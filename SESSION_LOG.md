@@ -531,3 +531,36 @@ A minimal `schedules_2025.parquet` (14 real week-10-2025 games, real matchups re
 - `/dfs_optimizer/.gitignore` (revised)
 
 **Handoff notes for next session:** if a future session (e.g. Phase 1's full-season historical pulls, or Phase 6's automated dry-run logging) starts producing genuinely large files, revisit whether everything should still be tracked directly in git vs. Git LFS or external storage for just the large ones -- don't assume this decision holds at unlimited scale. No other pipeline behavior changed by this -- purely a repo/backup decision, not a data or projection logic change.
+
+---
+
+## Session 3.2 — Multi-Lineup Generation + Exposure Limits
+**Date completed:** 2026-07-22
+**Status:** ✅ Complete
+
+**What was actually built:**
+- `scripts/optimizer.py` (extended, not replaced) — added `build_multi_lineup()`, which re-solves the Session 3.1 single-lineup ILP repeatedly to produce N distinct, salary-cap-legal lineups, none of which use any player in more than a configurable percentage of the total lineups. Outputs `output/lineups_multi_{site}_{week}.csv` — same columns as `lineup_single_{site}_{week}.csv` plus a leading `lineup_id` column. New CLI flags: `--n-lineups`, `--max-exposure` (default 40%), `--min-unique-swaps` (default 3). Single-lineup mode (`--site`/`--week` with no `--n-lineups`) is unchanged from Session 3.1 -- verified byte-identical code path, just gated by an `if args.n_lineups:` branch in `main()`.
+
+**Design decisions (continuing the numbered pattern from Session 3.1's docstring, now #5-8, documented in `optimizer.py` itself):**
+- **#5 -- Exposure cap is a hard ILP constraint**, not a soft penalty: once a player hits their allowed appearance count, they're filtered out of the candidate pool entirely for all remaining solves. Chosen because the roadmap's validation checkbox ("confirm no player exceeds the exposure cap set") asks for a guarantee, not a probability.
+- **#6 -- Exposure cap rounding:** `max(1, floor(max_exposure_pct * n_lineups))`. A plain floor could round to 0 for a low cap/lineup-count combination, which would silently ban a player outright rather than just limit repetition -- flooring at 1 avoids that edge case.
+- **#7 -- Lineup diversity via a hard minimum-swap constraint:** each new lineup must differ from every previously generated lineup by at least `min_unique_swaps` players (default 3), enforced as an ILP constraint, not randomized noise on projections. Known tradeoff, flagged in the code: the real-data test pool is thin (ROADMAP.md's "Known Testing Artifact" note -- only 4 non-zero-projection QBs), so a strict swap floor can go infeasible before N lineups are reached. Handled by relaxing `min_unique_swaps` by 1 (with a printed warning) each time a solve fails, rather than crashing or silently duplicating; if it relaxes all the way to 0 and still fails, generation stops early with an explicit count and reason printed -- never a silent short lineup set.
+- **#8 -- Default exposure cap 40%, same for both sites**, matching the roadmap card's own example figure. Kept shared rather than site-specific since exposure is a portfolio-construction choice, not something tied to a site's salary/roster structure the way e.g. chalk_score (Session 4.1) will be -- `--max-exposure` is still exposed as a flag if real usage later shows a reason to differ by site.
+
+**Files created/modified:**
+- `/dfs_optimizer/scripts/optimizer.py` (extended: `build_multi_lineup()` added, `solve_lineup()` extended with optional `previous_lineups`/`min_unique_swaps` params defaulting to no-op, `main()` branches on `--n-lineups`)
+- `/dfs_optimizer/output/lineups_multi_dk_10.csv`, `_fd_10.csv` (new)
+
+**Validation results:**
+- [x] Generated 20 lineups per site (DK and FD), confirmed no player exceeds the exposure cap: DK's top exposure topped out at 8/20 (exactly the 40% cap), same for FD -- verified by grouping the output CSV by player and counting appearances, not just trusting the solver's own accounting.
+- [x] Confirmed lineups are meaningfully different, not near-duplicates: computed pairwise player-set differences across all 20 lineups for both sites -- **0 identical or near-duplicate pairs**, minimum 3 players swapped between any two lineups (exactly the enforced floor, as expected since the solver stops swapping out more than required once salary-cap-optimal).
+- [x] Both sites' every generated lineup independently re-validated with Session 3.1's `validate_lineup()` (salary cap, exact roster size, correct position counts) -- 20/20 passed for both sites, no manual eyeballing.
+- [x] Both sites hit the full requested 20/20 lineups without needing to relax `min_unique_swaps` below its default of 3 -- the thin-pool infeasibility risk flagged in decision #7 didn't materialize at n_lineups=20/cap=40% against this test pool, though it remains a real risk worth watching at a real full-size slate with different N/cap combinations.
+
+**Known issues deferred:**
+- Everything carried over from Session 3.1's log (no defensive matchup_factor, FLEX_ELIGIBLE_POSITIONS not in SITE_CONFIGS, real-data-both-sites validation still blocked until Preseason Week 1 per ROADMAP.md's "Known Deferred Validations") still applies unchanged.
+- The relaxation behavior in decision #7 (progressively lowering `min_unique_swaps` on infeasibility) was implemented and is exercised by the code path, but wasn't actually triggered by this session's validation run (both sites reached 20/20 at the default swap floor) -- worth a future stress test at a higher `n_lineups` or a smaller/thinner pool to confirm the relaxation and early-stop logging behave as designed under real infeasibility, not just in code review.
+
+**Handoff notes for next session:**
+- Session 3.3 (Stacking Rules) extends `optimizer.py` again rather than replacing it -- likely adds a same-team QB+pass-catcher constraint to `solve_lineup()` alongside the existing salary/roster/uniqueness constraints, and probably needs to run under both single- and multi-lineup modes.
+- `build_multi_lineup()`'s per-lineup re-solve loop (locked-out pool + previous_lineups uniqueness constraints) is the reusable pattern Session 3.3's stacking constraints should slot into, rather than a parallel code path.

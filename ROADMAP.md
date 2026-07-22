@@ -245,6 +245,8 @@
 ---
 
 ### Session 3.2 — Multi-Lineup Generation + Exposure Limits
+**Status:** ✅ Complete (2026-07-22) — see SESSION_LOG.md for full detail.
+
 **Prerequisites:** Session 3.1 complete.
 
 **Files touched (modified):**
@@ -258,10 +260,12 @@
 - Generate N lineups with max-exposure caps per player (e.g., no player in more than 40% of lineups)
 
 **Validation:**
-- [ ] Generate 20 lineups per site, confirm no player exceeds the exposure cap set
-- [ ] Confirm lineups are meaningfully different from each other, not near-duplicates
+- [x] Generate 20 lineups per site, confirm no player exceeds the exposure cap set
+- [x] Confirm lineups are meaningfully different from each other, not near-duplicates
 
 **Handoff notes to log:** default exposure cap chosen and why — note if it differs by site (e.g. FD's higher cap could justify a different default) or is kept the same intentionally.
+
+**Resolution:** default exposure cap = 40% (`DEFAULT_MAX_EXPOSURE_PCT = 0.40`), matching this card's own example figure. Kept the same for both DK and FD intentionally — exposure is a portfolio-construction choice, not tied to a site's salary/roster structure, unlike e.g. Session 4.1's site-specific chalk_score. `--max-exposure` remains a CLI override per run if a future session finds a reason to split it by site. Diversity enforced via a hard minimum-swap ILP constraint (default 3 players) between every pair of lineups, with automatic relaxation + stderr warnings if the (currently thin, real-data test) pool can't support it — full reasoning in `optimizer.py`'s decisions #5-8. Both sites hit 20/20 lineups at the default settings against the current test pool; the relaxation path is implemented but not yet stress-tested against real infeasibility — flagged as a good target for a future session's validation, not blocking.
 
 ---
 
