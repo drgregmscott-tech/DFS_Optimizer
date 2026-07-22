@@ -1,0 +1,533 @@
+# Session Log
+
+Update this after completing every session — before closing that session, not later. This is what makes the next session's handoff possible without re-explaining the whole project.
+
+**Log entry template (copy this for each new session):**
+
+```
+## Session [X.X] — [Session Name]
+**Date completed:**
+**Status:** ✅ Complete / ⚠️ Complete with caveats / ❌ Blocked
+
+**What was actually built:**
+(brief description — note any deviation from what the roadmap card said, drift is normal and expected, just record it)
+
+**Files created/modified:**
+(exact paths — copy from roadmap card, correct if it changed)
+
+**Validation results:**
+- [ ] (each checkbox from the roadmap card — check off what passed)
+(paste any relevant validation output/numbers, e.g. row counts, spot-check values)
+
+**Decisions made / assumptions taken:**
+(anything decided during the session that isn't obvious from the roadmap — e.g. "chose PuLP over OR-Tools because X")
+
+**Known issues deferred:**
+(anything noticed but intentionally not fixed now — include why, so it doesn't get silently forgotten or silently re-litigated)
+
+**Handoff notes for next session:**
+(the specific thing the next session needs to know that isn't in the files themselves — e.g. "salary CSV column headers change slightly week to week, double check before running ingest")
+```
+
+---
+
+## Log Entries
+
+(Add entries below as sessions complete, most recent at the bottom or top — your call, just be consistent)
+
+---
+
+## Session 1.1 — Environment & Repo Setup
+**Date completed:** 2026-07-21
+**Status:** ✅ Complete
+
+**What was actually built:**
+- Repo folder structure (`/data`, `/scripts`, `/output`, `/logs`, plus `/config` for secrets — not in the original roadmap list but needed for Session 2.3's API key file).
+- `requirements.txt`, `README.md`, `.gitignore`.
+- `scripts/nflverse_fetch.py` — this is a deviation from the roadmap card, which called for installing `nfl_data_py`. See "Decisions made" below for why.
+
+**Files created/modified:**
+- `/dfs_optimizer/requirements.txt`
+- `/dfs_optimizer/README.md`
+- `/dfs_optimizer/.gitignore`
+- `/dfs_optimizer/scripts/nflverse_fetch.py` (new — not on the original roadmap card)
+- `/dfs_optimizer/config/`, `/dfs_optimizer/data/raw_salaries/` (empty, prep for later sessions)
+
+**Validation results:**
+- [x] Fresh clone of the repo + `pip install -r requirements.txt` runs without error on a clean environment — verified by building a throwaway venv and installing from `requirements.txt` directly (exit code 0).
+- [x] Import + a test pull of one week of prior-season data succeeds — but via `scripts/nflverse_fetch.py`, not `nfl_data_py` (see below). Verified pull of 2025 season weekly stats: 19,421 rows, 145 columns, weeks 1-22 (REG + POST) present.
+
+**Decisions made / assumptions taken:**
+- **Did not install `nfl_data_py` as the roadmap specified.** Found during setup that:
+  1. `nfl_data_py` is deprecated upstream — nflverse now recommends `nflreadpy` and has stated no further `nfl_data_py` updates are planned.
+  2. Its `import_weekly_data()` function 404s on any 2025+ season data, because it points at a GitHub release path (`releases/download/player_stats/...`) that nflverse retired on 2025-08-01 in favor of a renamed release (`stats_player`).
+  - Considered 3 options (switch to `nflreadpy`, patch `nfl_data_py`'s URL ourselves, or write our own fetch function) and discussed tradeoffs with the user. **Decision: wrote our own minimal fetch function** (`scripts/nflverse_fetch.py`) that reads nflverse's parquet releases directly via `pandas.read_parquet(url)`. Reasoning: keeps the whole pipeline in pandas (no Polars conversion needed, unlike `nflreadpy`), avoids depending on an abandoned package, and is small enough (~50 lines) that if nflverse renames a release again, there's one obvious file to fix.
+  - Schema note: the new `stats_player` release uses `team` where the old `nfl_data_py` output used `recent_team`. **This affects `blended_projections.py` and every downstream session that expected the old schema — future sessions need to adjust column names accordingly.**
+- Chose PuLP (not OR-Tools) per the roadmap's suggested default — no strong reason to deviate, installs cleanly.
+- Python 3.12.3 confirmed working.
+
+**Known issues deferred:**
+- `nflverse_fetch.py` currently only covers `weekly_stats`, `schedules`, and `weekly_rosters`. If a later session needs another nflverse dataset (e.g. injuries, NGS data), add a new entry to `URL_TEMPLATES` rather than reaching back for `nfl_data_py`.
+- No automated test/CI yet for `nflverse_fetch.py` beyond the manual smoke test — acceptable for this stage, revisit if the pipeline gets automated in Phase 5.
+
+**Handoff notes for next session:**
+- Session 1.2 (Historical Data Ingestion) should import from `scripts/nflverse_fetch.py` (`import_weekly_data`), not `nfl_data_py`.
+- **Schema alert:** the pulled weekly stats dataframe uses `team` (not `recent_team`) as the team column, and has 145 columns (not the older nfl_data_py column set). Session 1.2's "paste the `.columns` output" handoff step should capture the *actual* new schema, since it differs from what `blended_projections.py` (written against the old nfl_data_py schema) currently assumes.
+- Full column list from this session's pull is reproducible via `python3 scripts/nflverse_fetch.py` — didn't paste all 145 columns here since that's properly Session 1.2's job per the roadmap.
+- Python version: 3.12.3 in the build/test sandbox. **Re-validated on the user's actual machine on Python 3.14.6 (Windows 11, PowerShell)** — `pip install -r requirements.txt` and `python scripts\nflverse_fetch.py` both passed cleanly with no version-related issues. No upper Python-version pin needed in `requirements.txt` at this time.
+- Windows-specific setup notes (not issues with our code, just first-time-setup friction): (1) Windows ships a PATH alias that prints a misleading "install from Microsoft Store" message if Python isn't actually installed yet — install from python.org instead and check "Add python.exe to PATH" during install. (2) PowerShell needs `venv\Scripts\Activate.ps1` (not `source venv/bin/activate`, which is Mac/Linux syntax) and may require `Set-ExecutionPolicy -Scope CurrentUser RemoteSigned` once before it'll allow running the activation script. (3) Use `python` and backslash paths (`scripts\nflverse_fetch.py`) on Windows, not `python3` / forward slashes.
+- No other OS-specific issues hit beyond the pandas/numpy build-isolation issue below.
+- Minor unrelated install hiccup, already resolved: fresh `pip install` of *any* package needing to build from source (e.g. an old pinned `pandas==1.5.3`, which we no longer use) failed with `ModuleNotFoundError: No module named 'pkg_resources'` — recent `setuptools` releases removed `pkg_resources`, and pip's build-isolation fetches the newest `setuptools` regardless of what's globally installed. Not an issue for our final `requirements.txt` since none of our pinned packages need to build from source (all have prebuilt wheels for 3.12), but worth knowing if a future session adds a package that doesn't ship a wheel.
+
+---
+
+## Session 1.2 — Historical Data Ingestion
+**Date completed:** 2026-07-21
+**Status:** ✅ Complete
+
+**What was actually built:**
+- `scripts/ingest_historical.py` — pulls weekly player stats, schedules, and weekly rosters for given season(s) and writes each to parquet under `/data`.
+- Deviation from the roadmap card (expected, per Session 1.1's decision): imports from `scripts/nflverse_fetch.py`, not `nfl_data_py`.
+- Deviation from the roadmap card's file list: in addition to `weekly_stats_{season}.parquet`, also writes `schedules_{season(s)}.parquet` and `weekly_rosters_{season}.parquet`, since the roadmap's "Build" step explicitly calls for pulling all three (schedules + rosters just weren't named in the "Files touched" list). All three live under `/data`.
+- Found and fixed a second nflverse URL problem beyond the one already known from Session 1.1: the `schedules` release's actual asset filename is `games.parquet`, not `schedules.parquet` (the release *tag* is called "schedules" but the file inside it isn't). `nflverse_fetch.py`'s `URL_TEMPLATES["schedules"]` was 404ing until fixed.
+- Found a schema mismatch: the `weekly_rosters` release's player-ID column is named `gsis_id`, not `player_id` (same ID scheme/values as `weekly_stats.player_id`, just a different column name). `ingest_historical.py`'s dedup key accounts for this.
+
+**Files created/modified:**
+- `/dfs_optimizer/scripts/ingest_historical.py` (new)
+- `/dfs_optimizer/scripts/nflverse_fetch.py` (modified — fixed `schedules` URL template, see above)
+- `/dfs_optimizer/data/weekly_stats_2025.parquet` (output)
+- `/dfs_optimizer/data/schedules_2025.parquet` (output — not on original roadmap file list, see above)
+- `/dfs_optimizer/data/weekly_rosters_2025.parquet` (output — not on original roadmap file list, see above)
+
+**Validation results:**
+- [x] Pull returns expected row counts for a known week, spot-checked against a real box score — Patrick Mahomes, Week 1 2025 (KC @ LAC, Brazil game): our pull shows 24/39, 258 passing yards, 1 TD, opponent_team=LAC. Cross-checked against footballdb.com's Week 1 2025 scores page, which independently reports "258 Yds, 1 TD" for Mahomes in that game — matches exactly.
+- [x] Re-running the script doesn't duplicate rows (idempotency check) — ran `ingest_historical.py --season 2025` twice back to back; row counts identical both runs (weekly_stats: 19,421 / schedules: 285 / weekly_rosters: 46,841 after dedup), and the output parquet files are byte-for-byte identical (md5 match) between runs, since each run does a full overwrite rather than an append.
+- Row/column counts this run: `weekly_stats_2025.parquet` — 19,421 rows × 145 cols. `schedules_2025.parquet` — 285 rows × 46 cols. `weekly_rosters_2025.parquet` — 46,841 rows × 36 cols (8 duplicate rows on `[gsis_id, season, week]` were found and dropped in the raw source data — noted below).
+
+**Decisions made / assumptions taken:**
+- Wrote one parquet file per season for `weekly_stats` and `weekly_rosters` (matching the roadmap's `{season}` naming convention), but a single combined file for `schedules` (named `schedules_{season(s)}.parquet`) since schedule data is naturally one small table per season already and there's no strong reason to further split it.
+- Applied `drop_duplicates()` on a natural key before writing, as a safeguard against the source data containing duplicates — not strictly required for idempotency (since each run overwrites rather than appends) but protects against the *upstream* nflverse release itself containing dupes. This caught 8 real duplicate rows in the `weekly_rosters` source data this run.
+- Used `[player_id, season, week, season_type, game_id]` as the weekly_stats natural key, `[game_id]` for schedules, and `[gsis_id, season, week]` for weekly_rosters.
+
+**Known issues deferred:**
+- The 8 duplicate rows dropped from `weekly_rosters` weren't individually investigated (e.g. whether they're true dupes or a player who changed teams mid-week) — fine for now since they're a trivial fraction of 46,849 rows, but flag if roster data seems off later.
+- No automated test/CI yet, consistent with Session 1.1's deferral — still fine at this stage.
+
+**Handoff notes for next session:**
+- **Full column list for `weekly_stats_{season}.parquet`** (145 columns, this is the "paste the `.columns` output" step the roadmap calls for): `player_id, player_name, player_display_name, position, position_group, headshot_url, season, week, season_type, game_id, team, opponent_team, completions, attempts, passing_yards, passing_tds, passing_interceptions, sacks_suffered, sack_yards_lost, sack_fumbles, sack_fumbles_lost, passing_air_yards, passing_yards_after_catch, passing_first_downs, passing_epa, passing_cpoe, passing_2pt_conversions, pacr, passing_10, passing_16, passing_20, passing_40, carries, rushing_yards, rushing_tds, rushing_fumbles, rushing_fumbles_lost, rushing_first_downs, rushing_epa, rushing_2pt_conversions, rushing_10, rushing_12, rushing_20, rushing_40, receptions, targets, receiving_yards, receiving_tds, receiving_fumbles, receiving_fumbles_lost, receiving_air_yards, receiving_yards_after_catch, receiving_first_downs, receiving_epa, receiving_2pt_conversions, receiving_10, receiving_16, receiving_20, receiving_40, racr, target_share, air_yards_share, wopr, special_teams_tds, def_tackles_solo, def_tackles_with_assist, def_tackle_assists, def_tackles_for_loss, def_tackles_for_loss_yards, def_fumbles_forced, def_sacks, def_sack_yards, def_qb_hits, def_interceptions, def_interception_yards, def_pass_defended, def_tds, def_fumbles, def_safeties, misc_yards, fumble_recovery_own, fumble_recovery_yards_own, fumble_recovery_opp, fumble_recovery_yards_opp, fumble_recovery_tds, penalties, penalty_yards, fumbles_forced_by_opp, fumbles_not_forced, fumbles_out_of_bounds, fumbles_total, fumbles_lost_total, punt_returns, punt_return_yards, kickoff_returns, kickoff_return_yards, fg_made, fg_att, fg_missed, fg_blocked, fg_long, fg_pct, fg_made_0_19, fg_made_20_29, fg_made_30_39, fg_made_40_49, fg_made_50_59, fg_made_60_, fg_missed_0_19, fg_missed_20_29, fg_missed_30_39, fg_missed_40_49, fg_missed_50_59, fg_missed_60_, fg_made_list, fg_missed_list, fg_blocked_list, fg_made_distance, fg_missed_distance, fg_blocked_distance, pat_made, pat_att, pat_missed, pat_blocked, pat_pct, gwfg_made, gwfg_att, gwfg_missed, gwfg_blocked, gwfg_distance, pt_att, pt_blocked, pt_long, pt_yards, pt_inside_20, pt_out_of_bounds, pt_downed, pt_touchback, pt_fair_caught, pt_returned, pt_return_yards, pt_return_tds, pt_net_yards, fantasy_points, fantasy_points_ppr`. Both `fantasy_points` and `fantasy_points_ppr` are already precomputed — no need to hand-roll fantasy scoring from raw stats in Phase 2 unless a non-standard scoring system is needed.
+- **`opponent_team` is already present** in `weekly_stats` — Session 2.2 (Matchup Factor) doesn't need to derive it from the schedule separately.
+- **Team column is `team`, not `recent_team`** — reconfirming Session 1.1's schema alert. `blended_projections.py` (written against old `nfl_data_py` schema) still needs a pass to rename `recent_team` → `team` and switch its `import` off `nfl_data_py` before Phase 2 sessions build on it — not done in this session since it wasn't Session 1.2's job, but don't let it get silently forgotten.
+- **`weekly_rosters`'s player-ID column is `gsis_id`, not `player_id`** — same ID values/scheme as `weekly_stats.player_id`, just named differently. Any future join between `weekly_stats` and `weekly_rosters` needs `left_on="player_id", right_on="gsis_id"`.
+- **nflverse asset-filename gotcha, for the "one obvious file to fix" note in `nflverse_fetch.py`'s docstring:** release *tag* names don't always match the asset *filename* inside them — `schedules` release → `games.parquet`, but `weekly_rosters` release → `roster_weekly_{season}.parquet` (matches its tag reasonably). If another dataset gets added later and 404s even though the release tag looks right, check the actual asset filenames on the release page (or via `curl -I` against candidate names) before assuming the whole release moved.
+- Season used for this ingestion: 2025 (most recent completed season — 2026 regular season hasn't started yet as of this session, per `ROADMAP.md`'s Sept 9, 2026 go-live target). Re-run `ingest_historical.py --season 2026` once 2026 data starts flowing.
+
+---
+
+## Session 1.3 (REVISED) — Salary Data Ingestion, DraftKings + FanDuel
+**Date completed:** 2026-07-21
+**Status:** ⚠️ Complete with caveats
+
+**Why this is a revision, not a new session:** the original Session 1.3 (logged above) was built DK-only. The project's actual scope was always meant to include both DraftKings and FanDuel, but this wasn't clarified until after Session 1.3 first shipped. Rather than leave a DK-only implementation in place and patch it later, this revision reopens Session 1.3 and rebuilds `ingest_salaries.py` for both sites before Phase 2 starts building on top of it. `ROADMAP.md` has also been updated throughout (not just Session 1.3's card) to reflect dual-site scope — see the new "Notes on dual-site scope" section at the bottom of that file for the full breakdown of what changed structurally in later phases.
+
+**What was actually built:**
+- `scripts/ingest_salaries.py` rewritten to take a `--site {dk,fd}` flag. Site-specific parsing (column names, name construction, defense-position labels, team-abbreviation quirks) feeds into the same shared normalization/matching logic as before.
+- Added `SITE_CONFIGS` dict as the canonical source of truth for each site's salary cap, roster slots, and scoring format — DK: $50,000 cap, QB/RB/RB/WR/WR/WR/TE/FLEX/DST, full-PPR; FD: $60,000 cap, QB/RB/RB/WR/WR/WR/TE/FLEX/DEF, half-PPR. Not used by this script directly, but placed here so Sessions 2.x/3.1 read from one place instead of re-declaring these values.
+- Added handling for **DK's "DKEntries.csv" bulk lineup-upload template shape**, discovered from a real file the user provided this session — this is a different CSV shape than DK's standalone "Export to CSV" player-pool file (entries table on the left, player pool embedded starting several columns to the right, rather than a clean single table). Both shapes are real files a user could have on hand, so the script detects and handles either for site="dk".
+- Added `POSITION_EQUIVALENTS` handling (currently `{"RB": {"RB", "FB"}}`) after finding, in real DK data, that DK has no dedicated fullback position and folds FB into RB — this caused a real player (Alec Ingold) to fail exact-match despite being present and correct in the reference data.
+- Added a final "name-only, any position" fallback match stage (Step 5), applied only when the name uniquely resolves across the whole reference table. This catches cases where a site's position label disagrees with nflverse's for reasons that aren't a clean FB/RB-style equivalence (found via 2 real players — Blake Whiteheart and Will Mallory, both real TEs, listed as "RB" in the DK Madden Stream export for reasons that aren't clear from the data itself, possibly a Madden-simulation roster quirk rather than a real DK data issue).
+- `data/name_mapping.csv` schema changed from DK-only columns (`dk_name, dk_team, dk_position, player_id, notes`) to site-scoped columns (`site, source_name, source_team, source_position, player_id, notes`), since an override found on one site's export text doesn't necessarily apply to the other site's export text for the same player.
+- Output naming changed from `salaries_{slate_id}.csv` to `salaries_{site}_{slate_id}.csv` (and same pattern for the unmatched log) to avoid DK/FD collisions on the same slate_id.
+
+**Files created/modified:**
+- `/dfs_optimizer/scripts/ingest_salaries.py` (rewritten)
+- `/dfs_optimizer/data/name_mapping.csv` (schema changed, reset to header + 1 real entry — see below)
+- `/dfs_optimizer/ROADMAP.md` (updated throughout — Sessions 1.3, 2.1-2.4, 3.1-3.3, 4.1-4.2, 5.2, 6.1-6.3, 7.1-7.3, 8.1, 9.1-9.2, plus a new "Notes on dual-site scope" section)
+- `/dfs_optimizer/data/salaries_dk_madden_20260721.csv` (output, real data — see validation)
+- `/dfs_optimizer/data/salaries_fd_TEST_SAMPLE.csv` (output, synthetic data)
+
+**Validation results:**
+- [x] **DK, real data:** user provided a real `DKEntries.csv` export from an actual live DK "Madden Stream FREE 200-Player" contest (2026-07-21). Confirmed DK's Madden Stream contests use the same $50K cap, same 9-slot roster, and the same real player pool/salaries as regular DK Classic contests — only game results are simulated — making this a legitimate real-data validation of the ingestion path, though NOT a valid source for projection/accuracy testing later (the simulated results aren't real football outcomes). Result: 93 rows ingested, 91 matched (97.8%) after fixing the FB/RB equivalence issue and adding one real nickname override (Drew→Andrew Ogletree, found in this data). The 2 remaining unmatched (Joe Mixon, Tank Dell) were confirmed to have zero recorded games in `weekly_stats_2025.parquet` — a genuine reference-data gap, not a matching bug; nothing further to fix here without an external ID source.
+- [x] **FD, synthetic data only:** no real FD export exists yet (no FD equivalent of DK's Madden Stream). Validated against a 10-row synthetic file built from 8 real players (including an LA/LAR team-abbreviation case matching DK's) plus 1 team defense (FD's "D" position label) plus 1 deliberately fake name. Result: 9/10 auto-matched correctly, defense routed correctly, fake name correctly caught as unmatched. **This is the one open caveat for this revision** — FD's column layout (`SITE_CONFIGS["fd"]`) is based on documented format, not a verified real download.
+- [x] Unmatched players logged clearly, not silently dropped — confirmed for both sites (same mechanism as the original session, unchanged).
+
+**Decisions made / assumptions taken:**
+- Both sites required — user confirmed this was always the intended scope, clarified mid-project rather than at kickoff.
+- Kept a single script with a `--site` flag rather than two separate scripts, since ~90% of the matching logic (normalization, override table, output writing) is identical between sites and duplicating it would create two places to fix the same bug.
+- `POSITION_EQUIVALENTS` and the name-only fallback stage are general mechanisms, not one-off patches for the specific players found — chosen deliberately so future FB-labeled-as-RB or position-mislabeled cases resolve automatically instead of needing a new manual override every time.
+- FD's team-abbreviation map currently just inherits the DK/base map (`BASE_TEAM_ABBREV_MAP`) with an empty FD-specific override dict — untested assumption that FD mostly follows the same conventions as nflverse/DK; flagged in the script docstring to revisit once real FD data exists.
+
+**Known issues deferred:**
+- **FD ingestion is unverified against real data — the single biggest open item from this revision.** No FD equivalent of Madden Stream exists to test against right now (confirmed via search). Needs to be re-validated the moment a real FD slate is available (or an archived historical FD export can be sourced sooner). Do not treat FD's 97.8%-style match rate as proven until this happens — it hasn't been tested against real data at all yet.
+- The "name-only, any position" fallback (Step 5) is intentionally permissive — worth revisiting if it ever causes a wrong match in practice (it's designed to fail safe by requiring a globally unique name, but hasn't been stress-tested against a full slate with hundreds of players where name collisions are more likely).
+- FD's defense position label is treated as either "D" or "DEF" (both handled) since documentation wasn't fully consistent on which FD actually uses — confirm against a real export and simplify once known.
+
+**Handoff notes for next session:**
+- Session 2.1 (and the rest of Phase 2) needs to become site-aware per the `ROADMAP.md` update — specifically, fantasy points must be computed using each site's own scoring rule (DK full-PPR vs FD half-PPR) rather than the single hardcoded PPR formula currently in `blended_projections.py`. That file has NOT been updated yet — it still assumes DK-only, full-PPR, and imports the deprecated `nfl_data_py` (per Session 1.1/1.2's already-known issue). Both problems need fixing before or during Session 2.1, not deferred further.
+- `ingest_salaries.py`'s `SITE_CONFIGS` dict is now the canonical place for salary cap / roster slots / scoring format per site — future sessions (2.x, 3.1) should import/read from there rather than re-declaring these values, so a future correction only needs to happen in one place.
+- Before trusting FD data for anything beyond plumbing tests: get a real FD Classic salary CSV (from an actual FD slate, once one exists closer to the preseason window) and re-run `ingest_salaries.py --site fd` against it, the same way this session did for DK with the Madden Stream file.
+- `data/name_mapping.csv` currently has exactly 1 real entry (the Ogletree nickname case) plus header — not pre-seeded with guesses, consistent with the original session's approach.
+
+---
+
+## Session 2.1 — Season Baseline + Recent Form
+**Date completed:** 2026-07-21
+**Status:** ✅ Complete
+
+**What was actually built:**
+- `scripts/projections_baseline.py` — takes `--site {dk,fd} --season --week`, reads `data/weekly_stats_{season}.parquet`, and outputs per-player `season_avg`, `recent_form`, and `games_played`.
+- Replaces the old `blended_projections.py`'s season-baseline/recent-form logic rather than modifying that file — `blended_projections.py` still imports the deprecated `nfl_data_py` and is DK-only/full-PPR-hardcoded (per Session 1.1/1.2/1.3's handoff notes); this session did not touch it. It's now effectively superseded for baseline/recent-form purposes; matchup factor and vegas logic still need to be pulled out of it in later sessions.
+- Two design decisions made this session that the roadmap card didn't spell out explicitly (both cleared with the user before building):
+  1. **Lookahead-bias guard:** baseline/recent-form for week N only use weeks `1..N-1` of REG-season data. The old `blended_projections.py` averaged over the *entire* season file regardless of target week, which leaks the outcome being projected into its own inputs. `--week` is a hard cutoff on the input data here, not just an output-filename label.
+  2. **REG season only:** POST weeks (19-22 in nflverse's numbering) are excluded from both signals, since playoff performance reflects different opponents/roster context than a regular-season slate.
+- Site-aware scoring: DK uses nflverse's precomputed `fantasy_points_ppr` directly (full PPR). FD has no native half-PPR column in nflverse data, so it's derived as `fantasy_points + 0.5 * receptions` — confirmed exact (verified `fantasy_points_ppr - fantasy_points == receptions` to float-precision noise only across the full dataset before relying on the derivation).
+
+**Files created/modified:**
+- `/dfs_optimizer/scripts/projections_baseline.py` (new)
+- `/dfs_optimizer/output/baseline_recent_form_dk_2025_10.csv` (output, validation run)
+- `/dfs_optimizer/output/baseline_recent_form_fd_2025_10.csv` (output, validation run)
+
+**Validation results:**
+- [x] 5 known players, hand-calculated season_avg/recent_form vs. script output, both sites — Mahomes, McCaffrey, Kelce, Chase (all 9 games played), plus Tyreek Hill (only 4 games recorded before week 10, 2025 injury — this doubled as the `<5 games` test below). All 5 matched hand-calculated values exactly for both DK and FD. DK-FD season_avg gaps matched `0.5 * avg_receptions` exactly per player: 0.00 (Mahomes, QB, 0 receptions) up to 4.22 (Chase).
+- [x] Script handles players with `<5` games played without crashing — tested week 1 (0 prior REG games for anyone → empty output, 0 rows, no crash) and week 3 (401 players with 1-2 game histories, no crash). Week 10 run (full histories) also included in validation.
+- [x] DK/FD season_avg differ by roughly the expected half-point-per-reception gap, not something unexplained — confirmed exactly (see above), not just "roughly."
+
+**Decisions made / assumptions taken:**
+- User confirmed: go with my recommendation on both open questions (lookahead-bias guard, REG-only filtering) rather than deciding independently — both are now hard-coded, not configurable via CLI flag. If a future session needs POST-season or leakage-inclusive baselines for some reason, that'd be a deliberate new flag, not an accidental default.
+- `games_played` and `season_avg`/`recent_form` are left as `0`/`NaN` for players with no qualifying history before the target week, rather than filled with 0 or dropped — so downstream steps (2.2, 2.4) can decide explicitly how to treat a totally-unknown player (e.g. rookie debut) instead of that decision being silently baked in here.
+
+**Known issues deferred:**
+- Week 1 output is always empty (0 rows) by construction, since there's no prior-week data to build a baseline from yet. This is correct behavior, not a bug, but means week 1 can't be used standalone downstream — flagging so a future session doesn't mistake it for broken output.
+- `blended_projections.py` itself is now stale for baseline/recent-form (superseded by this session) but still contains the only existing matchup-factor and vegas-factor logic in the repo, unrefactored. Session 2.2 will need to pull matchup-factor logic out of it (and make it site-aware, same reasoning as this session) rather than starting from scratch.
+
+**Handoff notes for next session:**
+- Session 2.2 (Matchup Factor) needs the same site-aware fantasy-points computation used here (`compute_fantasy_points()` in `projections_baseline.py`) — reuse it rather than re-deriving FD's half-PPR formula a second time.
+- Session 2.2 should apply the same REG-only / lookahead-bias filtering established here for consistency, even though the roadmap card for 2.2 doesn't mention it explicitly — matchup factors computed from POST-season or future-leaking data would have the same problems addressed this session.
+- `data/weekly_stats_{season}.parquet`'s `opponent_team` column (confirmed present as of Session 1.2) is what 2.2 will group on.
+
+**ADDENDUM (added during Session 2.4, 2026-07-21):** a real bug was found in this session's `season_baseline()` during Session 2.4's first real end-to-end validation run. Grouping by `player_id, player_name, position, TEAM` silently split any player who changed teams mid-season into multiple output rows sharing the same `player_id` but different `season_avg` values (7 of 532 players in the real 2025 data, e.g. Joe Flacco, Colts → Browns) — invisible in this session's own validation because all 5 spot-check players stayed on one team all season. This output has never had a `team` column, so grouping by team was never correct in the first place. **Fixed in Session 2.4** by dropping `team` from the groupby (now `player_id, player_name, position` only). See Session 2.4's log entry below for the full fix and re-validation. `projections_baseline.py` needs to be re-run against real `weekly_stats_{season}.parquet` for every season/week this bug could have affected, since existing `baseline_recent_form_*.csv` files predating this fix contain the same duplicate-row defect.
+## Session 2.2 — Matchup Factor
+**Date completed:** 2026-07-21
+**Status:** ✅ Complete
+
+**What was actually built:**
+- `scripts/projections_matchup.py` — for a given site/season/week, computes each team's fantasy-points-allowed by position (QB/RB/WR/TE) relative to league average, as a `matchup_factor`.
+- Reused Session 2.1's site-aware scoring split (DK = `fantasy_points_ppr` as-is, FD = `fantasy_points + 0.5*receptions`) and its lookahead-bias guard (REG season only, `week < target_week`) unchanged, so both projection components stay consistent on what data a given week's projection is allowed to see.
+- One deviation from the original `blended_projections.py` placeholder logic worth flagging explicitly: that script computed points-allowed as a flat `.mean()` over all rows grouped by `opponent_team`+`position` — i.e. averaged per opposing *player*-game, not per opposing *team*-game. This session instead sums each position's fantasy points *within* a team-week first (all opposing WRs' points added together for that game), then averages those weekly sums across the team's games. Per-player averaging would understate points allowed to positions where a team faced 3 productive WRs in a game vs. 1 — summing first captures "how much this defense gave up to the position that week," which is what a matchup factor should mean.
+
+**Files created/modified:**
+- `/dfs_optimizer/scripts/projections_matchup.py` (new)
+
+**Validation results:**
+- [x] matchup_factor = exactly 1.0 for a league-average defense — confirmed for both sites: 128 rows (32 teams × 4 positions), position-weighted mean matchup_factor = 1.0000 for QB/RB/WR/TE on both DK and FD (holds by construction of the normalization, but confirmed programmatically rather than assumed).
+- [x] Spot-checked 2 sets of known matchups against public sources, both sites, week 10 (2025 season, so weeks 1-9 of data):
+  - **Cincinnati (bad defense)** — DK: QB 1.244, RB 1.544, TE 1.687, WR 0.963. FD: QB 1.238, RB 1.586, TE 1.785, WR 0.976. Verified: SI Sports reporting confirms the Bengals allowed 300 points through their first 9 games of 2025, the second-worst 9-game start by DVOA since 1978. Matches our data showing CIN as the single highest (juiciest) matchup_factor across QB/RB/TE.
+  - **Houston / Denver (elite defenses)** — DK QB matchup_factor: HOU 0.673, DEN 0.789 (2nd- and 3rd-toughest QB matchups in the league at week 10). Verified: multiple sources (FOX Sports, DirecTV, nflspy.com defensive rankings through Week 10) confirm Houston and Denver as the top 2 defenses in the NFL through this stretch of the season.
+- [x] No nulls, all 32 teams x 4 positions present (128/128 rows), both sites.
+- [x] Confirmed DK and FD outputs are meaningfully different (not a copy-paste bug) but highly correlated as expected — Pearson r = 0.995 between DK and FD matchup_factor across all 128 team/position rows; 0/128 rows identical. Largest divergence: CIN TE (DK 1.687 vs FD 1.785, diff +0.097) — makes sense, TE is the position where PPR value is most receiving-volume-driven.
+
+**Decisions made / assumptions taken:**
+- Summed-then-averaged (per team-week) rather than flat per-player-row averaging for points allowed — see "What was actually built" above. This is a real behavioral difference from the original `blended_projections.py` placeholder and should be the version future sessions build on.
+- Reused Session 2.1's `RECENCY_WEIGHTS`-adjacent conventions (REPO_ROOT-relative paths, REG-only + lookahead guard) verbatim rather than re-deriving them, to keep the two projection-component scripts behaviorally consistent with each other.
+- Used week 10 as the validation target week (matches Session 2.1's validation week), so the same 5 known players / matchups remain reusable as a regression check across both sessions if a future session wants one.
+
+**Known issues deferred:**
+- Team abbreviation `LA` (LA Rams) appears in the output, matching `weekly_stats`'s convention — flagging now because Session 2.3 (Vegas Integration) explicitly needs a team-name key consistent with this, and the roadmap already notes odds APIs often use a different format (e.g. "LAR"). Not a bug here, just a heads-up so 2.3 doesn't quietly break the join.
+- No handling yet for a team on a bye in the week immediately before the target week (e.g. a team with fewer games played than others by week N) — the average is still just "average over games actually played," which is directionally fine, but a team's matchup_factor is based on less data early in the season for teams that had an early bye. Not fixed now since it's inherent to small-sample early-season projections generally (same caveat applies to Session 2.1's season_avg), but worth a joint look if 2.4's blend ever needs a confidence/sample-size weighting.
+
+**Handoff notes for next session:**
+- Session 2.3 (Vegas Integration) needs a team-name key consistent with `weekly_stats`'s `team`/`opponent_team` values (confirmed format: `LA` not `LAR`, `WAS` not `WSH`, etc. — pull the full 32-team list from this session's output CSV if useful for building the normalization map).
+- Session 2.4 (Full Blend Pipeline) will merge this session's `matchup_factors_{site}_{season}_{week}.csv` with Session 2.1's `baseline_recent_form_{site}_{season}_{week}.csv` on `position` (and team, once 2.4 maps each player to their week-N opponent) — both scripts now share identical REPO_ROOT/DATA_DIR/OUTPUT_DIR conventions and identical site-scoring logic, so no reconciliation needed there.
+- Validation numbers above (CIN, HOU, DEN at week 10, both sites) are reusable as a regression check the same way Session 2.1 flagged its 5 players.
+
+---
+## Session 2.3 — Vegas Integration
+**Date completed:** _(not yet — see Status)_
+**Status:** ⚠️ Blocked — script built and unit-tested, but not yet run against the real API
+
+**What was actually built:**
+- `scripts/vegas_odds.py` — pulls NFL spreads + totals from The Odds API (`regions=us`, `markets=spreads,totals`), converts to per-team implied totals, writes `output/vegas_implied_totals_{week}.csv`.
+- Reads the API key from `config/api_keys.env` (`ODDS_API_KEY=...`) via a small hand-rolled parser rather than adding `python-dotenv` as a dependency — consistent with the project's existing preference for small dependency-light utilities (same reasoning as `nflverse_fetch.py` replacing `nfl_data_py`).
+- `TEAM_NAME_MAP` built from The Odds API's own documented full team names, mapped to the exact nflverse abbreviations confirmed in Session 2.2's output (`LA` not `LAR`, `WAS` not `WSH`, etc.) — sourced directly from both systems' real data, not guessed.
+- Design decision not on the original roadmap card: **consensus averaging across bookmakers.** The Odds API returns one spread/total per book; rather than pin to a single book (risk of one outlier line skewing the projection), this script averages spread and total across every US-region book returned per game, then computes implied totals from the averaged numbers. Documented in the script's docstring.
+- Built-in automated sanity check: for every game, `implied_total(home) + implied_total(away)` must equal the game's total to float precision — checked in code (`validate_implied_totals()`), not just eyeballed, same pattern as Session 2.2's league-average=1.0 check.
+- Every call prints the `x-requests-remaining` / `x-requests-used` / `x-requests-last` response headers, so actual quota burn is visible in real time rather than only estimated.
+
+**Files created/modified:**
+- `/dfs_optimizer/scripts/vegas_odds.py` (new)
+- `/dfs_optimizer/requirements.txt` (added `requests==2.33.1`)
+
+**Validation results:**
+- [x] Implied-total formula and consensus-averaging logic hand-verified against a synthetic 2-book example (KC -6.5/48 and KC -7.0/47 → consensus -6.75/47.5 → implied totals 27.125/20.375, summing back to 47.5 exactly). Also confirmed the "game with no posted lines yet" case is skipped cleanly rather than crashing.
+- [ ] **Not yet done: pulled odds matched against a live sportsbook page.** No real NFL lines are posted yet as of this session (2026-07-21) — Preseason Week 1 is Aug 13-15, 2026, and books generally don't post spreads/totals this far out. Deferred, same pattern as Session 1.3's FD-validation-gap: flag in every session's log until closed.
+- [ ] **Not yet done: real API call.** No Odds API key exists yet — user hasn't signed up (account creation is something Claude won't do on the user's behalf). Script is written and unit-tested against synthetic data only.
+
+**Decisions made / assumptions taken:**
+- User confirmed a specific polling cadence (Tue-Fri 1x/day, Sat 2x/day, Sunday hourly 4hrs-1hr before lock then every 15min in the final hour) — priced at ~121 credits/month, well under the 500/month free-tier cap. Added to `ROADMAP.md`'s Session 2.3 and Session 5.2 cards so Session 5.2 doesn't have to re-derive it.
+- Evaluated whether an alternative odds vendor was needed to "keep this free" for future multi-sport (NBA/NHL/MLB) expansion. Conclusion: not needed now (NFL-only scope is comfortably within budget), but flagged as a real future constraint — a single additional daily-cadence sport would exceed 500 credits/month on its own, since NFL's weekly cadence is what keeps usage low. Two alternative vendors surfaced (SharpAPI, SportsGameOdds) but neither was independently verified — SharpAPI in particular has no third-party coverage found, only its own marketing site, so it's noted as unverified rather than recommended. Full reasoning captured in `ROADMAP.md`'s new "Notes on odds vendor choice" section rather than repeated here.
+- Chose bookmaker-consensus averaging over pinning to one book (e.g. just DraftKings' own sportsbook line) for the implied-total input, to reduce single-book noise. This is a real behavioral choice, not neutral — flagging so it isn't silently relitigated.
+
+**Known issues deferred:**
+- Real-API validation (both checklist items above) blocked on the user signing up for a free key and adding it to `config/api_keys.env`. This session cannot be marked ✅ Complete until that happens and the validation steps are re-run against live data.
+- Once real lines exist, also worth spot-checking that the Odds API's bookmaker list for `regions=us` actually includes DraftKings and FanDuel specifically (both were listed as covered on the site's marketing page as of this session, but not confirmed inside an actual API response yet).
+
+**Handoff notes for next session:**
+- **This session is not done.** Once you have an Odds API key: add it to `config/api_keys.env`, then run `python3 scripts/vegas_odds.py --week <current_week>` and paste back the output (including the quota-usage line it prints) so the two open validation checkboxes above can be closed.
+- Session 2.4 (Full Blend Pipeline) needs this session's real output (`vegas_implied_totals_{week}.csv`) to exist before it can run end-to-end — it's currently blocked on the same key.
+- The confirmed weekly polling cadence now lives in `ROADMAP.md`'s Session 2.3 and Session 5.2 cards — Session 5.2 should implement against that rather than re-deriving a schedule from scratch.
+
+
+## Session 2.3 — Vegas Integration
+**Date completed:** 2026-07-21
+**Status:** ✅ Complete
+
+**What was actually built:**
+- `scripts/vegas_odds.py` — pulls NFL spreads + totals from The Odds API (`regions=us`, `markets=spreads,totals`), converts to per-team implied totals, writes `output/vegas_implied_totals_{week}.csv`.
+- Reads the API key from `config/api_keys.env` (`ODDS_API_KEY=...`) via a small hand-rolled parser rather than adding `python-dotenv` as a dependency — consistent with the project's existing preference for small dependency-light utilities (same reasoning as `nflverse_fetch.py` replacing `nfl_data_py`).
+- `TEAM_NAME_MAP` built from The Odds API's own documented full team names, mapped to the exact nflverse abbreviations confirmed in Session 2.2's output (`LA` not `LAR`, `WAS` not `WSH`, etc.) — sourced directly from both systems' real data, not guessed.
+- Design decision not on the original roadmap card: **consensus averaging across bookmakers.** The Odds API returns one spread/total per book; rather than pin to a single book (risk of one outlier line skewing the projection), this script averages spread and total across every US-region book returned per game, then computes implied totals from the averaged numbers. Documented in the script's docstring.
+- Every call prints the `x-requests-remaining` / `x-requests-used` / `x-requests-last` response headers, so actual quota burn is visible in real time rather than only estimated.
+- **Bug found and fixed post-first-real-run (see Validation results):** the original sanity check (`implied_total(home) + implied_total(away) == total`) was implemented by rebuilding a `team -> row` lookup dict from *all* rows across *all* games returned, then checking each game against that dict. Because the API returns every currently-listed upcoming game (not just one week — confirmed: `--week` only labels the output filename, it doesn't filter which games are pulled), a team appearing in multiple upcoming games caused later games to silently overwrite earlier ones in the lookup dict, producing false-positive mismatch warnings on effectively every game. **Fixed by validating each game's pair of rows inline, at the point they're computed, where the correct pairing is unambiguous** — no more cross-game lookup. Root cause confirmed via a one-off diagnostic script (`debug_vegas_consensus.py`, not part of the permanent pipeline) that dumped raw per-bookmaker data and showed `consensus_lines()`'s own math was correct all along (e.g. SEA/NE: 44.11 == 44.11) — the bug was entirely in the validation step, not the averaging or implied-total formula.
+- Added `opponent` and `commence_time` columns to the output CSV as part of the same fix, so a team's multiple rows (one per upcoming game it's part of) can be told apart downstream instead of assuming one row per team.
+
+**Files created/modified:**
+- `/dfs_optimizer/scripts/vegas_odds.py` (new, then revised same session after the validation bug above)
+- `/dfs_optimizer/requirements.txt` (added `requests==2.33.1`)
+
+**Validation results:**
+- [x] Implied-total formula and consensus-averaging logic hand-verified against a synthetic 2-book example (KC -6.5/48 and KC -7.0/47 → consensus -6.75/47.5 → implied totals 27.125/20.375, summing back to 47.5 exactly). Also confirmed the "game with no posted lines yet" case is skipped cleanly rather than crashing.
+- [x] Real API call succeeded: user signed up for an Odds API key, added to `config/api_keys.env`. First real run: quota `used=2, remaining=498`. Returned 75 games / 150 rows (more than one week's worth — API returns all currently-listed upcoming games, not filtered to a single week; see note above and Known issues deferred).
+- [x] Pulled odds matched a live sportsbook page — confirmed via 9-bookmaker raw dump for 2 games (SEA/NE, LA/SF) showing real, current DraftKings/FanDuel/BetMGM/etc. lines (e.g. DK: NE +3.5/-110, SEA -3.5/-110, total 44.5).
+- [x] Sum-to-total automated check: initially failed on all 75/75 games (false positive — see bug above). After fix, re-ran live: **"Sum-to-total check passed for all games."** Quota after fix-verification run: `used=6, remaining=494`.
+- [x] Confirmed via the diagnostic dump that regions=us bookmaker list includes DraftKings and FanDuel by name (both appeared directly in the raw per-bookmaker output for both test games).
+
+**Decisions made / assumptions taken:**
+- User confirmed a specific polling cadence (Tue-Fri 1x/day, Sat 2x/day, Sunday hourly 4hrs-1hr before lock then every 15min in the final hour) — priced at ~121 credits/month, well under the 500/month free-tier cap. Added to `ROADMAP.md`'s Session 2.3 and Session 5.2 cards so Session 5.2 doesn't have to re-derive it.
+- Evaluated whether an alternative odds vendor was needed to "keep this free" for future multi-sport (NBA/NHL/MLB) expansion. Conclusion: not needed now (NFL-only scope is comfortably within budget), but flagged as a real future constraint. Full reasoning in `ROADMAP.md`'s "Notes on odds vendor choice" section.
+- Chose bookmaker-consensus averaging over pinning to one book, to reduce single-book noise. Real behavioral choice, not neutral — flagging so it isn't silently relitigated.
+- Chose to validate inline per-game rather than reconstruct a global team→row lookup, specifically because the API's "all upcoming games" response shape makes team names non-unique across rows — any future validation or lookup logic added to this file should keep that in mind rather than assuming one row per team.
+
+**Known issues deferred:**
+- **The script pulls every upcoming NFL game currently listed by the API, not just one specific week — `--week` only affects the output filename.** This was fine for validating the pipeline works, but means the current `vegas_implied_totals_{week}.csv` contains multiple weeks' worth of games mixed together, with no reliable way to filter to "just week N" beyond eyeballing `commence_time`. Needs a real decision before Session 2.4 depends on this file for a specific week's slate: either add date-range filtering here (would need a week-to-date-range mapping), or have Session 2.4 do the filtering itself using the new `commence_time` column. Not solved this session — flag until closed.
+- The diagnostic script `debug_vegas_consensus.py` was written for one-time debugging and is not part of the regular pipeline — fine to leave in `/scripts/` for future reference, but shouldn't be scheduled/automated in Session 5.2.
+
+**Handoff notes for next session:**
+- Session 2.4 (Full Blend Pipeline) can now use this session's real output (`vegas_implied_totals_{week}.csv`), but **must decide how to handle the multi-week-games-in-one-file issue above** before joining it against a specific week's salary/projection data — joining on `team` alone risks picking up the wrong game's implied total for a team with multiple upcoming games in the file. Use the new `opponent`/`commence_time` columns to disambiguate.
+- The confirmed weekly polling cadence still lives in `ROADMAP.md`'s Session 2.3 and Session 5.2 cards — Session 5.2 should implement against that, and should also decide there whether the scheduled/automated version of this script needs the week-filtering fix mentioned above (likely yes, since production runs need one week's data cleanly, not 75 games).
+- Output CSV schema changed from Session 2.3's original card: now `team, opponent, commence_time, spread, over_under, implied_total` (added `opponent` and `commence_time`). Any script written against the original `team, spread, over_under, implied_total` schema needs updating.
+
+
+---
+
+## Session 2.4 — Full Blend Pipeline
+**Date completed:** 2026-07-21
+**Status:** ⚠️ Complete with caveats — validated mechanically, not yet with fully real data for either site
+
+**What was actually built:**
+- `scripts/build_projections.py` — takes `--site {dk,fd} --season --week --slate-id`, merges Session 2.1's baseline/recent-form, Session 2.2's matchup factors, Session 2.3's vegas implied totals, and Session 1.3's salary file into `output/final_projections_{site}_{week}.csv`.
+- `final_projection = (0.5 * season_avg + 0.5 * recent_form) * matchup_factor * vegas_factor`.
+- Three design gaps not spelled out on the roadmap card, cleared with the user before building (same pattern as 2.1/2.2):
+  1. **vegas_factor definition.** Checked for an industry-standard normalized "vegas factor" — didn't find one; DFS literature (FantasyLabs "Vegas Score," Stokastic, etc.) treats the raw `implied_total` itself as the model input, not a ratio. Defined `vegas_factor` the same way 2.2 defines `matchup_factor`: team's `implied_total` ÷ that week's league-average `implied_total` (among teams actually playing that week) — keeps both multipliers on the same "1.0 = league average" scale.
+  2. **Player's week-N opponent.** Nothing in 2.1-2.3's outputs carries this. Added `data/schedules_{season}.parquet` (a real Session 1.2 output, not on 2.4's original Inputs list) as a new input — builds a team→opponent map for the target week, used both to look up `matchup_factor` (against the OPPONENT's defense) and to filter `vegas_implied_totals_{week}.csv` down to exactly that week's `(team, opponent)` pairs, resolving the multi-week-mixing issue flagged in Session 2.3's log.
+  3. **Missing-data handling (user-confirmed):** neutral `1.0` fill for missing `matchup_factor`/`vegas_factor` (bye weeks, unposted lines) rather than dropping the player. Extended the same philosophy to a gap 2.1 explicitly deferred here: a player with no `season_avg`/`recent_form` yet (rookie, 0 games before target week) gets `0.0` rather than being dropped.
+- Team defenses (DK `DST` / FD `D`/`DEF`) are excluded from this pipeline entirely — `weekly_stats` has no defense-level rows, so 2.1/2.2 never produced baseline/matchup data for them. Flagged, not solved — a future session needs to decide if/how defenses get projected.
+
+**Bug found and fixed this session (see Session 2.1's addendum above for the full writeup):** `projections_baseline.py`'s `season_baseline()` grouped by team, silently splitting mid-season-team-change players into duplicate `player_id` rows with conflicting `season_avg`. Surfaced as literal duplicate players (e.g. two different "Joe Flacco" projections) in this session's first real end-to-end run — invisible in 2.1's own validation since none of its 5 spot-check players changed teams. Fixed by removing `team` from the groupby. `projections_baseline.py` was patched this session; `baseline_recent_form_dk_2025_10.csv` / `baseline_recent_form_fd_2025_10.csv` were reconstructed via a games-played-weighted collapse of the duplicate rows as a stand-in for a real re-run (mathematically equivalent to what the fixed script produces, but **not** a substitute for actually re-running `projections_baseline.py` against real `weekly_stats_2025.parquet` — flagged as a known issue below).
+
+**Files created/modified:**
+- `/dfs_optimizer/scripts/build_projections.py` (new)
+- `/dfs_optimizer/scripts/projections_baseline.py` (bug fix — `season_baseline()` groupby)
+- `/dfs_optimizer/output/baseline_recent_form_dk_2025_10.csv`, `/dfs_optimizer/output/baseline_recent_form_fd_2025_10.csv` (patched in place — duplicate rows collapsed; still needs a real re-run, see above)
+- `/dfs_optimizer/output/vegas_implied_totals_10.csv` (new — **synthetic**, see Decisions below)
+- `/dfs_optimizer/data/salaries_fd_SYNTHETIC_madden_20260721.csv` (new — **synthetic**, see Decisions below)
+- `/dfs_optimizer/output/final_projections_dk_10.csv`, `/dfs_optimizer/output/final_projections_fd_10.csv` (validation run outputs)
+- `/dfs_optimizer/ROADMAP.md` (new "Known Deferred Validations" section)
+
+**Validation results:**
+- [x] Full pipeline ran end-to-end for both sites (real DK salary data + real matchup/baseline data + synthetic vegas + synthetic FD salaries), no crashes.
+- [x] No negative projections, no nulls, both sites (`final_projections_dk_10.csv`: 85 players, 0 nulls, 0 negatives; `final_projections_fd_10.csv`: same).
+- [x] No unexpectedly missing/duplicated players — 0 duplicate `player_id`s in either output after the baseline bug fix (was 1 duplicate — Joe Flacco — before the fix, now resolved). 15 DAL players correctly got neutral `1.0` matchup/vegas factors (DAL had a real bye in week 10, 2025 — confirmed against `schedules_2025.parquet`, not a bug).
+- [x] Top 10 sanity check, DK vs FD close but not identical: both lead with Jonathan Taylor (RB) / Joe Flacco (QB) / De'Von Achane (RB) / C.J. Stroud (QB) in the same order. Diverge exactly as expected — FD (half-PPR) drops WR Michael Pittman Jr. and TE Dalton Schultz out of its top 10 in favor of volume rusher Javonte Williams and QB Jayden Daniels, consistent with half-PPR nudging pass-catchers down / rushers up relative to DK.
+- [ ] **Not done — real-data-for-both-sites-simultaneously validation.** See "Known Deferred Validations" in `ROADMAP.md` (new section, added this session). Blocked on: (a) real Vegas lines for a specific backtest week (Odds API only returns currently-listed games, can't retroactively supply 2025 week 10), (b) any real FD salary data existing at all. Both trace back to the same root cause: none of our external data sources have a real historical archive, and no real current-week data exists yet either. Closes at Preseason Week 1 (Aug 13-15, 2026) at the earliest.
+
+**Decisions made / assumptions taken:**
+- `vegas_implied_totals_10.csv` used this session is **synthetic** — deterministic but fabricated spread/total values for the real 14 week-10-2025 games (real matchups pulled from `schedules_2025.parquet`, not real lines). Built specifically because The Odds API cannot supply real historical lines for an already-played week. Validated internally (sum-to-total check passes for all 14 games) but the actual numbers are not real and must not be used for anything beyond pipeline-logic validation.
+- `salaries_fd_SYNTHETIC_madden_20260721.csv` used this session is **synthetic** — same 93 real players/teams as the real `salaries_dk_madden_20260721.csv`, with salary scaled by FD's cap ÷ DK's cap (60000/50000 = 1.2x) to land in FD's real price range. Not a real FD export (none exists yet — see `ROADMAP.md`'s new deferred-validations section). Built at this scale (93 players, not Session 1.3's original 10-row sample) specifically because Session 2.4 needed enough real players to run a meaningful top-10 sanity check, not just confirm the matching logic works.
+- Went with a games-played-weighted collapse to patch `baseline_recent_form_{site}_2025_10.csv` in place today rather than blocking this session entirely on a real re-run (which isn't possible without `weekly_stats_2025.parquet` present in this environment) — explicitly flagged as a stand-in, not a substitute for the real fix.
+
+**Known issues deferred:**
+- **`baseline_recent_form_dk_2025_10.csv` / `_fd_2025_10.csv` need a real re-run** of the now-patched `projections_baseline.py` against real `weekly_stats_2025.parquet` — today's fix was a reconstruction from the buggy output, mathematically equivalent but not the real thing. Don't treat today's files as authoritative going forward; regenerate and diff against today's numbers as a regression check.
+- Team defenses (DK `DST` / FD `D`/`DEF`) have no projection at all from this pipeline — needs a decision in a future session (likely before Phase 3's optimizer needs a full 9-slot roster including DST/DEF).
+- Full real-data validation (both sites, real salaries + real matchup week + real vegas lines, all for the same week) is not achievable yet — see `ROADMAP.md`'s new "Known Deferred Validations" section, which is now the running list for this and future sessions hitting the same kind of gap.
+- The bug found in `projections_baseline.py` this session may also affect any other already-generated `baseline_recent_form_*.csv` files for other seasons/weeks not touched this session — worth a sweep before trusting older output files.
+
+**Handoff notes for next session:**
+- Session 3.1 (Single Lineup Optimizer) should NOT be treated as validated against real data yet — it'll be building on `final_projections_{site}_{week}.csv`, which itself is only mechanically validated per above.
+- `ROADMAP.md`'s new "Known Deferred Validations" section is the place to check before assuming any session's real-data validation is actually closed — update it, don't recreate it, when a future session hits the same kind of live-data-only constraint (still true for The Odds API's historical gap and FD's total lack of real data).
+- If a real preseason DK+FD slate becomes available before Session 2.4's real-data validation is otherwise revisited, re-run this session's validation checklist in full against that real data rather than waiting for a dedicated session slot.
+
+---
+
+## Session 2.4 (ADDENDUM) — Real re-run + second bug + team-drift finding
+**Date completed:** 2026-07-21
+**Status:** ⚠️ Complete with one open structural caveat (see below) — the actual-outcome sanity check now genuinely passed, not just the mechanical checks
+
+**What happened:** user supplied the real `weekly_stats_2025.parquet`, enabling a genuine re-run of the patched `projections_baseline.py` (previous entry's fix had only been a manual reconstruction, explicitly flagged as a stand-in).
+
+**Second bug found and fixed, same function, different key:** removing `team` from `season_baseline()`'s groupby (previous fix) wasn't sufficient — `player_name` in nflverse's raw data is *also* occasionally inconsistent for the same `player_id` across different weeks (e.g. player_id `00-0039394` appears as both "Cas.Washington" and "C.Washington" across different weeks; `00-0040582` as both "A.Smith" and "Ar.Smith"). Grouping by `player_name` reproduced the identical duplicate-row defect through a different key — 2 more players affected. **Fixed** by grouping on `player_id` alone and attaching each player's most-recent `player_name`/`position` afterward (same "most recent" pattern `ingest_salaries.py`'s `build_player_reference()` already uses for this exact class of problem). Re-ran: **0 duplicate `player_id`s, both sites, confirmed against real data** (532 rows in, 532 unique out).
+
+**Actual-outcome sanity check — now genuinely done, not just mechanically checked:**
+- Real week 10, 2025 box scores confirm **Jonathan Taylor** (our #1, both sites) scored 49.6 fantasy points — the single highest score by any player all season. **De'Von Achane** (our #3, both sites) was independently called out in the same recap as a standout RB performance. Strong match.
+- **Joe Flacco** (our #2, both sites, ~23 pts) does NOT hold up: real box scores confirm he has no week-10 row at all — Cincinnati (his real week-10 team, post-trade from Cleveland) had a bye. Our pipeline has him on `CLE` (his team per the live July-2026 DK salary export) and matched him against `CLE`'s real week-10-2025 opponent (NYJ) — a real historical game, just one the real Flacco wasn't part of.
+- **Quantified the scope:** cross-checked all 85 skill players in the real DK salary pool against their actual week-10-2025 team (from `weekly_stats_2025.parquet`, team as of their last game before week 10). **5 of 85 (≈6%) have a mismatched team** between the live salary snapshot and their real historical week-10 team: Joe Flacco (CLE→ really CIN), Shedeur Sanders / Will Mallory / Jonathan Mingo (no real week-10-or-earlier row at all — rookies/inactive that season), Brenden Bates (CLE → really HOU).
+
+**Root cause, distinct from the two groupby bugs above:** this isn't a code bug — `schedules_2025.parquet`, the matching logic, and the neutral-fallback handling all did exactly what they were built to do. It's a **structural limitation of backtesting with a live, current-day salary file**: a player's team in that file reflects *today* (July 2026), not necessarily their team as of the historical week being validated. For live production use (current salary file + current week) this never comes up; it only bites when the target week is in the past relative to the salary file's snapshot date, which is exactly this validation's setup.
+
+**Decision needed, not yet made:** how a future backtest run should handle this — e.g., a `--backtest-mode` flag on `build_projections.py` that overrides a player's team with their real team from `weekly_stats_{season}.parquet` as of the target week (available in the same file already used for the schedule/opponent lookup) rather than trusting the salary file's team column when doing historical validation specifically. Not implemented this session — flagged for a future session's decision, since it changes real behavior and should be confirmed with the user first, same as every other design decision this session.
+
+**Files created/modified:**
+- `/dfs_optimizer/scripts/projections_baseline.py` (second bug fix — groupby key)
+- `/dfs_optimizer/data/weekly_stats_2025.parquet` (new — user-supplied, real data)
+- `/dfs_optimizer/output/baseline_recent_form_dk_2025_10.csv`, `_fd_2025_10.csv` (regenerated for real this time, superseding the earlier reconstructed stand-in)
+- `/dfs_optimizer/output/final_projections_dk_10.csv`, `_fd_10.csv` (regenerated)
+
+**Validation results:**
+- [x] Both roadmap validation checkboxes for Session 2.4 now genuinely pass, modulo the caveats above: no nulls/negatives/duplicates (real data), and top-10 roughly aligns with what actually happened (Taylor/Achane confirmed; Flacco's ranking traced to a specific, quantified, and now-documented data-freshness limitation rather than a pipeline bug).
+
+**Known issues deferred:**
+- The team-drift issue above (~6% of a live salary pool, in this sample) is a **new, separate item from "Known Deferred Validations" in `ROADMAP.md`** — that section covers data that flatly doesn't exist yet (real Vegas lines for a past week, real FD salaries). This one exists right now and needs a methodology decision, not a waiting period. Tracked separately in `ROADMAP.md`.
+- Everything else carried over from the previous Session 2.4 entry (team defenses unprojected, full real-data-both-sites validation still blocked on FD/Vegas) still applies unchanged.
+
+---
+
+## Session 2.4 (ADDENDUM 2) — Decision #4 implemented: team-drift auto-correction
+**Date completed:** 2026-07-21
+**Status:** ✅ Complete
+
+**What was actually built:** `build_projections.py` now auto-corrects for salary-file team drift when backtesting a played week, per the user-confirmed "Option A" (no flag, automatic based on data availability).
+
+**First implementation attempt found a gap immediately:** the straightforward version (if a player has a real row for the target week, use that team) produced **zero corrections** on re-run — because all 5 originally-flagged mismatched players (Flacco included) have **no real row at all** for week 10, not a real row under a different team. Investigating why revealed the actual shape of the problem: there are two genuinely different cases, and only one is "correctable":
+  - **4a — played, different team** (an in-season trade where the player DID suit up that week): correctable, use their real team.
+  - **4b — no real game that week at all** (bye, inactive, injury, hadn't debuted yet): NOT correctable by picking a team, because there's no real game to attribute to them. Forcing the salary file's team here is exactly how the original Flacco bug happened. Fixed by giving these players the same neutral `1.0` matchup_factor/vegas_factor fallback as any other missing-data case (decision #3), rather than a specific-but-wrong value.
+
+**On re-run, 4b affected far more players than expected — 41 of 85, not the 5 originally found.** Investigated: 15 are explained by the 4 real bye teams that week (CIN, TEN, DAL, KC). The other 26 — including C.J. Stroud, Jayden Daniels, Tyreek Hill — turned out to have no real week-10 row for reasons unrelated to a team bye (e.g. Stroud is missing weeks 6, 10, 11, 12 entirely in the real data, consistent with an injury absence, not a bye). This is the auto-correction working as intended, not a new bug -- it's catching real "we don't actually know this player's week-10 context" cases that the original (team-only) mismatch check never looked for. It does mean Session 2.4's earlier "Stroud roughly matches what happened" read was never actually verified against real data (only Taylor and Achane were checked) -- corrected now.
+
+**Final DK/FD top-10 after this fix:** Joe Flacco's projection dropped from ~23 to ~20.04 (now driven purely by his real season_avg/recent_form, with neutral 1.0 matchup/vegas instead of a borrowed CLE-vs-NYJ game he wasn't part of). Jonathan Taylor and De'Von Achane -- the two players independently confirmed against real box scores earlier -- remain #1/#2 on both sites, now with correctly non-neutral, real matchup/vegas factors (both IND and MIA actually played that week).
+
+**Files created/modified:**
+- `/dfs_optimizer/scripts/build_projections.py` (decision #4 implemented: `load_real_team_for_week()` two-case logic, `no_real_game_this_week` flag wired through to force neutral matchup_factor/vegas_factor)
+- `/dfs_optimizer/output/final_projections_dk_10.csv`, `_fd_10.csv` (regenerated)
+
+**Validation results:**
+- [x] 0 nulls, 0 negatives, 0 duplicates, both sites (unchanged from prior validation).
+- [x] Flacco's matchup_factor/vegas_factor now correctly 1.0/1.0 (previously borrowed from a game he wasn't part of).
+- [x] Live/current-week runs unaffected by construction -- `load_real_team_for_week()` returns `week_was_played=False` whenever `weekly_stats_{season}.parquet` has no rows yet for the target week (i.e. it hasn't happened), skipping all correction logic entirely.
+
+**Known issues deferred:**
+- 41/85 (≈48%) of this specific real DK pool now gets a neutral matchup/vegas factor for week 10 -- much higher than initially expected, but confirmed as an accurate reflection of "no real week-10 data exists for this player," not an over-correction. Worth knowing this ratio will vary a lot week to week and pool to pool; not itself a bug to chase.
+- The underlying reason so many players lack real week-10 rows (byes vs. injuries vs. inactives vs. genuinely not on an NFL roster that week) isn't distinguished anywhere in the output -- all get treated identically (neutral 1.0). A future session could add a reason code if that distinction becomes useful (e.g. for the optimizer to treat "definitely inactive" differently from "just uncertain").
+
+---
+
+## Session 2.4 (ADDENDUM 3) — Decision #4b corrected: zero, not neutral
+**Date completed:** 2026-07-21
+**Status:** ✅ Complete
+
+**User caught a real remaining bug:** Addendum 2 neutralized matchup_factor/vegas_factor to 1.0 for players with no real game that week, but left `final_projection` computed from the normal formula anyway -- still a real, positive number (Flacco showed ~20.04) for a player we know, via hindsight, scored ZERO real fantasy points that week (he didn't play). Neutralizing the multipliers wasn't the same as zeroing the outcome.
+
+**Fix:** for players flagged `no_real_game_this_week` (decision #4b), `final_projection` is now forced to `0.0` directly, overriding the blend formula entirely -- not just neutralizing its inputs. `season_avg`/`recent_form`/`matchup_factor`/`vegas_factor` are still shown in the output columns as real/neutral values (informational), but `final_projection` reflects the known real outcome.
+
+**Explicitly scoped to backtests only, confirmed not to affect live runs:** the `no_real_game_this_week` flag is only ever set `True` when `week_was_played` is `True` -- i.e. `weekly_stats_{season}.parquet` already has real rows for the target week. For a live/current-week run, that week has no rows yet by construction, so this zero-out never fires -- an uncertain-status player in a live run still correctly gets a normal non-zero projection (their true status is unknown, not confirmed-zero; that's Session 5.1's job, not this pipeline's).
+
+**Files created/modified:**
+- `/dfs_optimizer/scripts/build_projections.py` (final_projection override for decision #4b, docstring corrected)
+- `/dfs_optimizer/output/final_projections_dk_10.csv`, `_fd_10.csv` (regenerated)
+
+**Validation results:**
+- [x] Joe Flacco: `final_projection = 0.0`, both sites, correctly dropped out of the top 10 entirely.
+- [x] 0 nulls, 0 negatives, both sites (unchanged).
+- [x] Remaining DK/FD top 10 now consists entirely of players with genuinely non-neutral (real) matchup_factor/vegas_factor values -- i.e. every player left in the top 10 is confirmed, via real data, to have actually played that week.
+
+---
+
+## Session 3.1 — Single Lineup Optimizer
+**Date completed:** 2026-07-21
+**Status:** ✅ Complete
+
+**What was actually built:**
+- `scripts/optimizer.py` (new) — reads `final_projections_{site}_{week}.csv`, solves an integer linear program (PuLP + bundled CBC solver, already pinned in `requirements.txt`) for the single salary-cap-legal lineup maximizing total projected points, using each site's own cap/roster rules from `ingest_salaries.py`'s `SITE_CONFIGS` (Session 1.3) rather than hardcoding DK's numbers. Outputs `output/lineup_single_{site}_{week}.csv` with columns `roster_slot, player_name, position, team, salary, projection`.
+- `scripts/build_projections.py` (modified) — added a real DST/DEF projection (decision #5, see script's module docstring), since the optimizer needs a full legal 9-slot roster for both sites and `final_projections_{site}_10.csv` had zero defense rows through Session 2.4.
+
+**Design gap cleared with the user before building (same pattern as every prior session):** DST/DEF projections don't exist anywhere in the pipeline — flagged as an open gap since Session 2.4, and this session is exactly the point the roadmap said it would need closing. Asked the user how to handle it; user chose "add a real projection now" over a flat placeholder or skipping DST/DEF entirely. Built from the only two real signals available for a defense (no weekly_stats defense-level rows exist at all):
+  - `AvgPointsPerGame` from the salary export (real, DK/FD-computed) — used for both `season_avg` and `recent_form`, since there's no real week-by-week split to compute (flagged as a known simplification, not hidden).
+  - Vegas, inverted: `vegas_factor = league_avg_implied_total / opponent_implied_total` — the OPPONENT's implied total, not the defense's own team's (opposite convention from the skill-position `vegas_factor`), since a defense's output correlates with how poorly the opposing offense is expected to do.
+  - No defensive `matchup_factor` exists upstream at all — held flat neutral 1.0, flagged as a real gap, not fabricated.
+  - Bye-week handling matches decision #4b exactly: no real game that week (no row in `vegas_implied_totals_{week}.csv`) -> `final_projection` forced to `0.0`, not neutrally-factored. This needed NO `schedules_{season}.parquet` dependency at all -- `vegas_implied_totals_{week}.csv` already carries each team's real opponent in its own `opponent` column (a Session 2.3 addendum fix), so DST/DEF projections have one fewer upstream file dependency than skill-position ones.
+
+**Environment caveat, handled carefully:** this session's environment did not have `weekly_stats_2025.parquet` or `schedules_2025.parquet` on disk (both were user-supplied in a prior session, needed for skill-position decision #2/#4 logic, NOT needed for DST/DEF). A first attempt at a full re-run of `build_projections.py` without `weekly_stats_2025.parquet` present silently skipped decision #4's team-drift correction -- caught before shipping, since it would have quietly regressed the already-validated Flacco-type fixes from Session 2.4's addenda. Corrected approach: computed DST/DEF rows in isolation (confirmed they need only the salary file + `vegas_implied_totals_{week}.csv`, nothing else) and merged them into the existing, already-correct `final_projections_{site}_10.csv` files rather than regenerating the skill-position rows from scratch. A genuine full end-to-end re-run (skill positions + defenses together, one pass) has NOT been done since this addition -- flagged in `ROADMAP.md`'s new "RESOLVED (Session 3.1)" section as worth doing once those parquet files are available again, as a regression check.
+
+A minimal `schedules_2025.parquet` (14 real week-10-2025 games, real matchups reconstructed from `vegas_implied_totals_10.csv`'s own `team`/`opponent` columns -- matchups are real per Session 2.4's log, only that file's spread/total numbers are synthetic) was built locally just to test-run the full `build_projections.py --site {dk,fd}` path end-to-end once, confirming the new DST/DEF code integrates correctly. That reconstructed file was NOT what produced this session's actual shipped output (see caveat above) -- it was a code-path smoke test only, and isn't part of the deliverables.
+
+**FLEX eligibility convention:** `optimizer.py` hardcodes `FLEX_ELIGIBLE_POSITIONS = {"RB", "WR", "TE"}` (standard classic-contest rule for both sites) since `SITE_CONFIGS` has no such field. Flagged in `ROADMAP.md` as a real assumption never explicitly confirmed with the user, and as the one place to change for a future superflex format.
+
+**Files created/modified:**
+- `/dfs_optimizer/scripts/optimizer.py` (new)
+- `/dfs_optimizer/scripts/build_projections.py` (decision #5 added: `build_dst_projections()`, wired into `build_final_projections()`)
+- `/dfs_optimizer/output/final_projections_dk_10.csv`, `_fd_10.csv` (regenerated -- 85 skill players + 6 defenses each, up from 85)
+- `/dfs_optimizer/output/lineup_single_dk_10.csv`, `_fd_10.csv` (new)
+- `ROADMAP.md` (new "RESOLVED (Session 3.1)" section; FLEX-eligibility note added to the dual-site notes)
+
+**Validation results:**
+- [x] Both sites' output lineups are under their real salary cap and satisfy every position requirement -- enforced as automated ILP constraints (`validate_lineup()`'s assertions), not manual eyeballing. DK: $46,900 / $50,000 used. FD: $56,100 / $60,000 used. Both: exactly 9 players, correct position counts including FLEX.
+- [x] "No single-player swap would increase points without breaking a constraint" -- mathematically guaranteed by the ILP's certified global optimum (CBC solver, small problem size), AND independently verified empirically with a brute-force 1-for-1 swap check against every other player in the pool: 0 improving swaps found for either site.
+- [x] 0 zero-projection players selected in either lineup (Dallas's zeroed-out DST correctly excluded in favor of the 5 real-projection defenses) -- confirms decision #5's bye handling flows correctly into the optimizer without needing an explicit filter (decision #4 in `optimizer.py`'s docstring: the ILP naturally never picks a locked $0 over a positive alternative).
+- [x] Both sites' outputs read cap/roster from `SITE_CONFIGS` (Session 1.3), not hardcoded -- confirmed FD correctly used its own $60,000 cap and DEF label, not DK's $50,000/DST by default.
+
+**Known issues deferred:**
+- No defensive `matchup_factor` exists anywhere in the pipeline -- DST/DEF projections rely on `AvgPointsPerGame` + inverted Vegas only. A future session could add real defensive matchup data (e.g. opponent's sacks-allowed rate, points-allowed-by-position) to close this gap.
+- A genuine full single-pass re-run of `build_projections.py` (skill + defense together) hasn't happened since the DST/DEF addition -- see environment caveat above. Do this once `weekly_stats_2025.parquet`/`schedules_2025.parquet` are available again, as a regression check against this session's isolated-merge output.
+- `FLEX_ELIGIBLE_POSITIONS` lives only in `optimizer.py`, not in `SITE_CONFIGS` -- worth promoting there if a future site/format needs a different FLEX rule.
+- Everything carried over from Session 2.4's log (real-data-both-sites validation still blocked until Preseason Week 1, per `ROADMAP.md`'s "Known Deferred Validations") still applies unchanged -- this session's optimizer is validated for correctness-of-logic against Session 2.4's mechanically-validated projections, not yet against fully real data for both sites simultaneously.
+
+**Handoff notes for next session:**
+- Session 3.2 (Multi-Lineup Generation + Exposure Limits) extends `optimizer.py` rather than replacing it -- the single-lineup ILP formulation here (one binary var per player, aggregate position-count constraints) is the base to build exposure-cap constraints on top of.
+- `optimizer.py`'s `solve_lineup()`/`assign_roster_slots()`/`validate_lineup()` functions are written to be reusable per-lineup building blocks -- Session 3.2 likely calls `solve_lineup()` repeatedly with an added max-exposure constraint per player rather than rewriting the ILP from scratch.
+
+---
+
+## Session 3.1 (ADDENDUM) — True full single-pass re-run confirmed identical
+**Date completed:** 2026-07-21
+**Status:** ✅ Complete
+
+**What happened:** user supplied real `weekly_stats_2025.parquet`, `schedules_2025.parquet`, and `weekly_rosters_2025.parquet` (couldn't be added to the project file directory earlier, uploaded directly instead), closing the caveat flagged at the end of the original Session 3.1 entry above.
+
+**Ran the true full single-pass `build_projections.py` for both sites** (skill positions + DST/DEF together, one pass, no isolated-merge workaround needed this time) using the real parquet files. Decision #4's team-drift correction fired normally and matched Session 2.4's original real-data finding exactly: 41/85 skill players flagged `no_real_game_this_week` (bye/inactive/not-yet-debuted), 0 players needed decision #4a's trade-correction for week 10 specifically.
+
+**Regression check (the specific thing flagged as deferred):** diffed the true full re-run's output row-for-row, both sites, against the isolated-merge output shipped in the original Session 3.1 entry. **0 rows differed. Max absolute difference in `final_projection` across all 91 players (both sites): 0.0.** Re-ran `optimizer.py` against the fresh output as well -- identical lineups, byte-for-byte matching the previously shipped `lineup_single_{site}_10.csv` files. Confirms the isolated-merge approach (computing DST/DEF rows separately from salary + vegas data alone, merging into the already-correct skill-position rows) was mathematically equivalent to a true full re-run, as expected given DST/DEF projections never touched `weekly_stats`/`schedules` in the first place.
+
+**Files created/modified:**
+- `/dfs_optimizer/data/weekly_stats_2025.parquet`, `/dfs_optimizer/data/schedules_2025.parquet`, `/dfs_optimizer/data/weekly_rosters_2025.parquet` (new -- real, user-supplied; `weekly_rosters_2025.parquet` not yet consumed by any script, saved for a future session that needs roster/depth-chart data)
+- No script or output CSV changed as a result of this check -- everything already shipped in the original Session 3.1 entry is confirmed correct as-is.
+- `ROADMAP.md`'s "RESOLVED (Session 3.1)" section updated to close out the caveat.
+
+**Validation results:**
+- [x] True full single-pass re-run matches the isolated-merge output exactly, both sites -- the regression check flagged as deferred in the original Session 3.1 entry is now closed.
+
+**Known issues deferred:**
+- `weekly_rosters_2025.parquet` is now available in `/data` but nothing in the pipeline reads it yet -- worth knowing it's there if a future session needs real depth-chart/roster-status data (e.g. Session 5.1's injury-status work).
+- Everything else carried over from the original Session 3.1 entry (no defensive matchup_factor, FLEX_ELIGIBLE_POSITIONS not in SITE_CONFIGS, real-data-both-sites validation still blocked until Preseason Week 1) still applies unchanged.
+
+---
+
+## Infrastructure — GitHub backup (.gitignore revised)
+**Date completed:** 2026-07-21
+
+**What happened:** user flagged that all work so far has only existed locally, and wants it synced to GitHub as a backup. Asked how to handle data files specifically (many are real, manually-obtained snapshots -- e.g. the DK/FD salary exports -- not trivially regenerable if lost, unlike normal pipeline output). User chose: track everything in GitHub, including data/output, rather than keeping the repo code-only with a separate backup destination for data.
+
+**Change made:** `.gitignore` revised -- removed the `data/*.parquet`, `data/*.csv`, `output/*.csv`, `logs/*.csv`, `logs/*.md` exclusions from Session 1.1's original version (which treated all data/output as "regenerated by pipeline, not source-controlled"). Secrets (`*.env`, `config/api_keys.env`) and environment/OS cruft (`venv/`, `__pycache__/`, `.DS_Store`, etc.) remain excluded -- those should never be tracked regardless of the data-backup decision.
+
+**Sizing check before committing to this:** total current data/output footprint is small -- all CSVs combined are ~132KB, and the three real nflverse parquet files (`weekly_stats_2025.parquet`, `schedules_2025.parquet`, `weekly_rosters_2025.parquet`) are 864KB/52KB/840KB respectively. Comfortably clear of GitHub's 50MB-warning / 100MB-hard-limit thresholds -- no Git LFS needed at this size.
+
+**Files created/modified:**
+- `/dfs_optimizer/.gitignore` (revised)
+
+**Handoff notes for next session:** if a future session (e.g. Phase 1's full-season historical pulls, or Phase 6's automated dry-run logging) starts producing genuinely large files, revisit whether everything should still be tracked directly in git vs. Git LFS or external storage for just the large ones -- don't assume this decision holds at unlimited scale. No other pipeline behavior changed by this -- purely a repo/backup decision, not a data or projection logic change.

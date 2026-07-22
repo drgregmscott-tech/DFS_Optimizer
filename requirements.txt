@@ -1,0 +1,16 @@
+# NFL DFS Optimizer — pinned dependencies
+# Installed/verified on Python 3.12.3 (Session 1.1, 2026-07-21)
+#
+# NOTE: nfl_data_py is intentionally NOT used. It is deprecated upstream
+# (nflverse recommends nflreadpy instead) and its bundled data-pull functions
+# point at a GitHub release path nflverse retired on 2025-08-01, so they 404
+# on any 2025/2026 season data. See scripts/nflverse_fetch.py for our
+# lightweight replacement that reads nflverse's parquet releases directly.
+
+pandas==3.0.2
+numpy==2.4.4
+pyarrow==25.0.0        # required by pandas to read parquet
+fastparquet==2026.5.0  # fallback parquet engine
+appdirs==1.4.4          # fastparquet dependency
+PuLP==3.3.2             # optimizer solver (Phase 3)
+requests==2.33.1        # Odds API HTTP client (Session 2.3)
