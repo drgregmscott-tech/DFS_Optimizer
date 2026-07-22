@@ -812,3 +812,43 @@ A minimal `schedules_2025.parquet` (14 real week-10-2025 games, real matchups re
 **Handoff notes for next session:**
 - Session 4.2 (Cash-to-GPP Pivot Logic) can now choose to use either `chalk_score` (pure rank) or `estimated_ownership_pct` (percentage estimate) — or both — when deciding pivot targets. Worth an explicit decision in that session rather than defaulting to one silently, since they're not interchangeable (rank vs. an anchored-but-unfit percentage).
 - Session 9.3's first real task is investigative, not code — confirm what real ownership data is actually accessible per site before assuming the card's file/column design is right. That design may need to change once a real source is confirmed.
+
+---
+
+## Session 4.2 — Cash-to-GPP Pivot Logic
+**Date completed:** 2026-07-22
+**Status:** ✅ Complete
+
+**What was actually built:**
+- `scripts/pivot_finder.py` (new) — reads a site/week's `lineup_single_{site}_{week}.csv` (Session 3.1), `chalk_scores_{site}_{week}.csv` (Session 4.1), and `final_projections_{site}_{week}.csv` (Session 2.4/3.3), and produces `pivot_suggestions_{site}_{week}.csv`: for every player in the cash lineup, the top N (default 3) ranked same-position, lower-owned, similarly-priced pivot candidates, each with a `leverage_score`.
+- **Open decision from Session 4.1's addendum, resolved by the user at the start of this session:** use `estimated_ownership_pct`, not `chalk_score`, as the ownership signal for picking pivot targets. This changes the roadmap card's own validation checkbox wording ("lower chalk_score") to be checked against `estimated_ownership_pct` instead — flagged explicitly as decision #1 in the module docstring, and `chalk_score` is left out of this script's join/output entirely.
+- **Join key decision (new, this session):** `lineup_single_{site}_{week}.csv` (Session 3.1's `optimizer.py` output) has never carried `player_id` — only `player_name, position, team, salary, projection, opponent`. Rather than retroactively change Session 3.1/3.2/3.3's already-validated output schema, `pivot_finder.py` joins the cash lineup to `chalk_scores`/`final_projections` on the normalized triple `(player_name, position, team)`, reusing `ingest_salaries.py`'s existing `normalize_name()`/`normalize_team()` helpers (same normalization Session 1.3 already uses to join site salary exports against nflverse data) rather than inventing a second normalization scheme. Fails loudly (`SystemExit`) on any zero- or multi-match.
+- **Salary tolerance decision (new, this session):** a percentage of that site's cap (`SALARY_TOLERANCE_PCT_OF_CAP`, default 10%), not a flat dollar amount — travels between DK's $50K and FD's $60K cap unchanged, same reasoning already applied to `optimizer.py`'s `DEFAULT_MAX_EXPOSURE_PCT` (Session 3.2 decision #8).
+- **Leverage score formula (decision #6):** `ownership_edge_pts = cash_player.estimated_ownership_pct - candidate.estimated_ownership_pct`, `projection_retention = min(candidate.final_projection / cash_player.final_projection, 1.0)`, `leverage_score = clip(ownership_edge_pts * projection_retention, 0, 100)` — kept on the same bounded 0-100 scale as `chalk_score`/`estimated_ownership_pct` by capping retention at 100% rather than letting an "outprojects the cash player" candidate inflate the score past 100; that case is instead flagged via a separate `outprojects_cash_player` boolean column. Explicitly flagged as an unfit starting heuristic, same as every other blend weight in this project.
+- **Hard full-lineup salary cap re-check (decision #5):** for every candidate, computes what the entire 9-player lineup's total salary would be after the swap (`lineup_total_salary - cash_salary + candidate_salary`) and hard-filters out anything that would exceed that site's cap — a stricter, separate check from the per-player salary tolerance (decision #3), same "structural guarantee, not eyeballing" pattern as `optimizer.py`'s own salary_cap constraint.
+- Bye/zero-projection players (`final_projection == 0`) are never suggested as pivots regardless of their (correctly zeroed) ownership — same decision #4b philosophy as every prior session touching this.
+- A candidate already rostered elsewhere in the same cash lineup is excluded from that lineup's pivot pool.
+
+**Files created:**
+- `/dfs_optimizer/scripts/pivot_finder.py`
+
+**Validation results (real data, both sites, same 91-player/6-team pool as Sessions 2.4-4.1):**
+- [x] **Same position, within salary tolerance, lower estimated_ownership_pct than the player it replaces** — ran `validate_pivot_suggestions()` (the script's own automated assertion) against real output for both sites: 26 suggestion rows each (9 cash-lineup players × up to 3 candidates, one player — Daniel Jones, QB — only had 2 eligible candidates within tolerance, thin-QB-pool artifact already logged in Session 4.1). All passed. Independently re-verified same-position for every row a second way: cross-referenced each `pivot_player_name` back against `final_projections_{site}_10.csv`'s own `position` column directly (not just trusting the script's internal filter) — 0 mismatches, both sites.
+- [x] **Pivot swap doesn't break the full lineup's salary cap** — confirmed `lineup_salary_after_swap <= site_salary_cap` for all 26 rows, both sites (DK cap $50,000, max post-swap total seen $48,400; FD cap $60,000). This is a hard filter in `find_pivots_for_player()`, not just a reported column — a candidate that would break the cap is excluded from the output entirely rather than surfaced with a warning.
+- [x] **Fail-loud guards, tested against real (not hypothetical) failures:** (1) missing week's `lineup_single` file → clean `FileNotFoundError` with a clear fix instruction; (2) a stale/truncated `chalk_scores` file (simulated by truncating a real copy to 49 of 91 real rows) → `build_candidate_pool()` correctly raised `SystemExit` rather than silently proceeding with a partial join.
+
+**Decisions made / assumptions taken:**
+- `estimated_ownership_pct` (not `chalk_score`) used for pivot targeting — user-confirmed at the start of this session, resolving the open item flagged in Session 4.1's addendum handoff notes.
+- Join to the cash lineup via normalized `(player_name, position, team)`, not `player_id` — `lineup_single_*.csv`'s schema (Session 3.1) is left unchanged rather than retroactively modified.
+- Salary tolerance is % of site cap (default 10%), not a flat dollar amount — explicitly unfit to real data, flagged as a first retuning target alongside `OWNERSHIP_SOFTMAX_TEMPERATURE` (Session 4.1 addendum) once real usage exists.
+- `leverage_score` capped at 100 via retention-capped-at-1.0, with an "outprojects the cash player" case surfaced as a separate column rather than an uncapped score — keeps the output on the same 0-100 convention as `chalk_score`/`estimated_ownership_pct`.
+- Top N defaults to 3 (roadmap card's own "2-3" range), configurable via `--top-n`.
+
+**Known issues deferred:**
+- Same thin-pool caveat as every prior session touching this real 6-team/91-player test data — `Daniel Jones` (the only real nonzero-projection DK/FD QB with a lower-owned same-position peer within tolerance limited to 2, not 3, candidates) is a property of the test pool's thin QB depth (4 total nonzero QBs, per ROADMAP.md's "Known Testing Artifact" note), not a bug. Re-validate against a full 32-team slate once available (Preseason Week 1+).
+- `SALARY_TOLERANCE_PCT_OF_CAP` (10%) and the leverage-score blend are both unfit-to-real-data starting heuristics, same as Session 4.1's blend weights and softmax temperature — flagged for a future retuning session once real usage/finish-rate data exists.
+- `pivot_suggestions_{site}_{week}.csv` files were generated locally against real repo data during this session but are NOT yet committed to the repo — same "committed output can lag the current script version" gap already true of `lineup_single_dk_10.csv`/`lineup_single_fd_10.csv` (both regenerated fresh this session too, since the committed copies predated Session 3.3's `opponent` column addition).
+
+**Handoff notes for next session:**
+- Phase 4 (Ownership & Pivot Logic) is now complete. Phase 5 (Status Automation & Scheduling) is next per ROADMAP.md — Session 5.1 (Injury/Active Status Pull) has no dependency on this session's output and can start independently.
+- Whoever next touches `optimizer.py`'s `assign_roster_slots()` should know `pivot_finder.py` depends on its current column set (`player_name, position, team, salary, projection, opponent` — no `player_id`) via name/team/position matching; adding `player_id` to that output later would be a welcome simplification for this script, but isn't required.

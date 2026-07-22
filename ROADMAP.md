@@ -344,12 +344,15 @@
 
 **Build:**
 - Given a cash lineup, generate ranked pivot suggestions per position based on leverage score
+- **Decision (user-confirmed, resolving Session 4.1 addendum's open item):** uses `estimated_ownership_pct`, not `chalk_score`, as the ownership signal for picking pivot targets. Consequently the validation checkbox below checks `estimated_ownership_pct`, not `chalk_score` — see `pivot_finder.py`'s module docstring, decision #1.
+- **Join decision:** `lineup_single_{site}_{week}.csv` (Session 3.1) has no `player_id` column — joins to `chalk_scores`/`final_projections` via normalized `(player_name, position, team)` instead, reusing `ingest_salaries.py`'s existing normalization helpers. Full reasoning: decision #2.
+- **Salary tolerance decision:** a percentage of that site's cap (default 10%), not a flat dollar amount — travels between DK's $50K and FD's $60K cap unchanged. Full reasoning: decision #3.
 
 **Validation:**
-- [ ] For a test cash lineup on each site, confirm every suggested pivot is same position, within salary tolerance, and has lower chalk_score than the player it replaces
-- [ ] Confirm pivot swap doesn't break salary cap for the full lineup (using that site's cap)
+- [x] For a test cash lineup on each site, confirm every suggested pivot is same position, within salary tolerance, and has a lower **estimated_ownership_pct** than the player it replaces (see decision above re: chalk_score to estimated_ownership_pct) — ran against real data, both sites: 26 suggestion rows each, all passed the script's own validate_pivot_suggestions() assertion, independently re-verified same-position a second way by cross-referencing final_projections_{site}_10.csv directly. See SESSION_LOG.md's Session 4.2 entry for the actual numbers.
+- [x] Confirm pivot swap doesn't break salary cap for the full lineup (using that site's cap) — hard-filtered in find_pivots_for_player() (a candidate that would break the cap never appears in the output), confirmed on real data both sites (DK cap $50,000, max post-swap total seen $48,400; FD cap $60,000). See SESSION_LOG.md's Session 4.2 entry.
 
-**Handoff notes to log:** salary tolerance and projection tolerance values chosen for "acceptable" pivots — note if tolerance is an absolute dollar amount (which would need to scale between DK's $50K and FD's $60K cap) or a percentage of cap (which travels between sites unchanged).
+**Handoff notes to log:** salary tolerance and projection tolerance values chosen for "acceptable" pivots — note if tolerance is an absolute dollar amount (which would need to scale between DK's $50K and FD's $60K cap) or a percentage of cap (which travels between sites unchanged). **Resolved:** percentage of cap, default 10% — see decision above.
 
 ---
 
