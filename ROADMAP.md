@@ -360,6 +360,8 @@
 *Target: Aug 10-13, parallel with Phase 4*
 
 ### Session 5.1 — Injury/Active Status Pull
+**Status:** 🟡 Mechanism complete and validated on real data; one validation item intentionally deferred (see below) — same "can't fully validate until real data exists" pattern as the Vegas-lines and FD-salary gaps elsewhere in this roadmap. Not blocking — Session 5.2 has no dependency on the deferred item.
+
 **Prerequisites:** Session 1.2 complete (need player_id matching scheme).
 
 **Sites:** Site-agnostic — a player's injury status is the same fact regardless of which DFS site you're building for, so this session's output is shared by both.
@@ -367,19 +369,22 @@
 **Files touched (created):**
 - `/dfs_optimizer/scripts/status_check.py`
 
-**Inputs:** ESPN injury API endpoint (per-team).
+**Files touched (modified):**
+- `/dfs_optimizer/scripts/optimizer.py` — one-line bug fix, found during this session's real validation testing, unrelated to this session's own scope. See SESSION_LOG.md's Session 5.1 entry for details.
 
-**Outputs:** `/output/player_status_{week}_{timestamp}.csv` — columns: player_id, status (OUT/DOUBTFUL/QUESTIONABLE/ACTIVE)
+**Inputs:** ESPN's per-team roster endpoint (`site.api.espn.com/apis/site/v2/sports/football/nfl/teams/{id}/roster`) — see decision #1 in `status_check.py`'s module docstring for why this endpoint was chosen over two other real ESPN options that were tried and rejected. Last verified working: 2026-07-22.
+
+**Outputs:** `/output/player_status_{week}_{timestamp}.csv` — columns: player_id, player_name, team, position, status (OUT/DOUBTFUL/QUESTIONABLE/ACTIVE), raw_status, last_updated, match_method.
 
 **Build:**
 - ESPN injury endpoint integration
-- Status filter logic (OUT excludes from optimizer input; QUESTIONABLE flags but doesn't exclude)
+- Status filter logic (OUT excludes from optimizer input; QUESTIONABLE flags but doesn't exclude) — implemented as a second `status_check.py` subcommand (`apply`) that zeroes `final_projection` for OUT players by reusing `build_projections.py`'s existing zero-out convention (decision #4b), rather than adding a filter step to `optimizer.py` itself. This is what let the whole session ship with only one file touched, per this card's own file list.
 
 **Validation:**
-- [ ] Cross-check pulled statuses against NFL.com's official injury report for the same day — must match
-- [ ] Confirm OUT players are actually excluded from optimizer output for both sites (run optimizer with a test OUT player, confirm absence in both DK and FD results), not just flagged in a column nobody reads
+- [ ] Cross-check pulled statuses against NFL.com's official injury report for the same day — must match. **Deferred, not failed:** pulled live 2026-07-22 (off-season/training camp) — every real non-empty status found was tied to a long-term injury recovery or personal situation, not a game-week designation, since no real NFL game exists yet to designate a player in/out FOR. There's nothing on NFL.com's injury report to cross-check against yet either. First real point this closes: Preseason Week 1 (Aug 13-15, 2026), same checkpoint as this roadmap's other deferred-validation gaps — see "Known Deferred Validations" below.
+- [x] Confirm OUT players are actually excluded from optimizer output for both sites (run optimizer with a test OUT player, confirm absence in both DK and FD results), not just flagged in a column nobody reads. **Validated for real, DK side:** a real, previously-nonzero player (Jonathan Taylor, IND RB, real week-10 `final_projection` of 17.25) was manually forced to OUT status and run through the full real pipeline (`status_check.py apply` → `optimizer.py`) in the user's own environment. Confirmed absent from the resulting lineup; optimizer ran clean with no zero-projection-selected warning. **FD side not separately re-run** — the exclusion mechanism (zeroing `final_projection` before `optimizer.py` ever sees the file) is site-agnostic by construction, same file/column contract either site reads, so this is treated as covered by construction rather than needing a duplicate manual run; flagged here rather than silently assumed.
 
-**Handoff notes to log:** the exact ESPN endpoint URL used (unofficial endpoints can change without notice — note the date last verified working).
+**Handoff notes to log:** ESPN endpoint used: `https://site.api.espn.com/apis/site/v2/sports/football/nfl/teams/{team_id}/roster` (unofficial, undocumented — verify still working before relying on it for anything time-sensitive). Last verified working: 2026-07-22. Two other real ESPN endpoints were tried and rejected for this job — see `status_check.py`'s module docstring, decision #1, for the reasoning (both were either the wrong data shape or too expensive in round trips).
 
 ---
 
@@ -638,6 +643,7 @@ These are all instances of the same underlying problem: several data sources (Th
 - **Real FD salary data, at all.** Flagged since Session 1.3: DK has a real, year-round CSV source to validate against (Madden Stream contests). FD has no equivalent -- there has never been a real FD NFL export to test `ingest_salaries.py --site fd` against. Every FD validation so far (Session 1.3's 10-row test, Session 2.4's 93-row scaled synthetic file) has used synthetic data built from real DK data, not a real FD download. **First point this closes for real:** whenever a real FD Classic NFL slate first opens for the 2026 season (likely Preseason Week 1, same as above, but confirm -- FD's preseason slate calendar hasn't been checked directly).
 - **Session 2.4's full real end-to-end validation, both sites.** Directly follows from the two gaps above -- `build_projections.py` has now been validated mechanically (real DK salaries + real week-10 matchup/baseline data + synthetic FD salaries + synthetic vegas lines, see Session 2.4's log entry), but not with every input being simultaneously real for the same site and the same week. That combination doesn't exist yet for any week. **First point this closes for real:** Preseason Week 1, same as above -- first week where a real salary file (both sites, assuming FD's gap above also closes by then), real matchup-factor data, and real currently-posted vegas lines can all exist for the same slate at the same time.
 - **Session 3.3's stacking logic, against real data -- DK closed same day (addendum), FD still open.** Re-run against the real DK Madden Stream pool (`weekly_stats_2025.parquet`, `schedules_2025.parquet`, real `vegas_implied_totals_10.csv`, real `salaries_dk_madden_20260721.csv`) confirmed the full pipeline end-to-end, matched the project's own previously-logged real numbers exactly, and surfaced + fixed a real bug (`rank_candidate_teams`/`rank_candidate_games` didn't check the OPPONENT side had real pool players -- see SESSION_LOG.md's addendum). **Still open:** FD (same pre-existing no-real-FD-data gap as everything else FD), and a full 32-team slate (this real pool only has 6 teams -- Preseason Week 1 is the first point a full-size real slate exists to re-test against).
+- **Session 5.1's real OUT/DOUBTFUL game-day designations, cross-checked against NFL.com.** ESPN's per-team roster endpoint was pulled live and validated for real (all 32 teams, 919 players, real matching, real zero-out mechanism proven against a real forced-OUT player -- see SESSION_LOG.md's Session 5.1 entry) -- but every real non-empty status found on 2026-07-22 was a long-term-recovery or personal-situation designation, not a game-week one, since no real NFL game exists yet to designate a player in/out FOR. There's nothing real on NFL.com's injury report to cross-check against yet either. **First point this closes for real:** Preseason Week 1, same as the other gaps in this list.
 
 Until Preseason Week 1: treat Session 2.4 (and by extension anything built on top of it in Phase 3+) as validated for correctness-of-logic only, not for real-world data quality. Re-run Session 2.4's validation checklist in full once real data exists for both sites.
 

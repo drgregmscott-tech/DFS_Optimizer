@@ -222,7 +222,6 @@ player_id,player_name,team,position,status,raw_status,last_updated,match_method
 00-0040352,Coleman Owen,IND,WR,ACTIVE,,,auto_exact
 00-0037664,Alec Pierce,IND,WR,QUESTIONABLE,Questionable,2026-06-10T19:29Z,auto_exact
 00-0039164,Anthony Richardson Sr.,IND,QB,ACTIVE,,,auto_exact
-00-0036223,Jonathan Taylor,IND,RB,ACTIVE,,,auto_exact
 00-0032951,Laquon Treadwell,IND,WR,ACTIVE,,,auto_exact
 00-0040128,Tyler Warren,IND,TE,ACTIVE,,,auto_exact
 00-0036182,Nick Westbrook-Ikhine,IND,WR,ACTIVE,,,auto_fallback_name_only

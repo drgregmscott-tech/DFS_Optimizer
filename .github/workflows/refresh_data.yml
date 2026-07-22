@@ -1,0 +1,284 @@
+# Session 5.2 -- Scheduling Infrastructure.
+#
+# Orchestrates the scripts that are actually safe to re-run unattended on a
+# schedule. IMPORTANT SCOPE NOTE (see SESSION_LOG.md's Session 5.2 entry for
+# the full reasoning): this workflow does NOT run ingest_salaries.py,
+# projections_baseline.py, or projections_matchup.py.
+#   - ingest_salaries.py needs a manually-downloaded DK/FD export CSV --
+#     neither site has a salary API, so this can never be automated. The
+#     user downloads + ingests once when a slate posts, then updates
+#     data/current_slate.json (committed) so this workflow knows which
+#     slate_id/week to target.
+#   - projections_baseline.py / projections_matchup.py are computed once
+#     from weeks-1..N-1 of weekly_stats -- they don't change intra-week the
+#     way Vegas lines and injury status do, so re-running them on a 3-hour
+#     or 15-minute cadence would just burn CI minutes for no new data.
+#
+# What THIS workflow refreshes, per run: vegas_odds.py (fresh lines) ->
+# status_check.py pull (fresh ESPN status) -> build_projections.py, both
+# sites (rebuild the blend against the same salary file but fresh
+# vegas/status) -> status_check.py apply, both sites (re-zero any newly-OUT
+# player). Every run's outcome (success/failure, per site) is appended to
+# logs/automation_run_log.csv, which is what Session 5.2's validation
+# checklist below is checked against.
+#
+# Three trigger cadences, matching the roadmap card's split between "GitHub
+# Actions cron for regular-interval updates" and "Cloudflare Worker +
+# external trigger (cron-job.org) for the critical near-lock window":
+#
+#   1. light_vegas_refresh (this file's own `schedule:` cron) -- Tue-Fri
+#      1x/day, Sat 2x/day, Sun hourly from ~4hrs to ~1hr before a typical
+#      1:00pm ET early-slate lock. This is Session 2.3's already-budgeted
+#      cadence (~121 credits/month against The Odds API's 500/month free
+#      tier) -- vegas_odds.py only, not the full pipeline, to stay inside
+#      that budget. NOTE: the Sunday hourly window below is anchored to
+#      the common 1:00pm ET early slate and is an approximation -- a week
+#      with a different early-slate lock time (rare, but happens around
+#      int'l games) won't perfectly line up. Not a bug, just a known
+#      limitation of a static cron schedule -- flagged here rather than
+#      silently assumed correct every week.
+#   2. full_refresh_scheduled (this file's own `schedule:` cron) -- every 3
+#      hours on Thu/Sun/Mon (the days an NFL game can be locking), full
+#      pipeline both sites. Coarse, non-time-critical -- GitHub's own
+#      scheduled-cron delay (documented to occasionally run several minutes
+#      late under load) is an acceptable trade for a 3-hour-interval job.
+#   3. full_refresh_dispatch (repository_dispatch, type "near_lock_refresh")
+#      -- fired by cloudflare_worker/scheduled_refresh.js, which itself is
+#      pinged by an external cron-job.org job every 5-10 minutes during the
+#      actual near-lock window (both sites' lock times, set by the user in
+#      cron-job.org -- see that worker file's header for setup). This path
+#      exists specifically BECAUSE GitHub's native cron isn't reliable
+#      enough at 5-10 minute granularity for a moment that actually
+#      matters -- see Session 5.2's SESSION_LOG entry for the full
+#      reasoning already discussed with the user.
+#
+# workflow_dispatch is also enabled for manual ad-hoc runs/testing.
+#
+# Required repo configuration (one-time, done in GitHub's UI, not in code):
+#   - Settings -> Secrets and variables -> Actions -> New repository secret
+#     ODDS_API_KEY = <your real Odds API key> (same key currently sitting
+#     in your local, gitignored config/api_keys.env)
+#   - Settings -> Actions -> General -> Workflow permissions -> set to
+#     "Read and write permissions", so this workflow can commit its own
+#     output/log files back to the repo.
+
+name: Refresh Data
+
+on:
+  schedule:
+    # --- light_vegas_refresh (vegas_odds.py only) ---
+    - cron: "0 16 * * 2,3,4,5"        # Tue-Fri, 1x/day, ~noon ET
+    - cron: "0 15,21 * * 6"           # Sat, 2x/day, ~11am + 5pm ET
+    - cron: "0 15,16,17 * * 0"        # Sun, hourly, ~11am-1pm ET (4hrs-1hr before a ~1pm ET lock -- see note above)
+    # --- full_refresh_scheduled (full pipeline, both sites) ---
+    - cron: "0 */3 * * 4,0,1"         # Thu, Sun, Mon, every 3 hours
+  repository_dispatch:
+    types: [near_lock_refresh]
+  workflow_dispatch:
+    inputs:
+      reason:
+        description: "Optional note for why this was triggered manually"
+        required: false
+        default: "manual test run"
+
+# Near-lock dispatches can arrive every 5-10 minutes; don't let two runs
+# race each other's git commits. Queue rather than cancel -- a skipped
+# near-lock refresh is worse than a slightly-delayed one.
+concurrency:
+  group: refresh-data
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+env:
+  PYTHON_VERSION: "3.12"
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Determine which cadence fired this run
+        id: trigger
+        run: |
+          if [ "${{ github.event_name }}" = "schedule" ]; then
+            case "${{ github.event.schedule }}" in
+              "0 16 * * 2,3,4,5"|"0 15,21 * * 6"|"0 15,16,17 * * 0")
+                echo "mode=vegas_only" >> "$GITHUB_OUTPUT"
+                echo "trigger_type=light_vegas_refresh" >> "$GITHUB_OUTPUT"
+                ;;
+              "0 */3 * * 4,0,1")
+                echo "mode=full" >> "$GITHUB_OUTPUT"
+                echo "trigger_type=full_refresh_scheduled" >> "$GITHUB_OUTPUT"
+                ;;
+              *)
+                echo "mode=full" >> "$GITHUB_OUTPUT"
+                echo "trigger_type=unknown_schedule_${{ github.event.schedule }}" >> "$GITHUB_OUTPUT"
+                ;;
+            esac
+          elif [ "${{ github.event_name }}" = "repository_dispatch" ]; then
+            echo "mode=full" >> "$GITHUB_OUTPUT"
+            echo "trigger_type=full_refresh_dispatch" >> "$GITHUB_OUTPUT"
+          else
+            echo "mode=full" >> "$GITHUB_OUTPUT"
+            echo "trigger_type=manual_workflow_dispatch" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Write API key from secret
+        run: |
+          mkdir -p config
+          echo "ODDS_API_KEY=${{ secrets.ODDS_API_KEY }}" > config/api_keys.env
+
+      - name: Read current slate config
+        id: slate
+        run: |
+          python3 -c "
+          import json
+          cfg = json.load(open('data/current_slate.json'))
+          season = cfg['season']
+          print(f'season={season}')
+          for site in ('dk', 'fd'):
+              print(f'{site}_week={cfg[site][\"week\"]}')
+              print(f'{site}_slate_id={cfg[site][\"slate_id\"]}')
+          " >> "$GITHUB_OUTPUT"
+
+      - name: Pull fresh Vegas lines
+        id: vegas
+        continue-on-error: true
+        run: python3 scripts/vegas_odds.py --week ${{ steps.slate.outputs.dk_week }}
+
+      - name: Pull fresh injury/active status
+        id: status_pull
+        if: steps.trigger.outputs.mode == 'full'
+        continue-on-error: true
+        run: python3 scripts/status_check.py pull --season ${{ steps.slate.outputs.season }} --week ${{ steps.slate.outputs.dk_week }}
+
+      - name: Locate latest status pull file
+        id: status_file
+        if: steps.trigger.outputs.mode == 'full'
+        run: |
+          f=$(ls -t output/player_status_${{ steps.slate.outputs.dk_week }}_*.csv 2>/dev/null | head -n 1 || true)
+          echo "path=$f" >> "$GITHUB_OUTPUT"
+
+      - name: Rebuild projections -- DK
+        id: proj_dk
+        if: steps.trigger.outputs.mode == 'full'
+        continue-on-error: true
+        run: |
+          python3 scripts/build_projections.py --site dk \
+            --season ${{ steps.slate.outputs.season }} \
+            --week ${{ steps.slate.outputs.dk_week }} \
+            --slate-id ${{ steps.slate.outputs.dk_slate_id }}
+
+      - name: Rebuild projections -- FD
+        id: proj_fd
+        if: steps.trigger.outputs.mode == 'full'
+        continue-on-error: true
+        run: |
+          python3 scripts/build_projections.py --site fd \
+            --season ${{ steps.slate.outputs.season }} \
+            --week ${{ steps.slate.outputs.fd_week }} \
+            --slate-id ${{ steps.slate.outputs.fd_slate_id }}
+
+      - name: Apply status (zero OUT players) -- DK
+        id: apply_dk
+        if: steps.trigger.outputs.mode == 'full' && steps.status_file.outputs.path != ''
+        continue-on-error: true
+        run: |
+          python3 scripts/status_check.py apply --site dk \
+            --week ${{ steps.slate.outputs.dk_week }} \
+            --status-file "${{ steps.status_file.outputs.path }}"
+
+      - name: Apply status (zero OUT players) -- FD
+        id: apply_fd
+        if: steps.trigger.outputs.mode == 'full' && steps.status_file.outputs.path != ''
+        continue-on-error: true
+        run: |
+          python3 scripts/status_check.py apply --site fd \
+            --week ${{ steps.slate.outputs.fd_week }} \
+            --status-file "${{ steps.status_file.outputs.path }}"
+
+      # Always runs, even if earlier steps failed -- a failed run is exactly
+      # the kind of thing this log needs to capture, not swallow.
+      - name: Append run-log row(s)
+        if: always()
+        run: |
+          python3 -c "
+          import csv, os
+          from datetime import datetime, timezone
+          from pathlib import Path
+
+          log_path = Path('logs/automation_run_log.csv')
+          fieldnames = ['timestamp_utc', 'trigger_type', 'site', 'step', 'status']
+          is_new = not log_path.exists()
+          log_path.parent.mkdir(parents=True, exist_ok=True)
+
+          now = datetime.now(timezone.utc).isoformat()
+          trigger_type = '${{ steps.trigger.outputs.trigger_type }}'
+          mode = '${{ steps.trigger.outputs.mode }}'
+
+          def outcome(step_id):
+              # GitHub Actions step outcomes: 'success', 'failure', 'skipped', 'cancelled'
+              return os.environ.get(step_id, 'not_run')
+
+          rows = [
+              {'timestamp_utc': now, 'trigger_type': trigger_type, 'site': 'both', 'step': 'vegas_odds_pull', 'status': outcome('VEGAS_OUTCOME')},
+          ]
+          if mode == 'full':
+              rows.append({'timestamp_utc': now, 'trigger_type': trigger_type, 'site': 'both', 'step': 'status_pull', 'status': outcome('STATUS_PULL_OUTCOME')})
+              rows.append({'timestamp_utc': now, 'trigger_type': trigger_type, 'site': 'dk', 'step': 'build_projections', 'status': outcome('PROJ_DK_OUTCOME')})
+              rows.append({'timestamp_utc': now, 'trigger_type': trigger_type, 'site': 'fd', 'step': 'build_projections', 'status': outcome('PROJ_FD_OUTCOME')})
+              rows.append({'timestamp_utc': now, 'trigger_type': trigger_type, 'site': 'dk', 'step': 'status_apply', 'status': outcome('APPLY_DK_OUTCOME')})
+              rows.append({'timestamp_utc': now, 'trigger_type': trigger_type, 'site': 'fd', 'step': 'status_apply', 'status': outcome('APPLY_FD_OUTCOME')})
+
+          with log_path.open('a', newline='') as f:
+              writer = csv.DictWriter(f, fieldnames=fieldnames)
+              if is_new:
+                  writer.writeheader()
+              writer.writerows(rows)
+
+          print(f'Appended {len(rows)} row(s) to {log_path}')
+          "
+        env:
+          VEGAS_OUTCOME: ${{ steps.vegas.outcome }}
+          STATUS_PULL_OUTCOME: ${{ steps.status_pull.outcome }}
+          PROJ_DK_OUTCOME: ${{ steps.proj_dk.outcome }}
+          PROJ_FD_OUTCOME: ${{ steps.proj_fd.outcome }}
+          APPLY_DK_OUTCOME: ${{ steps.apply_dk.outcome }}
+          APPLY_FD_OUTCOME: ${{ steps.apply_fd.outcome }}
+
+      # Commit whatever changed (output/*, logs/automation_run_log.csv).
+      # Rebase-and-retry once to reduce lost updates when a near-lock
+      # dispatch lands while another run's commit is still landing.
+      - name: Commit refreshed outputs + run log
+        if: always()
+        run: |
+          git config user.name "dfs-optimizer-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add output/ logs/automation_run_log.csv
+          if git diff --cached --quiet; then
+            echo "No changes to commit."
+            exit 0
+          fi
+          git commit -m "Automated refresh (${{ steps.trigger.outputs.trigger_type }}) [skip ci]"
+          git pull --rebase origin "${{ github.ref_name }}" || true
+          git push origin HEAD:"${{ github.ref_name }}"
+
+      - name: Fail the run if any pipeline step failed
+        if: steps.vegas.outcome == 'failure' || steps.status_pull.outcome == 'failure' || steps.proj_dk.outcome == 'failure' || steps.proj_fd.outcome == 'failure' || steps.apply_dk.outcome == 'failure' || steps.apply_fd.outcome == 'failure'
+        run: |
+          echo "One or more pipeline steps failed -- see the step logs above and logs/automation_run_log.csv."
+          exit 1

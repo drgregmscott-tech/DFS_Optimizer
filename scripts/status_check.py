@@ -429,6 +429,29 @@ def run_apply(site: str, week: int, status_file: str, projections_file: str | No
     status = pd.read_csv(status_path, dtype={"player_id": str})
     required_status_cols = {"player_id", "status"}
     missing = required_status_cols - set(status.columns)
+
+    # Decision #6 (added after real testing surfaced this -- see
+    # SESSION_LOG.md, Session 5.1): a status file with more than one row
+    # for the same player_id would otherwise merge silently into a
+    # DUPLICATED row in the output projections file -- confirmed for real
+    # (a manually-edited test file with two rows for one player_id caused
+    # optimizer.py's solver to crash on that duplicated player_id, not a
+    # clean "OUT excluded" result). A normal `pull` output can't produce
+    # this on its own (one row per ESPN roster entry, one team per
+    # player), but a hand-edited or concatenated status file could -- fail
+    # loudly here rather than let a non-unique merge key silently corrupt
+    # final_projections, same "guarantee, not eyeballing" pattern as every
+    # other validation in this project.
+    dupe_ids = status.loc[status["player_id"].duplicated(keep=False), "player_id"].unique()
+    if len(dupe_ids):
+        raise SystemExit(
+            f"{status_path} has {len(dupe_ids)} player_id(s) appearing more than once: "
+            f"{sorted(dupe_ids)[:10]}{'...' if len(dupe_ids) > 10 else ''}. Merging a "
+            f"non-unique status file would silently duplicate rows in the output "
+            f"projections file. Deduplicate the status file (exactly one row per "
+            f"player_id) before re-running apply."
+        )
+
     if missing:
         raise SystemExit(f"{status_path} is missing expected columns: {sorted(missing)}.")
 

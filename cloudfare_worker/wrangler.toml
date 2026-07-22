@@ -1,0 +1,18 @@
+# Session 5.2 -- minimal config for `npx wrangler deploy scheduled_refresh.js`
+# from inside this directory. Not on the original roadmap file list --
+# added because scheduled_refresh.js needs this to deploy via Wrangler at
+# all; flagged here rather than silently added. See scheduled_refresh.js's
+# own header comment for the full one-time setup sequence (secrets, etc.).
+#
+# GITHUB_OWNER / GITHUB_REPO below are plain (non-secret) vars, safe to
+# commit. GH_DISPATCH_TOKEN and WORKER_AUTH_TOKEN are NOT set here -- those
+# are secrets, set separately via `npx wrangler secret put <NAME>` (or the
+# dashboard), never committed to the repo.
+
+name = "dfs-optimizer-scheduler"
+main = "scheduled_refresh.js"
+compatibility_date = "2026-07-01"
+
+[vars]
+GITHUB_OWNER = "drgregmscott-tech"
+GITHUB_REPO = "DFS_Optimizer"

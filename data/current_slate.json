@@ -1,0 +1,12 @@
+{
+  "_comment": "Session 5.2 -- read by refresh_data.yml on every automated run to know which season/week/slate_id to target per site. Update this by hand each week (or via a small manual step) right after you've downloaded that week's DK/FD salary files and run ingest_salaries.py -- the automation does NOT do salary ingestion itself (see ROADMAP.md / SESSION_LOG.md Session 5.2 entry for why: there is no API for DK/FD salary exports, only a manual 'Export to CSV' download on their own sites). If this file's week/slate_id is stale relative to what's actually been ingested, build_projections.py will either 404 on a missing salaries_{site}_{slate_id}.csv or silently rebuild against last week's slate -- check this file first if a run's output looks wrong.",
+  "season": 2026,
+  "dk": {
+    "week": 1,
+    "slate_id": "classic_wk1"
+  },
+  "fd": {
+    "week": 1,
+    "slate_id": "classic_wk1"
+  }
+}
