@@ -564,3 +564,70 @@ A minimal `schedules_2025.parquet` (14 real week-10-2025 games, real matchups re
 **Handoff notes for next session:**
 - Session 3.3 (Stacking Rules) extends `optimizer.py` again rather than replacing it -- likely adds a same-team QB+pass-catcher constraint to `solve_lineup()` alongside the existing salary/roster/uniqueness constraints, and probably needs to run under both single- and multi-lineup modes.
 - `build_multi_lineup()`'s per-lineup re-solve loop (locked-out pool + previous_lineups uniqueness constraints) is the reusable pattern Session 3.3's stacking constraints should slot into, rather than a parallel code path.
+
+---
+
+## Session 3.2 (ADDENDUM) — Projection Randomization
+**Date completed:** 2026-07-22
+**Status:** ✅ Complete
+
+**What happened:** user asked whether projection randomization was already planned anywhere in the pipeline. Checked `ROADMAP.md`/`SESSION_LOG.md` in full -- confirmed it was never planned as its own session and wasn't implemented. Clarified with the user what was meant (randomized-projections-for-diversity vs. Monte Carlo simulation-for-ranking are two different real DFS-tool features that live in different places) -- user confirmed the first: an optional per-run knob where each player's projection can be perturbed +/-X% before the optimizer selects against it, off by default, user-configurable (typically 1-40%), with each generated lineup getting its own independent randomization draw.
+
+**Design gaps cleared with the user before building (same pattern as every prior session):**
+- **Distribution shape:** asked whether the +/-X% draw should be uniform or normal. User wanted an industry-standard check first if available. Quick web check found real DFS tools (FantasyCruncher PRO's published methodology, the open-source `dfs-with-r/coach` optimizer) both use a normal (or log-normal) distribution scaled off the projection, not a flat uniform window -- reported this back, and it matched the user's own stated preference for normal/bell-curve. Implemented as: mean = real `final_projection`, std_dev = `randomization_pct`% of that same value, clipped at a floor of 0.0 (no negative fantasy points).
+- **Interaction with Session 3.2's swap constraint:** asked whether randomization should replace or supplement the existing hard minimum-swap uniqueness constraint. User chose supplement -- both apply together.
+- **Single- vs. multi-lineup scope:** asked whether randomization should be available in single-lineup mode too, not just multi-lineup batches. User chose both.
+
+**What was actually built (`scripts/optimizer.py`, extended again, decisions #9-13 in the file):**
+- `randomize_projections()` (new) -- draws one normal-distribution sample per player, mean/std_dev as described above, returns a `pd.Series` indexed by `player_id`. Does NOT modify the real `final_projection` column anywhere.
+- `solve_lineup()` extended with an `optimization_projection` param -- when provided, the ILP objective uses those (possibly randomized) values instead of the real `final_projection`; salary/position constraints and the real `final_projection` values carried in the returned rows are untouched either way. Defaults to `None` (uses real projection, Session 3.1/3.2 behavior unchanged).
+- `build_single_lineup()` and `build_multi_lineup()` both extended with `randomization_pct`/`seed` (and in multi-lineup's case, `rng` is created once but a **fresh draw is taken inside the generation loop for every lineup** -- user-confirmed requirement, not one draw reused across the batch).
+- New CLI flags: `--randomization-pct` (default 0 = off, typically 1-40 when used) and `--seed` (optional, for reproducible runs).
+- Output CSVs (`lineup_single_*`/`lineups_multi_*`) always report each selected player's REAL `final_projection` in the `projection` column, never the noisy value used to pick them -- so total-points figures stay meaningful and comparable across lineups/runs regardless of whether randomization was on.
+
+**Files created/modified:**
+- `/dfs_optimizer/scripts/optimizer.py` (extended: `randomize_projections()` added; `solve_lineup()`, `build_single_lineup()`, `build_multi_lineup()`, `main()` all extended with randomization params/flags)
+
+**Validation results:**
+- [x] `--randomization-pct 0` (default) reproduces Session 3.1's exact shipped `lineup_single_dk_10.csv` byte-for-byte -- confirmed via diff. No prior behavior changed by this addendum unless explicitly opted into.
+- [x] Same `--seed` + same `--randomization-pct` -> identical output across two separate runs -- confirmed via diff (reproducibility works as designed).
+- [x] `--randomization-pct 15` with a seed produced a DIFFERENT lineup than the unrandomized baseline (TE/FLEX swapped -- Harold Fannin Jr./Alec Pierce in for Dalton Schultz/Harold Fannin Jr.) -- confirms randomization is actually influencing selection, not a no-op.
+- [x] Multi-lineup mode, both sites, `--n-lineups 20 --randomization-pct 20`: exposure cap (8/20 = 40%) and the swap-uniqueness constraint (minimum 3 players swapped, 0 duplicate/near-duplicate pairs) BOTH still held exactly as in the original Session 3.2 validation -- confirms randomization is additive, not a replacement, as the user directed. All 20/20 lineups generated both sites, all under their real salary cap, all with correct roster composition.
+- [x] 20 distinct lineup-level point totals out of 20 lineups (DK, randomized run) -- confirms per-lineup independent draws are actually producing varied candidate rankings, not one draw reused for the whole batch.
+
+**Known issues deferred:**
+- Everything carried over from the original Session 3.2 entry (thin real-data test pool, deferred stress-test of the swap-relaxation path, real-data-both-sites validation still blocked until Preseason Week 1) still applies unchanged.
+- The clipping-at-0.0 asymmetry noted in decision #9 (low-projection/punt players get a right-skewed realized distribution once negative draws are clipped) is a known, minor property of the normal-distribution approach -- not expected to matter much in practice since punt players rarely swing a lineup decision, but flagged rather than silently accepted.
+- `--seed` reseeds a fresh `np.random.default_rng()` each CLI invocation; if a future session wants bit-for-bit-reproducible MULTI-run batches (e.g. same seed producing the same 20 lineups across separate process invocations, not just within one run), that already works as tested -- but no automated regression test locks this in beyond this session's manual validation. Worth a real test fixture if reproducibility becomes load-bearing for anything (e.g. debugging a specific reported bad lineup).
+
+**Handoff notes for next session:**
+- Session 3.3 (Stacking Rules) will need to decide how stacking constraints interact with BOTH existing diversity levers (hard swap constraint AND optional randomization) -- likely just another constraint added to the same `solve_lineup()` call, but worth explicitly re-checking exposure caps + uniqueness + randomization + stacking all together in that session's validation, not just stacking in isolation.
+
+---
+
+## Session 3.2 (ADDENDUM 2) — Renamed min_unique_swaps -> uniqueness, default changed to 1
+**Date completed:** 2026-07-22
+**Status:** ✅ Complete
+
+**What happened:** user asked whether "uniqueness" (standard DFS-optimizer terminology for the per-lineup minimum-swap diversity control) was already planned/built. Confirmed it already existed -- it's exactly what the original Session 3.2 entry implemented as `min_unique_swaps` (default 3) -- just under a non-standard name. User confirmed two changes: (1) rename `min_unique_swaps` -> `uniqueness` (`--uniqueness` CLI flag) throughout, to match standard terminology or any future UI; (2) change the default from 3 to 1, matching the standard convention.
+
+**What was actually changed (`scripts/optimizer.py`):**
+- Global rename: `min_unique_swaps` -> `uniqueness`, `MIN_UNIQUE_SWAPS` -> `UNIQUENESS`, `--min-unique-swaps` -> `--uniqueness`, `current_min_swaps` -> `current_uniqueness`. Purely a naming change -- the underlying mechanic (hard per-pair minimum-swap ILP constraint, with automatic relaxation + stderr warnings on infeasibility) is byte-for-byte the same logic as before.
+- `DEFAULT_UNIQUENESS` changed from `3` to `1`.
+- Added an explicit addendum note inline in decision #7's docstring block flagging the rename/default change as user-directed, not independently decided (same "flag, don't silently assume" pattern as every other decision in this file).
+
+**Validation results -- and an honest finding, not swept under the rug:**
+- [x] Single-lineup mode unaffected: re-ran `--site dk --week 10` with no `--n-lineups`, diffed against the original Session 3.1 shipped output -- still byte-for-byte identical.
+- [x] `--uniqueness 3` (explicit override) still reproduces the original Session 3.2 behavior/guarantee (verified 10 lineups, min swap = 3, matching the prior entry's math).
+- [x] FD, default `uniqueness=1`, 20 lineups: 20/20 generated, 0 relaxation events, 0 duplicate/near-duplicate pairs, exposure cap held (8/20). Clean.
+- [!] **DK, default `uniqueness=1`, 20 lineups: 20/20 generated, but the relaxation path (decision #7 -- documented but never actually triggered before this) fired 4 times near the end of the batch, and one exact duplicate pair (0 players swapped) appeared among the 20.** Confirmed reproducible across 5 repeated runs with identical settings -- deterministic, not solver flakiness. Exposure cap still held correctly regardless (8/20, hard constraint, unaffected by this). Root cause: this is the same thin-test-pool limitation already flagged in ROADMAP.md's "Known Testing Artifact" note (DK's real test pool has only 4 non-zero-projection QBs) -- at `uniqueness=1` + 40% exposure cap + 20 lineups, the pool runs out of genuinely distinct legal combinations before hitting 20, and the (working-as-designed) relaxation logic permits a duplicate rather than stopping early or crashing. This is a property of the small real-data test pool, not a bug in the rename or the underlying constraint logic -- expected to resolve against a real, full-size DK slate (32+ starting QBs) the same way the roadmap's other thin-pool artifacts are expected to.
+
+**Files created/modified:**
+- `/dfs_optimizer/scripts/optimizer.py` (renamed `min_unique_swaps` -> `uniqueness` throughout; `DEFAULT_UNIQUENESS` changed 3 -> 1; addendum note added to decision #7)
+
+**Known issues deferred:**
+- The DK duplicate-pair finding above is new information, not previously observed (the original Session 3.2 validation ran at the old default of 3, which never approached this pool's limit). Worth explicitly re-testing once a real full-size DK slate exists (Preseason Week 1, per ROADMAP.md's existing "Known Deferred Validations" section) to confirm this artifact actually disappears as expected, rather than assuming it will.
+- Not addressed in this addendum, flagged for a future call: CBC's branch-and-bound does not guarantee a stable tie-break among multiple equally-optimal solutions in general (this specific run happened to be reproducible, but that's not guaranteed by construction). If deterministic reproducibility across ALL settings (not just `--seed`-controlled randomization) becomes load-bearing later, a lexicographic secondary objective (e.g. minimize total salary, or a stable player-id ordering, as a tie-break) could be added to `solve_lineup()` -- not built now since it wasn't asked for and is a real design choice, not an obvious default.
+
+**Handoff notes for next session:**
+- Session 3.3 (Stacking Rules): when validating stacking together with exposure/uniqueness/randomization, use FD as well as DK, and don't assume DK's default 20-lineup run will always cleanly hit 20/20 without relaxation -- this addendum shows it sometimes won't, on the current thin test pool.
