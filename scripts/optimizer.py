@@ -1147,7 +1147,7 @@ def main():
     parser.add_argument(
         "--max-exposure", type=float, default=DEFAULT_MAX_EXPOSURE_PCT,
         help=f"Max fraction of lineups any one player may appear in "
-             f"(default {DEFAULT_MAX_EXPOSURE_PCT:.0%}). Only used with --n-lineups.",
+             f"(default {DEFAULT_MAX_EXPOSURE_PCT:.0%}%). Only used with --n-lineups.",
     )
     parser.add_argument(
         "--uniqueness", type=int, default=DEFAULT_UNIQUENESS,
