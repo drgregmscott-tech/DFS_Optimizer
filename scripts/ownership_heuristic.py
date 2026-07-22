@@ -91,12 +91,64 @@ case) gets value_percentile computed normally -- 0 value ranks at or near
 the bottom of its position group, which is correct (nobody chalks a
 bye-week player) -- rather than being dropped or special-cased.
 
+5. estimated_ownership_pct -- added same session as a follow-up to
+   chalk_score, after the user asked directly: chalk_score alone is a
+   RELATIVE ranking (0-100 scale, no real-world anchor) and was never
+   meant to be read as a percentage. This adds an actual 0-100 percentage
+   ESTIMATE, still not real data (none exists yet), but anchored to one
+   genuinely real, non-fabricated fact instead of an arbitrary curve:
+   roster-slot math. Every single lineup on a site fills exactly N slots
+   of a given position (e.g. DK fills exactly 2 "hard" RB slots plus a
+   share of 1 FLEX slot every single time), so across a large, rational
+   field, TOTAL ownership summed across every eligible player at that
+   position should land close to N * 100 percentage points -- this is a
+   structural constraint on the real world, not an empirical guess.
+   compute_position_slot_budgets() derives this "budget" per
+   position_group straight from SITE_CONFIGS[site]["roster_slots"].
+   FLEX (RB/WR/TE-eligible on both sites) has no real per-position
+   usage-rate data available yet (does the field actually play RB in
+   FLEX more often than WR? almost certainly yes in practice, but no real
+   number exists in this pipeline) -- decision: split FLEX's budget
+   evenly three ways, flagged as a simplification a future session can
+   replace once real logged FLEX usage exists (see the new Phase 9
+   "Actual Ownership Logging" / "Ownership Estimate Retuning" cards added
+   to ROADMAP.md this session).
+
+   Within each position_group, chalk_score is converted to a share of
+   that group's budget via a softmax: weight = exp(chalk_score /
+   OWNERSHIP_SOFTMAX_TEMPERATURE), normalized to sum to 1 within the
+   group, then multiplied by the group's budget. Softmax (rather than a
+   flat percentile-to-percentage rescale) was chosen because real
+   ownership is known to be concentrated, not flat -- a few true chalk
+   plays take a large share, most of the field's cheap depth pieces take
+   a sliver. OWNERSHIP_SOFTMAX_TEMPERATURE controls how concentrated:
+   lower = more winner-take-most. Like the blend weights above, this
+   constant is an UNFIT starting guess, not calibrated to real data --
+   flagged as the clearest first target for the new Phase 9 retuning
+   session once real ownership numbers exist to fit against.
+
+   Bye/no-real-game players (final_projection == 0) get an explicit 0
+   weight -- not just a low one -- so their share of the group's budget
+   gets fully redistributed to real players rather than leaving a
+   phantom floor value the way chalk_score's blend does (chalk_score
+   still assigns these players a nonzero score from the salary/vegas
+   components alone; estimated_ownership_pct deliberately does not,
+   since "how much of the real ownership budget should a player with a
+   confirmed zero projection get" has an unambiguous real-world answer:
+   none). If EVERY player in a position group has final_projection == 0
+   (all-bye edge case), there's no nonzero signal to weight by, so that
+   group's budget falls back to an even split across its players, with a
+   stderr warning -- flagged as a backtest-fixture artifact that a real
+   live slate's salary file should never actually trigger (it only ever
+   contains players who are genuinely playing that slate).
+
 Usage:
     python3 scripts/ownership_heuristic.py --site dk --week 10
 
 Outputs:
     output/chalk_scores_{site}_{week}.csv
     Required columns per the roadmap card: player_id, chalk_score.
+    estimated_ownership_pct (decision #5) and
     player_name/position/salary/final_projection are carried through too
     -- purely additive, makes the output spot-checkable without a join
     back to final_projections_*.csv.
@@ -106,6 +158,7 @@ import argparse
 import sys
 from pathlib import Path
 
+import numpy as np
 import pandas as pd
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
@@ -126,6 +179,19 @@ VEGAS_WEIGHT = 0.25
 MAX_NAME_RECOGNITION_BONUS = 20  # sanity ceiling on any single flag_weight row
 
 MIN_GROUP_SIZE_FOR_RELIABLE_PERCENTILE = 5  # below this, warn -- see ROADMAP.md's "Known Testing Artifact" note on thin pools
+
+# Decision #5 (see module docstring): estimated_ownership_pct constants.
+# Standard NFL DFS FLEX eligibility, same on both sites -- used to split a
+# roster's FLEX slot budget across the three positions that can fill it.
+FLEX_ELIGIBLE_POSITIONS = {"RB", "WR", "TE"}
+
+# Softmax temperature controlling how concentrated estimated_ownership_pct
+# is within a position group -- lower = more winner-take-most (a few true
+# mega-chalk plays take most of the group's budget), higher = flatter.
+# UNFIT starting guess, not calibrated to any real ownership data -- the
+# clearest first target for the new Phase 9 retuning session once real
+# ownership numbers exist to fit against (see ROADMAP.md).
+OWNERSHIP_SOFTMAX_TEMPERATURE = 15.0
 
 
 # ---------------------------------------------------------------------------
@@ -248,10 +314,103 @@ def compute_chalk_scores(df: pd.DataFrame, site: str) -> pd.DataFrame:
     return df
 
 
+
+# ---------------------------------------------------------------------------
+# Step 2: Estimated ownership % (decision #5)
+# ---------------------------------------------------------------------------
+
+def compute_position_slot_budgets(site: str) -> dict:
+    """Each position_group's total 'ownership budget,' in percentage
+    points summed across every eligible player in that group -- anchored
+    to real roster-slot math (see module docstring decision #5), not a
+    guess. FLEX's budget is split evenly across RB/WR/TE (no real
+    per-position FLEX usage-rate data exists yet)."""
+    slots = SITE_CONFIGS[site]["roster_slots"]
+    defense_values = SITE_CONFIGS[site]["defense_position_values"]
+    budgets: dict = {}
+
+    hard_slots = [s for s in slots if s != "FLEX"]
+    for s in hard_slots:
+        group = "DST" if s in defense_values else s
+        budgets[group] = budgets.get(group, 0.0) + 100.0
+
+    n_flex = slots.count("FLEX")
+    if n_flex:
+        flex_share = (n_flex * 100.0) / len(FLEX_ELIGIBLE_POSITIONS)
+        for group in FLEX_ELIGIBLE_POSITIONS:
+            budgets[group] = budgets.get(group, 0.0) + flex_share
+
+    # Internal consistency check, informational only -- total budget
+    # across all groups should equal exactly len(roster_slots) * 100,
+    # since every slot (hard or FLEX) contributes exactly 100 percentage
+    # points somewhere. Not a data-quality check (no real data involved
+    # yet), just confirms the budget math itself didn't drift.
+    expected_total = len(slots) * 100.0
+    actual_total = sum(budgets.values())
+    if abs(actual_total - expected_total) > 0.01:
+        raise SystemExit(
+            f"compute_position_slot_budgets({site!r}) internal check failed: "
+            f"budgets sum to {actual_total}, expected {expected_total} "
+            f"(len(roster_slots) * 100). This is a bug in this function, "
+            f"not a data problem -- check SITE_CONFIGS['{site}']['roster_slots']."
+        )
+    return budgets
+
+
+def compute_estimated_ownership(df: pd.DataFrame, site: str) -> pd.DataFrame:
+    """Decision #5 (see module docstring): converts chalk_score's relative
+    ranking into an ESTIMATED ownership percentage, anchored to real
+    roster-slot math, not to any real ownership data (none exists yet)."""
+    df = df.copy()
+    budgets = compute_position_slot_budgets(site)
+
+    # Bye/no-real-game players (final_projection == 0) get an explicit 0
+    # weight so their share of the group's budget is fully redistributed
+    # to real players -- see module docstring decision #5.
+    has_signal = df["final_projection"] > 0
+    df["_weight"] = 0.0
+    df.loc[has_signal, "_weight"] = np.exp(df.loc[has_signal, "chalk_score"] / OWNERSHIP_SOFTMAX_TEMPERATURE)
+
+    group_weight_sum = df.groupby("position_group")["_weight"].transform("sum")
+    group_size = df.groupby("position_group")["position_group"].transform("count")
+
+    all_zero = group_weight_sum == 0
+    if all_zero.any():
+        affected = sorted(df.loc[all_zero, "position_group"].unique().tolist())
+        print(
+            f"WARNING: position group(s) {affected} have final_projection "
+            f"== 0 for EVERY player this week -- estimated_ownership_pct "
+            f"falls back to an even split of that group's budget, since "
+            f"there's no nonzero signal to weight by. A real live slate's "
+            f"salary file should never hit this path (it only ever "
+            f"contains players who are genuinely playing) -- this is a "
+            f"backtest-fixture artifact, not expected in production.",
+            file=sys.stderr,
+        )
+
+    denom = group_weight_sum.replace(0, np.nan)
+    df["_group_share"] = df["_weight"] / denom
+    df.loc[all_zero, "_group_share"] = 1.0 / group_size[all_zero]
+
+    df["_group_budget"] = df["position_group"].map(budgets)
+    df["estimated_ownership_pct"] = (df["_group_share"] * df["_group_budget"]).clip(lower=0, upper=100)
+
+    group_totals = df.groupby("position_group")["estimated_ownership_pct"].sum()
+    print("estimated_ownership_pct summed per position group (should equal that group's roster-slot budget):")
+    for group, total in group_totals.sort_index().items():
+        print(f"  {group}: {total:.1f}% (budget: {budgets.get(group, float('nan')):.1f}%)")
+
+    return df.drop(columns=["_weight", "_group_share", "_group_budget"])
+
+
 def build_chalk_scores(site: str, week: int) -> pd.DataFrame:
     projections = load_final_projections(site, week)
     scored = compute_chalk_scores(projections, site)
-    out_cols = ["player_id", "player_name", "position", "salary", "final_projection", "chalk_score"]
+    scored = compute_estimated_ownership(scored, site)
+    out_cols = [
+        "player_id", "player_name", "position", "salary", "final_projection",
+        "chalk_score", "estimated_ownership_pct",
+    ]
     out = scored[out_cols].sort_values("chalk_score", ascending=False).reset_index(drop=True)
     return out
 
@@ -269,7 +428,9 @@ if __name__ == "__main__":
     result.to_csv(out_path, index=False)
 
     n_null = result.isna().any(axis=1).sum()
-    n_out_of_range = ((result["chalk_score"] < 0) | (result["chalk_score"] > 100)).sum()
+    n_chalk_out_of_range = ((result["chalk_score"] < 0) | (result["chalk_score"] > 100)).sum()
+    n_own_out_of_range = ((result["estimated_ownership_pct"] < 0) | (result["estimated_ownership_pct"] > 100)).sum()
     print(f"Wrote {len(result)} players to {out_path}")
     print(f"  Nulls in any column: {n_null} (should be 0)")
-    print(f"  chalk_score out of [0,100] range: {n_out_of_range} (should be 0)")
+    print(f"  chalk_score out of [0,100] range: {n_chalk_out_of_range} (should be 0)")
+    print(f"  estimated_ownership_pct out of [0,100] range: {n_own_out_of_range} (should be 0)")

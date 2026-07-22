@@ -314,17 +314,19 @@
 
 **Inputs:** `/output/final_projections_{site}_{week}.csv`
 
-**Outputs:** `/output/chalk_scores_{site}_{week}.csv` — columns: player_id, chalk_score (0-100 scale)
+**Outputs:** `/output/chalk_scores_{site}_{week}.csv` — columns: player_id, chalk_score (0-100 scale), **estimated_ownership_pct (0-100 scale, added same-day addendum — see below)**
 
 **Sites:** Computed per site — chalk/ownership perception is driven by that site's own salary and value context, not shared, since DK and FD price (and therefore "value") the same player differently.
 
 **Build:**
 - Value + salary tier + Vegas total + manual name-recognition flag list → chalk_score
+- **Addendum (same session):** chalk_score is a relative ranking with no real-world anchor — user asked directly for an actual percentage estimate that can be refined over time as real data comes in, not just a rank. Added `estimated_ownership_pct`: chalk_score converted to a percentage via a softmax within each position group, scaled so each group's TOTAL ownership matches a real structural fact (roster-slot math: every lineup fills exactly N slots of a position, so total ownership across that position's eligible pool should land near N × 100 percentage points — FLEX split evenly across RB/WR/TE, no real per-position FLEX usage-rate data exists yet). Still not real data, but anchored to something real instead of an arbitrary curve. Full reasoning: `ownership_heuristic.py`'s module docstring, decision #5.
 
 **Validation:**
-- [ ] Rank last week's players by chalk_score, compare relative order to actual published ownership for that site (if available) or intuition as a gut-check on direction, not precision — check both DK and FD ownership patterns separately, don't assume they match
+- [x] Rank last week's players by chalk_score, compare relative order to actual published ownership for that site (if available) or intuition as a gut-check on direction, not precision — check both DK and FD ownership patterns separately, don't assume they match. No real published ownership exists for this synthetic Madden Stream contest (same class of gap as everything else FD -- see ROADMAP.md's FanDuel validation gap note), so this ran as the card's own allowed fallback: an intuition gut-check, on the real 6-team pool (CLE/DAL/HOU/IND/MIA/WAS). Passed for both sites -- see SESSION_LOG.md's Session 4.1 entry for the actual numbers.
+- [x] `estimated_ownership_pct` addendum: confirmed each position group's total estimated ownership matches its roster-slot budget exactly (both sites) — see SESSION_LOG.md's Session 4.1 (ADDENDUM) entry for the actual per-group numbers. Confirmed bye/no-real-game players (final_projection == 0) correctly get exactly 0.0%, with their share of the budget redistributed to real players, not left as a phantom floor value.
 
-**Handoff notes to log:** the manual name-recognition flag list used (this needs periodic updates as player profiles change season to season) — note if it's shared across sites or needs site-specific entries.
+**Handoff notes to log:** the manual name-recognition flag list used (this needs periodic updates as player profiles change season to season) — note if it's shared across sites or needs site-specific entries. `OWNERSHIP_SOFTMAX_TEMPERATURE` (currently 15.0, unfit to real data) is the clearest first target for Session 9.3/9.4 below once real ownership data exists.
 
 ---
 
@@ -566,6 +568,47 @@
 
 ---
 
+### Session 9.3 — Actual Ownership Logging
+*Added during Session 4.1's addendum, when `estimated_ownership_pct` was added to `ownership_heuristic.py` — that estimate is anchored to real roster-slot math but not to any real ownership data, since none exists in this pipeline yet. This card is the other half of that decision: the mechanism to eventually get real data to check it against. Same relationship to Session 9.4 as Session 9.1 has to 9.2, just for ownership instead of projection accuracy.*
+
+**Prerequisites:** Session 8.1 complete (live enough to have real slates running), AND a real published-ownership source identified for at least one site/contest type (see Build below — this is a real open question, not a given).
+
+**Sites:** Log per site — DK and FD price the same player differently, so their real ownership numbers for the same player are never expected to match.
+
+**Files touched (created):**
+- `/dfs_optimizer/scripts/log_ownership.py`
+- `/dfs_optimizer/data/ownership_actual_log.csv` (grows weekly; columns: site, week, player_id, actual_ownership_pct, estimated_ownership_pct_at_time, source)
+
+**Build:**
+- Identify a real source of published ownership data per site. This is NOT solved by this roadmap yet — large-field GPP contests on both DK and FD sometimes have ownership published post-lock by the site itself or by third-party trackers (e.g. tools built on top of contest result exports), but availability, format, and reliability haven't been checked. First real action this session needs to take is confirming what's actually accessible, not assuming a specific source — same "verify before building on it" caution already applied to Vegas odds vendors (see "Notes on odds vendor choice") and FD's salary format.
+- Once a source is confirmed, log actual-vs-estimated ownership per player/week/site, alongside the `estimated_ownership_pct` this pipeline produced for that same slate (so error can be computed later without re-deriving it).
+
+**Validation:**
+- [ ] Confirm logged actuals genuinely come from a real contest's real ownership breakdown for a spot-check sample (not a synthetic/estimated stand-in) — same "don't trust it until it's verified real" standard already applied throughout this project (see ROADMAP.md's FanDuel validation gap note, the Vegas-lines deferred-validation note, etc.)
+- [ ] Confirm the DK/FD ownership numbers logged for the same real player in the same real slate are NOT expected to be equal, and aren't accidentally being logged as if they were (a copy-paste/site-mixup risk given how parallel this pipeline's DK/FD logic already is elsewhere)
+
+**Handoff notes to log:** which real ownership source(s) were actually usable per site — if only one site has a workable source, flag that explicitly rather than letting Session 9.4 assume both sites have equal real data to retune against (same asymmetry this project already tracks for FD salary/matchup data).
+
+---
+
+### Session 9.4 — Ownership Estimate Retuning (after Session 9.3 has real data for at least one full slate)
+**Prerequisites:** Session 9.3 producing real logged ownership data for at least one site.
+
+**Sites:** Same explicit-decision pattern as Session 9.2 — decide whether DK and FD get separately retuned parameters or share one, don't default to shared without checking whether their real ownership shapes actually diverge.
+
+**Files touched (modified):** `/dfs_optimizer/scripts/ownership_heuristic.py` (`OWNERSHIP_SOFTMAX_TEMPERATURE`, the FLEX-split-evenly simplification, and potentially the chalk_score blend weights themselves, all retuned/replaced using real data where the current version is an admitted unfit guess — see that script's module docstring, decision #5)
+
+**Inputs:** `/data/ownership_actual_log.csv`
+
+**Build:**
+- Fit `OWNERSHIP_SOFTMAX_TEMPERATURE` (and any other decision #5 constants worth revisiting) against real logged ownership error, same regression-style spirit as Session 9.2's projection-weight retuning.
+- Revisit the FLEX-split-evenly simplification specifically — real logged data should reveal actual RB vs WR vs TE FLEX usage rates, which is strictly better than an even three-way split once available.
+
+**Validation:**
+- [ ] Backtested retuned estimated_ownership_pct on held-out real weeks shows equal or better error against actual logged ownership than the original unfit constants, for each site independently — if not, don't ship, investigate why (same bar as Session 9.2)
+
+---
+
 ## Notes on sequencing
 - Phases 1-3 are strictly sequential
 - Phases 4 and 5 can run in parallel, both need Phase 3 done first
@@ -577,7 +620,7 @@
 Added retroactively during Session 1.3's revision (see SESSION_LOG.md) — the project was DK-only through the original Session 1.3 before this was clarified. What this changes, structurally:
 
 - **Site-agnostic (no change needed):** Session 1.1 (environment), Session 1.2 (nflverse historical data), Session 2.3 (Vegas odds), Session 5.1 (injury status). These operate one level below any DFS site's rules.
-- **Site-aware, runs once per site (DK and FD in parallel, same logic parameterized):** Session 1.3 (salary ingestion), Sessions 2.1/2.2/2.4 (projections — because DK is full-PPR and FD is half-PPR, so fantasy point values genuinely differ, not just formatting), Session 3.1-3.3 (optimizer — different cap and roster slots), Session 4.1/4.2 (ownership/pivots — different price context), Session 5.2 (scheduling — both sites' refreshes), Sessions 6.1-6.3 (dry runs — both sites), Session 8.1/9.1/9.2 (go-live and learning loop — both sites).
+- **Site-aware, runs once per site (DK and FD in parallel, same logic parameterized):** Session 1.3 (salary ingestion), Sessions 2.1/2.2/2.4 (projections — because DK is full-PPR and FD is half-PPR, so fantasy point values genuinely differ, not just formatting), Session 3.1-3.3 (optimizer — different cap and roster slots), Session 4.1/4.2 (ownership/pivots — different price context), Session 5.2 (scheduling — both sites' refreshes), Sessions 6.1-6.3 (dry runs — both sites), Session 8.1/9.1-9.4 (go-live and learning loop — both sites).
 - **Needs a site concept in the UI:** Phase 7 (frontend) — a site selector/toggle, not two separate apps.
 - **Canonical site config lives in one place:** `ingest_salaries.py`'s `SITE_CONFIGS` dict (Session 1.3) is the source of truth for each site's salary cap, roster slots, and scoring format (full vs half PPR) — later sessions should read from there rather than re-declaring these values, so a correction in one place propagates everywhere.
 - **FLEX eligibility is NOT in `SITE_CONFIGS`, added as a hardcoded assumption in Session 3.1's `optimizer.py`** (`FLEX_ELIGIBLE_POSITIONS = {"RB", "WR", "TE"}` — standard classic-contest DFS rule on both DK and FD, but never explicitly confirmed with the user since `SITE_CONFIGS` only stores the roster_slots list, not which positions can fill FLEX). If a future site/format needs a different rule (e.g. superflex allowing QB in FLEX), this is the one place to change — worth eventually promoting into `SITE_CONFIGS` itself rather than living only in `optimizer.py`.

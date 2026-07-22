@@ -729,3 +729,86 @@ A minimal `schedules_2025.parquet` (14 real week-10-2025 games, real matchups re
 **Handoff notes for next session:**
 - The `require_opponent_viable` fix generalizes beyond this specific pool -- any future real slate with asymmetric team coverage (e.g. a single-game showdown-style contest, or a partial-slate promo) would hit the same class of bug without it.
 - Session 6.1's Preseason Week 1 dry run (both sites, full slate) is the next real checkpoint for this -- worth specifically re-testing bring-back/game-stack auto-selection there, since a full 32-team slate should have plenty of valid candidates and would be the first chance to confirm the fix behaves correctly (not just fails gracefully) when real candidates DO exist on both sides.
+
+---
+
+## Session 4.1 — Chalk Score Heuristic
+**Date completed:** 2026-07-22
+**Status:** ✅ Complete
+
+**What was actually built:**
+- `scripts/ownership_heuristic.py` (new) — reads `final_projections_{site}_{week}.csv` (Session 2.4/3.3's output, including the `opponent`/`implied_total`/`over_under` columns added in 3.3's addendum) and produces a 0-100 `chalk_score` per player, per the card's four listed inputs:
+  1. **Value** (`final_projection / (salary/1000)`), percentile-ranked within `position_group` (DK's `DST` and FD's `D`/`DEF` are folded into one "DST" bucket via `SITE_CONFIGS[site]["defense_position_values"]`, so each site has a real pool to rank against instead of a group-of-one).
+  2. **Salary tier**, modeled as a U-shape rather than linear — both ends of a position's salary range (cheap punts, top-priced studs) score high, the middle scores low. `100 * abs(salary_percentile - 0.5) * 2`.
+  3. **Vegas total** — straight percentile rank of `implied_total` across the whole pool (not position-grouped), since a shootout raises attention on every position in that game alike.
+  4. **Manual name-recognition flag list** (`data/name_recognition_flags.csv`, new file — `player_id, player_name, flag_weight [0-20], notes`), applied as a flat additive bonus after the weighted blend, then the whole thing clipped to [0, 100]. Decision: **shared across sites**, not site-specific — a player's real-world fame doesn't change between DK and FD, only their price (already captured by inputs 1-2).
+- Blend: `chalk_score = clip(0.45*value_pct + 0.20*salary_tier + 0.25*vegas_pct + name_bonus, 0, 100)`. Weights are a starting heuristic, not fit to real ownership data — flagged in the module docstring as a target for future retuning, same spirit as `build_projections.py`'s `BASELINE_WEIGHT`/`RECENT_FORM_WEIGHT`.
+- Fail-loud schema guard: hard-requires `implied_total` (and the other Session 2.4/3.3 columns) in the input file — a real, non-hypothetical case this session, see Known issues deferred below.
+
+**Files created:**
+- `/dfs_optimizer/scripts/ownership_heuristic.py`
+- `/dfs_optimizer/data/name_recognition_flags.csv` (starter file — one example row, Patrick Mahomes, marked "example only")
+
+**Validation results:**
+- [x] Rank last week's players by chalk_score, compare relative order to actual published ownership (if available) or intuition as a gut-check — **run against real data, both sites.** No real published ownership exists for this synthetic DK Madden Stream contest (same pre-existing gap noted throughout the project for FD; this contest isn't a real public slate for either site), so this used the card's own allowed fallback: an intuition gut-check.
+  - Real 6-team pool (CLE/DAL/HOU/IND/MIA/WAS — same pool as Session 3.3's addendum), 91 players both sites, 0 nulls, 0 out-of-[0,100] scores.
+  - Top of both sites' rankings: De'Von Achane (#1), Jonathan Taylor (#2), then HOU DST / Jaylen Waddle / Nico Collins / Dalton Schultz — matches known real value plays already logged in Session 3.3's addendum (Achane/Waddle called out there as elite real projections).
+  - The 44 players with `final_projection == 0` (bye/no-real-game, per `build_projections.py`'s decision #4b) correctly clustered at the bottom of `chalk_score` (20.7-42.8), with every nonzero-projection player scoring 40.1+ — clean separation, not a hard cutoff (a couple of cheap-salary/high-team-total zero-projection players still land a modest floor score, a legitimate property of a multi-factor blend, not a bug).
+  - 0 name-recognition bonuses fired on this pool — expected, the starter flag list only has Mahomes (KC), not present in this CLE/DAL/HOU/IND/MIA/WAS pool. Not a gap in the code, just an empty-in-practice input on this particular data.
+
+**Decisions made / assumptions taken:**
+- Name-recognition flag list is shared across sites (not site-specific) — see module docstring decision #4.
+- Salary tier modeled as U-shaped rather than linear — see module docstring decision #2.
+- Value and salary-tier percentiles computed within a position group that merges site-specific defense labels into one "DST" bucket, rather than per raw position string — otherwise DK (`DST` only) and FD (`D`/`DEF` only) would each rank defenses against a pool of one label.
+- Blend weights (0.45/0.20/0.25 + additive name bonus) are an unfit starting heuristic, explicitly flagged for future retuning once real ownership data exists to check against.
+
+**Known issues deferred:**
+- **Two `final_projections_*.csv` files initially provided this session predated Session 3.3's addendum** (missing `opponent`/`implied_total`/`over_under`) — `ownership_heuristic.py` correctly failed loudly (`SystemExit`, missing-column message) rather than guessing. Not a bug; confirms the fail-loud guard works on a real, non-synthetic case. Resolved same session once the user regenerated both files with the current `build_projections.py`.
+- **`data/name_recognition_flags.csv` ships thin** — one example row only (Mahomes). Real chalk_score output for pools that include genuinely famous-but-mediocre-value players won't reflect that yet. Not treated as blocking (roadmap card's own handoff-notes instruction already frames this as something that "needs periodic updates as player profiles change season to season," not a one-time completion gate) — but flagging so a future session doesn't assume this list is populated.
+- **No real published ownership data exists to validate against, for either site** — same class of gap as FD's real salary/matchup data throughout this project. The intuition gut-check is the best available validation until Preseason Week 1 (or later) produces a real public slate with real published ownership to compare against.
+- **Only a 6-team, 91-player pool available** (same thin-pool limitation tracked in ROADMAP.md's "Known Testing Artifact" note) — `value_percentile`/`salary_tier_score` are less meaningful in thin position groups; the script prints a stderr warning when any position group drops below 5 players (didn't fire on this real run — smallest group was QB at 12).
+
+**Handoff notes for next session:**
+- Session 4.2 (Cash-to-GPP Pivot Logic) is next and depends on this session's `chalk_scores_{site}_{week}.csv` output directly — the column names to build against are `player_id, player_name, position, salary, final_projection, chalk_score`.
+- If a future session has access to a real full 32-team slate (Preseason Week 1+), re-run this exact validation there — worth specifically checking whether the position-group percentile approach still behaves sensibly with normal-sized position pools instead of this session's thin 6-team one.
+- Consider revisiting `data/name_recognition_flags.csv` with a real curated list before relying on chalk_score for anything beyond direction-of-travel — right now it's a placeholder more than a real input.
+
+---
+
+## Session 4.1 (ADDENDUM) — estimated_ownership_pct added
+**Date completed:** 2026-07-22
+**Status:** ✅ Complete
+
+**What happened:** after reviewing Session 4.1's `chalk_scores_*.csv` output, the user pointed out that `chalk_score` is a relative ranking with no real-world anchor — it was never meant to be read as a percentage — and asked directly whether an actual ownership PERCENTAGE estimate could be produced instead (or in addition), one that starts imprecise (no real historical ownership data exists yet) but can genuinely be refined over time/seasons as real data becomes available, rather than staying a pure rank forever.
+
+**What was actually built:**
+- `ownership_heuristic.py` extended with decision #5: `estimated_ownership_pct`, a 0-100 percentage estimate derived from `chalk_score`, anchored to one real, non-fabricated fact instead of an arbitrary curve — **roster-slot math**. Every lineup on a site fills exactly N slots of a given position, so across a rational field, total ownership summed across all eligible players at that position should land near `N * 100` percentage points. `compute_position_slot_budgets()` derives this "budget" per `position_group` directly from `SITE_CONFIGS[site]["roster_slots"]`. FLEX's budget (RB/WR/TE-eligible on both sites) is split evenly three ways — no real per-position FLEX usage-rate data exists yet, flagged as a simplification for the new Session 9.4 to replace with real data once available.
+- Within each `position_group`, `chalk_score` converts to a share of that group's budget via a softmax (`weight = exp(chalk_score / OWNERSHIP_SOFTMAX_TEMPERATURE)`, normalized within the group) rather than a flat percentile-to-percentage rescale — chosen because real ownership is known to be concentrated (a few true chalk plays take a large share), not flat. `OWNERSHIP_SOFTMAX_TEMPERATURE = 15.0` is an explicitly unfit starting guess, flagged in both the script's docstring and the new Session 9.4 roadmap card as the clearest first retuning target.
+- Bye/no-real-game players (`final_projection == 0`) get an explicit 0 weight, not just a low one — their share of the group's budget is fully redistributed to real players. This is a deliberate difference from `chalk_score`, which still leaves these players a nonzero floor value from the salary/vegas components alone; `estimated_ownership_pct` does not, since "what real ownership share should a confirmed-zero-projection player get" has an unambiguous answer (none).
+- All-zero-signal edge case handled: if an entire `position_group` has `final_projection == 0` for every player (didn't occur in this session's real data, but implemented defensively), that group's budget falls back to an even split with a stderr warning, explicitly flagged as a backtest-fixture artifact that a real live slate should never trigger.
+- Added two new roadmap cards to Phase 9 (Learning Loop): **Session 9.3 — Actual Ownership Logging** and **Session 9.4 — Ownership Estimate Retuning**, mirroring the existing 9.1/9.2 pattern (log actual-vs-projected, then periodically retune) but for ownership instead of projection accuracy. Session 9.3 explicitly flags that a real published-ownership source hasn't been identified/verified for either site yet — that's real open work, not assumed to exist.
+
+**Files created/modified:**
+- `/dfs_optimizer/scripts/ownership_heuristic.py` (extended — decision #5, new functions `compute_position_slot_budgets()` and `compute_estimated_ownership()`, new constants `FLEX_ELIGIBLE_POSITIONS`/`OWNERSHIP_SOFTMAX_TEMPERATURE`)
+- `ROADMAP.md` (Session 4.1 card updated with the addendum; two new cards added: Session 9.3, Session 9.4; site-aware summary line updated to `9.1-9.4`)
+
+**Validation results (real data, both sites, same 91-player/6-team pool as the original Session 4.1 entry):**
+- [x] **Budget-conservation check** — each `position_group`'s summed `estimated_ownership_pct` matches its roster-slot budget exactly, both sites:
+  - DK: DST 100.0% (budget 100.0%), QB 100.0% (100.0%), RB 233.3% (233.3%), TE 133.3% (133.3%), WR 333.3% (333.3%)
+  - FD: identical budget structure, same exact match (FD's 9-slot roster has the same shape as DK's, just different labels/cap)
+- [x] **Bye-zeroing check** — all 44 real `final_projection == 0` players got exactly `0.0%` estimated ownership, confirmed on both sites; their budget share visibly redistributed to the real (nonzero) players in the same position group (verified on the RB group: 14 real RBs' estimates sum to the full 233.3% RB budget with all 8 zero-projection RBs correctly excluded).
+- [x] **Sanity/shape check** — top estimated_ownership_pct both sites: De'Von Achane (DK 68.7%, FD 60.2%), Jonathan Taylor (DK 46.9%, FD 54.0%), HOU DST/DEF (~48.4% both sites), Jaylen Waddle (~47.9% both sites) — same real value plays already flagged as elite in Session 3.3's addendum and the original Session 4.1 entry, now expressed as plausible-looking percentages rather than pure ranks. High concentration on Achane (particularly DK, where only 14 of 22 real RBs have a nonzero projection) is consistent with this being a genuinely thin 6-team pool, not a full slate — flagged, not treated as a red flag.
+
+**Decisions made / assumptions taken:**
+- `estimated_ownership_pct` is explicitly still NOT real ownership data — it's an estimate anchored to real roster-slot math, clearly distinguished in the docstring from a fitted/calibrated number. Important this distinction doesn't get lost in later sessions that consume this column.
+- FLEX budget split evenly (not weighted toward RB/WR over TE, even though real-world FLEX usage almost certainly skews that way) — no real data exists yet to weight it correctly, and guessing at real-world skew without data would be fabricating precision this project has consistently avoided elsewhere (e.g. decision #3/#4 in `build_projections.py`).
+- Softmax over chalk_score (not a linear/percentile rescale) chosen specifically because flat rescaling would misrepresent how concentrated real DFS ownership is known to be — this is a shape assumption, not a fitted one, and is named as such.
+
+**Known issues deferred:**
+- **`OWNERSHIP_SOFTMAX_TEMPERATURE` and the FLEX-split-evenly simplification are both unfit to any real data** — by design, since no real ownership data exists in this pipeline yet. Both are explicitly named as Session 9.4's first retuning targets once Session 9.3 produces real logged data.
+- **Session 9.3 (Actual Ownership Logging) has a real, unresolved open question**: no real published-ownership source has been identified or verified for either site yet. Flagged explicitly in that card rather than assumed solvable — same caution already applied to the FD salary format and Vegas odds vendor choice elsewhere in this project.
+- Same thin-pool caveat as the rest of Session 4.1 — a full 32-team slate (Preseason Week 1+) is the first point this can be re-validated against a normal-sized pool instead of this session's 6-team one.
+
+**Handoff notes for next session:**
+- Session 4.2 (Cash-to-GPP Pivot Logic) can now choose to use either `chalk_score` (pure rank) or `estimated_ownership_pct` (percentage estimate) — or both — when deciding pivot targets. Worth an explicit decision in that session rather than defaulting to one silently, since they're not interchangeable (rank vs. an anchored-but-unfit percentage).
+- Session 9.3's first real task is investigative, not code — confirm what real ownership data is actually accessible per site before assuming the card's file/column design is right. That design may need to change once a real source is confirmed.
