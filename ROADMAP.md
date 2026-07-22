@@ -274,24 +274,32 @@
 ---
 
 ### Session 3.3 — Stacking Rules
+**Status:** ✅ Complete (code + synthetic-data validation, 2026-07-22; real-DK-data validation + a real bug fix same day via addendum) — see SESSION_LOG.md for full detail. **FD real-data validation still pending**, same pre-existing gap as everything else FD — see the "Known Deferred Validations" section below.
+
 **Prerequisites:** Session 3.2 complete.
 
-**Files touched (modified):**
-- `/dfs_optimizer/scripts/optimizer.py`
+**Files touched (modified) -- expanded from the original card's scope, see SESSION_LOG.md:**
+- `/dfs_optimizer/scripts/optimizer.py` (as originally scoped)
+- `/dfs_optimizer/scripts/build_projections.py` -- **not on the original card.** Stacking needs each player's week-N opponent and each team's Vegas implied total to auto-select and validate stacks; neither was ever written to `final_projections_{site}_{week}.csv` (both existed only as internal variables in build_projections.py). Added as three new output columns -- `opponent`, `implied_total`, `over_under` -- purely additive, no existing column's values changed. **Any `final_projections_*.csv` generated before this session needs to be regenerated before stacking will work against it** (`load_final_projections()` in optimizer.py now hard-requires the two new columns and will raise a clear SystemExit if they're missing).
 
-**Inputs:** `/output/final_projections_{site}_{week}.csv`, plus team/game grouping from Session 1.2 schema.
+**Inputs:** `/output/final_projections_{site}_{week}.csv` (now including `opponent`/`implied_total`/`over_under`).
 
-**Outputs:** `/output/lineups_multi_{site}_{week}.csv` (now with stack constraints applied)
+**Outputs:** `/output/lineup_single_{site}_{week}.csv` and `/output/lineups_multi_{site}_{week}.csv` (both now include an `opponent` column always; multi-lineup output adds a `stack_target` column when stacking is used) -- a small output-schema change from Sessions 3.1/3.2's shipped files, flagged not hidden.
 
-**Build:**
-- QB + pass-catcher same-team constraint
-- Game stack / bring-back constraint (optional here, can defer to Phase 6)
+**Build -- full taxonomy, user-directed scope expansion beyond the card's original two items (discussed and confirmed with the user before building, see SESSION_LOG.md):**
+- QB stack (`--stack-mode qb`), size 1-3 via `--stack-size`, covers Standard/Double/Triple stacks and QB+RB depending on `--stack-positions` (default WR/TE/RB -- "any pass-catcher," user-confirmed)
+- Bring-back (`--bring-back`), an add-on to a QB stack requiring >=1 opponent skill player
+- Game Stack / Shootout (`--stack-mode game`), standalone, no QB required
+- Mini-Stack (`--stack-mode mini`), two types via `--mini-stack-type`: same-team RB+DST, or opposing pass-catchers
+- Team/game selection: auto (highest Vegas implied_total/over_under) by default, `--stack-team`/`--stack-game` to pin
+- Multi-lineup batches diversify across a rotating candidate pool by default when auto-selecting; a pin forces the whole batch to one target (`--stack-diversify` to override)
 
 **Validation:**
-- [ ] Every generated lineup with stacking enabled actually contains the required correlated players — for both sites
-- [ ] Confirm an intentionally too-strict stack rule fails loudly (raises an error), not silently (returns an empty/broken lineup)
+- [x] Every generated lineup with stacking enabled actually contains the required correlated players — for both sites (validated via `validate_stack()`, a new function mirroring `validate_lineup()`'s existing automated-assertion pattern — not eyeballed)
+- [x] Confirm an intentionally too-strict stack rule fails loudly (raises an error), not silently — confirmed via a deliberately-impossible request (triple-TE stack against a team with 1 real TE), raises `RuntimeError` with a specific reason before the solver even runs
+- [ ] **Real-data re-validation** — all validation above ran against a synthetic 8-team/64-player fixture (no real repo data was available in the environment this session was built in). Needs re-running against a real `final_projections_{site}_{week}.csv` (regenerated with the new columns first) before this is trusted for a live/dry-run context.
 
-**Handoff notes to log:** which stack types were actually implemented vs. deferred.
+**Handoff notes to log:** all four stacking types from the user's full taxonomy were built (none deferred) -- see SESSION_LOG.md for the complete decision list (#14-21) and the 13-scenario test matrix.
 
 ---
 
@@ -583,6 +591,7 @@ These are all instances of the same underlying problem: several data sources (Th
 - **Real Vegas lines for a specific backtest week.** The Odds API's `/odds` endpoint only returns currently-listed games -- it can't retroactively supply real lines for a past week (e.g. 2025's week 10, already played) or a future week too far out for books to have posted lines yet. `vegas_odds.py`'s output for any week outside "currently listed" is necessarily synthetic or absent. **First point this closes for real:** once real preseason games are close enough that books post lines -- Preseason Week 1, Aug 13-15, 2026, per this roadmap's own milestone.
 - **Real FD salary data, at all.** Flagged since Session 1.3: DK has a real, year-round CSV source to validate against (Madden Stream contests). FD has no equivalent -- there has never been a real FD NFL export to test `ingest_salaries.py --site fd` against. Every FD validation so far (Session 1.3's 10-row test, Session 2.4's 93-row scaled synthetic file) has used synthetic data built from real DK data, not a real FD download. **First point this closes for real:** whenever a real FD Classic NFL slate first opens for the 2026 season (likely Preseason Week 1, same as above, but confirm -- FD's preseason slate calendar hasn't been checked directly).
 - **Session 2.4's full real end-to-end validation, both sites.** Directly follows from the two gaps above -- `build_projections.py` has now been validated mechanically (real DK salaries + real week-10 matchup/baseline data + synthetic FD salaries + synthetic vegas lines, see Session 2.4's log entry), but not with every input being simultaneously real for the same site and the same week. That combination doesn't exist yet for any week. **First point this closes for real:** Preseason Week 1, same as above -- first week where a real salary file (both sites, assuming FD's gap above also closes by then), real matchup-factor data, and real currently-posted vegas lines can all exist for the same slate at the same time.
+- **Session 3.3's stacking logic, against real data -- DK closed same day (addendum), FD still open.** Re-run against the real DK Madden Stream pool (`weekly_stats_2025.parquet`, `schedules_2025.parquet`, real `vegas_implied_totals_10.csv`, real `salaries_dk_madden_20260721.csv`) confirmed the full pipeline end-to-end, matched the project's own previously-logged real numbers exactly, and surfaced + fixed a real bug (`rank_candidate_teams`/`rank_candidate_games` didn't check the OPPONENT side had real pool players -- see SESSION_LOG.md's addendum). **Still open:** FD (same pre-existing no-real-FD-data gap as everything else FD), and a full 32-team slate (this real pool only has 6 teams -- Preseason Week 1 is the first point a full-size real slate exists to re-test against).
 
 Until Preseason Week 1: treat Session 2.4 (and by extension anything built on top of it in Phase 3+) as validated for correctness-of-logic only, not for real-world data quality. Re-run Session 2.4's validation checklist in full once real data exists for both sites.
 

@@ -631,3 +631,101 @@ A minimal `schedules_2025.parquet` (14 real week-10-2025 games, real matchups re
 
 **Handoff notes for next session:**
 - Session 3.3 (Stacking Rules): when validating stacking together with exposure/uniqueness/randomization, use FD as well as DK, and don't assume DK's default 20-lineup run will always cleanly hit 20/20 without relaxation -- this addendum shows it sometimes won't, on the current thin test pool.
+
+---
+
+## Session 3.3 — Stacking Rules
+**Date completed:** 2026-07-22
+**Status:** ⚠️ Complete with caveats — code built and validated against a synthetic fixture; real-data re-validation still needed (this session was built in a sandbox environment without access to the repo's actual data files -- see Known issues deferred).
+
+**What was actually built:**
+- Before any code, had an explicit discussion with the user about which stacking types to build (the roadmap card only listed two: QB+pass-catcher, and an optional game stack/bring-back deferred to Phase 6). User provided a full DFS stacking taxonomy (Standard/Double/Triple, QB+RB, Game Stack/Shootout, Bring-back, Mini-Stack) and directed building all of it in this one session, rather than the roadmap's lighter default scope.
+- `scripts/optimizer.py` extended with decisions #14-21:
+  - `--stack-mode {none,qb,game,mini}` -- `qb` covers Standard/Double/Triple/QB+RB via `--stack-size`/`--stack-positions` (default `WR,TE,RB` -- "any pass-catcher," user-confirmed); `game` is the Game Stack/Shootout, no QB required; `mini` covers same-team RB+DST or opposing pass-catchers via `--mini-stack-type`.
+  - `--bring-back` -- add-on to a QB stack, requires >=1 opponent skill player (QB/RB/WR/TE, deliberately excludes the opponent's DST/DEF -- a shootout benefits the opponent's offense, not their defense).
+  - Team/game selection: auto by default (highest Vegas `implied_total` for QB/mini-stack team selection, highest `over_under` for game-stack), `--stack-team`/`--stack-game` to pin -- user-confirmed "both, auto by default with a CLI override."
+  - Multi-lineup diversification (`resolve_stack_candidates()`): when auto-selecting, the batch rotates round-robin across up to `--stack-candidate-pool` (default 5) candidate teams/games instead of repeating one target. An explicit pin forces the whole batch to one target regardless of `--stack-diversify` -- user-confirmed: "most often [diversify] ... but the user needs to be able to say 'I want 20 stacked lineups from this game only.'" Per-lineup, if the current rotation candidate is infeasible (e.g. exposure-locked), the remaining candidates are tried before falling back to uniqueness relaxation -- stacking infeasibility and diversity infeasibility are retried independently, not conflated.
+  - `add_stack_constraints()` -- hard ILP constraints (mandatory whenever a stack is requested, matching the user's explicit instruction: "if stacking is enabled it is mandatory for every lineup ... if disabled, no stacking is required"). Raises a specific `RuntimeError` before the solver runs if the requested stack has no viable players in the current candidate pool (e.g. exposure-locked out), rather than waiting for a generic ILP infeasibility.
+  - `validate_stack()` -- new function mirroring the existing `validate_lineup()` pattern: an automated, structural re-check (not eyeballed) that the requested stack actually landed in the final lineup. Runs after every single- and multi-lineup solve.
+  - `assign_roster_slots()` extended to carry an `opponent` column through to the output (needed by `validate_stack()`'s bring-back check, and generally useful).
+- `scripts/build_projections.py` modified (**not on the original Session 3.3 card** -- see ROADMAP.md's updated card): added `opponent`, `implied_total`, `over_under` as three new output columns on `final_projections_{site}_{week}.csv`. Neither value existed downstream before this -- both were computed internally (the opponent map, the vegas-factor merge) but never written out, so `optimizer.py` would otherwise have had to re-derive the same schedule/vegas lookups a second time, in a different file, with real risk of drifting out of sync. Purely additive -- confirmed via a synthetic fixture that no existing column's values changed and the "no nulls in any column" invariant still holds (bye-week/no-real-game rows get sentinel values `"BYE_OR_UNKNOWN"`/`0.0` instead of real NaN, same philosophy as the existing matchup_factor/vegas_factor neutral-fill).
+
+**Files created/modified:**
+- `/dfs_optimizer/scripts/optimizer.py` (extended -- decisions #14-21)
+- `/dfs_optimizer/scripts/build_projections.py` (modified -- decision #6, three new output columns; deviation from the original card, flagged in ROADMAP.md)
+
+**Validation results:**
+- **Environment caveat, upfront:** this session was built in a clean sandbox with no access to the repo's real data files (no real `final_projections_*.csv`, no real DK Madden Stream pool). Rather than skip validation, built a synthetic 8-team/64-player fixture (4 games, realistic Vegas totals ranging 38.5-52.5, real-shaped salary/position distributions) to exercise the actual code paths end-to-end.
+- [x] `build_projections.py`'s new columns: ran for both sites against the synthetic fixture -- 0 nulls, 0 negatives (unchanged from prior sessions' invariants), new `opponent`/`implied_total`/`over_under` columns populated correctly (spot-checked: KC/BUF, the fixture's highest-total game at 52.5, correctly shows the highest `implied_total` values).
+- [x] 13-scenario test matrix against `optimizer.py`, both sites:
+  1. No-stack baseline -- confirmed same lineup as before this session's changes (modulo the new `opponent` output column, which is an intentional additive schema change, flagged not hidden).
+  2. Standard QB stack, auto-team -- landed on the optimizer's natural pick (KC), confirming auto-selection doesn't force a worse lineup when the natural optimum already satisfies the stack.
+  3. Triple stack forced on a deliberately non-optimal team (WAS, via `--stack-team`) -- confirmed the constraint actually changes the selected lineup (not a no-op), correctly pulling in 3 WAS pass-catchers around the WAS QB at a real points cost (158.46 -> 132.36), proving the constraint is binding.
+  4. QB+RB stack (`--stack-positions RB`) -- confirmed positions filtering works, pulled in a second KC RB instead of a WR/TE.
+  5. Bring-back on a natural KC stack -- BUF (the opponent) was already present, confirming the constraint is satisfied without forcing an unnecessary swap when already true.
+  6. Game stack, auto -- correctly selected KC-BUF (the 52.5-total game, highest in the fixture).
+  7. Mini-stack RB+DST, pinned to SF -- confirmed SF's own DST got pinned (via the same `== 1` pinning technique used for QB stacks) alongside an SF RB.
+  8. Mini-stack opposing-pass-catchers, pinned game MIA-NYJ -- confirmed a WR/TE from each side.
+  9. **Fail-loudly check:** requested a triple-TE stack on KC (which only has 1 real TE) -- raised a specific `RuntimeError` ("KC has 1 available QB(s) and 1 available partner(s) at ['TE']... need 1 QB + 3 partner(s)") before the solver ran, exactly per decision #21.
+  10. Multi-lineup (8 lineups, 100% exposure, uniqueness=1), QB stack, auto -- confirmed diversification rotated round-robin through the top 5 candidate teams by implied_total (`KC, BUF, SF, PHI, MIA` each appearing ~1-2x across 8 lineups), not repeating one team.
+  11. Multi-lineup (6 lineups), QB stack pinned to BUF -- confirmed **every** lineup's QB was BUF (the exact "20 lineups from this game only" case the user specifically asked for), regardless of the exposure/uniqueness churn happening elsewhere in the lineup.
+  12. Pin + `--stack-diversify on` together -- confirmed the "diversify has no effect once pinned" note printed correctly (decision #17), and as a bonus this run also demonstrated the fail-loudly path interacting correctly with a low exposure cap (BUF's single real QB got exposure-locked after lineup 1 at a 40% cap, correctly triggering the uniqueness-relaxation-then-stop-early path rather than silently dropping the stack).
+  13. FD-specific check (different defense label `DEF` vs DK's `DST`, different $60K cap) -- mini-stack RB+DST pinned to KC worked correctly on FD, confirming `DEFENSE_POSITION_LABELS = {"DST","D","DEF"}` handles both sites.
+- [ ] **Real-data re-validation** -- not done this session (no real data available in this environment). Needs a real `final_projections_{site}_{week}.csv` (regenerated with the new columns) and a re-run of at least the 13-scenario matrix above before trusting this for a live/dry-run context.
+
+**Decisions made / assumptions taken (numbered #14-21, continuing optimizer.py's docstring numbering):**
+- All four stacking types built in one session per explicit user direction (not deferred/split), full taxonomy list captured in the module docstring.
+- Stack partner default positions = WR/TE/RB ("any pass-catcher," user-confirmed over WR/TE-only or requiring a dedicated slot).
+- Stacking enforcement is mandatory-when-enabled, no-op-when-disabled (user-confirmed explicitly, not inferred).
+- Auto-select by default, `--stack-team`/`--stack-game` pin available (user-confirmed "both").
+- Multi-lineup diversification defaults to "auto" (diversify when auto-selecting, single-target when pinned), with an explicit `--stack-diversify` override -- user-confirmed this needs to support both the common case (diversify) and the specific case ("20 lineups from this game only").
+- `--stack-candidate-pool` default of 5 and `--game-stack-min-players` default of 4 were NOT explicitly discussed with the user -- chosen as reasonable defaults, both exposed as CLI overrides. Flagged as arbitrary, not user-confirmed, unlike every other default in this session.
+- Bring-back pool excludes the opponent's DST/DEF (a design choice, not explicitly asked -- reasoned from how bring-backs work in real DFS, flagged in the docstring rather than silently assumed).
+
+**Known issues deferred:**
+- **Real-data validation is the single biggest open item** -- everything above was validated against a synthetic fixture built for this session, not the project's actual data. Needs closing before Session 6.1's dry run, same pattern as every other "synthetic now, real later" gap this project has tracked (see ROADMAP.md's "Known Deferred Validations," now with a Session 3.3 entry added).
+- `--stack-candidate-pool` (5) and `--game-stack-min-players` (4) defaults are reasonable-but-arbitrary, not user-confirmed -- worth revisiting once real slate sizes (32 teams, not this session's 8-team fixture) show whether 5 candidates is enough diversity or too many/few.
+- Stacking was not tested in combination with `--randomization-pct` (Session 3.2 addendum) in the same run -- both are independent additive mechanisms by construction (randomization only affects the objective, stacking only affects constraints), so no interaction is expected, but this specific combination wasn't exercised in this session's test matrix.
+- `optimizer.py`'s output schema changed again (this is the second such change, after Session 3.2's `lineup_id`/`stack_target` additions) -- `opponent` is now always present in single- and multi-lineup output, `stack_target` is present in multi-lineup output. Any downstream consumer (e.g. Phase 7's frontend, still not built) reading these CSVs by fixed column position rather than by name would break -- worth keeping in mind once Phase 7 starts.
+
+**Handoff notes for next session:**
+- Before using stacking for real: (1) re-run `build_projections.py` for the target site/week to get the new `opponent`/`implied_total`/`over_under` columns, (2) re-run this session's 13-scenario matrix (or a subset) against that real output to confirm the synthetic-fixture validation holds against real data's shape (real slates have ~16 games/32 teams, not 4 games/8 teams -- the candidate-pool defaults in particular should get a second look at that scale).
+- Session 3.3 is the last item in Phase 3 per the roadmap's original plan -- Phase 4 (Ownership & Pivot Logic) and Phase 5 (Status Automation) can both start once Session 3.1-3.3 are real-data-validated, per ROADMAP.md's "Notes on sequencing."
+- If Phase 4's chalk_score/pivot logic ever wants to reason about "how contrarian is this stack" (leverage relative to a stacked-vs-unstacked field), the `stack_target` column in `lineups_multi_*.csv` output is already there to build on.
+
+---
+
+## Session 3.3 (ADDENDUM) — Real-data validation against the real DK pool + a real bug found and fixed
+**Date completed:** 2026-07-22
+**Status:** ✅ Complete — closes the "real-data re-validation" open item from the original Session 3.3 entry, for DK.
+
+**What happened:** user supplied the real `salaries_dk_madden_20260721.csv` (the same real 93-player DK Madden Stream pool from Session 1.3/2.4/3.1), `weekly_stats_2025.parquet`, `schedules_2025.parquet`, and `vegas_implied_totals_10.csv`. Ran the real `build_projections.py` and the full Session 3.3 stacking test matrix against this real data instead of the synthetic fixture used when the code was first built.
+
+**Reconstruction note:** `projections_baseline.py`/`projections_matchup.py` (Session 2.1/2.2) weren't re-fetched this session -- their exact documented formulas (recency weights `[0.35,0.25,0.20,0.12,0.08]`, REG-only + lookahead guard, sum-then-average matchup calc) were reconstructed from SESSION_LOG.md's own detailed writeups and run directly against the real `weekly_stats_2025.parquet`. Cross-checked against numbers already on record: reconstructed output was **532 baseline rows / 128 matchup rows** (exact match to Session 2.4's logged real run), and CIN's matchup factors (QB 1.244, RB 1.544, TE 1.687, WR 0.963) and HOU/DEN QB matchup factors (0.673/0.789) matched Session 2.2's logged real numbers to 3-4 decimal places. High confidence this reconstruction is equivalent to the real committed scripts, though the actual committed files remain the source of truth going forward.
+
+**Real end-to-end result matched the project's own history exactly:** 91 players output (85 skill + 6 defense, matching Session 3.1's log), 41/85 flagged `no_real_game_this_week` (matching Session 2.4's addendum finding exactly), 0 players needing decision #4a's trade correction, Joe Flacco correctly zeroed with `opponent = BYE_OR_UNKNOWN` (the new Session 3.3 column working correctly on the exact case it was designed around), and the no-stack baseline lineup's salary ($46,900/$50,000) matched Session 3.1's originally shipped lineup exactly.
+
+**Real bug found via real data (did not surface in the synthetic fixture) — fixed same session:**
+`rank_candidate_teams()`/`rank_candidate_games()` only checked that the PRIMARY team/side had viable players -- never checked whether the OPPONENT side (needed for `--bring-back` and `--stack-mode game`) had any players in the pool at all. The synthetic fixture never caught this because every team in that 8-team fixture had a full roster on both sides of every game. The real DK Madden Stream pool only contains players from **6 teams** (CLE, DAL, HOU, IND, MIA, WAS -- a curated subset, not a full slate; consistent with ROADMAP.md's existing "Known Testing Artifact" note about this pool's small size). Auto-selecting MIA for a QB stack (highest implied_total with a real QB+partner) then requesting `--bring-back` failed, because MIA's real opponent (BUF) has zero players in this pool -- the auto-selector picked a candidate that was guaranteed to fail the bring-back constraint, rather than skipping it up front the way a missing QB/partner already gets skipped.
+
+**Fix:** `rank_candidate_teams()` gained a `require_opponent_viable` param (used automatically whenever `--bring-back` is set) that filters out any candidate team whose real opponent has zero players in the current pool. `rank_candidate_games()` was tightened the same way -- both sides of a candidate game must have real players in the pool, not just exist as a real matchup in Vegas data. On this specific 6-team real pool, this correctly surfaced that **no valid bring-back or game-stack target exists at all** this week (none of the 6 teams' real opponents are also in the 6-team pool) -- confirmed this is a true fact about the thin pool, not a bug in the fix, by manually checking the 6 teams' real week-10 opponents (ATL, BUF, JAX, NYJ, DET, ATL) against the pool's own team list.
+
+**Files created/modified:**
+- `/dfs_optimizer/scripts/optimizer.py` (bug fix: `rank_candidate_teams()` gained `require_opponent_viable`, `rank_candidate_games()` now requires both sides present in-pool, `resolve_stack_candidates()` threads `bring_back` through to enable the check)
+
+**Validation results (real DK data, week 10 2025, the 91-player real pool):**
+- [x] No-stack baseline: lineup and salary ($46,900/$50,000) match Session 3.1's originally shipped real output exactly.
+- [x] Standard QB stack, auto: correctly selected MIA (De'Von Achane + Jaylen Waddle already elite real projections, highest implied_total among in-pool teams with a real QB+partner) over the no-stack optimum, points dropped 147.68 -> 140.89 confirming the constraint is binding, not a no-op.
+- [x] Bring-back / game-stack, auto (post-fix): correctly raises a clear, accurate "no viable candidate" error instead of picking MIA and failing later -- confirmed by hand that this 6-team pool genuinely has no team whose real opponent is also in-pool.
+- [x] Mini-stack RB+DST: unaffected by the fix, still works correctly (real Dolphins DST + real MIA RB).
+- [x] Multi-lineup diversification (10 lineups, 100% exposure): correctly rotated across the 4 real in-pool QB-stack-viable teams (MIA, HOU, IND, WAS) -- DAL excluded (real bye that week, 0 projection), CLE excluded (no viable QB/partner combo in this specific pool).
+- [x] Fail-loudly, both paths confirmed on real data: (a) an impossible partner-count request (triple-TE stack) raises decision #21's pre-solve `RuntimeError` with a specific reason; (b) a request where individual partners exist but can't all fit in a legal 9-slot roster (e.g. QB+3 TEs total needs more TE/FLEX slots than exist) correctly falls through to the generic "Solver did not find an optimal solution" path instead -- both are real, distinct fail-loud paths and both were exercised for real this session.
+
+**Known issues deferred:**
+- **FD real-data validation is still open** -- same pre-existing project-wide gap (no real FD export has ever existed, per Session 1.3's log), not something this session could close. `build_projections.py --site fd` was run against the real weekly_stats/schedule/vegas data but still against the same *scaled-synthetic* FD salary file lineage as prior sessions -- not newly re-validated here.
+- **Only a 6-team, 91-player pool was available** -- this is the same thin-pool limitation already tracked in ROADMAP.md's "Known Testing Artifact" note. A real full 32-team slate (expected at Preseason Week 1) may surface further edge cases the fix above doesn't anticipate (e.g. a team with a viable opponent that itself has no viable QB) -- worth a second real-data pass once a full slate exists.
+- The reconstructed `projections_baseline.py`/`projections_matchup.py` logic (this session's scratch `compute_baseline_matchup.py`, not committed to the repo) was cross-checked numerically against logged real values and matched, but is not a substitute for actually re-running the real committed scripts -- flagged for completeness, not because there's reason to doubt the match.
+
+**Handoff notes for next session:**
+- The `require_opponent_viable` fix generalizes beyond this specific pool -- any future real slate with asymmetric team coverage (e.g. a single-game showdown-style contest, or a partial-slate promo) would hit the same class of bug without it.
+- Session 6.1's Preseason Week 1 dry run (both sites, full slate) is the next real checkpoint for this -- worth specifically re-testing bring-back/game-stack auto-selection there, since a full 32-team slate should have plenty of valid candidates and would be the first chance to confirm the fix behaves correctly (not just fails gracefully) when real candidates DO exist on both sides.

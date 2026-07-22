@@ -321,12 +321,23 @@ def parse_team_pair(raw: str, flag_name: str) -> tuple:
 # Candidate ranking for auto-selection (decision #16)
 # ---------------------------------------------------------------------------
 
-def rank_candidate_teams(players: pd.DataFrame, partner_positions: set) -> list:
+def rank_candidate_teams(players: pd.DataFrame, partner_positions: set,
+                          require_opponent_viable: bool = False) -> list:
     """Ranks teams by implied_total (desc), restricted to teams that have
     at least one viable (non-zero-projection) QB AND at least one viable
     partner at an eligible position -- a team failing either check can
     never satisfy a QB stack, so it's excluded from the candidate pool up
-    front rather than only discovered after a wasted solve attempt."""
+    front rather than only discovered after a wasted solve attempt.
+
+    `require_opponent_viable` (added after real-data testing surfaced a
+    gap -- see SESSION_LOG.md): when True (used for --bring-back), also
+    requires the team's real opponent to have at least one player present
+    in the CURRENT SALARY POOL. This matters for thin pools (e.g. a
+    partial-slate test file) where a team's real Vegas opponent may not
+    have any players in the pool at all -- auto-selecting that team would
+    otherwise pick a candidate that's guaranteed to fail the bring-back
+    constraint, rather than skipping it up front the same way a missing
+    QB/partner already gets skipped."""
     has_qb = set(players.loc[
         (players["position"] == "QB") & (players["final_projection"] > 0), "team"
     ])
@@ -334,6 +345,16 @@ def rank_candidate_teams(players: pd.DataFrame, partner_positions: set) -> list:
         players["position"].isin(partner_positions) & (players["final_projection"] > 0), "team"
     ])
     viable = has_qb & has_partner
+
+    if require_opponent_viable:
+        teams_in_pool = set(players["team"].unique())
+        opponent_by_team = players.drop_duplicates("team").set_index("team")["opponent"]
+        viable = {
+            t for t in viable
+            if opponent_by_team.get(t) not in (None, "BYE_OR_UNKNOWN")
+            and opponent_by_team.get(t) in teams_in_pool
+        }
+
     totals = (
         players[players["team"].isin(viable) & (players["implied_total"] > 0)]
         .drop_duplicates("team")
@@ -348,11 +369,18 @@ def rank_candidate_games(players: pd.DataFrame) -> list:
     build_projections.py decision #6's BYE_OR_UNKNOWN sentinel) by
     over_under (desc). Returns a list of (team_a, team_b) tuples, deduped
     so each real game appears once regardless of which side's row it came
-    from."""
+    from.
+
+    Requires BOTH sides to actually have players present in the current
+    pool -- not just that the game exists in Vegas data (a real, thin test
+    pool can have a team's real Vegas opponent entirely absent from the
+    salary file; found via real-data testing -- see SESSION_LOG.md)."""
     real = players[(players["opponent"] != "BYE_OR_UNKNOWN") & (players["opponent"].notna())]
     if "over_under" not in real.columns or real.empty:
         return []
+    teams_in_pool = set(players["team"].unique())
     pairs = real[["team", "opponent", "over_under"]].drop_duplicates()
+    pairs = pairs[pairs["opponent"].isin(teams_in_pool)]  # both sides must have real pool players
     seen = set()
     games = []
     for row in pairs.sort_values("over_under", ascending=False).itertuples():
@@ -814,7 +842,7 @@ def validate_lineup(lineup: pd.DataFrame, salary_cap: int, roster_slots: list):
 def resolve_stack_candidates(players_all: pd.DataFrame, stack_mode: str,
                               stack_positions: set, stack_team: str, stack_game: tuple,
                               mini_stack_type: str, candidate_pool_size: int,
-                              diversify_requested: str) -> tuple:
+                              diversify_requested: str, bring_back: bool = False) -> tuple:
     """Decision #16/#17. Returns (candidates, diversify_active, pin_note):
     - candidates: list of {"target_team":..., "target_game":...} dicts --
       one entry if pinned or not diversifying, up to candidate_pool_size
@@ -830,14 +858,18 @@ def resolve_stack_candidates(players_all: pd.DataFrame, stack_mode: str,
 
     if stack_mode == "qb" or (stack_mode == "mini" and mini_stack_type == "rb-dst"):
         partner_positions = stack_positions if stack_mode == "qb" else {"RB"}
+        require_opp = bool(stack_mode == "qb" and bring_back)
         if stack_team:
             candidates = [{"target_team": stack_team, "target_game": None}]
         else:
-            ranked = rank_candidate_teams(players_all, partner_positions)
+            ranked = rank_candidate_teams(players_all, partner_positions,
+                                           require_opponent_viable=require_opp)
             if not ranked:
                 raise RuntimeError(
                     "No team has both a viable QB/RB and a viable stack "
-                    "partner/DST this week -- cannot auto-select a stack team."
+                    "partner/DST this week" +
+                    (" with a real, in-pool opponent for --bring-back" if require_opp else "") +
+                    " -- cannot auto-select a stack team."
                 )
             candidates = [{"target_team": t, "target_game": None} for t in ranked[:candidate_pool_size]]
     elif stack_mode == "game" or (stack_mode == "mini" and mini_stack_type == "opposing-pass-catchers"):
@@ -899,6 +931,7 @@ def build_single_lineup(site: str, week: int, randomization_pct: float = DEFAULT
         candidates, _, pin_note = resolve_stack_candidates(
             players, stack_mode, stack_positions, stack_team, stack_game,
             mini_stack_type, candidate_pool_size, diversify_requested="off",
+            bring_back=bring_back,
         )
         if pin_note:
             print(pin_note, file=sys.stderr)
@@ -988,6 +1021,7 @@ def build_multi_lineup(site: str, week: int, n_lineups: int = DEFAULT_N_LINEUPS,
         candidates, diversify_active, pin_note = resolve_stack_candidates(
             players_all, stack_mode, stack_positions, stack_team, stack_game,
             mini_stack_type, candidate_pool_size, stack_diversify,
+            bring_back=bring_back,
         )
         if pin_note:
             print(pin_note, file=sys.stderr)
