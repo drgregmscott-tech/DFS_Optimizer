@@ -391,12 +391,15 @@
 ### Session 5.2 — Scheduling Infrastructure
 **Prerequisites:** Sessions 1.3, 2.4, 5.1 complete (this orchestrates all the refresh-able scripts).
 
+**Status:** ✅ Complete (2026-07-23) — mechanism deployed live and validated end-to-end for real, both validation checkboxes below closed. One new deferred action opened (config only, not a data/logic gap) — see ROADMAP.md's "Known Deferred Validations" section and Session 6.1's card. See SESSION_LOG.md for full detail.
+
 **Sites:** Automation needs to trigger the DK and FD pipeline runs separately (different salary files land at different times if the two sites post slates at different points), so the schedule/run log should be able to distinguish which site a given run covers.
 
 **Files touched (created):**
 - `/dfs_optimizer/.github/workflows/refresh_data.yml`
-- `/dfs_optimizer/cloudflare_worker/scheduled_refresh.js`
+- `/dfs_optimizer/cloudflare_worker/scheduled_refresh.js` (+ `wrangler.toml`, needed for deployment, not on the original list)
 - `/dfs_optimizer/logs/automation_run_log.csv` (add a `site` column)
+- `/dfs_optimizer/data/current_slate.json` (new, not on the original list — the config the automation reads each run to know which season/week/slate_id to target per site)
 
 **Inputs:** All prior scripts (this session wires them into scheduled execution, doesn't create new logic).
 
@@ -404,14 +407,15 @@
 
 **Build:**
 - GitHub Actions cron for regular-interval updates (every few hours on game day), run once per site
-- Cloudflare Worker + external trigger (cron-job.org) for the critical near-lock window (every 5-10 min in the final hour), aware that DK and FD slates can lock at different times
+- Cloudflare Worker + external trigger (cron-job.org) for the critical near-lock window (**every ~10 min** in the final hour, revised down from the originally-proposed 5-10 min range — see decisions below), aware that DK and FD slates can lock at different times
 - For `vegas_odds.py` specifically, this session should implement the cadence already budgeted in Session 2.3's card: Tue-Fri 1x/day, Sat 2x/day, Sunday 1x/hour from 4hrs-1hr before lock, then 1x/15min in the final hour (~121 credits/month, confirmed against the free tier's 500/month cap). This is a different (lighter) cadence than the salary/projection refreshes, since odds move less frequently than player pool/injury status close to lock.
+- **Explicit scope decision:** salary ingestion (`ingest_salaries.py`) and the once-per-week `projections_baseline.py`/`projections_matchup.py` are deliberately NOT part of the automated refresh loop — see SESSION_LOG.md's Session 5.2 entry for the full reasoning (no DK/FD salary API exists at all; the baseline/matchup scripts don't produce new data intra-week). The automated loop covers Vegas lines, injury status, and rebuilding/re-applying projections against whichever salary file is already committed.
 
 **Validation:**
-- [ ] Log actual fire times vs scheduled times over a few days for both sites — confirm GitHub Actions delay is acceptable for non-critical updates
-- [ ] Confirm the Cloudflare Worker + external trigger combo fires within 1-2 minutes of scheduled time consistently, for both sites' lock windows
+- [x] Log actual fire times vs scheduled times over a few days for both sites — confirm GitHub Actions delay is acceptable for non-critical updates. **Closed 2026-07-23:** three real `repository_dispatch` round-trips (Worker → GitHub → workflow start) all completed within seconds. A genuine full-green run (all 6 logged steps) was confirmed by temporarily pointing `current_slate.json` at real committed week-10-2025 test data, then reverted.
+- [x] Confirm the Cloudflare Worker + external trigger combo fires within 1-2 minutes of scheduled time consistently, for both sites' lock windows. **Closed 2026-07-23:** confirmed the cron-job.org scheduler itself (not just its manual "Test run" button) fires unattended and correctly triggers a real GitHub Actions run — verified via a temporary same-day schedule change, then reset to the real weekly template.
 
-**Handoff notes to log:** observed delay patterns, any failures and how caught/resolved. Note if DK and FD lock times ever diverged enough to matter for scheduling.
+**Handoff notes to log:** observed delay patterns, any failures and how caught/resolved. Note if DK and FD lock times ever diverged enough to matter for scheduling. ✅ Logged in SESSION_LOG.md's Session 5.2 entry.
 
 ---
 
@@ -423,18 +427,21 @@
 
 **Sites:** Run the full pipeline for both DK and FD this week — a site that's never been dry-run isn't proven, regardless of how well its unit tests passed.
 
-**Files touched:** None new — this is an execution/observation session. Fixes get logged as a punch list.
+**Files touched:** `/dfs_optimizer/data/current_slate.json` (real week/slate_id, both sites) — carried over from Session 5.2's deferred action, not new scope. Otherwise none new — this is an execution/observation session. Fixes get logged as a punch list.
 
 **Inputs:** Live preseason Week 1 slate, both sites.
 
 **Outputs:** `/logs/dry_run_week1_issues.md` (punch list for Session 6.2, tag each issue with which site(s) it affects)
 
-**Build:** Run the full pipeline live end to end, for DK and FD. No real money.
+**Build:**
+- **Carried over from Session 5.2 (deferred action, do this first):** once Preseason Week 1's real slate/lock times are known, update `data/current_slate.json` (real season/week/slate_id, both sites) and the cron-job.org "DFS Optimizer - Near-Lock Refresh" job's schedule (Days/Hours, currently a Sunday-11am-CT/every-10-min template) to match. This is the first point either has a real value to be set to — see ROADMAP.md's "Known Deferred Validations" section and SESSION_LOG.md's Session 5.2 entry for why it couldn't be done sooner.
+- Run the full pipeline live end to end, for DK and FD. No real money.
 
 **Validation:**
 - [ ] Full pipeline runs start to finish without manual intervention, for both sites (the actual goal of this test)
 - [ ] Every failure/manual fix needed is logged, tagged by site
 - [ ] Generated lineups' actual results vs projections compared, both sites (expect roughness in preseason — focus on pipeline reliability over accuracy)
+- [ ] Confirm the near-lock automation (cron-job.org → Cloudflare Worker → GitHub Actions) actually fires during a real lock window and produces a real, correctly-timed refresh — first genuine real-world exercise of Session 5.2's mechanism
 
 **Handoff notes to log:** the full punch list, prioritized, with each item tagged DK/FD/both.
 
@@ -644,6 +651,7 @@ These are all instances of the same underlying problem: several data sources (Th
 - **Session 2.4's full real end-to-end validation, both sites.** Directly follows from the two gaps above -- `build_projections.py` has now been validated mechanically (real DK salaries + real week-10 matchup/baseline data + synthetic FD salaries + synthetic vegas lines, see Session 2.4's log entry), but not with every input being simultaneously real for the same site and the same week. That combination doesn't exist yet for any week. **First point this closes for real:** Preseason Week 1, same as above -- first week where a real salary file (both sites, assuming FD's gap above also closes by then), real matchup-factor data, and real currently-posted vegas lines can all exist for the same slate at the same time.
 - **Session 3.3's stacking logic, against real data -- DK closed same day (addendum), FD still open.** Re-run against the real DK Madden Stream pool (`weekly_stats_2025.parquet`, `schedules_2025.parquet`, real `vegas_implied_totals_10.csv`, real `salaries_dk_madden_20260721.csv`) confirmed the full pipeline end-to-end, matched the project's own previously-logged real numbers exactly, and surfaced + fixed a real bug (`rank_candidate_teams`/`rank_candidate_games` didn't check the OPPONENT side had real pool players -- see SESSION_LOG.md's addendum). **Still open:** FD (same pre-existing no-real-FD-data gap as everything else FD), and a full 32-team slate (this real pool only has 6 teams -- Preseason Week 1 is the first point a full-size real slate exists to re-test against).
 - **Session 5.1's real OUT/DOUBTFUL game-day designations, cross-checked against NFL.com.** ESPN's per-team roster endpoint was pulled live and validated for real (all 32 teams, 919 players, real matching, real zero-out mechanism proven against a real forced-OUT player -- see SESSION_LOG.md's Session 5.1 entry) -- but every real non-empty status found on 2026-07-22 was a long-term-recovery or personal-situation designation, not a game-week one, since no real NFL game exists yet to designate a player in/out FOR. There's nothing real on NFL.com's injury report to cross-check against yet either. **First point this closes for real:** Preseason Week 1, same as the other gaps in this list.
+- **Session 5.2's real weekly cron-job.org schedule + `current_slate.json`, both sites.** This one's a configuration gap rather than a data-quality gap -- the automation mechanism itself is fully built and validated (see SESSION_LOG.md's Session 5.2 entry), but the cron-job.org near-lock job (currently a Sunday-11am-CT/every-10-min *template*, approximating a typical 1:00pm ET early-slate lock) and `current_slate.json` (currently a season-2026/week-1 *placeholder*) both need hand-updating to whatever Preseason Week 1's real slate/lock times turn out to be -- there's no real value to set until that week's schedule is actually known. **First point this closes for real:** Preseason Week 1, done alongside Session 6.1's live dry run (see Session 6.1's card) -- not a separate session, just the same checkpoint.
 
 Until Preseason Week 1: treat Session 2.4 (and by extension anything built on top of it in Phase 3+) as validated for correctness-of-logic only, not for real-world data quality. Re-run Session 2.4's validation checklist in full once real data exists for both sites.
 

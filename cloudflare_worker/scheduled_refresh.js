@@ -10,13 +10,13 @@
  * cadences (every 3 hours, once/day, etc.) but is documented to sometimes
  * fire several minutes late under GitHub-side load. That's not acceptable
  * for the actual near-lock window (last hour before a DK/FD slate locks),
- * where refresh_data.yml's card calls for 5-10 minute granularity. This
+ * where refresh_data.yml's card calls for ~10-minute granularity. This
  * Worker is a thin, fast, reliable relay that turns an external HTTP ping
  * into a GitHub `repository_dispatch` event, which triggers
  * refresh_data.yml's `full_refresh_dispatch` path immediately.
  *
  * This Worker does NOT run any Python, touch the repo's data, or have a
- * Cron Trigger of its own. It only relays. The actual "every 5-10 minutes,
+ * Cron Trigger of its own. It only relays. The actual "every ~10 minutes,
  * only during the near-lock window" cadence is configured on cron-job.org
  * (a free external cron service) hitting this Worker's URL -- see setup
  * steps below. Splitting it this way means the tight-window schedule lives
@@ -55,7 +55,7 @@
  *
  * 4. At https://cron-job.org (free account), create a job per near-lock
  *    window you want covered (e.g. one for DK's Sunday early-slate lock,
- *    one for FD's if it differs) that sends a GET request every 5-10
+ *    one for FD's if it differs) that sends a GET request every ~10
  *    minutes, ONLY during that window, to:
  *      https://<your-worker-name>.<your-subdomain>.workers.dev/?token=<the same random string as WORKER_AUTH_TOKEN>
  *    cron-job.org supports both a time-of-day range AND day-of-week, so

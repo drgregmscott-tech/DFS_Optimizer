@@ -44,11 +44,11 @@
 #      late under load) is an acceptable trade for a 3-hour-interval job.
 #   3. full_refresh_dispatch (repository_dispatch, type "near_lock_refresh")
 #      -- fired by cloudflare_worker/scheduled_refresh.js, which itself is
-#      pinged by an external cron-job.org job every 5-10 minutes during the
+#      pinged by an external cron-job.org job every ~10 minutes during the
 #      actual near-lock window (both sites' lock times, set by the user in
 #      cron-job.org -- see that worker file's header for setup). This path
 #      exists specifically BECAUSE GitHub's native cron isn't reliable
-#      enough at 5-10 minute granularity for a moment that actually
+#      enough at ~10-minute granularity for a moment that actually
 #      matters -- see Session 5.2's SESSION_LOG entry for the full
 #      reasoning already discussed with the user.
 #
@@ -81,7 +81,7 @@ on:
         required: false
         default: "manual test run"
 
-# Near-lock dispatches can arrive every 5-10 minutes; don't let two runs
+# Near-lock dispatches can arrive every ~10 minutes; don't let two runs
 # race each other's git commits. Queue rather than cancel -- a skipped
 # near-lock refresh is worse than a slightly-delayed one.
 concurrency:
