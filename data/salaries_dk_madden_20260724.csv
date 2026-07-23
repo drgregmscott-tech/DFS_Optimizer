@@ -1,0 +1,95 @@
+Position,Name + ID,Name,ID,Roster Position,Salary,Game Info,TeamAbbrev,AvgPointsPerGame,Status,name,site,salary,normalized_name,normalized_team,position_upper,player_id,match_method,match_confidence
+RB,Christian McCaffrey (43636569),Christian McCaffrey,43636569,RB/FLEX,8900,NYJ@SF 07/24/2026 02:00PM ET,SF,22.0,,Christian McCaffrey,dk,8900,christian mccaffrey,SF,RB,00-0033280,auto_exact,high
+QB,Kyler Murray (43636557),Kyler Murray,43636557,QB,8300,DEN@ARI 07/24/2026 04:00PM ET,ARI,27.7,,Kyler Murray,dk,8300,kyler murray,ARI,QB,00-0035228,auto_exact,high
+RB,Breece Hall (43636571),Breece Hall,43636571,RB/FLEX,7800,NYJ@SF 07/24/2026 02:00PM ET,NYJ,18.2,,Breece Hall,dk,7800,breece hall,NYJ,RB,00-0038120,auto_exact,high
+RB,Omarion Hampton (43636573),Omarion Hampton,43636573,RB/FLEX,7600,BAL@LAC 07/24/2026 12:00PM ET,LAC,16.4,,Omarion Hampton,dk,7600,omarion hampton,LAC,RB,00-0040666,auto_exact,high
+QB,Lamar Jackson (43636558),Lamar Jackson,43636558,QB,7400,BAL@LAC 07/24/2026 12:00PM ET,BAL,25.3,,Lamar Jackson,dk,7400,lamar jackson,BAL,QB,00-0034796,auto_exact,high
+WR,Ladd McConkey (43636615),Ladd McConkey,43636615,WR/FLEX,7200,BAL@LAC 07/24/2026 12:00PM ET,LAC,18.3,,Ladd McConkey,dk,7200,ladd mcconkey,LAC,WR,00-0039915,auto_exact,high
+RB,J.K. Dobbins (43636575),J.K. Dobbins,43636575,RB/FLEX,6700,DEN@ARI 07/24/2026 04:00PM ET,DEN,15.2,,J.K. Dobbins,dk,6700,jk dobbins,DEN,RB,00-0036158,auto_exact,high
+RB,Derrick Henry (43636577),Derrick Henry,43636577,RB/FLEX,6600,BAL@LAC 07/24/2026 12:00PM ET,BAL,14.4,,Derrick Henry,dk,6600,derrick henry,BAL,RB,00-0032764,auto_exact,high
+QB,Bo Nix (43636559),Bo Nix,43636559,QB,6300,DEN@ARI 07/24/2026 04:00PM ET,DEN,22.8,,Bo Nix,dk,6300,bo nix,DEN,QB,00-0039732,auto_exact,high
+WR,Garrett Wilson (43636617),Garrett Wilson,43636617,WR/FLEX,6200,NYJ@SF 07/24/2026 02:00PM ET,NYJ,15.0,,Garrett Wilson,dk,6200,garrett wilson,NYJ,WR,00-0037740,auto_exact,high
+QB,Justin Herbert (43636560),Justin Herbert,43636560,QB,6100,BAL@LAC 07/24/2026 12:00PM ET,LAC,21.9,,Justin Herbert,dk,6100,justin herbert,LAC,QB,00-0036355,auto_exact,high
+RB,James Conner (43636579),James Conner,43636579,RB/FLEX,6100,DEN@ARI 07/24/2026 04:00PM ET,ARI,15.2,,James Conner,dk,6100,james conner,ARI,RB,00-0033553,auto_exact,high
+TE,Mark Andrews (43636685),Mark Andrews,43636685,TE/FLEX,6100,BAL@LAC 07/24/2026 12:00PM ET,BAL,14.2,,Mark Andrews,dk,6100,mark andrews,BAL,TE,00-0034753,auto_exact,high
+WR,Marvin Harrison Jr. (43636619),Marvin Harrison Jr.,43636619,WR/FLEX,5900,DEN@ARI 07/24/2026 04:00PM ET,ARI,14.2,,Marvin Harrison Jr.,dk,5900,marvin harrison,ARI,WR,00-0039849,auto_exact,high
+WR,Marvin Mims Jr. (43636621),Marvin Mims Jr.,43636621,WR/FLEX,5800,DEN@ARI 07/24/2026 04:00PM ET,DEN,13.5,,Marvin Mims Jr.,dk,5800,marvin mims,DEN,WR,00-0038976,auto_exact,high
+QB,Justin Fields (43636561),Justin Fields,43636561,QB,5700,NYJ@SF 07/24/2026 02:00PM ET,NYJ,24.5,,Justin Fields,dk,5700,justin fields,NYJ,QB,00-0036945,auto_exact,high
+QB,Brock Purdy (43636562),Brock Purdy,43636562,QB,5400,NYJ@SF 07/24/2026 02:00PM ET,SF,20.6,,Brock Purdy,dk,5400,brock purdy,SF,QB,00-0037834,auto_exact,high
+WR,Courtland Sutton (43636623),Courtland Sutton,43636623,WR/FLEX,5200,DEN@ARI 07/24/2026 04:00PM ET,DEN,12.9,,Courtland Sutton,dk,5200,courtland sutton,DEN,WR,00-0034348,auto_exact,high
+QB,Jacoby Brissett (43636563),Jacoby Brissett,43636563,QB,5000,DEN@ARI 07/24/2026 04:00PM ET,ARI,0.7,,Jacoby Brissett,dk,5000,jacoby brissett,ARI,QB,00-0033119,auto_exact,high
+QB,Tyrod Taylor (43636564),Tyrod Taylor,43636564,QB,5000,NYJ@SF 07/24/2026 02:00PM ET,NYJ,0.0,,Tyrod Taylor,dk,5000,tyrod taylor,NYJ,QB,00-0028118,auto_exact,high
+QB,Mac Jones (43636565),Mac Jones,43636565,QB,5000,NYJ@SF 07/24/2026 02:00PM ET,SF,0.0,,Mac Jones,dk,5000,mac jones,SF,QB,00-0036972,auto_exact,high
+QB,Cooper Rush (43636566),Cooper Rush,43636566,QB,5000,BAL@LAC 07/24/2026 12:00PM ET,BAL,0.0,,Cooper Rush,dk,5000,cooper rush,BAL,QB,00-0033662,auto_exact,high
+QB,Trey Lance (43636567),Trey Lance,43636567,QB,5000,BAL@LAC 07/24/2026 12:00PM ET,LAC,0.0,,Trey Lance,dk,5000,trey lance,LAC,QB,00-0037012,auto_exact,high
+QB,Jarrett Stidham (43636568),Jarrett Stidham,43636568,QB,5000,DEN@ARI 07/24/2026 04:00PM ET,DEN,0.0,,Jarrett Stidham,dk,5000,jarrett stidham,DEN,QB,00-0035264,auto_exact,high
+WR,Brandon Aiyuk (43636625),Brandon Aiyuk,43636625,WR/FLEX,4900,NYJ@SF 07/24/2026 02:00PM ET,SF,12.3,,Brandon Aiyuk,dk,4900,brandon aiyuk,SF,WR,,,
+WR,Quentin Johnston (43636627),Quentin Johnston,43636627,WR/FLEX,4700,BAL@LAC 07/24/2026 12:00PM ET,LAC,12.9,,Quentin Johnston,dk,4700,quentin johnston,LAC,WR,00-0038544,auto_exact,high
+WR,Zay Flowers (43636629),Zay Flowers,43636629,WR/FLEX,4600,BAL@LAC 07/24/2026 12:00PM ET,BAL,11.0,,Zay Flowers,dk,4600,zay flowers,BAL,WR,00-0039064,auto_exact,high
+TE,George Kittle (43636687),George Kittle,43636687,TE/FLEX,4500,NYJ@SF 07/24/2026 02:00PM ET,SF,10.9,,George Kittle,dk,4500,george kittle,SF,TE,00-0033288,auto_exact,high
+TE,Trey McBride (43636689),Trey McBride,43636689,TE/FLEX,4400,DEN@ARI 07/24/2026 04:00PM ET,ARI,11.5,,Trey McBride,dk,4400,trey mcbride,ARI,TE,00-0037744,auto_exact,high
+TE,Tyler Conklin (43636691),Tyler Conklin,43636691,TE/FLEX,4300,BAL@LAC 07/24/2026 12:00PM ET,LAC,12.2,,Tyler Conklin,dk,4300,tyler conklin,LAC,TE,00-0034270,auto_exact,high
+WR,Jauan Jennings (43636631),Jauan Jennings,43636631,WR/FLEX,4100,NYJ@SF 07/24/2026 02:00PM ET,SF,11.0,,Jauan Jennings,dk,4100,jauan jennings,SF,WR,00-0036259,auto_exact,high
+WR,Michael Wilson (43636633),Michael Wilson,43636633,WR/FLEX,4000,DEN@ARI 07/24/2026 04:00PM ET,ARI,11.4,,Michael Wilson,dk,4000,michael wilson,ARI,WR,00-0038559,auto_exact,high
+WR,Allen Lazard (43636635),Allen Lazard,43636635,WR/FLEX,3800,NYJ@SF 07/24/2026 02:00PM ET,NYJ,11.2,,Allen Lazard,dk,3800,allen lazard,NYJ,WR,00-0034521,auto_exact,high
+WR,Ricky Pearsall (43636637),Ricky Pearsall,43636637,WR/FLEX,3700,NYJ@SF 07/24/2026 02:00PM ET,SF,11.0,,Ricky Pearsall,dk,3700,ricky pearsall,SF,WR,00-0039916,auto_exact,high
+WR,Keenan Allen (43636639),Keenan Allen,43636639,WR/FLEX,3600,BAL@LAC 07/24/2026 12:00PM ET,LAC,11.9,,Keenan Allen,dk,3600,keenan allen,LAC,WR,00-0030279,auto_exact,high
+WR,Zay Jones (43636641),Zay Jones,43636641,WR/FLEX,3500,DEN@ARI 07/24/2026 04:00PM ET,ARI,9.2,,Zay Jones,dk,3500,zay jones,ARI,WR,00-0033891,auto_exact,high
+TE,Evan Engram (43636693),Evan Engram,43636693,TE/FLEX,3500,DEN@ARI 07/24/2026 04:00PM ET,DEN,9.5,,Evan Engram,dk,3500,evan engram,DEN,TE,00-0033881,auto_exact,high
+RB,Najee Harris (43636581),Najee Harris,43636581,RB/FLEX,3400,BAL@LAC 07/24/2026 12:00PM ET,LAC,2.0,,Najee Harris,dk,3400,najee harris,LAC,RB,00-0036893,auto_exact,high
+WR,Troy Franklin (43636643),Troy Franklin,43636643,WR/FLEX,3400,DEN@ARI 07/24/2026 04:00PM ET,DEN,9.0,,Troy Franklin,dk,3400,troy franklin,DEN,WR,00-0039868,auto_exact,high
+DST,Ravens (43636721),Ravens,43636721,DST,3400,BAL@LAC 07/24/2026 12:00PM ET,BAL,4.3,,Ravens,dk,3400,ravens,BAL,DST,DST_BAL,team_defense,high
+RB,RJ Harvey (43636583),RJ Harvey,43636583,RB/FLEX,3300,DEN@ARI 07/24/2026 04:00PM ET,DEN,4.9,,RJ Harvey,dk,3300,rj harvey,DEN,RB,00-0040730,auto_exact,high
+WR,DeAndre Hopkins (43636645),DeAndre Hopkins,43636645,WR/FLEX,3300,BAL@LAC 07/24/2026 12:00PM ET,BAL,7.6,,DeAndre Hopkins,dk,3300,deandre hopkins,BAL,WR,00-0030564,auto_exact,high
+DST,Broncos (43636722),Broncos,43636722,DST,3300,DEN@ARI 07/24/2026 04:00PM ET,DEN,3.4,,Broncos,dk,3300,broncos,DEN,DST,DST_DEN,team_defense,high
+RB,Justice Hill (43636585),Justice Hill,43636585,RB/FLEX,3200,BAL@LAC 07/24/2026 12:00PM ET,BAL,3.4,,Justice Hill,dk,3200,justice hill,BAL,RB,00-0034975,auto_exact,high
+WR,Rashod Bateman (43636647),Rashod Bateman,43636647,WR/FLEX,3200,BAL@LAC 07/24/2026 12:00PM ET,BAL,4.2,,Rashod Bateman,dk,3200,rashod bateman,BAL,WR,00-0036550,auto_exact,high
+TE,Mason Taylor (43636695),Mason Taylor,43636695,TE/FLEX,3200,NYJ@SF 07/24/2026 02:00PM ET,NYJ,7.6,,Mason Taylor,dk,3200,mason taylor,NYJ,TE,00-0040736,auto_exact,high
+DST,49ers (43636723),49ers,43636723,DST,3200,NYJ@SF 07/24/2026 02:00PM ET,SF,3.4,,49ers,dk,3200,49ers,SF,DST,DST_SF,team_defense,high
+RB,Kyle Juszczyk (43636587),Kyle Juszczyk,43636587,RB/FLEX,3100,NYJ@SF 07/24/2026 02:00PM ET,SF,2.5,,Kyle Juszczyk,dk,3100,kyle juszczyk,SF,RB,00-0029892,auto_exact,high
+WR,Josh Reynolds (43636649),Josh Reynolds,43636649,WR/FLEX,3100,NYJ@SF 07/24/2026 02:00PM ET,NYJ,4.1,,Josh Reynolds,dk,3100,josh reynolds,NYJ,WR,00-0033943,auto_exact,high
+DST,Jets (43636724),Jets,43636724,DST,3100,NYJ@SF 07/24/2026 02:00PM ET,NYJ,3.0,,Jets,dk,3100,jets,NYJ,DST,DST_NYJ,team_defense,high
+RB,Brian Robinson Jr. (43636589),Brian Robinson Jr.,43636589,RB/FLEX,3000,NYJ@SF 07/24/2026 02:00PM ET,SF,1.5,,Brian Robinson Jr.,dk,3000,brian robinson,SF,RB,00-0037746,auto_exact,high
+RB,Trey Benson (43636591),Trey Benson,43636591,RB/FLEX,3000,DEN@ARI 07/24/2026 04:00PM ET,ARI,0.2,,Trey Benson,dk,3000,trey benson,ARI,RB,00-0039921,auto_exact,high
+RB,Braelon Allen (43636593),Braelon Allen,43636593,RB/FLEX,3000,NYJ@SF 07/24/2026 02:00PM ET,NYJ,0.2,,Braelon Allen,dk,3000,braelon allen,NYJ,RB,00-0039794,auto_exact,high
+RB,Michael Burton (43636595),Michael Burton,43636595,RB/FLEX,3000,DEN@ARI 07/24/2026 04:00PM ET,DEN,0.8,,Michael Burton,dk,3000,michael burton,DEN,RB,,,
+RB,Patrick Ricard (43636597),Patrick Ricard,43636597,RB/FLEX,3000,BAL@LAC 07/24/2026 12:00PM ET,BAL,1.5,,Patrick Ricard,dk,3000,patrick ricard,BAL,RB,00-0033376,auto_exact,high
+RB,Jaleel McLaughlin (43636599),Jaleel McLaughlin,43636599,RB/FLEX,3000,DEN@ARI 07/24/2026 04:00PM ET,DEN,0.0,,Jaleel McLaughlin,dk,3000,jaleel mclaughlin,DEN,RB,00-0038794,auto_exact,high
+RB,Keaton Mitchell (43636601),Keaton Mitchell,43636601,RB/FLEX,3000,BAL@LAC 07/24/2026 12:00PM ET,BAL,0.1,,Keaton Mitchell,dk,3000,keaton mitchell,BAL,RB,00-0038454,auto_exact,high
+RB,Isaac Guerendo (43636603),Isaac Guerendo,43636603,RB/FLEX,3000,NYJ@SF 07/24/2026 02:00PM ET,SF,0.0,,Isaac Guerendo,dk,3000,isaac guerendo,SF,RB,00-0039363,auto_exact,high
+RB,Emari Demercado (43636605),Emari Demercado,43636605,RB/FLEX,3000,DEN@ARI 07/24/2026 04:00PM ET,ARI,0.7,,Emari Demercado,dk,3000,emari demercado,ARI,RB,00-0038705,auto_exact,high
+RB,Isaiah Davis (43636607),Isaiah Davis,43636607,RB/FLEX,3000,NYJ@SF 07/24/2026 02:00PM ET,NYJ,0.0,,Isaiah Davis,dk,3000,isaiah davis,NYJ,RB,00-0039798,auto_exact,high
+RB,Hassan Haskins (43636609),Hassan Haskins,43636609,RB/FLEX,3000,BAL@LAC 07/24/2026 12:00PM ET,LAC,0.0,,Hassan Haskins,dk,3000,hassan haskins,LAC,RB,00-0037617,auto_exact,high
+RB,Andrew Beck (43636611),Andrew Beck,43636611,RB/FLEX,3000,NYJ@SF 07/24/2026 02:00PM ET,NYJ,0.2,,Andrew Beck,dk,3000,andrew beck,NYJ,RB,00-0034959,auto_exact,high
+RB,Scott Matlock (43636613),Scott Matlock,43636613,RB/FLEX,3000,BAL@LAC 07/24/2026 12:00PM ET,LAC,0.9,,Scott Matlock,dk,3000,scott matlock,LAC,RB,00-0038614,auto_fallback_name_only_position_mismatch,low
+WR,Trent Sherfield Sr. (43636651),Trent Sherfield Sr.,43636651,WR/FLEX,3000,DEN@ARI 07/24/2026 04:00PM ET,DEN,0.9,,Trent Sherfield Sr.,dk,3000,trent sherfield,DEN,WR,00-0034487,auto_fallback_team_mismatch,medium
+WR,Skyy Moore (43636653),Skyy Moore,43636653,WR/FLEX,3000,NYJ@SF 07/24/2026 02:00PM ET,SF,0.0,,Skyy Moore,dk,3000,skyy moore,SF,WR,00-0038090,auto_exact,high
+WR,Tre' Harris (43636655),Tre' Harris,43636655,WR/FLEX,3000,BAL@LAC 07/24/2026 12:00PM ET,LAC,0.0,,Tre' Harris,dk,3000,tre harris,LAC,WR,00-0040727,auto_exact,high
+WR,Xavier Gipson (43636657),Xavier Gipson,43636657,WR/FLEX,3000,NYJ@SF 07/24/2026 02:00PM ET,NYJ,1.9,,Xavier Gipson,dk,3000,xavier gipson,NYJ,WR,00-0038496,auto_fallback_team_mismatch,medium
+WR,Tylan Wallace (43636659),Tylan Wallace,43636659,WR/FLEX,3000,BAL@LAC 07/24/2026 12:00PM ET,BAL,0.0,,Tylan Wallace,dk,3000,tylan wallace,BAL,WR,00-0036630,auto_exact,high
+WR,Pat Bryant (43636661),Pat Bryant,43636661,WR/FLEX,3000,DEN@ARI 07/24/2026 04:00PM ET,DEN,0.0,,Pat Bryant,dk,3000,pat bryant,DEN,WR,00-0040134,auto_exact,high
+WR,Greg Dortch (43636663),Greg Dortch,43636663,WR/FLEX,3000,DEN@ARI 07/24/2026 04:00PM ET,ARI,1.0,,Greg Dortch,dk,3000,greg dortch,ARI,WR,00-0035500,auto_exact,high
+WR,Jacob Cowing (43636665),Jacob Cowing,43636665,WR/FLEX,3000,NYJ@SF 07/24/2026 02:00PM ET,SF,0.0,,Jacob Cowing,dk,3000,jacob cowing,SF,WR,,,
+WR,A.T. Perry (43636667),A.T. Perry,43636667,WR/FLEX,3000,DEN@ARI 07/24/2026 04:00PM ET,DEN,0.0,,A.T. Perry,dk,3000,at perry,DEN,WR,,,
+WR,KeAndre Lambert-Smith (43636669),KeAndre Lambert-Smith,43636669,WR/FLEX,3000,BAL@LAC 07/24/2026 12:00PM ET,LAC,0.0,,KeAndre Lambert-Smith,dk,3000,keandre lambert smith,LAC,WR,00-0040184,auto_exact,high
+WR,Devontez Walker (43636671),Devontez Walker,43636671,WR/FLEX,3000,BAL@LAC 07/24/2026 12:00PM ET,BAL,0.0,,Devontez Walker,dk,3000,devontez walker,BAL,WR,00-0039792,auto_exact,high
+WR,Tyler Johnson (43636673),Tyler Johnson,43636673,WR/FLEX,3000,NYJ@SF 07/24/2026 02:00PM ET,NYJ,0.0,,Tyler Johnson,dk,3000,tyler johnson,NYJ,WR,00-0036427,auto_exact,high
+WR,Xavier Weaver (43636675),Xavier Weaver,43636675,WR/FLEX,3000,DEN@ARI 07/24/2026 04:00PM ET,ARI,0.1,,Xavier Weaver,dk,3000,xavier weaver,ARI,WR,00-0039521,auto_exact,high
+WR,Derius Davis (43636677),Derius Davis,43636677,WR/FLEX,3000,BAL@LAC 07/24/2026 12:00PM ET,LAC,0.0,,Derius Davis,dk,3000,derius davis,LAC,WR,00-0038573,auto_exact,high
+WR,LaJohntay Wester (43636679),LaJohntay Wester,43636679,WR/FLEX,3000,BAL@LAC 07/24/2026 12:00PM ET,BAL,0.8,,LaJohntay Wester,dk,3000,lajohntay wester,BAL,WR,00-0040075,auto_exact,high
+WR,Jordan Watkins (43636681),Jordan Watkins,43636681,WR/FLEX,3000,NYJ@SF 07/24/2026 02:00PM ET,SF,0.0,,Jordan Watkins,dk,3000,jordan watkins,SF,WR,00-0040172,auto_exact,high
+WR,Arian Smith (43636683),Arian Smith,43636683,WR/FLEX,3000,NYJ@SF 07/24/2026 02:00PM ET,NYJ,0.0,,Arian Smith,dk,3000,arian smith,NYJ,WR,00-0040582,auto_exact,high
+DST,Chargers (43636725),Chargers,43636725,DST,3000,BAL@LAC 07/24/2026 12:00PM ET,LAC,3.2,,Chargers,dk,3000,chargers,LAC,DST,DST_LAC,team_defense,high
+DST,Cardinals (43636726),Cardinals,43636726,DST,2900,DEN@ARI 07/24/2026 04:00PM ET,ARI,2.5,,Cardinals,dk,2900,cardinals,ARI,DST,DST_ARI,team_defense,high
+TE,Isaiah Likely (43636697),Isaiah Likely,43636697,TE/FLEX,2700,BAL@LAC 07/24/2026 12:00PM ET,BAL,3.9,,Isaiah Likely,dk,2700,isaiah likely,BAL,TE,00-0037838,auto_exact,high
+TE,Tip Reiman (43636699),Tip Reiman,43636699,TE/FLEX,2600,DEN@ARI 07/24/2026 04:00PM ET,ARI,2.6,,Tip Reiman,dk,2600,tip reiman,ARI,TE,00-0039737,auto_exact,high
+TE,Will Dissly (43636701),Will Dissly,43636701,TE/FLEX,2500,BAL@LAC 07/24/2026 12:00PM ET,LAC,1.8,,Will Dissly,dk,2500,will dissly,LAC,TE,00-0034159,auto_exact,high
+TE,Adam Trautman (43636703),Adam Trautman,43636703,TE/FLEX,2500,DEN@ARI 07/24/2026 04:00PM ET,DEN,1.2,,Adam Trautman,dk,2500,adam trautman,DEN,TE,00-0036422,auto_exact,high
+TE,Jeremy Ruckert (43636705),Jeremy Ruckert,43636705,TE/FLEX,2500,NYJ@SF 07/24/2026 02:00PM ET,NYJ,1.3,,Jeremy Ruckert,dk,2500,jeremy ruckert,NYJ,TE,00-0037805,auto_exact,high
+TE,Luke Farrell (43636707),Luke Farrell,43636707,TE/FLEX,2500,NYJ@SF 07/24/2026 02:00PM ET,SF,1.1,,Luke Farrell,dk,2500,luke farrell,SF,TE,00-0036887,auto_exact,high
+TE,Oronde Gadsden II (43636709),Oronde Gadsden II,43636709,TE/FLEX,2500,BAL@LAC 07/24/2026 12:00PM ET,LAC,0.4,,Oronde Gadsden II,dk,2500,oronde gadsden,LAC,TE,00-0040189,auto_exact,high
+TE,Charlie Kolar (43636711),Charlie Kolar,43636711,TE/FLEX,2500,BAL@LAC 07/24/2026 12:00PM ET,BAL,0.5,,Charlie Kolar,dk,2500,charlie kolar,BAL,TE,00-0038046,auto_exact,high
+TE,Elijah Higgins (43636713),Elijah Higgins,43636713,TE/FLEX,2500,DEN@ARI 07/24/2026 04:00PM ET,ARI,0.2,,Elijah Higgins,dk,2500,elijah higgins,ARI,TE,00-0039041,auto_exact,high
+TE,Lucas Krull (43636715),Lucas Krull,43636715,TE/FLEX,2500,DEN@ARI 07/24/2026 04:00PM ET,DEN,0.1,,Lucas Krull,dk,2500,lucas krull,DEN,TE,00-0037539,auto_exact,high
+TE,Stone Smartt (43636717),Stone Smartt,43636717,TE/FLEX,2500,NYJ@SF 07/24/2026 02:00PM ET,NYJ,0.0,,Stone Smartt,dk,2500,stone smartt,NYJ,TE,00-0037475,auto_exact,high
+TE,Jake Tonges (43636719),Jake Tonges,43636719,TE/FLEX,2500,NYJ@SF 07/24/2026 02:00PM ET,SF,0.2,,Jake Tonges,dk,2500,jake tonges,SF,TE,00-0037112,auto_exact,high
