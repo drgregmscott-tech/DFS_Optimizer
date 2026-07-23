@@ -1538,4 +1538,19 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    # Session 7.2c hotfix (real live testing this session): RuntimeError is
+    # this file's consistent signal for "the requested settings/pool
+    # combination is infeasible" (decisions #21/#24, solver infeasibility,
+    # "no lineups could be generated") -- never an internal bug (verified:
+    # every raise RuntimeError(...) site in this file is one of those
+    # cases). A full Python traceback for that case reads as "the system is
+    # broken" to someone who just picked an incompatible combination of
+    # controls (e.g. --bring-back against a pool whose real opponents
+    # aren't present) -- print just the clean message instead. Any OTHER
+    # exception type still gets its full traceback unchanged, since that
+    # DOES mean something unexpected broke and needs real debugging.
+    try:
+        main()
+    except RuntimeError as e:
+        print(f"\nCould not generate a lineup with the current settings: {e}", file=sys.stderr)
+        sys.exit(1)
