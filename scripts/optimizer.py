@@ -1435,6 +1435,18 @@ def main():
         help="Comma-separated player_id(s) to remove from the candidate pool "
              "entirely (decision #22).",
     )
+    # Session 7.2b -- UI-Optimizer Integration (real-solver dispatch path).
+    parser.add_argument(
+        "--request-id", default=None,
+        help="Decision #27: when set, output is written to "
+             "output/ui_requests/{request-id}.csv INSTEAD OF the canonical "
+             "lineup_single_{site}_{week}.csv / lineups_multi_{site}_{week}.csv "
+             "path. Exists so an ad-hoc/interactive run (e.g. a UI 'try these "
+             "settings' request dispatched via GitHub Actions) can never "
+             "silently overwrite the canonical output file that live "
+             "automation and other consumers read from. Omit for a normal, "
+             "canonical run -- default behavior is unchanged.",
+    )
     args = parser.parse_args()
 
     OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
@@ -1475,7 +1487,11 @@ def main():
             excluded_player_ids=excluded_player_ids,
             **stack_kwargs,
         )
-        out_path = OUTPUT_DIR / f"lineups_multi_{args.site}_{args.week}.csv"
+        if args.request_id:
+            out_path = OUTPUT_DIR / "ui_requests" / f"{args.request_id}.csv"
+            out_path.parent.mkdir(parents=True, exist_ok=True)
+        else:
+            out_path = OUTPUT_DIR / f"lineups_multi_{args.site}_{args.week}.csv"
         lineups.to_csv(out_path, index=False)
 
         exposure_cap = max(1, math.floor(args.max_exposure * args.n_lineups))
@@ -1501,7 +1517,11 @@ def main():
             excluded_player_ids=excluded_player_ids,
             **stack_kwargs,
         )
-        out_path = OUTPUT_DIR / f"lineup_single_{args.site}_{args.week}.csv"
+        if args.request_id:
+            out_path = OUTPUT_DIR / "ui_requests" / f"{args.request_id}.csv"
+            out_path.parent.mkdir(parents=True, exist_ok=True)
+        else:
+            out_path = OUTPUT_DIR / f"lineup_single_{args.site}_{args.week}.csv"
         lineup.to_csv(out_path, index=False)
 
         total_salary = lineup["salary"].sum()

@@ -1,0 +1,20 @@
+# Session 7.2b -- minimal config for `npx wrangler deploy optimizer_api.js`
+# from inside this directory. Mirrors ../wrangler.toml's pattern exactly
+# (Session 5.2) -- see optimizer_api.js's own header comment for the full
+# one-time setup sequence (secrets, etc.).
+#
+# GITHUB_OWNER / GITHUB_REPO below are plain (non-secret) vars, safe to
+# commit. GH_DISPATCH_TOKEN and WORKER_AUTH_TOKEN are NOT set here -- those
+# are secrets, set separately via `npx wrangler secret put <NAME>` (or the
+# dashboard), never committed to the repo. Note: secrets do NOT carry over
+# from the ../scheduled_refresh.js Worker even though this reuses the same
+# PAT value -- this is a separate Worker deployment and needs its own
+# `wrangler secret put` calls (see optimizer_api.js's setup header).
+
+name = "dfs-optimizer-api"
+main = "optimizer_api.js"
+compatibility_date = "2026-07-01"
+
+[vars]
+GITHUB_OWNER = "drgregmscott-tech"
+GITHUB_REPO = "DFS_Optimizer"

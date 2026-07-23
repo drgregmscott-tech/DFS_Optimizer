@@ -1,0 +1,174 @@
+# Session 7.2b -- UI-Optimizer Integration (real-solver dispatch path).
+#
+# WHY THIS EXISTS: the frontend (Session 7.1) is a static, client-only page
+# with no backend of its own -- it can't run PuLP/CBC. This workflow is the
+# "real solver confirm" half of the hybrid architecture agreed this session:
+# a UI control change (exposure %, stack mode, lock/exclude) gets dispatched
+# here as a `repository_dispatch` event, runs the ACTUAL, already-validated
+# `optimizer.py` (same file, same solver, same constraints as every other
+# session's output -- no second implementation to drift out of sync), and
+# writes its result to a REQUEST-SCOPED file rather than the canonical
+# lineup_single_{site}_{week}.csv / lineups_multi_{site}_{week}.csv path
+# (optimizer.py's `--request-id` flag, decision #27) -- so an interactive
+# "try these settings" preview can never clobber the canonical output that
+# live automation (refresh_data.yml) and other consumers read from.
+#
+# Fired by: cloudflare_worker/optimizer_api/optimizer_api.js's `dispatch`
+# action, which itself is called by the frontend (Session 7.2c). NOT fired
+# by any schedule -- purely on-demand, one run per UI request.
+#
+# Required repo configuration (already done in Session 5.2 for the same
+# GH_DISPATCH_TOKEN secret -- nothing new to set up here beyond confirming
+# it's still valid):
+#   - Settings -> Secrets and variables -> Actions -> GH_DISPATCH_TOKEN
+#     must already exist (Session 5.2's fine-grained PAT, "Contents: Read
+#     and write" on this repo) -- this workflow does not need its own
+#     secret, it just needs write access to commit its own output file,
+#     which `permissions: contents: write` below (GITHUB_TOKEN, not the
+#     PAT) already covers.
+
+name: Run Optimizer (On-Demand)
+
+on:
+  repository_dispatch:
+    types: [run_optimizer_request]
+
+# Each dispatch is independent (a different request_id writes a different
+# file) -- no reason to queue one behind another the way refresh_data.yml's
+# near-lock dispatches must. Multiple UI requests can run in parallel.
+concurrency:
+  group: run-optimizer-${{ github.event.client_payload.request_id }}
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+env:
+  PYTHON_VERSION: "3.12"
+
+jobs:
+  run_optimizer:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Validate required payload fields
+        run: |
+          if [ -z "${{ github.event.client_payload.request_id }}" ]; then
+            echo "::error::client_payload.request_id is required -- refusing to run without a scoped output path (decision #27's whole point)."
+            exit 1
+          fi
+          if [ -z "${{ github.event.client_payload.site }}" ] || [ -z "${{ github.event.client_payload.week }}" ]; then
+            echo "::error::client_payload.site and client_payload.week are required."
+            exit 1
+          fi
+
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      # Builds the optimizer.py CLI invocation from the dispatch payload.
+      # Every field is OPTIONAL except site/week/request_id (already
+      # validated above) -- an omitted field means "use optimizer.py's own
+      # default," never a value this workflow invents on its behalf. This
+      # keeps the exact same "flag, don't silently assume" behavior the CLI
+      # itself already has.
+      - name: Build optimizer.py arguments
+        id: build_args
+        run: |
+          python3 - <<'PYEOF' >> "$GITHUB_OUTPUT"
+          import json, os, shlex
+
+          p = json.loads(os.environ["PAYLOAD_JSON"])
+
+          def flag(name, key, cast=str):
+              v = p.get(key)
+              if v in (None, "", []):
+                  return []
+              return [name, str(cast(v))]
+
+          def bool_flag(name, key):
+              return [name] if p.get(key) in (True, "true", "1", 1) else []
+
+          args = []
+          args += flag("--site", "site")
+          args += flag("--week", "week", int)
+          args += ["--request-id", str(p["request_id"])]
+
+          if p.get("mode") == "multi":
+              args += flag("--n-lineups", "n_lineups", int)
+          args += flag("--max-exposure", "max_exposure", float)
+          args += flag("--uniqueness", "uniqueness", int)
+          args += flag("--randomization-pct", "randomization_pct", float)
+          args += flag("--seed", "seed", int)
+
+          args += flag("--stack-mode", "stack_mode")
+          args += flag("--stack-size", "stack_size", int)
+          args += flag("--stack-positions", "stack_positions")
+          args += bool_flag("--bring-back", "bring_back")
+          args += flag("--stack-team", "stack_team")
+          args += flag("--stack-game", "stack_game")
+          args += flag("--game-stack-min-players", "game_stack_min_players", int)
+          args += flag("--mini-stack-type", "mini_stack_type")
+          args += flag("--stack-candidate-pool", "stack_candidate_pool", int)
+          args += flag("--stack-diversify", "stack_diversify")
+
+          args += flag("--lock", "lock")
+          args += flag("--exclude", "exclude")
+
+          print(f"args={shlex.join(args)}")
+          PYEOF
+        env:
+          PAYLOAD_JSON: ${{ toJson(github.event.client_payload) }}
+
+      - name: Run optimizer.py
+        id: run
+        continue-on-error: true
+        run: python3 scripts/optimizer.py ${{ steps.build_args.outputs.args }}
+
+      # Failure path: optimizer.py raises loudly (bad lock request, infeasible
+      # stack, missing final_projections file, etc.) -- capture that message
+      # into a request-scoped error file so the poller (optimizer_api.js) can
+      # tell the UI exactly why, instead of polling forever for a CSV that
+      # will never appear.
+      - name: Write error marker on failure
+        if: steps.run.outcome == 'failure'
+        run: |
+          mkdir -p output/ui_requests
+          cat > "output/ui_requests/${{ github.event.client_payload.request_id }}.error.txt" <<'EOF'
+          optimizer.py failed for this request. Re-check the requested
+          parameters (lock/exclude/stack combination is the most common
+          cause -- see scripts/optimizer.py's decision #21/#24 error
+          messages for the specific reason) and re-submit.
+          EOF
+
+      # Request-scoped files only -- deliberately narrower than
+      # refresh_data.yml's `git add output/` (which is fine there since that
+      # workflow owns the canonical files). This workflow must never commit
+      # anything outside output/ui_requests/.
+      - name: Commit request result
+        if: always()
+        run: |
+          git config user.name "dfs-optimizer-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add output/ui_requests/
+          if git diff --cached --quiet; then
+            echo "No output produced (unexpected if optimizer.py succeeded) -- nothing to commit."
+            exit 0
+          fi
+          git commit -m "On-demand optimizer run: ${{ github.event.client_payload.request_id }} [skip ci]"
+          git pull --rebase origin "${{ github.ref_name }}" || true
+          git push origin HEAD:"${{ github.ref_name }}"
+
+      - name: Fail the run if optimizer.py failed
+        if: steps.run.outcome == 'failure'
+        run: |
+          echo "optimizer.py failed -- see the 'Run optimizer.py' step log above and output/ui_requests/${{ github.event.client_payload.request_id }}.error.txt"
+          exit 1
