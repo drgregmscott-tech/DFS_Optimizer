@@ -150,6 +150,7 @@ async function handleDispatch(url, env) {
     "seed", "stack_mode", "stack_size", "stack_positions", "bring_back",
     "stack_team", "stack_game", "game_stack_min_players", "mini_stack_type",
     "stack_candidate_pool", "stack_diversify", "lock", "exclude",
+    "min_salary_pct", "flex_positions",
   ];
   const params = {};
   for (const key of passthroughKeys) {

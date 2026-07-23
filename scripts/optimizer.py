@@ -161,6 +161,16 @@ DEFAULT_N_LINEUPS = 20
 DEFAULT_MAX_EXPOSURE_PCT = 0.40
 DEFAULT_UNIQUENESS = 1
 
+# Session 7.3 -- Salary Floor (decision #28). 0 means "no floor," identical
+# to every prior session's behavior (the ILP's own <= salary_cap constraint
+# is the only salary constraint). A value > 0 (e.g. 95) adds a companion
+# >= constraint at that %% of the site's cap, so a lineup can't leave more
+# money on the table than the user wants -- most useful in regular-season
+# slates where a thin, cheap-heavy lineup is rarely optimal anyway, but
+# previously nothing stopped the solver from returning one if the
+# objective happened to prefer it.
+DEFAULT_MIN_SALARY_PCT = 0.0
+
 # ---------------------------------------------------------------------------
 # Session 3.2 (addendum) -- Projection randomization
 # ---------------------------------------------------------------------------
@@ -307,6 +317,23 @@ def parse_stack_positions(raw: str) -> set:
             f"only {sorted(STACK_ELIGIBLE_QB_PARTNER_POSITIONS)} are eligible "
             f"QB-stack partners (decision #18)."
         )
+    return positions
+
+
+def parse_flex_positions(raw: str) -> set:
+    """Session 7.3 -- FLEX Eligibility Restriction (decision #29). Validates
+    a user-supplied subset of FLEX_ELIGIBLE_POSITIONS (RB/WR/TE) -- e.g.
+    'WR,RB' to exclude TE from FLEX entirely. Empty/whitespace-only entries
+    are ignored the same way --stack-positions handles them."""
+    positions = {p.strip().upper() for p in raw.split(",") if p.strip()}
+    invalid = positions - FLEX_ELIGIBLE_POSITIONS
+    if invalid:
+        raise SystemExit(
+            f"--flex-positions has invalid position(s) {sorted(invalid)} -- "
+            f"only {sorted(FLEX_ELIGIBLE_POSITIONS)} are FLEX-eligible at all."
+        )
+    if not positions:
+        raise SystemExit("--flex-positions was given but resolved to an empty set.")
     return positions
 
 
@@ -752,8 +779,27 @@ def solve_lineup(players: pd.DataFrame, salary_cap: int, fixed_counts: dict,
                   target_team: str = None, target_game: tuple = None,
                   game_stack_min_players: int = DEFAULT_GAME_STACK_MIN_PLAYERS,
                   mini_stack_type: str = None,
-                  locked_player_ids: set = None) -> pd.DataFrame:
-    """`previous_lineups`/`uniqueness` are Session 3.2 additions (see
+                  locked_player_ids: set = None,
+                  min_salary: int = 0,
+                  flex_positions: set = None) -> pd.DataFrame:
+    """`min_salary` is a Session 7.3 addition (decision #28): 0 (default)
+    adds no floor, identical to every prior session's behavior. A value > 0
+    adds a companion `>= min_salary` constraint alongside the existing
+    `<= salary_cap` one.
+
+    `flex_positions` is a Session 7.3 addition (decision #29): defaults to
+    None, meaning "every FLEX_ELIGIBLE_POSITIONS position can fill FLEX"
+    (identical to every prior session's behavior). When a strict subset is
+    supplied (e.g. {"RB", "WR"} to exclude TE from FLEX), positions left
+    OUT of the subset get an exact `== required` constraint instead of the
+    normal `>= required` one, so the solver can never place a "leftover"
+    player from an excluded position into FLEX. The positions left IN the
+    subset are unchanged (still `>= required`, free to absorb the FLEX
+    slot) -- since the roster-size and total-flex-pool constraints below
+    are unaffected, pinning the excluded positions to exact counts is
+    sufficient on its own to force the extra slot into an allowed position.
+
+    `previous_lineups`/`uniqueness` are Session 3.2 additions (see
     decision #7 above) -- default to None/0, which reproduces Session 3.1's
     exact single-lineup behavior unchanged. When provided, `previous_lineups`
     is a list of sets of player_id, and the solve adds one constraint per
@@ -787,6 +833,11 @@ def solve_lineup(players: pd.DataFrame, salary_cap: int, fixed_counts: dict,
     # Salary cap.
     prob += pulp.lpSum(x[pid] * salary[pid] for pid in x) <= salary_cap, "salary_cap"
 
+    # Session 7.3 -- salary floor (decision #28). No-op unless a floor was
+    # actually requested.
+    if min_salary > 0:
+        prob += pulp.lpSum(x[pid] * salary[pid] for pid in x) >= min_salary, "min_salary_floor"
+
     # Total roster size.
     total_slots = sum(fixed_counts.values()) + flex_count
     prob += pulp.lpSum(x[pid] for pid in x) == total_slots, "total_roster_size"
@@ -796,11 +847,21 @@ def solve_lineup(players: pd.DataFrame, salary_cap: int, fixed_counts: dict,
         for pos in set(position)
     }
 
+    # Session 7.3 -- FLEX eligibility restriction (decision #29). Defaults
+    # to every FLEX_ELIGIBLE_POSITIONS position, reproducing every prior
+    # session's behavior unchanged.
+    flex_positions = flex_positions if flex_positions is not None else set(FLEX_ELIGIBLE_POSITIONS)
+
     for pos, required in fixed_counts.items():
         pool = by_position.get(pos, [])
         if pos in FLEX_ELIGIBLE_POSITIONS:
-            # Own minimum, can exceed via FLEX -- exact total enforced below.
-            prob += pulp.lpSum(x[pid] for pid in pool) >= required, f"min_{pos}"
+            if pos in flex_positions:
+                # Own minimum, can exceed via FLEX -- exact total enforced below.
+                prob += pulp.lpSum(x[pid] for pid in pool) >= required, f"min_{pos}"
+            else:
+                # Excluded from FLEX this run -- pinned to its exact fixed
+                # count, same treatment as a non-FLEX-eligible position.
+                prob += pulp.lpSum(x[pid] for pid in pool) == required, f"exact_{pos}_no_flex"
         else:
             # QB / DST-DEF -- no FLEX eligibility, exact count.
             prob += pulp.lpSum(x[pid] for pid in pool) == required, f"exact_{pos}"
@@ -1045,7 +1106,9 @@ def build_single_lineup(site: str, week: int, randomization_pct: float = DEFAULT
                          mini_stack_type: str = None,
                          candidate_pool_size: int = DEFAULT_STACK_CANDIDATE_POOL,
                          locked_player_ids: set = None,
-                         excluded_player_ids: set = None) -> pd.DataFrame:
+                         excluded_player_ids: set = None,
+                         min_salary: int = 0,
+                         flex_positions: set = None) -> pd.DataFrame:
     config = SITE_CONFIGS[site]
     players = load_final_projections(site, week)
     fixed_counts, flex_count = parse_roster_requirements(config["roster_slots"])
@@ -1090,6 +1153,7 @@ def build_single_lineup(site: str, week: int, randomization_pct: float = DEFAULT
         bring_back=bring_back, target_team=target_team, target_game=target_game,
         game_stack_min_players=game_stack_min_players, mini_stack_type=mini_stack_type,
         locked_player_ids=locked_player_ids,
+        min_salary=min_salary, flex_positions=flex_positions,
     )
     if locked_player_ids:
         missing = locked_player_ids - set(selected["player_id"])
@@ -1135,7 +1199,9 @@ def build_multi_lineup(site: str, week: int, n_lineups: int = DEFAULT_N_LINEUPS,
                         candidate_pool_size: int = DEFAULT_STACK_CANDIDATE_POOL,
                         stack_diversify: str = DEFAULT_STACK_DIVERSIFY,
                         locked_player_ids: set = None,
-                        excluded_player_ids: set = None) -> tuple:
+                        excluded_player_ids: set = None,
+                        min_salary: int = 0,
+                        flex_positions: set = None) -> tuple:
     """Generates up to `n_lineups` distinct, salary-cap-legal lineups, none
     of which use any single player in more than `max_exposure_pct` of the
     total requested lineups (decisions #5/#6 above). Returns
@@ -1253,6 +1319,7 @@ def build_multi_lineup(site: str, week: int, n_lineups: int = DEFAULT_N_LINEUPS,
                     game_stack_min_players=game_stack_min_players,
                     mini_stack_type=mini_stack_type,
                     locked_player_ids=locked_player_ids,
+                    min_salary=min_salary, flex_positions=flex_positions,
                 )
                 chosen_cand = cand
                 break
@@ -1435,6 +1502,25 @@ def main():
         help="Comma-separated player_id(s) to remove from the candidate pool "
              "entirely (decision #22).",
     )
+    # Session 7.3 -- Salary Floor / FLEX Eligibility Restriction (decisions #28-29).
+    parser.add_argument(
+        "--min-salary-pct", type=float, default=DEFAULT_MIN_SALARY_PCT,
+        help=f"Minimum %% of that site's salary cap the lineup must use "
+             f"(default {DEFAULT_MIN_SALARY_PCT:.0f} -- no floor, existing "
+             f"behavior unchanged). E.g. 95 requires spending at least 95%% "
+             f"of the cap. A %% (not a flat dollar amount) so it travels "
+             f"between DK's $50K and FD's $60K cap unchanged, same pattern "
+             f"as pivot_finder.py's salary tolerance decision.",
+    )
+    parser.add_argument(
+        "--flex-positions", default=None,
+        help="Comma-separated subset of RB,WR,TE allowed to fill the FLEX "
+             "slot (default: unset, meaning all three -- existing behavior "
+             "unchanged). E.g. --flex-positions WR,RB excludes TE from "
+             "FLEX entirely (each position still gets its own normal fixed "
+             "slot(s) either way -- this only restricts the one extra FLEX "
+             "seat).",
+    )
     # Session 7.2b -- UI-Optimizer Integration (real-solver dispatch path).
     parser.add_argument(
         "--request-id", default=None,
@@ -1466,6 +1552,12 @@ def main():
             f"--exclude (decision #25)."
         )
 
+    # Session 7.3 -- decisions #28-29.
+    flex_positions = parse_flex_positions(args.flex_positions) if args.flex_positions else None
+    if not 0 <= args.min_salary_pct <= 100:
+        parser.error("--min-salary-pct must be between 0 and 100.")
+    min_salary = int(round((args.min_salary_pct / 100.0) * config["salary_cap"]))
+
     stack_kwargs = dict(
         stack_mode=args.stack_mode, stack_size=args.stack_size,
         stack_positions=stack_positions, bring_back=args.bring_back,
@@ -1485,6 +1577,7 @@ def main():
             stack_diversify=args.stack_diversify,
             locked_player_ids=locked_player_ids,
             excluded_player_ids=excluded_player_ids,
+            min_salary=min_salary, flex_positions=flex_positions,
             **stack_kwargs,
         )
         if args.request_id:
@@ -1515,6 +1608,7 @@ def main():
             rng=np.random.default_rng(args.seed) if args.randomization_pct > 0 else None,
             locked_player_ids=locked_player_ids,
             excluded_player_ids=excluded_player_ids,
+            min_salary=min_salary, flex_positions=flex_positions,
             **stack_kwargs,
         )
         if args.request_id:

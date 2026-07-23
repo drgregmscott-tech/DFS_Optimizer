@@ -688,6 +688,126 @@
     color: var(--dimmer);
     margin-top: 6px;
   }
+
+  /* ---------------- Session 7.3 -- Slate panel ---------------- */
+
+  .slate-panel {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 16px 18px;
+    margin-bottom: 20px;
+  }
+
+  .slate-row { display: flex; gap: 12px; flex-wrap: wrap; }
+  .slate-row input[type="number"] {
+    background: var(--ink-raised);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    color: var(--bone);
+    font-family: 'Inter', system-ui, sans-serif;
+    font-size: 13px;
+    padding: 8px 10px;
+    width: 100%;
+  }
+
+  .slate-chips {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-top: 12px;
+  }
+
+  .slate-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--panel-2);
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    padding: 5px 6px 5px 12px;
+    font-size: 12px;
+    color: var(--dim);
+  }
+
+  .slate-chip.active { border-color: var(--amber); color: var(--bone); }
+  .slate-chip .rm {
+    appearance: none; border: none; background: var(--line-soft); color: var(--dim);
+    width: 18px; height: 18px; border-radius: 50%; cursor: pointer; font-size: 11px; line-height: 1;
+  }
+  .slate-chip .rm:hover { background: var(--bad); color: var(--ink); }
+
+  /* ---------------- Slate overview (games / totals) ---------------- */
+
+  .overview-panel {
+    margin-top: 16px;
+    border: 1px solid var(--line-soft);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  .overview-row {
+    display: grid;
+    grid-template-columns: 1fr 90px;
+    padding: 8px 12px;
+    border-bottom: 1px solid var(--line-soft);
+    font-size: 12px;
+    align-items: center;
+  }
+  .overview-row:last-child { border-bottom: none; }
+  .overview-row.head { color: var(--dimmer); font-size: 10px; text-transform: uppercase; letter-spacing: 0.06em; background: var(--panel-2); }
+  .overview-row .ou { text-align: right; font-family: 'Roboto Mono', monospace; color: var(--amber); font-weight: 600; }
+  .overview-bar-wrap { grid-column: 1 / -1; height: 4px; background: var(--line-soft); border-radius: 2px; overflow: hidden; margin-top: 4px; }
+  .overview-bar { height: 100%; background: var(--amber); }
+
+  /* ---------------- Player pool tabs + sortable header ---------------- */
+
+  .pool-tabs {
+    display: flex;
+    gap: 6px;
+    margin-top: 12px;
+    flex-wrap: wrap;
+  }
+
+  .tab-btn {
+    appearance: none;
+    border: 1px solid var(--line);
+    background: var(--panel-2);
+    color: var(--dim);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.03em;
+    padding: 6px 12px;
+    border-radius: 999px;
+    cursor: pointer;
+  }
+  .tab-btn.active { background: var(--amber-dim); border-color: var(--amber); color: var(--amber); }
+
+  .player-list-head {
+    display: grid;
+    grid-template-columns: 1fr 58px 58px 50px 50px 112px;
+    gap: 10px;
+    padding: 6px 12px;
+    margin-top: 8px;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--dimmer);
+  }
+  .player-list-head .sortcol {
+    cursor: pointer;
+    text-align: right;
+    user-select: none;
+  }
+  .player-list-head .sortcol:hover { color: var(--bone); }
+  .player-list-head .sortcol.active { color: var(--amber); }
+  .player-list-head .sortcol.active::after { content: attr(data-arrow); margin-left: 3px; }
+
+  .player-row {
+    grid-template-columns: 1fr 58px 58px 50px 50px 112px !important;
+  }
+
+  .player-row .pown { font-family: 'Roboto Mono', monospace; font-size: 11px; color: var(--dim); text-align: right; }
+  .player-row .pactions { display: flex; gap: 4px; justify-content: flex-end; }
 </style>
 </head>
 <body>
@@ -705,23 +825,23 @@
 
 <div class="wrap">
 
-  <div class="upload-grid">
-    <div class="upload-card" data-site="dk" id="cardDk">
-      <div class="label-block">
-        <p class="site-label">DK lineups</p>
-        <p class="file-status" id="statusDk">No file loaded</p>
+  <div class="slate-panel" id="slatePanel">
+    <div class="slate-row">
+      <div style="flex:0 0 100px;">
+        <span class="field-label">Week</span>
+        <input type="number" id="slateWeek" min="1" max="22" value="10">
       </div>
-      <button class="upload-btn" id="btnDk">Upload CSV</button>
-      <input type="file" id="fileDk" accept=".csv">
-    </div>
-    <div class="upload-card" data-site="fd" id="cardFd">
-      <div class="label-block">
-        <p class="site-label">FD lineups</p>
-        <p class="file-status" id="statusFd">No file loaded</p>
+      <div style="flex:1; min-width:220px;">
+        <span class="field-label">Slate (this site + week)</span>
+        <div class="pool-upload-row" style="margin-top:0;">
+          <button class="upload-btn" id="btnSlate">Upload Slate CSV</button>
+          <input type="file" id="fileSlate" accept=".csv" style="display:none">
+          <span class="pool-status" id="slateStatus">No slate loaded</span>
+        </div>
       </div>
-      <button class="upload-btn" id="btnFd">Upload CSV</button>
-      <input type="file" id="fileFd" accept=".csv">
     </div>
+    <div class="slate-chips" id="slateChips"></div>
+    <div class="hint">One upload per site/week — accepts either <code>final_projections_&#123;site&#125;_&#123;week&#125;.csv</code> (to build lineups) or an already-built <code>lineup_single/multi_&#123;site&#125;_&#123;week&#125;.csv</code> (to just view). Stays loaded across page reloads (switch site above, or week here) until you remove it below.</div>
   </div>
 
   <!-- ================= Build Lineup panel (Session 7.2c) ================= -->
@@ -732,21 +852,7 @@
     </div>
     <div class="build-body">
 
-      <div>
-        <span class="field-label">Player pool (final_projections_&#123;site&#125;_&#123;week&#125;.csv)</span>
-        <div class="pool-upload-row">
-          <button class="upload-btn" id="btnPool">Upload CSV</button>
-          <input type="file" id="filePool" accept=".csv" style="display:none">
-          <span class="pool-status" id="poolStatus">No player pool loaded for this site</span>
-        </div>
-      </div>
-
       <div class="settings-row">
-        <div style="flex:1; min-width:120px;">
-          <span class="field-label">Week</span>
-          <input type="number" id="ctrlWeek" min="1" max="22" value="10">
-          <div class="hint" style="margin-top:4px">Pre-filled with 10 -- change this to match whichever week's <code>final_projections_&#123;site&#125;_&#123;week&#125;.csv</code> is actually committed in the repo.</div>
-        </div>
         <div style="flex:2; min-width:200px;">
           <span class="field-label">Worker URL (Session 7.2b)</span>
           <input type="text" id="settingsWorkerUrl" placeholder="https://dfs-optimizer-api.yoursubdomain.workers.dev">
@@ -756,24 +862,18 @@
           <input type="password" id="settingsWorkerToken" placeholder="WORKER_AUTH_TOKEN">
         </div>
       </div>
+      <div class="hint">Saved automatically as you type -- set once, stays across reloads.</div>
 
       <div class="controls-grid">
         <div>
-          <span class="field-label">Mode</span>
-          <select id="ctrlMode">
-            <option value="single">Single lineup</option>
-            <option value="multi">Multi-lineup</option>
-          </select>
-        </div>
-        <div id="wrapNLineups" style="display:none">
           <span class="field-label"># Lineups</span>
           <input type="number" id="ctrlNLineups" min="1" max="150" value="20">
         </div>
-        <div id="wrapMaxExposure" style="display:none">
+        <div>
           <span class="field-label">Max Exposure %</span>
           <input type="number" id="ctrlMaxExposure" min="1" max="100" value="40">
         </div>
-        <div id="wrapUniqueness" style="display:none">
+        <div>
           <span class="field-label">Uniqueness</span>
           <input type="number" id="ctrlUniqueness" min="0" max="9" value="1">
         </div>
@@ -791,12 +891,30 @@
           <input type="number" id="ctrlRandomization" min="0" max="100" value="0">
         </div>
         <div>
-          <span class="field-label">Seed (optional)</span>
-          <input type="number" id="ctrlSeed" placeholder="random each run">
+          <span class="field-label">Min Salary Used %</span>
+          <input type="number" id="ctrlMinSalaryPct" min="0" max="100" value="0" placeholder="0 = no floor">
+          <div class="hint" style="margin-top:4px">E.g. 95 requires spending at least 95% of the cap -- keeps lineups from leaving money on the table.</div>
         </div>
       </div>
 
-      <div class="hint" id="randomizationHint" style="display:none">Randomization only applies to "Confirm with Real Solver" -- Instant Preview always uses real, un-randomized projections.</div>
+      <div class="controls-grid">
+        <div>
+          <span class="field-label">FLEX Eligible Positions</span>
+          <div class="controls-grid" style="grid-template-columns:repeat(3,auto); gap:16px; margin-top:6px;">
+            <label class="checkbox-row" style="margin-top:0;"><input type="checkbox" id="ctrlFlexRb" checked> RB</label>
+            <label class="checkbox-row" style="margin-top:0;"><input type="checkbox" id="ctrlFlexWr" checked> WR</label>
+            <label class="checkbox-row" style="margin-top:0;"><input type="checkbox" id="ctrlFlexTe" checked> TE</label>
+          </div>
+        </div>
+        <div>
+          <label class="checkbox-row" style="margin-top:22px;">
+            <input type="checkbox" id="ctrlSaveSettings">
+            Save these settings (lineups, exposure, uniqueness, randomization, stack) for next time
+          </label>
+        </div>
+      </div>
+
+      <div class="hint" id="randomizationHint" style="display:none">Each lineup in the batch draws its own randomized projection around the real value -- adds variety across a multi-lineup build.</div>
 
       <div class="controls-grid stack-sub" id="stackSubFields" style="display:none">
         <div id="wrapStackSize">
@@ -828,18 +946,28 @@
         </div>
       </div>
 
+      <div id="slateOverview"></div>
+
       <div class="player-search">
-        <span class="field-label">Lock / Exclude players</span>
-        <input type="text" id="playerSearch" placeholder="Search player, team, or position&hellip;">
+        <div style="display:flex; justify-content:space-between; align-items:flex-end; gap:12px; flex-wrap:wrap;">
+          <span class="field-label" style="margin-bottom:0;">Player Pool -- Lock / Exclude</span>
+          <div class="pool-upload-row" style="margin:0; padding:6px 10px;">
+            <button class="upload-btn" id="btnOwnership" style="font-size:11px; padding:5px 10px;">Ownership CSV (optional)</button>
+            <input type="file" id="fileOwnership" accept=".csv" style="display:none">
+            <span class="pool-status" id="ownershipStatus" style="font-size:11px;">No ownership estimates loaded</span>
+          </div>
+        </div>
+        <input type="text" id="playerSearch" placeholder="Search player, team, or position&hellip;" style="margin-top:10px;">
+        <div class="pool-tabs" id="poolTabs"></div>
+        <div class="player-list-head" id="playerListHead"></div>
         <div class="player-list" id="playerList"></div>
       </div>
 
       <div class="action-row">
-        <button class="action-btn" id="btnPreview">Preview Instantly</button>
-        <button class="action-btn primary" id="btnConfirm">Confirm with Real Solver</button>
+        <button class="action-btn primary" id="btnConfirm">Build Lineups</button>
       </div>
       <div class="solve-status" id="solveStatus"></div>
-      <div class="hint">Instant preview runs a real ILP solver (glpk.js) in your browser — single-lineup, lock/exclude only, no stacking yet. "Confirm with Real Solver" always runs the actual <code>optimizer.py</code> via GitHub Actions and supports every control above.</div>
+      <div class="hint">Runs the actual <code>optimizer.py</code> via GitHub Actions (typically 20-90s) and supports every control above.</div>
 
     </div>
   </div>
@@ -872,8 +1000,14 @@
     excluded: { dk: {}, fd: {} },               // player_id -> true
     playerSearch: "",
     activeRequestId: null,
-    pollTimer: null
+    pollTimer: null,
+    // ---- Session 7.3 additions ----
+    ownership: { dk: null, fd: null },         // each: { filename, byId: { player_id: pct } }
+    poolTab: "ALL",
+    poolSort: { key: "final_projection", dir: "desc" }
   };
+
+  var SLATE_INDEX_KEY = "dfs_slate_index"; // JSON array of {site, week}
 
   // ---------------- CSV parsing ----------------
 
@@ -932,43 +1066,151 @@
     return { lineups: lineups, ids: ids };
   }
 
-  // ---------------- File handling ----------------
+  // ---------------- Session 7.3 -- unified slate handling ----------------
+  // Replaces the old separate "DK lineups"/"FD lineups" upload cards (item
+  // #1) AND the old separate "player pool" upload (item #2) with ONE
+  // upload that auto-detects which of the two real file shapes it got, and
+  // persists it to localStorage keyed by site+week so it survives a page
+  // reload (item #2's actual ask).
 
-  function handleFile(site, file) {
+  function cap(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
+
+  function slateKey(site, week) { return "dfs_slate_" + site + "_" + week; }
+
+  function readSlateIndex() {
+    try { return JSON.parse(localStorage.getItem(SLATE_INDEX_KEY) || "[]"); }
+    catch (e) { return []; }
+  }
+
+  function writeSlateIndex(list) {
+    try { localStorage.setItem(SLATE_INDEX_KEY, JSON.stringify(list)); } catch (e) { /* ignore */ }
+  }
+
+  function persistSlate(site, week, kind, filename, payload) {
+    try {
+      localStorage.setItem(slateKey(site, week), JSON.stringify({ kind: kind, filename: filename, payload: payload }));
+      var idx = readSlateIndex();
+      var exists = idx.some(function (e2) { return e2.site === site && String(e2.week) === String(week); });
+      if (!exists) { idx.push({ site: site, week: week }); writeSlateIndex(idx); }
+    } catch (e) { /* localStorage unavailable or quota exceeded -- slate still works this session, just won't persist */ }
+  }
+
+  function removeSlate(site, week) {
+    try {
+      localStorage.removeItem(slateKey(site, week));
+      writeSlateIndex(readSlateIndex().filter(function (e2) { return !(e2.site === site && String(e2.week) === String(week)); }));
+    } catch (e) { /* ignore */ }
+    if (state.activeSite === site && String(document.getElementById("slateWeek").value) === String(week)) {
+      state.data[site] = null;
+      state.pool[site] = null;
+      setSlateStatus("No slate loaded");
+      render();
+      renderPlayerList();
+      renderSlateOverview();
+    }
+    renderSlateChips();
+  }
+
+  function applySlatePayload(site, kind, filename, payload) {
+    if (kind === "pool") {
+      state.pool[site] = { filename: filename, players: payload };
+      applyOwnershipToPool(site);
+    } else {
+      var grouped = groupBySite(payload, site);
+      state.data[site] = { filename: filename, lineups: grouped.lineups, ids: grouped.ids, currentIndex: 0 };
+    }
+  }
+
+  function loadStoredSlate(site, week) {
+    try {
+      var raw = localStorage.getItem(slateKey(site, week));
+      if (!raw) return false;
+      var stored = JSON.parse(raw);
+      applySlatePayload(site, stored.kind, stored.filename, stored.payload);
+      return true;
+    } catch (e) { return false; }
+  }
+
+  function detectSlateKind(rows) {
+    if (!rows.length) return null;
+    var poolRequired = ["player_id", "player_name", "position", "team", "salary", "final_projection"];
+    var lineupRequired = ["roster_slot", "player_name", "position", "team", "salary", "projection"];
+    var hasAll = function (req) { return req.every(function (k) { return Object.prototype.hasOwnProperty.call(rows[0], k); }); };
+    if (hasAll(poolRequired)) return "pool";
+    if (hasAll(lineupRequired)) return "lineup";
+    return null;
+  }
+
+  function handleSlateFile(file) {
     if (!file) return;
+    var site = state.activeSite;
+    var week = document.getElementById("slateWeek").value.trim() || "10";
     var reader = new FileReader();
     reader.onload = function (e) {
       var rows;
-      try {
-        rows = parseCSV(e.target.result);
-      } catch (err) {
-        setStatus(site, "Couldn't parse file — check it's a valid CSV export.");
+      try { rows = parseCSV(e.target.result); }
+      catch (err) { setSlateStatus("Couldn't parse file — check it's a valid CSV export."); return; }
+      if (!rows.length) { setSlateStatus("File loaded but no rows found."); return; }
+      var kind = detectSlateKind(rows);
+      if (!kind) {
+        setSlateStatus("Doesn't look like final_projections_" + site + "_" + week + ".csv or a lineup_*.csv -- check the file.");
         return;
       }
-      if (!rows.length) {
-        setStatus(site, "File loaded but no rows found.");
-        return;
-      }
-      var required = ["roster_slot", "player_name", "position", "team", "salary", "projection"];
-      var missing = required.filter(function (k) { return !Object.prototype.hasOwnProperty.call(rows[0], k); });
-      if (missing.length) {
-        setStatus(site, "Missing expected column(s): " + missing.join(", "));
-        return;
-      }
-      var grouped = groupBySite(rows, site);
-      state.data[site] = { filename: file.name, lineups: grouped.lineups, ids: grouped.ids, currentIndex: 0 };
-      setStatus(site, file.name, true);
-      document.getElementById("card" + cap(site)).classList.add("has-file");
-      if (state.activeSite === site) render();
+      var payload = kind === "pool" ? rows.map(function (r) {
+        return {
+          player_id: r.player_id, player_name: r.player_name.trim(), position: r.position,
+          team: r.team, salary: parseFloat(r.salary) || 0, final_projection: parseFloat(r.final_projection) || 0,
+          opponent: r.opponent || "", implied_total: parseFloat(r.implied_total) || 0, over_under: parseFloat(r.over_under) || 0
+        };
+      }) : rows;
+      applySlatePayload(site, kind, file.name, payload);
+      persistSlate(site, week, kind, file.name, payload);
+      setSlateStatus(file.name + " — " + rows.length + (kind === "pool" ? " players (player pool)" : " rows (built lineup)"), true);
+      renderSlateChips();
+      render();
+      renderPlayerList();
+      renderSlateOverview();
     };
     reader.readAsText(file);
   }
 
-  function setStatus(site, text, loaded) {
-    document.getElementById("status" + cap(site)).textContent = text;
+  function setSlateStatus(text, loaded) {
+    var el = document.getElementById("slateStatus");
+    el.textContent = text;
+    el.classList.toggle("loaded", !!loaded);
   }
 
-  function cap(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
+  function renderSlateChips() {
+    var idx = readSlateIndex();
+    var el = document.getElementById("slateChips");
+    if (!idx.length) { el.innerHTML = ""; return; }
+    var curWeek = document.getElementById("slateWeek").value.trim();
+    el.innerHTML = idx.map(function (e2) {
+      var isActive = e2.site === state.activeSite && String(e2.week) === String(curWeek);
+      return '<span class="slate-chip' + (isActive ? " active" : "") + '" data-site="' + e2.site + '" data-week="' + e2.week + '">' +
+        e2.site.toUpperCase() + ' &middot; Wk ' + e2.week +
+        '<button class="rm" data-rm-site="' + e2.site + '" data-rm-week="' + e2.week + '" title="Remove">&times;</button></span>';
+    }).join("");
+  }
+
+  document.getElementById("slateChips").addEventListener("click", function (e) {
+    var rm = e.target.closest("button[data-rm-site]");
+    if (rm) { removeSlate(rm.getAttribute("data-rm-site"), rm.getAttribute("data-rm-week")); return; }
+    var chip = e.target.closest(".slate-chip[data-site]");
+    if (!chip) return;
+    var site = chip.getAttribute("data-site"), week = chip.getAttribute("data-week");
+    document.getElementById("slateWeek").value = week;
+    document.querySelectorAll("#siteToggle button").forEach(function (b) {
+      b.classList.toggle("active", b.getAttribute("data-site") === site);
+    });
+    state.activeSite = site;
+    var loaded = loadStoredSlate(site, week);
+    setSlateStatus(loaded ? "Loaded from this browser's storage" : "No slate loaded", loaded);
+    renderSlateChips();
+    render();
+    renderPlayerList();
+    renderSlateOverview();
+  });
 
   // ---------------- Rendering ----------------
 
@@ -990,8 +1232,7 @@
       viewer.innerHTML =
         '<div class="empty-state">' +
         '<div class="glyph">No slate loaded</div>' +
-        '<p>Upload a <code>lineup_single_' + site + '_&#123;week&#125;.csv</code> or ' +
-        '<code>lineups_multi_' + site + '_&#123;week&#125;.csv</code> above to view ' + cfg.label + ' lineups.</p>' +
+        '<p>Upload your ' + cfg.label + ' slate above (a <code>final_projections_' + site + '_&#123;week&#125;.csv</code> to build lineups, or an already-built <code>lineup_*_' + site + '_&#123;week&#125;.csv</code> to just view) — or build lineups below once a player pool is loaded.</p>' +
         '</div>';
       return;
     }
@@ -1083,6 +1324,27 @@
 
   // ---------------- Wiring ----------------
 
+  function refreshForActiveSlate() {
+    var site = state.activeSite;
+    var week = document.getElementById("slateWeek").value.trim();
+    var loadedLineup = loadStoredSlate(site, week);
+    // If nothing was persisted for this exact site+week, don't clobber
+    // whatever's already in memory for it (e.g. a lineup this session just
+    // built via "Build Lineups" but hasn't been re-persisted as a slate).
+    if (!loadedLineup && !state.pool[site] && !state.data[site]) {
+      setSlateStatus("No slate loaded");
+    } else if (loadedLineup) {
+      var stored = JSON.parse(localStorage.getItem(slateKey(site, week)) || "{}");
+      setSlateStatus((stored.filename || "loaded") + " — from this browser's storage", true);
+    } else {
+      setSlateStatus(state.pool[site] ? state.pool[site].filename + " — " + state.pool[site].players.length + " players" : "No slate loaded", !!state.pool[site]);
+    }
+    renderSlateChips();
+    render();
+    renderPlayerList();
+    renderSlateOverview();
+  }
+
   document.getElementById("siteToggle").addEventListener("click", function (e) {
     var btn = e.target.closest("button[data-site]");
     if (!btn) return;
@@ -1090,32 +1352,24 @@
     document.querySelectorAll("#siteToggle button").forEach(function (b) {
       b.classList.toggle("active", b === btn);
     });
-    render();
-    // Session 7.2c -- keep the Build panel's pool status/player list in sync
-    // with whichever site is now active (pool/locks/excludes are per-site).
-    var pool = state.pool[state.activeSite];
-    setPoolStatus(pool ? (pool.filename + " — " + pool.players.length + " players") : "No player pool loaded for this site", !!pool);
-    renderPlayerList();
+    refreshForActiveSlate();
   });
 
-  ["dk", "fd"].forEach(function (site) {
-    var input = document.getElementById("file" + cap(site));
-    var btn = document.getElementById("btn" + cap(site));
-    var card = document.getElementById("card" + cap(site));
+  document.getElementById("slateWeek").addEventListener("change", refreshForActiveSlate);
 
-    btn.addEventListener("click", function () { input.click(); });
-    input.addEventListener("change", function () { handleFile(site, input.files[0]); });
-
-    ["dragover", "dragenter"].forEach(function (evt) {
-      card.addEventListener(evt, function (e) { e.preventDefault(); card.classList.add("drag-over"); });
-    });
-    ["dragleave", "drop"].forEach(function (evt) {
-      card.addEventListener(evt, function (e) { e.preventDefault(); card.classList.remove("drag-over"); });
-    });
-    card.addEventListener("drop", function (e) {
-      var file = e.dataTransfer.files && e.dataTransfer.files[0];
-      if (file) handleFile(site, file);
-    });
+  document.getElementById("btnSlate").addEventListener("click", function () {
+    document.getElementById("fileSlate").click();
+  });
+  document.getElementById("fileSlate").addEventListener("change", function (e) {
+    handleSlateFile(e.target.files[0]);
+  });
+  ["dragover", "dragenter"].forEach(function (evt) {
+    document.getElementById("slatePanel").addEventListener(evt, function (e) { e.preventDefault(); });
+  });
+  document.getElementById("slatePanel").addEventListener("drop", function (e) {
+    e.preventDefault();
+    var file = e.dataTransfer.files && e.dataTransfer.files[0];
+    if (file) handleSlateFile(file);
   });
 
   // =========================================================================
@@ -1127,16 +1381,35 @@
   // deployed site, not a sandboxed artifact, so localStorage is the correct
   // tool here) ----------------
 
+  // Session 7.3 -- items #3/#5: Worker URL/Token save on EVERY keystroke
+  // (input event), not just on blur/change, so switching tabs or closing
+  // the browser mid-type never loses it. Full-settings save (item #5,
+  // replacing the old --seed field) is opt-in via the "Save these
+  // settings" checkbox.
+  var FULL_SETTINGS_FIELDS = [
+    "ctrlNLineups", "ctrlMaxExposure", "ctrlUniqueness", "ctrlRandomization",
+    "ctrlMinSalaryPct", "ctrlStackMode", "ctrlStackSize", "ctrlStackPositions",
+    "ctrlStackTeam", "ctrlStackGame", "ctrlMiniType", "ctrlBringBack",
+    "ctrlFlexRb", "ctrlFlexWr", "ctrlFlexTe"
+  ];
+
   function loadSettings() {
     try {
       document.getElementById("settingsWorkerUrl").value = localStorage.getItem("dfs_worker_url") || "";
       document.getElementById("settingsWorkerToken").value = localStorage.getItem("dfs_worker_token") || "";
-      // Week defaults to the input's own value="10" (set in HTML) if
-      // nothing's been saved yet -- only override it once a real save has
-      // happened, so a fresh browser still shows a sensible starting point
-      // rather than a blank field.
       var savedWeek = localStorage.getItem("dfs_week");
-      if (savedWeek) document.getElementById("ctrlWeek").value = savedWeek;
+      if (savedWeek) document.getElementById("slateWeek").value = savedWeek;
+
+      var saveFlag = localStorage.getItem("dfs_save_settings") === "1";
+      document.getElementById("ctrlSaveSettings").checked = saveFlag;
+      if (saveFlag) {
+        FULL_SETTINGS_FIELDS.forEach(function (id) {
+          var raw = localStorage.getItem("dfs_setting_" + id);
+          if (raw === null) return;
+          var el = document.getElementById(id);
+          if (el.type === "checkbox") el.checked = raw === "1"; else el.value = raw;
+        });
+      }
     } catch (e) { /* localStorage unavailable (private browsing etc) -- fields just stay empty */ }
   }
 
@@ -1144,82 +1417,146 @@
     try {
       localStorage.setItem("dfs_worker_url", document.getElementById("settingsWorkerUrl").value.trim());
       localStorage.setItem("dfs_worker_token", document.getElementById("settingsWorkerToken").value.trim());
-      localStorage.setItem("dfs_week", document.getElementById("ctrlWeek").value.trim());
+      localStorage.setItem("dfs_week", document.getElementById("slateWeek").value.trim());
     } catch (e) { /* ignore */ }
   }
 
-  // ---------------- Player pool CSV handling ----------------
+  function saveFullSettingsIfEnabled() {
+    try {
+      var enabled = document.getElementById("ctrlSaveSettings").checked;
+      localStorage.setItem("dfs_save_settings", enabled ? "1" : "0");
+      if (!enabled) return;
+      FULL_SETTINGS_FIELDS.forEach(function (id) {
+        var el = document.getElementById(id);
+        localStorage.setItem("dfs_setting_" + id, el.type === "checkbox" ? (el.checked ? "1" : "0") : el.value);
+      });
+    } catch (e) { /* ignore */ }
+  }
 
-  function handlePoolFile(file) {
+  // ---------------- Session 7.3 -- Ownership CSV handling (item #6) ----------------
+  // Accepts anything with player_id + a column matching /ownership/i (e.g.
+  // ownership_heuristic.py's chalk_scores_{site}_{week}.csv, which carries
+  // estimated_ownership_pct). Purely informational -- never sent to the
+  // solver, just displayed and averaged per built lineup.
+
+  function applyOwnershipToPool(site) {
+    var own = state.ownership[site];
+    var pool = state.pool[site];
+    if (!own || !pool) return;
+    pool.players.forEach(function (p) { p.ownership = own.byId[p.player_id]; });
+  }
+
+  function handleOwnershipFile(file) {
     if (!file) return;
+    var site = state.activeSite;
     var reader = new FileReader();
     reader.onload = function (e) {
       var rows;
-      try {
-        rows = parseCSV(e.target.result);
-      } catch (err) {
-        setPoolStatus("Couldn't parse file — check it's a valid CSV export.", false);
+      try { rows = parseCSV(e.target.result); }
+      catch (err) { setOwnershipStatus("Couldn't parse file — check it's a valid CSV export."); return; }
+      if (!rows.length || !Object.prototype.hasOwnProperty.call(rows[0], "player_id")) {
+        setOwnershipStatus("Needs a player_id column to match against your player pool.");
         return;
       }
-      if (!rows.length) {
-        setPoolStatus("File loaded but no rows found.", false);
+      var ownCol = Object.keys(rows[0]).find(function (k) { return /ownership/i.test(k); });
+      if (!ownCol) {
+        setOwnershipStatus("No column matching \"ownership\" found (e.g. estimated_ownership_pct).");
         return;
       }
-      var required = ["player_id", "player_name", "position", "team", "salary", "final_projection"];
-      var missing = required.filter(function (k) { return !Object.prototype.hasOwnProperty.call(rows[0], k); });
-      if (missing.length) {
-        setPoolStatus("Missing expected column(s): " + missing.join(", "), false);
-        return;
-      }
-      var players = rows.map(function (r) {
-        return {
-          player_id: r.player_id,
-          player_name: r.player_name.trim(),
-          position: r.position,
-          team: r.team,
-          salary: parseFloat(r.salary) || 0,
-          final_projection: parseFloat(r.final_projection) || 0,
-          opponent: r.opponent || ""
-        };
-      });
-      var site = state.activeSite;
-      state.pool[site] = { filename: file.name, players: players };
-      setPoolStatus(file.name + " — " + players.length + " players", true);
+      var byId = {};
+      rows.forEach(function (r) { byId[r.player_id] = parseFloat(r[ownCol]) || 0; });
+      state.ownership[site] = { filename: file.name, byId: byId };
+      applyOwnershipToPool(site);
+      setOwnershipStatus(file.name + " — matched via \"" + ownCol + "\"", true);
       renderPlayerList();
     };
     reader.readAsText(file);
   }
 
-  function setPoolStatus(text, loaded) {
-    var el = document.getElementById("poolStatus");
+  function setOwnershipStatus(text, loaded) {
+    var el = document.getElementById("ownershipStatus");
     el.textContent = text;
     el.classList.toggle("loaded", !!loaded);
   }
 
-  // ---------------- Player list (search + lock/exclude) ----------------
+  document.getElementById("btnOwnership").addEventListener("click", function () {
+    document.getElementById("fileOwnership").click();
+  });
+  document.getElementById("fileOwnership").addEventListener("change", function (e) {
+    handleOwnershipFile(e.target.files[0]);
+  });
+
+  // ---------------- Session 7.3 -- Player list: tabs, sorting, value column,
+  // ownership column (item #10; item #6's ownership display) ----------------
+
+  var POOL_TABS = ["ALL", "QB", "RB", "WR", "TE", "DST"];
+  var SORT_COLUMNS = [
+    { key: "salary", label: "Price" },
+    { key: "final_projection", label: "Proj" },
+    { key: "value", label: "Value" },
+    { key: "ownership", label: "Own%" }
+  ];
+
+  function isDefensePosition(pos) {
+    return pos === "DST" || pos === "DEF" || pos === "D";
+  }
+
+  function renderPoolTabs() {
+    document.getElementById("poolTabs").innerHTML = POOL_TABS.map(function (t) {
+      return '<button class="tab-btn' + (state.poolTab === t ? " active" : "") + '" data-tab="' + t + '">' + t + '</button>';
+    }).join("");
+  }
+
+  function renderPlayerListHead() {
+    var headEl = document.getElementById("playerListHead");
+    headEl.innerHTML = '<div>Player</div>' + SORT_COLUMNS.map(function (c) {
+      var active = state.poolSort.key === c.key;
+      var arrow = state.poolSort.dir === "asc" ? "\u2191" : "\u2193";
+      return '<div class="sortcol' + (active ? " active" : "") + '" data-sort="' + c.key + '" data-arrow="' + arrow + '">' + c.label + '</div>';
+    }).join("") + '<div></div>';
+  }
 
   function renderPlayerList() {
     var site = state.activeSite;
     var pool = state.pool[site];
     var listEl = document.getElementById("playerList");
+    renderPoolTabs();
+    renderPlayerListHead();
     if (!pool) {
-      listEl.innerHTML = '<div class="player-row"><div class="pmeta">Upload a player pool CSV above to lock/exclude players.</div></div>';
+      listEl.innerHTML = '<div class="player-row"><div class="pmeta">Upload your slate above to lock/exclude players.</div></div>';
       return;
     }
     var q = state.playerSearch.toLowerCase();
     var rows = pool.players.filter(function (p) {
+      if (state.poolTab !== "ALL") {
+        if (state.poolTab === "DST" ? !isDefensePosition(p.position) : p.position !== state.poolTab) return false;
+      }
       if (!q) return true;
       return p.player_name.toLowerCase().indexOf(q) !== -1 ||
              p.team.toLowerCase().indexOf(q) !== -1 ||
              p.position.toLowerCase().indexOf(q) !== -1;
-    }).slice(0, 200); // cap render for very large pools -- search narrows it down
+    });
 
-    if (!rows.length) {
-      listEl.innerHTML = '<div class="player-row"><div class="pmeta">No players match your search.</div></div>';
+    rows = rows.map(function (p) {
+      p.value = p.salary > 0 ? p.final_projection / (p.salary / 1000) : 0;
+      return p;
+    });
+
+    var sortKey = state.poolSort.key, sortDir = state.poolSort.dir;
+    rows.sort(function (a, b) {
+      var av = sortKey === "ownership" ? (a.ownership || 0) : a[sortKey];
+      var bv = sortKey === "ownership" ? (b.ownership || 0) : b[sortKey];
+      return sortDir === "asc" ? av - bv : bv - av;
+    });
+
+    var shown = rows.slice(0, 200); // cap render for very large pools -- search/tabs narrow it down
+
+    if (!shown.length) {
+      listEl.innerHTML = '<div class="player-row"><div class="pmeta">No players match.</div></div>';
       return;
     }
 
-    listEl.innerHTML = rows.map(function (p) {
+    listEl.innerHTML = shown.map(function (p) {
       var isLocked = !!state.locked[site][p.player_id];
       var isExcluded = !!state.excluded[site][p.player_id];
       var rowCls = "player-row" + (isLocked ? " is-locked" : "") + (isExcluded ? " is-excluded" : "");
@@ -1228,11 +1565,33 @@
         '<div class="pmeta">' + escapeHtml(p.position) + ' &middot; ' + escapeHtml(p.team) + '</div></div>' +
         '<div class="psal">' + fmtMoney(p.salary) + '</div>' +
         '<div class="pproj">' + fmtPts(p.final_projection) + '</div>' +
+        '<div class="pown">' + p.value.toFixed(1) + '</div>' +
+        '<div class="pown">' + (p.ownership != null ? p.ownership.toFixed(1) + '%' : '—') + '</div>' +
+        '<div class="pactions">' +
         '<button class="pill-btn lock-btn' + (isLocked ? ' active' : '') + '" data-action="lock">Lock</button>' +
         '<button class="pill-btn exclude-btn' + (isExcluded ? ' active' : '') + '" data-action="exclude">Exclude</button>' +
-        '</div>';
+        '</div></div>';
     }).join("");
   }
+
+  document.getElementById("poolTabs").addEventListener("click", function (e) {
+    var btn = e.target.closest("button[data-tab]");
+    if (!btn) return;
+    state.poolTab = btn.getAttribute("data-tab");
+    renderPlayerList();
+  });
+
+  document.getElementById("playerListHead").addEventListener("click", function (e) {
+    var col = e.target.closest(".sortcol[data-sort]");
+    if (!col) return;
+    var key = col.getAttribute("data-sort");
+    if (state.poolSort.key === key) {
+      state.poolSort.dir = state.poolSort.dir === "asc" ? "desc" : "asc";
+    } else {
+      state.poolSort = { key: key, dir: "desc" };
+    }
+    renderPlayerList();
+  });
 
   document.getElementById("playerList").addEventListener("click", function (e) {
     var btn = e.target.closest("button[data-action]");
@@ -1260,12 +1619,6 @@
   // ---------------- Controls panel show/hide wiring ----------------
 
   function updateControlsVisibility() {
-    var mode = document.getElementById("ctrlMode").value;
-    var isMulti = mode === "multi";
-    document.getElementById("wrapNLineups").style.display = isMulti ? "" : "none";
-    document.getElementById("wrapMaxExposure").style.display = isMulti ? "" : "none";
-    document.getElementById("wrapUniqueness").style.display = isMulti ? "" : "none";
-
     var stackMode = document.getElementById("ctrlStackMode").value;
     var showStack = stackMode !== "none";
     document.getElementById("stackSubFields").style.display = showStack ? "" : "none";
@@ -1276,17 +1629,10 @@
     document.getElementById("wrapStackTeam").style.display = (stackMode === "qb" || (stackMode === "mini")) ? "" : "none";
     document.getElementById("wrapStackGame").style.display = (stackMode === "game" || stackMode === "mini") ? "" : "none";
 
-    // Instant preview only supports single-lineup, no-stack, lock/exclude-only.
-    var previewBtn = document.getElementById("btnPreview");
-    var previewOk = !isMulti && stackMode === "none";
-    previewBtn.disabled = !previewOk;
-    previewBtn.title = previewOk ? "" : "Instant preview only supports single-lineup mode with no stacking yet -- use Confirm with Real Solver.";
-
     var randomization = parseFloat(document.getElementById("ctrlRandomization").value) || 0;
     document.getElementById("randomizationHint").style.display = randomization > 0 ? "" : "none";
   }
 
-  document.getElementById("ctrlMode").addEventListener("change", updateControlsVisibility);
   document.getElementById("ctrlStackMode").addEventListener("change", updateControlsVisibility);
   document.getElementById("ctrlRandomization").addEventListener("input", updateControlsVisibility);
 
@@ -1294,16 +1640,57 @@
     document.getElementById("buildPanel").classList.toggle("open");
   });
 
-  ["settingsWorkerUrl", "settingsWorkerToken", "ctrlWeek"].forEach(function (id) {
-    document.getElementById(id).addEventListener("change", saveSettings);
+  // Session 7.3, item #3 fix: save on every keystroke (input), not just on
+  // blur (change) -- so a URL/token typed and then immediately closed or
+  // tabbed away from is never lost.
+  ["settingsWorkerUrl", "settingsWorkerToken"].forEach(function (id) {
+    document.getElementById(id).addEventListener("input", saveSettings);
+  });
+  document.getElementById("slateWeek").addEventListener("change", saveSettings);
+
+  // Session 7.3, item #5: opt-in full-settings persistence, replacing the
+  // old --seed field. Saves immediately on any change while the checkbox
+  // is on; toggling it off stops future saves (existing saved values are
+  // left alone until re-enabled, not wiped).
+  document.getElementById("ctrlSaveSettings").addEventListener("change", saveFullSettingsIfEnabled);
+  FULL_SETTINGS_FIELDS.forEach(function (id) {
+    document.getElementById(id).addEventListener("change", saveFullSettingsIfEnabled);
   });
 
-  document.getElementById("btnPool").addEventListener("click", function () {
-    document.getElementById("filePool").click();
-  });
-  document.getElementById("filePool").addEventListener("change", function (e) {
-    handlePoolFile(e.target.files[0]);
-  });
+  // ---------------- Session 7.3, item #9: slate overview (games + totals) ----------------
+  // Derived directly from the already-loaded player pool -- final_projections
+  // rows already carry opponent/implied_total/over_under per player
+  // (build_projections.py's Vegas join), so no separate upload is needed.
+
+  function renderSlateOverview() {
+    var el = document.getElementById("slateOverview");
+    var site = state.activeSite;
+    var pool = state.pool[site];
+    if (!pool) { el.innerHTML = ""; return; }
+
+    var games = {};
+    pool.players.forEach(function (p) {
+      if (!p.team || !p.opponent || !p.over_under) return;
+      var key = [p.team, p.opponent].sort().join("-");
+      if (!games[key]) games[key] = { teams: [p.team, p.opponent].sort(), over_under: p.over_under };
+    });
+    var list = Object.keys(games).map(function (k) { return games[k]; });
+    if (!list.length) { el.innerHTML = ""; return; }
+    list.sort(function (a, b) { return b.over_under - a.over_under; });
+    var maxOU = Math.max.apply(null, list.map(function (g) { return g.over_under; }));
+
+    var rowsHtml = list.map(function (g) {
+      var pct = maxOU > 0 ? Math.round((g.over_under / maxOU) * 100) : 0;
+      return '<div class="overview-row"><div>' + escapeHtml(g.teams[0]) + ' vs ' + escapeHtml(g.teams[1]) + '</div>' +
+        '<div class="ou">' + g.over_under.toFixed(1) + '</div>' +
+        '<div class="overview-bar-wrap"><div class="overview-bar" style="width:' + pct + '%"></div></div></div>';
+    }).join("");
+
+    el.innerHTML = '<span class="field-label">Slate Overview -- Game Totals</span>' +
+      '<div class="overview-panel">' +
+      '<div class="overview-row head"><div>Game</div><div style="text-align:right">O/U</div></div>' +
+      rowsHtml + '</div>';
+  }
 
   // ---------------- Rendering a solved lineup back into the existing viewer ----------------
 
@@ -1314,8 +1701,6 @@
   function showSolvedLineup(site, rows, hasLineupId) {
     var grouped = groupBySite(rows, site);
     state.data[site] = { filename: "generated", lineups: grouped.lineups, ids: grouped.ids, currentIndex: 0 };
-    document.getElementById("card" + cap(site)).classList.add("has-file");
-    setStatus(site, "generated lineup" + (grouped.ids.length > 1 ? "s (" + grouped.ids.length + ")" : ""), true);
     if (state.activeSite === site) render();
   }
 
@@ -1325,136 +1710,20 @@
     el.className = "solve-status" + (kind ? " " + kind : "");
   }
 
-  // ---------------- Instant preview (client-side glpk.js) ----------------
-  // Decision (this session): single-lineup, lock/exclude, salary-cap +
-  // roster-count constraints ONLY -- exact same ILP formulation as
-  // optimizer.py's solve_lineup() (validated match, same objective/
-  // constraint values, against real data during this session's build).
-  // Stacking, exposure, uniqueness, and randomization are NOT replicated
-  // here -- "Confirm with Real Solver" is required for those, so there is
-  // never a second, drifting implementation of that logic.
-
-  var glpkPromise = null;
-  function loadGlpk() {
-    if (!glpkPromise) {
-      glpkPromise = import("https://cdn.jsdelivr.net/npm/glpk.js/dist/index.js")
-        .then(function (mod) { return mod.default(); });
-    }
-    return glpkPromise;
-  }
-
-  function solveInstant() {
-    var site = state.activeSite;
-    var pool = state.pool[site];
-    if (!pool) { setSolveStatus("Upload a player pool CSV for this site first.", "error"); return; }
-
-    var cfg = SITE_CONFIG[site];
-    var lockedIds = Object.keys(state.locked[site]);
-    var excludedIds = Object.keys(state.excluded[site]);
-    var players = pool.players.filter(function (p) { return excludedIds.indexOf(p.player_id) === -1; });
-
-    setSolveStatus("Solving instantly in your browser…", "");
-
-    loadGlpk().then(function (glpk) {
-      var vars = players.map(function (p) { return { name: p.player_id, coef: p.final_projection }; });
-      var subjectTo = [];
-
-      subjectTo.push({
-        name: "salary_cap",
-        vars: players.map(function (p) { return { name: p.player_id, coef: p.salary }; }),
-        bnds: { type: glpk.GLP_UP, ub: cfg.cap, lb: 0 }
-      });
-
-      var totalSlots = Object.keys(cfg.fixedCounts).reduce(function (s, k) { return s + cfg.fixedCounts[k]; }, 0) +
-                        Object.keys(cfg.flexFixed).reduce(function (s, k) { return s + cfg.flexFixed[k]; }, 0) + cfg.flexCount;
-      subjectTo.push({
-        name: "total_roster",
-        vars: players.map(function (p) { return { name: p.player_id, coef: 1 }; }),
-        bnds: { type: glpk.GLP_FX, ub: totalSlots, lb: totalSlots }
-      });
-
-      Object.keys(cfg.fixedCounts).forEach(function (pos) {
-        var count = cfg.fixedCounts[pos];
-        var posPool = players.filter(function (p) { return p.position === pos; });
-        subjectTo.push({
-          name: "exact_" + pos,
-          vars: posPool.map(function (p) { return { name: p.player_id, coef: 1 }; }),
-          bnds: { type: glpk.GLP_FX, ub: count, lb: count }
-        });
-      });
-
-      Object.keys(cfg.flexFixed).forEach(function (pos) {
-        var count = cfg.flexFixed[pos];
-        var posPool = players.filter(function (p) { return p.position === pos; });
-        subjectTo.push({
-          name: "min_" + pos,
-          vars: posPool.map(function (p) { return { name: p.player_id, coef: 1 }; }),
-          bnds: { type: glpk.GLP_LO, ub: 0, lb: count }
-        });
-      });
-
-      var flexFixedTotal = Object.keys(cfg.flexFixed).reduce(function (s, k) { return s + cfg.flexFixed[k]; }, 0);
-      var flexPool = players.filter(function (p) { return Object.prototype.hasOwnProperty.call(cfg.flexFixed, p.position); });
-      subjectTo.push({
-        name: "flex_pool_total",
-        vars: flexPool.map(function (p) { return { name: p.player_id, coef: 1 }; }),
-        bnds: { type: glpk.GLP_FX, ub: flexFixedTotal + cfg.flexCount, lb: flexFixedTotal + cfg.flexCount }
-      });
-
-      lockedIds.forEach(function (pid) {
-        if (!players.some(function (p) { return p.player_id === pid; })) return; // locked player not in (filtered) pool -- skip rather than crash; real solver will give the authoritative error
-        subjectTo.push({ name: "lock_" + pid, vars: [{ name: pid, coef: 1 }], bnds: { type: glpk.GLP_FX, ub: 1, lb: 1 } });
-      });
-
-      var lp = {
-        name: "dfs_lineup",
-        objective: { direction: glpk.GLP_MAX, name: "obj", vars: vars },
-        subjectTo: subjectTo,
-        binaries: players.map(function (p) { return p.player_id; })
-      };
-
-      return glpk.solve(lp, { msglev: glpk.GLP_MSG_OFF });
-    }).then(function (result) {
-      if (!result.result || result.result.status !== 5 /* GLP_OPT */) {
-        setSolveStatus("No legal lineup found with the current lock/exclude selections and this player pool.", "error");
-        return;
-      }
-      var selectedIds = Object.keys(result.result.vars).filter(function (k) { return result.result.vars[k] > 0.5; });
-      var selected = players.filter(function (p) { return selectedIds.indexOf(p.player_id) !== -1; });
-      var rows = selected.map(function (p) {
-        return {
-          roster_slot: p.position, // cosmetic only -- groupBySite/slotOrder sorts by position group, exact RB1/RB2/FLEX labeling is the real solver's job
-          player_id: p.player_id,
-          player_name: p.player_name,
-          position: p.position,
-          team: p.team,
-          salary: String(p.salary),
-          projection: String(p.final_projection),
-          opponent: p.opponent
-        };
-      });
-      showSolvedLineup(site, rows, false);
-      setSolveStatus("Instant preview solved — " + selected.length + " players, real ILP optimum for this pool/locks/excludes.", "ok");
-    }).catch(function (err) {
-      setSolveStatus("Instant preview failed: " + err.message, "error");
-    });
-  }
-
-  document.getElementById("btnPreview").addEventListener("click", solveInstant);
-
-  // ---------------- Confirm with Real Solver (dispatch + poll, Session 7.2b) ----------------
+  // ---------------- Confirm with Real Solver (dispatch + poll, Session 7.2b;
+  // now the ONLY build path -- item #4 removed the client-side glpk.js
+  // instant-preview solver and the single-lineup mode entirely. Every
+  // build always runs the real optimizer.py, multi-lineup, via GitHub
+  // Actions. ----------------
 
   function buildDispatchParams() {
     var site = state.activeSite;
-    var week = document.getElementById("ctrlWeek").value.trim();
-    var mode = document.getElementById("ctrlMode").value;
-    var params = { site: site, week: week, mode: mode };
+    var week = document.getElementById("slateWeek").value.trim();
+    var params = { site: site, week: week, mode: "multi" };
 
-    if (mode === "multi") {
-      params.n_lineups = document.getElementById("ctrlNLineups").value;
-      params.max_exposure = String(parseFloat(document.getElementById("ctrlMaxExposure").value) / 100);
-      params.uniqueness = document.getElementById("ctrlUniqueness").value;
-    }
+    params.n_lineups = document.getElementById("ctrlNLineups").value;
+    params.max_exposure = String(parseFloat(document.getElementById("ctrlMaxExposure").value) / 100);
+    params.uniqueness = document.getElementById("ctrlUniqueness").value;
 
     var stackMode = document.getElementById("ctrlStackMode").value;
     if (stackMode !== "none") {
@@ -1477,11 +1746,26 @@
     if (excludedIds.length) params.exclude = excludedIds.join(",");
 
     var randomization = parseFloat(document.getElementById("ctrlRandomization").value);
-    if (randomization > 0) {
-      params.randomization_pct = String(randomization);
-      var seed = document.getElementById("ctrlSeed").value.trim();
-      if (seed) params.seed = seed;
+    if (randomization > 0) params.randomization_pct = String(randomization);
+
+    // Session 7.3, item #7: salary floor. 0 (the field's default) means
+    // "omit the param" -- optimizer.py's own --min-salary-pct default is
+    // also 0, so this is a no-op unless the user actually sets a floor.
+    var minSalaryPct = parseFloat(document.getElementById("ctrlMinSalaryPct").value);
+    if (minSalaryPct > 0) params.min_salary_pct = String(minSalaryPct);
+
+    // Session 7.3, item #8: FLEX-eligible positions. Only sent when a
+    // strict subset is chosen -- all three checked (the default) omits the
+    // param entirely, matching optimizer.py's own "unset = all three" default.
+    var flexPositions = [];
+    if (document.getElementById("ctrlFlexRb").checked) flexPositions.push("RB");
+    if (document.getElementById("ctrlFlexWr").checked) flexPositions.push("WR");
+    if (document.getElementById("ctrlFlexTe").checked) flexPositions.push("TE");
+    if (flexPositions.length === 0) {
+      setSolveStatus("At least one FLEX-eligible position (RB/WR/TE) must stay checked.", "error");
+      return null;
     }
+    if (flexPositions.length < 3) params.flex_positions = flexPositions.join(",");
 
     return params;
   }
@@ -1498,7 +1782,7 @@
 
   function confirmWithRealSolver() {
     var site = state.activeSite;
-    var week = document.getElementById("ctrlWeek").value.trim();
+    var week = document.getElementById("slateWeek").value.trim();
     var base = document.getElementById("settingsWorkerUrl").value.trim();
     var token = document.getElementById("settingsWorkerToken").value.trim();
 
@@ -1510,6 +1794,7 @@
     document.getElementById("btnConfirm").disabled = true;
 
     var params = buildDispatchParams();
+    if (!params) { document.getElementById("btnConfirm").disabled = false; return; }
     fetch(workerUrl("dispatch", params), { cache: "no-store" })
       .then(function (r) { return r.json(); })
       .then(function (data) {
@@ -1558,12 +1843,27 @@
 
   document.getElementById("btnConfirm").addEventListener("click", confirmWithRealSolver);
 
-  // ---------------- Init (7.2c) ----------------
+  // ---------------- Init (7.3) ----------------
 
   loadSettings();
   updateControlsVisibility();
-  renderPlayerList();
 
+  // Session 7.3, item #2: restore whichever slate (if any) was persisted
+  // for the currently-active site + the restored week, so a page reload
+  // never requires re-uploading.
+  (function initSlate() {
+    var site = state.activeSite;
+    var week = document.getElementById("slateWeek").value.trim();
+    var loaded = loadStoredSlate(site, week);
+    if (loaded) {
+      var stored = JSON.parse(localStorage.getItem(slateKey(site, week)) || "{}");
+      setSlateStatus((stored.filename || "loaded") + " — from this browser's storage", true);
+    }
+    renderSlateChips();
+  })();
+
+  renderPlayerList();
+  renderSlateOverview();
   render();
 })();
 </script>

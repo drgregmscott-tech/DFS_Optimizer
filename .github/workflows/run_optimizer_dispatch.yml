@@ -131,6 +131,9 @@ jobs:
           args += flag("--lock", "lock")
           args += flag("--exclude", "exclude")
 
+          args += flag("--min-salary-pct", "min_salary_pct", float)
+          args += flag("--flex-positions", "flex_positions")
+
           print(f"args={shlex.join(args)}")
           PYEOF
         env:
