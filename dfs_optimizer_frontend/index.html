@@ -1,0 +1,766 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lineup Room — DFS Optimizer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Inter:wght@400;500;600&family=Roboto+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #0D1117;
+    --ink-raised: #10151C;
+    --panel: #161C24;
+    --panel-2: #1C2430;
+    --line: #262F3A;
+    --line-soft: #1E2530;
+    --bone: #EDEFF2;
+    --dim: #8B94A3;
+    --dimmer: #5B6472;
+    --amber: #F5A623;
+    --amber-dim: #4A3A1A;
+    --dk: #FF6A39;
+    --dk-dim: #3A2318;
+    --fd: #3DA9FC;
+    --fd-dim: #16283A;
+    --good: #3FBF7F;
+    --bad: #EF4444;
+    --radius: 10px;
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body {
+    margin: 0;
+    background: var(--ink);
+    color: var(--bone);
+    font-family: 'Inter', system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  body {
+    min-height: 100vh;
+    background-image:
+      radial-gradient(circle at 15% -10%, rgba(245,166,35,0.05), transparent 45%),
+      radial-gradient(circle at 85% 0%, rgba(61,169,252,0.04), transparent 40%);
+  }
+
+  a { color: inherit; }
+
+  ::selection { background: var(--amber-dim); color: var(--amber); }
+
+  .display {
+    font-family: 'Barlow Condensed', sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+
+  .mono {
+    font-family: 'Roboto Mono', monospace;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .wrap {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 0 20px 80px;
+  }
+
+  /* ---------------- Header ---------------- */
+
+  header.top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 28px 20px 20px;
+    max-width: 900px;
+    margin: 0 auto;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+
+  .wordmark {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+  }
+
+  .wordmark .mark {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 700;
+    font-size: 26px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  .wordmark .mark span { color: var(--amber); }
+
+  .wordmark .sub {
+    font-size: 11px;
+    color: var(--dimmer);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    font-family: 'Barlow Condensed', sans-serif;
+  }
+
+  .site-toggle {
+    display: inline-flex;
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    padding: 3px;
+    gap: 2px;
+  }
+
+  .site-toggle button {
+    appearance: none;
+    border: none;
+    background: transparent;
+    color: var(--dim);
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 600;
+    font-size: 14px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    padding: 8px 20px;
+    border-radius: 999px;
+    cursor: pointer;
+    transition: background 0.15s ease, color 0.15s ease;
+  }
+
+  .site-toggle button[data-site="dk"].active {
+    background: var(--dk-dim);
+    color: var(--dk);
+  }
+
+  .site-toggle button[data-site="fd"].active {
+    background: var(--fd-dim);
+    color: var(--fd);
+  }
+
+  .site-toggle button .dot {
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    margin-right: 7px;
+    background: currentColor;
+    opacity: 0.85;
+    vertical-align: middle;
+  }
+
+  /* ---------------- Upload cards ---------------- */
+
+  .upload-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    margin-bottom: 28px;
+  }
+
+  @media (max-width: 620px) {
+    .upload-grid { grid-template-columns: 1fr; }
+  }
+
+  .upload-card {
+    border: 1px dashed var(--line);
+    background: var(--panel);
+    border-radius: var(--radius);
+    padding: 16px 18px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    transition: border-color 0.15s ease, background 0.15s ease;
+  }
+
+  .upload-card.has-file {
+    border-style: solid;
+  }
+
+  .upload-card[data-site="dk"] { border-color: var(--line); }
+  .upload-card[data-site="dk"].has-file { border-color: var(--dk); background: linear-gradient(180deg, rgba(255,106,57,0.06), transparent); }
+  .upload-card[data-site="fd"].has-file { border-color: var(--fd); background: linear-gradient(180deg, rgba(61,169,252,0.06), transparent); }
+  .upload-card.drag-over { border-color: var(--amber) !important; background: rgba(245,166,35,0.06) !important; }
+
+  .upload-card .label-block { min-width: 0; }
+
+  .upload-card .site-label {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    font-size: 13px;
+    color: var(--dim);
+    margin: 0 0 4px;
+  }
+
+  .upload-card[data-site="dk"] .site-label { color: var(--dk); }
+  .upload-card[data-site="fd"] .site-label { color: var(--fd); }
+
+  .upload-card .file-status {
+    font-size: 13px;
+    color: var(--dimmer);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 220px;
+  }
+
+  .upload-card.has-file .file-status { color: var(--bone); }
+
+  .upload-btn {
+    appearance: none;
+    border: 1px solid var(--line);
+    background: var(--panel-2);
+    color: var(--bone);
+    font-size: 13px;
+    font-weight: 500;
+    padding: 8px 14px;
+    border-radius: 7px;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: border-color 0.15s ease;
+  }
+  .upload-btn:hover { border-color: var(--dimmer); }
+
+  input[type="file"] { display: none; }
+
+  /* ---------------- Empty state ---------------- */
+
+  .empty-state {
+    border: 1px solid var(--line-soft);
+    border-radius: var(--radius);
+    padding: 64px 32px;
+    text-align: center;
+    color: var(--dimmer);
+  }
+
+  .empty-state .glyph {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 15px;
+    letter-spacing: 0.15em;
+    color: var(--dim);
+    margin-bottom: 10px;
+    text-transform: uppercase;
+  }
+
+  .empty-state p {
+    font-size: 14px;
+    line-height: 1.6;
+    max-width: 380px;
+    margin: 0 auto;
+  }
+
+  /* ---------------- Scoreboard strip ---------------- */
+
+  .scoreboard {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 18px 20px;
+    margin-bottom: 16px;
+  }
+
+  .scoreboard-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+
+  .lineup-nav {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .nav-btn {
+    appearance: none;
+    border: 1px solid var(--line);
+    background: var(--panel-2);
+    color: var(--bone);
+    width: 30px;
+    height: 30px;
+    border-radius: 7px;
+    cursor: pointer;
+    font-size: 15px;
+    line-height: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .nav-btn:hover:not(:disabled) { border-color: var(--amber); color: var(--amber); }
+  .nav-btn:disabled { opacity: 0.3; cursor: default; }
+
+  .lineup-title {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 600;
+    font-size: 20px;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+    min-width: 150px;
+    text-align: center;
+  }
+
+  .lineup-title .count { color: var(--dimmer); font-size: 15px; }
+
+  .pts-block { text-align: right; }
+  .pts-block .pts-label {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    color: var(--dimmer);
+    text-transform: uppercase;
+  }
+  .pts-block .pts-value {
+    font-size: 26px;
+    font-weight: 700;
+    color: var(--amber);
+    line-height: 1.1;
+  }
+
+  .cap-row {
+    margin-top: 16px;
+  }
+
+  .cap-labels {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    color: var(--dim);
+    margin-bottom: 6px;
+  }
+
+  .cap-labels .cap-amount { color: var(--bone); }
+  .cap-labels .cap-amount.over { color: var(--bad); }
+
+  .cap-meter {
+    display: flex;
+    gap: 3px;
+    height: 10px;
+  }
+
+  .cap-seg {
+    flex: 1;
+    border-radius: 2px;
+    background: var(--line-soft);
+  }
+
+  .cap-seg.filled { background: var(--good); }
+  .cap-seg.filled.hot { background: var(--amber); }
+  .cap-seg.filled.over { background: var(--bad); }
+
+  /* ---------------- Roster table ---------------- */
+
+  .roster {
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    overflow: hidden;
+  }
+
+  .roster-row {
+    display: grid;
+    grid-template-columns: 56px 1fr 64px 84px 76px;
+    align-items: center;
+    padding: 11px 14px;
+    border-bottom: 1px solid var(--line-soft);
+    gap: 10px;
+  }
+
+  .roster-row:last-child { border-bottom: none; }
+  .roster-row:nth-child(odd) { background: rgba(255,255,255,0.012); }
+
+  .roster-row.head {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--dimmer);
+    background: var(--panel-2);
+    padding: 9px 14px;
+  }
+
+  .slot-badge {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 600;
+    font-size: 12px;
+    letter-spacing: 0.04em;
+    color: var(--amber);
+    background: var(--amber-dim);
+    border-radius: 5px;
+    padding: 3px 0;
+    text-align: center;
+  }
+
+  .player-cell { min-width: 0; }
+  .player-name {
+    font-weight: 500;
+    font-size: 14px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .player-meta {
+    font-size: 12px;
+    color: var(--dimmer);
+    margin-top: 1px;
+  }
+
+  .zero-flag {
+    display: inline-block;
+    margin-left: 7px;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    color: var(--bad);
+    background: rgba(239,68,68,0.12);
+    border-radius: 4px;
+    padding: 1px 5px;
+    vertical-align: middle;
+  }
+
+  .pos-cell {
+    font-size: 12px;
+    color: var(--dim);
+    text-align: center;
+  }
+
+  .salary-cell, .proj-cell {
+    font-size: 13px;
+    text-align: right;
+  }
+
+  .proj-cell { color: var(--amber); font-weight: 500; }
+  .proj-cell.zero { color: var(--bad); }
+
+  /* ---------------- Integrity strip ---------------- */
+
+  .integrity {
+    display: flex;
+    gap: 18px;
+    flex-wrap: wrap;
+    margin-top: 14px;
+    padding: 12px 16px;
+    border: 1px solid var(--line-soft);
+    border-radius: var(--radius);
+    font-size: 12px;
+    color: var(--dim);
+  }
+
+  .integrity .item { display: flex; align-items: center; gap: 6px; }
+  .integrity .ok::before { content: "●"; color: var(--good); font-size: 8px; }
+  .integrity .warn::before { content: "●"; color: var(--bad); font-size: 8px; }
+
+  /* ---------------- Footer ---------------- */
+
+  footer {
+    max-width: 900px;
+    margin: 40px auto 0;
+    padding: 0 20px;
+    font-size: 11px;
+    color: var(--dimmer);
+    text-align: center;
+  }
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="wordmark">
+    <div class="mark">Lineup<span>Room</span></div>
+    <div class="sub">DFS Optimizer</div>
+  </div>
+  <div class="site-toggle" id="siteToggle">
+    <button data-site="dk" class="active"><span class="dot"></span>DraftKings</button>
+    <button data-site="fd"><span class="dot"></span>FanDuel</button>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <div class="upload-grid">
+    <div class="upload-card" data-site="dk" id="cardDk">
+      <div class="label-block">
+        <p class="site-label">DK lineups</p>
+        <p class="file-status" id="statusDk">No file loaded</p>
+      </div>
+      <button class="upload-btn" id="btnDk">Upload CSV</button>
+      <input type="file" id="fileDk" accept=".csv">
+    </div>
+    <div class="upload-card" data-site="fd" id="cardFd">
+      <div class="label-block">
+        <p class="site-label">FD lineups</p>
+        <p class="file-status" id="statusFd">No file loaded</p>
+      </div>
+      <button class="upload-btn" id="btnFd">Upload CSV</button>
+      <input type="file" id="fileFd" accept=".csv">
+    </div>
+  </div>
+
+  <div id="viewer"></div>
+
+</div>
+
+<footer>lineup_single_&#123;site&#125;_&#123;week&#125;.csv or lineups_multi_&#123;site&#125;_&#123;week&#125;.csv — parsed locally in your browser, nothing is uploaded anywhere.</footer>
+
+<script>
+(function () {
+  "use strict";
+
+  var SITE_CONFIG = {
+    dk: { label: "DraftKings", cap: 50000, defSlot: "DST", slotOrder: ["QB","RB1","RB2","WR1","WR2","WR3","TE","FLEX","DST"] },
+    fd: { label: "FanDuel",    cap: 60000, defSlot: "DEF", slotOrder: ["QB","RB1","RB2","WR1","WR2","WR3","TE","FLEX","DEF"] }
+  };
+
+  var state = {
+    activeSite: "dk",
+    data: { dk: null, fd: null } // each: { filename, lineups: { [lineup_id]: [row,...] }, ids: [...] }
+  };
+
+  // ---------------- CSV parsing ----------------
+
+  function parseCSV(text) {
+    var rows = [];
+    var i = 0, field = "", row = [], inQuotes = false;
+    var len = text.length;
+    while (i < len) {
+      var c = text[i];
+      if (inQuotes) {
+        if (c === '"') {
+          if (text[i + 1] === '"') { field += '"'; i += 2; continue; }
+          inQuotes = false; i++; continue;
+        }
+        field += c; i++; continue;
+      } else {
+        if (c === '"') { inQuotes = true; i++; continue; }
+        if (c === ',') { row.push(field); field = ""; i++; continue; }
+        if (c === '\r') { i++; continue; }
+        if (c === '\n') { row.push(field); rows.push(row); row = []; field = ""; i++; continue; }
+        field += c; i++; continue;
+      }
+    }
+    if (field.length || row.length) { row.push(field); rows.push(row); }
+    if (!rows.length) return [];
+    var headers = rows[0].map(function (h) { return h.trim(); });
+    var out = [];
+    for (var r = 1; r < rows.length; r++) {
+      if (rows[r].length === 1 && rows[r][0] === "") continue;
+      var obj = {};
+      for (var c2 = 0; c2 < headers.length; c2++) {
+        obj[headers[c2]] = rows[r][c2] !== undefined ? rows[r][c2].trim() : "";
+      }
+      out.push(obj);
+    }
+    return out;
+  }
+
+  function groupBySite(rows, site) {
+    var hasLineupId = rows.length > 0 && Object.prototype.hasOwnProperty.call(rows[0], "lineup_id");
+    var lineups = {};
+    var ids = [];
+    rows.forEach(function (row) {
+      var id = hasLineupId ? row.lineup_id : "1";
+      if (!lineups[id]) { lineups[id] = []; ids.push(id); }
+      lineups[id].push(row);
+    });
+    var order = SITE_CONFIG[site].slotOrder;
+    ids.forEach(function (id) {
+      lineups[id].sort(function (a, b) {
+        var ai = order.indexOf(a.roster_slot), bi = order.indexOf(b.roster_slot);
+        if (ai === -1) ai = 99; if (bi === -1) bi = 99;
+        return ai - bi;
+      });
+    });
+    return { lineups: lineups, ids: ids };
+  }
+
+  // ---------------- File handling ----------------
+
+  function handleFile(site, file) {
+    if (!file) return;
+    var reader = new FileReader();
+    reader.onload = function (e) {
+      var rows;
+      try {
+        rows = parseCSV(e.target.result);
+      } catch (err) {
+        setStatus(site, "Couldn't parse file — check it's a valid CSV export.");
+        return;
+      }
+      if (!rows.length) {
+        setStatus(site, "File loaded but no rows found.");
+        return;
+      }
+      var required = ["roster_slot", "player_name", "position", "team", "salary", "projection"];
+      var missing = required.filter(function (k) { return !Object.prototype.hasOwnProperty.call(rows[0], k); });
+      if (missing.length) {
+        setStatus(site, "Missing expected column(s): " + missing.join(", "));
+        return;
+      }
+      var grouped = groupBySite(rows, site);
+      state.data[site] = { filename: file.name, lineups: grouped.lineups, ids: grouped.ids, currentIndex: 0 };
+      setStatus(site, file.name, true);
+      document.getElementById("card" + cap(site)).classList.add("has-file");
+      if (state.activeSite === site) render();
+    };
+    reader.readAsText(file);
+  }
+
+  function setStatus(site, text, loaded) {
+    document.getElementById("status" + cap(site)).textContent = text;
+  }
+
+  function cap(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
+
+  // ---------------- Rendering ----------------
+
+  function fmtMoney(n) {
+    return "$" + Math.round(n).toLocaleString("en-US");
+  }
+
+  function fmtPts(n) {
+    return n.toFixed(2);
+  }
+
+  function render() {
+    var viewer = document.getElementById("viewer");
+    var site = state.activeSite;
+    var d = state.data[site];
+    var cfg = SITE_CONFIG[site];
+
+    if (!d) {
+      viewer.innerHTML =
+        '<div class="empty-state">' +
+        '<div class="glyph">No slate loaded</div>' +
+        '<p>Upload a <code>lineup_single_' + site + '_&#123;week&#125;.csv</code> or ' +
+        '<code>lineups_multi_' + site + '_&#123;week&#125;.csv</code> above to view ' + cfg.label + ' lineups.</p>' +
+        '</div>';
+      return;
+    }
+
+    if (d.currentIndex >= d.ids.length) d.currentIndex = d.ids.length - 1;
+    if (d.currentIndex < 0) d.currentIndex = 0;
+
+    var id = d.ids[d.currentIndex];
+    var rows = d.lineups[id];
+
+    var totalSalary = rows.reduce(function (s, r) { return s + (parseFloat(r.salary) || 0); }, 0);
+    var totalPts = rows.reduce(function (s, r) { return s + (parseFloat(r.projection) || 0); }, 0);
+    var overCap = totalSalary > cfg.cap;
+    var pctFilled = Math.min(1, totalSalary / cfg.cap);
+    var segCount = 20;
+    var filledSegs = Math.round(pctFilled * segCount);
+
+    var segsHtml = "";
+    for (var s2 = 0; s2 < segCount; s2++) {
+      var cls = "cap-seg";
+      if (s2 < filledSegs) {
+        cls += overCap ? " filled over" : (s2 >= segCount - 3 ? " filled hot" : " filled");
+      }
+      segsHtml += '<div class="' + cls + '"></div>';
+    }
+
+    var navHtml =
+      '<div class="lineup-nav">' +
+      '<button class="nav-btn" id="prevBtn" ' + (d.currentIndex === 0 ? "disabled" : "") + '>&#8249;</button>' +
+      '<div class="lineup-title">LINEUP ' + (d.currentIndex + 1) +
+      (d.ids.length > 1 ? ' <span class="count">/ ' + d.ids.length + '</span>' : '') + '</div>' +
+      '<button class="nav-btn" id="nextBtn" ' + (d.currentIndex === d.ids.length - 1 ? "disabled" : "") + '>&#8250;</button>' +
+      '</div>';
+
+    var head =
+      '<div class="scoreboard">' +
+      '<div class="scoreboard-top">' + navHtml +
+      '<div class="pts-block"><div class="pts-label">Projected</div>' +
+      '<div class="pts-value mono">' + fmtPts(totalPts) + '</div></div>' +
+      '</div>' +
+      '<div class="cap-row">' +
+      '<div class="cap-labels"><span>SALARY USED</span>' +
+      '<span class="cap-amount mono ' + (overCap ? "over" : "") + '">' + fmtMoney(totalSalary) + ' / ' + fmtMoney(cfg.cap) + '</span></div>' +
+      '<div class="cap-meter">' + segsHtml + '</div>' +
+      '</div></div>';
+
+    var rowsHtml = rows.map(function (r) {
+      var isZero = parseFloat(r.projection) === 0;
+      return '<div class="roster-row">' +
+        '<div class="slot-badge">' + r.roster_slot + '</div>' +
+        '<div class="player-cell"><div class="player-name">' + escapeHtml(r.player_name.trim()) +
+        (isZero ? '<span class="zero-flag">0 PTS</span>' : '') + '</div>' +
+        '<div class="player-meta">' + escapeHtml(r.team) + (r.opponent ? " vs " + escapeHtml(r.opponent) : "") + '</div></div>' +
+        '<div class="pos-cell">' + escapeHtml(r.position) + '</div>' +
+        '<div class="salary-cell mono">' + fmtMoney(parseFloat(r.salary) || 0) + '</div>' +
+        '<div class="proj-cell mono ' + (isZero ? "zero" : "") + '">' + fmtPts(parseFloat(r.projection) || 0) + '</div>' +
+        '</div>';
+    }).join("");
+
+    var rosterHtml =
+      '<div class="roster">' +
+      '<div class="roster-row head"><div>SLOT</div><div>PLAYER</div><div class="pos-cell">POS</div>' +
+      '<div class="salary-cell">SALARY</div><div class="proj-cell">PROJ</div></div>' +
+      rowsHtml + '</div>';
+
+    var expectedSlots = cfg.slotOrder.length;
+    var slotCountOk = rows.length === expectedSlots;
+    var zeroCount = rows.filter(function (r) { return parseFloat(r.projection) === 0; }).length;
+
+    var integrityHtml =
+      '<div class="integrity">' +
+      '<div class="item ' + (slotCountOk ? "ok" : "warn") + '">' + rows.length + ' of ' + expectedSlots + ' roster slots</div>' +
+      '<div class="item ' + (overCap ? "warn" : "ok") + '">' + (overCap ? "over salary cap" : "within salary cap") + '</div>' +
+      '<div class="item ' + (zeroCount ? "warn" : "ok") + '">' + zeroCount + ' zero-projection player(s)</div>' +
+      '</div>';
+
+    viewer.innerHTML = head + rosterHtml + integrityHtml;
+
+    var prevBtn = document.getElementById("prevBtn");
+    var nextBtn = document.getElementById("nextBtn");
+    if (prevBtn) prevBtn.onclick = function () { d.currentIndex--; render(); };
+    if (nextBtn) nextBtn.onclick = function () { d.currentIndex++; render(); };
+  }
+
+  function escapeHtml(s) {
+    return String(s == null ? "" : s)
+      .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+  }
+
+  // ---------------- Wiring ----------------
+
+  document.getElementById("siteToggle").addEventListener("click", function (e) {
+    var btn = e.target.closest("button[data-site]");
+    if (!btn) return;
+    state.activeSite = btn.getAttribute("data-site");
+    document.querySelectorAll("#siteToggle button").forEach(function (b) {
+      b.classList.toggle("active", b === btn);
+    });
+    render();
+  });
+
+  ["dk", "fd"].forEach(function (site) {
+    var input = document.getElementById("file" + cap(site));
+    var btn = document.getElementById("btn" + cap(site));
+    var card = document.getElementById("card" + cap(site));
+
+    btn.addEventListener("click", function () { input.click(); });
+    input.addEventListener("change", function () { handleFile(site, input.files[0]); });
+
+    ["dragover", "dragenter"].forEach(function (evt) {
+      card.addEventListener(evt, function (e) { e.preventDefault(); card.classList.add("drag-over"); });
+    });
+    ["dragleave", "drop"].forEach(function (evt) {
+      card.addEventListener(evt, function (e) { e.preventDefault(); card.classList.remove("drag-over"); });
+    });
+    card.addEventListener("drop", function (e) {
+      var file = e.dataTransfer.files && e.dataTransfer.files[0];
+      if (file) handleFile(site, file);
+    });
+  });
+
+  render();
+})();
+</script>
+
+</body>
+</html>
