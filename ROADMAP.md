@@ -525,10 +525,14 @@
 
 ---
 
-### Session 7.2 — UI-Optimizer Integration
+### Session 7.2 — UI-Optimizer Integration ✅ Complete (2026-07-23)
 **Prerequisites:** Session 7.1 and Phase 3 (all of it) complete.
 
-**Files touched (modified):** Frontend components + a thin API layer to trigger/read optimizer output.
+**Files touched (created/modified):**
+- `scripts/optimizer.py` — added `--lock`/`--exclude` (decisions #22-26), `--request-id` (decision #27), and clean-error-message handling for the CLI entry point (Session 7.2c hotfix).
+- `.github/workflows/run_optimizer_dispatch.yml` — new. On-demand real-solver dispatch path.
+- `cloudflare_worker/optimizer_api/optimizer_api.js` + `wrangler.toml` — new. Second Worker (`dfs-optimizer-api`), separate from Session 5.2's `scheduled_refresh.js`, handling dispatch + poll.
+- `dfs_optimizer_frontend/index.html` — new "Build a Lineup" panel: player pool upload, full controls (mode, exposure, uniqueness, stacking, randomization, lock/exclude), instant client-side preview (glpk.js), and the real-solver confirm flow. Session 7.1's upload/view functionality is unchanged underneath it.
 
 **Inputs:** Live optimizer output.
 
@@ -536,15 +540,24 @@
 
 **Build:** Connect frontend controls (exposure limits, stack rules, lock/exclude players) to the optimizer backend, respecting the site selector from 7.1 (e.g. exposure/stack controls should operate on the currently-selected site's lineups, not mix DK and FD data).
 
+**Architecture decision (user-confirmed this session, given the runway before preseason):** hybrid, not a single approach —
+1. **Instant preview** — a real ILP solver (glpk.js, WASM) running client-side in the browser. Single-lineup, lock/exclude only (no stacking/exposure/randomization — see below for why). Confirmed exact parity against `optimizer.py`'s real PuLP/CBC output on real data (same salary/points totals to the penny, same players selected) before shipping.
+2. **Confirm with Real Solver** — the frontend dispatches to a Cloudflare Worker, which fires a `repository_dispatch` that runs the actual, unmodified `optimizer.py` via GitHub Actions (typically 20-90s), commits its result to a request-scoped path (`output/ui_requests/{request_id}.csv`, never the canonical `lineup_single_*`/`lineups_multi_*` files), and the frontend polls the Worker for the result. Supports every control, including stacking/exposure/uniqueness/randomization, since it's the real file — no second implementation to drift out of sync.
+
+Deliberately NOT replicated in the client-side instant-preview solver: stacking, exposure caps, uniqueness, randomization. Only lock/exclude + salary/roster constraints. This was a scope decision, not an oversight — those mechanics (especially exposure's iterative lock-out and uniqueness's relaxation-on-infeasibility) are complex enough that a second JS implementation would be a real, ongoing drift risk; "Confirm with Real Solver" exists specifically so nothing ever needs that.
+
 **Validation:**
-- [ ] Every UI control actually changes optimizer output as expected — test each control individually, for both DK and FD selected
+- [x] Every UI control actually changes optimizer output as expected — test each control individually, for both DK and FD selected.
+  - **DK: fully validated, live, on the real deployed site** (`https://dfs-optimizer.pages.dev`) against a real DK Madden Sim slate the user downloaded and ran through the real pipeline this session (see SESSION_LOG for the full real-data trail). Individually confirmed working: Lock, Exclude, Week, multi-lineup mode (n_lineups/max_exposure/uniqueness), QB Stack (with and without bring-back — including the infeasible-request case correctly failing with a clear message, not a crash), Game Stack, Mini Stack, Randomization (+ seed), Instant Preview, multi-lineup navigation/display in the viewer.
+  - **FD: deferred**, same reason as every other FD gap tracked in this file since Session 1.3 — there is no real FD data to validate against yet. First real point this closes: Preseason Week 1, same as the rest of the FD list below.
+  - Five real bugs were found and fixed via this live testing (not caught by local/sandboxed validation alone) — see SESSION_LOG's Session 7.2 entry for the full list. Flagging here because it's the reason this checkbox required actual live use of the deployed site, not just code review, to close honestly.
 
 ---
 
 ### Session 7.3 — Polish & Final Deploy
 **Prerequisites:** Session 7.2 complete.
 
-**Build:** Cleanup, mobile responsiveness, final deploy.
+**Build:** Cleanup, mobile responsiveness, final deploy. **Also the home for the user's layout/UX refinement suggestions on the Session 7.1/7.2 UI** (explicitly deferred here rather than 7.2, per user request at the end of that session — 7.2's own scope was wiring controls to real behavior, not refining how they're laid out).
 
 **Validation:**
 - [ ] Full walkthrough on the live domain from a phone and a desktop browser, no broken states, for both DK and FD views
@@ -674,6 +687,7 @@ These are all instances of the same underlying problem: several data sources (Th
 - **Session 3.3's stacking logic, against real data -- DK closed same day (addendum), FD still open.** Re-run against the real DK Madden Stream pool (`weekly_stats_2025.parquet`, `schedules_2025.parquet`, real `vegas_implied_totals_10.csv`, real `salaries_dk_madden_20260721.csv`) confirmed the full pipeline end-to-end, matched the project's own previously-logged real numbers exactly, and surfaced + fixed a real bug (`rank_candidate_teams`/`rank_candidate_games` didn't check the OPPONENT side had real pool players -- see SESSION_LOG.md's addendum). **Still open:** FD (same pre-existing no-real-FD-data gap as everything else FD), and a full 32-team slate (this real pool only has 6 teams -- Preseason Week 1 is the first point a full-size real slate exists to re-test against).
 - **Session 5.1's real OUT/DOUBTFUL game-day designations, cross-checked against NFL.com.** ESPN's per-team roster endpoint was pulled live and validated for real (all 32 teams, 919 players, real matching, real zero-out mechanism proven against a real forced-OUT player -- see SESSION_LOG.md's Session 5.1 entry) -- but every real non-empty status found on 2026-07-22 was a long-term-recovery or personal-situation designation, not a game-week one, since no real NFL game exists yet to designate a player in/out FOR. There's nothing real on NFL.com's injury report to cross-check against yet either. **First point this closes for real:** Preseason Week 1, same as the other gaps in this list.
 - **Session 5.2's real weekly cron-job.org schedule + `current_slate.json`, both sites.** This one's a configuration gap rather than a data-quality gap -- the automation mechanism itself is fully built and validated (see SESSION_LOG.md's Session 5.2 entry), but the cron-job.org near-lock job (currently a Sunday-11am-CT/every-10-min *template*, approximating a typical 1:00pm ET early-slate lock) and `current_slate.json` (currently a season-2026/week-1 *placeholder*) both need hand-updating to whatever Preseason Week 1's real slate/lock times turn out to be -- there's no real value to set until that week's schedule is actually known. **First point this closes for real:** Preseason Week 1, done alongside Session 6.1's live dry run (see Session 6.1's card) -- not a separate session, just the same checkpoint.
+- **Session 7.2's UI-Optimizer Integration, FD side.** DK side fully live-validated against a real Madden Sim slate this session (every control individually confirmed working on the real deployed site -- see SESSION_LOG.md's Session 7.2 entry). FD gets the exact same "no real data to point it at" gap as everything else FD in this list -- the frontend's controls, dispatch/poll flow, and instant-preview solver are all site-agnostic code (same `SITE_CONFIG`-driven logic DK and FD already share throughout this project), so this isn't expected to surface anything new once real FD data exists, but it hasn't been exercised live. **First point this closes for real:** Preseason Week 1, same as the rest of this list.
 
 Until Preseason Week 1: treat Session 2.4 (and by extension anything built on top of it in Phase 3+) as validated for correctness-of-logic only, not for real-world data quality. Re-run Session 2.4's validation checklist in full once real data exists for both sites.
 

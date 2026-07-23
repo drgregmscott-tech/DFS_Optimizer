@@ -985,3 +985,207 @@ The user's first attempt at a forced-OUT test (to exercise the exclusion mechani
 - Per ROADMAP.md, Session 7.2 (UI-Optimizer Integration) is next — its only prerequisites (Session 7.1 + all of Phase 3) are both complete, no blockers.
 - This session's frontend is deliberately upload/view only — it has no live connection to the repo's `/output` files, GitHub Actions, or the Cloudflare Worker from Session 5.2. Wiring that up is exactly Session 7.2's job; don't assume any of today's plumbing already does it.
 - `test_fixtures/` (real-data CSV samples used for this session's validation) were generated locally but were **not** committed to the repo — intentionally, per the README's own note (they're a testing aid, not a project asset). Recreate from real `/output` files if a future session wants them again.
+
+## Session 7.2 — UI-Optimizer Integration
+**Date completed:** 2026-07-23
+**Status:** ✅ Complete (DK fully live-validated; FD deferred, see ROADMAP.md's known-gaps list)
+
+**Architecture decision (user-confirmed, start of session):** three sub-options were laid out --
+(A) GitHub Actions round-trip only (real solver, ~30-90s per change), (B) client-side JS
+reimplementation only (instant, but a second solver to keep in sync), or a hybrid of both.
+User's own framing: "I'd rather do something more robust even if it takes more time... quality
+over speed is my preference" (weeks of runway before Preseason Week 1). **Chose the hybrid** --
+reasoning below. Session was sub-phased into 7.2a/7.2b/7.2c rather than built in one pass, matching
+this project's own "validate before moving on" pattern applied to a single session's internal work,
+not just session-to-session.
+
+### 7.2a — Lock / Exclude in `optimizer.py`
+Added real (not stubbed) lock/exclude support -- did not exist before this session, needed by both
+halves of the hybrid regardless of which one a given UI action uses. Continuing the decision
+numbering from Session 3.3's stacking decisions (#14-21):
+
+- **22.** Two independent mechanisms by `player_id` (not name -- names can collide): EXCLUDE filters
+  the player out of the pool entirely before the solver runs (same pattern as an exposure-locked-out
+  player); LOCK adds a hard `x[pid] == 1` ILP constraint inside `solve_lineup()`.
+- **23.** Locked players are exempt from both the exposure cap's lock-out check and the uniqueness
+  swap count -- a lock is an explicit override, not a competing rule, and counting a
+  guaranteed-every-lineup player as an available "swap" would silently inflate how many different
+  players two lineups actually need.
+- **24.** `validate_lock_feasibility()` mirrors decision #21's "fail loudly before the solver runs"
+  pattern -- catches too-many-locked-at-one-position, locked RB/WR/TE overflowing FLEX capacity,
+  locked salary alone exceeding the cap, or more locks than roster slots exist.
+- **25.** `--lock X --exclude X` on the same player is a hard CLI error, not a silent tie-break.
+- **26.** `player_id` is now carried through `assign_roster_slots()` into every output CSV (was
+  previously dropped after the solve) -- needed for a UI to round-trip "lock this exact player"
+  without a separate name lookup.
+
+**Real-data validation (8 tests, real `final_projections_dk_10.csv`/`final_projections_fd_10.csv`,
+the Session 1.3-era DK Madden Stream pool):** baseline no-regression; lock a low-value player
+(forced into FLEX, salary/roster stayed legal); exclude the top player (correctly removed, solver
+found the real next-best legal lineup, 135.65 → 117.17 pts); `--lock X --exclude X` → clean CLI
+error; locking 2 QBs (only 1 slot) → clear pre-solve `RuntimeError`, not an opaque solver failure;
+lock + mandatory QB stack together → both satisfied in one solve; lock 2 players + `uniqueness=3`
+across 8 lineups (thin pool) → all 8 generated, locks didn't inflate the swap requirement; exclude 2
+players across a 6-lineup batch → excluded players appear 0 times; lock+exclude+randomization
+together, both single- and multi-lineup mode → all compose correctly, output always reports the
+real (not noisy) projection.
+
+### 7.2b — GitHub Actions dispatch + Cloudflare Worker (the "confirm with real solver" path)
+**New file:** `.github/workflows/run_optimizer_dispatch.yml` -- triggered by `repository_dispatch`
+(type `run_optimizer_request`), builds an `optimizer.py` CLI invocation from the dispatch payload
+(every field optional except site/week/request_id -- an omitted field means "use optimizer.py's own
+default," never an invented one), runs it, commits only the request-scoped result under
+`output/ui_requests/`.
+
+**New file:** `cloudflare_worker/optimizer_api/optimizer_api.js` + `wrangler.toml` -- a SECOND
+Worker (`dfs-optimizer-api`), deliberately separate from Session 5.2's `scheduled_refresh.js` (that
+file's own header describes itself as dispatch-only relay; this one also reads results back out of
+the private repo via the GitHub Contents API, a genuinely different responsibility). Two actions:
+`dispatch` (fires the repository_dispatch, returns a `request_id` immediately, does not wait for the
+Action) and `poll` (checks for `output/ui_requests/{request_id}.csv` or `.error.txt`, returns the
+content directly -- the frontend never needs its own GitHub credentials).
+
+**27.** `optimizer.py` gained a `--request-id` flag: when set, output goes to
+`output/ui_requests/{request-id}.csv` INSTEAD OF the canonical `lineup_single_*`/`lineups_multi_*`
+path. Caught during design, before it could ship as a real bug: without this, an interactive "try
+these settings" dispatch would silently overwrite the canonical output file that live automation and
+other consumers read from. Verified via real run: canonical file's MD5 unchanged after a
+`--request-id` run against the same site/week.
+
+**Local validation (sandbox):** ran the workflow's embedded Python arg-builder standalone against
+three realistic payloads, then ran the exact generated `optimizer.py` commands against real data --
+all correct, including a deliberately-infeasible stack request (KC, not in the thin real test pool)
+correctly failing loudly, confirming the error path end-to-end before ever touching the user's real
+Cloudflare account.
+
+**Live deployment and testing (user's real Cloudflare/GitHub account) surfaced 5 real bugs, all
+fixed same-session:**
+1. **Mis-scoped GitHub token** (first attempt) -- 404 from the dispatches endpoint. Root cause: PAT
+   lacked the right repo access/permissions. User regenerated correctly-scoped fine-grained PAT.
+2. **Silent empty secret** -- `wrangler secret put` in a masked PowerShell prompt accepted an empty
+   paste and still printed "✨ Success!", so the Worker had an empty `GH_DISPATCH_TOKEN` (falsy in
+   JS, same code path as "missing"). Symptom looked identical to a missing secret. Fixed by piping
+   the value in (`$env:VAR | npx wrangler secret put ...`) instead of the interactive prompt, which
+   sidesteps the paste issue and lets `.Length` confirm it actually landed.
+3. **Browser caching identical GET requests** -- after the secret was genuinely fixed, repeated
+   identical dispatch URLs kept returning the stale cached error. Fixed by adding a cache-busting
+   query param to every dispatch/poll URL (`&cb=<timestamp>`) and `{cache: "no-store"}` in the
+   frontend's real fetch calls (7.2c) so this can't recur for an actual user.
+4. **GitHub's `repository_dispatch` 10-top-level-property limit on `client_payload`** -- a request
+   combining stacking + lock + exclude hit `422 No more than 10 properties are allowed`. Fixed by
+   nesting every optional field under a single `params` key in both `optimizer_api.js` and the
+   workflow's arg-builder, so `client_payload` always has exactly 4 top-level keys (`request_id`,
+   `site`, `week`, `params`) regardless of how many controls are set.
+5. **Generic error messages hid the real reason.** The workflow originally wrote the same canned
+   string to `.error.txt` regardless of what actually failed. Fixed by redirecting `optimizer.py`'s
+   real output to a log file and tailing it into `.error.txt` -- this is what let the *next* real bug
+   (a `--week 1` vs `--week 10` mixup, see 7.2c) get diagnosed and fixed directly from the frontend's
+   own error message rather than by hand-digging through the Actions log (which itself required
+   working around GitHub's log viewer being a virtualized UI that resists text extraction --
+   eventually solved via `find` + click + `get_page_text`, worth remembering for a future session
+   that needs to read Actions logs again).
+
+Also, as a direct follow-on from real testing (not originally scoped, but the natural conclusion of
+bug #5): `optimizer.py`'s CLI entry point now catches `RuntimeError` specifically (verified: all 16
+`raise RuntimeError(...)` sites in the file are "your settings/pool are infeasible" cases, never an
+internal bug) and prints just the clean message, no traceback -- any other exception type still gets
+its full traceback. Exit code 1 preserved either way, so the workflow's failure detection and
+`.error.txt` capture needed no changes. Live-validated against the exact real failure (a `--bring-back`
+request against a pool where no team's real opponent has any players present) -- now reads as
+"Could not generate a lineup with the current settings: ..." instead of a Python traceback.
+
+### 7.2c — Frontend "Build a Lineup" panel
+**Modified:** `dfs_optimizer_frontend/index.html`. Session 7.1's upload/view functionality is
+unchanged underneath a new collapsible panel: player pool upload (`final_projections_{site}_{week}.csv`
+-- separate from the lineup-viewer uploads), Worker URL + Auth Token settings
+(`localStorage`-persisted -- correct here since this is the real deployed site, not a sandboxed
+artifact), full controls (mode, n_lineups, max_exposure, uniqueness, week, all four stack modes with
+their sub-fields, randomization % + seed), a searchable player list with mutually-exclusive
+Lock/Exclude toggles, **Preview Instantly**, and **Confirm with Real Solver**.
+
+**Preview Instantly** -- a real ILP solver (`glpk.js`, WASM) running client-side. Single-lineup,
+lock/exclude only (no stacking/exposure/uniqueness/randomization -- a deliberate scope boundary, not
+an oversight: those mechanics are complex enough, especially exposure's iterative lock-out and
+uniqueness's relaxation-on-infeasibility, that a second JS implementation would be an ongoing drift
+risk against `optimizer.py`'s real logic; "Confirm with Real Solver" exists specifically so nothing
+ever needs that). **Validated for exact parity before shipping:** built the identical ILP formulation
+in `glpk.js` (via its `/node` entry point, since the browser build needs real Worker/Blob APIs Node
+doesn't have) and ran it against real `final_projections_dk_10.csv` -- reproduced `optimizer.py`'s
+exact salary/points totals for baseline, lock, and exclude cases, to the penny.
+
+**Confirm with Real Solver** -- dispatches to the 7.2b Worker, polls for the result, supports every
+control since it's calling the real, unmodified `optimizer.py`.
+
+**Real-data event this session:** the user downloaded a real DK Madden Sim slate export
+(`DKSalaries.csv`) and tried uploading it directly into the Player Pool box -- got a clear "missing
+expected columns" error, since that box wants the *output* of the projection pipeline
+(`final_projections_{site}_{week}.csv`), not DK's raw export. Explained the two-stage pipeline
+(raw export → `ingest_salaries.py` → `build_projections.py` → the file the UI actually wants), and
+flagged honestly that this specific slate (a simulated game, not a real one) has neither a real
+Vegas line nor real current-season history to draw on -- running it through the real pipeline would
+be a mechanically-real test, not an accurate preview of the sim's outcome. User chose to run it as a
+real-data test anyway ("I need to see how the optimizer works... let's find a way to test it now in
+a meaningful way").
+
+Ran the real pipeline end-to-end against this real upload: `ingest_salaries.py` matched 90/94 real
+players against real 2025 season history (4 unmatched, correctly flagged by name); `build_projections.py`
+produced real projections using the existing committed week-10-2025 baseline/matchup/vegas files as
+the historical reference (the only real signal available -- 28 players correctly zeroed as
+no-real-game-that-week, 57/90 got a real nonzero projection); `optimizer.py` solved a real, legal
+lineup (Justin Herbert/Christian McCaffrey/RJ Harvey stack-adjacent build, $44,100/$50,000, 151.38
+pts). All data pulled from the private repo via Claude in Chrome (including two binary `.parquet`
+files -- `weekly_stats_2025.parquet` and `schedules_2025.parquet` -- retrieved by fetching GitHub's
+tokenized raw-content redirect URL from within an authenticated page context, then handing that URL
+to `curl` directly, since `raw.githubusercontent.com` is an allowed sandbox domain but the browser
+tool blocks returning base64/binary blobs through its own response channel).
+
+**Important side effect, flagged plainly:** this run overwrote `output/final_projections_dk_10.csv`,
+which had been the shared "week 10" DK Madden Stream test file since Session 1.3. Going forward,
+"week 10" in this repo means THIS real slate's real projections, not the original test pool. Not a
+problem, just worth knowing before any future session assumes the old numbers are still there.
+
+**Bug found and fixed via this real run:** the Week field only had a `placeholder="10"` (gray hint
+text that disappears on click), not a real value -- looked pre-filled but wasn't, and an empty
+number input's spinner can jump straight to `1`. This produced a real dispatched request for
+`--week 1`, which correctly 404'd against the real repo (no `final_projections_dk_1.csv` exists) --
+and decision #5 above (real error surfacing) is what made this diagnosable directly from the
+frontend's own error text. Fixed: real `value="10"`, plus `localStorage` persistence matching the
+Worker URL/Token fields.
+
+**Gap found and closed same session:** Randomization/seed controls were fully supported by
+`optimizer.py` and by 7.2b's dispatch path, but no UI existed for them at all -- not a stub, just
+missing. Added "Randomization %" and "Seed (optional)" fields, wired into
+`buildDispatchParams()`, with a hint noting Instant Preview never randomizes (only the real-solver
+path does). User live-tested this after it shipped -- confirmed working.
+
+**Live validation, DK, on the real deployed site (`https://dfs-optimizer.pages.dev`), all
+user-confirmed:** Lock, Exclude, Week, multi-lineup mode (n_lineups/max_exposure/uniqueness), QB
+Stack with and without bring-back (including the correctly-infeasible bring-back case against this
+thin real pool -- confirmed via direct pool analysis that none of the 6 viable QB-stack teams have
+their real opponent present in this ~90-player slate, so no team/setting combination could have
+satisfied it -- this is a property of the pool size, same category as the "Known Testing Artifact"
+already logged in ROADMAP.md, not a bug), Game Stack, Mini Stack, Instant Preview, multi-lineup
+display/navigation in the viewer, Randomization + seed.
+
+**Deferred (both explicitly, by user request, matching this project's "flag, don't silently
+assume" pattern):**
+- **FD side** -- no real FD data exists yet to test against (same gap ROADMAP.md has tracked since
+  Session 1.3 for every other FD-touching session). Added to that file's existing tracked-gaps list
+  rather than treated as a new, separate problem. First real point this closes: Preseason Week 1.
+- **Layout/UX refinements** -- user has follow-up suggestions on how the Build panel is laid out;
+  explicitly deferred to Session 7.3 ("Polish & Final Deploy" is that card's actual job) rather than
+  scope-creeping into this session.
+
+**Handoff notes for next session:**
+- Live site: `https://dfs-optimizer.pages.dev`, auto-deploys on push to `main` (unchanged from
+  Session 7.1's Cloudflare Pages config).
+- Both Workers are live: `dfs-optimizer-scheduler` (Session 5.2, unchanged) and `dfs-optimizer-api`
+  (this session, new) -- each has its own independent secrets, confirmed via this session's live
+  debugging that they do NOT share even though `GH_DISPATCH_TOKEN`'s underlying PAT value can be
+  reused across both.
+- `output/final_projections_dk_10.csv` now holds real projections for the user's real Madden Sim
+  slate (see above), not the original Session-1.3-era test pool -- a future session touching "week
+  10" DK data should be aware of this.
+- Per ROADMAP.md, Session 7.3 (Polish & Final Deploy) is next -- its prerequisite (Session 7.2) is
+  complete. Bring the user's layout/UX suggestions into that session's scope from the start, since
+  they were deferred here specifically for 7.3 to pick up.
