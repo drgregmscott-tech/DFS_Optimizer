@@ -139,23 +139,42 @@ jobs:
       - name: Run optimizer.py
         id: run
         continue-on-error: true
-        run: python3 scripts/optimizer.py ${{ steps.build_args.outputs.args }}
+        # Redirected (not piped) to a log file so this step's own exit code
+        # stays exactly optimizer.py's exit code (a pipe through `tee`
+        # would need `pipefail` to preserve that correctly) -- the log is
+        # then read by the next step to give the UI a REAL, specific error
+        # instead of a generic one. Gap found via real live testing this
+        # session: the original version of this step gave no way to tell
+        # "week 1 has no final_projections file" apart from any other
+        # failure without digging through the Actions log by hand.
+        run: python3 scripts/optimizer.py ${{ steps.build_args.outputs.args }} > optimizer_run_output.log 2>&1
+
+      # Redirecting to a file (above) means this step's own log would
+      # otherwise show nothing -- print it back out here, always, so the
+      # Actions UI keeps full visibility for manual debugging exactly like
+      # before, on top of (not instead of) the request-scoped error.txt
+      # below.
+      - name: Show optimizer.py output
+        if: always()
+        run: cat optimizer_run_output.log
 
       # Failure path: optimizer.py raises loudly (bad lock request, infeasible
-      # stack, missing final_projections file, etc.) -- capture that message
-      # into a request-scoped error file so the poller (optimizer_api.js) can
-      # tell the UI exactly why, instead of polling forever for a CSV that
-      # will never appear.
+      # stack, missing final_projections file, etc.) -- capture ITS ACTUAL
+      # error message (last lines of optimizer_run_output.log, which is
+      # where Python's traceback and this project's own descriptive
+      # exception messages land) into a request-scoped error file, so the
+      # poller (optimizer_api.js) can tell the UI exactly why, instead of a
+      # generic "check your params" message that sends the user hunting
+      # through GitHub Actions logs for the real reason.
       - name: Write error marker on failure
         if: steps.run.outcome == 'failure'
         run: |
           mkdir -p output/ui_requests
-          cat > "output/ui_requests/${{ github.event.client_payload.request_id }}.error.txt" <<'EOF'
-          optimizer.py failed for this request. Re-check the requested
-          parameters (lock/exclude/stack combination is the most common
-          cause -- see scripts/optimizer.py's decision #21/#24 error
-          messages for the specific reason) and re-submit.
-          EOF
+          {
+            echo "optimizer.py failed for this request. Last lines of its output:"
+            echo ""
+            tail -n 15 optimizer_run_output.log
+          } > "output/ui_requests/${{ github.event.client_payload.request_id }}.error.txt"
 
       # Request-scoped files only -- deliberately narrower than
       # refresh_data.yml's `git add output/` (which is fine there since that
