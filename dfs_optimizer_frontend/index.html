@@ -852,17 +852,20 @@
     </div>
     <div class="build-body">
 
-      <div class="settings-row">
+      <div class="settings-row" id="workerSettingsRow">
         <div style="flex:2; min-width:200px;">
           <span class="field-label">Worker URL (Session 7.2b)</span>
-          <input type="text" id="settingsWorkerUrl" placeholder="https://dfs-optimizer-api.yoursubdomain.workers.dev">
+          <input type="text" id="settingsWorkerUrl" placeholder="https://dfs-optimizer-api.yoursubdomain.workers.dev" readonly>
         </div>
         <div style="flex:1; min-width:160px;">
           <span class="field-label">Worker Auth Token</span>
-          <input type="password" id="settingsWorkerToken" placeholder="WORKER_AUTH_TOKEN">
+          <input type="password" id="settingsWorkerToken" placeholder="WORKER_AUTH_TOKEN" readonly>
+        </div>
+        <div style="flex:0 0 auto; align-self:flex-end;">
+          <button class="upload-btn" id="btnToggleWorkerLock" type="button" title="These connect the builder to your Cloudflare Worker -- locked by default so a stray click/keystroke can't disable it at crunch time.">&#128274; Locked</button>
         </div>
       </div>
-      <div class="hint">Saved automatically as you type -- set once, stays across reloads.</div>
+      <div class="hint">Locked by default on every page load to prevent an accidental edit -- click "Locked" to unlock and change it. Saved automatically as you type once unlocked.</div>
 
       <div class="controls-grid">
         <div>
@@ -891,9 +894,9 @@
           <input type="number" id="ctrlRandomization" min="0" max="100" value="0">
         </div>
         <div>
-          <span class="field-label">Min Salary Used %</span>
-          <input type="number" id="ctrlMinSalaryPct" min="0" max="100" value="0" placeholder="0 = no floor">
-          <div class="hint" style="margin-top:4px">E.g. 95 requires spending at least 95% of the cap -- keeps lineups from leaving money on the table.</div>
+          <span class="field-label">Max $ Left Unused</span>
+          <input type="number" id="ctrlMaxLeftover" min="0" step="50" value="300" placeholder="e.g. 300">
+          <div class="hint" style="margin-top:4px">Requires spending at least (cap &minus; this) -- e.g. 300 on DK means at least $49,700 of the $50,000 cap gets used. Set to the cap amount (50000/60000) to disable.</div>
         </div>
       </div>
 
@@ -1109,6 +1112,52 @@
       renderSlateOverview();
     }
     renderSlateChips();
+    // Note: intentionally does NOT delete the cloud copy (data/ui_slates/
+    // {site}_{week}.json in the repo) -- "remove" here means "stop showing
+    // it in this browser," not "destroy the shared copy other devices are
+    // using." Deleting it there would need its own explicit action.
+  }
+
+  // ---------------- Session 7.3, item #2 -- cloud slate sync ----------------
+  // Syncs the uploaded slate through the Worker into the private repo
+  // (data/ui_slates/{site}_{week}.json) so the SAME slate shows up on any
+  // device pointed at the same Worker -- not just the browser it was
+  // uploaded from. Purely additive: if the Worker URL/Token aren't set,
+  // every function here silently no-ops and the page behaves exactly like
+  // local-only storage (same as before this feature existed).
+  function cloudConfigured() {
+    return !!(document.getElementById("settingsWorkerUrl").value.trim() &&
+              document.getElementById("settingsWorkerToken").value.trim());
+  }
+
+  function cloudSaveSlate(site, week, kind, filename, payload, onDone) {
+    if (!cloudConfigured()) { onDone(false, "Worker not configured -- saved locally only."); return; }
+    fetch(workerUrl("save_slate", { site: site, week: week }), {
+      method: "POST", cache: "no-store",
+      body: JSON.stringify({ kind: kind, filename: filename, payload: payload }),
+    })
+      .then(function (r) { return r.json(); })
+      .then(function (data) {
+        if (data.error) { onDone(false, data.error); return; }
+        onDone(true, null);
+      })
+      .catch(function (err) { onDone(false, err.message); });
+  }
+
+  function cloudLoadSlate(site, week, onDone) {
+    if (!cloudConfigured()) { onDone(null); return; }
+    fetch(workerUrl("load_slate", { site: site, week: week }), { cache: "no-store" })
+      .then(function (r) { return r.json(); })
+      .then(function (data) { onDone(data.found ? data : null); })
+      .catch(function () { onDone(null); });
+  }
+
+  function cloudListSlates(onDone) {
+    if (!cloudConfigured()) { onDone(null); return; }
+    fetch(workerUrl("list_slates", {}), { cache: "no-store" })
+      .then(function (r) { return r.json(); })
+      .then(function (data) { onDone(Array.isArray(data.slates) ? data.slates : null); })
+      .catch(function () { onDone(null); });
   }
 
   function applySlatePayload(site, kind, filename, payload) {
@@ -1131,6 +1180,23 @@
     } catch (e) { return false; }
   }
 
+  // Tries the cloud copy first (if the Worker is configured), falls back
+  // to this browser's local copy, and reports which source (if any) it
+  // used via callback(source) where source is "cloud" | "local" | "none".
+  // Mirrors a cloud hit into local storage too, so the slate still works
+  // offline on this device afterward.
+  function loadSlateForActive(site, week, callback) {
+    cloudLoadSlate(site, week, function (record) {
+      if (record) {
+        applySlatePayload(site, record.kind, record.filename, record.payload);
+        persistSlate(site, week, record.kind, record.filename, record.payload);
+        callback("cloud", record.filename);
+        return;
+      }
+      var hadLocal = loadStoredSlate(site, week);
+      callback(hadLocal ? "local" : "none", null);
+    });
+  }
   function detectSlateKind(rows) {
     if (!rows.length) return null;
     var poolRequired = ["player_id", "player_name", "position", "team", "salary", "final_projection"];
@@ -1165,11 +1231,16 @@
       }) : rows;
       applySlatePayload(site, kind, file.name, payload);
       persistSlate(site, week, kind, file.name, payload);
-      setSlateStatus(file.name + " — " + rows.length + (kind === "pool" ? " players (player pool)" : " rows (built lineup)"), true);
+      var localMsg = file.name + " — " + rows.length + (kind === "pool" ? " players (player pool)" : " rows (built lineup)");
+      setSlateStatus(localMsg, true);
       renderSlateChips();
       render();
       renderPlayerList();
       renderSlateOverview();
+
+      cloudSaveSlate(site, week, kind, file.name, payload, function (ok, errMsg) {
+        setSlateStatus(localMsg + (ok ? " · synced to cloud" : (cloudConfigured() ? " · cloud sync failed (" + errMsg + ")" : "")), true);
+      });
     };
     reader.readAsText(file);
   }
@@ -1180,8 +1251,7 @@
     el.classList.toggle("loaded", !!loaded);
   }
 
-  function renderSlateChips() {
-    var idx = readSlateIndex();
+  function renderSlateChipsFromList(idx) {
     var el = document.getElementById("slateChips");
     if (!idx.length) { el.innerHTML = ""; return; }
     var curWeek = document.getElementById("slateWeek").value.trim();
@@ -1191,6 +1261,21 @@
         e2.site.toUpperCase() + ' &middot; Wk ' + e2.week +
         '<button class="rm" data-rm-site="' + e2.site + '" data-rm-week="' + e2.week + '" title="Remove">&times;</button></span>';
     }).join("");
+  }
+
+  function renderSlateChips() {
+    var local = readSlateIndex();
+    renderSlateChipsFromList(local); // immediate, no network wait
+    cloudListSlates(function (cloudSlates) {
+      if (!cloudSlates) return; // Worker not configured or unreachable -- local-only view stands
+      var merged = local.slice();
+      cloudSlates.forEach(function (c) {
+        if (!merged.some(function (e2) { return e2.site === c.site && String(e2.week) === String(c.week); })) {
+          merged.push(c);
+        }
+      });
+      renderSlateChipsFromList(merged);
+    });
   }
 
   document.getElementById("slateChips").addEventListener("click", function (e) {
@@ -1204,12 +1289,16 @@
       b.classList.toggle("active", b.getAttribute("data-site") === site);
     });
     state.activeSite = site;
-    var loaded = loadStoredSlate(site, week);
-    setSlateStatus(loaded ? "Loaded from this browser's storage" : "No slate loaded", loaded);
-    renderSlateChips();
-    render();
-    renderPlayerList();
-    renderSlateOverview();
+    setSlateStatus("Loading…");
+    loadSlateForActive(site, week, function (source, filename) {
+      if (source === "cloud") setSlateStatus((filename || "slate") + " — loaded from the cloud", true);
+      else if (source === "local") setSlateStatus("Loaded from this browser's storage", true);
+      else setSlateStatus("No slate loaded", false);
+      renderSlateChips();
+      render();
+      renderPlayerList();
+      renderSlateOverview();
+    });
   });
 
   // ---------------- Rendering ----------------
@@ -1327,22 +1416,27 @@
   function refreshForActiveSlate() {
     var site = state.activeSite;
     var week = document.getElementById("slateWeek").value.trim();
-    var loadedLineup = loadStoredSlate(site, week);
-    // If nothing was persisted for this exact site+week, don't clobber
-    // whatever's already in memory for it (e.g. a lineup this session just
-    // built via "Build Lineups" but hasn't been re-persisted as a slate).
-    if (!loadedLineup && !state.pool[site] && !state.data[site]) {
-      setSlateStatus("No slate loaded");
-    } else if (loadedLineup) {
-      var stored = JSON.parse(localStorage.getItem(slateKey(site, week)) || "{}");
-      setSlateStatus((stored.filename || "loaded") + " — from this browser's storage", true);
-    } else {
-      setSlateStatus(state.pool[site] ? state.pool[site].filename + " — " + state.pool[site].players.length + " players" : "No slate loaded", !!state.pool[site]);
-    }
-    renderSlateChips();
-    render();
-    renderPlayerList();
-    renderSlateOverview();
+    setSlateStatus("Checking for a saved slate…");
+    loadSlateForActive(site, week, function (source, filename) {
+      // If nothing was found anywhere for this exact site+week, don't
+      // clobber whatever's already in memory for it (e.g. a lineup this
+      // session just built via "Build Lineups" but hasn't been
+      // re-persisted as a slate).
+      if (source === "cloud") {
+        setSlateStatus((filename || "slate") + " — loaded from the cloud", true);
+      } else if (source === "local") {
+        var stored = JSON.parse(localStorage.getItem(slateKey(site, week)) || "{}");
+        setSlateStatus((stored.filename || "loaded") + " — from this browser's storage", true);
+      } else if (state.pool[site] || state.data[site]) {
+        setSlateStatus(state.pool[site] ? state.pool[site].filename + " — " + state.pool[site].players.length + " players" : "No slate loaded", !!state.pool[site]);
+      } else {
+        setSlateStatus("No slate loaded");
+      }
+      renderSlateChips();
+      render();
+      renderPlayerList();
+      renderSlateOverview();
+    });
   }
 
   document.getElementById("siteToggle").addEventListener("click", function (e) {
@@ -1388,7 +1482,7 @@
   // settings" checkbox.
   var FULL_SETTINGS_FIELDS = [
     "ctrlNLineups", "ctrlMaxExposure", "ctrlUniqueness", "ctrlRandomization",
-    "ctrlMinSalaryPct", "ctrlStackMode", "ctrlStackSize", "ctrlStackPositions",
+    "ctrlMaxLeftover", "ctrlStackMode", "ctrlStackSize", "ctrlStackPositions",
     "ctrlStackTeam", "ctrlStackGame", "ctrlMiniType", "ctrlBringBack",
     "ctrlFlexRb", "ctrlFlexWr", "ctrlFlexTe"
   ];
@@ -1648,6 +1742,25 @@
   });
   document.getElementById("slateWeek").addEventListener("change", saveSettings);
 
+  // Session 7.3, item #4: locked (readonly) by default on EVERY page
+  // load, regardless of prior state -- a stray click/keystroke can't
+  // touch these fields until someone deliberately clicks "Locked" to
+  // unlock them. Re-locks automatically when a value is saved (blur),
+  // and always starts locked again on the next visit.
+  function setWorkerFieldsLocked(locked) {
+    var urlEl = document.getElementById("settingsWorkerUrl");
+    var tokenEl = document.getElementById("settingsWorkerToken");
+    var btn = document.getElementById("btnToggleWorkerLock");
+    urlEl.readOnly = locked;
+    tokenEl.readOnly = locked;
+    btn.innerHTML = locked ? "&#128274; Locked" : "&#128275; Unlocked -- click to re-lock";
+    btn.classList.toggle("primary", !locked);
+  }
+  document.getElementById("btnToggleWorkerLock").addEventListener("click", function () {
+    var isLocked = document.getElementById("settingsWorkerUrl").readOnly;
+    setWorkerFieldsLocked(!isLocked);
+  });
+
   // Session 7.3, item #5: opt-in full-settings persistence, replacing the
   // old --seed field. Saves immediately on any change while the checkbox
   // is on; toggling it off stops future saves (existing saved values are
@@ -1748,11 +1861,17 @@
     var randomization = parseFloat(document.getElementById("ctrlRandomization").value);
     if (randomization > 0) params.randomization_pct = String(randomization);
 
-    // Session 7.3, item #7: salary floor. 0 (the field's default) means
-    // "omit the param" -- optimizer.py's own --min-salary-pct default is
-    // also 0, so this is a no-op unless the user actually sets a floor.
-    var minSalaryPct = parseFloat(document.getElementById("ctrlMinSalaryPct").value);
-    if (minSalaryPct > 0) params.min_salary_pct = String(minSalaryPct);
+    // Session 7.3, item #7 (refined per feedback): the field is dollar-
+    // precision ("leave at most $X on the table"), converted here to the
+    // % optimizer.py actually takes -- keeps exact DK/FD dollar amounts
+    // (e.g. 49700/50000 on DK) reachable without the granularity loss a
+    // whole-number % field would have had.
+    var cap = SITE_CONFIG[site].cap;
+    var maxLeftover = parseFloat(document.getElementById("ctrlMaxLeftover").value);
+    if (!isNaN(maxLeftover) && maxLeftover >= 0 && maxLeftover < cap) {
+      var minSalaryPct = ((cap - maxLeftover) / cap) * 100;
+      params.min_salary_pct = minSalaryPct.toFixed(3);
+    }
 
     // Session 7.3, item #8: FLEX-eligible positions. Only sent when a
     // strict subset is chosen -- all three checked (the default) omits the
@@ -1847,20 +1966,23 @@
 
   loadSettings();
   updateControlsVisibility();
+  setWorkerFieldsLocked(true); // item #4 -- always starts locked, every load, regardless of prior session
 
-  // Session 7.3, item #2: restore whichever slate (if any) was persisted
-  // for the currently-active site + the restored week, so a page reload
-  // never requires re-uploading.
-  (function initSlate() {
-    var site = state.activeSite;
-    var week = document.getElementById("slateWeek").value.trim();
-    var loaded = loadStoredSlate(site, week);
-    if (loaded) {
-      var stored = JSON.parse(localStorage.getItem(slateKey(site, week)) || "{}");
+  // Session 7.3, items #2/#5: restore whichever slate (if any) was
+  // persisted -- cloud first (so any device shows the same slate), local
+  // as a fallback -- for the currently-active site + the restored week,
+  // so a page reload/new device never requires re-uploading.
+  loadSlateForActive(state.activeSite, document.getElementById("slateWeek").value.trim(), function (source, filename) {
+    if (source === "cloud") setSlateStatus((filename || "slate") + " — loaded from the cloud", true);
+    else if (source === "local") {
+      var stored = JSON.parse(localStorage.getItem(slateKey(state.activeSite, document.getElementById("slateWeek").value.trim())) || "{}");
       setSlateStatus((stored.filename || "loaded") + " — from this browser's storage", true);
     }
     renderSlateChips();
-  })();
+    renderPlayerList();
+    renderSlateOverview();
+    render();
+  });
 
   renderPlayerList();
   renderSlateOverview();

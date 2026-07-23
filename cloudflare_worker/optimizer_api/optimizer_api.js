@@ -87,6 +87,29 @@
  *   -> 200 { "status": "complete", "csv": "<raw csv text>" }
  *   -> 200 { "status": "error", "message": "<text>" }
  *   -> 200 { "status": "pending" }   (neither file exists yet -- keep polling)
+ *
+ * Session 7.3 additions -- cross-device slate sync (item #2). The
+ * frontend's uploaded slate previously lived only in that browser's
+ * localStorage, so a slate uploaded on desktop was invisible on phone.
+ * These three actions store/retrieve it in the private repo instead
+ * (same GitHub Contents API `fetchRepoFile` already uses for polling),
+ * so any device pointed at the same Worker sees the same slate.
+ *
+ * POST /?action=save_slate&token=<WORKER_AUTH_TOKEN>&site=dk&week=10
+ *   body: { "kind": "pool"|"lineup", "filename": "...", "payload": <parsed rows> }
+ *   -> 200 { "ok": true }
+ *   Writes data/ui_slates/{site}_{week}.json (create or update, via the
+ *   Contents API's normal get-sha-then-PUT flow). POST (not GET) because
+ *   a full player pool as a query string risks real URL-length limits.
+ *
+ * GET /?action=load_slate&token=<WORKER_AUTH_TOKEN>&site=dk&week=10
+ *   -> 200 { "found": true, "kind": ..., "filename": ..., "payload": ..., "savedAt": ... }
+ *   -> 200 { "found": false }   (nothing saved yet for this site/week)
+ *
+ * GET /?action=list_slates&token=<WORKER_AUTH_TOKEN>
+ *   -> 200 { "slates": [ { "site": "dk", "week": "10" }, ... ] }
+ *   Lists data/ui_slates/ directly -- returns [] if the folder doesn't
+ *   exist yet (first-ever save creates it).
  */
 
 const POLL_PENDING_RETRY_HINT_MS = 4000; // suggested to the client, not enforced server-side
@@ -106,7 +129,8 @@ function corsHeaders() {
   // this header).
   return {
     "Access-Control-Allow-Origin": "*",
-    "Access-Control-Allow-Methods": "GET, OPTIONS",
+    "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
+    "Access-Control-Allow-Headers": "Content-Type",
   };
 }
 
@@ -198,9 +222,135 @@ async function fetchRepoFile(env, path) {
   }
   const data = await res.json();
   // Contents API returns base64 with embedded newlines -- atob() alone
-  // chokes on those, so strip whitespace first.
-  const decoded = atob(data.content.replace(/\s/g, ""));
+  // chokes on those, so strip whitespace first. Also UTF-8 safe (matches
+  // putRepoFile's UTF-8 safe encode below) -- found via testing that a
+  // plain atob() mangles any non-ASCII byte (em-dashes, curly quotes,
+  // accented names), even though it happened not to matter for this
+  // project's existing plain-ASCII CSV/error.txt content.
+  const decoded = decodeURIComponent(escape(atob(data.content.replace(/\s/g, ""))));
   return decoded;
+}
+
+function ghHeaders(env) {
+  return {
+    "Accept": "application/vnd.github+json",
+    "Authorization": `Bearer ${env.GH_DISPATCH_TOKEN}`,
+    "User-Agent": "dfs-optimizer-api-worker",
+    "X-GitHub-Api-Version": "2022-11-28",
+  };
+}
+
+// Session 7.3 -- create-or-update a repo file via the Contents API's
+// standard flow: GET first to find the existing sha (required by GitHub
+// for an update, omitted entirely for a brand-new file), then PUT.
+async function putRepoFile(env, path, contentText, message) {
+  const apiUrl = `https://api.github.com/repos/${env.GITHUB_OWNER}/${env.GITHUB_REPO}/contents/${path}`;
+  let sha;
+  const getRes = await fetch(apiUrl, { headers: ghHeaders(env) });
+  if (getRes.status === 200) {
+    sha = (await getRes.json()).sha;
+  } else if (getRes.status !== 404) {
+    throw new Error(`GitHub contents API GET failed for ${path} (status ${getRes.status}): ${await getRes.text()}`);
+  }
+  // UTF-8-safe base64 encode (btoa alone chokes on non-Latin1 chars --
+  // player names are ASCII in practice, but this is cheap insurance).
+  const b64 = btoa(unescape(encodeURIComponent(contentText)));
+  const body = { message, content: b64, branch: "main" };
+  if (sha) body.sha = sha;
+  const putRes = await fetch(apiUrl, {
+    method: "PUT",
+    headers: { ...ghHeaders(env), "Content-Type": "application/json" },
+    body: JSON.stringify(body),
+  });
+  if (!putRes.ok) {
+    throw new Error(`GitHub contents API PUT failed for ${path} (status ${putRes.status}): ${await putRes.text()}`);
+  }
+}
+
+async function listRepoDir(env, dirPath) {
+  const apiUrl = `https://api.github.com/repos/${env.GITHUB_OWNER}/${env.GITHUB_REPO}/contents/${dirPath}`;
+  const res = await fetch(apiUrl, { headers: ghHeaders(env) });
+  if (res.status === 404) return []; // folder doesn't exist yet -- no slates saved anywhere yet
+  if (!res.ok) {
+    throw new Error(`GitHub contents API list failed for ${dirPath} (status ${res.status}): ${await res.text()}`);
+  }
+  const data = await res.json();
+  return Array.isArray(data) ? data : [];
+}
+
+// site/week land directly in a GitHub API path below -- validate against a
+// known-safe shape rather than trusting query-string input verbatim.
+function validSiteWeek(site, week) {
+  return (site === "dk" || site === "fd") && /^[0-9]{1,3}$/.test(String(week));
+}
+
+async function handleSaveSlate(request, url, env) {
+  const site = url.searchParams.get("site");
+  const week = url.searchParams.get("week");
+  if (!validSiteWeek(site, week)) {
+    return json({ error: "site must be dk/fd and week must be a number." }, 400);
+  }
+  if (!env.GH_DISPATCH_TOKEN || !env.GITHUB_OWNER || !env.GITHUB_REPO) {
+    return json({ error: "Worker is missing required secrets/env vars -- see this file's setup header." }, 500);
+  }
+  let body;
+  try {
+    body = await request.json();
+  } catch (e) {
+    return json({ error: "Request body must be JSON." }, 400);
+  }
+  if (!body || (body.kind !== "pool" && body.kind !== "lineup") || body.payload === undefined) {
+    return json({ error: "Body must include kind ('pool' or 'lineup') and payload." }, 400);
+  }
+  const record = {
+    kind: body.kind,
+    filename: body.filename || "",
+    payload: body.payload,
+    savedAt: new Date().toISOString(),
+  };
+  try {
+    await putRepoFile(
+      env, `data/ui_slates/${site}_${week}.json`, JSON.stringify(record),
+      `UI slate save: ${site} week ${week} [skip ci]`,
+    );
+  } catch (err) {
+    return json({ error: `Save failed: ${err.message}` }, 502);
+  }
+  return json({ ok: true });
+}
+
+async function handleLoadSlate(url, env) {
+  const site = url.searchParams.get("site");
+  const week = url.searchParams.get("week");
+  if (!validSiteWeek(site, week)) {
+    return json({ error: "site must be dk/fd and week must be a number." }, 400);
+  }
+  try {
+    const text = await fetchRepoFile(env, `data/ui_slates/${site}_${week}.json`);
+    if (text === null) return json({ found: false });
+    return json({ found: true, ...JSON.parse(text) });
+  } catch (err) {
+    return json({ error: `Load failed: ${err.message}` }, 502);
+  }
+}
+
+async function handleListSlates(env) {
+  try {
+    const entries = await listRepoDir(env, "data/ui_slates");
+    const slates = entries
+      .map((e) => e.name)
+      .filter((n) => n.endsWith(".json"))
+      .map((n) => n.slice(0, -5))
+      .map((base) => {
+        const idx = base.lastIndexOf("_");
+        if (idx === -1) return null;
+        return { site: base.slice(0, idx), week: base.slice(idx + 1) };
+      })
+      .filter(Boolean);
+    return json({ slates });
+  } catch (err) {
+    return json({ error: `List failed: ${err.message}` }, 502);
+  }
 }
 
 async function handlePoll(url, env) {
@@ -235,17 +385,26 @@ export default {
     if (request.method === "OPTIONS") {
       return new Response(null, { headers: corsHeaders() });
     }
-    if (request.method !== "GET") {
-      return json({ error: "Method not allowed -- use GET." }, 405);
+
+    const url = new URL(request.url);
+    const action = url.searchParams.get("action");
+
+    // Every action is GET except save_slate, which is POST -- a full
+    // player pool as a query string risks real URL-length limits, so its
+    // payload travels in the request body instead (item #2).
+    const methodOk = request.method === "GET" || (request.method === "POST" && action === "save_slate");
+    if (!methodOk) {
+      return json({ error: "Method not allowed." }, 405);
     }
     if (!auth(request, env)) {
       return json({ error: "Unauthorized." }, 401);
     }
 
-    const url = new URL(request.url);
-    const action = url.searchParams.get("action");
     if (action === "dispatch") return handleDispatch(url, env);
     if (action === "poll") return handlePoll(url, env);
-    return json({ error: "action must be 'dispatch' or 'poll'." }, 400);
+    if (action === "save_slate") return handleSaveSlate(request, url, env);
+    if (action === "load_slate") return handleLoadSlate(url, env);
+    if (action === "list_slates") return handleListSlates(env);
+    return json({ error: "action must be 'dispatch', 'poll', 'save_slate', 'load_slate', or 'list_slates'." }, 400);
   },
 };
