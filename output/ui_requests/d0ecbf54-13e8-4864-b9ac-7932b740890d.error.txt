@@ -1,0 +1,14 @@
+optimizer.py failed for this request. Last lines of its output:
+
+Traceback (most recent call last):
+  File "/home/runner/work/DFS_Optimizer/DFS_Optimizer/scripts/optimizer.py", line 1541, in <module>
+    main()
+  File "/home/runner/work/DFS_Optimizer/DFS_Optimizer/scripts/optimizer.py", line 1479, in main
+    lineups, exposure_count, n_generated = build_multi_lineup(
+                                           ^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/work/DFS_Optimizer/DFS_Optimizer/scripts/optimizer.py", line 1194, in build_multi_lineup
+    candidates, diversify_active, pin_note = resolve_stack_candidates(
+                                             ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/work/DFS_Optimizer/DFS_Optimizer/scripts/optimizer.py", line 997, in resolve_stack_candidates
+    raise RuntimeError(
+RuntimeError: No team has both a viable QB/RB and a viable stack partner/DST this week with a real, in-pool opponent for --bring-back -- cannot auto-select a stack team.
