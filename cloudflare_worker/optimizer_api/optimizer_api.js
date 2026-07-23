@@ -110,6 +110,16 @@
  *   -> 200 { "slates": [ { "site": "dk", "week": "10" }, ... ] }
  *   Lists data/ui_slates/ directly -- returns [] if the folder doesn't
  *   exist yet (first-ever save creates it).
+ *
+ * GET /?action=ping&token=<WORKER_AUTH_TOKEN>
+ *   -> 200 { "ok": true }
+ *   Session 7.3 addition -- a deliberately trivial action that makes
+ *   NO GitHub API call at all, just confirms two things in isolation:
+ *   the Worker is actually deployed and reachable at this URL, and the
+ *   supplied token matches. Exists so a "Failed to fetch" in the UI can
+ *   be narrowed down to "wrong/undeployed URL" vs. "reachable, but a
+ *   GitHub-side problem (bad PAT, wrong owner/repo)" without needing a
+ *   full dispatch/save round-trip to find out.
  */
 
 const POLL_PENDING_RETRY_HINT_MS = 4000; // suggested to the client, not enforced server-side
@@ -405,6 +415,7 @@ export default {
     if (action === "save_slate") return handleSaveSlate(request, url, env);
     if (action === "load_slate") return handleLoadSlate(url, env);
     if (action === "list_slates") return handleListSlates(env);
-    return json({ error: "action must be 'dispatch', 'poll', 'save_slate', 'load_slate', or 'list_slates'." }, 400);
+    if (action === "ping") return json({ ok: true }); // deliberately no GitHub call -- see docstring
+    return json({ error: "action must be 'dispatch', 'poll', 'save_slate', 'load_slate', 'list_slates', or 'ping'." }, 400);
   },
 };

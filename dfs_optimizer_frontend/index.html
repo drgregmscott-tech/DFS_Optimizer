@@ -861,11 +861,13 @@
           <span class="field-label">Worker Auth Token</span>
           <input type="password" id="settingsWorkerToken" placeholder="WORKER_AUTH_TOKEN" readonly>
         </div>
-        <div style="flex:0 0 auto; align-self:flex-end;">
+        <div style="flex:0 0 auto; align-self:flex-end; display:flex; gap:8px;">
           <button class="upload-btn" id="btnToggleWorkerLock" type="button" title="These connect the builder to your Cloudflare Worker -- locked by default so a stray click/keystroke can't disable it at crunch time.">&#128274; Locked</button>
+          <button class="upload-btn" id="btnTestConnection" type="button">Test Connection</button>
         </div>
       </div>
       <div class="hint">Locked by default on every page load to prevent an accidental edit -- click "Locked" to unlock and change it. Saved automatically as you type once unlocked.</div>
+      <div class="solve-status" id="connectionTestStatus"></div>
 
       <div class="controls-grid">
         <div>
@@ -1760,6 +1762,47 @@
     var isLocked = document.getElementById("settingsWorkerUrl").readOnly;
     setWorkerFieldsLocked(!isLocked);
   });
+
+  // Session 7.3 -- "Test Connection" isolates exactly where a failure is,
+  // instead of the generic "Failed to fetch" a full build attempt gives.
+  function testConnection() {
+    var statusEl = document.getElementById("connectionTestStatus");
+    var setResult = function (text, kind) { statusEl.textContent = text; statusEl.className = "solve-status" + (kind ? " " + kind : ""); };
+
+    var rawUrl = document.getElementById("settingsWorkerUrl").value.trim();
+    var token = document.getElementById("settingsWorkerToken").value.trim();
+
+    if (!rawUrl) { setResult("Worker URL is empty -- unlock and paste it in first.", "error"); return; }
+    if (!token) { setResult("Worker Auth Token is empty -- unlock and paste it in first.", "error"); return; }
+    if (!/^https:\/\//i.test(rawUrl)) { setResult("Worker URL should start with https:// -- check for a typo.", "error"); return; }
+    if (/\s/.test(rawUrl) || /\s/.test(token)) { setResult("URL or Token has a stray space in it (often from a copy-paste) -- check for one at the start or end.", "error"); return; }
+
+    setResult("Testing…", "");
+    fetch(workerUrl("ping", {}), { cache: "no-store" })
+      .then(function (r) {
+        if (r.status === 401) { setResult("Reached the Worker, but the token was rejected (401) -- confirm WORKER_AUTH_TOKEN matches exactly what's set via `wrangler secret put`.", "error"); return null; }
+        return r.json().then(function (data) { return { status: r.status, data: data }; });
+      })
+      .then(function (result) {
+        if (!result) return; // 401 already handled above
+        if (result.data && result.data.ok) {
+          setResult("Connected -- Worker is deployed and the token is correct.", "ok");
+        } else {
+          setResult("Reached the Worker (status " + result.status + ") but got an unexpected response: " + JSON.stringify(result.data), "error");
+        }
+      })
+      .catch(function (err) {
+        // A true "Failed to fetch" -- the request never got an HTTP
+        // response at all. Almost always one of: the Worker isn't
+        // deployed yet (no `wrangler deploy` run), the URL has a typo/
+        // wrong subdomain, or a browser extension/network is blocking it.
+        setResult(
+          "Failed to fetch (" + err.message + ") -- the browser never got a response at all. Most likely: the Worker hasn't been deployed yet (run `npx wrangler deploy` from cloudflare_worker/optimizer_api), or the URL doesn't match what Cloudflare actually assigned (check Workers & Pages \u2192 dfs-optimizer-api in your dashboard for the real URL).",
+          "error"
+        );
+      });
+  }
+  document.getElementById("btnTestConnection").addEventListener("click", testConnection);
 
   // Session 7.3, item #5: opt-in full-settings persistence, replacing the
   // old --seed field. Saves immediately on any change while the checkbox
