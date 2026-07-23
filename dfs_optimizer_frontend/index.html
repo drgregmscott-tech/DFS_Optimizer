@@ -456,13 +456,237 @@
 
   /* ---------------- Footer ---------------- */
 
-  footer {
+  .footer-note {
     max-width: 900px;
     margin: 40px auto 0;
     padding: 0 20px;
     font-size: 11px;
     color: var(--dimmer);
     text-align: center;
+  }
+
+  /* ---------------- Build Lineup panel (Session 7.2c) ---------------- */
+
+  .build-panel {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    margin-top: 24px;
+    overflow: hidden;
+  }
+
+  .build-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 18px;
+    cursor: pointer;
+    user-select: none;
+  }
+
+  .build-header .title {
+    font-family: 'Barlow Condensed', sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    font-size: 15px;
+    font-weight: 600;
+  }
+
+  .build-header .chevron {
+    color: var(--dim);
+    transition: transform 0.15s ease;
+    font-size: 12px;
+  }
+
+  .build-panel.open .chevron { transform: rotate(90deg); }
+
+  .build-body {
+    display: none;
+    padding: 0 18px 18px;
+    border-top: 1px solid var(--line-soft);
+  }
+
+  .build-panel.open .build-body { display: block; }
+
+  .settings-row {
+    display: flex;
+    gap: 10px;
+    margin-top: 16px;
+    flex-wrap: wrap;
+  }
+
+  .settings-row input[type="text"], .settings-row input[type="password"] {
+    flex: 1;
+    min-width: 160px;
+  }
+
+  .field-label {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--dim);
+    margin-bottom: 4px;
+    display: block;
+  }
+
+  .build-body input[type="text"],
+  .build-body input[type="password"],
+  .build-body input[type="number"],
+  .build-body select {
+    background: var(--ink-raised);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    color: var(--bone);
+    font-family: 'Inter', system-ui, sans-serif;
+    font-size: 13px;
+    padding: 8px 10px;
+    width: 100%;
+  }
+
+  .build-body input:focus, .build-body select:focus {
+    outline: none;
+    border-color: var(--amber);
+  }
+
+  .pool-upload-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 16px;
+    padding: 12px;
+    background: var(--ink-raised);
+    border: 1px dashed var(--line);
+    border-radius: 8px;
+  }
+
+  .pool-upload-row .upload-btn {
+    background: var(--panel-2);
+    border: 1px solid var(--line);
+    color: var(--bone);
+    font-size: 12px;
+    padding: 7px 14px;
+    border-radius: 6px;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+
+  .pool-status { font-size: 12px; color: var(--dim); flex: 1; }
+  .pool-status.loaded { color: var(--good); }
+
+  .controls-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 12px;
+    margin-top: 16px;
+  }
+
+  .controls-grid.stack-sub {
+    margin-top: 10px;
+    padding: 10px;
+    background: var(--ink-raised);
+    border-radius: 8px;
+  }
+
+  .checkbox-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 22px;
+    font-size: 12px;
+    color: var(--dim);
+  }
+
+  .player-search {
+    margin-top: 16px;
+  }
+
+  .player-list {
+    max-height: 320px;
+    overflow-y: auto;
+    margin-top: 10px;
+    border: 1px solid var(--line-soft);
+    border-radius: 8px;
+  }
+
+  .player-row {
+    display: grid;
+    grid-template-columns: 1fr auto auto auto auto;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 12px;
+    border-bottom: 1px solid var(--line-soft);
+    font-size: 12px;
+  }
+
+  .player-row:last-child { border-bottom: none; }
+  .player-row.is-locked { background: rgba(63,191,127,0.08); }
+  .player-row.is-excluded { background: rgba(239,68,68,0.08); opacity: 0.6; }
+
+  .player-row .pname { color: var(--bone); }
+  .player-row .pmeta { color: var(--dim); font-size: 11px; }
+  .player-row .pproj, .player-row .psal { font-family: 'Roboto Mono', monospace; font-size: 11px; color: var(--dim); text-align: right; }
+
+  .pill-btn {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    padding: 4px 9px;
+    border-radius: 999px;
+    border: 1px solid var(--line);
+    background: transparent;
+    color: var(--dim);
+    cursor: pointer;
+  }
+
+  .pill-btn.lock-btn.active { background: var(--good); border-color: var(--good); color: var(--ink); }
+  .pill-btn.exclude-btn.active { background: var(--bad); border-color: var(--bad); color: var(--ink); }
+
+  .action-row {
+    display: flex;
+    gap: 10px;
+    margin-top: 18px;
+    flex-wrap: wrap;
+  }
+
+  .action-btn {
+    flex: 1;
+    min-width: 200px;
+    padding: 12px 16px;
+    border-radius: 8px;
+    border: 1px solid var(--line);
+    background: var(--panel-2);
+    color: var(--bone);
+    font-family: 'Barlow Condensed', sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  .action-btn:hover { border-color: var(--dim); }
+  .action-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+  .action-btn.primary {
+    background: var(--amber);
+    border-color: var(--amber);
+    color: var(--ink);
+  }
+
+  .solve-status {
+    margin-top: 12px;
+    font-size: 12px;
+    color: var(--dim);
+    min-height: 18px;
+  }
+
+  .solve-status.error { color: var(--bad); }
+  .solve-status.ok { color: var(--good); }
+
+  .hint {
+    font-size: 11px;
+    color: var(--dimmer);
+    margin-top: 6px;
   }
 </style>
 </head>
@@ -500,24 +724,144 @@
     </div>
   </div>
 
+  <!-- ================= Build Lineup panel (Session 7.2c) ================= -->
+  <div class="build-panel" id="buildPanel">
+    <div class="build-header" id="buildHeader">
+      <div class="title">Build a Lineup</div>
+      <div class="chevron">&#9656;</div>
+    </div>
+    <div class="build-body">
+
+      <div>
+        <span class="field-label">Player pool (final_projections_&#123;site&#125;_&#123;week&#125;.csv)</span>
+        <div class="pool-upload-row">
+          <button class="upload-btn" id="btnPool">Upload CSV</button>
+          <input type="file" id="filePool" accept=".csv" style="display:none">
+          <span class="pool-status" id="poolStatus">No player pool loaded for this site</span>
+        </div>
+      </div>
+
+      <div class="settings-row">
+        <div style="flex:1; min-width:120px;">
+          <span class="field-label">Week</span>
+          <input type="number" id="ctrlWeek" min="1" max="22" placeholder="10">
+        </div>
+        <div style="flex:2; min-width:200px;">
+          <span class="field-label">Worker URL (Session 7.2b)</span>
+          <input type="text" id="settingsWorkerUrl" placeholder="https://dfs-optimizer-api.yoursubdomain.workers.dev">
+        </div>
+        <div style="flex:1; min-width:160px;">
+          <span class="field-label">Worker Auth Token</span>
+          <input type="password" id="settingsWorkerToken" placeholder="WORKER_AUTH_TOKEN">
+        </div>
+      </div>
+
+      <div class="controls-grid">
+        <div>
+          <span class="field-label">Mode</span>
+          <select id="ctrlMode">
+            <option value="single">Single lineup</option>
+            <option value="multi">Multi-lineup</option>
+          </select>
+        </div>
+        <div id="wrapNLineups" style="display:none">
+          <span class="field-label"># Lineups</span>
+          <input type="number" id="ctrlNLineups" min="1" max="150" value="20">
+        </div>
+        <div id="wrapMaxExposure" style="display:none">
+          <span class="field-label">Max Exposure %</span>
+          <input type="number" id="ctrlMaxExposure" min="1" max="100" value="40">
+        </div>
+        <div id="wrapUniqueness" style="display:none">
+          <span class="field-label">Uniqueness</span>
+          <input type="number" id="ctrlUniqueness" min="0" max="9" value="1">
+        </div>
+        <div>
+          <span class="field-label">Stack Mode</span>
+          <select id="ctrlStackMode">
+            <option value="none">None</option>
+            <option value="qb">QB Stack</option>
+            <option value="game">Game Stack</option>
+            <option value="mini">Mini Stack</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="controls-grid stack-sub" id="stackSubFields" style="display:none">
+        <div id="wrapStackSize">
+          <span class="field-label">Stack Size</span>
+          <input type="number" id="ctrlStackSize" min="1" max="4" value="1">
+        </div>
+        <div id="wrapStackPositions">
+          <span class="field-label">Partner Positions</span>
+          <input type="text" id="ctrlStackPositions" value="WR,TE,RB">
+        </div>
+        <div id="wrapStackTeam">
+          <span class="field-label">Stack Team (optional)</span>
+          <input type="text" id="ctrlStackTeam" placeholder="auto">
+        </div>
+        <div id="wrapStackGame">
+          <span class="field-label">Stack Game (optional)</span>
+          <input type="text" id="ctrlStackGame" placeholder="e.g. KC-BUF">
+        </div>
+        <div id="wrapMiniType" style="display:none">
+          <span class="field-label">Mini Stack Type</span>
+          <select id="ctrlMiniType">
+            <option value="rb-dst">RB + own DST/DEF</option>
+            <option value="opposing-pass-catchers">Opposing pass-catchers</option>
+          </select>
+        </div>
+        <div class="checkbox-row" id="wrapBringBack">
+          <input type="checkbox" id="ctrlBringBack">
+          <label for="ctrlBringBack">Bring-back</label>
+        </div>
+      </div>
+
+      <div class="player-search">
+        <span class="field-label">Lock / Exclude players</span>
+        <input type="text" id="playerSearch" placeholder="Search player, team, or position&hellip;">
+        <div class="player-list" id="playerList"></div>
+      </div>
+
+      <div class="action-row">
+        <button class="action-btn" id="btnPreview">Preview Instantly</button>
+        <button class="action-btn primary" id="btnConfirm">Confirm with Real Solver</button>
+      </div>
+      <div class="solve-status" id="solveStatus"></div>
+      <div class="hint">Instant preview runs a real ILP solver (glpk.js) in your browser — single-lineup, lock/exclude only, no stacking yet. "Confirm with Real Solver" always runs the actual <code>optimizer.py</code> via GitHub Actions and supports every control above.</div>
+
+    </div>
+  </div>
+  <!-- ================= /Build Lineup panel ================= -->
+
   <div id="viewer"></div>
 
 </div>
 
-<footer>lineup_single_&#123;site&#125;_&#123;week&#125;.csv or lineups_multi_&#123;site&#125;_&#123;week&#125;.csv — parsed locally in your browser, nothing is uploaded anywhere.</footer>
+<footer class="footer-note">lineup_single_&#123;site&#125;_&#123;week&#125;.csv or lineups_multi_&#123;site&#125;_&#123;week&#125;.csv — parsed locally in your browser, nothing is uploaded anywhere.</footer>
 
 <script>
 (function () {
+
   "use strict";
 
   var SITE_CONFIG = {
-    dk: { label: "DraftKings", cap: 50000, defSlot: "DST", slotOrder: ["QB","RB1","RB2","WR1","WR2","WR3","TE","FLEX","DST"] },
-    fd: { label: "FanDuel",    cap: 60000, defSlot: "DEF", slotOrder: ["QB","RB1","RB2","WR1","WR2","WR3","TE","FLEX","DEF"] }
+    dk: { label: "DraftKings", cap: 50000, defSlot: "DST", slotOrder: ["QB","RB1","RB2","WR1","WR2","WR3","TE","FLEX","DST"],
+          fixedCounts: { QB: 1, DST: 1 }, flexFixed: { RB: 2, WR: 3, TE: 1 }, flexCount: 1, defensePositions: ["DST"] },
+    fd: { label: "FanDuel",    cap: 60000, defSlot: "DEF", slotOrder: ["QB","RB1","RB2","WR1","WR2","WR3","TE","FLEX","DEF"],
+          fixedCounts: { QB: 1, DEF: 1 }, flexFixed: { RB: 2, WR: 3, TE: 1 }, flexCount: 1, defensePositions: ["D","DEF"] }
   };
 
   var state = {
     activeSite: "dk",
-    data: { dk: null, fd: null } // each: { filename, lineups: { [lineup_id]: [row,...] }, ids: [...] }
+    data: { dk: null, fd: null }, // each: { filename, lineups: { [lineup_id]: [row,...] }, ids: [...] }
+    // ---- Session 7.2c additions ----
+    pool: { dk: null, fd: null },              // each: { filename, players: [...] }
+    locked: { dk: {}, fd: {} },                // player_id -> true
+    excluded: { dk: {}, fd: {} },               // player_id -> true
+    playerSearch: "",
+    activeRequestId: null,
+    pollTimer: null
   };
 
   // ---------------- CSV parsing ----------------
@@ -736,6 +1080,11 @@
       b.classList.toggle("active", b === btn);
     });
     render();
+    // Session 7.2c -- keep the Build panel's pool status/player list in sync
+    // with whichever site is now active (pool/locks/excludes are per-site).
+    var pool = state.pool[state.activeSite];
+    setPoolStatus(pool ? (pool.filename + " — " + pool.players.length + " players") : "No player pool loaded for this site", !!pool);
+    renderPlayerList();
   });
 
   ["dk", "fd"].forEach(function (site) {
@@ -757,6 +1106,434 @@
       if (file) handleFile(site, file);
     });
   });
+
+  // =========================================================================
+  // Session 7.2c -- Build a Lineup (player pool, controls, lock/exclude,
+  // instant preview, confirm-with-real-solver)
+  // =========================================================================
+
+  // ---------------- Settings (localStorage-persisted -- this is a real
+  // deployed site, not a sandboxed artifact, so localStorage is the correct
+  // tool here) ----------------
+
+  function loadSettings() {
+    try {
+      document.getElementById("settingsWorkerUrl").value = localStorage.getItem("dfs_worker_url") || "";
+      document.getElementById("settingsWorkerToken").value = localStorage.getItem("dfs_worker_token") || "";
+    } catch (e) { /* localStorage unavailable (private browsing etc) -- fields just stay empty */ }
+  }
+
+  function saveSettings() {
+    try {
+      localStorage.setItem("dfs_worker_url", document.getElementById("settingsWorkerUrl").value.trim());
+      localStorage.setItem("dfs_worker_token", document.getElementById("settingsWorkerToken").value.trim());
+    } catch (e) { /* ignore */ }
+  }
+
+  // ---------------- Player pool CSV handling ----------------
+
+  function handlePoolFile(file) {
+    if (!file) return;
+    var reader = new FileReader();
+    reader.onload = function (e) {
+      var rows;
+      try {
+        rows = parseCSV(e.target.result);
+      } catch (err) {
+        setPoolStatus("Couldn't parse file — check it's a valid CSV export.", false);
+        return;
+      }
+      if (!rows.length) {
+        setPoolStatus("File loaded but no rows found.", false);
+        return;
+      }
+      var required = ["player_id", "player_name", "position", "team", "salary", "final_projection"];
+      var missing = required.filter(function (k) { return !Object.prototype.hasOwnProperty.call(rows[0], k); });
+      if (missing.length) {
+        setPoolStatus("Missing expected column(s): " + missing.join(", "), false);
+        return;
+      }
+      var players = rows.map(function (r) {
+        return {
+          player_id: r.player_id,
+          player_name: r.player_name.trim(),
+          position: r.position,
+          team: r.team,
+          salary: parseFloat(r.salary) || 0,
+          final_projection: parseFloat(r.final_projection) || 0,
+          opponent: r.opponent || ""
+        };
+      });
+      var site = state.activeSite;
+      state.pool[site] = { filename: file.name, players: players };
+      setPoolStatus(file.name + " — " + players.length + " players", true);
+      renderPlayerList();
+    };
+    reader.readAsText(file);
+  }
+
+  function setPoolStatus(text, loaded) {
+    var el = document.getElementById("poolStatus");
+    el.textContent = text;
+    el.classList.toggle("loaded", !!loaded);
+  }
+
+  // ---------------- Player list (search + lock/exclude) ----------------
+
+  function renderPlayerList() {
+    var site = state.activeSite;
+    var pool = state.pool[site];
+    var listEl = document.getElementById("playerList");
+    if (!pool) {
+      listEl.innerHTML = '<div class="player-row"><div class="pmeta">Upload a player pool CSV above to lock/exclude players.</div></div>';
+      return;
+    }
+    var q = state.playerSearch.toLowerCase();
+    var rows = pool.players.filter(function (p) {
+      if (!q) return true;
+      return p.player_name.toLowerCase().indexOf(q) !== -1 ||
+             p.team.toLowerCase().indexOf(q) !== -1 ||
+             p.position.toLowerCase().indexOf(q) !== -1;
+    }).slice(0, 200); // cap render for very large pools -- search narrows it down
+
+    if (!rows.length) {
+      listEl.innerHTML = '<div class="player-row"><div class="pmeta">No players match your search.</div></div>';
+      return;
+    }
+
+    listEl.innerHTML = rows.map(function (p) {
+      var isLocked = !!state.locked[site][p.player_id];
+      var isExcluded = !!state.excluded[site][p.player_id];
+      var rowCls = "player-row" + (isLocked ? " is-locked" : "") + (isExcluded ? " is-excluded" : "");
+      return '<div class="' + rowCls + '" data-pid="' + escapeHtml(p.player_id) + '">' +
+        '<div><div class="pname">' + escapeHtml(p.player_name) + '</div>' +
+        '<div class="pmeta">' + escapeHtml(p.position) + ' &middot; ' + escapeHtml(p.team) + '</div></div>' +
+        '<div class="psal">' + fmtMoney(p.salary) + '</div>' +
+        '<div class="pproj">' + fmtPts(p.final_projection) + '</div>' +
+        '<button class="pill-btn lock-btn' + (isLocked ? ' active' : '') + '" data-action="lock">Lock</button>' +
+        '<button class="pill-btn exclude-btn' + (isExcluded ? ' active' : '') + '" data-action="exclude">Exclude</button>' +
+        '</div>';
+    }).join("");
+  }
+
+  document.getElementById("playerList").addEventListener("click", function (e) {
+    var btn = e.target.closest("button[data-action]");
+    if (!btn) return;
+    var row = e.target.closest(".player-row[data-pid]");
+    if (!row) return;
+    var pid = row.getAttribute("data-pid");
+    var site = state.activeSite;
+    var action = btn.getAttribute("data-action");
+    if (action === "lock") {
+      if (state.locked[site][pid]) { delete state.locked[site][pid]; }
+      else { state.locked[site][pid] = true; delete state.excluded[site][pid]; } // decision #25 -- mutually exclusive
+    } else if (action === "exclude") {
+      if (state.excluded[site][pid]) { delete state.excluded[site][pid]; }
+      else { state.excluded[site][pid] = true; delete state.locked[site][pid]; }
+    }
+    renderPlayerList();
+  });
+
+  document.getElementById("playerSearch").addEventListener("input", function (e) {
+    state.playerSearch = e.target.value;
+    renderPlayerList();
+  });
+
+  // ---------------- Controls panel show/hide wiring ----------------
+
+  function updateControlsVisibility() {
+    var mode = document.getElementById("ctrlMode").value;
+    var isMulti = mode === "multi";
+    document.getElementById("wrapNLineups").style.display = isMulti ? "" : "none";
+    document.getElementById("wrapMaxExposure").style.display = isMulti ? "" : "none";
+    document.getElementById("wrapUniqueness").style.display = isMulti ? "" : "none";
+
+    var stackMode = document.getElementById("ctrlStackMode").value;
+    var showStack = stackMode !== "none";
+    document.getElementById("stackSubFields").style.display = showStack ? "" : "none";
+    document.getElementById("wrapMiniType").style.display = stackMode === "mini" ? "" : "none";
+    document.getElementById("wrapStackSize").style.display = stackMode === "qb" ? "" : "none";
+    document.getElementById("wrapStackPositions").style.display = stackMode === "qb" ? "" : "none";
+    document.getElementById("wrapBringBack").style.display = stackMode === "qb" ? "" : "none";
+    document.getElementById("wrapStackTeam").style.display = (stackMode === "qb" || (stackMode === "mini")) ? "" : "none";
+    document.getElementById("wrapStackGame").style.display = (stackMode === "game" || stackMode === "mini") ? "" : "none";
+
+    // Instant preview only supports single-lineup, no-stack, lock/exclude-only.
+    var previewBtn = document.getElementById("btnPreview");
+    var previewOk = !isMulti && stackMode === "none";
+    previewBtn.disabled = !previewOk;
+    previewBtn.title = previewOk ? "" : "Instant preview only supports single-lineup mode with no stacking yet -- use Confirm with Real Solver.";
+  }
+
+  document.getElementById("ctrlMode").addEventListener("change", updateControlsVisibility);
+  document.getElementById("ctrlStackMode").addEventListener("change", updateControlsVisibility);
+
+  document.getElementById("buildHeader").addEventListener("click", function () {
+    document.getElementById("buildPanel").classList.toggle("open");
+  });
+
+  ["settingsWorkerUrl", "settingsWorkerToken"].forEach(function (id) {
+    document.getElementById(id).addEventListener("change", saveSettings);
+  });
+
+  document.getElementById("btnPool").addEventListener("click", function () {
+    document.getElementById("filePool").click();
+  });
+  document.getElementById("filePool").addEventListener("change", function (e) {
+    handlePoolFile(e.target.files[0]);
+  });
+
+  // ---------------- Rendering a solved lineup back into the existing viewer ----------------
+
+  // Converts either instant-preview solver output or the real-solver's CSV
+  // into the exact row shape render() already expects (Session 7.1), and
+  // injects it into state.data so the existing, already-validated render()
+  // path displays it -- no separate display code path to maintain.
+  function showSolvedLineup(site, rows, hasLineupId) {
+    var grouped = groupBySite(rows, site);
+    state.data[site] = { filename: "generated", lineups: grouped.lineups, ids: grouped.ids, currentIndex: 0 };
+    document.getElementById("card" + cap(site)).classList.add("has-file");
+    setStatus(site, "generated lineup" + (grouped.ids.length > 1 ? "s (" + grouped.ids.length + ")" : ""), true);
+    if (state.activeSite === site) render();
+  }
+
+  function setSolveStatus(text, kind) {
+    var el = document.getElementById("solveStatus");
+    el.textContent = text;
+    el.className = "solve-status" + (kind ? " " + kind : "");
+  }
+
+  // ---------------- Instant preview (client-side glpk.js) ----------------
+  // Decision (this session): single-lineup, lock/exclude, salary-cap +
+  // roster-count constraints ONLY -- exact same ILP formulation as
+  // optimizer.py's solve_lineup() (validated match, same objective/
+  // constraint values, against real data during this session's build).
+  // Stacking, exposure, uniqueness, and randomization are NOT replicated
+  // here -- "Confirm with Real Solver" is required for those, so there is
+  // never a second, drifting implementation of that logic.
+
+  var glpkPromise = null;
+  function loadGlpk() {
+    if (!glpkPromise) {
+      glpkPromise = import("https://cdn.jsdelivr.net/npm/glpk.js/dist/index.js")
+        .then(function (mod) { return mod.default(); });
+    }
+    return glpkPromise;
+  }
+
+  function solveInstant() {
+    var site = state.activeSite;
+    var pool = state.pool[site];
+    if (!pool) { setSolveStatus("Upload a player pool CSV for this site first.", "error"); return; }
+
+    var cfg = SITE_CONFIG[site];
+    var lockedIds = Object.keys(state.locked[site]);
+    var excludedIds = Object.keys(state.excluded[site]);
+    var players = pool.players.filter(function (p) { return excludedIds.indexOf(p.player_id) === -1; });
+
+    setSolveStatus("Solving instantly in your browser…", "");
+
+    loadGlpk().then(function (glpk) {
+      var vars = players.map(function (p) { return { name: p.player_id, coef: p.final_projection }; });
+      var subjectTo = [];
+
+      subjectTo.push({
+        name: "salary_cap",
+        vars: players.map(function (p) { return { name: p.player_id, coef: p.salary }; }),
+        bnds: { type: glpk.GLP_UP, ub: cfg.cap, lb: 0 }
+      });
+
+      var totalSlots = Object.keys(cfg.fixedCounts).reduce(function (s, k) { return s + cfg.fixedCounts[k]; }, 0) +
+                        Object.keys(cfg.flexFixed).reduce(function (s, k) { return s + cfg.flexFixed[k]; }, 0) + cfg.flexCount;
+      subjectTo.push({
+        name: "total_roster",
+        vars: players.map(function (p) { return { name: p.player_id, coef: 1 }; }),
+        bnds: { type: glpk.GLP_FX, ub: totalSlots, lb: totalSlots }
+      });
+
+      Object.keys(cfg.fixedCounts).forEach(function (pos) {
+        var count = cfg.fixedCounts[pos];
+        var posPool = players.filter(function (p) { return p.position === pos; });
+        subjectTo.push({
+          name: "exact_" + pos,
+          vars: posPool.map(function (p) { return { name: p.player_id, coef: 1 }; }),
+          bnds: { type: glpk.GLP_FX, ub: count, lb: count }
+        });
+      });
+
+      Object.keys(cfg.flexFixed).forEach(function (pos) {
+        var count = cfg.flexFixed[pos];
+        var posPool = players.filter(function (p) { return p.position === pos; });
+        subjectTo.push({
+          name: "min_" + pos,
+          vars: posPool.map(function (p) { return { name: p.player_id, coef: 1 }; }),
+          bnds: { type: glpk.GLP_LO, ub: 0, lb: count }
+        });
+      });
+
+      var flexFixedTotal = Object.keys(cfg.flexFixed).reduce(function (s, k) { return s + cfg.flexFixed[k]; }, 0);
+      var flexPool = players.filter(function (p) { return Object.prototype.hasOwnProperty.call(cfg.flexFixed, p.position); });
+      subjectTo.push({
+        name: "flex_pool_total",
+        vars: flexPool.map(function (p) { return { name: p.player_id, coef: 1 }; }),
+        bnds: { type: glpk.GLP_FX, ub: flexFixedTotal + cfg.flexCount, lb: flexFixedTotal + cfg.flexCount }
+      });
+
+      lockedIds.forEach(function (pid) {
+        if (!players.some(function (p) { return p.player_id === pid; })) return; // locked player not in (filtered) pool -- skip rather than crash; real solver will give the authoritative error
+        subjectTo.push({ name: "lock_" + pid, vars: [{ name: pid, coef: 1 }], bnds: { type: glpk.GLP_FX, ub: 1, lb: 1 } });
+      });
+
+      var lp = {
+        name: "dfs_lineup",
+        objective: { direction: glpk.GLP_MAX, name: "obj", vars: vars },
+        subjectTo: subjectTo,
+        binaries: players.map(function (p) { return p.player_id; })
+      };
+
+      return glpk.solve(lp, { msglev: glpk.GLP_MSG_OFF });
+    }).then(function (result) {
+      if (!result.result || result.result.status !== 5 /* GLP_OPT */) {
+        setSolveStatus("No legal lineup found with the current lock/exclude selections and this player pool.", "error");
+        return;
+      }
+      var selectedIds = Object.keys(result.result.vars).filter(function (k) { return result.result.vars[k] > 0.5; });
+      var selected = players.filter(function (p) { return selectedIds.indexOf(p.player_id) !== -1; });
+      var rows = selected.map(function (p) {
+        return {
+          roster_slot: p.position, // cosmetic only -- groupBySite/slotOrder sorts by position group, exact RB1/RB2/FLEX labeling is the real solver's job
+          player_id: p.player_id,
+          player_name: p.player_name,
+          position: p.position,
+          team: p.team,
+          salary: String(p.salary),
+          projection: String(p.final_projection),
+          opponent: p.opponent
+        };
+      });
+      showSolvedLineup(site, rows, false);
+      setSolveStatus("Instant preview solved — " + selected.length + " players, real ILP optimum for this pool/locks/excludes.", "ok");
+    }).catch(function (err) {
+      setSolveStatus("Instant preview failed: " + err.message, "error");
+    });
+  }
+
+  document.getElementById("btnPreview").addEventListener("click", solveInstant);
+
+  // ---------------- Confirm with Real Solver (dispatch + poll, Session 7.2b) ----------------
+
+  function buildDispatchParams() {
+    var site = state.activeSite;
+    var week = document.getElementById("ctrlWeek").value.trim();
+    var mode = document.getElementById("ctrlMode").value;
+    var params = { site: site, week: week, mode: mode };
+
+    if (mode === "multi") {
+      params.n_lineups = document.getElementById("ctrlNLineups").value;
+      params.max_exposure = String(parseFloat(document.getElementById("ctrlMaxExposure").value) / 100);
+      params.uniqueness = document.getElementById("ctrlUniqueness").value;
+    }
+
+    var stackMode = document.getElementById("ctrlStackMode").value;
+    if (stackMode !== "none") {
+      params.stack_mode = stackMode;
+      if (stackMode === "qb") {
+        params.stack_size = document.getElementById("ctrlStackSize").value;
+        params.stack_positions = document.getElementById("ctrlStackPositions").value;
+        if (document.getElementById("ctrlBringBack").checked) params.bring_back = "true";
+      }
+      if (stackMode === "mini") params.mini_stack_type = document.getElementById("ctrlMiniType").value;
+      var stackTeam = document.getElementById("ctrlStackTeam").value.trim();
+      if (stackTeam) params.stack_team = stackTeam;
+      var stackGame = document.getElementById("ctrlStackGame").value.trim();
+      if (stackGame) params.stack_game = stackGame;
+    }
+
+    var lockedIds = Object.keys(state.locked[site]);
+    var excludedIds = Object.keys(state.excluded[site]);
+    if (lockedIds.length) params.lock = lockedIds.join(",");
+    if (excludedIds.length) params.exclude = excludedIds.join(",");
+
+    return params;
+  }
+
+  function workerUrl(action, params) {
+    var base = document.getElementById("settingsWorkerUrl").value.trim().replace(/\/+$/, "");
+    var token = document.getElementById("settingsWorkerToken").value.trim();
+    var qs = new URLSearchParams(params || {});
+    qs.set("action", action);
+    qs.set("token", token);
+    qs.set("cb", Date.now().toString()); // cache-bust -- browsers/edges have been seen caching identical GETs (Session 7.2b's own live debugging)
+    return base + "/?" + qs.toString();
+  }
+
+  function confirmWithRealSolver() {
+    var site = state.activeSite;
+    var week = document.getElementById("ctrlWeek").value.trim();
+    var base = document.getElementById("settingsWorkerUrl").value.trim();
+    var token = document.getElementById("settingsWorkerToken").value.trim();
+
+    if (!base || !token) { setSolveStatus("Set the Worker URL and Auth Token above first.", "error"); return; }
+    if (!week) { setSolveStatus("Enter a week number first.", "error"); return; }
+
+    if (state.pollTimer) { clearTimeout(state.pollTimer); state.pollTimer = null; }
+    setSolveStatus("Dispatching to the real solver (GitHub Actions)…", "");
+    document.getElementById("btnConfirm").disabled = true;
+
+    var params = buildDispatchParams();
+    fetch(workerUrl("dispatch", params), { cache: "no-store" })
+      .then(function (r) { return r.json(); })
+      .then(function (data) {
+        if (data.error) { throw new Error(data.error); }
+        state.activeRequestId = data.request_id;
+        setSolveStatus("Dispatched (request " + data.request_id.slice(0, 8) + "…) — waiting for GitHub Actions (usually 20-90s)…", "");
+        pollForResult(site, data.request_id, 0);
+      })
+      .catch(function (err) {
+        setSolveStatus("Dispatch failed: " + err.message, "error");
+        document.getElementById("btnConfirm").disabled = false;
+      });
+  }
+
+  var MAX_POLL_ATTEMPTS = 30; // ~2 minutes at the 4s hint below, generous vs. the ~20-90s real runs seen during this session's own live testing
+
+  function pollForResult(site, requestId, attempt) {
+    if (requestId !== state.activeRequestId) return; // a newer request superseded this one -- stop polling the stale one
+    if (attempt >= MAX_POLL_ATTEMPTS) {
+      setSolveStatus("Gave up waiting after " + MAX_POLL_ATTEMPTS + " polls -- check the repo's Actions tab directly.", "error");
+      document.getElementById("btnConfirm").disabled = false;
+      return;
+    }
+    fetch(workerUrl("poll", { request_id: requestId }), { cache: "no-store" })
+      .then(function (r) { return r.json(); })
+      .then(function (data) {
+        if (requestId !== state.activeRequestId) return;
+        if (data.error) { throw new Error(data.error); }
+        if (data.status === "complete") {
+          var rows = parseCSV(data.csv);
+          showSolvedLineup(site, rows, true);
+          setSolveStatus("Real solver confirmed — " + (state.data[site] ? state.data[site].ids.length : 1) + " lineup(s).", "ok");
+          document.getElementById("btnConfirm").disabled = false;
+        } else if (data.status === "error") {
+          setSolveStatus("Real solver failed: " + data.message, "error");
+          document.getElementById("btnConfirm").disabled = false;
+        } else {
+          state.pollTimer = setTimeout(function () { pollForResult(site, requestId, attempt + 1); }, data.poll_retry_hint_ms || 4000);
+        }
+      })
+      .catch(function (err) {
+        setSolveStatus("Poll failed: " + err.message, "error");
+        document.getElementById("btnConfirm").disabled = false;
+      });
+  }
+
+  document.getElementById("btnConfirm").addEventListener("click", confirmWithRealSolver);
+
+  // ---------------- Init (7.2c) ----------------
+
+  loadSettings();
+  updateControlsVisibility();
+  renderPlayerList();
 
   render();
 })();
