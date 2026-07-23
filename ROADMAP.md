@@ -419,6 +419,25 @@
 
 ---
 
+## BRIDGE TESTING — Madden Sims (optional, now through Preseason Week 1)
+*Added 2026-07-23, during the Phase 6/7 reorder discussion. Not a numbered phase or session with its own hard validation checkboxes — this is ongoing, opportunistic real-data exercise to use during the dead time between Phase 5 finishing early and Phase 6 being able to start for real (blocked on a real preseason slate regardless — see "Known Deferred Validations" below). Optional: Phase 7 has no dependency on this, and this has no dependency on Phase 7 — either can be worked whenever, in whatever order, or skipped entirely if the time is better spent on Phase 7.*
+
+**Why Madden Sims and not something else:** DK's Madden Stream contests are the same real, year-round DK data source already used to validate Sessions 1.3, 2.4, 3.1, 3.3, and 4.1 — this isn't a new data source, just continued use of one already proven out. Confirmed via DraftKings' own schedule page: Madden Stream contests run daily, with Classic (3-game) slates locking multiple times a day, so real lock events are available far more often than the three preseason dry-run weeks will provide.
+
+**What this can actually validate for real, worth doing opportunistically:**
+- **Full end-to-end weekly workflow rehearsal, timed.** Every session so far validated its own script in isolation against real Madden data; nothing has walked the entire real sequence in one sitting the way it'll actually be run live — download salary CSV → `ingest_salaries.py` → `build_projections.py` → `status_check.py apply` → `optimizer.py` → stacking → `pivot_finder.py` → `ownership_heuristic.py`. Useful as a rehearsal of the human workflow, not just the code.
+- **Real (not manually forced) automation reps.** Session 5.2 validated the cron-job.org → Worker → GitHub Actions chain by temporarily repointing the schedule to fire early. A live Madden slate's real, naturally-occurring lock time can exercise the same chain without forcing it — repeatable several times over these three weeks instead of the one-off manual test.
+- **Repeat runs against different slate compositions**, to catch anything that only surfaces with a different real player pool than the single week-10-2025 test file everything's been validated against so far.
+
+**What this explicitly does NOT close, so don't mistake a clean Madden run for these being resolved:**
+- **FanDuel** — no Madden Sims equivalent exists on FD; this gap only closes at a real FD preseason slate (see "Known Deferred Validations" below).
+- **Full 32-team slate size** — Madden Classic slates are still a small pool (~6 teams), same "Known Testing Artifact" limitation already documented below; won't stress-test the uniqueness/exposure edge case found in Session 3.2's addendum at real scale.
+- **Real injury/game-day statuses** — these are simulated games, not real NFL games, so there's no real OUT/DOUBTFUL designation tied to them either way; Session 5.1's deferred NFL.com cross-check still only closes at Preseason Week 1.
+
+**No required output file or validation checklist.** If a real issue is found during a bridge-testing session, log it as a dated addendum in SESSION_LOG.md the same way other addenda in this project have been handled, and flag it in this section if it changes what's safe to assume going into Phase 6.
+
+---
+
 ## PHASE 6 — Preseason Live Dry Runs
 *Target: Aug 13-29*
 
@@ -629,6 +648,7 @@
 - Phases 4 and 5 can run in parallel, both need Phase 3 done first
 - Phase 6 is the real validation gate for everything before it
 - Phase 7 can start as early as Phase 3 is stable
+- **Execution-order update (2026-07-23):** Phases 1-5 finished ahead of schedule (2026-07-23 vs. the original Aug 10-13 target), well before Phase 6 can start for real — Phase 6 is blocked on a real preseason slate existing at all (Aug 13-15 at the earliest, per this roadmap's own milestones and "Known Deferred Validations" below), not on anything still open in this project. Rather than sit idle, **Phase 7 (Frontend/Hosting) is being executed next, ahead of Phase 6** — this was already permitted by this section's own "Phase 7 can start as early as Phase 3 is stable" note, just not previously acted on. Phase numbers are intentionally left unchanged (only the execution order deviates) since both files have extensive existing cross-references keyed to "Phase 6"/"Session 6.x" specifically meaning the preseason dry runs — renumbering would be pure churn for no functional benefit. The optional Madden Sims bridge-testing entry above (between Phase 5 and Phase 6 in this document's order) has no dependency relationship with Phase 7 in either direction and can be worked whenever, or skipped, independent of Phase 7's progress.
 - Ownership sophistication, correlation-matrix stacking, and MLB expansion are deliberately excluded — v2 work, after core NFL product is proven through a live season
 
 ## Notes on dual-site (DraftKings + FanDuel) scope
