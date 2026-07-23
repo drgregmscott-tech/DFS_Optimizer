@@ -318,6 +318,111 @@ def parse_team_pair(raw: str, flag_name: str) -> tuple:
 
 
 # ---------------------------------------------------------------------------
+# Session 7.2 -- Lock / Exclude (UI-Optimizer Integration)
+# ---------------------------------------------------------------------------
+# Continuing the numbering from Session 3.3's stacking decisions (#14-21).
+#
+# 22. Two independent mechanisms, by player_id (not player_name -- names can
+#     collide; player_id is this project's existing stable key throughout
+#     build_projections.py/ingest_salaries.py):
+#     - EXCLUDE: the player is removed from the candidate pool entirely,
+#       before the solver ever sees them (same "not in the pool" pattern as
+#       an exposure-locked-out player, decision #5) -- done once, by the
+#       caller (build_single_lineup/build_multi_lineup), not inside
+#       solve_lineup() itself, since it never needs to vary per-solve within
+#       a single run.
+#     - LOCK: the player is forced into every generated lineup via a hard
+#       ILP constraint (x[pid] == 1), same "hard constraint, not a soft
+#       nudge" pattern as every other rule in this file. Implemented inside
+#       solve_lineup() itself (not pre-filtered) because it must still
+#       participate in salary-cap/position-count constraints alongside every
+#       other decision variable.
+#
+# 23. Locked players are exempt from BOTH the exposure cap's lock-out check
+#     (decision #5/#6 -- a lock is an explicit, stronger override of "no
+#     more than X%", not a conflicting rule to reconcile) AND from the
+#     uniqueness swap count (decision #7) -- a locked player appears in
+#     every lineup by definition, so counting them as an available "swap"
+#     would inflate how many different players two lineups actually need,
+#     making a uniqueness target infeasible for reasons unrelated to the
+#     real pool being thin.
+#
+# 24. validate_lock_feasibility() mirrors add_stack_constraints()'s decision
+#     #21 pattern: fails loudly with a specific, structural reason (too many
+#     locked players at an exact-count position, locked RB/WR/TE overflowing
+#     available FLEX-inclusive slots, locked salaries alone exceeding the
+#     cap, or more locked players than roster slots exist at all) BEFORE the
+#     solver ever runs, rather than surfacing as an opaque "did not find an
+#     optimal solution." A lock that's only infeasible for subtler reasons
+#     (e.g. conflicts with a simultaneous stack requirement) still falls
+#     through to the solver's own infeasibility path -- both fail loudly,
+#     neither silently drops the lock.
+#
+# 25. --lock and --exclude on the same player_id is a hard CLI error (fails
+#     at argument-parsing time, not a silent "exclude wins"/"lock wins"
+#     precedence rule).
+#
+# 26. player_id is now carried through assign_roster_slots() into the output
+#     CSV (previously dropped after the solve). Needed so a UI can
+#     round-trip "lock this specific player" from a rendered lineup without
+#     a separate name-based lookup.
+def parse_id_list(raw: str) -> set:
+    return {p.strip() for p in raw.split(",") if p.strip()} if raw else set()
+
+
+def validate_lock_feasibility(players: pd.DataFrame, locked_player_ids: set,
+                               fixed_counts: dict, flex_count: int, salary_cap: int):
+    """Decision #24 -- structural pre-check for a lock request, independent
+    of which OTHER players end up selected. Does not check interaction with
+    stacking or exposure -- those still fail loudly via their own existing
+    paths (decision #21, solve_lineup's own RuntimeError) if a conflict
+    exists there instead."""
+    if not locked_player_ids:
+        return
+    locked = players[players["player_id"].isin(locked_player_ids)]
+    unknown = locked_player_ids - set(locked["player_id"])
+    if unknown:
+        raise RuntimeError(
+            f"Cannot lock player_id(s) {sorted(unknown)} -- not found in "
+            f"the current candidate pool (already excluded, or an invalid "
+            f"player_id)."
+        )
+
+    total_slots = sum(fixed_counts.values()) + flex_count
+    if len(locked) > total_slots:
+        raise RuntimeError(
+            f"Cannot lock {len(locked)} player(s) -- only {total_slots} "
+            f"roster slot(s) exist."
+        )
+
+    for pos, required in fixed_counts.items():
+        if pos in FLEX_ELIGIBLE_POSITIONS:
+            continue
+        n_locked_here = int((locked["position"] == pos).sum())
+        if n_locked_here > required:
+            raise RuntimeError(
+                f"Cannot lock {n_locked_here} {pos}(s) -- exactly {required} "
+                f"{pos} slot(s) exist in this roster."
+            )
+
+    flex_locked = int(locked["position"].isin(FLEX_ELIGIBLE_POSITIONS).sum())
+    flex_fixed_total = sum(c for pos, c in fixed_counts.items() if pos in FLEX_ELIGIBLE_POSITIONS)
+    flex_capacity = flex_fixed_total + flex_count
+    if flex_locked > flex_capacity:
+        raise RuntimeError(
+            f"Cannot lock {flex_locked} RB/WR/TE player(s) -- only "
+            f"{flex_capacity} RB/WR/TE slot(s) (including FLEX) exist."
+        )
+
+    locked_salary = int(locked["salary"].sum())
+    if locked_salary > salary_cap:
+        raise RuntimeError(
+            f"Locked players alone cost {locked_salary}, exceeding the "
+            f"{salary_cap} salary cap -- cannot build a legal lineup."
+        )
+
+
+# ---------------------------------------------------------------------------
 # Candidate ranking for auto-selection (decision #16)
 # ---------------------------------------------------------------------------
 
@@ -646,7 +751,8 @@ def solve_lineup(players: pd.DataFrame, salary_cap: int, fixed_counts: dict,
                   stack_positions: set = None, bring_back: bool = False,
                   target_team: str = None, target_game: tuple = None,
                   game_stack_min_players: int = DEFAULT_GAME_STACK_MIN_PLAYERS,
-                  mini_stack_type: str = None) -> pd.DataFrame:
+                  mini_stack_type: str = None,
+                  locked_player_ids: set = None) -> pd.DataFrame:
     """`previous_lineups`/`uniqueness` are Session 3.2 additions (see
     decision #7 above) -- default to None/0, which reproduces Session 3.1's
     exact single-lineup behavior unchanged. When provided, `previous_lineups`
@@ -706,15 +812,34 @@ def solve_lineup(players: pd.DataFrame, salary_cap: int, fixed_counts: dict,
         "rb_wr_te_pool_total",
     )
 
+    # Session 7.2 -- lock constraints (decision #22). Excluded players are
+    # never in `players` at all by this point (filtered by the caller), so
+    # only locking needs handling here. Missing/infeasible locks are caught
+    # earlier by validate_lock_feasibility(); this is a final defensive
+    # check in case a locked player fell out of the pool mid-batch (e.g. a
+    # caller bug), rather than a silent KeyError.
+    locked_player_ids = locked_player_ids or set()
+    missing_locks = locked_player_ids - set(x)
+    if missing_locks:
+        raise RuntimeError(
+            f"Cannot lock player_id(s) {sorted(missing_locks)} -- not present "
+            f"in this solve's candidate pool."
+        )
+    for pid in locked_player_ids:
+        prob += x[pid] == 1, f"locked_{pid}"
+
     # Session 3.2 -- uniqueness constraints (decision #7). Only players
     # still present in this solve's pool are counted; a previously-used
     # player who has since been exposure-locked-out (decision #5, handled
     # by the caller filtering the pool before this function runs) simply
     # isn't in `x`, so referencing them here would be a KeyError -- filter
-    # to the ones that are.
+    # to the ones that are. Locked players (decision #23) are also excluded
+    # from this count -- they appear in every lineup by definition, so
+    # counting them as an available "swap" would inflate how many different
+    # players two lineups actually need to satisfy `uniqueness`.
     if previous_lineups:
         for i, prev_ids in enumerate(previous_lineups):
-            relevant = [pid for pid in prev_ids if pid in x]
+            relevant = [pid for pid in prev_ids if pid in x and pid not in locked_player_ids]
             if not relevant:
                 continue
             prob += (
@@ -788,6 +913,10 @@ def assign_roster_slots(selected: pd.DataFrame, fixed_counts: dict) -> pd.DataFr
     out = pd.DataFrame([
         {
             "roster_slot": label,
+            # Session 7.2 addition (decision #26) -- carries the stable
+            # player_id through to output so a UI can round-trip "lock this
+            # exact player" without a separate name-based lookup.
+            "player_id": row.player_id,
             "player_name": row.player_name,
             "position": row.position,
             "team": row.team,
@@ -914,10 +1043,26 @@ def build_single_lineup(site: str, week: int, randomization_pct: float = DEFAULT
                          stack_team: str = None, stack_game: tuple = None,
                          game_stack_min_players: int = DEFAULT_GAME_STACK_MIN_PLAYERS,
                          mini_stack_type: str = None,
-                         candidate_pool_size: int = DEFAULT_STACK_CANDIDATE_POOL) -> pd.DataFrame:
+                         candidate_pool_size: int = DEFAULT_STACK_CANDIDATE_POOL,
+                         locked_player_ids: set = None,
+                         excluded_player_ids: set = None) -> pd.DataFrame:
     config = SITE_CONFIGS[site]
     players = load_final_projections(site, week)
     fixed_counts, flex_count = parse_roster_requirements(config["roster_slots"])
+
+    # Session 7.2 -- exclude (decision #22): filtered once, up front, so the
+    # solver never sees these players at all.
+    locked_player_ids = locked_player_ids or set()
+    excluded_player_ids = excluded_player_ids or set()
+    if excluded_player_ids:
+        missing_excl = excluded_player_ids - set(players["player_id"])
+        if missing_excl:
+            print(
+                f"NOTE: --exclude player_id(s) {sorted(missing_excl)} not "
+                f"found in this pool -- ignored.", file=sys.stderr,
+            )
+        players = players[~players["player_id"].isin(excluded_player_ids)].copy()
+    validate_lock_feasibility(players, locked_player_ids, fixed_counts, flex_count, config["salary_cap"])
 
     optimization_projection = None
     if randomization_pct > 0:
@@ -944,7 +1089,14 @@ def build_single_lineup(site: str, week: int, randomization_pct: float = DEFAULT
         stack_mode=stack_mode, stack_size=stack_size, stack_positions=stack_positions,
         bring_back=bring_back, target_team=target_team, target_game=target_game,
         game_stack_min_players=game_stack_min_players, mini_stack_type=mini_stack_type,
+        locked_player_ids=locked_player_ids,
     )
+    if locked_player_ids:
+        missing = locked_player_ids - set(selected["player_id"])
+        assert not missing, (
+            f"LOCK VALIDATION FAILED: player_id(s) {sorted(missing)} requested "
+            f"locked but not present in the solved lineup"
+        )
     lineup = assign_roster_slots(selected, fixed_counts)
     validate_lineup(lineup, config["salary_cap"], config["roster_slots"])
     validate_stack(
@@ -981,7 +1133,9 @@ def build_multi_lineup(site: str, week: int, n_lineups: int = DEFAULT_N_LINEUPS,
                         game_stack_min_players: int = DEFAULT_GAME_STACK_MIN_PLAYERS,
                         mini_stack_type: str = None,
                         candidate_pool_size: int = DEFAULT_STACK_CANDIDATE_POOL,
-                        stack_diversify: str = DEFAULT_STACK_DIVERSIFY) -> tuple:
+                        stack_diversify: str = DEFAULT_STACK_DIVERSIFY,
+                        locked_player_ids: set = None,
+                        excluded_player_ids: set = None) -> tuple:
     """Generates up to `n_lineups` distinct, salary-cap-legal lineups, none
     of which use any single player in more than `max_exposure_pct` of the
     total requested lineups (decisions #5/#6 above). Returns
@@ -1007,11 +1161,30 @@ def build_multi_lineup(site: str, week: int, n_lineups: int = DEFAULT_N_LINEUPS,
     exposure-locked-out earlier in the batch), the remaining candidates are
     tried before falling back to uniqueness relaxation -- a stacking
     infeasibility and a diversity infeasibility are handled as separate,
-    independently-retried problems rather than one giving up for the other."""
+    independently-retried problems rather than one giving up for the other.
+
+    Session 7.2 params (decisions #22-25): `excluded_player_ids` are removed
+    from the pool once, up front, for the whole batch. `locked_player_ids`
+    are forced into EVERY lineup in the batch via a hard constraint, are
+    exempt from the exposure lock-out check below (a lock is an explicit
+    override, not a conflicting rule -- decision #23), and are exempt from
+    the uniqueness swap count inside solve_lineup() for the same reason."""
     config = SITE_CONFIGS[site]
     players_all = load_final_projections(site, week)
     fixed_counts, flex_count = parse_roster_requirements(config["roster_slots"])
     rng = np.random.default_rng(seed) if randomization_pct > 0 else None
+
+    locked_player_ids = locked_player_ids or set()
+    excluded_player_ids = excluded_player_ids or set()
+    if excluded_player_ids:
+        missing_excl = excluded_player_ids - set(players_all["player_id"])
+        if missing_excl:
+            print(
+                f"NOTE: --exclude player_id(s) {sorted(missing_excl)} not "
+                f"found in this pool -- ignored.", file=sys.stderr,
+            )
+        players_all = players_all[~players_all["player_id"].isin(excluded_player_ids)].copy()
+    validate_lock_feasibility(players_all, locked_player_ids, fixed_counts, flex_count, config["salary_cap"])
 
     exposure_cap = max(1, math.floor(max_exposure_pct * n_lineups))
 
@@ -1042,7 +1215,10 @@ def build_multi_lineup(site: str, week: int, n_lineups: int = DEFAULT_N_LINEUPS,
     n_generated = 0
 
     while n_generated < n_lineups:
-        locked_out = {pid for pid, cnt in exposure_count.items() if cnt >= exposure_cap}
+        locked_out = {
+            pid for pid, cnt in exposure_count.items()
+            if cnt >= exposure_cap and pid not in locked_player_ids
+        }
         pool = players_all[~players_all["player_id"].isin(locked_out)]
 
         # Decision #12 -- independent draw per lineup, not one draw reused
@@ -1076,6 +1252,7 @@ def build_multi_lineup(site: str, week: int, n_lineups: int = DEFAULT_N_LINEUPS,
                     target_team=cand["target_team"], target_game=cand["target_game"],
                     game_stack_min_players=game_stack_min_players,
                     mini_stack_type=mini_stack_type,
+                    locked_player_ids=locked_player_ids,
                 )
                 chosen_cand = cand
                 break
@@ -1106,6 +1283,12 @@ def build_multi_lineup(site: str, week: int, n_lineups: int = DEFAULT_N_LINEUPS,
             )
             break
 
+        if locked_player_ids:
+            missing = locked_player_ids - set(selected["player_id"])
+            assert not missing, (
+                f"LOCK VALIDATION FAILED: player_id(s) {sorted(missing)} requested "
+                f"locked but not present in lineup {n_generated + 1}"
+            )
         lineup = assign_roster_slots(selected, fixed_counts)
         validate_lineup(lineup, config["salary_cap"], config["roster_slots"])
         validate_stack(
@@ -1240,6 +1423,18 @@ def main():
              "when auto-selecting -- has no effect when --stack-team/"
              "--stack-game is pinned (that always uses one target).",
     )
+    # Session 7.2 -- Lock / Exclude (decisions #22-25).
+    parser.add_argument(
+        "--lock", default=None,
+        help="Comma-separated player_id(s) to force into every generated "
+             "lineup (decision #22). Fails loudly before solving if the "
+             "request is structurally impossible (decision #24).",
+    )
+    parser.add_argument(
+        "--exclude", default=None,
+        help="Comma-separated player_id(s) to remove from the candidate pool "
+             "entirely (decision #22).",
+    )
     args = parser.parse_args()
 
     OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
@@ -1249,6 +1444,16 @@ def main():
     stack_game = parse_team_pair(args.stack_game, "--stack-game") if args.stack_game else None
     if args.stack_mode == "mini" and not args.mini_stack_type:
         parser.error("--stack-mode mini requires --mini-stack-type {rb-dst,opposing-pass-catchers}")
+
+    locked_player_ids = parse_id_list(args.lock)
+    excluded_player_ids = parse_id_list(args.exclude)
+    overlap = locked_player_ids & excluded_player_ids
+    if overlap:
+        parser.error(
+            f"player_id(s) {sorted(overlap)} cannot be both --lock and "
+            f"--exclude (decision #25)."
+        )
+
     stack_kwargs = dict(
         stack_mode=args.stack_mode, stack_size=args.stack_size,
         stack_positions=stack_positions, bring_back=args.bring_back,
@@ -1266,6 +1471,8 @@ def main():
             randomization_pct=args.randomization_pct,
             seed=args.seed,
             stack_diversify=args.stack_diversify,
+            locked_player_ids=locked_player_ids,
+            excluded_player_ids=excluded_player_ids,
             **stack_kwargs,
         )
         out_path = OUTPUT_DIR / f"lineups_multi_{args.site}_{args.week}.csv"
@@ -1278,6 +1485,8 @@ def main():
               f"for week {args.week} (exposure cap: {exposure_cap}/{args.n_lineups} "
               f"lineups = {args.max_exposure:.0%}"
               + (f", randomization: {args.randomization_pct:.0f}%)" if args.randomization_pct > 0 else ", randomization: off)"))
+        if locked_player_ids or excluded_player_ids:
+            print(f"Locked: {sorted(locked_player_ids) or 'none'} | Excluded: {sorted(excluded_player_ids) or 'none'}")
         print("Top exposure (player_id: times used):")
         for pid, cnt in top_exposure:
             if cnt > 0:
@@ -1288,6 +1497,8 @@ def main():
             args.site, args.week,
             randomization_pct=args.randomization_pct,
             rng=np.random.default_rng(args.seed) if args.randomization_pct > 0 else None,
+            locked_player_ids=locked_player_ids,
+            excluded_player_ids=excluded_player_ids,
             **stack_kwargs,
         )
         out_path = OUTPUT_DIR / f"lineup_single_{args.site}_{args.week}.csv"
@@ -1297,6 +1508,8 @@ def main():
         total_points = lineup["projection"].sum()
         print(f"[{config['label']}] Optimal single lineup for week {args.week}"
               + (f" (randomization: {args.randomization_pct:.0f}%):" if args.randomization_pct > 0 else ":"))
+        if locked_player_ids or excluded_player_ids:
+            print(f"Locked: {sorted(locked_player_ids) or 'none'} | Excluded: {sorted(excluded_player_ids) or 'none'}")
         print(lineup.to_string(index=False))
         print(f"Total salary: {total_salary} / {config['salary_cap']} "
               f"({config['salary_cap'] - total_salary} remaining)")
