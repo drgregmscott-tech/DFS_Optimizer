@@ -786,7 +786,17 @@
             <option value="mini">Mini Stack</option>
           </select>
         </div>
+        <div>
+          <span class="field-label">Randomization %</span>
+          <input type="number" id="ctrlRandomization" min="0" max="100" value="0">
+        </div>
+        <div>
+          <span class="field-label">Seed (optional)</span>
+          <input type="number" id="ctrlSeed" placeholder="random each run">
+        </div>
       </div>
+
+      <div class="hint" id="randomizationHint" style="display:none">Randomization only applies to "Confirm with Real Solver" -- Instant Preview always uses real, un-randomized projections.</div>
 
       <div class="controls-grid stack-sub" id="stackSubFields" style="display:none">
         <div id="wrapStackSize">
@@ -1271,10 +1281,14 @@
     var previewOk = !isMulti && stackMode === "none";
     previewBtn.disabled = !previewOk;
     previewBtn.title = previewOk ? "" : "Instant preview only supports single-lineup mode with no stacking yet -- use Confirm with Real Solver.";
+
+    var randomization = parseFloat(document.getElementById("ctrlRandomization").value) || 0;
+    document.getElementById("randomizationHint").style.display = randomization > 0 ? "" : "none";
   }
 
   document.getElementById("ctrlMode").addEventListener("change", updateControlsVisibility);
   document.getElementById("ctrlStackMode").addEventListener("change", updateControlsVisibility);
+  document.getElementById("ctrlRandomization").addEventListener("input", updateControlsVisibility);
 
   document.getElementById("buildHeader").addEventListener("click", function () {
     document.getElementById("buildPanel").classList.toggle("open");
@@ -1461,6 +1475,13 @@
     var excludedIds = Object.keys(state.excluded[site]);
     if (lockedIds.length) params.lock = lockedIds.join(",");
     if (excludedIds.length) params.exclude = excludedIds.join(",");
+
+    var randomization = parseFloat(document.getElementById("ctrlRandomization").value);
+    if (randomization > 0) {
+      params.randomization_pct = String(randomization);
+      var seed = document.getElementById("ctrlSeed").value.trim();
+      if (seed) params.seed = seed;
+    }
 
     return params;
   }
