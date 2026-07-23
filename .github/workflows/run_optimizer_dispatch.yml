@@ -89,20 +89,28 @@ jobs:
           p = json.loads(os.environ["PAYLOAD_JSON"])
 
           def flag(name, key, cast=str):
-              v = p.get(key)
+              v = params.get(key)
               if v in (None, "", []):
                   return []
               return [name, str(cast(v))]
 
           def bool_flag(name, key):
-              return [name] if p.get(key) in (True, "true", "1", 1) else []
+              return [name] if params.get(key) in (True, "true", "1", 1) else []
+
+          # site/week/request_id stay top-level in client_payload; every
+          # optional field is nested under client_payload.params (Session
+          # 7.2b hotfix -- see optimizer_api.js's own comment: GitHub's
+          # repository_dispatch caps client_payload at 10 top-level
+          # properties, hit for real via live testing when stacking+lock+
+          # exclude were combined in one request).
+          params = p.get("params", {})
 
           args = []
-          args += flag("--site", "site")
-          args += flag("--week", "week", int)
+          args += ["--site", str(p["site"])]
+          args += ["--week", str(int(p["week"]))]
           args += ["--request-id", str(p["request_id"])]
 
-          if p.get("mode") == "multi":
+          if params.get("mode") == "multi":
               args += flag("--n-lineups", "n_lineups", int)
           args += flag("--max-exposure", "max_exposure", float)
           args += flag("--uniqueness", "uniqueness", int)

@@ -135,17 +135,28 @@ async function handleDispatch(url, env) {
   // Pass through every recognized param as-is; omit anything not supplied
   // so run_optimizer_dispatch.yml's own per-field defaulting (mirroring
   // optimizer.py's own CLI defaults) applies unchanged.
+  //
+  // NESTED under a single `params` key rather than spread as top-level
+  // client_payload properties -- GitHub's repository_dispatch endpoint
+  // hard-caps client_payload at 10 top-level properties (discovered via
+  // real live testing this session: a request combining stacking + lock +
+  // exclude hit "422 No more than 10 properties are allowed" with the
+  // flat structure). Nesting keeps client_payload at a fixed 4 top-level
+  // keys (request_id, site, week, params) regardless of how many optional
+  // fields are set -- run_optimizer_dispatch.yml's arg-builder reads from
+  // client_payload.params accordingly.
   const passthroughKeys = [
     "mode", "n_lineups", "max_exposure", "uniqueness", "randomization_pct",
     "seed", "stack_mode", "stack_size", "stack_positions", "bring_back",
     "stack_team", "stack_game", "game_stack_min_players", "mini_stack_type",
     "stack_candidate_pool", "stack_diversify", "lock", "exclude",
   ];
-  const client_payload = { request_id, site, week };
+  const params = {};
   for (const key of passthroughKeys) {
     const v = url.searchParams.get(key);
-    if (v !== null && v !== "") client_payload[key] = v;
+    if (v !== null && v !== "") params[key] = v;
   }
+  const client_payload = { request_id, site, week, params };
 
   const dispatchUrl = `https://api.github.com/repos/${env.GITHUB_OWNER}/${env.GITHUB_REPO}/dispatches`;
   const ghResponse = await fetch(dispatchUrl, {
