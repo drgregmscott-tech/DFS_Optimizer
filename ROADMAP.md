@@ -503,23 +503,25 @@
 ## PHASE 7 — Frontend / Hosting
 *Target: parallel with Phase 6, finish by Sept 9*
 
-### Session 7.1 — Basic UI + Hosting Setup
+### Session 7.1 — Basic UI + Hosting Setup ✅ Complete (2026-07-23)
 **Prerequisites:** Session 3.2 complete (need a stable lineup output format to build the UI against).
 
 **Sites:** UI needs a DK/FD toggle or selector from the start — retrofitting a site switch after the UI is built single-site is more work than building it in.
 
 **Files touched (created):**
-- `/dfs_optimizer_frontend/` (separate repo or subfolder)
+- `/dfs_optimizer_frontend/` — built as a **subfolder in this repo** (user-confirmed this session), not a separate repo. Keeps one GitHub/Cloudflare account pairing, same "build output directory" pattern already used for `cloudflare_worker/` in Session 5.2.
 
 **Inputs:** `/output/lineups_multi_{site}_{week}.csv` format (as a contract, not live data yet).
 
-**Outputs:** Deployed site on Vercel/Netlify free tier, connected to purchased domain.
+**Outputs:** Deployed to **Cloudflare Pages free tier** — `https://dfs-optimizer.pages.dev`. Built and validated this session; see SESSION_LOG.md's Session 7.1 entry for the full record.
 
-**Build:** Simple frontend (upload/view players, view generated lineups) with a site selector (DK/FD) driving which data set is displayed.
+**Correction (this session):** this card previously read "Vercel/Netlify free tier, connected to purchased domain." Neither holds. Cloudflare Pages was used instead (consolidates onto the Cloudflare account already wired up in Session 5.2), and **no domain purchase is needed or planned** — this project is confirmed personal-use-only, and a free `*.pages.dev` subdomain is a real, publicly-reachable HTTPS domain that fully satisfies this card's own "real domain, not localhost" validation line below. A custom domain remains available later as a purely optional, cosmetic add-on, not a requirement — worth remembering if a future session (e.g. Session 7.3's "live domain" language) is tempted to re-introduce a domain-purchase assumption.
+
+**Build:** Simple frontend (upload/view players, view generated lineups) with a site selector (DK/FD) driving which data set is displayed. Shipped as a single static `index.html` (vanilla HTML/CSS/JS, no framework, no build step) — fastest path to a zero-config Cloudflare Pages deploy for this session's scope; revisit only if Session 7.2's interactivity needs outgrow vanilla JS, not before.
 
 **Validation:**
-- [ ] Site loads on the real domain, not just localhost
-- [ ] A generated lineup from the backend correctly displays with no data mismatches, for both DK and FD selections
+- [x] Site loads on the real domain, not just localhost — confirmed live at `https://dfs-optimizer.pages.dev`.
+- [x] A generated lineup from the backend correctly displays with no data mismatches, for both DK and FD selections — confirmed live, real repo data, both the single- and multi-lineup formats, including the DK `DST`/FD `DEF` slot-label difference and the real zero-projection Dallas DST/DEF bye case. Full detail in SESSION_LOG.md.
 
 ---
 
