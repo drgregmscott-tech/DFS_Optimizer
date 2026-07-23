@@ -1,0 +1,4 @@
+optimizer.py failed for this request. Re-check the requested
+parameters (lock/exclude/stack combination is the most common
+cause -- see scripts/optimizer.py's decision #21/#24 error
+messages for the specific reason) and re-submit.
