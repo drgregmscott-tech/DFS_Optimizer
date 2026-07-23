@@ -744,7 +744,8 @@
       <div class="settings-row">
         <div style="flex:1; min-width:120px;">
           <span class="field-label">Week</span>
-          <input type="number" id="ctrlWeek" min="1" max="22" placeholder="10">
+          <input type="number" id="ctrlWeek" min="1" max="22" value="10">
+          <div class="hint" style="margin-top:4px">Pre-filled with 10 -- change this to match whichever week's <code>final_projections_&#123;site&#125;_&#123;week&#125;.csv</code> is actually committed in the repo.</div>
         </div>
         <div style="flex:2; min-width:200px;">
           <span class="field-label">Worker URL (Session 7.2b)</span>
@@ -1120,6 +1121,12 @@
     try {
       document.getElementById("settingsWorkerUrl").value = localStorage.getItem("dfs_worker_url") || "";
       document.getElementById("settingsWorkerToken").value = localStorage.getItem("dfs_worker_token") || "";
+      // Week defaults to the input's own value="10" (set in HTML) if
+      // nothing's been saved yet -- only override it once a real save has
+      // happened, so a fresh browser still shows a sensible starting point
+      // rather than a blank field.
+      var savedWeek = localStorage.getItem("dfs_week");
+      if (savedWeek) document.getElementById("ctrlWeek").value = savedWeek;
     } catch (e) { /* localStorage unavailable (private browsing etc) -- fields just stay empty */ }
   }
 
@@ -1127,6 +1134,7 @@
     try {
       localStorage.setItem("dfs_worker_url", document.getElementById("settingsWorkerUrl").value.trim());
       localStorage.setItem("dfs_worker_token", document.getElementById("settingsWorkerToken").value.trim());
+      localStorage.setItem("dfs_week", document.getElementById("ctrlWeek").value.trim());
     } catch (e) { /* ignore */ }
   }
 
@@ -1272,7 +1280,7 @@
     document.getElementById("buildPanel").classList.toggle("open");
   });
 
-  ["settingsWorkerUrl", "settingsWorkerToken"].forEach(function (id) {
+  ["settingsWorkerUrl", "settingsWorkerToken", "ctrlWeek"].forEach(function (id) {
     document.getElementById(id).addEventListener("change", saveSettings);
   });
 
