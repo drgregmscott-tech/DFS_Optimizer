@@ -1189,3 +1189,282 @@ assume" pattern):**
 - Per ROADMAP.md, Session 7.3 (Polish & Final Deploy) is next -- its prerequisite (Session 7.2) is
   complete. Bring the user's layout/UX suggestions into that session's scope from the start, since
   they were deferred here specifically for 7.3 to pick up.
+
+## Session 7.3 — Polish & Final Deploy
+
+**Scope note:** by far the largest session in this project so far, spanning many back-and-forth
+rounds as the user tested changes live and reported back real issues. Structured below by feature
+area rather than strict chronological order, since several areas (stacking, the DK-import feature)
+were revisited multiple times as real bugs surfaced through live testing.
+
+### Items 1-2 -- One slate upload, persisted
+
+Removed the old dual DK/FD "lineup viewer" upload cards and the separate player-pool upload,
+replaced with a single "Upload Slate CSV" flow (site + week) that auto-detects whether the file is
+a player pool (`final_projections_*.csv`) or an already-built lineup file. Persists to
+`localStorage` per site+week, with removable chips for each loaded slate, so a page reload never
+requires re-uploading.
+
+**Extended well past the original ask, at user request:** a slate uploaded on desktop wasn't visible
+on phone (localStorage is per-browser, not synced). Added three new Cloudflare Worker actions
+(`save_slate`/`load_slate`/`list_slates`) that store the slate as JSON at
+`data/ui_slates/{site}_{week}.json` in the private repo via the same GitHub Contents API access the
+Worker already had for polling -- any device pointed at the same Worker now sees the same slate.
+Cloud-first with local fallback; degrades silently to local-only if the Worker isn't configured on
+a given device.
+
+**Bug found and fixed during this build (before any live testing):** `optimizer_api.js`'s existing
+`fetchRepoFile()` decoded GitHub's base64 content with a plain `atob()` -- correct for the
+project's existing plain-ASCII CSV/error.txt use cases, but silently mangles any non-ASCII
+character (em-dashes, curly quotes, accented names) once JSON slate content started flowing through
+the same function. Fixed to `decodeURIComponent(escape(atob(...)))`, confirmed backward-compatible
+with the existing ASCII use case via a direct round-trip test.
+
+**Real user-side issue found via live testing (not a code bug):** cross-device sync appeared not to
+work even after the fix shipped. Root cause: the user's Worker URL field was pointed at
+`dfs-optimizer-scheduler` (Session 5.2's automation Worker) instead of `dfs-optimizer-api` (this
+session's Worker) -- a real, deployed Worker, so it wasn't obviously wrong at a glance. Found by
+directly comparing the URL in the user's screenshot against their own `wrangler deploy` output.
+Resolved once the correct URL was entered; confirmed working by the user afterward.
+
+### Item 3 -- Worker URL/Token friction
+
+Two problems reported: (1) had to re-enter every session (turned out to already be
+`localStorage`-persisted from Session 7.2b, but only saved on blur/`change`, so a value typed and
+then immediately navigated away from could be lost -- now saves on every keystroke via `input`);
+(2) fear of accidentally editing/breaking the fields at crunch time -- fields are now `readonly` by
+default on every page load regardless of prior session state, with an explicit "Locked/Unlocked"
+toggle button required before editing.
+
+**Added a "Test Connection" diagnostic** (new `action=ping` Worker endpoint, deliberately makes no
+GitHub API call) after the user hit a generic, unhelpful "Failed to fetch" -- it now distinguishes
+empty fields, missing `https://`, stray whitespace, a rejected token (401, reachable but wrong
+secret), and a genuine network/undeployed-Worker failure, with a specific next step for each. This
+diagnostic is what surfaced the wrong-Worker-URL issue above.
+
+### Item 4 -- Removed single-lineup mode and Instant Preview entirely
+
+Deleted the client-side `glpk.js` instant-preview solver and the single-lineup mode selector
+completely, per explicit user request -- "Build Lineups" is now the only build path, always
+multi-lineup, always the real `optimizer.py` via GitHub Actions dispatch.
+
+### Item 5 -- Seed removed, Save Settings added
+
+Removed the `--seed` UI field. Added a "Save these settings" checkbox that persists # lineups, max
+exposure, uniqueness, randomization, minimum salary, FLEX positions, and all stack settings to
+`localStorage`, auto-restored on next visit when the checkbox is on.
+
+### Item 6 -- Ownership, baked into the pipeline (not a separate upload)
+
+Originally shipped as an optional second CSV upload (matched by `player_id`). User then asked for
+it to be automatic instead. Added `add_ownership_columns()` to `build_projections.py`, which calls
+`ownership_heuristic.py`'s existing `compute_chalk_scores()`/`compute_estimated_ownership()`
+UNCHANGED against the same in-memory DataFrame the file is about to write -- `chalk_score` and
+`estimated_ownership_pct` now ship as real columns in `final_projections_{site}_{week}.csv` itself.
+`ownership_heuristic.py`'s own standalone CLI (`chalk_scores_{site}_{week}.csv`) is untouched and
+still works if wanted separately. Validated: merged output matches the standalone script's own
+output to floating-point precision (~7e-15 diff) against real data.
+
+**Bug found via user question ("is this not showing because of the Madden slate, or is something
+wrong?"), not live testing:** the frontend's slate-upload parser only kept a fixed whitelist of
+columns from an uploaded pool CSV -- `chalk_score`/`estimated_ownership_pct` were silently dropped
+even from a correctly-rebuilt file. Fixed to read `estimated_ownership_pct` directly off the main
+slate upload (with a status line reporting whether it was found), and fixed a related bug in the
+ownership-override merge that was blanking out already-baked-in values for any player not covered
+by a separately-uploaded override file.
+
+**Extended again, at user request:** built-lineup and uploaded-lineup views now show a per-player
+Own% column and a "Total Own" stat (sum across the lineup) in the scoreboard header, joined at
+display time against whichever pool is loaded for that site. Validated end-to-end against real
+data: all 9 players of a real built lineup matched correctly (283.3% total).
+
+### Item 7 -- Adjustable minimum salary used
+
+Went through two redesigns based on user feedback: first a "% of cap" field, then "$ left on the
+table," and finally (most direct, per user's own suggestion) a plain "Minimum Salary" dollar input
+paired with a synced slider, bounded automatically to the active site's real cap (DK $50,000 / FD
+$60,000). Client-side converts to the `--min-salary-pct` the backend takes, at enough decimal
+precision that exact dollar targets land exactly (verified: $49,700 on DK round-trips to exactly
+99.4000% and back to $49,700, no drift).
+
+### Item 8 -- FLEX-eligible position control
+
+Added RB/WR/TE checkboxes controlling which positions can fill the FLEX slot. Backend: new
+`--flex-positions` flag on `optimizer.py`, pins any excluded position to its exact fixed count so
+the solver can't slot a "leftover" player from an excluded position into FLEX. Validated against
+real data restricting to WR-only, RB+WR, and TE-only -- correct in every case.
+
+**Bug reported by user, investigated and found to be a stale-deployment issue, not a code bug:**
+user reported FLEX restricted to WR-only still placed a TE. Reproduced the exact scenario directly
+against the backend and got the correct result (WR in FLEX) both before and after the report --
+root cause was almost certainly the Cloudflare Worker not having been redeployed with the current
+`optimizer_api.js`/dispatch workflow yet (`wrangler deploy` is a separate manual step from the
+frontend's git-push auto-deploy, easy to miss). Documented, not silently assumed fixed.
+
+### Item 9 -- Slate overview (games + totals)
+
+Derived directly from the already-loaded player pool's existing `opponent`/`over_under` columns --
+no separate upload needed. Renders a sorted list of real games with a relative bar chart. Validated
+against real data (7 real games from the DK Madden Sim slate, correctly sorted).
+
+### Item 10 -- Player pool: tabs, sorting, value column
+
+Player list reworked into ALL/QB/RB/WR/TE/DST tabs with sortable Price/Proj/Value/Own% columns
+(Value = projection per $1,000 salary). Validated top-5-WR-by-value and DST-tab-membership against
+real data.
+
+### Mobile responsiveness (not on the original list -- added after user reported real issues on a
+Pixel 9 Pro XL)
+
+Three issues, all traced to the same root cause: fixed-pixel-width grid columns that don't fit a
+phone viewport. (1) Green "loaded from cloud" status text overflowing its container -- a classic
+flexbox bug (`flex:1` without `min-width:0` refuses to let text wrap below its intrinsic width).
+(2) Player pool columns misaligned, Lock/Exclude buttons clipped off-screen. (3) Player names
+truncated in the built-lineup view. Fixed via a `@media (max-width: 640px)` block that reflows both
+the player-pool row/header and the roster row into stacked 2-3 row layouts instead of squeezing
+6 fixed columns sideways -- same DOM/JS, only which grid area each element lands in changes.
+**Two self-caught bugs before shipping:** an early version of the fix hid the player-pool header
+entirely on mobile, which would have made sorting untappable (fixed to reflow instead of hide); and
+an early version double-prefixed the price column with `$` on top of `fmtMoney()`'s own `$` (caught
+and removed before shipping).
+
+### Download Lineups -- DK/FD bulk-entry import (not on the original list -- new user request)
+
+User's real workflow: reserve max entries in a contest with dummy lineups, then bulk-replace them
+near lock via DraftKings' `DKEntries.csv` re-upload mechanism, which requires the roster columns to
+contain the site's own player ID (bare or `Name (ID)`) -- never a name alone. Built a "Download N
+Lineups for [Site] Import" button that exports every currently-loaded lineup in that exact shape
+(`QB,RB,RB,WR,WR,WR,TE,FLEX,DST` header, CRLF line endings matching DK's own file).
+
+**Required real pipeline work, not just a UI button:** the site's own player ID (DK's `ID`, e.g.
+`43636569`) was never carried past `ingest_salaries.py`'s raw salary file -- `build_projections.py`
+dropped it before `final_projections` was ever written. Added `site_id_col` to
+`ingest_salaries.py`'s `SITE_CONFIGS` (DK confirmed `"ID"`; FD's `"Id"` inherits the same
+unverified-since-Session-1.3 caveat as everything else FD), threaded `site_player_id` through both
+the skill-player and DST paths in `build_projections.py`, and through `optimizer.py`'s
+`assign_roster_slots()` into the final lineup CSV.
+
+**Two real, distinct bugs found via the user's own live testing against a real uploaded
+`DKEntries.csv`, both fixed and re-validated against that same real file:**
+1. **DST always missing its ID, skill players fine.** `build_dst_projections()` has TWO separate
+   column-selection points -- `site_player_id` was added to the first (near the top of the
+   function) but a second, later `return dst[[...]]` at the very end silently dropped it again
+   before the function returned. Only DST hits that second selection point, which is exactly why
+   only DST was affected (one per lineup, matching the user's exact "20 missing across 20 lineups"
+   report). Caught specifically because this round of testing called the actual function directly
+   rather than a hand-retyped mirror of its logic -- the mirror is what let the bug through the
+   first validation pass.
+2. **Every DK ID had a spurious `.0` suffix** (`43636560.0`), which DraftKings' bulk-upload rejects
+   the same as a missing ID. Root cause: `optimizer.py`'s `load_final_projections()` read
+   `site_player_id` without forcing string dtype -- a single NaN anywhere in that column (e.g. one
+   real matching gap) silently upcasts the ENTIRE column to float64 on read, corrupting every real
+   ID in the process. Fixed with an explicit `dtype=` on read, plus a defensive `_clean_site_id()`
+   cleanup applied on both the write side (`build_projections.py`) and read side (`optimizer.py`)
+   so an already-corrupted file self-heals on the next build rather than needing a full pipeline
+   re-run. Also added a diagnostic to `build_projections.py`'s console output that names any
+   player still missing a `site_player_id`, so a future real gap is visible immediately instead of
+   silently blank.
+
+Both fixes re-validated end-to-end against the user's real `DKEntries.csv` IDs after the fix --
+confirmed clean (0 missing, 0 `.0`-corrupted) on a fresh build. **User confirmed working live** after
+the second round of fixes.
+
+### Item 11 -- Stacking
+
+Opened with a theory discussion (common stack archetypes -- QB+1, QB+2, game stack with bring-back,
+mini-stacks, team stacks -- and what public DFS research generally shows works). User then reviewed
+the actual UI/mechanics against that theory and correctly identified two real gaps:
+
+1. **Game Stack didn't require a QB at all.** Traced the actual constraint code: `>=1 from each
+   side, >=4 total` was the ENTIRE constraint -- a lineup could satisfy "Game Stack" with e.g. 2 RBs
+   from one side and 2 WRs from the other, capturing none of the shootout/QB correlation the
+   strategy is supposed to be about. **Fixed (decision #30):** now also requires the lineup's one
+   QB slot to come from one of the two stacked teams. Deliberately doesn't pin which side's
+   QB -- that's what QB Stack + Bring-back is for. Updated the matching post-solve validation and
+   the auto-selection candidate-ranking function (added an opt-in `require_qb_viable` filter, since
+   the SAME ranking function is also shared by the opposing-pass-catchers mini-stack, which has no
+   QB requirement and must not be affected). Also exposed `game_stack_min_players` in the UI for
+   the first time -- it existed in the backend since Session 3.3 but was never surfaced, a hidden
+   constant with zero user control. Both fixes validated end-to-end against real data (QB
+   confirmed on the stacked team; custom min-players=6 confirmed).
+2. **No way to combine two independent stacks in one lineup** (e.g. QB+WR from one game, RB+DST
+   from a different game). Confirmed as a real architectural gap -- `stack_mode` is a single,
+   mutually-exclusive selector. User's stated intent was specifically QB+WR paired with a
+   *different-game* RB+DST (not an opposing-team bring-back) -- scoped what that would take (two
+   simultaneous constraint sets, two independent auto-selected targets that can't collide, new UI,
+   new validation) and **explicitly deferred at user's own request** ("hold off for now... as I
+   test more I could see if I really want it in there or not"), pending more real-world testing of
+   the simpler single-stack modes first.
+
+**Also shipped this round, all decision #31/#32:**
+- Tightened QB Stack's default partner positions from `WR,TE,RB` to `WR,TE` -- RB production
+  doesn't correlate with its own QB's passing stats the way WR/TE does; RB remains a fully
+  supported opt-in, only the default changed.
+- Replaced the free-text "Stack Team"/"Stack Game" inputs (flagged by the user as inviting typos
+  and naming ambiguity -- "Kansas City" vs "KC") with pill-button pickers populated directly from
+  the loaded slate's real teams/games. **Multiple selections now actually work end-to-end, not just
+  in the UI:** `optimizer.py`'s `--stack-team`/`--stack-game` now accept comma-separated lists and
+  reuse the existing auto-diversification round-robin machinery to rotate the batch across exactly
+  the user's picks (e.g. "stack KC or SEA") instead of pinning to one. Validated: a 2-team pin
+  (LAC,DEN) rotated LAC/DEN/LAC/DEN/LAC/DEN across 6 lineups exactly as expected; single-team pin
+  confirmed unchanged (backward compatible). Multi-game rotation validated at the
+  candidate-resolution level directly (the sandbox's thin test slate genuinely only has one real
+  two-sided game, so a full multi-game solve couldn't be exercised there) -- worth a live check
+  once real full-slate FD/DK data exists.
+- Added a live, dynamic explanation box under the Stack Mode dropdown (where the user pointed)
+  describing in plain language what the currently-selected mode + settings will actually do to the
+  lineup, addressing the user's "make it clear what's going to happen" request directly.
+
+### Partial-build banner (not on the original list -- new user question)
+
+User asked what happens if the requested lineup count is infeasible under the current settings
+(e.g. asked for 20, only 15 legal lineups exist). Traced the actual behavior: `optimizer.py` already
+keeps and writes whatever it built rather than discarding a partial batch, and exits successfully
+(not an error) -- but that success path meant the GitHub Actions workflow's `error.txt` never got
+written, so a partial batch looked IDENTICAL to a full success in the UI, with no indication
+anywhere in the app that fewer lineups came back than requested. Fixed: the frontend now tracks the
+requested count at dispatch time and compares it against what actually came back, showing a clear
+warning (not an error state) with the likely cause and next steps if they don't match.
+
+### What's validated live vs. sandbox-only
+
+Given the volume of changes this session, worth being explicit about which pieces the user has
+actually confirmed live on the deployed site vs. which are validated only against real data in the
+sandbox (same distinction this file has maintained all project):
+
+**Confirmed live by the user, this session:** cross-device cloud slate sync (after the Worker-URL
+mixup was found and fixed), ownership showing up in the player pool and lineup view, the DK-import
+download feature (through two real rounds of bug-fixing against a real `DKEntries.csv`), the
+Worker "Test Connection" diagnostic correctly identifying the wrong-Worker-URL issue.
+
+**NOT yet live-confirmed by the user (sandbox/unit-validated only):** the Game Stack QB requirement
+and `game_stack_min_players` UI control, tightened QB Stack defaults, the new team/game chip
+pickers and multi-pin rotation, the mobile responsive CSS fixes (reported broken, fixed, not yet
+re-confirmed working), the Minimum Salary slider redesign, the partial-build banner, and the stack
+explanation text. All validated against real repo data end-to-end in the sandbox per this session's
+usual standard, but a live pass on the actual deployed site (ideally both desktop and the same
+Pixel 9 Pro XL that surfaced the mobile issues) is still the right next step before calling this
+session fully closed out in practice, not just in code.
+
+**FD side:** every item above inherits the same pre-existing "no real FD data exists yet" gap
+tracked in ROADMAP.md since Session 1.3 -- nothing new here, but worth restating given how much
+shipped this session. `site_id_col` for FD (`"Id"`) is a documented guess, unverified, same as
+FD's `required_columns` has been all along.
+
+**Handoff notes for next session:**
+- Live site: `https://dfs-optimizer.pages.dev`, auto-deploys on push to `main`.
+- Both Workers remain independent, separate secrets: `dfs-optimizer-scheduler` (Session 5.2) and
+  `dfs-optimizer-api` (Session 7.2+, this session's cloud-sync/download-format/ping additions all
+  live here) -- confirmed via this session's real debugging that pointing the UI at the WRONG one
+  of these two (an easy mistake, both are real deployed Workers) produces a generic, hard-to-diagnose
+  "Failed to fetch" rather than an obviously-wrong error; the new Test Connection button exists
+  specifically to catch this faster next time.
+- `optimizer_api.js` requires a manual `wrangler deploy` from `cloudflare_worker/optimizer_api/` --
+  unlike the frontend, it does NOT auto-deploy on git push. Confirmed at least once this session
+  that a forgotten `wrangler deploy` produced behavior indistinguishable from a real code bug
+  (the FLEX-restriction report) -- worth checking first whenever live behavior doesn't match what
+  the code says it should do.
+- `data/ui_slates/` is a new directory this session, holding cloud-synced slate JSON files --
+  purely additive, not read by any pipeline script, only by the Worker's new slate-sync actions.
+- Next real milestone per this roadmap remains Preseason Week 1 -- the first point essentially
+  every item in the "Known Deferred Validations" list below closes for real, FD included.
