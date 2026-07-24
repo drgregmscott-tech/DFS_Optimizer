@@ -808,6 +808,35 @@
 
   .player-row .pown { font-family: 'Roboto Mono', monospace; font-size: 11px; color: var(--dim); text-align: right; }
   .player-row .pactions { display: flex; gap: 4px; justify-content: flex-end; }
+
+  /* ---------------- Session 7.3 -- min-salary slider ---------------- */
+
+  input[type="range"] {
+    -webkit-appearance: none;
+    appearance: none;
+    height: 4px;
+    background: var(--line-soft);
+    border-radius: 2px;
+    outline: none;
+  }
+  input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: var(--amber);
+    cursor: pointer;
+    border: 2px solid var(--ink);
+  }
+  input[type="range"]::-moz-range-thumb {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: var(--amber);
+    cursor: pointer;
+    border: 2px solid var(--ink);
+  }
 </style>
 </head>
 <body>
@@ -896,9 +925,10 @@
           <input type="number" id="ctrlRandomization" min="0" max="100" value="0">
         </div>
         <div>
-          <span class="field-label">Max $ Left Unused</span>
-          <input type="number" id="ctrlMaxLeftover" min="0" step="50" value="300" placeholder="e.g. 300">
-          <div class="hint" style="margin-top:4px">Requires spending at least (cap &minus; this) -- e.g. 300 on DK means at least $49,700 of the $50,000 cap gets used. Set to the cap amount (50000/60000) to disable.</div>
+          <span class="field-label">Minimum Salary</span>
+          <input type="number" id="ctrlMinSalary" min="0" max="50000" step="100" value="49700" placeholder="e.g. 49700">
+          <input type="range" id="ctrlMinSalarySlider" min="0" max="50000" step="100" value="49700" style="width:100%; margin-top:6px;">
+          <div class="hint" style="margin-top:4px">Lineups must spend at least this much (cap is $50,000 on DK, $60,000 on FD -- the slider adjusts automatically when you switch sites).</div>
         </div>
       </div>
 
@@ -1132,6 +1162,18 @@
               document.getElementById("settingsWorkerToken").value.trim());
   }
 
+  // Item #2 follow-up: make "nothing loaded" self-diagnosing instead of a
+  // flat "No slate loaded" -- on a device with no Worker configured, that
+  // phrase alone looks identical whether cloud sync is simply off or
+  // something's actually broken. Distinguishing the two means a second
+  // device (e.g. a phone) can tell at a glance whether it even TRIED the
+  // cloud, without needing to ask.
+  function noSlateMessage() {
+    return cloudConfigured()
+      ? "No slate loaded (checked the cloud -- nothing saved yet for this site/week)."
+      : "No slate loaded. Worker URL/Token aren't set on this device, so it only checked local storage -- set them above to pull the slate you uploaded elsewhere.";
+  }
+
   function cloudSaveSlate(site, week, kind, filename, payload, onDone) {
     if (!cloudConfigured()) { onDone(false, "Worker not configured -- saved locally only."); return; }
     fetch(workerUrl("save_slate", { site: site, week: week }), {
@@ -1295,7 +1337,7 @@
     loadSlateForActive(site, week, function (source, filename) {
       if (source === "cloud") setSlateStatus((filename || "slate") + " — loaded from the cloud", true);
       else if (source === "local") setSlateStatus("Loaded from this browser's storage", true);
-      else setSlateStatus("No slate loaded", false);
+      else setSlateStatus(noSlateMessage(), false);
       renderSlateChips();
       render();
       renderPlayerList();
@@ -1432,7 +1474,7 @@
       } else if (state.pool[site] || state.data[site]) {
         setSlateStatus(state.pool[site] ? state.pool[site].filename + " — " + state.pool[site].players.length + " players" : "No slate loaded", !!state.pool[site]);
       } else {
-        setSlateStatus("No slate loaded");
+        setSlateStatus(noSlateMessage());
       }
       renderSlateChips();
       render();
@@ -1441,6 +1483,24 @@
     });
   }
 
+  // Session 7.3, item #1: minimum-salary number field + slider, kept in
+  // sync both ways, bounded to whichever site is currently active (DK
+  // $50,000 / FD $60,000) so the slider's range always matches a real
+  // achievable target.
+  function updateMinSalaryBounds() {
+    var cap = SITE_CONFIG[state.activeSite].cap;
+    var numEl = document.getElementById("ctrlMinSalary");
+    var sliderEl = document.getElementById("ctrlMinSalarySlider");
+    [numEl, sliderEl].forEach(function (el) { el.max = cap; });
+    if (parseFloat(numEl.value) > cap) { numEl.value = cap; sliderEl.value = cap; }
+  }
+  document.getElementById("ctrlMinSalary").addEventListener("input", function () {
+    document.getElementById("ctrlMinSalarySlider").value = this.value;
+  });
+  document.getElementById("ctrlMinSalarySlider").addEventListener("input", function () {
+    document.getElementById("ctrlMinSalary").value = this.value;
+  });
+
   document.getElementById("siteToggle").addEventListener("click", function (e) {
     var btn = e.target.closest("button[data-site]");
     if (!btn) return;
@@ -1448,6 +1508,7 @@
     document.querySelectorAll("#siteToggle button").forEach(function (b) {
       b.classList.toggle("active", b === btn);
     });
+    updateMinSalaryBounds();
     refreshForActiveSlate();
   });
 
@@ -1484,7 +1545,7 @@
   // settings" checkbox.
   var FULL_SETTINGS_FIELDS = [
     "ctrlNLineups", "ctrlMaxExposure", "ctrlUniqueness", "ctrlRandomization",
-    "ctrlMaxLeftover", "ctrlStackMode", "ctrlStackSize", "ctrlStackPositions",
+    "ctrlMinSalary", "ctrlStackMode", "ctrlStackSize", "ctrlStackPositions",
     "ctrlStackTeam", "ctrlStackGame", "ctrlMiniType", "ctrlBringBack",
     "ctrlFlexRb", "ctrlFlexWr", "ctrlFlexTe"
   ];
@@ -1904,16 +1965,16 @@
     var randomization = parseFloat(document.getElementById("ctrlRandomization").value);
     if (randomization > 0) params.randomization_pct = String(randomization);
 
-    // Session 7.3, item #7 (refined per feedback): the field is dollar-
-    // precision ("leave at most $X on the table"), converted here to the
-    // % optimizer.py actually takes -- keeps exact DK/FD dollar amounts
-    // (e.g. 49700/50000 on DK) reachable without the granularity loss a
-    // whole-number % field would have had.
+    // Session 7.3, item #1 (refined again per feedback -- now a direct
+    // dollar input, no derived "leftover" math for the user to do): still
+    // converted to the % optimizer.py actually takes, computed at full
+    // precision so exact dollar amounts (e.g. 49700/50000 on DK) land
+    // exactly, not just close.
     var cap = SITE_CONFIG[site].cap;
-    var maxLeftover = parseFloat(document.getElementById("ctrlMaxLeftover").value);
-    if (!isNaN(maxLeftover) && maxLeftover >= 0 && maxLeftover < cap) {
-      var minSalaryPct = ((cap - maxLeftover) / cap) * 100;
-      params.min_salary_pct = minSalaryPct.toFixed(3);
+    var minSalary = parseFloat(document.getElementById("ctrlMinSalary").value);
+    if (!isNaN(minSalary) && minSalary > 0 && minSalary <= cap) {
+      var minSalaryPct = (minSalary / cap) * 100;
+      params.min_salary_pct = minSalaryPct.toFixed(4);
     }
 
     // Session 7.3, item #8: FLEX-eligible positions. Only sent when a
@@ -2010,6 +2071,7 @@
   loadSettings();
   updateControlsVisibility();
   setWorkerFieldsLocked(true); // item #4 -- always starts locked, every load, regardless of prior session
+  updateMinSalaryBounds(); // item #1 -- bound the slider to the active site's real cap on load too, not just on toggle
 
   // Session 7.3, items #2/#5: restore whichever slate (if any) was
   // persisted -- cloud first (so any device shows the same slate), local
@@ -2020,6 +2082,8 @@
     else if (source === "local") {
       var stored = JSON.parse(localStorage.getItem(slateKey(state.activeSite, document.getElementById("slateWeek").value.trim())) || "{}");
       setSlateStatus((stored.filename || "loaded") + " — from this browser's storage", true);
+    } else {
+      setSlateStatus(noSlateMessage());
     }
     renderSlateChips();
     renderPlayerList();

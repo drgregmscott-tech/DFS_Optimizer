@@ -184,6 +184,23 @@ skill positions get one. Session 3.1 adds a real (if simplified)
 projection for them -- see decision #5 above -- since the optimizer needs
 a full 9-slot roster including DST/DEF for both sites.
 
+  7. Session 7.3 addition (user-confirmed): `chalk_score` and
+     `estimated_ownership_pct` (Session 4.1's ownership_heuristic.py) are
+     now baked directly into this file's own output, instead of requiring
+     a separate `chalk_scores_{site}_{week}.csv` file the frontend had to
+     upload a second time. `add_ownership_columns()` below imports and
+     calls ownership_heuristic.py's own `compute_chalk_scores()`/
+     `compute_estimated_ownership()` UNCHANGED, on this exact run's
+     in-memory DataFrame (not a re-read of the just-written CSV) -- no
+     second implementation of the ownership math to drift out of sync,
+     and no risk of the two files disagreeing within a single run.
+     ownership_heuristic.py's own standalone CLI is untouched and still
+     produces `chalk_scores_{site}_{week}.csv` exactly as before -- this
+     is purely an additional consumer of its compute functions, not a
+     replacement. Downstream readers of `final_projections_{site}_{week}.csv`
+     that don't know about the two new columns are unaffected (extra
+     columns, nothing existing changed or removed).
+
 Usage:
     python3 build_projections.py --site dk --season 2025 --week 10 \
         --slate-id classic_wk10
@@ -199,6 +216,7 @@ import pandas as pd
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from ingest_salaries import SITE_CONFIGS  # noqa: E402 -- Session 1.3's single source of truth for per-site defense-position labels (decision #5)
+from ownership_heuristic import compute_chalk_scores, compute_estimated_ownership  # noqa: E402 -- Session 7.3 decision #7: bake ownership into final_projections directly, see add_ownership_columns() below
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 DATA_DIR = REPO_ROOT / "data"
@@ -467,6 +485,31 @@ def build_dst_projections(salaries: pd.DataFrame, vegas: pd.DataFrame, site: str
 # Step 3: Build the blended output
 # ---------------------------------------------------------------------------
 
+# ---------------------------------------------------------------------------
+# Step 3: Ownership estimates (Session 7.3, decision #7)
+# ---------------------------------------------------------------------------
+
+def add_ownership_columns(df: pd.DataFrame, site: str) -> pd.DataFrame:
+    """Bakes ownership_heuristic.py's chalk_score/estimated_ownership_pct
+    into this file's own output (see module docstring, decision #7).
+    Reuses its compute functions unchanged, run on THIS exact DataFrame
+    (skill players + DST/DEF, already merged) -- not a re-read from disk."""
+    scored = compute_chalk_scores(df, site)
+    scored = compute_estimated_ownership(scored, site)
+    ownership_cols = scored[["player_id", "chalk_score", "estimated_ownership_pct"]]
+    merged = df.merge(ownership_cols, on="player_id", how="left")
+    n_missing = merged["chalk_score"].isna().sum()
+    if n_missing:
+        raise SystemExit(
+            f"add_ownership_columns: {n_missing} player(s) got no chalk_score/"
+            f"estimated_ownership_pct after merge -- should be impossible since "
+            f"ownership_heuristic.py computed scores from this exact same "
+            f"DataFrame. Likely a player_id dtype/duplicate mismatch -- "
+            f"investigate before shipping."
+        )
+    return merged
+
+
 def build_final_projections(site: str, season: int, week: int, slate_id: str) -> pd.DataFrame:
     baseline = load_baseline_recent_form(site, season, week)
     matchup = load_matchup_factors(site, season, week)
@@ -600,6 +643,15 @@ def build_final_projections(site: str, season: int, week: int, slate_id: str) ->
     dst_out = build_dst_projections(salaries, vegas, site)
 
     out = pd.concat([skill_out, dst_out], ignore_index=True)
+
+    # Session 7.3, decision #7: chalk_score/estimated_ownership_pct baked
+    # in here -- must run AFTER the skill+DST concat above (ownership needs
+    # the full pool, including defenses, to compute real roster-slot
+    # budgets/percentiles) but BEFORE the final sort below (a merge can
+    # reorder rows, and the ascending-by-final_projection sort is this
+    # function's real, validated output order).
+    out = add_ownership_columns(out, site)
+
     out = out.sort_values("final_projection", ascending=False).reset_index(drop=True)
 
     return out
@@ -621,6 +673,10 @@ if __name__ == "__main__":
 
     n_null = result.isna().any(axis=1).sum()
     n_neg = (result["final_projection"] < 0).sum()
+    n_chalk_out_of_range = ((result["chalk_score"] < 0) | (result["chalk_score"] > 100)).sum()
+    n_own_out_of_range = ((result["estimated_ownership_pct"] < 0) | (result["estimated_ownership_pct"] > 100)).sum()
     print(f"Wrote {len(result)} players to {out_path}")
     print(f"  Nulls in any column: {n_null} (should be 0)")
     print(f"  Negative final_projection: {n_neg} (should be 0)")
+    print(f"  chalk_score out of [0,100] range: {n_chalk_out_of_range} (should be 0)")
+    print(f"  estimated_ownership_pct out of [0,100] range: {n_own_out_of_range} (should be 0)")
