@@ -1,0 +1,7 @@
+optimizer.py failed for this request. Last lines of its output:
+
+WARNING: lineup 1/20 infeasible with uniqueness=1 across all 6 candidate(s) tried (pool too thin -- see decision #7; last reason: Solver did not find an optimal solution (status: Infeasible). Check that enough players exist at every required position within the salary cap.). Relaxing to 0 and retrying.
+WARNING: stopping early at 0 of 20 requested lineups -- no further legal lineup exists even with uniqueness fully relaxed to 0 and every stack candidate tried (exposure caps still enforced, decision #5). Last reason: Solver did not find an optimal solution (status: Infeasible). Check that enough players exist at every required position within the salary cap.. See ROADMAP.md's 'Known Testing Artifact' note if this is the small real-data test pool.
+
+Could not generate a lineup with the current settings: No lineups could be generated at all -- check pool size vs. roster requirements, exposure_cap (decision #6), and stack feasibility (decision #21) if stacking was requested.
+Stacking: diversifying across 6 candidate team(s) across the batch (decision #17): ['team:BAL', 'team:BUF', 'team:CIN', 'team:DET', 'team:GB', 'team:KC']
