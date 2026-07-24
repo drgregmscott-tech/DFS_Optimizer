@@ -363,7 +363,7 @@
 
   .roster-row {
     display: grid;
-    grid-template-columns: 56px 1fr 64px 84px 76px 60px;
+    grid-template-columns: 56px 1fr 64px 84px 76px 60px 60px;
     align-items: center;
     padding: 11px 14px;
     border-bottom: 1px solid var(--line-soft);
@@ -428,12 +428,13 @@
     text-align: center;
   }
 
-  .salary-cell, .proj-cell, .own-cell {
+  .salary-cell, .proj-cell, .own-cell, .value-cell {
     font-size: 13px;
     text-align: right;
   }
 
   .own-cell { color: var(--dim); font-family: 'Roboto Mono', monospace; font-size: 12px; }
+  .value-cell { color: var(--dim); font-family: 'Roboto Mono', monospace; font-size: 12px; }
 
   .proj-cell { color: var(--amber); font-weight: 500; }
   .proj-cell.zero { color: var(--bad); }
@@ -896,10 +897,10 @@
      column gets real room instead of being squeezed sideways. */
   @media (max-width: 640px) {
     .roster-row {
-      grid-template-columns: 44px 1fr 1fr 1fr;
+      grid-template-columns: 44px 1fr 1fr 1fr 1fr;
       grid-template-areas:
-        "slot player player player"
-        "pos  salary proj   own";
+        "slot player player player player"
+        "pos  salary proj   value  own";
       row-gap: 6px;
     }
     .roster-row.head { display: none; } /* labels are redundant once each stat gets its own line below */
@@ -908,8 +909,9 @@
     .pos-cell    { grid-area: pos; text-align: left; }
     .salary-cell { grid-area: salary; }
     .proj-cell   { grid-area: proj; }
+    .value-cell  { grid-area: value; }
     .own-cell    { grid-area: own; }
-    .pos-cell, .salary-cell, .proj-cell, .own-cell {
+    .pos-cell, .salary-cell, .proj-cell, .value-cell, .own-cell {
       font-size: 11px;
       padding-top: 4px;
       border-top: 1px solid var(--line-soft);
@@ -917,6 +919,7 @@
     .pos-cell::before   { content: "POS "; color: var(--dimmer); }
     .salary-cell::before{ content: "SAL "; color: var(--dimmer); }
     .proj-cell::before  { content: "PROJ "; color: var(--dimmer); }
+    .value-cell::before { content: "VAL "; color: var(--dimmer); }
     .own-cell::before   { content: "OWN "; color: var(--dimmer); }
 
     .player-list-head {
@@ -1550,12 +1553,16 @@
       '<button class="nav-btn" id="nextBtn" ' + (d.currentIndex === d.ids.length - 1 ? "disabled" : "") + '>&#8250;</button>' +
       '</div>';
 
+    var lineupValue = totalSalary > 0 ? totalPts / (totalSalary / 1000) : 0;
+
     var head =
       '<div class="scoreboard">' +
       '<div class="scoreboard-top">' + navHtml +
       (totalOwnership != null ?
         '<div class="pts-block"><div class="pts-label">Total Own</div>' +
         '<div class="pts-value mono">' + totalOwnership.toFixed(1) + '%</div></div>' : '') +
+      '<div class="pts-block"><div class="pts-label">Value</div>' +
+      '<div class="pts-value mono">' + lineupValue.toFixed(2) + '</div></div>' +
       '<div class="pts-block"><div class="pts-label">Projected</div>' +
       '<div class="pts-value mono">' + fmtPts(totalPts) + '</div></div>' +
       '</div>' +
@@ -1568,14 +1575,22 @@
     var rowsHtml = rows.map(function (r, i) {
       var isZero = parseFloat(r.projection) === 0;
       var own = rowOwnerships[i];
+      var salaryNum = parseFloat(r.salary) || 0;
+      var projNum = parseFloat(r.projection) || 0;
+      // Same formula already used for the player-pool browser's VAL column
+      // (renderPlayerList()) -- points per $1,000 salary, the standard DFS
+      // "value" metric. Kept consistent across both views rather than
+      // introducing a second definition.
+      var value = salaryNum > 0 ? projNum / (salaryNum / 1000) : 0;
       return '<div class="roster-row">' +
         '<div class="slot-badge">' + r.roster_slot + '</div>' +
         '<div class="player-cell"><div class="player-name">' + escapeHtml(r.player_name.trim()) +
         (isZero ? '<span class="zero-flag">0 PTS</span>' : '') + '</div>' +
         '<div class="player-meta">' + escapeHtml(r.team) + (r.opponent ? " vs " + escapeHtml(r.opponent) : "") + '</div></div>' +
         '<div class="pos-cell">' + escapeHtml(r.position) + '</div>' +
-        '<div class="salary-cell mono">' + fmtMoney(parseFloat(r.salary) || 0) + '</div>' +
-        '<div class="proj-cell mono ' + (isZero ? "zero" : "") + '">' + fmtPts(parseFloat(r.projection) || 0) + '</div>' +
+        '<div class="salary-cell mono">' + fmtMoney(salaryNum) + '</div>' +
+        '<div class="proj-cell mono ' + (isZero ? "zero" : "") + '">' + fmtPts(projNum) + '</div>' +
+        '<div class="value-cell mono">' + value.toFixed(2) + '</div>' +
         '<div class="own-cell">' + (own != null ? own.toFixed(1) + '%' : '\u2014') + '</div>' +
         '</div>';
     }).join("");
@@ -1583,7 +1598,7 @@
     var rosterHtml =
       '<div class="roster">' +
       '<div class="roster-row head"><div>SLOT</div><div>PLAYER</div><div class="pos-cell">POS</div>' +
-      '<div class="salary-cell">SALARY</div><div class="proj-cell">PROJ</div><div class="own-cell">OWN</div></div>' +
+      '<div class="salary-cell">SALARY</div><div class="proj-cell">PROJ</div><div class="value-cell">VALUE</div><div class="own-cell">OWN</div></div>' +
       rowsHtml + '</div>';
 
     var expectedSlots = cfg.slotOrder.length;
