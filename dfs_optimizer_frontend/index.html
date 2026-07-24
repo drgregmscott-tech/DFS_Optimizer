@@ -363,7 +363,7 @@
 
   .roster-row {
     display: grid;
-    grid-template-columns: 56px 1fr 64px 84px 76px;
+    grid-template-columns: 56px 1fr 64px 84px 76px 60px;
     align-items: center;
     padding: 11px 14px;
     border-bottom: 1px solid var(--line-soft);
@@ -428,10 +428,12 @@
     text-align: center;
   }
 
-  .salary-cell, .proj-cell {
+  .salary-cell, .proj-cell, .own-cell {
     font-size: 13px;
     text-align: right;
   }
+
+  .own-cell { color: var(--dim); font-family: 'Roboto Mono', monospace; font-size: 12px; }
 
   .proj-cell { color: var(--amber); font-weight: 500; }
   .proj-cell.zero { color: var(--bad); }
@@ -557,6 +559,7 @@
     background: var(--ink-raised);
     border: 1px dashed var(--line);
     border-radius: 8px;
+    flex-wrap: wrap;
   }
 
   .pool-upload-row .upload-btn {
@@ -570,7 +573,13 @@
     white-space: nowrap;
   }
 
-  .pool-status { font-size: 12px; color: var(--dim); flex: 1; }
+  .pool-status {
+    font-size: 12px;
+    color: var(--dim);
+    flex: 1 1 160px;
+    min-width: 0;
+    overflow-wrap: break-word;
+  }
   .pool-status.loaded { color: var(--good); }
 
   .controls-grid {
@@ -836,6 +845,69 @@
     background: var(--amber);
     cursor: pointer;
     border: 2px solid var(--ink);
+  }
+
+  /* ---------------- Mobile reflow ----------------
+     Both .roster-row and .player-row/.player-list-head were built as a
+     single-row grid with several fixed-px columns (salary/proj/value/own
+     widths, etc.) -- on a real phone viewport those fixed columns alone
+     add up to more than the available width, leaving next to nothing for
+     the 1fr player-name column. Result: truncated names, squeezed/
+     misaligned stat columns, and a Lock/Exclude actions cell clipped off
+     the right edge entirely. Below ~640px, both switch to a 2-3 row
+     stacked layout via grid-template-areas (same DOM/JS untouched -- only
+     which grid area each existing element lands in changes), so every
+     column gets real room instead of being squeezed sideways. */
+  @media (max-width: 640px) {
+    .roster-row {
+      grid-template-columns: 44px 1fr 1fr 1fr;
+      grid-template-areas:
+        "slot player player player"
+        "pos  salary proj   own";
+      row-gap: 6px;
+    }
+    .roster-row.head { display: none; } /* labels are redundant once each stat gets its own line below */
+    .slot-badge  { grid-area: slot; }
+    .player-cell { grid-area: player; }
+    .pos-cell    { grid-area: pos; text-align: left; }
+    .salary-cell { grid-area: salary; }
+    .proj-cell   { grid-area: proj; }
+    .own-cell    { grid-area: own; }
+    .pos-cell, .salary-cell, .proj-cell, .own-cell {
+      font-size: 11px;
+      padding-top: 4px;
+      border-top: 1px solid var(--line-soft);
+    }
+    .pos-cell::before   { content: "POS "; color: var(--dimmer); }
+    .salary-cell::before{ content: "SAL "; color: var(--dimmer); }
+    .proj-cell::before  { content: "PROJ "; color: var(--dimmer); }
+    .own-cell::before   { content: "OWN "; color: var(--dimmer); }
+
+    .player-list-head {
+      grid-template-columns: repeat(4, 1fr);
+      padding: 8px 12px;
+    }
+    .player-list-head > div:first-child,
+    .player-list-head > div:last-child { display: none; } /* "Player" label + blank actions spacer -- redundant once each row below is self-labeled */
+    .player-list-head .sortcol { text-align: left; }
+
+    .player-row {
+      grid-template-columns: repeat(4, 1fr) !important;
+      grid-template-areas:
+        "name  name  name  name"
+        "price proj  value own"
+        "act   act   act   act";
+      row-gap: 6px;
+    }
+    .player-row > div:first-child { grid-area: name; }
+    .player-row .psal  { grid-area: price; text-align: left; }
+    .player-row .pproj { grid-area: proj; text-align: left; }
+    .player-row > div:nth-child(4) { grid-area: value; text-align: left; }
+    .player-row > div:nth-child(5) { grid-area: own; text-align: left; }
+    .player-row .pactions { grid-area: act; justify-content: flex-start; }
+    .player-row .pproj::before { content: "PROJ "; color: var(--dimmer); font-size: 9px; }
+    .player-row > div:nth-child(4)::before { content: "VAL "; color: var(--dimmer); font-size: 9px; }
+    .player-row > div:nth-child(5)::before { content: "OWN "; color: var(--dimmer); font-size: 9px; }
   }
 </style>
 </head>
@@ -1400,6 +1472,22 @@
     var segCount = 20;
     var filledSegs = Math.round(pctFilled * segCount);
 
+    // Ownership per player isn't in the lineup CSV itself (optimizer.py
+    // has no concept of it) -- joined here, at display time, against
+    // whichever player pool is currently loaded for this site (which
+    // carries build_projections.py's baked-in estimated_ownership_pct,
+    // per item #5). Falls back to "--" per player, and skips the total
+    // stat entirely, if no pool is loaded or a given player isn't in it
+    // (e.g. viewing a lineup from a different pool upload).
+    var pool = state.pool[site];
+    var ownershipById = {};
+    if (pool) {
+      pool.players.forEach(function (p) { if (p.ownership != null) ownershipById[p.player_id] = p.ownership; });
+    }
+    var rowOwnerships = rows.map(function (r) { return ownershipById[r.player_id]; });
+    var allHaveOwnership = rowOwnerships.every(function (o) { return o != null; });
+    var totalOwnership = allHaveOwnership ? rowOwnerships.reduce(function (s, o) { return s + o; }, 0) : null;
+
     var segsHtml = "";
     for (var s2 = 0; s2 < segCount; s2++) {
       var cls = "cap-seg";
@@ -1420,6 +1508,9 @@
     var head =
       '<div class="scoreboard">' +
       '<div class="scoreboard-top">' + navHtml +
+      (totalOwnership != null ?
+        '<div class="pts-block"><div class="pts-label">Total Own</div>' +
+        '<div class="pts-value mono">' + totalOwnership.toFixed(1) + '%</div></div>' : '') +
       '<div class="pts-block"><div class="pts-label">Projected</div>' +
       '<div class="pts-value mono">' + fmtPts(totalPts) + '</div></div>' +
       '</div>' +
@@ -1429,8 +1520,9 @@
       '<div class="cap-meter">' + segsHtml + '</div>' +
       '</div></div>';
 
-    var rowsHtml = rows.map(function (r) {
+    var rowsHtml = rows.map(function (r, i) {
       var isZero = parseFloat(r.projection) === 0;
+      var own = rowOwnerships[i];
       return '<div class="roster-row">' +
         '<div class="slot-badge">' + r.roster_slot + '</div>' +
         '<div class="player-cell"><div class="player-name">' + escapeHtml(r.player_name.trim()) +
@@ -1439,13 +1531,14 @@
         '<div class="pos-cell">' + escapeHtml(r.position) + '</div>' +
         '<div class="salary-cell mono">' + fmtMoney(parseFloat(r.salary) || 0) + '</div>' +
         '<div class="proj-cell mono ' + (isZero ? "zero" : "") + '">' + fmtPts(parseFloat(r.projection) || 0) + '</div>' +
+        '<div class="own-cell">' + (own != null ? own.toFixed(1) + '%' : '\u2014') + '</div>' +
         '</div>';
     }).join("");
 
     var rosterHtml =
       '<div class="roster">' +
       '<div class="roster-row head"><div>SLOT</div><div>PLAYER</div><div class="pos-cell">POS</div>' +
-      '<div class="salary-cell">SALARY</div><div class="proj-cell">PROJ</div></div>' +
+      '<div class="salary-cell">SALARY</div><div class="proj-cell">PROJ</div><div class="own-cell">OWN</div></div>' +
       rowsHtml + '</div>';
 
     var expectedSlots = cfg.slotOrder.length;
