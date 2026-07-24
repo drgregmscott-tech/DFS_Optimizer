@@ -1041,7 +1041,8 @@
         </div>
         <div id="wrapStackPositions">
           <span class="field-label">Partner Positions</span>
-          <input type="text" id="ctrlStackPositions" value="WR,TE,RB">
+          <input type="text" id="ctrlStackPositions" value="WR,TE">
+          <div class="hint" style="margin-top:4px">WR/TE correlate with their own QB's passing stats -- RB production is mostly independent (rushing, not passing), so it's left out of the default. Add RB here if you specifically want it as an option.</div>
         </div>
         <div id="wrapStackTeam">
           <span class="field-label">Stack Team (optional)</span>
@@ -1050,6 +1051,10 @@
         <div id="wrapStackGame">
           <span class="field-label">Stack Game (optional)</span>
           <input type="text" id="ctrlStackGame" placeholder="e.g. KC-BUF">
+        </div>
+        <div id="wrapGameStackMin" style="display:none">
+          <span class="field-label">Min Players From Game</span>
+          <input type="number" id="ctrlGameStackMin" min="2" max="8" value="4">
         </div>
         <div id="wrapMiniType" style="display:none">
           <span class="field-label">Mini Stack Type</span>
@@ -1743,7 +1748,7 @@
   var FULL_SETTINGS_FIELDS = [
     "ctrlNLineups", "ctrlMaxExposure", "ctrlUniqueness", "ctrlRandomization",
     "ctrlMinSalary", "ctrlStackMode", "ctrlStackSize", "ctrlStackPositions",
-    "ctrlStackTeam", "ctrlStackGame", "ctrlMiniType", "ctrlBringBack",
+    "ctrlStackTeam", "ctrlStackGame", "ctrlMiniType", "ctrlBringBack", "ctrlGameStackMin",
     "ctrlFlexRb", "ctrlFlexWr", "ctrlFlexTe"
   ];
 
@@ -1988,6 +1993,7 @@
     document.getElementById("wrapBringBack").style.display = stackMode === "qb" ? "" : "none";
     document.getElementById("wrapStackTeam").style.display = (stackMode === "qb" || (stackMode === "mini")) ? "" : "none";
     document.getElementById("wrapStackGame").style.display = (stackMode === "game" || stackMode === "mini") ? "" : "none";
+    document.getElementById("wrapGameStackMin").style.display = (stackMode === "game") ? "" : "none";
 
     var randomization = parseFloat(document.getElementById("ctrlRandomization").value) || 0;
     document.getElementById("randomizationHint").style.display = randomization > 0 ? "" : "none";
@@ -2154,6 +2160,7 @@
         if (document.getElementById("ctrlBringBack").checked) params.bring_back = "true";
       }
       if (stackMode === "mini") params.mini_stack_type = document.getElementById("ctrlMiniType").value;
+      if (stackMode === "game") params.game_stack_min_players = document.getElementById("ctrlGameStackMin").value;
       var stackTeam = document.getElementById("ctrlStackTeam").value.trim();
       if (stackTeam) params.stack_team = stackTeam;
       var stackGame = document.getElementById("ctrlStackGame").value.trim();

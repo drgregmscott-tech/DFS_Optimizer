@@ -302,7 +302,14 @@ STACK_ELIGIBLE_QB_PARTNER_POSITIONS = {"WR", "TE", "RB"}
 
 DEFAULT_STACK_MODE = "none"
 DEFAULT_STACK_SIZE = 1
-DEFAULT_STACK_POSITIONS = "WR,TE,RB"
+# Session 7.3, decision #31: tightened from "WR,TE,RB" -- RB production
+# doesn't correlate with the QB's own passing stats the way WR/TE does
+# (rushing yards/TDs are a largely separate pool from passing yards/TDs),
+# so defaulting to include it muddied what a QB stack is theoretically
+# supposed to capture. Still fully supported as an opt-in via
+# --stack-positions (STACK_ELIGIBLE_QB_PARTNER_POSITIONS unchanged) --
+# only the DEFAULT changed, not what's allowed.
+DEFAULT_STACK_POSITIONS = "WR,TE"
 DEFAULT_GAME_STACK_MIN_PLAYERS = 4
 DEFAULT_STACK_CANDIDATE_POOL = 5
 DEFAULT_STACK_DIVERSIFY = "auto"  # auto | on | off -- see decision #17
@@ -496,7 +503,7 @@ def rank_candidate_teams(players: pd.DataFrame, partner_positions: set,
     return totals.index.tolist()
 
 
-def rank_candidate_games(players: pd.DataFrame) -> list:
+def rank_candidate_games(players: pd.DataFrame, require_qb_viable: bool = False) -> list:
     """Ranks distinct real games (excludes bye-week/unknown rows -- see
     build_projections.py decision #6's BYE_OR_UNKNOWN sentinel) by
     over_under (desc). Returns a list of (team_a, team_b) tuples, deduped
@@ -506,13 +513,30 @@ def rank_candidate_games(players: pd.DataFrame) -> list:
     Requires BOTH sides to actually have players present in the current
     pool -- not just that the game exists in Vegas data (a real, thin test
     pool can have a team's real Vegas opponent entirely absent from the
-    salary file; found via real-data testing -- see SESSION_LOG.md)."""
+    salary file; found via real-data testing -- see SESSION_LOG.md).
+
+    `require_qb_viable` (Session 7.3, decision #30 -- Game Stack now
+    requires a QB from one of the two teams, see add_stack_constraints):
+    when True, also requires at least one side to have a viable
+    (non-zero-projection) QB, same up-front filtering rank_candidate_teams()
+    already does for QB stacks -- a candidate game with no QB on either
+    side can never satisfy the constraint, so it's excluded before a
+    wasted solve attempt rather than only discovered after one. Defaults
+    to False because this function is ALSO used for the opposing-pass-
+    catchers mini-stack, which has no QB requirement at all -- filtering
+    QB-less games out there would wrongly shrink a perfectly valid
+    candidate pool."""
     real = players[(players["opponent"] != "BYE_OR_UNKNOWN") & (players["opponent"].notna())]
     if "over_under" not in real.columns or real.empty:
         return []
     teams_in_pool = set(players["team"].unique())
     pairs = real[["team", "opponent", "over_under"]].drop_duplicates()
     pairs = pairs[pairs["opponent"].isin(teams_in_pool)]  # both sides must have real pool players
+    if require_qb_viable:
+        has_qb = set(players.loc[
+            (players["position"] == "QB") & (players["final_projection"] > 0), "team"
+        ])
+        pairs = pairs[pairs["team"].isin(has_qb) | pairs["opponent"].isin(has_qb)]
     seen = set()
     games = []
     for row in pairs.sort_values("over_under", ascending=False).itertuples():
@@ -590,6 +614,22 @@ def add_stack_constraints(prob, x: dict, players: pd.DataFrame, stack_mode: str,
                 f"one side has no available players in the current "
                 f"candidate pool (a={len(pool_a)}, b={len(pool_b)})."
             )
+        # Session 7.3, decision #30: a game stack now requires a QB from
+        # ONE of the two teams (the lineup's single QB slot must land in
+        # this game) -- without this, "≥1 each side + ≥N total" could be
+        # satisfied entirely by uncorrelated skill players who happen to
+        # be in the same game, which doesn't capture the shootout
+        # correlation the strategy is supposed to be about. Deliberately
+        # doesn't pin WHICH side's QB -- that's what QB Stack (+ bring-
+        # back) is for, when you have a specific team's QB in mind rather
+        # than "I like this game environment, not sure which side pops."
+        qb_pool = team_pool(team_a, {"QB"}) + team_pool(team_b, {"QB"})
+        if not qb_pool:
+            raise RuntimeError(
+                f"Game stack {team_a}/{team_b} impossible (decision #30): "
+                f"neither side has a viable QB in the current candidate pool."
+            )
+        prob += pulp.lpSum(x[pid] for pid in qb_pool) == 1, f"game_stack_{team_a}_{team_b}_qb"
         prob += pulp.lpSum(x[pid] for pid in pool_a) >= 1, f"game_stack_{team_a}_min1"
         prob += pulp.lpSum(x[pid] for pid in pool_b) >= 1, f"game_stack_{team_b}_min1"
         prob += (
@@ -665,6 +705,11 @@ def validate_stack(lineup: pd.DataFrame, stack_mode: str,
         team_a, team_b = target_game
         n_a = (lineup["team"] == team_a).sum()
         n_b = (lineup["team"] == team_b).sum()
+        n_qb = ((lineup["team"].isin([team_a, team_b])) & (lineup["position"] == "QB")).sum()
+        assert n_qb == 1, (
+            f"STACK VALIDATION FAILED: game stack {team_a}/{team_b} -- "
+            f"lineup's QB isn't from either team (decision #30)"
+        )
         assert n_a >= 1 and n_b >= 1, (
             f"STACK VALIDATION FAILED: game stack {team_a}/{team_b} missing "
             f"a player from one side (a={n_a}, b={n_b})"
@@ -1097,7 +1142,7 @@ def resolve_stack_candidates(players_all: pd.DataFrame, stack_mode: str,
         if stack_game:
             candidates = [{"target_team": None, "target_game": stack_game}]
         else:
-            ranked = rank_candidate_games(players_all)
+            ranked = rank_candidate_games(players_all, require_qb_viable=(stack_mode == "game"))
             if not ranked:
                 raise RuntimeError("No real games found this week to auto-select a game/mini-stack from.")
             candidates = [{"target_team": None, "target_game": g} for g in ranked[:candidate_pool_size]]
