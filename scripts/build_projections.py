@@ -678,6 +678,19 @@ if __name__ == "__main__":
 
     result = build_final_projections(args.site, args.season, args.week, args.slate_id)
 
+    # Session 7.3 fix -- defensively clean site_player_id before writing:
+    # strip a stray ".0" (the float-upcast bug fixed in optimizer.py's
+    # load_final_projections(), belt-and-suspenders here too) and normalize
+    # actual gaps to a clean blank rather than the literal string "nan".
+    def _clean_site_id(value):
+        if pd.isna(value):
+            return None
+        s = str(value).strip()
+        if s.endswith(".0") and s[:-2].isdigit():
+            s = s[:-2]
+        return s
+    result["site_player_id"] = result["site_player_id"].map(_clean_site_id)
+
     OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
     out_path = OUTPUT_DIR / f"final_projections_{args.site}_{args.week}.csv"
     result.to_csv(out_path, index=False)
@@ -686,8 +699,16 @@ if __name__ == "__main__":
     n_neg = (result["final_projection"] < 0).sum()
     n_chalk_out_of_range = ((result["chalk_score"] < 0) | (result["chalk_score"] > 100)).sum()
     n_own_out_of_range = ((result["estimated_ownership_pct"] < 0) | (result["estimated_ownership_pct"] > 100)).sum()
+    n_no_site_id = result["site_player_id"].isna().sum()
     print(f"Wrote {len(result)} players to {out_path}")
     print(f"  Nulls in any column: {n_null} (should be 0)")
     print(f"  Negative final_projection: {n_neg} (should be 0)")
     print(f"  chalk_score out of [0,100] range: {n_chalk_out_of_range} (should be 0)")
     print(f"  estimated_ownership_pct out of [0,100] range: {n_own_out_of_range} (should be 0)")
+    print(f"  Missing site_player_id (DK/FD's own ID -- needed for the Download "
+          f"Lineups import feature): {n_no_site_id} (should be 0)")
+    if n_no_site_id:
+        missing = result[result["site_player_id"].isna()][["player_name", "position", "team"]]
+        print(f"    Affected: {missing.to_string(index=False)}")
+
+

@@ -704,7 +704,14 @@ def load_final_projections(site: str, week: int) -> pd.DataFrame:
             f"--week {week} first (Session 2.4, extended in Session 3.1 "
             f"for DST/DEF -- decision #5)."
         )
-    df = pd.read_csv(path, dtype={"player_id": str})
+    # Session 7.3 fix -- site_player_id MUST be read as str, not left to
+    # pandas' default inference. A numeric-looking column with even ONE
+    # missing value anywhere gets inferred as float64, not int64 -- which
+    # silently corrupts EVERY id in the column into "43636560.0" once
+    # written back out (found via a real user's download: every DK ID had
+    # a spurious ".0" suffix, which DraftKings' own bulk-upload rejects
+    # outright, same as a missing ID).
+    df = pd.read_csv(path, dtype={"player_id": str, "site_player_id": str})
     required = {
         "player_id", "player_name", "position", "team", "salary", "final_projection",
         # Session 3.3 addition (build_projections.py decision #6) -- needed
@@ -935,6 +942,23 @@ def solve_lineup(players: pd.DataFrame, salary_cap: int, fixed_counts: dict,
 # Step 3: Assign human-readable roster_slot labels (cosmetic, post-solve)
 # ---------------------------------------------------------------------------
 
+def _clean_site_id(value):
+    """Defense in depth for the .0-suffix bug fixed in load_final_projections()
+    above: even with that fix, a final_projections file WRITTEN before the
+    fix could already have "43636560.0" baked into it as literal text (not
+    just a read-time dtype issue) -- this strips a trailing ".0" from
+    anything that looks like it, so an already-corrupted file self-heals
+    on the next lineup build rather than needing a full pipeline re-run."""
+    if value is None:
+        return None
+    s = str(value).strip()
+    if not s or s.lower() == "nan":
+        return None
+    if s.endswith(".0") and s[:-2].isdigit():
+        s = s[:-2]
+    return s
+
+
 def assign_roster_slots(selected: pd.DataFrame, fixed_counts: dict) -> pd.DataFrame:
     remaining = selected.copy()
     rows = []
@@ -993,7 +1017,7 @@ def assign_roster_slots(selected: pd.DataFrame, fixed_counts: dict) -> pd.DataFr
             # (or "Name (ID)"), never just a name. getattr() default keeps
             # this backward-compatible with a final_projections file built
             # before build_projections.py carried site_player_id through.
-            "site_player_id": getattr(row, "site_player_id", None),
+            "site_player_id": _clean_site_id(getattr(row, "site_player_id", None)),
         }
         for label, row in rows
     ])
