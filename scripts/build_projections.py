@@ -272,8 +272,16 @@ def load_salaries(site: str, slate_id: str) -> pd.DataFrame:
             f"{path} not found. Run ingest_salaries.py --site {site} "
             f"--slate-id {slate_id} first (Session 1.3)."
         )
-    df = pd.read_csv(path, dtype={"player_id": str})
-    required = {"player_id", "name", "salary", "normalized_team", "position_upper"}
+    # Session 7.3 addition -- site_id_col (ingest_salaries.py's
+    # SITE_CONFIGS) is the site's OWN player ID (DK's "ID", FD's "Id"),
+    # different from this pipeline's nflverse player_id. Read as str
+    # explicitly, same reasoning as player_id below -- an all-numeric
+    # column with no NaNs would read fine as int64, but one bye/inactive
+    # row with a blank ID anywhere would upcast the whole column to
+    # float64 and every ID would come out "43636569.0".
+    site_id_col = SITE_CONFIGS[site]["site_id_col"]
+    df = pd.read_csv(path, dtype={"player_id": str, site_id_col: str})
+    required = {"player_id", "name", "salary", "normalized_team", "position_upper", site_id_col}
     missing = required - set(df.columns)
     if missing:
         raise SystemExit(
@@ -412,13 +420,15 @@ def build_vegas_factors(vegas: pd.DataFrame, opponent_map: dict) -> pd.DataFrame
 
 def build_dst_projections(salaries: pd.DataFrame, vegas: pd.DataFrame, site: str) -> pd.DataFrame:
     defense_values = SITE_CONFIGS[site]["defense_position_values"]
+    site_id_col = SITE_CONFIGS[site]["site_id_col"]
     dst = salaries[salaries["position_upper"].isin(defense_values)].copy()
     dst = dst[dst["player_id"].notna()]
     dst = dst.rename(columns={
         "normalized_team": "team",
         "position_upper": "position",
         "name": "player_name",
-    })[["player_id", "player_name", "position", "team", "salary", "AvgPointsPerGame"]]
+        site_id_col: "site_player_id",
+    })[["player_id", "player_name", "position", "team", "salary", "site_player_id", "AvgPointsPerGame"]]
 
     # Decision #5a: AvgPointsPerGame is the only real historical scoring
     # signal available for a defense -- used for both season_avg and
@@ -529,8 +539,9 @@ def build_final_projections(site: str, season: int, week: int, slate_id: str) ->
         "position_upper": "position",
         "salary": "salary",
     })
-    players = players[["player_id", "name", "position", "team", "salary"]].rename(
-        columns={"name": "player_name"}
+    site_id_col = SITE_CONFIGS[site]["site_id_col"]
+    players = players[["player_id", "name", "position", "team", "salary", site_id_col]].rename(
+        columns={"name": "player_name", site_id_col: "site_player_id"}
     )
 
     # Decision #4 (see module docstring): auto-correct team drift when the
@@ -630,7 +641,7 @@ def build_final_projections(site: str, season: int, week: int, slate_id: str) ->
     df["over_under"] = df["over_under"].fillna(0.0)
 
     out_cols = [
-        "player_id", "player_name", "position", "team", "salary",
+        "player_id", "player_name", "position", "team", "salary", "site_player_id",
         "season_avg", "recent_form", "matchup_factor", "vegas_factor",
         "final_projection", "opponent", "implied_total", "over_under",
     ]

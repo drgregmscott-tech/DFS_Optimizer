@@ -676,6 +676,17 @@
   .action-btn:hover { border-color: var(--dim); }
   .action-btn:disabled { opacity: 0.4; cursor: not-allowed; }
 
+  .download-row {
+    margin-top: 14px;
+    padding: 14px;
+    background: var(--panel);
+    border: 1px solid var(--line-soft);
+    border-radius: 8px;
+  }
+  .download-row .action-btn { width: 100%; flex: none; }
+  .download-row .hint { margin-top: 8px; margin-bottom: 0; }
+  .download-row .hint.warn-text { color: var(--bad); }
+
   .action-btn.primary {
     background: var(--amber);
     border-color: var(--amber);
@@ -1552,17 +1563,93 @@
       '<div class="item ' + (zeroCount ? "warn" : "ok") + '">' + zeroCount + ' zero-projection player(s)</div>' +
       '</div>';
 
-    viewer.innerHTML = head + rosterHtml + integrityHtml;
+    // Session 7.3 -- "Download Lineups" (item: DK/FD bulk-entry import).
+    // Exports EVERY lineup currently loaded for this site (not just the
+    // one on screen) in the exact horizontal shape DK's own bulk-upload
+    // template expects -- see downloadLineupsForImport() for the full
+    // reasoning and the FD-unverified caveat.
+    var downloadHtml =
+      '<div class="download-row">' +
+      '<button class="action-btn" id="btnDownloadLineups">Download ' + d.ids.length + ' Lineup' + (d.ids.length === 1 ? "" : "s") + ' for ' + cfg.label + ' Import</button>' +
+      '<div class="hint" id="downloadHint">Paste the downloaded rows into the QB/RB/RB/WR/WR/WR/TE/FLEX/' + cfg.defSlot + ' columns of your ' + cfg.label + ' entries file, in order, one row per entry.' +
+      (site === "fd" ? " FD's exact bulk-upload column format hasn't been verified against a real FD export yet -- double check the result before uploading." : "") + '</div>' +
+      '</div>';
+
+    viewer.innerHTML = head + rosterHtml + integrityHtml + downloadHtml;
 
     var prevBtn = document.getElementById("prevBtn");
     var nextBtn = document.getElementById("nextBtn");
     if (prevBtn) prevBtn.onclick = function () { d.currentIndex--; render(); };
     if (nextBtn) nextBtn.onclick = function () { d.currentIndex++; render(); };
+    document.getElementById("btnDownloadLineups").onclick = downloadLineupsForImport;
   }
 
   function escapeHtml(s) {
     return String(s == null ? "" : s)
       .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+  }
+
+  // ---------------- Session 7.3 -- Download Lineups (DK/FD bulk-entry import) ----------------
+  // DK's own DKEntries.csv bulk-upload template is explicit (see that
+  // file's own embedded instructions): each reserved entry is a ROW, and
+  // the QB/RB/RB/WR/WR/WR/TE/FLEX/DST columns must contain either a bare
+  // site player ID or "Name (ID)" -- name alone is rejected outright. This
+  // exports every lineup currently loaded for the active site in exactly
+  // that horizontal shape, ready to paste into the matching columns of a
+  // real DKEntries.csv (or FD's equivalent -- see the FD-unverified
+  // caveat rendered next to the button).
+
+  function csvField(s) {
+    var str = String(s == null ? "" : s);
+    if (/[",\r\n]/.test(str)) return '"' + str.replace(/"/g, '""') + '"';
+    return str;
+  }
+
+  function downloadLineupsForImport() {
+    var site = state.activeSite;
+    var cfg = SITE_CONFIG[site];
+    var d = state.data[site];
+    if (!d) return;
+
+    var header = cfg.slotOrder.map(function (s) { return s.replace(/[0-9]+$/, ""); });
+    var lines = [header.map(csvField).join(",")];
+    var missingIds = 0;
+
+    d.ids.forEach(function (id) {
+      var bySlot = {};
+      d.lineups[id].forEach(function (r) { bySlot[r.roster_slot] = r; });
+      var cells = cfg.slotOrder.map(function (slot) {
+        var r = bySlot[slot];
+        if (!r) return ""; // shouldn't happen for a valid lineup, but never crash the download over it
+        var pid = r.site_player_id;
+        if (!pid) { missingIds++; return csvField(r.player_name.trim()); } // best-effort fallback -- DK will reject a name-only cell, but this at least surfaces which player needs attention rather than silently blanking the cell
+        return csvField(r.player_name.trim() + " (" + pid + ")");
+      });
+      lines.push(cells.join(","));
+    });
+
+    var csvText = lines.join("\r\n") + "\r\n"; // CRLF -- matches DK's own DKEntries.csv line endings
+    var blob = new Blob([csvText], { type: "text/csv;charset=utf-8;" });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement("a");
+    var week = document.getElementById("slateWeek").value.trim();
+    a.href = url;
+    a.download = "lineups_" + site + "_import_wk" + week + ".csv";
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+
+    var hintEl = document.getElementById("downloadHint");
+    if (hintEl) {
+      if (missingIds > 0) {
+        hintEl.textContent = "Downloaded " + d.ids.length + " lineup(s), but " + missingIds + " player slot(s) had no " + cfg.label + " ID and were written as name-only -- " + cfg.label + " will reject those cells. Rebuild this slate with the current build_projections.py (needs its site_player_id column) and re-download.";
+        hintEl.classList.add("warn-text");
+      } else {
+        hintEl.textContent = "Downloaded " + d.ids.length + " lineup(s) -- paste the rows into the QB/RB/RB/WR/WR/WR/TE/FLEX/" + cfg.defSlot + " columns of your " + cfg.label + " entries file, in order.";
+        hintEl.classList.remove("warn-text");
+      }
+    }
   }
 
   // ---------------- Wiring ----------------

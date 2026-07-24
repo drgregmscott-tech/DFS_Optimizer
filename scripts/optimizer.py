@@ -987,6 +987,13 @@ def assign_roster_slots(selected: pd.DataFrame, fixed_counts: dict) -> pd.DataFr
             # bring-back checks, and generally useful in the output CSV to
             # see who a selected player was facing.
             "opponent": row.opponent,
+            # Session 7.3 addition -- the site's OWN player ID (DK's "ID",
+            # FD's "Id"), needed for the "Download Lineups" DK/FD-import
+            # feature -- their bulk-upload template requires this exact ID
+            # (or "Name (ID)"), never just a name. getattr() default keeps
+            # this backward-compatible with a final_projections file built
+            # before build_projections.py carried site_player_id through.
+            "site_player_id": getattr(row, "site_player_id", None),
         }
         for label, row in rows
     ])

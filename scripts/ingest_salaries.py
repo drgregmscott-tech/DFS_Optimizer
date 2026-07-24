@@ -144,6 +144,15 @@ SITE_CONFIGS = {
         "team_col": "TeamAbbrev",
         "position_col": "Position",
         "salary_col": "Salary",
+        # Session 7.3 addition -- DK's own numeric player ID (the "ID"
+        # column in both a standalone DK salary export and the embedded
+        # player-pool table in DKEntries.csv -- see that file's own
+        # "Position,Name + ID,Name,ID,..." header). Different from this
+        # pipeline's own nflverse player_id; needed for the "Download
+        # Lineups" DK-import feature, which has to write DK's ID (or
+        # "Name (ID)"), never just a name (DK's own bulk-upload
+        # instructions explicitly reject name-only).
+        "site_id_col": "ID",
         "defense_position_values": {"DST"},
         "team_abbrev_overrides": {},
         "salary_cap": 50000,
@@ -161,6 +170,11 @@ SITE_CONFIGS = {
         "team_col": "Team",
         "position_col": "Position",
         "salary_col": "Salary",
+        # Session 7.3 addition -- same purpose as dk's site_id_col above.
+        # UNVERIFIED, same caveat as required_columns above -- FD's own
+        # entry-upload template/column name hasn't been confirmed against
+        # a real export yet.
+        "site_id_col": "Id",
         "defense_position_values": {"D", "DEF"},
         "team_abbrev_overrides": {},
         "salary_cap": 60000,
