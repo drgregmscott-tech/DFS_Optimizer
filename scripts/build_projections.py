@@ -485,7 +485,7 @@ def build_dst_projections(salaries: pd.DataFrame, vegas: pd.DataFrame, site: str
     dst["over_under"] = dst["over_under"].fillna(0.0)
 
     return dst[[
-        "player_id", "player_name", "position", "team", "salary",
+        "player_id", "player_name", "position", "team", "salary", "site_player_id",
         "season_avg", "recent_form", "matchup_factor", "vegas_factor",
         "final_projection", "opponent", "implied_total", "over_under",
     ]]
