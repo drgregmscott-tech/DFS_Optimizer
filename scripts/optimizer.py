@@ -1371,9 +1371,10 @@ def build_multi_lineup(site: str, week: int, n_lineups: int = DEFAULT_N_LINEUPS,
             print(pin_note, file=sys.stderr)
         if diversify_active:
             print(
-                f"Stacking: diversifying across {len(candidates)} candidate "
+                f"Stacking: evaluating {len(candidates)} candidate "
                 f"{'team' if stack_mode in ('qb',) or (stack_mode == 'mini' and mini_stack_type == 'rb-dst') else 'game'}(s) "
-                f"across the batch (decision #17): "
+                f"for every lineup, keeping whichever scores highest each "
+                f"time (decision #33): "
                 f"{[_stack_label(c) for c in candidates]}",
             )
         else:
@@ -1398,22 +1399,27 @@ def build_multi_lineup(site: str, week: int, n_lineups: int = DEFAULT_N_LINEUPS,
         if randomization_pct > 0:
             optimization_projection = randomize_projections(pool, randomization_pct, rng)
 
-        # Decision #17 -- rotation order for this lineup: if diversifying,
-        # start at a different candidate each lineup (round-robin) so a
-        # batch of e.g. 5 candidates x 20 lineups cycles through evenly,
-        # rather than exhausting candidate[0] before ever trying candidate[1].
-        if diversify_active:
-            start = n_generated % len(candidates)
-            try_order = candidates[start:] + candidates[:start]
-        else:
-            try_order = [candidates[0]]
-
+        # Decision #33 (supersedes decision #17's rotation schedule) --
+        # TRUE GREEDY SELECTION. A lineup optimizer's job is to return the
+        # best legal lineup possible at every step, full stop -- never a
+        # lineup picked because it was "this index's turn" in a rotation.
+        # So: solve against EVERY currently-viable stack candidate for this
+        # lineup slot, and keep whichever one actually produces the
+        # highest-scoring legal lineup -- even if that means the same
+        # team/game gets picked repeatedly across several lineups in a row,
+        # until its players hit their exposure cap or a uniqueness
+        # constraint forces a swap. Diversification across teams/games now
+        # emerges naturally from exposure caps and uniqueness depleting the
+        # best option over time, not from a forced schedule that could
+        # (and did -- see SESSION_LOG.md) hand out a worse candidate purely
+        # because of where n_generated landed in the rotation.
         selected = None
         chosen_cand = None
         stack_infeasible_reason = None
-        for cand in try_order:
+        best_score = None
+        for cand in candidates:
             try:
-                selected = solve_lineup(
+                candidate_selected = solve_lineup(
                     pool, config["salary_cap"], fixed_counts, flex_count,
                     previous_lineups=previous_lineups,
                     uniqueness=current_uniqueness,
@@ -1426,18 +1432,32 @@ def build_multi_lineup(site: str, week: int, n_lineups: int = DEFAULT_N_LINEUPS,
                     locked_player_ids=locked_player_ids,
                     min_salary=min_salary, flex_positions=flex_positions,
                 )
-                chosen_cand = cand
-                break
             except RuntimeError as e:
                 stack_infeasible_reason = e
                 continue
+            # Score every candidate on the SAME values solve_lineup() just
+            # optimized against -- real final_projection, or this lineup's
+            # own randomized draw if randomization_pct > 0 (decision #12
+            # still applies: one draw per lineup, shared across every
+            # candidate tried for that lineup, so this comparison stays
+            # apples-to-apples rather than mixing noisy and real scores).
+            if optimization_projection is not None:
+                candidate_score = optimization_projection.reindex(
+                    candidate_selected["player_id"]
+                ).sum()
+            else:
+                candidate_score = candidate_selected["final_projection"].sum()
+            if best_score is None or candidate_score > best_score:
+                best_score = candidate_score
+                selected = candidate_selected
+                chosen_cand = cand
 
         if selected is None:
             if current_uniqueness > 0:
                 print(
                     f"WARNING: lineup {n_generated + 1}/{n_lineups} infeasible with "
                     f"uniqueness={current_uniqueness} across all "
-                    f"{len(try_order)} candidate(s) tried (pool too thin -- see "
+                    f"{len(candidates)} candidate(s) tried (pool too thin -- see "
                     f"decision #7; last reason: {stack_infeasible_reason}). "
                     f"Relaxing to {current_uniqueness - 1} and retrying.",
                     file=sys.stderr,
