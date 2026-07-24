@@ -1,0 +1,10 @@
+lineup_id,roster_slot,player_id,player_name,position,team,salary,projection,value,opponent,site_player_id,stack_target
+1,QB,90000098,Emmanuel Whitfield,QB,GB,7500,19.29,2.57,DET,90000098,
+1,DEF,90000169,Vikings,DEF,MIN,4300,2.81,0.65,HOU,90000169,
+1,RB1,90000076,Brandon Pace,RB,BAL,8400,24.74,2.95,CIN,90000076,
+1,RB2,90000232,Deshawn Fontaine,RB,ATL,8200,23.67,2.89,NO,90000232,
+1,WR1,90000115,Cameron Whitfield,WR,DET,8700,26.14,3.0,GB,90000115,
+1,WR2,90000104,Antonio Osei,WR,GB,7100,17.54,2.47,DET,90000104,
+1,WR3,90000238,Malik Booker,WR,ATL,4500,3.73,0.83,NO,90000238,
+1,TE,90000228,Tyler Kessler,TE,NO,4100,1.78,0.43,ATL,90000228,
+1,FLEX,90000160,Cameron Pruitt,RB,MIN,7200,18.38,2.55,HOU,90000160,
