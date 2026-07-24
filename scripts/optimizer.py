@@ -1074,6 +1074,12 @@ def assign_roster_slots(selected: pd.DataFrame, fixed_counts: dict) -> pd.DataFr
             "team": row.team,
             "salary": row.salary,
             "projection": row.final_projection,
+            # Session 8 (this session) addition -- points per $1,000 salary,
+            # the standard DFS "value" metric. Guarded against salary=0 (a
+            # locked $0 player would otherwise divide by zero); rounded to
+            # 2dp for readability, matching how projection/salary are
+            # already displayed.
+            "value": round(row.final_projection / (row.salary / 1000), 2) if row.salary else 0.0,
             # Session 3.3 addition -- needed by validate_stack() for
             # bring-back checks, and generally useful in the output CSV to
             # see who a selected player was facing.
@@ -1213,6 +1219,7 @@ def build_single_lineup(site: str, week: int, randomization_pct: float = DEFAULT
                          locked_player_ids: set = None,
                          excluded_player_ids: set = None,
                          min_salary: int = 0,
+                         min_projection: float = 0.0,
                          flex_positions: set = None) -> pd.DataFrame:
     config = SITE_CONFIGS[site]
     players = load_final_projections(site, week)
@@ -1230,6 +1237,26 @@ def build_single_lineup(site: str, week: int, randomization_pct: float = DEFAULT
                 f"found in this pool -- ignored.", file=sys.stderr,
             )
         players = players[~players["player_id"].isin(excluded_player_ids)].copy()
+
+    # Decision #34 -- see build_multi_lineup() for full rationale. Same
+    # filter, same lock exemption, applied here for single-lineup mode too.
+    if min_projection > 0:
+        below_floor = players[
+            (players["final_projection"] < min_projection)
+            & (~players["player_id"].isin(locked_player_ids))
+        ]
+        if len(below_floor):
+            print(
+                f"Pool filter: excluding {len(below_floor)} player(s) below "
+                f"--min-projection {min_projection} (decision #34): "
+                f"{sorted(below_floor['player_name'].tolist())}",
+                file=sys.stderr,
+            )
+        players = players[
+            (players["final_projection"] >= min_projection)
+            | (players["player_id"].isin(locked_player_ids))
+        ].copy()
+
     validate_lock_feasibility(players, locked_player_ids, fixed_counts, flex_count, config["salary_cap"])
 
     optimization_projection = None
@@ -1306,6 +1333,7 @@ def build_multi_lineup(site: str, week: int, n_lineups: int = DEFAULT_N_LINEUPS,
                         locked_player_ids: set = None,
                         excluded_player_ids: set = None,
                         min_salary: int = 0,
+                        min_projection: float = 0.0,
                         flex_positions: set = None) -> tuple:
     """Generates up to `n_lineups` distinct, salary-cap-legal lineups, none
     of which use any single player in more than `max_exposure_pct` of the
@@ -1355,6 +1383,38 @@ def build_multi_lineup(site: str, week: int, n_lineups: int = DEFAULT_N_LINEUPS,
                 f"found in this pool -- ignored.", file=sys.stderr,
             )
         players_all = players_all[~players_all["player_id"].isin(excluded_player_ids)].copy()
+
+    # Decision #34: pool-level minimum-projection filter. This is a
+    # distinct step from optimization itself -- the same "filter pools:
+    # remove injured or bad-matchup players" step every commercial DFS
+    # optimizer runs before it ever solves anything. Without it, a deeply
+    # constrained batch (exposure caps exhausting every viable player at a
+    # position, or a stack target whose real QB happens to be a near-zero
+    # player) can mathematically pull in a technically-legal but
+    # practically insane player -- e.g. a $4,000 player projected at 1.44
+    # points -- simply because nothing better was AVAILABLE at that point,
+    # never because it was actually a good pick. This keeps such players
+    # out of consideration from the start instead. Locked players
+    # (decision #23) are EXEMPT -- an explicit lock is a deliberate
+    # override and should never be silently dropped by a floor the user
+    # didn't intend to apply to that specific pick.
+    if min_projection > 0:
+        below_floor = players_all[
+            (players_all["final_projection"] < min_projection)
+            & (~players_all["player_id"].isin(locked_player_ids))
+        ]
+        if len(below_floor):
+            print(
+                f"Pool filter: excluding {len(below_floor)} player(s) below "
+                f"--min-projection {min_projection} (decision #34): "
+                f"{sorted(below_floor['player_name'].tolist())}",
+                file=sys.stderr,
+            )
+        players_all = players_all[
+            (players_all["final_projection"] >= min_projection)
+            | (players_all["player_id"].isin(locked_player_ids))
+        ].copy()
+
     validate_lock_feasibility(players_all, locked_player_ids, fixed_counts, flex_count, config["salary_cap"])
 
     exposure_cap = max(1, math.floor(max_exposure_pct * n_lineups))
@@ -1662,6 +1722,22 @@ def main():
              "automation and other consumers read from. Omit for a normal, "
              "canonical run -- default behavior is unchanged.",
     )
+    # Session 8 (this session) -- Pool-level value filter (decision #34).
+    parser.add_argument(
+        "--min-projection", type=float, default=0.0,
+        help="Excludes any player projected below this many points from "
+             "the candidate pool entirely, before optimization runs "
+             "(default 0.0 -- no floor, existing behavior unchanged). "
+             "This is the 'filter pools: remove injured or bad-matchup "
+             "players' step every commercial DFS optimizer runs as a "
+             "separate pass from the optimization itself -- without it, a "
+             "deeply exposure/uniqueness-constrained batch or a forced "
+             "stack target can mathematically pull in a technically-legal "
+             "but practically unusable player (e.g. a $4,000 player "
+             "projected at 1.44 points) simply because nothing better was "
+             "available at that step, not because it was ever a good "
+             "pick. Locked players (decision #22) are always exempt.",
+    )
     args = parser.parse_args()
 
     OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
@@ -1707,7 +1783,8 @@ def main():
             stack_diversify=args.stack_diversify,
             locked_player_ids=locked_player_ids,
             excluded_player_ids=excluded_player_ids,
-            min_salary=min_salary, flex_positions=flex_positions,
+            min_salary=min_salary, min_projection=args.min_projection,
+            flex_positions=flex_positions,
             **stack_kwargs,
         )
         if args.request_id:
@@ -1730,6 +1807,19 @@ def main():
         for pid, cnt in top_exposure:
             if cnt > 0:
                 print(f"  {pid}: {cnt}/{n_generated}")
+        # Session 8 (this session) addition -- per-lineup value summary, so
+        # a batch can be scanned at a glance for anything that looks off
+        # (unusually low total salary used, or a lineup_value well below
+        # the rest of the batch) without opening the CSV.
+        summary = lineups.groupby("lineup_id").agg(
+            total_salary=("salary", "sum"), total_projection=("projection", "sum")
+        )
+        summary["lineup_value"] = (
+            summary["total_projection"] / (summary["total_salary"] / 1000)
+        ).round(2)
+        summary["total_projection"] = summary["total_projection"].round(2)
+        print("Per-lineup summary (lineup_id: salary used, total projection, value):")
+        print(summary.to_string())
         print(f"Wrote {out_path}")
     else:
         lineup = build_single_lineup(
@@ -1738,7 +1828,8 @@ def main():
             rng=np.random.default_rng(args.seed) if args.randomization_pct > 0 else None,
             locked_player_ids=locked_player_ids,
             excluded_player_ids=excluded_player_ids,
-            min_salary=min_salary, flex_positions=flex_positions,
+            min_salary=min_salary, min_projection=args.min_projection,
+            flex_positions=flex_positions,
             **stack_kwargs,
         )
         if args.request_id:
@@ -1750,6 +1841,7 @@ def main():
 
         total_salary = lineup["salary"].sum()
         total_points = lineup["projection"].sum()
+        lineup_value = round(total_points / (total_salary / 1000), 2) if total_salary else 0.0
         print(f"[{config['label']}] Optimal single lineup for week {args.week}"
               + (f" (randomization: {args.randomization_pct:.0f}%):" if args.randomization_pct > 0 else ":"))
         if locked_player_ids or excluded_player_ids:
@@ -1758,6 +1850,7 @@ def main():
         print(f"Total salary: {total_salary} / {config['salary_cap']} "
               f"({config['salary_cap'] - total_salary} remaining)")
         print(f"Total projected points: {total_points:.2f}")
+        print(f"Lineup value: {lineup_value} pts/$1000")
         print(f"Wrote {out_path}")
 
 
