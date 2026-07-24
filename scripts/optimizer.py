@@ -351,6 +351,28 @@ def parse_team_pair(raw: str, flag_name: str) -> tuple:
     return tuple(parts)
 
 
+def parse_team_list(raw: str, flag_name: str) -> list:
+    """Session 7.3 addition (decision #32) -- lets --stack-team pin MORE
+    THAN ONE team (e.g. 'KC,SEA'), reusing the existing candidate-rotation
+    machinery (originally built for auto-select diversification, decision
+    #17) to rotate the batch across exactly the teams the user picked,
+    instead of only ever pinning to one. A single team (no comma) still
+    works exactly as before."""
+    teams = [t.strip().upper() for t in raw.split(",") if t.strip()]
+    if not teams:
+        raise SystemExit(f"{flag_name} resolved to an empty team list: {raw!r}")
+    return teams
+
+
+def parse_game_list(raw: str, flag_name: str) -> list:
+    """Same idea as parse_team_list, for --stack-game: comma-separates
+    multiple TEAM-TEAM pairs (e.g. 'KC-BUF,SEA-ARI')."""
+    pairs = [p.strip() for p in raw.split(",") if p.strip()]
+    if not pairs:
+        raise SystemExit(f"{flag_name} resolved to an empty game list: {raw!r}")
+    return [parse_team_pair(p, flag_name) for p in pairs]
+
+
 # ---------------------------------------------------------------------------
 # Session 7.2 -- Lock / Exclude (UI-Optimizer Integration)
 # ---------------------------------------------------------------------------
@@ -1106,27 +1128,33 @@ def validate_lineup(lineup: pd.DataFrame, salary_cap: int, roster_slots: list):
 # ---------------------------------------------------------------------------
 
 def resolve_stack_candidates(players_all: pd.DataFrame, stack_mode: str,
-                              stack_positions: set, stack_team: str, stack_game: tuple,
+                              stack_positions: set, stack_teams: list, stack_games: list,
                               mini_stack_type: str, candidate_pool_size: int,
                               diversify_requested: str, bring_back: bool = False) -> tuple:
-    """Decision #16/#17. Returns (candidates, diversify_active, pin_note):
+    """Decision #16/#17, extended by decision #32. Returns (candidates,
+    diversify_active, pin_note):
     - candidates: list of {"target_team":..., "target_game":...} dicts --
-      one entry if pinned or not diversifying, up to candidate_pool_size
-      entries (ranked best-first) if diversifying.
+      one entry if a single team/game is pinned or not diversifying, one
+      entry per pinned team/game if the user explicitly picked more than
+      one (decision #32), or up to candidate_pool_size entries (ranked
+      best-first) if auto-selecting with diversification.
     - diversify_active: whether the caller should rotate across
-      `candidates` per lineup. Always False when a team/game is pinned,
-      regardless of --stack-diversify (decision #17).
-    - pin_note: a string to print if --stack-diversify on was combined with
-      an explicit pin (has no effect, but flagged rather than silently
-      ignored), else None."""
-    pinned = bool(stack_team or stack_game)
+      `candidates` per lineup. False for a single pin (unchanged
+      behavior); TRUE whenever more than one candidate is in play,
+      whether that's from auto-ranking or the user explicitly picking
+      multiple teams/games -- picking more than one IS the request to
+      rotate across them, regardless of --stack-diversify.
+    - pin_note: a string to print if --stack-diversify on was combined
+      with a SINGLE explicit pin (has no effect there -- nothing to
+      rotate across), else None."""
+    pinned = bool(stack_teams or stack_games)
     pin_note = None
 
     if stack_mode == "qb" or (stack_mode == "mini" and mini_stack_type == "rb-dst"):
         partner_positions = stack_positions if stack_mode == "qb" else {"RB"}
         require_opp = bool(stack_mode == "qb" and bring_back)
-        if stack_team:
-            candidates = [{"target_team": stack_team, "target_game": None}]
+        if stack_teams:
+            candidates = [{"target_team": t, "target_game": None} for t in stack_teams]
         else:
             ranked = rank_candidate_teams(players_all, partner_positions,
                                            require_opponent_viable=require_opp)
@@ -1139,8 +1167,8 @@ def resolve_stack_candidates(players_all: pd.DataFrame, stack_mode: str,
                 )
             candidates = [{"target_team": t, "target_game": None} for t in ranked[:candidate_pool_size]]
     elif stack_mode == "game" or (stack_mode == "mini" and mini_stack_type == "opposing-pass-catchers"):
-        if stack_game:
-            candidates = [{"target_team": None, "target_game": stack_game}]
+        if stack_games:
+            candidates = [{"target_team": None, "target_game": g} for g in stack_games]
         else:
             ranked = rank_candidate_games(players_all, require_qb_viable=(stack_mode == "game"))
             if not ranked:
@@ -1154,14 +1182,15 @@ def resolve_stack_candidates(players_all: pd.DataFrame, stack_mode: str,
     else:
         candidates = [{"target_team": None, "target_game": None}]
 
-    if pinned and diversify_requested == "on":
+    if pinned and len(candidates) == 1 and diversify_requested == "on":
         pin_note = (
-            "--stack-diversify on was set together with an explicit "
-            "--stack-team/--stack-game pin -- diversify has no effect once "
-            "the team/game is pinned (decision #17); using the pinned "
-            "target for every lineup."
+            "--stack-diversify on was set together with a single explicit "
+            "--stack-team/--stack-game pin -- diversify has nothing to "
+            "rotate across with just one target; pass more than one "
+            "(comma-separated) to actually diversify across your own picks "
+            "(decision #32)."
         )
-    diversify_active = (not pinned) and (diversify_requested != "off")
+    diversify_active = ((not pinned) and (diversify_requested != "off")) or (pinned and len(candidates) > 1)
     return candidates, diversify_active, pin_note
 
 
@@ -1177,7 +1206,7 @@ def build_single_lineup(site: str, week: int, randomization_pct: float = DEFAULT
                          rng: np.random.Generator = None,
                          stack_mode: str = DEFAULT_STACK_MODE, stack_size: int = DEFAULT_STACK_SIZE,
                          stack_positions: set = None, bring_back: bool = False,
-                         stack_team: str = None, stack_game: tuple = None,
+                         stack_teams: list = None, stack_games: list = None,
                          game_stack_min_players: int = DEFAULT_GAME_STACK_MIN_PLAYERS,
                          mini_stack_type: str = None,
                          candidate_pool_size: int = DEFAULT_STACK_CANDIDATE_POOL,
@@ -1213,7 +1242,7 @@ def build_single_lineup(site: str, week: int, randomization_pct: float = DEFAULT
     target_team = target_game = None
     if stack_mode != "none":
         candidates, _, pin_note = resolve_stack_candidates(
-            players, stack_mode, stack_positions, stack_team, stack_game,
+            players, stack_mode, stack_positions, stack_teams, stack_games,
             mini_stack_type, candidate_pool_size, diversify_requested="off",
             bring_back=bring_back,
         )
@@ -1269,7 +1298,7 @@ def build_multi_lineup(site: str, week: int, n_lineups: int = DEFAULT_N_LINEUPS,
                         seed: int = None,
                         stack_mode: str = DEFAULT_STACK_MODE, stack_size: int = DEFAULT_STACK_SIZE,
                         stack_positions: set = None, bring_back: bool = False,
-                        stack_team: str = None, stack_game: tuple = None,
+                        stack_teams: list = None, stack_games: list = None,
                         game_stack_min_players: int = DEFAULT_GAME_STACK_MIN_PLAYERS,
                         mini_stack_type: str = None,
                         candidate_pool_size: int = DEFAULT_STACK_CANDIDATE_POOL,
@@ -1295,7 +1324,7 @@ def build_multi_lineup(site: str, week: int, n_lineups: int = DEFAULT_N_LINEUPS,
 
     Session 3.3 stacking params: if `stack_mode != "none"`, every lineup in
     the batch is mandatorily stacked (decision #15). When auto-selecting
-    (no `stack_team`/`stack_game` pin) and `stack_diversify` allows it
+    (no `stack_teams`/`stack_games` pin) and `stack_diversify` allows it
     (decision #17), the batch ROTATES through up to `candidate_pool_size`
     candidate teams/games (best-first by implied_total/over_under) instead
     of repeating one target for all `n_lineups`. For each lineup, if the
@@ -1334,7 +1363,7 @@ def build_multi_lineup(site: str, week: int, n_lineups: int = DEFAULT_N_LINEUPS,
     diversify_active = False
     if stack_mode != "none":
         candidates, diversify_active, pin_note = resolve_stack_candidates(
-            players_all, stack_mode, stack_positions, stack_team, stack_game,
+            players_all, stack_mode, stack_positions, stack_teams, stack_games,
             mini_stack_type, candidate_pool_size, stack_diversify,
             bring_back=bring_back,
         )
@@ -1529,14 +1558,18 @@ def main():
     )
     parser.add_argument(
         "--stack-team", default=None,
-        help="Pin the stack to this team (e.g. KC) instead of auto-selecting by "
-             "Vegas implied total (decision #16). Used with --stack-mode qb or "
-             "--stack-mode mini --mini-stack-type rb-dst.",
+        help="Pin the stack to this team (e.g. KC), or a comma-separated list "
+             "of teams (e.g. KC,SEA) to rotate the batch across exactly those "
+             "teams instead of auto-selecting by Vegas implied total (decision "
+             "#16, extended by #32). Used with --stack-mode qb or --stack-mode "
+             "mini --mini-stack-type rb-dst.",
     )
     parser.add_argument(
         "--stack-game", default=None,
-        help="Pin the stack to this exact game, TEAM-TEAM (e.g. KC-BUF), instead "
-             "of auto-selecting by over_under (decision #16). Used with "
+        help="Pin the stack to this exact game, TEAM-TEAM (e.g. KC-BUF), or a "
+             "comma-separated list of games (e.g. KC-BUF,SEA-ARI) to rotate "
+             "the batch across exactly those games instead of auto-selecting "
+             "by over_under (decision #16, extended by #32). Used with "
              "--stack-mode game or --stack-mode mini --mini-stack-type "
              "opposing-pass-catchers.",
     )
@@ -1615,7 +1648,8 @@ def main():
     config = SITE_CONFIGS[args.site]
 
     stack_positions = parse_stack_positions(args.stack_positions) if args.stack_mode == "qb" else None
-    stack_game = parse_team_pair(args.stack_game, "--stack-game") if args.stack_game else None
+    stack_teams = parse_team_list(args.stack_team, "--stack-team") if args.stack_team else None
+    stack_games = parse_game_list(args.stack_game, "--stack-game") if args.stack_game else None
     if args.stack_mode == "mini" and not args.mini_stack_type:
         parser.error("--stack-mode mini requires --mini-stack-type {rb-dst,opposing-pass-catchers}")
 
@@ -1637,7 +1671,7 @@ def main():
     stack_kwargs = dict(
         stack_mode=args.stack_mode, stack_size=args.stack_size,
         stack_positions=stack_positions, bring_back=args.bring_back,
-        stack_team=args.stack_team, stack_game=stack_game,
+        stack_teams=stack_teams, stack_games=stack_games,
         game_stack_min_players=args.game_stack_min_players,
         mini_stack_type=args.mini_stack_type,
         candidate_pool_size=args.stack_candidate_pool,

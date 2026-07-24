@@ -702,12 +702,27 @@
 
   .solve-status.error { color: var(--bad); }
   .solve-status.ok { color: var(--good); }
+  .solve-status.warn { color: var(--amber); }
 
   .hint {
     font-size: 11px;
     color: var(--dimmer);
     margin-top: 6px;
   }
+
+  .stack-explain {
+    font-size: 12px;
+    line-height: 1.5;
+    color: var(--dim);
+    background: var(--panel-2);
+    border: 1px solid var(--line-soft);
+    border-left: 3px solid var(--amber);
+    border-radius: 6px;
+    padding: 10px 12px;
+    margin-top: 4px;
+    margin-bottom: 16px;
+  }
+  .stack-explain strong { color: var(--bone); }
 
   /* ---------------- Session 7.3 -- Slate panel ---------------- */
 
@@ -801,6 +816,16 @@
     cursor: pointer;
   }
   .tab-btn.active { background: var(--amber-dim); border-color: var(--amber); color: var(--amber); }
+
+  /* ---------------- Session 7.3 -- stack team/game chip picker ---------------- */
+
+  .chip-select {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    margin-top: 6px;
+  }
+  .chip-select .hint { margin: 0; }
 
   .player-list-head {
     display: grid;
@@ -1015,6 +1040,8 @@
         </div>
       </div>
 
+      <div class="stack-explain" id="stackExplain" style="display:none"></div>
+
       <div class="controls-grid">
         <div>
           <span class="field-label">FLEX Eligible Positions</span>
@@ -1044,13 +1071,13 @@
           <input type="text" id="ctrlStackPositions" value="WR,TE">
           <div class="hint" style="margin-top:4px">WR/TE correlate with their own QB's passing stats -- RB production is mostly independent (rushing, not passing), so it's left out of the default. Add RB here if you specifically want it as an option.</div>
         </div>
-        <div id="wrapStackTeam">
-          <span class="field-label">Stack Team (optional)</span>
-          <input type="text" id="ctrlStackTeam" placeholder="auto">
+        <div id="wrapStackTeam" style="grid-column:1/-1">
+          <span class="field-label">Stack Team(s) (optional -- pick 1 or more, or leave blank to auto-select)</span>
+          <div class="chip-select" id="stackTeamOptions"></div>
         </div>
-        <div id="wrapStackGame">
-          <span class="field-label">Stack Game (optional)</span>
-          <input type="text" id="ctrlStackGame" placeholder="e.g. KC-BUF">
+        <div id="wrapStackGame" style="grid-column:1/-1">
+          <span class="field-label">Stack Game(s) (optional -- pick 1 or more, or leave blank to auto-select)</span>
+          <div class="chip-select" id="stackGameOptions"></div>
         </div>
         <div id="wrapGameStackMin" style="display:none">
           <span class="field-label">Min Players From Game</span>
@@ -1127,7 +1154,9 @@
     // ---- Session 7.3 additions ----
     ownership: { dk: null, fd: null },         // each: { filename, byId: { player_id: pct } }
     poolTab: "ALL",
-    poolSort: { key: "final_projection", dir: "desc" }
+    poolSort: { key: "final_projection", dir: "desc" },
+    stackTeamSelection: { dk: {}, fd: {} },     // team -> true (chip picker, decision #32)
+    stackGameSelection: { dk: {}, fd: {} }      // "TEAM-TEAM" -> true
   };
 
   var SLATE_INDEX_KEY = "dfs_slate_index"; // JSON array of {site, week}
@@ -1748,7 +1777,7 @@
   var FULL_SETTINGS_FIELDS = [
     "ctrlNLineups", "ctrlMaxExposure", "ctrlUniqueness", "ctrlRandomization",
     "ctrlMinSalary", "ctrlStackMode", "ctrlStackSize", "ctrlStackPositions",
-    "ctrlStackTeam", "ctrlStackGame", "ctrlMiniType", "ctrlBringBack", "ctrlGameStackMin",
+    "ctrlMiniType", "ctrlBringBack", "ctrlGameStackMin",
     "ctrlFlexRb", "ctrlFlexWr", "ctrlFlexTe"
   ];
 
@@ -1983,6 +2012,35 @@
 
   // ---------------- Controls panel show/hide wiring ----------------
 
+  function updateStackExplain() {
+    var el = document.getElementById("stackExplain");
+    var mode = document.getElementById("ctrlStackMode").value;
+    if (mode === "none") { el.style.display = "none"; return; }
+    el.style.display = "";
+    var html = "";
+    if (mode === "qb") {
+      var size = document.getElementById("ctrlStackSize").value || "1";
+      var positions = document.getElementById("ctrlStackPositions").value || "WR,TE";
+      var bringBack = document.getElementById("ctrlBringBack").checked;
+      html = "<strong>QB Stack:</strong> every lineup includes a QB plus at least " + escapeHtml(size) +
+        " of their own teammate(s) at " + escapeHtml(positions) + ". " +
+        (bringBack
+          ? "Bring-back is ON, so it also requires at least 1 player from the QB's opponent -- this makes it a full game stack (both sides of a shootout)."
+          : "Bring-back is OFF, so the rest of the lineup can come from any other teams -- turn on Bring-back below to also require a player from the QB's opponent.");
+    } else if (mode === "game") {
+      var minP = document.getElementById("ctrlGameStackMin").value || "4";
+      html = "<strong>Game Stack:</strong> picks one game and requires the lineup's QB to be on one of the two teams, at least 1 player from EACH side, and " + escapeHtml(minP) + "+ combined players from both teams total. Built around a high-scoring game lifting both offenses, not just one.";
+    } else if (mode === "mini") {
+      var miniType = document.getElementById("ctrlMiniType").value;
+      if (miniType === "rb-dst") {
+        html = "<strong>Mini Stack (RB + own DST/DEF):</strong> every lineup includes a RB and that RB's own team's DST/DEF -- no QB requirement. Leverages game-script correlation (a team controlling the game tends to run more, which also helps its own defense), not passing correlation.";
+      } else {
+        html = "<strong>Mini Stack (Opposing pass-catchers):</strong> every lineup includes at least 1 WR/TE from EACH side of the selected game -- no QB requirement. Useful when you like the game environment but don't want to commit to which team's passing attack actually pops.";
+      }
+    }
+    el.innerHTML = html;
+  }
+
   function updateControlsVisibility() {
     var stackMode = document.getElementById("ctrlStackMode").value;
     var showStack = stackMode !== "none";
@@ -1994,6 +2052,7 @@
     document.getElementById("wrapStackTeam").style.display = (stackMode === "qb" || (stackMode === "mini")) ? "" : "none";
     document.getElementById("wrapStackGame").style.display = (stackMode === "game" || stackMode === "mini") ? "" : "none";
     document.getElementById("wrapGameStackMin").style.display = (stackMode === "game") ? "" : "none";
+    updateStackExplain();
 
     var randomization = parseFloat(document.getElementById("ctrlRandomization").value) || 0;
     document.getElementById("randomizationHint").style.display = randomization > 0 ? "" : "none";
@@ -2001,6 +2060,10 @@
 
   document.getElementById("ctrlStackMode").addEventListener("change", updateControlsVisibility);
   document.getElementById("ctrlRandomization").addEventListener("input", updateControlsVisibility);
+  ["ctrlStackSize", "ctrlStackPositions", "ctrlBringBack", "ctrlGameStackMin", "ctrlMiniType"].forEach(function (id) {
+    document.getElementById(id).addEventListener("input", updateStackExplain);
+    document.getElementById(id).addEventListener("change", updateStackExplain);
+  });
 
   document.getElementById("buildHeader").addEventListener("click", function () {
     document.getElementById("buildPanel").classList.toggle("open");
@@ -2092,7 +2155,7 @@
     var el = document.getElementById("slateOverview");
     var site = state.activeSite;
     var pool = state.pool[site];
-    if (!pool) { el.innerHTML = ""; return; }
+    if (!pool) { el.innerHTML = ""; renderStackTeamOptions(); renderStackGameOptions(); return; }
 
     var games = {};
     pool.players.forEach(function (p) {
@@ -2101,22 +2164,91 @@
       if (!games[key]) games[key] = { teams: [p.team, p.opponent].sort(), over_under: p.over_under };
     });
     var list = Object.keys(games).map(function (k) { return games[k]; });
-    if (!list.length) { el.innerHTML = ""; return; }
-    list.sort(function (a, b) { return b.over_under - a.over_under; });
-    var maxOU = Math.max.apply(null, list.map(function (g) { return g.over_under; }));
+    if (!list.length) { el.innerHTML = ""; }
+    else {
+      list.sort(function (a, b) { return b.over_under - a.over_under; });
+      var maxOU = Math.max.apply(null, list.map(function (g) { return g.over_under; }));
 
-    var rowsHtml = list.map(function (g) {
-      var pct = maxOU > 0 ? Math.round((g.over_under / maxOU) * 100) : 0;
-      return '<div class="overview-row"><div>' + escapeHtml(g.teams[0]) + ' vs ' + escapeHtml(g.teams[1]) + '</div>' +
-        '<div class="ou">' + g.over_under.toFixed(1) + '</div>' +
-        '<div class="overview-bar-wrap"><div class="overview-bar" style="width:' + pct + '%"></div></div></div>';
-    }).join("");
+      var rowsHtml = list.map(function (g) {
+        var pct = maxOU > 0 ? Math.round((g.over_under / maxOU) * 100) : 0;
+        return '<div class="overview-row"><div>' + escapeHtml(g.teams[0]) + ' vs ' + escapeHtml(g.teams[1]) + '</div>' +
+          '<div class="ou">' + g.over_under.toFixed(1) + '</div>' +
+          '<div class="overview-bar-wrap"><div class="overview-bar" style="width:' + pct + '%"></div></div></div>';
+      }).join("");
 
-    el.innerHTML = '<span class="field-label">Slate Overview -- Game Totals</span>' +
-      '<div class="overview-panel">' +
-      '<div class="overview-row head"><div>Game</div><div style="text-align:right">O/U</div></div>' +
-      rowsHtml + '</div>';
+      el.innerHTML = '<span class="field-label">Slate Overview -- Game Totals</span>' +
+        '<div class="overview-panel">' +
+        '<div class="overview-row head"><div>Game</div><div style="text-align:right">O/U</div></div>' +
+        rowsHtml + '</div>';
+    }
+    renderStackTeamOptions();
+    renderStackGameOptions();
   }
+
+  // ---------------- Session 7.3, decision #32 -- stack team/game chip pickers ----------------
+  // Replaces the old free-text "Stack Team"/"Stack Game" inputs (which
+  // invited exactly the ambiguity flagged -- "Kansas City" vs "KC", typos,
+  // etc.) with real teams/games read straight off the loaded slate.
+  // Multiple selections are supported -- the backend now rotates the
+  // batch across exactly the picks made here (decision #32), rather than
+  // pinning to a single one.
+
+  function renderStackTeamOptions() {
+    var site = state.activeSite;
+    var pool = state.pool[site];
+    var container = document.getElementById("stackTeamOptions");
+    if (!pool) { container.innerHTML = '<div class="hint">Upload your slate above to pick teams.</div>'; return; }
+    var teams = Array.from(new Set(pool.players.map(function (p) { return p.team; }))).filter(Boolean).sort();
+    if (!teams.length) { container.innerHTML = '<div class="hint">No teams found in this slate.</div>'; return; }
+    var selected = state.stackTeamSelection[site];
+    container.innerHTML = teams.map(function (t) {
+      return '<button type="button" class="tab-btn' + (selected[t] ? " active" : "") + '" data-team="' + escapeHtml(t) + '">' + escapeHtml(t) + '</button>';
+    }).join("");
+  }
+
+  function renderStackGameOptions() {
+    var site = state.activeSite;
+    var pool = state.pool[site];
+    var container = document.getElementById("stackGameOptions");
+    if (!pool) { container.innerHTML = '<div class="hint">Upload your slate above to pick games.</div>'; return; }
+    var teamsInPool = new Set(pool.players.map(function (p) { return p.team; }));
+    var games = {};
+    pool.players.forEach(function (p) {
+      if (!p.team || !p.opponent || p.opponent === "BYE_OR_UNKNOWN") return;
+      if (!teamsInPool.has(p.opponent)) return; // matches optimizer.py's rank_candidate_games -- both sides must have real pool players, or the game can never be built
+      var pair = [p.team, p.opponent].sort();
+      games[pair.join("-")] = pair;
+    });
+    var keys = Object.keys(games).sort();
+    if (!keys.length) { container.innerHTML = '<div class="hint">No games with both sides in this slate.</div>'; return; }
+    var selected = state.stackGameSelection[site];
+    container.innerHTML = keys.map(function (key) {
+      var pair = games[key];
+      return '<button type="button" class="tab-btn' + (selected[key] ? " active" : "") + '" data-game="' + escapeHtml(key) + '">' + escapeHtml(pair[0]) + ' vs ' + escapeHtml(pair[1]) + '</button>';
+    }).join("");
+  }
+
+  document.getElementById("stackTeamOptions").addEventListener("click", function (e) {
+    var btn = e.target.closest("button[data-team]");
+    if (!btn) return;
+    var site = state.activeSite;
+    var team = btn.getAttribute("data-team");
+    var sel = state.stackTeamSelection[site];
+    if (sel[team]) delete sel[team]; else sel[team] = true;
+    renderStackTeamOptions();
+    updateStackExplain();
+  });
+
+  document.getElementById("stackGameOptions").addEventListener("click", function (e) {
+    var btn = e.target.closest("button[data-game]");
+    if (!btn) return;
+    var site = state.activeSite;
+    var key = btn.getAttribute("data-game");
+    var sel = state.stackGameSelection[site];
+    if (sel[key]) delete sel[key]; else sel[key] = true;
+    renderStackGameOptions();
+    updateStackExplain();
+  });
 
   // ---------------- Rendering a solved lineup back into the existing viewer ----------------
 
@@ -2161,10 +2293,10 @@
       }
       if (stackMode === "mini") params.mini_stack_type = document.getElementById("ctrlMiniType").value;
       if (stackMode === "game") params.game_stack_min_players = document.getElementById("ctrlGameStackMin").value;
-      var stackTeam = document.getElementById("ctrlStackTeam").value.trim();
-      if (stackTeam) params.stack_team = stackTeam;
-      var stackGame = document.getElementById("ctrlStackGame").value.trim();
-      if (stackGame) params.stack_game = stackGame;
+      var pickedTeams = Object.keys(state.stackTeamSelection[site]);
+      if (pickedTeams.length) params.stack_team = pickedTeams.join(",");
+      var pickedGames = Object.keys(state.stackGameSelection[site]);
+      if (pickedGames.length) params.stack_game = pickedGames.join(",");
     }
 
     var lockedIds = Object.keys(state.locked[site]);
@@ -2228,6 +2360,7 @@
 
     var params = buildDispatchParams();
     if (!params) { document.getElementById("btnConfirm").disabled = false; return; }
+    state.activeRequestedLineups = parseInt(params.n_lineups, 10) || 1;
     fetch(workerUrl("dispatch", params), { cache: "no-store" })
       .then(function (r) { return r.json(); })
       .then(function (data) {
@@ -2259,7 +2392,20 @@
         if (data.status === "complete") {
           var rows = parseCSV(data.csv);
           showSolvedLineup(site, rows, true);
-          setSolveStatus("Real solver confirmed — " + (state.data[site] ? state.data[site].ids.length : 1) + " lineup(s).", "ok");
+          var got = state.data[site] ? state.data[site].ids.length : 1;
+          var requested = state.activeRequestedLineups || got;
+          if (got < requested) {
+            setSolveStatus(
+              "Requested " + requested + " lineups, got " + got + " -- your current settings " +
+              "(exposure cap, uniqueness, or stacking) made the rest infeasible. The build isn't " +
+              "broken, it just ran out of legal lineups under these constraints -- loosen Max " +
+              "Exposure, Uniqueness, or the stack settings and try again, or check the GitHub " +
+              "Actions run log for the exact reason.",
+              "warn"
+            );
+          } else {
+            setSolveStatus("Real solver confirmed — " + got + " lineup(s).", "ok");
+          }
           document.getElementById("btnConfirm").disabled = false;
         } else if (data.status === "error") {
           setSolveStatus("Real solver failed: " + data.message, "error");
