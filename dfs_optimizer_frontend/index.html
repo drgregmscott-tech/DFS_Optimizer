@@ -987,9 +987,9 @@
         <div style="display:flex; justify-content:space-between; align-items:flex-end; gap:12px; flex-wrap:wrap;">
           <span class="field-label" style="margin-bottom:0;">Player Pool -- Lock / Exclude</span>
           <div class="pool-upload-row" style="margin:0; padding:6px 10px;">
-            <button class="upload-btn" id="btnOwnership" style="font-size:11px; padding:5px 10px;">Ownership CSV (optional)</button>
+            <button class="upload-btn" id="btnOwnership" style="font-size:11px; padding:5px 10px;">Override Ownership CSV (optional)</button>
             <input type="file" id="fileOwnership" accept=".csv" style="display:none">
-            <span class="pool-status" id="ownershipStatus" style="font-size:11px;">No ownership estimates loaded</span>
+            <span class="pool-status" id="ownershipStatus" style="font-size:11px;">Using estimated_ownership_pct from the slate, if present</span>
           </div>
         </div>
         <input type="text" id="playerSearch" placeholder="Search player, team, or position&hellip;" style="margin-top:10px;">
@@ -1206,8 +1206,17 @@
 
   function applySlatePayload(site, kind, filename, payload) {
     if (kind === "pool") {
+      // Default display value: whatever came baked into the slate itself
+      // (build_projections.py's estimated_ownership_pct, if present --
+      // see item #5). A separately-uploaded ownership CSV can still
+      // override this per-player below, but isn't required to see it.
+      payload.forEach(function (p) { p.ownership = p.estimated_ownership_pct; });
       state.pool[site] = { filename: filename, players: payload };
       applyOwnershipToPool(site);
+      if (site === state.activeSite && !state.ownership[site]) {
+        var hasBaked = payload.some(function (p) { return p.estimated_ownership_pct != null; });
+        setOwnershipStatus(hasBaked ? "Loaded from this slate's estimated_ownership_pct column" : "This slate has no estimated_ownership_pct column -- rebuild it with the updated build_projections.py, or upload an override CSV", hasBaked);
+      }
     } else {
       var grouped = groupBySite(payload, site);
       state.data[site] = { filename: filename, lineups: grouped.lineups, ids: grouped.ids, currentIndex: 0 };
@@ -1270,7 +1279,15 @@
         return {
           player_id: r.player_id, player_name: r.player_name.trim(), position: r.position,
           team: r.team, salary: parseFloat(r.salary) || 0, final_projection: parseFloat(r.final_projection) || 0,
-          opponent: r.opponent || "", implied_total: parseFloat(r.implied_total) || 0, over_under: parseFloat(r.over_under) || 0
+          opponent: r.opponent || "", implied_total: parseFloat(r.implied_total) || 0, over_under: parseFloat(r.over_under) || 0,
+          // Item #5 follow-up: build_projections.py now bakes these in
+          // directly -- read them straight off the main slate upload if
+          // present, so ownership shows up with zero extra steps. The
+          // separate "Ownership CSV" upload still exists as an override
+          // for anyone using an older final_projections file or a
+          // different ownership source, but isn't required anymore.
+          estimated_ownership_pct: Object.prototype.hasOwnProperty.call(r, "estimated_ownership_pct") && r.estimated_ownership_pct !== ""
+            ? parseFloat(r.estimated_ownership_pct) : null
         };
       }) : rows;
       applySlatePayload(site, kind, file.name, payload);
@@ -1600,7 +1617,13 @@
     var own = state.ownership[site];
     var pool = state.pool[site];
     if (!own || !pool) return;
-    pool.players.forEach(function (p) { p.ownership = own.byId[p.player_id]; });
+    // Only OVERRIDE players this separately-uploaded file actually covers
+    // -- previously this blanked every other player's ownership to
+    // undefined, silently wiping out the baked-in estimated_ownership_pct
+    // (item #5) for anyone not in this particular file.
+    pool.players.forEach(function (p) {
+      if (Object.prototype.hasOwnProperty.call(own.byId, p.player_id)) p.ownership = own.byId[p.player_id];
+    });
   }
 
   function handleOwnershipFile(file) {
