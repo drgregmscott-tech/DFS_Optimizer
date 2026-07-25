@@ -185,6 +185,8 @@ async function handleDispatch(url, env) {
     "stack_team", "stack_game", "game_stack_min_players", "mini_stack_type",
     "stack_candidate_pool", "stack_diversify", "lock", "exclude",
     "min_salary_pct", "flex_positions",
+    // Session 8 (this session) -- decisions #34/#35.
+    "min_projection", "min_total_ownership",
   ];
   const params = {};
   for (const key of passthroughKeys) {

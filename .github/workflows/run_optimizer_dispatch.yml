@@ -134,6 +134,12 @@ jobs:
           args += flag("--min-salary-pct", "min_salary_pct", float)
           args += flag("--flex-positions", "flex_positions")
 
+          # Session 8 (this session) -- decisions #34/#35. Same "omit means
+          # optimizer.py's own default (0, no floor)" convention as every
+          # other optional field above.
+          args += flag("--min-projection", "min_projection", float)
+          args += flag("--min-total-ownership", "min_total_ownership", float)
+
           print(f"args={shlex.join(args)}")
           PYEOF
         env:
