@@ -67,7 +67,6 @@ Josh Ferguson,RB,IND,3000,5484,RB,IND@JAX,6.366666666666667,rotoguru_gid,Josh Fe
 Paul Perkins,RB,NYG,3000,5472,RB,NYG@MIN,0.0,rotoguru_gid,Paul Perkins,dk,3000,paul perkins,NYG,RB,00-0032417,auto_exact,high
 Theo Riddick,RB,DET,5200,2907,RB,DET@CHI,16.7,rotoguru_gid,Theo Riddick,dk,5200,theo riddick,DET,RB,00-0030107,auto_exact,high
 Matt Asiata,RB,MIN,3300,2873,RB,MIN@NYG,2.5666666666666664,rotoguru_gid,Matt Asiata,dk,3300,matt asiata,MIN,RB,00-0028198,auto_exact,high
-C.J. Spiller,RB,SEA,0,2775,RB,SEA@NYJ,,rotoguru_gid,C.J. Spiller,dk,0,cj spiller,SEA,RB,00-0027861,auto_fallback_team_mismatch,medium
 Spencer Ware,RB,KC,5700,2914,RB,KC@PIT,18.566666666666663,rotoguru_gid,Spencer Ware,dk,5700,spencer ware,KC,RB,00-0030414,auto_exact,high
 LeGarrette Blount,RB,NE,5000,2721,RB,NE@BUF,19.6,rotoguru_gid,LeGarrette Blount,dk,5000,legarrette blount,NE,RB,00-0027325,auto_exact,high
 DeAngelo Williams,RB,PIT,6200,2500,RB,PIT@KC,23.23333333333333,rotoguru_gid,DeAngelo Williams,dk,6200,deangelo williams,PIT,RB,00-0024242,auto_exact,high
@@ -113,7 +112,6 @@ Mike Tolbert,RB,CAR,3000,2647,RB,CAR@ATL,2.7,rotoguru_gid,Mike Tolbert,dk,3000,m
 Derrick Henry,RB,TEN,3500,5445,RB,TEN@HOU,5.6000000000000005,rotoguru_gid,Derrick Henry,dk,3500,derrick henry,TEN,RB,00-0032764,auto_exact,high
 Jamaal Charles,RB,KC,5400,2629,RB,KC@PIT,,rotoguru_gid,Jamaal Charles,dk,5400,jamaal charles,KC,RB,00-0026213,auto_exact,high
 Zach Line,RB,MIN,3000,2912,RB,MIN@NYG,0.0,rotoguru_gid,Zach Line,dk,3000,zach line,MIN,RB,00-0029931,auto_exact,high
-Joique Bell,RB,CHI,0,2719,RB,CHI@DET,,rotoguru_gid,Joique Bell,dk,0,joique bell,CHI,RB,00-0027218,auto_fallback_team_mismatch,medium
 Rob Kelley,RB,WAS,3400,5493,RB,WAS@CLE,0.7,rotoguru_gid,Rob Kelley,dk,3400,rob kelley,WAS,RB,00-0032371,auto_exact,high
 Alex Collins,RB,SEA,3000,5450,RB,SEA@NYJ,2.55,rotoguru_gid,Alex Collins,dk,3000,alex collins,SEA,RB,00-0032426,auto_exact,high
 Raheem Mostert,RB,CHI,3000,5414,RB,CHI@DET,,rotoguru_gid,Raheem Mostert,dk,3000,raheem mostert,CHI,RB,00-0031687,auto_fallback_team_mismatch,medium

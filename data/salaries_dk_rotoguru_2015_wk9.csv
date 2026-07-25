@@ -47,7 +47,6 @@ Chris Ivory,RB,NYJ,5900,2741,RB,NYJ@JAX,18.1,rotoguru_gid,Chris Ivory,dk,5900,ch
 Frank Gore,RB,IND,4800,2467,RB,IND@DEN,12.275,rotoguru_gid,Frank Gore,dk,4800,frank gore,IND,RB,00-0023500,auto_exact,high
 Darren McFadden,RB,DAL,4300,2603,RB,DAL@PHI,12.228571428571428,rotoguru_gid,Darren McFadden,dk,4300,darren mcfadden,DAL,RB,00-0026144,auto_exact,high
 Shane Vereen,RB,NYG,4400,2830,RB,NYG@TB,10.75,rotoguru_gid,Shane Vereen,dk,4400,shane vereen,NYG,RB,00-0027994,auto_exact,high
-Shaun Draughn,RB,SF,0,2875,RB,SF@ATL,0.6199999999999999,rotoguru_gid,Shaun Draughn,dk,0,shaun draughn,SF,RB,00-0028202,auto_exact,high
 Mark Ingram,RB,NO,6500,2793,RB,NO@TEN,18.175,rotoguru_gid,Mark Ingram,dk,6500,mark ingram,NO,RB,00-0027966,auto_exact,high
 T.J. Yeldon,RB,JAX,4800,2993,RB,JAX@NYJ,13.8,rotoguru_gid,T.J. Yeldon,dk,4800,tj yeldon,JAX,RB,00-0032209,auto_exact,high
 Brandon Bolden,RB,NE,3000,2874,RB,NE@WAS,0.6,rotoguru_gid,Brandon Bolden,dk,3000,brandon bolden,NE,RB,00-0029239,auto_exact,high
@@ -72,7 +71,6 @@ C.J. Anderson,RB,DEN,4100,2924,RB,DEN@IND,8.8,rotoguru_gid,C.J. Anderson,dk,4100
 Andre Williams,RB,NYG,3000,2934,RB,NYG@TB,2.8375000000000004,rotoguru_gid,Andre Williams,dk,3000,andre williams,NYG,RB,00-0031055,auto_exact,high
 Darren Sproles,RB,PHI,3800,2484,RB,PHI@DAL,8.885714285714286,rotoguru_gid,Darren Sproles,dk,3800,darren sproles,PHI,RB,00-0023564,auto_exact,high
 Chris Thompson,RB,WAS,3300,2915,RB,WAS@NE,9.333333333333334,rotoguru_gid,Chris Thompson,dk,3300,chris thompson,WAS,RB,00-0030404,auto_exact,high
-Jay Ajayi,RB,MIA,0,2998,RB,MIA@BUF,,rotoguru_gid,Jay Ajayi,dk,0,jay ajayi,MIA,RB,00-0031590,auto_exact,high
 Jerick McKinnon,RB,MIN,3000,2935,RB,MIN@LA,2.071428571428572,rotoguru_gid,Jerick McKinnon,dk,3000,jerick mckinnon,MIN,RB,00-0031376,auto_exact,high
 Zac Stacy,RB,NYJ,3000,2902,RB,NYJ@JAX,4.583333333333333,rotoguru_gid,Zac Stacy,dk,3000,zac stacy,NYJ,RB,00-0030536,auto_exact,high
 Ka'Deem Carey,RB,CHI,3000,2972,RB,CHI@SDG,0.0,rotoguru_gid,Ka'Deem Carey,dk,3000,kadeem carey,CHI,RB,00-0031057,auto_exact,high
@@ -85,7 +83,6 @@ Rex Burkhead,RB,CIN,3000,2890,RB,CIN@CLE,1.1,rotoguru_gid,Rex Burkhead,dk,3000,r
 Jorvorskie Lane,RB,TB,3000,2878,RB,TB@NYG,0.0,rotoguru_gid,Jorvorskie Lane,dk,3000,jorvorskie lane,TB,RB,00-0029619,auto_exact,high
 Donald Brown,RB,SDG,3000,2705,RB,SDG@CHI,0.0,rotoguru_gid,Donald Brown,dk,3000,donald brown,SDG,RB,00-0027003,auto_fallback_team_mismatch,medium
 Fozzy Whittaker,RB,CAR,3000,2916,RB,CAR@GB,1.6857142857142855,rotoguru_gid,Fozzy Whittaker,dk,3000,fozzy whittaker,CAR,RB,00-0029731,auto_exact,high
-Pierre Thomas,RB,SF,0,2598,RB,SF@ATL,,rotoguru_gid,Pierre Thomas,dk,0,pierre thomas,SF,RB,00-0024813,auto_fallback_team_mismatch,medium
 Antone Smith,RB,CHI,3000,2774,RB,CHI@SDG,0.0,rotoguru_gid,Antone Smith,dk,3000,antone smith,CHI,RB,00-0026855,auto_exact,high
 Alfred Morris,RB,WAS,3300,2871,RB,WAS@NE,6.014285714285714,rotoguru_gid,Alfred Morris,dk,3300,alfred morris,WAS,RB,00-0029141,auto_exact,high
 Tre Mason,RB,LA,3300,2932,RB,LA@MIN,3.2,rotoguru_gid,Tre Mason,dk,3300,tre mason,LA,RB,00-0031391,auto_exact,high
@@ -198,7 +195,6 @@ Josh Huff,WR,PHI,3200,5261,WR,PHI@DAL,5.516666666666667,rotoguru_gid,Josh Huff,d
 Bruce Ellington,WR,SF,3000,5265,WR,SF@ATL,2.24,rotoguru_gid,Bruce Ellington,dk,3000,bruce ellington,SF,WR,00-0031326,auto_exact,high
 Marquess Wilson,WR,CHI,4000,5238,WR,CHI@SDG,7.742857142857142,rotoguru_gid,Marquess Wilson,dk,4000,marquess wilson,CHI,WR,00-0030047,auto_exact,high
 Jarius Wright,WR,MIN,3000,5188,WR,MIN@LA,4.557142857142857,rotoguru_gid,Jarius Wright,dk,3000,jarius wright,MIN,WR,00-0029572,auto_exact,high
-Javontee Herndon,WR,SDG,0,5314,WR,SDG@CHI,,rotoguru_gid,Javontee Herndon,dk,0,javontee herndon,SDG,WR,00-0030920,auto_fallback_team_mismatch,medium
 Lucky Whitehead,WR,DAL,3000,5400,WR,DAL@PHI,1.4666666666666668,rotoguru_gid,Lucky Whitehead,dk,3000,lucky whitehead,DAL,WR,00-0031757,auto_exact,high
 Josh Bellamy,WR,CHI,3000,5191,WR,CHI@SDG,2.9857142857142853,rotoguru_gid,Josh Bellamy,dk,3000,josh bellamy,CHI,WR,00-0029319,auto_exact,high
 Brandon Tate,WR,CIN,3000,3860,WR,CIN@CLE,1.7857142857142858,rotoguru_gid,Brandon Tate,dk,3000,brandon tate,CIN,WR,00-0027057,auto_exact,high
@@ -243,7 +239,6 @@ Denarius Moore,WR,BUF,3000,5109,WR,BUF@MIA,-0.3333333333333333,rotoguru_gid,Dena
 Jacoby Jones,WR,PIT,3000,3678,WR,PIT@LV,0.0,rotoguru_gid,Jacoby Jones,dk,3000,jacoby jones,PIT,WR,00-0025460,auto_exact,high
 Greg Jennings,WR,MIA,3000,3587,WR,MIA@BUF,2.914285714285714,rotoguru_gid,Greg Jennings,dk,3000,greg jennings,MIA,WR,00-0024267,auto_exact,high
 Russell Shepard,WR,TB,3000,5223,WR,TB@NYG,0.4,rotoguru_gid,Russell Shepard,dk,3000,russell shepard,TB,WR,00-0030147,auto_exact,high
-Marcus Thigpen,WR,LV,0,3818,WR,LV@PIT,0.0,rotoguru_gid,Marcus Thigpen,dk,0,marcus thigpen,LV,WR,00-0026577,auto_fallback_team_mismatch,medium
 Delanie Walker,TE,TEN,4200,4360,TE,TEN@NO,12.85,rotoguru_gid,Delanie Walker,dk,4200,delanie walker,TEN,TE,00-0024389,auto_exact,high
 Tyler Eifert,TE,CIN,5400,4568,TE,CIN@CLE,15.585714285714284,rotoguru_gid,Tyler Eifert,dk,5400,tyler eifert,CIN,TE,00-0030549,auto_exact,high
 Owen Daniels,TE,DEN,2600,4335,TE,DEN@IND,5.985714285714287,rotoguru_gid,Owen Daniels,dk,2600,owen daniels,DEN,TE,00-0024313,auto_exact,high
@@ -278,7 +273,6 @@ Vance McDonald,TE,SF,2500,4572,TE,SF@ATL,1.6428571428571428,rotoguru_gid,Vance M
 Marcedes Lewis,TE,JAX,2500,4324,TE,JAX@NYJ,2.0142857142857142,rotoguru_gid,Marcedes Lewis,dk,2500,marcedes lewis,JAX,TE,00-0024243,auto_exact,high
 Mychal Rivera,TE,LV,2500,4574,TE,LV@PIT,2.642857142857143,rotoguru_gid,Mychal Rivera,dk,2500,mychal rivera,LV,TE,00-0030514,auto_exact,high
 Rhett Ellison,TE,MIN,2500,4554,TE,MIN@LA,0.5666666666666667,rotoguru_gid,Rhett Ellison,dk,2500,rhett ellison,MIN,TE,00-0029587,auto_exact,high
-Jerome Cunningham,TE,NYG,0,4667,TE,NYG@TB,1.3,rotoguru_gid,Jerome Cunningham,dk,0,jerome cunningham,NYG,TE,00-0031462,auto_exact,high
 Cameron Brate,TE,TB,2500,4648,TE,TB@NYG,4.025,rotoguru_gid,Cameron Brate,dk,2500,cameron brate,TB,TE,00-0031273,auto_exact,high
 Virgil Green,TE,DEN,2500,4542,TE,DEN@IND,3.128571428571429,rotoguru_gid,Virgil Green,dk,2500,virgil green,DEN,TE,00-0028142,auto_exact,high
 Jim Dray,TE,CLE,2500,4484,TE,CLE@CIN,0.875,rotoguru_gid,Jim Dray,dk,2500,jim dray,CLE,TE,00-0027825,auto_exact,high

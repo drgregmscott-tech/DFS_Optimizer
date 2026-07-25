@@ -26,7 +26,6 @@ Brandon Weeden,QB,DAL,5000,1411,QB,DAL@ARI,3.13,rotoguru_gid
 Nick Foles,QB,PHI,7700,1413,QB,PHI@HOU,19.465714285714284,rotoguru_gid
 Austin Davis,QB,LA,5500,1445,QB,LA@SF,15.540000000000001,rotoguru_gid
 Philip Rivers,QB,SDG,8300,1231,QB,SDG@MIA,22.0775,rotoguru_gid
-Matt Simms,QB,NYJ,0,1436,QB,NYJ@KC,,rotoguru_gid
 Matt Moore,QB,MIA,5000,1298,QB,MIA@SDG,-0.2,rotoguru_gid
 Kellen Clemens,QB,SDG,5000,1262,QB,SDG@MIA,0.0,rotoguru_gid
 Matt Schaub,QB,LV,5000,1234,QB,LV@SEA,-0.5,rotoguru_gid
@@ -66,7 +65,6 @@ Lance Dunbar,RB,DAL,3000,2880,RB,DAL@ARI,3.2625,rotoguru_gid
 C.J. Anderson,RB,DEN,3000,2924,RB,DEN@NE,1.25,rotoguru_gid
 Benny Cunningham,RB,LA,3000,2911,RB,LA@SF,9.171428571428573,rotoguru_gid
 Lorenzo Taliaferro,RB,BAL,3300,2975,RB,BAL@PIT,8.085714285714285,rotoguru_gid
-Marion Grice,RB,ARI,0,2943,RB,ARI@DAL,,rotoguru_gid
 Ben Tate,RB,MIN,4300,2779,RB,MIN@WAS,10.96,rotoguru_gid
 Damien Williams,RB,MIA,3000,2957,RB,MIA@SDG,1.0,rotoguru_gid
 Frank Gore,RB,SF,3800,2467,RB,SF@LA,10.157142857142857,rotoguru_gid
@@ -89,7 +87,6 @@ Carlos Hyde,RB,SF,3000,2933,RB,SF@LA,5.042857142857143,rotoguru_gid
 Rex Burkhead,RB,CIN,3000,2890,RB,CIN@JAX,0.0,rotoguru_gid
 Robert Hughes,RB,ARI,3000,2882,RB,ARI@DAL,0.9857142857142857,rotoguru_gid
 Michael Cox,RB,NYG,3000,2906,RB,NYG@IND,0.0,rotoguru_gid
-Dan Herron,RB,IND,0,2855,RB,IND@NYG,1.975,rotoguru_gid
 LeGarrette Blount,RB,NE,3000,2721,RB,NE@DEN,5.9875,rotoguru_gid
 Chris Ivory,RB,NYJ,4500,2741,RB,NYJ@KC,13.2125,rotoguru_gid
 Juwan Thompson,RB,DEN,3200,2965,RB,DEN@NE,4.242857142857143,rotoguru_gid
@@ -105,7 +102,6 @@ Will Johnson,RB,PIT,3000,2877,RB,PIT@BAL,0.8,rotoguru_gid
 Knile Davis,RB,KC,3400,2891,RB,KC@NYJ,12.757142857142856,rotoguru_gid
 Mike James,RB,TB,3000,2895,RB,TB@CLE,0.2833333333333333,rotoguru_gid
 Ronnie Brown,RB,SDG,3000,2456,RB,SDG@MIA,1.8199999999999998,rotoguru_gid
-Edwin Baker,RB,NO,0,2904,RB,NO@CAR,,rotoguru_gid
 Joseph Randle,RB,DAL,3000,2900,RB,DAL@ARI,1.9625000000000001,rotoguru_gid
 Henry Hynoski,RB,NYG,3000,2837,RB,NYG@IND,0.014285714285714287,rotoguru_gid
 Bernard Pierce,RB,BAL,3000,2861,RB,BAL@PIT,6.4,rotoguru_gid

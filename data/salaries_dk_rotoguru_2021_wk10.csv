@@ -16,7 +16,6 @@ Tom Brady,QB,TB,7600,1131,QB,TB@WAS,27.6125,rotoguru_gid,Tom Brady,dk,7600,tom b
 Justin Herbert,QB,LAC,7300,1552,QB,LAC@MIN,24.8125,rotoguru_gid,Justin Herbert,dk,7300,justin herbert,LAC,QB,00-0036355,auto_exact,high
 Tua Tagovailoa,QB,MIA,5600,1551,QB,MIA@BAL,17.56,rotoguru_gid,Tua Tagovailoa,dk,5600,tua tagovailoa,MIA,QB,00-0036212,auto_exact,high
 Matthew Stafford,QB,LA,7000,1340,QB,LA@SF,24.17111111111111,rotoguru_gid,Matthew Stafford,dk,7000,matthew stafford,LA,QB,00-0026498,auto_exact,high
-Cam Newton,QB,CAR,0,1378,QB,CAR@ARI,,rotoguru_gid,Cam Newton,dk,0,cam newton,CAR,QB,00-0027939,auto_exact,high
 Aaron Rodgers,QB,GB,7100,1252,QB,GB@SEA,20.1325,rotoguru_gid,Aaron Rodgers,dk,7100,aaron rodgers,GB,QB,00-0023459,auto_exact,high
 Trevor Lawrence,QB,JAX,5300,1565,QB,JAX@IND,15.555,rotoguru_gid,Trevor Lawrence,dk,5300,trevor lawrence,JAX,QB,00-0036971,auto_exact,high
 Teddy Bridgewater,QB,DEN,5500,1439,QB,DEN@PHI,17.491111111111113,rotoguru_gid,Teddy Bridgewater,dk,5500,teddy bridgewater,DEN,QB,00-0031237,auto_exact,high
@@ -205,8 +204,6 @@ Olamide Zaccheaus,WR,ATL,4400,5799,WR,ATL@DAL,6.025,rotoguru_gid,Olamide Zacchea
 Nelson Agholor,WR,NE,4000,5378,WR,NE@CLE,7.555555555555555,rotoguru_gid,Nelson Agholor,dk,4000,nelson agholor,NE,WR,00-0031549,auto_exact,high
 Jaelon Darden,WR,TB,3000,5956,WR,TB@WAS,2.0666666666666664,rotoguru_gid,Jaelon Darden,dk,3000,jaelon darden,TB,WR,00-0036877,auto_exact,high
 Brandon Zylstra,WR,CAR,3000,5677,WR,CAR@ARI,4.65,rotoguru_gid,Brandon Zylstra,dk,3000,brandon zylstra,CAR,WR,00-0034052,auto_exact,high
-DeSean Jackson,WR,LV,0,3770,WR,LV@KC,5.585714285714286,rotoguru_gid,DeSean Jackson,dk,0,desean jackson,LV,WR,00-0026189,auto_exact,high
-Odell Beckham Jr.,WR,LA,0,5323,WR,LA@SF,6.933333333333334,rotoguru_gid,Odell Beckham Jr.,dk,0,odell beckham,LA,WR,00-0031235,auto_exact,high
 Trinity Benson,WR,DET,3000,5954,WR,DET@PIT,1.9166666666666667,rotoguru_gid,Trinity Benson,dk,3000,trinity benson,DET,WR,00-0034930,auto_exact,high
 N'Keal Harry,WR,NE,3000,5724,WR,NE@CLE,2.54,rotoguru_gid,N'Keal Harry,dk,3000,nkeal harry,NE,WR,00-0035624,auto_fallback_name_only_position_mismatch,low
 Cole Beasley,WR,BUF,5200,5163,WR,BUF@NYJ,13.075,rotoguru_gid,Cole Beasley,dk,5200,cole beasley,BUF,WR,00-0029000,auto_exact,high

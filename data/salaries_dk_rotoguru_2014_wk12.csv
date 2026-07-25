@@ -44,11 +44,9 @@ Ryan Mathews,RB,SDG,4600,2754,RB,SDG@LA,10.066666666666666,rotoguru_gid,Ryan Mat
 Jamaal Charles,RB,KC,7900,2629,RB,KC@LV,18.73333333333333,rotoguru_gid,Jamaal Charles,dk,7900,jamaal charles,KC,RB,00-0026213,auto_exact,high
 Isaiah Crowell,RB,CLE,3800,2969,RB,CLE@ATL,7.339999999999999,rotoguru_gid,Isaiah Crowell,dk,3800,isaiah crowell,CLE,RB,00-0030656,auto_exact,high
 Rashad Jennings,RB,NYG,5100,2658,RB,NYG@DAL,14.366666666666667,rotoguru_gid,Rashad Jennings,dk,5100,rashad jennings,NYG,RB,00-0027155,auto_exact,high
-LeGarrette Blount,RB,NE,0,2721,RB,NE@DET,4.563636363636364,rotoguru_gid,LeGarrette Blount,dk,0,legarrette blount,NE,RB,00-0027325,auto_exact,high
 DeMarco Murray,RB,DAL,8500,2831,RB,DAL@NYG,25.14,rotoguru_gid,DeMarco Murray,dk,8500,demarco murray,DAL,RB,00-0028009,auto_exact,high
 Jeremy Hill,RB,CIN,5700,2928,RB,CIN@HOU,12.25,rotoguru_gid,Jeremy Hill,dk,5700,jeremy hill,CIN,RB,00-0031301,auto_exact,high
 Shane Vereen,RB,NE,5300,2830,RB,NE@DET,12.33,rotoguru_gid,Shane Vereen,dk,5300,shane vereen,NE,RB,00-0027994,auto_exact,high
-Dan Herron,RB,IND,0,2855,RB,IND@JAX,2.06,rotoguru_gid,Dan Herron,dk,0,dan herron,IND,RB,00-0029588,auto_exact,high
 Fred Jackson,RB,BUF,5000,2520,RB,BUF@NYJ,13.2375,rotoguru_gid,Fred Jackson,dk,5000,fred jackson,BUF,RB,00-0024204,auto_exact,high
 Anthony Dixon,RB,BUF,3700,2730,RB,BUF@NYJ,3.56,rotoguru_gid,Anthony Dixon,dk,3700,anthony dixon,BUF,RB,00-0027772,auto_exact,high
 Steven Jackson,RB,ATL,4000,2418,RB,ATL@CLE,9.27,rotoguru_gid,Steven Jackson,dk,4000,steven jackson,ATL,RB,00-0022736,auto_exact,high
@@ -336,7 +334,6 @@ Jeff Cumberland,TE,NYJ,3000,4481,TE,NYJ@BUF,3.64,rotoguru_gid,Jeff Cumberland,dk
 Ben Watson,TE,NO,3000,4292,TE,NO@BAL,2.04,rotoguru_gid,Ben Watson,dk,3000,ben watson,NO,TE,00-0022943,manual_override,high
 Logan Paulsen,TE,WAS,3000,4513,TE,WAS@SF,1.26,rotoguru_gid,Logan Paulsen,dk,3000,logan paulsen,WAS,TE,00-0027215,auto_exact,high
 Jacob Tamme,TE,DEN,3400,4411,TE,DEN@MIA,3.08,rotoguru_gid,Jacob Tamme,dk,3400,jacob tamme,DEN,TE,00-0026267,auto_exact,high
-Marcedes Lewis,TE,JAX,0,4324,TE,JAX@IND,12.3,rotoguru_gid,Marcedes Lewis,dk,0,marcedes lewis,JAX,TE,00-0024243,auto_exact,high
 Justin Perillo,TE,GB,3000,4628,TE,GB@MIN,,rotoguru_gid,Justin Perillo,dk,3000,justin perillo,GB,TE,,,
 Clark Harris,TE,CIN,3000,4391,TE,CIN@HOU,0.0,rotoguru_gid,Clark Harris,dk,3000,clark harris,CIN,TE,00-0025630,manual_override,high
 Trey Burton,TE,PHI,3000,4618,TE,PHI@TEN,0.1,rotoguru_gid,Trey Burton,dk,3000,trey burton,PHI,TE,00-0030710,auto_exact,high

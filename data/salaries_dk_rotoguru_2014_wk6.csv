@@ -85,7 +85,6 @@ Will Ta'ufo'ou,RB,JAX,3000,2654,RB,JAX@TEN,1.44,rotoguru_gid,Will Ta'ufo'ou,dk,3
 Eddie Lacy,RB,GB,6300,2896,RB,GB@MIA,12.84,rotoguru_gid,Eddie Lacy,dk,6300,eddie lacy,GB,RB,00-0030485,auto_exact,high
 Stevan Ridley,RB,NE,3700,2829,RB,NE@BUF,10.82,rotoguru_gid,Stevan Ridley,dk,3700,stevan ridley,NE,RB,00-0028011,auto_exact,high
 Frank Gore,RB,SF,4800,2467,RB,SF@LA,13.06,rotoguru_gid,Frank Gore,dk,4800,frank gore,SF,RB,00-0023500,auto_exact,high
-Ronnie Brown,RB,SDG,0,2456,RB,SDG@LV,0.95,rotoguru_gid,Ronnie Brown,dk,0,ronnie brown,SDG,RB,00-0023437,auto_fallback_team_mismatch,medium
 Chris Ivory,RB,NYJ,4300,2741,RB,NYJ@DEN,12.16,rotoguru_gid,Chris Ivory,dk,4300,chris ivory,NYJ,RB,00-0027531,auto_exact,high
 Darrin Reaves,RB,CAR,3100,2983,RB,CAR@CIN,6.4,rotoguru_gid,Darrin Reaves,dk,3100,darrin reaves,CAR,RB,00-0031123,auto_exact,high
 Knowshon Moreno,RB,MIA,4200,2706,RB,MIA@GB,11.4,rotoguru_gid,Knowshon Moreno,dk,4200,knowshon moreno,MIA,RB,00-0026988,auto_exact,high
@@ -104,7 +103,6 @@ Jacquizz Rodgers,RB,ATL,3000,2818,RB,ATL@CHI,4.98,rotoguru_gid,Jacquizz Rodgers,
 Ka'Deem Carey,RB,CHI,3000,2972,RB,CHI@ATL,1.56,rotoguru_gid,Ka'Deem Carey,dk,3000,kadeem carey,CHI,RB,00-0031057,auto_exact,high
 Shane Vereen,RB,NE,5100,2830,RB,NE@BUF,11.26,rotoguru_gid,Shane Vereen,dk,5100,shane vereen,NE,RB,00-0027994,auto_exact,high
 Robert Hughes,RB,ARI,3000,2882,RB,ARI@WAS,0.475,rotoguru_gid,Robert Hughes,dk,3000,robert hughes,ARI,RB,00-0028345,auto_exact,high
-George Winn,RB,DET,0,2984,RB,DET@MIN,4.8,rotoguru_gid,George Winn,dk,0,george winn,DET,RB,00-0030247,auto_exact,high
 John Kuhn,RB,GB,3000,2549,RB,GB@MIA,1.98,rotoguru_gid,John Kuhn,dk,3000,john kuhn,GB,RB,00-0022999,auto_exact,high
 Jamize Olawale,RB,LV,3000,2913,RB,LV@SDG,0.35,rotoguru_gid,Jamize Olawale,dk,3000,jamize olawale,LV,RB,00-0029492,auto_exact,high
 James Develin,RB,NE,3000,2825,RB,NE@BUF,1.2600000000000002,rotoguru_gid,James Develin,dk,3000,james develin,NE,RB,00-0027925,auto_exact,high
@@ -179,10 +177,8 @@ Davante Adams,WR,GB,3000,5263,WR,GB@MIA,5.0,rotoguru_gid,Davante Adams,dk,3000,d
 Pierre Garcon,WR,WAS,5800,3754,WR,WAS@ARI,12.56,rotoguru_gid,Pierre Garcon,dk,5800,pierre garcon,WAS,WR,00-0026345,auto_exact,high
 Eddie Royal,WR,SDG,5500,3748,WR,SDG@LV,14.9,rotoguru_gid,Eddie Royal,dk,5500,eddie royal,SDG,WR,00-0026182,auto_fallback_team_mismatch,medium
 Golden Tate,WR,DET,6300,3995,WR,DET@MIN,17.7,rotoguru_gid,Golden Tate,dk,6300,golden tate,DET,WR,00-0027891,auto_exact,high
-Brian Tyms,WR,NE,0,5244,WR,NE@BUF,,rotoguru_gid,Brian Tyms,dk,0,brian tyms,NE,WR,00-0028984,auto_exact,high
 Riley Cooper,WR,PHI,3500,3898,WR,PHI@NYG,7.959999999999999,rotoguru_gid,Riley Cooper,dk,3500,riley cooper,PHI,WR,00-0027758,auto_exact,high
 Julio Jones,WR,ATL,8400,5089,WR,ATL@CHI,24.24,rotoguru_gid,Julio Jones,dk,8400,julio jones,ATL,WR,00-0027944,auto_exact,high
-Michael Campanaro,WR,BAL,0,5277,WR,BAL@TB,,rotoguru_gid,Michael Campanaro,dk,0,michael campanaro,BAL,WR,00-0031025,auto_exact,high
 Rueben Randle,WR,NYG,4600,5158,WR,NYG@PHI,10.78,rotoguru_gid,Rueben Randle,dk,4600,rueben randle,NYG,WR,00-0029262,auto_exact,high
 Justin Hunter,WR,TEN,4800,5207,WR,TEN@JAX,8.34,rotoguru_gid,Justin Hunter,dk,4800,justin hunter,TEN,WR,00-0030521,auto_exact,high
 Vincent Jackson,WR,TB,5700,3550,WR,TB@BAL,12.76,rotoguru_gid,Vincent Jackson,dk,5700,vincent jackson,TB,WR,00-0023496,auto_exact,high
@@ -234,7 +230,6 @@ Corey Fuller,WR,DET,3000,5203,WR,DET@MIN,1.98,rotoguru_gid,Corey Fuller,dk,3000,
 Percy Harvin,WR,NYJ,5400,3802,WR,NYJ@DEN,11.65,rotoguru_gid,Percy Harvin,dk,5400,percy harvin,NYJ,WR,00-0026998,auto_exact,high
 Justin Brown,WR,PIT,3000,3825,WR,PIT@CLE,3.5,rotoguru_gid,Justin Brown,dk,3000,justin brown,PIT,WR,00-0030466,auto_exact,high
 Eric Weems,WR,ATL,3000,3732,WR,ATL@CHI,2.725,rotoguru_gid,Eric Weems,dk,3000,eric weems,ATL,WR,00-0024535,auto_exact,high
-Damian Williams,WR,LA,0,5074,WR,LA@SF,,rotoguru_gid,Damian Williams,dk,0,damian williams,LA,WR,00-0027893,auto_fallback_team_mismatch,medium
 DeAndre Hopkins,WR,HOU,5800,5206,WR,HOU@IND,16.080000000000002,rotoguru_gid,DeAndre Hopkins,dk,5800,deandre hopkins,HOU,WR,00-0030564,auto_exact,high
 T.J. Graham,WR,NYJ,3000,5166,WR,NYJ@DEN,,rotoguru_gid,T.J. Graham,dk,3000,tj graham,NYJ,WR,,,
 Cole Beasley,WR,DAL,3000,5163,WR,DAL@SEA,4.359999999999999,rotoguru_gid,Cole Beasley,dk,3000,cole beasley,DAL,WR,00-0029000,auto_exact,high

@@ -281,7 +281,17 @@ def compute_chalk_scores(df: pd.DataFrame, site: str) -> pd.DataFrame:
     # Decision #1: value = projected points per $1K salary, percentile-
     # ranked within position_group so positions with structurally
     # different raw value ranges are comparable.
-    df["value"] = df["final_projection"] / (df["salary"] / 1000.0)
+    # Defensive guard (added after the Session 10.1 backtest surfaced a
+    # real $0-salary player -- Cam Newton, CAR, 2021 wk10 -- in RotoGuru
+    # data): a salary <= 0 would make this divide 0/0 -> NaN, which
+    # propagates to a NaN chalk_score and hard-stops build_projections.py's
+    # add_ownership_columns. The upstream ingest now drops $0 players so a
+    # real slate should never reach here with one, but this guard means the
+    # heuristic itself can never emit a NaN value regardless of input: a
+    # non-positive salary yields value 0.0 (correctly the worst value), not
+    # NaN.
+    safe_salary = df["salary"].where(df["salary"] > 0)
+    df["value"] = (df["final_projection"] / (safe_salary / 1000.0)).fillna(0.0)
     df["value_percentile"] = df.groupby("position_group")["value"].rank(pct=True) * 100
 
     # Decision #2: salary tier, U-shaped -- both ends of a position

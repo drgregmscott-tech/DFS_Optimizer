@@ -84,7 +84,6 @@ Troymaine Pope,RB,LAC,4000,5510,RB,LAC@NYJ,5.033333333333333,rotoguru_gid,Troyma
 Devine Ozigbo,RB,JAX,4000,5813,RB,JAX@PIT,0.0,rotoguru_gid,Devine Ozigbo,dk,4000,devine ozigbo,JAX,RB,00-0035184,auto_exact,high
 Rex Burkhead,RB,NE,4600,2890,RB,NE@HOU,11.6,rotoguru_gid,Rex Burkhead,dk,4600,rex burkhead,NE,RB,00-0030288,auto_exact,high
 C.J. Prosise,RB,HOU,4000,5448,RB,HOU@NE,0.15,rotoguru_gid,C.J. Prosise,dk,4000,cj prosise,HOU,RB,00-0032393,auto_exact,high
-Bo Scarbrough,RB,SEA,0,5791,RB,SEA@ARI,,rotoguru_gid,Bo Scarbrough,dk,0,bo scarbrough,SEA,RB,00-0034432,auto_exact,high
 Samaje Perine,RB,CIN,4000,5538,RB,CIN@WAS,2.055555555555556,rotoguru_gid,Samaje Perine,dk,4000,samaje perine,CIN,RB,00-0033526,auto_exact,high
 Devontae Booker,RB,LV,4000,5468,RB,LV@KC,7.066666666666666,rotoguru_gid,Devontae Booker,dk,4000,devontae booker,LV,RB,00-0032972,auto_exact,high
 Rodney Smith,RB,CAR,4000,5890,RB,CAR@DET,2.5,rotoguru_gid,Rodney Smith,dk,4000,rodney smith,CAR,RB,00-0035957,auto_exact,high
@@ -186,7 +185,6 @@ D.J. Chark,WR,JAX,5700,5659,WR,JAX@PIT,14.1625,rotoguru_gid,D.J. Chark,dk,5700,d
 Van Jefferson,WR,LA,3000,5844,WR,LA@TB,2.611111111111111,rotoguru_gid,Van Jefferson,dk,3000,van jefferson,LA,WR,00-0036415,auto_exact,high
 KJ Hamler,WR,DEN,3600,5842,WR,DEN@MIA,7.742857142857143,rotoguru_gid,KJ Hamler,dk,3600,kj hamler,DEN,WR,00-0036412,auto_exact,high
 Marquez Valdes-Scantling,WR,GB,4800,5656,WR,GB@IND,10.733333333333333,rotoguru_gid,Marquez Valdes-Scantling,dk,4800,marquez valdes scantling,GB,WR,00-0034272,auto_exact,high
-Dez Bryant,WR,BAL,0,3891,WR,BAL@TEN,,rotoguru_gid,Dez Bryant,dk,0,dez bryant,BAL,WR,00-0027902,auto_exact,high
 Jakobi Meyers,WR,NE,4900,5749,WR,NE@HOU,10.494285714285713,rotoguru_gid,Jakobi Meyers,dk,4900,jakobi meyers,NE,WR,00-0034960,auto_exact,high
 Jerry Jeudy,WR,DEN,5300,5832,WR,DEN@MIA,11.577777777777778,rotoguru_gid,Jerry Jeudy,dk,5300,jerry jeudy,DEN,WR,00-0036407,auto_exact,high
 T.Y. Hilton,WR,IND,4200,5151,WR,IND@GB,6.8875,rotoguru_gid,T.Y. Hilton,dk,4200,ty hilton,IND,WR,00-0029608,auto_exact,high
@@ -219,7 +217,6 @@ Henry Ruggs III,WR,LV,4000,5833,WR,LV@KC,7.185714285714285,rotoguru_gid,Henry Ru
 Mecole Hardman,WR,KC,4200,5727,WR,KC@LV,9.566666666666666,rotoguru_gid,Mecole Hardman,dk,4200,mecole hardman,KC,WR,00-0035140,auto_exact,high
 Jamison Crowder,WR,NYJ,6100,5410,WR,NYJ@LAC,19.78,rotoguru_gid,Jamison Crowder,dk,6100,jamison crowder,NYJ,WR,00-0031941,auto_exact,high
 David Moore,WR,SEA,3500,5655,WR,SEA@ARI,9.31111111111111,rotoguru_gid,David Moore,dk,3500,david moore,SEA,WR,00-0033589,auto_exact,high
-Donte Moncrief,WR,NE,0,5344,WR,NE@HOU,,rotoguru_gid,Donte Moncrief,dk,0,donte moncrief,NE,WR,00-0031339,auto_exact,high
 James Proche,WR,BAL,3000,5845,WR,BAL@TEN,0.0,rotoguru_gid,James Proche,dk,3000,james proche,BAL,WR,00-0036133,auto_exact,high
 Marcus Johnson,WR,IND,3000,5587,WR,IND@GB,6.683333333333334,rotoguru_gid,Marcus Johnson,dk,3000,marcus johnson,IND,WR,00-0032980,auto_exact,high
 Antonio Callaway,WR,MIA,3000,5642,WR,MIA@DEN,,rotoguru_gid,Antonio Callaway,dk,3000,antonio callaway,MIA,WR,00-0034772,auto_exact,high
@@ -323,7 +320,6 @@ Marcedes Lewis,TE,GB,2500,4324,TE,GB@IND,2.4000000000000004,rotoguru_gid,Marcede
 Jared Cook,TE,NO,4100,4437,TE,NO@ATL,8.9875,rotoguru_gid,Jared Cook,dk,4100,jared cook,NO,TE,00-0027061,auto_exact,high
 Nick Keizer,TE,KC,2500,4786,TE,KC@LV,1.2166666666666666,rotoguru_gid,Nick Keizer,dk,2500,nick keizer,KC,TE,00-0034192,auto_exact,high
 Jesse James,TE,DET,2500,4653,TE,DET@CAR,2.711111111111111,rotoguru_gid,Jesse James,dk,2500,jesse james,DET,TE,00-0032135,auto_exact,high
-Eric Saubert,TE,JAX,0,4726,TE,JAX@PIT,,rotoguru_gid,Eric Saubert,dk,0,eric saubert,JAX,TE,00-0033576,auto_exact,high
 Jeremy Sprinkle,TE,WAS,2500,4714,TE,WAS@CIN,0.1777777777777777,rotoguru_gid,Jeremy Sprinkle,dk,2500,jeremy sprinkle,WAS,TE,00-0033528,auto_exact,high
 Temarrick Hemingway,TE,WAS,2500,4788,TE,WAS@CIN,0.5,rotoguru_gid,Temarrick Hemingway,dk,2500,temarrick hemingway,WAS,TE,00-0033112,auto_exact,high
 Isaac Nauta,TE,DET,2500,4774,TE,DET@CAR,0.325,rotoguru_gid,Isaac Nauta,dk,2500,isaac nauta,DET,TE,00-0035539,auto_exact,high

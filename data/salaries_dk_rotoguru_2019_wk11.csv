@@ -62,7 +62,6 @@ Darrel Williams,RB,KC,3400,5708,RB,KC@LAC,4.79,rotoguru_gid,Darrel Williams,dk,3
 Melvin Gordon,RB,LAC,6300,2991,RB,LAC@KC,14.35,rotoguru_gid,Melvin Gordon,dk,6300,melvin gordon,LAC,RB,00-0032144,auto_exact,high
 Kareem Hunt,RB,CLE,4300,5560,RB,CLE@PIT,14.4,rotoguru_gid,Kareem Hunt,dk,4300,kareem hunt,CLE,RB,00-0033923,auto_exact,high
 Patrick Laird,RB,MIA,3000,5788,RB,MIA@BUF,3.9,rotoguru_gid,Patrick Laird,dk,3000,patrick laird,MIA,RB,00-0035342,auto_exact,high
-Bo Scarbrough,RB,DET,0,5791,RB,DET@DAL,,rotoguru_gid,Bo Scarbrough,dk,0,bo scarbrough,DET,RB,00-0034432,auto_exact,high
 James White,RB,NE,5400,2954,RB,NE@PHI,13.35,rotoguru_gid,James White,dk,5400,james white,NE,RB,00-0031062,auto_exact,high
 Jeff Wilson Jr.,RB,SF,3300,5703,RB,SF@ARI,5.5,rotoguru_gid,Jeff Wilson Jr.,dk,3300,jeff wilson,SF,RB,00-0034115,auto_exact,high
 Phillip Lindsay,RB,DEN,5300,5630,RB,DEN@MIN,14.711111111111112,rotoguru_gid,Phillip Lindsay,dk,5300,phillip lindsay,DEN,RB,00-0034109,auto_exact,high
@@ -164,7 +163,6 @@ Pharoh Cooper,WR,ARI,3000,5462,WR,ARI@SF,3.628571428571429,rotoguru_gid,Pharoh C
 Phillip Dorsett,WR,NE,4200,5384,WR,NE@PHI,9.875,rotoguru_gid,Phillip Dorsett,dk,4200,phillip dorsett,NE,WR,00-0032208,auto_exact,high
 Tyrell Williams,WR,LV,5400,5432,WR,LV@CIN,13.857142857142858,rotoguru_gid,Tyrell Williams,dk,5400,tyrell williams,LV,WR,00-0032160,auto_exact,high
 Chris Conley,WR,JAX,4400,5385,WR,JAX@IND,9.566666666666668,rotoguru_gid,Chris Conley,dk,4400,chris conley,JAX,WR,00-0032128,auto_exact,high
-Tim Patrick,WR,DEN,0,5651,WR,DEN@MIN,0.0,rotoguru_gid,Tim Patrick,dk,0,tim patrick,DEN,WR,00-0033375,auto_exact,high
 Hunter Renfrow,WR,LV,4000,5761,WR,LV@CIN,7.7666666666666675,rotoguru_gid,Hunter Renfrow,dk,4000,hunter renfrow,LV,WR,00-0034983,auto_exact,high
 Anthony Miller,WR,CHI,3300,5632,WR,CHI@LA,4.188888888888889,rotoguru_gid,Anthony Miller,dk,3300,anthony miller,CHI,WR,00-0034353,auto_exact,high
 Scott Miller,WR,TB,3000,5772,WR,TB@NO,2.333333333333333,rotoguru_gid,Scott Miller,dk,3000,scott miller,TB,WR,00-0035298,auto_exact,high
@@ -205,7 +203,6 @@ Trey Quinn,WR,WAS,3300,5652,WR,WAS@NYJ,5.288888888888889,rotoguru_gid,Trey Quinn
 Marvin Hall,WR,DET,3100,5595,WR,DET@DAL,5.3,rotoguru_gid,Marvin Hall,dk,3100,marvin hall,DET,WR,00-0033094,auto_exact,high
 N'Keal Harry,WR,NE,3000,5724,WR,NE@PHI,,rotoguru_gid,N'Keal Harry,dk,3000,nkeal harry,NE,WR,00-0035624,auto_fallback_name_only_position_mismatch,low
 Sammy Watkins,WR,KC,4900,5252,WR,KC@LAC,14.05,rotoguru_gid,Sammy Watkins,dk,4900,sammy watkins,KC,WR,00-0031325,auto_exact,high
-Tevin Jones,WR,DAL,0,5792,WR,DAL@DET,,rotoguru_gid,Tevin Jones,dk,0,tevin jones,DAL,WR,00-0032728,auto_fallback_team_mismatch,medium
 Kenny Golladay,WR,DET,6700,5554,WR,DET@DAL,18.522222222222226,rotoguru_gid,Kenny Golladay,dk,6700,kenny golladay,DET,WR,00-0033932,auto_exact,high
 Marquise Brown,WR,BAL,5600,5730,WR,BAL@HOU,14.342857142857143,rotoguru_gid,Marquise Brown,dk,5600,marquise brown,BAL,WR,00-0035662,auto_exact,high
 JuJu Smith-Schuster,WR,PIT,6000,5553,WR,PIT@CLE,11.811111111111112,rotoguru_gid,JuJu Smith-Schuster,dk,6000,juju smith schuster,PIT,WR,00-0033857,auto_exact,high

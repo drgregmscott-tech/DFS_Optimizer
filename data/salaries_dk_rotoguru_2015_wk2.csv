@@ -127,7 +127,6 @@ LeGarrette Blount,RB,NE,5000,2721,RB,NE@BUF,,rotoguru_gid,LeGarrette Blount,dk,5
 Bernard Pierce,RB,JAX,3000,2861,RB,JAX@MIA,1.4,rotoguru_gid,Bernard Pierce,dk,3000,bernard pierce,JAX,RB,00-0029264,auto_exact,high
 Jay Prosch,RB,HOU,3000,2980,RB,HOU@CAR,0.0,rotoguru_gid,Jay Prosch,dk,3000,jay prosch,HOU,RB,00-0031085,auto_exact,high
 Jarryd Hayne,RB,SF,3000,5401,RB,SF@PIT,2.0,rotoguru_gid,Jarryd Hayne,dk,3000,jarryd hayne,SF,RB,00-0031493,auto_exact,high
-Kerwynn Williams,RB,ARI,0,2918,RB,ARI@CHI,,rotoguru_gid,Kerwynn Williams,dk,0,kerwynn williams,ARI,RB,00-0030117,auto_exact,high
 Fozzy Whittaker,RB,CAR,3000,2916,RB,CAR@HOU,2.5,rotoguru_gid,Fozzy Whittaker,dk,3000,fozzy whittaker,CAR,RB,00-0029731,auto_exact,high
 Michael Burton,RB,DET,3000,5415,RB,DET@MIN,0.0,rotoguru_gid,Michael Burton,dk,3000,michael burton,DET,RB,00-0031595,auto_exact,high
 Branden Oliver,RB,SDG,3300,2982,RB,SDG@CIN,3.1,rotoguru_gid,Branden Oliver,dk,3300,branden oliver,SDG,RB,00-0031277,auto_fallback_team_mismatch,medium
@@ -244,7 +243,6 @@ Tyler Lockett,WR,SEA,3400,5386,WR,SEA@GB,13.4,rotoguru_gid,Tyler Lockett,dk,3400
 Kendall Wright,WR,TEN,5000,5162,WR,TEN@CLE,23.1,rotoguru_gid,Kendall Wright,dk,5000,kendall wright,TEN,WR,00-0029708,auto_exact,high
 Quincy Enunwa,WR,NYJ,3000,5420,WR,NYJ@IND,0.0,rotoguru_gid,Quincy Enunwa,dk,3000,quincy enunwa,NYJ,WR,00-0031023,auto_exact,high
 Phillip Dorsett,WR,IND,3300,5384,WR,IND@NYJ,5.5,rotoguru_gid,Phillip Dorsett,dk,3300,phillip dorsett,IND,WR,00-0032208,auto_exact,high
-Chandler Worthy,WR,HOU,0,5418,WR,HOU@CAR,,rotoguru_gid,Chandler Worthy,dk,0,chandler worthy,HOU,WR,00-0031932,auto_exact,high
 Lance Moore,WR,DET,3000,3604,WR,DET@MIN,3.2,rotoguru_gid,Lance Moore,dk,3000,lance moore,DET,WR,00-0023310,auto_exact,high
 Marlon Brown,WR,BAL,3200,5226,WR,BAL@LV,4.5,rotoguru_gid,Marlon Brown,dk,3200,marlon brown,BAL,WR,00-0030400,auto_exact,high
 De'Anthony Thomas,WR,KC,3000,2958,WR,KC@DEN,2.1,rotoguru_gid,De'Anthony Thomas,dk,3000,deanthony thomas,KC,WR,00-0031060,auto_exact,high
@@ -325,7 +323,6 @@ Heath Miller,TE,PIT,3500,4311,TE,PIT@SF,16.4,rotoguru_gid,Heath Miller,dk,3500,h
 Vernon Davis,TE,SF,3000,4323,TE,SF@PIT,7.7,rotoguru_gid,Vernon Davis,dk,3000,vernon davis,SF,TE,00-0024221,auto_fallback_team_mismatch,medium
 Charles Clay,TE,BUF,3400,4543,TE,BUF@NE,8.3,rotoguru_gid,Charles Clay,dk,3400,charles clay,BUF,TE,00-0028112,auto_exact,high
 Travis Kelce,TE,KC,5100,4582,TE,KC@DEN,31.6,rotoguru_gid,Travis Kelce,dk,5100,travis kelce,KC,TE,00-0030506,auto_exact,high
-Jake Stoneburner,TE,MIA,0,4597,TE,MIA@JAX,,rotoguru_gid,Jake Stoneburner,dk,0,jake stoneburner,MIA,TE,00-0030272,auto_exact,high
 Ladarius Green,TE,SDG,3500,4562,TE,SDG@CIN,18.4,rotoguru_gid,Ladarius Green,dk,3500,ladarius green,SDG,TE,00-0029275,auto_fallback_team_mismatch,medium
 Jared Cook,TE,LA,3000,4437,TE,LA@WAS,13.5,rotoguru_gid,Jared Cook,dk,3000,jared cook,LA,TE,00-0027061,auto_exact,high
 Jordan Cameron,TE,MIA,4000,4533,TE,MIA@JAX,11.3,rotoguru_gid,Jordan Cameron,dk,4000,jordan cameron,MIA,TE,00-0028040,auto_exact,high
@@ -355,10 +352,8 @@ Maxx Williams,TE,BAL,2500,4650,TE,BAL@LV,2.5,rotoguru_gid,Maxx Williams,dk,2500,
 Lee Smith,TE,LV,2500,4535,TE,LV@BAL,0.0,rotoguru_gid,Lee Smith,dk,2500,lee smith,LV,TE,00-0028097,auto_exact,high
 Jermaine Gresham,TE,ARI,2600,4493,TE,ARI@CHI,1.4,rotoguru_gid,Jermaine Gresham,dk,2600,jermaine gresham,ARI,TE,00-0027873,auto_exact,high
 Clive Walford,TE,LV,2500,4651,TE,LV@BAL,1.1,rotoguru_gid,Clive Walford,dk,2500,clive walford,LV,TE,00-0032256,auto_exact,high
-Jerome Cunningham,TE,NYG,0,4667,TE,NYG@ATL,,rotoguru_gid,Jerome Cunningham,dk,0,jerome cunningham,NYG,TE,00-0031462,auto_exact,high
 Matthew Mulligan,TE,BUF,2500,4431,TE,BUF@NE,0.0,rotoguru_gid,Matthew Mulligan,dk,2500,matthew mulligan,BUF,TE,00-0026008,auto_exact,high
 Josh Hill,TE,NO,2600,4586,TE,NO@TB,0.0,rotoguru_gid,Josh Hill,dk,2600,josh hill,NO,TE,00-0030216,auto_exact,high
-Geoff Swaim,TE,DAL,0,4668,TE,DAL@PHI,,rotoguru_gid,Geoff Swaim,dk,0,geoff swaim,DAL,TE,00-0032141,auto_exact,high
 Cooper Helfet,TE,SEA,2500,4614,TE,SEA@GB,0.0,rotoguru_gid,Cooper Helfet,dk,2500,cooper helfet,SEA,TE,00-0029534,auto_exact,high
 Clark Harris,TE,CIN,2500,4391,TE,CIN@SDG,,rotoguru_gid,Clark Harris,dk,2500,clark harris,CIN,TE,00-0025630,manual_override,high
 Trey Burton,TE,PHI,2500,4618,TE,PHI@DAL,0.0,rotoguru_gid,Trey Burton,dk,2500,trey burton,PHI,TE,00-0030710,auto_exact,high

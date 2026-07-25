@@ -2,7 +2,6 @@ Position,Team,Salary,Id,Nickname,First Name,Last Name,Opponent,AvgPointsPerGame,
 QB,BAL,8300,1527,Lamar Jackson,Lamar,Jackson,MIN,24.388571428571428,rotoguru_gid
 QB,LAC,7600,1552,Justin Herbert,Justin,Herbert,PHI,21.98,rotoguru_gid
 QB,ATL,6700,1301,Matt Ryan,Matt,Ryan,NO,17.065714285714286,rotoguru_gid
-QB,NYJ,0,1320,Josh Johnson,Josh,Johnson,IND,0.68,rotoguru_gid
 QB,IND,7500,1514,Carson Wentz,Carson,Wentz,NYJ,17.855,rotoguru_gid
 QB,DEN,7100,1439,Teddy Bridgewater,Teddy,Bridgewater,DAL,16.07,rotoguru_gid
 QB,MIN,7400,1415,Kirk Cousins,Kirk,Cousins,BAL,19.945714285714285,rotoguru_gid
@@ -96,7 +95,6 @@ RB,HOU,5100,5630,Phillip Lindsay,Phillip,Lindsay,MIA,3.4625,rotoguru_gid
 RB,LV,4800,5490,Jalen Richard,Jalen,Richard,NYG,1.9000000000000001,rotoguru_gid
 RB,SF,5400,5865,JaMycal Hasty,JaMycal,Hasty,ARI,5.9,rotoguru_gid
 RB,CLE,4800,5952,Demetric Felton,Demetric,Felton,CIN,3.2625,rotoguru_gid
-RB,KC,0,5963,Derrick Gore,Derrick,Gore,GB,6.0,rotoguru_gid
 RB,SF,4600,2908,Kyle Juszczyk,Kyle,Juszczyk,ARI,4.242857142857143,rotoguru_gid
 RB,ATL,5600,5320,Mike Davis,Mike,Davis,NO,8.328571428571427,rotoguru_gid
 RB,CIN,4600,5921,Chris Evans,Chris,Evans,CLE,3.1714285714285713,rotoguru_gid

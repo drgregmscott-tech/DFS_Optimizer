@@ -73,7 +73,6 @@ Christine Michael,RB,SEA,6700,2898,RB,SEA@BUF,15.828571428571427,rotoguru_gid,Ch
 Matt Asiata,RB,MIN,4300,2873,RB,MIN@DET,8.62857142857143,rotoguru_gid,Matt Asiata,dk,4300,matt asiata,MIN,RB,00-0028198,auto_exact,high
 Jordan Todman,RB,IND,3000,2840,RB,IND@GB,0.0,rotoguru_gid,Jordan Todman,dk,3000,jordan todman,IND,RB,00-0028121,auto_exact,high
 Alfred Morris,RB,DAL,4600,2871,RB,DAL@CLE,3.8285714285714287,rotoguru_gid,Alfred Morris,dk,4600,alfred morris,DAL,RB,00-0029141,auto_exact,high
-Mike James,RB,TB,0,2895,RB,TB@ATL,,rotoguru_gid,Mike James,dk,0,mike james,TB,RB,00-0030391,auto_exact,high
 DeAndre Washington,RB,LV,3300,5449,RB,LV@DEN,5.6125,rotoguru_gid,DeAndre Washington,dk,3300,deandre washington,LV,RB,00-0032940,auto_exact,high
 Robert Turbin,RB,IND,3400,2867,RB,IND@GB,5.185714285714286,rotoguru_gid,Robert Turbin,dk,3400,robert turbin,IND,RB,00-0029273,auto_exact,high
 Reggie Bush,RB,BUF,3000,2495,RB,BUF@SEA,2.583333333333333,rotoguru_gid,Reggie Bush,dk,3000,reggie bush,BUF,RB,00-0024217,auto_exact,high
@@ -219,7 +218,6 @@ Charles Johnson,WR,MIN,3000,3103,WR,MIN@DET,2.1714285714285717,rotoguru_gid,Char
 Jordan Taylor,WR,DEN,3000,5501,WR,DEN@LV,1.3571428571428572,rotoguru_gid,Jordan Taylor,dk,3000,jordan taylor,DEN,WR,00-0031697,auto_exact,high
 Marvin Jones,WR,DET,5600,5168,WR,DET@MIN,16.4875,rotoguru_gid,Marvin Jones,dk,5600,marvin jones,DET,WR,00-0029293,auto_exact,high
 Travis Benjamin,WR,SDG,5600,5173,WR,SDG@TEN,13.725,rotoguru_gid,Travis Benjamin,dk,5600,travis benjamin,SDG,WR,00-0029269,auto_fallback_team_mismatch,medium
-Jeremy Butler,WR,SDG,0,5276,WR,SDG@TEN,,rotoguru_gid,Jeremy Butler,dk,0,jeremy butler,SDG,WR,00-0030691,auto_fallback_team_mismatch,medium
 Bennie Fowler,WR,DEN,3000,5353,WR,DEN@LV,3.083333333333333,rotoguru_gid,Bennie Fowler,dk,3000,bennie fowler,DEN,WR,00-0030670,auto_exact,high
 Pharoh Cooper,WR,LA,3000,5462,WR,LA@CAR,0.0,rotoguru_gid,Pharoh Cooper,dk,3000,pharoh cooper,LA,WR,00-0033111,auto_exact,high
 Chris Moore,WR,BAL,3000,5479,WR,BAL@PIT,1.6833333333333331,rotoguru_gid,Chris Moore,dk,3000,chris moore,BAL,WR,00-0032398,auto_exact,high

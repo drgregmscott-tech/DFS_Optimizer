@@ -92,7 +92,6 @@ Chris Polk,RB,PHI,3000,2879,RB,PHI@WAS,0.0,rotoguru_gid,Chris Polk,dk,3000,chris
 Marcel Reece,RB,LV,3000,2665,RB,LV@NE,2.1,rotoguru_gid,Marcel Reece,dk,3000,marcel reece,LV,RB,00-0026393,auto_exact,high
 Montee Ball,RB,DEN,5900,2886,RB,DEN@SEA,14.1,rotoguru_gid,Montee Ball,dk,5900,montee ball,DEN,RB,00-0030522,auto_exact,high
 Mike Tolbert,RB,CAR,3300,2647,RB,CAR@PIT,4.75,rotoguru_gid,Mike Tolbert,dk,3300,mike tolbert,CAR,RB,00-0026069,auto_exact,high
-Daniel Thomas,RB,MIA,0,2794,RB,MIA@KC,,rotoguru_gid,Daniel Thomas,dk,0,daniel thomas,MIA,RB,00-0028000,auto_exact,high
 Jonathan Grimes,RB,HOU,3000,2881,RB,HOU@NYG,0.55,rotoguru_gid,Jonathan Grimes,dk,3000,jonathan grimes,HOU,RB,00-0029510,auto_exact,high
 Eddie Lacy,RB,GB,5900,2896,RB,GB@DET,7.8,rotoguru_gid,Eddie Lacy,dk,5900,eddie lacy,GB,RB,00-0030485,auto_exact,high
 Benny Cunningham,RB,LA,3100,2911,RB,LA@DAL,6.0,rotoguru_gid,Benny Cunningham,dk,3100,benny cunningham,LA,RB,00-0029795,auto_exact,high
@@ -117,7 +116,6 @@ Anthony Sherman,RB,KC,3000,2822,RB,KC@MIA,0.2,rotoguru_gid,Anthony Sherman,dk,30
 Cedric Peerman,RB,CIN,3000,2692,RB,CIN@TEN,0.0,rotoguru_gid,Cedric Peerman,dk,3000,cedric peerman,CIN,RB,00-0026932,auto_exact,high
 Robert Turbin,RB,SEA,3300,2867,RB,SEA@DEN,7.449999999999999,rotoguru_gid,Robert Turbin,dk,3300,robert turbin,SEA,RB,00-0029273,auto_exact,high
 Jamize Olawale,RB,LV,3000,2913,RB,LV@NE,0.0,rotoguru_gid,Jamize Olawale,dk,3000,jamize olawale,LV,RB,00-0029492,auto_exact,high
-Branden Oliver,RB,SDG,0,2982,RB,SDG@BUF,,rotoguru_gid,Branden Oliver,dk,0,branden oliver,SDG,RB,00-0031277,auto_fallback_team_mismatch,medium
 Jordan Todman,RB,JAX,3000,2840,RB,JAX@IND,1.05,rotoguru_gid,Jordan Todman,dk,3000,jordan todman,JAX,RB,00-0028121,auto_exact,high
 Frank Gore,RB,SF,4800,2467,RB,SF@ARI,11.05,rotoguru_gid,Frank Gore,dk,4800,frank gore,SF,RB,00-0023500,auto_exact,high
 Travaris Cadet,RB,NO,3000,2869,RB,NO@MIN,0.75,rotoguru_gid,Travaris Cadet,dk,3000,travaris cadet,NO,RB,00-0029205,auto_exact,high
@@ -132,7 +130,6 @@ Stepfan Taylor,RB,ARI,3000,2903,RB,ARI@SF,5.8,rotoguru_gid,Stepfan Taylor,dk,300
 DuJuan Harris,RB,GB,3000,2802,RB,GB@DET,1.4,rotoguru_gid,DuJuan Harris,dk,3000,dujuan harris,GB,RB,00-0028409,auto_exact,high
 Austin Johnson,RB,NO,3000,2979,RB,NO@MIN,1.0,rotoguru_gid,Austin Johnson,dk,3000,austin johnson,NO,RB,00-0029729,auto_exact,high
 Danny Woodhead,RB,SDG,4500,2689,RB,SDG@BUF,6.05,rotoguru_gid,Danny Woodhead,dk,4500,danny woodhead,SDG,RB,00-0026019,auto_fallback_team_mismatch,medium
-Dan Herron,RB,IND,0,2855,RB,IND@JAX,,rotoguru_gid,Dan Herron,dk,0,dan herron,IND,RB,00-0029588,auto_exact,high
 Latavius Murray,RB,LV,3000,2899,RB,LV@NE,0.3,rotoguru_gid,Latavius Murray,dk,3000,latavius murray,LV,RB,00-0030513,auto_exact,high
 Lance Dunbar,RB,DAL,3000,2880,RB,DAL@LA,3.9,rotoguru_gid,Lance Dunbar,dk,3000,lance dunbar,DAL,RB,00-0029004,auto_exact,high
 Leon Washington,RB,TEN,3000,2507,RB,TEN@CIN,2.7,rotoguru_gid,Leon Washington,dk,3000,leon washington,TEN,RB,00-0024332,auto_exact,high
@@ -361,13 +358,11 @@ Virgil Green,TE,DEN,3000,4542,TE,DEN@SEA,0.9,rotoguru_gid,Virgil Green,dk,3000,v
 Antonio Gates,TE,SDG,6100,4270,TE,SDG@BUF,24.35,rotoguru_gid,Antonio Gates,dk,6100,antonio gates,SDG,TE,00-0021547,auto_fallback_team_mismatch,medium
 Owen Daniels,TE,BAL,3600,4335,TE,BAL@CLE,13.6,rotoguru_gid,Owen Daniels,dk,3600,owen daniels,BAL,TE,00-0024313,auto_exact,high
 Dante Rosario,TE,CHI,3000,4370,TE,CHI@NYJ,2.05,rotoguru_gid,Dante Rosario,dk,3000,dante rosario,CHI,TE,00-0025542,auto_exact,high
-Marcel Jensen,TE,JAX,0,4643,TE,JAX@IND,,rotoguru_gid,Marcel Jensen,dk,0,marcel jensen,JAX,TE,00-0030822,auto_exact,high
 Gavin Escobar,TE,DAL,3000,4570,TE,DAL@LA,0.75,rotoguru_gid,Gavin Escobar,dk,3000,gavin escobar,DAL,TE,00-0030544,auto_exact,high
 Brian Leonhardt,TE,LV,3000,4639,TE,LV@NE,1.1,rotoguru_gid,Brian Leonhardt,dk,3000,brian leonhardt,LV,TE,00-0029755,auto_exact,high
 Ryan Hewitt,TE,CIN,3000,2978,TE,CIN@TEN,0.0,rotoguru_gid,Ryan Hewitt,dk,3000,ryan hewitt,CIN,TE,00-0030780,auto_exact,high
 Jermaine Gresham,TE,CIN,3000,4493,TE,CIN@TEN,4.55,rotoguru_gid,Jermaine Gresham,dk,3000,jermaine gresham,CIN,TE,00-0027873,auto_exact,high
 Joseph Fauria,TE,DET,3000,4584,TE,DET@GB,4.3,rotoguru_gid,Joseph Fauria,dk,3000,joseph fauria,DET,TE,00-0029883,auto_exact,high
-Kevin Brock,TE,CIN,0,4474,TE,CIN@TEN,,rotoguru_gid,Kevin Brock,dk,0,kevin brock,CIN,TE,00-0026699,auto_exact,high
 Cooper Helfet,TE,SEA,3000,4614,TE,SEA@DEN,,rotoguru_gid,Cooper Helfet,dk,3000,cooper helfet,SEA,TE,00-0029534,auto_exact,high
 Clark Harris,TE,CIN,3000,4391,TE,CIN@TEN,0.0,rotoguru_gid,Clark Harris,dk,3000,clark harris,CIN,TE,00-0025630,manual_override,high
 Trey Burton,TE,PHI,3000,4618,TE,PHI@WAS,0.0,rotoguru_gid,Trey Burton,dk,3000,trey burton,PHI,TE,00-0030710,auto_exact,high

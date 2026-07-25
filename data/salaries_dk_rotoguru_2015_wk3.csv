@@ -90,7 +90,6 @@ Jonathan Stewart,RB,CAR,4900,2612,RB,CAR@NO,9.5,rotoguru_gid,Jonathan Stewart,dk
 Dexter McCluster,RB,TEN,3000,3953,RB,TEN@IND,8.6,rotoguru_gid,Dexter McCluster,dk,3000,dexter mccluster,TEN,RB,00-0027651,auto_fallback_name_only_position_mismatch,low
 Melvin Gordon,RB,SDG,5000,2991,RB,SDG@MIN,9.75,rotoguru_gid,Melvin Gordon,dk,5000,melvin gordon,SDG,RB,00-0032144,auto_fallback_team_mismatch,medium
 Benny Cunningham,RB,LA,4000,2911,RB,LA@PIT,11.45,rotoguru_gid,Benny Cunningham,dk,4000,benny cunningham,LA,RB,00-0029795,auto_exact,high
-Jonas Gray,RB,MIA,0,2953,RB,MIA@BUF,,rotoguru_gid,Jonas Gray,dk,0,jonas gray,MIA,RB,00-0029104,auto_fallback_team_mismatch,medium
 C.J. Spiller,RB,NO,4800,2775,RB,NO@CAR,3.6,rotoguru_gid,C.J. Spiller,dk,4800,cj spiller,NO,RB,00-0027861,auto_exact,high
 Doug Martin,RB,TB,5100,2858,RB,TB@HOU,8.600000000000001,rotoguru_gid,Doug Martin,dk,5100,doug martin,TB,RB,00-0029613,auto_exact,high
 Fred Jackson,RB,SEA,3000,2520,RB,SEA@CHI,6.25,rotoguru_gid,Fred Jackson,dk,3000,fred jackson,SEA,RB,00-0024204,auto_exact,high
@@ -238,7 +237,6 @@ Harry Douglas,WR,TEN,3000,3731,WR,TEN@IND,5.8500000000000005,rotoguru_gid,Harry 
 Sammy Watkins,WR,BUF,6100,5252,WR,BUF@MIA,9.0,rotoguru_gid,Sammy Watkins,dk,6100,sammy watkins,BUF,WR,00-0031325,auto_exact,high
 Darrius Heyward-Bey,WR,PIT,3500,3848,WR,PIT@LA,13.75,rotoguru_gid,Darrius Heyward-Bey,dk,3500,darrius heyward bey,PIT,WR,00-0026983,auto_exact,high
 Marlon Brown,WR,BAL,3000,5226,WR,BAL@CIN,3.85,rotoguru_gid,Marlon Brown,dk,3000,marlon brown,BAL,WR,00-0030400,auto_exact,high
-Bryan Walters,WR,JAX,0,5070,WR,JAX@NE,3.7,rotoguru_gid,Bryan Walters,dk,0,bryan walters,JAX,WR,00-0027595,auto_exact,high
 Eddie Royal,WR,CHI,3700,3748,WR,CHI@SEA,6.45,rotoguru_gid,Eddie Royal,dk,3700,eddie royal,CHI,WR,00-0026182,auto_exact,high
 Michael Campanaro,WR,BAL,3000,5277,WR,BAL@CIN,0.9,rotoguru_gid,Michael Campanaro,dk,3000,michael campanaro,BAL,WR,00-0031025,auto_exact,high
 Justin Hunter,WR,TEN,3400,5207,WR,TEN@IND,3.75,rotoguru_gid,Justin Hunter,dk,3400,justin hunter,TEN,WR,00-0030521,auto_exact,high
@@ -257,7 +255,6 @@ De'Anthony Thomas,WR,KC,3000,2958,WR,KC@GB,2.55,rotoguru_gid,De'Anthony Thomas,d
 Chris Givens,WR,BAL,3000,5204,WR,BAL@CIN,0.85,rotoguru_gid,Chris Givens,dk,3000,chris givens,BAL,WR,00-0029614,auto_exact,high
 Devin Funchess,WR,CAR,3100,5381,WR,CAR@NO,2.2,rotoguru_gid,Devin Funchess,dk,3100,devin funchess,CAR,WR,00-0032055,auto_exact,high
 Marqise Lee,WR,JAX,3400,5256,WR,JAX@NE,5.9,rotoguru_gid,Marqise Lee,dk,3400,marqise lee,JAX,WR,00-0031431,auto_exact,high
-Brenton Bersin,WR,CAR,0,5292,WR,CAR@NO,,rotoguru_gid,Brenton Bersin,dk,0,brenton bersin,CAR,WR,00-0029394,auto_exact,high
 Michael Floyd,WR,ARI,4000,5148,WR,ARI@SF,1.4,rotoguru_gid,Michael Floyd,dk,4000,michael floyd,ARI,WR,00-0029638,auto_exact,high
 Greg Jennings,WR,MIA,3300,3587,WR,MIA@BUF,2.95,rotoguru_gid,Greg Jennings,dk,3300,greg jennings,MIA,WR,00-0024267,auto_exact,high
 Brandon Coleman,WR,NO,3700,5326,WR,NO@CAR,10.2,rotoguru_gid,Brandon Coleman,dk,3700,brandon coleman,NO,WR,00-0030801,auto_exact,high

@@ -5,7 +5,6 @@ Baker Mayfield,QB,CLE,5300,1528,QB,CLE@TEN,13.810909090909092,rotoguru_gid
 Ryan Tannehill,QB,TEN,6200,1410,QB,TEN@CLE,20.85818181818182,rotoguru_gid
 Matthew Stafford,QB,DET,5700,1340,QB,DET@CHI,17.867272727272727,rotoguru_gid
 Jared Goff,QB,LA,5800,1490,QB,LA@ARI,18.66363636363636,rotoguru_gid
-Lamar Jackson,QB,BAL,0,1527,QB,BAL@DAL,20.942,rotoguru_gid
 Kirk Cousins,QB,MIN,6400,1415,QB,MIN@JAX,19.401818181818182,rotoguru_gid
 Nick Mullens,QB,SF,5400,1534,QB,SF@BUF,11.968571428571428,rotoguru_gid
 Taysom Hill,QB,NO,6300,1530,QB,NO@ATL,8.125454545454545,rotoguru_gid
@@ -16,7 +15,6 @@ Sam Darnold,QB,NYJ,5000,1524,QB,NYJ@LV,10.625714285714285,rotoguru_gid
 Patrick Mahomes II,QB,KC,8200,1523,QB,KC@DEN,28.616363636363634,rotoguru_gid
 Ben Roethlisberger,QB,PIT,6500,1232,QB,PIT@WAS,19.845454545454547,rotoguru_gid
 Philip Rivers,QB,IND,5900,1231,QB,IND@HOU,16.62,rotoguru_gid
-Andy Dalton,QB,DAL,0,1403,QB,DAL@BAL,8.950000000000001,rotoguru_gid
 Kyler Murray,QB,ARI,7600,1537,QB,ARI@LA,28.323636363636364,rotoguru_gid
 Russell Wilson,QB,SEA,7700,1412,QB,SEA@NYG,27.321818181818184,rotoguru_gid
 Tua Tagovailoa,QB,MIA,5900,1551,QB,MIA@CIN,8.413333333333334,rotoguru_gid
@@ -51,9 +49,6 @@ Cam Akers,RB,LA,4500,5819,RB,LA@ARI,5.133333333333334,rotoguru_gid
 Darrell Henderson,RB,LA,4300,5716,RB,LA@ARI,10.00909090909091,rotoguru_gid
 Myles Gaskin,RB,MIA,5900,5789,RB,MIA@CIN,14.214285714285714,rotoguru_gid
 Kenyan Drake,RB,ARI,5700,5446,RB,ARI@LA,14.23,rotoguru_gid
-Ezekiel Elliott,RB,DAL,0,5444,RB,DAL@BAL,16.11818181818182,rotoguru_gid
-Gus Edwards,RB,BAL,0,5681,RB,BAL@DAL,6.254545454545454,rotoguru_gid
-J.K. Dobbins,RB,BAL,0,5821,RB,BAL@DAL,8.83,rotoguru_gid
 Nyheim Hines,RB,IND,5300,5623,RB,IND@HOU,12.636363636363637,rotoguru_gid
 Devin Singletary,RB,BUF,4400,5717,RB,BUF@SF,9.263636363636364,rotoguru_gid
 Austin Ekeler,RB,LAC,7100,5575,RB,LAC@NE,17.22,rotoguru_gid
@@ -82,8 +77,6 @@ Jaylen Samuels,RB,PIT,4000,5688,RB,PIT@WAS,0.36666666666666664,rotoguru_gid
 Patrick Laird,RB,MIA,4000,5788,RB,MIA@CIN,0.9363636363636364,rotoguru_gid
 Carlos Hyde,RB,SEA,5300,2933,RB,SEA@NYG,9.383333333333335,rotoguru_gid
 Ameer Abdullah,RB,MIN,4000,2995,RB,MIN@JAX,1.0,rotoguru_gid
-Mark Ingram,RB,BAL,0,2793,RB,BAL@DAL,5.6375,rotoguru_gid
-Tony Pollard,RB,DAL,0,5718,RB,DAL@BAL,5.781818181818182,rotoguru_gid
 Jordan Wilkins,RB,IND,4200,5625,RB,IND@HOU,5.072727272727272,rotoguru_gid
 Latavius Murray,RB,NO,5900,2899,RB,NO@ATL,10.027272727272727,rotoguru_gid
 Malcolm Brown,RB,LA,4000,5441,RB,LA@ARI,8.818181818181818,rotoguru_gid
@@ -91,19 +84,16 @@ James White,RB,NE,5000,2954,RB,NE@LAC,9.044444444444444,rotoguru_gid
 Miles Sanders,RB,PHI,6700,5714,RB,PHI@GB,14.2875,rotoguru_gid
 DeeJay Dallas,RB,SEA,4000,5873,RB,SEA@NYG,6.6375,rotoguru_gid
 Kerryon Johnson,RB,DET,4400,5621,RB,DET@CHI,5.245454545454546,rotoguru_gid
-Patrick Ricard,RB,BAL,0,5743,RB,BAL@DAL,1.19,rotoguru_gid
 Todd Gurley,RB,ATL,5300,2992,RB,ATL@NO,14.219999999999999,rotoguru_gid
 Benny Snell,RB,PIT,5400,5740,RB,PIT@WAS,4.890909090909091,rotoguru_gid
 Jalen Richard,RB,LV,4000,5490,RB,LV@NYJ,3.922222222222222,rotoguru_gid
 Phillip Lindsay,RB,DEN,4200,5630,RB,DEN@KC,6.725,rotoguru_gid
 Zack Moss,RB,BUF,4500,5824,RB,BUF@SF,8.875,rotoguru_gid
 Joshua Kelley,RB,LAC,4000,5829,RB,LAC@NE,7.281818181818182,rotoguru_gid
-Jordan Howard,RB,PHI,0,5447,RB,PHI@GB,5.6,rotoguru_gid
 Theo Riddick,RB,LV,4000,2907,RB,LV@NYJ,1.3,rotoguru_gid
 Brian Hill,RB,ATL,4800,5608,RB,ATL@NO,5.790909090909091,rotoguru_gid
 D'Ernest Johnson,RB,CLE,4000,5746,RB,CLE@TEN,1.5545454545454547,rotoguru_gid
 Anthony McFarland,RB,PIT,4200,5864,RB,PIT@WAS,2.1375,rotoguru_gid
-Justice Hill,RB,BAL,0,5719,RB,BAL@DAL,1.042857142857143,rotoguru_gid
 Antonio Gibson,RB,WAS,6800,5827,RB,WAS@PIT,17.254545454545454,rotoguru_gid
 Alec Ingold,RB,LV,4000,5764,RB,LV@NYJ,2.4545454545454546,rotoguru_gid
 Jakob Johnson,RB,NE,4000,5778,RB,NE@LAC,1.4909090909090907,rotoguru_gid
@@ -150,7 +140,6 @@ T.Y. Hilton,WR,IND,4300,5151,WR,IND@HOU,7.980000000000001,rotoguru_gid
 Keke Coutee,WR,HOU,3500,5670,WR,HOU@IND,5.6000000000000005,rotoguru_gid
 Michael Thomas,WR,NO,7000,5459,WR,NO@ATL,10.2,rotoguru_gid
 Jamison Crowder,WR,NYJ,5100,5410,WR,NYJ@LV,15.37142857142857,rotoguru_gid
-Michael Gallup,WR,DAL,0,5634,WR,DAL@BAL,9.072727272727272,rotoguru_gid
 Rashard Higgins,WR,CLE,4000,5475,WR,CLE@TEN,7.166666666666667,rotoguru_gid
 Adam Thielen,WR,MIN,7300,5333,WR,MIN@JAX,19.21,rotoguru_gid
 Diontae Johnson,WR,PIT,6500,5754,WR,PIT@WAS,14.559999999999999,rotoguru_gid
@@ -161,18 +150,15 @@ DeAndre Hopkins,WR,ARI,7800,5206,WR,ARI@LA,19.245454545454546,rotoguru_gid
 Stefon Diggs,WR,BUF,7500,5424,WR,BUF@SF,19.136363636363637,rotoguru_gid
 Calvin Ridley,WR,ATL,7200,5631,WR,ATL@NO,19.11,rotoguru_gid
 Robert Woods,WR,LA,5900,5217,WR,LA@ARI,17.027272727272727,rotoguru_gid
-Chad Hansen,WR,HOU,0,5601,WR,HOU@IND,,rotoguru_gid
 Donovan Peoples-Jones,WR,CLE,3000,5874,WR,CLE@TEN,2.275,rotoguru_gid
 Gunner Olszewski,WR,NE,3000,5752,WR,NE@LAC,0.6625,rotoguru_gid
 Henry Ruggs III,WR,LV,4500,5833,WR,LV@NYJ,6.822222222222223,rotoguru_gid
-Amari Cooper,WR,DAL,0,5376,WR,DAL@BAL,16.900000000000002,rotoguru_gid
 James Washington,WR,PIT,3300,5635,WR,PIT@WAS,6.118181818181818,rotoguru_gid
 Laviska Shenault Jr.,WR,JAX,3600,5847,WR,JAX@MIN,8.933333333333334,rotoguru_gid
 Gabriel Davis,WR,BUF,4300,5858,WR,BUF@SF,7.4,rotoguru_gid
 Julio Jones,WR,ATL,6600,5089,WR,ATL@NO,17.4625,rotoguru_gid
 Cooper Kupp,WR,LA,6100,5552,WR,LA@ARI,15.054545454545455,rotoguru_gid
 Russell Gage,WR,ATL,4500,5680,WR,ATL@NO,9.172727272727274,rotoguru_gid
-Marquise Brown,WR,BAL,0,5730,WR,BAL@DAL,9.881818181818183,rotoguru_gid
 Tyreek Hill,WR,KC,9100,5485,WR,KC@DEN,24.463636363636365,rotoguru_gid
 Greg Ward,WR,PHI,3400,5793,WR,PHI@GB,8.181818181818182,rotoguru_gid
 Quintez Cephus,WR,DET,3000,5852,WR,DET@CHI,3.675,rotoguru_gid
@@ -190,8 +176,6 @@ Jalen Reagor,WR,PHI,4500,5834,WR,PHI@GB,8.299999999999999,rotoguru_gid
 Brandin Cooks,WR,HOU,5600,5255,WR,HOU@IND,13.172727272727274,rotoguru_gid
 Isaiah McKenzie,WR,BUF,3000,5574,WR,BUF@SF,4.261818181818182,rotoguru_gid
 Anthony Miller,WR,CHI,3100,5632,WR,CHI@DET,7.872727272727272,rotoguru_gid
-Miles Boykin,WR,BAL,0,5748,WR,BAL@DAL,3.209090909090909,rotoguru_gid
-CeeDee Lamb,WR,DAL,0,5831,WR,DAL@BAL,13.954545454545455,rotoguru_gid
 Tee Higgins,WR,CIN,4600,5839,WR,CIN@MIA,13.918181818181818,rotoguru_gid
 Cameron Batson,WR,TEN,3000,5679,WR,TEN@CLE,2.4857142857142853,rotoguru_gid
 Keenan Allen,WR,LAC,8100,5198,WR,LAC@NE,20.59090909090909,rotoguru_gid
@@ -210,7 +194,6 @@ Nelson Agholor,WR,LV,5200,5378,WR,LV@NYJ,10.700000000000001,rotoguru_gid
 Sammy Watkins,WR,KC,4800,5252,WR,KC@DEN,10.383333333333333,rotoguru_gid
 Kendrick Bourne,WR,SF,3900,5598,WR,SF@BUF,7.92,rotoguru_gid
 DeVante Parker,WR,MIA,6400,5380,WR,MIA@CIN,13.29090909090909,rotoguru_gid
-Noah Brown,WR,DAL,0,5585,WR,DAL@BAL,1.8272727272727274,rotoguru_gid
 Golden Tate,WR,NYG,3800,3995,WR,NYG@SEA,7.924444444444443,rotoguru_gid
 KeeSean Johnson,WR,ARI,3000,5731,WR,ARI@LA,2.5333333333333337,rotoguru_gid
 Van Jefferson,WR,LA,3000,5844,WR,LA@ARI,2.8363636363636364,rotoguru_gid
@@ -248,11 +231,9 @@ Equanimeous St. Brown,WR,GB,3500,5672,WR,GB@PHI,1.7285714285714284,rotoguru_gid
 K.J. Hill,WR,LAC,3000,5868,WR,LAC@NE,0.4125,rotoguru_gid
 Keelan Cole,WR,JAX,3800,5570,WR,JAX@MIN,11.081818181818182,rotoguru_gid
 David Moore,WR,SEA,3400,5655,WR,SEA@NYG,8.618181818181817,rotoguru_gid
-Tommylee Lewis,WR,NO,0,5496,WR,NO@ATL,1.5,rotoguru_gid
 Isaiah Wright,WR,WAS,3000,5867,WR,WAS@PIT,5.05,rotoguru_gid
 Jerry Jeudy,WR,DEN,4600,5832,WR,DEN@KC,10.081818181818182,rotoguru_gid
 Christian Kirk,WR,ARI,5200,5636,WR,ARI@LA,12.290000000000001,rotoguru_gid
-Devin Duvernay,WR,BAL,0,5841,WR,BAL@DAL,4.363636363636363,rotoguru_gid
 Tyron Johnson,WR,LAC,3000,5878,WR,LAC@NE,4.957142857142857,rotoguru_gid
 C.J. Board,WR,NYG,3000,5784,WR,NYG@SEA,2.0,rotoguru_gid
 Donte Moncrief,WR,NE,3000,5344,WR,NE@LAC,1.25,rotoguru_gid
@@ -305,7 +286,6 @@ Tyler Eifert,TE,JAX,3000,4568,TE,JAX@MIN,5.44,rotoguru_gid
 Gerald Everett,TE,LA,3200,4705,TE,LA@ARI,6.2727272727272725,rotoguru_gid
 Anthony Firkser,TE,TEN,2500,4738,TE,TEN@CLE,6.0181818181818185,rotoguru_gid
 Noah Fant,TE,DEN,4000,4748,TE,DEN@KC,9.75,rotoguru_gid
-Dalton Schultz,TE,DAL,0,4742,TE,DAL@BAL,9.472727272727273,rotoguru_gid
 James O'Shaughnessy,TE,JAX,2500,4664,TE,JAX@MIN,3.53,rotoguru_gid
 Jesse James,TE,DET,2500,4653,TE,DET@CHI,2.518181818181818,rotoguru_gid
 Evan Engram,TE,NYG,4900,4701,TE,NYG@SEA,9.790909090909091,rotoguru_gid
@@ -325,7 +305,6 @@ Jordan Akins,TE,HOU,2900,4729,TE,HOU@IND,6.9875,rotoguru_gid
 Nick Vannett,TE,DEN,2500,4688,TE,DEN@KC,1.48,rotoguru_gid
 Nick Keizer,TE,KC,2500,4786,TE,KC@DEN,1.1,rotoguru_gid
 Jack Doyle,TE,IND,2500,4594,TE,IND@HOU,4.266666666666667,rotoguru_gid
-Luke Willson,TE,BAL,0,4578,TE,BAL@DAL,0.0,rotoguru_gid
 Trey Burton,TE,IND,3500,4618,TE,IND@HOU,9.325,rotoguru_gid
 Tyler Conklin,TE,MIN,2500,4732,TE,MIN@JAX,0.41818181818181815,rotoguru_gid
 Hayden Hurst,TE,ATL,4000,4720,TE,ATL@NO,9.536363636363637,rotoguru_gid
@@ -334,7 +313,6 @@ Stephen Anderson,TE,LAC,2500,4679,TE,LAC@NE,0.0,rotoguru_gid
 Hunter Henry,TE,LAC,4800,4675,TE,LAC@NE,10.563636363636364,rotoguru_gid
 David Njoku,TE,CLE,2500,4702,TE,CLE@TEN,3.775,rotoguru_gid
 Kaden Smith,TE,NYG,2500,4770,TE,NYG@SEA,2.27,rotoguru_gid
-Blake Bell,TE,DAL,0,4666,TE,DAL@BAL,1.3636363636363635,rotoguru_gid
 Jeremy Sprinkle,TE,WAS,2500,4714,TE,WAS@PIT,0.14545454545454548,rotoguru_gid
 Temarrick Hemingway,TE,WAS,2500,4788,TE,WAS@PIT,0.3333333333333333,rotoguru_gid
 Richard Rodgers,TE,PHI,3300,4629,TE,PHI@GB,6.409090909090909,rotoguru_gid
@@ -389,7 +367,6 @@ Cleveland,DST,CLE,2500,7008,DST,CLE@TEN,6.636363636363637,rotoguru_gid
 Kansas City,DST,KC,3700,7015,DST,KC@DEN,7.363636363636363,rotoguru_gid
 Buffalo,DST,BUF,2700,7004,DST,BUF@SF,5.636363636363637,rotoguru_gid
 Atlanta,DST,ATL,2400,7002,DST,ATL@NO,5.2727272727272725,rotoguru_gid
-Baltimore,DST,BAL,0,7003,DST,BAL@DAL,9.636363636363637,rotoguru_gid
 Cincinnati,DST,CIN,2300,7007,DST,CIN@MIA,2.909090909090909,rotoguru_gid
 Houston,DST,HOU,2800,7032,DST,HOU@IND,4.181818181818182,rotoguru_gid
 Chicago,DST,CHI,3100,7006,DST,CHI@DET,5.636363636363637,rotoguru_gid
@@ -398,6 +375,5 @@ Pittsburgh,DST,PIT,4300,7024,DST,PIT@WAS,11.272727272727273,rotoguru_gid
 San Francisco,DST,SF,2500,7027,DST,SF@BUF,6.2727272727272725,rotoguru_gid
 Arizona,DST,ARI,2900,7001,DST,ARI@LA,5.909090909090909,rotoguru_gid
 Denver,DST,DEN,1900,7010,DST,DEN@KC,5.0,rotoguru_gid
-Dallas,DST,DAL,0,7009,DST,DAL@BAL,2.727272727272727,rotoguru_gid
 Tennessee,DST,TEN,2900,7030,DST,TEN@CLE,4.818181818181818,rotoguru_gid
 LA Chargers,DST,LAC,2600,7026,DST,LAC@NE,5.0,rotoguru_gid

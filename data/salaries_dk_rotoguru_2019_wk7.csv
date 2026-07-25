@@ -96,7 +96,6 @@ Kerryon Johnson,RB,DET,5100,5621,RB,DET@MIN,14.02,rotoguru_gid,Kerryon Johnson,d
 Jeff Wilson Jr.,RB,SF,4200,5703,RB,SF@WAS,9.733333333333334,rotoguru_gid,Jeff Wilson Jr.,dk,4200,jeff wilson,SF,RB,00-0034115,auto_exact,high
 Alexander Mattison,RB,MIN,4600,5720,RB,MIN@DET,5.333333333333333,rotoguru_gid,Alexander Mattison,dk,4600,alexander mattison,MIN,RB,00-0034972,auto_exact,high
 Jalen Richard,RB,LV,3800,5490,RB,LV@GB,3.34,rotoguru_gid,Jalen Richard,dk,3800,jalen richard,LV,RB,00-0033025,auto_exact,high
-Zach Zenner,RB,NO,0,5397,RB,NO@CHI,,rotoguru_gid,Zach Zenner,dk,0,zach zenner,NO,RB,00-0031665,auto_fallback_team_mismatch,medium
 C.J. Prosise,RB,SEA,3700,5448,RB,SEA@BAL,4.6,rotoguru_gid,C.J. Prosise,dk,3700,cj prosise,SEA,RB,00-0032393,auto_exact,high
 Dwayne Washington,RB,NO,3000,5483,RB,NO@CHI,0.0,rotoguru_gid,Dwayne Washington,dk,3000,dwayne washington,NO,RB,00-0032450,auto_exact,high
 Damien Harris,RB,NE,3000,5715,RB,NE@NYJ,0.0,rotoguru_gid,Damien Harris,dk,3000,damien harris,NE,RB,00-0035657,auto_exact,high
@@ -189,7 +188,6 @@ Adam Humphries,WR,TEN,3400,5412,WR,TEN@LAC,6.666666666666667,rotoguru_gid,Adam H
 Tavon Austin,WR,DAL,3700,5199,WR,DAL@PHI,4.675000000000001,rotoguru_gid,Tavon Austin,dk,3700,tavon austin,DAL,WR,00-0030525,auto_exact,high
 Javon Wims,WR,CHI,3500,5671,WR,CHI@NO,2.28,rotoguru_gid,Javon Wims,dk,3500,javon wims,CHI,WR,00-0034426,auto_exact,high
 Miles Boykin,WR,BAL,3500,5748,WR,BAL@SEA,4.433333333333333,rotoguru_gid,Miles Boykin,dk,3500,miles boykin,BAL,WR,00-0035703,auto_exact,high
-Bennie Fowler,WR,NYG,0,5353,WR,NYG@ARI,5.975,rotoguru_gid,Bennie Fowler,dk,0,bennie fowler,NYG,WR,00-0030670,auto_exact,high
 Geronimo Allison,WR,GB,4900,5511,WR,GB@LV,6.516666666666667,rotoguru_gid,Geronimo Allison,dk,4900,geronimo allison,GB,WR,00-0032626,auto_exact,high
 Cody Latimer,WR,NYG,3500,5268,WR,NYG@ARI,3.28,rotoguru_gid,Cody Latimer,dk,3500,cody latimer,NYG,WR,00-0031344,auto_exact,high
 Allen Lazard,WR,GB,3000,5711,WR,GB@LV,2.75,rotoguru_gid,Allen Lazard,dk,3000,allen lazard,GB,WR,00-0034521,auto_exact,high
@@ -318,7 +316,6 @@ Maxx Williams,TE,ARI,2700,4650,TE,ARI@NYG,3.8,rotoguru_gid,Maxx Williams,dk,2700
 Drew Sample,TE,CIN,2500,4756,TE,CIN@JAX,0.9,rotoguru_gid,Drew Sample,dk,2500,drew sample,CIN,TE,00-0035631,auto_exact,high
 Levine Toilolo,TE,SF,2500,4577,TE,SF@WAS,0.36,rotoguru_gid,Levine Toilolo,dk,2500,levine toilolo,SF,TE,00-0030443,auto_exact,high
 Ross Dwelley,TE,SF,2500,4745,TE,SF@WAS,0.3399999999999999,rotoguru_gid,Ross Dwelley,dk,2500,ross dwelley,SF,TE,00-0034073,auto_exact,high
-Eric Tomlinson,TE,NE,0,4704,TE,NE@NYJ,0.0,rotoguru_gid,Eric Tomlinson,dk,0,eric tomlinson,NE,TE,00-0031690,auto_exact,high
 Ryan Griffin,TE,NYJ,2700,4592,TE,NYJ@NE,3.7,rotoguru_gid,Ryan Griffin,dk,2700,ryan griffin,NYJ,TE,00-0030108,auto_exact,high
 Clark Harris,TE,CIN,2500,4391,TE,CIN@JAX,0.0,rotoguru_gid,Clark Harris,dk,2500,clark harris,CIN,TE,00-0025630,manual_override,high
 Jaeden Graham,TE,ATL,2500,4765,TE,ATL@LA,3.1,rotoguru_gid,Jaeden Graham,dk,2500,jaeden graham,ATL,TE,00-0034788,auto_exact,high

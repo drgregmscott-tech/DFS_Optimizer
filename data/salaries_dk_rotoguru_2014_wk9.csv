@@ -26,7 +26,6 @@ Brandon Weeden,QB,DAL,5000,1411,QB,DAL@ARI,3.13,rotoguru_gid,Brandon Weeden,dk,5
 Nick Foles,QB,PHI,7700,1413,QB,PHI@HOU,19.465714285714284,rotoguru_gid,Nick Foles,dk,7700,nick foles,PHI,QB,00-0029567,auto_exact,high
 Austin Davis,QB,LA,5500,1445,QB,LA@SF,15.54,rotoguru_gid,Austin Davis,dk,5500,austin davis,LA,QB,00-0028957,auto_exact,high
 Philip Rivers,QB,SDG,8300,1231,QB,SDG@MIA,22.0775,rotoguru_gid,Philip Rivers,dk,8300,philip rivers,SDG,QB,00-0022942,auto_fallback_team_mismatch,medium
-Matt Simms,QB,NYJ,0,1436,QB,NYJ@KC,,rotoguru_gid,Matt Simms,dk,0,matt simms,NYJ,QB,00-0029151,auto_exact,high
 Matt Moore,QB,MIA,5000,1298,QB,MIA@SDG,-0.2,rotoguru_gid,Matt Moore,dk,5000,matt moore,MIA,QB,00-0025708,auto_exact,high
 Kellen Clemens,QB,SDG,5000,1262,QB,SDG@MIA,0.0,rotoguru_gid,Kellen Clemens,dk,5000,kellen clemens,SDG,QB,00-0024264,auto_fallback_team_mismatch,medium
 Matt Schaub,QB,LV,5000,1234,QB,LV@SEA,-0.5,rotoguru_gid,Matt Schaub,dk,5000,matt schaub,LV,QB,00-0022787,auto_exact,high
@@ -66,7 +65,6 @@ Lance Dunbar,RB,DAL,3000,2880,RB,DAL@ARI,3.2625,rotoguru_gid,Lance Dunbar,dk,300
 C.J. Anderson,RB,DEN,3000,2924,RB,DEN@NE,1.25,rotoguru_gid,C.J. Anderson,dk,3000,cj anderson,DEN,RB,00-0029854,auto_exact,high
 Benny Cunningham,RB,LA,3000,2911,RB,LA@SF,9.171428571428573,rotoguru_gid,Benny Cunningham,dk,3000,benny cunningham,LA,RB,00-0029795,auto_exact,high
 Lorenzo Taliaferro,RB,BAL,3300,2975,RB,BAL@PIT,8.085714285714285,rotoguru_gid,Lorenzo Taliaferro,dk,3300,lorenzo taliaferro,BAL,RB,00-0031066,auto_exact,high
-Marion Grice,RB,ARI,0,2943,RB,ARI@DAL,,rotoguru_gid,Marion Grice,dk,0,marion grice,ARI,RB,00-0030999,auto_exact,high
 Ben Tate,RB,MIN,4300,2779,RB,MIN@WAS,10.96,rotoguru_gid,Ben Tate,dk,4300,ben tate,MIN,RB,00-0027890,auto_fallback_team_mismatch,medium
 Damien Williams,RB,MIA,3000,2957,RB,MIA@SDG,1.0,rotoguru_gid,Damien Williams,dk,3000,damien williams,MIA,RB,00-0030874,auto_exact,high
 Frank Gore,RB,SF,3800,2467,RB,SF@LA,10.157142857142857,rotoguru_gid,Frank Gore,dk,3800,frank gore,SF,RB,00-0023500,auto_exact,high
@@ -89,7 +87,6 @@ Carlos Hyde,RB,SF,3000,2933,RB,SF@LA,5.042857142857143,rotoguru_gid,Carlos Hyde,
 Rex Burkhead,RB,CIN,3000,2890,RB,CIN@JAX,0.0,rotoguru_gid,Rex Burkhead,dk,3000,rex burkhead,CIN,RB,00-0030288,auto_exact,high
 Robert Hughes,RB,ARI,3000,2882,RB,ARI@DAL,0.9857142857142857,rotoguru_gid,Robert Hughes,dk,3000,robert hughes,ARI,RB,00-0028345,auto_exact,high
 Michael Cox,RB,NYG,3000,2906,RB,NYG@IND,0.0,rotoguru_gid,Michael Cox,dk,3000,michael cox,NYG,RB,00-0030128,auto_exact,high
-Dan Herron,RB,IND,0,2855,RB,IND@NYG,1.975,rotoguru_gid,Dan Herron,dk,0,dan herron,IND,RB,00-0029588,auto_exact,high
 LeGarrette Blount,RB,NE,3000,2721,RB,NE@DEN,5.9875,rotoguru_gid,LeGarrette Blount,dk,3000,legarrette blount,NE,RB,00-0027325,auto_exact,high
 Chris Ivory,RB,NYJ,4500,2741,RB,NYJ@KC,13.2125,rotoguru_gid,Chris Ivory,dk,4500,chris ivory,NYJ,RB,00-0027531,auto_exact,high
 Juwan Thompson,RB,DEN,3200,2965,RB,DEN@NE,4.242857142857143,rotoguru_gid,Juwan Thompson,dk,3200,juwan thompson,DEN,RB,00-0030705,auto_exact,high
@@ -105,7 +102,6 @@ Will Johnson,RB,PIT,3000,2877,RB,PIT@BAL,0.8,rotoguru_gid,Will Johnson,dk,3000,w
 Knile Davis,RB,KC,3400,2891,RB,KC@NYJ,12.757142857142856,rotoguru_gid,Knile Davis,dk,3400,knile davis,KC,RB,00-0030280,auto_exact,high
 Mike James,RB,TB,3000,2895,RB,TB@CLE,0.2833333333333333,rotoguru_gid,Mike James,dk,3000,mike james,TB,RB,00-0030391,auto_exact,high
 Ronnie Brown,RB,SDG,3000,2456,RB,SDG@MIA,1.82,rotoguru_gid,Ronnie Brown,dk,3000,ronnie brown,SDG,RB,00-0023437,auto_fallback_team_mismatch,medium
-Edwin Baker,RB,NO,0,2904,RB,NO@CAR,,rotoguru_gid,Edwin Baker,dk,0,edwin baker,NO,RB,00-0029317,auto_exact,high
 Joseph Randle,RB,DAL,3000,2900,RB,DAL@ARI,1.9625,rotoguru_gid,Joseph Randle,dk,3000,joseph randle,DAL,RB,00-0030388,auto_exact,high
 Henry Hynoski,RB,NYG,3000,2837,RB,NYG@IND,0.0142857142857142,rotoguru_gid,Henry Hynoski,dk,3000,henry hynoski,NYG,RB,00-0028492,auto_exact,high
 Bernard Pierce,RB,BAL,3000,2861,RB,BAL@PIT,6.4,rotoguru_gid,Bernard Pierce,dk,3000,bernard pierce,BAL,RB,00-0029264,auto_exact,high

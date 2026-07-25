@@ -435,10 +435,24 @@ def write_week_file(season_df: pd.DataFrame, site: str, season: int,
         raise SystemExit(f"No rows for site={site} season={season} week={week}.")
 
     # Decision #5 -- drop unpurchasable rows, count them, never zero-fill.
+    # Covers BOTH the literal "N/A" (parsed to NaN above) AND a literal 0 (or
+    # negative) salary. RotoGuru writes $0 for a player who is on the roster
+    # page but not actually purchasable that week -- e.g. Cam Newton, CAR,
+    # 2021 wk10: re-signed but pre-first-game-back, listed at $0. A $0 player
+    # is catastrophic downstream in exactly the same way an N/A one is: it's
+    # free points to the optimizer, AND it makes ownership_heuristic.py's
+    # `value = final_projection / (salary/1000)` divide by zero -> NaN
+    # chalk_score -> build_projections.py's add_ownership_columns hard-stops
+    # ("1 player got no chalk_score"). Found via the Session 10.1 backtest
+    # harness -- the curated Madden test pool never contained a $0 player, so
+    # this only surfaced against real RotoGuru data. Same fail-loud spirit as
+    # the original N/A drop: excluded from the salary file, still retained in
+    # the actuals file (the player may really have scored; he just wasn't
+    # purchasable).
     n_total = len(wk)
-    no_salary = wk["salary"].isna()
-    n_dropped = int(no_salary.sum())
-    wk = wk[~no_salary].copy()
+    unpurchasable = wk["salary"].isna() | (wk["salary"] <= 0)
+    n_dropped = int(unpurchasable.sum())
+    wk = wk[~unpurchasable].copy()
 
     # Decision #7 -- 'Def' -> this site's own defense label.
     wk["position_out"] = wk["rotoguru_position"].where(

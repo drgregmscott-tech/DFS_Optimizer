@@ -118,7 +118,6 @@ Fozzy Whittaker,RB,CAR,3000,2916,RB,CAR@SEA,5.836363636363637,rotoguru_gid,Fozzy
 Corey Grant,RB,JAX,3000,5405,RB,JAX@DEN,1.4166666666666667,rotoguru_gid,Corey Grant,dk,3000,corey grant,JAX,RB,00-0031731,auto_exact,high
 Jeremy Langford,RB,CHI,4100,5371,RB,CHI@SF,7.471428571428571,rotoguru_gid,Jeremy Langford,dk,4100,jeremy langford,CHI,RB,00-0031569,auto_exact,high
 Derek Watt,RB,SDG,3000,5504,RB,SDG@TB,1.1,rotoguru_gid,Derek Watt,dk,3000,derek watt,SDG,RB,00-0032897,auto_fallback_team_mismatch,medium
-George Farmer,RB,SEA,0,5516,RB,SEA@CAR,1.4,rotoguru_gid,George Farmer,dk,0,george farmer,SEA,RB,00-0031746,auto_exact,high
 James Starks,RB,GB,4400,2777,RB,GB@HOU,8.357142857142858,rotoguru_gid,James Starks,dk,4400,james starks,GB,RB,00-0027791,auto_exact,high
 Lance Dunbar,RB,DAL,3000,2880,RB,DAL@MIN,2.775,rotoguru_gid,Lance Dunbar,dk,3000,lance dunbar,DAL,RB,00-0029004,auto_exact,high
 Will Tukuafu,RB,SEA,3000,2986,RB,SEA@CAR,0.05,rotoguru_gid,Will Tukuafu,dk,3000,will tukuafu,SEA,RB,00-0027905,auto_exact,high
@@ -326,7 +325,6 @@ Clive Walford,TE,LV,2500,4651,TE,LV@BUF,6.5,rotoguru_gid,Clive Walford,dk,2500,c
 Darren Waller,TE,BAL,2500,5419,TE,BAL@MIA,2.357142857142857,rotoguru_gid,Darren Waller,dk,2500,darren waller,BAL,TE,00-0031610,auto_exact,high
 Hunter Henry,TE,SDG,2900,4675,TE,SDG@TB,9.25,rotoguru_gid,Hunter Henry,dk,2900,hunter henry,SDG,TE,00-0033090,auto_fallback_team_mismatch,medium
 Martellus Bennett,TE,NE,4800,4407,TE,NE@LA,11.818181818181818,rotoguru_gid,Martellus Bennett,dk,4800,martellus bennett,NE,TE,00-0026201,auto_exact,high
-Gerald Christian,TE,BUF,0,4658,TE,BUF@LV,,rotoguru_gid,Gerald Christian,dk,0,gerald christian,BUF,TE,00-0032190,auto_exact,high
 Brandon Bostick,TE,NYJ,2500,4593,TE,NYJ@IND,0.609090909090909,rotoguru_gid,Brandon Bostick,dk,2500,brandon bostick,NYJ,TE,00-0029601,auto_exact,high
 Jerell Adams,TE,NYG,2500,4686,TE,NYG@PIT,3.2,rotoguru_gid,Jerell Adams,dk,2500,jerell adams,NYG,TE,00-0032429,auto_exact,high
 Darren Fells,TE,ARI,2500,4609,TE,ARI@WAS,2.033333333333333,rotoguru_gid,Darren Fells,dk,2500,darren fells,ARI,TE,00-0029738,auto_exact,high

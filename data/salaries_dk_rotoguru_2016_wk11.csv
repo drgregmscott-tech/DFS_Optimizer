@@ -100,7 +100,6 @@ Aaron Ripkowski,RB,GB,3000,5406,RB,GB@WAS,1.2777777777777777,rotoguru_gid,Aaron 
 Mike James,RB,TB,3100,2895,RB,TB@KC,3.6,rotoguru_gid,Mike James,dk,3100,mike james,TB,RB,00-0030391,auto_exact,high
 Paul Lasike,RB,CHI,3000,5373,RB,CHI@NYG,0.5333333333333333,rotoguru_gid,Paul Lasike,dk,3000,paul lasike,CHI,RB,00-0031706,auto_exact,high
 DuJuan Harris,RB,SF,4000,2802,RB,SF@NE,11.1,rotoguru_gid,DuJuan Harris,dk,4000,dujuan harris,SF,RB,00-0028409,auto_exact,high
-Troymaine Pope,RB,SEA,0,5510,RB,SEA@PHI,0.1,rotoguru_gid,Troymaine Pope,dk,0,troymaine pope,SEA,RB,00-0033164,auto_exact,high
 Alfred Morris,RB,DAL,4700,2871,RB,DAL@BAL,3.922222222222222,rotoguru_gid,Alfred Morris,dk,4700,alfred morris,DAL,RB,00-0029141,auto_exact,high
 Will Tukuafu,RB,SEA,3000,2986,RB,SEA@PHI,0.0,rotoguru_gid,Will Tukuafu,dk,3000,will tukuafu,SEA,RB,00-0027905,auto_exact,high
 Kenyan Drake,RB,MIA,3000,5446,RB,MIA@LA,3.4000000000000004,rotoguru_gid,Kenyan Drake,dk,3000,kenyan drake,MIA,RB,00-0033118,auto_exact,high
@@ -207,7 +206,6 @@ Devin Funchess,WR,CAR,3700,5381,WR,CAR@NO,6.377777777777777,rotoguru_gid,Devin F
 Josh Bellamy,WR,CHI,3000,5191,WR,CHI@NYG,1.0777777777777775,rotoguru_gid,Josh Bellamy,dk,3000,josh bellamy,CHI,WR,00-0029319,auto_exact,high
 Brian Quick,WR,LA,3400,5157,WR,LA@MIA,9.566666666666666,rotoguru_gid,Brian Quick,dk,3400,brian quick,LA,WR,00-0029640,auto_exact,high
 Jermaine Kearse,WR,SEA,3000,5186,WR,SEA@PHI,6.3,rotoguru_gid,Jermaine Kearse,dk,3000,jermaine kearse,SEA,WR,00-0029159,auto_exact,high
-Marquess Wilson,WR,CHI,0,5238,WR,CHI@NYG,,rotoguru_gid,Marquess Wilson,dk,0,marquess wilson,CHI,WR,00-0030047,auto_exact,high
 James Wright,WR,CIN,3000,5290,WR,CIN@BUF,0.8857142857142858,rotoguru_gid,James Wright,dk,3000,james wright,CIN,WR,00-0031291,auto_exact,high
 Michael Floyd,WR,ARI,4000,5148,WR,ARI@MIN,8.977777777777778,rotoguru_gid,Michael Floyd,dk,4000,michael floyd,ARI,WR,00-0029638,auto_fallback_team_mismatch,medium
 Golden Tate,WR,DET,5300,3995,WR,DET@JAX,13.077777777777776,rotoguru_gid,Golden Tate,dk,5300,golden tate,DET,WR,00-0027891,auto_exact,high

@@ -32,7 +32,6 @@ Jeff Driskel,QB,DEN,5300,1494,QB,DEN@TB,19.74,rotoguru_gid
 Gardner Minshew,QB,JAX,6400,1540,QB,JAX@MIA,24.64,rotoguru_gid
 Daniel Jones,QB,NYG,5500,1539,QB,NYG@SF,14.55,rotoguru_gid
 Sam Darnold,QB,NYJ,5000,1524,QB,NYJ@IND,12.03,rotoguru_gid
-Brett Rypien,QB,DEN,0,1555,QB,DEN@TB,,rotoguru_gid
 Jalen Hurts,QB,PHI,4200,1554,QB,PHI@CIN,,rotoguru_gid
 Taysom Hill,QB,NO,4100,1530,QB,NO@GB,3.01,rotoguru_gid
 Jacoby Brissett,QB,IND,5000,1496,QB,IND@NYJ,0.0,rotoguru_gid
@@ -100,7 +99,6 @@ Tyler Ervin,RB,GB,4000,5470,RB,GB@NO,3.4000000000000004,rotoguru_gid
 Devontae Booker,RB,LV,4000,5468,RB,LV@NE,4.85,rotoguru_gid
 Mark Ingram,RB,BAL,5500,2793,RB,BAL@KC,9.299999999999999,rotoguru_gid
 D'Andre Swift,RB,DET,5000,5822,RB,DET@ARI,11.75,rotoguru_gid
-JaMycal Hasty,RB,SF,0,5865,RB,SF@NYG,,rotoguru_gid
 Alexander Mattison,RB,MIN,4000,5720,RB,MIN@TEN,7.3,rotoguru_gid
 Jamaal Williams,RB,GB,4000,5541,RB,GB@NO,8.25,rotoguru_gid
 Darrel Williams,RB,KC,4000,5708,RB,KC@BAL,3.6,rotoguru_gid
@@ -112,7 +110,6 @@ Malcolm Brown,RB,LA,5200,5441,RB,LA@BUF,15.35,rotoguru_gid
 Travis Homer,RB,SEA,4000,5738,RB,SEA@DAL,2.2,rotoguru_gid
 T.J. Yeldon,RB,BUF,4000,2993,RB,BUF@LA,,rotoguru_gid
 Kyle Juszczyk,RB,SF,4000,2908,RB,SF@NYG,4.2,rotoguru_gid
-Reggie Bonnafon,RB,CAR,0,5735,RB,CAR@LAC,,rotoguru_gid
 Jakob Johnson,RB,NE,4000,5778,RB,NE@LV,3.55,rotoguru_gid
 Cullen Gillaspia,RB,HOU,4000,5762,RB,HOU@PIT,0.0,rotoguru_gid
 Jeremy McNichols,RB,TEN,4000,5542,RB,TEN@MIN,0.35,rotoguru_gid
@@ -226,14 +223,11 @@ Brandon Powell,WR,ATL,3000,5689,WR,ATL@CHI,0.0,rotoguru_gid
 Damiere Byrd,WR,NE,3000,5531,WR,NE@LV,6.6,rotoguru_gid
 Michael Pittman Jr.,WR,IND,4000,5837,WR,IND@NYJ,5.35,rotoguru_gid
 N'Keal Harry,WR,NE,4200,5724,WR,NE@LV,11.55,rotoguru_gid
-Lawrence Cager,WR,NYJ,0,5869,WR,NYJ@IND,,rotoguru_gid
 Zach Pascal,WR,IND,4500,5647,WR,IND@NYJ,7.35,rotoguru_gid
 Brandin Cooks,WR,HOU,5200,5255,WR,HOU@PIT,9.25,rotoguru_gid
 Nelson Agholor,WR,LV,3800,5378,WR,LV@NE,6.1000000000000005,rotoguru_gid
 Auden Tate,WR,CIN,3000,5696,WR,CIN@PHI,0.0,rotoguru_gid
-Deontay Burnett,WR,PHI,0,5686,WR,PHI@CIN,,rotoguru_gid
 Russell Gage,WR,ATL,5100,5680,WR,ATL@CHI,20.0,rotoguru_gid
-KeeSean Johnson,WR,ARI,0,5731,WR,ARI@DET,,rotoguru_gid
 Jalen Guyton,WR,LAC,3400,5801,WR,LAC@CAR,5.5,rotoguru_gid
 Daurice Fountain,WR,IND,3000,5870,WR,IND@NYJ,,rotoguru_gid
 Julian Edelman,WR,NE,6200,3826,WR,NE@LV,20.95,rotoguru_gid
@@ -267,7 +261,6 @@ Marquez Valdes-Scantling,WR,GB,4900,5656,WR,GB@NO,14.5,rotoguru_gid
 Dede Westbrook,WR,JAX,3400,5603,WR,JAX@MIA,,rotoguru_gid
 Cordarrelle Patterson,WR,CHI,3600,5208,WR,CHI@ATL,4.699999999999999,rotoguru_gid
 Collin Johnson,WR,JAX,3000,5860,WR,JAX@MIA,1.2,rotoguru_gid
-Isaiah Zuber,WR,NE,0,5872,WR,NE@LV,,rotoguru_gid
 David Moore,WR,SEA,3600,5655,WR,SEA@DAL,10.4,rotoguru_gid
 Larry Fitzgerald,WR,ARI,4600,3501,WR,ARI@DET,9.7,rotoguru_gid
 Diontae Johnson,WR,PIT,5400,5754,WR,PIT@HOU,16.95,rotoguru_gid

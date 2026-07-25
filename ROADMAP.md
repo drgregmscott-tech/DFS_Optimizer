@@ -612,6 +612,8 @@ By far the largest session in this project -- see SESSION_LOG.md's Session 7.3 e
 ### Session 9.2 — Weight Retuning (after ~4 weeks of data minimum)
 **Prerequisites:** Session 9.1 running for 4+ weeks.
 
+**⚠️ Revised by Phase 10 (2026-07-25):** this card's premise — regression-reweighting the *four* projection components (season_avg, recent_form, matchup_factor, vegas_factor) — assumes the original Session 2.1-2.4 blend, which Phase 10 replaces. Two changes carry over: (1) the components themselves change (Phase 10 blends a small number of decorrelated stat-line sources, not those four), and (2) FFA's 11-season finding that accuracy-weighting is statistically interchangeable with equal-weighting means aggressive per-week retuning is a live overfitting risk, not a straightforward win — see Phase 10's design intro. Keep this card's *intent* (fit weights against logged error, per site) but read it through Phase 10's component set and its caution against chasing week-to-week noise.
+
 **Sites:** Decide explicitly whether DK and FD get separate retuned weights or share one blend — worth a deliberate call here rather than defaulting to shared, since half-PPR could plausibly shift the ideal weighting between recent form and matchup factor.
 
 **Files touched (modified):** `/dfs_optimizer/scripts/build_projections.py` (blend weights updated, per site if they end up diverging)
@@ -666,7 +668,124 @@ By far the largest session in this project -- see SESSION_LOG.md's Session 7.3 e
 
 ---
 
-## Notes on sequencing
+## PHASE 10 — Projection System Redesign
+*Opened 2026-07-25. A ground-up redesign of the projection engine, deliberately specced from first principles BEFORE re-reading the existing `build_projections.py`, to avoid anchoring on the current recency-weighted-average approach. The original engine (Sessions 2.1-2.4) was intentionally a get-something-working placeholder; this phase replaces it. The design below is settled and user-agreed; the cards implement it in dependency order.*
+
+### The settled design (read this before any Phase 10 card)
+
+**One model, parameterized optimizer.** A projection estimates what happens on the field, which doesn't change with contest type. What changes is how the *optimizer* uses it. So there is ONE projection model; cash vs single-entry/3-max vs 20-max differ only in the optimizer's objective, not in separate projection models.
+
+**Output schema is per-player mean + sigma, per site.** Not a bare point estimate, not a full distribution. The user's actual strategy ("cash floor with GPP upside", played at 1-3 entries) decomposes precisely: suppress *idiosyncratic* variance (individually boom/bust players — lowers your floor), source all upside from *correlated* variance (stacking — fattens the right tail for free). Implementing that needs a per-player sigma alongside the mean. Objective becomes maximize `sum(mean) − λ·(idiosyncratic sigma)`, correlation enforced as a constraint. λ is high for cash, moderate for single-entry/3-max, lower for 20-max.
+
+**Mean, not median.** The optimizer maximizes a sum, and expectation is linear (median is not additive). The right-skew concern (TD-dependent boom/bust over-selection) is handled by the λ·sigma penalty, not by switching to median.
+
+**sigma from stat-line composition, not player history.** Historical per-player SD isn't sticky year-to-year and is confounded with the mean (a bigger projection mechanically carries bigger absolute variance). Instead, model variance per stat component (receptions low, yards moderate, TDs high) and combine, conditioning sigma on the projection rather than on player identity. This is a second, independent reason to blend at the stat-line level.
+
+**Blend at the stat-line level, small number of decorrelated components.** Usage-based (nflverse history) + market-based (Vegas implied total now; prop-derived TDs later) blended as *stat lines*, converted once to DK points and once to FD points, then a salary-implied baseline anchor applied at the points level. Blending helps in proportion to error *decorrelation*, not component count — so a few genuinely different information sources, fixed conservative weights, NOT many similar sub-models. (FFA's 11-season finding: accuracy-weighting is statistically interchangeable with equal-weighting because source accuracy doesn't persist week to week — so resist heavy retuning of blend weights; this directly tempers the ambition of the old Session 9.2 card.)
+
+**Blend weights dynamic on data sufficiency (cold start).** No separate rookie model. At zero games of usage data a projection is essentially salary + market; as games accumulate the usage component takes over (empirical-Bayes shrinkage schedule). Same mechanism handles mid-season role changes and elevated backups. Critical caveat: suppress the salary anchor's weight when a role change is flagged — a stale price is exactly the value spot we're trying to beat.
+
+**DST is a separate, distributional model.** Points-allowed is scored as a step function on both sites, so `E[f(X)] ≠ f(E[X])` — you must integrate over the bracket probabilities given the opponent's implied total, not look up one bracket. DST is more predictable than its reputation (public analysis ~0.37 correlation, beating WR/TE point projections). Inputs: distributional points-allowed (dominant), sack rate, turnover rate (QB-specific, rookie-adjusted), own-defense EPA/play as the stable modifier, wind. It is the sharpest illustration of why mean and sigma are tracked separately (compressed means, enormously dispersed outcomes).
+
+**Correlation stays in constraints (stacking), not the objective.** For 1-3 entries this is correct and — importantly — keeps the problem linear, so CBC/PuLP is retained (a covariance objective would force a MIQP). Exposure caps / uniqueness / randomness are *portfolio* levers (make lineups differ from each other); they do almost nothing at 1-3 entries and randomness at 1 entry is actively harmful. Randomness should scale with entry count and, once sigma exists, be sigma-proportional rather than a flat uniform percentage.
+
+**Manual override layer:** post-blend, expiring (week-stamped, stale ones fail loud), auditable (pre/post columns), logged for the learning loop.
+
+**Calibration shrinkage:** the known slope-below-1 bias (projections overstate the top-to-bottom gap) is real and free, but ours must be fit OUT-OF-SAMPLE, not hardcoded from someone else's slopes. Instrument now (Session 9.1), fit later. Note it fights points-per-dollar's cheap-player bias — resolved because the ILP handles the price tradeoff natively, so value stays display-only and never drives selection.
+
+**Success is measured at the lineup level.** MAE is the wrong scoreboard (two projection sets with identical MAE build completely different lineups; what drives selection is ordering within salary band). The metric is percentile against a synthetic ownership-weighted field, reported as median-percentile (cash/floor proxy) AND max-percentile (upside proxy) separately — never blended, since λ trades between them and that tradeoff curve is the point.
+
+**Share reconciliation is mandatory, specifically because of stacking.** If the QB projection and his stacked receivers' projections aren't derived from the same team pass-volume number, the stack is internally incoherent — which corrupts the exact mechanism the user's whole strategy depends on. After building player projections, aggregate to team level, compare against Vegas-derived team targets, rescale shares, fail loud past a threshold.
+
+---
+
+### Session 10.0 — Historical Data Bootstrap ✅ Complete (2026-07-25)
+**Prerequisites:** none (foundational for the rest of Phase 10).
+
+**Why:** the project has real 2025 outcomes but no real historical salary files (DK/FD publish no API; "Export to CSV" is current-slate only). No salaries -> no cap -> no legal lineup -> no lineup-level backtest and no salary-anchor curve. RotoGuru (free archive, DK 2014-2021 / FD 2011-2021) closes it.
+
+**Files created:** `scripts/ingest_rotoguru.py`, `scripts/batch_match_rotoguru.py`, `scripts/resolve_unmatched.py`; modified `scripts/ingest_salaries.py`. Data: 155 matched salary files, 9 actuals files, nflverse 2014-2021 history.
+
+**Result:** mean 99.7% match (min 98.6%, 0 errors, 0 low weeks) across all 155 files. Full detail + the three real bugs found only by live data (`NOR->NO`, team-keyed override miss, upsert dedup block) in SESSION_LOG.md's Session 10.0 entry.
+
+**This is a bootstrap, not the validation set** — RotoGuru's newest is 2021, the project's current-state `weekly_stats` is 2025, no overlap. Its jobs: prove harness mechanics, fit the salary curve, fit stat-component variance. Real current-state validation accumulates live from Preseason Week 1.
+
+---
+
+### Session 10.1 — Lineup-Level Backtest Harness
+**Prerequisites:** Session 10.0 complete. **Build this BEFORE any projection change** — without it, a rewrite can't be told from a regression, and the existing system has no measured baseline.
+
+**Sites:** DK first (8 seasons of real matched data). FD has only 2021 matched — usable to prove the mechanics, not to fit anything.
+
+**Files touched (created):** `/dfs_optimizer/scripts/backtest_harness.py`; likely `/dfs_optimizer/output/backtest_*.csv` for results.
+
+**Build:**
+- Reconstruct a week's legal player pool from `data/salaries_{site}_rotoguru_{season}_wk{week}.csv`, **filtered to the Sunday main slate** using `schedules_{season}.parquet` (the bootstrap deliberately left the full-week Thurs-Mon pool unfiltered — the harness owns this, once, since it loads schedules anyway). NOTE the schedules layout wrinkle: 2014-2021 is ONE combined `schedules_2014_..._2021.parquet`, 2025 is per-season — handle both.
+- Run the real `optimizer.py` against that pool (real imported functions, not a reimplementation — the project's own hard-won lesson that only real runs catch the real bugs).
+- Score the built lineup(s) against `rotoguru_actuals_{site}_{season}.csv`.
+- **Metric = percentile against a synthetic field**, NOT percent-of-hindsight-optimal (that denominator is a single noisy extremum, is uninformative in scale, and rewards ceiling-chasing which is explicitly not the user's strategy). Sample the field proportional to Session 4.1's `estimated_ownership_pct` (chalk-concentrated, far more realistic than uniform; the circularity — our ownership estimate could be wrong — is acknowledged and is what Sessions 9.3/9.4 eventually fix). Report **median-percentile (cash/floor proxy) and max-percentile (upside proxy) separately, never blended.** At n=1 they collapse to one number, which is correct for single-entry.
+
+**Validation:**
+- [ ] Harness reconstructs a known week's pool, solves, and scores end-to-end against real actuals with no manual step.
+- [ ] Produces a baseline percentile distribution for the CURRENT projection system (the number every later Phase 10 change is measured against).
+- [ ] Sunday-slate filter verified against a spot-check week (pool excludes Thu/Mon-only players correctly).
+
+---
+
+### Session 10.2 — Salary-Anchor Baseline Curve
+**Prerequisites:** Session 10.0 (needs historical salaries). Independent of 10.1, but 10.1's harness makes its value measurable.
+
+**Sites:** per site (DK full-PPR and FD half-PPR price differently).
+
+**Files touched (created):** a fitted points-vs-salary curve artifact + the code to fit it; consumed later by the rewritten projection blend.
+
+**Build:** fit the empirical points-vs-salary relationship by position from the matched historical data (the 4for4-style baseline: subtract a fitted salary baseline rather than dividing, which structurally over-favors cheap players). This is the market's own forecast, free, and doubles as a sanity check on whether the model is drifting from the market for good reasons or bad. Its immediate secondary payoff: tells us how much signal DK/FD pricing carries vs our historical component — real information about the market-vs-model balance, learned cheaply, before committing weeks to the model side.
+
+**Validation:**
+- [ ] Curve fit per site per position on the historical data; sanity-checked shape (monotonic-ish, sensible endpoints).
+- [ ] Measured against Session 10.1's baseline: does adding the anchor help lineup-level percentile?
+
+---
+
+### Session 10.3 — Stat-Line Projection Rewrite (the core rebuild — "Gap 1")
+**Prerequisites:** Sessions 10.1 and 10.2 (harness to measure it, anchor as a component). **Built as a NEW parallel component that co-exists with the current `build_projections.py` until the harness says it wins** — not an in-place edit of Session 2.1, per the project's schema-stability principle.
+
+**Sites:** one stat line, converted once per site.
+
+**Build:** replace the direct-fantasy-point projection with a volume × efficiency **stat-line** model (attempts/targets/carries/receptions/yards/TDs), then a scoring converter. This is the structural change that unlocks sigma-from-composition, prop ingestion, and share reconciliation — none of which are possible against a direct-points projection. `weekly_stats` already carries the 145 columns needed and is already lookahead-guarded.
+
+**Honest expectation:** the *capability* gain is near-certain; the *accuracy* gain is not (FFA: the best commercial sources cluster within ~3% MAE of each other, and simple averages are hard to beat). This is exactly why it's built parallel and measured, not assumed.
+
+**Validation:**
+- [ ] Stat-line component produces per-player mean AND sigma (sigma from component composition, with an empirical within-player yards/TD correlation adjustment, not an independence assumption).
+- [ ] Measured against Session 10.1 baseline at the lineup level — ships only if it wins, stays parallel if it doesn't.
+- [ ] Share reconciliation step (team-level aggregation vs Vegas targets, fail-loud past threshold).
+
+---
+
+### Session 10.4 — DST Model Rebuild
+**Prerequisites:** Session 10.0. Independent of 10.1-10.3 (self-contained; can run in parallel). Arguably the best ROI-per-effort in the phase — currently the weakest component (a season-average × linear Vegas scale) and it fills 1 of 9 lineup slots every time.
+
+**Build:** distributional points-allowed (negative-binomial or empirical, conditioned on opponent implied total, integrated over each site's scoring brackets — handles the DK/FD bracket divergence correctly), plus sack rate, QB-specific turnover rate (rookie-adjusted), own-defense EPA/play as the stable modifier, and wind. Replaces the flat `matchup_factor=1.0` DST gap flagged since Session 2.4.
+
+**Validation:**
+- [ ] Distributional points-allowed integrates over real brackets per site (not a single-bracket lookup).
+- [ ] Measured against Session 10.1 baseline for the DST slot specifically.
+
+---
+
+### Session 10.5 — Objective + Randomization Rewire (needs 10.3's sigma)
+**Prerequisites:** Session 10.3 (sigma must exist).
+
+**Build:** wire per-player sigma into the optimizer objective as `sum(mean) − λ·(idiosyncratic sigma)`, keeping it LINEAR (sigma as a per-player constant, so CBC is retained — no MIQP). Make randomization sigma-proportional and entry-count-scaled (off at single-entry). λ fit from the backtest on a coarse grid, per contest type, selected on realized cash-rate + top-percentile frequency — NOT hand-tuned, NOT a single "optimal" value (the tradeoff curve is the output).
+
+**Validation:**
+- [ ] λ=0 reproduces current pure-mean behavior (sanity anchor).
+- [ ] λ sweep produces a sensible floor-vs-upside tradeoff curve on the backtest, per contest type.
+
+---
+
+
 - Phases 1-3 are strictly sequential
 - Phases 4 and 5 can run in parallel, both need Phase 3 done first
 - Phase 6 is the real validation gate for everything before it
@@ -701,6 +820,8 @@ These are all instances of the same underlying problem: several data sources (Th
 - **Session 7.3's mobile responsive CSS fixes and several other late-session UI changes, live re-confirmation.** Fixed based on a real user-reported bug (Pixel 9 Pro XL layout issues), validated by static structural checks (syntax, DOM-id cross-reference, balanced grid areas) but not yet re-confirmed working live on that same device, nor has the Minimum Salary slider, the new stack team/game chip pickers, or the partial-build warning banner been exercised live yet. See SESSION_LOG.md's Session 7.3 entry, "What's validated live vs. sandbox-only" section, for the full breakdown of what has and hasn't been user-confirmed.
 
 Until Preseason Week 1: treat Session 2.4 (and by extension anything built on top of it in Phase 3+) as validated for correctness-of-logic only, not for real-world data quality. Re-run Session 2.4's validation checklist in full once real data exists for both sites.
+
+- **FD DST projection path reads the wrong column name (found during Session 10.0).** `build_projections.py`'s `build_dst_projections()` reads `salaries["AvgPointsPerGame"]` for BOTH sites, but a real FanDuel export names that column `FPPG`, and `ingest_salaries.py`'s `load_raw_salary_csv()` doesn't rename it — so FD's DST path would `KeyError` or silently null on a real FD export. Not fixed in Session 10.0 (separate decision about FD's real column contract, still unverified — same root as the standing FD gaps above). Session 10.0's RotoGuru FD files emit `AvgPointsPerGame` so the bootstrap/harness aren't blocked, but the real-FD-export gap is open. **First point this closes for real:** whenever a real FD Classic export first exists, alongside the other FD gaps.
 
 ## RESOLVED (Session 2.4 addendum): salary-file team drift in backtests
 *Originally logged as an open decision; implemented this session ("Option A" -- auto-correct, no flag). Kept here rather than deleted, since the reasoning is worth keeping visible for future sessions touching this logic.*

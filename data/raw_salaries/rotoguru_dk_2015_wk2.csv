@@ -127,7 +127,6 @@ LeGarrette Blount,RB,NE,5000,2721,RB,NE@BUF,,rotoguru_gid
 Bernard Pierce,RB,JAX,3000,2861,RB,JAX@MIA,1.4,rotoguru_gid
 Jay Prosch,RB,HOU,3000,2980,RB,HOU@CAR,0.0,rotoguru_gid
 Jarryd Hayne,RB,SF,3000,5401,RB,SF@PIT,2.0,rotoguru_gid
-Kerwynn Williams,RB,ARI,0,2918,RB,ARI@CHI,,rotoguru_gid
 Fozzy Whittaker,RB,CAR,3000,2916,RB,CAR@HOU,2.5,rotoguru_gid
 Michael Burton,RB,DET,3000,5415,RB,DET@MIN,0.0,rotoguru_gid
 Branden Oliver,RB,SDG,3300,2982,RB,SDG@CIN,3.1,rotoguru_gid
@@ -244,7 +243,6 @@ Tyler Lockett,WR,SEA,3400,5386,WR,SEA@GB,13.4,rotoguru_gid
 Kendall Wright,WR,TEN,5000,5162,WR,TEN@CLE,23.1,rotoguru_gid
 Quincy Enunwa,WR,NYJ,3000,5420,WR,NYJ@IND,0.0,rotoguru_gid
 Phillip Dorsett,WR,IND,3300,5384,WR,IND@NYJ,5.5,rotoguru_gid
-Chandler Worthy,WR,HOU,0,5418,WR,HOU@CAR,,rotoguru_gid
 Lance Moore,WR,DET,3000,3604,WR,DET@MIN,3.2,rotoguru_gid
 Marlon Brown,WR,BAL,3200,5226,WR,BAL@LV,4.5,rotoguru_gid
 De'Anthony Thomas,WR,KC,3000,2958,WR,KC@DEN,2.1,rotoguru_gid
@@ -325,7 +323,6 @@ Heath Miller,TE,PIT,3500,4311,TE,PIT@SF,16.4,rotoguru_gid
 Vernon Davis,TE,SF,3000,4323,TE,SF@PIT,7.7,rotoguru_gid
 Charles Clay,TE,BUF,3400,4543,TE,BUF@NE,8.3,rotoguru_gid
 Travis Kelce,TE,KC,5100,4582,TE,KC@DEN,31.6,rotoguru_gid
-Jake Stoneburner,TE,MIA,0,4597,TE,MIA@JAX,,rotoguru_gid
 Ladarius Green,TE,SDG,3500,4562,TE,SDG@CIN,18.4,rotoguru_gid
 Jared Cook,TE,LA,3000,4437,TE,LA@WAS,13.5,rotoguru_gid
 Jordan Cameron,TE,MIA,4000,4533,TE,MIA@JAX,11.3,rotoguru_gid
@@ -355,10 +352,8 @@ Maxx Williams,TE,BAL,2500,4650,TE,BAL@LV,2.5,rotoguru_gid
 Lee Smith,TE,LV,2500,4535,TE,LV@BAL,0.0,rotoguru_gid
 Jermaine Gresham,TE,ARI,2600,4493,TE,ARI@CHI,1.4,rotoguru_gid
 Clive Walford,TE,LV,2500,4651,TE,LV@BAL,1.1,rotoguru_gid
-Jerome Cunningham,TE,NYG,0,4667,TE,NYG@ATL,,rotoguru_gid
 Matthew Mulligan,TE,BUF,2500,4431,TE,BUF@NE,0.0,rotoguru_gid
 Josh Hill,TE,NO,2600,4586,TE,NO@TB,0.0,rotoguru_gid
-Geoff Swaim,TE,DAL,0,4668,TE,DAL@PHI,,rotoguru_gid
 Cooper Helfet,TE,SEA,2500,4614,TE,SEA@GB,0.0,rotoguru_gid
 Clark Harris,TE,CIN,2500,4391,TE,CIN@SDG,,rotoguru_gid
 Trey Burton,TE,PHI,2500,4618,TE,PHI@DAL,0.0,rotoguru_gid

@@ -114,7 +114,6 @@ John Kuhn,RB,GB,3000,2549,RB,GB@DAL,1.05,rotoguru_gid
 Orleans Darkwa,RB,NYG,3500,2976,RB,NYG@MIA,1.7833333333333332,rotoguru_gid
 Stevan Ridley,RB,NYJ,3000,2829,RB,NYJ@TEN,0.225,rotoguru_gid
 Michael Burton,RB,DET,3000,5415,RB,DET@LA,0.25833333333333336,rotoguru_gid
-Pierre Thomas,RB,WAS,0,2598,RB,WAS@CHI,1.2,rotoguru_gid
 Shane Vereen,RB,NYG,4000,2830,RB,NYG@MIA,9.708333333333334,rotoguru_gid
 Derrick Coleman,RB,SEA,3000,2909,RB,SEA@BAL,0.13,rotoguru_gid
 Jerick McKinnon,RB,MIN,3000,2935,RB,MIN@ARI,2.625,rotoguru_gid
@@ -246,12 +245,10 @@ Marlon Moore,WR,CLE,3000,3960,WR,CLE@SF,1.1727272727272728,rotoguru_gid
 Anquan Boldin,WR,SF,4000,3423,WR,SF@CLE,12.65,rotoguru_gid
 Chris Hogan,WR,BUF,3000,5167,WR,BUF@PHI,6.646666666666667,rotoguru_gid
 DeVante Parker,WR,MIA,4000,5380,WR,MIA@NYG,3.8363636363636364,rotoguru_gid
-Vincent Brown,WR,SDG,0,5123,WR,SDG@KC,,rotoguru_gid
 Davante Adams,WR,GB,4200,5263,WR,GB@DAL,8.7,rotoguru_gid
 Stefon Diggs,WR,MIN,4400,5424,WR,MIN@ARI,13.766666666666666,rotoguru_gid
 Greg Jennings,WR,MIA,3000,3587,WR,MIA@NYG,2.6,rotoguru_gid
 Marqise Lee,WR,JAX,3000,5256,WR,JAX@IND,2.6166666666666667,rotoguru_gid
-Chris Matthews,WR,BAL,0,5368,WR,BAL@SEA,1.0444444444444445,rotoguru_gid
 Jerricho Cotchery,WR,CAR,3200,3497,WR,CAR@ATL,7.42,rotoguru_gid
 Cecil Shorts,WR,HOU,3600,5103,WR,HOU@NE,12.004444444444445,rotoguru_gid
 Emmanuel Sanders,WR,DEN,5900,3983,WR,DEN@LV,15.054545454545455,rotoguru_gid
@@ -364,7 +361,6 @@ Brandon Pettigrew,TE,DET,2500,4462,TE,DET@LA,2.5714285714285716,rotoguru_gid
 Dwayne Allen,TE,IND,2500,4551,TE,IND@JAX,2.9699999999999998,rotoguru_gid
 Coby Fleener,TE,IND,3000,4552,TE,IND@JAX,7.8500000000000005,rotoguru_gid
 Josh Hill,TE,NO,2500,4586,TE,NO@TB,2.8166666666666664,rotoguru_gid
-Brian Leonhardt,TE,SF,0,4639,TE,SF@CLE,,rotoguru_gid
 Justin Perillo,TE,GB,2500,4628,TE,GB@DAL,3.4857142857142853,rotoguru_gid
 Brent Celek,TE,PHI,2800,4363,TE,PHI@BUF,6.083333333333333,rotoguru_gid
 Clark Harris,TE,CIN,2500,4391,TE,CIN@PIT,0.0,rotoguru_gid

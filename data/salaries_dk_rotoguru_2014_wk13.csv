@@ -47,7 +47,6 @@ DeMarco Murray,RB,DAL,8400,2831,RB,DAL@PHI,24.60909090909091,rotoguru_gid,DeMarc
 Arian Foster,RB,HOU,8800,2696,RB,HOU@TEN,25.8875,rotoguru_gid,Arian Foster,dk,8800,arian foster,HOU,RB,00-0026796,auto_exact,high
 Justin Forsett,RB,BAL,6300,2642,RB,BAL@SDG,17.936363636363637,rotoguru_gid,Justin Forsett,dk,6300,justin forsett,BAL,RB,00-0026373,auto_exact,high
 Mark Ingram,RB,NO,6800,2793,RB,NO@PIT,17.5875,rotoguru_gid,Mark Ingram,dk,6800,mark ingram,NO,RB,00-0027966,auto_exact,high
-Dan Herron,RB,IND,0,2855,RB,IND@WAS,3.983333333333333,rotoguru_gid,Dan Herron,dk,0,dan herron,IND,RB,00-0029588,auto_exact,high
 Roy Helu,RB,WAS,3400,2813,RB,WAS@IND,9.036363636363635,rotoguru_gid,Roy Helu,dk,3400,roy helu,WAS,RB,00-0028043,auto_exact,high
 Jamaal Charles,RB,KC,8600,2629,RB,KC@DEN,19.08,rotoguru_gid,Jamaal Charles,dk,8600,jamaal charles,KC,RB,00-0026213,auto_exact,high
 Marshawn Lynch,RB,SEA,6400,2552,RB,SEA@SF,20.2,rotoguru_gid,Marshawn Lynch,dk,6400,marshawn lynch,SEA,RB,00-0025399,auto_exact,high
@@ -349,7 +348,6 @@ Scott Chandler,TE,BUF,3000,4376,TE,BUF@CLE,7.045454545454546,rotoguru_gid,Scott 
 Zach Sudfeld,TE,NYJ,3000,4583,TE,NYJ@MIA,0.2272727272727272,rotoguru_gid,Zach Sudfeld,dk,3000,zach sudfeld,NYJ,TE,00-0029999,auto_exact,high
 Marcedes Lewis,TE,JAX,3000,4324,TE,JAX@NYG,8.366666666666667,rotoguru_gid,Marcedes Lewis,dk,3000,marcedes lewis,JAX,TE,00-0024243,auto_exact,high
 Josh Hill,TE,NO,3000,4586,TE,NO@PIT,3.945454545454545,rotoguru_gid,Josh Hill,dk,3000,josh hill,NO,TE,00-0030216,auto_exact,high
-Cameron Brate,TE,TB,0,4648,TE,TB@CIN,,rotoguru_gid,Cameron Brate,dk,0,cameron brate,TB,TE,00-0031273,auto_exact,high
 Clay Harbor,TE,JAX,3000,4495,TE,JAX@NYG,7.2625,rotoguru_gid,Clay Harbor,dk,3000,clay harbor,JAX,TE,00-0027725,auto_exact,high
 Tim Wright,TE,NE,3400,4591,TE,NE@GB,7.345454545454545,rotoguru_gid,Tim Wright,dk,3400,tim wright,NE,TE,00-0029910,manual_override,high
 Ladarius Green,TE,SDG,3000,4562,TE,SDG@BAL,3.6,rotoguru_gid,Ladarius Green,dk,3000,ladarius green,SDG,TE,00-0029275,auto_fallback_team_mismatch,medium

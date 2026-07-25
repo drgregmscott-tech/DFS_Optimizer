@@ -27,7 +27,6 @@ Mason Rudolph,QB,PIT,4000,1526,QB,PIT@SEA,,rotoguru_gid,Mason Rudolph,dk,4000,ma
 Philip Rivers,QB,LAC,6100,1231,QB,LAC@DET,27.92,rotoguru_gid,Philip Rivers,dk,6100,philip rivers,LAC,QB,00-0022942,auto_exact,high
 Kirk Cousins,QB,MIN,5300,1415,QB,MIN@GB,14.32,rotoguru_gid,Kirk Cousins,dk,5300,kirk cousins,MIN,QB,00-0029604,auto_exact,high
 Derek Carr,QB,LV,5100,1441,QB,LV@KC,14.56,rotoguru_gid,Derek Carr,dk,5100,derek carr,LV,QB,00-0031280,auto_exact,high
-Luke Falk,QB,NYJ,0,1541,QB,NYJ@CLE,,rotoguru_gid,Luke Falk,dk,0,luke falk,NYJ,QB,00-0034412,auto_exact,high
 Teddy Bridgewater,QB,NO,4400,1439,QB,NO@LA,,rotoguru_gid,Teddy Bridgewater,dk,4400,teddy bridgewater,NO,QB,00-0031237,auto_exact,high
 Mitchell Trubisky,QB,CHI,5500,1519,QB,CHI@DEN,9.22,rotoguru_gid,Mitchell Trubisky,dk,5500,mitchell trubisky,CHI,QB,00-0033869,auto_exact,high
 Taysom Hill,QB,NO,4200,1530,QB,NO@LA,8.7,rotoguru_gid,Taysom Hill,dk,4200,taysom hill,NO,QB,00-0033357,auto_fallback_name_only_position_mismatch,low
@@ -52,7 +51,6 @@ Kerryon Johnson,RB,DET,5700,5621,RB,DET@LAC,8.2,rotoguru_gid,Kerryon Johnson,dk,
 Frank Gore,RB,BUF,3500,2467,RB,BUF@NYG,2.0,rotoguru_gid,Frank Gore,dk,3500,frank gore,BUF,RB,00-0023500,auto_exact,high
 Peyton Barber,RB,TB,3900,5507,RB,TB@CAR,6.5,rotoguru_gid,Peyton Barber,dk,3900,peyton barber,TB,RB,00-0032741,auto_exact,high
 Todd Gurley,RB,LA,7000,2992,RB,LA@NO,11.1,rotoguru_gid,Todd Gurley,dk,7000,todd gurley,LA,RB,00-0032241,auto_exact,high
-Jeff Wilson Jr.,RB,SF,0,5703,RB,SF@CIN,,rotoguru_gid,Jeff Wilson Jr.,dk,0,jeff wilson,SF,RB,00-0034115,auto_exact,high
 Royce Freeman,RB,DEN,3700,5620,RB,DEN@CHI,7.1,rotoguru_gid,Royce Freeman,dk,3700,royce freeman,DEN,RB,00-0034838,auto_exact,high
 David Montgomery,RB,CHI,4900,5713,RB,CHI@DEN,5.5,rotoguru_gid,David Montgomery,dk,4900,david montgomery,CHI,RB,00-0035685,auto_exact,high
 Sony Michel,RB,NE,6200,5615,RB,NE@MIA,1.4,rotoguru_gid,Sony Michel,dk,6200,sony michel,NE,RB,00-0034845,auto_exact,high
@@ -185,7 +183,6 @@ Curtis Samuel,WR,CAR,4800,5556,WR,CAR@TB,6.2,rotoguru_gid,Curtis Samuel,dk,4800,
 John Brown,WR,BUF,5200,5264,WR,BUF@NYG,28.3,rotoguru_gid,John Brown,dk,5200,john brown,BUF,WR,00-0031051,auto_exact,high
 JuJu Smith-Schuster,WR,PIT,7500,5553,WR,PIT@SEA,13.8,rotoguru_gid,JuJu Smith-Schuster,dk,7500,juju smith schuster,PIT,WR,00-0033857,auto_exact,high
 Michael Gallup,WR,DAL,5600,5634,WR,DAL@WAS,25.8,rotoguru_gid,Michael Gallup,dk,5600,michael gallup,DAL,WR,00-0034764,auto_exact,high
-T.J. Jones,WR,NYG,0,5458,WR,NYG@BUF,,rotoguru_gid,T.J. Jones,dk,0,tj jones,NYG,WR,00-0031189,auto_exact,high
 Adam Thielen,WR,MIN,7100,5333,WR,MIN@GB,13.3,rotoguru_gid,Adam Thielen,dk,7100,adam thielen,MIN,WR,00-0030035,auto_exact,high
 Isaiah McKenzie,WR,BUF,3000,5574,WR,BUF@NYG,0.0,rotoguru_gid,Isaiah McKenzie,dk,3000,isaiah mckenzie,BUF,WR,00-0033466,auto_exact,high
 Cole Beasley,WR,BUF,3800,5163,WR,BUF@NYG,9.0,rotoguru_gid,Cole Beasley,dk,3800,cole beasley,BUF,WR,00-0029000,auto_exact,high

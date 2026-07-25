@@ -117,7 +117,6 @@ Mike Davis,RB,SEA,3000,5320,RB,SEA@CHI,,rotoguru_gid,Mike Davis,dk,3000,mike dav
 Damien Williams,RB,KC,3000,2957,RB,KC@PIT,0.0,rotoguru_gid,Damien Williams,dk,3000,damien williams,KC,RB,00-0030874,auto_exact,high
 Shaun Wilson,RB,TB,3000,5643,RB,TB@PHI,0.6,rotoguru_gid,Shaun Wilson,dk,3000,shaun wilson,TB,RB,00-0034621,auto_exact,high
 C.J. Ham,RB,MIN,3000,5581,RB,MIN@GB,0.0,rotoguru_gid,C.J. Ham,dk,3000,cj ham,MIN,RB,00-0032918,auto_exact,high
-Brandon Wilds,RB,ARI,0,5522,RB,ARI@LA,,rotoguru_gid,Brandon Wilds,dk,0,brandon wilds,ARI,RB,00-0032593,auto_fallback_team_mismatch,medium
 Alex Armah,RB,CAR,3000,5644,RB,CAR@ATL,6.1,rotoguru_gid,Alex Armah,dk,3000,alex armah,CAR,RB,00-0033296,auto_exact,high
 Spencer Ware,RB,KC,4100,2914,RB,KC@PIT,5.0,rotoguru_gid,Spencer Ware,dk,4100,spencer ware,KC,RB,00-0030414,auto_exact,high
 Jalen Richard,RB,LV,3400,5490,RB,LV@DEN,16.9,rotoguru_gid,Jalen Richard,dk,3400,jalen richard,LV,RB,00-0033025,auto_exact,high
@@ -204,7 +203,6 @@ Pierre Garcon,WR,SF,5000,3754,WR,SF@DET,4.1,rotoguru_gid,Pierre Garcon,dk,5000,p
 Phillip Dorsett,WR,NE,4500,5384,WR,NE@JAX,19.6,rotoguru_gid,Phillip Dorsett,dk,4500,phillip dorsett,NE,WR,00-0032208,auto_exact,high
 Anthony Miller,WR,CHI,3700,5632,WR,CHI@SEA,3.4,rotoguru_gid,Anthony Miller,dk,3700,anthony miller,CHI,WR,00-0034353,auto_exact,high
 Odell Beckham Jr.,WR,NYG,8500,5323,WR,NYG@DAL,25.0,rotoguru_gid,Odell Beckham Jr.,dk,8500,odell beckham,NYG,WR,00-0031235,auto_exact,high
-Kamar Aiken,WR,PHI,0,5275,WR,PHI@TB,,rotoguru_gid,Kamar Aiken,dk,0,kamar aiken,PHI,WR,00-0028497,auto_exact,high
 Taylor Gabriel,WR,CHI,3900,5361,WR,CHI@SEA,7.5,rotoguru_gid,Taylor Gabriel,dk,3900,taylor gabriel,CHI,WR,00-0031228,auto_exact,high
 Chris Conley,WR,KC,3300,5385,WR,KC@PIT,2.5,rotoguru_gid,Chris Conley,dk,3300,chris conley,KC,WR,00-0032128,auto_exact,high
 Ted Ginn Jr.,WR,NO,4800,3670,WR,NO@CLE,20.3,rotoguru_gid,Ted Ginn Jr.,dk,4800,ted ginn,NO,WR,00-0025396,auto_exact,high
@@ -218,7 +216,6 @@ Kendrick Bourne,WR,SF,3000,5598,WR,SF@DET,0.0,rotoguru_gid,Kendrick Bourne,dk,30
 Deonte Thompson,WR,DAL,3600,5160,WR,DAL@NYG,5.7,rotoguru_gid,Deonte Thompson,dk,3600,deonte thompson,DAL,WR,00-0029388,auto_fallback_team_mismatch,medium
 Demarcus Robinson,WR,KC,3100,5515,WR,KC@PIT,0.0,rotoguru_gid,Demarcus Robinson,dk,3100,demarcus robinson,KC,WR,00-0032775,auto_exact,high
 Danny Amendola,WR,MIA,4600,3851,WR,MIA@NYJ,6.6,rotoguru_gid,Danny Amendola,dk,4600,danny amendola,MIA,WR,00-0026035,auto_exact,high
-Martavis Bryant,WR,LV,0,5367,WR,LV@DEN,,rotoguru_gid,Martavis Bryant,dk,0,martavis bryant,LV,WR,00-0031373,auto_exact,high
 Randall Cobb,WR,GB,4600,5125,WR,GB@MIN,32.2,rotoguru_gid,Randall Cobb,dk,4600,randall cobb,GB,WR,00-0028002,auto_exact,high
 Demaryius Thomas,WR,DEN,5600,3997,WR,DEN@LV,18.3,rotoguru_gid,Demaryius Thomas,dk,5600,demaryius thomas,DEN,WR,00-0027874,auto_fallback_team_mismatch,medium
 Christian Kirk,WR,ARI,3600,5636,WR,ARI@LA,1.4,rotoguru_gid,Christian Kirk,dk,3600,christian kirk,ARI,WR,00-0034775,auto_exact,high

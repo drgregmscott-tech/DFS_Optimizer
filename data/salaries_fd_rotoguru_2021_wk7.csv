@@ -19,7 +19,6 @@ QB,DEN,7200,1439,Teddy Bridgewater,Teddy,Bridgewater,CLE,16.86,rotoguru_gid,Tedd
 QB,DET,6700,1490,Jared Goff,Jared,Goff,LA,15.25,rotoguru_gid,Jared Goff,fd,6700,jared goff,DET,QB,00-0033106,auto_exact,high
 QB,CLE,6000,1435,Case Keenum,Case,Keenum,DEN,0.12,rotoguru_gid,Case Keenum,fd,6000,case keenum,CLE,QB,00-0028986,auto_exact,high
 QB,SEA,6800,1426,Geno Smith,Geno,Smith,NO,6.933333333333333,rotoguru_gid,Geno Smith,fd,6800,geno smith,SEA,QB,00-0030565,auto_exact,high
-QB,NYJ,0,1576,Mike White,Mike,White,NE,,rotoguru_gid,Mike White,fd,0,mike white,NYJ,QB,00-0034401,auto_exact,high
 QB,KC,8800,1523,Patrick Mahomes II,Patrick,Mahomes II,TEN,26.98,rotoguru_gid,Patrick Mahomes II,fd,8800,patrick mahomes,KC,QB,00-0033873,auto_exact,high
 QB,SF,7200,1452,Jimmy Garoppolo,Jimmy,Garoppolo,IND,14.9,rotoguru_gid,Jimmy Garoppolo,fd,7200,jimmy garoppolo,SF,QB,00-0031345,auto_exact,high
 QB,CHI,6500,1567,Justin Fields,Justin,Fields,TB,7.746666666666666,rotoguru_gid,Justin Fields,fd,6500,justin fields,CHI,QB,00-0036945,auto_exact,high
@@ -94,7 +93,6 @@ RB,MIA,5200,5441,Malcolm Brown,Malcolm,Brown,ATL,3.266666666666666,rotoguru_gid,
 RB,SEA,5200,5738,Travis Homer,Travis,Homer,NO,2.9,rotoguru_gid,Travis Homer,fd,5200,travis homer,SEA,RB,00-0035594,auto_exact,high
 RB,CHI,6100,2957,Damien Williams,Damien,Williams,TB,7.359999999999999,rotoguru_gid,Damien Williams,fd,6100,damien williams,CHI,RB,00-0030874,auto_exact,high
 RB,CLE,4500,5627,John Kelly,John,Kelly,DEN,,rotoguru_gid,John Kelly,fd,4500,john kelly,CLE,RB,00-0034808,auto_exact,high
-RB,KC,0,5963,Derrick Gore,Derrick,Gore,TEN,,rotoguru_gid,Derrick Gore,fd,0,derrick gore,KC,RB,00-0035715,auto_exact,high
 RB,ATL,4500,5492,Keith Smith,Keith,Smith,MIA,1.02,rotoguru_gid,Keith Smith,fd,4500,keith smith,ATL,RB,00-0030968,auto_exact,high
 RB,ATL,6300,5320,Mike Davis,Mike,Davis,MIA,9.64,rotoguru_gid,Mike Davis,fd,6300,mike davis,ATL,RB,00-0032063,auto_exact,high
 RB,CHI,4700,5815,Ryan Nall,Ryan,Nall,TB,0.0,rotoguru_gid,Ryan Nall,fd,4700,ryan nall,CHI,RB,00-0034597,auto_exact,high

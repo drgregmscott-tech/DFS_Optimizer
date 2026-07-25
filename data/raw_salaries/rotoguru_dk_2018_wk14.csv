@@ -2,7 +2,6 @@ Name,Position,TeamAbbrev,Salary,ID,Roster Position,Game Info,AvgPointsPerGame,id
 Dak Prescott,QB,DAL,5600,1501,QB,DAL@PHI,17.925,rotoguru_gid
 Tom Brady,QB,NE,5800,1131,QB,NE@MIA,19.37333333333333,rotoguru_gid
 Andrew Luck,QB,IND,5900,1409,QB,IND@HOU,23.166666666666668,rotoguru_gid
-Josh Johnson,QB,WAS,0,1320,QB,WAS@NYG,,rotoguru_gid
 Patrick Mahomes II,QB,KC,7000,1523,QB,KC@BAL,30.97666666666667,rotoguru_gid
 Josh Allen,QB,BUF,5500,1529,QB,BUF@NYJ,16.1025,rotoguru_gid
 Ryan Tannehill,QB,MIA,4800,1410,QB,MIA@NE,15.074285714285713,rotoguru_gid
@@ -40,7 +39,6 @@ Josh McCown,QB,NYJ,4400,1175,QB,NYJ@BUF,8.253333333333332,rotoguru_gid
 DeShone Kizer,QB,GB,4300,1517,QB,GB@ATL,0.2,rotoguru_gid
 Mark Sanchez,QB,WAS,4000,1339,QB,WAS@NYG,3.8,rotoguru_gid
 Taysom Hill,QB,NO,4000,1530,QB,NO@TB,2.255,rotoguru_gid
-Kyle Lauletta,QB,NYG,0,1535,QB,NYG@WAS,,rotoguru_gid
 Derrick Henry,RB,TEN,3600,5445,RB,TEN@JAX,8.043333333333333,rotoguru_gid
 Ezekiel Elliott,RB,DAL,8600,5444,RB,DAL@PHI,23.441666666666666,rotoguru_gid
 Saquon Barkley,RB,NYG,8900,5614,RB,NYG@WAS,26.55,rotoguru_gid
@@ -229,7 +227,6 @@ Brandin Cooks,WR,LA,6800,5255,WR,LA@CHI,17.391666666666666,rotoguru_gid
 Quincy Enunwa,WR,NYJ,3700,5420,WR,NYJ@BUF,8.27,rotoguru_gid
 Laquon Treadwell,WR,MIN,3100,5453,WR,MIN@SEA,5.408333333333334,rotoguru_gid
 Tyrell Williams,WR,LAC,4600,5432,WR,LAC@CIN,9.983333333333333,rotoguru_gid
-Jalen Tolliver,WR,ARI,0,5707,WR,ARI@DET,,rotoguru_gid
 Kendrick Bourne,WR,SF,3400,5598,WR,SF@DEN,6.558333333333334,rotoguru_gid
 Corey Davis,WR,TEN,5100,5550,WR,TEN@JAX,13.483333333333334,rotoguru_gid
 Keith Kirkwood,WR,NO,3500,5695,WR,NO@TB,7.575,rotoguru_gid

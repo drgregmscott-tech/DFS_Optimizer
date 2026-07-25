@@ -84,7 +84,6 @@ Branden Oliver,RB,SDG,3000,2982,RB,SDG@BAL,4.228571428571429,rotoguru_gid,Brande
 Mike Tolbert,RB,CAR,3000,2647,RB,CAR@IND,5.366666666666667,rotoguru_gid,Mike Tolbert,dk,3000,mike tolbert,CAR,RB,00-0026069,auto_exact,high
 Kyle Juszczyk,RB,BAL,3000,2908,RB,BAL@SDG,5.714285714285714,rotoguru_gid,Kyle Juszczyk,dk,3000,kyle juszczyk,BAL,RB,00-0029892,auto_exact,high
 Jeremy Langford,RB,CHI,3000,5371,RB,CHI@MIN,3.4166666666666665,rotoguru_gid,Jeremy Langford,dk,3000,jeremy langford,CHI,RB,00-0031569,auto_exact,high
-Kendall Gaskins,RB,SF,0,5426,RB,SF@LA,,rotoguru_gid,Kendall Gaskins,dk,0,kendall gaskins,SF,RB,00-0030039,auto_exact,high
 Matt Asiata,RB,MIN,3000,2873,RB,MIN@CHI,2.8000000000000003,rotoguru_gid,Matt Asiata,dk,3000,matt asiata,MIN,RB,00-0028198,auto_exact,high
 Mike Davis,RB,SF,3000,5320,RB,SF@LA,1.475,rotoguru_gid,Mike Davis,dk,3000,mike davis,SF,RB,00-0032063,auto_exact,high
 James Starks,RB,GB,4300,2777,RB,GB@DEN,10.183333333333332,rotoguru_gid,James Starks,dk,4300,james starks,GB,RB,00-0027791,auto_exact,high
@@ -192,7 +191,6 @@ Randall Cobb,WR,GB,7000,5125,WR,GB@DEN,15.533333333333331,rotoguru_gid,Randall C
 Martavis Bryant,WR,PIT,5300,5367,WR,PIT@CIN,25.15,rotoguru_gid,Martavis Bryant,dk,5300,martavis bryant,PIT,WR,00-0031373,auto_exact,high
 Kenny Stills,WR,MIA,3000,5212,WR,MIA@NE,5.116666666666667,rotoguru_gid,Kenny Stills,dk,3000,kenny stills,MIA,WR,00-0030085,auto_exact,high
 Chris Givens,WR,BAL,3000,5204,WR,BAL@SDG,1.9,rotoguru_gid,Chris Givens,dk,3000,chris givens,BAL,WR,00-0029614,auto_exact,high
-Brandon LaFell,WR,NE,0,3946,WR,NE@MIA,4.5,rotoguru_gid,Brandon LaFell,dk,0,brandon lafell,NE,WR,00-0027681,auto_exact,high
 Ted Ginn Jr.,WR,CAR,3400,3670,WR,CAR@IND,11.433333333333332,rotoguru_gid,Ted Ginn Jr.,dk,3400,ted ginn,CAR,WR,00-0025396,auto_exact,high
 Mike Evans,WR,TB,6800,5253,WR,TB@ATL,13.36,rotoguru_gid,Mike Evans,dk,6800,mike evans,TB,WR,00-0031408,auto_exact,high
 Taylor Gabriel,WR,CLE,3000,5361,WR,CLE@ARI,5.171428571428572,rotoguru_gid,Taylor Gabriel,dk,3000,taylor gabriel,CLE,WR,00-0031228,auto_exact,high
@@ -207,7 +205,6 @@ Jaron Brown,WR,ARI,3000,5229,WR,ARI@CLE,2.3000000000000003,rotoguru_gid,Jaron Br
 Steve Johnson,WR,SDG,3200,3737,WR,SDG@BAL,11.9,rotoguru_gid,Steve Johnson,dk,3200,steve johnson,SDG,WR,00-0026364,auto_fallback_team_mismatch,medium
 Charles Johnson,WR,MIN,3000,3103,WR,MIN@CHI,3.425,rotoguru_gid,Charles Johnson,dk,3000,charles johnson,MIN,WR,00-0025470,auto_fallback_name_only_position_mismatch,low
 Roddy White,WR,ATL,3900,3571,WR,ATL@TB,5.514285714285714,rotoguru_gid,Roddy White,dk,3900,roddy white,ATL,WR,00-0023462,auto_exact,high
-Adam Humphries,WR,TB,0,5412,WR,TB@ATL,1.7,rotoguru_gid,Adam Humphries,dk,0,adam humphries,TB,WR,00-0032009,auto_exact,high
 Emmanuel Sanders,WR,DEN,7500,3983,WR,DEN@GB,19.116666666666667,rotoguru_gid,Emmanuel Sanders,dk,7500,emmanuel sanders,DEN,WR,00-0027685,auto_exact,high
 Albert Wilson,WR,KC,3000,5339,WR,KC@DET,6.06,rotoguru_gid,Albert Wilson,dk,3000,albert wilson,KC,WR,00-0030669,auto_exact,high
 Bennie Fowler,WR,DEN,3000,5353,WR,DEN@GB,2.95,rotoguru_gid,Bennie Fowler,dk,3000,bennie fowler,DEN,WR,00-0030670,auto_exact,high

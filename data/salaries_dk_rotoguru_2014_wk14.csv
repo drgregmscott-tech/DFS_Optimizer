@@ -58,9 +58,7 @@ Fred Jackson,RB,BUF,5300,2520,RB,BUF@DEN,13.21,rotoguru_gid,Fred Jackson,dk,5300
 Justin Forsett,RB,BAL,6900,2642,RB,BAL@MIA,17.883333333333333,rotoguru_gid,Justin Forsett,dk,6900,justin forsett,BAL,RB,00-0026373,auto_exact,high
 Steven Jackson,RB,ATL,3900,2418,RB,ATL@GB,9.908333333333331,rotoguru_gid,Steven Jackson,dk,3900,steven jackson,ATL,RB,00-0022736,auto_exact,high
 Lamar Miller,RB,MIA,4500,2859,RB,MIA@BAL,13.25,rotoguru_gid,Lamar Miller,dk,4500,lamar miller,MIA,RB,00-0029615,auto_exact,high
-Kerwynn Williams,RB,ARI,0,2918,RB,ARI@KC,,rotoguru_gid,Kerwynn Williams,dk,0,kerwynn williams,ARI,RB,00-0030117,auto_exact,high
 Isaiah Crowell,RB,CLE,5000,2969,RB,CLE@IND,8.299999999999999,rotoguru_gid,Isaiah Crowell,dk,5000,isaiah crowell,CLE,RB,00-0030656,auto_exact,high
-Dan Herron,RB,IND,0,2855,RB,IND@CLE,5.785714285714286,rotoguru_gid,Dan Herron,dk,0,dan herron,IND,RB,00-0029588,auto_exact,high
 Latavius Murray,RB,LV,3800,2899,RB,LV@SF,3.736363636363636,rotoguru_gid,Latavius Murray,dk,3800,latavius murray,LV,RB,00-0030513,auto_exact,high
 Fozzy Whittaker,RB,CAR,3000,2916,RB,CAR@NO,4.3,rotoguru_gid,Fozzy Whittaker,dk,3000,fozzy whittaker,CAR,RB,00-0029731,auto_exact,high
 Donald Brown,RB,SDG,3000,2705,RB,SDG@NE,4.955555555555556,rotoguru_gid,Donald Brown,dk,3000,donald brown,SDG,RB,00-0027003,auto_fallback_team_mismatch,medium
@@ -269,7 +267,6 @@ Rueben Randle,WR,NYG,4300,5158,WR,NYG@TEN,10.991666666666667,rotoguru_gid,Rueben
 Ted Ginn Jr.,WR,ARI,3100,3670,WR,ARI@KC,2.908333333333333,rotoguru_gid,Ted Ginn Jr.,dk,3100,ted ginn,ARI,WR,00-0025396,auto_exact,high
 Josh Morgan,WR,CHI,3000,3774,WR,CHI@DAL,1.67,rotoguru_gid,Josh Morgan,dk,3000,josh morgan,CHI,WR,00-0026314,auto_exact,high
 Brandon Gibson,WR,MIA,3000,3862,WR,MIA@BAL,4.42,rotoguru_gid,Brandon Gibson,dk,3000,brandon gibson,MIA,WR,00-0026937,auto_exact,high
-Chris Owusu,WR,NYJ,0,5187,WR,NYJ@MIN,2.925,rotoguru_gid,Chris Owusu,dk,0,chris owusu,NYJ,WR,00-0028905,auto_exact,high
 Greg Little,WR,CIN,3000,5090,WR,CIN@PIT,2.825,rotoguru_gid,Greg Little,dk,3000,greg little,CIN,WR,00-0027997,auto_exact,high
 Davante Adams,WR,GB,4200,5263,WR,GB@ATL,8.058333333333334,rotoguru_gid,Davante Adams,dk,4200,davante adams,GB,WR,00-0031381,auto_exact,high
 Reggie Wayne,WR,IND,4800,3303,WR,IND@CLE,12.054545454545456,rotoguru_gid,Reggie Wayne,dk,4800,reggie wayne,IND,WR,00-0020498,auto_exact,high

@@ -90,7 +90,6 @@ Chris Polk,RB,HOU,3300,2879,RB,HOU@IND,6.325,rotoguru_gid,Chris Polk,dk,3300,chr
 Ronnie Hillman,RB,DEN,4900,2856,RB,DEN@LV,9.225,rotoguru_gid,Ronnie Hillman,dk,4900,ronnie hillman,DEN,RB,00-0029683,auto_exact,high
 Jeremy Hill,RB,CIN,6100,2928,RB,CIN@SEA,11.875,rotoguru_gid,Jeremy Hill,dk,6100,jeremy hill,CIN,RB,00-0031301,auto_exact,high
 C.J. Spiller,RB,NO,3800,2775,RB,NO@PHI,10.033333333333331,rotoguru_gid,C.J. Spiller,dk,3800,cj spiller,NO,RB,00-0027861,auto_exact,high
-Dan Herron,RB,BUF,0,2855,RB,BUF@TEN,,rotoguru_gid,Dan Herron,dk,0,dan herron,BUF,RB,00-0029588,auto_fallback_team_mismatch,medium
 Dexter McCluster,RB,TEN,3000,3953,RB,TEN@BUF,7.466666666666666,rotoguru_gid,Dexter McCluster,dk,3000,dexter mccluster,TEN,RB,00-0027651,auto_fallback_name_only_position_mismatch,low
 Ameer Abdullah,RB,DET,4100,2995,RB,DET@ARI,10.2,rotoguru_gid,Ameer Abdullah,dk,4100,ameer abdullah,DET,RB,00-0032104,auto_exact,high
 Juwan Thompson,RB,DEN,3000,2965,RB,DEN@LV,0.275,rotoguru_gid,Juwan Thompson,dk,3000,juwan thompson,DEN,RB,00-0030705,auto_exact,high
@@ -102,11 +101,9 @@ Michael Burton,RB,DET,3000,5415,RB,DET@ARI,0.375,rotoguru_gid,Michael Burton,dk,
 Alfred Morris,RB,WAS,4000,2871,RB,WAS@ATL,8.675,rotoguru_gid,Alfred Morris,dk,4000,alfred morris,WAS,RB,00-0029141,auto_exact,high
 Jamize Olawale,RB,LV,3000,2913,RB,LV@DEN,2.7,rotoguru_gid,Jamize Olawale,dk,3000,jamize olawale,LV,RB,00-0029492,auto_exact,high
 Jarryd Hayne,RB,SF,3000,5401,RB,SF@NYG,0.575,rotoguru_gid,Jarryd Hayne,dk,3000,jarryd hayne,SF,RB,00-0031493,auto_exact,high
-Zurlon Tipton,RB,IND,0,2988,RB,IND@HOU,,rotoguru_gid,Zurlon Tipton,dk,0,zurlon tipton,IND,RB,00-0030855,auto_exact,high
 Tre Mason,RB,LA,3700,2932,RB,LA@GB,3.0,rotoguru_gid,Tre Mason,dk,3700,tre mason,LA,RB,00-0031391,auto_exact,high
 Christine Michael,RB,DAL,3000,2898,RB,DAL@NE,-0.1,rotoguru_gid,Christine Michael,dk,3000,christine michael,DAL,RB,00-0030432,auto_fallback_team_mismatch,medium
 Bernard Pierce,RB,JAX,3000,2861,RB,JAX@TB,1.0499999999999998,rotoguru_gid,Bernard Pierce,dk,3000,bernard pierce,JAX,RB,00-0029264,auto_exact,high
-Rod Smith,RB,DAL,0,3191,RB,DAL@NE,,rotoguru_gid,Rod Smith,dk,0,rod smith,DAL,RB,00-0031900,auto_exact,high
 Jacquizz Rodgers,RB,CHI,3000,2818,RB,CHI@KC,1.45,rotoguru_gid,Jacquizz Rodgers,dk,3000,jacquizz rodgers,CHI,RB,00-0028083,auto_exact,high
 John Kuhn,RB,GB,3000,2549,RB,GB@LA,1.975,rotoguru_gid,John Kuhn,dk,3000,john kuhn,GB,RB,00-0022999,auto_exact,high
 Tevin Coleman,RB,ATL,4200,2994,RB,ATL@WAS,8.6,rotoguru_gid,Tevin Coleman,dk,4200,tevin coleman,ATL,RB,00-0032058,auto_exact,high
@@ -207,7 +204,6 @@ Randall Cobb,WR,GB,7500,5125,WR,GB@LA,20.525,rotoguru_gid,Randall Cobb,dk,7500,r
 Terrance Williams,WR,DAL,4300,5216,WR,DAL@NE,10.825,rotoguru_gid,Terrance Williams,dk,4300,terrance williams,DAL,WR,00-0030542,auto_exact,high
 Tyler Lockett,WR,SEA,3400,5386,WR,SEA@CIN,8.0,rotoguru_gid,Tyler Lockett,dk,3400,tyler lockett,SEA,WR,00-0032211,auto_exact,high
 Darrius Heyward-Bey,WR,PIT,3500,3848,WR,PIT@SDG,11.375,rotoguru_gid,Darrius Heyward-Bey,dk,3500,darrius heyward bey,PIT,WR,00-0026983,auto_exact,high
-Jeremy Ross,WR,BAL,0,5194,WR,BAL@CLE,,rotoguru_gid,Jeremy Ross,dk,0,jeremy ross,BAL,WR,00-0028249,auto_fallback_team_mismatch,medium
 Marquise Goodwin,WR,BUF,3000,5205,WR,BUF@TEN,,rotoguru_gid,Marquise Goodwin,dk,3000,marquise goodwin,BUF,WR,00-0030068,auto_exact,high
 Vincent Jackson,WR,TB,5000,3550,WR,TB@JAX,15.8,rotoguru_gid,Vincent Jackson,dk,5000,vincent jackson,TB,WR,00-0023496,auto_exact,high
 Roddy White,WR,ATL,3500,3571,WR,ATL@WAS,3.8,rotoguru_gid,Roddy White,dk,3500,roddy white,ATL,WR,00-0023462,auto_exact,high
@@ -267,7 +263,6 @@ Jaron Brown,WR,ARI,3000,5229,WR,ARI@DET,3.7,rotoguru_gid,Jaron Brown,dk,3000,jar
 Miles Austin,WR,PHI,3300,3610,WR,PHI@NO,4.325,rotoguru_gid,Miles Austin,dk,3300,miles austin,PHI,WR,00-0023921,auto_exact,high
 Jacoby Jones,WR,SDG,3000,3678,WR,SDG@PIT,0.0,rotoguru_gid,Jacoby Jones,dk,3000,jacoby jones,SDG,WR,00-0025460,auto_fallback_team_mismatch,medium
 Percy Harvin,WR,BUF,4600,3802,WR,BUF@TEN,12.5,rotoguru_gid,Percy Harvin,dk,4600,percy harvin,BUF,WR,00-0026998,auto_exact,high
-Denarius Moore,WR,BUF,0,5109,WR,BUF@TEN,,rotoguru_gid,Denarius Moore,dk,0,denarius moore,BUF,WR,00-0028086,auto_exact,high
 Gary Barnidge,TE,CLE,3800,4401,TE,CLE@BAL,13.625,rotoguru_gid,Gary Barnidge,dk,3800,gary barnidge,CLE,TE,00-0026281,auto_exact,high
 Antonio Gates,TE,SDG,4200,4270,TE,SDG@PIT,,rotoguru_gid,Antonio Gates,dk,4200,antonio gates,SDG,TE,00-0021547,auto_fallback_team_mismatch,medium
 Tyler Eifert,TE,CIN,4600,4568,TE,CIN@SEA,14.8,rotoguru_gid,Tyler Eifert,dk,4600,tyler eifert,CIN,TE,00-0030549,auto_exact,high

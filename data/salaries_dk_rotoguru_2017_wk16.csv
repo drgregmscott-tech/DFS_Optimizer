@@ -100,7 +100,6 @@ Ameer Abdullah,RB,DET,3800,2995,RB,DET@CIN,9.325,rotoguru_gid,Ameer Abdullah,dk,
 Derek Watt,RB,LAC,3000,5504,RB,LAC@NYJ,0.2928571428571428,rotoguru_gid,Derek Watt,dk,3000,derek watt,LAC,RB,00-0032897,auto_exact,high
 Corey Clement,RB,PHI,3600,5583,RB,PHI@LV,7.45,rotoguru_gid,Corey Clement,dk,3600,corey clement,PHI,RB,00-0033725,auto_exact,high
 Charles Sims,RB,TB,3500,2931,RB,TB@CAR,5.064285714285715,rotoguru_gid,Charles Sims,dk,3500,charles sims,TB,RB,00-0031390,auto_exact,high
-Stevan Ridley,RB,PIT,0,2829,RB,PIT@HOU,,rotoguru_gid,Stevan Ridley,dk,0,stevan ridley,PIT,RB,00-0028011,auto_exact,high
 Jonathan Stewart,RB,CAR,3700,2612,RB,CAR@TB,8.814285714285713,rotoguru_gid,Jonathan Stewart,dk,3700,jonathan stewart,CAR,RB,00-0026153,auto_exact,high
 Matt Forte,RB,NYJ,3800,2613,RB,NYJ@LAC,10.890909090909092,rotoguru_gid,Matt Forte,dk,3800,matt forte,NYJ,RB,00-0026184,auto_exact,high
 LeGarrette Blount,RB,PHI,3900,2721,RB,PHI@LV,7.378571428571428,rotoguru_gid,LeGarrette Blount,dk,3900,legarrette blount,PHI,RB,00-0027325,auto_exact,high
@@ -151,7 +150,6 @@ Austin Ekeler,RB,LAC,4000,5575,RB,LAC@NYJ,7.778571428571429,rotoguru_gid,Austin 
 Jamize Olawale,RB,LV,3000,2913,RB,LV@PHI,1.96,rotoguru_gid,Jamize Olawale,dk,3000,jamize olawale,LV,RB,00-0029492,auto_exact,high
 Jay Prosch,RB,HOU,3000,2980,RB,HOU@PIT,0.4,rotoguru_gid,Jay Prosch,dk,3000,jay prosch,HOU,RB,00-0031085,auto_exact,high
 Dan Vitale,RB,CLE,3000,5517,RB,CLE@CHI,0.35,rotoguru_gid,Dan Vitale,dk,3000,dan vitale,CLE,RB,00-0032794,manual_override,high
-Bronson Hill,RB,ARI,0,5529,RB,ARI@NYG,,rotoguru_gid,Bronson Hill,dk,0,bronson hill,ARI,RB,00-0032298,auto_exact,high
 Elijah McGuire,RB,NYJ,3600,5544,RB,NYJ@LAC,5.371428571428572,rotoguru_gid,Elijah McGuire,dk,3600,elijah mcguire,NYJ,RB,00-0033295,auto_exact,high
 Larry Fitzgerald,WR,ARI,6800,3501,WR,ARI@NYG,16.442857142857143,rotoguru_gid,Larry Fitzgerald,dk,6800,larry fitzgerald,ARI,WR,00-0022921,auto_exact,high
 Julio Jones,WR,ATL,7900,5089,WR,ATL@NO,16.142857142857142,rotoguru_gid,Julio Jones,dk,7900,julio jones,ATL,WR,00-0027944,auto_exact,high
@@ -174,7 +172,6 @@ Doug Baldwin,WR,SEA,6300,5136,WR,SEA@DAL,13.62857142857143,rotoguru_gid,Doug Bal
 Eric Decker,WR,TEN,3200,3902,WR,TEN@LA,7.014285714285714,rotoguru_gid,Eric Decker,dk,3200,eric decker,TEN,WR,00-0027690,auto_exact,high
 Deonte Thompson,WR,BUF,3000,5160,WR,BUF@NE,6.9692307692307685,rotoguru_gid,Deonte Thompson,dk,3000,deonte thompson,BUF,WR,00-0029388,auto_exact,high
 Chris Godwin,WR,TB,3000,5579,WR,TB@CAR,3.971428571428572,rotoguru_gid,Chris Godwin,dk,3000,chris godwin,TB,WR,00-0033921,auto_exact,high
-Jaelen Strong,WR,JAX,0,5383,WR,JAX@SF,0.0,rotoguru_gid,Jaelen Strong,dk,0,jaelen strong,JAX,WR,00-0031560,auto_exact,high
 Ryan Grant,WR,WAS,3200,2580,WR,WAS@DEN,7.821428571428571,rotoguru_gid,Ryan Grant,dk,3200,ryan grant,WAS,WR,00-0031068,auto_exact,high
 Sammy Watkins,WR,LA,4400,5252,WR,LA@TEN,9.80714285714286,rotoguru_gid,Sammy Watkins,dk,4400,sammy watkins,LA,WR,00-0031325,auto_exact,high
 Kelvin Benjamin,WR,BUF,4200,5257,WR,BUF@NE,10.125,rotoguru_gid,Kelvin Benjamin,dk,4200,kelvin benjamin,BUF,WR,00-0031359,auto_exact,high
@@ -212,7 +209,6 @@ Rishard Matthews,WR,TEN,5100,5182,WR,TEN@LA,12.558333333333332,rotoguru_gid,Rish
 Marquise Goodwin,WR,SF,5200,5205,WR,SF@JAX,11.364285714285714,rotoguru_gid,Marquise Goodwin,dk,5200,marquise goodwin,SF,WR,00-0030068,auto_exact,high
 Kendall Wright,WR,CHI,3800,5162,WR,CHI@CLE,8.2,rotoguru_gid,Kendall Wright,dk,3800,kendall wright,CHI,WR,00-0029708,auto_exact,high
 Albert Wilson,WR,KC,3200,5339,WR,KC@MIA,7.7,rotoguru_gid,Albert Wilson,dk,3200,albert wilson,KC,WR,00-0030669,auto_exact,high
-Michael Clark,WR,GB,0,5610,WR,GB@MIN,,rotoguru_gid,Michael Clark,dk,0,michael clark,GB,WR,00-0033352,auto_exact,high
 Dez Bryant,WR,DAL,6000,3891,WR,DAL@SEA,12.55,rotoguru_gid,Dez Bryant,dk,6000,dez bryant,DAL,WR,00-0027902,auto_exact,high
 Robert Woods,WR,LA,6500,5217,WR,LA@TEN,14.909090909090908,rotoguru_gid,Robert Woods,dk,6500,robert woods,LA,WR,00-0030431,auto_exact,high
 Danny Amendola,WR,NE,4800,3851,WR,NE@BUF,9.830769230769231,rotoguru_gid,Danny Amendola,dk,4800,danny amendola,NE,WR,00-0026035,auto_exact,high

@@ -98,7 +98,6 @@ Jalen Richard,RB,LV,4300,5490,RB,LV@BUF,5.433333333333334,rotoguru_gid,Jalen Ric
 Kenyan Drake,RB,ARI,6000,5446,RB,ARI@CAR,11.633333333333333,rotoguru_gid,Kenyan Drake,dk,6000,kenyan drake,ARI,RB,00-0033118,auto_exact,high
 Royce Freeman,RB,DEN,4000,5620,RB,DEN@NYJ,3.233333333333333,rotoguru_gid,Royce Freeman,dk,4000,royce freeman,DEN,RB,00-0034838,auto_exact,high
 Kalen Ballage,RB,NYJ,4300,5628,RB,NYJ@DEN,6.949999999999999,rotoguru_gid,Kalen Ballage,dk,4300,kalen ballage,NYJ,RB,00-0034799,auto_fallback_team_mismatch,medium
-Dontrell Hilliard,RB,CLE,0,5683,RB,CLE@DAL,,rotoguru_gid,Dontrell Hilliard,dk,0,dontrell hilliard,CLE,RB,00-0034253,auto_fallback_team_mismatch,medium
 Jeff Wilson Jr.,RB,SF,4900,5703,RB,SF@PHI,7.399999999999999,rotoguru_gid,Jeff Wilson Jr.,dk,4900,jeff wilson,SF,RB,00-0034115,auto_exact,high
 J.K. Dobbins,RB,BAL,4800,5821,RB,BAL@WAS,9.9,rotoguru_gid,J.K. Dobbins,dk,4800,jk dobbins,BAL,RB,00-0036158,auto_exact,high
 Austin Ekeler,RB,LAC,7100,5575,RB,LAC@TB,19.933333333333334,rotoguru_gid,Austin Ekeler,dk,7100,austin ekeler,LAC,RB,00-0033699,auto_exact,high
@@ -111,7 +110,6 @@ Michael Burton,RB,NO,4000,5415,RB,NO@DET,0.0,rotoguru_gid,Michael Burton,dk,4000
 LeSean McCoy,RB,TB,4000,2707,RB,TB@LAC,4.233333333333333,rotoguru_gid,LeSean McCoy,dk,4000,lesean mccoy,TB,RB,00-0027029,auto_exact,high
 La'Mical Perine,RB,NYJ,4000,5863,RB,NYJ@DEN,3.0,rotoguru_gid,La'Mical Perine,dk,4000,lamical perine,NYJ,RB,00-0036269,auto_exact,high
 Keith Smith,RB,ATL,4000,5492,RB,ATL@GB,0.8666666666666667,rotoguru_gid,Keith Smith,dk,4000,keith smith,ATL,RB,00-0030968,auto_exact,high
-Theo Riddick,RB,LV,0,2907,RB,LV@BUF,,rotoguru_gid,Theo Riddick,dk,0,theo riddick,LV,RB,00-0030107,auto_exact,high
 Chandler Cox,RB,MIA,4000,5737,RB,MIA@SEA,0.0,rotoguru_gid,Chandler Cox,dk,4000,chandler cox,MIA,RB,00-0035310,manual_override,high
 Jordan Howard,RB,MIA,4100,5447,RB,MIA@SEA,6.4,rotoguru_gid,Jordan Howard,dk,4100,jordan howard,MIA,RB,00-0032780,auto_fallback_team_mismatch,medium
 Peyton Barber,RB,WAS,4000,5507,RB,WAS@BAL,5.2,rotoguru_gid,Peyton Barber,dk,4000,peyton barber,WAS,RB,00-0032741,auto_exact,high
@@ -178,13 +176,11 @@ Keenan Allen,WR,LAC,6500,5198,WR,LAC@TB,19.5,rotoguru_gid,Keenan Allen,dk,6500,k
 Jalen Guyton,WR,LAC,3400,5801,WR,LAC@TB,5.1000000000000005,rotoguru_gid,Jalen Guyton,dk,3400,jalen guyton,LAC,WR,00-0035414,auto_exact,high
 Laviska Shenault Jr.,WR,JAX,4400,5847,WR,JAX@CIN,10.766666666666666,rotoguru_gid,Laviska Shenault Jr.,dk,4400,laviska shenault,JAX,WR,00-0036268,auto_exact,high
 Jerry Jeudy,WR,DEN,5300,5832,WR,DEN@NYJ,10.1,rotoguru_gid,Jerry Jeudy,dk,5300,jerry jeudy,DEN,WR,00-0036407,auto_exact,high
-Travis Fulgham,WR,PHI,0,5809,WR,PHI@SF,,rotoguru_gid,Travis Fulgham,dk,0,travis fulgham,PHI,WR,00-0035592,auto_exact,high
 Brandon Aiyuk,WR,SF,5000,5830,WR,SF@PHI,12.6,rotoguru_gid,Brandon Aiyuk,dk,5000,brandon aiyuk,SF,WR,00-0036261,auto_exact,high
 Damiere Byrd,WR,NE,3000,5531,WR,NE@KC,6.3,rotoguru_gid,Damiere Byrd,dk,3000,damiere byrd,NE,WR,00-0031868,auto_exact,high
 Tee Higgins,WR,CIN,4500,5839,WR,CIN@JAX,9.166666666666666,rotoguru_gid,Tee Higgins,dk,4500,tee higgins,CIN,WR,00-0036410,auto_exact,high
 Mecole Hardman,WR,KC,4300,5727,WR,KC@NE,9.0,rotoguru_gid,Mecole Hardman,dk,4300,mecole hardman,KC,WR,00-0035140,auto_exact,high
 Marquise Brown,WR,BAL,6300,5730,WR,BAL@WAS,10.2,rotoguru_gid,Marquise Brown,dk,6300,marquise brown,BAL,WR,00-0035662,auto_exact,high
-Tyron Johnson,WR,LAC,0,5878,WR,LAC@TB,,rotoguru_gid,Tyron Johnson,dk,0,tyron johnson,LAC,WR,00-0035457,auto_exact,high
 Cole Beasley,WR,BUF,4700,5163,WR,BUF@LV,13.6,rotoguru_gid,Cole Beasley,dk,4700,cole beasley,BUF,WR,00-0029000,auto_exact,high
 Kenny Stills,WR,HOU,3200,5212,WR,HOU@MIN,3.3666666666666667,rotoguru_gid,Kenny Stills,dk,3200,kenny stills,HOU,WR,00-0030085,auto_exact,high
 DeAndre Hopkins,WR,ARI,8500,5206,WR,ARI@CAR,26.53333333333333,rotoguru_gid,DeAndre Hopkins,dk,8500,deandre hopkins,ARI,WR,00-0030564,auto_exact,high
@@ -235,7 +231,6 @@ Darrius Shepherd,WR,GB,3000,5774,WR,GB@ATL,,rotoguru_gid,Darrius Shepherd,dk,300
 Russell Gage,WR,ATL,5100,5680,WR,ATL@GB,14.866666666666667,rotoguru_gid,Russell Gage,dk,5100,russell gage,ATL,WR,00-0034411,auto_exact,high
 Willie Snead,WR,BAL,4000,5287,WR,BAL@WAS,7.899999999999999,rotoguru_gid,Willie Snead,dk,4000,willie snead,BAL,WR,00-0030663,auto_exact,high
 Isaiah McKenzie,WR,BUF,3000,5574,WR,BUF@LV,4.466666666666667,rotoguru_gid,Isaiah McKenzie,dk,3000,isaiah mckenzie,BUF,WR,00-0033466,auto_exact,high
-Marcus Johnson,WR,IND,0,5587,WR,IND@CHI,,rotoguru_gid,Marcus Johnson,dk,0,marcus johnson,IND,WR,00-0032980,auto_exact,high
 Cam Sims,WR,WAS,3000,5812,WR,WAS@BAL,0.0,rotoguru_gid,Cam Sims,dk,3000,cam sims,WAS,WR,00-0034104,auto_exact,high
 Ted Ginn Jr.,WR,CHI,3400,3670,WR,CHI@IND,1.95,rotoguru_gid,Ted Ginn Jr.,dk,3400,ted ginn,CHI,WR,00-0025396,auto_exact,high
 Malik Taylor,WR,GB,3000,5879,WR,GB@ATL,,rotoguru_gid,Malik Taylor,dk,3000,malik taylor,GB,WR,00-0035480,auto_exact,high

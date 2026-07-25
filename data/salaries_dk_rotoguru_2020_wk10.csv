@@ -80,7 +80,6 @@ Mark Ingram,RB,BAL,5000,2793,RB,BAL@NE,6.666666666666667,rotoguru_gid,Mark Ingra
 Melvin Gordon,RB,DEN,5200,2991,RB,DEN@LV,14.0,rotoguru_gid,Melvin Gordon,dk,5200,melvin gordon,DEN,RB,00-0032144,auto_exact,high
 Royce Freeman,RB,DEN,4000,5620,RB,DEN@LV,2.45,rotoguru_gid,Royce Freeman,dk,4000,royce freeman,DEN,RB,00-0034838,auto_exact,high
 Jeremy McNichols,RB,TEN,4000,5542,RB,TEN@IND,2.575,rotoguru_gid,Jeremy McNichols,dk,4000,jeremy mcnichols,TEN,RB,00-0033955,auto_exact,high
-Austin Walter,RB,SF,0,5887,RB,SF@NO,,rotoguru_gid,Austin Walter,dk,0,austin walter,SF,RB,00-0035187,auto_exact,high
 Jakob Johnson,RB,NE,4000,5778,RB,NE@BAL,1.55,rotoguru_gid,Jakob Johnson,dk,4000,jakob johnson,NE,RB,00-0035726,auto_exact,high
 Adrian Peterson,RB,DET,4000,2553,RB,DET@WAS,7.9875,rotoguru_gid,Adrian Peterson,dk,4000,adrian peterson,DET,RB,00-0025394,auto_exact,high
 Cam Akers,RB,LA,4200,5819,RB,LA@SEA,3.1833333333333336,rotoguru_gid,Cam Akers,dk,4200,cam akers,LA,RB,00-0036414,auto_exact,high
@@ -91,8 +90,6 @@ James White,RB,NE,4400,2954,RB,NE@BAL,8.266666666666667,rotoguru_gid,James White
 Jordan Wilkins,RB,IND,4300,5625,RB,IND@TEN,4.9625,rotoguru_gid,Jordan Wilkins,dk,4300,jordan wilkins,IND,RB,00-0034400,auto_exact,high
 Ryan Nall,RB,CHI,4000,5815,RB,CHI@MIN,1.7666666666666666,rotoguru_gid,Ryan Nall,dk,4000,ryan nall,CHI,RB,00-0034597,auto_exact,high
 Zack Moss,RB,BUF,5200,5824,RB,BUF@ARI,9.916666666666666,rotoguru_gid,Zack Moss,dk,5200,zack moss,BUF,RB,00-0036251,auto_exact,high
-Lamar Miller,RB,CHI,0,2859,RB,CHI@MIN,,rotoguru_gid,Lamar Miller,dk,0,lamar miller,CHI,RB,00-0029615,auto_exact,high
-Rodney Smith,RB,CAR,0,5890,RB,CAR@TB,,rotoguru_gid,Rodney Smith,dk,0,rodney smith,CAR,RB,00-0035957,auto_exact,high
 Peyton Barber,RB,WAS,4000,5507,RB,WAS@DET,2.6875,rotoguru_gid,Peyton Barber,dk,4000,peyton barber,WAS,RB,00-0032741,auto_exact,high
 J.K. Dobbins,RB,BAL,5200,5821,RB,BAL@NE,8.425,rotoguru_gid,J.K. Dobbins,dk,5200,jk dobbins,BAL,RB,00-0036158,auto_exact,high
 Khari Blasingame,RB,TEN,4000,5800,RB,TEN@IND,0.6,rotoguru_gid,Khari Blasingame,dk,4000,khari blasingame,TEN,RB,00-0035099,auto_exact,high
@@ -109,7 +106,6 @@ Tyler Ervin,RB,GB,4000,5470,RB,GB@JAX,4.133333333333333,rotoguru_gid,Tyler Ervin
 Patrick Ricard,RB,BAL,4000,5743,RB,BAL@NE,1.15,rotoguru_gid,Patrick Ricard,dk,4000,patrick ricard,BAL,RB,00-0033376,auto_exact,high
 Benny Snell,RB,PIT,4000,5740,RB,PIT@CIN,4.1,rotoguru_gid,Benny Snell,dk,4000,benny snell,PIT,RB,00-0035217,auto_exact,high
 Artavis Pierce,RB,CHI,4000,5892,RB,CHI@MIN,,rotoguru_gid,Artavis Pierce,dk,4000,artavis pierce,CHI,RB,00-0036208,auto_exact,high
-C.J. Prosise,RB,HOU,0,5448,RB,HOU@CLE,0.02,rotoguru_gid,C.J. Prosise,dk,0,cj prosise,HOU,RB,00-0032393,auto_exact,high
 Kyle Juszczyk,RB,SF,4000,2908,RB,SF@NO,4.155555555555555,rotoguru_gid,Kyle Juszczyk,dk,4000,kyle juszczyk,SF,RB,00-0029892,auto_exact,high
 Alexander Mattison,RB,MIN,4000,5720,RB,MIN@CHI,7.0375000000000005,rotoguru_gid,Alexander Mattison,dk,4000,alexander mattison,MIN,RB,00-0034972,auto_exact,high
 Kerryon Johnson,RB,DET,4000,5621,RB,DET@WAS,4.85,rotoguru_gid,Kerryon Johnson,dk,4000,kerryon johnson,DET,RB,00-0034349,auto_exact,high
@@ -305,7 +301,6 @@ Tyler Eifert,TE,JAX,2700,4568,TE,JAX@GB,5.014285714285714,rotoguru_gid,Tyler Eif
 Evan Engram,TE,NYG,4500,4701,TE,NYG@PHI,9.255555555555556,rotoguru_gid,Evan Engram,dk,4500,evan engram,NYG,TE,00-0033881,auto_exact,high
 T.J. Hockenson,TE,DET,5100,4749,TE,DET@WAS,12.75,rotoguru_gid,T.J. Hockenson,dk,5100,tj hockenson,DET,TE,00-0035229,auto_exact,high
 Kaden Smith,TE,NYG,2500,4770,TE,NYG@PHI,2.1666666666666665,rotoguru_gid,Kaden Smith,dk,2500,kaden smith,NYG,TE,00-0034988,auto_exact,high
-Troy Fumagalli,TE,DEN,0,4762,TE,DEN@LV,,rotoguru_gid,Troy Fumagalli,dk,0,troy fumagalli,DEN,TE,00-0034393,auto_exact,high
 Ross Dwelley,TE,SF,3800,4745,TE,SF@NO,3.022222222222222,rotoguru_gid,Ross Dwelley,dk,3800,ross dwelley,SF,TE,00-0034073,auto_exact,high
 Tyler Conklin,TE,MIN,2500,4732,TE,MIN@CHI,0.0,rotoguru_gid,Tyler Conklin,dk,2500,tyler conklin,MIN,TE,00-0034270,auto_exact,high
 Ryan Izzo,TE,NE,2500,4751,TE,NE@BAL,2.425,rotoguru_gid,Ryan Izzo,dk,2500,ryan izzo,NE,TE,00-0034439,auto_exact,high

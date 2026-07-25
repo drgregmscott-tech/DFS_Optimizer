@@ -119,7 +119,6 @@ Jamaal Williams,RB,GB,4400,5541,RB,GB@CIN,1.5,rotoguru_gid,Jamaal Williams,dk,44
 Latavius Murray,RB,MIN,3200,2899,RB,MIN@TB,0.6,rotoguru_gid,Latavius Murray,dk,3200,latavius murray,MIN,RB,00-0030513,auto_exact,high
 Zach Zenner,RB,DET,3300,5397,RB,DET@ATL,,rotoguru_gid,Zach Zenner,dk,3300,zach zenner,DET,RB,00-0031665,auto_exact,high
 Terrell Watson,RB,PIT,3000,5374,RB,PIT@CHI,0.05,rotoguru_gid,Terrell Watson,dk,3000,terrell watson,PIT,RB,00-0031793,auto_exact,high
-Matt Jones,RB,IND,0,3552,RB,IND@CLE,,rotoguru_gid,Matt Jones,dk,0,matt jones,IND,RB,00-0031939,auto_exact,high
 Kerwynn Williams,RB,ARI,4000,2918,RB,ARI@DAL,5.199999999999999,rotoguru_gid,Kerwynn Williams,dk,4000,kerwynn williams,ARI,RB,00-0030117,auto_exact,high
 Andy Janovich,RB,DEN,3000,5482,RB,DEN@BUF,0.0,rotoguru_gid,Andy Janovich,dk,3000,andy janovich,DEN,RB,00-0032956,auto_exact,high
 Raheem Mostert,RB,SF,3000,5414,RB,SF@LA,0.0,rotoguru_gid,Raheem Mostert,dk,3000,raheem mostert,SF,RB,00-0031687,auto_exact,high
@@ -231,7 +230,6 @@ Nelson Agholor,WR,PHI,4200,5378,WR,PHI@NYG,14.25,rotoguru_gid,Nelson Agholor,dk,
 Terrelle Pryor,WR,WAS,5900,1407,WR,WAS@LV,8.85,rotoguru_gid,Terrelle Pryor,dk,5900,terrelle pryor,WAS,WR,00-0028825,auto_exact,high
 Kaelin Clay,WR,BUF,3000,5430,WR,BUF@DEN,0.0,rotoguru_gid,Kaelin Clay,dk,3000,kaelin clay,BUF,WR,00-0032115,auto_fallback_team_mismatch,medium
 Cooper Kupp,WR,LA,4700,5552,WR,LA@SF,11.95,rotoguru_gid,Cooper Kupp,dk,4700,cooper kupp,LA,WR,00-0033908,auto_exact,high
-Jordan Leslie,WR,CLE,0,5584,WR,CLE@IND,,rotoguru_gid,Jordan Leslie,dk,0,jordan leslie,CLE,WR,00-0031801,auto_exact,high
 Tyrell Williams,WR,LAC,4600,5432,WR,LAC@KC,9.9,rotoguru_gid,Tyrell Williams,dk,4600,tyrell williams,LAC,WR,00-0032160,auto_exact,high
 Taywan Taylor,WR,TEN,3600,5555,WR,TEN@SEA,5.1,rotoguru_gid,Taywan Taylor,dk,3600,taywan taylor,TEN,WR,00-0033911,auto_exact,high
 ArDarius Stewart,WR,NYJ,3100,5551,WR,NYJ@MIA,1.5,rotoguru_gid,ArDarius Stewart,dk,3100,ardarius stewart,NYJ,WR,00-0033916,auto_exact,high

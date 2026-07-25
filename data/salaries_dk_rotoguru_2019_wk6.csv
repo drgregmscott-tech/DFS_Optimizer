@@ -88,7 +88,6 @@ Gus Edwards,RB,BAL,3900,5681,RB,BAL@CIN,4.68,rotoguru_gid,Gus Edwards,dk,3900,gu
 Justice Hill,RB,BAL,3200,5719,RB,BAL@CIN,1.92,rotoguru_gid,Justice Hill,dk,3200,justice hill,BAL,RB,00-0034975,auto_exact,high
 J.D. McKissic,RB,DET,3000,5586,RB,DET@GB,3.5250000000000004,rotoguru_gid,J.D. McKissic,dk,3000,jd mckissic,DET,RB,00-0032602,auto_exact,high
 Nick Bellore,RB,SEA,3000,5663,RB,SEA@CLE,0.0,rotoguru_gid,Nick Bellore,dk,3000,nick bellore,SEA,RB,00-0028292,auto_fallback_name_only_position_mismatch,low
-Boston Scott,RB,PHI,0,5624,RB,PHI@MIN,,rotoguru_gid,Boston Scott,dk,0,boston scott,PHI,RB,00-0034414,auto_exact,high
 Peyton Barber,RB,TB,4200,5507,RB,TB@CAR,9.58,rotoguru_gid,Peyton Barber,dk,4200,peyton barber,TB,RB,00-0032741,auto_exact,high
 C.J. Prosise,RB,SEA,3900,5448,RB,SEA@CLE,5.175000000000001,rotoguru_gid,C.J. Prosise,dk,3900,cj prosise,SEA,RB,00-0032393,auto_exact,high
 Andy Janovich,RB,DEN,3100,5482,RB,DEN@TEN,0.0,rotoguru_gid,Andy Janovich,dk,3100,andy janovich,DEN,RB,00-0032956,auto_exact,high
@@ -100,7 +99,6 @@ Ito Smith,RB,ATL,4300,5658,RB,ATL@ARI,7.0,rotoguru_gid,Ito Smith,dk,4300,ito smi
 Bilal Powell,RB,NYJ,3100,2819,RB,NYJ@DAL,0.2,rotoguru_gid,Bilal Powell,dk,3100,bilal powell,NYJ,RB,00-0028064,auto_exact,high
 Wendell Smallwood,RB,WAS,3400,5473,RB,WAS@MIA,1.6800000000000002,rotoguru_gid,Wendell Smallwood,dk,3400,wendell smallwood,WAS,RB,00-0032782,auto_exact,high
 Alex Armah,RB,CAR,3000,5644,RB,CAR@TB,1.82,rotoguru_gid,Alex Armah,dk,3000,alex armah,CAR,RB,00-0033296,auto_exact,high
-Dalyn Dawkins,RB,TEN,0,5780,RB,TEN@DEN,,rotoguru_gid,Dalyn Dawkins,dk,0,dalyn dawkins,TEN,RB,00-0034654,auto_exact,high
 Keith Smith,RB,ATL,3000,5492,RB,ATL@ARI,0.0,rotoguru_gid,Keith Smith,dk,3000,keith smith,ATL,RB,00-0030968,auto_exact,high
 Ryquell Armstead,RB,JAX,3400,5745,RB,JAX@NO,2.84,rotoguru_gid,Ryquell Armstead,dk,3400,ryquell armstead,JAX,RB,00-0035268,auto_exact,high
 Darwin Thompson,RB,KC,3400,5744,RB,KC@HOU,0.55,rotoguru_gid,Darwin Thompson,dk,3400,darwin thompson,KC,RB,00-0035148,auto_exact,high
@@ -184,7 +182,6 @@ David Moore,WR,SEA,3300,5655,WR,SEA@CLE,4.6000000000000005,rotoguru_gid,David Mo
 Jarvis Landry,WR,CLE,5200,5335,WR,CLE@SEA,13.26,rotoguru_gid,Jarvis Landry,dk,5200,jarvis landry,CLE,WR,00-0031382,auto_exact,high
 Corey Davis,WR,TEN,4000,5550,WR,TEN@DEN,7.82,rotoguru_gid,Corey Davis,dk,4000,corey davis,TEN,WR,00-0033871,auto_exact,high
 Albert Wilson,WR,MIA,4000,5339,WR,MIA@WAS,3.4,rotoguru_gid,Albert Wilson,dk,4000,albert wilson,MIA,WR,00-0030669,auto_exact,high
-Jason Moore,WR,LAC,0,5781,WR,LAC@PIT,,rotoguru_gid,Jason Moore,dk,0,jason moore,LAC,WR,00-0035432,auto_exact,high
 Darius Slayton,WR,NYG,3100,5767,WR,NYG@NE,10.233333333333333,rotoguru_gid,Darius Slayton,dk,3100,darius slayton,NYG,WR,00-0035535,auto_exact,high
 Brandin Cooks,WR,LA,5400,5255,WR,LA@SF,13.04,rotoguru_gid,Brandin Cooks,dk,5400,brandin cooks,LA,WR,00-0031236,auto_exact,high
 Mohamed Sanu,WR,ATL,4500,5159,WR,ATL@ARI,12.68,rotoguru_gid,Mohamed Sanu,dk,4500,mohamed sanu,ATL,WR,00-0029632,auto_fallback_team_mismatch,medium

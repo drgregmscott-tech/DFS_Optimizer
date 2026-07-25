@@ -112,7 +112,6 @@ Jonathan Williams,RB,BUF,3000,5451,RB,BUF@SF,0.2,rotoguru_gid,Jonathan Williams,
 DeAngelo Williams,RB,PIT,4800,2500,RB,PIT@MIA,15.52,rotoguru_gid,DeAngelo Williams,dk,4800,deangelo williams,PIT,RB,00-0024242,auto_exact,high
 Reggie Bush,RB,BUF,3000,2495,RB,BUF@SF,-0.0333333333333333,rotoguru_gid,Reggie Bush,dk,3000,reggie bush,BUF,RB,00-0024217,auto_exact,high
 Kenjon Barner,RB,PHI,3000,2887,RB,PHI@WAS,3.65,rotoguru_gid,Kenjon Barner,dk,3000,kenjon barner,PHI,RB,00-0030465,auto_exact,high
-Justin Forsett,RB,DET,0,2642,RB,DET@LA,8.466666666666667,rotoguru_gid,Justin Forsett,dk,0,justin forsett,DET,RB,00-0026373,auto_fallback_team_mismatch,medium
 Kenneth Farrow,RB,SDG,3000,5494,RB,SDG@DEN,0.4333333333333333,rotoguru_gid,Kenneth Farrow,dk,3000,kenneth farrow,SDG,RB,00-0032902,auto_fallback_team_mismatch,medium
 Shaun Draughn,RB,SF,3000,2875,RB,SF@BUF,3.3200000000000003,rotoguru_gid,Shaun Draughn,dk,3000,shaun draughn,SF,RB,00-0028202,auto_exact,high
 Alfred Morris,RB,DAL,3300,2871,RB,DAL@GB,5.2,rotoguru_gid,Alfred Morris,dk,3300,alfred morris,DAL,RB,00-0029141,auto_exact,high
@@ -176,7 +175,6 @@ Marqise Lee,WR,JAX,3100,5256,WR,JAX@CHI,8.225,rotoguru_gid,Marqise Lee,dk,3100,m
 Arrelious Benn,WR,JAX,3000,3885,WR,JAX@CHI,0.75,rotoguru_gid,Arrelious Benn,dk,3000,arrelious benn,JAX,WR,00-0027654,auto_exact,high
 Darrius Heyward-Bey,WR,PIT,3000,3848,WR,PIT@MIA,2.36,rotoguru_gid,Darrius Heyward-Bey,dk,3000,darrius heyward bey,PIT,WR,00-0026983,auto_exact,high
 Tyler Boyd,WR,CIN,3000,5455,WR,CIN@NE,6.0600000000000005,rotoguru_gid,Tyler Boyd,dk,3000,tyler boyd,CIN,WR,00-0033009,auto_exact,high
-Cobi Hamilton,WR,PIT,0,5288,WR,PIT@MIA,,rotoguru_gid,Cobi Hamilton,dk,0,cobi hamilton,PIT,WR,00-0030290,auto_exact,high
 Ricardo Louis,WR,CLE,3000,5481,WR,CLE@TEN,4.025,rotoguru_gid,Ricardo Louis,dk,3000,ricardo louis,CLE,WR,00-0033079,auto_exact,high
 Terrance Williams,WR,DAL,3800,5216,WR,DAL@GB,8.92,rotoguru_gid,Terrance Williams,dk,3800,terrance williams,DAL,WR,00-0030542,auto_exact,high
 Bennie Fowler,WR,DEN,3000,5353,WR,DEN@SDG,1.8666666666666665,rotoguru_gid,Bennie Fowler,dk,3000,bennie fowler,DEN,WR,00-0030670,auto_exact,high

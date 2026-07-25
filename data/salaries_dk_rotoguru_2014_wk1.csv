@@ -121,7 +121,6 @@ Bilal Powell,RB,NYJ,3000,2819,RB,NYJ@LV,,rotoguru_gid,Bilal Powell,dk,3000,bilal
 Theo Riddick,RB,DET,3100,2907,RB,DET@NYG,,rotoguru_gid,Theo Riddick,dk,3100,theo riddick,DET,RB,00-0030107,auto_exact,high
 Anthony Sherman,RB,KC,3000,2822,RB,KC@TEN,,rotoguru_gid,Anthony Sherman,dk,3000,anthony sherman,KC,RB,00-0028074,auto_exact,high
 Bernard Pierce,RB,BAL,4600,2861,RB,BAL@CIN,,rotoguru_gid,Bernard Pierce,dk,4600,bernard pierce,BAL,RB,00-0029264,auto_exact,high
-Ray Agnew,RB,CLE,0,2973,RB,CLE@PIT,,rotoguru_gid,Ray Agnew,dk,0,ray agnew,CLE,RB,00-0030653,auto_exact,high
 Jonathan Grimes,RB,HOU,3000,2881,RB,HOU@WAS,,rotoguru_gid,Jonathan Grimes,dk,3000,jonathan grimes,HOU,RB,00-0029510,auto_exact,high
 Jerick McKinnon,RB,MIN,3000,2935,RB,MIN@LA,,rotoguru_gid,Jerick McKinnon,dk,3000,jerick mckinnon,MIN,RB,00-0031376,auto_exact,high
 James Develin,RB,NE,3000,2825,RB,NE@MIA,,rotoguru_gid,James Develin,dk,3000,james develin,NE,RB,00-0027925,auto_exact,high
@@ -232,12 +231,9 @@ Jarius Wright,WR,MIN,3000,5188,WR,MIN@LA,,rotoguru_gid,Jarius Wright,dk,3000,jar
 Michael Crabtree,WR,SF,6100,3872,WR,SF@DAL,,rotoguru_gid,Michael Crabtree,dk,6100,michael crabtree,SF,WR,00-0026986,auto_exact,high
 Doug Baldwin,WR,SEA,3500,5136,WR,SEA@GB,,rotoguru_gid,Doug Baldwin,dk,3500,doug baldwin,SEA,WR,00-0028434,auto_exact,high
 Victor Cruz,WR,NYG,6300,3900,WR,NYG@DET,,rotoguru_gid,Victor Cruz,dk,6300,victor cruz,NYG,WR,00-0027265,auto_exact,high
-Santonio Holmes,WR,CHI,0,3586,WR,CHI@BUF,,rotoguru_gid,Santonio Holmes,dk,0,santonio holmes,CHI,WR,00-0024240,auto_exact,high
 Miles Austin,WR,CLE,3600,3610,WR,CLE@PIT,,rotoguru_gid,Miles Austin,dk,3600,miles austin,CLE,WR,00-0023921,auto_exact,high
-Devin Street,WR,DAL,0,5364,WR,DAL@SF,,rotoguru_gid,Devin Street,dk,0,devin street,DAL,WR,00-0031310,auto_exact,high
 Andre Caldwell,WR,DEN,3000,3743,WR,DEN@IND,,rotoguru_gid,Andre Caldwell,dk,3000,andre caldwell,DEN,WR,00-0026237,auto_exact,high
 Jacoby Jones,WR,BAL,3000,3678,WR,BAL@CIN,,rotoguru_gid,Jacoby Jones,dk,3000,jacoby jones,BAL,WR,00-0025460,auto_exact,high
-Taylor Gabriel,WR,CLE,0,5361,WR,CLE@PIT,,rotoguru_gid,Taylor Gabriel,dk,0,taylor gabriel,CLE,WR,00-0031228,auto_exact,high
 Andre Roberts,WR,WAS,3000,3978,WR,WAS@HOU,,rotoguru_gid,Andre Roberts,dk,3000,andre roberts,WAS,WR,00-0027691,auto_exact,high
 Larry Fitzgerald,WR,ARI,6700,3501,WR,ARI@SDG,,rotoguru_gid,Larry Fitzgerald,dk,6700,larry fitzgerald,ARI,WR,00-0022921,auto_exact,high
 Frankie Hammond,WR,KC,3000,5337,WR,KC@TEN,,rotoguru_gid,Frankie Hammond,dk,3000,frankie hammond,KC,WR,00-0030154,auto_exact,high
@@ -254,7 +250,6 @@ Brandon Gibson,WR,MIA,3300,3862,WR,MIA@NE,,rotoguru_gid,Brandon Gibson,dk,3300,b
 Jermaine Kearse,WR,SEA,3300,5186,WR,SEA@GB,,rotoguru_gid,Jermaine Kearse,dk,3300,jermaine kearse,SEA,WR,00-0029159,auto_exact,high
 Micheal Spurlock,WR,CHI,3000,3654,WR,CHI@BUF,,rotoguru_gid,Micheal Spurlock,dk,3000,micheal spurlock,CHI,WR,00-0023968,auto_exact,high
 Jaron Brown,WR,ARI,3000,5229,WR,ARI@SDG,,rotoguru_gid,Jaron Brown,dk,3000,jaron brown,ARI,WR,00-0030300,auto_exact,high
-Damaris Johnson,WR,HOU,0,5178,WR,HOU@WAS,,rotoguru_gid,Damaris Johnson,dk,0,damaris johnson,HOU,WR,00-0029435,auto_exact,high
 Jason Avant,WR,KC,3000,3611,WR,KC@TEN,,rotoguru_gid,Jason Avant,dk,3000,jason avant,KC,WR,00-0024324,auto_exact,high
 Allen Robinson,WR,JAX,3200,5258,WR,JAX@PHI,,rotoguru_gid,Allen Robinson,dk,3200,allen robinson,JAX,WR,00-0031428,auto_exact,high
 Dri Archer,WR,PIT,3000,5271,WR,PIT@CLE,,rotoguru_gid,Dri Archer,dk,3000,dri archer,PIT,WR,00-0031392,auto_fallback_name_only_position_mismatch,low
@@ -332,7 +327,6 @@ Andrew Quarless,TE,GB,3000,4518,TE,GB@SEA,,rotoguru_gid,Andrew Quarless,dk,3000,
 Coby Fleener,TE,IND,3700,4552,TE,IND@DEN,,rotoguru_gid,Coby Fleener,dk,3700,coby fleener,IND,TE,00-0029697,auto_exact,high
 Jim Dray,TE,CLE,3000,4484,TE,CLE@PIT,,rotoguru_gid,Jim Dray,dk,3000,jim dray,CLE,TE,00-0027825,auto_exact,high
 Charles Clay,TE,MIA,3900,4543,TE,MIA@NE,,rotoguru_gid,Charles Clay,dk,3900,charles clay,MIA,TE,00-0028112,auto_exact,high
-Tim Wright,TE,NE,0,4591,TE,NE@MIA,,rotoguru_gid,Tim Wright,dk,0,tim wright,NE,TE,00-0029910,manual_override,high
 Brent Celek,TE,PHI,3500,4363,TE,PHI@JAX,,rotoguru_gid,Brent Celek,dk,3500,brent celek,PHI,TE,00-0025549,auto_exact,high
 Taylor Thompson,TE,TEN,3000,4560,TE,TEN@KC,,rotoguru_gid,Taylor Thompson,dk,3000,taylor thompson,TEN,TE,00-0029590,auto_exact,high
 Ladarius Green,TE,SDG,3200,4562,TE,SDG@ARI,,rotoguru_gid,Ladarius Green,dk,3200,ladarius green,SDG,TE,00-0029275,auto_fallback_team_mismatch,medium

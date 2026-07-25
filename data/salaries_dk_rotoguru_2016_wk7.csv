@@ -67,19 +67,16 @@ Rob Kelley,RB,WAS,3000,5493,RB,WAS@DET,2.2,rotoguru_gid,Rob Kelley,dk,3000,rob k
 Christine Michael,RB,SEA,6700,2898,RB,SEA@ARI,18.22,rotoguru_gid,Christine Michael,dk,6700,christine michael,SEA,RB,00-0030432,auto_fallback_team_mismatch,medium
 Ryan Mathews,RB,PHI,3900,2754,RB,PHI@MIN,10.64,rotoguru_gid,Ryan Mathews,dk,3900,ryan mathews,PHI,RB,00-0027864,auto_exact,high
 Mike Davis,RB,SF,3000,5320,RB,SF@TB,0.9,rotoguru_gid,Mike Davis,dk,3000,mike davis,SF,RB,00-0032063,auto_exact,high
-DuJuan Harris,RB,SF,0,2802,RB,SF@TB,,rotoguru_gid,DuJuan Harris,dk,0,dujuan harris,SF,RB,00-0028409,auto_exact,high
 Damien Williams,RB,MIA,3000,2957,RB,MIA@BUF,7.5,rotoguru_gid,Damien Williams,dk,3000,damien williams,MIA,RB,00-0030874,auto_exact,high
 Duke Johnson,RB,CLE,3900,2997,RB,CLE@CIN,10.816666666666668,rotoguru_gid,Duke Johnson,dk,3900,duke johnson,CLE,RB,00-0032257,auto_exact,high
 Chris Ivory,RB,JAX,3400,2741,RB,JAX@LV,5.9,rotoguru_gid,Chris Ivory,dk,3400,chris ivory,JAX,RB,00-0027531,auto_exact,high
 Darren Sproles,RB,PHI,3800,2484,RB,PHI@MIN,10.86,rotoguru_gid,Darren Sproles,dk,3800,darren sproles,PHI,RB,00-0023564,auto_exact,high
 Justin Forsett,RB,DET,3300,2642,RB,DET@WAS,6.475,rotoguru_gid,Justin Forsett,dk,3300,justin forsett,DET,RB,00-0026373,auto_fallback_team_mismatch,medium
 Ka'Deem Carey,RB,CHI,3000,2972,RB,CHI@GB,2.425,rotoguru_gid,Ka'Deem Carey,dk,3000,kadeem carey,CHI,RB,00-0031057,auto_exact,high
-Antone Smith,RB,TB,0,2774,RB,TB@SF,,rotoguru_gid,Antone Smith,dk,0,antone smith,TB,RB,00-0026855,auto_exact,high
 Jerick McKinnon,RB,MIN,4300,2935,RB,MIN@PHI,6.959999999999999,rotoguru_gid,Jerick McKinnon,dk,4300,jerick mckinnon,MIN,RB,00-0031376,auto_exact,high
 Tim Hightower,RB,NO,3000,2604,RB,NO@KC,1.1800000000000002,rotoguru_gid,Tim Hightower,dk,3000,tim hightower,NO,RB,00-0026289,auto_exact,high
 Alfred Blue,RB,HOU,3000,2960,RB,HOU@DEN,1.8666666666666665,rotoguru_gid,Alfred Blue,dk,3000,alfred blue,HOU,RB,00-0031075,auto_exact,high
 Rex Burkhead,RB,CIN,3000,2890,RB,CIN@CLE,0.2666666666666666,rotoguru_gid,Rex Burkhead,dk,3000,rex burkhead,CIN,RB,00-0030288,auto_exact,high
-Lorenzo Taliaferro,RB,BAL,0,2975,RB,BAL@NYJ,,rotoguru_gid,Lorenzo Taliaferro,dk,0,lorenzo taliaferro,BAL,RB,00-0031066,auto_exact,high
 T.J. Yeldon,RB,JAX,4100,2993,RB,JAX@LV,10.56,rotoguru_gid,T.J. Yeldon,dk,4100,tj yeldon,JAX,RB,00-0032209,auto_exact,high
 C.J. Prosise,RB,SEA,3000,5448,RB,SEA@ARI,2.1,rotoguru_gid,C.J. Prosise,dk,3000,cj prosise,SEA,RB,00-0032393,auto_exact,high
 DeAndre Washington,RB,LV,3900,5449,RB,LV@JAX,6.416666666666667,rotoguru_gid,DeAndre Washington,dk,3900,deandre washington,LV,RB,00-0032940,auto_exact,high
@@ -110,7 +107,6 @@ Kenneth Dixon,RB,BAL,3000,5469,RB,BAL@NYJ,1.85,rotoguru_gid,Kenneth Dixon,dk,300
 Bobby Rainey,RB,NYG,3200,2863,RB,NYG@LA,7.040000000000001,rotoguru_gid,Bobby Rainey,dk,3200,bobby rainey,NYG,RB,00-0029384,auto_exact,high
 Andre Ellington,RB,ARI,3000,2892,RB,ARI@SEA,1.7833333333333332,rotoguru_gid,Andre Ellington,dk,3000,andre ellington,ARI,RB,00-0030287,auto_exact,high
 Ronnie Hillman,RB,MIN,3000,2856,RB,MIN@PHI,,rotoguru_gid,Ronnie Hillman,dk,3000,ronnie hillman,MIN,RB,00-0029683,auto_fallback_team_mismatch,medium
-Don Jackson,RB,GB,0,5509,RB,GB@CHI,,rotoguru_gid,Don Jackson,dk,0,don jackson,GB,RB,00-0032636,auto_exact,high
 John Kuhn,RB,NO,3000,2549,RB,NO@KC,6.18,rotoguru_gid,John Kuhn,dk,3000,john kuhn,NO,RB,00-0022999,auto_exact,high
 Derrick Henry,RB,TEN,3100,5445,RB,TEN@IND,4.633333333333334,rotoguru_gid,Derrick Henry,dk,3100,derrick henry,TEN,RB,00-0032764,auto_exact,high
 Zach Line,RB,MIN,3000,2912,RB,MIN@PHI,0.12,rotoguru_gid,Zach Line,dk,3000,zach line,MIN,RB,00-0029931,auto_exact,high

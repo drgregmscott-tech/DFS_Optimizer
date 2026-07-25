@@ -30,7 +30,6 @@ QB,NO,7400,1465,Jameis Winston,Jameis,Winston,TB,18.36,rotoguru_gid,Jameis Winst
 QB,CLE,6500,1528,Baker Mayfield,Baker,Mayfield,PIT,15.76,rotoguru_gid,Baker Mayfield,fd,6500,baker mayfield,CLE,QB,00-0034855,auto_exact,high
 QB,DET,6800,1490,Jared Goff,Jared,Goff,PHI,14.931428571428572,rotoguru_gid,Jared Goff,fd,6800,jared goff,DET,QB,00-0033106,auto_exact,high
 QB,ATL,7200,1301,Matt Ryan,Matt,Ryan,CAR,18.55333333333333,rotoguru_gid,Matt Ryan,fd,7200,matt ryan,ATL,QB,00-0026143,auto_exact,high
-QB,NYJ,0,1320,Josh Johnson,Josh,Johnson,CIN,,rotoguru_gid,Josh Johnson,fd,0,josh johnson,NYJ,QB,00-0026300,auto_fallback_team_mismatch,medium
 QB,DET,6000,1546,David Blough,David,Blough,PHI,,rotoguru_gid,David Blough,fd,6000,david blough,DET,QB,00-0035040,auto_exact,high
 QB,PHI,6000,1540,Gardner Minshew,Gardner,Minshew,DET,,rotoguru_gid,Gardner Minshew,fd,6000,gardner minshew,PHI,QB,00-0035289,auto_exact,high
 QB,LA,6100,1563,John Wolford,John,Wolford,HOU,-1.1,rotoguru_gid,John Wolford,fd,6100,john wolford,LA,QB,00-0034899,auto_exact,high
@@ -60,7 +59,6 @@ RB,CAR,6600,5911,Chuba Hubbard,Chuba,Hubbard,ATL,8.057142857142857,rotoguru_gid,
 RB,WAS,5400,5586,J.D. McKissic,J.D.,McKissic,DEN,8.8,rotoguru_gid,J.D. McKissic,fd,5400,jd mckissic,WAS,RB,00-0032602,auto_exact,high
 RB,HOU,4500,2890,Rex Burkhead,Rex,Burkhead,LA,0.3333333333333333,rotoguru_gid,Rex Burkhead,fd,4500,rex burkhead,HOU,RB,00-0030288,auto_exact,high
 RB,DET,4500,5913,Jermar Jefferson,Jermar,Jefferson,PHI,0.0,rotoguru_gid,Jermar Jefferson,fd,4500,jermar jefferson,DET,RB,00-0036670,auto_exact,high
-RB,KC,0,5963,Derrick Gore,Derrick,Gore,NYG,1.2,rotoguru_gid,Derrick Gore,fd,0,derrick gore,KC,RB,00-0035715,auto_exact,high
 RB,TB,4900,2889,Giovani Bernard,Giovani,Bernard,NO,5.633333333333333,rotoguru_gid,Giovani Bernard,fd,4900,giovani bernard,TB,RB,00-0030456,auto_exact,high
 RB,JAX,5000,2933,Carlos Hyde,Carlos,Hyde,SEA,2.64,rotoguru_gid,Carlos Hyde,fd,5000,carlos hyde,JAX,RB,00-0031045,auto_exact,high
 RB,CLE,6700,5746,D'Ernest Johnson,D'Ernest,Johnson,PIT,3.7285714285714286,rotoguru_gid,D'Ernest Johnson,fd,6700,dernest johnson,CLE,RB,00-0035628,auto_exact,high
@@ -74,7 +72,6 @@ RB,CHI,6500,5912,Khalil Herbert,Khalil,Herbert,SF,6.028571428571429,rotoguru_gid
 RB,MIN,9200,5559,Dalvin Cook,Dalvin,Cook,DAL,14.975,rotoguru_gid,Dalvin Cook,fd,9200,dalvin cook,MIN,RB,00-0033893,auto_exact,high
 RB,SEA,5500,5738,Travis Homer,Travis,Homer,JAX,2.685714285714286,rotoguru_gid,Travis Homer,fd,5500,travis homer,SEA,RB,00-0035594,auto_exact,high
 RB,CLE,8000,5622,Nick Chubb,Nick,Chubb,PIT,16.060000000000002,rotoguru_gid,Nick Chubb,fd,8000,nick chubb,CLE,RB,00-0034791,auto_exact,high
-RB,DET,0,5950,Godwin Igwebuike,Godwin,Igwebuike,PHI,,rotoguru_gid,Godwin Igwebuike,fd,0,godwin igwebuike,DET,RB,00-0034614,auto_exact,high
 RB,MIA,5700,5789,Myles Gaskin,Myles,Gaskin,BUF,10.128571428571428,rotoguru_gid,Myles Gaskin,fd,5700,myles gaskin,MIA,RB,00-0035311,auto_exact,high
 RB,WAS,6200,5827,Antonio Gibson,Antonio,Gibson,DEN,11.457142857142856,rotoguru_gid,Antonio Gibson,fd,6200,antonio gibson,WAS,RB,00-0036328,auto_exact,high
 RB,TEN,10500,5445,Derrick Henry,Derrick,Henry,IND,25.357142857142858,rotoguru_gid,Derrick Henry,fd,10500,derrick henry,TEN,RB,00-0032764,auto_exact,high
@@ -171,7 +168,6 @@ WR,NYJ,5600,5410,Jamison Crowder,Jamison,Crowder,CIN,9.133333333333333,rotoguru_
 WR,TB,7500,5253,Mike Evans,Mike,Evans,NO,15.728571428571428,rotoguru_gid,Mike Evans,fd,7500,mike evans,TB,WR,00-0031408,auto_exact,high
 WR,CIN,6300,5839,Tee Higgins,Tee,Higgins,NYJ,10.02,rotoguru_gid,Tee Higgins,fd,6300,tee higgins,CIN,WR,00-0036410,auto_exact,high
 WR,CIN,8200,5924,Ja'Marr Chase,Ja'Marr,Chase,NYJ,18.385714285714283,rotoguru_gid,Ja'Marr Chase,fd,8200,jamarr chase,CIN,WR,00-0036900,auto_exact,high
-WR,TB,0,5816,Cyril Grayson,Cyril,Grayson,NO,,rotoguru_gid,Cyril Grayson,fd,0,cyril grayson,TB,WR,00-0033215,auto_exact,high
 WR,BUF,4700,5858,Gabriel Davis,Gabriel,Davis,MIA,3.233333333333333,rotoguru_gid,Gabriel Davis,fd,4700,gabriel davis,BUF,WR,00-0036196,manual_override,high
 WR,NO,5500,5639,Tre'Quan Smith,Tre'Quan,Smith,TB,1.6,rotoguru_gid,Tre'Quan Smith,fd,5500,trequan smith,NO,WR,00-0034765,auto_exact,high
 WR,LA,5700,5844,Van Jefferson,Van,Jefferson,HOU,8.414285714285715,rotoguru_gid,Van Jefferson,fd,5700,van jefferson,LA,WR,00-0036415,auto_exact,high

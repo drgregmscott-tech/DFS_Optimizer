@@ -80,7 +80,6 @@ Mark Ingram,RB,BAL,5000,2793,RB,BAL@NE,6.666666666666667,rotoguru_gid
 Melvin Gordon,RB,DEN,5200,2991,RB,DEN@LV,14.0,rotoguru_gid
 Royce Freeman,RB,DEN,4000,5620,RB,DEN@LV,2.45,rotoguru_gid
 Jeremy McNichols,RB,TEN,4000,5542,RB,TEN@IND,2.575,rotoguru_gid
-Austin Walter,RB,SF,0,5887,RB,SF@NO,,rotoguru_gid
 Jakob Johnson,RB,NE,4000,5778,RB,NE@BAL,1.55,rotoguru_gid
 Adrian Peterson,RB,DET,4000,2553,RB,DET@WAS,7.9875,rotoguru_gid
 Cam Akers,RB,LA,4200,5819,RB,LA@SEA,3.1833333333333336,rotoguru_gid
@@ -91,8 +90,6 @@ James White,RB,NE,4400,2954,RB,NE@BAL,8.266666666666667,rotoguru_gid
 Jordan Wilkins,RB,IND,4300,5625,RB,IND@TEN,4.9625,rotoguru_gid
 Ryan Nall,RB,CHI,4000,5815,RB,CHI@MIN,1.7666666666666666,rotoguru_gid
 Zack Moss,RB,BUF,5200,5824,RB,BUF@ARI,9.916666666666666,rotoguru_gid
-Lamar Miller,RB,CHI,0,2859,RB,CHI@MIN,,rotoguru_gid
-Rodney Smith,RB,CAR,0,5890,RB,CAR@TB,,rotoguru_gid
 Peyton Barber,RB,WAS,4000,5507,RB,WAS@DET,2.6875,rotoguru_gid
 J.K. Dobbins,RB,BAL,5200,5821,RB,BAL@NE,8.425,rotoguru_gid
 Khari Blasingame,RB,TEN,4000,5800,RB,TEN@IND,0.6,rotoguru_gid
@@ -109,7 +106,6 @@ Tyler Ervin,RB,GB,4000,5470,RB,GB@JAX,4.133333333333333,rotoguru_gid
 Patrick Ricard,RB,BAL,4000,5743,RB,BAL@NE,1.15,rotoguru_gid
 Benny Snell,RB,PIT,4000,5740,RB,PIT@CIN,4.1,rotoguru_gid
 Artavis Pierce,RB,CHI,4000,5892,RB,CHI@MIN,,rotoguru_gid
-C.J. Prosise,RB,HOU,0,5448,RB,HOU@CLE,0.02,rotoguru_gid
 Kyle Juszczyk,RB,SF,4000,2908,RB,SF@NO,4.155555555555555,rotoguru_gid
 Alexander Mattison,RB,MIN,4000,5720,RB,MIN@CHI,7.0375000000000005,rotoguru_gid
 Kerryon Johnson,RB,DET,4000,5621,RB,DET@WAS,4.85,rotoguru_gid
@@ -305,7 +301,6 @@ Tyler Eifert,TE,JAX,2700,4568,TE,JAX@GB,5.014285714285714,rotoguru_gid
 Evan Engram,TE,NYG,4500,4701,TE,NYG@PHI,9.255555555555555,rotoguru_gid
 T.J. Hockenson,TE,DET,5100,4749,TE,DET@WAS,12.75,rotoguru_gid
 Kaden Smith,TE,NYG,2500,4770,TE,NYG@PHI,2.1666666666666665,rotoguru_gid
-Troy Fumagalli,TE,DEN,0,4762,TE,DEN@LV,,rotoguru_gid
 Ross Dwelley,TE,SF,3800,4745,TE,SF@NO,3.022222222222222,rotoguru_gid
 Tyler Conklin,TE,MIN,2500,4732,TE,MIN@CHI,0.0,rotoguru_gid
 Ryan Izzo,TE,NE,2500,4751,TE,NE@BAL,2.425,rotoguru_gid

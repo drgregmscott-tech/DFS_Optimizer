@@ -93,7 +93,6 @@ Tevin Coleman,RB,ATL,4000,2994,RB,ATL@NO,5.833333333333333,rotoguru_gid,Tevin Co
 David Johnson,RB,ARI,4200,5395,RB,ARI@PIT,13.36,rotoguru_gid,David Johnson,dk,4200,david johnson,ARI,RB,00-0032187,auto_exact,high
 Fred Jackson,RB,SEA,3000,2520,RB,SEA@CAR,6.1,rotoguru_gid,Fred Jackson,dk,3000,fred jackson,SEA,RB,00-0024204,auto_exact,high
 Robert Turbin,RB,CLE,3000,2867,RB,CLE@DEN,,rotoguru_gid,Robert Turbin,dk,3000,robert turbin,CLE,RB,00-0029273,auto_fallback_team_mismatch,medium
-Ahmad Bradshaw,RB,IND,0,2535,RB,IND@NE,,rotoguru_gid,Ahmad Bradshaw,dk,0,ahmad bradshaw,IND,RB,00-0025637,auto_exact,high
 Anthony Sherman,RB,KC,3000,2822,RB,KC@MIN,0.2,rotoguru_gid,Anthony Sherman,dk,3000,anthony sherman,KC,RB,00-0028074,auto_exact,high
 Melvin Gordon,RB,SDG,4600,2991,RB,SDG@GB,9.32,rotoguru_gid,Melvin Gordon,dk,4600,melvin gordon,SDG,RB,00-0032144,auto_fallback_team_mismatch,medium
 Darrel Young,RB,WAS,3000,2791,RB,WAS@NYJ,0.24,rotoguru_gid,Darrel Young,dk,3000,darrel young,WAS,RB,00-0026852,auto_exact,high
@@ -304,7 +303,6 @@ James O'Shaughnessy,TE,KC,2500,4664,TE,KC@MIN,2.3000000000000003,rotoguru_gid,Ja
 Will Tye,TE,NYG,2500,4670,TE,NYG@PHI,8.8,rotoguru_gid,Will Tye,dk,2500,will tye,NYG,TE,00-0032004,auto_exact,high
 Levine Toilolo,TE,ATL,2500,4577,TE,ATL@NO,1.0,rotoguru_gid,Levine Toilolo,dk,2500,levine toilolo,ATL,TE,00-0030443,auto_exact,high
 Demetrius Harris,TE,KC,2500,4642,TE,KC@MIN,0.0,rotoguru_gid,Demetrius Harris,dk,2500,demetrius harris,KC,TE,00-0030155,auto_exact,high
-Justin Perillo,TE,GB,0,4628,TE,GB@SDG,,rotoguru_gid,Justin Perillo,dk,0,justin perillo,GB,TE,00-0030758,auto_exact,high
 Jack Doyle,TE,IND,2500,4594,TE,IND@NE,1.44,rotoguru_gid,Jack Doyle,dk,2500,jack doyle,IND,TE,00-0030181,auto_exact,high
 Luke Willson,TE,SEA,2500,4578,TE,SEA@CAR,3.2,rotoguru_gid,Luke Willson,dk,2500,luke willson,SEA,TE,00-0030089,auto_exact,high
 Ryan Hewitt,TE,CIN,2500,2978,TE,CIN@BUF,0.0,rotoguru_gid,Ryan Hewitt,dk,2500,ryan hewitt,CIN,TE,00-0030780,auto_exact,high

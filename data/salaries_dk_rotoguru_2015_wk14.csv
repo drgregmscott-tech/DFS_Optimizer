@@ -114,7 +114,6 @@ John Kuhn,RB,GB,3000,2549,RB,GB@DAL,1.05,rotoguru_gid,John Kuhn,dk,3000,john kuh
 Orleans Darkwa,RB,NYG,3500,2976,RB,NYG@MIA,1.7833333333333332,rotoguru_gid,Orleans Darkwa,dk,3500,orleans darkwa,NYG,RB,00-0030860,auto_exact,high
 Stevan Ridley,RB,NYJ,3000,2829,RB,NYJ@TEN,0.225,rotoguru_gid,Stevan Ridley,dk,3000,stevan ridley,NYJ,RB,00-0028011,auto_exact,high
 Michael Burton,RB,DET,3000,5415,RB,DET@LA,0.2583333333333333,rotoguru_gid,Michael Burton,dk,3000,michael burton,DET,RB,00-0031595,auto_exact,high
-Pierre Thomas,RB,WAS,0,2598,RB,WAS@CHI,1.2,rotoguru_gid,Pierre Thomas,dk,0,pierre thomas,WAS,RB,00-0024813,auto_exact,high
 Shane Vereen,RB,NYG,4000,2830,RB,NYG@MIA,9.708333333333334,rotoguru_gid,Shane Vereen,dk,4000,shane vereen,NYG,RB,00-0027994,auto_exact,high
 Derrick Coleman,RB,SEA,3000,2909,RB,SEA@BAL,0.13,rotoguru_gid,Derrick Coleman,dk,3000,derrick coleman,SEA,RB,00-0029068,auto_exact,high
 Jerick McKinnon,RB,MIN,3000,2935,RB,MIN@ARI,2.625,rotoguru_gid,Jerick McKinnon,dk,3000,jerick mckinnon,MIN,RB,00-0031376,auto_exact,high
@@ -246,12 +245,10 @@ Marlon Moore,WR,CLE,3000,3960,WR,CLE@SF,1.1727272727272728,rotoguru_gid,Marlon M
 Anquan Boldin,WR,SF,4000,3423,WR,SF@CLE,12.65,rotoguru_gid,Anquan Boldin,dk,4000,anquan boldin,SF,WR,00-0022084,auto_exact,high
 Chris Hogan,WR,BUF,3000,5167,WR,BUF@PHI,6.646666666666667,rotoguru_gid,Chris Hogan,dk,3000,chris hogan,BUF,WR,00-0028237,auto_exact,high
 DeVante Parker,WR,MIA,4000,5380,WR,MIA@NYG,3.836363636363637,rotoguru_gid,DeVante Parker,dk,4000,devante parker,MIA,WR,00-0031547,auto_exact,high
-Vincent Brown,WR,SDG,0,5123,WR,SDG@KC,,rotoguru_gid,Vincent Brown,dk,0,vincent brown,SDG,WR,00-0028020,auto_fallback_team_mismatch,medium
 Davante Adams,WR,GB,4200,5263,WR,GB@DAL,8.7,rotoguru_gid,Davante Adams,dk,4200,davante adams,GB,WR,00-0031381,auto_exact,high
 Stefon Diggs,WR,MIN,4400,5424,WR,MIN@ARI,13.766666666666666,rotoguru_gid,Stefon Diggs,dk,4400,stefon diggs,MIN,WR,00-0031588,auto_exact,high
 Greg Jennings,WR,MIA,3000,3587,WR,MIA@NYG,2.6,rotoguru_gid,Greg Jennings,dk,3000,greg jennings,MIA,WR,00-0024267,auto_exact,high
 Marqise Lee,WR,JAX,3000,5256,WR,JAX@IND,2.6166666666666667,rotoguru_gid,Marqise Lee,dk,3000,marqise lee,JAX,WR,00-0031431,auto_exact,high
-Chris Matthews,WR,BAL,0,5368,WR,BAL@SEA,1.0444444444444445,rotoguru_gid,Chris Matthews,dk,0,chris matthews,BAL,WR,00-0028702,auto_exact,high
 Jerricho Cotchery,WR,CAR,3200,3497,WR,CAR@ATL,7.42,rotoguru_gid,Jerricho Cotchery,dk,3200,jerricho cotchery,CAR,WR,00-0022811,auto_exact,high
 Cecil Shorts,WR,HOU,3600,5103,WR,HOU@NE,12.004444444444443,rotoguru_gid,Cecil Shorts,dk,3600,cecil shorts,HOU,WR,00-0028052,auto_exact,high
 Emmanuel Sanders,WR,DEN,5900,3983,WR,DEN@LV,15.054545454545456,rotoguru_gid,Emmanuel Sanders,dk,5900,emmanuel sanders,DEN,WR,00-0027685,auto_exact,high
@@ -364,7 +361,6 @@ Brandon Pettigrew,TE,DET,2500,4462,TE,DET@LA,2.571428571428572,rotoguru_gid,Bran
 Dwayne Allen,TE,IND,2500,4551,TE,IND@JAX,2.97,rotoguru_gid,Dwayne Allen,dk,2500,dwayne allen,IND,TE,00-0029689,auto_exact,high
 Coby Fleener,TE,IND,3000,4552,TE,IND@JAX,7.85,rotoguru_gid,Coby Fleener,dk,3000,coby fleener,IND,TE,00-0029697,auto_exact,high
 Josh Hill,TE,NO,2500,4586,TE,NO@TB,2.8166666666666664,rotoguru_gid,Josh Hill,dk,2500,josh hill,NO,TE,00-0030216,auto_exact,high
-Brian Leonhardt,TE,SF,0,4639,TE,SF@CLE,,rotoguru_gid,Brian Leonhardt,dk,0,brian leonhardt,SF,TE,00-0029755,auto_exact,high
 Justin Perillo,TE,GB,2500,4628,TE,GB@DAL,3.4857142857142853,rotoguru_gid,Justin Perillo,dk,2500,justin perillo,GB,TE,00-0030758,auto_exact,high
 Brent Celek,TE,PHI,2800,4363,TE,PHI@BUF,6.083333333333333,rotoguru_gid,Brent Celek,dk,2800,brent celek,PHI,TE,00-0025549,auto_exact,high
 Clark Harris,TE,CIN,2500,4391,TE,CIN@PIT,0.0,rotoguru_gid,Clark Harris,dk,2500,clark harris,CIN,TE,00-0025630,manual_override,high

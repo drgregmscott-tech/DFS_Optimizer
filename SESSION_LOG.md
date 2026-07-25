@@ -1468,3 +1468,63 @@ FD's `required_columns` has been all along.
   purely additive, not read by any pipeline script, only by the Worker's new slate-sync actions.
 - Next real milestone per this roadmap remains Preseason Week 1 -- the first point essentially
   every item in the "Known Deferred Validations" list below closes for real, FD included.
+
+---
+
+## Session 10.0 — Projection System Redesign (design) + Historical Data Bootstrap (build)
+**Date completed:** 2026-07-25
+**Status:** ⚠️ Complete with caveats — the *design* is settled and the *historical-data bootstrap* sub-phase is built and validated; the projection rewrite, backtest harness, and salary-anchor curve it enables are scoped but NOT yet built (see Handoff).
+
+**What was actually built:**
+
+This session opened a new phase (Phase 10 — see ROADMAP.md) to redesign the projection engine from first principles. The bulk of the session was *design* — deliberately conducted before looking at the existing `build_projections.py`, to avoid anchoring on what's already there. That design is now settled (full spec in ROADMAP.md's Phase 10 intro). The *code* delivered this session is the first buildable piece: the historical-data bootstrap that every downstream Phase 10 step depends on.
+
+Why this sub-phase exists at all: the project had real 2025 NFL **outcomes** (`weekly_stats_2025.parquet`) but **zero real historical salary files** — DK/FD publish no API, and their "Export to CSV" only ever gives the current slate. No historical salaries means no cap, no legal roster, no lineup, so no lineup-level backtest and no salary-vs-points baseline curve. The bootstrap closes that gap using RotoGuru, a free archive of historical DK/FD salaries + actual DFS points.
+
+- `scripts/ingest_rotoguru.py` (new) — fetches RotoGuru's semi-colon feed, emits per-week raw-salary files shaped to mimic each site's own export (so the existing matcher, not a second copy, does the nflverse matching) plus a per-season actuals file (the scoring truth the future harness grades against). Coverage verified live: DK 2014-2021, FD 2011-2021, nothing after 2021.
+- `scripts/batch_match_rotoguru.py` (new) — runs the existing `ingest_salaries.py` matcher as a subprocess over all 155 raw files, materializing the full matched dataset up front (chosen over on-demand matching so the harness just reads files), with a match-quality-aware summary that separates a genuine break from the normal scrub tail.
+- `scripts/resolve_unmatched.py` (new) — two-phase (propose / `--write`) resolver for the recurring unmatched names, with hand-verified manual aliases for retroactive nflverse name changes and a self-healing upsert write.
+- `scripts/ingest_salaries.py` (modified) — two real fixes, both surfaced only by running real data (see Decisions).
+- `data/raw_salaries/rotoguru_{site}_{season}_wk{week}.csv` (155 files) + `data/rotoguru_actuals_{site}_{season}.csv` (9 files) + `data/name_mapping.csv` (16 mapping rows added across both sites) + `data/weekly_stats_{2014..2021}.parquet`, `schedules_2014_..._2021.parquet`, `weekly_rosters_{2014..2021}.parquet` (nflverse history pulled to match RotoGuru's window).
+
+**Files created/modified:**
+- `/dfs_optimizer/scripts/ingest_rotoguru.py` (new)
+- `/dfs_optimizer/scripts/batch_match_rotoguru.py` (new)
+- `/dfs_optimizer/scripts/resolve_unmatched.py` (new)
+- `/dfs_optimizer/scripts/ingest_salaries.py` (modified — `NOR->NO` team-map fix; name-keyed override logic)
+- `/dfs_optimizer/data/raw_salaries/rotoguru_*_wk*.csv` (155), `/data/rotoguru_actuals_*.csv` (9), `/data/name_mapping.csv` (rows added), `/data/weekly_stats_2014..2021.parquet`, `/data/schedules_2014_..2021.parquet`, `/data/weekly_rosters_2014..2021.parquet`
+
+**Validation results:**
+- [x] RotoGuru coverage verified live before building on it (DK 2014-2021, FD 2011-2021) — not assumed.
+- [x] Year/week fail-loud assertion tested three ways: out-of-range season blocked pre-flight; wrong-year response hard-stops (`YEAR MISMATCH`); wrong-week response hard-stops. Confirmed on live pulls that a valid in-range season never false-trips.
+- [x] Full DK 2014-2021 + FD 2021 pulled clean (155 raw files, 8 DK actuals + 1 FD actuals).
+- [x] All 33 RotoGuru team abbreviations validated against the real 32-team nflverse set — surfaced and fixed the `NOR` gap (see Decisions).
+- [x] End-to-end match rate after name resolution: **mean 99.7%, min 98.6%, max 100.0%** across all 155 files, 0 hard errors, 0 weeks below the 95% floor. (Pre-resolution baseline was mean 98.8%.)
+- [x] Every recurring rosterable unmatched name resolved (Robby Anderson, Ben Watson, Gabe Davis, Deonte Harris, etc.); residual is pure special-teamers/camp bodies who never enter an optimal lineup.
+- [x] Manual aliases verified against the real parquet (Robby Anderson -> Robbie Chosen `00-0032688`; Deonte Harris -> Deonte Harty `00-0035215`) — nflverse retroactive legal-name changes.
+- [x] Name-keyed override + self-healing upsert verified on the exact multi-team failure case (Anderson resolves on CAR and ARI, not just his most-recent team).
+- [ ] **Lineup-level backtest harness** — NOT built this session (this is the next step; the whole bootstrap exists to feed it).
+- [ ] **Sunday-main-slate filtering** — NOT applied. RotoGuru's pool is the full-week Thurs-Mon slate, wider than a Sunday Classic main slate. Deliberately deferred to the harness, which will already have `schedules_{season}.parquet` loaded (see Handoff).
+
+**Decisions made / assumptions taken:**
+- **Design settled before touching existing code** (user's explicit instruction). Full projection-system spec lives in ROADMAP.md's Phase 10 intro. Key settled points: one projection model parameterized by contest type at the *optimizer* objective (not two models); output schema is per-player **mean + sigma** (sigma derived from stat-line composition, not player history — the latter isn't sticky and is confounded with the mean); blend at the **stat-line level** (usage + market), convert once per site, then apply a salary anchor at the points level; DST as a separate model with distributional (step-function) points-allowed handling; correlation stays as optimizer *constraints* (stacking), not a covariance objective, so no MIQP/solver change is needed; manual override as a logged, expiring, post-blend layer; calibration shrinkage instrumented now, fit out-of-sample later; success measured at the **lineup level** (percentile vs a synthetic ownership-weighted field), not MAE.
+- **RotoGuru silently serves its newest season on an out-of-range year** (verified: `year=2024` returned 2021 data, no error, `year` param dropped from the redirect). Every response's own Year/Week columns are asserted against the request — a mismatch is a hard `SystemExit`, never a warning. This is the same silent-corruption class the project has been bitten by twice (duplicate `player_id`; empty Cloudflare secret reporting success).
+- **`NOR->NO` team-map gap, found only by real data.** `BASE_TEAM_ABBREV_MAP` had `NOS->NO` but not `NOR->NO`, and RotoGuru uses `nor`. Left unmapped it (a) demoted every New Orleans skill player from exact to medium-confidence fallback matching, and (b) produced a DST row with `normalized_team=NOR` that can never match Vegas's `NO`, which would make `build_dst_projections()` treat NO as on a bye and force `final_projection=0.0` every week, silently. Fixed at the canonical location (affects any source writing `NOR`, not just RotoGuru). Purely additive — no current export sends `NOR`.
+- **Manual override made name-keyed, team-agnostic when `source_team` is blank.** Originally the override key was `(name, team, position)`. But a mapping row already carries an explicit `player_id`, so the ambiguity the team-check exists to resolve is already resolved — requiring team to also match can only cause misses. A name-variant row written with one team (e.g. Anderson on CAR) fired only in that player's CAR weeks and silently missed his NYJ/ARI/WAS weeks (observed: 113 unmatched -> only 110 after "mapping"). Now: blank `source_team` = "any team" (name-keyed); a supplied team still narrows (backward compatible, verified). Safe because no two mapped players share a normalized name.
+- **Resolver write is an upsert, not a blind append.** First cut deduped on `(site, source_name, player_id)`, so a stale team-keyed row and its corrected team-agnostic replacement shared that key and the fix was silently skipped — the stale row survived and Anderson stayed 93x unmatched. Now the write is keyed on `(site, source_name)`: a new resolution *replaces* any prior row for that name+site, preserving unrelated rows. Self-healing on re-run.
+- **Output mimics the site export; matching stays in one place** (`ingest_salaries.py`). RotoGuru's GID is emitted as the site-ID column but flagged `id_source=rotoguru_gid` and the filename is prefixed `rotoguru_`, because it is NOT the site's real player ID — a RotoGuru-sourced lineup can never be uploaded to DK/FD (harmless for backtesting).
+- **`AvgPointsPerGame` derived with the Session 2.1 lookahead guard** (weeks strictly before target only); blank, never 0.0, when unavailable — because `build_dst_projections()` applies its own `.fillna(0.0)` and a real 0.0 here would impersonate a measurement.
+- **`N/A`-salary rows excluded from salary files, retained in actuals.** A $0 player is free points to the optimizer. FD dropped ~30/week (528 total in 2021); DK dropped ~0 — a real slate-width difference (FD runs a narrower slate), not a parser artifact.
+- **nflverse history pulled 2014-2021** (not the earlier-floated 2021-2025). Rationale changed: no longer picking an era-relevance window, but matching the window where salary AND stats both exist, so components can be fit on their own maximal windows and only aligned when fitting blend weights.
+
+**Known issues deferred:**
+- **`build_projections.py` DST path reads `AvgPointsPerGame` for BOTH sites, but FD real exports name that column `FPPG`.** So FD's DST path would `KeyError`/null on a real FD export. Consistent with the long-standing "no real FD data" gap; not fixed here (separate decision about FD's real column contract, still unverified). The RotoGuru FD files emit `AvgPointsPerGame` so the harness isn't blocked, but the real FD gap remains open.
+- **Sunday-main-slate filtering** not applied (see Validation) — deferred to the harness.
+- **Residual unmatched tail** (T.J. Graham, Philly Brown, Jody Fortson, Walter Powell, Kennard Backman, etc.) intentionally left — special-teamers/camp bodies who never enter an optimal lineup. Chasing them is negative ROI; this is the floor.
+- **`schedules` came out as ONE combined file** (`schedules_2014_..._2021.parquet`) for the historical pull, vs the per-season `schedules_2025.parquet` already present. The harness must handle both layouts — flagged so a file-path lookup doesn't silently miss.
+
+**Handoff notes for next session:**
+- Next build is the **lineup-level backtest harness** (Phase 10, next card): reconstruct a week's pool from the matched `salaries_{site}_rotoguru_{season}_wk{week}.csv` files, run the real optimizer, score against `rotoguru_actuals_{site}_{season}.csv`, report percentile vs a synthetic field sampled proportional to Session 4.1's `estimated_ownership_pct`. Metric is deliberately NOT percent-of-hindsight-optimal (that denominator is one noisy extremum); it's percentile-vs-field, reported as median-percentile (floor/cash proxy) AND max-percentile (upside proxy) separately, never blended. The harness must apply the Sunday-main-slate filter (using `schedules`) that the bootstrap deliberately left off.
+- **This dataset is a bootstrap, not the validation set.** RotoGuru's newest data is 2021; the project's `weekly_stats` current-state data is 2025 — they don't overlap, so this can't measure whether the *current* projection system is good *now*. Its jobs are: (1) prove the harness mechanics, (2) fit the salary-vs-points baseline curve, (3) fit stat-component variance parameters. The real current-state validation set accumulates live from Preseason Week 1 onward (real weekly salary exports + Session 9.1 logging). **Action worth taking regardless:** archive every real salary export downloaded from here on (including Madden Sim and preseason) — that's the actual validation dataset and it can't be recovered later.
+- **λ (risk penalty), calibration slopes, blend weights** are all to be *fit from the backtest*, not decided — coarse grid for λ, out-of-sample for slopes, per contest type.
+- RotoGuru is a small volunteer-run site — the ingest caches every response to `data/raw_salaries/.rotoguru_cache/` and rate-limits at 2s/request by default. Leave both on. (Add the cache dir to `.gitignore`.)

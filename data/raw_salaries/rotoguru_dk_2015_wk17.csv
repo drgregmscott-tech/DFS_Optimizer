@@ -22,7 +22,6 @@ Ryan Mallett,QB,BAL,5000,1401,QB,BAL@CIN,8.98,rotoguru_gid
 Ryan Fitzpatrick,QB,NYJ,5400,1242,QB,NYJ@BUF,19.450666666666667,rotoguru_gid
 Brian Hoyer,QB,HOU,5100,1336,QB,HOU@JAX,16.568,rotoguru_gid
 Derek Carr,QB,LV,5300,1441,QB,LV@KC,19.621333333333332,rotoguru_gid
-Josh Freeman,QB,IND,0,1330,QB,IND@TEN,,rotoguru_gid
 Brock Osweiler,QB,DEN,5100,1414,QB,DEN@SDG,16.642857142857142,rotoguru_gid
 Case Keenum,QB,LA,5100,1435,QB,LA@SF,7.436,rotoguru_gid
 Colt McCoy,QB,WAS,5000,1361,QB,WAS@DAL,0.0,rotoguru_gid
@@ -89,7 +88,6 @@ Mike Tolbert,RB,CAR,3000,2647,RB,CAR@TB,5.04,rotoguru_gid
 Theo Riddick,RB,DET,4000,2907,RB,DET@CHI,11.513333333333332,rotoguru_gid
 Lamar Miller,RB,MIA,6200,2859,RB,MIA@NE,15.639999999999999,rotoguru_gid
 James Starks,RB,GB,3600,2777,RB,GB@MIN,11.006666666666666,rotoguru_gid
-Mike Davis,RB,SF,0,5320,RB,SF@LA,1.94,rotoguru_gid
 Akeem Hunt,RB,HOU,3000,5431,RB,HOU@JAX,2.1666666666666665,rotoguru_gid
 Ameer Abdullah,RB,DET,3700,2995,RB,DET@CHI,7.533333333333333,rotoguru_gid
 Eddie Lacy,RB,GB,4500,2896,RB,GB@MIN,10.392857142857142,rotoguru_gid

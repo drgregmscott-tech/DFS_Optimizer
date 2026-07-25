@@ -101,7 +101,6 @@ David Fluellen,RB,TEN,3000,2959,RB,TEN@NE,0.0333333333333333,rotoguru_gid,David 
 Zach Line,RB,NO,3000,2912,RB,NO@CIN,1.4125,rotoguru_gid,Zach Line,dk,3000,zach line,NO,RB,00-0029931,auto_exact,high
 Shaun Wilson,RB,TB,3000,5643,RB,TB@WAS,1.275,rotoguru_gid,Shaun Wilson,dk,3000,shaun wilson,TB,RB,00-0034621,auto_exact,high
 Anthony Sherman,RB,KC,3000,2822,RB,KC@ARI,2.055555555555556,rotoguru_gid,Anthony Sherman,dk,3000,anthony sherman,KC,RB,00-0028074,auto_exact,high
-Zach Zenner,RB,DET,0,5397,RB,DET@CHI,,rotoguru_gid,Zach Zenner,dk,0,zach zenner,DET,RB,00-0031665,auto_exact,high
 Chase Edmonds,RB,ARI,4100,5619,RB,ARI@KC,3.1750000000000003,rotoguru_gid,Chase Edmonds,dk,4100,chase edmonds,ARI,RB,00-0034681,auto_exact,high
 Dontrell Hilliard,RB,CLE,3000,5683,RB,CLE@ATL,1.1333333333333333,rotoguru_gid,Dontrell Hilliard,dk,3000,dontrell hilliard,CLE,RB,00-0034253,auto_exact,high
 Carlos Hyde,RB,JAX,4400,2933,RB,JAX@IND,11.171428571428573,rotoguru_gid,Carlos Hyde,dk,4400,carlos hyde,JAX,RB,00-0031045,auto_exact,high
@@ -148,7 +147,6 @@ Tyler Lockett,WR,SEA,4800,5386,WR,SEA@LA,13.5875,rotoguru_gid,Tyler Lockett,dk,4
 JuJu Smith-Schuster,WR,PIT,6900,5553,WR,PIT@CAR,18.275,rotoguru_gid,JuJu Smith-Schuster,dk,6900,juju smith schuster,PIT,WR,00-0033857,auto_exact,high
 Donte Moncrief,WR,JAX,4700,5344,WR,JAX@IND,10.1125,rotoguru_gid,Donte Moncrief,dk,4700,donte moncrief,JAX,WR,00-0031339,auto_exact,high
 Keenan Allen,WR,LAC,7100,5198,WR,LAC@LV,16.05,rotoguru_gid,Keenan Allen,dk,7100,keenan allen,LAC,WR,00-0030279,auto_exact,high
-Robert Foster,WR,BUF,0,5649,WR,BUF@NYJ,0.8333333333333334,rotoguru_gid,Robert Foster,dk,0,robert foster,BUF,WR,00-0034510,auto_exact,high
 Robert Woods,WR,LA,6600,5217,WR,LA@SEA,17.96666666666667,rotoguru_gid,Robert Woods,dk,6600,robert woods,LA,WR,00-0030431,auto_exact,high
 Josh Doctson,WR,WAS,4300,5460,WR,WAS@TB,6.285714285714286,rotoguru_gid,Josh Doctson,dk,4300,josh doctson,WAS,WR,00-0032760,auto_exact,high
 Danny Amendola,WR,MIA,4500,3851,WR,MIA@GB,9.946666666666664,rotoguru_gid,Danny Amendola,dk,4500,danny amendola,MIA,WR,00-0026035,auto_exact,high
@@ -182,7 +180,6 @@ Adam Humphries,WR,TB,3900,5412,WR,TB@WAS,10.7375,rotoguru_gid,Adam Humphries,dk,
 Calvin Ridley,WR,ATL,5900,5631,WR,ATL@CLE,15.775,rotoguru_gid,Calvin Ridley,dk,5900,calvin ridley,ATL,WR,00-0034837,auto_exact,high
 Jordan Matthews,WR,PHI,3100,5254,WR,PHI@DAL,6.0,rotoguru_gid,Jordan Matthews,dk,3100,jordan matthews,PHI,WR,00-0031299,auto_fallback_name_only_position_mismatch,low
 Seth Roberts,WR,LV,3200,5408,WR,LV@LAC,6.971428571428571,rotoguru_gid,Seth Roberts,dk,3200,seth roberts,LV,WR,00-0031166,auto_exact,high
-Keith Kirkwood,WR,NO,0,5695,WR,NO@CIN,,rotoguru_gid,Keith Kirkwood,dk,0,keith kirkwood,NO,WR,00-0034317,auto_exact,high
 D.J. Moore,WR,CAR,4700,5633,WR,CAR@PIT,8.05,rotoguru_gid,D.J. Moore,dk,4700,dj moore,CAR,WR,00-0034827,auto_exact,high
 Devin Funchess,WR,CAR,5300,5381,WR,CAR@PIT,12.3125,rotoguru_gid,Devin Funchess,dk,5300,devin funchess,CAR,WR,00-0032055,auto_exact,high
 Allen Hurns,WR,DAL,3400,5341,WR,DAL@PHI,5.5125,rotoguru_gid,Allen Hurns,dk,3400,allen hurns,DAL,WR,00-0030821,auto_exact,high
@@ -190,7 +187,6 @@ Demarcus Robinson,WR,KC,3000,5515,WR,KC@ARI,2.011111111111111,rotoguru_gid,Demar
 Antonio Callaway,WR,CLE,4000,5642,WR,CLE@ATL,7.48888888888889,rotoguru_gid,Antonio Callaway,dk,4000,antonio callaway,CLE,WR,00-0034772,auto_exact,high
 Quincy Enunwa,WR,NYJ,3700,5420,WR,NYJ@BUF,8.957142857142857,rotoguru_gid,Quincy Enunwa,dk,3700,quincy enunwa,NYJ,WR,00-0031023,auto_exact,high
 Cameron Batson,WR,TEN,3000,5679,WR,TEN@NE,2.55,rotoguru_gid,Cameron Batson,dk,3000,cameron batson,TEN,WR,00-0034652,auto_exact,high
-Isaiah McKenzie,WR,BUF,0,5574,WR,BUF@NYJ,,rotoguru_gid,Isaiah McKenzie,dk,0,isaiah mckenzie,BUF,WR,00-0033466,auto_exact,high
 Michael Gallup,WR,DAL,3700,5634,WR,DAL@PHI,5.3875,rotoguru_gid,Michael Gallup,dk,3700,michael gallup,DAL,WR,00-0034764,auto_exact,high
 Breshad Perriman,WR,CLE,3000,5379,WR,CLE@ATL,2.7,rotoguru_gid,Breshad Perriman,dk,3000,breshad perriman,CLE,WR,00-0032054,auto_exact,high
 Jarius Wright,WR,CAR,3100,5188,WR,CAR@PIT,5.8,rotoguru_gid,Jarius Wright,dk,3100,jarius wright,CAR,WR,00-0029572,auto_exact,high

@@ -30,7 +30,6 @@ QB,NO,7400,1465,Jameis Winston,Jameis,Winston,TB,18.36,rotoguru_gid
 QB,CLE,6500,1528,Baker Mayfield,Baker,Mayfield,PIT,15.76,rotoguru_gid
 QB,DET,6800,1490,Jared Goff,Jared,Goff,PHI,14.931428571428572,rotoguru_gid
 QB,ATL,7200,1301,Matt Ryan,Matt,Ryan,CAR,18.55333333333333,rotoguru_gid
-QB,NYJ,0,1320,Josh Johnson,Josh,Johnson,CIN,,rotoguru_gid
 QB,DET,6000,1546,David Blough,David,Blough,PHI,,rotoguru_gid
 QB,PHI,6000,1540,Gardner Minshew,Gardner,Minshew,DET,,rotoguru_gid
 QB,LA,6100,1563,John Wolford,John,Wolford,HOU,-1.1,rotoguru_gid
@@ -60,7 +59,6 @@ RB,CAR,6600,5911,Chuba Hubbard,Chuba,Hubbard,ATL,8.057142857142857,rotoguru_gid
 RB,WAS,5400,5586,J.D. McKissic,J.D.,McKissic,DEN,8.8,rotoguru_gid
 RB,HOU,4500,2890,Rex Burkhead,Rex,Burkhead,LA,0.3333333333333333,rotoguru_gid
 RB,DET,4500,5913,Jermar Jefferson,Jermar,Jefferson,PHI,0.0,rotoguru_gid
-RB,KC,0,5963,Derrick Gore,Derrick,Gore,NYG,1.2,rotoguru_gid
 RB,TB,4900,2889,Giovani Bernard,Giovani,Bernard,NO,5.633333333333333,rotoguru_gid
 RB,JAX,5000,2933,Carlos Hyde,Carlos,Hyde,SEA,2.64,rotoguru_gid
 RB,CLE,6700,5746,D'Ernest Johnson,D'Ernest,Johnson,PIT,3.7285714285714286,rotoguru_gid
@@ -74,7 +72,6 @@ RB,CHI,6500,5912,Khalil Herbert,Khalil,Herbert,SF,6.028571428571429,rotoguru_gid
 RB,MIN,9200,5559,Dalvin Cook,Dalvin,Cook,DAL,14.975,rotoguru_gid
 RB,SEA,5500,5738,Travis Homer,Travis,Homer,JAX,2.685714285714286,rotoguru_gid
 RB,CLE,8000,5622,Nick Chubb,Nick,Chubb,PIT,16.060000000000002,rotoguru_gid
-RB,DET,0,5950,Godwin Igwebuike,Godwin,Igwebuike,PHI,,rotoguru_gid
 RB,MIA,5700,5789,Myles Gaskin,Myles,Gaskin,BUF,10.128571428571428,rotoguru_gid
 RB,WAS,6200,5827,Antonio Gibson,Antonio,Gibson,DEN,11.457142857142857,rotoguru_gid
 RB,TEN,10500,5445,Derrick Henry,Derrick,Henry,IND,25.357142857142858,rotoguru_gid
@@ -171,7 +168,6 @@ WR,NYJ,5600,5410,Jamison Crowder,Jamison,Crowder,CIN,9.133333333333333,rotoguru_
 WR,TB,7500,5253,Mike Evans,Mike,Evans,NO,15.728571428571428,rotoguru_gid
 WR,CIN,6300,5839,Tee Higgins,Tee,Higgins,NYJ,10.02,rotoguru_gid
 WR,CIN,8200,5924,Ja'Marr Chase,Ja'Marr,Chase,NYJ,18.385714285714283,rotoguru_gid
-WR,TB,0,5816,Cyril Grayson,Cyril,Grayson,NO,,rotoguru_gid
 WR,BUF,4700,5858,Gabriel Davis,Gabriel,Davis,MIA,3.233333333333333,rotoguru_gid
 WR,NO,5500,5639,Tre'Quan Smith,Tre'Quan,Smith,TB,1.6,rotoguru_gid
 WR,LA,5700,5844,Van Jefferson,Van,Jefferson,HOU,8.414285714285715,rotoguru_gid

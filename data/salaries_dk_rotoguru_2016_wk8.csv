@@ -66,11 +66,9 @@ Jamize Olawale,RB,LV,3000,2913,RB,LV@TB,3.242857142857143,rotoguru_gid,Jamize Ol
 Ryan Mathews,RB,PHI,4000,2754,RB,PHI@DAL,10.25,rotoguru_gid,Ryan Mathews,dk,4000,ryan mathews,PHI,RB,00-0027864,auto_exact,high
 Charcandrick West,RB,KC,3000,2987,RB,KC@IND,4.68,rotoguru_gid,Charcandrick West,dk,3000,charcandrick west,KC,RB,00-0030668,auto_exact,high
 Jonathan Williams,RB,BUF,3000,5451,RB,BUF@NE,0.65,rotoguru_gid,Jonathan Williams,dk,3000,jonathan williams,BUF,RB,00-0032975,auto_exact,high
-Terron Ward,RB,ATL,0,5375,RB,ATL@GB,,rotoguru_gid,Terron Ward,dk,0,terron ward,ATL,RB,00-0031682,auto_exact,high
 Spencer Ware,RB,KC,6800,2914,RB,KC@IND,18.95,rotoguru_gid,Spencer Ware,dk,6800,spencer ware,KC,RB,00-0030414,auto_exact,high
 Robert Turbin,RB,IND,3000,2867,RB,IND@KC,4.983333333333333,rotoguru_gid,Robert Turbin,dk,3000,robert turbin,IND,RB,00-0029273,auto_exact,high
 Derek Watt,RB,SDG,3000,5504,RB,SDG@DEN,0.72,rotoguru_gid,Derek Watt,dk,3000,derek watt,SDG,RB,00-0032897,auto_fallback_team_mismatch,medium
-Juwan Thompson,RB,DEN,0,2965,RB,DEN@SDG,,rotoguru_gid,Juwan Thompson,dk,0,juwan thompson,DEN,RB,00-0030705,auto_exact,high
 Jalen Richard,RB,LV,3100,5490,RB,LV@TB,7.057142857142857,rotoguru_gid,Jalen Richard,dk,3100,jalen richard,LV,RB,00-0033025,auto_exact,high
 James White,RB,NE,4800,2954,RB,NE@BUF,11.228571428571428,rotoguru_gid,James White,dk,4800,james white,NE,RB,00-0031062,auto_exact,high
 Reggie Bush,RB,BUF,3300,2495,RB,BUF@NE,2.18,rotoguru_gid,Reggie Bush,dk,3300,reggie bush,BUF,RB,00-0024217,auto_exact,high
@@ -167,7 +165,6 @@ Brandon Marshall,WR,NYJ,7800,3627,WR,NYJ@CLE,13.6,rotoguru_gid,Brandon Marshall,
 Dorial Green-Beckham,WR,PHI,3000,5382,WR,PHI@DAL,5.483333333333333,rotoguru_gid,Dorial Green-Beckham,dk,3000,dorial green beckham,PHI,WR,00-0032218,auto_exact,high
 Russell Shepard,WR,TB,3300,5223,WR,TB@LV,4.133333333333333,rotoguru_gid,Russell Shepard,dk,3300,russell shepard,TB,WR,00-0030147,auto_exact,high
 Ted Ginn Jr.,WR,CAR,3900,3670,WR,CAR@ARI,5.783333333333334,rotoguru_gid,Ted Ginn Jr.,dk,3900,ted ginn,CAR,WR,00-0025396,auto_exact,high
-Geronimo Allison,WR,GB,0,5511,WR,GB@ATL,,rotoguru_gid,Geronimo Allison,dk,0,geronimo allison,GB,WR,00-0032626,auto_exact,high
 Jermaine Kearse,WR,SEA,3100,5186,WR,SEA@NO,6.133333333333333,rotoguru_gid,Jermaine Kearse,dk,3100,jermaine kearse,SEA,WR,00-0029159,auto_exact,high
 Bryan Walters,WR,JAX,3000,5070,WR,JAX@TEN,0.0,rotoguru_gid,Bryan Walters,dk,3000,bryan walters,JAX,WR,00-0027595,auto_exact,high
 Kelvin Benjamin,WR,CAR,7200,5257,WR,CAR@ARI,15.9,rotoguru_gid,Kelvin Benjamin,dk,7200,kelvin benjamin,CAR,WR,00-0031359,auto_exact,high

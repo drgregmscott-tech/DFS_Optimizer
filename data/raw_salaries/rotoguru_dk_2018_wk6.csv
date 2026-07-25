@@ -82,7 +82,6 @@ Jamaal Williams,RB,GB,4100,5541,RB,GB@SF,6.640000000000001,rotoguru_gid
 Devontae Booker,RB,DEN,3800,5468,RB,DEN@LA,5.58,rotoguru_gid
 Javorius Allen,RB,BAL,4800,5370,RB,BAL@TEN,13.34,rotoguru_gid
 Ronald Jones,RB,TB,3900,5617,RB,TB@ATL,3.8,rotoguru_gid
-Gus Edwards,RB,BAL,0,5681,RB,BAL@TEN,,rotoguru_gid
 Aaron Jones,RB,GB,4600,5543,RB,GB@SF,9.6,rotoguru_gid
 Mike Davis,RB,SEA,4100,5320,RB,SEA@LV,12.45,rotoguru_gid
 Derrick Henry,RB,TEN,4000,5445,RB,TEN@BAL,5.284,rotoguru_gid
@@ -96,10 +95,8 @@ James Develin,RB,NE,3000,2825,RB,NE@KC,1.24,rotoguru_gid
 Justin Jackson,RB,LAC,3000,5682,RB,LAC@CLE,,rotoguru_gid
 Royce Freeman,RB,DEN,3900,5620,RB,DEN@LA,9.82,rotoguru_gid
 Mike Boone,RB,MIN,3000,5662,RB,MIN@ARI,1.1,rotoguru_gid
-Jamaal Charles,RB,JAX,0,2629,RB,JAX@DAL,,rotoguru_gid
 Chris Ivory,RB,BUF,3800,2741,RB,BUF@HOU,6.4799999999999995,rotoguru_gid
 Doug Martin,RB,LV,3500,2858,RB,LV@SEA,2.52,rotoguru_gid
-Kenjon Barner,RB,NE,0,2887,RB,NE@KC,1.1,rotoguru_gid
 Robert Turbin,RB,IND,3500,2867,RB,IND@NYJ,0.0,rotoguru_gid
 Jamize Olawale,RB,DAL,3000,2913,RB,DAL@JAX,0.0,rotoguru_gid
 Samaje Perine,RB,WAS,3200,5538,RB,WAS@CAR,,rotoguru_gid
@@ -304,15 +301,12 @@ James O'Shaughnessy,TE,JAX,2600,4664,TE,JAX@DAL,2.6399999999999997,rotoguru_gid
 Lance Kendricks,TE,GB,2500,4538,TE,GB@SF,2.8,rotoguru_gid
 Xavier Grimble,TE,PIT,2500,4604,TE,PIT@CIN,0.38,rotoguru_gid
 Jeff Heuerman,TE,DEN,2600,4676,TE,DEN@LA,4.34,rotoguru_gid
-Anthony Firkser,TE,TEN,0,4738,TE,TEN@BAL,,rotoguru_gid
 Gerald Everett,TE,LA,2900,4705,TE,LA@DEN,2.925,rotoguru_gid
-Mo Alie-Cox,TE,IND,0,4736,TE,IND@NYJ,2.7,rotoguru_gid
 Geoff Swaim,TE,DAL,2900,4668,TE,DAL@JAX,7.18,rotoguru_gid
 Mark Andrews,TE,BAL,2600,4721,TE,BAL@TEN,6.1,rotoguru_gid
 Jermaine Gresham,TE,ARI,2700,4493,TE,ARI@MIN,1.3333333333333333,rotoguru_gid
 Scott Simonson,TE,NYG,2500,4620,TE,NYG@PHI,0.33999999999999997,rotoguru_gid
 Neal Sterling,TE,NYJ,2500,4684,TE,NYJ@IND,2.85,rotoguru_gid
-Tyrone Swoopes,TE,SEA,0,4740,TE,SEA@LV,,rotoguru_gid
 Jared Cook,TE,LV,5000,4437,TE,LV@SEA,17.4,rotoguru_gid
 Nick Boyle,TE,BAL,2500,4660,TE,BAL@TEN,4.279999999999999,rotoguru_gid
 Rico Gathers,TE,DAL,2500,4735,TE,DAL@JAX,1.05,rotoguru_gid
@@ -321,7 +315,6 @@ Mike Gesicki,TE,MIA,2700,4719,TE,MIA@CHI,3.1399999999999997,rotoguru_gid
 Orson Charles,TE,CLE,2500,4561,TE,CLE@LAC,0.0,rotoguru_gid
 Dallas Goedert,TE,PHI,2600,4725,TE,PHI@NYG,5.72,rotoguru_gid
 Matt LaCosse,TE,DEN,2500,4674,TE,DEN@LA,1.3199999999999998,rotoguru_gid
-David Grinnage,TE,JAX,0,4739,TE,JAX@DAL,,rotoguru_gid
 Jordan Akins,TE,HOU,2500,4729,TE,HOU@BUF,3.2600000000000002,rotoguru_gid
 Antony Auclair,TE,TB,2500,4716,TE,TB@ATL,0.45,rotoguru_gid
 Antonio Gates,TE,LAC,2800,4270,TE,LAC@CLE,5.54,rotoguru_gid

@@ -98,7 +98,6 @@ Bobby Rainey,RB,NYG,3000,2863,RB,NYG@WAS,0.0,rotoguru_gid,Bobby Rainey,dk,3000,b
 Jacquizz Rodgers,RB,TB,3000,2818,RB,TB@LA,2.9,rotoguru_gid,Jacquizz Rodgers,dk,3000,jacquizz rodgers,TB,RB,00-0028083,auto_exact,high
 Chris Ivory,RB,JAX,3900,2741,RB,JAX@BAL,,rotoguru_gid,Chris Ivory,dk,3900,chris ivory,JAX,RB,00-0027531,auto_exact,high
 Matt Asiata,RB,MIN,3000,2873,RB,MIN@CAR,2.4,rotoguru_gid,Matt Asiata,dk,3000,matt asiata,MIN,RB,00-0028198,auto_exact,high
-Dexter McCluster,RB,SDG,0,3953,RB,SDG@IND,,rotoguru_gid,Dexter McCluster,dk,0,dexter mccluster,SDG,RB,00-0027651,auto_fallback_name_only_position_mismatch,low
 Chris Thompson,RB,WAS,3400,2915,RB,WAS@NYG,10.35,rotoguru_gid,Chris Thompson,dk,3400,chris thompson,WAS,RB,00-0030404,auto_exact,high
 Andy Janovich,RB,DEN,3000,5482,RB,DEN@CIN,5.45,rotoguru_gid,Andy Janovich,dk,3000,andy janovich,DEN,RB,00-0032956,auto_exact,high
 James White,RB,NE,4200,2954,RB,NE@HOU,7.15,rotoguru_gid,James White,dk,4200,james white,NE,RB,00-0031062,auto_exact,high
@@ -111,7 +110,6 @@ Isaiah Pead,RB,MIA,3000,2860,RB,MIA@CLE,,rotoguru_gid,Isaiah Pead,dk,3000,isaiah
 Derek Watt,RB,SDG,3000,5504,RB,SDG@IND,,rotoguru_gid,Derek Watt,dk,3000,derek watt,SDG,RB,00-0032897,auto_fallback_team_mismatch,medium
 Anthony Sherman,RB,KC,3000,2822,RB,KC@NYJ,0.0,rotoguru_gid,Anthony Sherman,dk,3000,anthony sherman,KC,RB,00-0028074,auto_exact,high
 Malcolm Johnson,RB,CLE,3000,4663,RB,CLE@MIA,1.45,rotoguru_gid,Malcolm Johnson,dk,3000,malcolm johnson,CLE,RB,00-0032068,auto_exact,high
-Terrence Magee,RB,SEA,0,5439,RB,SEA@SF,,rotoguru_gid,Terrence Magee,dk,0,terrence magee,SEA,RB,00-0031768,auto_exact,high
 Alfred Blue,RB,HOU,3400,2960,RB,HOU@NE,0.75,rotoguru_gid,Alfred Blue,dk,3400,alfred blue,HOU,RB,00-0031075,auto_exact,high
 Kyle Juszczyk,RB,BAL,3000,2908,RB,BAL@JAX,3.05,rotoguru_gid,Kyle Juszczyk,dk,3000,kyle juszczyk,BAL,RB,00-0029892,auto_exact,high
 Rob Kelley,RB,WAS,3000,5493,RB,WAS@NYG,,rotoguru_gid,Rob Kelley,dk,3000,rob kelley,WAS,RB,00-0032371,auto_exact,high

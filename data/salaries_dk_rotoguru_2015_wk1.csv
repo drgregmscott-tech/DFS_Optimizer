@@ -34,7 +34,6 @@ Peyton Manning,QB,DEN,8200,1081,QB,DEN@BAL,,rotoguru_gid,Peyton Manning,dk,8200,
 Josh McCown,QB,CLE,5200,1175,QB,CLE@NYJ,,rotoguru_gid,Josh McCown,dk,5200,josh mccown,CLE,QB,00-0021206,auto_exact,high
 Derek Carr,QB,LV,6100,1441,QB,LV@CIN,,rotoguru_gid,Derek Carr,dk,6100,derek carr,LV,QB,00-0031280,auto_exact,high
 Joe Flacco,QB,BAL,6700,1302,QB,BAL@DEN,,rotoguru_gid,Joe Flacco,dk,6700,joe flacco,BAL,QB,00-0026158,auto_exact,high
-Tyler Murphy,QB,PIT,0,1489,QB,PIT@NE,,rotoguru_gid,Tyler Murphy,dk,0,tyler murphy,PIT,QB,00-0031816,auto_fallback_name_only_position_mismatch,low
 Matt Cassel,QB,DAL,5800,1241,QB,DAL@NYG,,rotoguru_gid,Matt Cassel,dk,5800,matt cassel,DAL,QB,00-0023662,auto_exact,high
 Luke McCown,QB,NO,5000,1227,QB,NO@ARI,,rotoguru_gid,Luke McCown,dk,5000,luke mccown,NO,QB,00-0022864,manual_override,high
 Joe Webb,QB,CAR,5000,5071,QB,CAR@JAX,,rotoguru_gid,Joe Webb,dk,5000,joe webb,CAR,QB,00-0027796,auto_exact,high
@@ -80,7 +79,6 @@ Lamar Miller,RB,MIA,5500,2859,RB,MIA@WAS,,rotoguru_gid,Lamar Miller,dk,5500,lama
 Adrian Peterson,RB,MIN,7700,2553,RB,MIN@SF,,rotoguru_gid,Adrian Peterson,dk,7700,adrian peterson,MIN,RB,00-0025394,auto_exact,high
 Tevin Coleman,RB,ATL,4800,2994,RB,ATL@PHI,,rotoguru_gid,Tevin Coleman,dk,4800,tevin coleman,ATL,RB,00-0032058,auto_exact,high
 Devonta Freeman,RB,ATL,4300,2930,RB,ATL@PHI,,rotoguru_gid,Devonta Freeman,dk,4300,devonta freeman,ATL,RB,00-0031285,auto_exact,high
-Will Johnson,RB,PIT,0,2877,RB,PIT@NE,,rotoguru_gid,Will Johnson,dk,0,will johnson,PIT,RB,00-0028841,auto_exact,high
 Denard Robinson,RB,JAX,3000,2901,RB,JAX@CAR,,rotoguru_gid,Denard Robinson,dk,3000,denard robinson,JAX,RB,00-0030547,auto_exact,high
 Doug Martin,RB,TB,4500,2858,RB,TB@TEN,,rotoguru_gid,Doug Martin,dk,4500,doug martin,TB,RB,00-0029613,auto_exact,high
 Joique Bell,RB,DET,5200,2719,RB,DET@SDG,,rotoguru_gid,Joique Bell,dk,5200,joique bell,DET,RB,00-0027218,auto_exact,high
@@ -212,7 +210,6 @@ Cole Beasley,WR,DAL,3400,5163,WR,DAL@NYG,,rotoguru_gid,Cole Beasley,dk,3400,cole
 Marquess Wilson,WR,CHI,3500,5238,WR,CHI@GB,,rotoguru_gid,Marquess Wilson,dk,3500,marquess wilson,CHI,WR,00-0030047,auto_exact,high
 Anquan Boldin,WR,SF,6200,3423,WR,SF@MIN,,rotoguru_gid,Anquan Boldin,dk,6200,anquan boldin,SF,WR,00-0022084,auto_exact,high
 Ted Ginn Jr.,WR,CAR,3000,3670,WR,CAR@JAX,,rotoguru_gid,Ted Ginn Jr.,dk,3000,ted ginn,CAR,WR,00-0025396,auto_exact,high
-Willie Snead,WR,NO,0,5287,WR,NO@ARI,,rotoguru_gid,Willie Snead,dk,0,willie snead,NO,WR,00-0030663,auto_exact,high
 Andre Roberts,WR,WAS,3200,3978,WR,WAS@MIA,,rotoguru_gid,Andre Roberts,dk,3200,andre roberts,WAS,WR,00-0027691,auto_exact,high
 Golden Tate,WR,DET,6300,3995,WR,DET@SDG,,rotoguru_gid,Golden Tate,dk,6300,golden tate,DET,WR,00-0027891,auto_exact,high
 Andre Johnson,WR,IND,6100,3437,WR,IND@BUF,,rotoguru_gid,Andre Johnson,dk,6100,andre johnson,IND,WR,00-0022044,auto_exact,high
