@@ -855,6 +855,7 @@ def solve_lineup(players: pd.DataFrame, salary_cap: int, fixed_counts: dict,
                   mini_stack_type: str = None,
                   locked_player_ids: set = None,
                   min_salary: int = 0,
+                  min_total_ownership: float = 0.0,
                   flex_positions: set = None) -> pd.DataFrame:
     """`min_salary` is a Session 7.3 addition (decision #28): 0 (default)
     adds no floor, identical to every prior session's behavior. A value > 0
@@ -911,6 +912,31 @@ def solve_lineup(players: pd.DataFrame, salary_cap: int, fixed_counts: dict,
     # actually requested.
     if min_salary > 0:
         prob += pulp.lpSum(x[pid] * salary[pid] for pid in x) >= min_salary, "min_salary_floor"
+
+    # Decision #35 (this session) -- minimum total lineup ownership, same
+    # pattern as decision #28's salary floor: no-op unless requested, and
+    # a simple ">=" companion constraint alongside the existing objective
+    # rather than a second objective. Lets a normal run explore anywhere
+    # from 0 (no floor, existing behavior) up to a very high floor, which
+    # -- since points-maximization is still the objective -- converges
+    # toward "the highest-owned lineup that's still as good as possible
+    # given that floor" as the floor approaches the max achievable total,
+    # letting a "super chalk" build and the true optimal be compared
+    # directly on the same objective rather than needing a second, separate
+    # ownership-only solve mode.
+    if min_total_ownership > 0:
+        if "estimated_ownership_pct" not in players.columns:
+            raise RuntimeError(
+                "--min-total-ownership was requested but this pool's "
+                "final_projections file has no estimated_ownership_pct "
+                "column -- re-run build_projections.py for this "
+                "site/week first."
+            )
+        ownership = players.set_index("player_id")["estimated_ownership_pct"].fillna(0)
+        prob += (
+            pulp.lpSum(x[pid] * ownership[pid] for pid in x) >= min_total_ownership,
+            "min_total_ownership_floor",
+        )
 
     # Total roster size.
     total_slots = sum(fixed_counts.values()) + flex_count
@@ -1220,6 +1246,7 @@ def build_single_lineup(site: str, week: int, randomization_pct: float = DEFAULT
                          excluded_player_ids: set = None,
                          min_salary: int = 0,
                          min_projection: float = 0.0,
+                         min_total_ownership: float = 0.0,
                          flex_positions: set = None) -> pd.DataFrame:
     config = SITE_CONFIGS[site]
     players = load_final_projections(site, week)
@@ -1257,6 +1284,21 @@ def build_single_lineup(site: str, week: int, randomization_pct: float = DEFAULT
             | (players["player_id"].isin(locked_player_ids))
         ].copy()
 
+    # Decision #35 -- validated once, upfront, here -- NOT left to
+    # solve_lineup()'s own check. solve_lineup() is called inside a
+    # try/except RuntimeError loop when stacking (see build_multi_lineup),
+    # and a missing-column error raised from inside that loop would get
+    # silently swallowed and misreported as "stacking infeasible" instead
+    # of the actual problem. Failing loudly here, before any solving
+    # starts, keeps this project's established "never silently guess or
+    # misreport" convention intact.
+    if min_total_ownership > 0 and "estimated_ownership_pct" not in players.columns:
+        raise SystemExit(
+            "--min-total-ownership was requested but this pool's "
+            "final_projections file has no estimated_ownership_pct "
+            "column -- re-run build_projections.py for this site/week first."
+        )
+
     validate_lock_feasibility(players, locked_player_ids, fixed_counts, flex_count, config["salary_cap"])
 
     optimization_projection = None
@@ -1285,7 +1327,8 @@ def build_single_lineup(site: str, week: int, randomization_pct: float = DEFAULT
         bring_back=bring_back, target_team=target_team, target_game=target_game,
         game_stack_min_players=game_stack_min_players, mini_stack_type=mini_stack_type,
         locked_player_ids=locked_player_ids,
-        min_salary=min_salary, flex_positions=flex_positions,
+        min_salary=min_salary, min_total_ownership=min_total_ownership,
+        flex_positions=flex_positions,
     )
     if locked_player_ids:
         missing = locked_player_ids - set(selected["player_id"])
@@ -1334,6 +1377,7 @@ def build_multi_lineup(site: str, week: int, n_lineups: int = DEFAULT_N_LINEUPS,
                         excluded_player_ids: set = None,
                         min_salary: int = 0,
                         min_projection: float = 0.0,
+                        min_total_ownership: float = 0.0,
                         flex_positions: set = None) -> tuple:
     """Generates up to `n_lineups` distinct, salary-cap-legal lineups, none
     of which use any single player in more than `max_exposure_pct` of the
@@ -1415,6 +1459,21 @@ def build_multi_lineup(site: str, week: int, n_lineups: int = DEFAULT_N_LINEUPS,
             | (players_all["player_id"].isin(locked_player_ids))
         ].copy()
 
+    # Decision #35 -- validated once, upfront, here -- NOT left to
+    # solve_lineup()'s own check, which sits inside a try/except
+    # RuntimeError loop when stacking (below). A missing-column error
+    # raised from inside that loop would get silently swallowed and
+    # misreported as "stacking infeasible" for all N lineups instead of
+    # the actual problem. Failing loudly here, before the batch starts,
+    # keeps this project's established "never silently guess or
+    # misreport" convention intact.
+    if min_total_ownership > 0 and "estimated_ownership_pct" not in players_all.columns:
+        raise SystemExit(
+            "--min-total-ownership was requested but this pool's "
+            "final_projections file has no estimated_ownership_pct "
+            "column -- re-run build_projections.py for this site/week first."
+        )
+
     validate_lock_feasibility(players_all, locked_player_ids, fixed_counts, flex_count, config["salary_cap"])
 
     exposure_cap = max(1, math.floor(max_exposure_pct * n_lineups))
@@ -1490,7 +1549,8 @@ def build_multi_lineup(site: str, week: int, n_lineups: int = DEFAULT_N_LINEUPS,
                     game_stack_min_players=game_stack_min_players,
                     mini_stack_type=mini_stack_type,
                     locked_player_ids=locked_player_ids,
-                    min_salary=min_salary, flex_positions=flex_positions,
+                    min_salary=min_salary, min_total_ownership=min_total_ownership,
+                    flex_positions=flex_positions,
                 )
             except RuntimeError as e:
                 stack_infeasible_reason = e
@@ -1722,6 +1782,19 @@ def main():
              "automation and other consumers read from. Omit for a normal, "
              "canonical run -- default behavior is unchanged.",
     )
+    parser.add_argument(
+        "--min-total-ownership", type=float, default=0.0,
+        help="Requires the lineup's summed estimated_ownership_pct across "
+             "all 9 players to be at least this much (default 0.0 -- no "
+             "floor, existing behavior unchanged; same units as the UI's "
+             "'Total Own' stat, e.g. 57.5). Same pattern as "
+             "--min-salary-pct (decision #28): a floor alongside the "
+             "existing points-maximization objective, not a second "
+             "objective. Setting this very high (near the max achievable "
+             "for the slate) converges toward the single highest-owned "
+             "legal lineup -- a 'super chalk' reference build you can "
+             "directly compare against the unrestricted optimal.",
+    )
     # Session 8 (this session) -- Pool-level value filter (decision #34).
     parser.add_argument(
         "--min-projection", type=float, default=0.0,
@@ -1784,6 +1857,7 @@ def main():
             locked_player_ids=locked_player_ids,
             excluded_player_ids=excluded_player_ids,
             min_salary=min_salary, min_projection=args.min_projection,
+            min_total_ownership=args.min_total_ownership,
             flex_positions=flex_positions,
             **stack_kwargs,
         )
@@ -1829,6 +1903,7 @@ def main():
             locked_player_ids=locked_player_ids,
             excluded_player_ids=excluded_player_ids,
             min_salary=min_salary, min_projection=args.min_projection,
+            min_total_ownership=args.min_total_ownership,
             flex_positions=flex_positions,
             **stack_kwargs,
         )
