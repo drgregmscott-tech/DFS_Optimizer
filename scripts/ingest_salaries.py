@@ -110,6 +110,17 @@ BASE_TEAM_ABBREV_MAP = {
     "WSH": "WAS",
     "JAC": "JAX",
     "NOS": "NO",
+    "NOR": "NO",   # found via real RotoGuru data (Session: RotoGuru ingest) --
+                   # "NOS" was already here but RotoGuru uses "nor". Left
+                   # unmapped, NOR silently (a) demoted every New Orleans skill
+                   # player from an exact match to the medium-confidence
+                   # auto_fallback_team_mismatch stage, and (b) produced a
+                   # DST row with normalized_team="NOR", which can never match
+                   # the Vegas file's "NO" -- so build_dst_projections() would
+                   # treat NO as a bye and force final_projection to 0.0 every
+                   # single week, with no error. Purely additive: no site
+                   # export currently sends "NOR", so no existing behavior
+                   # changes.
     "GNB": "GB",
     "SFO": "SF",
     "TAM": "TB",
