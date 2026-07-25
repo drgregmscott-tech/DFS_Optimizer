@@ -1,2 +1,33 @@
 site,source_name,source_team,source_position,player_id,notes
 dk,Drew Ogletree,IND,TE,00-0037292,DK lists nickname 'Drew'; nflverse uses formal 'Andrew Ogletree' - found via real Madden Stream export 2026-07-21
+dk,Deonte Harris,NO,WR,00-0035215,auto-resolved from RotoGuru unmatched (51 weeks); Deonte Harty in nflverse
+dk,Gabriel Davis,BUF,WR,00-0036196,auto-resolved from RotoGuru unmatched (50 weeks); Gabe Davis in nflverse
+dk,Nick Westbrook,TEN,WR,00-0036182,auto-resolved from RotoGuru unmatched (47 weeks); Nick Westbrook-Ikhine in nflverse
+dk,Olabisi Johnson,MIN,WR,00-0035006,auto-resolved from RotoGuru unmatched (32 weeks); Bisi Johnson in nflverse
+dk,Matthew Dayes,CLE,RB,00-0033596,auto-resolved from RotoGuru unmatched (22 weeks); Matt Dayes in nflverse
+dk,Luke McCown,NO,QB,00-0022864,auto-resolved from RotoGuru unmatched (17 weeks); Luke McCown in nflverse
+dk,Michael Vick,,QB,00-0020245,auto-resolved from RotoGuru unmatched (16 weeks); Mike Vick in nflverse; team-agnostic
+dk,Clark Harris,,LS,00-0025630,auto-resolved from RotoGuru unmatched (16 weeks); Clark Harris in nflverse; team-agnostic
+dk,Chandler Cox,,FB,00-0035310,auto-resolved from RotoGuru unmatched (13 weeks); Chandler Cox in nflverse; team-agnostic
+fd,Gabriel Davis,,WR,00-0036196,auto-resolved from RotoGuru unmatched (18 weeks); Gabe Davis in nflverse; team-agnostic
+fd,Nick Westbrook,,WR,00-0036182,auto-resolved from RotoGuru unmatched (18 weeks); Nick Westbrook-Ikhine in nflverse; team-agnostic
+fd,Michael Vick,,QB,00-0020245,auto-resolved from RotoGuru unmatched (16 weeks); Mike Vick in nflverse; team-agnostic
+fd,Clark Harris,,LS,00-0025630,auto-resolved from RotoGuru unmatched (16 weeks); Clark Harris in nflverse; team-agnostic
+fd,Deonte Harris,,WR,00-0035215,auto-resolved from RotoGuru unmatched (15 weeks); Deonte Harty in nflverse; team-agnostic
+fd,Chandler Cox,,FB,00-0035310,auto-resolved from RotoGuru unmatched (13 weeks); Chandler Cox in nflverse; team-agnostic
+dk,Robby Anderson,,WR,00-0032688,auto-resolved from RotoGuru unmatched (96 weeks); Robbie Chosen in nflverse; team-agnostic
+dk,Ben Watson,,TE,00-0022943,auto-resolved from RotoGuru unmatched (28 weeks); Benjamin Watson in nflverse; team-agnostic
+dk,Dan Vitale,,RB,00-0032794,auto-resolved from RotoGuru unmatched (19 weeks); Danny Vitale in nflverse; team-agnostic
+dk,Joshua Perkins,,TE,00-0032599,auto-resolved from RotoGuru unmatched (14 weeks); Josh Perkins in nflverse; team-agnostic
+dk,D'Wayne Eskridge,,WR,00-0036620,auto-resolved from RotoGuru unmatched (12 weeks); Dee Eskridge in nflverse; team-agnostic
+dk,Tim Wright,,TE,00-0029910,auto-resolved from RotoGuru unmatched (10 weeks); Timothy Wright in nflverse; team-agnostic
+dk,Andrew Beck,,FB,00-0034959,auto-resolved from RotoGuru unmatched (9 weeks); Andrew Beck in nflverse; team-agnostic
+dk,Khari Lee,,TE,00-0031922,auto-resolved from RotoGuru unmatched (8 weeks); Khari Lee in nflverse; team-agnostic
+fd,Robby Anderson,,WR,00-0032688,auto-resolved from RotoGuru unmatched (96 weeks); Robbie Chosen in nflverse; team-agnostic
+fd,Ben Watson,,TE,00-0022943,auto-resolved from RotoGuru unmatched (28 weeks); Benjamin Watson in nflverse; team-agnostic
+fd,Dan Vitale,,RB,00-0032794,auto-resolved from RotoGuru unmatched (19 weeks); Danny Vitale in nflverse; team-agnostic
+fd,Joshua Perkins,,TE,00-0032599,auto-resolved from RotoGuru unmatched (14 weeks); Josh Perkins in nflverse; team-agnostic
+fd,D'Wayne Eskridge,,WR,00-0036620,auto-resolved from RotoGuru unmatched (12 weeks); Dee Eskridge in nflverse; team-agnostic
+fd,Tim Wright,,TE,00-0029910,auto-resolved from RotoGuru unmatched (10 weeks); Timothy Wright in nflverse; team-agnostic
+fd,Andrew Beck,,FB,00-0034959,auto-resolved from RotoGuru unmatched (9 weeks); Andrew Beck in nflverse; team-agnostic
+fd,Khari Lee,,TE,00-0031922,auto-resolved from RotoGuru unmatched (8 weeks); Khari Lee in nflverse; team-agnostic

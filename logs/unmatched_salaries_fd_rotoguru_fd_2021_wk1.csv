@@ -1,0 +1,8 @@
+Position,Team,Salary,Id,Nickname,First Name,Last Name,Opponent,AvgPointsPerGame,id_source,name,site,salary,normalized_name,normalized_team,position_upper,player_id,match_method,match_confidence
+RB,CHI,4600,5564,Tarik Cohen,Tarik,Cohen,LA,,rotoguru_gid,Tarik Cohen,fd,4600,tarik cohen,CHI,RB,,,
+WR,NO,5300,5760,Deonte Harris,Deonte,Harris,GB,,rotoguru_gid,Deonte Harris,fd,5300,deonte harris,NO,WR,,,
+WR,CAR,6200,5502,Robby Anderson,Robby,Anderson,NYJ,,rotoguru_gid,Robby Anderson,fd,6200,robby anderson,CAR,WR,,,
+WR,BUF,4900,5858,Gabriel Davis,Gabriel,Davis,PIT,,rotoguru_gid,Gabriel Davis,fd,4900,gabriel davis,BUF,WR,,,
+WR,SEA,4800,5935,D'Wayne Eskridge,D'Wayne,Eskridge,IND,,rotoguru_gid,D'Wayne Eskridge,fd,4800,dwayne eskridge,SEA,WR,,,
+WR,TEN,4500,5871,Nick Westbrook,Nick,Westbrook,ARI,,rotoguru_gid,Nick Westbrook,fd,4500,nick westbrook,TEN,WR,,,
+TE,MIN,4100,4754,Brandon Dillon,Brandon,Dillon,CIN,,rotoguru_gid,Brandon Dillon,fd,4100,brandon dillon,MIN,TE,,,

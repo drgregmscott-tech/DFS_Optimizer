@@ -1,0 +1,3 @@
+Name,Position,TeamAbbrev,Salary,ID,Roster Position,Game Info,AvgPointsPerGame,id_source,name,site,salary,normalized_name,normalized_team,position_upper,player_id,match_method,match_confidence
+A.J. McCarron,QB,CIN,5000,1467,QB,CIN@NE,,rotoguru_gid,A.J. McCarron,dk,5000,aj mccarron,CIN,QB,,,
+Walter Powell,WR,BUF,3000,5270,WR,BUF@SF,3.0,rotoguru_gid,Walter Powell,dk,3000,walter powell,BUF,WR,,,

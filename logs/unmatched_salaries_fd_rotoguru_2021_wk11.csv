@@ -1,0 +1,5 @@
+Position,Team,Salary,Id,Nickname,First Name,Last Name,Opponent,AvgPointsPerGame,id_source,name,site,salary,normalized_name,normalized_team,position_upper,player_id,match_method,match_confidence
+RB,KC,4500,5544,Elijah McGuire,Elijah,McGuire,DAL,,rotoguru_gid,Elijah McGuire,fd,4500,elijah mcguire,KC,RB,,,
+WR,CLE,4500,5869,Lawrence Cager,Lawrence,Cager,DET,,rotoguru_gid,Lawrence Cager,fd,4500,lawrence cager,CLE,WR,,,
+TE,WAS,4000,4788,Temarrick Hemingway,Temarrick,Hemingway,CAR,,rotoguru_gid,Temarrick Hemingway,fd,4000,temarrick hemingway,WAS,TE,,,
+TE,CIN,4000,4796,Mason Schreck,Mason,Schreck,LV,,rotoguru_gid,Mason Schreck,fd,4000,mason schreck,CIN,TE,,,

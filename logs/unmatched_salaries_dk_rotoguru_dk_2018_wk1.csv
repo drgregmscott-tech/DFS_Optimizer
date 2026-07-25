@@ -1,0 +1,7 @@
+Name,Position,TeamAbbrev,Salary,ID,Roster Position,Game Info,AvgPointsPerGame,id_source,name,site,salary,normalized_name,normalized_team,position_upper,player_id,match_method,match_confidence
+Robby Anderson,WR,NYJ,5700,5502,WR,NYJ@DET,,rotoguru_gid,Robby Anderson,dk,5700,robby anderson,NYJ,WR,,,
+Bradley Marquez,WR,DET,3000,5428,WR,DET@NYJ,,rotoguru_gid,Bradley Marquez,dk,3000,bradley marquez,DET,WR,,,
+Markus Wheaton,WR,PHI,3000,5215,WR,PHI@ATL,,rotoguru_gid,Markus Wheaton,dk,3000,markus wheaton,PHI,WR,,,
+Ben Watson,TE,NO,3100,4292,TE,NO@TB,,rotoguru_gid,Ben Watson,dk,3100,ben watson,NO,TE,,,
+Shane Smith,TE,NYG,2600,4723,TE,NYG@JAX,,rotoguru_gid,Shane Smith,dk,2600,shane smith,NYG,TE,,,
+Joshua Perkins,TE,PHI,2500,4693,TE,PHI@ATL,,rotoguru_gid,Joshua Perkins,dk,2500,joshua perkins,PHI,TE,,,

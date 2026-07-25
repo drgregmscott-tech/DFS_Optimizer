@@ -1,0 +1,4 @@
+Name,Position,TeamAbbrev,Salary,ID,Roster Position,Game Info,AvgPointsPerGame,id_source,name,site,salary,normalized_name,normalized_team,position_upper,player_id,match_method,match_confidence
+Matt Schaub,QB,ATL,4500,1234,QB,ATL@CHI,,rotoguru_gid,Matt Schaub,dk,4500,matt schaub,ATL,QB,,,
+Joe Banyard,RB,BUF,3000,2905,RB,BUF@NYJ,,rotoguru_gid,Joe Banyard,dk,3000,joe banyard,BUF,RB,,,
+Geremy Davis,WR,LAC,3000,5399,WR,LAC@DEN,,rotoguru_gid,Geremy Davis,dk,3000,geremy davis,LAC,WR,,,

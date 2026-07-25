@@ -1,0 +1,4 @@
+Position,Team,Salary,Id,Nickname,First Name,Last Name,Opponent,AvgPointsPerGame,id_source,name,site,salary,normalized_name,normalized_team,position_upper,player_id,match_method,match_confidence
+WR,PIT,4500,5753,Steven Sims Jr.,Steven,Sims Jr.,DET,,rotoguru_gid,Steven Sims Jr.,fd,4500,steven sims,PIT,WR,,,
+TE,NE,4000,4674,Matt LaCosse,Matt,LaCosse,CLE,,rotoguru_gid,Matt LaCosse,fd,4000,matt lacosse,NE,TE,,,
+TE,NE,4100,4779,Devin Asiasi,Devin,Asiasi,CLE,,rotoguru_gid,Devin Asiasi,fd,4100,devin asiasi,NE,TE,,,

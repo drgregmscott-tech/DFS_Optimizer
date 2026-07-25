@@ -1,0 +1,5 @@
+Name,Position,TeamAbbrev,Salary,ID,Roster Position,Game Info,AvgPointsPerGame,id_source,name,site,salary,normalized_name,normalized_team,position_upper,player_id,match_method,match_confidence
+Walter Powell,WR,BUF,3000,5270,WR,BUF@NE,2.9,rotoguru_gid,Walter Powell,dk,3000,walter powell,BUF,WR,,,
+Scott Simonson,TE,CAR,2500,4620,TE,CAR@ATL,0.0,rotoguru_gid,Scott Simonson,dk,2500,scott simonson,CAR,TE,,,
+Jim Dray,TE,BUF,2500,4484,TE,BUF@NE,0.0,rotoguru_gid,Jim Dray,dk,2500,jim dray,BUF,TE,,,
+Asante Cleveland,TE,SDG,2500,4644,TE,SDG@NO,,rotoguru_gid,Asante Cleveland,dk,2500,asante cleveland,SDG,TE,,,

@@ -1,0 +1,3 @@
+Name,Position,TeamAbbrev,Salary,ID,Roster Position,Game Info,AvgPointsPerGame,id_source,name,site,salary,normalized_name,normalized_team,position_upper,player_id,match_method,match_confidence
+James Casey,TE,DEN,2500,4439,TE,DEN@KC,0.0,rotoguru_gid,James Casey,dk,2500,james casey,DEN,TE,,,
+Anthony McCoy,TE,SEA,2500,4504,TE,SEA@GB,,rotoguru_gid,Anthony McCoy,dk,2500,anthony mccoy,SEA,TE,,,

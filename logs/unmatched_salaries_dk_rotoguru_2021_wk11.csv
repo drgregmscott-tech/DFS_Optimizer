@@ -1,0 +1,3 @@
+Name,Position,TeamAbbrev,Salary,ID,Roster Position,Game Info,AvgPointsPerGame,id_source,name,site,salary,normalized_name,normalized_team,position_upper,player_id,match_method,match_confidence
+Elijah McGuire,RB,KC,4000,5544,RB,KC@DAL,,rotoguru_gid,Elijah McGuire,dk,4000,elijah mcguire,KC,RB,,,
+Mason Schreck,TE,CIN,2500,4796,TE,CIN@LV,,rotoguru_gid,Mason Schreck,dk,2500,mason schreck,CIN,TE,,,

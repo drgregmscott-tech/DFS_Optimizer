@@ -1,0 +1,5 @@
+Name,Position,TeamAbbrev,Salary,ID,Roster Position,Game Info,AvgPointsPerGame,id_source,name,site,salary,normalized_name,normalized_team,position_upper,player_id,match_method,match_confidence
+Philly Brown,WR,CAR,3000,5362,WR,CAR@NO,6.7625,rotoguru_gid,Philly Brown,dk,3000,philly brown,CAR,WR,,,
+T.J. Graham,WR,NYJ,3000,5166,WR,NYJ@MIN,2.257142857142857,rotoguru_gid,T.J. Graham,dk,3000,tj graham,NYJ,WR,,,
+Joshua Cribbs,WR,IND,3000,3577,WR,IND@CLE,0.0,rotoguru_gid,Joshua Cribbs,dk,3000,joshua cribbs,IND,WR,,,
+Blake Annen,TE,CHI,3000,4617,TE,CHI@DAL,0.0,rotoguru_gid,Blake Annen,dk,3000,blake annen,CHI,TE,,,

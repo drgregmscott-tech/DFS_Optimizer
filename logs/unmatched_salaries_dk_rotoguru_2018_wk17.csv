@@ -1,0 +1,5 @@
+Name,Position,TeamAbbrev,Salary,ID,Roster Position,Game Info,AvgPointsPerGame,id_source,name,site,salary,normalized_name,normalized_team,position_upper,player_id,match_method,match_confidence
+David Williams,RB,JAX,3000,5685,RB,JAX@HOU,0.68,rotoguru_gid,David Williams,dk,3000,david williams,JAX,RB,,,
+Matthew Dayes,RB,SF,3200,5566,RB,SF@LA,0.0,rotoguru_gid,Matthew Dayes,dk,3200,matthew dayes,SF,RB,,,
+Trey Edmunds,RB,PIT,3000,5573,RB,PIT@CIN,0.0,rotoguru_gid,Trey Edmunds,dk,3000,trey edmunds,PIT,RB,,,
+Ben Koyack,TE,JAX,2500,4689,TE,JAX@HOU,0.0,rotoguru_gid,Ben Koyack,dk,2500,ben koyack,JAX,TE,,,

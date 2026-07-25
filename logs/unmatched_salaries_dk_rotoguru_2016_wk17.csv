@@ -1,0 +1,3 @@
+Name,Position,TeamAbbrev,Salary,ID,Roster Position,Game Info,AvgPointsPerGame,id_source,name,site,salary,normalized_name,normalized_team,position_upper,player_id,match_method,match_confidence
+Tre McBride,WR,TEN,3000,5394,WR,TEN@HOU,0.0,rotoguru_gid,Tre McBride,dk,3000,tre mcbride,TEN,WR,,,
+Jim Dray,TE,SF,2500,4484,TE,SF@SEA,0.0,rotoguru_gid,Jim Dray,dk,2500,jim dray,SF,TE,,,

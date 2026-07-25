@@ -1,0 +1,5 @@
+Position,Team,Salary,Id,Nickname,First Name,Last Name,Opponent,AvgPointsPerGame,id_source,name,site,salary,normalized_name,normalized_team,position_upper,player_id,match_method,match_confidence
+RB,SF,4700,5621,Kerryon Johnson,Kerryon,Johnson,GB,,rotoguru_gid,Kerryon Johnson,fd,4700,kerryon johnson,SF,RB,,,
+RB,NYJ,4500,5661,Josh Adams,Josh,Adams,DEN,,rotoguru_gid,Josh Adams,fd,4500,josh adams,NYJ,RB,,,
+WR,IND,4500,5882,De'Michael Harris,De'Michael,Harris,TEN,0.0,rotoguru_gid,De'Michael Harris,fd,4500,demichael harris,IND,WR,,,
+TE,KC,4000,4811,Jody Fortson,Jody,Fortson,LAC,1.6,rotoguru_gid,Jody Fortson,fd,4000,jody fortson,KC,TE,,,

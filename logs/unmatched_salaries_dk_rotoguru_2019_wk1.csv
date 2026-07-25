@@ -1,0 +1,7 @@
+Name,Position,TeamAbbrev,Salary,ID,Roster Position,Game Info,AvgPointsPerGame,id_source,name,site,salary,normalized_name,normalized_team,position_upper,player_id,match_method,match_confidence
+Cooper Rush,QB,DAL,4400,1521,QB,DAL@NYG,,rotoguru_gid,Cooper Rush,dk,4400,cooper rush,DAL,QB,,,
+Jordan Chunn,RB,DAL,3000,5736,RB,DAL@NYG,,rotoguru_gid,Jordan Chunn,dk,3000,jordan chunn,DAL,RB,,,
+Keith Kirkwood,WR,NO,3200,5695,WR,NO@HOU,,rotoguru_gid,Keith Kirkwood,dk,3200,keith kirkwood,NO,WR,,,
+Jerell Adams,TE,HOU,2500,4686,TE,HOU@NO,,rotoguru_gid,Jerell Adams,dk,2500,jerell adams,HOU,TE,,,
+Brandon Dillon,TE,MIN,2500,4754,TE,MIN@ATL,,rotoguru_gid,Brandon Dillon,dk,2500,brandon dillon,MIN,TE,,,
+Alex Ellis,TE,PHI,2500,4755,TE,PHI@WAS,,rotoguru_gid,Alex Ellis,dk,2500,alex ellis,PHI,TE,,,

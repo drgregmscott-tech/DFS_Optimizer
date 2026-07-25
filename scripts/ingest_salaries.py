@@ -367,14 +367,36 @@ def match_players(salaries: pd.DataFrame, reference: pd.DataFrame,
     salaries["match_confidence"] = None
 
     # --- 1. Manual overrides (highest priority) ---
-    override_lookup = {
-        (row.normalized_name, row.normalized_team, str(row.source_position).upper()): row.player_id
-        for row in name_mapping.itertuples()
-    }
+    # A mapping row carries an explicit player_id, so the (name, team,
+    # position) ambiguity it exists to resolve is ALREADY resolved -- the ID
+    # pins the exact player. Requiring team to match on top of that can only
+    # cause MISSES, never prevent a bad match: a name-variant row written
+    # with one team (e.g. Robby Anderson -> Robbie Chosen, source_team CAR)
+    # would then fire only in that player's CAR weeks and silently fail to
+    # resolve his NYJ/ARI/WAS weeks, which is exactly the multi-team miss
+    # found on real data (113 unmatched -> only 110 after mapping).
+    #
+    # So overrides are keyed by NAME, team-agnostic by default. A row MAY
+    # still supply source_team to narrow -- kept for the rare case of two
+    # different real players sharing a normalized name, where team is the
+    # disambiguator -- but a blank/NaN source_team means "any team". Because
+    # each row names an explicit player_id, name-only can't silently pick
+    # the wrong same-named player the way an inferred match could.
+    name_only_lookup = {}       # normalized_name -> player_id
+    name_team_lookup = {}       # (normalized_name, normalized_team) -> player_id
+    for row in name_mapping.itertuples():
+        team = getattr(row, "normalized_team", "")
+        if isinstance(team, str) and team.strip():
+            name_team_lookup[(row.normalized_name, team)] = row.player_id
+        else:
+            name_only_lookup[row.normalized_name] = row.player_id
+
     for idx, row in salaries.iterrows():
-        key = (row["normalized_name"], row["normalized_team"], row["position_upper"])
-        if key in override_lookup:
-            salaries.at[idx, "player_id"] = override_lookup[key]
+        pid = name_team_lookup.get((row["normalized_name"], row["normalized_team"]))
+        if pid is None:
+            pid = name_only_lookup.get(row["normalized_name"])
+        if pid is not None:
+            salaries.at[idx, "player_id"] = pid
             salaries.at[idx, "match_method"] = "manual_override"
             salaries.at[idx, "match_confidence"] = "high"
 
