@@ -1041,6 +1041,16 @@
           <input type="range" id="ctrlMinSalarySlider" min="0" max="50000" step="100" value="49700" style="width:100%; margin-top:6px;">
           <div class="hint" style="margin-top:4px">Lineups must spend at least this much (cap is $50,000 on DK, $60,000 on FD -- the slider adjusts automatically when you switch sites).</div>
         </div>
+        <div>
+          <span class="field-label">Minimum Projection</span>
+          <input type="number" id="ctrlMinProjection" min="0" step="0.5" value="0" placeholder="0 = no floor">
+          <div class="hint" style="margin-top:4px">Excludes any player projected below this many points from the pool entirely, before the solver runs (0 = no floor). Locked players are always exempt.</div>
+        </div>
+        <div>
+          <span class="field-label">Minimum Total Ownership</span>
+          <input type="number" id="ctrlMinTotalOwnership" min="0" step="1" value="0" placeholder="0 = no floor">
+          <div class="hint" style="margin-top:4px">Requires the lineup's summed ownership to be at least this much (0 = no floor; same units as "Total Own" on a built lineup, e.g. 130). Set very high to see a "super chalk" build for comparison against the true optimal.</div>
+        </div>
       </div>
 
       <div class="stack-explain" id="stackExplain" style="display:none"></div>
@@ -1791,7 +1801,8 @@
   // settings" checkbox.
   var FULL_SETTINGS_FIELDS = [
     "ctrlNLineups", "ctrlMaxExposure", "ctrlUniqueness", "ctrlRandomization",
-    "ctrlMinSalary", "ctrlStackMode", "ctrlStackSize", "ctrlStackPositions",
+    "ctrlMinSalary", "ctrlMinProjection", "ctrlMinTotalOwnership",
+    "ctrlStackMode", "ctrlStackSize", "ctrlStackPositions",
     "ctrlMiniType", "ctrlBringBack", "ctrlGameStackMin",
     "ctrlFlexRb", "ctrlFlexWr", "ctrlFlexTe"
   ];
@@ -2332,6 +2343,20 @@
     if (!isNaN(minSalary) && minSalary > 0 && minSalary <= cap) {
       var minSalaryPct = (minSalary / cap) * 100;
       params.min_salary_pct = minSalaryPct.toFixed(4);
+    }
+
+    // Session 8 (this session) -- decisions #34/#35, same "0 = no floor,
+    // omit the param entirely" convention as every other optional field
+    // here rather than sending an explicit 0 (matches optimizer.py's own
+    // argparse default either way, but keeps the sent request minimal and
+    // consistent with the rest of this function).
+    var minProjection = parseFloat(document.getElementById("ctrlMinProjection").value);
+    if (!isNaN(minProjection) && minProjection > 0) {
+      params.min_projection = String(minProjection);
+    }
+    var minTotalOwnership = parseFloat(document.getElementById("ctrlMinTotalOwnership").value);
+    if (!isNaN(minTotalOwnership) && minTotalOwnership > 0) {
+      params.min_total_ownership = String(minTotalOwnership);
     }
 
     // Session 7.3, item #8: FLEX-eligible positions. Only sent when a
