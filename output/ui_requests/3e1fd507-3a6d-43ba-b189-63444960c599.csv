@@ -1,0 +1,10 @@
+lineup_id,roster_slot,player_id,player_name,position,team,salary,projection,value,opponent,site_player_id,stack_target
+1,QB,90000170,Xavier Ashworth,QB,PIT,5600,14.06,2.51,JAX,90000170,
+1,DST,90000049,Eagles,DST,PHI,3900,6.5,1.67,DAL,90000049,
+1,RB1,90000172,Preston Nakamura,RB,PIT,7700,23.65,3.07,JAX,90000172,
+1,RB2,90000136,Dominic Rourke,RB,LAR,7500,22.72,3.03,SEA,90000136,
+1,WR1,90000200,Emmanuel Ellison,WR,DEN,5400,13.26,2.46,LAC,90000200,
+1,WR2,90000056,Omar Blackwell,WR,MIA,5500,13.08,2.38,SF,90000056,
+1,WR3,90000213,Isaiah Sanders,WR,LAC,4500,8.97,1.99,DEN,90000213,
+1,TE,90000239,Preston Blackwell,TE,ATL,4400,8.12,1.85,NO,90000239,
+1,FLEX,90000173,Jalen Monroe,RB,PIT,5500,14.34,2.61,JAX,90000173,
