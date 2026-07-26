@@ -74,11 +74,13 @@ from pathlib import Path
 
 import numpy as np
 import pandas as pd
-from scipy import stats
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 import dst_model  # noqa: E402
+import statlite as stats  # noqa: E402 -- Session 10.4: spearmanr / ttest_rel
+                          # without the SciPy dependency. Aliased to `stats`
+                          # so the call sites read the same as before.
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 DATA_DIR = REPO_ROOT / "data"

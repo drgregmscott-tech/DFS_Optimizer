@@ -214,11 +214,12 @@ from pathlib import Path
 
 import numpy as np
 import pandas as pd
-from scipy import optimize, stats
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 import dst_model  # noqa: E402
+import statlite  # noqa: E402 -- Session 10.4: the SciPy functions this needs,
+                 # without the SciPy dependency. See that module's docstring.
 from ingest_salaries import BASE_TEAM_ABBREV_MAP  # noqa: E402
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
@@ -451,8 +452,9 @@ def ols(y: np.ndarray, X: np.ndarray) -> tuple:
     """Least squares with t-statistics. Returns (beta, tvals, r2).
 
     Deliberately not statsmodels: this project's runtime dependency set is
-    pandas / numpy / scipy / PuLP, and one OLS with t-stats does not justify
-    adding statsmodels to the production install just so the fitter can run.
+    pandas / numpy / PuLP / pyarrow, and one OLS with t-stats does not
+    justify adding statsmodels to it just so the fitter can run. Same
+    reasoning that produced statlite.py -- see that module's docstring.
     """
     n, k = X.shape
     beta, *_ = np.linalg.lstsq(X, y, rcond=None)
@@ -479,9 +481,9 @@ def fit_nb_dispersion(y: np.ndarray, mu: np.ndarray) -> float:
     def nll(log_r):
         r = np.exp(log_r)
         p = r / (r + mu)
-        return -float(stats.nbinom.logpmf(y, r, p).sum())
+        return -float(statlite.nbinom_logpmf(y, r, p).sum())
 
-    res = optimize.minimize_scalar(nll, bounds=(-2.0, 8.0), method="bounded")
+    res = statlite.minimize_scalar_bounded(nll, (-2.0, 8.0))
     return float(np.exp(res.x))
 
 
