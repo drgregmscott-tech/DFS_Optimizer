@@ -111,3 +111,9 @@ timestamp_utc,trigger_type,site,step,status
 2026-07-24T17:41:21.016143+00:00,light_vegas_refresh,both,vegas_odds_pull,success
 2026-07-25T16:07:22.571560+00:00,light_vegas_refresh,both,vegas_odds_pull,success
 2026-07-25T21:59:55.060743+00:00,light_vegas_refresh,both,vegas_odds_pull,success
+2026-07-26T02:29:11.774104+00:00,full_refresh_scheduled,both,vegas_odds_pull,success
+2026-07-26T02:29:11.774104+00:00,full_refresh_scheduled,both,status_pull,failure
+2026-07-26T02:29:11.774104+00:00,full_refresh_scheduled,dk,build_projections,failure
+2026-07-26T02:29:11.774104+00:00,full_refresh_scheduled,fd,build_projections,failure
+2026-07-26T02:29:11.774104+00:00,full_refresh_scheduled,dk,status_apply,success
+2026-07-26T02:29:11.774104+00:00,full_refresh_scheduled,fd,status_apply,failure
