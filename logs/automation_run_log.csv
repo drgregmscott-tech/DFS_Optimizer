@@ -179,3 +179,9 @@ timestamp_utc,trigger_type,site,step,status
 2026-07-26T16:40:29.487993+00:00,full_refresh_dispatch,dk,status_apply,failure
 2026-07-26T16:40:29.487993+00:00,full_refresh_dispatch,fd,status_apply,failure
 2026-07-26T16:41:58.225084+00:00,light_vegas_refresh,both,vegas_odds_pull,success
+2026-07-26T16:50:30.728748+00:00,full_refresh_dispatch,both,vegas_odds_pull,success
+2026-07-26T16:50:30.728748+00:00,full_refresh_dispatch,both,status_pull,failure
+2026-07-26T16:50:30.728748+00:00,full_refresh_dispatch,dk,build_projections,failure
+2026-07-26T16:50:30.728748+00:00,full_refresh_dispatch,fd,build_projections,failure
+2026-07-26T16:50:30.728748+00:00,full_refresh_dispatch,dk,status_apply,failure
+2026-07-26T16:50:30.728748+00:00,full_refresh_dispatch,fd,status_apply,failure
