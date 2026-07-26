@@ -1,0 +1,141 @@
+{
+  "schema_version": 1,
+  "fitted_on": "2026-07-26",
+  "fit_seasons": [
+    2014,
+    2015,
+    2016,
+    2017
+  ],
+  "n_team_weeks": 2048,
+  "n_fit_rows": 1548,
+  "min_fit_week": 5,
+  "wind_clip_mph": 30.0,
+  "shrink_games": {
+    "sack_rate": 8.0,
+    "int_rate": 12.0,
+    "fumble_rate": 16.0,
+    "qb_hit_rate": 6.0,
+    "dropbacks": 6.0
+  },
+  "points_allowed": {
+    "intercept": -2.748992,
+    "coefficients": {
+      "opp_implied": 1.094798,
+      "own_epa_prior": -0.112889,
+      "wind_eff": -0.036652
+    },
+    "t_statistics": {
+      "opp_implied": 16.117,
+      "own_epa_prior": -2.247,
+      "wind_eff": -0.913
+    },
+    "r_squared": 0.15355,
+    "n": 1548,
+    "nb_dispersion": 6.5364,
+    "observed_mean": 21.7946,
+    "observed_sd": 9.7159
+  },
+  "dropbacks": {
+    "intercept": 11.573729,
+    "coefficients": {
+      "opp_dropbacks_prior": 0.444177,
+      "game_total": 0.193992,
+      "abs_spread": 0.055349,
+      "wind_eff": 0.018852
+    },
+    "t_statistics": {
+      "opp_dropbacks_prior": 7.905,
+      "game_total": 3.461,
+      "abs_spread": 0.848,
+      "wind_eff": 0.506
+    },
+    "r_squared": 0.0554,
+    "n": 1548,
+    "nb_dispersion": 46.0873,
+    "observed_mean": 37.4386,
+    "observed_sd": 8.4747
+  },
+  "sack_rate": {
+    "intercept": 0.021722,
+    "coefficients": {
+      "opp_sack_rate_prior": 0.509293,
+      "own_sack_rate_prior": 0.159641,
+      "wind_eff": 8.6e-05
+    },
+    "t_statistics": {
+      "opp_sack_rate_prior": 8.774,
+      "own_sack_rate_prior": 2.318,
+      "wind_eff": 0.413
+    },
+    "r_squared": 0.05049,
+    "n": 1548,
+    "nb_dispersion": 7.9902,
+    "observed_mean": 0.0629,
+    "observed_sd": 0.0478
+  },
+  "int_rate": {
+    "intercept": 0.010372,
+    "coefficients": {
+      "qb_int_rate_prior": 0.453252,
+      "own_int_rate_prior": 0.085965,
+      "wind_eff": 0.000143
+    },
+    "t_statistics": {
+      "qb_int_rate_prior": 3.568,
+      "own_int_rate_prior": 1.165,
+      "wind_eff": 1.229
+    },
+    "r_squared": 0.01033,
+    "n": 1548,
+    "nb_dispersion": 20.8333,
+    "observed_mean": 0.0238,
+    "observed_sd": 0.0262,
+    "rookie_multiplier": 1.0934,
+    "qb_shrink_attempts": 200.0,
+    "league_int_rate": 0.02423
+  },
+  "fumble_recovery": {
+    "league_rate_per_game": 0.56738,
+    "opp_fumbles_lost_league": 0.5752,
+    "opp_weight": 0.5,
+    "nb_dispersion": 11.2384,
+    "split_half_note": "team-season split-half r = +0.038; shrunk to league mean"
+  },
+  "rare_events": {
+    "def_td_per_game": 0.08594,
+    "st_td_per_game": 0.04785,
+    "safety_per_game": 0.03516,
+    "blocked_kick_per_game": 0.1001,
+    "residual_td_per_game": 0.026
+  },
+  "league_means": {
+    "points_allowed": 21.8721,
+    "dropbacks": 37.438,
+    "sacks": 2.2876,
+    "interceptions": 0.8452,
+    "opp_implied": 22.6001,
+    "qb_hits": 5.5132
+  },
+  "latent_factor": {
+    "strength": 0.36999,
+    "target_within_game_corr": 0.2786,
+    "note": "see dst_model.py decision #13"
+  },
+  "recalibration": {
+    "intercept": -5.08928,
+    "slope": 1.66965,
+    "n": 2000,
+    "pre_correction_mean": 7.467,
+    "pre_correction_sd": 0.9575,
+    "actual_mean": 7.378,
+    "actual_sd": 6.2427,
+    "correlation": 0.2561,
+    "fit_seasons": [
+      2014,
+      2015,
+      2016,
+      2017
+    ]
+  }
+}

@@ -682,18 +682,45 @@ def describe_anchor(anchor: dict | None) -> str:
     (Session 10.2, decision #8b). Never abbreviated away -- a percentile
     without its config is not comparable to anything."""
     if not anchor or (anchor["weight"] <= 0 and not anchor["cold_start"]):
-        return "anchor OFF (Session 10.1 baseline arm)"
+        # Session 10.4: this used to append "(Session 10.1 baseline arm)".
+        # That was true when the anchor was the only thing that could differ
+        # from the baseline, and became FALSE once the engine (10.3a) and the
+        # DST model (10.4) could too -- a distributional-DST run printed
+        # "baseline arm" while being nothing of the sort. describe_arm() now
+        # owns that judgement, because it is the only function that sees the
+        # whole configuration.
+        return "anchor OFF"
     if anchor["cold_start"]:
         return f"anchor ON cold-start (floor w={anchor['weight']}, k={anchor['k']})"
     return f"anchor ON flat w={anchor['weight']}"
 
 
-def describe_arm(engine: str, anchor: dict | None) -> str:
-    """Decision #10: an arm is now (engine, anchor), and a percentile without
-    its full config is not comparable to anything."""
+def describe_arm(engine: str, anchor: dict | None,
+                 dst_model_mode: str = "legacy") -> str:
+    """Decision #10, extended by decision #14: an arm is (engine, anchor, DST
+    model), and a percentile without its FULL config is not comparable to
+    anything.
+
+    Session 10.4 fixed a real reporting bug here. `--dst-model` was wired
+    through the pipeline correctly but was missing from this label, so a run
+    with the distributional DST printed "(Session 10.1 baseline arm)" -- the
+    banner actively asserted it WAS the baseline while running a modified
+    projection. Numbers logged from that run would have carried the wrong
+    arm label, which is the one failure mode this whole function exists to
+    prevent. Caught by reading real output, not by review.
+    """
     label = {"legacy": "legacy points-blend engine (Session 2.4)",
              "statline": "stat-line MC engine (Session 10.3a)"}.get(engine, engine)
-    return f"{label} | {describe_anchor(anchor)}"
+    dst = {"legacy": "legacy DST (Session 3.1)",
+           "distributional": "DISTRIBUTIONAL DST (Session 10.4)"}.get(
+               dst_model_mode, dst_model_mode)
+    parts = [label, describe_anchor(anchor), dst]
+    arm = " | ".join(parts)
+    is_baseline = (engine == "legacy" and dst_model_mode == "legacy"
+                   and not (anchor and (anchor["weight"] > 0 or anchor["cold_start"])))
+    if is_baseline:
+        arm += "  <- Session 10.1 baseline arm"
+    return arm
 
 
 def percentile_of(score: float, field_scores: np.ndarray) -> float:
@@ -919,7 +946,12 @@ def backtest_week(site: str, season: int, week: int, games: pd.DataFrame,
         "max_percentile": round(float(np.max(pcts)), 1),
         "anchor": describe_anchor(anchor),
         "engine": engine,
-        "arm": describe_arm(engine, anchor),
+        # Session 10.4: dst_model_mode was missing from this label, so the
+        # arm string written into the RESULTS FILE did not record which DST
+        # model produced the number. Logged results with a wrong arm label
+        # are worse than no label.
+        "dst_model": dst_model_mode,
+        "arm": describe_arm(engine, anchor, dst_model_mode),
         "field_pinned": bool(field_proj_path != proj_path and not field_pool_note),
         "detail": field_pool_note,
     }
@@ -1011,7 +1043,7 @@ def main():
     print("NOTE: field percentile is vs a SYNTHETIC ownership-weighted field "
           "(Session 4.1 heuristic, not real ownership) -- 'plausible field', "
           "not 'real contest' (decision #3).")
-    print(f"ARM:  {describe_arm(args.engine, anchor)}")
+    print(f"ARM:  {describe_arm(args.engine, anchor, args.dst_model)}")
     print(f"FIELD: sampled from the {args.field_pool} pool "
           f"({'pinned to legacy+anchor-off -- comparable across arms' if args.field_pool == 'baseline' else 'moves with the arm -- NOT comparable across arms'}).")
     print("SEED: per-week generators derived from (seed, season, week) -- an "
