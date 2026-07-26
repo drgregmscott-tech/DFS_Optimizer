@@ -112,6 +112,63 @@ Numbered decisions:
      jobs: prove these mechanics, and produce the baseline distribution that
      every later Phase 10 change is measured against. The output says so.
 
+  8. SESSION 10.2 -- SALARY-ANCHOR MEASUREMENT ARM. `--salary-anchor-weight`
+     (and the cold-start variants) are passed straight through to
+     build_projections.py, which is where the anchor is actually applied.
+     The harness deliberately does NOT implement the blend itself -- same
+     decision #4 reasoning as everything else here: measuring a
+     reimplementation would measure the reimplementation.
+
+     Two consequences worth stating:
+
+     (a) WEEK 1 BECOMES BACKTESTABLE when the anchor can carry the
+         cold start. The week-1 skip below exists because a usage-based
+         model has zero prior weeks to build from, so every projection is
+         0/NaN and the pool empties. A salary anchor has no such
+         dependency -- price exists before kickoff. So week 1 is skipped
+         only when the anchor is off, or when it is on at a flat weight
+         below 1.0 (which would still leave a mostly-zero pool). With
+         `--salary-anchor-cold-start`, week 1 runs. That is not a
+         convenience: it is the cleanest available evidence for or against
+         the ROADMAP's cold-start design claim, on a week where the usage
+         model contributes literally nothing.
+
+     (b) EVERY RESULT LINE AND THE SUMMARY STATE THE ANCHOR CONFIG. A
+         percentile with no record of which arm produced it is worthless
+         for a before/after comparison, and this file is the before/after
+         comparison.
+
+  9. SESSION 10.2 -- THE FIELD IS PINNED TO THE ANCHOR-OFF POOL BY DEFAULT.
+     Found by running Session 10.2's first real comparison, not by review.
+
+     Turning the anchor on rescues zero-history players from a 0.0 model
+     projection into a positive one, so they pass this harness's
+     `final_projection > 0` pool filter. The pool grew ~35% (226 -> 312
+     players in 2021 wk2). Decision #3 samples the synthetic FIELD from that
+     same pool -- so the field grew too, got more diluted, and scored lower.
+     Measured across 2021: the field's median score fell in 15 of 17 weeks,
+     mean -1.41 pts, t = -4.3.
+
+     That was by a wide margin the strongest effect in the whole comparison.
+     Every apparent percentile "gain" (max-pctile +1.4, t = +1.8; median-
+     pctile +1.9, t = +1.0) was weaker than the movement in the yardstick
+     being measured against, and the arm's RAW score -- in real fantasy
+     points, immune to the field -- moved +0.4 pts/week at w=0.25, i.e. not
+     at all. The improvement was substantially an artifact.
+
+     So `--field-pool baseline` (the default) runs the projection pipeline a
+     SECOND time per week with the anchor off, purely to construct the
+     field, and pins every arm to that one yardstick. Costs one extra
+     build_projections call per week and only when the anchor is on; the
+     anchor-OFF arm is untouched, so Session 10.1's published baseline
+     (72.8 / 94.7) still reproduces exactly. `--field-pool arm` restores the
+     old behaviour for comparison.
+
+     Raw median/best lineup scores are now printed per week and in the
+     summary alongside the percentiles, for the same reason: they are in
+     arm-independent units, so they are the check on whether a percentile
+     move is real.
+
 Usage:
     python3 scripts/backtest_harness.py --site dk --season 2021 --week 10
     python3 scripts/backtest_harness.py --site dk --season 2021 --week 1 2 3
@@ -148,13 +205,35 @@ GAMES_CACHE = DATA_DIR / "nflverse_games.csv"
 DEBUG = False
 
 
-def _debug_dump(site, season, week, lineup, actuals_wk, pool, field_scores, our_score):
+def _debug_dump(site, season, week, lineup, actuals_wk, pool, field_scores,
+                our_score, label="lineup"):
+    """Player-by-player dump. Session 10.2: anchor-aware -- when the pool
+    carries the decision #8 audit columns, every line shows what the anchor
+    actually did to that player (pre-anchor model value, the fitted anchor,
+    the weight applied, the resulting delta), and players who exist in the
+    pool ONLY because the anchor rescued them from a 0.0 model projection
+    are tagged RESCUED.
+
+    That tag is the point of the whole dump. The riskiest way for the anchor
+    to look good is for its gains to come from newly-rescued zero-history
+    players -- those are the least-informed projections in the pool, so a
+    win there is as likely to be luck as skill, and it would not generalize.
+    A win that comes from RE-RANKING players the model already knew about is
+    a different and far more trustworthy thing. Reading those apart requires
+    seeing which is which, per player, on a real week.
+    """
     pts = actuals_wk.set_index("gid")["actual_points"]
-    print(f"\n===== DEBUG: {site} {season} wk{week} — our lineup =====")
-    proj_by_id = pool.set_index("site_player_id")["final_projection"] \
-        if "site_player_id" in pool.columns else None
+    anchored = "final_projection_pre_anchor" in pool.columns
+    lut = pool.set_index("site_player_id") if "site_player_id" in pool.columns else None
+
+    print(f"\n===== DEBUG: {site} {season} wk{week} — our {label} =====")
+    if anchored:
+        print(f"  {'':3s} {'player':22s} {'pre':>6s} {'anch':>6s} {'w':>5s} "
+              f"{'post':>6s} {'actual':>7s}  flags")
     total_proj = total_act = 0.0
     n_zero_actual = 0
+    n_rescued = 0
+    rescued_actual = 0.0
     for r in lineup.itertuples():
         sid = str(getattr(r, "site_player_id", ""))
         name = getattr(r, "player_name", getattr(r, "name", "?"))
@@ -170,18 +249,41 @@ def _debug_dump(site, season, week, lineup, actuals_wk, pool, field_scores, our_
         total_act += act_used
         if act_used == 0.0:
             n_zero_actual += 1
-        print(f"  {posn:3s} {str(name)[:22]:22s} id={sid:6s} "
-              f"proj={proj:6.2f}  actual={act_used:6.2f}  join={joined}")
+
+        if anchored and lut is not None and sid in lut.index:
+            row = lut.loc[sid]
+            pre = float(row["final_projection_pre_anchor"])
+            anc = float(row["salary_anchor"])
+            w = float(row["anchor_weight_used"])
+            flags = []
+            if pre == 0.0 and proj > 0.0:
+                flags.append("RESCUED")
+                n_rescued += 1
+                rescued_actual += act_used
+            if w == 0.0:
+                flags.append("no-anchor")
+            print(f"  {posn:3s} {str(name)[:22]:22s} {pre:6.2f} {anc:6.2f} "
+                  f"{w:5.2f} {proj:6.2f} {act_used:7.2f}  "
+                  f"{joined if joined != 'OK' else ''}{' '.join(flags)}")
+        else:
+            print(f"  {posn:3s} {str(name)[:22]:22s} id={sid:6s} "
+                  f"proj={proj:6.2f}  actual={act_used:6.2f}  join={joined}")
+
     print(f"  -- lineup projected total: {total_proj:.2f}   "
           f"actual total: {total_act:.2f}   (harness scored: {our_score:.2f})")
     print(f"  -- players with 0 actual points: {n_zero_actual}/9 "
           f"(several NO-JOINs would signal a scoring bug)")
+    if anchored:
+        share = (rescued_actual / total_act * 100.0) if total_act else 0.0
+        print(f"  -- ANCHOR-RESCUED players in this lineup: {n_rescued}/9, "
+              f"contributing {rescued_actual:.1f} of {total_act:.1f} actual "
+              f"pts ({share:.0f}%).")
+        print(f"     A high share here means the arm's result rests on "
+              f"zero-history players, NOT on better ranking of known ones.")
     fs = np.asarray(field_scores)
     print(f"  -- field: n={len(fs)}, min={fs.min():.1f}, "
           f"p25={np.percentile(fs,25):.1f}, median={np.median(fs):.1f}, "
           f"p75={np.percentile(fs,75):.1f}, max={fs.max():.1f}")
-    # Is the field scoring plausibly? A field of chalk lineups scoring a
-    # median NEAR the theoretical max would signal the field is unrealistic.
     print(f"  -- our score {our_score:.1f} vs field median {np.median(fs):.1f}: "
           f"{'BELOW' if our_score < np.median(fs) else 'above'} median")
     print("=" * 52 + "\n")
@@ -350,10 +452,16 @@ def sunday_main_slate_teams(games: pd.DataFrame, season: int, week: int) -> set:
 # Run the real projection pipeline for one week
 # ---------------------------------------------------------------------------
 
-def run_projection_pipeline(site: str, season: int, week: int, slate_id: str) -> Path:
+def run_projection_pipeline(site: str, season: int, week: int, slate_id: str,
+                            anchor: dict | None = None) -> Path:
     """Drive the REAL component scripts + build_projections.py via their
     file interfaces. Returns the path to final_projections_{site}_{week}.csv.
-    Raises RuntimeError with the failing step's stderr on any failure."""
+    Raises RuntimeError with the failing step's stderr on any failure.
+
+    `anchor` (Session 10.2, decision #8) is passed straight through to
+    build_projections.py as CLI flags -- the harness never applies the blend
+    itself. None / all-zero means the flags are omitted entirely, so the
+    command line is byte-identical to the Session 10.1 baseline run."""
     def run(script, extra):
         cmd = [sys.executable, str(SCRIPTS_DIR / script),
                "--site", site, "--season", str(season), "--week", str(week)] + extra
@@ -367,6 +475,11 @@ def run_projection_pipeline(site: str, season: int, week: int, slate_id: str) ->
     cmd = [sys.executable, str(SCRIPTS_DIR / "build_projections.py"),
            "--site", site, "--season", str(season), "--week", str(week),
            "--slate-id", slate_id]
+    if anchor and (anchor["weight"] > 0 or anchor["cold_start"]):
+        cmd += ["--salary-anchor-weight", str(anchor["weight"]),
+                "--salary-anchor-k", str(anchor["k"])]
+        if anchor["cold_start"]:
+            cmd += ["--salary-anchor-cold-start"]
     p = subprocess.run(cmd, capture_output=True, text=True)
     if p.returncode != 0:
         raise RuntimeError(f"build_projections.py failed:\n{(p.stderr or p.stdout).strip()[-1500:]}")
@@ -455,6 +568,17 @@ def build_synthetic_field(pool: pd.DataFrame, site: str, field_size: int,
     return field
 
 
+def describe_anchor(anchor: dict | None) -> str:
+    """One-line, unambiguous label for which arm produced a result
+    (Session 10.2, decision #8b). Never abbreviated away -- a percentile
+    without its config is not comparable to anything."""
+    if not anchor or (anchor["weight"] <= 0 and not anchor["cold_start"]):
+        return "anchor OFF (Session 10.1 baseline arm)"
+    if anchor["cold_start"]:
+        return f"anchor ON cold-start (floor w={anchor['weight']}, k={anchor['k']})"
+    return f"anchor ON flat w={anchor['weight']}"
+
+
 def percentile_of(score: float, field_scores: np.ndarray) -> float:
     if len(field_scores) == 0:
         return float("nan")
@@ -466,7 +590,9 @@ def percentile_of(score: float, field_scores: np.ndarray) -> float:
 # ---------------------------------------------------------------------------
 
 def backtest_week(site: str, season: int, week: int, games: pd.DataFrame,
-                  num_lineups: int, field_size: int, rng: np.random.Generator) -> dict:
+                  num_lineups: int, field_size: int, rng: np.random.Generator,
+                  anchor: dict | None = None,
+                  field_pool_mode: str = "baseline") -> dict:
     slate_id = f"rotoguru_{season}_wk{week}"
     salary_path = DATA_DIR / f"salaries_{site}_{slate_id}.csv"
     if not salary_path.exists():
@@ -483,18 +609,51 @@ def backtest_week(site: str, season: int, week: int, games: pd.DataFrame,
     # should fall back to salary + market signal). Until that ships, week 1
     # is skipped with an explicit reason rather than a confusing
     # "pool too small" error that looks like a data problem.
-    if week == 1:
+    # Session 10.2, decision #8a: the anchor is exactly the salary+market
+    # fallback that note anticipated. When it is on and able to carry a
+    # zero-history player (cold-start schedule, or a flat weight of 1.0),
+    # week 1 IS backtestable and is no longer skipped.
+    anchor_carries_cold_start = bool(
+        anchor and (anchor["cold_start"] or anchor["weight"] >= 1.0)
+    )
+    if week == 1 and not anchor_carries_cold_start:
         return {"site": site, "season": season, "week": week, "status": "SKIP",
                 "detail": "week 1 not backtestable -- no prior-week data for the "
-                          "current usage-based model (cold-start gap; Phase 10 "
-                          "salary+market fallback will address)"}
+                          "current usage-based model (cold-start gap; run with "
+                          "--salary-anchor-cold-start to make it backtestable)"}
 
     try:
         ensure_per_season_schedule(season)  # decision #7: bridge schedule layout
         build_vegas_file(games, site, season, week)
-        proj_path = run_projection_pipeline(site, season, week, slate_id)
+        proj_path = run_projection_pipeline(site, season, week, slate_id, anchor)
     except RuntimeError as e:
         return {"site": site, "season": season, "week": week, "status": "ERROR", "detail": str(e)}
+
+    # Session 10.2, decision #9: build the FIELD from an anchor-OFF pool, so
+    # every arm is scored against one fixed yardstick. See the module
+    # docstring -- without this, turning the anchor on enlarges the pool
+    # (zero-history players get rescued), which enlarges and WEAKENS the
+    # synthetic field sampled from it, which raises our percentile for a
+    # reason that has nothing to do with the projection being better.
+    # Measured on the first Session 10.2 run: field median fell in 15 of 17
+    # weeks (mean -1.41 pts, t=-4.3) -- by far the strongest effect in that
+    # whole comparison, and a pure artifact.
+    field_proj_path = proj_path
+    if field_pool_mode == "baseline" and anchor and (
+            anchor["weight"] > 0 or anchor["cold_start"]):
+        try:
+            field_proj_path = run_projection_pipeline(
+                site, season, week, slate_id, None)
+            field_proj_path = OUTPUT_DIR / f"final_projections_{site}_{week}_fieldbase.csv"
+            pd.read_csv(OUTPUT_DIR / f"final_projections_{site}_{week}.csv",
+                        dtype={"player_id": str, "site_player_id": str}
+                        ).to_csv(field_proj_path, index=False)
+            # Rebuild the ANCHORED file, which the baseline run just clobbered.
+            run_projection_pipeline(site, season, week, slate_id, anchor)
+        except RuntimeError as e:
+            return {"site": site, "season": season, "week": week,
+                    "status": "ERROR",
+                    "detail": f"field-baseline rebuild failed: {e}"}
 
     # Decision #2: filter to Sunday main slate, then write the filtered pool
     # back to the final_projections path so the REAL build_multi_lineup
@@ -525,6 +684,38 @@ def backtest_week(site: str, season: int, week: int, games: pd.DataFrame,
                           f"pipeline or column round-trip is broken"}
     filtered_path = OUTPUT_DIR / f"final_projections_{site}_{week}.csv"
     pool.to_csv(filtered_path, index=False)
+
+    # Decision #9, bug-fix pass: build the FIELD POOL here -- BEFORE the
+    # optimizer runs, not after. Two reasons, both found by real runs:
+    #   (a) a field-pool problem should fail fast, not after burning a full
+    #       20-lineup ILP solve, and
+    #   (b) that wasted solve drew from `rng`, which shifted the RNG state
+    #       for every subsequent week and made the affected arm's per-week
+    #       fields non-identical to the other arms' -- silently un-pinning
+    #       the very yardstick this decision exists to pin. Observed: the
+    #       cold-start arm's field medians diverged from wk4 onward.
+    field_pool = pool
+    field_pool_note = ""
+    if field_proj_path != proj_path:
+        fproj = pd.read_csv(field_proj_path,
+                            dtype={"player_id": str, "site_player_id": str})
+        fp = fproj[fproj["team"].isin(main_teams_norm)]
+        fp = fp[fp["final_projection"] > 0].copy()
+        if len(fp) < 20:
+            # The anchor-OFF pool can be legitimately EMPTY -- week 1 is the
+            # canonical case, and it is exactly the week the cold-start arm
+            # exists to make buildable. Pinning the field to a pool that
+            # does not exist is impossible, so fall back to this arm's own
+            # pool and say so loudly. The week's percentile is then not
+            # cross-arm comparable, which is already true regardless: the
+            # baseline arm has no week 1 at all to compare it against.
+            field_pool_note = (f"field fell back to the ARM pool "
+                               f"(anchor-OFF pool had {len(fp)} players -- "
+                               f"expected for week 1); this week's percentile "
+                               f"is NOT cross-arm comparable")
+            print(f"     NOTE wk{week}: {field_pool_note}")
+        else:
+            field_pool = fp
 
     # Run the REAL optimizer in-process (decision #4). build_multi_lineup
     # re-reads final_projections_{site}_{week}.csv internally -- which is now
@@ -557,14 +748,23 @@ def backtest_week(site: str, season: int, week: int, games: pd.DataFrame,
 
     our_scores = [score_lineup(list(lu["site_player_id"]), actuals_wk) for lu in lineups]
 
-    field = build_synthetic_field(pool, site, field_size, rng)
+    field = build_synthetic_field(field_pool, site, field_size, rng)
     field_scores = np.array([score_lineup(f, actuals_wk) for f in field], dtype=float)
 
     pcts = np.array([percentile_of(s, field_scores) for s in our_scores])
 
     if DEBUG:
-        _debug_dump(site, season, week, lineups[0], actuals_wk, pool,
-                    field_scores, our_scores[0])
+        # Dump the two lineups the two REPORTED numbers actually come from,
+        # not lineups[0] (which is neither). Session 10.2.
+        best_i = int(np.argmax(our_scores))
+        med_i = int(np.argsort(our_scores)[len(our_scores) // 2])
+        _debug_dump(site, season, week, lineups[best_i], actuals_wk, pool,
+                    field_scores, our_scores[best_i],
+                    label=f"MAX-percentile lineup (#{best_i})")
+        if med_i != best_i:
+            _debug_dump(site, season, week, lineups[med_i], actuals_wk, pool,
+                        field_scores, our_scores[med_i],
+                        label=f"MEDIAN-percentile lineup (#{med_i})")
 
     return {
         "site": site, "season": season, "week": week, "status": "OK",
@@ -575,7 +775,9 @@ def backtest_week(site: str, season: int, week: int, games: pd.DataFrame,
         "field_median_score": round(float(np.median(field_scores)), 2) if len(field_scores) else None,
         "median_percentile": round(float(np.median(pcts)), 1),
         "max_percentile": round(float(np.max(pcts)), 1),
-        "detail": "",
+        "anchor": describe_anchor(anchor),
+        "field_pinned": bool(field_proj_path != proj_path and not field_pool_note),
+        "detail": field_pool_note,
     }
 
 
@@ -598,7 +800,30 @@ def main():
                         help="Re-download nflverse games.csv")
     parser.add_argument("--debug", action="store_true",
                         help="Dump one week's lineup player-by-player (proj vs actual) + field distribution")
+    # Session 10.2 (decision #8) -- passed straight through to
+    # build_projections.py. Omitted entirely at the defaults, so a default
+    # run is byte-identical to the Session 10.1 baseline run.
+    parser.add_argument("--salary-anchor-weight", type=float, default=0.0,
+                        help="Blend weight on the fitted salary-implied baseline "
+                             "(0.0 = off = the Session 10.1 baseline arm)")
+    parser.add_argument("--salary-anchor-cold-start", action="store_true",
+                        help="Use the games_played shrinkage schedule instead of a "
+                             "flat weight. Also makes week 1 backtestable.")
+    parser.add_argument("--salary-anchor-k", type=float, default=4.0,
+                        help="Half-weight point of the cold-start schedule, in games "
+                             "played. ARBITRARY default, not fit.")
+    parser.add_argument("--field-pool", choices=["baseline", "arm"], default="baseline",
+                        help="Which pool the synthetic field is sampled from "
+                             "(decision #9). 'baseline' (default) pins the field to "
+                             "the anchor-OFF pool so every arm shares one yardstick; "
+                             "'arm' is the pre-10.2 behaviour, which lets the field "
+                             "move with the projection being tested. No effect when "
+                             "the anchor is off.")
     args = parser.parse_args()
+
+    anchor = {"weight": args.salary_anchor_weight,
+              "cold_start": args.salary_anchor_cold_start,
+              "k": args.salary_anchor_k}
 
     global DEBUG
     DEBUG = args.debug
@@ -622,18 +847,23 @@ def main():
           "measure whether the current projections are good now (decision #6).")
     print("NOTE: field percentile is vs a SYNTHETIC ownership-weighted field "
           "(Session 4.1 heuristic, not real ownership) -- 'plausible field', "
-          "not 'real contest' (decision #3).\n")
+          "not 'real contest' (decision #3).")
+    print(f"ARM:  {describe_anchor(anchor)}")
+    print(f"FIELD: sampled from the {args.field_pool} pool "
+          f"({'pinned -- comparable across arms' if args.field_pool == 'baseline' else 'moves with the arm -- NOT comparable across arms'}).\n")
 
     results = []
     for week in weeks:
         res = backtest_week(args.site, args.season, week, games,
-                            args.num_lineups, args.field_size, rng)
+                            args.num_lineups, args.field_size, rng, anchor,
+                            args.field_pool)
         results.append(res)
         if res["status"] == "OK":
             print(f"  OK  {args.site} {args.season} wk{week:<2}  "
                   f"median pctile {res['median_percentile']:>5.1f}  "
                   f"max pctile {res['max_percentile']:>5.1f}  "
-                  f"(our best {res['our_best_score']}, field median "
+                  f"(our med {res['our_median_score']}, best "
+                  f"{res['our_best_score']}, field median "
                   f"{res['field_median_score']}, pool {res['pool_size']})")
         elif res["status"] == "SKIP":
             print(f"  --  {args.site} {args.season} wk{week:<2}  SKIP: {res['detail'][:100]}")
@@ -645,6 +875,7 @@ def main():
     err = [r for r in results if r["status"] == "ERROR"]
     skip = [r for r in results if r["status"] == "SKIP"]
     print("\n" + "=" * 62 + "\nSUMMARY\n" + "=" * 62)
+    print(f"  Arm:   {describe_anchor(anchor)}")
     print(f"  Weeks: {len(results)}   OK: {len(ok)}   SKIP: {len(skip)}   ERROR: {len(err)}")
     if ok:
         med = np.array([r["median_percentile"] for r in ok])
@@ -653,9 +884,40 @@ def main():
               f"mean {med.mean():.1f}, min {med.min():.1f}, max {med.max():.1f}")
         print(f"  Max-percentile (upside proxy):        "
               f"mean {mx.mean():.1f}, min {mx.min():.1f}, max {mx.max():.1f}")
-        print("\n  ^ This is the BASELINE for the current projection system. "
-              "Every Phase 10\n    projection change is measured against these two "
-              "numbers, separately.")
+        # Session 10.2, decision #9: raw scores are in ARM-INDEPENDENT units
+        # (real fantasy points), so a paired week-by-week comparison of these
+        # between arms is immune to any change in the field. Percentiles are
+        # the headline; these are the check on them.
+        rmed = np.array([r["our_median_score"] for r in ok], dtype=float)
+        rbest = np.array([r["our_best_score"] for r in ok], dtype=float)
+        fmed = np.array([r["field_median_score"] for r in ok], dtype=float)
+        print(f"  Raw score, median lineup:  mean {rmed.mean():6.2f}   "
+              f"(arm-independent units -- compare these across arms too)")
+        print(f"  Raw score, best lineup:    mean {rbest.mean():6.2f}")
+        print(f"  Field median score:        mean {fmed.mean():6.2f}   "
+              f"(should be IDENTICAL across arms under --field-pool baseline)")
+        unpinned = [r for r in ok if r.get("detail")]
+        if unpinned:
+            print(f"\n  !! {len(unpinned)} week(s) could NOT use the pinned field and "
+                  f"fell back to their own pool.\n     Those weeks are not "
+                  f"cross-arm comparable, so the means above are not either.\n"
+                  f"     Re-run with an explicit --week list excluding them for the "
+                  f"like-for-like number:")
+            for r in unpinned:
+                print(f"       wk{r['week']}: {r['detail']}")
+        if anchor["weight"] > 0 or anchor["cold_start"]:
+            print("\n  ^ Compare BOTH numbers, separately, against the Session 10.1 "
+                  "baseline\n    (2021 DK, 20 lineups): median-pctile 72.8, "
+                  "max-pctile 94.7.\n    A change that lifts one and drops the other "
+                  "is a floor/upside tradeoff to\n    decide deliberately, not an "
+                  "unambiguous win. NOTE: if this run included\n    week 1 (only "
+                  "possible with the anchor on), it is NOT week-for-week comparable\n"
+                  "    to the baseline -- re-run excluding week 1 for the like-for-like "
+                  "number.")
+        else:
+            print("\n  ^ This is the BASELINE for the current projection system. "
+                  "Every Phase 10\n    projection change is measured against these two "
+                  "numbers, separately.")
     if skip:
         print("\n  SKIPPED (not backtestable, not an error):")
         for r in skip:

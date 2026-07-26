@@ -201,11 +201,70 @@ a full 9-slot roster including DST/DEF for both sites.
      that don't know about the two new columns are unaffected (extra
      columns, nothing existing changed or removed).
 
+  8. Session 10.2 addition -- OPTIONAL salary-anchor blend, DEFAULT OFF.
+     Phase 10's design adds a salary-implied baseline ("the market's own
+     forecast") as a projection component. Session 10.2 fits that curve
+     (scripts/fit_salary_anchor.py -> data/salary_anchor_{site}.json) and
+     this script is where it gets consumed.
+
+     It is off by default (`--salary-anchor-weight 0.0`). With weight 0 and
+     `--salary-anchor-cold-start` unset, this script's behavior and its
+     output schema are byte-for-byte what they were before Session 10.2 --
+     no new columns, no changed values. That is deliberate and follows the
+     project's schema-stability rule and Phase 10's own "build it parallel,
+     ship it only if the backtest says it wins" principle. The ROADMAP's
+     validation line for Session 10.2 is a measurement, and a measurement
+     needs both arms to exist at once.
+
+     When enabled:
+       final_projection = (1 - w) * model_projection + w * salary_anchor
+     and three AUDIT columns are appended (only when enabled):
+       `salary_anchor`               -- the fitted E[points | salary, position]
+       `anchor_weight_used`          -- the per-player w actually applied
+       `final_projection_pre_anchor` -- the untouched model value
+     plus `points_above_anchor` (= final_projection - salary_anchor), which
+     is the SUBTRACT-form value metric the ROADMAP's Session 10.2 card
+     specifies in place of points-per-$1K. It is informational only and
+     never drives selection -- the ILP already handles the price tradeoff
+     natively via the salary cap.
+
+     8a. THE ANCHOR IS NOT APPLIED TO CONFIRMED-NO-GAME ROWS. Decision #4b
+         above forces final_projection to exactly 0.0 for a player with no
+         real game that week (bye/inactive/not-yet-debuted, known via
+         hindsight in a backtest), and decision #5 does the same for a bye
+         defense. Both are marked by `opponent == "BYE_OR_UNKNOWN"`. Those
+         rows are EXCLUDED from the blend: mixing a positive, salary-derived
+         anchor into a confirmed zero would resurrect a player we know
+         scored nothing, silently inflating every backtest that touches
+         that week. This is the single most important correctness detail in
+         this decision.
+
+         Critically, this is NOT the same test as `final_projection == 0`.
+         A cold-start player (rookie, week 1, midseason signing) also has a
+         model projection of 0.0 -- via decision #3's no-history fallback --
+         but has a REAL game and a REAL price. Those players are exactly who
+         the anchor exists to help, so they stay in. Gating on the
+         BYE_OR_UNKNOWN sentinel rather than on a zero projection is what
+         keeps those two cases apart.
+
+     8b. COLD-START SCHEDULE. `--salary-anchor-cold-start` replaces the flat
+         weight with the shrinkage schedule in salary_anchor.py's decision
+         #4: w -> 1.0 at zero games of history, decaying toward the
+         `--salary-anchor-weight` floor as games accumulate. DST rows have
+         no games_played concept anywhere in this pipeline, so they are
+         given a sufficient-history value UNLESS their season_avg is 0.0
+         (which is the real "no signal yet" case for a defense, e.g. week
+         1) -- flagged as a modelling assumption, not a measured fact.
+         Session 10.4's DST rebuild is where this stops being a proxy.
+
 Usage:
     python3 build_projections.py --site dk --season 2025 --week 10 \
         --slate-id classic_wk10
     python3 build_projections.py --site fd --season 2025 --week 10 \
         --slate-id classic_wk10
+    # Session 10.2 -- with the salary anchor on (measurement arm):
+    python3 build_projections.py --site dk --season 2021 --week 10 \
+        --slate-id rotoguru_2021_wk10 --salary-anchor-weight 0.25
 """
 
 import argparse
@@ -217,6 +276,7 @@ import pandas as pd
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from ingest_salaries import SITE_CONFIGS  # noqa: E402 -- Session 1.3's single source of truth for per-site defense-position labels (decision #5)
 from ownership_heuristic import compute_chalk_scores, compute_estimated_ownership  # noqa: E402 -- Session 7.3 decision #7: bake ownership into final_projections directly, see add_ownership_columns() below
+import salary_anchor  # noqa: E402 -- Session 10.2 decision #8: optional salary-anchor blend, off by default (the artifact is only READ when a caller asks for weight > 0)
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 DATA_DIR = REPO_ROOT / "data"
@@ -230,6 +290,19 @@ POSITIONS = ["QB", "RB", "WR", "TE"]
 # Session 9.2's future retuning has a clear starting point to diff against.
 BASELINE_WEIGHT = 0.5
 RECENT_FORM_WEIGHT = 0.5
+
+# Session 10.2 (decision #8) -- salary anchor, OFF by default. 0.0 means
+# this script behaves and emits exactly as it did before Session 10.2.
+SALARY_ANCHOR_WEIGHT_DEFAULT = 0.0
+
+# Decision #8b: the sentinel decisions #4b/#5 already write for a
+# confirmed-no-game row. Single source of the "don't anchor this row" test.
+NO_GAME_SENTINEL = "BYE_OR_UNKNOWN"
+
+# Decision #8b: stand-in games_played for defenses, which have no
+# games_played anywhere in this pipeline. Large enough that the cold-start
+# schedule leaves a defense at the weight floor.
+DST_ASSUMED_GAMES_PLAYED = 99
 
 # ---------------------------------------------------------------------------
 # Step 0: Load the three projection-component inputs + salary file
@@ -520,7 +593,72 @@ def add_ownership_columns(df: pd.DataFrame, site: str) -> pd.DataFrame:
     return merged
 
 
-def build_final_projections(site: str, season: int, week: int, slate_id: str) -> pd.DataFrame:
+# ---------------------------------------------------------------------------
+# Step 3b: Salary anchor (Session 10.2, decision #8) -- OPTIONAL, off by default
+# ---------------------------------------------------------------------------
+
+def apply_salary_anchor(df: pd.DataFrame, site: str, weight: float,
+                        cold_start: bool, k: float) -> pd.DataFrame:
+    """Blend the fitted salary-implied baseline into final_projection.
+
+    Called only when a caller explicitly asked for it. See module docstring,
+    decision #8 (and 8a/8b for the two correctness details).
+    """
+    artifact = salary_anchor.load_anchor(site)
+
+    out = df.copy()
+    out["salary_anchor"] = salary_anchor.anchor_points(
+        artifact, out["position"], out["salary"]
+    )
+
+    w = salary_anchor.effective_weight(weight, out["_anchor_games"], cold_start, k)
+
+    # Decision #8a: never blend into a CONFIRMED zero. Gated on the
+    # BYE_OR_UNKNOWN sentinel, NOT on final_projection == 0 -- a cold-start
+    # player also projects 0.0 and is precisely who the anchor is for.
+    no_game = out["opponent"].astype(str) == NO_GAME_SENTINEL
+    w = pd.Series(w, index=out.index).where(~no_game, 0.0)
+
+    out["final_projection_pre_anchor"] = out["final_projection"]
+    out["anchor_weight_used"] = w.round(4)
+    out["final_projection"] = salary_anchor.blend(
+        out["final_projection"], out["salary_anchor"], w.to_numpy()
+    )
+    # Decision #1 in fit_salary_anchor.py: the SUBTRACT form of value.
+    # Informational only -- never drives selection (the ILP owns the price
+    # tradeoff via the salary cap).
+    out["points_above_anchor"] = (
+        out["final_projection"] - out["salary_anchor"]
+    ).round(4)
+    # A confirmed-no-game row is not "17 points below baseline" -- it simply
+    # has no game. Reporting the raw difference there would put a large,
+    # meaningless negative on exactly the rows decision #8a excluded, and
+    # anything sorting or filtering on this column would be misled by it.
+    # Zeroed rather than nulled, to keep this file's "no nulls" invariant.
+    out.loc[no_game, "points_above_anchor"] = 0.0
+    # Keep the anchor column itself honest for the excluded rows: the curve
+    # value is still reported (it's a real property of their price), but
+    # zero weight was applied, which anchor_weight_used says explicitly.
+
+    n_blended = int((w > 0).sum())
+    n_excluded = int(no_game.sum())
+    n_rescued = int(((out["final_projection_pre_anchor"] == 0.0)
+                     & (out["final_projection"] > 0.0)).sum())
+    mode = (f"cold-start schedule (floor {weight}, k={k})" if cold_start
+            else f"flat weight {weight}")
+    print(f"Salary anchor ON -- {mode}. Blended {n_blended}/{len(out)} rows; "
+          f"{n_excluded} confirmed-no-game row(s) excluded (decision #8a); "
+          f"{n_rescued} cold-start player(s) went from a 0.0 model projection "
+          f"to a positive anchored one.")
+
+    return out
+
+
+def build_final_projections(site: str, season: int, week: int, slate_id: str,
+                            anchor_weight: float = SALARY_ANCHOR_WEIGHT_DEFAULT,
+                            anchor_cold_start: bool = False,
+                            anchor_k: float = salary_anchor.DEFAULT_COLD_START_K,
+                            ) -> pd.DataFrame:
     baseline = load_baseline_recent_form(site, season, week)
     matchup = load_matchup_factors(site, season, week)
     vegas = load_vegas_implied_totals(week)
@@ -653,7 +791,28 @@ def build_final_projections(site: str, season: int, week: int, slate_id: str) ->
     # restricted/renamed for the skill-position convention above).
     dst_out = build_dst_projections(salaries, vegas, site)
 
+    # Decision #8b: games_played is needed by the cold-start schedule but is
+    # NOT an output column of this file (and isn't being made one -- schema
+    # stability). Carried as a private column through the concat and dropped
+    # before the frame is returned, so nothing downstream ever sees it.
+    skill_out = skill_out.assign(_anchor_games=df["games_played"].to_numpy())
+    dst_out = dst_out.assign(
+        _anchor_games=(dst_out["season_avg"] > 0).map(
+            {True: DST_ASSUMED_GAMES_PLAYED, False: 0}
+        ).astype(int)
+    )
+
     out = pd.concat([skill_out, dst_out], ignore_index=True)
+
+    # Session 10.2, decision #8: optional salary-anchor blend. Runs BEFORE
+    # add_ownership_columns() below, because chalk_score/ownership are
+    # derived from final_projection and must reflect the projection actually
+    # used -- not a pre-anchor value the optimizer never sees.
+    anchor_on = anchor_weight > 0 or anchor_cold_start
+    if anchor_on:
+        out = apply_salary_anchor(out, site, anchor_weight,
+                                  anchor_cold_start, anchor_k)
+    out = out.drop(columns=["_anchor_games"])
 
     # Session 7.3, decision #7: chalk_score/estimated_ownership_pct baked
     # in here -- must run AFTER the skill+DST concat above (ownership needs
@@ -674,9 +833,30 @@ if __name__ == "__main__":
     parser.add_argument("--season", type=int, required=True)
     parser.add_argument("--week", type=int, required=True)
     parser.add_argument("--slate-id", required=True, help="e.g. classic_wk10, matches ingest_salaries.py's --slate-id")
+    # Session 10.2 (decision #8) -- all three default to OFF. With these
+    # untouched this script's output is identical to pre-10.2.
+    parser.add_argument("--salary-anchor-weight", type=float,
+                        default=SALARY_ANCHOR_WEIGHT_DEFAULT,
+                        help="Blend weight on the fitted salary-implied baseline "
+                             "(0.0 = off, the default; 1.0 = pure market). "
+                             "Requires data/salary_anchor_{site}.json.")
+    parser.add_argument("--salary-anchor-cold-start", action="store_true",
+                        help="Use the games_played shrinkage schedule instead of a "
+                             "flat weight: full anchor at 0 games of history, "
+                             "decaying toward --salary-anchor-weight as history "
+                             "accumulates (decision #8b).")
+    parser.add_argument("--salary-anchor-k", type=float,
+                        default=salary_anchor.DEFAULT_COLD_START_K,
+                        help="Half-weight point of the cold-start schedule, in "
+                             "games played. ARBITRARY default, not fit.")
     args = parser.parse_args()
 
-    result = build_final_projections(args.site, args.season, args.week, args.slate_id)
+    result = build_final_projections(
+        args.site, args.season, args.week, args.slate_id,
+        anchor_weight=args.salary_anchor_weight,
+        anchor_cold_start=args.salary_anchor_cold_start,
+        anchor_k=args.salary_anchor_k,
+    )
 
     # Session 7.3 fix -- defensively clean site_player_id before writing:
     # strip a stray ".0" (the float-upcast bug fixed in optimizer.py's
