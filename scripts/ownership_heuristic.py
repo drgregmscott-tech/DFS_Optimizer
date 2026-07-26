@@ -310,7 +310,18 @@ def compute_chalk_scores(df: pd.DataFrame, site: str) -> pd.DataFrame:
     # sites, 0 for anyone not on the list.
     flags = load_name_recognition_flags()
     df = df.merge(flags, on="player_id", how="left")
-    df["flag_weight"] = df["flag_weight"].fillna(0.0)
+    # Session 10.3a: coerce, do not just fillna. When name_recognition_flags.csv
+    # is absent (the empty-frame return above) or present-but-header-only,
+    # `flag_weight` arrives as object dtype, survives fillna as object, and
+    # propagates into `chalk_score` -- where numpy's exp() raises under pandas
+    # 3.x ("loop of ufunc does not support argument 0 of type float"). Dormant
+    # today on both counts: the CSV is committed, and this project is on pandas
+    # 2.x. Fixed here rather than at the empty-frame return because this point
+    # covers the header-only case too, which is what clearing the file to
+    # disable the feature would produce. Deliberately minimal -- the ownership
+    # model is slated for its own rework after Phase 10, so this is a stopgap,
+    # not an investment.
+    df["flag_weight"] = pd.to_numeric(df["flag_weight"], errors="coerce").fillna(0.0)
     n_flagged = (df["flag_weight"] > 0).sum()
     print(f"{n_flagged} player(s) received a name-recognition bonus from {NAME_RECOGNITION_PATH.name}.")
 

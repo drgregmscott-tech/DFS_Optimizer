@@ -1681,3 +1681,77 @@ Largest effect measured anywhere across seven curve/weight variants: **1.1 perce
 - **For Session 10.3, take decision #10 seriously:** price is nearly collinear with the salary cap at the points level, so the productive place to use this curve is as a prior on the **stat-line** inputs, not as a points-level blend. That is a real constraint on the design, learned cheaply, and it is exactly the kind of thing the harness was built to surface before weeks were spent on it.
 - **Week 1 is now backtestable** with `--salary-anchor-cold-start`, but its percentile is not cross-arm comparable (the baseline arm has no week 1 at all). Use an explicit `--week 2 3 ... 18` list for a like-for-like season number; the harness flags the un-pinned week in its summary either way.
 - **Commit point:** the four scripts plus `data/salary_anchor_dk.json` and the two archived variant fits are a clean unit. No Cloudflare Worker or frontend redeploy — nothing in this session touches the four-layer parameter chain, since the anchor flags are backtest/offline-only and the live UI never sets them.
+
+---
+
+## Session 10.3a — Stat-Line Projection Rewrite (2026-07-26)
+
+**Status: complete.** The stat-line engine is built, measured out-of-sample across four seasons, and ships on the capability gate agreed before any code was written. `build_projections.py` is untouched.
+
+### What changed about the session before it started
+
+The card's original validation line said the engine "ships only if it wins." Three cheap pre-tests, run on real data before a line of code, argued that bar would kill a component Session 10.5 cannot exist without:
+
+1. **The legacy target variable is wrong three ways.** nflverse's `fantasy_points` scores an interception at −2; DK and FD both use −1. DK additionally uses −1 for a lost fumble and pays three +3 yardage bonuses. Reconstructing the column confirmed this to 7.1e-15. Against each site's own legacy formula, corrected scoring differs on 13.2% of DK rows and 5.2% of FD rows — and on **42.9% of DK performances worth 15+ points**. The harness grades against RotoGuru actuals, which are real DK points, so the pipeline was projecting in one unit and being scored in another.
+2. **But fixing that will not move the lineup metric.** Within position, Spearman between old and corrected scoring is ≥ 0.9906 — a level shift, not a re-ranking, which is precisely the shape Session 10.2 taught us an ILP barely notices.
+3. **And the core bet is close to a null.** A crude volume × efficiency model raced against points-averaging over **9,822 real player-weeks** (2019–21, 2018 as prior only) came out within 0.02 MAE — 5.20 vs 5.18 — with **residual correlation 0.965**. The design intro says blending helps in proportion to error decorrelation; there is almost none here, because volume history and points history are the same signal with fewer steps between. The steelman does hold (stat-line wins on TD-heavy histories by 0.20–0.31 MAE, loses slightly on TD-light ones) but the effects cancel in aggregate.
+
+On that evidence the card was re-scoped by agreement to a **capability gate**: ships if it delivers a validated mean and sigma and is not worse, with accuracy explicitly not the deliverable. Three other decisions were taken at the same time: measure multi-season for power, use Monte Carlo rather than an analytic converter, and defer price-as-volume-prior to 10.3b.
+
+### Why Monte Carlo
+
+DK's bonuses are step functions, so `E[points] ≠ points(E[stats])`. Measured on the real output, scoring a mean stat line **over**-credits a player already past a threshold by −2.22 pts and **under**-credits one within reach by +0.36. Unlike the scoring-table correction, that is a *signed* error among exactly the players competing for a slot. The simulator also produces sigma in the same pass and handles the yards/TD correlation natively.
+
+Sigma is **idiosyncratic by construction** — independent draws per player, no team-level component — which is the correct kind for 10.5, since correlated variance lives in the optimizer's stacking constraints.
+
+### Three bugs, all found by running it, none by review
+
+1. **Conditional vs unconditional volume.** A recency average covers only games a player *appeared in*, so it is a volume conditional on playing. Cooper Rush (DAL, 2021 wk10) appeared in exactly one prior week — 40 attempts covering an injured Prescott — and was therefore projected at 40 attempts. Summed with Prescott, the pool projected **77.5 attempts for a team that throws 39.6**. Surfaced only because share reconciliation had a team-level constraint to violate; the legacy engine makes the same error invisibly. Fixed by weighting volume by the share of the team's last five *played* weeks in which the player recorded a stat line.
+2. **`NaN or 0.0` returns NaN.** NaN is truthy in Python, so the idiomatic `getattr(row, col, 0.0) or 0.0` passes it straight through — into `rng.binomial`, which raised. Guarded at two layers.
+3. **Reconciliation thresholds, wrong twice.** First a relative test on trivial volumes; then a per-pair extreme test that aborted on ordinary football. See below.
+
+### The reconciliation problem, and the fix that mattered
+
+Two weeks aborted: 2021 wk13 and wk15. The first error message named a 2.00× pair while claiming a 3.0× breach — the harness truncated the output before the real culprit. Fixing the diagnostics (worst-first ordering, offending pairs named in the first line) cost a round trip and revealed the actual cause.
+
+Both failures were the same structural fact, breaking in **opposite directions**:
+
+| | full-season share | recent-5 share | who played |
+|---|---|---|---|
+| NYJ wk13 | Wilson 48% | Wilson 11% | Wilson only |
+| CAR wk15 | Newton 17% | Newton 47% | Newton only |
+
+No backward-looking share gets both right; tuning the window would have fixed one week and broken the other. The resolution is that **pass attempts are an exclusive resource** — they belong to quarterbacks, the pool holds the quarterbacks, so the share is 1.0 and history should not be consulted for it. Reconciliation's job for passing is to distribute the team's predicted attempts among available QBs, weighted by recent usage. Rushing and receiving are not exclusive (the pool genuinely misses bench players) so they keep a share, now measured over the recent window. Verified: Wilson 4.8 → 34 attempts, Newton 16.7 → 32 instead of being cut to 5.4, and a synthetic broken mapping still aborts.
+
+Breakage detection now needs an extreme ratio **and** a material absolute gap — every real failure was under half a game's volume, and the ratio only looked alarming because the denominator was small. The systemic test needs ≥20 material pairs before it can fire. Exclusive components are exempt from the ratio test entirely, since their rescale is a normalization by construction (routinely 2–13× on healthy weeks).
+
+### The measurement, and what did not replicate
+
+**In-sample (2021, variance fit on 2014–21):** median-pctile +1.82, max-pctile +1.75, and a max-percentile variance reduction of **3.58×, p ≈ 0.001** with the entire gain in the bad weeks. That looked like the headline finding.
+
+**Out-of-sample (variance fit 2014–17, measured 2018–21, 65 weeks):**
+
+| | legacy | statline | Δ | t |
+|---|---|---|---|---|
+| median-pctile | 75.65 | 77.85 | +2.20 | +1.15 |
+| max-pctile | 96.54 | 96.82 | +0.28 | +0.56 |
+| raw median score | 127.17 | 129.43 | +2.26 | +1.35 |
+| raw best score | 163.67 | 165.07 | +1.40 | +0.57 |
+
+Median-percentile is positive in **all four seasons** (+1.41, +1.93, +1.93, +3.48). The variance finding shrank to 1.54× (p ≈ 0.039) and the tail decomposition inverted — the gain sits in the middle half, not the tails, and the disaster rate is flat at 3/65 for both arms. Across six tests run, nothing survives a multiple-comparisons correction.
+
+**The transferable lesson is the leak itself.** Fitting `statline_variance.json` on the season then measured inflated the effect roughly threefold on the same 2021 weeks (variance ratio 3.58× → 1.20×, max-pctile 96.6 → 95.2). It would have gone into this log as a finding. The holdout cost one extra fit and one extra run.
+
+### Sandbox-only vs live-validated
+
+Everything in the deliverables was **live-validated** in the real environment against real RotoGuru slates. The following were **sandbox-only**, on synthetic fixtures built from real 2021 players: the three reconciliation shape tests, and the pandas-3 dtype reproduction. The DST sigma constants are **measured** (3,952 real team-weeks, 2014–21) but remain unconditional pending Session 10.4.
+
+### Handoff notes
+
+- **Refit for production:** `python3 scripts/fit_statline_variance.py` (all eight seasons). The 2014–17 artifact was for the measurement only.
+- **New baseline pair:** 2021 DK **72.9 / 94.8**; pooled 2018–21 **75.6 / 96.5**. The original 72.8 / 94.7 stays valid for Sessions 10.1 and 10.2 under the old seeding scheme.
+- **`optimizer.py` drops `sigma`** — it reaches the optimizer, it does not survive it. First task of Session 10.5.
+- **`ownership_heuristic.py` got a one-line coercion** of `flag_weight` — a dormant pandas-3.x break, not a live bug. Explicitly a stopgap: the ownership model is slated for its own rework after Phase 10, and pandas 3.0 will break more than this one line when it arrives.
+- **FD is unverified**, consistent with every other FD gap in this project — but note `statline_variance.json` is site-agnostic, so unlike the FD salary anchor this component is *not* blocked on FD data.
+- **`output/statline_reconcile_{site}_{week}.csv`** is written every run: one row per team/component pair with the share, its basis, and the applied scale. Reconciliation moves volume on ~83 pairs a week and this is the only way to see it.
+- **Commit point:** the five scripts plus `data/statline_variance.json`. No Worker or frontend redeploy — nothing here touches the four-layer parameter chain, since the engine is backtest/offline-only and the live UI never selects it.

@@ -727,6 +727,16 @@ The reason is mechanical, not statistical, and it was found by walking real debu
 
 **⚠️ Amended by Session 10.2 (2026-07-26) — the harness gained `--field-pool` (its decision #9), and every future comparison must use the default.** The field was sampled from the same pool lineups were built from, so a projection change that enlarges the pool also enlarges and DILUTES the field, and our percentile rises for a reason unrelated to the projection. Measured when the salary anchor was first switched on: the field's median score fell in **15 of 17 weeks, mean −1.41 pts, t = −4.3** — stronger than any real effect in that comparison, and a pure artifact. `--field-pool baseline` (now the default) pins every arm to one yardstick by rebuilding an anchor-off pool per week purely for the field. **The baseline figures above are unaffected and reproduce exactly**, since pinning is a no-op when the arm being measured is the baseline itself. Two further consequences: raw median/best lineup scores are now printed per week and in the summary (arm-independent units, so they are the check on whether a percentile move is real), and week 1 cannot be pinned at all (its anchor-off pool is empty by definition) so it falls back to its own pool and is flagged as not cross-arm comparable.
 
+**⚠️ Re-baselined by Session 10.3a (2026-07-26) — the harness now derives each week's RNG from `(seed, season, week)` (its decision #13), which changes the field draws.** The old scheme threaded one generator through the whole run, so a week's field depended on every week before it — fine until a week did not consume its draws, and an ERRORED or SKIPPED week returns before touching the RNG. Measured: the stat-line arm errored on 2021 wk13, and from wk14 onward its field silently diverged from the legacy arm's (wk14 108.82 vs 107.92, wk17 100.66 vs 99.63), un-pinning the very yardstick decision #9 exists to pin. This is Session 10.2's bug #3 recurring through a different mechanism, which is the argument for removing the coupling rather than patching the symptom twice.
+
+**The re-measured numbers, which are the anchor from Session 10.3a on:**
+- **2021 DK, 17 weeks × 20 lineups:** median-percentile **72.9**, max-percentile **94.8**. Raw scores came back *identical to the cent* (median 118.08, best 148.23) — the optimizer built the same lineups; only the field sample moved, by 0.06 points. The metric is not seed-sensitive.
+- **Pooled 2018–2021 DK, 65 weeks × 20 lineups:** median-percentile **75.6 ± 1.6 SE**, max-percentile **96.5 ± 0.6 SE**. Per season: 2018 80.6 / 98.3, 2019 75.1 / 96.7, 2020 74.1 / 96.4, 2021 72.9 / 94.8. Use the pooled pair for anything needing power; 17 weeks against a ~16-point week-to-week SD cannot detect an effect smaller than about 9 percentile points.
+
+The original **72.8 / 94.7** remains the valid historical record for Sessions 10.1 and 10.2, which were internally consistent under the old scheme. Do not restate their conclusions against the new pair.
+
+**Known data gap:** 2018/2019/2020 wk18 error on both arms for want of `salaries_dk_rotoguru_{season}_wk18.csv`. Symmetric, so it biases nothing, but `batch_match_rotoguru.py` would recover three weeks.
+
 **Sites:** DK first (8 seasons of real matched data). FD has only 2021 matched — usable to prove the mechanics, not to fit anything.
 
 **Files touched (created):** `/dfs_optimizer/scripts/backtest_harness.py`; likely `/dfs_optimizer/output/backtest_*.csv` for results.
@@ -773,21 +783,47 @@ The reason is mechanical, not statistical, and it was found by walking real debu
 
 ---
 
-### Session 10.3 — Stat-Line Projection Rewrite (the core rebuild — "Gap 1")
-**Prerequisites:** Sessions 10.1 and 10.2 (harness to measure it, anchor as a component). **Built as a NEW parallel component that co-exists with the current `build_projections.py` until the harness says it wins** — not an in-place edit of Session 2.1, per the project's schema-stability principle.
+### Session 10.3a — Stat-Line Projection Rewrite (the core rebuild — "Gap 1") ✅ Complete (2026-07-26)
+**Prerequisites:** Sessions 10.1 and 10.2 (harness to measure it, anchor as a component). Built as a NEW parallel component co-existing with `build_projections.py`, which is **untouched and deliberately frozen** — it is the measurement baseline, and correcting even its known-wrong scoring would invalidate every number Sessions 10.1 and 10.2 recorded.
 
-**⚠️ Constraint inherited from Session 10.2 (2026-07-26), read before designing the blend:** the salary anchor exists and is fit (`data/salary_anchor_dk.json`, consumed via `scripts/salary_anchor.py`), but it was measured to be **neutral as a points-level blend component**, because a monotone-in-salary term is close to redundant with the salary-cap constraint the ILP already enforces — see the amendment to Phase 10's design intro above for the mechanism and the numbers. **So do not wire the anchor in as a points-level term here.** Use price as a prior on the **stat-line inputs** (volume, targets, carries), where it carries information the cap does not. The anchor's one genuinely non-redundant use is the **cold start** this card's own "blend weights dynamic on data sufficiency" design point calls for — and Session 10.2 already measured that working (week 1 2021, unbuildable → median-pctile 57.2 / max-pctile 99.7 on price alone), so the mechanism is proven and reusable rather than speculative. Session 10.2's `--salary-anchor-cold-start` shrinkage schedule (`w = floor + (1−floor)·k/(k+games_played)`, `k` arbitrary at 4.0) is the working starting point, not a finished answer.
+**Outcome in one line:** the engine ships on the **capability gate** agreed before the build — a validated per-player mean *and* sigma, which Session 10.5's objective cannot exist without. Measured out-of-sample over 65 weeks it is **parity with a mild positive tilt**: median-percentile +2.20 (t = +1.15, positive in all four seasons), max-percentile +0.28, raw median lineup score +2.26. Nothing significant, nothing worse. Full detail, the three bugs real runs caught, and the in-sample-leak lesson are in SESSION_LOG.md's Session 10.3a entry.
 
-**Sites:** one stat line, converted once per site.
+**Deliverables (all live-validated in the real environment unless noted):**
+- `/dfs_optimizer/scripts/scoring_rules.py` (new) — exact DK/FD scoring applied to a stat line. Reproduces nflverse's own `fantasy_points_ppr` to 7.1e-15, which is how its arithmetic is proven rather than asserted.
+- `/dfs_optimizer/scripts/fit_statline_variance.py` (new) — the fitter. Writes `data/statline_variance.json`, **site-agnostic** (a stat line is real football; only the converter is site-specific). Notably this is the one Phase 10 component *not* blocked on real FD data.
+- `/dfs_optimizer/scripts/statline_model.py` (new) — the consumer: participation-weighted volume, empirical-Bayes-shrunk efficiency, share reconciliation, and the Monte-Carlo draw scheme.
+- `/dfs_optimizer/scripts/build_projections_statline.py` (new) — the parallel engine. Writes the **same filename and a superset of the same schema**, which is why `optimizer.py`, `ownership_heuristic.py`, the Worker and the frontend all consume it with zero changes.
+- `/dfs_optimizer/scripts/backtest_harness.py` (modified) — `--engine {legacy,statline}`, multi-season `--season`, per-week RNG derivation.
+- `/dfs_optimizer/scripts/ownership_heuristic.py` (modified, one line) — `flag_weight` coerced to numeric. A dormant pandas-3.x break, not a live bug; a stopgap ahead of the planned ownership rework, not an investment in it.
 
-**Build:** replace the direct-fantasy-point projection with a volume × efficiency **stat-line** model (attempts/targets/carries/receptions/yards/TDs), then a scoring converter. This is the structural change that unlocks sigma-from-composition, prop ingestion, and share reconciliation — none of which are possible against a direct-points projection. `weekly_stats` already carries the 145 columns needed and is already lookahead-guarded.
+**Why Monte Carlo rather than an analytic mean:** DK's bonuses are step functions, so `E[points] ≠ points(E[stats])`. Measured on real data, scoring a mean stat line **over**-credits a player already past a threshold by −2.22 pts and **under**-credits one within reach by +0.36. That is a signed re-ranking error among exactly the players competing for a slot — unlike the scoring-table correction itself, which is a level shift (Spearman ≥ 0.9906 within position) that an ILP barely notices.
 
-**Honest expectation:** the *capability* gain is near-certain; the *accuracy* gain is not (FFA: the best commercial sources cluster within ~3% MAE of each other, and simple averages are hard to beat). This is exactly why it's built parallel and measured, not assumed.
+**⚠️ The legacy engine's target variable is wrong, and stays wrong on purpose.** nflverse's `fantasy_points` scores an interception at −2; DK and FD both use −1. DK additionally uses −1 for a lost fumble and pays three +3 yardage bonuses. Against each site's own legacy formula the corrected scoring differs on **13.2% of DK rows and 5.2% of FD rows**. `build_projections.py` keeps the old behaviour so the baseline stays valid; only the new engine is correct. A future session must not "helpfully" fix it without re-baselining first.
 
 **Validation:**
-- [ ] Stat-line component produces per-player mean AND sigma (sigma from component composition, with an empirical within-player yards/TD correlation adjustment, not an independence assumption).
-- [ ] Measured against Session 10.1 baseline at the lineup level — ships only if it wins, stays parallel if it doesn't.
-- [ ] Share reconciliation step (team-level aggregation vs Vegas targets, fail-loud past threshold).
+- [x] Stat-line component produces per-player mean AND sigma, with an **empirical** within-player yards/TD correlation reproduced by a calibrated latent factor — verified on an independent seed, every component within 0.007 of its measured target. The independence assumption it replaces would have given 0.172 against a measured 0.375 for WR receiving.
+- [x] Measured against the Session 10.1 baseline at the lineup level, out-of-sample (variance fit 2014–17, measured 2018–21).
+- [x] Share reconciliation step with fail-loud past threshold.
+
+---
+
+### Session 10.3b — Stat-Line Priors, Cold Start, and Role Change
+**Prerequisites:** Session 10.3a. Everything here was deferred by explicit agreement, not overlooked.
+
+**The one problem this card exists to solve:** 10.3a's volume model is participation-weighted (a recency average over games a player *appeared in* is a volume conditional on playing, which made a one-start backup look like a permanent starter). That fix is right, and it cannot distinguish "was hurt, is healthy now" from "is a backup." Reconciliation currently does the repair — for passing it allocates the team's whole predicted attempt total among available QBs — which is structurally sound but means **the QB projection is substantially a product of reconciliation rather than of the volume model.** A real role/depth-chart signal is what closes that.
+
+**Build:**
+- **Price as a prior on stat-line VOLUME** (not points — Session 10.2 measured the points-level blend neutral, and the mechanism is in the amendment to Phase 10's design intro). Needs a new fitted artifact: `E[target_share | salary, position]`, reusing `fit_salary_anchor.py`'s isotonic machinery on the share rather than on points.
+- **Cold start on the stat-line inputs**, making week 1 buildable. Session 10.2 already measured the mechanism working on price alone (week 1 2021: unbuildable → median-pctile 57.2 / max-pctile 99.7), so this is proven and reusable, not speculative. `w = floor + (1−floor)·k/(k+games_played)`, `k` arbitrary at 4.0, is the starting point.
+- **Role-change flag**, the item Session 10.2 first deferred.
+- **Vegas-anchored team volume**, replacing 10.3a's team-history volume prediction. 10.3a applies `matchup_factor × vegas_factor` to the *efficiency* side only (its decision #10); moving game environment onto team volume is the defensible alternative it deliberately left open.
+
+**Retuning targets, all flagged ARBITRARY in code and none of them fit:** `SHRINK_K` (yards 40, TD 120, catch 40, INT 400), `RECONCILE_FAIL_THRESHOLD` 0.40, `RECONCILE_MIN_VOLUME` 10.0, `RECONCILE_EXTREME_ABS` 60.0, `RECONCILE_MAX_VIOLATION_SHARE` 0.25, `RECENT_SHARE_MIN_VOLUME` 25.0.
+
+**Validation:**
+- [ ] Week 1 becomes buildable by the stat-line engine and is measured, not assumed.
+- [ ] A returning starter is projected sensibly without reconciliation doing all the work — checked against the 2021 cases this session catalogued (NYJ wk13 Wilson, CAR wk15 Newton).
+- [ ] Price-as-volume-prior measured separately from the rest, so a null result is attributable.
 
 ---
 
@@ -802,8 +838,12 @@ The reason is mechanical, not statistical, and it was found by walking real debu
 
 ---
 
-### Session 10.5 — Objective + Randomization Rewire (needs 10.3's sigma)
-**Prerequisites:** Session 10.3 (sigma must exist).
+### Session 10.5 — Objective + Randomization Rewire (needs 10.3a's sigma)
+**Prerequisites:** Session 10.3a (sigma now exists).
+
+**⚠️ What 10.3a hands you, and the one thing it does not (2026-07-26):** `final_projections_{site}_{week}.csv` from `build_projections_statline.py` carries a `sigma` column plus `sigma_source`. That sigma is **idiosyncratic by construction** — every player is drawn independently, so it holds no team-level correlated component, which is the right kind for this card's objective, since the design keeps correlated variance in the optimizer's stacking *constraints* rather than the objective. DST sigma is real but **unconditional** (`3.25 + 0.39 × projection`, measured over 3,952 team-weeks), flagged `dst_measured_unconditional_session_10_4_pending`; conditioning it on the opponent's implied total is Session 10.4's job.
+
+**Blocker to clear first:** `optimizer.py` selects a fixed column list and **drops `sigma`** on the way to its lineup output. It reaches the optimizer fine; it does not survive it. Carrying it through is the first task of this card.
 
 **Build:** wire per-player sigma into the optimizer objective as `sum(mean) − λ·(idiosyncratic sigma)`, keeping it LINEAR (sigma as a per-player constant, so CBC is retained — no MIQP). Make randomization sigma-proportional and entry-count-scaled (off at single-entry). λ fit from the backtest on a coarse grid, per contest type, selected on realized cash-rate + top-percentile frequency — NOT hand-tuned, NOT a single "optimal" value (the tradeoff curve is the output).
 
