@@ -112,6 +112,32 @@ Numbered decisions:
      jobs: prove these mechanics, and produce the baseline distribution that
      every later Phase 10 change is measured against. The output says so.
 
+  14. SESSION 10.4 -- DST MODEL SELECTION (`--dst-model legacy|
+     distributional`). Unlike the engine swap in decision #10, this is a flag
+     on the existing builders rather than a different script, because Session
+     10.4 rebuilt a COMPONENT that both engines already share (they both call
+     build_dst_projections()) rather than adding a parallel pipeline.
+
+     IMPORTANT, and the same trap decision #11 exists to close: the field
+     pool is deliberately NOT rebuilt with the DST model under test. A
+     distributional DST changes which defenses look good, which would change
+     the sampled field as well as our own lineups, and the field must stay
+     pinned to one yardstick. `--field-pool baseline` keeps meaning "legacy
+     engine, anchor off, LEGACY DST" for exactly the reason Session 10.2
+     measured: the last time an arm was allowed to move the field, the
+     field's median fell in 15 of 17 weeks (t = -4.3), which was stronger
+     than any real effect in the comparison and was a pure artifact.
+
+     Expect the lineup-level effect to be SMALL and possibly undetectable.
+     A DST fills 1 of 9 slots and contributes roughly 6.5 of ~120 lineup
+     points. Session 10.1's own power note applies: 17 weeks against a
+     ~16-point week-to-week SD cannot resolve an effect below about 9
+     percentile points, and no DST change will ever be that large. The
+     DST-slot measurement that this card's first validation asks for lives in
+     `measure_dst.py`, which grades the defense directly against real graded
+     DST actuals; this harness answers the separate question of whether the
+     improvement survives into whole lineups.
+
   10. SESSION 10.3a -- ENGINE SELECTION (`--engine legacy|statline`). The
      stat-line rewrite is a PARALLEL engine (a separate script writing the
      same output file), so an arm is selected by choosing which builder to
@@ -507,7 +533,8 @@ def sunday_main_slate_teams(games: pd.DataFrame, season: int, week: int) -> set:
 def run_projection_pipeline(site: str, season: int, week: int, slate_id: str,
                             anchor: dict | None = None,
                             engine: str = "legacy",
-                            statline: dict | None = None) -> Path:
+                            statline: dict | None = None,
+                            dst_model_mode: str = "legacy") -> Path:
     """Drive the REAL component scripts + build_projections.py via their
     file interfaces. Returns the path to final_projections_{site}_{week}.csv.
     Raises RuntimeError with the failing step's stderr on any failure.
@@ -536,6 +563,12 @@ def run_projection_pipeline(site: str, season: int, week: int, slate_id: str,
     cmd = [sys.executable, str(SCRIPTS_DIR / builder),
            "--site", site, "--season", str(season), "--week", str(week),
            "--slate-id", slate_id]
+    # Session 10.4 (decision #14 below). Passed through, never applied here --
+    # the harness runs the real engine, it does not reimplement a model. Both
+    # builders accept the same flag with the same default, so omitting it
+    # leaves the command line byte-identical to a pre-10.4 run.
+    if dst_model_mode != "legacy":
+        cmd += ["--dst-model", dst_model_mode]
     if engine == "statline":
         if statline:
             cmd += ["--statline-sims", str(statline["sims"]),
@@ -678,6 +711,7 @@ def backtest_week(site: str, season: int, week: int, games: pd.DataFrame,
                   anchor: dict | None = None,
                   field_pool_mode: str = "baseline",
                   engine: str = "legacy",
+                  dst_model_mode: str = "legacy",
                   statline: dict | None = None) -> dict:
     slate_id = f"rotoguru_{season}_wk{week}"
     salary_path = DATA_DIR / f"salaries_{site}_{slate_id}.csv"
@@ -718,7 +752,8 @@ def backtest_week(site: str, season: int, week: int, games: pd.DataFrame,
         ensure_per_season_schedule(season)  # decision #7: bridge schedule layout
         build_vegas_file(games, site, season, week)
         proj_path = run_projection_pipeline(site, season, week, slate_id, anchor,
-                                            engine=engine, statline=statline)
+                                            engine=engine, statline=statline,
+                                            dst_model_mode=dst_model_mode)
     except RuntimeError as e:
         return {"site": site, "season": season, "week": week, "status": "ERROR", "detail": str(e)}
 
@@ -735,8 +770,12 @@ def backtest_week(site: str, season: int, week: int, games: pd.DataFrame,
     # the anchor is on OR a non-legacy engine is selected. Both change the
     # pool, and a changed pool changes the field, which moves our percentile
     # for a reason unrelated to the projection.
+    # Session 10.4, decision #14: a non-legacy DST model also changes the
+    # pool's projections, so it counts as an arm differing from the baseline
+    # and must NOT be allowed to move the field.
     arm_differs_from_baseline = (
         engine != "legacy"
+        or dst_model_mode != "legacy"
         or bool(anchor and (anchor["weight"] > 0 or anchor["cold_start"])))
     field_proj_path = proj_path
     if field_pool_mode == "baseline" and arm_differs_from_baseline:
@@ -744,14 +783,15 @@ def backtest_week(site: str, season: int, week: int, games: pd.DataFrame,
             # The yardstick: LEGACY engine, anchor OFF -- exactly the
             # configuration the 72.8 / 94.7 baseline was measured on.
             run_projection_pipeline(site, season, week, slate_id, None,
-                                    engine="legacy")
+                                    engine="legacy", dst_model_mode="legacy")
             field_proj_path = OUTPUT_DIR / f"final_projections_{site}_{week}_fieldbase.csv"
             pd.read_csv(OUTPUT_DIR / f"final_projections_{site}_{week}.csv",
                         dtype={"player_id": str, "site_player_id": str}
                         ).to_csv(field_proj_path, index=False)
             # Rebuild the ARM's file, which the baseline run just clobbered.
             run_projection_pipeline(site, season, week, slate_id, anchor,
-                                    engine=engine, statline=statline)
+                                    engine=engine, statline=statline,
+                                    dst_model_mode=dst_model_mode)
         except RuntimeError as e:
             return {"site": site, "season": season, "week": week,
                     "status": "ERROR",
@@ -913,6 +953,12 @@ def main():
     parser.add_argument("--debug", action="store_true",
                         help="Dump one week's lineup player-by-player (proj vs actual) + field distribution")
     # Session 10.3a, decision #10 -- which projection engine builds the arm.
+    parser.add_argument("--dst-model", choices=["legacy", "distributional"],
+                        default="legacy",
+                        help="DST model (Session 10.4, decision #14). Default "
+                             "legacy keeps every pre-10.4 number reproducible. "
+                             "The FIELD is always built with the legacy DST, "
+                             "same pinning as the engine and anchor.")
     parser.add_argument("--engine", choices=["legacy", "statline"], default="legacy",
                         help="legacy = build_projections.py (Session 2.4, the "
                              "baseline). statline = build_projections_statline.py "
@@ -988,9 +1034,18 @@ def main():
             # this week's field cannot depend on whether an earlier week
             # errored, was skipped, or ran at all.
             week_rng = np.random.default_rng([args.seed, season, week])
+            # Keyword-passed on purpose. These were positional until Session
+            # 10.4 inserted `dst_model_mode` into the signature, which would
+            # have silently bound `statline` to it -- a wrong-arm run that
+            # reported clean numbers rather than failing. Keywords make the
+            # next insertion safe.
             res = backtest_week(args.site, season, week, games,
                                 args.num_lineups, args.field_size, week_rng,
-                                anchor, args.field_pool, args.engine, statline)
+                                anchor=anchor,
+                                field_pool_mode=args.field_pool,
+                                engine=args.engine,
+                                dst_model_mode=args.dst_model,
+                                statline=statline)
             results.append(res)
             if res["status"] == "OK":
                 print(f"  OK  {args.site} {season} wk{week:<2}  "

@@ -34,6 +34,14 @@ URL_TEMPLATES = {
     "schedules": f"{BASE_URL}/schedules/games.parquet",
     # weekly rosters (team, position, status per player per week)
     "weekly_rosters": f"{BASE_URL}/weekly_rosters/roster_weekly_{{season}}.parquet",
+    # TEAM-level weekly stats, one row per team per game (Session 10.4).
+    # Carries the defensive counting stats (def_sacks, def_interceptions,
+    # fumble_recovery_opp, def_safeties, def_tds), the blocked-kick columns
+    # (fg_blocked / pat_blocked / pt_blocked) and per-team offensive EPA --
+    # everything the DST model needs. ~126 KB per season, which is why
+    # Session 10.4 uses it instead of the play-by-play release: pbp is ~20 MB
+    # per season and the only thing it was wanted for was EPA, which is here.
+    "team_stats": f"{BASE_URL}/stats_team/stats_team_week_{{season}}.parquet",
 }
 
 
@@ -67,6 +75,20 @@ def import_schedules(years: list[int] | None = None) -> pd.DataFrame:
     if years:
         df = df[df["season"].isin(years)]
     return df
+
+
+def import_team_stats(years: list[int]) -> pd.DataFrame:
+    """Pull weekly TEAM stats for the given seasons (Session 10.4).
+
+    NOTE the team-code wrinkle this release has relative to `schedules`:
+    stats_team uses the CURRENT franchise abbreviation retroactively (LV, LAC,
+    LA) while games.parquet uses the ERA-CORRECT one (OAK, SD, STL). Anything
+    joining the two must normalise first -- see fit_dst_model.py's decision
+    #12, which exists because that mismatch silently dropped 13% of a fit
+    panel via an inner join.
+    """
+    frames = [_read_parquet(URL_TEMPLATES["team_stats"].format(season=y)) for y in years]
+    return pd.concat(frames, ignore_index=True)
 
 
 def import_weekly_rosters(years: list[int]) -> pd.DataFrame:

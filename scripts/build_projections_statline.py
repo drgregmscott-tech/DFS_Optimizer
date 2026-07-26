@@ -52,7 +52,17 @@ Numbered decisions:
      in sync and would confound 10.3's measurement with a DST change. The
      import is direct, so a 10.4 fix lands in both engines at once.
 
-  3. DST SIGMA IS A MEASURED PLACEHOLDER -- not NaN, not zero, and not a
+     SESSION 10.4 UPDATE: that prediction held. `build_dst_projections()`
+     grew a `model=` argument and both engines picked it up with no
+     duplicated logic -- this engine just forwards its own `--dst-model`
+     flag. Default stays `legacy` here too, so an existing stat-line run is
+     unchanged unless the flag is passed.
+
+  3. DST SIGMA IS A MEASURED PLACEHOLDER (SUPERSEDED WHEN
+     --dst-model distributional IS PASSED -- Session 10.4 now returns a real
+     simulated sigma conditioned on the opponent's implied total, and
+     `sigma_source` becomes `dst_simulated_session_10_4`. The constants below
+     remain in force for the legacy DST path, which is still the default.) -- not NaN, not zero, and not a
      guess. A defense has no stat-line model until Session 10.4, but a NaN
      here is not an option: Session 10.5's objective
      (`sum(mean) - lambda*sigma`) has to do something with a defense on every
@@ -181,6 +191,7 @@ def build_statline_projections(site: str, season: int, week: int, slate_id: str,
                                n_sims: int = statline_model.DEFAULT_SIMS,
                                seed: int = statline_model.DEFAULT_SEED,
                                reconcile_threshold: float = statline_model.RECONCILE_FAIL_THRESHOLD,
+                               dst_model_mode: str = "legacy",
                                ) -> pd.DataFrame:
     variance = statline_model.load_variance()
     matchup = load_matchup_factors(site, season, week)
@@ -313,19 +324,35 @@ def build_statline_projections(site: str, season: int, week: int, slate_id: str,
     skill_out = df[LEGACY_COLUMNS + ["sigma", "sigma_source", "statline_p10",
                                      "statline_p90"] + PROJ_STAT_COLUMNS]
 
-    # --- DST (decisions #2, #3) -------------------------------------------
-    dst_out = build_dst_projections(salaries, vegas, site)
-    dst_sigma = (DST_SIGMA_INTERCEPT[site]
-                 + DST_SIGMA_SLOPE[site] * dst_out["final_projection"]
-                 ).clip(*DST_SIGMA_BOUNDS)
-    dst_out = dst_out.assign(
-        sigma=dst_sigma.where(dst_out["final_projection"] > 0, 0.0).round(4),
-        sigma_source=np.where(dst_out["final_projection"] > 0,
-                              "dst_measured_unconditional_session_10_4_pending",
-                              "no_game"),
-        statline_p10=0.0,
-        statline_p90=0.0,
-    )
+    # --- DST (decisions #2, #3; Session 10.4) ------------------------------
+    dst_out = build_dst_projections(salaries, vegas, site, model=dst_model_mode,
+                                    season=season, week=week)
+    if "sigma" in dst_out.columns:
+        # Session 10.4's distributional path returns a real simulated sigma,
+        # conditioned on the opponent's implied total. This is the column
+        # Session 10.5's objective actually wants; the placeholder below
+        # existed only because this did not exist yet.
+        dst_out = dst_out.drop(columns=[c for c in ("dst_p10", "dst_p90")
+                                        if c in dst_out.columns])
+        dst_out = dst_out.assign(
+            sigma=dst_out["sigma"].fillna(0.0).round(4),
+            sigma_source=np.where(dst_out["final_projection"] > 0,
+                                  "dst_simulated_session_10_4", "no_game"),
+            statline_p10=0.0,
+            statline_p90=0.0,
+        )
+    else:
+        dst_sigma = (DST_SIGMA_INTERCEPT[site]
+                     + DST_SIGMA_SLOPE[site] * dst_out["final_projection"]
+                     ).clip(*DST_SIGMA_BOUNDS)
+        dst_out = dst_out.assign(
+            sigma=dst_sigma.where(dst_out["final_projection"] > 0, 0.0).round(4),
+            sigma_source=np.where(dst_out["final_projection"] > 0,
+                                  "dst_measured_unconditional_session_10_4_pending",
+                                  "no_game"),
+            statline_p10=0.0,
+            statline_p90=0.0,
+        )
     for c in PROJ_STAT_COLUMNS:
         dst_out[c] = 0.0
     dst_out = dst_out[skill_out.columns]
@@ -351,6 +378,13 @@ if __name__ == "__main__":
     parser.add_argument("--statline-seed", type=int, default=statline_model.DEFAULT_SEED,
                         help="Seed for this engine's OWN Generator. Never touches "
                              "the global numpy RNG (statline_model decision #2).")
+    # Session 10.4 -- forwarded straight to build_dst_projections(). Default
+    # legacy, so an existing stat-line run is unchanged.
+    parser.add_argument("--dst-model", choices=["legacy", "distributional"],
+                        default="legacy",
+                        help="DST projection model (Session 10.4). "
+                             "'distributional' also replaces the placeholder "
+                             "DST sigma with a real simulated one.")
     parser.add_argument("--reconcile-threshold", type=float,
                         default=statline_model.RECONCILE_FAIL_THRESHOLD,
                         help="Max proportional share-reconciliation rescale before "
@@ -360,7 +394,8 @@ if __name__ == "__main__":
     result = build_statline_projections(
         args.site, args.season, args.week, args.slate_id,
         n_sims=args.statline_sims, seed=args.statline_seed,
-        reconcile_threshold=args.reconcile_threshold)
+        reconcile_threshold=args.reconcile_threshold,
+        dst_model_mode=args.dst_model)
 
     def _clean_site_id(value):
         if pd.isna(value):

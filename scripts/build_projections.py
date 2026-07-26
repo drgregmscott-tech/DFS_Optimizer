@@ -271,6 +271,7 @@ import argparse
 import sys
 from pathlib import Path
 
+import numpy as np  # noqa: E402 -- Session 10.4, the distributional DST path
 import pandas as pd
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
@@ -484,6 +485,105 @@ def build_vegas_factors(vegas: pd.DataFrame, opponent_map: dict) -> pd.DataFrame
 
 
 # ---------------------------------------------------------------------------
+# ---------------------------------------------------------------------------
+# Session 10.4 -- the distributional DST path (decision #9). Kept in this
+# file rather than in build_projections_statline.py so BOTH engines get it
+# from one place: the stat-line engine imports build_dst_projections()
+# directly (its decision #2), so a change here lands in both at once.
+# ---------------------------------------------------------------------------
+
+def _build_dst_distributional(salaries: pd.DataFrame, vegas: pd.DataFrame,
+                              site: str, season: int, week: int,
+                              sims: int | None, seed: int | None) -> pd.DataFrame:
+    """Simulate every defense in the pool and return the same schema the
+    legacy path returns, plus `sigma` / `dst_p10` / `dst_p90`.
+
+    The legacy columns are filled honestly rather than left blank:
+      season_avg   -- the simulated mean before recalibration, i.e. the pure
+                      model projection. Not a season average; documented here
+                      rather than left to be guessed at, the same treatment
+                      build_projections_statline.py's decision #1 gives it.
+      recent_form  -- the same value. There is no second recency scheme in
+                      this model to distinguish it from, and inventing a fake
+                      split would be worse than repeating the real number.
+      matchup_factor -- Session 2.4's flat 1.0 is finally RETIRED here: it
+                      carries the ratio of this defense's simulated mean to
+                      the league-average simulated mean, which is a real
+                      defensive matchup factor and is exactly the gap the
+                      ROADMAP has flagged since Session 2.4.
+      vegas_factor -- unchanged in meaning from decision #5b, so anything
+                      reading it still gets what it always got.
+    """
+    import dst_model
+
+    defense_values = SITE_CONFIGS[site]["defense_position_values"]
+    site_id_col = SITE_CONFIGS[site]["site_id_col"]
+    dst = salaries[salaries["position_upper"].isin(defense_values)].copy()
+    dst = dst[dst["player_id"].notna()]
+    dst = dst.rename(columns={
+        "normalized_team": "team", "position_upper": "position",
+        "name": "player_name", site_id_col: "site_player_id",
+    })[["player_id", "player_name", "position", "team", "salary", "site_player_id"]]
+
+    model_obj = dst_model.load_model()
+    games = None
+    games_path = DATA_DIR / "games.parquet"
+    if games_path.exists():
+        games = pd.read_parquet(games_path)
+
+    teams = sorted(dst["team"].dropna().unique())
+    feat = dst_model.build_features(season, week, teams, vegas, model_obj, games=games)
+    sim = dst_model.simulate(
+        feat, site, model_obj,
+        n_sims=sims or dst_model.DEFAULT_SIMS,
+        seed=seed if seed is not None else dst_model.DEFAULT_SEED)
+
+    sim = sim.merge(feat[["team", "has_game", "opponent", "own_implied",
+                          "over_under", "opp_implied"]], on="team", how="left")
+    dst = dst.merge(sim, on="team", how="left")
+
+    n_bye = int((~dst["has_game"].fillna(False)).sum())
+    played = dst["has_game"].fillna(False)
+
+    # Decision #5b's vegas_factor, unchanged in meaning.
+    league_avg = float(vegas["implied_total"].mean())
+    dst["vegas_factor"] = np.where(
+        played & dst["opp_implied"].notna() & (dst["opp_implied"] > 0),
+        league_avg / dst["opp_implied"].replace(0, np.nan), 1.0)
+
+    dst["final_projection"] = dst["final_projection"].fillna(0.0).clip(lower=0.0)
+    dst.loc[~played, "final_projection"] = 0.0
+    dst["sigma"] = dst["sigma"].fillna(0.0)
+    dst.loc[~played, "sigma"] = 0.0
+    dst["season_avg"] = dst["final_projection"]
+    dst["recent_form"] = dst["final_projection"]
+
+    # The Session 2.4 DST matchup_factor gap, closed.
+    league_proj = float(dst.loc[played, "final_projection"].mean()) if played.any() else 0.0
+    dst["matchup_factor"] = np.where(
+        played & (league_proj > 0), dst["final_projection"] / max(league_proj, 1e-9), 1.0)
+
+    dst["opponent"] = dst["opponent"].where(played).fillna("BYE_OR_UNKNOWN")
+    dst["implied_total"] = dst["own_implied"].where(played).fillna(0.0)
+    dst["over_under"] = dst["over_under"].where(played).fillna(0.0)
+    dst["dst_p10"] = dst["p10"].fillna(0.0).where(played, 0.0)
+    dst["dst_p90"] = dst["p90"].fillna(0.0).where(played, 0.0)
+
+    print(f"{n_bye} defense(s) had no game this week (bye) -- final_projection "
+          f"forced to 0.0 (decision #5, same philosophy as decision #4b).")
+    print(f"DST model: distributional (Session 10.4). "
+          f"mean projection {dst.loc[played, 'final_projection'].mean():.2f}, "
+          f"sigma {dst.loc[played, 'sigma'].mean():.2f} "
+          f"(range {dst.loc[played, 'sigma'].min():.2f}-{dst.loc[played, 'sigma'].max():.2f}).")
+
+    return dst[[
+        "player_id", "player_name", "position", "team", "salary", "site_player_id",
+        "season_avg", "recent_form", "matchup_factor", "vegas_factor",
+        "final_projection", "opponent", "implied_total", "over_under",
+        "sigma", "dst_p10", "dst_p90",
+    ]]
+
+
 # Step 2b: DST/DEF projections (Session 3.1, decision #5 -- see module
 # docstring). Deliberately separate from the skill-position path above: no
 # baseline_recent_form/matchup_factor inputs exist for defenses at all, and
@@ -491,7 +591,43 @@ def build_vegas_factors(vegas: pd.DataFrame, opponent_map: dict) -> pd.DataFrame
 # which is the opposite convention from build_vegas_factors() above.
 # ---------------------------------------------------------------------------
 
-def build_dst_projections(salaries: pd.DataFrame, vegas: pd.DataFrame, site: str) -> pd.DataFrame:
+def build_dst_projections(salaries: pd.DataFrame, vegas: pd.DataFrame, site: str,
+                          *, model: str = "legacy", season: int | None = None,
+                          week: int | None = None,
+                          sims: int | None = None,
+                          seed: int | None = None) -> pd.DataFrame:
+    """Session 10.4 -- decision #9.
+
+    `model="legacy"` is the Session 3.1 model (decision #5): one season
+    average scaled by an inverted Vegas ratio. It is the DEFAULT and its
+    output is byte-for-byte what it was before Session 10.4, because this
+    script is the frozen measurement baseline every Phase 10 comparison keys
+    to (72.8 / 94.7 from Session 10.1). Same discipline Session 10.2 applied
+    to the salary anchor.
+
+    `model="distributional"` is Session 10.4's rebuild: a Monte-Carlo
+    simulation over per-component distributions with the points-allowed
+    brackets integrated rather than looked up. It also returns a real
+    conditional `sigma`, which the legacy path cannot produce at all.
+
+    Measured out-of-sample (fit 2014-17, measured 2018-21, 1,922
+    defense-weeks against real graded DK actuals):
+        MAE      5.116 -> 4.620
+        RMSE     6.603 -> 5.805
+        Spearman 0.198 -> 0.308
+    """
+    if model not in ("legacy", "distributional"):
+        raise SystemExit(
+            f"build_dst_projections: unknown model {model!r}. "
+            f"Expected 'legacy' or 'distributional'.")
+    if model == "distributional":
+        if season is None or week is None:
+            raise SystemExit(
+                "build_dst_projections(model='distributional') needs season "
+                "and week -- it reads prior-week team stats. The legacy model "
+                "needs neither, which is why they are optional.")
+        return _build_dst_distributional(salaries, vegas, site, season, week,
+                                         sims, seed)
     defense_values = SITE_CONFIGS[site]["defense_position_values"]
     site_id_col = SITE_CONFIGS[site]["site_id_col"]
     dst = salaries[salaries["position_upper"].isin(defense_values)].copy()
@@ -658,6 +794,9 @@ def build_final_projections(site: str, season: int, week: int, slate_id: str,
                             anchor_weight: float = SALARY_ANCHOR_WEIGHT_DEFAULT,
                             anchor_cold_start: bool = False,
                             anchor_k: float = salary_anchor.DEFAULT_COLD_START_K,
+                            dst_model_mode: str = "legacy",
+                            dst_sims: int | None = None,
+                            dst_seed: int | None = None,
                             ) -> pd.DataFrame:
     baseline = load_baseline_recent_form(site, season, week)
     matchup = load_matchup_factors(site, season, week)
@@ -789,7 +928,18 @@ def build_final_projections(site: str, season: int, week: int, slate_id: str,
     # optimizer to fill a legal 9-slot roster for either site. Uses the raw
     # `vegas` frame directly (not `vegas_factors`, which is already
     # restricted/renamed for the skill-position convention above).
-    dst_out = build_dst_projections(salaries, vegas, site)
+    dst_out = build_dst_projections(salaries, vegas, site,
+                                    model=dst_model_mode, season=season,
+                                    week=week, sims=dst_sims, seed=dst_seed)
+    # Session 10.4: the distributional path returns three extra columns that
+    # the legacy schema does not carry. They are dropped here and re-attached
+    # by build_projections_statline.py, which DOES have a sigma column --
+    # this file's schema is frozen (decision #1 of the stat-line engine) and
+    # widening it would break the Session 2.4 contract.
+    _dst_extra = None
+    if "sigma" in dst_out.columns:
+        _dst_extra = dst_out[["player_id", "sigma", "dst_p10", "dst_p90"]].copy()
+        dst_out = dst_out.drop(columns=["sigma", "dst_p10", "dst_p90"])
 
     # Decision #8b: games_played is needed by the cold-start schedule but is
     # NOT an output column of this file (and isn't being made one -- schema
@@ -849,6 +999,21 @@ if __name__ == "__main__":
                         default=salary_anchor.DEFAULT_COLD_START_K,
                         help="Half-weight point of the cold-start schedule, in "
                              "games played. ARBITRARY default, not fit.")
+    # Session 10.4 (decision #9) -- defaults to the legacy model, so this
+    # script's output with no new flags is byte-for-byte pre-10.4 and the
+    # Session 10.1 baseline is untouched.
+    parser.add_argument("--dst-model", choices=["legacy", "distributional"],
+                        default="legacy",
+                        help="DST projection model. 'legacy' (default) is the "
+                             "Session 3.1 AvgPointsPerGame x vegas-ratio model "
+                             "and keeps this script's output identical to "
+                             "pre-10.4. 'distributional' is Session 10.4's "
+                             "simulated model; needs data/dst_model.json and "
+                             "data/team_stats_{season}.parquet.")
+    parser.add_argument("--dst-sims", type=int, default=None,
+                        help="Monte-Carlo draws per defense (default 20000).")
+    parser.add_argument("--dst-seed", type=int, default=None,
+                        help="Seed for the DST simulation.")
     args = parser.parse_args()
 
     result = build_final_projections(
@@ -856,6 +1021,9 @@ if __name__ == "__main__":
         anchor_weight=args.salary_anchor_weight,
         anchor_cold_start=args.salary_anchor_cold_start,
         anchor_k=args.salary_anchor_k,
+        dst_model_mode=args.dst_model,
+        dst_sims=args.dst_sims,
+        dst_seed=args.dst_seed,
     )
 
     # Session 7.3 fix -- defensively clean site_player_id before writing:
