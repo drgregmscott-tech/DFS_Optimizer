@@ -1,0 +1,390 @@
+"""
+build_projections_statline.py
+==============================
+
+Session 10.3a -- the PARALLEL projection engine.
+
+Same job as build_projections.py (Session 2.4): produce
+`output/final_projections_{site}_{week}.csv` for a site/season/week. Different
+internals: instead of blending points averages, it projects a STAT LINE, then
+converts it to that site's points via `scoring_rules.py`, Monte-Carlo'd so the
+mean is right despite DK's step-function bonuses and so a per-player sigma
+falls out of the same pass.
+
+It EXISTS ALONGSIDE build_projections.py, which is untouched. Per the ROADMAP
+card: "Built as a NEW parallel component that co-exists with the current
+build_projections.py until the harness says it wins."
+
+Numbered decisions:
+
+  1. SAME OUTPUT FILENAME AND A SUPERSET OF THE SAME SCHEMA. It writes the
+     identical path build_projections.py writes, with every legacy column
+     present and meaning the same thing, plus new columns appended. That is
+     what lets `optimizer.py`, `ownership_heuristic.py`, the frontend and the
+     harness all consume it with ZERO changes -- the engines are swapped by
+     choosing which script to run, not by teaching everything downstream
+     about a second format. The legacy engine's own schema is not touched,
+     so Session 2.4's contract is intact (this project's schema-stability
+     principle).
+
+     Legacy columns kept, with honest mappings:
+       season_avg     -- the stat-line mean with the market factor removed
+                         (i.e. the pure usage projection). Not a season
+                         average; it is the closest honest analogue and the
+                         column is documented here rather than left to be
+                         guessed at.
+       recent_form    -- same value. There is no second recency scheme in
+                         this engine to distinguish it from, and fabricating
+                         a fake split would be worse than repeating the real
+                         number. Same reasoning build_projections.py's
+                         decision #5a already applied to defenses.
+       matchup_factor,
+       vegas_factor   -- passed through unchanged from Sessions 2.2/2.3, so
+                         they still mean what they always meant. Their
+                         product is what decision #10 of statline_model.py
+                         applies to the efficiency rates.
+     New columns appended: sigma, statline_p10, statline_p90, and proj_*
+     mean stat-line columns (audit trail -- the whole point of a stat-line
+     model is that you can see WHY a projection is what it is).
+
+  2. DST IS REUSED VERBATIM FROM build_projections.py. Session 10.4 owns the
+     DST rebuild; re-implementing it here would create a second copy to keep
+     in sync and would confound 10.3's measurement with a DST change. The
+     import is direct, so a 10.4 fix lands in both engines at once.
+
+  3. DST SIGMA IS A MEASURED PLACEHOLDER -- not NaN, not zero, and not a
+     guess. A defense has no stat-line model until Session 10.4, but a NaN
+     here is not an option: Session 10.5's objective
+     (`sum(mean) - lambda*sigma`) has to do something with a defense on every
+     single lineup, and NaN would either crash it or silently become zero --
+     which would assert that a DST has no variance, the least true statement
+     available about a DST.
+
+     So it is measured directly, this session, from real data: team-week
+     defensive scoring reconstructed over 3,952 real team-weeks (2014-2021)
+     by aggregating def_sacks / def_interceptions / fumble_recovery_opp /
+     def_safeties / def_tds / special_teams_tds from nflverse weekly stats
+     and applying each site's points-allowed brackets to the real final
+     scores from nflverse games.csv. Result: mean 6.36, SD 5.78.
+
+     The measurement also CORRECTED the first implementation of this. The
+     obvious move -- scale sigma proportionally to the projection -- is
+     wrong. Sorting teams into strength quartiles, mean DST scoring rises
+     5.24 -> 7.56 (a factor of 1.44) while its SD rises only 5.30 -> 6.21 (a
+     factor of 1.17). A good defense is not proportionally more volatile. The
+     fitted relationship is therefore affine and mostly flat:
+         sigma ~= 3.25 + 0.39 * projection
+     which is what ships. Still labelled a placeholder in `sigma_source`,
+     because it is an UNCONDITIONAL spread -- Session 10.4's job is to
+     condition it on the opponent's implied total, which is the whole reason
+     that card exists.
+
+     Known approximations, stated rather than buried: blocked kicks and
+     2-point return conversions are not in the reconstruction (nflverse
+     weekly stats carry no team-level column for them), and return TDs are
+     attributed via players' `special_teams_tds`. Both are small and both
+     bias the measured SD slightly LOW, i.e. conservatively.
+
+  4. NO SALARY ANCHOR HERE. Session 10.2 measured the anchor as neutral at
+     the points level and explained why (a monotone-in-salary term is nearly
+     redundant with the salary cap the ILP already enforces). Its one real
+     use, cold start, belongs on the stat-line INPUTS -- Session 10.3b. So
+     this engine takes no anchor flags at all rather than offering a knob
+     that is known not to work here.
+
+  5. WEEK 1 IS STILL NOT BUILDABLE, and says so. statline_model.py's
+     decision #5 keeps projections_baseline.py's lookahead guard, so week 1
+     has no prior usage and every projection is 0. Reported explicitly
+     instead of emitting a file full of zeros that looks like a bug.
+
+  6. A PLAYER WITH NO USAGE HISTORY GETS 0.0, not a drop -- identical to
+     build_projections.py's decision #3, so the two engines' pools differ
+     only where the projection genuinely differs, never because one engine
+     silently kept or dropped a player the other did not.
+
+  8. THE RECONCILIATION AUDIT TRAIL is written to
+     `output/statline_reconcile_{site}_{week}.csv` every run: one row per
+     team/component pair with the share used, which basis produced it
+     (exclusive / recent / full_season), the raw pool sum, the target and the
+     applied scale. Reconciliation adjusts real volume on roughly 80 pairs a
+     week and none of it was previously visible after the fact.
+
+  7. THE CONFIRMED-NO-GAME ZERO-OUT IS PRESERVED EXACTLY (build_projections'
+     decisions #4a/#4b): team drift is auto-corrected from real data for an
+     already-played week, and a player with no real row that week is forced
+     to 0.0 rather than neutrally-factored. Reusing the legacy loaders means
+     this behaviour is shared code, not a parallel reimplementation that
+     could drift.
+
+Usage:
+  python3 scripts/build_projections_statline.py --site dk --season 2021 \
+      --week 10 --slate-id rotoguru_2021_wk10
+"""
+
+import argparse
+import sys
+from pathlib import Path
+
+import numpy as np
+import pandas as pd
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+
+import scoring_rules  # noqa: E402
+import statline_model  # noqa: E402
+from ingest_salaries import SITE_CONFIGS  # noqa: E402
+# Decisions #2 and #7: reuse, never re-implement.
+from build_projections import (  # noqa: E402
+    NO_GAME_SENTINEL,
+    POSITIONS,
+    add_ownership_columns,
+    build_dst_projections,
+    build_opponent_map,
+    build_vegas_factors,
+    load_matchup_factors,
+    load_real_team_for_week,
+    load_salaries,
+    load_schedule,
+    load_vegas_implied_totals,
+)
+
+REPO_ROOT = Path(__file__).resolve().parent.parent
+OUTPUT_DIR = REPO_ROOT / "output"
+
+# Decision #3 -- MEASURED, not assumed: 3,952 real team-weeks, 2014-2021.
+# sigma ~= intercept + slope * projection. The slope is well below
+# proportional (0.39, not 1.0) because a better defense is barely more
+# volatile than a worse one -- see decision #3 for the quartile evidence.
+# DK and FD share these values because their defensive scoring components and
+# points-allowed brackets are the same; kept per-site so Session 10.4 can
+# diverge them without touching any call site.
+DST_SIGMA_INTERCEPT = {"dk": 3.25, "fd": 3.25}
+DST_SIGMA_SLOPE = {"dk": 0.39, "fd": 0.39}
+# Floor/ceiling: the affine fit is only supported over the observed
+# projection range, and no real DST has near-zero week-to-week spread.
+DST_SIGMA_BOUNDS = (3.0, 9.0)
+
+PROJ_STAT_COLUMNS = [
+    "proj_pass_att", "proj_pass_yd", "proj_pass_td", "proj_rush_att",
+    "proj_rush_yd", "proj_rush_td", "proj_targets", "proj_rec",
+    "proj_rec_yd", "proj_rec_td",
+]
+
+LEGACY_COLUMNS = [
+    "player_id", "player_name", "position", "team", "salary", "site_player_id",
+    "season_avg", "recent_form", "matchup_factor", "vegas_factor",
+    "final_projection", "opponent", "implied_total", "over_under",
+]
+
+
+def build_statline_projections(site: str, season: int, week: int, slate_id: str,
+                               n_sims: int = statline_model.DEFAULT_SIMS,
+                               seed: int = statline_model.DEFAULT_SEED,
+                               reconcile_threshold: float = statline_model.RECONCILE_FAIL_THRESHOLD,
+                               ) -> pd.DataFrame:
+    variance = statline_model.load_variance()
+    matchup = load_matchup_factors(site, season, week)
+    vegas = load_vegas_implied_totals(week)
+    salaries = load_salaries(site, slate_id)
+    schedule = load_schedule(season)
+
+    opponent_map = build_opponent_map(schedule, week)
+    vegas_factors = build_vegas_factors(vegas, opponent_map)
+
+    site_id_col = SITE_CONFIGS[site]["site_id_col"]
+    players = salaries[salaries["position_upper"].isin(POSITIONS)].copy()
+    players = players[players["player_id"].notna()]
+    players = players.rename(columns={"normalized_team": "team",
+                                      "position_upper": "position"})
+    players = players[["player_id", "name", "position", "team", "salary", site_id_col]] \
+        .rename(columns={"name": "player_name", site_id_col: "site_player_id"})
+
+    # Decision #7: identical team-drift handling to the legacy engine.
+    week_was_played, real_team_this_week = load_real_team_for_week(season, week)
+    players["no_real_game_this_week"] = False
+    if week_was_played:
+        corrected = players["player_id"].map(real_team_this_week)
+        played = corrected.notna()
+        players.loc[played, "team"] = corrected[played]
+        players["no_real_game_this_week"] = ~played
+        print(f"{int((~played).sum())} player(s) had no real game in week {week} "
+              f"-- final_projection forced to 0.0 (build_projections decision #4b).")
+
+    # --- usage + reconciliation -------------------------------------------
+    usage = statline_model.build_usage(season, week, variance)
+    if usage.empty:
+        print(f"WARNING: no usage history at all before week {week} "
+              f"(decision #5 -- week 1 is not buildable by this engine).",
+              file=sys.stderr)
+
+    df = players.merge(usage.drop(columns=["position", "hist_team"], errors="ignore"),
+                       on="player_id", how="left")
+    n_no_history = int(df["games_played"].isna().sum()) if "games_played" in df else len(df)
+    if "games_played" in df:
+        df["games_played"] = df["games_played"].fillna(0).astype(int)
+
+    df["opponent"] = df["team"].map(opponent_map)
+    df.loc[df["no_real_game_this_week"], "opponent"] = None
+
+    matchup_lookup = matchup.set_index(["team", "position"])["matchup_factor"]
+    df["matchup_factor"] = df.apply(
+        lambda r: matchup_lookup.get((r["opponent"], r["position"])), axis=1)
+    df["matchup_factor"] = df["matchup_factor"].fillna(1.0)
+
+    merge_cols = ["team", "vegas_factor", "implied_total"]
+    if "over_under" in vegas_factors.columns:
+        merge_cols.append("over_under")
+    df = df.merge(vegas_factors[merge_cols], on="team", how="left")
+    for c in ("vegas_factor", "implied_total", "over_under"):
+        if c in df.columns:
+            df.loc[df["no_real_game_this_week"], c] = None
+    df["vegas_factor"] = df["vegas_factor"].fillna(1.0)
+
+    # Decision #10 of statline_model: the market factor scales efficiency.
+    df["market_factor"] = df["matchup_factor"] * df["vegas_factor"]
+
+    # Share reconciliation (statline_model decision #7) -- mandatory per the
+    # ROADMAP, because an incoherent QB/receiver pair corrupts stacking.
+    team_vol = statline_model.team_volume_history(season, week)
+    recon_pool = df[~df["no_real_game_this_week"]].copy()
+    if not recon_pool.empty and not team_vol.empty:
+        recon_pool, recon_report = statline_model.reconcile_team_shares(
+            recon_pool, team_vol, reconcile_threshold)
+        for col in ("recv_mu", "rush_mu", "pass_mu"):
+            if col in recon_pool.columns:
+                df.loc[recon_pool.index, col] = recon_pool[col]
+        if len(recon_report):
+            worst = recon_report.reindex(
+                recon_report["scale"].sub(1.0).abs().sort_values(ascending=False).index).head(3)
+            print(f"Share reconciliation: {len(recon_report)} team/component pair(s) "
+                  f"rescaled; largest "
+                  f"{', '.join(f'{r.team}/{r.component} {r.scale:.2f}x' for r in worst.itertuples())}.")
+            # Decision #8: reconciliation moves real volume on ~80 team/component
+            # pairs a week, and until now none of it was inspectable after the
+            # fact. Written every run so a surprising projection can be traced
+            # to the rescale that produced it.
+            OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
+            recon_report.sort_values(
+                "scale", key=lambda c: (c - 1.0).abs(), ascending=False
+            ).to_csv(OUTPUT_DIR / f"statline_reconcile_{site}_{week}.csv", index=False)
+
+    # --- simulate ----------------------------------------------------------
+    # Belt-and-suspenders with statline_model._num(): a player with no usage
+    # history merges in as NaN across every usage column, and NaN is truthy in
+    # Python so the idiomatic `x or 0.0` does not catch it. Guarded in the draw
+    # path AND here, the same two-place pattern Session 10.1's bug #2 ($0
+    # salary -> NaN value) settled on.
+    usage_cols = [c for c in df.columns
+                  if c.endswith(("_mu", "_yd_rate", "_td_rate", "_hist_vol"))
+                  or c in ("catch_rate", "int_rate", "participation", "market_factor")]
+    for c in usage_cols:
+        df[c] = pd.to_numeric(df[c], errors="coerce").fillna(0.0)
+
+    sim_input = df[~df["no_real_game_this_week"]].copy()
+    sim = statline_model.simulate(sim_input, site, variance, n_sims=n_sims, seed=seed)
+
+    df = df.merge(sim, on="player_id", how="left")
+    # Decision #6: no history -> 0.0, never dropped.
+    for c in ["statline_mean", "statline_sigma", "statline_p10", "statline_p90"] + PROJ_STAT_COLUMNS:
+        if c not in df.columns:
+            df[c] = 0.0
+        df[c] = df[c].fillna(0.0)
+
+    df["final_projection"] = df["statline_mean"].clip(lower=0.0)
+    df["sigma"] = df["statline_sigma"].clip(lower=0.0)
+    df["sigma_source"] = "statline_mc"
+
+    # Decision #1: honest legacy-column mappings.
+    safe_factor = df["market_factor"].replace(0, np.nan)
+    df["season_avg"] = (df["final_projection"] / safe_factor).fillna(0.0).round(4)
+    df["recent_form"] = df["season_avg"]
+
+    # Decision #7: confirmed-no-game rows are zeroed outright.
+    no_game = df["no_real_game_this_week"]
+    df.loc[no_game, ["final_projection", "sigma", "statline_p10", "statline_p90"]] = 0.0
+    df.loc[no_game, "sigma_source"] = "no_game"
+
+    if "over_under" not in df.columns:
+        df["over_under"] = None
+    df["opponent"] = df["opponent"].fillna(NO_GAME_SENTINEL)
+    df["implied_total"] = df["implied_total"].fillna(0.0)
+    df["over_under"] = df["over_under"].fillna(0.0)
+
+    skill_out = df[LEGACY_COLUMNS + ["sigma", "sigma_source", "statline_p10",
+                                     "statline_p90"] + PROJ_STAT_COLUMNS]
+
+    # --- DST (decisions #2, #3) -------------------------------------------
+    dst_out = build_dst_projections(salaries, vegas, site)
+    dst_sigma = (DST_SIGMA_INTERCEPT[site]
+                 + DST_SIGMA_SLOPE[site] * dst_out["final_projection"]
+                 ).clip(*DST_SIGMA_BOUNDS)
+    dst_out = dst_out.assign(
+        sigma=dst_sigma.where(dst_out["final_projection"] > 0, 0.0).round(4),
+        sigma_source=np.where(dst_out["final_projection"] > 0,
+                              "dst_measured_unconditional_session_10_4_pending",
+                              "no_game"),
+        statline_p10=0.0,
+        statline_p90=0.0,
+    )
+    for c in PROJ_STAT_COLUMNS:
+        dst_out[c] = 0.0
+    dst_out = dst_out[skill_out.columns]
+
+    out = pd.concat([skill_out, dst_out], ignore_index=True)
+    out = add_ownership_columns(out, site)
+    out = out.sort_values("final_projection", ascending=False).reset_index(drop=True)
+
+    print(f"{n_no_history} player(s) had no usage history before week {week} "
+          f"(0.0 projection, decision #6).")
+    return out
+
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(
+        description="Session 10.3a stat-line projection engine (parallel to build_projections.py).")
+    parser.add_argument("--site", choices=["dk", "fd"], required=True)
+    parser.add_argument("--season", type=int, required=True)
+    parser.add_argument("--week", type=int, required=True)
+    parser.add_argument("--slate-id", required=True)
+    parser.add_argument("--statline-sims", type=int, default=statline_model.DEFAULT_SIMS,
+                        help="Monte-Carlo draws per player (decision #1).")
+    parser.add_argument("--statline-seed", type=int, default=statline_model.DEFAULT_SEED,
+                        help="Seed for this engine's OWN Generator. Never touches "
+                             "the global numpy RNG (statline_model decision #2).")
+    parser.add_argument("--reconcile-threshold", type=float,
+                        default=statline_model.RECONCILE_FAIL_THRESHOLD,
+                        help="Max proportional share-reconciliation rescale before "
+                             "hard error (statline_model decision #7).")
+    args = parser.parse_args()
+
+    result = build_statline_projections(
+        args.site, args.season, args.week, args.slate_id,
+        n_sims=args.statline_sims, seed=args.statline_seed,
+        reconcile_threshold=args.reconcile_threshold)
+
+    def _clean_site_id(value):
+        if pd.isna(value):
+            return None
+        s = str(value).strip()
+        if s.endswith(".0") and s[:-2].isdigit():
+            s = s[:-2]
+        return s
+    result["site_player_id"] = result["site_player_id"].map(_clean_site_id)
+
+    OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
+    out_path = OUTPUT_DIR / f"final_projections_{args.site}_{args.week}.csv"
+    result.to_csv(out_path, index=False)
+
+    n_null = result[LEGACY_COLUMNS].isna().any(axis=1).sum()
+    n_neg = int((result["final_projection"] < 0).sum())
+    n_nonzero = int((result["final_projection"] > 0).sum())
+    n_sigma_zero = int(((result["final_projection"] > 0) & (result["sigma"] <= 0)).sum())
+    print(f"Wrote {len(result)} players to {out_path}")
+    print(f"  Nulls in any legacy column: {n_null} (should be 0)")
+    print(f"  Negative final_projection: {n_neg} (should be 0)")
+    print(f"  Players with a positive projection: {n_nonzero}")
+    print(f"  Positive projection but zero sigma: {n_sigma_zero} (should be 0 -- "
+          f"a real projection with no variance would break Session 10.5's objective)")
+    if n_nonzero == 0:
+        print("  NOTE: every projection is 0.0 -- expected for week 1 "
+              "(decision #5), a real problem for any other week.")

@@ -112,6 +112,58 @@ Numbered decisions:
      jobs: prove these mechanics, and produce the baseline distribution that
      every later Phase 10 change is measured against. The output says so.
 
+  10. SESSION 10.3a -- ENGINE SELECTION (`--engine legacy|statline`). The
+     stat-line rewrite is a PARALLEL engine (a separate script writing the
+     same output file), so an arm is selected by choosing which builder to
+     invoke, not by adding a mode flag to build_projections.py. Same
+     decision #4 reasoning: the harness runs the real engine, never a copy.
+
+  11. SESSION 10.3a -- THE FIELD IS ALWAYS BUILT BY THE LEGACY ENGINE WITH
+     THE ANCHOR OFF. Decision #9 pinned the field against the anchor; the
+     same hazard applies, harder, to an engine swap. The stat-line engine
+     produces a different pool (different projections mean different players
+     clear the `final_projection > 0` filter), which would enlarge or shrink
+     the synthetic field and move our percentile for a reason that has
+     nothing to do with the projection. Session 10.2's bug #1 measured that
+     artifact at t = -4.3, stronger than any real effect in that comparison.
+     So `--field-pool baseline` now means "legacy engine, anchor off" for
+     every arm, which is the single fixed yardstick the 72.8 / 94.7 baseline
+     was itself measured on.
+
+  12. SESSION 10.3a -- MULTI-SEASON RUNS (`--season 2015 2016 ...`). Session
+     10.2 concluded "inside the noise" partly because 17 weeks against a
+     15.6-point week-to-week SD gives a standard error near 3.8 percentile
+     points -- it could not have detected a real 2-point effect. Pooling
+     seasons is the cheapest available power. Per-season figures are still
+     reported separately, because pooling seasons that a fit was derived
+     from with seasons it wasn't is exactly how a measurement gets flattered.
+
+  13. SESSION 10.3a -- EACH WEEK GETS ITS OWN GENERATOR, DERIVED FROM
+     (seed, season, week). Previously one Generator was threaded through the
+     whole run and drawn from sequentially, so a week's field depended on
+     every week before it. That is fine until a week does not consume its
+     draws -- and an ERRORED or SKIPPED week returns before touching the RNG.
+     Measured on the first Session 10.3a comparison: the stat-line arm errored
+     on 2021 wk13, so from wk14 onward its generator was one week behind the
+     legacy arm's and every later week was scored against a DIFFERENT field.
+     Field medians were identical wk2-wk12 and then diverged (wk14 108.82 vs
+     107.92, wk17 100.66 vs 99.63, wk18 97.58 vs 99.12), silently un-pinning
+     the yardstick decisions #9 and #11 exist to pin. This is Session 10.2's
+     bug #3 recurring through a different mechanism, which is the argument
+     for removing the coupling rather than patching the symptom again.
+
+     Deriving per week makes a week's result independent of which other weeks
+     ran, errored, or were skipped, and of the order they ran in -- so an arm
+     that fails on some weeks stays comparable on the rest, and a `--week 5`
+     spot-check reproduces its number from a full-season run exactly.
+
+     CONSEQUENCE, stated loudly: this CHANGES the field draws, so the recorded
+     Session 10.1 baseline of 72.8 / 94.7 does not reproduce byte-for-byte
+     under this scheme and must be re-measured once. Those numbers remain the
+     valid historical record for Sessions 10.1 and 10.2, which were internally
+     consistent under the old scheme; the re-measured pair becomes the anchor
+     from Session 10.3a on.
+
   8. SESSION 10.2 -- SALARY-ANCHOR MEASUREMENT ARM. `--salary-anchor-weight`
      (and the cold-start variants) are passed straight through to
      build_projections.py, which is where the anchor is actually applied.
@@ -453,7 +505,9 @@ def sunday_main_slate_teams(games: pd.DataFrame, season: int, week: int) -> set:
 # ---------------------------------------------------------------------------
 
 def run_projection_pipeline(site: str, season: int, week: int, slate_id: str,
-                            anchor: dict | None = None) -> Path:
+                            anchor: dict | None = None,
+                            engine: str = "legacy",
+                            statline: dict | None = None) -> Path:
     """Drive the REAL component scripts + build_projections.py via their
     file interfaces. Returns the path to final_projections_{site}_{week}.csv.
     Raises RuntimeError with the failing step's stderr on any failure.
@@ -469,24 +523,46 @@ def run_projection_pipeline(site: str, season: int, week: int, slate_id: str,
         if p.returncode != 0:
             raise RuntimeError(f"{script} failed:\n{(p.stderr or p.stdout).strip()[-1500:]}")
 
+    # Both component scripts run for either engine: the stat-line engine
+    # needs matchup_factors, and the field pool (decision #11) is always
+    # rebuilt with the LEGACY engine, which needs baseline_recent_form. So
+    # both files must exist regardless of which arm is being measured.
     run("projections_baseline.py", [])
     run("projections_matchup.py", [])
-    # build_projections also needs --slate-id; vegas file already written.
-    cmd = [sys.executable, str(SCRIPTS_DIR / "build_projections.py"),
+
+    # Decision #10: select the engine by choosing the builder script.
+    builder = ("build_projections_statline.py" if engine == "statline"
+               else "build_projections.py")
+    cmd = [sys.executable, str(SCRIPTS_DIR / builder),
            "--site", site, "--season", str(season), "--week", str(week),
            "--slate-id", slate_id]
-    if anchor and (anchor["weight"] > 0 or anchor["cold_start"]):
+    if engine == "statline":
+        if statline:
+            cmd += ["--statline-sims", str(statline["sims"]),
+                    "--statline-seed", str(statline["seed"])]
+        # Decision #4 of build_projections_statline.py: the stat-line engine
+        # takes no anchor flags at all -- Session 10.2 measured the anchor as
+        # neutral at the points level, and its one real use (cold start)
+        # belongs on the stat-line inputs, which is Session 10.3b.
+        if anchor and (anchor["weight"] > 0 or anchor["cold_start"]):
+            raise RuntimeError(
+                "--engine statline cannot be combined with the salary-anchor "
+                "flags. The anchor is a points-level blend, measured neutral "
+                "in Session 10.2 and deliberately not wired into the "
+                "stat-line engine (its decision #4). Run them as separate "
+                "arms.")
+    elif anchor and (anchor["weight"] > 0 or anchor["cold_start"]):
         cmd += ["--salary-anchor-weight", str(anchor["weight"]),
                 "--salary-anchor-k", str(anchor["k"])]
         if anchor["cold_start"]:
             cmd += ["--salary-anchor-cold-start"]
     p = subprocess.run(cmd, capture_output=True, text=True)
     if p.returncode != 0:
-        raise RuntimeError(f"build_projections.py failed:\n{(p.stderr or p.stdout).strip()[-1500:]}")
+        raise RuntimeError(f"{builder} failed:\n{(p.stderr or p.stdout).strip()[-1500:]}")
 
     proj_path = OUTPUT_DIR / f"final_projections_{site}_{week}.csv"
     if not proj_path.exists():
-        raise RuntimeError(f"build_projections.py ran but {proj_path.name} was not written.")
+        raise RuntimeError(f"{builder} ran but {proj_path.name} was not written.")
     return proj_path
 
 
@@ -579,6 +655,14 @@ def describe_anchor(anchor: dict | None) -> str:
     return f"anchor ON flat w={anchor['weight']}"
 
 
+def describe_arm(engine: str, anchor: dict | None) -> str:
+    """Decision #10: an arm is now (engine, anchor), and a percentile without
+    its full config is not comparable to anything."""
+    label = {"legacy": "legacy points-blend engine (Session 2.4)",
+             "statline": "stat-line MC engine (Session 10.3a)"}.get(engine, engine)
+    return f"{label} | {describe_anchor(anchor)}"
+
+
 def percentile_of(score: float, field_scores: np.ndarray) -> float:
     if len(field_scores) == 0:
         return float("nan")
@@ -592,7 +676,9 @@ def percentile_of(score: float, field_scores: np.ndarray) -> float:
 def backtest_week(site: str, season: int, week: int, games: pd.DataFrame,
                   num_lineups: int, field_size: int, rng: np.random.Generator,
                   anchor: dict | None = None,
-                  field_pool_mode: str = "baseline") -> dict:
+                  field_pool_mode: str = "baseline",
+                  engine: str = "legacy",
+                  statline: dict | None = None) -> dict:
     slate_id = f"rotoguru_{season}_wk{week}"
     salary_path = DATA_DIR / f"salaries_{site}_{slate_id}.csv"
     if not salary_path.exists():
@@ -616,16 +702,23 @@ def backtest_week(site: str, season: int, week: int, games: pd.DataFrame,
     anchor_carries_cold_start = bool(
         anchor and (anchor["cold_start"] or anchor["weight"] >= 1.0)
     )
+    # Session 10.3a: the stat-line engine keeps the same lookahead guard
+    # (statline_model.py decision #5), so week 1 is unbuildable for it too.
+    # Its cold start is Session 10.3b, and it takes no anchor flags, so no
+    # configuration of --engine statline makes week 1 buildable today.
     if week == 1 and not anchor_carries_cold_start:
+        detail = ("week 1 not backtestable -- no prior-week usage data. For the "
+                  "legacy engine, --salary-anchor-cold-start makes it "
+                  "buildable; the stat-line engine has no cold start until "
+                  "Session 10.3b.")
         return {"site": site, "season": season, "week": week, "status": "SKIP",
-                "detail": "week 1 not backtestable -- no prior-week data for the "
-                          "current usage-based model (cold-start gap; run with "
-                          "--salary-anchor-cold-start to make it backtestable)"}
+                "detail": detail}
 
     try:
         ensure_per_season_schedule(season)  # decision #7: bridge schedule layout
         build_vegas_file(games, site, season, week)
-        proj_path = run_projection_pipeline(site, season, week, slate_id, anchor)
+        proj_path = run_projection_pipeline(site, season, week, slate_id, anchor,
+                                            engine=engine, statline=statline)
     except RuntimeError as e:
         return {"site": site, "season": season, "week": week, "status": "ERROR", "detail": str(e)}
 
@@ -638,18 +731,27 @@ def backtest_week(site: str, season: int, week: int, games: pd.DataFrame,
     # Measured on the first Session 10.2 run: field median fell in 15 of 17
     # weeks (mean -1.41 pts, t=-4.3) -- by far the strongest effect in that
     # whole comparison, and a pure artifact.
+    # Session 10.3a, decision #11: the arm differs from the baseline if EITHER
+    # the anchor is on OR a non-legacy engine is selected. Both change the
+    # pool, and a changed pool changes the field, which moves our percentile
+    # for a reason unrelated to the projection.
+    arm_differs_from_baseline = (
+        engine != "legacy"
+        or bool(anchor and (anchor["weight"] > 0 or anchor["cold_start"])))
     field_proj_path = proj_path
-    if field_pool_mode == "baseline" and anchor and (
-            anchor["weight"] > 0 or anchor["cold_start"]):
+    if field_pool_mode == "baseline" and arm_differs_from_baseline:
         try:
-            field_proj_path = run_projection_pipeline(
-                site, season, week, slate_id, None)
+            # The yardstick: LEGACY engine, anchor OFF -- exactly the
+            # configuration the 72.8 / 94.7 baseline was measured on.
+            run_projection_pipeline(site, season, week, slate_id, None,
+                                    engine="legacy")
             field_proj_path = OUTPUT_DIR / f"final_projections_{site}_{week}_fieldbase.csv"
             pd.read_csv(OUTPUT_DIR / f"final_projections_{site}_{week}.csv",
                         dtype={"player_id": str, "site_player_id": str}
                         ).to_csv(field_proj_path, index=False)
-            # Rebuild the ANCHORED file, which the baseline run just clobbered.
-            run_projection_pipeline(site, season, week, slate_id, anchor)
+            # Rebuild the ARM's file, which the baseline run just clobbered.
+            run_projection_pipeline(site, season, week, slate_id, anchor,
+                                    engine=engine, statline=statline)
         except RuntimeError as e:
             return {"site": site, "season": season, "week": week,
                     "status": "ERROR",
@@ -776,6 +878,8 @@ def backtest_week(site: str, season: int, week: int, games: pd.DataFrame,
         "median_percentile": round(float(np.median(pcts)), 1),
         "max_percentile": round(float(np.max(pcts)), 1),
         "anchor": describe_anchor(anchor),
+        "engine": engine,
+        "arm": describe_arm(engine, anchor),
         "field_pinned": bool(field_proj_path != proj_path and not field_pool_note),
         "detail": field_pool_note,
     }
@@ -786,20 +890,41 @@ def backtest_week(site: str, season: int, week: int, games: pd.DataFrame,
 # ---------------------------------------------------------------------------
 
 def main():
-    parser = argparse.ArgumentParser(description="Lineup-level backtest harness (Session 10.1).")
+    parser = argparse.ArgumentParser(
+        description="Lineup-level backtest harness (Session 10.1; engines added 10.3a).")
     parser.add_argument("--site", choices=["dk", "fd"], required=True)
-    parser.add_argument("--season", type=int, required=True)
+    # Decision #12: accepts several seasons. `--season 2021` still works
+    # exactly as before, so every Session 10.1/10.2 command line is unchanged.
+    parser.add_argument("--season", type=int, nargs="+", required=True,
+                        help="One or more seasons. Multiple seasons are pooled "
+                             "for power AND reported per season (decision #12).")
     parser.add_argument("--week", type=int, nargs="+", default=None)
     parser.add_argument("--all-weeks", action="store_true")
     parser.add_argument("--num-lineups", type=int, default=1,
                         help="Lineups to build per week (1 = single-entry; 20 = GPP portfolio)")
     parser.add_argument("--field-size", type=int, default=2000,
                         help="Synthetic field size for percentile (decision #3)")
-    parser.add_argument("--seed", type=int, default=42)
+    parser.add_argument("--seed", type=int, default=42,
+                        help="Base seed. Each week's generator is derived from "
+                             "(seed, season, week), so weeks are independent "
+                             "of each other (decision #13).")
     parser.add_argument("--refresh-games", action="store_true",
                         help="Re-download nflverse games.csv")
     parser.add_argument("--debug", action="store_true",
                         help="Dump one week's lineup player-by-player (proj vs actual) + field distribution")
+    # Session 10.3a, decision #10 -- which projection engine builds the arm.
+    parser.add_argument("--engine", choices=["legacy", "statline"], default="legacy",
+                        help="legacy = build_projections.py (Session 2.4, the "
+                             "baseline). statline = build_projections_statline.py "
+                             "(Session 10.3a). The FIELD is always built by the "
+                             "legacy engine with the anchor off (decision #11).")
+    parser.add_argument("--statline-sims", type=int, default=4000,
+                        help="Monte-Carlo draws per player for --engine statline.")
+    parser.add_argument("--statline-seed", type=int, default=20103,
+                        help="Seed for the stat-line engine's OWN Generator. Kept "
+                             "separate from --seed so the projection draws and the "
+                             "field draws can never disturb each other (Session "
+                             "10.2's bug #3 was exactly that kind of coupling).")
     # Session 10.2 (decision #8) -- passed straight through to
     # build_projections.py. Omitted entirely at the defaults, so a default
     # run is byte-identical to the Session 10.1 baseline run.
@@ -814,33 +939,25 @@ def main():
                              "played. ARBITRARY default, not fit.")
     parser.add_argument("--field-pool", choices=["baseline", "arm"], default="baseline",
                         help="Which pool the synthetic field is sampled from "
-                             "(decision #9). 'baseline' (default) pins the field to "
-                             "the anchor-OFF pool so every arm shares one yardstick; "
-                             "'arm' is the pre-10.2 behaviour, which lets the field "
-                             "move with the projection being tested. No effect when "
-                             "the anchor is off.")
+                             "(decisions #9, #11). 'baseline' (default) pins the "
+                             "field to the LEGACY engine with the anchor off so "
+                             "every arm shares one yardstick; 'arm' is the pre-10.2 "
+                             "behaviour and must not be used for a measurement.")
     args = parser.parse_args()
 
     anchor = {"weight": args.salary_anchor_weight,
               "cold_start": args.salary_anchor_cold_start,
               "k": args.salary_anchor_k}
+    statline = {"sims": args.statline_sims, "seed": args.statline_seed}
 
     global DEBUG
     DEBUG = args.debug
 
     games = load_games(force_refresh=args.refresh_games)
-    rng = np.random.default_rng(args.seed)
+    seasons = sorted(set(args.season))
 
-    if args.all_weeks:
-        weeks = sorted(games[(games["season"] == args.season)]["week"].unique())
-        weeks = [int(w) for w in weeks if w <= 18]
-    elif args.week:
-        weeks = args.week
-    else:
-        raise SystemExit("Specify --week N [N ...] or --all-weeks.")
-
-    print(f"Backtest: {SITE_CONFIGS[args.site]['label']} {args.season}, "
-          f"weeks {weeks}, {args.num_lineups} lineup(s)/week, "
+    print(f"Backtest: {SITE_CONFIGS[args.site]['label']} "
+          f"season(s) {seasons}, {args.num_lineups} lineup(s)/week, "
           f"field {args.field_size}.")
     print("NOTE: this is a BOOTSTRAP measurement (RotoGuru <=2021, not current "
           "2025 data) -- it proves mechanics and sets a baseline, it does NOT "
@@ -848,76 +965,120 @@ def main():
     print("NOTE: field percentile is vs a SYNTHETIC ownership-weighted field "
           "(Session 4.1 heuristic, not real ownership) -- 'plausible field', "
           "not 'real contest' (decision #3).")
-    print(f"ARM:  {describe_anchor(anchor)}")
+    print(f"ARM:  {describe_arm(args.engine, anchor)}")
     print(f"FIELD: sampled from the {args.field_pool} pool "
-          f"({'pinned -- comparable across arms' if args.field_pool == 'baseline' else 'moves with the arm -- NOT comparable across arms'}).\n")
+          f"({'pinned to legacy+anchor-off -- comparable across arms' if args.field_pool == 'baseline' else 'moves with the arm -- NOT comparable across arms'}).")
+    print("SEED: per-week generators derived from (seed, season, week) -- an "
+          "errored or skipped\n      week cannot shift the field for any other "
+          "week (decision #13).\n")
 
     results = []
-    for week in weeks:
-        res = backtest_week(args.site, args.season, week, games,
-                            args.num_lineups, args.field_size, rng, anchor,
-                            args.field_pool)
-        results.append(res)
-        if res["status"] == "OK":
-            print(f"  OK  {args.site} {args.season} wk{week:<2}  "
-                  f"median pctile {res['median_percentile']:>5.1f}  "
-                  f"max pctile {res['max_percentile']:>5.1f}  "
-                  f"(our med {res['our_median_score']}, best "
-                  f"{res['our_best_score']}, field median "
-                  f"{res['field_median_score']}, pool {res['pool_size']})")
-        elif res["status"] == "SKIP":
-            print(f"  --  {args.site} {args.season} wk{week:<2}  SKIP: {res['detail'][:100]}")
+    for season in seasons:
+        if args.all_weeks:
+            weeks = sorted(games[games["season"] == season]["week"].unique())
+            weeks = [int(w) for w in weeks if w <= 18]
+        elif args.week:
+            weeks = list(args.week)
         else:
-            print(f"  XX  {args.site} {args.season} wk{week:<2}  ERROR: {res['detail'][:120]}")
+            raise SystemExit("Specify --week N [N ...] or --all-weeks.")
+        if len(seasons) > 1:
+            print(f"--- {season} ({len(weeks)} weeks) ---")
+        for week in weeks:
+            # Decision #13: a generator derived from (seed, season, week), so
+            # this week's field cannot depend on whether an earlier week
+            # errored, was skipped, or ran at all.
+            week_rng = np.random.default_rng([args.seed, season, week])
+            res = backtest_week(args.site, season, week, games,
+                                args.num_lineups, args.field_size, week_rng,
+                                anchor, args.field_pool, args.engine, statline)
+            results.append(res)
+            if res["status"] == "OK":
+                print(f"  OK  {args.site} {season} wk{week:<2}  "
+                      f"median pctile {res['median_percentile']:>5.1f}  "
+                      f"max pctile {res['max_percentile']:>5.1f}  "
+                      f"(our med {res['our_median_score']}, best "
+                      f"{res['our_best_score']}, field median "
+                      f"{res['field_median_score']}, pool {res['pool_size']})")
+            elif res["status"] == "SKIP":
+                print(f"  --  {args.site} {season} wk{week:<2}  SKIP: {res['detail'][:100]}")
+            else:
+                first_line = res["detail"].strip().splitlines()
+                print(f"  XX  {args.site} {season} wk{week:<2}  ERROR: "
+                      f"{(first_line[-1] if len(first_line) > 1 else first_line[0])[:150]}")
 
     # Summary
     ok = [r for r in results if r["status"] == "OK"]
     err = [r for r in results if r["status"] == "ERROR"]
     skip = [r for r in results if r["status"] == "SKIP"]
     print("\n" + "=" * 62 + "\nSUMMARY\n" + "=" * 62)
-    print(f"  Arm:   {describe_anchor(anchor)}")
+    print(f"  Arm:   {describe_arm(args.engine, anchor)}")
     print(f"  Weeks: {len(results)}   OK: {len(ok)}   SKIP: {len(skip)}   ERROR: {len(err)}")
+
+    def _block(rows, label, indent="  "):
+        med = np.array([r["median_percentile"] for r in rows], dtype=float)
+        mx = np.array([r["max_percentile"] for r in rows], dtype=float)
+        rmed = np.array([r["our_median_score"] for r in rows], dtype=float)
+        rbest = np.array([r["our_best_score"] for r in rows], dtype=float)
+        fmed = np.array([r["field_median_score"] for r in rows], dtype=float)
+        n = len(rows)
+        # Decision #12: the standard error is printed next to the mean,
+        # because Session 10.2's "inside the noise" conclusion was partly a
+        # power problem and reporting a mean without its SE is what hides that.
+        se_med = med.std(ddof=1) / np.sqrt(n) if n > 1 else float("nan")
+        se_mx = mx.std(ddof=1) / np.sqrt(n) if n > 1 else float("nan")
+        print(f"{indent}{label} (n={n} weeks)")
+        print(f"{indent}  Median-percentile (cash/floor proxy): mean {med.mean():.1f} "
+              f"+/- {se_med:.1f} SE   (min {med.min():.1f}, max {med.max():.1f}, "
+              f"wk-to-wk SD {med.std(ddof=1) if n > 1 else float('nan'):.1f})")
+        print(f"{indent}  Max-percentile (upside proxy):        mean {mx.mean():.1f} "
+              f"+/- {se_mx:.1f} SE   (min {mx.min():.1f}, max {mx.max():.1f})")
+        print(f"{indent}  Raw score, median lineup: mean {rmed.mean():6.2f}   "
+              f"best lineup: mean {rbest.mean():6.2f}   "
+              f"field median: mean {fmed.mean():6.2f}")
+
     if ok:
-        med = np.array([r["median_percentile"] for r in ok])
-        mx = np.array([r["max_percentile"] for r in ok])
-        print(f"  Median-percentile (cash/floor proxy): "
-              f"mean {med.mean():.1f}, min {med.min():.1f}, max {med.max():.1f}")
-        print(f"  Max-percentile (upside proxy):        "
-              f"mean {mx.mean():.1f}, min {mx.min():.1f}, max {mx.max():.1f}")
-        # Session 10.2, decision #9: raw scores are in ARM-INDEPENDENT units
-        # (real fantasy points), so a paired week-by-week comparison of these
-        # between arms is immune to any change in the field. Percentiles are
-        # the headline; these are the check on them.
-        rmed = np.array([r["our_median_score"] for r in ok], dtype=float)
-        rbest = np.array([r["our_best_score"] for r in ok], dtype=float)
-        fmed = np.array([r["field_median_score"] for r in ok], dtype=float)
-        print(f"  Raw score, median lineup:  mean {rmed.mean():6.2f}   "
-              f"(arm-independent units -- compare these across arms too)")
-        print(f"  Raw score, best lineup:    mean {rbest.mean():6.2f}")
-        print(f"  Field median score:        mean {fmed.mean():6.2f}   "
-              f"(should be IDENTICAL across arms under --field-pool baseline)")
+        if len(seasons) > 1:
+            for season in seasons:
+                rows = [r for r in ok if r["season"] == season]
+                if rows:
+                    _block(rows, f"{season}")
+            print()
+            _block(ok, "POOLED across all seasons")
+            print("  ^ Decision #12: pooled figures buy power; the per-season "
+                  "blocks above are\n    what tells you whether an effect is "
+                  "consistent or one lucky season.")
+        else:
+            _block(ok, f"{seasons[0]}")
+
         unpinned = [r for r in ok if r.get("detail")]
         if unpinned:
             print(f"\n  !! {len(unpinned)} week(s) could NOT use the pinned field and "
                   f"fell back to their own pool.\n     Those weeks are not "
-                  f"cross-arm comparable, so the means above are not either.\n"
-                  f"     Re-run with an explicit --week list excluding them for the "
-                  f"like-for-like number:")
+                  f"cross-arm comparable, so the means above are not either.")
             for r in unpinned:
-                print(f"       wk{r['week']}: {r['detail']}")
-        if anchor["weight"] > 0 or anchor["cold_start"]:
+                print(f"       {r['season']} wk{r['week']}: {r['detail']}")
+
+        is_baseline_arm = (args.engine == "legacy"
+                           and anchor["weight"] <= 0 and not anchor["cold_start"])
+        if is_baseline_arm:
+            print("\n  ^ This is the BASELINE arm (legacy engine, anchor off). Every "
+                  "Phase 10\n    projection change is measured against these two "
+                  "numbers, separately.")
+        else:
             print("\n  ^ Compare BOTH numbers, separately, against the Session 10.1 "
                   "baseline\n    (2021 DK, 20 lineups): median-pctile 72.8, "
                   "max-pctile 94.7.\n    A change that lifts one and drops the other "
                   "is a floor/upside tradeoff to\n    decide deliberately, not an "
-                  "unambiguous win. NOTE: if this run included\n    week 1 (only "
-                  "possible with the anchor on), it is NOT week-for-week comparable\n"
-                  "    to the baseline -- re-run excluding week 1 for the like-for-like "
-                  "number.")
-        else:
-            print("\n  ^ This is the BASELINE for the current projection system. "
-                  "Every Phase 10\n    projection change is measured against these two "
-                  "numbers, separately.")
+                  "unambiguous win. Read the raw scores too --\n    they are in "
+                  "arm-independent units and are the check on the percentiles.")
+            if args.engine == "statline":
+                print("\n    Session 10.3a ships on a CAPABILITY gate, not an accuracy "
+                      "gate (user-agreed):\n    the deliverable is a validated "
+                      "mean+sigma that Session 10.5's objective needs.\n    A pre-test "
+                      "over 9,822 real player-weeks found volume x efficiency and\n"
+                      "    points-averaging within 0.02 MAE of each other, with residual\n"
+                      "    correlation 0.965 -- so parity here is the EXPECTED result, "
+                      "not a failure.")
     if skip:
         print("\n  SKIPPED (not backtestable, not an error):")
         for r in skip:
@@ -926,7 +1087,12 @@ def main():
     if err:
         print("\n  ERRORS (investigate -- not silently skipped):")
         for r in err:
-            print(f"    {r['site']} {r['season']} wk{r['week']}: {r['detail'][:160]}")
+            # Decision #13's sibling lesson: a truncated error message cost a
+            # full diagnostic cycle on the first Session 10.3a run. Errors are
+            # rare; print enough of them to act on.
+            print(f"    {r['site']} {r['season']} wk{r['week']}:")
+            for line in r["detail"].strip().splitlines()[:6]:
+                print(f"      {line[:200]}")
 
     if err and not ok:
         sys.exit(1)
