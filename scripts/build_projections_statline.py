@@ -191,7 +191,7 @@ def build_statline_projections(site: str, season: int, week: int, slate_id: str,
                                n_sims: int = statline_model.DEFAULT_SIMS,
                                seed: int = statline_model.DEFAULT_SEED,
                                reconcile_threshold: float = statline_model.RECONCILE_FAIL_THRESHOLD,
-                               dst_model_mode: str = "legacy",
+                               dst_model_mode: str = "distributional",
                                ) -> pd.DataFrame:
     variance = statline_model.load_variance()
     matchup = load_matchup_factors(site, season, week)
@@ -381,10 +381,13 @@ if __name__ == "__main__":
     # Session 10.4 -- forwarded straight to build_dst_projections(). Default
     # legacy, so an existing stat-line run is unchanged.
     parser.add_argument("--dst-model", choices=["legacy", "distributional"],
-                        default="legacy",
-                        help="DST projection model (Session 10.4). "
-                             "'distributional' also replaces the placeholder "
-                             "DST sigma with a real simulated one.")
+                        default="distributional",
+                        help="DST projection model (Session 10.4, DEFAULT "
+                             "since that session). 'distributional' also "
+                             "replaces the placeholder DST sigma with a real "
+                             "simulated one, which is what Session 10.5's "
+                             "objective needs. 'legacy' restores the "
+                             "pre-10.4 DST and its unconditional sigma.")
     parser.add_argument("--reconcile-threshold", type=float,
                         default=statline_model.RECONCILE_FAIL_THRESHOLD,
                         help="Max proportional share-reconciliation rescale before "

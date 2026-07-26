@@ -695,6 +695,10 @@ The reason is mechanical, not statistical, and it was found by walking real debu
 
 **DST is a separate, distributional model.** Points-allowed is scored as a step function on both sites, so `E[f(X)] ≠ f(E[X])` — you must integrate over the bracket probabilities given the opponent's implied total, not look up one bracket. DST is more predictable than its reputation (public analysis ~0.37 correlation, beating WR/TE point projections). Inputs: distributional points-allowed (dominant), sack rate, turnover rate (QB-specific, rookie-adjusted), own-defense EPA/play as the stable modifier, wind. It is the sharpest illustration of why mean and sigma are tracked separately (compressed means, enormously dispersed outcomes).
 
+**⚠️ Amended by Session 10.4 (2026-07-26) — this paragraph's central claim is CONFIRMED and two of its supporting details are not.** The `E[f(X)] ≠ f(E[X])` argument is right and now quantified: point-estimate bracket lookup is biased low 0.30 pts on every defense, compresses the across-defense spread 19%, and ranks worse (Spearman 0.336 vs 0.369). Integration is the whole ballgame and it delivered — DST-slot Spearman rose 0.199 → 0.311 against real graded actuals.
+
+What did not survive contact with data: (1) **"own-defense EPA/play as the stable modifier"** — the opponent's offense carries ~4× the signal the defense's own history does, and own-defense EPA survives only as a small mean-reversion correction on the market's number. (2) **"more predictable than its reputation (~0.37 correlation)"** — measured here at 0.30 Spearman / 0.30 Pearson on a real out-of-sample slate, so the direction is right but the public figure is optimistic. Wind is real but marginal (t = −2.98 on eight seasons, null on four, and null on every volume channel because books price the forecast into the total line). The "compressed means, dispersed outcomes" point is exactly right: a DST's sigma (~6.2) now measures nearly as large as its mean (~6.9).
+
 **Correlation stays in constraints (stacking), not the objective.** For 1-3 entries this is correct and — importantly — keeps the problem linear, so CBC/PuLP is retained (a covariance objective would force a MIQP). Exposure caps / uniqueness / randomness are *portfolio* levers (make lineups differ from each other); they do almost nothing at 1-3 entries and randomness at 1 entry is actively harmful. Randomness should scale with entry count and, once sigma exists, be sigma-proportional rather than a flat uniform percentage.
 
 **Manual override layer:** post-blend, expiring (week-stamped, stale ones fail loud), auditable (pre/post columns), logged for the learning loop.
@@ -827,14 +831,65 @@ The original **72.8 / 94.7** remains the valid historical record for Sessions 10
 
 ---
 
-### Session 10.4 — DST Model Rebuild
-**Prerequisites:** Session 10.0. Independent of 10.1-10.3 (self-contained; can run in parallel). Arguably the best ROI-per-effort in the phase — currently the weakest component (a season-average × linear Vegas scale) and it fills 1 of 9 lineup slots every time.
+### Session 10.4 — DST Model Rebuild ✅ Complete (2026-07-26)
+**Prerequisites:** Session 10.0. Independent of 10.1-10.3 (self-contained; ran in parallel). The card's "best ROI-per-effort in the phase" call held up.
 
-**Build:** distributional points-allowed (negative-binomial or empirical, conditioned on opponent implied total, integrated over each site's scoring brackets — handles the DK/FD bracket divergence correctly), plus sack rate, QB-specific turnover rate (rookie-adjusted), own-defense EPA/play as the stable modifier, and wind. Replaces the flat `matchup_factor=1.0` DST gap flagged since Session 2.4.
+**Outcome in one line:** the distributional model **ships ON BY DEFAULT** — the first Phase 10 component to do so — on a DST-slot improvement measured against real graded actuals (MAE −0.50, RMSE −0.80, **Spearman +0.11**), with the lineup-level check confirming no regression (+0.3 median-pctile / +0.2 max-pctile, both inside one SE, as pre-registered). It also produces the **conditional DST sigma** Session 10.5 needs and closes the flat `matchup_factor = 1.0` gap open since Session 2.4. Full detail, the four bugs real runs caught, and the two design premises that measured out FALSE are in SESSION_LOG.md's Session 10.4 entry.
+
+**Deliverables (all live-validated on the real Windows environment):**
+- `/dfs_optimizer/scripts/dst_model.py` (new) — the simulator. Monte-Carlo over per-component distributions, bracket table integrated per draw, mean + conditional sigma from one pass.
+- `/dfs_optimizer/scripts/fit_dst_model.py` (new) — the fitter, writes `data/dst_model.json`. Deliberately separate so the production path never imports fitting machinery (same split as 10.2's `salary_anchor` / `fit_salary_anchor`).
+- `/dfs_optimizer/scripts/measure_dst.py` (new) — DST-slot measurement against real graded RotoGuru DST actuals.
+- `/dfs_optimizer/scripts/statlite.py` (new) — the four SciPy functions this needed (NB log-pmf, bounded 1-D minimiser, Spearman, paired t-test), on numpy + stdlib. SciPy was NOT installed on the real environment and the production path did not need it; `verify_against_scipy()` proves every function matches SciPy to ~1e-13.
+- `/dfs_optimizer/scripts/scoring_rules.py` (modified) — gained the DST table (it had none), `score_dst()`, `dst_points_allowed()`, and `verify_dst_against_actuals()`.
+- `/dfs_optimizer/scripts/build_projections.py` (modified) — `--dst-model`, **default `distributional`**. `--dst-model legacy` reproduces pre-10.4 output byte-for-byte.
+- `/dfs_optimizer/scripts/build_projections_statline.py` (modified) — same flag forwarded; the distributional path also supersedes 10.3a's placeholder DST sigma.
+- `/dfs_optimizer/scripts/backtest_harness.py` (modified) — `--dst-model` (**default stays `legacy`**, see below), DST model added to the arm label, flag always passed explicitly.
+- `/dfs_optimizer/scripts/nflverse_fetch.py`, `ingest_historical.py` (modified) — the `stats_team` release (~126 KB/season) and `games.parquet`.
+- `/dfs_optimizer/data/dst_model.json` (new, `schema_version: 1`) — production fit, all eight seasons.
+
+**⚠️ THE DEFAULTS DIVERGE ON PURPOSE, and this is the single most important thing to know about this card.** `build_projections.py` and `build_projections_statline.py` default to **distributional** (production should use the better model). `backtest_harness.py` defaults to **legacy**, because its default *is* the definition of the Session 10.1 baseline arm, and decision #11's pinned field must keep meaning "legacy engine, anchor off, legacy DST" or every recorded Phase 10 number becomes incomparable. The harness therefore passes `--dst-model` **explicitly on every invocation** rather than relying on a downstream default — an omitted flag would have silently handed it a distributional DST while it believed it was the baseline.
+
+**⚠️ NEW REQUIRED INPUT FOR THE AUTOMATED REFRESH.** Because distributional is now the default, `data/team_stats_{season}.parquet` and `data/dst_model.json` are required inputs to **every** projection build, including the GitHub Actions refresh. `refresh_data.yml` needs a step pulling the CURRENT season's team stats each week; without it the DST model runs on prior-season carryover alone (degraded, not wrong) or fails loud if the file is absent entirely. **This is an open item — see Known Deferred Validations.**
+
+**Measured results:**
+
+*DST slot, real graded DK actuals, legacy arm read from the real salary files (65 weeks, 1,914 defense-weeks):*
+
+| | legacy | distributional (holdout fit) | distributional (production fit) |
+|---|---|---|---|
+| MAE | 5.121 | 4.624 | **4.552** |
+| RMSE | 6.608 | 5.805 | **5.781** |
+| Spearman | 0.199 | 0.309 | **0.311** |
+| mean projected vs actual 6.688 | 6.987 | 7.213 (+0.53) | **6.908 (+0.22)** |
+| sigma calibration | n/a | 0.944 | 0.931 |
+
+The middle column is the honest out-of-sample number (fit 2014-17). The right column is the shipped production fit and is **in-sample** for these seasons — recorded as the configuration's numbers, not as evidence. Chosen-DST +0.69/week, t = +0.65, p = 0.52: positive, not significant, not claimed.
+
+*Lineup level, pooled 2018-2021 DK, 65 weeks × 20 lineups, legacy engine, anchor off:*
+
+| | baseline | distributional DST | delta |
+|---|---|---|---|
+| median-percentile | 75.6 ± 1.6 | 75.9 ± 1.8 | +0.3 |
+| max-percentile | 96.5 ± 0.6 | 96.7 ± 0.6 | +0.2 |
+| raw median lineup | 127.17 | 127.72 | +0.55 |
+| raw best lineup | 163.67 | 164.34 | +0.67 |
+
+Both percentile deltas are a fraction of one SE and signs flip across seasons (2019 median −3.9, 2020 median +3.1), which is what noise looks like. **This was pre-registered as a pass before the run**: a DST moves ~6.7 of ~120 lineup points and cannot clear a 1.8-point SE. The card ships on the DST-slot evidence; the harness run is a regression check, and it passed.
+
+**Baseline reproduction confirmed:** re-running the harness with no new flags returns **75.6 / 96.5**, raw median 127.17, best 163.67, field median 108.16 — identical to Session 10.3a's recorded values to the cent. `build_projections.py` was modified this session and the frozen baseline is provably intact.
+
+**Two of this card's own design premises measured FALSE, and the card is amended rather than quietly satisfied:**
+1. **"handles the DK/FD bracket divergence correctly" — there is no divergence.** DK and FD share every bracket and every component value. Verified by reconstructing real graded actuals for both sites from nflverse components: DK 89.7% exact / mean bias −0.156, FD 87.5% / −0.178. Tables stay per-site so a future divergence is a config edit, but no code branches on site.
+2. **"own-defense EPA/play as the stable modifier" — the OPPONENT's offense carries roughly four times the signal the defense's own history does** (sacks: opponent's sacks-allowed prior t = +12.4 vs own t = +4.8). Own-defense EPA survives as a small mean-reversion correction on the market's number (t = −2.13), not as a quality signal. The model follows the data and the card is corrected here.
 
 **Validation:**
-- [ ] Distributional points-allowed integrates over real brackets per site (not a single-bracket lookup).
-- [ ] Measured against Session 10.1 baseline for the DST slot specifically.
+- [x] **Distributional points-allowed integrates over real brackets per site (not a single-bracket lookup).** Confirmed and quantified: integrating over the fitted NB returns mean bracket value 0.433 against a realized 0.479, while point-estimate lookup returns 0.181 — biased low 0.30 pts on **every** defense, compressing the across-defense spread 19% (SD 0.860 → 0.696) and ranking worse (Spearman 0.336 → 0.369). Fitted NB dispersion r = 6.50; overdispersion measured at var/mean 3.4–4.4, so Poisson is ruled out on data, not assumed.
+- [x] **Measured against Session 10.1 baseline for the DST slot specifically.** Both halves done — direct DST accuracy against real graded actuals (table above) and the lineup-level A/B against 75.6 / 96.5. The card's single line was split into two measurements because the harness cannot isolate one of nine slots.
+- [x] **Conditional sigma delivered** (`sigma_source = dst_simulated_session_10_4`), replacing 10.3a's unconditional `3.25 + 0.39 × projection` placeholder and clearing the blocker flagged on Session 10.5's card. Calibration 0.931 (1.00 ideal); range 5.56–6.78 and genuinely varying with the opponent.
+- [x] **`matchup_factor = 1.0` retired** — the gap flagged since Session 2.4. Now carries the ratio of a defense's simulated mean to the league-average simulated mean (real observed range 0.60–1.55).
+- [ ] **FD unverified**, same standing gap as everything FD. Weaker exposure than the FD salary anchor: the DST scoring table IS verified against real FD 2021 actuals, and the model is site-parameterised throughout. See Known Deferred Validations.
+- [ ] **`refresh_data.yml` team-stats step** — see Known Deferred Validations.
 
 ---
 
@@ -842,6 +897,8 @@ The original **72.8 / 94.7** remains the valid historical record for Sessions 10
 **Prerequisites:** Session 10.3a (sigma now exists).
 
 **⚠️ What 10.3a hands you, and the one thing it does not (2026-07-26):** `final_projections_{site}_{week}.csv` from `build_projections_statline.py` carries a `sigma` column plus `sigma_source`. That sigma is **idiosyncratic by construction** — every player is drawn independently, so it holds no team-level correlated component, which is the right kind for this card's objective, since the design keeps correlated variance in the optimizer's stacking *constraints* rather than the objective. DST sigma is real but **unconditional** (`3.25 + 0.39 × projection`, measured over 3,952 team-weeks), flagged `dst_measured_unconditional_session_10_4_pending`; conditioning it on the opponent's implied total is Session 10.4's job.
+
+**✅ RESOLVED by Session 10.4 (2026-07-26).** DST sigma is now simulated per defense and conditioned on the opponent's implied total — `sigma_source = dst_simulated_session_10_4`, calibration ratio 0.931 (realized RMSE / mean projected sigma; 1.00 ideal), observed range 5.56–6.78 varying with the matchup rather than with the projection alone. The distributional DST is **on by default**, so this arrives without a flag. Two things to carry into this card: (a) DST sigma is NOT idiosyncratic in the same sense as a skill player's — decision #13 of `dst_model.py` deliberately builds in a within-game latent factor calibrated to a measured +0.301 correlation between a defense's points-allowed bracket and its other components, because independent draws understated total DST sigma by 11%; it is still free of any component correlated with OTHER players' outcomes, which is the property this objective actually requires. (b) A DST's sigma (~6.2) is large relative to its mean (~6.9), so a `λ·sigma` penalty will bite the DST slot harder than any other. Watch for λ driving the optimizer to the cheapest defense.
 
 **Blocker to clear first:** `optimizer.py` selects a fixed column list and **drops `sigma`** on the way to its lineup output. It reaches the optimizer fine; it does not survive it. Carrying it through is the first task of this card.
 
@@ -890,6 +947,10 @@ These are all instances of the same underlying problem: several data sources (Th
 Until Preseason Week 1: treat Session 2.4 (and by extension anything built on top of it in Phase 3+) as validated for correctness-of-logic only, not for real-world data quality. Re-run Session 2.4's validation checklist in full once real data exists for both sites.
 
 - **FD's salary-anchor curve cannot be fit, and is now BLOCKED rather than deferred by assumption (Session 10.2).** This one is different in kind from the other FD gaps in this list: it isn't "untested," it's "demonstrably not fittable on the data that exists." With only 2021 matched (RotoGuru has no FD before 2011 and nothing after 2021, and only 2021 was matched in Session 10.0), QB bins to 4 knots and the defense to 3, and the top-endpoint extension hits its cap at **QB, RB, WR and TE simultaneously** — WR's top bin mean is $7,045 against a $10,200 salary maximum, a $3,155 gap the extension cannot honestly span. A capped top means expensive players compress onto a near-flat anchor, which is precisely the region that decides lineups. `fit_salary_anchor.py` now treats both conditions as hard errors before writing anything, and `data/salary_anchor_fd.json` was deleted so a stale unfit curve can't be silently picked up. Note this also exposed and fixed a real hole in the fitter's own guard — it counted ROWS, not BINS, and let a 3-knot curve through twice. **First point this closes for real:** whenever enough real FD Classic slates accumulate to fit against — which for FD means live exports from Preseason Week 1 onward, not the historical bootstrap, since the bootstrap's FD coverage is what failed here.
+
+- **`refresh_data.yml` needs a current-season team-stats pull (opened by Session 10.4).** This is a live-automation gap, not a data-quality one, and it is the only genuinely open item from Session 10.4. Because the distributional DST is now the DEFAULT, `data/team_stats_{season}.parquet` is a required input to every projection build — including the unattended GitHub Actions refresh. Nothing in that workflow currently pulls it. Consequences, in order of likelihood: the file is stale, so the DST model sees no current-season weeks and falls back to prior-season carryover (degraded but not wrong, and it fails silently in the sense that the numbers still look plausible); or the file is absent entirely for a new season, and `dst_model.load_team_stats()` fails loud with instructions. `data/dst_model.json` is also required but is static and committed once. **Fix:** add a step to `refresh_data.yml` running `python3 scripts/ingest_historical.py --season {current}` (or a narrower team-stats-only pull) ahead of `build_projections.py`, and commit `team_stats_{season}.parquet`. **First point this matters for real:** the first live automated run of the 2026 season — Preseason Week 1, alongside the other Session 6.1 checkpoint items.
+
+- **FD's DST model is unverified end-to-end, but is NOT blocked (Session 10.4).** Worth distinguishing from the FD salary anchor, which is *demonstrably not fittable* on available data. The DST model's FD exposure is much smaller: the scoring table is verified against real graded FD 2021 actuals (87.5% exact, mean bias −0.178, the same residual shape as DK), the model is site-parameterised at every call site with no branching on site, and `dst_model.json` is fit on stat lines and game outcomes rather than on anything site-specific — so unlike the anchor there is nothing here that *cannot* be fit for FD. What has never happened is a real FD Classic export running end-to-end through it. Note this compounds with the FD DST column-name bug below, which would bite first. **First point this closes for real:** whenever a real FD Classic export first exists.
 
 - **FD DST projection path reads the wrong column name (found during Session 10.0).** `build_projections.py`'s `build_dst_projections()` reads `salaries["AvgPointsPerGame"]` for BOTH sites, but a real FanDuel export names that column `FPPG`, and `ingest_salaries.py`'s `load_raw_salary_csv()` doesn't rename it — so FD's DST path would `KeyError` or silently null on a real FD export. Not fixed in Session 10.0 (separate decision about FD's real column contract, still unverified — same root as the standing FD gaps above). Session 10.0's RotoGuru FD files emit `AvgPointsPerGame` so the bootstrap/harness aren't blocked, but the real-FD-export gap is open. **First point this closes for real:** whenever a real FD Classic export first exists, alongside the other FD gaps.
 

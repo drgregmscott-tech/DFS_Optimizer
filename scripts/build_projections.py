@@ -1003,13 +1003,15 @@ if __name__ == "__main__":
     # script's output with no new flags is byte-for-byte pre-10.4 and the
     # Session 10.1 baseline is untouched.
     parser.add_argument("--dst-model", choices=["legacy", "distributional"],
-                        default="legacy",
-                        help="DST projection model. 'legacy' (default) is the "
-                             "Session 3.1 AvgPointsPerGame x vegas-ratio model "
-                             "and keeps this script's output identical to "
-                             "pre-10.4. 'distributional' is Session 10.4's "
-                             "simulated model; needs data/dst_model.json and "
-                             "data/team_stats_{season}.parquet.")
+                        default="distributional",
+                        help="DST projection model. 'distributional' (DEFAULT "
+                             "since Session 10.4) is the simulated model; it "
+                             "needs data/dst_model.json and "
+                             "data/team_stats_{season}.parquet. 'legacy' is "
+                             "the Session 3.1 AvgPointsPerGame x vegas-ratio "
+                             "model and reproduces pre-10.4 output exactly -- "
+                             "pass it to reproduce any Session 10.1/10.2/10.3a "
+                             "number.")
     parser.add_argument("--dst-sims", type=int, default=None,
                         help="Monte-Carlo draws per defense (default 20000).")
     parser.add_argument("--dst-seed", type=int, default=None,

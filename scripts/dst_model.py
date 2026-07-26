@@ -182,7 +182,16 @@ def load_team_stats(season: int) -> pd.DataFrame:
             f"{path.name} not found -- the DST model needs nflverse team-week "
             f"stats. Run:\n"
             f"  python3 scripts/ingest_historical.py --season {season}\n"
-            f"(Session 10.4 added the team-stats pull to that script.)"
+            f"(Session 10.4 added the team-stats pull to that script.)\n\n"
+            f"NOTE FOR THE AUTOMATED REFRESH: since Session 10.4 the "
+            f"distributional DST is the DEFAULT, so this file is now a "
+            f"required input to every projection build -- including the "
+            f"GitHub Actions refresh, which must pull the CURRENT season's "
+            f"team stats each week or the DST model runs on prior-season "
+            f"carryover alone. If you need a build to succeed right now "
+            f"without it, pass --dst-model legacy explicitly; that is a "
+            f"deliberate downgrade, not a fallback this code will take on "
+            f"your behalf."
         )
     df = pd.read_parquet(path)
     df = df[df["season_type"] == "REG"].copy()

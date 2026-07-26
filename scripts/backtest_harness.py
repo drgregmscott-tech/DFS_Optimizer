@@ -564,11 +564,18 @@ def run_projection_pipeline(site: str, season: int, week: int, slate_id: str,
            "--site", site, "--season", str(season), "--week", str(week),
            "--slate-id", slate_id]
     # Session 10.4 (decision #14 below). Passed through, never applied here --
-    # the harness runs the real engine, it does not reimplement a model. Both
-    # builders accept the same flag with the same default, so omitting it
-    # leaves the command line byte-identical to a pre-10.4 run.
-    if dst_model_mode != "legacy":
-        cmd += ["--dst-model", dst_model_mode]
+    # the harness runs the real engine, it does not reimplement a model.
+    #
+    # ALWAYS passed EXPLICITLY, never omitted. Until the default flipped this
+    # was appended only when non-legacy, on the reasoning that omitting it
+    # left the command line identical to a pre-10.4 run. That reasoning died
+    # the moment build_projections.py started defaulting to distributional:
+    # omitting the flag would have silently given the harness a
+    # DISTRIBUTIONAL DST while it believed it was running the legacy
+    # baseline -- including for the pinned FIELD, which decision #11 exists
+    # to hold fixed. Every recorded Phase 10 number would have quietly become
+    # incomparable. An explicit flag cannot drift with a downstream default.
+    cmd += ["--dst-model", dst_model_mode]
     if engine == "statline":
         if statline:
             cmd += ["--statline-sims", str(statline["sims"]),
