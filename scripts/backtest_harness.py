@@ -1098,7 +1098,13 @@ def main():
     err = [r for r in results if r["status"] == "ERROR"]
     skip = [r for r in results if r["status"] == "SKIP"]
     print("\n" + "=" * 62 + "\nSUMMARY\n" + "=" * 62)
-    print(f"  Arm:   {describe_arm(args.engine, anchor)}")
+    # Session 10.4: THIRD call site, and the one that got missed when the
+    # other two were fixed. The run banner said DISTRIBUTIONAL DST while this
+    # summary said "legacy DST <- Session 10.1 baseline arm" for the same run.
+    # The summary is what gets copied into a session log, so it is the worst
+    # of the three to have wrong. A grep for every call site is the fix that
+    # should have been applied the first time.
+    print(f"  Arm:   {describe_arm(args.engine, anchor, args.dst_model)}")
     print(f"  Weeks: {len(results)}   OK: {len(ok)}   SKIP: {len(skip)}   ERROR: {len(err)}")
 
     def _block(rows, label, indent="  "):
