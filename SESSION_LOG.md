@@ -1853,3 +1853,17 @@ Everything in the deliverables was **live-validated on the real Windows environm
 - **Session 10.5 is unblocked on sigma** but should read that card's amended note first: a DST's sigma (~6.2) is nearly as large as its mean (~6.9), so a `λ·sigma` penalty will bite the DST slot harder than any other slot. Watch for λ driving the optimizer to the cheapest defense. `optimizer.py` still drops `sigma` — unchanged, still 10.5's first task.
 - **Retuning targets, flagged ARBITRARY in code and not fit:** `SHRINK_GAMES` (sack_rate 8.0, int_rate 12.0, fumble_rate 16.0, qb_hit_rate 6.0, dropbacks 6.0), `QB_INT_SHRINK_ATTEMPTS` 200.0, `MIN_FIT_WEEK` 5, and the bounds `PA_MEAN_BOUNDS` / `DROPBACK_BOUNDS` / `SACK_RATE_BOUNDS` / `INT_RATE_BOUNDS`. The rookie multiplier (1.120) is fitted but rests on a t = +1.76 term — a judgement call to include, recorded as such.
 - **A free side benefit, not claimed as solved:** the DST model is buildable in week 1 via prior-season carryover, unlike the stat-line engine's skill positions (Session 10.3b's job).
+
+### Session 10.4 (ADDENDUM) — pre-kickoff season handling (2026-07-26)
+
+Found while answering a user question about the `refresh_data.yml` gap rather than by testing, which is worth noting: the question "can we do this now or must we wait for the season?" is what prompted checking whether the current season's nflverse release exists at all.
+
+It does not. `stats_team_week_2026.parquet` **404s today**, while `games.parquet` already carries all 272 scheduled 2026 games with null scores — nflverse publishes the team-stats release only once a season's first games are in the books.
+
+`dst_model.load_team_stats()` raised on a missing file unconditionally, so **the first live run of the 2026 season would have hard-failed before reaching the prior-season carryover path that decision #15 exists to provide.** The model was designed to handle week 1 and could not get far enough to do it.
+
+Fixed as decision #19. A missing current-season file is legitimate when `season_has_started()` is False — no game of that season has a score yet — and a hard error once it is True. The two states are distinguished by **data rather than by a calendar guess**, which matters because preseason and regular season both contain a "week 1" and a date-based rule would have to encode the schedule. Both call sites that load current-season stats (`build_features` and `_attach_epa_and_wind`) were updated; a case where NEITHER the current nor the prior season has data still fails loud, since carryover then has nothing to carry.
+
+Verified end-to-end against the real 2026 schedule with no `team_stats_2026.parquet` present: 32 defenses built on 2025 carryover alone, projections 6.62–7.89, sigma 5.92–6.22, every QB resolved via the `last_game_leading_passer` fallback (correct — no 2026 starter is announced in `games.parquet` yet). Re-ran the 2021 measurement afterwards: unchanged.
+
+**Operational consequence:** `data/team_stats_2025.parquet` is a required commit for the 2026 season, because it is the carryover source. The `refresh_data.yml` step must tolerate a 404 on the current season rather than failing the job.

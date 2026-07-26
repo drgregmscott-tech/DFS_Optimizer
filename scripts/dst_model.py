@@ -175,8 +175,47 @@ def _shrink(total, count, prior_rate, k):
     return (total + k * np.asarray(prior_rate, dtype=float)) / (count + k)
 
 
-def load_team_stats(season: int) -> pd.DataFrame:
+def season_has_started(season: int, games: pd.DataFrame | None = None) -> bool:
+    """Has any game of `season` actually been played?
+
+    Decision #19. nflverse does not publish `stats_team_week_{season}.parquet`
+    until a season's first games are in the books -- verified 2026-07-26, when
+    the 2026 asset 404s while `games.parquet` already carries all 272 of that
+    season's scheduled games with null scores. So "the current season's team
+    stats file is missing" is a LEGITIMATE state before kickoff and a REAL
+    ERROR after it, and the two must be told apart by data rather than by a
+    guess about the calendar.
+    """
+    if games is None:
+        gp = DATA_DIR / "games.parquet"
+        if not gp.exists():
+            return True     # cannot tell -- treat the file as required
+        games = pd.read_parquet(gp)
+    wk = games[games["season"] == season]
+    if wk.empty:
+        return True
+    return bool(pd.to_numeric(wk["home_score"], errors="coerce").notna().any())
+
+
+def load_team_stats(season: int, allow_missing: bool = False,
+                    games: pd.DataFrame | None = None) -> pd.DataFrame:
+    """Load a season's team-week stats.
+
+    `allow_missing` returns an EMPTY frame instead of raising when the file is
+    absent AND no game of that season has been played yet -- the pre-kickoff
+    state above. It never silently swallows a missing file for a season that
+    is under way; that still raises.
+    """
     path = DATA_DIR / f"team_stats_{season}.parquet"
+    if not path.exists() and allow_missing and not season_has_started(season, games):
+        print(f"  NOTE: {path.name} does not exist and no {season} game has "
+              f"been played yet -- nflverse does not publish that release "
+              f"until a season starts. The DST model is running on "
+              f"prior-season carryover, which is what decision #15 is for. "
+              f"This is expected before kickoff and would be an ERROR once "
+              f"{season} games have been played.")
+        return pd.DataFrame(columns=["season", "week", "team", "opponent_team",
+                                     "season_type"])
     if not path.exists():
         raise SystemExit(
             f"{path.name} not found -- the DST model needs nflverse team-week "
@@ -261,11 +300,22 @@ def build_features(season: int, week: int, teams, vegas: pd.DataFrame,
     lg = model["league_means"]
     shrink = model["shrink_games"]
 
-    cur = _season_totals(load_team_stats(season), upto_week=week)
+    # Decision #19: before a season's first kickoff the current-season file
+    # does not exist yet. That is the exact case decision #15's carryover was
+    # built for, so it must not be a hard error -- the model was previously
+    # unable to get far enough to use its own week-1 path.
+    cur = _season_totals(load_team_stats(season, allow_missing=True, games=games),
+                         upto_week=week)
     try:
         prev = _season_totals(load_team_stats(season - 1), upto_week=None)
     except SystemExit:
         prev = pd.DataFrame(columns=cur.columns)
+    if cur.empty and prev.empty:
+        raise SystemExit(
+            f"dst_model: no team stats for {season} OR {season - 1}. The "
+            f"model needs at least one of them -- carryover has nothing to "
+            f"carry. Run: python3 scripts/ingest_historical.py --season "
+            f"{season - 1}")
 
     lg_sack_rate = lg["sacks"] / lg["dropbacks"]
     lg_int_rate = model["int_rate"]["league_int_rate"]
@@ -483,8 +533,8 @@ def _attach_opponent_qb(feat: pd.DataFrame, season: int, week: int,
 def _attach_epa_and_wind(feat: pd.DataFrame, season: int, week: int,
                          games: pd.DataFrame | None, model: dict) -> pd.DataFrame:
     """Own-defense EPA allowed (prior weeks) and this week's wind."""
-    ts = load_team_stats(season)
-    prior = ts[ts["week"] < week]
+    ts = load_team_stats(season, allow_missing=True, games=games)
+    prior = ts[ts["week"] < week] if not ts.empty else ts
     if not prior.empty:
         epa = prior[["season", "week", "team", "opponent_team"]].merge(
             prior[["season", "week", "team", "passing_epa", "rushing_epa"]].rename(
