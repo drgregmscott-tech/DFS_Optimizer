@@ -113,6 +113,70 @@ Numbered decisions:
      surfaced it, because a points average has no team-level constraint to
      violate. Decision #7's reconciliation is what made it visible.
 
+ 11. SESSION 10.3b -- PRICE IS A COLD-START PRIOR ON VOLUME, and nothing
+     more by default. The mechanism lives in volume_prior.py (read its
+     decisions #1-#8 for the measured evidence); this module only calls it.
+     `apply_volume_prior()` is a no-op unless a caller passes an artifact,
+     so an existing Session 10.3a run is byte-for-byte unchanged.
+
+ 12. SESSION 10.3b -- `{comp}_mu_raw` IS NOW STORED ALONGSIDE `{comp}_mu`.
+     `_mu` is the participation-weighted (unconditional) volume decision #9
+     built; `_mu_raw` is the same number BEFORE participation is applied.
+     Both are kept because the role-change override (volume_prior.py
+     decision #3) works by RECOMPUTING `_mu = _mu_raw * participation_eff`.
+     Recovering `_mu_raw` by dividing `_mu` by participation would divide by
+     zero for exactly the players the override exists for.
+
+ 13. SESSION 10.3b -- TEAM VOLUME IS VEGAS-ANCHORED WHEN AN ARTIFACT IS
+     SUPPLIED, replacing decision #10's deliberately-left-open alternative.
+     Measured out-of-sample (probe B): pass attempts R2 0.0652 -> 0.0799,
+     carries 0.0394 -> 0.0667. Note what that also says -- the team-history
+     prediction this module has anchored reconciliation to since Session
+     10.3a explains under 7% of the variance in either channel. See
+     volume_prior.py decision #8; reconciliation is not thereby wrong, it is
+     just normalizing to a weaker number than its role suggests.
+
+     Decision #10 stands otherwise: the matchup/vegas MULTIPLIERS still
+     scale efficiency, not volume. What changes is that the team-level
+     TARGET reconciliation normalizes to is now a fitted function of the
+     line rather than of team history alone.
+
+ 14. SESSION 10.3b -- WEEK 1 IS BUILDABLE, which supersedes decision #5's
+     closing sentence. At week 1 there is no history at all, so:
+       - team volume comes from volume_prior's `no_history` specification
+         (league mean tilted by the line -- prior-season carryover measured
+         WORSE than the league mean, volume_prior.py decision #6),
+       - player volume is price_share x that team volume, since the
+         cold-start weight is 1.0 at games_played = 0,
+       - participation is BYPASSED rather than applied. This is the trap:
+         `_participation()` returns 0.0 when the team has no played weeks,
+         and multiplying a price-predicted volume by it would return the
+         engine to a pool of zeros while looking like it had worked.
+       - reconciliation's non-exclusive pool share falls back to the
+         PRICE-implied pool share (`share_basis = "price"`), because there
+         is no historical pool share to take.
+
+ 15. SESSION 10.3b -- THE ROLE-CHANGE OVERRIDE RAISES PARTICIPATION, and is
+     the direct fix for the limitation decision #9 named and left open. Its
+     strength is volume_prior.py's FITTED slope, not a constant chosen here.
+
+ 17. SESSION 10.3b -- COLD-START EFFICIENCY IS THE POSITION MEAN, FILLED
+     EXPLICITLY. The design note for this card asserted that efficiency at
+     cold start was already handled because _shrink() returns the position
+     mean at a zero denominator. That was WRONG: _shrink() is only reached
+     for players build_usage() emits a row for, and a zero-history player is
+     not one of them. His rates come out of the left join as NaN, and NaN
+     times a correctly cold-started volume is NaN. fill_cold_start_rates()
+     closes it, using the same artifact values _shrink() would have used.
+
+ 16. SESSION 10.3b -- AN EMPTY build_usage() STILL CARRIES ITS SCHEMA. It
+     used to return a bare `pd.DataFrame()`, which has no `player_id` column,
+     so every caller's merge raised `KeyError: 'player_id'`. Latent through
+     all of Session 10.3a because week 1 was skipped before the merge was
+     reached; it killed all four week-1 backtests on the first run in which
+     week 1 was buildable. An empty result is a valid result and has to be
+     shaped like one.
+
  10. THE MARKET FACTOR IS APPLIED TO EFFICIENCY, NOT VOLUME. matchup_factor
      and vegas_factor arrive from Sessions 2.2/2.3 as "1.0 = league average"
      multipliers; they scale the yards-per-opportunity and TD-per-
@@ -384,8 +448,13 @@ def build_usage(season: int, week: int, variance: dict) -> pd.DataFrame:
             # rw() averages over games the player APPEARED in, so it is a
             # conditional-on-playing volume; participation makes it
             # unconditional.
-            mu = _recency_weighted(g[vol_stat].to_numpy()) * part
+            mu_raw = _recency_weighted(g[vol_stat].to_numpy())
+            mu = mu_raw * part
             den = float(g[vol_stat].sum())
+            # Decision #12: keep BOTH. The role-change override recomputes
+            # mu from mu_raw, and mu/participation is a divide-by-zero for
+            # precisely the players that override exists for.
+            rec[f"{name}_mu_raw"] = mu_raw
             rec[f"{name}_mu"] = mu
             rec[f"{name}_hist_vol"] = den
             recent_wks = team_wks.get(hist_team, [])[-lookback:]
@@ -408,6 +477,30 @@ def build_usage(season: int, week: int, variance: dict) -> pd.DataFrame:
 
     usage = pd.DataFrame(rows)
     if usage.empty:
+        # Session 10.3b, decision #16 -- FOUND BY THE FIRST REAL RUN.
+        #
+        # This used to return a bare `pd.DataFrame()`: empty AND columnless.
+        # Every caller then did `players.merge(usage, on="player_id")`, which
+        # raises `KeyError: 'player_id'` because the key column does not
+        # exist. That was invisible for the whole of Session 10.3a because
+        # week 1 was skipped before this line was ever reached -- the moment
+        # Session 10.3b made week 1 buildable, all four week-1 backtests died
+        # here.
+        #
+        # An empty frame must still carry its SCHEMA. Returning the full
+        # column set (the union over every position's components, which is
+        # what a populated frame's columns are) makes the merge a clean
+        # all-NaN left join, which is exactly what "no player has any
+        # history" should mean.
+        cols = {"player_id": str, "position": str, "hist_team": str}
+        num = ["games_played", "participation", "catch_rate", "int_rate"]
+        for _pos, _cs in COMPONENTS.items():
+            for _n, _v, _y, _t in _cs:
+                num += [f"{_n}_mu_raw", f"{_n}_mu", f"{_n}_hist_vol",
+                        f"{_n}_recent_vol", f"{_n}_yd_rate", f"{_n}_td_rate"]
+        usage = pd.DataFrame({c: pd.Series(dtype=t) for c, t in cols.items()})
+        for c in dict.fromkeys(num):
+            usage[c] = pd.Series(dtype=float)
         return usage
     return usage
 
@@ -436,6 +529,241 @@ def team_volume_history(season: int, week: int) -> pd.DataFrame:
             "recent_targets": float(rec["targets"].sum()),
         })
     return pd.DataFrame(out)
+
+
+# ---------------------------------------------------------------------------
+# Session 10.3b -- Vegas-anchored team volume and the price prior
+# (decisions #11-#15). All of it is INERT unless a caller passes an artifact.
+# ---------------------------------------------------------------------------
+
+# component -> (predicted team column, history-basis column) in the frame
+# team_volume_history() returns.
+_TEAM_PRED_COL = {"pass": "team_attempts", "rush": "team_carries",
+                  "recv": "team_targets"}
+
+
+def vegas_anchored_team_volume(team_vol: pd.DataFrame, vegas: pd.DataFrame,
+                               artifact: dict, teams=None) -> pd.DataFrame:
+    """Decision #13/#14. Replace each team's predicted volume with the fitted
+    function of (team history, implied total, spread).
+
+    `team_vol` may be EMPTY -- that is week 1, and the `no_history`
+    specification is used instead for every team in `teams`. `vegas` must be
+    indexed by team and carry `implied_total` and `spread`.
+
+    The pre-anchor value is preserved as `{col}_history`, because the
+    role-change flag's `hist_share` denominator has to stay the history-based
+    number: comparing a player's history-derived volume against a
+    Vegas-derived team total would fold the team change into what is supposed
+    to be a PLAYER-level divergence.
+    """
+    import volume_prior
+
+    week1 = team_vol is None or team_vol.empty
+    if week1:
+        if teams is None:
+            raise SystemExit(
+                "vegas_anchored_team_volume() was given no team history and "
+                "no team list. Week 1 needs the pool's teams to build a "
+                "no-history team volume for -- refusing to invent one.")
+        out = pd.DataFrame({"team": sorted(set(teams))})
+    else:
+        out = team_vol.copy()
+
+    it = out["team"].map(vegas["implied_total"]) if "implied_total" in vegas else np.nan
+    sp = out["team"].map(vegas["spread"]) if "spread" in vegas else np.nan
+
+    for comp, col in _TEAM_PRED_COL.items():
+        hist_vals = None
+        if not week1 and col in out.columns:
+            out[f"{col}_history"] = out[col]
+            hist_vals = out[col]
+        out[col] = volume_prior.predict_team_volume(
+            artifact, comp, it, sp, history_volume=hist_vals)
+    return out
+
+
+def fill_cold_start_rates(pool: pd.DataFrame, variance: dict) -> pd.DataFrame:
+    """Decision #17. Give a zero-history player the POSITION MEAN efficiency
+    rate instead of NaN.
+
+    build_usage() only emits rows for players who have history, so after the
+    left join a zero-history player has NaN for every `{comp}_yd_rate`,
+    `{comp}_td_rate`, `catch_rate` and `int_rate`. Session 10.3b's design
+    note claimed this was already handled -- "_shrink() returns the position
+    mean when the denominator is zero" -- but that is only true for a player
+    build_usage() actually PROCESSED. A player with no history never reaches
+    _shrink() at all, so nothing fills the rate and the whole cold-start
+    volume gets multiplied by NaN.
+
+    The value used is the same position mean _shrink() would have returned at
+    a zero denominator, read from the same variance artifact, so a cold-start
+    player and a zero-denominator player land on exactly the same number
+    rather than on two independently-plausible ones.
+
+    Only fills NaN -- a player with history keeps every rate he earned.
+    """
+    from fit_statline_variance import COMPONENTS
+
+    df = pool.copy()
+    filled = 0
+    for pos, cs in COMPONENTS.items():
+        vpos = variance["positions"].get(pos)
+        if vpos is None:
+            continue
+        mask = df["position"].astype(str) == pos
+        if not mask.any():
+            continue
+        for name, _v, _y, _t in cs:
+            comp = vpos["components"].get(name)
+            if comp is None:
+                continue
+            for col, key in ((f"{name}_yd_rate", "yards_per_opportunity"),
+                             (f"{name}_td_rate", "td_per_opportunity")):
+                if col not in df.columns:
+                    df[col] = np.nan
+                need = mask & df[col].isna()
+                filled += int(need.sum())
+                df.loc[need, col] = float(comp[key])
+        # Match the populated path EXACTLY: build_usage() sets catch_rate
+        # only for positions that have a recv component, and int_rate only
+        # for QB. Filling them more widely would be harmless (nothing reads
+        # them) but would make a cold-start row differ in shape from a
+        # normal one, which is the kind of small inconsistency that costs an
+        # hour three sessions later.
+        has_recv = any(n == "recv" for n, _v, _y, _t in cs)
+        for col, key in (("catch_rate", "catch_rate"),
+                         ("int_rate", "int_per_attempt")):
+            if key not in vpos:
+                continue
+            if col == "catch_rate" and not has_recv:
+                continue
+            if col == "int_rate" and pos != "QB":
+                continue
+            if col not in df.columns:
+                df[col] = np.nan
+            need = mask & df[col].isna()
+            filled += int(need.sum())
+            df.loc[need, col] = float(vpos[key])
+    if filled:
+        print(f"Cold-start efficiency: filled {filled} NaN rate cell(s) with "
+              f"position means (decision #17).")
+    return df
+
+
+def apply_volume_prior(pool: pd.DataFrame, artifact: dict,
+                       team_vol: pd.DataFrame,
+                       weight_floor: float = None, k: float = None,
+                       role_change: bool = True) -> pd.DataFrame:
+    """Decisions #11, #12, #15. Blend a price-implied volume into `{comp}_mu`
+    and apply the role-change participation override.
+
+    `pool` needs: position, salary, participation, games_played, and the
+    `{comp}_mu` / `{comp}_mu_raw` columns build_usage() produced. `team_vol`
+    is the (already Vegas-anchored) team frame.
+
+    Returns the pool with `{comp}_mu` updated and an audit trail added:
+    `{comp}_price_share`, `{comp}_hist_share`, `volume_prior_weight`,
+    `participation_effective`, `role_change_flag`. The audit columns are not
+    decoration -- reconciliation's week-1 price basis reads
+    `{comp}_price_share` directly (decision #14), and Session 10.3a's
+    experience was that an unlogged volume adjustment is untraceable after
+    the fact.
+    """
+    import volume_prior
+    from fit_statline_variance import COMPONENTS
+
+    if weight_floor is None:
+        weight_floor = volume_prior.DEFAULT_WEIGHT_FLOOR
+    if k is None:
+        k = volume_prior.DEFAULT_COLD_START_K
+
+    df = pool.copy()
+    tv = team_vol.set_index("team") if not team_vol.empty else pd.DataFrame()
+
+    if "participation" not in df.columns:
+        df["participation"] = 0.0
+    if "games_played" not in df.columns:
+        df["games_played"] = 0
+    df["participation"] = pd.to_numeric(df["participation"],
+                                        errors="coerce").fillna(0.0)
+    df["games_played"] = pd.to_numeric(df["games_played"],
+                                       errors="coerce").fillna(0).astype(int)
+
+    comps = sorted({c for cs in COMPONENTS.values() for c, _v, _y, _t in cs})
+    for comp in comps:
+        df[f"{comp}_price_share"] = 0.0
+        df[f"{comp}_hist_share"] = np.nan
+        df[f"{comp}_price_volume"] = 0.0
+
+    # --- price-implied share, and the volume it implies -------------------
+    for pos, cs in COMPONENTS.items():
+        mask = df["position"].astype(str) == pos
+        if not mask.any():
+            continue
+        for comp, _v, _y, _t in cs:
+            ps = volume_prior.share_from_salary(
+                artifact, pos, comp, df.loc[mask, "salary"])
+            df.loc[mask, f"{comp}_price_share"] = ps
+            col = _TEAM_PRED_COL[comp]
+            team_pred = df.loc[mask, "team"].map(
+                tv[col] if (len(tv) and col in tv.columns) else {})
+            team_pred = pd.to_numeric(team_pred, errors="coerce").fillna(0.0)
+            df.loc[mask, f"{comp}_price_volume"] = ps * team_pred.to_numpy(float)
+
+            # hist_share against the HISTORY team volume, never the anchored
+            # one -- see vegas_anchored_team_volume()'s docstring.
+            hcol = f"{col}_history"
+            src = hcol if (len(tv) and hcol in tv.columns) else None
+            if src is not None and f"{comp}_mu" in df.columns:
+                denom = pd.to_numeric(
+                    df.loc[mask, "team"].map(tv[src]), errors="coerce")
+                mu = pd.to_numeric(df.loc[mask, f"{comp}_mu"],
+                                   errors="coerce").fillna(0.0)
+                with np.errstate(divide="ignore", invalid="ignore"):
+                    hs = np.where(denom.to_numpy(float) > 1e-9,
+                                  mu.to_numpy(float) / denom.to_numpy(float),
+                                  np.nan)
+                df.loc[mask, f"{comp}_hist_share"] = hs
+
+    # --- decision #15: role change raises participation -------------------
+    df["participation_effective"] = df["participation"]
+    df["role_change_flag"] = False
+    if role_change:
+        prim = df["position"].astype(str).map(volume_prior.PRIMARY_COMPONENT)
+        hs = pd.Series(np.nan, index=df.index, dtype=float)
+        ps = pd.Series(0.0, index=df.index, dtype=float)
+        for comp in comps:
+            m = prim == comp
+            if m.any():
+                hs.loc[m] = df.loc[m, f"{comp}_hist_share"]
+                ps.loc[m] = df.loc[m, f"{comp}_price_share"]
+        part_eff, flag = volume_prior.role_change_participation(
+            artifact, df["participation"], hs, ps)
+        df["participation_effective"] = part_eff
+        df["role_change_flag"] = flag
+        # Decision #12: recompute from _mu_raw, never by dividing _mu.
+        for comp in comps:
+            raw, mu = f"{comp}_mu_raw", f"{comp}_mu"
+            if raw in df.columns and mu in df.columns:
+                df[mu] = pd.to_numeric(df[raw], errors="coerce").fillna(0.0)                          * df["participation_effective"]
+
+    # --- decision #11: the cold-start blend -------------------------------
+    w = volume_prior.cold_start_weight(df["games_played"], weight_floor, k)
+    df["volume_prior_weight"] = w
+    for comp in comps:
+        mu = f"{comp}_mu"
+        if mu not in df.columns:
+            continue
+        # NOTE the price side is NOT multiplied by participation. That is
+        # decision #14's "bypass", and it is structural rather than a special
+        # case: participation corrects a CONDITIONAL history average, while a
+        # price-predicted share is already unconditional. Multiplying would
+        # send every week-1 player to zero (participation is 0.0 when the
+        # team has no played weeks) while looking like the prior had run.
+        df[mu] = volume_prior.blend_volume(
+            df[mu], df[f"{comp}_price_volume"], w)
+    return df
 
 
 # ---------------------------------------------------------------------------
@@ -488,6 +816,17 @@ def _pool_share(comp, sub, tv, team, team_hist_col, team_recent_col,
     """
     if comp in EXCLUSIVE_COMPONENTS:
         return 1.0, "exclusive"
+    # Decision #14: week 1 has no historical pool share to take, but it DOES
+    # have a price-implied one -- the sum of the pool's price-predicted
+    # shares IS an estimate of the pool's share of team volume, and it is
+    # the only such estimate available before a game is played. Used only
+    # when the history-based bases below are unavailable.
+    price_col = f"{comp}_price_share"
+    have_history = team_recent_col in tv.columns and team in tv.index
+    if not have_history and price_col in sub:
+        ps = float(sub[price_col].fillna(0.0).sum())
+        if ps > 0:
+            return min(ps, 1.0), "price"
     team_recent = float(tv.at[team, team_recent_col])
     pool_recent = float(sub[recent_vol_col].fillna(0.0).sum()) if recent_vol_col in sub else 0.0
     if team_recent >= RECENT_SHARE_MIN_VOLUME and pool_recent > 0:

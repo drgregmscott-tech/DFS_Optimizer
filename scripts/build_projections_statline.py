@@ -126,9 +126,34 @@ Numbered decisions:
      this behaviour is shared code, not a parallel reimplementation that
      could drift.
 
+  9. SESSION 10.3b -- THE VOLUME PRIOR IS OPT-IN AND OFF BY DEFAULT.
+     `--volume-prior` turns on price-as-a-cold-start-prior, the
+     Vegas-anchored team volume, and the role-change participation override
+     together, because they are not separable: cold start needs a team
+     volume that is not this season's history (there isn't one in week 1),
+     and the role flag needs the price share the cold start already
+     computes. Session 10.3b's card listed them as independent bullets;
+     probe C measured that they are not. See volume_prior.py decisions
+     #1-#8 for the evidence behind each.
+
+     OFF BY DEFAULT, unlike Session 10.4's DST model, and deliberately so:
+     10.4 shipped on a measured DST-slot improvement, whereas this card
+     ships on a CAPABILITY gate (week 1 becomes buildable, role changes are
+     repaired before reconciliation) with no accuracy claim. A component
+     that has not been shown to help should not be silently on. Flip the
+     default only when a measurement supports it.
+
+     `--volume-prior-floor` (default 0.0) is the mid-season asymptotic
+     weight. 0.0 means the prior is a cold-start mechanism ONLY, which is
+     what probe A's evidence supports and what the user confirmed: price
+     never beat history at any games-played level, so a standing mid-season
+     blend is not something to switch on by accident.
+
 Usage:
   python3 scripts/build_projections_statline.py --site dk --season 2021 \
       --week 10 --slate-id rotoguru_2021_wk10
+  python3 scripts/build_projections_statline.py --site dk --season 2021 \
+      --week 1 --slate-id rotoguru_2021_wk1 --volume-prior
 """
 
 import argparse
@@ -142,6 +167,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 import scoring_rules  # noqa: E402
 import statline_model  # noqa: E402
+import volume_prior  # noqa: E402
 from ingest_salaries import SITE_CONFIGS  # noqa: E402
 # Decisions #2 and #7: reuse, never re-implement.
 from build_projections import (  # noqa: E402
@@ -192,8 +218,18 @@ def build_statline_projections(site: str, season: int, week: int, slate_id: str,
                                seed: int = statline_model.DEFAULT_SEED,
                                reconcile_threshold: float = statline_model.RECONCILE_FAIL_THRESHOLD,
                                dst_model_mode: str = "distributional",
+                               use_volume_prior: bool = False,
+                               prior_floor: float = None,
+                               prior_k: float = None,
+                               role_change: bool = True,
                                ) -> pd.DataFrame:
     variance = statline_model.load_variance()
+    prior_art = volume_prior.load_prior(site) if use_volume_prior else None
+    if prior_art is not None:
+        print(f"Volume prior ON -- {volume_prior.describe(prior_art)}; "
+              f"mid-season floor {prior_floor if prior_floor is not None else volume_prior.DEFAULT_WEIGHT_FLOOR}, "
+              f"k {prior_k if prior_k is not None else volume_prior.DEFAULT_COLD_START_K}, "
+              f"role-change {'on' if role_change else 'OFF'}.")
     matchup = load_matchup_factors(site, season, week)
     vegas = load_vegas_implied_totals(week)
     salaries = load_salaries(site, slate_id)
@@ -223,16 +259,24 @@ def build_statline_projections(site: str, season: int, week: int, slate_id: str,
 
     # --- usage + reconciliation -------------------------------------------
     usage = statline_model.build_usage(season, week, variance)
-    if usage.empty:
+    if usage.empty and prior_art is None:
         print(f"WARNING: no usage history at all before week {week} "
-              f"(decision #5 -- week 1 is not buildable by this engine).",
-              file=sys.stderr)
+              f"(decision #5 -- week 1 is not buildable by this engine "
+              f"without --volume-prior).", file=sys.stderr)
+    elif usage.empty:
+        print(f"No usage history before week {week}: building from the price "
+              f"prior alone (statline_model decision #14).")
 
     df = players.merge(usage.drop(columns=["position", "hist_team"], errors="ignore"),
                        on="player_id", how="left")
     n_no_history = int(df["games_played"].isna().sum()) if "games_played" in df else len(df)
     if "games_played" in df:
         df["games_played"] = df["games_played"].fillna(0).astype(int)
+
+    if prior_art is not None:
+        # Decision #17. Must run BEFORE the rates are used for anything --
+        # a cold-start player's volume is worthless multiplied by a NaN rate.
+        df = statline_model.fill_cold_start_rates(df, variance)
 
     df["opponent"] = df["team"].map(opponent_map)
     df.loc[df["no_real_game_this_week"], "opponent"] = None
@@ -257,6 +301,37 @@ def build_statline_projections(site: str, season: int, week: int, slate_id: str,
     # Share reconciliation (statline_model decision #7) -- mandatory per the
     # ROADMAP, because an incoherent QB/receiver pair corrupts stacking.
     team_vol = statline_model.team_volume_history(season, week)
+
+    if prior_art is not None:
+        # Team-level spread. build_vegas_factors() drops it (it only ever
+        # needed implied_total), but the fitted team-volume specification
+        # requires BOTH terms -- volume_prior.py decision #7 -- so it is
+        # taken from the raw vegas frame here rather than by widening a
+        # Session 2.3 contract that nothing else uses.
+        vg = vegas.copy()
+        vg["expected_opponent"] = vg["team"].map(opponent_map)
+        vg = vg[vg["opponent"] == vg["expected_opponent"]].drop_duplicates("team")
+        if "spread" not in vg.columns:
+            vg["spread"] = 0.0
+        vg = vg.set_index("team")[["implied_total", "spread"]]
+
+        pool_teams = sorted(df.loc[~df["no_real_game_this_week"], "team"]
+                            .dropna().astype(str).unique().tolist())
+        team_vol = statline_model.vegas_anchored_team_volume(
+            team_vol, vg, prior_art, teams=pool_teams)
+
+        for c in ("participation", "games_played"):
+            if c not in df.columns:
+                df[c] = 0.0
+        df = statline_model.apply_volume_prior(
+            df, prior_art, team_vol, weight_floor=prior_floor, k=prior_k,
+            role_change=role_change)
+        n_flag = int(df["role_change_flag"].sum())
+        n_cold = int((df["games_played"] <= 1).sum())
+        print(f"Volume prior applied: {n_flag} role-change flag(s), "
+              f"{n_cold} player(s) at 0-1 games of history "
+              f"(mean price weight {df['volume_prior_weight'].mean():.3f}).")
+
     recon_pool = df[~df["no_real_game_this_week"]].copy()
     if not recon_pool.empty and not team_vol.empty:
         recon_pool, recon_report = statline_model.reconcile_team_shares(
@@ -286,8 +361,10 @@ def build_statline_projections(site: str, season: int, week: int, slate_id: str,
     # path AND here, the same two-place pattern Session 10.1's bug #2 ($0
     # salary -> NaN value) settled on.
     usage_cols = [c for c in df.columns
-                  if c.endswith(("_mu", "_yd_rate", "_td_rate", "_hist_vol"))
-                  or c in ("catch_rate", "int_rate", "participation", "market_factor")]
+                  if c.endswith(("_mu", "_mu_raw", "_yd_rate", "_td_rate",
+                                 "_hist_vol", "_price_share", "_price_volume"))
+                  or c in ("catch_rate", "int_rate", "participation",
+                           "participation_effective", "market_factor")]
     for c in usage_cols:
         df[c] = pd.to_numeric(df[c], errors="coerce").fillna(0.0)
 
@@ -388,6 +465,28 @@ if __name__ == "__main__":
                              "simulated one, which is what Session 10.5's "
                              "objective needs. 'legacy' restores the "
                              "pre-10.4 DST and its unconditional sigma.")
+    # Session 10.3b (decision #9). One flag turns on all three mechanisms,
+    # because probe C measured that they are not separable.
+    parser.add_argument("--volume-prior", action="store_true",
+                        help="Enable the Session 10.3b volume prior: price as "
+                             "a cold-start prior on volume, Vegas-anchored "
+                             "team volume, and the role-change participation "
+                             "override. OFF by default -- this card ships on "
+                             "a capability gate, not a measured improvement.")
+    parser.add_argument("--volume-prior-floor", type=float, default=None,
+                        help="Mid-season asymptotic weight on the price side "
+                             f"(default {volume_prior.DEFAULT_WEIGHT_FLOOR} = "
+                             "cold start only; probe A measured price losing "
+                             "to history at every games-played level, so "
+                             "raising this is not a free win).")
+    parser.add_argument("--volume-prior-k", type=float, default=None,
+                        help="Half-weight point of the cold-start schedule "
+                             f"(default {volume_prior.DEFAULT_COLD_START_K}, "
+                             "ARBITRARY and unfit -- first retuning target).")
+    parser.add_argument("--no-role-change", action="store_true",
+                        help="Disable the participation override only, "
+                             "keeping cold start and Vegas team volume. For "
+                             "attributing a result to one mechanism.")
     parser.add_argument("--reconcile-threshold", type=float,
                         default=statline_model.RECONCILE_FAIL_THRESHOLD,
                         help="Max proportional share-reconciliation rescale before "
@@ -398,7 +497,11 @@ if __name__ == "__main__":
         args.site, args.season, args.week, args.slate_id,
         n_sims=args.statline_sims, seed=args.statline_seed,
         reconcile_threshold=args.reconcile_threshold,
-        dst_model_mode=args.dst_model)
+        dst_model_mode=args.dst_model,
+        use_volume_prior=args.volume_prior,
+        prior_floor=args.volume_prior_floor,
+        prior_k=args.volume_prior_k,
+        role_change=not args.no_role_change)
 
     def _clean_site_id(value):
         if pd.isna(value):
@@ -425,4 +528,5 @@ if __name__ == "__main__":
           f"a real projection with no variance would break Session 10.5's objective)")
     if n_nonzero == 0:
         print("  NOTE: every projection is 0.0 -- expected for week 1 "
-              "(decision #5), a real problem for any other week.")
+              "WITHOUT --volume-prior (decision #5). With the prior on, or "
+              "for any other week, this is a real problem.")

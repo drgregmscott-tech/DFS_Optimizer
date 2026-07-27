@@ -534,7 +534,8 @@ def run_projection_pipeline(site: str, season: int, week: int, slate_id: str,
                             anchor: dict | None = None,
                             engine: str = "legacy",
                             statline: dict | None = None,
-                            dst_model_mode: str = "legacy") -> Path:
+                            dst_model_mode: str = "legacy",
+                            prior: dict | None = None) -> Path:
     """Drive the REAL component scripts + build_projections.py via their
     file interfaces. Returns the path to final_projections_{site}_{week}.csv.
     Raises RuntimeError with the failing step's stderr on any failure.
@@ -580,6 +581,20 @@ def run_projection_pipeline(site: str, season: int, week: int, slate_id: str,
         if statline:
             cmd += ["--statline-sims", str(statline["sims"]),
                     "--statline-seed", str(statline["seed"])]
+        # Session 10.3b (decision #15 below). Appended only when ON, which is
+        # SAFE here and would not be for --dst-model: the downstream default
+        # is False and this session is not flipping it, so an omitted flag
+        # cannot silently select a different arm. If a future session makes
+        # the volume prior the default, this must become an always-explicit
+        # flag exactly as Session 10.4's trap required.
+        if prior and prior["on"]:
+            cmd += ["--volume-prior"]
+            if prior["floor"] is not None:
+                cmd += ["--volume-prior-floor", str(prior["floor"])]
+            if prior["k"] is not None:
+                cmd += ["--volume-prior-k", str(prior["k"])]
+            if not prior["role_change"]:
+                cmd += ["--no-role-change"]
         # Decision #4 of build_projections_statline.py: the stat-line engine
         # takes no anchor flags at all -- Session 10.2 measured the anchor as
         # neutral at the points level, and its one real use (cold start)
@@ -703,7 +718,8 @@ def describe_anchor(anchor: dict | None) -> str:
 
 
 def describe_arm(engine: str, anchor: dict | None,
-                 dst_model_mode: str = "legacy") -> str:
+                 dst_model_mode: str = "legacy",
+                 prior: dict | None = None) -> str:
     """Decision #10, extended by decision #14: an arm is (engine, anchor, DST
     model), and a percentile without its FULL config is not comparable to
     anything.
@@ -722,8 +738,30 @@ def describe_arm(engine: str, anchor: dict | None,
            "distributional": "DISTRIBUTIONAL DST (Session 10.4)"}.get(
                dst_model_mode, dst_model_mode)
     parts = [label, describe_anchor(anchor), dst]
+    # Session 10.3b: an arm is now (engine, anchor, DST model, volume prior).
+    # Session 10.4's bug #4 was exactly this -- an axis added to what defines
+    # an arm without being added to the label, so a run asserted it was the
+    # baseline while running a modified projection. "When you add an axis to
+    # what defines an arm, grep for every place that names one."
+    if prior and prior.get("on"):
+        # Resolve None to the defaults actually in force. A label reading
+        # "floor=None" tells a future reader nothing about which arm ran,
+        # which is the entire job of this function.
+        import volume_prior as _vp
+        fl = prior.get("floor")
+        kk = prior.get("k")
+        fl = _vp.DEFAULT_WEIGHT_FLOOR if fl is None else fl
+        kk = _vp.DEFAULT_COLD_START_K if kk is None else kk
+        bits = [f"floor={fl}", f"k={kk}",
+                f"max_gp={_vp.COLD_START_MAX_GAMES:g}"]
+        if not prior.get("role_change", True):
+            bits.append("role-change OFF")
+        parts.append("VOLUME PRIOR (" + ", ".join(str(b) for b in bits) + ")")
+    else:
+        parts.append("volume prior off")
     arm = " | ".join(parts)
     is_baseline = (engine == "legacy" and dst_model_mode == "legacy"
+                   and not (prior and prior.get("on"))
                    and not (anchor and (anchor["weight"] > 0 or anchor["cold_start"])))
     if is_baseline:
         arm += "  <- Session 10.1 baseline arm"
@@ -746,7 +784,8 @@ def backtest_week(site: str, season: int, week: int, games: pd.DataFrame,
                   field_pool_mode: str = "baseline",
                   engine: str = "legacy",
                   dst_model_mode: str = "legacy",
-                  statline: dict | None = None) -> dict:
+                  statline: dict | None = None,
+                  prior: dict | None = None) -> dict:
     slate_id = f"rotoguru_{season}_wk{week}"
     salary_path = DATA_DIR / f"salaries_{site}_{slate_id}.csv"
     if not salary_path.exists():
@@ -771,14 +810,21 @@ def backtest_week(site: str, season: int, week: int, games: pd.DataFrame,
         anchor and (anchor["cold_start"] or anchor["weight"] >= 1.0)
     )
     # Session 10.3a: the stat-line engine keeps the same lookahead guard
-    # (statline_model.py decision #5), so week 1 is unbuildable for it too.
-    # Its cold start is Session 10.3b, and it takes no anchor flags, so no
-    # configuration of --engine statline makes week 1 buildable today.
-    if week == 1 and not anchor_carries_cold_start:
+    # (statline_model.py decision #5), so week 1 was unbuildable for it too.
+    # Session 10.3b closes that: --volume-prior gives the stat-line engine a
+    # cold start on its VOLUME inputs (price-implied share x a no-history
+    # team volume), so week 1 is now buildable on that arm and is no longer
+    # skipped. This is the card's first validation line, and it is measured
+    # rather than assumed -- a week-1 row now appears in the results table
+    # with a real percentile, or fails loud.
+    prior_carries_cold_start = bool(
+        engine == "statline" and prior and prior["on"]
+    )
+    if week == 1 and not (anchor_carries_cold_start or prior_carries_cold_start):
         detail = ("week 1 not backtestable -- no prior-week usage data. For the "
                   "legacy engine, --salary-anchor-cold-start makes it "
-                  "buildable; the stat-line engine has no cold start until "
-                  "Session 10.3b.")
+                  "buildable; for the stat-line engine, --volume-prior "
+                  "(Session 10.3b).")
         return {"site": site, "season": season, "week": week, "status": "SKIP",
                 "detail": detail}
 
@@ -787,7 +833,8 @@ def backtest_week(site: str, season: int, week: int, games: pd.DataFrame,
         build_vegas_file(games, site, season, week)
         proj_path = run_projection_pipeline(site, season, week, slate_id, anchor,
                                             engine=engine, statline=statline,
-                                            dst_model_mode=dst_model_mode)
+                                            dst_model_mode=dst_model_mode,
+                                            prior=prior)
     except RuntimeError as e:
         return {"site": site, "season": season, "week": week, "status": "ERROR", "detail": str(e)}
 
@@ -807,9 +854,17 @@ def backtest_week(site: str, season: int, week: int, games: pd.DataFrame,
     # Session 10.4, decision #14: a non-legacy DST model also changes the
     # pool's projections, so it counts as an arm differing from the baseline
     # and must NOT be allowed to move the field.
+    # Session 10.3b, decision #15: the volume prior changes the pool too --
+    # it rescues zero-history players who would otherwise project 0.0 and be
+    # filtered out. That ENLARGES the pool, which enlarges and dilutes a
+    # field sampled from it, which raises our percentile for a reason that
+    # has nothing to do with the projection. That is precisely the artifact
+    # decision #9 was created to kill (measured then at t = -4.3), so the
+    # prior must be an arm axis here as well as in the label.
     arm_differs_from_baseline = (
         engine != "legacy"
         or dst_model_mode != "legacy"
+        or bool(prior and prior["on"])
         or bool(anchor and (anchor["weight"] > 0 or anchor["cold_start"])))
     field_proj_path = proj_path
     if field_pool_mode == "baseline" and arm_differs_from_baseline:
@@ -823,9 +878,15 @@ def backtest_week(site: str, season: int, week: int, games: pd.DataFrame,
                         dtype={"player_id": str, "site_player_id": str}
                         ).to_csv(field_proj_path, index=False)
             # Rebuild the ARM's file, which the baseline run just clobbered.
+            # `prior=` is NOT optional here. Omitting it would rebuild the arm
+            # WITHOUT the volume prior while every label and every recorded
+            # number said it had one -- the same silent wrong-arm failure as
+            # Session 10.4's bugs #3 and #4, one layer deeper. Every argument
+            # in this call must match the arm's own configuration exactly.
             run_projection_pipeline(site, season, week, slate_id, anchor,
                                     engine=engine, statline=statline,
-                                    dst_model_mode=dst_model_mode)
+                                    dst_model_mode=dst_model_mode,
+                                    prior=prior)
         except RuntimeError as e:
             return {"site": site, "season": season, "week": week,
                     "status": "ERROR",
@@ -958,7 +1019,8 @@ def backtest_week(site: str, season: int, week: int, games: pd.DataFrame,
         # model produced the number. Logged results with a wrong arm label
         # are worse than no label.
         "dst_model": dst_model_mode,
-        "arm": describe_arm(engine, anchor, dst_model_mode),
+        "arm": describe_arm(engine, anchor, dst_model_mode, prior),
+        "volume_prior": bool(prior and prior["on"]),
         "field_pinned": bool(field_proj_path != proj_path and not field_pool_note),
         "detail": field_pool_note,
     }
@@ -1022,6 +1084,24 @@ def main():
     parser.add_argument("--salary-anchor-k", type=float, default=4.0,
                         help="Half-weight point of the cold-start schedule, in games "
                              "played. ARBITRARY default, not fit.")
+    # Session 10.3b. Mirrors build_projections_statline.py's flags; the
+    # harness passes them through and never applies the prior itself
+    # (decision #4: the harness runs the real engine, it does not
+    # reimplement a model).
+    parser.add_argument("--volume-prior", action="store_true",
+                        help="Session 10.3b: price cold-start prior on volume, "
+                             "Vegas-anchored team volume, and the role-change "
+                             "participation override. Requires --engine "
+                             "statline. Makes week 1 buildable.")
+    parser.add_argument("--volume-prior-floor", type=float, default=None,
+                        help="Mid-season asymptotic price weight (default 0.0 "
+                             "= cold start only).")
+    parser.add_argument("--volume-prior-k", type=float, default=None,
+                        help="Half-weight point of the cold-start schedule "
+                             "(default 4.0, ARBITRARY and unfit).")
+    parser.add_argument("--no-role-change", action="store_true",
+                        help="Disable the participation override only, so a "
+                             "result can be attributed to one mechanism.")
     parser.add_argument("--field-pool", choices=["baseline", "arm"], default="baseline",
                         help="Which pool the synthetic field is sampled from "
                              "(decisions #9, #11). 'baseline' (default) pins the "
@@ -1034,6 +1114,15 @@ def main():
               "cold_start": args.salary_anchor_cold_start,
               "k": args.salary_anchor_k}
     statline = {"sims": args.statline_sims, "seed": args.statline_seed}
+    prior = {"on": args.volume_prior, "floor": args.volume_prior_floor,
+             "k": args.volume_prior_k,
+             "role_change": not args.no_role_change}
+    if args.volume_prior and args.engine != "statline":
+        raise SystemExit(
+            "--volume-prior requires --engine statline. The prior acts on the "
+            "stat-line VOLUME inputs, which the legacy points-blend engine "
+            "does not have. (The legacy engine's equivalent is Session 10.2's "
+            "--salary-anchor-cold-start, which acts on points.)")
 
     global DEBUG
     DEBUG = args.debug
@@ -1050,7 +1139,7 @@ def main():
     print("NOTE: field percentile is vs a SYNTHETIC ownership-weighted field "
           "(Session 4.1 heuristic, not real ownership) -- 'plausible field', "
           "not 'real contest' (decision #3).")
-    print(f"ARM:  {describe_arm(args.engine, anchor, args.dst_model)}")
+    print(f"ARM:  {describe_arm(args.engine, anchor, args.dst_model, prior)}")
     print(f"FIELD: sampled from the {args.field_pool} pool "
           f"({'pinned to legacy+anchor-off -- comparable across arms' if args.field_pool == 'baseline' else 'moves with the arm -- NOT comparable across arms'}).")
     print("SEED: per-week generators derived from (seed, season, week) -- an "
@@ -1083,6 +1172,7 @@ def main():
                                 anchor=anchor,
                                 field_pool_mode=args.field_pool,
                                 engine=args.engine,
+                                prior=prior,
                                 dst_model_mode=args.dst_model,
                                 statline=statline)
             results.append(res)
@@ -1111,7 +1201,7 @@ def main():
     # The summary is what gets copied into a session log, so it is the worst
     # of the three to have wrong. A grep for every call site is the fix that
     # should have been applied the first time.
-    print(f"  Arm:   {describe_arm(args.engine, anchor, args.dst_model)}")
+    print(f"  Arm:   {describe_arm(args.engine, anchor, args.dst_model, prior)}")
     print(f"  Weeks: {len(results)}   OK: {len(ok)}   SKIP: {len(skip)}   ERROR: {len(err)}")
 
     def _block(rows, label, indent="  "):
@@ -1158,7 +1248,8 @@ def main():
             for r in unpinned:
                 print(f"       {r['season']} wk{r['week']}: {r['detail']}")
 
-        is_baseline_arm = (args.engine == "legacy"
+        is_baseline_arm = (not prior["on"]
+                           and args.engine == "legacy"
                            and anchor["weight"] <= 0 and not anchor["cold_start"])
         if is_baseline_arm:
             print("\n  ^ This is the BASELINE arm (legacy engine, anchor off). Every "
