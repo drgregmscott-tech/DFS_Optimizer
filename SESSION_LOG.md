@@ -1867,3 +1867,90 @@ Fixed as decision #19. A missing current-season file is legitimate when `season_
 Verified end-to-end against the real 2026 schedule with no `team_stats_2026.parquet` present: 32 defenses built on 2025 carryover alone, projections 6.62–7.89, sigma 5.92–6.22, every QB resolved via the `last_game_leading_passer` fallback (correct — no 2026 starter is announced in `games.parquet` yet). Re-ran the 2021 measurement afterwards: unchanged.
 
 **Operational consequence:** `data/team_stats_2025.parquet` is a required commit for the 2026 season, because it is the carryover source. The `refresh_data.yml` step must tolerate a 404 on the current season rather than failing the job.
+
+---
+
+## Session 10.3b — Stat-Line Priors, Cold Start, and Role Change (2026-07-27)
+
+Ships on the capability gate agreed before the build, not on accuracy. Week 1 is buildable by the stat-line engine for the first time, and the three catalogued role-change cases are repaired before reconciliation touches them. The lineup-level effect is **+3.01 median-percentile (SE 1.55, t = 1.94, p = 0.057)** out-of-sample — below the bar, carried almost entirely by 2019, negative in 2020.
+
+### The pre-test came first, and two premises died there
+
+Sessions 10.3a and 10.4 both measured their own card's premises before building, and both times something came back false. `probe_statline_priors.py` is that step for this card — a throwaway script that writes nothing to `data/`, reuses `statline_model.py`'s own history primitives and `fit_salary_anchor.py`'s own isotonic machinery rather than reimplementing either, and asserts its cached history loader matches `load_history()` before printing a number.
+
+**Probe A — price does not beat history at volume share, anywhere.** Pooled out-of-sample MAE 0.0709 (price) vs 0.0600 (history), 36,025 rows, and history wins in every games-played bucket including 0–1. A 50/50 blend lands at 0.0597, a 0.5% improvement. What price *does* have is decorrelated error: residual correlation 0.474–0.597, nowhere near the 0.965 that made 10.3a's blend a null. Real independent information, just the weaker signal. Consequence: **the price prior ships cold-start-only, mid-season floor 0.0** (user-confirmed). One honest caveat on that evidence — probe A necessarily excluded 3,905 rows with no history share, so its `gp 0-1` bucket is effectively gp = 1 and it cannot itself speak to true cold start. That rests on Session 10.2's measured week-1 result.
+
+**Probe B — Vegas adds to team volume, with the card's mechanism corrected.** Pass attempts R² 0.0652 → 0.0799; carries 0.0394 → 0.0667. The pre-registered hypothesis held: spread drives carries (t = −6.62), total drives attempts (t = +5.02). The mechanical finding that would have been easy to get wrong: **both terms are required together.** Alone, each is weak (attempts: total t = +1.54, spread t = +1.07); jointly +4.67 and +4.53. That is suppression, and it is expected — `implied_total = total/2 − spread/2`, so carrying both is what spans *both* teams' implied totals rather than one composite. Never fit or ship one without the other.
+
+**Probe C — prior-season team-volume carryover is worse than useless. FALSE premise.** Week-1 pass attempts: league average MAE 6.31 / R² **+0.015**; carryover MAE 6.42 / R² **−0.065**. Carries: +0.026 vs **−0.046**. Negative out-of-sample R² on both channels. Week-1 team volume is therefore the league mean tilted by that week's line, and the prior season is never consulted. **This finding must not be applied to `dst_model.py` decision #15** — that carries over defensive *quality*, which persists across a season boundary. This is *volume*, which is scheme and pace and turns over with coordinators and personnel. Different quantity, different answer, and 10.4's addendum depends on the carryover path working.
+
+**Probe D — the ROADMAP's role-change instruction is backwards, and it is now amended there.** Phase 10's design intro said to *suppress* the salary anchor when a role change is flagged, "a stale price is exactly the value spot we're trying to beat." That presumes the price is stale. On a weekly slate the site reprices every player every week with real money behind it while our usage history is weeks old by construction. Regressing what history misses on the price−history divergence, out-of-sample: **slope +0.4529, t = +93.26, R² = 0.195.** The three catalogued cases, realized share 1.000 in all three: NYJ 2021 wk13 Z. Wilson hist 0.128 / price 0.935; SEA wk13 R. Wilson hist 0.582 / price 0.971; CAR wk15 Newton hist 0.521 / price 0.935.
+
+### The structural finding that reordered the build
+
+Cold start and Vegas team volume are **not independent bullets**, which is how the card listed them. In week 1 `load_history()` is empty, so `team_volume_history()` returns an empty frame, so reconciliation cannot run — and `_participation()` returns 0.0 for every player, which would multiply any price-predicted volume straight back to zero while looking like it had worked. A player share is meaningless without a team total to take a share *of*. Cold start therefore depends on a team-volume source that is not this season's history, and they ship behind one flag.
+
+### Design decisions taken, and one rejected
+
+**The role-change flag acts on participation, not on the share** (option (b) of two, user-confirmed). This card states its own problem precisely: "the QB projection is substantially a product of reconciliation rather than of the volume model." Zach Wilson's failure is not really his share — it is `participation = 0.20` crushing his volume, after which reconciliation scales the pool back up and does the work the volume model should have done. The rejected alternative was to blend the share toward price at probe D's slope; it was rejected because in the top-divergence decile price *alone* is worse than history (MAE 0.237 vs 0.167), so a 0.45 blend puts Wilson at ~0.49 against a realized 1.000 — half a fix that leaves reconciliation still doing the repair.
+
+**The override's strength is fitted, not hand-tuned.** The first draft was `clip((rel_div − LO)/(HI − LO))` with LO and HI chosen by eye against the three catalogued cases — three points fitted and called a rule. Replaced with a formulation whose one constant *is* probe D's regression slope: `share_target = hist + ROLE_SLOPE × (price − hist)`, then `part_eff = clip(part × share_target/hist, part, 1.0)`. Participation is scaled by exactly the ratio the fitted response says the share should move. It **only ever raises, never lowers** — participation already handles the backup case correctly (that is what 10.3a decision #9 built it for, and Cooper Rush is the evidence); the gap it cannot close is one-directional.
+
+**The cold-start schedule needed a taper, and the bare ROADMAP formula did not mean what "cold-start only" was agreed to mean.** `floor + (1−floor)·k/(k+gp)` at floor 0.0, k 4.0 gives w = 0.364 at seven games and 0.20 at sixteen. An entrenched starter in the first real run had his volume pulled from 38.0 to 35.2 by a standing one-third price weight — a long way from cold start, and pointing the wrong way against probe A. The floor is the *asymptote*, not the mid-season weight, and the decay to it is slow. Added a linear taper to zero over `COLD_START_MAX_GAMES` = 4: weights are now 1.000 / 0.600 / 0.333 / 0.143 / 0.000 at gp 0–4. Linear rather than a second decay curve on purpose — a hard cutoff would put a discontinuity in a player's projection at the game he crosses it. Verified afterwards: the gp = 9 starter is *exactly* untouched at 38.0 while the role-change player is still repaired.
+
+### Measurement
+
+Both artifacts holdout-fit (2014–17), measured on 2018–21, week 1 excluded so the comparison is the same 65 weeks, paired by week, both arms run on identical code the same day.
+
+| arm | median-pctile | paired delta |
+|---|---|---|
+| volume prior OFF | 77.88 | — |
+| prior ON, role-change ON | 80.89 | **+3.01, SE 1.55, t = 1.94, p = 0.057** |
+| prior ON, role-change OFF | — | role change alone: **−0.06, t = −0.07, p = 0.94** |
+
+Per season: 2018 +2.01, 2019 **+8.93**, 2020 **−0.60**, 2021 +1.78. One season out of four driving it while another goes negative is the signature of noise, not an effect. **Read the per-season block, not the pooled number.**
+
+The role-change flag is a lineup-level null and is kept anyway, logged honestly as such: the player-level repair is real, and Session 10.5's objective consumes per-player mean and sigma directly, where a QB projected at a 0.128 share when he took every snap is simply a wrong number whether or not he lands in an optimal lineup.
+
+**A pre-registration that was wrong, recorded as such.** Before the build I wrote that none of this would clear the noise floor. The first measurement came back +4.21 at t = 3.08 and I said so. That measurement was then found to be sitting on an in-sample variance artifact shared by both arms; the clean number is +3.01 at t = 1.94, much closer to the original prediction. The lesson is not that the prediction was right — it is that the first number was quoted before its artifacts were checked.
+
+### Four bugs, all found by running
+
+1. **`KeyError: 'player_id'` killed all four week-1 backtests.** `build_usage()` returned a bare `pd.DataFrame()` — empty *and columnless* — so every caller's `merge(on="player_id")` raised. Latent through the whole of 10.3a because week 1 was skipped before that line was ever reached. An empty result is a valid result and has to be shaped like one; it now returns the full column schema (decision #16).
+2. **Cold-start efficiency was NaN.** The design note for this card asserted the case was already handled because `_shrink()` returns the position mean at a zero denominator. Wrong: `_shrink()` is only reached for players `build_usage()` emits a row for, and a zero-history player is not one of them. His rates arrive from the left join as NaN, and NaN times a correctly cold-started volume is NaN. `fill_cold_start_rates()` closes it using the same artifact values `_shrink()` would have used (decision #17).
+3. **The role slope was fit on the measurement seasons.** Caught by reviewing the first real backtest rather than the code. The slope went into the artifact and was then measured on the same seasons — precisely the error 10.3a caught in itself at a threefold inflation. Fixed by cross-fitting inside the fit window; on a holdout fit nothing from 2018–21 enters the artifact.
+4. **Field pinning would have silently run the wrong arm.** The harness rebuilds the arm's projection file after the baseline run clobbers it, and that call did not forward `prior=`. The measured arm would have been plain stat-line while every label said volume-prior — the same class as 10.4's bugs #3 and #4, one layer deeper.
+
+Plus, in the pre-test itself: `statlite.spearmanr` returns a result object rather than a tuple; a per-week team-volume recomputation inside the per-player loop that would have been ~190,000 full boolean scans on the real panel; and an unfitted `(position, component)` pair dropped **silently**, taking every TE row out of the pooled numbers without a word.
+
+### Two process defects fixed, neither deferred
+
+**The artifact provenance guard (`backtest_harness.py` decision #16).** This session lost three full backtest runs and came one bisect from blaming a +1.4 shift on newly-written code, because `statline_variance.json` had been refit on all eight seasons for production and silently became the basis of a 2018–21 measurement. Nothing printed that fact anywhere. `fit_volume_prior.py` warned about its own fit window, but a warning only one of four artifacts emits is not a guard — and the one that mattered was silent. The harness now prints every loaded artifact's fit window in the run banner and warns loudly on overlap with the measured seasons. It **warns rather than aborts**: measuring in-sample is the right thing when you want the shipped configuration's own numbers, and is only wrong when it goes unrecorded.
+
+**A false provenance message in `fit_volume_prior.py`.** On the production refit it printed "curves on [2014–2017] → slope fit on [2018–2021]" and, in the same line, "Nothing from [2018–2021] enters the artifact." Both halves, contradicting each other. Now checked rather than asserted.
+
+**The field's RNG stream (`backtest_harness.py` decision #17).** A cross-arm field divergence at 2020 wk3 (field median 119.03 vs 109.24, identical on the other 64 weeks) was found by eyeballing three printed logs, which is not a detection method. The root fragility: `build_synthetic_field()` reused the same generator the optimizer seed had already drawn from, so the pinned field's randomness depended on how many draws everything before it happened to consume — arm-invariant by accident, not by construction. It now gets its own stream derived from (seed, season, week) plus a stream tag. A `field_pool_fingerprint` is also recorded per week and printed in the summary, so two arms' logs can be compared mechanically instead of by eye. **The 2020 wk3 divergence itself is not fully explained** — the new stream removes the mechanism that most plausibly caused it, and the fingerprint will catch any recurrence, but this is a fix-and-detect rather than a root-caused diagnosis.
+
+### The re-baseline, and what it supersedes
+
+The volume-prior-OFF arm did not reproduce 10.4's recorded 75.9 / 96.7. It returned 77.1 with the all-eight variance artifact and **77.9** with the holdout artifact — refitting to holdout moved it *away* from the target, so the in-sample-artifact hypothesis was wrong and is recorded as wrong.
+
+Every file on the stat-line path was then diffed against its pre-session version from GitHub history and cleared: `statline_model.py` (only two commits ever; the diff against 10.3a is exactly this session's additive edits), `build_projections_statline.py` (this session's additions on top of 10.4's, all gated), `scoring_rules.py` (10.4's changes are purely additive and entirely DST — `score_statline()` and `STATLINE_COLUMNS` byte-identical to 10.3a), `fit_statline_variance.py` (untouched since 10.3a). The automated cron commits write only `logs/automation_run_log.csv`. The legacy path is provably unaffected throughout — field median is identical to the cent at 108.16 across every run.
+
+The most parsimonious explanation left is a **stale reference**: 10.4 has three commits, and its reproduction check may predate the last two, in which case the recorded figure describes an intermediate state of the repo that no longer exists. Proving that would mean reconstructing and running each intermediate commit, which was judged disproportionate.
+
+**Re-baselined by explicit agreement.** New reference, 2026-07-27, holdout artifacts, 65 weeks, week 1 excluded: stat-line + distributional DST, volume prior OFF = **77.9 / 97.3**, raw median lineup 129.64, best 166.23, field median 108.16. This supersedes 10.4's 75.9 / 96.7 for all future comparison. The discrepancy is unexplained and logged as such rather than buried.
+
+### Sandbox-only vs live-validated
+
+**Live-validated on real 2014–2021 data:** every probe result; the fitter end to end; all seven share curves; the team-volume specifications; the role slope and the three catalogued-case repairs; week 1 building in all four seasons; the three-arm measurement; the file diffs against GitHub history.
+
+**Sandbox-only (synthetic fixtures on real schemas):** the provenance guard's four cases; `field_pool_fingerprint`'s stability, projection-independence and change-detection; the field RNG's reproducibility and per-week variation; the cold-start taper table; the role-change guard paths. None of these has run on Greg's machine yet — **the next backtest is their first live exercise**, and the fingerprint block appearing in the summary is the thing to check.
+
+### Handoff notes
+
+- `--volume-prior` is **OFF by default** and should stay off until a measurement supports flipping it.
+- Before any future measurement, read the ARTIFACTS block in the run banner. If anything says `<< IN-SAMPLE`, refit before believing the numbers.
+- `COLD_START_MAX_GAMES` and `DEFAULT_COLD_START_K` are the first retuning targets; probe A's evidence argues for a faster handover than either.
+- Session 10.5 can proceed. Its blocker was a validated per-player mean and sigma, which 10.3a delivered and this session did not disturb.
+- `probe_statline_priors.py` is a throwaway. It writes nothing and nothing loads it. Delete it whenever it stops being useful.

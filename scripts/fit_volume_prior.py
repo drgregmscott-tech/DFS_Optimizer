@@ -485,8 +485,10 @@ def main():
     panel = build_player_panel(args.site, seasons)
     fit_p = panel[panel["season"].isin(args.fit_seasons)]
     test_p = panel[panel["season"].isin(args.test_seasons)].copy()
+    _ov = sorted(set(args.fit_seasons) & set(args.test_seasons))
     print(f"  Panel: {len(panel):,} rows "
-          f"({len(fit_p):,} fit / {len(test_p):,} diagnostic).")
+          f"({len(fit_p):,} fit / {len(test_p):,} diagnostic"
+          f"{'; THESE OVERLAP on ' + str(_ov) if _ov else ''}).")
 
     # --- 1. share curves --------------------------------------------------
     wanted = sorted({(p, c) for p, cs in COMPONENTS.items()
@@ -579,9 +581,23 @@ def main():
             slope_p.loc[m, "price_share"] = interp_knots(
                 c["knots"], slope_p.loc[m, "salary"].to_numpy(float))
     ev = slope_p.dropna(subset=["price_share", "hist_share", "realized_share"])
+    # The claim below has to be CHECKED, not asserted. On a production refit
+    # (--fit-seasons = all eight) the split puts the slope's eval half ON the
+    # measurement seasons, at which point the old unconditional "nothing from
+    # the measurement window enters the artifact" line was simply false -- a
+    # message that lies is worse than no message, and this project's whole
+    # fail-loud convention exists to stop exactly that.
+    slope_overlap = sorted(set(slope_eval_seasons) & set(MEASUREMENT_SEASONS))
     print(f"\n  Role slope cross-fit: curves on {slope_fit_seasons} -> slope "
-          f"fit on {slope_eval_seasons} ({len(ev):,} rows). Nothing from "
-          f"{args.test_seasons} enters the artifact.")
+          f"fit on {slope_eval_seasons} ({len(ev):,} rows).")
+    if slope_overlap:
+        print(f"  !! The slope's eval half OVERLAPS the measurement window on "
+              f"{slope_overlap}.\n     Correct for a PRODUCTION refit, and "
+              f"DISQUALIFYING for a measurement: any\n     backtest over those "
+              f"seasons against this artifact is partly in-sample.")
+    else:
+        print(f"     No measurement-window season ({MEASUREMENT_SEASONS}) "
+              f"contributes to the artifact.")
 
     # The catalogued-case validation still needs price_share on the
     # DIAGNOSTIC seasons, using the SHIPPED curves. Reported only.

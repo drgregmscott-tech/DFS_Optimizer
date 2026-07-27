@@ -256,6 +256,8 @@ Usage:
 """
 
 import argparse
+import hashlib
+import json
 import subprocess
 import sys
 from pathlib import Path
@@ -643,6 +645,28 @@ def score_lineup(lineup_site_ids: list, actuals_week: pd.DataFrame) -> float:
     return total
 
 
+def field_pool_fingerprint(pool: pd.DataFrame) -> str:
+    """Order-independent hash of the pool the synthetic field is drawn from.
+
+    Covers exactly the columns build_synthetic_field() actually reads --
+    identity, position, salary and ownership weight. Projections are NOT
+    included: the field pool is pinned to the baseline arm, so its
+    projections are the same object for every arm by construction, and
+    hashing them would only add noise if a future column is reordered.
+    """
+    cols = [c for c in ("player_id", "position", "salary",
+                        "estimated_ownership_pct") if c in pool.columns]
+    if not cols or pool.empty:
+        return "empty"
+    d = pool[cols].copy()
+    for c in ("salary", "estimated_ownership_pct"):
+        if c in d.columns:
+            d[c] = pd.to_numeric(d[c], errors="coerce").round(4)
+    d = d.sort_values(cols).astype(str)
+    payload = "|".join(d.apply(lambda r: ",".join(r.values), axis=1).tolist())
+    return hashlib.sha1(payload.encode()).hexdigest()[:12]
+
+
 def build_synthetic_field(pool: pd.DataFrame, site: str, field_size: int,
                           rng: np.random.Generator) -> list:
     """Sample `field_size` legal lineups, drawing players with probability
@@ -782,6 +806,7 @@ def backtest_week(site: str, season: int, week: int, games: pd.DataFrame,
                   num_lineups: int, field_size: int, rng: np.random.Generator,
                   anchor: dict | None = None,
                   field_pool_mode: str = "baseline",
+                  seed_base: int = 42,
                   engine: str = "legacy",
                   dst_model_mode: str = "legacy",
                   statline: dict | None = None,
@@ -985,7 +1010,22 @@ def backtest_week(site: str, season: int, week: int, games: pd.DataFrame,
 
     our_scores = [score_lineup(list(lu["site_player_id"]), actuals_wk) for lu in lineups]
 
-    field = build_synthetic_field(field_pool, site, field_size, rng)
+    # Session 10.3b, decision #17 -- THE FIELD GETS ITS OWN RNG STREAM.
+    #
+    # This used to reuse `rng`, the same generator the line above already drew
+    # from for the optimizer seed. That made the pinned field's randomness a
+    # function of how many draws everything BEFORE it happened to consume --
+    # so the field was arm-invariant only by accident, and any future edit
+    # that added or removed a draw upstream would silently decouple it across
+    # arms while every label still said "pinned". Decision #11's whole point
+    # is that the field cannot move between arms; that guarantee should come
+    # from construction, not from nobody having touched the call order.
+    #
+    # Derived from (seed, season, week) plus a distinct stream tag, so it is
+    # reproducible, independent of the optimizer, and identical for every arm
+    # measuring the same week.
+    field_rng = np.random.default_rng([seed_base, season, week, 0xF1E1D])
+    field = build_synthetic_field(field_pool, site, field_size, field_rng)
     field_scores = np.array([score_lineup(f, actuals_wk) for f in field], dtype=float)
 
     pcts = np.array([percentile_of(s, field_scores) for s in our_scores])
@@ -1010,6 +1050,13 @@ def backtest_week(site: str, season: int, week: int, games: pd.DataFrame,
         "our_best_score": round(max(our_scores), 2),
         "our_median_score": round(float(np.median(our_scores)), 2),
         "field_median_score": round(float(np.median(field_scores)), 2) if len(field_scores) else None,
+        # Decision #17. A fingerprint of the pool the field was drawn from.
+        # Session 10.3b caught a cross-arm field divergence at 2020 wk3 by
+        # eyeballing field medians across three printed logs -- which is not a
+        # detection method. Two arms measuring the same week MUST report the
+        # same value here; the run summary checks it and says so.
+        "field_pool_fingerprint": field_pool_fingerprint(field_pool),
+        "field_pool_n": int(len(field_pool)),
         "median_percentile": round(float(np.median(pcts)), 1),
         "max_percentile": round(float(np.max(pcts)), 1),
         "anchor": describe_anchor(anchor),
@@ -1029,6 +1076,97 @@ def backtest_week(site: str, season: int, week: int, games: pd.DataFrame,
 # ---------------------------------------------------------------------------
 # Main
 # ---------------------------------------------------------------------------
+
+# ---------------------------------------------------------------------------
+# Session 10.3b, decision #16 -- ARTIFACT PROVENANCE GUARD
+# ---------------------------------------------------------------------------
+
+# Every fitted artifact an arm can load, and the flag that pulls it in. The
+# season key differs per artifact because they were written across four
+# sessions, so both spellings are accepted -- and an artifact that records NO
+# fit seasons is reported as uncheckable rather than assumed safe.
+_PROVENANCE_ARTIFACTS = [
+    ("statline_variance.json", "engine=statline"),
+    ("dst_model_{site}.json", "--dst-model distributional"),
+    ("volume_prior_{site}.json", "--volume-prior"),
+    ("salary_anchor_{site}.json", "--salary-anchor-weight / --salary-anchor-cold-start"),
+]
+
+
+def check_artifact_provenance(measured_seasons, site, engine, anchor,
+                              dst_model_mode, prior) -> None:
+    """Print every loaded artifact's fit window, and warn when it OVERLAPS a
+    season being measured.
+
+    WHY THIS EXISTS. Session 10.3b lost three full backtest runs and came one
+    step from blaming a +1.4 shift on newly-written code, because
+    `statline_variance.json` had been refit on all eight seasons for
+    production and then silently became the basis of a 2018-21 measurement.
+    Nothing printed that fact anywhere. fit_volume_prior.py warns about its
+    own fit window, but a warning only one of four artifacts emits is not a
+    guard -- and the one artifact that mattered was silent.
+
+    Deliberately a WARNING, never an abort. Measuring in-sample is the RIGHT
+    thing when you want the shipped configuration's own numbers; it is only
+    wrong when it goes unrecorded. So it prints every run and the operator
+    decides.
+    """
+    want = set(int(s) for s in measured_seasons)
+    checked, flagged, unknown = [], [], []
+
+    for tmpl, why in _PROVENANCE_ARTIFACTS:
+        if tmpl.startswith("statline_variance") and engine != "statline":
+            continue
+        if tmpl.startswith("dst_model") and dst_model_mode == "legacy":
+            continue
+        if tmpl.startswith("volume_prior") and not (prior and prior.get("on")):
+            continue
+        if tmpl.startswith("salary_anchor") and not (
+                anchor and (anchor["weight"] > 0 or anchor["cold_start"])):
+            continue
+        path = DATA_DIR / tmpl.format(site=site)
+        if not path.exists():
+            continue
+        try:
+            art = json.loads(path.read_text())
+        except Exception as e:
+            unknown.append((path.name, f"unreadable ({e})"))
+            continue
+        seasons = None
+        for key in ("fit_seasons", "seasons"):
+            if isinstance(art.get(key), list) and art[key]:
+                seasons = [int(x) for x in art[key]]
+                break
+        if seasons is None:
+            unknown.append((path.name, "records no fit seasons"))
+            continue
+        overlap = sorted(set(seasons) & want)
+        checked.append((path.name, seasons, overlap))
+        if overlap:
+            flagged.append((path.name, overlap, why))
+
+    if not checked and not unknown:
+        return
+    print("ARTIFACTS:")
+    for name, seasons, overlap in checked:
+        rng = (f"{min(seasons)}-{max(seasons)}" if len(seasons) > 1
+               else str(seasons[0]))
+        print(f"  {name:<28} fit {rng}"
+              f"{'   << IN-SAMPLE for this run' if overlap else ''}")
+    for name, note in unknown:
+        print(f"  {name:<28} {note} -- provenance CANNOT be checked")
+    if flagged:
+        print("  !! IN-SAMPLE MEASUREMENT. The artifact(s) below were fit on "
+              "season(s) being")
+        print("     measured, so this run reports the shipped configuration's "
+              "OWN numbers and is")
+        print("     NOT evidence. Session 10.3a measured a threefold inflation "
+              "from exactly this.")
+        for name, overlap, why in flagged:
+            print(f"       {name} overlaps on {overlap}  (loaded by {why})")
+        print(f"     To MEASURE instead, refit on a window excluding "
+              f"{sorted(want)} first.\n")
+
 
 def main():
     parser = argparse.ArgumentParser(
@@ -1146,6 +1284,9 @@ def main():
           "errored or skipped\n      week cannot shift the field for any other "
           "week (decision #13).\n")
 
+    check_artifact_provenance(args.season, args.site, args.engine, anchor,
+                              args.dst_model, prior)
+
     results = []
     for season in seasons:
         if args.all_weeks:
@@ -1171,6 +1312,7 @@ def main():
                                 args.num_lineups, args.field_size, week_rng,
                                 anchor=anchor,
                                 field_pool_mode=args.field_pool,
+                                seed_base=args.seed,
                                 engine=args.engine,
                                 prior=prior,
                                 dst_model_mode=args.dst_model,
@@ -1182,7 +1324,8 @@ def main():
                       f"max pctile {res['max_percentile']:>5.1f}  "
                       f"(our med {res['our_median_score']}, best "
                       f"{res['our_best_score']}, field median "
-                      f"{res['field_median_score']}, pool {res['pool_size']})")
+                      f"{res['field_median_score']}, pool {res['pool_size']}, "
+                      f"field {res.get('field_pool_fingerprint','?')})")
             elif res["status"] == "SKIP":
                 print(f"  --  {args.site} {season} wk{week:<2}  SKIP: {res['detail'][:100]}")
             else:
@@ -1209,6 +1352,16 @@ def main():
         mx = np.array([r["max_percentile"] for r in rows], dtype=float)
         rmed = np.array([r["our_median_score"] for r in rows], dtype=float)
         rbest = np.array([r["our_best_score"] for r in rows], dtype=float)
+        # Decision #17: make the pinned field's arm-invariance checkable from
+        # ONE log instead of by diffing three. Print the fingerprint per week
+        # so two arms' logs can be compared mechanically.
+        fps = {(r["season"], r["week"]): r.get("field_pool_fingerprint")
+               for r in rows if r.get("field_pool_fingerprint")}
+        if fps:
+            print("\n  FIELD POOL FINGERPRINTS (must match across arms for the "
+                  "same week):")
+            for (sea, wk), fp in sorted(fps.items()):
+                print(f"    {sea} wk{wk:<2} {fp}")
         fmed = np.array([r["field_median_score"] for r in rows], dtype=float)
         n = len(rows)
         # Decision #12: the standard error is printed next to the mean,
