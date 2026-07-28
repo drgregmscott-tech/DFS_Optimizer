@@ -1,0 +1,461 @@
+{
+ "schema_version": 1,
+ "fit_date": "2026-07-28",
+ "site": "dk",
+ "seasons": [
+  2014,
+  2015,
+  2016,
+  2017
+ ],
+ "n_rows": 15563,
+ "n_bins_requested": 10,
+ "guards": {
+  "min_rows_per_position": 400,
+  "min_rows_per_bin": 50,
+  "min_usable_bins": 6
+ },
+ "notes": "Session 10.4b. Corrects the OVER-DISPERSION of the stat-line engine's per-player sigma measured by probe_sigma_quality.py's probe B3. Fit on within-bin residual SD with the bin's own mean bias removed (consumer decision #1) -- the per-position MEAN bias is a separate, uncorrected finding. Site-keyed: sigma is in fantasy points and does not transfer between DK and FD.",
+ "positions": {
+  "QB": {
+   "a": 5.803547,
+   "b": 0.138096,
+   "b_raw": 0.138096,
+   "b_clamped": false,
+   "a_refit_on_clamp": false,
+   "loglog_r2": 0.678,
+   "sigma_fit_range": [
+    0.331,
+    21.6401
+   ],
+   "n_rows": 1553,
+   "n_bins": 10,
+   "calibration_before": 0.9053,
+   "calibration_after": 1.1509,
+   "bins": [
+    {
+     "bin": 0,
+     "n": 156,
+     "mean_sigma": 2.7468,
+     "mean_error": 3.9726,
+     "resid_sd": 6.6891
+    },
+    {
+     "bin": 1,
+     "n": 155,
+     "mean_sigma": 6.682,
+     "mean_error": 4.652,
+     "resid_sd": 7.488
+    },
+    {
+     "bin": 2,
+     "n": 155,
+     "mean_sigma": 8.1663,
+     "mean_error": 2.2808,
+     "resid_sd": 7.7887
+    },
+    {
+     "bin": 3,
+     "n": 155,
+     "mean_sigma": 9.0635,
+     "mean_error": 2.1294,
+     "resid_sd": 7.5644
+    },
+    {
+     "bin": 4,
+     "n": 156,
+     "mean_sigma": 9.8535,
+     "mean_error": -0.1171,
+     "resid_sd": 8.5861
+    },
+    {
+     "bin": 5,
+     "n": 155,
+     "mean_sigma": 10.6275,
+     "mean_error": -0.9679,
+     "resid_sd": 7.7724
+    },
+    {
+     "bin": 6,
+     "n": 155,
+     "mean_sigma": 11.2657,
+     "mean_error": -0.7685,
+     "resid_sd": 8.5759
+    },
+    {
+     "bin": 7,
+     "n": 155,
+     "mean_sigma": 12.1738,
+     "mean_error": -4.26,
+     "resid_sd": 7.5112
+    },
+    {
+     "bin": 8,
+     "n": 155,
+     "mean_sigma": 13.44,
+     "mean_error": -4.9974,
+     "resid_sd": 8.4687
+    },
+    {
+     "bin": 9,
+     "n": 156,
+     "mean_sigma": 16.1565,
+     "mean_error": -10.6047,
+     "resid_sd": 8.6151
+    }
+   ]
+  },
+  "RB": {
+   "a": 3.335719,
+   "b": 0.3681,
+   "b_raw": 0.3681,
+   "b_clamped": false,
+   "a_refit_on_clamp": false,
+   "loglog_r2": 0.9781,
+   "sigma_fit_range": [
+    0.1743,
+    49.0134
+   ],
+   "n_rows": 3852,
+   "n_bins": 10,
+   "calibration_before": 0.9078,
+   "calibration_after": 1.0888,
+   "bins": [
+    {
+     "bin": 0,
+     "n": 386,
+     "mean_sigma": 1.303,
+     "mean_error": 1.7542,
+     "resid_sd": 3.7381
+    },
+    {
+     "bin": 1,
+     "n": 385,
+     "mean_sigma": 2.3781,
+     "mean_error": 2.1206,
+     "resid_sd": 4.4845
+    },
+    {
+     "bin": 2,
+     "n": 385,
+     "mean_sigma": 3.481,
+     "mean_error": 1.883,
+     "resid_sd": 4.8787
+    },
+    {
+     "bin": 3,
+     "n": 385,
+     "mean_sigma": 4.8012,
+     "mean_error": 2.1119,
+     "resid_sd": 6.4294
+    },
+    {
+     "bin": 4,
+     "n": 385,
+     "mean_sigma": 6.1734,
+     "mean_error": 1.81,
+     "resid_sd": 6.6229
+    },
+    {
+     "bin": 5,
+     "n": 385,
+     "mean_sigma": 7.703,
+     "mean_error": 1.462,
+     "resid_sd": 7.4697
+    },
+    {
+     "bin": 6,
+     "n": 385,
+     "mean_sigma": 9.4662,
+     "mean_error": 0.7983,
+     "resid_sd": 7.4988
+    },
+    {
+     "bin": 7,
+     "n": 385,
+     "mean_sigma": 11.5113,
+     "mean_error": -0.5069,
+     "resid_sd": 7.7835
+    },
+    {
+     "bin": 8,
+     "n": 385,
+     "mean_sigma": 14.0876,
+     "mean_error": -0.7659,
+     "resid_sd": 8.8502
+    },
+    {
+     "bin": 9,
+     "n": 386,
+     "mean_sigma": 20.3001,
+     "mean_error": -5.3064,
+     "resid_sd": 10.1408
+    }
+   ]
+  },
+  "WR": {
+   "a": 3.15109,
+   "b": 0.391562,
+   "b_raw": 0.391562,
+   "b_clamped": false,
+   "a_refit_on_clamp": false,
+   "loglog_r2": 0.9732,
+   "sigma_fit_range": [
+    0.3431,
+    35.3069
+   ],
+   "n_rows": 5816,
+   "n_bins": 10,
+   "calibration_before": 0.857,
+   "calibration_after": 1.0626,
+   "bins": [
+    {
+     "bin": 0,
+     "n": 582,
+     "mean_sigma": 1.5519,
+     "mean_error": 1.5653,
+     "resid_sd": 3.7728
+    },
+    {
+     "bin": 1,
+     "n": 582,
+     "mean_sigma": 2.9009,
+     "mean_error": 1.8079,
+     "resid_sd": 4.5434
+    },
+    {
+     "bin": 2,
+     "n": 581,
+     "mean_sigma": 4.2617,
+     "mean_error": 2.1128,
+     "resid_sd": 6.1443
+    },
+    {
+     "bin": 3,
+     "n": 582,
+     "mean_sigma": 5.7442,
+     "mean_error": 1.3733,
+     "resid_sd": 6.1023
+    },
+    {
+     "bin": 4,
+     "n": 581,
+     "mean_sigma": 7.2021,
+     "mean_error": 1.0645,
+     "resid_sd": 6.4204
+    },
+    {
+     "bin": 5,
+     "n": 582,
+     "mean_sigma": 8.5869,
+     "mean_error": 0.9586,
+     "resid_sd": 7.7199
+    },
+    {
+     "bin": 6,
+     "n": 581,
+     "mean_sigma": 10.0853,
+     "mean_error": 0.0148,
+     "resid_sd": 7.4319
+    },
+    {
+     "bin": 7,
+     "n": 582,
+     "mean_sigma": 11.9938,
+     "mean_error": 0.0935,
+     "resid_sd": 8.3815
+    },
+    {
+     "bin": 8,
+     "n": 581,
+     "mean_sigma": 14.4563,
+     "mean_error": -0.8329,
+     "resid_sd": 8.9272
+    },
+    {
+     "bin": 9,
+     "n": 582,
+     "mean_sigma": 19.4285,
+     "mean_error": -3.5471,
+     "resid_sd": 10.2699
+    }
+   ]
+  },
+  "TE": {
+   "a": 3.106313,
+   "b": 0.354613,
+   "b_raw": 0.354613,
+   "b_clamped": false,
+   "a_refit_on_clamp": false,
+   "loglog_r2": 0.9585,
+   "sigma_fit_range": [
+    0.5232,
+    26.0755
+   ],
+   "n_rows": 2901,
+   "n_bins": 10,
+   "calibration_before": 1.0537,
+   "calibration_after": 1.0819,
+   "bins": [
+    {
+     "bin": 0,
+     "n": 291,
+     "mean_sigma": 1.1377,
+     "mean_error": 1.7955,
+     "resid_sd": 3.5005
+    },
+    {
+     "bin": 1,
+     "n": 290,
+     "mean_sigma": 1.9345,
+     "mean_error": 1.7766,
+     "resid_sd": 3.7983
+    },
+    {
+     "bin": 2,
+     "n": 290,
+     "mean_sigma": 2.6115,
+     "mean_error": 1.8094,
+     "resid_sd": 4.1959
+    },
+    {
+     "bin": 3,
+     "n": 290,
+     "mean_sigma": 3.3179,
+     "mean_error": 1.5504,
+     "resid_sd": 4.3258
+    },
+    {
+     "bin": 4,
+     "n": 290,
+     "mean_sigma": 4.1549,
+     "mean_error": 1.4549,
+     "resid_sd": 5.3211
+    },
+    {
+     "bin": 5,
+     "n": 290,
+     "mean_sigma": 5.0493,
+     "mean_error": 0.452,
+     "resid_sd": 5.6182
+    },
+    {
+     "bin": 6,
+     "n": 290,
+     "mean_sigma": 6.1619,
+     "mean_error": 1.0389,
+     "resid_sd": 6.3322
+    },
+    {
+     "bin": 7,
+     "n": 290,
+     "mean_sigma": 7.6741,
+     "mean_error": 0.1723,
+     "resid_sd": 6.2548
+    },
+    {
+     "bin": 8,
+     "n": 290,
+     "mean_sigma": 9.6476,
+     "mean_error": -1.3348,
+     "resid_sd": 6.5911
+    },
+    {
+     "bin": 9,
+     "n": 290,
+     "mean_sigma": 13.7752,
+     "mean_error": -3.7131,
+     "resid_sd": 8.2638
+    }
+   ]
+  },
+  "DST": {
+   "a": 0.961413,
+   "b": 1.0,
+   "b_raw": 2.864199,
+   "b_clamped": true,
+   "a_refit_on_clamp": true,
+   "loglog_r2": 0.548,
+   "sigma_fit_range": [
+    5.7941,
+    6.8644
+   ],
+   "n_rows": 1441,
+   "n_bins": 10,
+   "calibration_before": 0.9614,
+   "calibration_after": 1.0,
+   "bins": [
+    {
+     "bin": 0,
+     "n": 145,
+     "mean_sigma": 5.9839,
+     "mean_error": 0.185,
+     "resid_sd": 5.0305
+    },
+    {
+     "bin": 1,
+     "n": 145,
+     "mean_sigma": 6.0756,
+     "mean_error": 0.1976,
+     "resid_sd": 5.2282
+    },
+    {
+     "bin": 2,
+     "n": 143,
+     "mean_sigma": 6.1258,
+     "mean_error": 0.5129,
+     "resid_sd": 6.3875
+    },
+    {
+     "bin": 3,
+     "n": 144,
+     "mean_sigma": 6.1662,
+     "mean_error": -0.1031,
+     "resid_sd": 5.8716
+    },
+    {
+     "bin": 4,
+     "n": 145,
+     "mean_sigma": 6.2075,
+     "mean_error": 0.9913,
+     "resid_sd": 6.4318
+    },
+    {
+     "bin": 5,
+     "n": 143,
+     "mean_sigma": 6.2494,
+     "mean_error": 0.1864,
+     "resid_sd": 5.478
+    },
+    {
+     "bin": 6,
+     "n": 144,
+     "mean_sigma": 6.2928,
+     "mean_error": 0.3019,
+     "resid_sd": 6.3192
+    },
+    {
+     "bin": 7,
+     "n": 144,
+     "mean_sigma": 6.3292,
+     "mean_error": 0.6679,
+     "resid_sd": 6.0438
+    },
+    {
+     "bin": 8,
+     "n": 144,
+     "mean_sigma": 6.3871,
+     "mean_error": 0.2833,
+     "resid_sd": 6.2077
+    },
+    {
+     "bin": 9,
+     "n": 144,
+     "mean_sigma": 6.5283,
+     "mean_error": 0.4268,
+     "resid_sd": 6.8173
+    }
+   ]
+  }
+ }
+}

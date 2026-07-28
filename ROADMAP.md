@@ -909,8 +909,40 @@ Both percentile deltas are a fraction of one SE and signs flip across seasons (2
 
 ---
 
+### Session 10.4b — Sigma Dispersion Recalibration
+**Prerequisites:** Session 10.3a (sigma exists), Session 10.4 (distributional DST sigma).
+
+**Why it was inserted before 10.5:** `probe_sigma_quality.py`'s probe B3 measured the stat-line engine's per-player sigma to be correctly ranked (Spearman +0.31–0.45) but massively over-dispersed — realized/projected ratio falling 2.1–2.7 → 0.58–0.69 across sigma quintiles at every position. Session 10.5's objective squares sigma (`Σμ − λΣσ²`), so the distortion compounds nonlinearly, and no single λ can correct it. Nothing consumed `sigma` at the time of writing, making this the cheapest point to fix the scale.
+
+**Files touched:** `scripts/sigma_recalibration.py` (new — consumer), `scripts/fit_sigma_recalibration.py` (new — fitter, owns `collect_rows`), `scripts/build_projections_statline.py` (modified — `--sigma-recalibration` flag, OFF by default), `scripts/probe_sigma_quality.py` (modified — imports from fitter, `--apply-recalibration` validation mode).
+
+**Artifact:** `data/sigma_recalibration.json` — per-position power transform `σ' = a·clip(σ,lo,hi)^b`, fit on within-bin residual SD (bias removed per bin) against within-bin mean sigma. Holdout 2014–2017, measurement 2018–2021. DK only; FD blocked (site-keyed by design, consumer fails loud on mismatch).
+
+**Fitted values (DK, 2014–2017):** QB b=0.138 (loglog R²=0.678), RB b=0.368 (R²=0.978), WR b=0.392 (R²=0.973), TE b=0.355 (R²=0.959), DST b=1.000 (b_raw=2.864, clamped — distributional DST wasn't active for this holdout window; level held via decision #13 intercept refit).
+
+**Validation (probe re-run, 2018–2021, --reuse --apply-recalibration):**
+- [x] B3 ratio column flattens toward 1.0: RB/WR/TE flat within ±0.15, QB weakly rising 1.10→1.24 (consistent with low holdout R²). Monotone collapse eliminated.
+- [ ] B1 level — measured at QB 1.285 / RB 1.163 / WR 1.124 / TE 1.079 / DST 0.967 against an in-sample `dst_model.json`. True out-of-sample B1 requires `dst_model.json` holdout refit (blocked on 2013 carryover — see deferred items).
+- [x] B3 Spearman unchanged (+0.31–0.45) — confirmed non-evidence by construction, as pre-registered.
+
+**Derived lambda grid** (probe A3 post-recalibration, deliverable for 10.5):
+```
+floor-seeking  (cash):  [0.039, 0.063, 0.104, 0.139, 0.188]
+upside-seeking (GPP):   [-0.003, -0.005, -0.014, -0.030, -0.095]
+full sweep:             [-0.095, -0.030, -0.014, -0.005, -0.003, 0.0, 0.039, 0.063, 0.104, 0.139, 0.188]
+```
+
+**Deferred:**
+- [ ] `dst_model.json` holdout refit: run `python scripts/ingest_historical.py --season 2013` then `python scripts/fit_dst_model.py --fit-seasons 2014 2015 2016 2017`, rebuild probe cache, re-read B1. Not blocking 10.5.
+- [ ] End-to-end wiring validation (`--sigma-recalibration` on a real slate) — Preseason Week 1, same gate as other 6.1 items. See Known Deferred Validations.
+- [ ] FD artifact — BLOCKED same standing gap as all FD items.
+
+**Status:** ✅ Complete (2026-07-28) — core correction validated, two deferred items logged explicitly above. See SESSION_LOG.md for full detail.
+
+---
+
 ### Session 10.5 — Objective + Randomization Rewire (needs 10.3a's sigma)
-**Prerequisites:** Session 10.3a (sigma now exists).
+**Prerequisites:** Session 10.3a (sigma now exists), Session 10.4b (sigma dispersion corrected).
 
 **⚠️ What 10.3a hands you, and the one thing it does not (2026-07-26):** `final_projections_{site}_{week}.csv` from `build_projections_statline.py` carries a `sigma` column plus `sigma_source`. That sigma is **idiosyncratic by construction** — every player is drawn independently, so it holds no team-level correlated component, which is the right kind for this card's objective, since the design keeps correlated variance in the optimizer's stacking *constraints* rather than the objective. DST sigma is real but **unconditional** (`3.25 + 0.39 × projection`, measured over 3,952 team-weeks), flagged `dst_measured_unconditional_session_10_4_pending`; conditioning it on the opponent's implied total is Session 10.4's job.
 
@@ -973,6 +1005,10 @@ Until Preseason Week 1: treat Session 2.4 (and by extension anything built on to
   **Fix (doable now):** add a step to `refresh_data.yml` ahead of `build_projections.py` that pulls the current season's team stats and does not fail the job on a 404, plus commit `team_stats_2025.parquet`. **First point the current-season half matters for real:** once 2026 games have actually been played — Preseason Week 1, alongside the other Session 6.1 checkpoint items.
 
 - **FD's DST model is unverified end-to-end, but is NOT blocked (Session 10.4).** Worth distinguishing from the FD salary anchor, which is *demonstrably not fittable* on available data. The DST model's FD exposure is much smaller: the scoring table is verified against real graded FD 2021 actuals (87.5% exact, mean bias −0.178, the same residual shape as DK), the model is site-parameterised at every call site with no branching on site, and `dst_model.json` is fit on stat lines and game outcomes rather than on anything site-specific — so unlike the anchor there is nothing here that *cannot* be fit for FD. What has never happened is a real FD Classic export running end-to-end through it. Note this compounds with the FD DST column-name bug below, which would bite first. **First point this closes for real:** whenever a real FD Classic export first exists.
+
+- **Session 10.4b: `--sigma-recalibration` end-to-end wiring validation.** The consumer function (`sigma_recalibration.apply_recalibration`) was validated in isolation via `--apply-recalibration` on the probe cache. What has never been exercised is the full chain: `build_projections_statline.py --sigma-recalibration` → `run_projection_pipeline()` in `backtest_harness.py` → recalibrated sigma values and correct `sigma_source` labels in the output `final_projections_dk_{week}.csv`. Requires a real salary CSV as input. **First point this closes for real:** Preseason Week 1 (Aug 13–15), same gate as other Session 6.1 pipeline reliability checks.
+
+- **Session 10.4b: `dst_model.json` holdout refit blocked on 2013 carryover.** `fit_dst_model.py --fit-seasons 2014 2015 2016 2017` requires `data/team_stats_2013.parquet` as carryover for the 2014 season. Run `python scripts/ingest_historical.py --season 2013` first. After refit, rebuild the probe sigma cache (`probe_sigma_quality.py --season 2018 2019 2020 2021 --all-weeks`) and re-read B1 for the true out-of-sample level calibration. Not blocking Session 10.5 — `sigma_recalibration.json` is clean; this only affects the completeness of the B1 measurement.
 
 - **FD DST projection path reads the wrong column name (found during Session 10.0).** `build_projections.py`'s `build_dst_projections()` reads `salaries["AvgPointsPerGame"]` for BOTH sites, but a real FanDuel export names that column `FPPG`, and `ingest_salaries.py`'s `load_raw_salary_csv()` doesn't rename it — so FD's DST path would `KeyError` or silently null on a real FD export. Not fixed in Session 10.0 (separate decision about FD's real column contract, still unverified — same root as the standing FD gaps above). Session 10.0's RotoGuru FD files emit `AvgPointsPerGame` so the bootstrap/harness aren't blocked, but the real-FD-export gap is open. **First point this closes for real:** whenever a real FD Classic export first exists, alongside the other FD gaps.
 

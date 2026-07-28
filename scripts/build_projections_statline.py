@@ -167,6 +167,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 import scoring_rules  # noqa: E402
 import statline_model  # noqa: E402
+import sigma_recalibration
 import volume_prior  # noqa: E402
 from ingest_salaries import SITE_CONFIGS  # noqa: E402
 # Decisions #2 and #7: reuse, never re-implement.
@@ -222,6 +223,7 @@ def build_statline_projections(site: str, season: int, week: int, slate_id: str,
                                prior_floor: float = None,
                                prior_k: float = None,
                                role_change: bool = True,
+                               sigma_recal: bool = False,
                                ) -> pd.DataFrame:
     variance = statline_model.load_variance()
     prior_art = volume_prior.load_prior(site) if use_volume_prior else None
@@ -435,6 +437,25 @@ def build_statline_projections(site: str, season: int, week: int, slate_id: str,
     dst_out = dst_out[skill_out.columns]
 
     out = pd.concat([skill_out, dst_out], ignore_index=True)
+
+    # Session 10.4b (decision #12 of this file) -- sigma dispersion
+    # recalibration. OFF by default, so an existing stat-line run is
+    # byte-for-byte unchanged. Applied AFTER the skill+DST concat because the
+    # artifact is fit per position across the whole pool, and BEFORE the
+    # ownership columns purely for readability -- ownership derives from
+    # final_projection and is untouched by sigma either way.
+    #
+    # Why this exists: probe_sigma_quality.py's probe B3 measured the
+    # engine's per-player sigma to be correctly RANKED (Spearman +0.31 to
+    # +0.45) but massively OVER-DISPERSED (realized/projected ratio falling
+    # ~2.1-2.7 -> ~0.58-0.69 across sigma quintiles at every position). The
+    # LEVEL was already right, which is why Session 10.3a's capability gate
+    # passed and this went unnoticed. Session 10.5's objective squares sigma,
+    # and because the distortion is non-linear while lambda is a scalar, no
+    # lambda can undo it. See sigma_recalibration.py's module docstring.
+    if sigma_recal:
+        out = sigma_recalibration.apply_recalibration(out, site)
+
     out = add_ownership_columns(out, site)
     out = out.sort_values("final_projection", ascending=False).reset_index(drop=True)
 
@@ -487,6 +508,18 @@ if __name__ == "__main__":
                         help="Disable the participation override only, "
                              "keeping cold start and Vegas team volume. For "
                              "attributing a result to one mechanism.")
+    # Session 10.4b. OFF by default: this session ships the correction, and
+    # the default is flipped only once the probe re-run confirms probe B3's
+    # ratio column flattens. "Never silently change existing behavior."
+    parser.add_argument("--sigma-recalibration", action="store_true",
+                        help="Apply the Session 10.4b per-position sigma "
+                             "dispersion correction from "
+                             "data/sigma_recalibration.json. OFF by default. "
+                             "Corrects a measured over-dispersion that no "
+                             "single lambda in Session 10.5's objective could "
+                             "undo, because the distortion is non-linear in "
+                             "sigma. Fails loud if the artifact is missing or "
+                             "was fit for a different site.")
     parser.add_argument("--reconcile-threshold", type=float,
                         default=statline_model.RECONCILE_FAIL_THRESHOLD,
                         help="Max proportional share-reconciliation rescale before "
@@ -501,7 +534,8 @@ if __name__ == "__main__":
         use_volume_prior=args.volume_prior,
         prior_floor=args.volume_prior_floor,
         prior_k=args.volume_prior_k,
-        role_change=not args.no_role_change)
+        role_change=not args.no_role_change,
+        sigma_recal=args.sigma_recalibration)
 
     def _clean_site_id(value):
         if pd.isna(value):
@@ -521,6 +555,8 @@ if __name__ == "__main__":
     n_nonzero = int((result["final_projection"] > 0).sum())
     n_sigma_zero = int(((result["final_projection"] > 0) & (result["sigma"] <= 0)).sum())
     print(f"Wrote {len(result)} players to {out_path}")
+    print(f"  Sigma recalibration (10.4b): "
+          f"{'ON' if args.sigma_recalibration else 'OFF'}")
     print(f"  Nulls in any legacy column: {n_null} (should be 0)")
     print(f"  Negative final_projection: {n_neg} (should be 0)")
     print(f"  Players with a positive projection: {n_nonzero}")

@@ -1,18 +1,14 @@
 {
   "schema_version": 1,
-  "fitted_on": "2026-07-26",
+  "fitted_on": "2026-07-28",
   "fit_seasons": [
     2014,
     2015,
     2016,
-    2017,
-    2018,
-    2019,
-    2020,
-    2021
+    2017
   ],
-  "n_team_weeks": 4128,
-  "n_fit_rows": 3122,
+  "n_team_weeks": 2048,
+  "n_fit_rows": 1548,
   "min_fit_week": 5,
   "wind_clip_mph": 30.0,
   "shrink_games": {
@@ -23,127 +19,123 @@
     "dropbacks": 6.0
   },
   "points_allowed": {
-    "intercept": -0.759754,
+    "intercept": -2.748992,
     "coefficients": {
-      "opp_implied": 1.031227,
-      "own_epa_prior": -0.070504,
-      "wind_eff": -0.083942
+      "opp_implied": 1.094798,
+      "own_epa_prior": -0.112889,
+      "wind_eff": -0.036652
     },
     "t_statistics": {
-      "opp_implied": 22.851,
-      "own_epa_prior": -2.127,
-      "wind_eff": -2.978
+      "opp_implied": 16.117,
+      "own_epa_prior": -2.247,
+      "wind_eff": -0.913
     },
-    "r_squared": 0.16119,
-    "n": 3122,
-    "nb_dispersion": 6.4957,
-    "observed_mean": 22.3334,
-    "observed_sd": 9.9079
+    "r_squared": 0.15355,
+    "n": 1548,
+    "nb_dispersion": 6.5364,
+    "observed_mean": 21.7946,
+    "observed_sd": 9.7159
   },
   "dropbacks": {
-    "intercept": 10.194335,
+    "intercept": 11.573729,
     "coefficients": {
-      "opp_dropbacks_prior": 0.442844,
-      "game_total": 0.231134,
-      "abs_spread": -0.041999,
-      "wind_eff": -0.008149
+      "opp_dropbacks_prior": 0.444177,
+      "game_total": 0.193992,
+      "abs_spread": 0.055349,
+      "wind_eff": 0.018852
     },
     "t_statistics": {
-      "opp_dropbacks_prior": 11.557,
-      "game_total": 6.354,
-      "abs_spread": -1.001,
-      "wind_eff": -0.312
+      "opp_dropbacks_prior": 7.905,
+      "game_total": 3.461,
+      "abs_spread": 0.848,
+      "wind_eff": 0.506
     },
-    "r_squared": 0.06396,
-    "n": 3122,
-    "nb_dispersion": 42.043,
-    "observed_mean": 37.131,
-    "observed_sd": 8.6135
+    "r_squared": 0.0554,
+    "n": 1548,
+    "nb_dispersion": 46.0873,
+    "observed_mean": 37.4386,
+    "observed_sd": 8.4747
   },
   "sack_rate": {
-    "intercept": 0.017579,
+    "intercept": 0.021722,
     "coefficients": {
-      "opp_sack_rate_prior": 0.488486,
-      "own_sack_rate_prior": 0.231606,
-      "wind_eff": 0.000234
+      "opp_sack_rate_prior": 0.509293,
+      "own_sack_rate_prior": 0.159641,
+      "wind_eff": 8.6e-05
     },
     "t_statistics": {
-      "opp_sack_rate_prior": 12.439,
-      "own_sack_rate_prior": 4.828,
-      "wind_eff": 1.624
+      "opp_sack_rate_prior": 8.774,
+      "own_sack_rate_prior": 2.318,
+      "wind_eff": 0.413
     },
-    "r_squared": 0.05531,
-    "n": 3122,
-    "nb_dispersion": 8.28,
-    "observed_mean": 0.0638,
-    "observed_sd": 0.0481
+    "r_squared": 0.05049,
+    "n": 1548,
+    "nb_dispersion": 7.9902,
+    "observed_mean": 0.0629,
+    "observed_sd": 0.0478
   },
   "int_rate": {
-    "intercept": 0.007914,
+    "intercept": 0.010372,
     "coefficients": {
-      "qb_int_rate_prior": 0.516504,
-      "own_int_rate_prior": 0.137737,
-      "wind_eff": 0.000113
+      "qb_int_rate_prior": 0.453252,
+      "own_int_rate_prior": 0.085965,
+      "wind_eff": 0.000143
     },
     "t_statistics": {
-      "qb_int_rate_prior": 5.674,
-      "own_int_rate_prior": 2.684,
-      "wind_eff": 1.37
+      "qb_int_rate_prior": 3.568,
+      "own_int_rate_prior": 1.165,
+      "wind_eff": 1.229
     },
-    "r_squared": 0.01362,
-    "n": 3122,
-    "nb_dispersion": 12.1569,
-    "observed_mean": 0.0236,
-    "observed_sd": 0.0269,
-    "rookie_multiplier": 1.1199,
+    "r_squared": 0.01033,
+    "n": 1548,
+    "nb_dispersion": 20.8333,
+    "observed_mean": 0.0238,
+    "observed_sd": 0.0262,
+    "rookie_multiplier": 1.0934,
     "qb_shrink_attempts": 200.0,
-    "league_int_rate": 0.023821
+    "league_int_rate": 0.02423
   },
   "fumble_recovery": {
-    "league_rate_per_game": 0.54966,
-    "opp_fumbles_lost_league": 0.55523,
+    "league_rate_per_game": 0.56738,
+    "opp_fumbles_lost_league": 0.5752,
     "opp_weight": 0.5,
-    "nb_dispersion": 38.4189,
+    "nb_dispersion": 11.2384,
     "split_half_note": "team-season split-half r = +0.038; shrunk to league mean"
   },
   "rare_events": {
-    "def_td_per_game": 0.07946,
-    "st_td_per_game": 0.04118,
-    "safety_per_game": 0.03173,
-    "blocked_kick_per_game": 0.08285,
+    "def_td_per_game": 0.08594,
+    "st_td_per_game": 0.04785,
+    "safety_per_game": 0.03516,
+    "blocked_kick_per_game": 0.1001,
     "residual_td_per_game": 0.026
   },
   "league_means": {
-    "points_allowed": 22.4215,
-    "dropbacks": 37.2728,
-    "sacks": 2.3232,
-    "interceptions": 0.8224,
-    "opp_implied": 22.9385,
-    "qb_hits": 5.5766
+    "points_allowed": 21.8721,
+    "dropbacks": 37.438,
+    "sacks": 2.2876,
+    "interceptions": 0.8452,
+    "opp_implied": 22.6001,
+    "qb_hits": 5.5132
   },
   "latent_factor": {
-    "strength": 0.38906,
-    "target_within_game_corr": 0.3013,
+    "strength": 0.36999,
+    "target_within_game_corr": 0.2786,
     "note": "see dst_model.py decision #13"
   },
   "recalibration": {
-    "intercept": -5.2546,
-    "slope": 1.70066,
-    "n": 4080,
-    "pre_correction_mean": 7.2055,
-    "pre_correction_sd": 1.0131,
-    "actual_mean": 6.9995,
-    "actual_sd": 6.1553,
-    "correlation": 0.2799,
+    "intercept": -4.80969,
+    "slope": 1.63683,
+    "n": 2000,
+    "pre_correction_mean": 7.4459,
+    "pre_correction_sd": 0.9677,
+    "actual_mean": 7.378,
+    "actual_sd": 6.2427,
+    "correlation": 0.2537,
     "fit_seasons": [
       2014,
       2015,
       2016,
-      2017,
-      2018,
-      2019,
-      2020,
-      2021
+      2017
     ]
   }
 }

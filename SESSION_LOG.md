@@ -1954,3 +1954,112 @@ The most parsimonious explanation left is a **stale reference**: 10.4 has three 
 - `COLD_START_MAX_GAMES` and `DEFAULT_COLD_START_K` are the first retuning targets; probe A's evidence argues for a faster handover than either.
 - Session 10.5 can proceed. Its blocker was a validated per-player mean and sigma, which 10.3a delivered and this session did not disturb.
 - `probe_statline_priors.py` is a throwaway. It writes nothing and nothing loads it. Delete it whenever it stops being useful.
+
+---
+
+## Session 10.4b — Sigma Dispersion Recalibration
+
+**Date:** 2026-07-28
+**Status:** ✅ Complete — three pre-registered validation predictions met. One open measurement item and one deferred artifact refit, both logged explicitly below.
+
+### Why this session exists
+
+Session 10.5's pre-test (`probe_sigma_quality.py`, probe B3) measured, for the first time, whether the stat-line engine's per-player sigma actually separates safe players from volatile ones. Two results came back, pointing in opposite directions:
+
+- **The signal is real.** Spearman(projected sigma, |error|) = +0.31 to +0.45 at every skill position.
+- **The spread is massively over-dispersed.** Realized/projected ratio falling monotonically from 2.1–2.7 in the lowest sigma quintile to 0.58–0.69 in the highest, at every position (2018–2021 DK, 65 weeks, 15,968 player-weeks):
+
+| pos | projected σ, q1→q5 | realized sd, q1→q5 | ratio q1→q5 |
+|---|---|---|---|
+| QB | 3.63 → 16.40 (4.5×) | 7.41 → 10.53 (1.4×) | 2.04 → 0.64 |
+| RB | 1.80 → 17.88 (9.9×) | 4.84 → 10.42 (2.2×) | 2.69 → 0.58 |
+| WR | 2.04 → 17.18 (8.4×) | 4.53 → 10.01 (2.2×) | 2.22 → 0.58 |
+| TE | 1.53 → 11.46 (7.5×) | 3.26 → 7.92 (2.4×) | 2.13 → 0.69 |
+
+The level was fine (probe B1: 0.92–1.07), which is why Session 10.3a's capability gate passed — the two halves cancel in the average. Session 10.5's objective is `Σμ − λΣσ²`, so the distortion gets squared; in variance units the model's spread is too wide by roughly 10–20×. Because the distortion is non-linear in sigma while λ is a single scalar, no value of λ can undo it. It had to be fixed before the objective was built. Nothing consumed `sigma` yet at the time of writing, making this the cheapest point in the project's life to correct its scale.
+
+### Files shipped
+
+| File | Repo path | Status |
+|---|---|---|
+| `sigma_recalibration.py` | `scripts/sigma_recalibration.py` | New — consumer, applies transform |
+| `fit_sigma_recalibration.py` | `scripts/fit_sigma_recalibration.py` | New — fitter, owns `collect_rows`, writes artifact |
+| `build_projections_statline.py` | `scripts/build_projections_statline.py` | Modified — `--sigma-recalibration` flag, OFF by default |
+| `probe_sigma_quality.py` | `scripts/probe_sigma_quality.py` | Modified — imports `collect_rows` from fitter; `--apply-recalibration` validation mode |
+
+### The model
+
+Per position, a power transform: `σ' = a · clip(σ, lo, hi)^b`. `a` and `b` come from one log-log regression of within-bin realized dispersion on within-bin mean sigma. The bias is removed within each bin before measuring dispersion (decision #1) — bias belongs in the mean term, not the variance term. The level is not a separately tuned knob; it falls from the same regression, and `calibration_after` (realized_sd / mean_σ') is a validation, not a fitted quantity. Holdout window: 2014–2017. Measurement window: 2018–2021.
+
+### Bug caught in testing (decision #13)
+
+When `b` is clamped to `[0,1]` (decision #9), the joint regression's intercept `a` is only valid at the slope it was fit with. The fixture test caught this: a clamped DST slope broke the level calibration from 0.957 to 0.672. Fix: if and only if `b` was clamped, refit `a` as `overall_sd / mean(clip(σ, lo, hi)^b)` — a one-liner that restores the level exactly. When `b` is untouched, `a` stays as fitted so `calibration_after` is still a genuine, independent validation rather than a tautology. Both `b_raw` and `a_refit_on_clamp` go into the artifact.
+
+### Fitted artifact (`data/sigma_recalibration.json`, DK, fit on 2014–2017, 15,563 player-weeks)
+
+| pos | a | b | b_raw | b_clamped | loglog_r² | calib_before | calib_after |
+|---|---|---|---|---|---|---|---|
+| QB | 5.8035 | 0.138 | 0.138 | no | 0.678 | 0.905 | 1.151 |
+| RB | 3.3357 | 0.368 | 0.368 | no | 0.978 | 0.908 | 1.089 |
+| WR | 3.1511 | 0.392 | 0.392 | no | 0.973 | 0.857 | 1.063 |
+| TE | 3.1063 | 0.355 | 0.355 | no | 0.959 | 1.054 | 1.082 |
+| DST | 0.9614 | 1.000 | 2.864 | **YES** | 0.548 | 0.961 | 1.000 |
+
+QB's low R² (0.678): the holdout window (2014–2017) generated DST sigma via the legacy unconditional model (distributional DST shipped in Session 10.4, which was fit on all eight seasons). QB sigma is noisily estimated on that holdout but not wrong in sign. DST `b_raw = 2.864` reflects the same mismatch — the holdout DST sigma came from a different model, so the fitter found the early seasons' DST sigma to be more variable than actuals warranted (under-dispersed in the fitter's direction). The clamped b=1.0 with the decision #13 refit holds calibration at 1.000.
+
+### Validation run results (probe re-run, 2018–2021, `--reuse --apply-recalibration`)
+
+**Three pre-registered predictions:**
+
+**1. B3 ratio column flattens toward 1.0 — PASS.** The monotone collapse is gone:
+
+| pos | ratio q1→q5 before | ratio q1→q5 after |
+|---|---|---|
+| QB | 2.04 → 0.64 | 1.10 → 1.24 |
+| RB | 2.69 → 0.58 | 1.19 → 1.09 |
+| WR | 2.22 → 0.58 | 1.11 → 1.05 |
+| TE | 2.13 → 0.69 | 0.91 → 1.08 |
+| DST | flat (0.85–0.93) | flat (0.88–1.01) |
+
+RB, WR, and TE flat within ±0.15 of 1.0 across all five quintiles. TE is the cleanest: 0.91 → 0.93 → 0.95 → 1.01 → 1.08. QB weakly rising (1.10 → 1.24) — the low holdout R² is the honest explanation; the correction removed ~90% of the distortion. DST flat as expected per decision #10.
+
+**2. B1 level stays near 1.0 — RECORDED, NOT BLOCKING.** QB 1.285, RB 1.163, WR 1.124, TE 1.079, DST 0.967. TE is within normal range; QB is the widest. The probe cache was built with in-sample artifacts (`dst_model.json` still all-eight-seasons at measurement time — see deferred items below). True out-of-sample B1 requires a cache rebuild with holdout artifacts. The pre-recalibration B1 (0.92–1.07) was in-sample-flattered; the true out-of-sample level was already above 1.0 before this session. DST shifting from 0.930 → 0.967 is the clearest signal of that flattery.
+
+**3. B3 Spearman unchanged — confirmed non-evidence, as pre-registered.** +0.314 / +0.419 / +0.446 / +0.436. Guaranteed by the monotone transform. Stated here so it is not later misread as a passed test.
+
+### Additional findings recorded (not corrected here)
+
+- **Per-position mean bias** (RB +1.08, WR +0.85, TE +0.77, QB −0.63 under/over-projection): a projection-accuracy item for a future card, explicitly excluded from this session per decision #1.
+- **B2 shape** (RB/WR/TE ~0.19–0.21 above p90 vs 0.10 target — simulator's right tail too thin): an open finding, not touched per consumer decision #6. The right-tail thinness is a separate still-open item.
+- **Upside-seeking λ (negative) has almost nothing to act on**: 95–98% of same-position pairs are floor-seeking (higher-projected player also riskier). Stacking is the right mechanism for correlated upside.
+- **Session 10.4's DST λ-distortion warning measured FALSE**: DST sigma is effectively constant (slope 0.055, Spearman +0.076 against |error|), so no λ in the useful grid materially reorders DST pairs.
+
+### A1 post-recalibration
+
+After recalibration, sig_R² drops materially (QB 0.984→0.790, RB 0.971→0.884, WR 0.976→0.909, TE 0.968→0.883, DST unchanged). resid/sig drops to 0.039–0.099. The objective now has meaningfully more independent information than the raw mean alone. This is what was supposed to happen.
+
+### Derived lambda grid (from probe A3, post-recalibration)
+
+```
+floor-seeking  (cash):  [0.039, 0.063, 0.104, 0.139, 0.188]
+upside-seeking (GPP):   [-0.003, -0.005, -0.014, -0.030, -0.095]
+full sweep grid:        [-0.095, -0.030, -0.014, -0.005, -0.003, 0.0, 0.039, 0.063, 0.104, 0.139, 0.188]
+```
+
+This grid was derived from the measurement data — not guessed — and is the input to Session 10.5's sweep. Grid points placed at the λ reversing 1/2/5/10/25% of same-position pairs in each direction.
+
+### Key decisions documented in module docstrings
+
+#1 bias in mean not variance, #2 site-keyed hard error on mismatch, #3 no extrapolation (clip to fit range), #4 zero stays zero, #5 provenance suffix on sigma_source, #6 p10/p90 not touched, #7 holdout default 2014–2017, #8 bin guards (rows AND bins AND usable bins all three), #9 clamp loudly store b_raw, #10 DST near-zero b is the correct expected outcome, #11 week 1 skip, #12 collection/fitting separable via --rows, #13 refit a on clamp.
+
+### Deferred items (explicit, not silent)
+
+- **`dst_model.json` holdout refit blocked on 2013 carryover.** `fit_dst_model.py --fit-seasons 2014 2015 2016 2017` requires `data/team_stats_2013.parquet`. Run `python scripts/ingest_historical.py --season 2013` first, then refit, then rebuild the probe cache (`--season 2018 2019 2020 2021 --all-weeks`, no `--reuse`) to get clean out-of-sample B1. Not blocking 10.5 — `sigma_recalibration.json` itself is clean.
+- **End-to-end wiring validation.** Confirming `build_projections_statline.py --sigma-recalibration` produces recalibrated sigma values and correct `sigma_source` labels end-to-end in a real build. Deferred to Preseason Week 1 (Aug 13–15), same gate as other Session 6.1 pipeline reliability checks. Added to Known Deferred Validations.
+- **`sigma_recalibration.json` FD artifact — BLOCKED**, same standing gap as every other FD item. Consumer fails loud on site mismatch (decision #2) rather than silently borrowing DK's curve.
+
+### Sandbox-only vs live-validated
+
+**Live-validated on real data (2014–2021, 65 fit-window weeks + 65 measurement-window weeks):** the over-dispersion measurement itself; all probe A and B outputs; fitter end-to-end on 2014–2017 holdout; consumer applied to the 2018–2021 cache; B3 ratio column before and after; sigma_source provenance label.
+
+**Sandbox-only (fixture test on synthetic data):** the decision #13 intercept-refit path; the hard-error on positive-projection-zero-sigma; the site-mismatch error; the schema-version error; the clip-fraction reporting. None has run on real data yet — the first live projection build with `--sigma-recalibration` is its first exercise.

@@ -1,17 +1,13 @@
 {
  "schema_version": 1,
- "fit_date": "2026-07-27",
+ "fit_date": "2026-07-28",
  "seasons": [
   2014,
   2015,
   2016,
-  2017,
-  2018,
-  2019,
-  2020,
-  2021
+  2017
  ],
- "n_rows": 43879,
+ "n_rows": 21696,
  "min_games_per_player_season": 6,
  "notes": "Site-agnostic by design (decision #1) -- a stat line is real football; only scoring_rules.py is site-specific. Component whitelist per position is decision #3; anything outside it is never simulated.",
  "positions": {
@@ -19,117 +15,117 @@
    "components": {
     "pass": {
      "volume_stat": "attempts",
-     "r": 15.7043,
-     "n_player_seasons": 319,
-     "mean_volume": 31.303,
-     "yards_per_opportunity": 7.18724,
-     "td_per_opportunity": 0.04508,
-     "yards_cv": 0.2613,
-     "yards_td_corr_target": 0.4578,
-     "n_efficiency_rows": 3971,
-     "n_corr_rows": 4126,
-     "latent_sd": 0.3047
+     "r": 15.7718,
+     "n_player_seasons": 161,
+     "mean_volume": 31.72,
+     "yards_per_opportunity": 7.15504,
+     "td_per_opportunity": 0.04398,
+     "yards_cv": 0.2563,
+     "yards_td_corr_target": 0.4476,
+     "n_efficiency_rows": 1984,
+     "n_corr_rows": 2054,
+     "latent_sd": 0.2863
     },
     "rush": {
      "volume_stat": "carries",
-     "r": 8.2013,
-     "n_player_seasons": 320,
-     "mean_volume": 3.052,
-     "yards_per_opportunity": 4.20357,
-     "td_per_opportunity": 0.04211,
-     "yards_cv": 0.9181,
-     "yards_td_corr_target": 0.1989,
-     "n_efficiency_rows": 2796,
-     "n_corr_rows": 4126,
-     "latent_sd": 0.5772
+     "r": 10.7595,
+     "n_player_seasons": 160,
+     "mean_volume": 2.794,
+     "yards_per_opportunity": 4.08896,
+     "td_per_opportunity": 0.03711,
+     "yards_cv": 0.962,
+     "yards_td_corr_target": 0.2014,
+     "n_efficiency_rows": 1308,
+     "n_corr_rows": 2054,
+     "latent_sd": 0.6757
     }
    },
-   "fumbles_lost_per_touch": 0.063209,
-   "catch_rate": 0.71429,
-   "int_per_attempt": 0.02346
+   "fumbles_lost_per_touch": 0.066667,
+   "catch_rate": 0.75,
+   "int_per_attempt": 0.024
   },
   "RB": {
    "components": {
     "rush": {
      "volume_stat": "carries",
-     "r": 6.4001,
-     "n_player_seasons": 819,
-     "mean_volume": 8.196,
-     "yards_per_opportunity": 4.21281,
-     "td_per_opportunity": 0.02992,
-     "yards_cv": 0.5431,
-     "yards_td_corr_target": 0.3803,
-     "n_efficiency_rows": 8547,
-     "n_corr_rows": 10812,
-     "latent_sd": 0.836
+     "r": 6.0692,
+     "n_player_seasons": 411,
+     "mean_volume": 8.171,
+     "yards_per_opportunity": 4.10999,
+     "td_per_opportunity": 0.02738,
+     "yards_cv": 0.5558,
+     "yards_td_corr_target": 0.3679,
+     "n_efficiency_rows": 4276,
+     "n_corr_rows": 5438,
+     "latent_sd": 0.8437
     },
     "recv": {
      "volume_stat": "targets",
-     "r": 5.8287,
-     "n_player_seasons": 770,
-     "mean_volume": 2.55,
-     "yards_per_opportunity": 5.98222,
-     "td_per_opportunity": 0.02943,
-     "yards_cv": 0.7645,
-     "yards_td_corr_target": 0.281,
-     "n_efficiency_rows": 6428,
-     "n_corr_rows": 10812,
-     "latent_sd": 1.0275
+     "r": 5.9198,
+     "n_player_seasons": 379,
+     "mean_volume": 2.558,
+     "yards_per_opportunity": 6.04841,
+     "td_per_opportunity": 0.02811,
+     "yards_cv": 0.7712,
+     "yards_td_corr_target": 0.2856,
+     "n_efficiency_rows": 3192,
+     "n_corr_rows": 5438,
+     "latent_sd": 1.1074
     }
    },
-   "fumbles_lost_per_touch": 0.005216,
-   "catch_rate": 0.75381
+   "fumbles_lost_per_touch": 0.005639,
+   "catch_rate": 0.74006
   },
   "WR": {
    "components": {
     "recv": {
      "volume_stat": "targets",
-     "r": 12.8534,
-     "n_player_seasons": 1275,
-     "mean_volume": 4.671,
-     "yards_per_opportunity": 7.89269,
-     "td_per_opportunity": 0.04818,
-     "yards_cv": 0.6912,
-     "yards_td_corr_target": 0.3754,
-     "n_efficiency_rows": 13285,
-     "n_corr_rows": 17112,
-     "latent_sd": 0.8885
+     "r": 14.0891,
+     "n_player_seasons": 627,
+     "mean_volume": 4.737,
+     "yards_per_opportunity": 7.71855,
+     "td_per_opportunity": 0.04627,
+     "yards_cv": 0.7002,
+     "yards_td_corr_target": 0.3575,
+     "n_efficiency_rows": 6595,
+     "n_corr_rows": 8511,
+     "latent_sd": 0.8599
     },
     "rush": {
      "volume_stat": "carries",
-     "r": 3.6261,
-     "n_player_seasons": 89,
-     "mean_volume": 1.231,
-     "yards_per_opportunity": 5.98647,
-     "td_per_opportunity": 0.03449,
-     "yards_cv": 0.92,
-     "yards_td_corr_target": 0.3915,
-     "n_efficiency_rows": 657,
-     "n_corr_rows": 17112,
-     "latent_sd": 1.9715
+     "r": 3.6746,
+     "n_player_seasons": 37,
+     "mean_volume": 1.577,
+     "yards_per_opportunity": 5.78245,
+     "td_per_opportunity": 0.02828,
+     "yards_cv": 0.9251,
+     "yards_td_corr_target": 0.4319,
+     "n_efficiency_rows": 292,
+     "n_corr_rows": 8511,
+     "latent_sd": 2.3135
     }
    },
-   "fumbles_lost_per_touch": 0.005558,
-   "catch_rate": 0.61401
+   "fumbles_lost_per_touch": 0.005715,
+   "catch_rate": 0.5953
   },
   "TE": {
    "components": {
     "recv": {
      "volume_stat": "targets",
-     "r": 13.111,
-     "n_player_seasons": 679,
-     "mean_volume": 3.272,
-     "yards_per_opportunity": 7.30445,
-     "td_per_opportunity": 0.05592,
-     "yards_cv": 0.7195,
-     "yards_td_corr_target": 0.2923,
-     "n_efficiency_rows": 6455,
-     "n_corr_rows": 8305,
-     "latent_sd": 0.6557
+     "r": 12.2291,
+     "n_player_seasons": 338,
+     "mean_volume": 3.388,
+     "yards_per_opportunity": 7.19465,
+     "td_per_opportunity": 0.05492,
+     "yards_cv": 0.733,
+     "yards_td_corr_target": 0.2888,
+     "n_efficiency_rows": 3214,
+     "n_corr_rows": 4127,
+     "latent_sd": 0.6528
     }
    },
-   "fumbles_lost_per_touch": 0.007246,
-   "catch_rate": 0.66604
+   "fumbles_lost_per_touch": 0.007348,
+   "catch_rate": 0.65254
   }
  }
 }
