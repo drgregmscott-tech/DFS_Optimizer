@@ -173,6 +173,19 @@ jobs:
           f=$(ls -t output/player_status_${{ steps.slate.outputs.dk_week }}_*.csv 2>/dev/null | head -n 1 || true)
           echo "path=$f" >> "$GITHUB_OUTPUT"
 
+      # Session 10.4 opened this item: the distributional DST model (now the
+      # default) reads data/team_stats_{season}.parquet. Without a current-
+      # season pull here the model runs on prior-season carryover alone
+      # (degraded, not wrong) or fails loud if the file is absent. continue-
+      # on-error so a transient nflverse failure does not abort the refresh.
+      - name: Pull current-season team stats (needed by distributional DST)
+        id: team_stats
+        if: steps.trigger.outputs.mode == 'full'
+        continue-on-error: true
+        run: |
+          python3 scripts/ingest_historical.py \
+            --season ${{ steps.slate.outputs.season }}
+
       - name: Rebuild projections -- DK
         id: proj_dk
         if: steps.trigger.outputs.mode == 'full'
@@ -238,6 +251,7 @@ jobs:
               {'timestamp_utc': now, 'trigger_type': trigger_type, 'site': 'both', 'step': 'vegas_odds_pull', 'status': outcome('VEGAS_OUTCOME')},
           ]
           if mode == 'full':
+              rows.append({'timestamp_utc': now, 'trigger_type': trigger_type, 'site': 'both', 'step': 'team_stats_pull', 'status': outcome('TEAM_STATS_OUTCOME')})
               rows.append({'timestamp_utc': now, 'trigger_type': trigger_type, 'site': 'both', 'step': 'status_pull', 'status': outcome('STATUS_PULL_OUTCOME')})
               rows.append({'timestamp_utc': now, 'trigger_type': trigger_type, 'site': 'dk', 'step': 'build_projections', 'status': outcome('PROJ_DK_OUTCOME')})
               rows.append({'timestamp_utc': now, 'trigger_type': trigger_type, 'site': 'fd', 'step': 'build_projections', 'status': outcome('PROJ_FD_OUTCOME')})
@@ -254,6 +268,7 @@ jobs:
           "
         env:
           VEGAS_OUTCOME: ${{ steps.vegas.outcome }}
+          TEAM_STATS_OUTCOME: ${{ steps.team_stats.outcome }}
           STATUS_PULL_OUTCOME: ${{ steps.status_pull.outcome }}
           PROJ_DK_OUTCOME: ${{ steps.proj_dk.outcome }}
           PROJ_FD_OUTCOME: ${{ steps.proj_fd.outcome }}
@@ -278,7 +293,7 @@ jobs:
           git push origin HEAD:"${{ github.ref_name }}"
 
       - name: Fail the run if any pipeline step failed
-        if: steps.vegas.outcome == 'failure' || steps.status_pull.outcome == 'failure' || steps.proj_dk.outcome == 'failure' || steps.proj_fd.outcome == 'failure' || steps.apply_dk.outcome == 'failure' || steps.apply_fd.outcome == 'failure'
+        if: steps.vegas.outcome == 'failure' || steps.team_stats.outcome == 'failure' || steps.status_pull.outcome == 'failure' || steps.proj_dk.outcome == 'failure' || steps.proj_fd.outcome == 'failure' || steps.apply_dk.outcome == 'failure' || steps.apply_fd.outcome == 'failure'
         run: |
           echo "One or more pipeline steps failed -- see the step logs above and logs/automation_run_log.csv."
           exit 1

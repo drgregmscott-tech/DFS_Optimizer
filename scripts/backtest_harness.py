@@ -537,7 +537,10 @@ def run_projection_pipeline(site: str, season: int, week: int, slate_id: str,
                             engine: str = "legacy",
                             statline: dict | None = None,
                             dst_model_mode: str = "legacy",
-                            prior: dict | None = None) -> Path:
+                            prior: dict | None = None,
+                            sigma_recal: bool = False) -> Path:
+    # Session 10.5: sigma_recal=False default means every existing call site
+    # is byte-identical. Only meaningful with engine="statline".
     """Drive the REAL component scripts + build_projections.py via their
     file interfaces. Returns the path to final_projections_{site}_{week}.csv.
     Raises RuntimeError with the failing step's stderr on any failure.
@@ -601,6 +604,11 @@ def run_projection_pipeline(site: str, season: int, week: int, slate_id: str,
         # takes no anchor flags at all -- Session 10.2 measured the anchor as
         # neutral at the points level, and its one real use (cold start)
         # belongs on the stat-line inputs, which is Session 10.3b.
+        # Session 10.5: pass --sigma-recalibration when requested.
+        # Only meaningful on the stat-line path; the legacy engine emits no
+        # sigma and its builder has no such flag -- silently omitted there.
+        if sigma_recal:
+            cmd += ["--sigma-recalibration"]
         if anchor and (anchor["weight"] > 0 or anchor["cold_start"]):
             raise RuntimeError(
                 "--engine statline cannot be combined with the salary-anchor "
@@ -810,7 +818,22 @@ def backtest_week(site: str, season: int, week: int, games: pd.DataFrame,
                   engine: str = "legacy",
                   dst_model_mode: str = "legacy",
                   statline: dict | None = None,
-                  prior: dict | None = None) -> dict:
+                  prior: dict | None = None,
+                  lam: float = 0.0,
+                  sigma_recal: bool = False,
+                  skip_projection_build: bool = False) -> dict:
+    # Session 10.5: lam and sigma_recal default to 0/False, and
+    # skip_projection_build defaults to False, so every existing call site
+    # (and every pre-10.5 script) is byte-identical unchanged.
+    #
+    # skip_projection_build=True is used by the sweep loop: for the second
+    # through Nth lambda values in a sweep the projection files are already
+    # current on disk (written by the first lambda call), so we skip the
+    # ~2-min rebuild and go straight to the optimizer. The WEEK-1 skip and
+    # the week-1/field-baseline early-return paths are still evaluated
+    # normally -- only the run_projection_pipeline calls are skipped.
+    # Hard error if the expected file is missing, so this never silently
+    # optimizes against last week's pool.
     slate_id = f"rotoguru_{season}_wk{week}"
     salary_path = DATA_DIR / f"salaries_{site}_{slate_id}.csv"
     if not salary_path.exists():
@@ -853,15 +876,27 @@ def backtest_week(site: str, season: int, week: int, games: pd.DataFrame,
         return {"site": site, "season": season, "week": week, "status": "SKIP",
                 "detail": detail}
 
-    try:
-        ensure_per_season_schedule(season)  # decision #7: bridge schedule layout
-        build_vegas_file(games, site, season, week)
-        proj_path = run_projection_pipeline(site, season, week, slate_id, anchor,
-                                            engine=engine, statline=statline,
-                                            dst_model_mode=dst_model_mode,
-                                            prior=prior)
-    except RuntimeError as e:
-        return {"site": site, "season": season, "week": week, "status": "ERROR", "detail": str(e)}
+    proj_path = OUTPUT_DIR / f"final_projections_{site}_{week}.csv"
+    if skip_projection_build:
+        # Sweep mode: files are already current from the first-lambda call.
+        # Fail loud rather than silently optimize against stale/missing data.
+        if not proj_path.exists():
+            return {"site": site, "season": season, "week": week,
+                    "status": "ERROR",
+                    "detail": (f"skip_projection_build=True but "
+                               f"{proj_path.name} is missing -- the first "
+                               f"lambda call must have failed. Cannot sweep.")}
+    else:
+        try:
+            ensure_per_season_schedule(season)  # decision #7: bridge schedule layout
+            build_vegas_file(games, site, season, week)
+            proj_path = run_projection_pipeline(site, season, week, slate_id, anchor,
+                                                engine=engine, statline=statline,
+                                                dst_model_mode=dst_model_mode,
+                                                prior=prior,
+                                                sigma_recal=sigma_recal)
+        except RuntimeError as e:
+            return {"site": site, "season": season, "week": week, "status": "ERROR", "detail": str(e)}
 
     # Session 10.2, decision #9: build the FIELD from an anchor-OFF pool, so
     # every arm is scored against one fixed yardstick. See the module
@@ -896,22 +931,27 @@ def backtest_week(site: str, season: int, week: int, games: pd.DataFrame,
         try:
             # The yardstick: LEGACY engine, anchor OFF -- exactly the
             # configuration the 72.8 / 94.7 baseline was measured on.
-            run_projection_pipeline(site, season, week, slate_id, None,
-                                    engine="legacy", dst_model_mode="legacy")
-            field_proj_path = OUTPUT_DIR / f"final_projections_{site}_{week}_fieldbase.csv"
-            pd.read_csv(OUTPUT_DIR / f"final_projections_{site}_{week}.csv",
-                        dtype={"player_id": str, "site_player_id": str}
-                        ).to_csv(field_proj_path, index=False)
-            # Rebuild the ARM's file, which the baseline run just clobbered.
-            # `prior=` is NOT optional here. Omitting it would rebuild the arm
-            # WITHOUT the volume prior while every label and every recorded
-            # number said it had one -- the same silent wrong-arm failure as
-            # Session 10.4's bugs #3 and #4, one layer deeper. Every argument
-            # in this call must match the arm's own configuration exactly.
-            run_projection_pipeline(site, season, week, slate_id, anchor,
-                                    engine=engine, statline=statline,
-                                    dst_model_mode=dst_model_mode,
-                                    prior=prior)
+            # skip_projection_build: on subsequent sweep lambda calls the
+            # field-baseline file is already on disk from the first call.
+            field_base_path = OUTPUT_DIR / f"final_projections_{site}_{week}_fieldbase.csv"
+            if not skip_projection_build:
+                run_projection_pipeline(site, season, week, slate_id, None,
+                                        engine="legacy", dst_model_mode="legacy")
+                pd.read_csv(OUTPUT_DIR / f"final_projections_{site}_{week}.csv",
+                            dtype={"player_id": str, "site_player_id": str}
+                            ).to_csv(field_base_path, index=False)
+                # Rebuild the ARM's file, which the baseline run just clobbered.
+                # `prior=` is NOT optional here. Omitting it would rebuild the arm
+                # WITHOUT the volume prior while every label and every recorded
+                # number said it had one -- the same silent wrong-arm failure as
+                # Session 10.4's bugs #3 and #4, one layer deeper. Every argument
+                # in this call must match the arm's own configuration exactly.
+                run_projection_pipeline(site, season, week, slate_id, anchor,
+                                        engine=engine, statline=statline,
+                                        dst_model_mode=dst_model_mode,
+                                        prior=prior,
+                                        sigma_recal=sigma_recal)
+            field_proj_path = field_base_path
         except RuntimeError as e:
             return {"site": site, "season": season, "week": week,
                     "status": "ERROR",
@@ -985,6 +1025,7 @@ def backtest_week(site: str, season: int, week: int, games: pd.DataFrame,
     try:
         lineups_df, _exposure, n_generated = opt.build_multi_lineup(
             site, week, n_lineups=num_lineups, seed=int(rng.integers(1_000_000)),
+            lam=lam,
         )
     except Exception as e:
         return {"site": site, "season": season, "week": week, "status": "ERROR",
@@ -1043,6 +1084,40 @@ def backtest_week(site: str, season: int, week: int, games: pd.DataFrame,
                         field_scores, our_scores[med_i],
                         label=f"MEDIAN-percentile lineup (#{med_i})")
 
+    # Session 10.5 (decision #2): beat-rate and top-rate metrics.
+    # Named beat_rate@pXX / top_rate@pXX -- NOT "cash rate". These measure
+    # against a synthetic field; real DFS cash rates depend on contest
+    # structure and rake. Named explicitly so no future reader mistakes
+    # them for real money-in/money-out statistics.
+    #
+    # PRE-REGISTERED SELECTION RULE (written here before the sweep runs):
+    #   - Beat_rate@p44 selects lambda for cash games (DK 50/50 after rake ~= p44).
+    #   - Beat_rate@p50 selects lambda for 3-max GPPs.
+    #   - Top_rate@p90 selects lambda for large-field GPPs.
+    # No lambda is selected by argmax over the same 65 weeks measured here.
+    # The curve is the deliverable; a strategy choice converts it to one
+    # lambda per contest type. This pre-registration is enforced by logging
+    # it here in the code, not a separate document.
+    #
+    # beat_rate@p50: fraction of our (week × lineup) entries that beat the
+    #     field's 50th percentile. Entry-level metric (each lineup is one entry).
+    # beat_rate@p44: same at field's 44th percentile (cash-game proxy).
+    # top_rate@p90: fraction of WEEKS where at least one of our lineups cleared
+    #     field's 90th percentile. Week-level metric -- a GPP entry is a
+    #     portfolio; you cash once if any lineup fires.
+    # top_rate@p99: same at field's 99th percentile (large-field GPP proxy).
+    if len(field_scores) > 0:
+        p44_thr = float(np.percentile(field_scores, 44))
+        p50_thr = float(np.percentile(field_scores, 50))
+        p90_thr = float(np.percentile(field_scores, 90))
+        p99_thr = float(np.percentile(field_scores, 99))
+        beat_p44 = round(float(np.mean([s >= p44_thr for s in our_scores])), 4)
+        beat_p50 = round(float(np.mean([s >= p50_thr for s in our_scores])), 4)
+        top_p90 = 1.0 if any(s >= p90_thr for s in our_scores) else 0.0
+        top_p99 = 1.0 if any(s >= p99_thr for s in our_scores) else 0.0
+    else:
+        beat_p44 = beat_p50 = top_p90 = top_p99 = None
+
     return {
         "site": site, "season": season, "week": week, "status": "OK",
         "n_lineups": len(lineups), "n_field": len(field),
@@ -1059,6 +1134,13 @@ def backtest_week(site: str, season: int, week: int, games: pd.DataFrame,
         "field_pool_n": int(len(field_pool)),
         "median_percentile": round(float(np.median(pcts)), 1),
         "max_percentile": round(float(np.max(pcts)), 1),
+        # Session 10.5 (decision #2): threshold metrics. See pre-registration above.
+        "beat_rate_p44": beat_p44,
+        "beat_rate_p50": beat_p50,
+        "top_rate_p90": top_p90,
+        "top_rate_p99": top_p99,
+        "lam": lam,
+        "sigma_recal": sigma_recal,
         "anchor": describe_anchor(anchor),
         "engine": engine,
         # Session 10.4: dst_model_mode was missing from this label, so the
@@ -1246,6 +1328,39 @@ def main():
                              "field to the LEGACY engine with the anchor off so "
                              "every arm shares one yardstick; 'arm' is the pre-10.2 "
                              "behaviour and must not be used for a measurement.")
+    # Session 10.5 (decision #2): lambda sweep mode.
+    # PRE-REGISTERED SELECTION RULE (also recorded in backtest_week's return dict):
+    #   beat_rate@p44  -> cash games
+    #   beat_rate@p50  -> 3-max GPPs
+    #   top_rate@p90   -> large-field GPPs
+    # No lambda is selected by argmax of any metric. The curve is the output.
+    parser.add_argument("--lambda-grid", type=float, nargs="+", default=None,
+                        help="Session 10.5: run a sweep over these lambda values "
+                             "(space-separated). When set, the projection pool and "
+                             "synthetic field are built ONCE per week, then the "
+                             "optimizer is re-run in-process for each lambda -- "
+                             "cheap. Results are reported per lambda and written to "
+                             "a single CSV. The derived grid from probe A3 "
+                             "(2018-2021 DK, 65 weeks): "
+                             "[-0.095 -0.030 -0.014 -0.005 -0.003 "
+                             "0.0 0.039 0.063 0.104 0.139 0.188]. "
+                             "Requires --engine statline --sigma-recalibration. "
+                             "Omit to run a single lambda (default 0.0).")
+    parser.add_argument("--sigma-recalibration", action="store_true",
+                        help="Session 10.5: pass --sigma-recalibration to "
+                             "build_projections_statline.py so the pool carries "
+                             "recalibrated per-player sigma values (Session 10.4b). "
+                             "Required for --lambda-grid. No-op with --engine legacy.")
+    parser.add_argument("--contest-type", choices=["single", "3max", "20max"],
+                        default=None,
+                        help="Session 10.5: contest type sets --num-lineups for the "
+                             "sweep (single=1, 3max=3, 20max=20). When set, "
+                             "overrides --num-lineups. Mutually exclusive with "
+                             "--num-lineups when --lambda-grid is active.")
+    parser.add_argument("--lam", type=float, default=0.0,
+                        help="Session 10.5: single-lambda value for non-sweep runs "
+                             "(default 0.0 = pure-mean, identical to every prior "
+                             "session). Ignored when --lambda-grid is set.")
     args = parser.parse_args()
 
     anchor = {"weight": args.salary_anchor_weight,
@@ -1261,6 +1376,33 @@ def main():
             "stat-line VOLUME inputs, which the legacy points-blend engine "
             "does not have. (The legacy engine's equivalent is Session 10.2's "
             "--salary-anchor-cold-start, which acts on points.)")
+
+    # Session 10.5 sweep-mode guards and setup.
+    sweep_lambdas = None
+    if args.lambda_grid is not None:
+        if args.engine != "statline":
+            raise SystemExit("--lambda-grid requires --engine statline (needs sigma column).")
+        if not args.sigma_recalibration:
+            raise SystemExit(
+                "--lambda-grid requires --sigma-recalibration. A non-zero lambda "
+                "on a pool with no real sigma is silent nonsense -- the guard in "
+                "optimizer.py would catch it per-week anyway, but failing here is "
+                "cheaper and clearer.")
+        sweep_lambdas = sorted(set(args.lambda_grid))
+        if args.contest_type:
+            ct_map = {"single": 1, "3max": 3, "20max": 20}
+            # Override num_lineups from contest_type if both are given --
+            # contest_type is the semantic, num_lineups is the mechanism.
+            args.num_lineups = ct_map[args.contest_type]
+        print(f"SWEEP MODE: {len(sweep_lambdas)} lambda values × "
+              f"{args.num_lineups} lineup(s)/week  "
+              f"[contest: {args.contest_type or 'manual'}]")
+        print(f"  Lambda grid: {sweep_lambdas}")
+        print("  PRE-REGISTERED selection rule:")
+        print("    beat_rate@p44  -> cash games")
+        print("    beat_rate@p50  -> 3-max GPPs")
+        print("    top_rate@p90   -> large-field GPPs")
+        print("  (No lambda is selected by argmax. The curve is the output.)")
 
     global DEBUG
     DEBUG = args.debug
@@ -1303,40 +1445,141 @@ def main():
             # this week's field cannot depend on whether an earlier week
             # errored, was skipped, or ran at all.
             week_rng = np.random.default_rng([args.seed, season, week])
-            # Keyword-passed on purpose. These were positional until Session
-            # 10.4 inserted `dst_model_mode` into the signature, which would
-            # have silently bound `statline` to it -- a wrong-arm run that
-            # reported clean numbers rather than failing. Keywords make the
-            # next insertion safe.
-            res = backtest_week(args.site, season, week, games,
-                                args.num_lineups, args.field_size, week_rng,
-                                anchor=anchor,
-                                field_pool_mode=args.field_pool,
-                                seed_base=args.seed,
-                                engine=args.engine,
-                                prior=prior,
-                                dst_model_mode=args.dst_model,
-                                statline=statline)
-            results.append(res)
-            if res["status"] == "OK":
-                print(f"  OK  {args.site} {season} wk{week:<2}  "
-                      f"median pctile {res['median_percentile']:>5.1f}  "
-                      f"max pctile {res['max_percentile']:>5.1f}  "
-                      f"(our med {res['our_median_score']}, best "
-                      f"{res['our_best_score']}, field median "
-                      f"{res['field_median_score']}, pool {res['pool_size']}, "
-                      f"field {res.get('field_pool_fingerprint','?')})")
-            elif res["status"] == "SKIP":
-                print(f"  --  {args.site} {season} wk{week:<2}  SKIP: {res['detail'][:100]}")
+
+            if sweep_lambdas is not None:
+                # SWEEP MODE (Session 10.5, decision #2):
+                # Build the projection pool and synthetic field ONCE per week,
+                # then loop over lambda values in-process. This is the entire
+                # cost saving: a projection rebuild takes ~30s per week; a
+                # lambda re-solve takes <1s. Without this, a 11-point grid ×
+                # 65 weeks × 3 contest types = 2,145 full builds.
+                #
+                # Implementation: backtest_week already does the expensive
+                # work (build_vegas_file, run_projection_pipeline, field
+                # build) before the optimizer runs. We call it at lam=0 first
+                # to do that work and capture the pool/field state -- the pool
+                # is written to disk and the field is deterministic from
+                # (seed, season, week), so every subsequent lam call reads the
+                # same pool and builds the identical field without rebuilding
+                # projections (they are already on disk and proj_path exists).
+                # Keyword-passed on purpose (same reasoning as the non-sweep path).
+                for i_lam, lam_val in enumerate(sweep_lambdas):
+                    # Decision #15 (Session 10.5b): build-once efficiency.
+                    # The first lambda call does the full pipeline: vegas,
+                    # projections, field baseline. Every subsequent call skips
+                    # the ~2-min rebuild and goes straight to the optimizer,
+                    # reading the files the first call already wrote to disk.
+                    # This turns 65 weeks × 11 lambdas × 3 contest types
+                    # from ~24 hours of projection builds into ~2 hours.
+                    # If the first call errored or skipped, subsequent calls
+                    # are also short-circuited (the break below handles SKIP;
+                    # the missing-file guard in backtest_week handles ERROR).
+                    skip_build = (i_lam > 0)
+                    res = backtest_week(args.site, season, week, games,
+                                        args.num_lineups, args.field_size, week_rng,
+                                        anchor=anchor,
+                                        field_pool_mode=args.field_pool,
+                                        seed_base=args.seed,
+                                        engine=args.engine,
+                                        prior=prior,
+                                        dst_model_mode=args.dst_model,
+                                        statline=statline,
+                                        lam=lam_val,
+                                        sigma_recal=args.sigma_recalibration,
+                                        skip_projection_build=skip_build)
+                    results.append(res)
+                    if res["status"] == "OK":
+                        print(f"  OK  {args.site} {season} wk{week:<2}  "
+                              f"lam={lam_val:+.4f}  "
+                              f"med-pct {res['median_percentile']:>5.1f}  "
+                              f"max-pct {res['max_percentile']:>5.1f}  "
+                              f"beat@p44 {res['beat_rate_p44']:.3f}  "
+                              f"top@p90 {res['top_rate_p90']:.0f}")
+                    elif res["status"] == "SKIP":
+                        print(f"  --  {args.site} {season} wk{week:<2}  lam={lam_val:+.4f}  "
+                              f"SKIP: {res['detail'][:80]}")
+                        break  # if the week is unbuildable, all lambdas skip
+                    else:
+                        first_line = res["detail"].strip().splitlines()
+                        print(f"  XX  {args.site} {season} wk{week:<2}  lam={lam_val:+.4f}  "
+                              f"ERROR: {(first_line[-1] if len(first_line) > 1 else first_line[0])[:120]}")
             else:
-                first_line = res["detail"].strip().splitlines()
-                print(f"  XX  {args.site} {season} wk{week:<2}  ERROR: "
-                      f"{(first_line[-1] if len(first_line) > 1 else first_line[0])[:150]}")
+                # SINGLE-LAMBDA MODE (default, unchanged from before 10.5)
+                res = backtest_week(args.site, season, week, games,
+                                    args.num_lineups, args.field_size, week_rng,
+                                    anchor=anchor,
+                                    field_pool_mode=args.field_pool,
+                                    seed_base=args.seed,
+                                    engine=args.engine,
+                                    prior=prior,
+                                    dst_model_mode=args.dst_model,
+                                    statline=statline,
+                                    lam=args.lam if hasattr(args, "lam") else 0.0,
+                                    sigma_recal=args.sigma_recalibration)
+                results.append(res)
+                if res["status"] == "OK":
+                    print(f"  OK  {args.site} {season} wk{week:<2}  "
+                          f"median pctile {res['median_percentile']:>5.1f}  "
+                          f"max pctile {res['max_percentile']:>5.1f}  "
+                          f"(our med {res['our_median_score']}, best "
+                          f"{res['our_best_score']}, field median "
+                          f"{res['field_median_score']}, pool {res['pool_size']}, "
+                          f"field {res.get('field_pool_fingerprint','?')})")
+                elif res["status"] == "SKIP":
+                    print(f"  --  {args.site} {season} wk{week:<2}  SKIP: {res['detail'][:100]}")
+                else:
+                    first_line = res["detail"].strip().splitlines()
+                    print(f"  XX  {args.site} {season} wk{week:<2}  ERROR: "
+                          f"{(first_line[-1] if len(first_line) > 1 else first_line[0])[:150]}")
 
     # Summary
     ok = [r for r in results if r["status"] == "OK"]
     err = [r for r in results if r["status"] == "ERROR"]
     skip = [r for r in results if r["status"] == "SKIP"]
+
+    # Session 10.5: write results CSV. Always written; in sweep mode it
+    # contains one row per (week, lambda). In non-sweep mode it contains
+    # one row per week (backward-compatible -- same shape, new columns).
+    results_path = OUTPUT_DIR / f"backtest_results_{args.site}.csv"
+    pd.DataFrame(results).to_csv(results_path, index=False)
+    print(f"\nResults written to {results_path} ({len(results)} rows).")
+
+    # Session 10.5 sweep summary: print the lambda curve.
+    if sweep_lambdas is not None and ok:
+        print("\n" + "=" * 70 + "\nSWEEP CURVE (pre-registered selection rule in header)\n" + "=" * 70)
+        print(f"  {'lambda':>8s}  {'n_wks':>5s}  "
+              f"{'med_pct':>7s}  {'max_pct':>7s}  "
+              f"{'beat@p44':>8s}  {'beat@p50':>8s}  "
+              f"{'top@p90':>7s}  {'top@p99':>7s}")
+        print(f"  {'':>8s}  {'':>5s}  "
+              f"{'':>7s}  {'':>7s}  "
+              f"{'<-cash':>8s}  {'<-3max':>8s}  "
+              f"{'<-gpp':>7s}  {'':>7s}")
+        print("  " + "-" * 68)
+        for lv in sweep_lambdas:
+            lam_ok = [r for r in ok if abs(r.get("lam", 0) - lv) < 1e-9]
+            if not lam_ok:
+                continue
+            med = float(np.mean([r["median_percentile"] for r in lam_ok]))
+            mx = float(np.mean([r["max_percentile"] for r in lam_ok]))
+            bp44 = float(np.mean([r["beat_rate_p44"] for r in lam_ok if r["beat_rate_p44"] is not None]))
+            bp50 = float(np.mean([r["beat_rate_p50"] for r in lam_ok if r["beat_rate_p50"] is not None]))
+            tp90 = float(np.mean([r["top_rate_p90"] for r in lam_ok if r["top_rate_p90"] is not None]))
+            tp99 = float(np.mean([r["top_rate_p99"] for r in lam_ok if r["top_rate_p99"] is not None]))
+            anchor_marker = "  <-- lambda=0 anchor" if abs(lv) < 1e-9 else ""
+            print(f"  {lv:>+8.4f}  {len(lam_ok):>5d}  "
+                  f"{med:>7.2f}  {mx:>7.2f}  "
+                  f"{bp44:>8.4f}  {bp50:>8.4f}  "
+                  f"{tp90:>7.4f}  {tp99:>7.4f}{anchor_marker}")
+        print("\n  VALIDATION CHECK: lambda=0 row must match the 10.3b re-baseline")
+        print("  (stat-line + distributional DST + volume prior OFF, 65 weeks):")
+        print("  median-pctile 77.9, max-pctile 97.3. If it does not, stop.")
+        print("  The remaining rows are meaningless if the anchor is wrong.")
+        print("\n  Pre-registered selection (no argmax of any metric):")
+        print("    beat_rate@p44  selects lambda for cash games.")
+        print("    beat_rate@p50  selects lambda for 3-max GPPs.")
+        print("    top_rate@p90   selects lambda for large-field GPPs.")
+
     print("\n" + "=" * 62 + "\nSUMMARY\n" + "=" * 62)
     # Session 10.4: THIRD call site, and the one that got missed when the
     # other two were fixed. The run banner said DISTRIBUTIONAL DST while this

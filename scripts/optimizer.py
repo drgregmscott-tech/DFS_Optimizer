@@ -216,7 +216,21 @@ DEFAULT_MIN_SALARY_PCT = 0.0
 #     run can be exactly replayed (used by this addendum's own validation
 #     run, and useful for debugging a specific generated lineup later).
 #     Omitted by default -- normal usage is genuinely random every run.
+#
+# 14. (Session 10.5, decision #3) SIGMA-MODE RANDOMIZATION is additive, not
+#     a reinterpretation of pct-mode. `randomization_mode="pct"` (default)
+#     is byte-identical to every prior session in every way. When
+#     `randomization_mode="sigma"` is chosen, the per-player std_dev is
+#     `pct/100 * sigma` rather than `pct/100 * final_projection`. Everything
+#     else is unchanged: same clipping, same one-draw-per-lineup, same seed.
+#     The entry-count scale (0 at n=1, linear to 1.0 at
+#     DEFAULT_SIGMA_RAND_FULL_LINEUPS) is FLAGGED ARBITRARY -- no data
+#     behind this schedule; first retuning target after the sweep.
+#     Sigma-mode requires sigma in the pool (same pre-solve guard as lambda).
 DEFAULT_RANDOMIZATION_PCT = 0.0
+# Session 10.5 decision #3: n_lineups at which sigma-mode randomization
+# reaches full scale. Linear ramp from 0 at n=1. FLAGGED ARBITRARY.
+DEFAULT_SIGMA_RAND_FULL_LINEUPS = 20
 
 
 # ---------------------------------------------------------------------------
@@ -787,6 +801,13 @@ def load_final_projections(site: str, week: int) -> pd.DataFrame:
         # addendum won't have these -- re-run build_projections.py.
         "opponent", "implied_total",
     }
+    # Session 10.5 (decision #1): `sigma` is NOT in `required`. Legacy
+    # final_projections files built by build_projections.py (the live
+    # production path) carry no sigma column and must still load cleanly.
+    # The stat-line path (build_projections_statline.py) does emit sigma;
+    # a non-zero --lambda on a sigma-less file is a hard error raised at
+    # solve time, not here. sigma_source is carried through for provenance
+    # only -- never used in any constraint or objective.
     missing = required - set(df.columns)
     if missing:
         raise SystemExit(
@@ -823,19 +844,49 @@ def parse_roster_requirements(roster_slots: list) -> tuple:
 # ---------------------------------------------------------------------------
 
 def randomize_projections(players: pd.DataFrame, randomization_pct: float,
-                           rng: np.random.Generator) -> pd.Series:
-    """Returns a pd.Series indexed by player_id: the real `final_projection`
-    unchanged if `randomization_pct <= 0` (decision #10), otherwise one
-    independent normal draw per player with mean = real final_projection and
-    std_dev = randomization_pct% of that same value (decision #9), clipped
-    at 0.0. This Series is meant to be passed to `solve_lineup`'s
-    `optimization_projection` param -- it never modifies `players` itself,
-    so the real final_projection stays intact for output/display (decision
-    #11)."""
+                           rng: np.random.Generator,
+                           mode: str = "pct",
+                           n_lineups: int = 1) -> pd.Series:
+    """Returns a pd.Series indexed by player_id for use as the ILP objective.
+
+    Session 3.2 (decisions #9-13): `mode="pct"` (default) draws from
+    N(final_projection, pct/100 * final_projection), clipped at 0. This is
+    the only mode that existed before Session 10.5 and is byte-identical.
+
+    Session 10.5 (decision #14): `mode="sigma"` scales the std_dev on the
+    pool's per-player sigma instead of the projection:
+        std_dev = pct/100 * sigma * entry_scale
+    where entry_scale ramps linearly 0 (n_lineups=1) -> 1.0 (n_lineups >=
+    DEFAULT_SIGMA_RAND_FULL_LINEUPS). FLAGGED ARBITRARY: the ramp has no
+    data behind it (decision #14). Hard error if sigma is absent or all-zero.
+
+    Neither mode modifies `players` itself; output always reports the real
+    final_projection (decision #11).
+    """
     base = players.set_index("player_id")["final_projection"]
     if randomization_pct <= 0:
         return base
-    std_dev = base * (randomization_pct / 100.0)
+
+    if mode == "sigma":
+        if "sigma" not in players.columns:
+            raise RuntimeError(
+                "randomization_mode='sigma' requires a 'sigma' column in the "
+                "pool -- build projections with build_projections_statline.py "
+                "--sigma-recalibration (Session 10.5)."
+            )
+        sigma_s = players.set_index("player_id")["sigma"]
+        if int((sigma_s > 0).sum()) == 0:
+            raise RuntimeError(
+                "randomization_mode='sigma' requested but every player has "
+                "sigma=0. Use build_projections_statline.py --sigma-recalibration."
+            )
+        # Entry-count scale: 0 at n=1, linear ramp to 1.0. FLAGGED ARBITRARY.
+        entry_scale = min(1.0, max(0.0, (n_lineups - 1) /
+                                   max(1, DEFAULT_SIGMA_RAND_FULL_LINEUPS - 1)))
+        std_dev = sigma_s * (randomization_pct / 100.0) * entry_scale
+    else:
+        std_dev = base * (randomization_pct / 100.0)
+
     noisy = rng.normal(loc=base.to_numpy(), scale=std_dev.to_numpy())
     return pd.Series(noisy, index=base.index).clip(lower=0.0)
 
@@ -856,8 +907,21 @@ def solve_lineup(players: pd.DataFrame, salary_cap: int, fixed_counts: dict,
                   locked_player_ids: set = None,
                   min_salary: int = 0,
                   min_total_ownership: float = 0.0,
-                  flex_positions: set = None) -> pd.DataFrame:
-    """`min_salary` is a Session 7.3 addition (decision #28): 0 (default)
+                  flex_positions: set = None,
+                  lam: float = 0.0) -> pd.DataFrame:
+    """`lam` is a Session 10.5 addition (decision #2): the lambda
+    coefficient on the variance penalty `sum(mu) - lam*sum(sigma^2)`.
+    Defaults to 0.0 -- byte-identical to every prior session's behavior.
+    Positive values penalize variance (floor-seeking, cash games); negative
+    values reward it (upside-seeking, GPPs -- probe A3 showed the negative
+    direction has little to act on: ~96% of same-position pairs are
+    floor-seeking by construction). The penalty uses the REAL per-player
+    sigma^2 always -- never the randomized draw -- so risk preference is
+    stable across a portfolio even when projections are noisy.
+    Hard error if lam != 0.0 and the pool has no sigma or all-zero sigma:
+    a non-zero lambda on a sigma-less pool is silent nonsense, not a no-op.
+
+    `min_salary` is a Session 7.3 addition (decision #28): 0 (default)
     adds no floor, identical to every prior session's behavior. A value > 0
     adds a companion `>= min_salary` constraint alongside the existing
     `<= salary_cap` one.
@@ -903,7 +967,35 @@ def solve_lineup(players: pd.DataFrame, salary_cap: int, fixed_counts: dict,
     salary = players.set_index("player_id")["salary"]
     position = players.set_index("player_id")["position"]
 
-    prob += pulp.lpSum(x[pid] * proj[pid] for pid in x), "total_projected_points"
+    # Session 10.5 (decision #2): mean-variance objective.
+    # Precompute sigma^2 per player from the REAL sigma column (not the
+    # randomized draw). getattr default 0.0 keeps this backward-compatible
+    # with legacy pools that predate Session 10.3a.
+    real_sigma = players.set_index("player_id")["sigma"] if "sigma" in players.columns else (
+        players.set_index("player_id")["final_projection"] * 0.0
+    )
+    var = (real_sigma ** 2)
+
+    if lam != 0.0:
+        # Hard error here, not at solve time, so the message is clear and
+        # not swallowed by the try/except in build_multi_lineup's candidate
+        # loop (decision #35's precedent for pre-solve guards).
+        n_nonzero_sigma = int((real_sigma > 0).sum())
+        if n_nonzero_sigma == 0:
+            raise RuntimeError(
+                f"lam={lam} was requested but every player in this pool has "
+                f"sigma=0. This pool was built by build_projections.py (the "
+                f"legacy path, which emits no sigma) or by "
+                f"build_projections_statline.py WITHOUT --sigma-recalibration. "
+                f"Either use lam=0 (the default) or build projections with "
+                f"build_projections_statline.py and --sigma-recalibration so "
+                f"the pool carries real per-player sigma values."
+            )
+
+    prob += (
+        pulp.lpSum(x[pid] * proj[pid] for pid in x)
+        - lam * pulp.lpSum(x[pid] * var[pid] for pid in x)
+    ), "mean_variance_objective"
 
     # Salary cap.
     prob += pulp.lpSum(x[pid] * salary[pid] for pid in x) <= salary_cap, "salary_cap"
@@ -1117,6 +1209,15 @@ def assign_roster_slots(selected: pd.DataFrame, fixed_counts: dict) -> pd.DataFr
             # this backward-compatible with a final_projections file built
             # before build_projections.py carried site_player_id through.
             "site_player_id": _clean_site_id(getattr(row, "site_player_id", None)),
+            # Session 10.5 (decision #1): sigma and sigma_source carried
+            # through from the projection file so solve_lineup() can read
+            # them from the returned DataFrame. sigma defaults to 0.0 for
+            # files built before Session 10.3a (all legacy files); the
+            # non-zero-lambda guard in solve_lineup() catches that case.
+            # sigma_source is for provenance only -- never used in any
+            # constraint or objective.
+            "sigma": float(getattr(row, "sigma", 0.0) or 0.0),
+            "sigma_source": getattr(row, "sigma_source", "") or "",
         }
         for label, row in rows
     ])
@@ -1236,8 +1337,10 @@ def _stack_label(cand: dict) -> str:
 
 def build_single_lineup(site: str, week: int, randomization_pct: float = DEFAULT_RANDOMIZATION_PCT,
                          rng: np.random.Generator = None,
+                         randomization_mode: str = "pct",
                          stack_mode: str = DEFAULT_STACK_MODE, stack_size: int = DEFAULT_STACK_SIZE,
                          stack_positions: set = None, bring_back: bool = False,
+                         lam: float = 0.0,
                          stack_teams: list = None, stack_games: list = None,
                          game_stack_min_players: int = DEFAULT_GAME_STACK_MIN_PLAYERS,
                          mini_stack_type: str = None,
@@ -1304,7 +1407,10 @@ def build_single_lineup(site: str, week: int, randomization_pct: float = DEFAULT
     optimization_projection = None
     if randomization_pct > 0:
         rng = rng if rng is not None else np.random.default_rng()
-        optimization_projection = randomize_projections(players, randomization_pct, rng)
+        # n_lineups=1: entry_scale=0 in sigma-mode (off for single-entry, decision #14).
+        optimization_projection = randomize_projections(
+            players, randomization_pct, rng, mode=randomization_mode, n_lineups=1,
+        )
 
     # Session 3.3 -- single-lineup mode always uses the single BEST
     # candidate (no diversification concept for one lineup) unless pinned.
@@ -1328,7 +1434,7 @@ def build_single_lineup(site: str, week: int, randomization_pct: float = DEFAULT
         game_stack_min_players=game_stack_min_players, mini_stack_type=mini_stack_type,
         locked_player_ids=locked_player_ids,
         min_salary=min_salary, min_total_ownership=min_total_ownership,
-        flex_positions=flex_positions,
+        flex_positions=flex_positions, lam=lam,
     )
     if locked_player_ids:
         missing = locked_player_ids - set(selected["player_id"])
@@ -1337,6 +1443,11 @@ def build_single_lineup(site: str, week: int, randomization_pct: float = DEFAULT
             f"locked but not present in the solved lineup"
         )
     lineup = assign_roster_slots(selected, fixed_counts)
+    # Session 10.5 (decision #1): sigma_total = sum of all nine players'
+    # recalibrated sigma values. Stored in attrs so it survives the
+    # validate/return chain without widening the per-player DataFrame schema.
+    # Zero when the projection file predates Session 10.3a (legacy path).
+    lineup.attrs["sigma_total"] = round(float(lineup["sigma"].sum()), 4)
     validate_lineup(lineup, config["salary_cap"], config["roster_slots"])
     validate_stack(
         lineup, stack_mode, stack_size=stack_size, stack_positions=stack_positions,
@@ -1363,8 +1474,10 @@ def build_single_lineup(site: str, week: int, randomization_pct: float = DEFAULT
 
 def build_multi_lineup(site: str, week: int, n_lineups: int = DEFAULT_N_LINEUPS,
                         max_exposure_pct: float = DEFAULT_MAX_EXPOSURE_PCT,
+                        lam: float = 0.0,
                         uniqueness: int = DEFAULT_UNIQUENESS,
                         randomization_pct: float = DEFAULT_RANDOMIZATION_PCT,
+                        randomization_mode: str = "pct",
                         seed: int = None,
                         stack_mode: str = DEFAULT_STACK_MODE, stack_size: int = DEFAULT_STACK_SIZE,
                         stack_positions: set = None, bring_back: bool = False,
@@ -1516,7 +1629,9 @@ def build_multi_lineup(site: str, week: int, n_lineups: int = DEFAULT_N_LINEUPS,
         # for the whole batch.
         optimization_projection = None
         if randomization_pct > 0:
-            optimization_projection = randomize_projections(pool, randomization_pct, rng)
+            optimization_projection = randomize_projections(
+                pool, randomization_pct, rng, mode=randomization_mode, n_lineups=n_lineups,
+            )
 
         # Decision #33 (supersedes decision #17's rotation schedule) --
         # TRUE GREEDY SELECTION. A lineup optimizer's job is to return the
@@ -1550,7 +1665,7 @@ def build_multi_lineup(site: str, week: int, n_lineups: int = DEFAULT_N_LINEUPS,
                     mini_stack_type=mini_stack_type,
                     locked_player_ids=locked_player_ids,
                     min_salary=min_salary, min_total_ownership=min_total_ownership,
-                    flex_positions=flex_positions,
+                    flex_positions=flex_positions, lam=lam,
                 )
             except RuntimeError as e:
                 stack_infeasible_reason = e
@@ -1602,6 +1717,9 @@ def build_multi_lineup(site: str, week: int, n_lineups: int = DEFAULT_N_LINEUPS,
                 f"locked but not present in lineup {n_generated + 1}"
             )
         lineup = assign_roster_slots(selected, fixed_counts)
+        # Session 10.5 (decision #1): sigma_total on each lineup frame,
+        # same as the single-lineup path.
+        lineup.attrs["sigma_total"] = round(float(lineup["sigma"].sum()), 4)
         validate_lineup(lineup, config["salary_cap"], config["roster_slots"])
         validate_stack(
             lineup, stack_mode, stack_size=stack_size, stack_positions=stack_positions,
@@ -1661,6 +1779,18 @@ def main():
              "always reports the real projection. Works in both single- and "
              "multi-lineup modes; in multi-lineup mode each lineup gets its "
              "own independent draw.",
+    )
+    parser.add_argument(
+        "--randomization-mode", dest="randomization_mode",
+        choices=["pct", "sigma"], default="pct",
+        help="Session 10.5 (decision #14): randomization std_dev scale. "
+             "'pct' (default) -- pct%% of each player's real final_projection "
+             "(every prior session's behavior, unchanged). "
+             "'sigma' -- pct%% of each player's real per-player sigma, with "
+             "an entry-count ramp (off at n=1, full at "
+             f"{DEFAULT_SIGMA_RAND_FULL_LINEUPS}+ lineups, FLAGGED ARBITRARY). "
+             "Requires --sigma-recalibration in the projection build. "
+             "Use with --n-lineups; --randomization-pct sets the overall scale.",
     )
     parser.add_argument(
         "--seed", type=int, default=None,
@@ -1811,6 +1941,24 @@ def main():
              "available at that step, not because it was ever a good "
              "pick. Locked players (decision #22) are always exempt.",
     )
+    # Session 10.5 (decision #2) -- lambda variance penalty.
+    parser.add_argument(
+        "--lambda", dest="lam", type=float, default=0.0,
+        help="Session 10.5: lambda coefficient in the mean-variance objective "
+             "sum(mu) - lambda*sum(sigma^2). Default 0.0 = pure-mean maximization "
+             "(every prior session's behavior, unchanged). Positive values "
+             "penalize variance (floor-seeking, cash games); negative values "
+             "reward it (upside-seeking, GPPs). Requires a projection file built "
+             "by build_projections_statline.py --sigma-recalibration: fails loud "
+             "if the pool has no per-player sigma. The derived coarse grid from "
+             "probe A3 (2018-2021 DK, 65 weeks): floor-seeking cash "
+             "[0.039, 0.063, 0.104, 0.139, 0.188]; upside-seeking GPP "
+             "[-0.003, -0.005, -0.014, -0.030, -0.095]. These are derived "
+             "from the data -- not guessed -- and are the input to Session "
+             "10.5's backtest sweep. FLAGGED ARBITRARY: no lambda has been "
+             "validated by a backtest sweep yet; 0.0 is the only defensible "
+             "production default until that sweep runs.",
+    )
     args = parser.parse_args()
 
     OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
@@ -1852,6 +2000,7 @@ def main():
             max_exposure_pct=args.max_exposure,
             uniqueness=args.uniqueness,
             randomization_pct=args.randomization_pct,
+            randomization_mode=args.randomization_mode,
             seed=args.seed,
             stack_diversify=args.stack_diversify,
             locked_player_ids=locked_player_ids,
@@ -1859,6 +2008,7 @@ def main():
             min_salary=min_salary, min_projection=args.min_projection,
             min_total_ownership=args.min_total_ownership,
             flex_positions=flex_positions,
+            lam=args.lam,
             **stack_kwargs,
         )
         if args.request_id:
@@ -1899,12 +2049,14 @@ def main():
         lineup = build_single_lineup(
             args.site, args.week,
             randomization_pct=args.randomization_pct,
+            randomization_mode=args.randomization_mode,
             rng=np.random.default_rng(args.seed) if args.randomization_pct > 0 else None,
             locked_player_ids=locked_player_ids,
             excluded_player_ids=excluded_player_ids,
             min_salary=min_salary, min_projection=args.min_projection,
             min_total_ownership=args.min_total_ownership,
             flex_positions=flex_positions,
+            lam=args.lam,
             **stack_kwargs,
         )
         if args.request_id:
