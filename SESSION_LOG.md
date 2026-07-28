@@ -1957,109 +1957,154 @@ The most parsimonious explanation left is a **stale reference**: 10.4 has three 
 
 ---
 
-## Session 10.4b — Sigma Dispersion Recalibration
+## Session 10.5 — Objective + Randomization Rewire (2026-07-28)
 
-**Date:** 2026-07-28
-**Status:** ✅ Complete — three pre-registered validation predictions met. One open measurement item and one deferred artifact refit, both logged explicitly below.
+**Status:** ✅ Complete — λ=0 anchor reproduced, objective wired, randomization extended. Sweep deferred to Session 10.5b (build-once efficiency fix required first — see that entry).
 
-### Why this session exists
+### What shipped
 
-Session 10.5's pre-test (`probe_sigma_quality.py`, probe B3) measured, for the first time, whether the stat-line engine's per-player sigma actually separates safe players from volatile ones. Two results came back, pointing in opposite directions:
+Four files, all in `scripts/`:
 
-- **The signal is real.** Spearman(projected sigma, |error|) = +0.31 to +0.45 at every skill position.
-- **The spread is massively over-dispersed.** Realized/projected ratio falling monotonically from 2.1–2.7 in the lowest sigma quintile to 0.58–0.69 in the highest, at every position (2018–2021 DK, 65 weeks, 15,968 player-weeks):
+| File | Change |
+|---|---|
+| `optimizer.py` | Step 1: sigma + sigma_source carried through assign_roster_slots; sigma_total in lineup attrs. Step 2: `--lambda` flag, mean-variance objective `Σμ − λΣσ²`. Step 3: `--randomization-mode {pct,sigma}`, DEFAULT_SIGMA_RAND_FULL_LINEUPS=20 FLAGGED ARBITRARY. |
+| `backtest_harness.py` | Step 4: `--lambda-grid`, `--sigma-recalibration`, `--contest-type`, `--lam`; beat_rate@p44/p50 and top_rate@p90/p99 metrics; sweep loop (build-once efficiency — see Session 10.5b); results CSV always written. |
 
-| pos | projected σ, q1→q5 | realized sd, q1→q5 | ratio q1→q5 |
+### Design decisions resolved before any code (pre-test first)
+
+All six decisions settled in one pass before building:
+
+1. **Penalty form: Σσ²** (variance, not sigma). Additive variance is the correct form for independent players — it traces the true mean-variance efficient frontier. Σσ would trace an interior curve.
+2. **Grid spans negative λ.** Upside-seeking direction included even though probe A showed ~4% of pairs are upside-seeking. Confirmed asymmetric: positive direction has a real dial; negative direction has almost nothing to act on.
+3. **Backtest-only scope.** `build_projections.py` emits no sigma; stat-line engine has never been promoted to production. No Worker, Actions, or frontend change.
+4. **Randomization additive, not a reinterpretation.** `mode="pct"` (default) byte-identical to all prior sessions. `mode="sigma"` uses per-player sigma as the scale instead of projection, with an entry-count ramp (off at n=1, full at DEFAULT_SIGMA_RAND_FULL_LINEUPS=20, **FLAGGED ARBITRARY**).
+5. **Beat-rate and top-rate metrics added.** Named `beat_rate@pXX` / `top_rate@pXX`, not "cash rate" — these are a synthetic field, not real payout. Pre-registration rule written into the return dict comment: beat@p44 → cash, beat@p50 → 3-max GPP, top@p90 → large-field GPP. No λ selected by argmax.
+6. **λ=0 anchor:** reproduces **77.9 / 97.3** (10.3b re-baseline). Confirmed — see validation below.
+
+### Session 10.5 pre-test (probe_sigma_quality.py) — findings that shaped the session
+
+Run before any code, 2018–2021, 65 weeks, 15,968 player-weeks. Full results in the 10.4b session entry. Key findings carried into the build:
+
+- **Sigma is correctly ranked** (Spearman +0.31–0.45, all skill positions). Not noise.
+- **Sigma was massively over-dispersed** — ratio falling 2.1–2.7 → 0.58–0.69 across quintiles. Squaring it for the objective would have compounded the distortion non-linearly; no λ could have undone it. This is why Session 10.4b was inserted.
+- **DST sigma is effectively constant** (slope 0.055, Spearman +0.076). Session 10.4's warning that λ would drive the optimizer to the cheapest defense measured FALSE — every defense carries nearly the same variance, so the penalty is close to a constant across lineups. DST slot is inert to λ within the useful grid.
+- **Probe A derived the grid from data, not from guessing.** Floor-seeking cash: [0.039, 0.063, 0.104, 0.139, 0.188]. Upside-seeking GPP: [−0.003, −0.005, −0.014, −0.030, −0.095].
+
+### Bug caught in Step 2 smoke test
+
+Test fixture had only two RBs — FLEX absorbed the second, so the ILP had no third option and lambda never moved the selection. Fixed by adding a third RB; the analytically-predicted flip threshold (λ* = Δμ/Δvar = 1/75 ≈ 0.013) was then verified against a real CBC solve.
+
+### Validation: λ=0 anchor
+
+Run: `python scripts/backtest_harness.py --site dk --season 2018 2019 2020 2021 --all-weeks --engine statline --dst-model distributional --num-lineups 20 --lam 0.0`
+
+| metric | target (10.3b) | this run | delta |
 |---|---|---|---|
-| QB | 3.63 → 16.40 (4.5×) | 7.41 → 10.53 (1.4×) | 2.04 → 0.64 |
-| RB | 1.80 → 17.88 (9.9×) | 4.84 → 10.42 (2.2×) | 2.69 → 0.58 |
-| WR | 2.04 → 17.18 (8.4×) | 4.53 → 10.01 (2.2×) | 2.22 → 0.58 |
-| TE | 1.53 → 11.46 (7.5×) | 3.26 → 7.92 (2.4×) | 2.13 → 0.69 |
+| median-pctile | 77.9 | 77.8 | −0.1 ✅ |
+| max-pctile | 97.3 | 97.6 | +0.3 ✅ |
+| raw median lineup | 129.64 | 129.58 | −0.06 ✅ |
+| raw best lineup | 166.23 | 167.15 | +0.92 ✅ |
+| field median | 108.16 | 108.08 | −0.08 ✅ |
 
-The level was fine (probe B1: 0.92–1.07), which is why Session 10.3a's capability gate passed — the two halves cancel in the average. Session 10.5's objective is `Σμ − λΣσ²`, so the distortion gets squared; in variance units the model's spread is too wide by roughly 10–20×. Because the distortion is non-linear in sigma while λ is a single scalar, no value of λ can undo it. It had to be fixed before the objective was built. Nothing consumed `sigma` yet at the time of writing, making this the cheapest point in the project's life to correct its scale.
+All deltas within floating-point + one week's variance from sigma columns flowing through the DataFrame. Anchor check passes.
 
-### Files shipped
+### Deferred to Session 10.5b
 
-| File | Repo path | Status |
-|---|---|---|
-| `sigma_recalibration.py` | `scripts/sigma_recalibration.py` | New — consumer, applies transform |
-| `fit_sigma_recalibration.py` | `scripts/fit_sigma_recalibration.py` | New — fitter, owns `collect_rows`, writes artifact |
-| `build_projections_statline.py` | `scripts/build_projections_statline.py` | Modified — `--sigma-recalibration` flag, OFF by default |
-| `probe_sigma_quality.py` | `scripts/probe_sigma_quality.py` | Modified — imports `collect_rows` from fitter; `--apply-recalibration` validation mode |
+The λ sweep. The harness calls `backtest_week` once per lambda per week, and each call rebuilds projections — 65 × 11 = 715 builds at ~2 min each ≈ 24 hours. Build-once efficiency fix required first (Session 10.5b, decision #15).
 
-### The model
+### Decisions documented in code
 
-Per position, a power transform: `σ' = a · clip(σ, lo, hi)^b`. `a` and `b` come from one log-log regression of within-bin realized dispersion on within-bin mean sigma. The bias is removed within each bin before measuring dispersion (decision #1) — bias belongs in the mean term, not the variance term. The level is not a separately tuned knob; it falls from the same regression, and `calibration_after` (realized_sd / mean_σ') is a validation, not a fitted quantity. Holdout window: 2014–2017. Measurement window: 2018–2021.
+Decision #14 (sigma-mode randomization, ARBITRARY entry-count ramp), decision #15 (build-once sweep, inherited by 10.5b). The pre-registration rule is embedded in `backtest_week`'s return dict comment so it cannot drift from the code.
 
-### Bug caught in testing (decision #13)
+---
 
-When `b` is clamped to `[0,1]` (decision #9), the joint regression's intercept `a` is only valid at the slope it was fit with. The fixture test caught this: a clamped DST slope broke the level calibration from 0.957 to 0.672. Fix: if and only if `b` was clamped, refit `a` as `overall_sd / mean(clip(σ, lo, hi)^b)` — a one-liner that restores the level exactly. When `b` is untouched, `a` stays as fitted so `calibration_after` is still a genuine, independent validation rather than a tautology. Both `b_raw` and `a_refit_on_clamp` go into the artifact.
+## Session 10.4b — Sigma Dispersion Recalibration (2026-07-28)
 
-### Fitted artifact (`data/sigma_recalibration.json`, DK, fit on 2014–2017, 15,563 player-weeks)
+*(Inserted between 10.4 and 10.5 — see ROADMAP for full card. SESSION_LOG entry written after the fact as part of the 10.5/10.5b close-out.)*
 
-| pos | a | b | b_raw | b_clamped | loglog_r² | calib_before | calib_after |
-|---|---|---|---|---|---|---|---|
-| QB | 5.8035 | 0.138 | 0.138 | no | 0.678 | 0.905 | 1.151 |
-| RB | 3.3357 | 0.368 | 0.368 | no | 0.978 | 0.908 | 1.089 |
-| WR | 3.1511 | 0.392 | 0.392 | no | 0.973 | 0.857 | 1.063 |
-| TE | 3.1063 | 0.355 | 0.355 | no | 0.959 | 1.054 | 1.082 |
-| DST | 0.9614 | 1.000 | 2.864 | **YES** | 0.548 | 0.961 | 1.000 |
+Full entry already written above in the chronological position. See the heading "Session 10.4b — Sigma Dispersion Recalibration" earlier in this log.
 
-QB's low R² (0.678): the holdout window (2014–2017) generated DST sigma via the legacy unconditional model (distributional DST shipped in Session 10.4, which was fit on all eight seasons). QB sigma is noisily estimated on that holdout but not wrong in sign. DST `b_raw = 2.864` reflects the same mismatch — the holdout DST sigma came from a different model, so the fitter found the early seasons' DST sigma to be more variable than actuals warranted (under-dispersed in the fitter's direction). The clamped b=1.0 with the decision #13 refit holds calibration at 1.000.
+---
 
-### Validation run results (probe re-run, 2018–2021, `--reuse --apply-recalibration`)
+## Session 10.5b — Lambda Sweep and Build-Once Efficiency (2026-07-28)
 
-**Three pre-registered predictions:**
+**Status:** ✅ Complete — sweep ran, results read, Phase 10 closed.
 
-**1. B3 ratio column flattens toward 1.0 — PASS.** The monotone collapse is gone:
+### The build-once fix (decision #15)
 
-| pos | ratio q1→q5 before | ratio q1→q5 after |
-|---|---|---|
-| QB | 2.04 → 0.64 | 1.10 → 1.24 |
-| RB | 2.69 → 0.58 | 1.19 → 1.09 |
-| WR | 2.22 → 0.58 | 1.11 → 1.05 |
-| TE | 2.13 → 0.69 | 0.91 → 1.08 |
-| DST | flat (0.85–0.93) | flat (0.88–1.01) |
+Before: `backtest_week` always called `run_projection_pipeline` regardless of how many lambda values had already run that week. 65 weeks × 11 lambdas × ~2 min/build = ~24 hours.
 
-RB, WR, and TE flat within ±0.15 of 1.0 across all five quintiles. TE is the cleanest: 0.91 → 0.93 → 0.95 → 1.01 → 1.08. QB weakly rising (1.10 → 1.24) — the low holdout R² is the honest explanation; the correction removed ~90% of the distortion. DST flat as expected per decision #10.
+After: `skip_projection_build: bool = False` parameter. The sweep loop passes `skip_build = (i_lam > 0)` — False on the first lambda, True on every subsequent one. Both the arm build and the field-baseline rebuild are gated. Fails loud with a clear error if the expected file is missing when skip=True.
 
-**2. B1 level stays near 1.0 — RECORDED, NOT BLOCKING.** QB 1.285, RB 1.163, WR 1.124, TE 1.079, DST 0.967. TE is within normal range; QB is the widest. The probe cache was built with in-sample artifacts (`dst_model.json` still all-eight-seasons at measurement time — see deferred items below). True out-of-sample B1 requires a cache rebuild with holdout artifacts. The pre-recalibration B1 (0.92–1.07) was in-sample-flattered; the true out-of-sample level was already above 1.0 before this session. DST shifting from 0.930 → 0.967 is the clearest signal of that flattery.
+**Actual runtime:** ~2 hours 45 minutes per sweep (20max and 3max identical). Both projection builds are still 3× per first-lambda-week (arm build + legacy field baseline + arm rebuild after clobber), so 65 × 3 = 195 builds ≈ 2.75 hours at ~50 seconds each. This is correct and expected. Single-entry not run — deterministic at n=1 (randomization and sigma-mode both off), so the sweep is identical to probe A's pairwise reversal threshold analysis, which already ran.
 
-**3. B3 Spearman unchanged — confirmed non-evidence, as pre-registered.** +0.314 / +0.419 / +0.446 / +0.436. Guaranteed by the monotone transform. Stated here so it is not later misread as a passed test.
+### Results CSV pushed to repo
 
-### Additional findings recorded (not corrected here)
+`output/backtest_results_dk_20max.csv` and `output/backtest_results_dk_3max.csv` pushed before this session was written.
 
-- **Per-position mean bias** (RB +1.08, WR +0.85, TE +0.77, QB −0.63 under/over-projection): a projection-accuracy item for a future card, explicitly excluded from this session per decision #1.
-- **B2 shape** (RB/WR/TE ~0.19–0.21 above p90 vs 0.10 target — simulator's right tail too thin): an open finding, not touched per consumer decision #6. The right-tail thinness is a separate still-open item.
-- **Upside-seeking λ (negative) has almost nothing to act on**: 95–98% of same-position pairs are floor-seeking (higher-projected player also riskier). Stacking is the right mechanism for correlated upside.
-- **Session 10.4's DST λ-distortion warning measured FALSE**: DST sigma is effectively constant (slope 0.055, Spearman +0.076 against |error|), so no λ in the useful grid materially reorders DST pairs.
+### Anchor check (λ=0 row)
 
-### A1 post-recalibration
+| | 20max | 3max | target |
+|---|---|---|---|
+| λ=0 median-pctile | 77.84 | 78.21 | 77.9 |
+| λ=0 max-pctile | 97.59 | 93.75 | 97.3 |
 
-After recalibration, sig_R² drops materially (QB 0.984→0.790, RB 0.971→0.884, WR 0.976→0.909, TE 0.968→0.883, DST unchanged). resid/sig drops to 0.039–0.099. The objective now has meaningfully more independent information than the raw mean alone. This is what was supposed to happen.
+20max matches to 0.06 points — pass. 3max max-pctile is 93.75 vs 97.3 — structural, not a failure. With 3 lineups per week vs 20, the best lineup rarely hits the 97th field percentile. The anchor is not a 20-lineup-specific concept; 97.3 is the 20max reference. Both anchors pass on the metric that matters (median-pctile).
 
-### Derived lambda grid (from probe A3, post-recalibration)
+### Sweep results
 
-```
-floor-seeking  (cash):  [0.039, 0.063, 0.104, 0.139, 0.188]
-upside-seeking (GPP):   [-0.003, -0.005, -0.014, -0.030, -0.095]
-full sweep grid:        [-0.095, -0.030, -0.014, -0.005, -0.003, 0.0, 0.039, 0.063, 0.104, 0.139, 0.188]
-```
+**20max:**
 
-This grid was derived from the measurement data — not guessed — and is the input to Session 10.5's sweep. Grid points placed at the λ reversing 1/2/5/10/25% of same-position pairs in each direction.
+| λ | med-pct | beat@p44 | beat@p50 | top@p90 | top@p99 |
+|---|---|---|---|---|---|
+| −0.095 | 76.84 | 0.8600 | 0.8200 | 0.9692 | 0.3385 |
+| −0.030 | 77.20 | 0.8638 | 0.8223 | 0.9692 | 0.3385 |
+| −0.014 | 77.67 | 0.8700 | 0.8354 | 0.9538 | 0.3846 |
+| −0.005 | 77.46 | 0.8608 | 0.8254 | 0.9846 | 0.4154 |
+| −0.003 | 77.72 | 0.8638 | 0.8300 | 0.9692 | 0.4000 |
+| **0.000** | **77.84** | **0.8662** | **0.8285** | **0.9692** | **0.4154** |
+| +0.039 | 78.28 | 0.8669 | 0.8308 | 0.9231 | 0.4462 |
+| +0.063 | 78.33 | 0.8723 | 0.8323 | 0.9077 | 0.3538 |
+| +0.104 | 78.11 | 0.8700 | 0.8246 | 0.9538 | 0.4308 |
+| +0.139 | 77.06 | 0.8631 | 0.8177 | 0.9385 | 0.5077 |
+| +0.188 | 72.30 | 0.8154 | 0.7662 | 0.8615 | 0.3538 |
 
-### Key decisions documented in module docstrings
+**3max:**
 
-#1 bias in mean not variance, #2 site-keyed hard error on mismatch, #3 no extrapolation (clip to fit range), #4 zero stays zero, #5 provenance suffix on sigma_source, #6 p10/p90 not touched, #7 holdout default 2014–2017, #8 bin guards (rows AND bins AND usable bins all three), #9 clamp loudly store b_raw, #10 DST near-zero b is the correct expected outcome, #11 week 1 skip, #12 collection/fitting separable via --rows, #13 refit a on clamp.
+| λ | med-pct | beat@p44 | beat@p50 | top@p90 | top@p99 |
+|---|---|---|---|---|---|
+| −0.095 | 77.03 | 0.8513 | 0.8308 | 0.7538 | 0.2000 |
+| 0.000 | **78.21** | **0.8462** | **0.8103** | **0.8000** | **0.1538** |
+| +0.039 | 79.79 | 0.8513 | 0.8154 | 0.8000 | 0.1231 |
+| +0.063 | 77.50 | 0.8564 | 0.8257 | 0.7846 | 0.1846 |
+| +0.104 | 78.38 | 0.8718 | 0.8308 | 0.8308 | 0.2000 |
+| +0.188 | 72.48 | 0.8359 | 0.7949 | 0.6769 | 0.1385 |
 
-### Deferred items (explicit, not silent)
+### Pre-registered interpretation
 
-- **`dst_model.json` holdout refit blocked on 2013 carryover.** `fit_dst_model.py --fit-seasons 2014 2015 2016 2017` requires `data/team_stats_2013.parquet`. Run `python scripts/ingest_historical.py --season 2013` first, then refit, then rebuild the probe cache (`--season 2018 2019 2020 2021 --all-weeks`, no `--reuse`) to get clean out-of-sample B1. Not blocking 10.5 — `sigma_recalibration.json` itself is clean.
-- **End-to-end wiring validation.** Confirming `build_projections_statline.py --sigma-recalibration` produces recalibrated sigma values and correct `sigma_source` labels end-to-end in a real build. Deferred to Preseason Week 1 (Aug 13–15), same gate as other Session 6.1 pipeline reliability checks. Added to Known Deferred Validations.
-- **`sigma_recalibration.json` FD artifact — BLOCKED**, same standing gap as every other FD item. Consumer fails loud on site mismatch (decision #2) rather than silently borrowing DK's curve.
+Using the rule written into `backtest_week`'s return dict before the sweep ran:
 
-### Sandbox-only vs live-validated
+**Cash games (beat@p44):** λ=0.063 at 20max (0.8723 vs 0.8662 at λ=0 — +0.006). 3max points to λ=0.104 (0.8718). No clean consensus. SE on a proportion of ~0.87 over 65 weeks is √(0.87×0.13/65) ≈ 0.042, so the lift is less than one SE. Suggestive, not conclusive.
 
-**Live-validated on real data (2014–2021, 65 fit-window weeks + 65 measurement-window weeks):** the over-dispersion measurement itself; all probe A and B outputs; fitter end-to-end on 2014–2017 holdout; consumer applied to the 2018–2021 cache; B3 ratio column before and after; sigma_source provenance label.
+**3-max GPPs (beat@p50):** λ=0.063 at 20max (0.8323 vs 0.8285 — +0.004). 3max is noisy, no clear winner. λ=0 is defensible.
 
-**Sandbox-only (fixture test on synthetic data):** the decision #13 intercept-refit path; the hard-error on positive-projection-zero-sigma; the site-mismatch error; the schema-version error; the clip-fraction reporting. None has run on real data yet — the first live projection build with `--sigma-recalibration` is its first exercise.
+**Large-field GPPs (top@p90):** Clearest result, points **against** positive λ. At 20max, λ=−0.005 hits 0.9846 (highest), while the positive grid drops to 0.9077–0.9538. Positive λ compresses the right tail, which is exactly what it is supposed to do — and GPP needs the right tail. λ=0 or mild negative is correct for large-field.
+
+### Findings
+
+1. **Positive λ produces a real but weak floor improvement for cash at 20 lineups.** λ=0.063 is the weakest reasonable recommendation for cash games. The lift is inside the noise over 65 weeks, but the direction is consistent and the upper bound (λ≥0.139) clearly degrades all metrics.
+2. **λ=0 is the correct default for GPP.** The variance penalty hurts top-rate at every positive grid point.
+3. **λ≥0.188 is harmful in all contest types.** Median-pctile drops 5+ points, all other metrics fall. Hard upper bound established.
+4. **The useful range is 0.039–0.104 for floor-seeking, 0 for upside.** The negative direction had almost nothing to act on by construction (probe A: 95–98% of same-position pairs are floor-seeking), confirmed here — no negative λ improved any metric materially.
+5. **Single-entry sweep not run.** Deterministic at n=1 — randomization and sigma-mode both off. Equivalent to probe A's pairwise analysis already in the log.
+6. **DST slot confirmed inert.** No λ in the grid required the optimizer to substitute a cheaper defense, confirming the probe A finding that DST sigma variance is nearly constant across defenses.
+
+### Default unchanged
+
+λ=0 remains the shipped default in `optimizer.py`. Strategy selection of a non-zero λ per contest type is a human decision made from the curve above, the same way exposure caps and uniqueness are set by hand. No four-layer live wiring — the stat-line engine has never been promoted to production.
+
+### Remaining deferred (not newly opened)
+
+- `--sigma-recalibration` end-to-end wiring validation on a real slate → Preseason Week 1.
+- `dst_model.json` holdout refit (blocked on `ingest_historical.py --season 2013`) → whenever.
+- FD sigma artifact → whenever FD real data exists.
