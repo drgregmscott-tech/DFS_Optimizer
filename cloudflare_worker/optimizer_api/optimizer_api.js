@@ -365,6 +365,44 @@ async function handleListSlates(env) {
   }
 }
 
+// Presets are stored as a single JSON object at data/ui_presets.json.
+// Shape: { presetName: { ctrlNLineups: "10", ... }, ... }
+// Shared across all devices that have the same Worker token.
+
+async function handleGetPresets(env) {
+  try {
+    const text = await fetchRepoFile(env, "data/ui_presets.json");
+    if (text === null) return json({ presets: {} });
+    return json({ presets: JSON.parse(text) });
+  } catch (err) {
+    return json({ error: `Get presets failed: ${err.message}` }, 502);
+  }
+}
+
+async function handleSavePresets(request, env) {
+  if (!env.GH_DISPATCH_TOKEN || !env.GITHUB_OWNER || !env.GITHUB_REPO) {
+    return json({ error: "Worker is missing required secrets/env vars." }, 500);
+  }
+  let body;
+  try {
+    body = await request.json();
+  } catch (e) {
+    return json({ error: "Request body must be JSON." }, 400);
+  }
+  if (!body || typeof body.presets !== "object") {
+    return json({ error: "Body must include presets object." }, 400);
+  }
+  try {
+    await putRepoFile(
+      env, "data/ui_presets.json", JSON.stringify(body.presets, null, 1),
+      "UI preset save [skip ci]",
+    );
+  } catch (err) {
+    return json({ error: `Save presets failed: ${err.message}` }, 502);
+  }
+  return json({ ok: true });
+}
+
 async function handlePoll(url, env) {
   const request_id = url.searchParams.get("request_id");
   if (!request_id) {
@@ -401,10 +439,9 @@ export default {
     const url = new URL(request.url);
     const action = url.searchParams.get("action");
 
-    // Every action is GET except save_slate, which is POST -- a full
-    // player pool as a query string risks real URL-length limits, so its
-    // payload travels in the request body instead (item #2).
-    const methodOk = request.method === "GET" || (request.method === "POST" && action === "save_slate");
+    // POST actions: save_slate and save_presets carry large payloads in body.
+    const postActions = ["save_slate", "save_presets"];
+    const methodOk = request.method === "GET" || (request.method === "POST" && postActions.includes(action));
     if (!methodOk) {
       return json({ error: "Method not allowed." }, 405);
     }
@@ -417,7 +454,9 @@ export default {
     if (action === "save_slate") return handleSaveSlate(request, url, env);
     if (action === "load_slate") return handleLoadSlate(url, env);
     if (action === "list_slates") return handleListSlates(env);
+    if (action === "get_presets") return handleGetPresets(env);
+    if (action === "save_presets") return handleSavePresets(request, env);
     if (action === "ping") return json({ ok: true }); // deliberately no GitHub call -- see docstring
-    return json({ error: "action must be 'dispatch', 'poll', 'save_slate', 'load_slate', 'list_slates', or 'ping'." }, 400);
+    return json({ error: "action must be 'dispatch', 'poll', 'save_slate', 'load_slate', 'list_slates', 'get_presets', 'save_presets', or 'ping'." }, 400);
   },
 };

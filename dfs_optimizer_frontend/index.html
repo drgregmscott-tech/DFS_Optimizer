@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Lineup Room — DFS Optimizer</title>
+<title>NFL Optimizer</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Inter:wght@400;500;600&family=Roboto+Mono:wght@400;500;700&display=swap" rel="stylesheet">
@@ -725,6 +725,269 @@
   }
   .stack-explain strong { color: var(--bone); }
 
+  /* ---------------- Connection panel ---------------- */
+
+  .conn-panel {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    margin-bottom: 16px;
+    overflow: hidden;
+  }
+
+  .conn-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 13px 18px;
+    cursor: pointer;
+    user-select: none;
+  }
+
+  .conn-header .title {
+    font-family: 'Barlow Condensed', sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    font-size: 15px;
+    font-weight: 600;
+  }
+
+  .conn-header .chevron {
+    color: var(--dim);
+    transition: transform 0.15s ease;
+    font-size: 12px;
+  }
+
+  .conn-panel.open .chevron { transform: rotate(90deg); }
+
+  .conn-body {
+    display: none;
+    padding: 0 18px 16px;
+    border-top: 1px solid var(--line-soft);
+  }
+
+  .conn-panel.open .conn-body { display: block; }
+
+  .conn-body input[type="text"],
+  .conn-body input[type="password"] {
+    background: var(--ink-raised);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    color: var(--bone);
+    font-family: 'Inter', system-ui, sans-serif;
+    font-size: 13px;
+    padding: 8px 10px;
+    width: 100%;
+  }
+
+  .conn-body input:focus { outline: none; border-color: var(--amber); }
+
+  /* ---------------- Slates panel ---------------- */
+
+  .slates-panel {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    margin-bottom: 16px;
+    overflow: hidden;
+  }
+
+  .slates-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 13px 18px;
+    cursor: pointer;
+    user-select: none;
+  }
+
+  .slates-header .title {
+    font-family: 'Barlow Condensed', sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    font-size: 15px;
+    font-weight: 600;
+  }
+
+  .slates-header .chevron {
+    color: var(--dim);
+    transition: transform 0.15s ease;
+    font-size: 12px;
+  }
+
+  .slates-panel.open .chevron { transform: rotate(90deg); }
+
+  .slates-body {
+    display: none;
+    padding: 0 18px 16px;
+    border-top: 1px solid var(--line-soft);
+  }
+
+  .slates-panel.open .slates-body { display: block; }
+
+  .slates-body input[type="number"] {
+    background: var(--ink-raised);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    color: var(--bone);
+    font-family: 'Inter', system-ui, sans-serif;
+    font-size: 13px;
+    padding: 8px 10px;
+    width: 100%;
+  }
+
+  /* ---------------- Icon buttons (lock/exclude) ---------------- */
+
+  .icon-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 6px;
+    border: 1px solid var(--line);
+    background: transparent;
+    color: var(--dim);
+    cursor: pointer;
+    font-size: 13px;
+    flex-shrink: 0;
+    transition: background 0.12s, border-color 0.12s, color 0.12s;
+  }
+
+  .icon-btn.lock-btn.active { background: rgba(63,191,127,0.18); border-color: var(--good); color: var(--good); }
+  .icon-btn.exclude-btn.active { background: rgba(239,68,68,0.18); border-color: var(--bad); color: var(--bad); }
+  .icon-btn:hover:not(.active) { border-color: var(--dimmer); color: var(--bone); }
+
+  /* ---------------- Filter bar ---------------- */
+
+  .filter-toggle-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 10px;
+  }
+
+  .filter-toggle-btn {
+    appearance: none;
+    border: 1px solid var(--line);
+    background: var(--panel-2);
+    color: var(--dim);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.03em;
+    padding: 5px 11px;
+    border-radius: 999px;
+    cursor: pointer;
+  }
+
+  .filter-toggle-btn.has-filters { border-color: var(--amber); color: var(--amber); background: var(--amber-dim); }
+
+  .filter-bar {
+    display: none;
+    margin-top: 10px;
+    padding: 12px;
+    background: var(--ink-raised);
+    border: 1px solid var(--line-soft);
+    border-radius: 8px;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  .filter-bar.open { display: flex; }
+
+  .filter-group {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    flex: 1;
+    min-width: 120px;
+  }
+
+  .filter-group .filter-label {
+    font-size: 9px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--dimmer);
+  }
+
+  .filter-inputs {
+    display: flex;
+    gap: 4px;
+    align-items: center;
+  }
+
+  .filter-inputs input[type="number"] {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 5px;
+    color: var(--bone);
+    font-size: 12px;
+    padding: 5px 7px;
+    width: 70px;
+    font-family: 'Roboto Mono', monospace;
+  }
+
+  .filter-inputs input[type="number"]:focus { outline: none; border-color: var(--amber); }
+
+  .filter-inputs .sep { font-size: 11px; color: var(--dimmer); }
+
+  .filter-clear-btn {
+    appearance: none;
+    border: 1px solid var(--line);
+    background: transparent;
+    color: var(--dim);
+    font-size: 10px;
+    padding: 4px 10px;
+    border-radius: 999px;
+    cursor: pointer;
+    align-self: flex-end;
+    margin-left: auto;
+  }
+
+  .filter-clear-btn:hover { border-color: var(--bad); color: var(--bad); }
+
+  /* ---------------- Player pool updated grid (icons left) ---------------- */
+
+  .player-list-head {
+    grid-template-columns: 58px 1fr 64px 58px 50px 52px !important;
+  }
+
+  .player-row {
+    grid-template-columns: 58px 1fr 64px 58px 50px 52px !important;
+  }
+
+  .player-row .pactions {
+    display: flex;
+    gap: 4px;
+    justify-content: flex-start;
+    align-items: center;
+  }
+
+  /* ---------------- Preset controls ---------------- */
+
+  .preset-row {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    flex-wrap: wrap;
+    margin-top: 10px;
+  }
+
+  .preset-row select {
+    background: var(--ink-raised);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    color: var(--bone);
+    font-size: 12px;
+    padding: 6px 10px;
+    flex: 1;
+    min-width: 120px;
+  }
+
+  .preset-row select:focus { outline: none; border-color: var(--amber); }
+
+  .preset-row .upload-btn { font-size: 11px; padding: 6px 12px; }
+
   /* ---------------- Session 7.3 -- Slate panel ---------------- */
 
   .slate-panel {
@@ -830,7 +1093,6 @@
 
   .player-list-head {
     display: grid;
-    grid-template-columns: 1fr 58px 58px 50px 50px 112px;
     gap: 10px;
     padding: 6px 12px;
     margin-top: 8px;
@@ -848,12 +1110,7 @@
   .player-list-head .sortcol.active { color: var(--amber); }
   .player-list-head .sortcol.active::after { content: attr(data-arrow); margin-left: 3px; }
 
-  .player-row {
-    grid-template-columns: 1fr 58px 58px 50px 50px 112px !important;
-  }
-
   .player-row .pown { font-family: 'Roboto Mono', monospace; font-size: 11px; color: var(--dim); text-align: right; }
-  .player-row .pactions { display: flex; gap: 4px; justify-content: flex-end; }
 
   /* ---------------- Session 7.3 -- min-salary slider ---------------- */
 
@@ -923,30 +1180,28 @@
     .own-cell::before   { content: "OWN "; color: var(--dimmer); }
 
     .player-list-head {
-      grid-template-columns: repeat(4, 1fr);
+      grid-template-columns: 44px 1fr 1fr 1fr 1fr !important;
       padding: 8px 12px;
     }
-    .player-list-head > div:first-child,
-    .player-list-head > div:last-child { display: none; } /* "Player" label + blank actions spacer -- redundant once each row below is self-labeled */
+    .player-list-head > div:last-child { display: none; }
     .player-list-head .sortcol { text-align: left; }
 
     .player-row {
-      grid-template-columns: repeat(4, 1fr) !important;
+      grid-template-columns: 44px 1fr 1fr 1fr 1fr !important;
       grid-template-areas:
-        "name  name  name  name"
-        "price proj  value own"
-        "act   act   act   act";
+        "act  name  name  name  name"
+        "act  price proj  value own";
       row-gap: 6px;
     }
-    .player-row > div:first-child { grid-area: name; }
+    .player-row .pactions { grid-area: act; flex-direction: column; gap: 4px; justify-content: center; align-items: center; }
+    .player-row > div:nth-child(2) { grid-area: name; }
     .player-row .psal  { grid-area: price; text-align: left; }
     .player-row .pproj { grid-area: proj; text-align: left; }
-    .player-row > div:nth-child(4) { grid-area: value; text-align: left; }
-    .player-row > div:nth-child(5) { grid-area: own; text-align: left; }
-    .player-row .pactions { grid-area: act; justify-content: flex-start; }
+    .player-row > div:nth-child(5) { grid-area: value; text-align: left; }
+    .player-row > div:nth-child(6) { grid-area: own; text-align: left; }
     .player-row .pproj::before { content: "PROJ "; color: var(--dimmer); font-size: 9px; }
-    .player-row > div:nth-child(4)::before { content: "VAL "; color: var(--dimmer); font-size: 9px; }
-    .player-row > div:nth-child(5)::before { content: "OWN "; color: var(--dimmer); font-size: 9px; }
+    .player-row > div:nth-child(5)::before { content: "VAL "; color: var(--dimmer); font-size: 9px; }
+    .player-row > div:nth-child(6)::before { content: "OWN "; color: var(--dimmer); font-size: 9px; }
   }
 </style>
 </head>
@@ -954,8 +1209,8 @@
 
 <header class="top">
   <div class="wordmark">
-    <div class="mark">Lineup<span>Room</span></div>
-    <div class="sub">DFS Optimizer</div>
+    <div class="mark">NFL<span>Optimizer</span></div>
+    <div class="sub">DraftKings &amp; FanDuel</div>
   </div>
   <div class="site-toggle" id="siteToggle">
     <button data-site="dk" class="active"><span class="dot"></span>DraftKings</button>
@@ -965,36 +1220,16 @@
 
 <div class="wrap">
 
-  <div class="slate-panel" id="slatePanel">
-    <div class="slate-row">
-      <div style="flex:0 0 100px;">
-        <span class="field-label">Week</span>
-        <input type="number" id="slateWeek" min="1" max="22" value="10">
-      </div>
-      <div style="flex:1; min-width:220px;">
-        <span class="field-label">Slate (this site + week)</span>
-        <div class="pool-upload-row" style="margin-top:0;">
-          <button class="upload-btn" id="btnSlate">Upload Slate CSV</button>
-          <input type="file" id="fileSlate" accept=".csv" style="display:none">
-          <span class="pool-status" id="slateStatus">No slate loaded</span>
-        </div>
-      </div>
-    </div>
-    <div class="slate-chips" id="slateChips"></div>
-    <div class="hint">One upload per site/week — accepts either <code>final_projections_&#123;site&#125;_&#123;week&#125;.csv</code> (to build lineups) or an already-built <code>lineup_single/multi_&#123;site&#125;_&#123;week&#125;.csv</code> (to just view). Stays loaded across page reloads (switch site above, or week here) until you remove it below.</div>
-  </div>
-
-  <!-- ================= Build Lineup panel (Session 7.2c) ================= -->
-  <div class="build-panel" id="buildPanel">
-    <div class="build-header" id="buildHeader">
-      <div class="title">Build a Lineup</div>
+  <!-- ================= Connection panel ================= -->
+  <div class="conn-panel" id="connPanel">
+    <div class="conn-header" id="connHeader">
+      <div class="title">Connection</div>
       <div class="chevron">&#9656;</div>
     </div>
-    <div class="build-body">
-
+    <div class="conn-body">
       <div class="settings-row" id="workerSettingsRow">
         <div style="flex:2; min-width:200px;">
-          <span class="field-label">Worker URL (Session 7.2b)</span>
+          <span class="field-label">Worker URL</span>
           <input type="text" id="settingsWorkerUrl" placeholder="https://dfs-optimizer-api.yoursubdomain.workers.dev" readonly>
         </div>
         <div style="flex:1; min-width:160px;">
@@ -1002,21 +1237,57 @@
           <input type="password" id="settingsWorkerToken" placeholder="WORKER_AUTH_TOKEN" readonly>
         </div>
         <div style="flex:0 0 auto; align-self:flex-end; display:flex; gap:8px;">
-          <button class="upload-btn" id="btnToggleWorkerLock" type="button" title="These connect the builder to your Cloudflare Worker -- locked by default so a stray click/keystroke can't disable it at crunch time.">&#128274; Locked</button>
+          <button class="upload-btn" id="btnToggleWorkerLock" type="button" title="Locked by default so a stray click can't disable it at crunch time.">&#128274; Locked</button>
           <button class="upload-btn" id="btnTestConnection" type="button">Test Connection</button>
         </div>
       </div>
-      <div class="hint">Locked by default on every page load to prevent an accidental edit -- click "Locked" to unlock and change it. Saved automatically as you type once unlocked.</div>
+      <div class="hint">Locked by default on every page load to prevent an accidental edit — click "Locked" to unlock and change it. Saved automatically as you type once unlocked.</div>
       <div class="solve-status" id="connectionTestStatus"></div>
+    </div>
+  </div>
+
+  <!-- ================= Slates panel ================= -->
+  <div class="slates-panel open" id="slatesPanel">
+    <div class="slates-header" id="slatesHeader">
+      <div class="title">Slates</div>
+      <div class="chevron">&#9656;</div>
+    </div>
+    <div class="slates-body">
+      <div class="slate-row" style="margin-top:12px;">
+        <div style="flex:0 0 100px;">
+          <span class="field-label">Week</span>
+          <input type="number" id="slateWeek" min="1" max="22" value="10">
+        </div>
+        <div style="flex:1; min-width:220px;">
+          <span class="field-label">Slate (this site + week)</span>
+          <div class="pool-upload-row" style="margin-top:0;">
+            <button class="upload-btn" id="btnSlate">Upload Slate CSV</button>
+            <input type="file" id="fileSlate" accept=".csv" style="display:none">
+            <span class="pool-status" id="slateStatus">No slate loaded</span>
+          </div>
+        </div>
+      </div>
+      <div class="slate-chips" id="slateChips"></div>
+      <div class="hint">One upload per site/week — accepts either <code>final_projections_&#123;site&#125;_&#123;week&#125;.csv</code> (to build lineups) or an already-built <code>lineup_single/multi_&#123;site&#125;_&#123;week&#125;.csv</code> (to just view). Stays loaded across page reloads (switch site above, or week here) until you remove it below.</div>
+    </div>
+  </div>
+
+  <!-- ================= Build Lineup panel (Session 7.2c) ================= -->
+  <div class="build-panel open" id="buildPanel">
+    <div class="build-header" id="buildHeader">
+      <div class="title">Build a Lineup</div>
+      <div class="chevron">&#9656;</div>
+    </div>
+    <div class="build-body">
 
       <div class="controls-grid">
         <div>
           <span class="field-label"># Lineups</span>
-          <input type="number" id="ctrlNLineups" min="1" max="150" value="20">
+          <input type="number" id="ctrlNLineups" min="1" max="150" value="10">
         </div>
         <div>
           <span class="field-label">Max Exposure %</span>
-          <input type="number" id="ctrlMaxExposure" min="1" max="100" value="40">
+          <input type="number" id="ctrlMaxExposure" min="1" max="100" value="100">
         </div>
         <div>
           <span class="field-label">Uniqueness</span>
@@ -1064,11 +1335,17 @@
             <label class="checkbox-row" style="margin-top:0;"><input type="checkbox" id="ctrlFlexTe" checked> TE</label>
           </div>
         </div>
-        <div>
-          <label class="checkbox-row" style="margin-top:22px;">
-            <input type="checkbox" id="ctrlSaveSettings">
-            Save these settings (lineups, exposure, uniqueness, randomization, stack) for next time
-          </label>
+        <div style="grid-column:1/-1;">
+          <span class="field-label">Settings Presets</span>
+          <div class="preset-row">
+            <select id="presetSelect">
+              <option value="">— Load a preset —</option>
+            </select>
+            <button class="upload-btn" id="btnLoadPreset" type="button">Load</button>
+            <button class="upload-btn" id="btnSavePreset" type="button">Save as Preset…</button>
+            <button class="upload-btn" id="btnDeletePreset" type="button" style="color:var(--bad); border-color:var(--bad);">Delete</button>
+          </div>
+          <div class="solve-status" id="presetStatus" style="margin-top:6px;"></div>
         </div>
       </div>
 
@@ -1113,7 +1390,7 @@
 
       <div class="player-search">
         <div style="display:flex; justify-content:space-between; align-items:flex-end; gap:12px; flex-wrap:wrap;">
-          <span class="field-label" style="margin-bottom:0;">Player Pool -- Lock / Exclude</span>
+          <span class="field-label" style="margin-bottom:0;">Player Pool</span>
           <div class="pool-upload-row" style="margin:0; padding:6px 10px;">
             <button class="upload-btn" id="btnOwnership" style="font-size:11px; padding:5px 10px;">Override Ownership CSV (optional)</button>
             <input type="file" id="fileOwnership" accept=".csv" style="display:none">
@@ -1121,7 +1398,47 @@
           </div>
         </div>
         <input type="text" id="playerSearch" placeholder="Search player, team, or position&hellip;" style="margin-top:10px;">
-        <div class="pool-tabs" id="poolTabs"></div>
+        <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap; margin-top:10px;">
+          <div class="pool-tabs" id="poolTabs" style="margin-top:0; flex:1; min-width:200px;"></div>
+          <div class="filter-toggle-row" style="margin-top:0;">
+            <button class="filter-toggle-btn" id="btnFilterToggle" type="button">Filter ▾</button>
+          </div>
+        </div>
+        <div class="filter-bar" id="filterBar">
+          <div class="filter-group">
+            <div class="filter-label">Salary</div>
+            <div class="filter-inputs">
+              <input type="number" id="fSalMin" placeholder="Min" step="100">
+              <span class="sep">–</span>
+              <input type="number" id="fSalMax" placeholder="Max" step="100">
+            </div>
+          </div>
+          <div class="filter-group">
+            <div class="filter-label">Projection</div>
+            <div class="filter-inputs">
+              <input type="number" id="fProjMin" placeholder="Min" step="0.5">
+              <span class="sep">–</span>
+              <input type="number" id="fProjMax" placeholder="Max" step="0.5">
+            </div>
+          </div>
+          <div class="filter-group">
+            <div class="filter-label">Value</div>
+            <div class="filter-inputs">
+              <input type="number" id="fValMin" placeholder="Min" step="0.1">
+              <span class="sep">–</span>
+              <input type="number" id="fValMax" placeholder="Max" step="0.1">
+            </div>
+          </div>
+          <div class="filter-group">
+            <div class="filter-label">Own %</div>
+            <div class="filter-inputs">
+              <input type="number" id="fOwnMin" placeholder="Min" step="1">
+              <span class="sep">–</span>
+              <input type="number" id="fOwnMax" placeholder="Max" step="1">
+            </div>
+          </div>
+          <button class="filter-clear-btn" id="btnFilterClear" type="button">Clear filters</button>
+        </div>
         <div class="player-list-head" id="playerListHead"></div>
         <div class="player-list" id="playerList"></div>
       </div>
@@ -1166,8 +1483,9 @@
     pollTimer: null,
     // ---- Session 7.3 additions ----
     ownership: { dk: null, fd: null },         // each: { filename, byId: { player_id: pct } }
-    poolTab: "ALL",
+    poolTabs: { ALL: true },                   // multi-select: tab -> true (ALL means no position filter)
     poolSort: { key: "final_projection", dir: "desc" },
+    poolFilters: { salMin:"", salMax:"", projMin:"", projMax:"", valMin:"", valMax:"", ownMin:"", ownMax:"" },
     stackTeamSelection: { dk: {}, fd: {} },     // team -> true (chip picker, decision #32)
     stackGameSelection: { dk: {}, fd: {} }      // "TEAM-TEAM" -> true
   };
@@ -1424,6 +1742,7 @@
       persistSlate(site, week, kind, file.name, payload);
       var localMsg = file.name + " — " + rows.length + (kind === "pool" ? " players (player pool)" : " rows (built lineup)");
       setSlateStatus(localMsg, true);
+      document.getElementById("slatesPanel").classList.remove("open");
       renderSlateChips();
       render();
       renderPlayerList();
@@ -1508,14 +1827,7 @@
     var d = state.data[site];
     var cfg = SITE_CONFIG[site];
 
-    if (!d) {
-      viewer.innerHTML =
-        '<div class="empty-state">' +
-        '<div class="glyph">No slate loaded</div>' +
-        '<p>Upload your ' + cfg.label + ' slate above (a <code>final_projections_' + site + '_&#123;week&#125;.csv</code> to build lineups, or an already-built <code>lineup_*_' + site + '_&#123;week&#125;.csv</code> to just view) — or build lineups below once a player pool is loaded.</p>' +
-        '</div>';
-      return;
-    }
+    if (!d) { viewer.innerHTML = ""; return; }
 
     if (d.currentIndex >= d.ids.length) d.currentIndex = d.ids.length - 1;
     if (d.currentIndex < 0) d.currentIndex = 0;
@@ -1777,9 +2089,9 @@
     handleSlateFile(e.target.files[0]);
   });
   ["dragover", "dragenter"].forEach(function (evt) {
-    document.getElementById("slatePanel").addEventListener(evt, function (e) { e.preventDefault(); });
+    document.getElementById("slatesPanel").addEventListener(evt, function (e) { e.preventDefault(); });
   });
-  document.getElementById("slatePanel").addEventListener("drop", function (e) {
+  document.getElementById("slatesPanel").addEventListener("drop", function (e) {
     e.preventDefault();
     var file = e.dataTransfer.files && e.dataTransfer.files[0];
     if (file) handleSlateFile(file);
@@ -1790,16 +2102,9 @@
   // instant preview, confirm-with-real-solver)
   // =========================================================================
 
-  // ---------------- Settings (localStorage-persisted -- this is a real
-  // deployed site, not a sandboxed artifact, so localStorage is the correct
-  // tool here) ----------------
+  // ---------------- Settings (localStorage for Worker URL/Token/Week; cloud for named presets) ----------------
 
-  // Session 7.3 -- items #3/#5: Worker URL/Token save on EVERY keystroke
-  // (input event), not just on blur/change, so switching tabs or closing
-  // the browser mid-type never loses it. Full-settings save (item #5,
-  // replacing the old --seed field) is opt-in via the "Save these
-  // settings" checkbox.
-  var FULL_SETTINGS_FIELDS = [
+  var PRESET_FIELDS = [
     "ctrlNLineups", "ctrlMaxExposure", "ctrlUniqueness", "ctrlRandomization",
     "ctrlMinSalary", "ctrlMinProjection", "ctrlMinTotalOwnership",
     "ctrlStackMode", "ctrlStackSize", "ctrlStackPositions",
@@ -1807,24 +2112,139 @@
     "ctrlFlexRb", "ctrlFlexWr", "ctrlFlexTe"
   ];
 
+  function readPresetValues() {
+    var vals = {};
+    PRESET_FIELDS.forEach(function(id) {
+      var el = document.getElementById(id);
+      vals[id] = el.type === "checkbox" ? el.checked : el.value;
+    });
+    return vals;
+  }
+
+  function applyPresetValues(vals) {
+    PRESET_FIELDS.forEach(function(id) {
+      if (!Object.prototype.hasOwnProperty.call(vals, id)) return;
+      var el = document.getElementById(id);
+      if (el.type === "checkbox") el.checked = !!vals[id]; else el.value = vals[id];
+    });
+    updateControlsVisibility();
+    updateMinSalaryBounds();
+  }
+
+  function setPresetStatus(text, kind) {
+    var el = document.getElementById("presetStatus");
+    el.textContent = text;
+    el.className = "solve-status" + (kind ? " " + kind : "");
+  }
+
+  // Presets stored in the Worker under key "presets" (shared across all devices with the token)
+  function workerPresetUrl(action, params) {
+    var base = document.getElementById("settingsWorkerUrl").value.trim().replace(/\/+$/, "");
+    var token = document.getElementById("settingsWorkerToken").value.trim();
+    var qs = new URLSearchParams(params || {});
+    qs.set("action", action);
+    qs.set("token", token);
+    qs.set("cb", Date.now().toString());
+    return base + "/?" + qs.toString();
+  }
+
+  function loadPresetsFromCloud(onDone) {
+    var base = document.getElementById("settingsWorkerUrl").value.trim();
+    var token = document.getElementById("settingsWorkerToken").value.trim();
+    if (!base || !token) { onDone(null); return; }
+    fetch(workerPresetUrl("get_presets", {}), { cache: "no-store" })
+      .then(function(r) { return r.json(); })
+      .then(function(data) { onDone(data.presets || null); })
+      .catch(function() { onDone(null); });
+  }
+
+  function savePresetsToCloud(presets, onDone) {
+    var base = document.getElementById("settingsWorkerUrl").value.trim();
+    var token = document.getElementById("settingsWorkerToken").value.trim();
+    if (!base || !token) { onDone(false, "Worker not configured."); return; }
+    fetch(workerPresetUrl("save_presets", {}), {
+      method: "POST", cache: "no-store",
+      body: JSON.stringify({ presets: presets }),
+    })
+      .then(function(r) { return r.json(); })
+      .then(function(data) { onDone(!data.error, data.error || null); })
+      .catch(function(err) { onDone(false, err.message); });
+  }
+
+  function populatePresetDropdown(presets) {
+    var sel = document.getElementById("presetSelect");
+    var current = sel.value;
+    sel.innerHTML = '<option value="">— Load a preset —</option>';
+    if (presets) {
+      Object.keys(presets).sort().forEach(function(name) {
+        var opt = document.createElement("option");
+        opt.value = name;
+        opt.textContent = name;
+        sel.appendChild(opt);
+      });
+    }
+    if (current) sel.value = current;
+  }
+
+  // Cache presets locally so we don't re-fetch on every interaction
+  var cachedPresets = null;
+
+  function refreshPresetDropdown() {
+    loadPresetsFromCloud(function(presets) {
+      cachedPresets = presets || {};
+      populatePresetDropdown(cachedPresets);
+    });
+  }
+
+  document.getElementById("btnLoadPreset").addEventListener("click", function() {
+    var name = document.getElementById("presetSelect").value;
+    if (!name) { setPresetStatus("Select a preset first.", ""); return; }
+    if (!cachedPresets || !cachedPresets[name]) {
+      setPresetStatus("Preset not found — try refreshing.", "error"); return;
+    }
+    applyPresetValues(cachedPresets[name]);
+    setPresetStatus("Loaded \"" + name + "\".", "ok");
+  });
+
+  document.getElementById("btnSavePreset").addEventListener("click", function() {
+    var name = (window.prompt("Name this preset (e.g. Cash, 20-max GPP):") || "").trim();
+    if (!name) return;
+    if (!cachedPresets) cachedPresets = {};
+    cachedPresets[name] = readPresetValues();
+    setPresetStatus("Saving…", "");
+    savePresetsToCloud(cachedPresets, function(ok, err) {
+      if (ok) {
+        populatePresetDropdown(cachedPresets);
+        document.getElementById("presetSelect").value = name;
+        setPresetStatus("Saved \"" + name + "\" to cloud.", "ok");
+      } else {
+        setPresetStatus("Save failed: " + (err || "unknown error") + " — check Worker URL/Token in Connection above.", "error");
+      }
+    });
+  });
+
+  document.getElementById("btnDeletePreset").addEventListener("click", function() {
+    var name = document.getElementById("presetSelect").value;
+    if (!name) { setPresetStatus("Select a preset to delete.", ""); return; }
+    if (!window.confirm("Delete preset \"" + name + "\"?")) return;
+    if (cachedPresets) delete cachedPresets[name];
+    savePresetsToCloud(cachedPresets || {}, function(ok, err) {
+      if (ok) {
+        populatePresetDropdown(cachedPresets);
+        setPresetStatus("Deleted \"" + name + "\".", "ok");
+      } else {
+        setPresetStatus("Delete failed: " + (err || "unknown error"), "error");
+      }
+    });
+  });
+
   function loadSettings() {
     try {
       document.getElementById("settingsWorkerUrl").value = localStorage.getItem("dfs_worker_url") || "";
       document.getElementById("settingsWorkerToken").value = localStorage.getItem("dfs_worker_token") || "";
       var savedWeek = localStorage.getItem("dfs_week");
       if (savedWeek) document.getElementById("slateWeek").value = savedWeek;
-
-      var saveFlag = localStorage.getItem("dfs_save_settings") === "1";
-      document.getElementById("ctrlSaveSettings").checked = saveFlag;
-      if (saveFlag) {
-        FULL_SETTINGS_FIELDS.forEach(function (id) {
-          var raw = localStorage.getItem("dfs_setting_" + id);
-          if (raw === null) return;
-          var el = document.getElementById(id);
-          if (el.type === "checkbox") el.checked = raw === "1"; else el.value = raw;
-        });
-      }
-    } catch (e) { /* localStorage unavailable (private browsing etc) -- fields just stay empty */ }
+    } catch (e) { /* localStorage unavailable -- fields stay empty */ }
   }
 
   function saveSettings() {
@@ -1835,17 +2255,7 @@
     } catch (e) { /* ignore */ }
   }
 
-  function saveFullSettingsIfEnabled() {
-    try {
-      var enabled = document.getElementById("ctrlSaveSettings").checked;
-      localStorage.setItem("dfs_save_settings", enabled ? "1" : "0");
-      if (!enabled) return;
-      FULL_SETTINGS_FIELDS.forEach(function (id) {
-        var el = document.getElementById(id);
-        localStorage.setItem("dfs_setting_" + id, el.type === "checkbox" ? (el.checked ? "1" : "0") : el.value);
-      });
-    } catch (e) { /* ignore */ }
-  }
+  function saveFullSettingsIfEnabled() { /* no-op: replaced by cloud presets */ }
 
   // ---------------- Session 7.3 -- Ownership CSV handling (item #6) ----------------
   // Accepts anything with player_id + a column matching /ownership/i (e.g.
@@ -1921,19 +2331,49 @@
     return pos === "DST" || pos === "DEF" || pos === "D";
   }
 
+  function hasActiveFilters() {
+    var f = state.poolFilters;
+    return f.salMin !== "" || f.salMax !== "" || f.projMin !== "" || f.projMax !== "" ||
+           f.valMin !== "" || f.valMax !== "" || f.ownMin !== "" || f.ownMax !== "";
+  }
+
+  function updateFilterToggleBtn() {
+    var btn = document.getElementById("btnFilterToggle");
+    if (btn) btn.classList.toggle("has-filters", hasActiveFilters());
+  }
+
   function renderPoolTabs() {
+    // Multi-select: ALL is exclusive (clears others), positions toggle independently.
+    // If no positions selected, ALL is shown active.
+    var activeTabs = state.poolTabs;
+    var allActive = activeTabs.ALL || Object.keys(activeTabs).length === 0;
     document.getElementById("poolTabs").innerHTML = POOL_TABS.map(function (t) {
-      return '<button class="tab-btn' + (state.poolTab === t ? " active" : "") + '" data-tab="' + t + '">' + t + '</button>';
+      var isActive = t === "ALL" ? allActive : (!allActive && activeTabs[t]);
+      return '<button class="tab-btn' + (isActive ? " active" : "") + '" data-tab="' + t + '">' + t + '</button>';
     }).join("");
   }
 
   function renderPlayerListHead() {
     var headEl = document.getElementById("playerListHead");
-    headEl.innerHTML = '<div>Player</div>' + SORT_COLUMNS.map(function (c) {
+    headEl.innerHTML = '<div></div><div>Player</div>' + SORT_COLUMNS.map(function (c) {
       var active = state.poolSort.key === c.key;
       var arrow = state.poolSort.dir === "asc" ? "\u2191" : "\u2193";
       return '<div class="sortcol' + (active ? " active" : "") + '" data-sort="' + c.key + '" data-arrow="' + arrow + '">' + c.label + '</div>';
-    }).join("") + '<div></div>';
+    }).join("");
+  }
+
+  function passesFilters(p) {
+    var f = state.poolFilters;
+    if (f.salMin !== "" && p.salary < parseFloat(f.salMin)) return false;
+    if (f.salMax !== "" && p.salary > parseFloat(f.salMax)) return false;
+    if (f.projMin !== "" && p.final_projection < parseFloat(f.projMin)) return false;
+    if (f.projMax !== "" && p.final_projection > parseFloat(f.projMax)) return false;
+    if (f.valMin !== "" && p.value < parseFloat(f.valMin)) return false;
+    if (f.valMax !== "" && p.value > parseFloat(f.valMax)) return false;
+    var own = p.ownership != null ? p.ownership : 0;
+    if (f.ownMin !== "" && own < parseFloat(f.ownMin)) return false;
+    if (f.ownMax !== "" && own > parseFloat(f.ownMax)) return false;
+    return true;
   }
 
   function renderPlayerList() {
@@ -1942,25 +2382,37 @@
     var listEl = document.getElementById("playerList");
     renderPoolTabs();
     renderPlayerListHead();
+    updateFilterToggleBtn();
     if (!pool) {
-      listEl.innerHTML = '<div class="player-row"><div class="pmeta">Upload your slate above to lock/exclude players.</div></div>';
+      listEl.innerHTML = '<div class="player-row"><div></div><div class="pmeta">Upload your slate above to lock/exclude players.</div></div>';
       return;
     }
     var q = state.playerSearch.toLowerCase();
+    var allActive = state.poolTabs.ALL || Object.keys(state.poolTabs).length === 0;
     var rows = pool.players.filter(function (p) {
-      if (state.poolTab !== "ALL") {
-        if (state.poolTab === "DST" ? !isDefensePosition(p.position) : p.position !== state.poolTab) return false;
+      if (!allActive) {
+        var tabMatch = false;
+        if (state.poolTabs.DST && isDefensePosition(p.position)) tabMatch = true;
+        Object.keys(state.poolTabs).forEach(function(t) {
+          if (t !== "DST" && t !== "ALL" && p.position === t) tabMatch = true;
+        });
+        if (!tabMatch) return false;
       }
-      if (!q) return true;
-      return p.player_name.toLowerCase().indexOf(q) !== -1 ||
-             p.team.toLowerCase().indexOf(q) !== -1 ||
-             p.position.toLowerCase().indexOf(q) !== -1;
+      if (q) {
+        var nameMatch = p.player_name.toLowerCase().indexOf(q) !== -1 ||
+                        p.team.toLowerCase().indexOf(q) !== -1 ||
+                        p.position.toLowerCase().indexOf(q) !== -1;
+        if (!nameMatch) return false;
+      }
+      return true;
     });
 
     rows = rows.map(function (p) {
       p.value = p.salary > 0 ? p.final_projection / (p.salary / 1000) : 0;
       return p;
     });
+
+    rows = rows.filter(passesFilters);
 
     var sortKey = state.poolSort.key, sortDir = state.poolSort.dir;
     rows.sort(function (a, b) {
@@ -1969,10 +2421,10 @@
       return sortDir === "asc" ? av - bv : bv - av;
     });
 
-    var shown = rows.slice(0, 200); // cap render for very large pools -- search/tabs narrow it down
+    var shown = rows.slice(0, 200);
 
     if (!shown.length) {
-      listEl.innerHTML = '<div class="player-row"><div class="pmeta">No players match.</div></div>';
+      listEl.innerHTML = '<div class="player-row"><div></div><div class="pmeta">No players match.</div></div>';
       return;
     }
 
@@ -1980,24 +2432,62 @@
       var isLocked = !!state.locked[site][p.player_id];
       var isExcluded = !!state.excluded[site][p.player_id];
       var rowCls = "player-row" + (isLocked ? " is-locked" : "") + (isExcluded ? " is-excluded" : "");
+      var lockIcon = isLocked ? "&#128274;" : "&#128275;";
       return '<div class="' + rowCls + '" data-pid="' + escapeHtml(p.player_id) + '">' +
+        '<div class="pactions">' +
+        '<button class="icon-btn lock-btn' + (isLocked ? ' active' : '') + '" data-action="lock" title="' + (isLocked ? 'Unlock' : 'Lock') + '">' + lockIcon + '</button>' +
+        '<button class="icon-btn exclude-btn' + (isExcluded ? ' active' : '') + '" data-action="exclude" title="' + (isExcluded ? 'Un-exclude' : 'Exclude') + '">&#x2715;</button>' +
+        '</div>' +
         '<div><div class="pname">' + escapeHtml(p.player_name) + '</div>' +
         '<div class="pmeta">' + escapeHtml(p.position) + ' &middot; ' + escapeHtml(p.team) + '</div></div>' +
         '<div class="psal">' + fmtMoney(p.salary) + '</div>' +
         '<div class="pproj">' + fmtPts(p.final_projection) + '</div>' +
         '<div class="pown">' + p.value.toFixed(1) + '</div>' +
         '<div class="pown">' + (p.ownership != null ? p.ownership.toFixed(1) + '%' : '—') + '</div>' +
-        '<div class="pactions">' +
-        '<button class="pill-btn lock-btn' + (isLocked ? ' active' : '') + '" data-action="lock">Lock</button>' +
-        '<button class="pill-btn exclude-btn' + (isExcluded ? ' active' : '') + '" data-action="exclude">Exclude</button>' +
-        '</div></div>';
+        '</div>';
     }).join("");
   }
 
   document.getElementById("poolTabs").addEventListener("click", function (e) {
     var btn = e.target.closest("button[data-tab]");
     if (!btn) return;
-    state.poolTab = btn.getAttribute("data-tab");
+    var t = btn.getAttribute("data-tab");
+    if (t === "ALL") {
+      state.poolTabs = { ALL: true };
+    } else {
+      delete state.poolTabs.ALL;
+      if (state.poolTabs[t]) {
+        delete state.poolTabs[t];
+        if (Object.keys(state.poolTabs).length === 0) state.poolTabs = { ALL: true };
+      } else {
+        state.poolTabs[t] = true;
+      }
+    }
+    renderPlayerList();
+  });
+
+  // Filter bar toggle
+  document.getElementById("btnFilterToggle").addEventListener("click", function () {
+    document.getElementById("filterBar").classList.toggle("open");
+  });
+
+  // Filter inputs
+  var FILTER_FIELD_MAP = [
+    { id: "fSalMin",  key: "salMin"  }, { id: "fSalMax",  key: "salMax"  },
+    { id: "fProjMin", key: "projMin" }, { id: "fProjMax", key: "projMax" },
+    { id: "fValMin",  key: "valMin"  }, { id: "fValMax",  key: "valMax"  },
+    { id: "fOwnMin",  key: "ownMin"  }, { id: "fOwnMax",  key: "ownMax"  }
+  ];
+  FILTER_FIELD_MAP.forEach(function(m) {
+    document.getElementById(m.id).addEventListener("input", function(e) {
+      state.poolFilters[m.key] = e.target.value;
+      renderPlayerList();
+    });
+  });
+
+  document.getElementById("btnFilterClear").addEventListener("click", function () {
+    state.poolFilters = { salMin:"", salMax:"", projMin:"", projMax:"", valMin:"", valMax:"", ownMin:"", ownMax:"" };
+    FILTER_FIELD_MAP.forEach(function(m) { document.getElementById(m.id).value = ""; });
     renderPlayerList();
   });
 
@@ -2091,6 +2581,14 @@
     document.getElementById(id).addEventListener("change", updateStackExplain);
   });
 
+  document.getElementById("connHeader").addEventListener("click", function () {
+    document.getElementById("connPanel").classList.toggle("open");
+  });
+
+  document.getElementById("slatesHeader").addEventListener("click", function () {
+    document.getElementById("slatesPanel").classList.toggle("open");
+  });
+
   document.getElementById("buildHeader").addEventListener("click", function () {
     document.getElementById("buildPanel").classList.toggle("open");
   });
@@ -2163,14 +2661,7 @@
   }
   document.getElementById("btnTestConnection").addEventListener("click", testConnection);
 
-  // Session 7.3, item #5: opt-in full-settings persistence, replacing the
-  // old --seed field. Saves immediately on any change while the checkbox
-  // is on; toggling it off stops future saves (existing saved values are
-  // left alone until re-enabled, not wiped).
-  document.getElementById("ctrlSaveSettings").addEventListener("change", saveFullSettingsIfEnabled);
-  FULL_SETTINGS_FIELDS.forEach(function (id) {
-    document.getElementById(id).addEventListener("change", saveFullSettingsIfEnabled);
-  });
+  // Presets are cloud-stored; no local change listeners needed here.
 
   // ---------------- Session 7.3, item #9: slate overview (games + totals) ----------------
   // Derived directly from the already-loaded player pool -- final_projections
@@ -2466,18 +2957,22 @@
 
   loadSettings();
   updateControlsVisibility();
-  setWorkerFieldsLocked(true); // item #4 -- always starts locked, every load, regardless of prior session
-  updateMinSalaryBounds(); // item #1 -- bound the slider to the active site's real cap on load too, not just on toggle
+  setWorkerFieldsLocked(true);
+  updateMinSalaryBounds();
 
-  // Session 7.3, items #2/#5: restore whichever slate (if any) was
-  // persisted -- cloud first (so any device shows the same slate), local
-  // as a fallback -- for the currently-active site + the restored week,
-  // so a page reload/new device never requires re-uploading.
+  // Load presets from cloud after settings (Worker URL/token) are in place
+  refreshPresetDropdown();
+
+  // Restore persisted slate -- cloud first, local fallback
   loadSlateForActive(state.activeSite, document.getElementById("slateWeek").value.trim(), function (source, filename) {
-    if (source === "cloud") setSlateStatus((filename || "slate") + " — loaded from the cloud", true);
-    else if (source === "local") {
+    if (source === "cloud") {
+      setSlateStatus((filename || "slate") + " — loaded from the cloud", true);
+      // Auto-collapse slates panel once a slate is successfully loaded
+      document.getElementById("slatesPanel").classList.remove("open");
+    } else if (source === "local") {
       var stored = JSON.parse(localStorage.getItem(slateKey(state.activeSite, document.getElementById("slateWeek").value.trim())) || "{}");
       setSlateStatus((stored.filename || "loaded") + " — from this browser's storage", true);
+      document.getElementById("slatesPanel").classList.remove("open");
     } else {
       setSlateStatus(noSlateMessage());
     }
