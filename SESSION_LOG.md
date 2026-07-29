@@ -2224,3 +2224,120 @@ All budget totals exact. All three output-integrity checks pass. FD not separate
 - `name_recognition_flags.csv`: 0 flagged players this run. List starts thin and is expected to grow. Update before each regular-season week if notable name-recognition situations arise (injured starter returning, breakout narrative player, etc.).
 - `OWNERSHIP_SOFTMAX_TEMPERATURE = 15.0`: first retuning target in Session 11.1. Large gap between 15.0 and the fitted value (if observed) is informative — means the initial guess was significantly off and more data would improve the fit further.
 - Next action: Session 9.3 at Regular Season Week 1. Priority source: DraftKings large-field GPP (Millionaire Maker or equivalent). Log `contest_type` and `field_size` from day one — these are required for Session 11.3's fit and cannot be retrofitted from old data.
+
+---
+
+## Session 11.0 — Ownership Model Feature Expansion + Phase 11 Gap Assessment (2026-07-28)
+
+**Date completed:** 2026-07-28
+**Status:** ✅ Complete — gap assessment done, Phase 11 added to ROADMAP.md, `ownership_heuristic.py` updated and validated.
+
+### What was actually built
+
+This session opened Phase 11 (Ownership Model Upgrade) and completed its first card (Session 11.0). The work split into two parts: a research-driven gap assessment comparing what we have against three target tiers, and a code change to `ownership_heuristic.py` that closes the feature gap identified.
+
+**Part 1 — Gap assessment and tier definitions**
+
+A clean-slate research session (no preconceptions, fresh web research) established the following:
+
+*What ownership actually is:* Ownership percentage = (lineups containing player X) / (total entries) × 100. Computed by the platform post-lock. Contest-specific, not slate-wide. Before lock, every number is a projection — not a fact.
+
+*What drives projected ownership (from research):* The strongest single predictor is points-per-dollar value (salary ÷ projection). Salary alone explains ~8% of ownership variance (r ≈ 0.29 from a real 95,825-entry MLB slate). Adding projected points and game totals likely gets to ~20-25% explained variance. The industry has not converged on a single formula — tools differ mainly in how they combine these inputs and whether they simulate field lineups (expensive) or use a direct formula (tractable).
+
+*Three tiers defined:*
+
+| Tier | Description | Effort | Benefit |
+|---|---|---|---|
+| 1 | Value-based softmax, parameters fit to real data | Low | High |
+| 2 | 5-feature model + learning loop retuning | Medium | High |
+| 3 | Per-contest-type stratification | Medium | Medium |
+| 4 | Simulation-based field modeling (SaberSim-style) | High | Low-medium |
+
+Tier 4 dropped. High effort, marginal benefit at personal-use scale.
+
+*Gap against each tier:*
+
+**Tier 1 (value-based softmax):** Architecture is ~70% there. The softmax structure, per-position budget anchoring, and value feature are all built. The gap is unfit parameters: temperature = 15.0 (arbitrary), blend weights (0.45/0.20/0.25, arbitrary), FLEX split even thirds (no real data). These close at Session 11.1 once real ownership data exists.
+
+**Tier 2 (feature-weighted model + learning loop):** ~40% there. Two real ownership predictors were missing from the feature set: raw projected points as a standalone signal (distinct from value efficiency), and game-level over/under (distinct from implied team total). The logging infrastructure (Session 9.3) and retuning (Session 9.4, renamed 11.2) were already planned but not started. Session 11.0's code change adds the two missing features. The learning loop starts at Week 1.
+
+**Tier 3 (contest-type stratification):** 0% there. No architecture, no data. The action is to capture `contest_type` in Session 9.3's logging schema from day one, so Tier 3 fitting is possible after one full season. Session 11.3 cannot be built responsibly before the 2026 regular season ends.
+
+**Part 2 — Code change: `scripts/ownership_heuristic.py`**
+
+Two new features added to the chalk_score blend. No existing features removed. No existing output columns changed. No downstream scripts affected.
+
+*New feature 1 — raw_projection_percentile (decision #6):*
+`final_projection` as a standalone input, percentile-ranked within position group. Distinct from value (pts/$1K). Captures "expected ceiling" signal that pure value misses: an expensive stud with 18 projected points has lower value than a cheap role player with 12 points, but the stud will be owned far more heavily on projection ceiling alone. Value alone systematically undersells expensive chalk and oversells cheap punts in ownership terms.
+
+*New feature 2 — over_under_percentile (decision #7):*
+Game-level over/under, percentile-ranked across the full pool. `over_under` already existed in `final_projections_*.csv` since Session 3.3's addendum — no pipeline change needed. Captures "shootout game" signal distinct from implied_total: a team with implied_total 27 in a 52 O/U game has a very different ownership profile than the same team in a 38 O/U game, even with identical spreads. Affects all positions in the game, not just the favored team's offense.
+
+*Updated blend weights:*
+
+```
+OLD (4-feature, Session 4.1):
+  value: 0.45 | salary_tier: 0.20 | vegas: 0.25
+
+NEW (5-feature, Session 11.0):
+  value: 0.35 | projection: 0.15 | salary_tier: 0.15 | vegas: 0.20 | over_under: 0.15
+```
+
+Weights sum to 1.00. All five are unfit starting guesses; retuning targets for Session 11.1. Direction rationale: value drops because raw projection is now separate; salary_tier drops because value+projection together carry most of the salary-driven signal; vegas redistributes partially to over_under.
+
+*Temperature unchanged:* `OWNERSHIP_SOFTMAX_TEMPERATURE = 15.0`. Temperature is fit separately from the blend weights. The feature expansion doesn't change the right starting point — it will be re-evaluated in Session 11.1 alongside the weights.
+
+*New required input column:* `load_final_projections()` now requires `over_under` in the projections file. Already present since Session 3.3's addendum. A clear SystemExit with an explanatory message fires if it's missing.
+
+**Part 3 — ROADMAP.md update**
+
+Phase 11 added with five session cards:
+
+| Session | What | When |
+|---|---|---|
+| 11.0 ✅ | Feature expansion + schema def | Done |
+| 9.3 | Ownership logging (updated schema) | Week 1 onward |
+| 11.1 | Regress weights + temperature | ~Week 6-7 |
+| 11.2 (was 9.4) | FLEX split + per-position temperatures | ~Week 8+ |
+| 11.3 | Per-contest-type stratification | Post-season 2026 |
+
+Session 9.3's card was updated in-place with the full `ownership_actual_log.csv` schema (columns: site, season, week, slate_type, contest_id, contest_type, field_size, player_id, player_name, actual_ownership_pct, estimated_ownership_pct_at_lock, source, logged_at). `slate_type` values: regular_season | preseason | madden_sim. Session 11.1 fits on regular_season rows only — preseason and Madden Sim rows are logged for pipeline validation dry runs but excluded from the weight/temperature fit (preseason field is skewed toward hardcore grinders, player pool and salary structure unrepresentative of the regular season; Madden Sim field is a tiny self-selected population with no real-world narrative signals). Session 9.4 redirected to Session 11.2.
+
+### Validation
+
+Run against real DK week-10 test data (`output/final_projections_dk_10.csv`, 245 players):
+
+```
+python scripts/ownership_heuristic.py --site dk --week 10
+```
+
+```
+0 player(s) received a name-recognition bonus from name_recognition_flags.csv.
+estimated_ownership_pct summed per position group (should equal that group's roster-slot budget):
+  DST: 100.0%  (budget: 100.0%)  ✅
+  QB:  100.0%  (budget: 100.0%)  ✅
+  RB:  233.3%  (budget: 233.3%)  ✅
+  TE:  133.3%  (budget: 133.3%)  ✅
+  WR:  333.3%  (budget: 333.3%)  ✅
+Wrote 245 players to output/chalk_scores_dk_10.csv
+  Nulls in any column:                     0  (should be 0)  ✅
+  chalk_score out of [0,100] range:        0  (should be 0)  ✅
+  estimated_ownership_pct out of [0,100]:  0  (should be 0)  ✅
+```
+
+All budget totals exact. All three output-integrity checks pass. FD not separately re-run — the feature additions are site-agnostic by construction (both sites use the same `over_under` column and the same `final_projection` column from `final_projections_*.csv`); treated as covered by construction rather than needing a duplicate manual run, flagged here rather than silently assumed.
+
+### Deferred items
+
+- FD real-data validation: same pre-existing gap as all other FD items — closes at Preseason Week 1 alongside the rest of the FD list.
+- All five blend weights and temperature: unfit starting guesses. Retuning targets for Session 11.1. Logged explicitly in `ownership_heuristic.py`'s module docstring and constants block.
+- FLEX split (even thirds): known simplification, logged as retuning target for Session 11.2.
+- Session 9.3 data source: DraftKings large-field GPP contest results page identified as primary source. No script built yet — blocked on Regular Season Week 1 having real slates. Schema is defined and ready.
+- Preseason logging (Preseason Weeks 1-3): log with `slate_type = preseason`. Useful for pipeline/schema validation before Week 1 matters. Does not count toward Session 11.1's 4-6 week data gate and must not be included in the fit.
+- Madden Sim logging: log with `slate_type = madden_sim` if ownership is captured from a Madden Sim contest during bridge testing. Useful only for confirming log_ownership.py runs end-to-end. Excluded from all fits.
+
+### Handoff notes
+
+- `name_recognition_flags.csv`: 0 flagged players this run. List starts thin and is expected to grow. Update before each regular-season week if notable name-recognition situations arise (injured starter returning, breakout narrative player, etc.).
+- `OWNERSHIP_SOFTMAX_TEMPERATURE = 15.0`: first retuning target in Session 11.1. Large gap between 15.0 and the fitted value (if observed) is informative — means the initial guess was significantly off and more data would improve the fit further.
+- Next action: Session 9.3 script can be built now against the defined schema. First real logging opportunity is Preseason Week 1 (Aug 13-15) — tag those rows `slate_type = preseason` and use them to confirm the script works end-to-end, not to inform any model fit. Regular Season Week 1 (Sept 9) is when the data gate clock starts. Priority source: DraftKings large-field GPP (Millionaire Maker or equivalent). Log `slate_type`, `contest_type`, and `field_size` from day one — these cannot be retrofitted from old data and are required for Sessions 11.1 and 11.3.
