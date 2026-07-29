@@ -1051,3 +1051,401 @@ The Odds API (Session 2.3's chosen vendor) is confirmed sufficient for **NFL-onl
 
 Before any future multi-sport session gets built: re-evaluate odds vendors at that time rather than assuming The Odds API's free tier still fits, or defaulting straight to a paid plan without checking. As of Session 2.3 (July 2026), two alternatives surfaced that didn't exist when this roadmap was first written: SharpAPI (claims a 12 req/min rate-limit free tier instead of a monthly credit cap — but as of this writing has no independent reviews or third-party coverage found, only its own marketing site; treat as unverified, not a safe default) and SportsGameOdds (broader book/league coverage, free "Amateur" tier at 2,500 objects/month, somewhat more established-feeling but still not independently verified here). Neither was vetted hands-on. The safest fallback if free-tier math doesn't work at that time is simply upgrading The Odds API to its $30/month 20K-credit tier — trivial cost against the rest of this project, and removes the problem outright rather than optimizing around a thinner polling schedule that risks stale lines near lock.
 
+
+---
+
+## PHASE 11 — Ownership Model Upgrade
+*Opened 2026-07-28. Structured response to the gap assessment comparing the
+current heuristic against Tier 1/2/3 ownership model targets defined during
+the 2026-07-28 ownership model research session. Phase 10 is complete;
+this phase can run in parallel with Phase 6 (preseason dry runs) for the
+code work, and in parallel with the regular season for the data-collection
+and fitting sessions.*
+
+**Why a new phase, not a revision to Phase 4 or 9:**
+Phase 4 (Session 4.1) shipped the correct architecture: value-based softmax,
+per-position budgets, estimated_ownership_pct. The problem isn't the
+structure -- it's that the parameters are unfit guesses (temperature = 15.0,
+weights = 0.45/0.20/0.25, FLEX split = even thirds) and two real ownership
+predictors were missing from the feature set. Phase 9 (Sessions 9.3/9.4)
+always planned to close the data gap; this phase adds the feature expansion
+that makes the eventual retuning worthwhile, and locks in the data schema
+before a single real ownership number is logged.
+
+**The gap assessment (full) is in SESSION_LOG.md's Phase 11 entry.**
+
+**Tier definitions (established 2026-07-28):**
+- Tier 1: Value-based softmax with parameters fit to real data. Architecture
+  already built; gap is unfit constants and two missing features.
+- Tier 2: Feature-weighted model (5 inputs) + learning loop retuning.
+  Closes once 11.0 ships, real data flows through 9.3, and 11.1 fits.
+- Tier 3: Per-contest-type stratification. Requires a full season of
+  tagged data before fitting is meaningful.
+- Tier 4: Simulation-based field modeling (SaberSim-style). Dropped --
+  high effort, marginal benefit for personal-use scale. Not built.
+
+---
+
+### Session 11.0 — Feature Expansion + Schema Prep
+**Status:** ✅ Complete (2026-07-28)
+**Prerequisites:** Session 4.1 complete (updates ownership_heuristic.py in place).
+**Blocking:** Nothing blocked here -- pure code work, no real data needed.
+
+**Files touched (modified):**
+- `scripts/ownership_heuristic.py` -- two new features added to chalk_score
+  blend, one required input column added, blend weights updated. No existing
+  output column changed; no existing feature removed.
+
+**What changed in ownership_heuristic.py:**
+
+*New feature 1 -- raw_projection_percentile (decision #6):*
+`final_projection` as a standalone feature, percentile-ranked within
+position_group. This is distinct from value (pts/$1K): a player can have a
+great raw projection AND poor value (expensive stud), or great value AND a
+modest raw projection (cheap punt). Both signals predict ownership
+independently. Research finding from the 2026-07-28 session: salary and
+projected points together explain ~20-25% of ownership variance vs ~8% for
+salary alone. The existing value feature partially captures this but not
+fully -- an expensive player with 18 projected points has lower value than a
+cheap player with 12 projected points, but the expensive player gets owned
+far more heavily on projection ceiling alone. This feature corrects that.
+
+*New feature 2 -- over_under_percentile (decision #7):*
+Game-level over/under (O/U) as a separate signal from implied_total.
+`over_under` already exists in `final_projections_*.csv` (added in Session
+3.3's addendum). Percentile-ranked across the full pool (not
+position-grouped), same approach as vegas_percentile. Why separate from
+implied_total: a team with implied_total 27 in a 52 O/U game (shootout) has
+a very different DFS ownership profile than the same team in a 38 O/U game
+(defensive game with one dominant offense), even with identical point
+spreads. The O/U captures "shootout game" signal that affects all positions
+in the game, including the trailing team's skill positions and the leading
+team's DST opponent.
+
+*Updated blend weights (5-feature, all UNFIT starting guesses):*
+```
+OLD (4-feature, Session 4.1):
+  VALUE 0.45 | SALARY_TIER 0.20 | VEGAS 0.25
+
+NEW (5-feature, Session 11.0):
+  VALUE 0.35 | PROJECTION 0.15 | SALARY_TIER 0.15 | VEGAS 0.20 | OVER_UNDER 0.15
+```
+Direction rationale: value drops because raw projection is now separate;
+salary_tier drops because value+projection together carry the salary-driven
+signal; vegas drops slightly to share with over_under; projection and
+over_under are new at 0.15 each. All five weights are retuning targets for
+Session 11.1. The module docstring tracks the old weights explicitly for
+diff visibility.
+
+*New required input column:*
+`load_final_projections()` now requires `over_under` in addition to the
+existing required columns. `over_under` has been in `final_projections_*.csv`
+since Session 3.3's addendum -- if a file generated before that addendum is
+used, this will raise a clear SystemExit with a message explaining which
+column is missing and why.
+
+*OWNERSHIP_SOFTMAX_TEMPERATURE unchanged (still 15.0):*
+Temperature is fit separately from the blend weights. The 5-feature
+expansion doesn't change the right starting point for temperature -- it will
+be re-evaluated in Session 11.1 against real data alongside the weights.
+
+**Schema prep for Session 9.3:**
+The `ownership_actual_log.csv` schema is defined here so Session 9.3
+implements it correctly from day one. See the Session 9.3 card update below.
+
+**Validation:**
+- [x] `ownership_heuristic.py` runs without error against the existing
+  Madden Sim test data (DK week 10, FD week 10). Output columns unchanged;
+  chalk_score and estimated_ownership_pct within expected ranges (0-100,
+  no nulls). Verified that `over_under` is present in the test
+  `final_projections_*.csv` (it has been since Session 3.3's addendum).
+- [x] With `--site dk --week 10`, print output shows 5 feature components
+  summing correctly and all players have non-null chalk_score values.
+- [x] `estimated_ownership_pct` group totals still match roster-slot budgets
+  exactly (the softmax-to-budget logic is unchanged; this is a regression
+  check confirming the new features don't disturb it).
+
+**Handoff notes:**
+Session 9.3 can now be built against the schema defined in this session's
+notes. Session 11.1 cannot be built until Session 9.3 has 4-6 weeks of real
+data -- design the script now if desired, but don't fit against fewer than
+4 weeks.
+
+---
+
+### Session 9.3 — Actual Ownership Logging *(updated card)*
+*Original card added during Session 4.1's addendum. Schema updated by
+Session 11.0 (2026-07-28) to include contest_type and field_size, which
+are required for Session 11.3's contest-type stratification. The original
+card's build intent and prerequisites are unchanged.*
+
+**Prerequisites:** Session 8.1 complete (live enough to have real slates
+running), AND a real published-ownership source identified for at least one
+site/contest type.
+
+**Sites:** Log per site -- DK and FD price the same player differently, so
+their real ownership numbers for the same player are never expected to match.
+
+**Files touched (created):**
+- `scripts/log_ownership.py`
+- `data/ownership_actual_log.csv` (grows weekly)
+
+**Full schema for ownership_actual_log.csv (defined Session 11.0):**
+```
+site              -- dk | fd
+season            -- e.g. 2026
+week              -- NFL week number
+contest_id        -- platform's own contest identifier, if available
+contest_type      -- cash | single_entry_gpp | 3max_gpp
+                     (log "unknown" if the contest type can't be determined
+                     reliably -- don't guess; bad labels are worse than
+                     missing ones for Session 11.3's fit)
+field_size        -- number of entries in the logged contest
+                     (ownership behavior differs between 100-entry and
+                     50,000-entry fields; this is needed to weight or
+                     stratify observations in Session 11.1)
+player_id         -- nflverse player_id, same scheme as rest of pipeline
+player_name       -- for human spot-checking
+actual_ownership_pct   -- the real published number (0-100 scale)
+estimated_ownership_pct_at_lock  -- what our model predicted at lock time
+                                    (from chalk_scores_{site}_{week}.csv)
+source            -- where the actual number came from
+                     (e.g. "dk_contest_page", "rotogrinders_tracker")
+logged_at         -- ISO timestamp of when this row was written
+```
+
+**Data source guidance (resolved in this card):**
+DraftKings publishes ownership percentages on the contest results page for
+large-field GPPs post-lock. This is the most reliable source -- no
+third-party dependency, same data the platform uses internally. Recommended
+first target: the Millionaire Maker or equivalent large-field single-entry
+GPP. For cash games and small-field contests, ownership is often not
+published by the platform; log what's available, note the source, and do not
+fabricate or estimate entries for contest types that can't be observed.
+
+Third-party trackers (e.g. RotoGrinders' ownership tool for DK large-field
+contests) are an acceptable supplementary source when the platform page
+itself doesn't expose ownership in a copyable format. Always record the
+source in the `source` column.
+
+**Priority order for logging:** large-field DK GPPs first (most reliably
+published, largest sample per week, most strategically important). DK cash
+and FD ownership second (less reliably published -- log when available, skip
+when not, never fabricate).
+
+**Build:**
+- Script to semi-automate ownership collection: given a site, week, and
+  source URL, scrape or accept pasted ownership numbers and write to
+  `ownership_actual_log.csv` with the full schema above.
+- Pull our own `estimated_ownership_pct` from that week's
+  `chalk_scores_{site}_{week}.csv` and join it in at log time, so the
+  error is computable from the log itself without a secondary join.
+- Idempotency: re-running for the same site/week/contest_id should update
+  existing rows, not append duplicates.
+
+**Validation:**
+- [ ] Confirm logged actuals match what's published on the contest page for
+  a spot-check sample (5+ players across multiple ownership levels).
+- [ ] Confirm `estimated_ownership_pct_at_lock` is populated correctly
+  from the chalk_scores file for the same week.
+- [ ] Confirm schema matches the definition above exactly (no missing
+  columns, no extra undocumented columns).
+
+---
+
+### Session 9.4 — Ownership Estimate Retuning
+*Renamed Session 11.2 in the Phase 11 numbering. This card is kept here for
+cross-reference continuity; the authoritative card is Session 11.2 below.*
+
+---
+
+### Session 11.1 — Regression Retuning (Blend Weights + Temperature)
+**Prerequisites:** Session 9.3 running for 4-6 weeks minimum. Do not fit
+on fewer than 4 weeks -- the model will overfit to noise. The script can
+be written before data exists; the fit itself must wait.
+
+**Data gate:** ~4-6 player-weeks per position × ~50 players per slate =
+~200-300 observations minimum before fitting. At 16+ weeks of real data the
+fit becomes genuinely stable.
+
+**Sites:** Fit DK and FD separately. The pipeline already enforces this
+(ownership_heuristic.py is site-specific); the fit must be too.
+
+**Files touched (created):**
+- `scripts/fit_ownership_params.py` -- fits weights and temperature,
+  writes artifact. Same fitter/consumer split as Session 10.4b's
+  `fit_sigma_recalibration.py` / `sigma_recalibration.py`.
+- `data/ownership_params_{site}.json` -- fitted artifact, loaded by
+  ownership_heuristic.py when present.
+
+**Files touched (modified):**
+- `scripts/ownership_heuristic.py` -- load fitted params from artifact
+  when present; fall back to hardcoded defaults with a warning when not.
+  Graceful degradation, not a crash. Same pattern as sigma_recalibration.py.
+
+**Method:**
+1. For each player-week in `ownership_actual_log.csv`, compute the 5
+   feature values (value_percentile, raw_projection_percentile,
+   salary_tier_score, vegas_percentile, over_under_percentile) from the
+   corresponding week's `final_projections_*.csv`.
+2. Fit a log-linear model: `log(actual_ownership_pct + 0.5)` as a linear
+   function of the 5 features. Log-linear because ownership is bounded
+   0-100 and right-skewed (a few players at 40%+, most at <10%). The +0.5
+   floor prevents log(0) on unrostered players.
+3. Temperature: grid search from 5.0 to 30.0 in steps of 0.5. For each
+   candidate temperature, compute estimated_ownership_pct using that
+   temperature and measure MAE against actual_ownership_pct across all
+   logged weeks. Pick the value that minimizes MAE.
+4. FLEX split: if logged data has enough observations (see Session 11.2),
+   do not hardcode here -- defer to 11.2.
+5. Holdout validation: fit on weeks 1-N, validate on the most recent 2
+   weeks. If validation MAE >= baseline MAE (from the unfit constants),
+   do not ship -- investigate.
+
+**Artifact schema (data/ownership_params_{site}.json):**
+```json
+{
+  "schema_version": 1,
+  "fit_date": "YYYY-MM-DD",
+  "site": "dk",
+  "n_weeks": 8,
+  "n_observations": 412,
+  "temperature": 12.5,
+  "weights": {
+    "value": 0.31,
+    "projection": 0.18,
+    "salary_tier": 0.12,
+    "vegas": 0.23,
+    "over_under": 0.16
+  },
+  "validation_mae": 4.2,
+  "baseline_mae": 6.8,
+  "notes": "Fit on weeks 1-6, validated on weeks 7-8."
+}
+```
+
+**Validation:**
+- [ ] Holdout MAE improves over baseline (unfit constants) for both DK and
+  FD -- if not, do not ship, investigate.
+- [ ] Retuned estimated_ownership_pct still sums to roster-slot budget per
+  position group (the softmax-to-budget normalization is unchanged; this
+  confirms the new temperature doesn't break the budget constraint).
+- [ ] Top-5 most-owned players per position per week (by actual ownership)
+  are correctly ranked in the top-5 by estimated_ownership_pct on held-out
+  weeks -- rank ordering within position group is more important than
+  absolute accuracy for the optimizer's use case.
+
+**Handoff notes:** log the fitted temperature and weights in SESSION_LOG.md.
+The gap between fitted and original constants is informative -- a large gap
+(e.g. temperature 15.0 fitted to 8.0) means the initial guess was
+significantly off and more real data would likely improve the fit further.
+
+---
+
+### Session 11.2 — FLEX Split + Position-Level Temperature Retuning
+*(Originally Session 9.4 -- Ownership Estimate Retuning. Renumbered and
+scoped more precisely by Phase 11.)*
+
+**Prerequisites:** Session 11.1 complete. Session 9.3 running for 8+
+weeks (need enough FLEX position data to split reliably).
+
+**Files touched (modified):**
+- `scripts/fit_ownership_params.py` -- extend to fit per-position
+  temperature and FLEX usage rates.
+- `data/ownership_params_{site}.json` -- extend artifact schema to include
+  per-position temperatures and FLEX splits.
+- `scripts/ownership_heuristic.py` -- read per-position temperatures from
+  artifact if present; fall back to global temperature when not.
+
+**Two specific improvements:**
+
+*FLEX split by real field behavior:*
+The current even-thirds FLEX split (RB/WR/TE each get 1/3 of the FLEX
+budget) is a known simplification. Real DFS fields fill FLEX with RBs more
+often than WRs, and WRs more often than TEs. Logged ownership data reveals
+the actual split by checking: across all observed lineups implied by the
+ownership percentages, what fraction of FLEX usage goes to each position?
+This can be estimated from the logged ownership totals per position relative
+to their hard-slot budgets -- the excess above the hard-slot budget is FLEX
+usage. Replace the even-thirds split with the observed ratio once enough
+data exists.
+
+*Per-position temperatures:*
+The global OWNERSHIP_SOFTMAX_TEMPERATURE (currently 15.0, to be refit in
+11.1) may not be right for every position. QB ownership in DFS is known to
+be more concentrated than RB ownership (there are fewer viable QB options
+and they're more consensus). DST ownership is more volatile week to week
+than skill positions. Check whether fitting a separate temperature per
+position improves MAE on held-out weeks. If yes, ship per-position
+temperatures in the artifact. If not (improvement < 0.5 MAE points),
+keep the global temperature -- complexity isn't worth it at that margin.
+
+**Validation:**
+- [ ] Backtested FLEX-corrected estimated_ownership_pct shows RB/WR/TE
+  estimated totals closer to their respective logged actuals than the
+  even-thirds baseline, on held-out weeks.
+- [ ] Per-position temperature MAE improvement check: only ship per-position
+  temperatures if improvement >= 0.5 MAE points vs global temperature.
+- [ ] All validation checks from 11.1 still pass after this update.
+
+---
+
+### Session 11.3 — Contest-Type Stratification
+**Prerequisites:** Session 9.3 running for one full regular season (17+
+weeks) with `contest_type` logged reliably for at least two contest types.
+This session cannot be built responsibly before the 2026 regular season
+ends. Design the approach now; execute in the 2026-2027 offseason.
+
+**Data gate:** ~16 logged weeks × 50 players per slate × 2 contest types
+minimum = ~1,600 observations. Less than this and the per-contest-type
+fit is noisier than the global fit and shouldn't be shipped.
+
+**Files touched (modified):**
+- `scripts/ownership_heuristic.py` -- add `--contest-type` argument
+  (cash | single_entry_gpp | 3max_gpp). When provided, load a
+  contest-type-specific fitted artifact if present; fall back to the global
+  fit from Session 11.1 with a printed warning when not.
+- `scripts/fit_ownership_params.py` -- extend to fit per-contest-type.
+- `data/ownership_params_{site}_{contest_type}.json` -- per-contest-type
+  artifact files. The global artifact (no contest_type suffix) from Session
+  11.1 remains as the fallback.
+- `scripts/optimizer.py` -- pass `--contest-type` through from the CLI
+  to `ownership_heuristic.py` (four-layer architecture: frontend,
+  Cloudflare Worker passthroughKeys, GitHub Actions flag-builder,
+  optimizer.py argparse -- all four must be updated).
+- Cloudflare Worker `optimizer_api.js` -- add `contest_type` to
+  passthroughKeys whitelist.
+- `.github/workflows/run_optimizer_dispatch.yml` -- add `contest_type`
+  to the flag-builder.
+- `dfs_optimizer_frontend/index.html` -- add contest-type selector to the
+  Build panel (cash / single-entry GPP / 3-max GPP).
+
+**Why contest-type stratification matters:**
+Research finding (Establish The Run, 2026): ownership can swing 15-20
+percentage points for the same player between a 3-max field and a
+single-entry field of the same size and stakes. Cash-game fields converge
+on high-floor players; GPP fields spread out more and chase upside.
+A single ownership model predicts neither well at the extremes.
+
+**Validation:**
+- [ ] For each contest type with 8+ held-out weeks of logged data,
+  per-contest-type MAE improves over the global model's MAE on those same
+  weeks -- if not, don't ship per-type params for that contest type;
+  fall back to global.
+- [ ] The four-layer architecture update (frontend → Worker → Actions →
+  optimizer.py) is confirmed end-to-end: setting a contest type in the
+  UI produces a lineup built with the correct type-specific ownership
+  estimate, not the global fallback.
+
+---
+
+## Summary: Phase 11 sequencing
+
+| Session | What | When | Tier closed |
+|---|---|---|---|
+| 11.0 ✅ | Feature expansion + schema def | Pre-season (done) | Tier 2 setup |
+| 9.3 | Ownership logging w/ contest_type + field_size | Week 1 onward | Data foundation |
+| 11.1 | Regress weights + temperature on real data | ~Week 6-7 | Tier 1 + Tier 2 |
+| 11.2 | FLEX split + per-position temperatures | ~Week 8+ | Tier 2 refinement |
+| 11.3 | Per-contest-type stratification | Post-season 2026 | Tier 3 |
+

@@ -3,6 +3,7 @@ ownership_heuristic.py
 =======================
 
 Session 4.1 -- Chalk Score Heuristic.
+Updated Session 11.0 -- Feature Expansion (2026-07-28).
 
 For a given site (DK/FD) and week, reads that week's
 final_projections_{site}_{week}.csv (Session 2.4/3.3's output) and produces
@@ -15,9 +16,53 @@ DK/FD ownership percentages exist anywhere in this pipeline (same class of
 gap as FD's real salary data -- see ROADMAP.md's FanDuel validation gap
 note). The roadmap card's own validation step says as much: check relative
 order against actual published ownership "if available, or intuition as a
-gut-check on direction, not precision." Four inputs are combined below,
-each cleared as a design decision this session left open (same pattern as
-build_projections.py's decisions #1-#6):
+gut-check on direction, not precision."
+
+SESSION 11.0 CHANGES (2026-07-28)
+----------------------------------
+Two new features added, one weight table updated. No existing feature
+removed, no existing output column changed -- purely additive.
+
+New features:
+  - raw_projection_percentile: final_projection as a standalone feature,
+    percentile-ranked within position group. This is distinct from value
+    (pts/$1K): a player can have a great raw projection AND poor value (very
+    expensive), or great value AND a modest raw projection (cheap role
+    player). Both signals predict ownership independently. Research finding:
+    salary and projected points together explain ~20-25% of ownership
+    variance vs ~8% for salary alone.
+
+  - over_under_percentile: the game-level over/under (already present in
+    final_projections_*.csv from Session 3.3's addendum) as a separate
+    feature. This captures "shootout game" signal that implied_total alone
+    misses. A team with a 26 implied total in a 52 O/U game (expected
+    shootout) is a meaningfully different ownership driver than a team with
+    26 in a 40 O/U game (expected defensive game with one dominant offense).
+    Percentile-ranked across the full pool, same as implied_total.
+
+Updated blend weights (all 5 are UNFIT starting guesses, flagged for
+Session 11.1 regression retuning once real ownership data exists):
+
+  Old (4-feature):  value 0.45 | salary_tier 0.20 | vegas 0.25 | name 0+ 
+  New (5-feature):  value 0.35 | projection 0.15 | salary_tier 0.15
+                    | vegas 0.20 | over_under 0.15 | name 0+
+
+Rationale for direction of weight changes:
+  - value dropped 0.45 -> 0.35: raw projection is now a separate feature,
+    so value doesn't need to carry both the "good player" signal AND the
+    "efficient play" signal alone.
+  - salary_tier dropped 0.20 -> 0.15: value + raw projection together
+    already carry most of the salary-driven signal.
+  - vegas held 0.25 -> 0.20: redistributed partially to over_under.
+  - over_under 0.0 -> 0.15: new. Game totals are a real, published
+    predictor of ownership documented in the research gathered 2026-07-28.
+  - projection 0.0 -> 0.15: new. Raw ceiling is a distinct ownership
+    driver from value efficiency.
+
+ALL FIVE WEIGHTS ARE RETUNING TARGETS for Session 11.1 once
+ownership_actual_log.csv has 4-6 weeks of real data.
+
+Design decisions from Session 4.1 (unchanged):
 
 1. Value (points per $1K salary) -- the single strongest real driver of
    DFS ownership: cheap-for-their-projection players get rostered a lot
@@ -44,8 +89,8 @@ build_projections.py's decisions #1-#6):
    100 * abs(salary_percentile_within_position_group - 0.5) * 2, so both
    tails approach 100 and the middle approaches 0.
 
-3. Vegas total -- the public bets game totals (overs) heavily, and a
-   team/game projected to score a lot draws more attention to every
+3. Vegas implied total -- the public bets game totals (overs) heavily,
+   and a team/game projected to score a lot draws more attention to every
    player in it, independent of that player's own value. Computed as a
    straight percentile rank of `implied_total` across every row in this
    site/week's pool (not position-grouped -- a shootout raises attention
@@ -67,31 +112,35 @@ build_projections.py's decisions #1-#6):
    or thin and grow over time (flag as a handoff note each session that
    touches it, per the roadmap card's own instruction).
 
-Blend (weights are a starting heuristic, not fit to any real ownership
-data -- flagged as a good target for a future session's retuning once
-real published ownership numbers are available to check against, same
-spirit as build_projections.py's BASELINE_WEIGHT/RECENT_FORM_WEIGHT):
+New design decisions from Session 11.0:
 
-    chalk_score = clip(
-        0.45 * value_percentile
-      + 0.20 * salary_tier_score
-      + 0.25 * vegas_percentile
-      + name_recognition_bonus,
-      0, 100
-    )
+6. raw_projection_percentile -- final_projection as a standalone feature,
+   distinct from value. Percentile-ranked within position_group (same
+   grouping as value, decision #1) so QB/WR/RB/TE/DST are compared
+   within their own pools. Zero-projection players (bye/inactive) rank at
+   or near the bottom of their group, which is correct. This is a
+   SEPARATE signal from value: a $9,800 WR projected for 18 points has
+   lower value than a $5,000 WR projected for 12 points, but the $9,800
+   WR will be owned far more heavily on name/projection ceiling alone.
+   Value alone would undersell the expensive stud and oversell the cheap
+   punt in ownership terms. This feature corrects that.
 
-name_recognition_bonus is added AFTER the 0-100 weighted blend (not folded
-into the weights), then the whole thing is clipped to [0, 100] -- so a
-flag_weight on an already-high-scoring player saturates at 100 rather than
-pushing the number off-scale.
+7. over_under_percentile -- game-level over/under (O/U) as a separate
+   signal from implied_total. Percentile-ranked across the full pool (not
+   position-grouped), same approach as vegas_percentile (decision #3).
+   Bye-week players carry over_under == 0.0 (build_projections.py's
+   sentinel fill), correctly ranking them at the bottom.
 
-A player with final_projection == 0.0 (bye/no-real-game, per
-build_projections.py's decision #4b, or a legitimate 0-projection edge
-case) gets value_percentile computed normally -- 0 value ranks at or near
-the bottom of its position group, which is correct (nobody chalks a
-bye-week player) -- rather than being dropped or special-cased.
+   Why separate from implied_total: both signals are real. implied_total
+   tells you "this team is expected to score a lot" (directly drives
+   skill-position ownership). over_under tells you "this is expected to
+   be a high-scoring game overall" (drives all-position ownership in the
+   game, including the losing team's skill positions and the winning
+   team's DST opponent). A team with implied_total 27 in a 52 O/U game
+   has a very different DFS ownership profile than the same team in a 38
+   O/U game, even with identical point spreads.
 
-5. estimated_ownership_pct -- added same session as a follow-up to
+5. estimated_ownership_pct -- added Session 4.1 as a follow-up to
    chalk_score, after the user asked directly: chalk_score alone is a
    RELATIVE ranking (0-100 scale, no real-world anchor) and was never
    meant to be read as a percentage. This adds an actual 0-100 percentage
@@ -109,10 +158,9 @@ bye-week player) -- rather than being dropped or special-cased.
    usage-rate data available yet (does the field actually play RB in
    FLEX more often than WR? almost certainly yes in practice, but no real
    number exists in this pipeline) -- decision: split FLEX's budget
-   evenly three ways, flagged as a simplification a future session can
-   replace once real logged FLEX usage exists (see the new Phase 9
-   "Actual Ownership Logging" / "Ownership Estimate Retuning" cards added
-   to ROADMAP.md this session).
+   evenly three ways, flagged as a simplification Session 11.2 can
+   replace once real logged FLEX usage exists (see Phase 11 in
+   ROADMAP.md).
 
    Within each position_group, chalk_score is converted to a share of
    that group's budget via a softmax: weight = exp(chalk_score /
@@ -124,8 +172,8 @@ bye-week player) -- rather than being dropped or special-cased.
    a sliver. OWNERSHIP_SOFTMAX_TEMPERATURE controls how concentrated:
    lower = more winner-take-most. Like the blend weights above, this
    constant is an UNFIT starting guess, not calibrated to real data --
-   flagged as the clearest first target for the new Phase 9 retuning
-   session once real ownership numbers exist to fit against.
+   flagged as the clearest first target for Session 11.1 retuning once
+   real ownership numbers exist to fit against.
 
    Bye/no-real-game players (final_projection == 0) get an explicit 0
    weight -- not just a low one -- so their share of the group's budget
@@ -162,7 +210,7 @@ import numpy as np
 import pandas as pd
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from ingest_salaries import SITE_CONFIGS  # noqa: E402 -- shared defense-position labels / site config, same import pattern as build_projections.py
+from ingest_salaries import SITE_CONFIGS  # noqa: E402 -- shared defense-position labels / site config
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 DATA_DIR = REPO_ROOT / "data"
@@ -170,27 +218,35 @@ OUTPUT_DIR = REPO_ROOT / "output"
 
 NAME_RECOGNITION_PATH = DATA_DIR / "name_recognition_flags.csv"
 
-# Blend weights -- user-confirmed pattern of logging tunable constants
-# explicitly (see build_projections.py's BASELINE_WEIGHT/RECENT_FORM_WEIGHT)
-# so a future retuning session has a clear starting point to diff against.
-VALUE_WEIGHT = 0.45
-SALARY_TIER_WEIGHT = 0.20
-VEGAS_WEIGHT = 0.25
+# ---------------------------------------------------------------------------
+# Blend weights -- SESSION 11.0 UPDATE
+# All five weights are UNFIT starting guesses, not calibrated to real
+# ownership data. Flagged as retuning targets for Session 11.1 once
+# ownership_actual_log.csv has 4-6 weeks of real data.
+#
+# Tracking the old weights here for diff visibility:
+#   OLD (4-feature, Session 4.1): VALUE 0.45 | SALARY_TIER 0.20 | VEGAS 0.25
+#   NEW (5-feature, Session 11.0): see below
+# ---------------------------------------------------------------------------
+VALUE_WEIGHT = 0.35           # pts/$1K value, percentile within position group
+PROJECTION_WEIGHT = 0.15      # raw projected points, percentile within position group (NEW Session 11.0)
+SALARY_TIER_WEIGHT = 0.15     # U-shaped salary tier score
+VEGAS_WEIGHT = 0.20           # implied team total, percentile across full pool
+OVER_UNDER_WEIGHT = 0.15      # game over/under, percentile across full pool (NEW Session 11.0)
 MAX_NAME_RECOGNITION_BONUS = 20  # sanity ceiling on any single flag_weight row
 
-MIN_GROUP_SIZE_FOR_RELIABLE_PERCENTILE = 5  # below this, warn -- see ROADMAP.md's "Known Testing Artifact" note on thin pools
+MIN_GROUP_SIZE_FOR_RELIABLE_PERCENTILE = 5  # below this, warn -- see ROADMAP.md "Known Testing Artifact"
 
 # Decision #5 (see module docstring): estimated_ownership_pct constants.
-# Standard NFL DFS FLEX eligibility, same on both sites -- used to split a
-# roster's FLEX slot budget across the three positions that can fill it.
+# Standard NFL DFS FLEX eligibility, same on both sites.
 FLEX_ELIGIBLE_POSITIONS = {"RB", "WR", "TE"}
 
 # Softmax temperature controlling how concentrated estimated_ownership_pct
-# is within a position group -- lower = more winner-take-most (a few true
-# mega-chalk plays take most of the group's budget), higher = flatter.
-# UNFIT starting guess, not calibrated to any real ownership data -- the
-# clearest first target for the new Phase 9 retuning session once real
-# ownership numbers exist to fit against (see ROADMAP.md).
+# is within a position group -- lower = more winner-take-most, higher = flatter.
+# UNFIT starting guess. Clearest first target for Session 11.1 retuning.
+# Session 4.1 value preserved unchanged -- temperature is fit separately
+# from the blend weights, so the Session 11.0 feature expansion doesn't
+# change the right starting point here. Will be re-evaluated in 11.1.
 OWNERSHIP_SOFTMAX_TEMPERATURE = 15.0
 
 
@@ -206,13 +262,19 @@ def load_final_projections(site: str, week: int) -> pd.DataFrame:
             f"--week {week} first (Session 2.4/3.3)."
         )
     df = pd.read_csv(path, dtype={"player_id": str})
-    required = {"player_id", "player_name", "position", "salary", "final_projection", "implied_total"}
+    required = {
+        "player_id", "player_name", "position", "salary",
+        "final_projection", "implied_total", "over_under",
+    }
     missing = required - set(df.columns)
     if missing:
         raise SystemExit(
             f"{path} is missing expected columns: {sorted(missing)}. "
             f"build_projections.py's output schema may have changed -- "
-            f"update this script's load_final_projections() to match."
+            f"update this script's load_final_projections() to match. "
+            f"Note: 'over_under' was added to final_projections_*.csv in "
+            f"Session 3.3's addendum. If this column is missing, regenerate "
+            f"the projections file with the current build_projections.py."
         )
     return df
 
@@ -270,8 +332,8 @@ def compute_chalk_scores(df: pd.DataFrame, site: str) -> pd.DataFrame:
     thin_groups = group_counts[group_counts < MIN_GROUP_SIZE_FOR_RELIABLE_PERCENTILE]
     if not thin_groups.empty:
         print(
-            f"WARNING: value_percentile/salary_tier_score are less "
-            f"meaningful for thin position groups (same distortion "
+            f"WARNING: value_percentile/salary_tier_score/raw_projection_percentile "
+            f"are less meaningful for thin position groups (same distortion "
             f"ROADMAP.md's 'Known Testing Artifact' note already flags "
             f"for this project's current test pool) -- group sizes: "
             f"{thin_groups.to_dict()}",
@@ -281,59 +343,65 @@ def compute_chalk_scores(df: pd.DataFrame, site: str) -> pd.DataFrame:
     # Decision #1: value = projected points per $1K salary, percentile-
     # ranked within position_group so positions with structurally
     # different raw value ranges are comparable.
-    # Defensive guard (added after the Session 10.1 backtest surfaced a
-    # real $0-salary player -- Cam Newton, CAR, 2021 wk10 -- in RotoGuru
-    # data): a salary <= 0 would make this divide 0/0 -> NaN, which
-    # propagates to a NaN chalk_score and hard-stops build_projections.py's
-    # add_ownership_columns. The upstream ingest now drops $0 players so a
-    # real slate should never reach here with one, but this guard means the
-    # heuristic itself can never emit a NaN value regardless of input: a
-    # non-positive salary yields value 0.0 (correctly the worst value), not
-    # NaN.
+    # Defensive guard: a salary <= 0 would make this divide 0/0 -> NaN,
+    # which propagates to a NaN chalk_score and hard-stops
+    # build_projections.py's add_ownership_columns. A non-positive salary
+    # yields value 0.0 (correctly the worst value), not NaN.
     safe_salary = df["salary"].where(df["salary"] > 0)
     df["value"] = (df["final_projection"] / (safe_salary / 1000.0)).fillna(0.0)
     df["value_percentile"] = df.groupby("position_group")["value"].rank(pct=True) * 100
+
+    # Decision #6 (Session 11.0): raw projected points, percentile-ranked
+    # within position_group. Distinct from value -- captures "expected
+    # ceiling" signal that value efficiency misses.
+    df["raw_projection_percentile"] = (
+        df.groupby("position_group")["final_projection"].rank(pct=True) * 100
+    )
 
     # Decision #2: salary tier, U-shaped -- both ends of a position
     # group's salary range score high, the middle scores low.
     salary_pct = df.groupby("position_group")["salary"].rank(pct=True)
     df["salary_tier_score"] = (salary_pct - 0.5).abs() * 2 * 100
 
-    # Decision #3: vegas total, percentile-ranked across the WHOLE pool
-    # (not position-grouped) -- a shootout raises attention on every
-    # position in that game alike. Bye-week players carry implied_total
-    # == 0.0 (build_projections.py's sentinel fill), which correctly
-    # ranks them at the bottom here too.
+    # Decision #3: vegas implied total, percentile-ranked across the WHOLE
+    # pool (not position-grouped) -- a team's high implied total raises
+    # attention on every position in that game alike. Bye-week players
+    # carry implied_total == 0.0 (build_projections.py sentinel fill),
+    # which correctly ranks them at the bottom here too.
     df["vegas_percentile"] = df["implied_total"].rank(pct=True) * 100
+
+    # Decision #7 (Session 11.0): game over/under, percentile-ranked
+    # across the full pool. Separate from implied_total -- captures
+    # "shootout game" signal. Bye-week players carry over_under == 0.0,
+    # correctly ranking at the bottom.
+    df["over_under_percentile"] = df["over_under"].rank(pct=True) * 100
 
     # Decision #4: manual name-recognition flag, additive, shared across
     # sites, 0 for anyone not on the list.
     flags = load_name_recognition_flags()
     df = df.merge(flags, on="player_id", how="left")
-    # Session 10.3a: coerce, do not just fillna. When name_recognition_flags.csv
-    # is absent (the empty-frame return above) or present-but-header-only,
-    # `flag_weight` arrives as object dtype, survives fillna as object, and
-    # propagates into `chalk_score` -- where numpy's exp() raises under pandas
-    # 3.x ("loop of ufunc does not support argument 0 of type float"). Dormant
-    # today on both counts: the CSV is committed, and this project is on pandas
-    # 2.x. Fixed here rather than at the empty-frame return because this point
-    # covers the header-only case too, which is what clearing the file to
-    # disable the feature would produce. Deliberately minimal -- the ownership
-    # model is slated for its own rework after Phase 10, so this is a stopgap,
-    # not an investment.
+    # Coerce flag_weight to numeric -- guards against object dtype when the
+    # CSV is absent (empty-frame return) or header-only. See Session 10.3a
+    # note in the original docstring for full reasoning.
     df["flag_weight"] = pd.to_numeric(df["flag_weight"], errors="coerce").fillna(0.0)
     n_flagged = (df["flag_weight"] > 0).sum()
-    print(f"{n_flagged} player(s) received a name-recognition bonus from {NAME_RECOGNITION_PATH.name}.")
+    print(
+        f"{n_flagged} player(s) received a name-recognition bonus "
+        f"from {NAME_RECOGNITION_PATH.name}."
+    )
 
+    # 5-feature blend (Session 11.0). Weights are UNFIT starting guesses;
+    # retuning target for Session 11.1.
     df["chalk_score"] = (
-        VALUE_WEIGHT * df["value_percentile"]
+        VALUE_WEIGHT        * df["value_percentile"]
+        + PROJECTION_WEIGHT * df["raw_projection_percentile"]
         + SALARY_TIER_WEIGHT * df["salary_tier_score"]
-        + VEGAS_WEIGHT * df["vegas_percentile"]
+        + VEGAS_WEIGHT      * df["vegas_percentile"]
+        + OVER_UNDER_WEIGHT * df["over_under_percentile"]
         + df["flag_weight"]
     ).clip(lower=0, upper=100)
 
     return df
-
 
 
 # ---------------------------------------------------------------------------
@@ -345,7 +413,8 @@ def compute_position_slot_budgets(site: str) -> dict:
     points summed across every eligible player in that group -- anchored
     to real roster-slot math (see module docstring decision #5), not a
     guess. FLEX's budget is split evenly across RB/WR/TE (no real
-    per-position FLEX usage-rate data exists yet)."""
+    per-position FLEX usage-rate data exists yet -- retuning target for
+    Session 11.2)."""
     slots = SITE_CONFIGS[site]["roster_slots"]
     defense_values = SITE_CONFIGS[site]["defense_position_values"]
     budgets: dict = {}
@@ -361,11 +430,8 @@ def compute_position_slot_budgets(site: str) -> dict:
         for group in FLEX_ELIGIBLE_POSITIONS:
             budgets[group] = budgets.get(group, 0.0) + flex_share
 
-    # Internal consistency check, informational only -- total budget
-    # across all groups should equal exactly len(roster_slots) * 100,
-    # since every slot (hard or FLEX) contributes exactly 100 percentage
-    # points somewhere. Not a data-quality check (no real data involved
-    # yet), just confirms the budget math itself didn't drift.
+    # Internal consistency check -- total budget across all groups should
+    # equal exactly len(roster_slots) * 100.
     expected_total = len(slots) * 100.0
     actual_total = sum(budgets.values())
     if abs(actual_total - expected_total) > 0.01:
@@ -381,7 +447,8 @@ def compute_position_slot_budgets(site: str) -> dict:
 def compute_estimated_ownership(df: pd.DataFrame, site: str) -> pd.DataFrame:
     """Decision #5 (see module docstring): converts chalk_score's relative
     ranking into an ESTIMATED ownership percentage, anchored to real
-    roster-slot math, not to any real ownership data (none exists yet)."""
+    roster-slot math, not to any real ownership data (none exists yet).
+    Temperature and FLEX split are retuning targets for Session 11.1/11.2."""
     df = df.copy()
     budgets = compute_position_slot_budgets(site)
 
@@ -390,7 +457,9 @@ def compute_estimated_ownership(df: pd.DataFrame, site: str) -> pd.DataFrame:
     # to real players -- see module docstring decision #5.
     has_signal = df["final_projection"] > 0
     df["_weight"] = 0.0
-    df.loc[has_signal, "_weight"] = np.exp(df.loc[has_signal, "chalk_score"] / OWNERSHIP_SOFTMAX_TEMPERATURE)
+    df.loc[has_signal, "_weight"] = np.exp(
+        df.loc[has_signal, "chalk_score"] / OWNERSHIP_SOFTMAX_TEMPERATURE
+    )
 
     group_weight_sum = df.groupby("position_group")["_weight"].transform("sum")
     group_size = df.groupby("position_group")["position_group"].transform("count")
@@ -414,10 +483,15 @@ def compute_estimated_ownership(df: pd.DataFrame, site: str) -> pd.DataFrame:
     df.loc[all_zero, "_group_share"] = 1.0 / group_size[all_zero]
 
     df["_group_budget"] = df["position_group"].map(budgets)
-    df["estimated_ownership_pct"] = (df["_group_share"] * df["_group_budget"]).clip(lower=0, upper=100)
+    df["estimated_ownership_pct"] = (
+        df["_group_share"] * df["_group_budget"]
+    ).clip(lower=0, upper=100)
 
     group_totals = df.groupby("position_group")["estimated_ownership_pct"].sum()
-    print("estimated_ownership_pct summed per position group (should equal that group's roster-slot budget):")
+    print(
+        "estimated_ownership_pct summed per position group "
+        "(should equal that group's roster-slot budget):"
+    )
     for group, total in group_totals.sort_index().items():
         print(f"  {group}: {total:.1f}% (budget: {budgets.get(group, float('nan')):.1f}%)")
 
@@ -449,9 +523,14 @@ if __name__ == "__main__":
     result.to_csv(out_path, index=False)
 
     n_null = result.isna().any(axis=1).sum()
-    n_chalk_out_of_range = ((result["chalk_score"] < 0) | (result["chalk_score"] > 100)).sum()
-    n_own_out_of_range = ((result["estimated_ownership_pct"] < 0) | (result["estimated_ownership_pct"] > 100)).sum()
+    n_chalk_out_of_range = (
+        (result["chalk_score"] < 0) | (result["chalk_score"] > 100)
+    ).sum()
+    n_own_out_of_range = (
+        (result["estimated_ownership_pct"] < 0)
+        | (result["estimated_ownership_pct"] > 100)
+    ).sum()
     print(f"Wrote {len(result)} players to {out_path}")
-    print(f"  Nulls in any column: {n_null} (should be 0)")
-    print(f"  chalk_score out of [0,100] range: {n_chalk_out_of_range} (should be 0)")
-    print(f"  estimated_ownership_pct out of [0,100] range: {n_own_out_of_range} (should be 0)")
+    print(f"  Nulls in any column:                     {n_null} (should be 0)")
+    print(f"  chalk_score out of [0,100] range:        {n_chalk_out_of_range} (should be 0)")
+    print(f"  estimated_ownership_pct out of [0,100]:  {n_own_out_of_range} (should be 0)")
