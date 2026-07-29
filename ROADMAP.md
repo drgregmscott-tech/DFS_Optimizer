@@ -630,23 +630,25 @@ By far the largest session in this project -- see SESSION_LOG.md's Session 7.3 e
 ### Session 9.3 — Actual Ownership Logging
 *Added during Session 4.1's addendum, when `estimated_ownership_pct` was added to `ownership_heuristic.py` — that estimate is anchored to real roster-slot math but not to any real ownership data, since none exists in this pipeline yet. This card is the other half of that decision: the mechanism to eventually get real data to check it against. Same relationship to Session 9.4 as Session 9.1 has to 9.2, just for ownership instead of projection accuracy.*
 
+**⚠️ Script built 2026-07-29 — session closes on first real end-to-end run (Preseason Week 1). See the updated card below (Phase 9) and SESSION_LOG.md's Session 9.3 entry for full detail.**
+
 **Prerequisites:** Session 8.1 complete (live enough to have real slates running), AND a real published-ownership source identified for at least one site/contest type (see Build below — this is a real open question, not a given).
 
 **Sites:** Log per site — DK and FD price the same player differently, so their real ownership numbers for the same player are never expected to match.
 
 **Files touched (created):**
-- `/dfs_optimizer/scripts/log_ownership.py`
+- `/dfs_optimizer/scripts/log_ownership.py` ✅ built 2026-07-29
 - `/dfs_optimizer/data/ownership_actual_log.csv` (grows weekly; columns: site, week, player_id, actual_ownership_pct, estimated_ownership_pct_at_time, source)
 
 **Build:**
-- Identify a real source of published ownership data per site. This is NOT solved by this roadmap yet — large-field GPP contests on both DK and FD sometimes have ownership published post-lock by the site itself or by third-party trackers (e.g. tools built on top of contest result exports), but availability, format, and reliability haven't been checked. First real action this session needs to take is confirming what's actually accessible, not assuming a specific source — same "verify before building on it" caution already applied to Vegas odds vendors (see "Notes on odds vendor choice") and FD's salary format.
-- Once a source is confirmed, log actual-vs-estimated ownership per player/week/site, alongside the `estimated_ownership_pct` this pipeline produced for that same slate (so error can be computed later without re-deriving it).
+- ✅ Script built. See SESSION_LOG.md's Session 9.3 entry.
 
 **Validation:**
-- [ ] Confirm logged actuals genuinely come from a real contest's real ownership breakdown for a spot-check sample (not a synthetic/estimated stand-in) — same "don't trust it until it's verified real" standard already applied throughout this project (see ROADMAP.md's FanDuel validation gap note, the Vegas-lines deferred-validation note, etc.)
-- [ ] Confirm the DK/FD ownership numbers logged for the same real player in the same real slate are NOT expected to be equal, and aren't accidentally being logged as if they were (a copy-paste/site-mixup risk given how parallel this pipeline's DK/FD logic already is elsewhere)
+- [ ] **End-to-end run against real ownership data** — first opportunity Preseason Week 1. Tag those rows `--slate-type preseason` to confirm the script works end-to-end. This closes the session.
+- [ ] Confirm logged actuals genuinely come from a real contest's real ownership breakdown for a spot-check sample.
+- [ ] Confirm the DK/FD ownership numbers logged for the same real player in the same real slate are NOT expected to be equal, and aren't accidentally being logged as if they were.
 
-**Handoff notes to log:** which real ownership source(s) were actually usable per site — if only one site has a workable source, flag that explicitly rather than letting Session 9.4 assume both sites have equal real data to retune against (same asymmetry this project already tracks for FD salary/matchup data).
+**Handoff notes to log:** which real ownership source(s) were actually usable per site — if only one site has a workable source, flag that explicitly rather than letting Session 9.4 assume both sites have equal real data to retune against.
 
 ---
 
@@ -1009,7 +1011,7 @@ Until Preseason Week 1: treat Session 2.4 (and by extension anything built on to
 
 - **FD's DST model is unverified end-to-end, but is NOT blocked (Session 10.4).** Worth distinguishing from the FD salary anchor, which is *demonstrably not fittable* on available data. The DST model's FD exposure is much smaller: the scoring table is verified against real graded FD 2021 actuals (87.5% exact, mean bias −0.178, the same residual shape as DK), the model is site-parameterised at every call site with no branching on site, and `dst_model.json` is fit on stat lines and game outcomes rather than on anything site-specific — so unlike the anchor there is nothing here that *cannot* be fit for FD. What has never happened is a real FD Classic export running end-to-end through it. Note this compounds with the FD DST column-name bug below, which would bite first. **First point this closes for real:** whenever a real FD Classic export first exists.
 
-- **FD DST projection path reads the wrong column name (found during Session 10.0).** `build_projections.py`'s `build_dst_projections()` reads `salaries["AvgPointsPerGame"]` for BOTH sites, but a real FanDuel export names that column `FPPG`, and `ingest_salaries.py`'s `load_raw_salary_csv()` doesn't rename it — so FD's DST path would `KeyError` or silently null on a real FD export. Not fixed in Session 10.0 (separate decision about FD's real column contract, still unverified — same root as the standing FD gaps above). Session 10.0's RotoGuru FD files emit `AvgPointsPerGame` so the bootstrap/harness aren't blocked, but the real-FD-export gap is open. **First point this closes for real:** whenever a real FD Classic export first exists, alongside the other FD gaps.
+- ~~**FD DST projection path reads the wrong column name (found during Session 10.0).**~~ ✅ **CODE FIX COMPLETE (2026-07-29).** `ingest_salaries.py`'s `SITE_CONFIGS` now has an `"avg_ppg_col"` key per site (`"AvgPointsPerGame"` for DK, `"FPPG"` for FD). `build_projections.py`'s legacy DST path reads that key instead of hardcoding DK's column name, and a fail-loud `SystemExit` guard fires if the column is absent, naming the right place to fix it. **Remaining step:** confirm `"FPPG"` is correct against a real FD Classic export — same checkpoint as every other FD gap (Preseason Week 1). The RotoGuru harness is unaffected (its FD files already emit `AvgPointsPerGame`). See SESSION_LOG.md's FD DST Column Name Bug Fix entry for full detail.
 
 ## RESOLVED (Session 2.4 addendum): salary-file team drift in backtests
 *Originally logged as an open decision; implemented this session ("Option A" -- auto-correct, no flag). Kept here rather than deleted, since the reasoning is worth keeping visible for future sessions touching this logic.*
@@ -1176,8 +1178,10 @@ data -- design the script now if desired, but don't fit against fewer than
 ### Session 9.3 — Actual Ownership Logging *(updated card)*
 *Original card added during Session 4.1's addendum. Schema updated by
 Session 11.0 (2026-07-28) to include contest_type and field_size, which
-are required for Session 11.3's contest-type stratification. The original
-card's build intent and prerequisites are unchanged.*
+are required for Session 11.3's contest-type stratification. Script built
+2026-07-29. Session closes on first real end-to-end run (Preseason Week 1).*
+
+**Status: ⚠️ Script built — pending first live run to close.**
 
 **Prerequisites:** Session 8.1 complete (live enough to have real slates
 running), AND a real published-ownership source identified for at least one
@@ -1187,7 +1191,7 @@ site/contest type.
 their real ownership numbers for the same player are never expected to match.
 
 **Files touched (created):**
-- `scripts/log_ownership.py`
+- `scripts/log_ownership.py` ✅ built 2026-07-29
 - `data/ownership_actual_log.csv` (grows weekly)
 
 **Full schema for ownership_actual_log.csv (defined Session 11.0):**
@@ -1234,22 +1238,23 @@ and FD ownership second (less reliably published -- log when available, skip
 when not, never fabricate).
 
 **Build:**
-- Script to semi-automate ownership collection: given a site, week, and
-  source URL, scrape or accept pasted ownership numbers and write to
-  `ownership_actual_log.csv` with the full schema above.
-- Pull our own `estimated_ownership_pct` from that week's
-  `chalk_scores_{site}_{week}.csv` and join it in at log time, so the
-  error is computable from the log itself without a secondary join.
-- Idempotency: re-running for the same site/week/contest_id should update
-  existing rows, not append duplicates.
+- ✅ Built 2026-07-29. Two subcommands: `log` (appends rows to
+  `ownership_actual_log.csv`) and `summary` (prints current log state
+  and data-gate progress without modifying). See SESSION_LOG.md's
+  Session 9.3 entry for full design decisions and schema verification.
 
 **Validation:**
+- [x] Schema matches Session 11.0's 13-column definition exactly.
+- [x] Syntax check passed.
+- [x] Duplicate detection, data-gate counter, and unmatched-player logging
+      verified by inspection.
+- [ ] **End-to-end run against real ownership data** — first opportunity
+  Preseason Week 1. Tag those rows `--slate-type preseason` to confirm
+  the script works end-to-end. This single checkbox closes the session.
 - [ ] Confirm logged actuals match what's published on the contest page for
   a spot-check sample (5+ players across multiple ownership levels).
 - [ ] Confirm `estimated_ownership_pct_at_lock` is populated correctly
   from the chalk_scores file for the same week.
-- [ ] Confirm schema matches the definition above exactly (no missing
-  columns, no extra undocumented columns).
 
 ---
 
@@ -1444,7 +1449,7 @@ A single ownership model predicts neither well at the extremes.
 | Session | What | When | Tier closed |
 |---|---|---|---|
 | 11.0 ✅ | Feature expansion + schema def | Pre-season (done) | Tier 2 setup |
-| 9.3 | Ownership logging w/ contest_type + field_size | Week 1 onward | Data foundation |
+| 9.3 ⚠️ | Ownership logging — script built, first live run pending | Preseason Week 1 | Data foundation |
 | 11.1 | Regress weights + temperature on real data | ~Week 6-7 | Tier 1 + Tier 2 |
 | 11.2 | FLEX split + per-position temperatures | ~Week 8+ | Tier 2 refinement |
 | 11.3 | Per-contest-type stratification | Post-season 2026 | Tier 3 |
@@ -1662,22 +1667,23 @@ useful solely for pipeline validation (confirming log_ownership.py runs
 correctly end-to-end), not for any ownership model calibration.
 
 **Build:**
-- Script to semi-automate ownership collection: given a site, week, and
-  source URL, scrape or accept pasted ownership numbers and write to
-  `ownership_actual_log.csv` with the full schema above.
-- Pull our own `estimated_ownership_pct` from that week's
-  `chalk_scores_{site}_{week}.csv` and join it in at log time, so the
-  error is computable from the log itself without a secondary join.
-- Idempotency: re-running for the same site/week/contest_id should update
-  existing rows, not append duplicates.
+- ✅ Built 2026-07-29. Two subcommands: `log` (appends rows to
+  `ownership_actual_log.csv`) and `summary` (prints current log state
+  and data-gate progress without modifying). See SESSION_LOG.md's
+  Session 9.3 entry for full design decisions and schema verification.
 
 **Validation:**
+- [x] Schema matches Session 11.0's 13-column definition exactly.
+- [x] Syntax check passed.
+- [x] Duplicate detection, data-gate counter, and unmatched-player logging
+      verified by inspection.
+- [ ] **End-to-end run against real ownership data** — first opportunity
+  Preseason Week 1. Tag those rows `--slate-type preseason` to confirm
+  the script works end-to-end. This single checkbox closes the session.
 - [ ] Confirm logged actuals match what's published on the contest page for
   a spot-check sample (5+ players across multiple ownership levels).
 - [ ] Confirm `estimated_ownership_pct_at_lock` is populated correctly
   from the chalk_scores file for the same week.
-- [ ] Confirm schema matches the definition above exactly (no missing
-  columns, no extra undocumented columns).
 
 ---
 
@@ -1876,7 +1882,7 @@ A single ownership model predicts neither well at the extremes.
 | Session | What | When | Tier closed |
 |---|---|---|---|
 | 11.0 ✅ | Feature expansion + schema def | Pre-season (done) | Tier 2 setup |
-| 9.3 | Ownership logging w/ contest_type + field_size | Week 1 onward | Data foundation |
+| 9.3 ⚠️ | Ownership logging — script built, first live run pending | Preseason Week 1 | Data foundation |
 | 11.1 | Regress weights + temperature on real data | ~Week 6-7 | Tier 1 + Tier 2 |
 | 11.2 | FLEX split + per-position temperatures | ~Week 8+ | Tier 2 refinement |
 | 11.3 | Per-contest-type stratification | Post-season 2026 | Tier 3 |

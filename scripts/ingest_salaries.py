@@ -164,6 +164,13 @@ SITE_CONFIGS = {
         # "Name (ID)"), never just a name (DK's own bulk-upload
         # instructions explicitly reject name-only).
         "site_id_col": "ID",
+        # The column name for a defense's season average fantasy points in
+        # the raw salary export. Used by build_projections.py's legacy DST
+        # path (decision #5a). DK names this column "AvgPointsPerGame";
+        # FD names it "FPPG". Keeping this in SITE_CONFIGS (the single
+        # source of truth for site-specific column names) rather than
+        # hardcoding in build_projections.py -- same discipline as site_id_col.
+        "avg_ppg_col": "AvgPointsPerGame",
         "defense_position_values": {"DST"},
         "team_abbrev_overrides": {},
         "salary_cap": 50000,
@@ -186,6 +193,12 @@ SITE_CONFIGS = {
         # entry-upload template/column name hasn't been confirmed against
         # a real export yet.
         "site_id_col": "Id",
+        # FD names the season-average PPG column "FPPG" (not "AvgPointsPerGame"
+        # like DK). UNVERIFIED against a real FD export -- confirmed from FD's
+        # documented column layout (see module docstring), same status as
+        # required_columns and site_id_col above. Fix here when a real FD
+        # export confirms or corrects this.
+        "avg_ppg_col": "FPPG",
         "defense_position_values": {"D", "DEF"},
         "team_abbrev_overrides": {},
         "salary_cap": 60000,

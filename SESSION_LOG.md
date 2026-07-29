@@ -2217,7 +2217,7 @@ All budget totals exact. All three output-integrity checks pass. FD not separate
 - FD real-data validation: same pre-existing gap as all other FD items — closes at Preseason Week 1 alongside the rest of the FD list.
 - All five blend weights and temperature: unfit starting guesses. Retuning targets for Session 11.1. Logged explicitly in `ownership_heuristic.py`'s module docstring and constants block.
 - FLEX split (even thirds): known simplification, logged as retuning target for Session 11.2.
-- Session 9.3 data source: DraftKings large-field GPP contest results page identified as primary source. No script built yet — blocked on Regular Season Week 1 having real slates. Schema is defined and ready.
+- Session 9.3 data source: DraftKings large-field GPP contest results page identified as primary source. Script built (2026-07-29) — see Session 9.3 log entry. First real logging opportunity is Preseason Week 1; that run closes the session.
 
 ### Handoff notes
 
@@ -2332,7 +2332,7 @@ All budget totals exact. All three output-integrity checks pass. FD not separate
 - FD real-data validation: same pre-existing gap as all other FD items — closes at Preseason Week 1 alongside the rest of the FD list.
 - All five blend weights and temperature: unfit starting guesses. Retuning targets for Session 11.1. Logged explicitly in `ownership_heuristic.py`'s module docstring and constants block.
 - FLEX split (even thirds): known simplification, logged as retuning target for Session 11.2.
-- Session 9.3 data source: DraftKings large-field GPP contest results page identified as primary source. No script built yet — blocked on Regular Season Week 1 having real slates. Schema is defined and ready.
+- Session 9.3 data source: DraftKings large-field GPP contest results page identified as primary source. Script built (2026-07-29) — see Session 9.3 log entry. First real logging opportunity is Preseason Week 1; that run closes the session.
 - Preseason logging (Preseason Weeks 1-3): log with `slate_type = preseason`. Useful for pipeline/schema validation before Week 1 matters. Does not count toward Session 11.1's 4-6 week data gate and must not be included in the fit.
 - Madden Sim logging: log with `slate_type = madden_sim` if ownership is captured from a Madden Sim contest during bridge testing. Useful only for confirming log_ownership.py runs end-to-end. Excluded from all fits.
 
@@ -2340,4 +2340,100 @@ All budget totals exact. All three output-integrity checks pass. FD not separate
 
 - `name_recognition_flags.csv`: 0 flagged players this run. List starts thin and is expected to grow. Update before each regular-season week if notable name-recognition situations arise (injured starter returning, breakout narrative player, etc.).
 - `OWNERSHIP_SOFTMAX_TEMPERATURE = 15.0`: first retuning target in Session 11.1. Large gap between 15.0 and the fitted value (if observed) is informative — means the initial guess was significantly off and more data would improve the fit further.
-- Next action: Session 9.3 script can be built now against the defined schema. First real logging opportunity is Preseason Week 1 (Aug 13-15) — tag those rows `slate_type = preseason` and use them to confirm the script works end-to-end, not to inform any model fit. Regular Season Week 1 (Sept 9) is when the data gate clock starts. Priority source: DraftKings large-field GPP (Millionaire Maker or equivalent). Log `slate_type`, `contest_type`, and `field_size` from day one — these cannot be retrofitted from old data and are required for Sessions 11.1 and 11.3.
+- Session 9.3 script built (2026-07-29) — see Session 9.3 log entry. First real logging opportunity is Preseason Week 1 (Aug 13-15) — tag those rows `slate_type = preseason` and use them to confirm the script works end-to-end, not to inform any model fit. Regular Season Week 1 (Sept 9) is when the data gate clock starts. Priority source: DraftKings large-field GPP (Millionaire Maker or equivalent). Log `slate_type`, `contest_type`, and `field_size` from day one — these cannot be retrofitted from old data and are required for Sessions 11.1 and 11.3.
+
+---
+
+## FD DST Column Name Bug Fix — `ingest_salaries.py` + `build_projections.py` (2026-07-29)
+**Date completed:** 2026-07-29
+**Status:** ✅ Complete with caveats — code fix done; `"FPPG"` as FD's actual column name is still unverified against a real FD export (same pre-existing gap as all FD items).
+
+**What this fixed:**
+`build_projections.py`'s legacy DST path hardcoded `salaries["AvgPointsPerGame"]` for both sites. DK's salary export uses that column name; FD's real export names it `"FPPG"`. On a real FD Classic export, this would produce a `KeyError` or a silent null on every defense, zeroing all FD DST projections regardless of the true season average — discovered via static review during a full project audit (2026-07-29), consistent with the existing "known deferred" note in ROADMAP.md's Known Deferred Validations section.
+
+**What was built:**
+
+*`scripts/ingest_salaries.py` (modified):*
+- Added `"avg_ppg_col"` key to `SITE_CONFIGS` for both sites: `"AvgPointsPerGame"` for DK, `"FPPG"` for FD. This is the single source of truth for the column name — same discipline as `site_id_col` and every other site-specific column in `SITE_CONFIGS`. The FD value is marked UNVERIFIED, same status as `required_columns` and `site_id_col` for FD.
+
+*`scripts/build_projections.py` (modified):*
+- Legacy DST path (`build_dst_projections()`) now reads `SITE_CONFIGS[site]["avg_ppg_col"]` instead of hardcoding `"AvgPointsPerGame"`.
+- Added a fail-loud `SystemExit` guard that fires before any DataFrame operation if the expected column is absent. The error message names the expected column, its source (`SITE_CONFIGS[site]["avg_ppg_col"]`), and points directly to `ingest_salaries.py` as the place to correct it — no guesswork required.
+- The distributional DST path (`_build_dst_distributional`) was not touched — it never read this column and is unaffected.
+- Module docstring updated to reference the SITE_CONFIGS key rather than the hardcoded DK column name.
+
+**Files created/modified:**
+- `scripts/ingest_salaries.py` (modified — `avg_ppg_col` added to both site SITE_CONFIGS entries)
+- `scripts/build_projections.py` (modified — legacy DST path uses SITE_CONFIGS lookup + fail-loud guard)
+
+**Validation results:**
+- [x] Python syntax check passed on both files.
+- [x] `SITE_CONFIGS["dk"]["avg_ppg_col"] == "AvgPointsPerGame"` — DK behavior unchanged.
+- [x] `SITE_CONFIGS["fd"]["avg_ppg_col"] == "FPPG"` — FD now reads the documented column name.
+- [x] `avg_ppg_col = SITE_CONFIGS[site]["avg_ppg_col"]` lookup present in the legacy DST path.
+- [x] Fail-loud guard present and tested for correct error message structure.
+- [x] Distributional DST path confirmed unaffected (never read `AvgPointsPerGame`).
+- [ ] **FD column name confirmed against a real FD export** — deferred, same as all FD items. Closes at Preseason Week 1.
+
+**Decisions made / assumptions taken:**
+- Added `avg_ppg_col` to `SITE_CONFIGS` rather than normalizing the column name in `_load_fd_raw()`. Normalizing in the loader would hide the column name mismatch from the person debugging a future FD format change; keeping the raw column name in `SITE_CONFIGS` and resolving it at point-of-use makes the contract explicit and auditable.
+- `"FPPG"` for FD is from FD's documented Classic export format (consistent with the module docstring's existing column layout note). It is marked UNVERIFIED in the code comment, the same status FD's other column names have carried since Session 1.3.
+
+**Known issues deferred:**
+- FD column name confirmation against a real FD export — unchanged from ROADMAP.md's existing entry. ROADMAP.md's Known Deferred Validations entry for this bug has been updated to ✅ RESOLVED (code fix), with the column-name verification noted as the remaining step at Preseason Week 1.
+
+**Handoff notes:**
+- DK behavior is byte-for-byte unchanged (same column name as before, just read via `SITE_CONFIGS` now). No re-run of any DK validation is needed.
+- If a real FD export has a different column name than `"FPPG"`, the fail-loud guard will catch it immediately and name the right place to fix it.
+
+---
+
+## Session 9.3 — Actual Ownership Logging
+**Date completed:** 2026-07-29
+**Status:** ⚠️ Complete with caveats — `log_ownership.py` built and syntax-validated; end-to-end run against real ownership data deferred to Preseason Week 1.
+
+**What was actually built:**
+
+`scripts/log_ownership.py` — a two-subcommand CLI for logging real post-lock ownership percentages alongside pipeline estimates.
+
+**`log` subcommand:** Given a site, season, week, slate-type, contest-type, field-size, a manually-prepared two-column CSV (player_name, actual_ownership_pct), and a source description, appends ownership rows to `data/ownership_actual_log.csv`. Joins in `estimated_ownership_pct_at_lock` from `chalk_scores_{site}_{week}.csv` at log time (decision #2 — captures the pre-lock estimate without requiring a secondary join later). Fails loudly on duplicates (decision #1 — checks by contest_id when present, falls back to site/season/week/slate_type/contest_type). Writes unmatched players to a separate `data/ownership_unmatched_{site}_{season}_wk{week}.csv` rather than dropping silently (same pattern as `ingest_salaries.py`). Prints a running data-gate counter showing progress toward Session 11.1's 4-6 regular-season-week minimum.
+
+**`summary` subcommand:** Prints a summary of the log's current state — total rows, weeks, and data-gate progress by slate_type — without modifying anything.
+
+**Key design decisions:**
+
+1. **Append-only, fail-loud on duplicates.** Running twice for the same contest raises a clear error, not a silent double. Contest_id is the preferred duplicate key; falls back to (site, season, week, slate_type, contest_type) when contest_id is unavailable.
+2. **Estimated ownership captured at log time** from the chalk_scores file. That file reflects the final pre-lock state and must be captured before the next week's run overwrites it.
+3. **Player matching via `normalize_name()`** — imports the same function used throughout the pipeline, so `name_mapping.csv` overrides apply automatically. DST/DEF rows matched on team name (stripping "D/ST"/"DST"/"Defense" suffixes) since defense display names vary across platforms.
+4. **`slate_type` is required and validated** against `{regular_season, preseason, madden_sim}`. Not inferred from week number — preseason week 1 and regular-season week 1 are both "week 1" and Madden Sim slates run any time. Caller must pass the correct type explicitly.
+5. **Log lives in `data/`, not `output/`.** `ownership_actual_log.csv` is a growing persistent dataset (like `name_mapping.csv`, `salary_anchor_dk.json`, etc.), not a per-run output.
+
+**Schema** (matches Session 11.0's definition exactly — 13 columns):
+`site, season, week, slate_type, contest_id, contest_type, field_size, player_id, player_name, actual_ownership_pct, estimated_ownership_pct_at_lock, source, logged_at`
+
+**Files created/modified:**
+- `scripts/log_ownership.py` (new)
+
+**Validation results:**
+- [x] Python syntax check passed.
+- [x] `LOG_COLUMNS` verified to match Session 11.0's 13-column schema exactly.
+- [x] `VALID_SLATE_TYPES` = `{regular_season, preseason, madden_sim}` — matches ROADMAP.md.
+- [x] `VALID_CONTEST_TYPES` = `{cash, single_entry_gpp, 3max_gpp, unknown}` — matches ROADMAP.md.
+- [x] Duplicate detection logic verified (contest_id path and fallback path).
+- [x] Data-gate counter logic verified (tracks regular_season weeks toward 4-6 minimum).
+- [ ] **End-to-end run against real ownership data** — deferred to Preseason Week 1. Tag those rows `--slate-type preseason`. This is the step that closes the session.
+
+**Decisions made / assumptions taken:**
+- Chose a two-subcommand CLI (`log` / `summary`) over a single-purpose script, since checking the log's current state without modifying it is a genuinely common need (especially near the data gate).
+- Raw ownership input is a manually-prepared CSV rather than a scraper — consistent with the project's pattern of manual exports for DK/FD data (same reasoning as `ingest_salaries.py`'s salary-CSV requirement). Avoids a brittle dependency on contest page HTML structure that could break any week.
+- Duplicate check raises rather than updates/replaces, because updating in place risks silently overwriting corrected data with stale data if the script is re-run after a manual correction. If a re-log is intentional, the existing rows should be manually removed first.
+- `normalize_name()` imported from `ingest_salaries.py` — same function, same override table, no second normalization implementation.
+
+**Known issues deferred:**
+- End-to-end run on real data — first opportunity Preseason Week 1. Use those rows to confirm the script works; they are logged with `slate_type=preseason` and excluded from all model fits.
+- FD ownership logging — same pre-existing FD gap. Log when FD ownership is available; don't force it.
+
+**Handoff notes:**
+- First real use: Preseason Week 1 (Aug 13-15). Run `log_ownership.py log` after lock for the DK large-field GPP result. This closes Session 9.3.
+- `data_gate` counter in the `log` output shows progress toward Session 11.1's 4-6 regular-season week minimum. Regular Season Week 1 (Sept 9) is when that clock starts.
+- The `summary` subcommand is the fast way to check how many weeks have been logged before kicking off Session 11.1.

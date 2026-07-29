@@ -113,7 +113,8 @@ lookahead-bias guard / Session 2.2's per-team-week summing):
      (user-confirmed, "Option A" from Session 3.1's clarifying question):
      add a REAL projection now rather than a flat placeholder, built from
      the only two genuinely real signals available for a defense:
-       a. `AvgPointsPerGame` -- a real season average DraftKings/FanDuel
+       a. The site's average-PPG column (SITE_CONFIGS[site]["avg_ppg_col"]:
+          "AvgPointsPerGame" for DK, "FPPG" for FD) -- a real season average
           computes and includes directly in the salary export for EVERY
           player, including defenses. Never used anywhere upstream before
           this (skill-position season_avg/recent_form instead come from
@@ -630,21 +631,37 @@ def build_dst_projections(salaries: pd.DataFrame, vegas: pd.DataFrame, site: str
                                          sims, seed)
     defense_values = SITE_CONFIGS[site]["defense_position_values"]
     site_id_col = SITE_CONFIGS[site]["site_id_col"]
+    # Decision #5a fix (Session 10.0 deferred item, closed here): the column
+    # name for a defense's season-average PPG differs by site -- DK exports
+    # "AvgPointsPerGame", FD exports "FPPG". The canonical name lives in
+    # SITE_CONFIGS[site]["avg_ppg_col"] (same discipline as site_id_col),
+    # so adding a new site or correcting a column name requires one change
+    # in ingest_salaries.py, not a hunt through build_projections.py too.
+    avg_ppg_col = SITE_CONFIGS[site]["avg_ppg_col"]
     dst = salaries[salaries["position_upper"].isin(defense_values)].copy()
     dst = dst[dst["player_id"].notna()]
+    if avg_ppg_col not in dst.columns:
+        raise SystemExit(
+            f"build_dst_projections (legacy): expected column '{avg_ppg_col}' "
+            f"for site='{site}' (from SITE_CONFIGS['{site}']['avg_ppg_col']) "
+            f"but it is not present in the salary DataFrame. "
+            f"Columns present: {sorted(dst.columns.tolist())}. "
+            f"If this is a real FD export and the column is named differently, "
+            f"update SITE_CONFIGS['fd']['avg_ppg_col'] in ingest_salaries.py."
+        )
     dst = dst.rename(columns={
         "normalized_team": "team",
         "position_upper": "position",
         "name": "player_name",
         site_id_col: "site_player_id",
-    })[["player_id", "player_name", "position", "team", "salary", "site_player_id", "AvgPointsPerGame"]]
+    })[["player_id", "player_name", "position", "team", "salary", "site_player_id", avg_ppg_col]]
 
-    # Decision #5a: AvgPointsPerGame is the only real historical scoring
+    # Decision #5a: the site's PPG column is the only real historical scoring
     # signal available for a defense -- used for both season_avg and
     # recent_form (no real week-by-week split exists to tell them apart).
-    dst["season_avg"] = dst["AvgPointsPerGame"].fillna(0.0)
+    dst["season_avg"] = dst[avg_ppg_col].fillna(0.0)
     dst["recent_form"] = dst["season_avg"]
-    dst = dst.drop(columns=["AvgPointsPerGame"])
+    dst = dst.drop(columns=[avg_ppg_col])
 
     # Decision #5: no defensive matchup_factor exists anywhere upstream --
     # held flat neutral, flagged as a known gap rather than fabricated.
