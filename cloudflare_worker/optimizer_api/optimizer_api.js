@@ -91,25 +91,39 @@
  * Session 7.3 additions -- cross-device slate sync (item #2). The
  * frontend's uploaded slate previously lived only in that browser's
  * localStorage, so a slate uploaded on desktop was invisible on phone.
- * These three actions store/retrieve it in the private repo instead
+ * These actions store/retrieve it in the private repo instead
  * (same GitHub Contents API `fetchRepoFile` already uses for polling),
  * so any device pointed at the same Worker sees the same slate.
  *
- * POST /?action=save_slate&token=<WORKER_AUTH_TOKEN>&site=dk&week=10
- *   body: { "kind": "pool"|"lineup", "filename": "...", "payload": <parsed rows> }
- *   -> 200 { "ok": true }
- *   Writes data/ui_slates/{site}_{week}.json (create or update, via the
- *   Contents API's normal get-sha-then-PUT flow). POST (not GET) because
- *   a full player pool as a query string risks real URL-length limits.
+ * Slate rework (slate-mgmt session): the old site+week integer key is
+ * replaced by site+slateId (a user-defined string). This allows multiple
+ * slates for the same week (main/early/afternoon), preseason slates,
+ * Madden Sim slates, and Thanksgiving slates without any naming collision.
+ * SlateId format: alphanumeric, hyphens, underscores only (validated).
+ * Files live at data/ui_slates/{site}_{slateId}.json -- same folder,
+ * same GitHub Contents API pattern, just a different naming convention.
  *
- * GET /?action=load_slate&token=<WORKER_AUTH_TOKEN>&site=dk&week=10
- *   -> 200 { "found": true, "kind": ..., "filename": ..., "payload": ..., "savedAt": ... }
- *   -> 200 { "found": false }   (nothing saved yet for this site/week)
+ * POST /?action=save_slate&token=<WORKER_AUTH_TOKEN>&site=dk&slate_id=classic_wk3
+ *   body: { "kind": "pool"|"lineup", "filename": "...", "label": "...", "payload": <parsed rows> }
+ *   -> 200 { "ok": true }
+ *   Writes data/ui_slates/{site}_{slateId}.json (create or update). POST
+ *   because a full player pool as a query string risks URL-length limits.
+ *
+ * GET /?action=load_slate&token=<WORKER_AUTH_TOKEN>&site=dk&slate_id=classic_wk3
+ *   -> 200 { "found": true, "kind": ..., "filename": ..., "label": ..., "payload": ..., "savedAt": ... }
+ *   -> 200 { "found": false }   (nothing saved yet for this site/slateId)
  *
  * GET /?action=list_slates&token=<WORKER_AUTH_TOKEN>
- *   -> 200 { "slates": [ { "site": "dk", "week": "10" }, ... ] }
+ *   -> 200 { "slates": [ { "site": "dk", "slateId": "classic_wk3", "label": "DK Classic Wk 3", "savedAt": "..." }, ... ] }
  *   Lists data/ui_slates/ directly -- returns [] if the folder doesn't
  *   exist yet (first-ever save creates it).
+ *
+ * DELETE /?action=delete_slate&token=<WORKER_AUTH_TOKEN>&site=dk&slate_id=classic_wk3
+ *   -> 200 { "ok": true }
+ *   -> 200 { "ok": true, "note": "not found" }   (already gone -- idempotent)
+ *   Deletes data/ui_slates/{site}_{slateId}.json from the repo. This is
+ *   the missing piece that previously made the X button re-appear after
+ *   cloud list_slates re-rendered the chip list.
  *
  * GET /?action=ping&token=<WORKER_AUTH_TOKEN>
  *   -> 200 { "ok": true }
@@ -139,7 +153,7 @@ function corsHeaders() {
   // this header).
   return {
     "Access-Control-Allow-Origin": "*",
-    "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
+    "Access-Control-Allow-Methods": "GET, POST, DELETE, OPTIONS",
     "Access-Control-Allow-Headers": "Content-Type",
   };
 }
@@ -290,17 +304,21 @@ async function listRepoDir(env, dirPath) {
   return Array.isArray(data) ? data : [];
 }
 
-// site/week land directly in a GitHub API path below -- validate against a
-// known-safe shape rather than trusting query-string input verbatim.
-function validSiteWeek(site, week) {
-  return (site === "dk" || site === "fd") && /^[0-9]{1,3}$/.test(String(week));
+// site and slateId land directly in a GitHub API path -- validate against
+// known-safe shapes rather than trusting query-string input verbatim.
+// SlateId: alphanumeric, hyphens, underscores, 1-64 chars.
+function validSite(site) {
+  return site === "dk" || site === "fd";
+}
+function validSlateId(slateId) {
+  return typeof slateId === "string" && /^[a-zA-Z0-9_-]{1,64}$/.test(slateId);
 }
 
 async function handleSaveSlate(request, url, env) {
   const site = url.searchParams.get("site");
-  const week = url.searchParams.get("week");
-  if (!validSiteWeek(site, week)) {
-    return json({ error: "site must be dk/fd and week must be a number." }, 400);
+  const slateId = url.searchParams.get("slate_id");
+  if (!validSite(site) || !validSlateId(slateId)) {
+    return json({ error: "site must be dk/fd and slate_id must be 1-64 alphanumeric/hyphen/underscore chars." }, 400);
   }
   if (!env.GH_DISPATCH_TOKEN || !env.GITHUB_OWNER || !env.GITHUB_REPO) {
     return json({ error: "Worker is missing required secrets/env vars -- see this file's setup header." }, 500);
@@ -317,13 +335,15 @@ async function handleSaveSlate(request, url, env) {
   const record = {
     kind: body.kind,
     filename: body.filename || "",
+    label: body.label || slateId,
+    week: body.week || "1",
     payload: body.payload,
     savedAt: new Date().toISOString(),
   };
   try {
     await putRepoFile(
-      env, `data/ui_slates/${site}_${week}.json`, JSON.stringify(record),
-      `UI slate save: ${site} week ${week} [skip ci]`,
+      env, `data/ui_slates/${site}_${slateId}.json`, JSON.stringify(record),
+      `UI slate save: ${site} ${slateId} [skip ci]`,
     );
   } catch (err) {
     return json({ error: `Save failed: ${err.message}` }, 502);
@@ -333,12 +353,12 @@ async function handleSaveSlate(request, url, env) {
 
 async function handleLoadSlate(url, env) {
   const site = url.searchParams.get("site");
-  const week = url.searchParams.get("week");
-  if (!validSiteWeek(site, week)) {
-    return json({ error: "site must be dk/fd and week must be a number." }, 400);
+  const slateId = url.searchParams.get("slate_id");
+  if (!validSite(site) || !validSlateId(slateId)) {
+    return json({ error: "site must be dk/fd and slate_id must be 1-64 alphanumeric/hyphen/underscore chars." }, 400);
   }
   try {
-    const text = await fetchRepoFile(env, `data/ui_slates/${site}_${week}.json`);
+    const text = await fetchRepoFile(env, `data/ui_slates/${site}_${slateId}.json`);
     if (text === null) return json({ found: false });
     return json({ found: true, ...JSON.parse(text) });
   } catch (err) {
@@ -349,20 +369,72 @@ async function handleLoadSlate(url, env) {
 async function handleListSlates(env) {
   try {
     const entries = await listRepoDir(env, "data/ui_slates");
-    const slates = entries
-      .map((e) => e.name)
-      .filter((n) => n.endsWith(".json"))
-      .map((n) => n.slice(0, -5))
-      .map((base) => {
-        const idx = base.lastIndexOf("_");
-        if (idx === -1) return null;
-        return { site: base.slice(0, idx), week: base.slice(idx + 1) };
-      })
-      .filter(Boolean);
+    const slates = [];
+    for (const entry of entries) {
+      if (!entry.name.endsWith(".json")) continue;
+      // Parse "{site}_{slateId}.json" -- site is "dk" or "fd" (no underscore),
+      // so the first underscore is always the delimiter.
+      const base = entry.name.slice(0, -5);
+      const sep = base.indexOf("_");
+      if (sep === -1) continue;
+      const site = base.slice(0, sep);
+      const slateId = base.slice(sep + 1);
+      if (!validSite(site) || !validSlateId(slateId)) continue;
+      // Fetch the record to get label and savedAt for the dropdown.
+      // list_slates is called once on load and after any delete -- acceptable
+      // to do N fetches here for correctness (typical slate count is small).
+      try {
+        const text = await fetchRepoFile(env, `data/ui_slates/${entry.name}`);
+        if (text) {
+          const rec = JSON.parse(text);
+          slates.push({ site, slateId, label: rec.label || slateId, savedAt: rec.savedAt || "" });
+        }
+      } catch (_) {
+        // If a single file is unreadable, skip it rather than failing the whole list.
+        slates.push({ site, slateId, label: slateId, savedAt: "" });
+      }
+    }
+    // Sort chronologically by savedAt descending (newest first).
+    slates.sort((a, b) => (b.savedAt > a.savedAt ? 1 : b.savedAt < a.savedAt ? -1 : 0));
     return json({ slates });
   } catch (err) {
     return json({ error: `List failed: ${err.message}` }, 502);
   }
+}
+
+async function handleDeleteSlate(url, env) {
+  const site = url.searchParams.get("site");
+  const slateId = url.searchParams.get("slate_id");
+  if (!validSite(site) || !validSlateId(slateId)) {
+    return json({ error: "site must be dk/fd and slate_id must be 1-64 alphanumeric/hyphen/underscore chars." }, 400);
+  }
+  if (!env.GH_DISPATCH_TOKEN || !env.GITHUB_OWNER || !env.GITHUB_REPO) {
+    return json({ error: "Worker is missing required secrets/env vars." }, 500);
+  }
+  const path = `data/ui_slates/${site}_${slateId}.json`;
+  const apiUrl = `https://api.github.com/repos/${env.GITHUB_OWNER}/${env.GITHUB_REPO}/contents/${path}`;
+  // GET to find the SHA (required by GitHub's DELETE endpoint).
+  const getRes = await fetch(apiUrl, { headers: ghHeaders(env) });
+  if (getRes.status === 404) {
+    return json({ ok: true, note: "not found" }); // idempotent -- already gone
+  }
+  if (!getRes.ok) {
+    return json({ error: `Delete pre-check failed (status ${getRes.status})` }, 502);
+  }
+  const sha = (await getRes.json()).sha;
+  const delRes = await fetch(apiUrl, {
+    method: "DELETE",
+    headers: { ...ghHeaders(env), "Content-Type": "application/json" },
+    body: JSON.stringify({
+      message: `UI slate delete: ${site} ${slateId} [skip ci]`,
+      sha,
+      branch: "main",
+    }),
+  });
+  if (!delRes.ok) {
+    return json({ error: `Delete failed (status ${delRes.status}): ${await delRes.text()}` }, 502);
+  }
+  return json({ ok: true });
 }
 
 // Presets are stored as a single JSON object at data/ui_presets.json.
@@ -433,15 +505,20 @@ async function handlePoll(url, env) {
 export default {
   async fetch(request, env, ctx) {
     if (request.method === "OPTIONS") {
-      return new Response(null, { headers: corsHeaders() });
+      // Preflight for CORS -- browsers send this before DELETE and POST.
+      return new Response(null, { status: 204, headers: corsHeaders() });
     }
 
     const url = new URL(request.url);
     const action = url.searchParams.get("action");
 
-    // POST actions: save_slate and save_presets carry large payloads in body.
+    // POST actions carry large payloads in body; DELETE for slate removal.
     const postActions = ["save_slate", "save_presets"];
-    const methodOk = request.method === "GET" || (request.method === "POST" && postActions.includes(action));
+    const deleteActions = ["delete_slate"];
+    const methodOk =
+      request.method === "GET" ||
+      (request.method === "POST" && postActions.includes(action)) ||
+      (request.method === "DELETE" && deleteActions.includes(action));
     if (!methodOk) {
       return json({ error: "Method not allowed." }, 405);
     }
@@ -454,9 +531,10 @@ export default {
     if (action === "save_slate") return handleSaveSlate(request, url, env);
     if (action === "load_slate") return handleLoadSlate(url, env);
     if (action === "list_slates") return handleListSlates(env);
+    if (action === "delete_slate") return handleDeleteSlate(url, env);
     if (action === "get_presets") return handleGetPresets(env);
     if (action === "save_presets") return handleSavePresets(request, env);
     if (action === "ping") return json({ ok: true }); // deliberately no GitHub call -- see docstring
-    return json({ error: "action must be 'dispatch', 'poll', 'save_slate', 'load_slate', 'list_slates', 'get_presets', 'save_presets', or 'ping'." }, 400);
+    return json({ error: "action must be 'dispatch', 'poll', 'save_slate', 'load_slate', 'list_slates', 'delete_slate', 'get_presets', 'save_presets', or 'ping'." }, 400);
   },
 };

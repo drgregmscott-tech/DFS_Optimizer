@@ -1017,31 +1017,63 @@
     width: 100%;
   }
 
-  .slate-chips {
+  /* Slate dropdown + delete row (replaces chip list -- slate-mgmt session) */
+  .slate-select-row {
     display: flex;
-    gap: 8px;
-    flex-wrap: wrap;
-    margin-top: 12px;
-  }
-
-  .slate-chip {
-    display: inline-flex;
     align-items: center;
     gap: 8px;
+    margin-top: 12px;
+    flex-wrap: wrap;
+  }
+  .slate-select-row select {
+    flex: 1;
+    min-width: 160px;
     background: var(--panel-2);
+    color: var(--bone);
     border: 1px solid var(--line);
-    border-radius: 999px;
-    padding: 5px 6px 5px 12px;
+    border-radius: 6px;
+    padding: 7px 10px;
+    font-size: 13px;
+    cursor: pointer;
+    appearance: none;
+    -webkit-appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23888'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    padding-right: 28px;
+  }
+  .slate-select-row select:focus { outline: none; border-color: var(--amber); }
+  .slate-select-row select option { background: var(--panel-2); color: var(--bone); }
+  .slate-delete-btn {
+    appearance: none;
+    background: none;
+    border: 1px solid var(--bad);
+    color: var(--bad);
+    border-radius: 6px;
+    padding: 6px 12px;
     font-size: 12px;
-    color: var(--dim);
+    cursor: pointer;
+    white-space: nowrap;
   }
-
-  .slate-chip.active { border-color: var(--amber); color: var(--bone); }
-  .slate-chip .rm {
-    appearance: none; border: none; background: var(--line-soft); color: var(--dim);
-    width: 18px; height: 18px; border-radius: 50%; cursor: pointer; font-size: 11px; line-height: 1;
+  .slate-delete-btn:hover { background: var(--bad); color: var(--ink); }
+  .slate-delete-btn:disabled { opacity: 0.35; cursor: default; pointer-events: none; }
+  /* Inline label field shown in the upload form before confirming */
+  .slate-label-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 8px;
   }
-  .slate-chip .rm:hover { background: var(--bad); color: var(--ink); }
+  .slate-label-row input[type="text"] {
+    flex: 1;
+    background: var(--panel-2);
+    color: var(--bone);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    padding: 7px 10px;
+    font-size: 13px;
+  }
+  .slate-label-row input[type="text"]:focus { outline: none; border-color: var(--amber); }
 
   /* ---------------- Slate overview (games / totals) ---------------- */
 
@@ -1261,21 +1293,25 @@
     </div>
     <div class="slates-body">
       <div class="slate-row" style="margin-top:12px;">
-        <div style="flex:0 0 100px;">
-          <span class="field-label">Week</span>
-          <input type="number" id="slateWeek" min="1" max="22" value="10">
-        </div>
         <div style="flex:1; min-width:220px;">
-          <span class="field-label">Slate (this site + week)</span>
+          <span class="field-label">Upload Slate CSV</span>
           <div class="pool-upload-row" style="margin-top:0;">
-            <button class="upload-btn" id="btnSlate">Upload Slate CSV</button>
+            <button class="upload-btn" id="btnSlate">Choose File…</button>
             <input type="file" id="fileSlate" accept=".csv" style="display:none">
             <span class="pool-status" id="slateStatus">No slate loaded</span>
           </div>
+          <div class="slate-label-row" id="slateLabelRow" style="display:none;">
+            <span class="field-label" style="white-space:nowrap; margin:0;">Name:</span>
+            <input type="text" id="slateLabel" placeholder="e.g. classic_wk3, preseason_wk1, thanksgiving" maxlength="64">
+            <button class="upload-btn" id="btnSlateConfirm">Save</button>
+          </div>
         </div>
       </div>
-      <div class="slate-chips" id="slateChips"></div>
-      <div class="hint">One upload per site/week — accepts either <code>final_projections_&#123;site&#125;_&#123;week&#125;.csv</code> (to build lineups) or an already-built <code>lineup_single/multi_&#123;site&#125;_&#123;week&#125;.csv</code> (to just view). Stays loaded across page reloads (switch site above, or week here) until you remove it below.</div>
+      <div class="slate-select-row" id="slateSelectRow" style="display:none;">
+        <select id="slateSelect"></select>
+        <button class="slate-delete-btn" id="btnSlateDelete" title="Delete this slate (removes from this browser and cloud)">Delete</button>
+      </div>
+      <div class="hint">Accepts either <code>final_projections_&#123;site&#125;_&#123;week&#125;.csv</code> (to build lineups) or an already-built <code>lineup_*.csv</code> (to view). Give each slate a short name — it can be anything (classic_wk3, preseason_wk1, thanksgiving, early_wk4). Persists across reloads and syncs to cloud.</div>
     </div>
   </div>
 
@@ -1497,7 +1533,11 @@
     stackGameSelection: { dk: {}, fd: {} }      // "TEAM-TEAM" -> true
   };
 
-  var SLATE_INDEX_KEY = "dfs_slate_index"; // JSON array of {site, week}
+  // Slate management (slate-mgmt session): index entries are now
+  // {site, slateId, label} -- slateId is a user-defined string (e.g.
+  // "classic_wk3", "preseason_wk1") rather than a week number.
+  var SLATE_INDEX_KEY = "dfs_slate_index_v2"; // v2 = slateId-keyed (v1 was site+week)
+  var pendingSlate = null; // {file, rows, kind} -- set while user is typing the label
 
   // ---------------- CSV parsing ----------------
 
@@ -1556,16 +1596,16 @@
     return { lineups: lineups, ids: ids };
   }
 
-  // ---------------- Session 7.3 -- unified slate handling ----------------
-  // Replaces the old separate "DK lineups"/"FD lineups" upload cards (item
-  // #1) AND the old separate "player pool" upload (item #2) with ONE
-  // upload that auto-detects which of the two real file shapes it got, and
-  // persists it to localStorage keyed by site+week so it survives a page
-  // reload (item #2's actual ask).
+  // ---------------- Slate management (slate-mgmt session) ----------------
+  // Unified upload that auto-detects file type (pool vs lineup), persists
+  // by a user-defined slateId string (not a week number), and uses a
+  // dropdown for selection rather than chips. Delete is wired to both
+  // localStorage AND the cloud (fixing the "X button re-appears" bug).
 
   function cap(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
 
-  function slateKey(site, week) { return "dfs_slate_" + site + "_" + week; }
+  // Storage key: site + slateId (arbitrary string, validated server-side).
+  function slateKey(site, slateId) { return "dfs_slate_v2_" + site + "_" + slateId; }
 
   function readSlateIndex() {
     try { return JSON.parse(localStorage.getItem(SLATE_INDEX_KEY) || "[]"); }
@@ -1576,76 +1616,74 @@
     try { localStorage.setItem(SLATE_INDEX_KEY, JSON.stringify(list)); } catch (e) { /* ignore */ }
   }
 
-  function persistSlate(site, week, kind, filename, payload) {
-    try {
-      localStorage.setItem(slateKey(site, week), JSON.stringify({ kind: kind, filename: filename, payload: payload }));
-      var idx = readSlateIndex();
-      var exists = idx.some(function (e2) { return e2.site === site && String(e2.week) === String(week); });
-      if (!exists) { idx.push({ site: site, week: week }); writeSlateIndex(idx); }
-    } catch (e) { /* localStorage unavailable or quota exceeded -- slate still works this session, just won't persist */ }
+  // Sanitise a label into a valid slateId: lowercase, spaces→underscores,
+  // strip anything that isn't alphanumeric/hyphen/underscore, cap at 64.
+  function labelToSlateId(label) {
+    return label.toLowerCase().replace(/\s+/g, "_").replace(/[^a-z0-9_-]/g, "").slice(0, 64) || "slate";
   }
 
-  function removeSlate(site, week) {
+  function persistSlate(site, slateId, label, kind, filename, payload, week) {
     try {
-      localStorage.removeItem(slateKey(site, week));
-      writeSlateIndex(readSlateIndex().filter(function (e2) { return !(e2.site === site && String(e2.week) === String(week)); }));
+      localStorage.setItem(slateKey(site, slateId), JSON.stringify({ kind: kind, filename: filename, label: label, week: week || "1", payload: payload }));
+      var idx = readSlateIndex();
+      var exists = idx.some(function (e2) { return e2.site === site && e2.slateId === slateId; });
+      if (!exists) { idx.push({ site: site, slateId: slateId, label: label }); writeSlateIndex(idx); }
+    } catch (e) { /* localStorage unavailable -- slate still works this session */ }
+  }
+
+  // removeSlate: wipes localStorage AND fires cloud delete (fixes the bug
+  // where the X cleared local storage but cloud list_slates re-added the
+  // chip on the next render).
+  function removeSlate(site, slateId) {
+    try {
+      localStorage.removeItem(slateKey(site, slateId));
+      writeSlateIndex(readSlateIndex().filter(function (e2) { return !(e2.site === site && e2.slateId === slateId); }));
     } catch (e) { /* ignore */ }
-    if (state.activeSite === site && String(document.getElementById("slateWeek").value) === String(week)) {
+    // Clear state if this was the active slate.
+    var sel = document.getElementById("slateSelect");
+    if (sel && sel.value === (site + "|" + slateId)) {
       state.data[site] = null;
       state.pool[site] = null;
-      setSlateStatus("No slate loaded");
+      setSlateStatus("Slate deleted.");
       render();
       renderPlayerList();
       renderSlateOverview();
     }
-    renderSlateChips();
-    // Note: intentionally does NOT delete the cloud copy (data/ui_slates/
-    // {site}_{week}.json in the repo) -- "remove" here means "stop showing
-    // it in this browser," not "destroy the shared copy other devices are
-    // using." Deleting it there would need its own explicit action.
+    renderSlateDropdown();
+    // Cloud delete -- fire and forget; UI is already updated.
+    if (cloudConfigured()) {
+      fetch(workerUrl("delete_slate", { site: site, slate_id: slateId }), {
+        method: "DELETE", cache: "no-store",
+      }).catch(function () { /* ignore network errors on delete */ });
+    }
   }
 
-  // ---------------- Session 7.3, item #2 -- cloud slate sync ----------------
-  // Syncs the uploaded slate through the Worker into the private repo
-  // (data/ui_slates/{site}_{week}.json) so the SAME slate shows up on any
-  // device pointed at the same Worker -- not just the browser it was
-  // uploaded from. Purely additive: if the Worker URL/Token aren't set,
-  // every function here silently no-ops and the page behaves exactly like
-  // local-only storage (same as before this feature existed).
+  // ---------------- Cloud slate sync ----------------
   function cloudConfigured() {
     return !!(document.getElementById("settingsWorkerUrl").value.trim() &&
               document.getElementById("settingsWorkerToken").value.trim());
   }
 
-  // Item #2 follow-up: make "nothing loaded" self-diagnosing instead of a
-  // flat "No slate loaded" -- on a device with no Worker configured, that
-  // phrase alone looks identical whether cloud sync is simply off or
-  // something's actually broken. Distinguishing the two means a second
-  // device (e.g. a phone) can tell at a glance whether it even TRIED the
-  // cloud, without needing to ask.
   function noSlateMessage() {
     return cloudConfigured()
-      ? "No slate loaded (checked the cloud -- nothing saved yet for this site/week)."
-      : "No slate loaded. Worker URL/Token aren't set on this device, so it only checked local storage -- set them above to pull the slate you uploaded elsewhere.";
+      ? "No slate loaded (checked the cloud — nothing found)."
+      : "No slate loaded. Set Worker URL/Token above to enable cloud sync.";
   }
 
-  function cloudSaveSlate(site, week, kind, filename, payload, onDone) {
-    if (!cloudConfigured()) { onDone(false, "Worker not configured -- saved locally only."); return; }
-    fetch(workerUrl("save_slate", { site: site, week: week }), {
+  function cloudSaveSlate(site, slateId, label, kind, filename, payload, week, onDone) {
+    if (!cloudConfigured()) { onDone(false, "Worker not configured — saved locally only."); return; }
+    fetch(workerUrl("save_slate", { site: site, slate_id: slateId }), {
       method: "POST", cache: "no-store",
-      body: JSON.stringify({ kind: kind, filename: filename, payload: payload }),
+      body: JSON.stringify({ kind: kind, filename: filename, label: label, week: week || "1", payload: payload }),
     })
       .then(function (r) { return r.json(); })
-      .then(function (data) {
-        if (data.error) { onDone(false, data.error); return; }
-        onDone(true, null);
-      })
+      .then(function (data) { onDone(!data.error, data.error || null); })
       .catch(function (err) { onDone(false, err.message); });
   }
 
-  function cloudLoadSlate(site, week, onDone) {
+  function cloudLoadSlate(site, slateId, onDone) {
     if (!cloudConfigured()) { onDone(null); return; }
-    fetch(workerUrl("load_slate", { site: site, week: week }), { cache: "no-store" })
+    fetch(workerUrl("load_slate", { site: site, slate_id: slateId }), { cache: "no-store" })
       .then(function (r) { return r.json(); })
       .then(function (data) { onDone(data.found ? data : null); })
       .catch(function () { onDone(null); });
@@ -1659,18 +1697,15 @@
       .catch(function () { onDone(null); });
   }
 
+  // ---------------- Slate payload application ----------------
   function applySlatePayload(site, kind, filename, payload) {
     if (kind === "pool") {
-      // Default display value: whatever came baked into the slate itself
-      // (build_projections.py's estimated_ownership_pct, if present --
-      // see item #5). A separately-uploaded ownership CSV can still
-      // override this per-player below, but isn't required to see it.
       payload.forEach(function (p) { p.ownership = p.estimated_ownership_pct; });
       state.pool[site] = { filename: filename, players: payload };
       applyOwnershipToPool(site);
       if (site === state.activeSite && !state.ownership[site]) {
         var hasBaked = payload.some(function (p) { return p.estimated_ownership_pct != null; });
-        setOwnershipStatus(hasBaked ? "Loaded from this slate's estimated_ownership_pct column" : "This slate has no estimated_ownership_pct column -- rebuild it with the updated build_projections.py, or upload an override CSV", hasBaked);
+        setOwnershipStatus(hasBaked ? "Loaded from this slate's estimated_ownership_pct column" : "This slate has no estimated_ownership_pct column — rebuild it with the updated build_projections.py, or upload an override CSV", hasBaked);
       }
     } else {
       var grouped = groupBySite(payload, site);
@@ -1678,9 +1713,9 @@
     }
   }
 
-  function loadStoredSlate(site, week) {
+  function loadStoredSlate(site, slateId) {
     try {
-      var raw = localStorage.getItem(slateKey(site, week));
+      var raw = localStorage.getItem(slateKey(site, slateId));
       if (!raw) return false;
       var stored = JSON.parse(raw);
       applySlatePayload(site, stored.kind, stored.filename, stored.payload);
@@ -1688,23 +1723,20 @@
     } catch (e) { return false; }
   }
 
-  // Tries the cloud copy first (if the Worker is configured), falls back
-  // to this browser's local copy, and reports which source (if any) it
-  // used via callback(source) where source is "cloud" | "local" | "none".
-  // Mirrors a cloud hit into local storage too, so the slate still works
-  // offline on this device afterward.
-  function loadSlateForActive(site, week, callback) {
-    cloudLoadSlate(site, week, function (record) {
+  function loadSlateForActive(site, slateId, callback) {
+    cloudLoadSlate(site, slateId, function (record) {
       if (record) {
         applySlatePayload(site, record.kind, record.filename, record.payload);
-        persistSlate(site, week, record.kind, record.filename, record.payload);
+        persistSlate(site, slateId, record.label || slateId, record.kind, record.filename, record.payload, record.week || "1");
         callback("cloud", record.filename);
         return;
       }
-      var hadLocal = loadStoredSlate(site, week);
+      var hadLocal = loadStoredSlate(site, slateId);
       callback(hadLocal ? "local" : "none", null);
     });
   }
+
+  // ---------------- File parsing ----------------
   function detectSlateKind(rows) {
     if (!rows.length) return null;
     var poolRequired = ["player_id", "player_name", "position", "team", "salary", "final_projection"];
@@ -1715,10 +1747,9 @@
     return null;
   }
 
+  // Step 1 of upload: read and parse the file, show the label field.
   function handleSlateFile(file) {
     if (!file) return;
-    var site = state.activeSite;
-    var week = document.getElementById("slateWeek").value.trim() || "10";
     var reader = new FileReader();
     reader.onload = function (e) {
       var rows;
@@ -1727,39 +1758,71 @@
       if (!rows.length) { setSlateStatus("File loaded but no rows found."); return; }
       var kind = detectSlateKind(rows);
       if (!kind) {
-        setSlateStatus("Doesn't look like final_projections_" + site + "_" + week + ".csv or a lineup_*.csv -- check the file.");
+        setSlateStatus("Doesn't look like a final_projections or lineup CSV — check the file.");
         return;
       }
-      var payload = kind === "pool" ? rows.map(function (r) {
-        return {
-          player_id: r.player_id, player_name: r.player_name.trim(), position: r.position,
-          team: r.team, salary: parseFloat(r.salary) || 0, final_projection: parseFloat(r.final_projection) || 0,
-          opponent: r.opponent || "", implied_total: parseFloat(r.implied_total) || 0, over_under: parseFloat(r.over_under) || 0,
-          // Item #5 follow-up: build_projections.py now bakes these in
-          // directly -- read them straight off the main slate upload if
-          // present, so ownership shows up with zero extra steps. The
-          // separate "Ownership CSV" upload still exists as an override
-          // for anyone using an older final_projections file or a
-          // different ownership source, but isn't required anymore.
-          estimated_ownership_pct: Object.prototype.hasOwnProperty.call(r, "estimated_ownership_pct") && r.estimated_ownership_pct !== ""
-            ? parseFloat(r.estimated_ownership_pct) : null
-        };
-      }) : rows;
-      applySlatePayload(site, kind, file.name, payload);
-      persistSlate(site, week, kind, file.name, payload);
-      var localMsg = file.name + " — " + rows.length + (kind === "pool" ? " players (player pool)" : " rows (built lineup)");
-      setSlateStatus(localMsg, true);
-      document.getElementById("slatesPanel").classList.remove("open");
-      renderSlateChips();
-      render();
-      renderPlayerList();
-      renderSlateOverview();
-
-      cloudSaveSlate(site, week, kind, file.name, payload, function (ok, errMsg) {
-        setSlateStatus(localMsg + (ok ? " · synced to cloud" : (cloudConfigured() ? " · cloud sync failed (" + errMsg + ")" : "")), true);
-      });
+      // Stash the parsed data and show the label field.
+      pendingSlate = { file: file, rows: rows, kind: kind };
+      // Pre-fill label from filename (strip extension).
+      var suggested = file.name.replace(/\.[^.]+$/, "");
+      document.getElementById("slateLabel").value = suggested;
+      document.getElementById("slateLabelRow").style.display = "flex";
+      setSlateStatus(rows.length + (kind === "pool" ? " players" : " lineup rows") + " ready — enter a name then click Save.");
     };
     reader.readAsText(file);
+  }
+
+  // Step 2: user confirmed the label — finish saving.
+  function confirmSlateUpload() {
+    if (!pendingSlate) return;
+    var label = document.getElementById("slateLabel").value.trim();
+    if (!label) { setSlateStatus("Please enter a name for this slate."); return; }
+    var slateId = labelToSlateId(label);
+    if (!slateId) { setSlateStatus("Name must contain at least one letter or number."); return; }
+
+    var site = state.activeSite;
+    var kind = pendingSlate.kind;
+    var rows = pendingSlate.rows;
+    var file = pendingSlate.file;
+    pendingSlate = null;
+    document.getElementById("slateLabelRow").style.display = "none";
+
+    var payload = kind === "pool" ? rows.map(function (r) {
+      return {
+        player_id: r.player_id, player_name: r.player_name.trim(), position: r.position,
+        team: r.team, salary: parseFloat(r.salary) || 0, final_projection: parseFloat(r.final_projection) || 0,
+        opponent: r.opponent || "", implied_total: parseFloat(r.implied_total) || 0, over_under: parseFloat(r.over_under) || 0,
+        estimated_ownership_pct: Object.prototype.hasOwnProperty.call(r, "estimated_ownership_pct") && r.estimated_ownership_pct !== ""
+          ? parseFloat(r.estimated_ownership_pct) : null
+      };
+    }) : rows;
+
+    // Extract week number from the filename if possible.
+    // Matches patterns like: final_projections_dk_10.csv, lineup_multi_dk_3.csv
+    var weekMatch = file.name.match(/_(\d{1,3})\.csv$/i);
+    var week = weekMatch ? weekMatch[1] : "1"; // default 1 for Madden Sim / preseason
+
+    applySlatePayload(site, kind, file.name, payload);
+    persistSlate(site, slateId, label, kind, file.name, payload, week);
+
+    var localMsg = label + " — " + rows.length + (kind === "pool" ? " players (player pool)" : " rows (built lineup)");
+    setSlateStatus(localMsg, true);
+    document.getElementById("slatesPanel").classList.remove("open");
+
+    // Update the dropdown and set this new slate as active.
+    renderSlateDropdown(function () {
+      var sel = document.getElementById("slateSelect");
+      sel.value = site + "|" + slateId;
+      updateDeleteBtnState();
+    });
+    render();
+    renderPlayerList();
+    renderSlateOverview();
+
+    // Cloud save (async).
+    cloudSaveSlate(site, slateId, label, kind, file.name, payload, week, function (ok, errMsg) {
+      setSlateStatus(localMsg + (ok ? " · synced to cloud" : (cloudConfigured() ? " · cloud sync failed (" + errMsg + ")" : "")), true);
+    });
   }
 
   function setSlateStatus(text, loaded) {
@@ -1768,54 +1831,85 @@
     el.classList.toggle("loaded", !!loaded);
   }
 
-  function renderSlateChipsFromList(idx) {
-    var el = document.getElementById("slateChips");
-    if (!idx.length) { el.innerHTML = ""; return; }
-    var curWeek = document.getElementById("slateWeek").value.trim();
-    el.innerHTML = idx.map(function (e2) {
-      var isActive = e2.site === state.activeSite && String(e2.week) === String(curWeek);
-      return '<span class="slate-chip' + (isActive ? " active" : "") + '" data-site="' + e2.site + '" data-week="' + e2.week + '">' +
-        e2.site.toUpperCase() + ' &middot; Wk ' + e2.week +
-        '<button class="rm" data-rm-site="' + e2.site + '" data-rm-week="' + e2.week + '" title="Remove">&times;</button></span>';
-    }).join("");
-  }
-
-  function renderSlateChips() {
+  // ---------------- Slate dropdown ----------------
+  // Renders the <select> from the merged local+cloud index.
+  // Optional callback fires after the DOM is updated.
+  function renderSlateDropdown(callback) {
     var local = readSlateIndex();
-    renderSlateChipsFromList(local); // immediate, no network wait
+    buildDropdown(local);
+    if (callback) callback();
     cloudListSlates(function (cloudSlates) {
-      if (!cloudSlates) return; // Worker not configured or unreachable -- local-only view stands
+      if (!cloudSlates) { if (callback) callback(); return; }
       var merged = local.slice();
       cloudSlates.forEach(function (c) {
-        if (!merged.some(function (e2) { return e2.site === c.site && String(e2.week) === String(c.week); })) {
-          merged.push(c);
+        if (!merged.some(function (e2) { return e2.site === c.site && e2.slateId === c.slateId; })) {
+          // Cloud-only entry (uploaded from another device) -- add it.
+          merged.push({ site: c.site, slateId: c.slateId, label: c.label || c.slateId });
         }
       });
-      renderSlateChipsFromList(merged);
+      buildDropdown(merged);
+      if (callback) callback();
     });
   }
 
-  document.getElementById("slateChips").addEventListener("click", function (e) {
-    var rm = e.target.closest("button[data-rm-site]");
-    if (rm) { removeSlate(rm.getAttribute("data-rm-site"), rm.getAttribute("data-rm-week")); return; }
-    var chip = e.target.closest(".slate-chip[data-site]");
-    if (!chip) return;
-    var site = chip.getAttribute("data-site"), week = chip.getAttribute("data-week");
-    document.getElementById("slateWeek").value = week;
+  function buildDropdown(idx) {
+    var sel = document.getElementById("slateSelect");
+    var row = document.getElementById("slateSelectRow");
+    if (!idx.length) { row.style.display = "none"; sel.innerHTML = ""; return; }
+    row.style.display = "flex";
+    // Sort: active site first, then alphabetically by label.
+    idx.sort(function (a, b) {
+      if (a.site !== b.site) return a.site === state.activeSite ? -1 : 1;
+      return (a.label || a.slateId).localeCompare(b.label || b.slateId);
+    });
+    var prev = sel.value; // preserve selection across re-renders
+    sel.innerHTML = idx.map(function (e2) {
+      var val = e2.site + "|" + e2.slateId;
+      var displayLabel = e2.site.toUpperCase() + " · " + (e2.label || e2.slateId);
+      return '<option value="' + val + '">' + displayLabel + "</option>";
+    }).join("");
+    if (prev && sel.querySelector('option[value="' + prev + '"]')) sel.value = prev;
+    updateDeleteBtnState();
+  }
+
+  function updateDeleteBtnState() {
+    var btn = document.getElementById("btnSlateDelete");
+    var sel = document.getElementById("slateSelect");
+    btn.disabled = !sel || !sel.value;
+  }
+
+  // Dropdown change: load the selected slate.
+  document.getElementById("slateSelect").addEventListener("change", function () {
+    var val = this.value;
+    if (!val) return;
+    var parts = val.split("|");
+    var site = parts[0], slateId = parts.slice(1).join("|");
+    // Switch site toggle if needed.
     document.querySelectorAll("#siteToggle button").forEach(function (b) {
       b.classList.toggle("active", b.getAttribute("data-site") === site);
     });
     state.activeSite = site;
     setSlateStatus("Loading…");
-    loadSlateForActive(site, week, function (source, filename) {
-      if (source === "cloud") setSlateStatus((filename || "slate") + " — loaded from the cloud", true);
-      else if (source === "local") setSlateStatus("Loaded from this browser's storage", true);
+    loadSlateForActive(site, slateId, function (source, filename) {
+      if (source === "cloud") setSlateStatus((filename || slateId) + " — loaded from cloud", true);
+      else if (source === "local") setSlateStatus((filename || slateId) + " — loaded from local storage", true);
       else setSlateStatus(noSlateMessage(), false);
-      renderSlateChips();
+      updateDeleteBtnState();
       render();
       renderPlayerList();
       renderSlateOverview();
     });
+  });
+
+  // Delete button: remove selected slate from local + cloud.
+  document.getElementById("btnSlateDelete").addEventListener("click", function () {
+    var sel = document.getElementById("slateSelect");
+    if (!sel.value) return;
+    var parts = sel.value.split("|");
+    var site = parts[0], slateId = parts.slice(1).join("|");
+    var label = sel.options[sel.selectedIndex] ? sel.options[sel.selectedIndex].text : slateId;
+    if (!confirm("Delete \"" + label + "\"?\n\nThis removes it from this browser and from the cloud. It cannot be undone.")) return;
+    removeSlate(site, slateId);
   });
 
   // ---------------- Rendering ----------------
@@ -2010,9 +2104,9 @@
     var blob = new Blob([csvText], { type: "text/csv;charset=utf-8;" });
     var url = URL.createObjectURL(blob);
     var a = document.createElement("a");
-    var week = document.getElementById("slateWeek").value.trim();
+    var selVal = (document.getElementById("slateSelect").value || "").split("|").slice(1).join("|") || "export";
     a.href = url;
-    a.download = "lineups_" + site + "_import_wk" + week + ".csv";
+    a.download = "lineups_" + site + "_import_" + selVal + ".csv";
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
@@ -2032,30 +2126,36 @@
 
   // ---------------- Wiring ----------------
 
+  // refreshForActiveSlate: re-checks the currently-selected dropdown value
+  // for the active site. Called when the site toggle changes.
   function refreshForActiveSlate() {
     var site = state.activeSite;
-    var week = document.getElementById("slateWeek").value.trim();
-    setSlateStatus("Checking for a saved slate…");
-    loadSlateForActive(site, week, function (source, filename) {
-      // If nothing was found anywhere for this exact site+week, don't
-      // clobber whatever's already in memory for it (e.g. a lineup this
-      // session just built via "Build Lineups" but hasn't been
-      // re-persisted as a slate).
-      if (source === "cloud") {
-        setSlateStatus((filename || "slate") + " — loaded from the cloud", true);
-      } else if (source === "local") {
-        var stored = JSON.parse(localStorage.getItem(slateKey(site, week)) || "{}");
-        setSlateStatus((stored.filename || "loaded") + " — from this browser's storage", true);
-      } else if (state.pool[site] || state.data[site]) {
-        setSlateStatus(state.pool[site] ? state.pool[site].filename + " — " + state.pool[site].players.length + " players" : "No slate loaded", !!state.pool[site]);
-      } else {
-        setSlateStatus(noSlateMessage());
-      }
-      renderSlateChips();
+    var sel = document.getElementById("slateSelect");
+    var selVal = sel ? sel.value : "";
+    // If the dropdown has an entry for this site, load it.
+    if (selVal && selVal.startsWith(site + "|")) {
+      var slateId = selVal.split("|").slice(1).join("|");
+      setSlateStatus("Checking for a saved slate…");
+      loadSlateForActive(site, slateId, function (source, filename) {
+        if (source === "cloud") setSlateStatus((filename || slateId) + " — loaded from cloud", true);
+        else if (source === "local") setSlateStatus((filename || slateId) + " — from local storage", true);
+        else if (state.pool[site] || state.data[site]) {
+          setSlateStatus(state.pool[site] ? state.pool[site].filename + " — " + state.pool[site].players.length + " players" : "No slate loaded", !!state.pool[site]);
+        } else {
+          setSlateStatus(noSlateMessage());
+        }
+        render();
+        renderPlayerList();
+        renderSlateOverview();
+      });
+    } else {
+      // No dropdown entry for this site -- see if there's anything in the dropdown for it.
+      renderSlateDropdown();
+      if (!state.pool[site] && !state.data[site]) setSlateStatus(noSlateMessage());
       render();
       renderPlayerList();
       renderSlateOverview();
-    });
+    }
   }
 
   // Session 7.3, item #1: minimum-salary number field + slider, kept in
@@ -2087,13 +2187,16 @@
     refreshForActiveSlate();
   });
 
-  document.getElementById("slateWeek").addEventListener("change", refreshForActiveSlate);
-
   document.getElementById("btnSlate").addEventListener("click", function () {
     document.getElementById("fileSlate").click();
   });
   document.getElementById("fileSlate").addEventListener("change", function (e) {
     handleSlateFile(e.target.files[0]);
+    this.value = ""; // reset so the same file can be re-chosen if needed
+  });
+  document.getElementById("btnSlateConfirm").addEventListener("click", confirmSlateUpload);
+  document.getElementById("slateLabel").addEventListener("keydown", function (e) {
+    if (e.key === "Enter") confirmSlateUpload();
   });
   ["dragover", "dragenter"].forEach(function (evt) {
     document.getElementById("slatesPanel").addEventListener(evt, function (e) { e.preventDefault(); });
@@ -2249,8 +2352,8 @@
     try {
       document.getElementById("settingsWorkerUrl").value = localStorage.getItem("dfs_worker_url") || "";
       document.getElementById("settingsWorkerToken").value = localStorage.getItem("dfs_worker_token") || "";
-      var savedWeek = localStorage.getItem("dfs_week");
-      if (savedWeek) document.getElementById("slateWeek").value = savedWeek;
+      // dfs_week key intentionally not restored -- slate selection is now
+      // handled by the dropdown (slateId-keyed), not a persisted week number.
     } catch (e) { /* localStorage unavailable -- fields stay empty */ }
   }
 
@@ -2258,7 +2361,6 @@
     try {
       localStorage.setItem("dfs_worker_url", document.getElementById("settingsWorkerUrl").value.trim());
       localStorage.setItem("dfs_worker_token", document.getElementById("settingsWorkerToken").value.trim());
-      localStorage.setItem("dfs_week", document.getElementById("slateWeek").value.trim());
     } catch (e) { /* ignore */ }
   }
 
@@ -2606,7 +2708,8 @@
   ["settingsWorkerUrl", "settingsWorkerToken"].forEach(function (id) {
     document.getElementById(id).addEventListener("input", saveSettings);
   });
-  document.getElementById("slateWeek").addEventListener("change", saveSettings);
+  document.getElementById("settingsWorkerUrl").addEventListener("change", saveSettings);
+  document.getElementById("settingsWorkerToken").addEventListener("change", saveSettings);
 
   // Session 7.3, item #4: locked (readonly) by default on EVERY page
   // load, regardless of prior state -- a stray click/keystroke can't
@@ -2800,7 +2903,19 @@
 
   function buildDispatchParams() {
     var site = state.activeSite;
-    var week = document.getElementById("slateWeek").value.trim();
+    // Week is stored in the slate record at upload time (auto-detected from
+    // filename like final_projections_dk_10.csv, else 1 for Madden/preseason).
+    // Read it back from localStorage for the currently-selected slate.
+    var selVal = document.getElementById("slateSelect").value || "";
+    var slateId = selVal.split("|").slice(1).join("|") || "";
+    var week = "1";
+    if (slateId) {
+      try {
+        var raw = localStorage.getItem(slateKey(site, slateId));
+        if (raw) { var rec = JSON.parse(raw); week = String(rec.week || "1"); }
+      } catch (e) { /* fall through to week=1 */ }
+    }
+    if (!week) week = "1";
     var params = { site: site, week: week, mode: "multi" };
 
     params.n_lineups = document.getElementById("ctrlNLineups").value;
@@ -2885,12 +3000,12 @@
 
   function confirmWithRealSolver() {
     var site = state.activeSite;
-    var week = document.getElementById("slateWeek").value.trim();
     var base = document.getElementById("settingsWorkerUrl").value.trim();
     var token = document.getElementById("settingsWorkerToken").value.trim();
 
     if (!base || !token) { setSolveStatus("Set the Worker URL and Auth Token above first.", "error"); return; }
-    if (!week) { setSolveStatus("Enter a week number first.", "error"); return; }
+    var selVal = document.getElementById("slateSelect").value || "";
+    if (!selVal) { setSolveStatus("Upload and select a slate first.", "error"); return; }
 
     if (state.pollTimer) { clearTimeout(state.pollTimer); state.pollTimer = null; }
     setSolveStatus("Dispatching to the real solver (GitHub Actions)…", "");
@@ -2970,23 +3085,39 @@
   // Load presets from cloud after settings (Worker URL/token) are in place
   refreshPresetDropdown();
 
-  // Restore persisted slate -- cloud first, local fallback
-  loadSlateForActive(state.activeSite, document.getElementById("slateWeek").value.trim(), function (source, filename) {
-    if (source === "cloud") {
-      setSlateStatus((filename || "slate") + " — loaded from the cloud", true);
-      // Auto-collapse slates panel once a slate is successfully loaded
-      document.getElementById("slatesPanel").classList.remove("open");
-    } else if (source === "local") {
-      var stored = JSON.parse(localStorage.getItem(slateKey(state.activeSite, document.getElementById("slateWeek").value.trim())) || "{}");
-      setSlateStatus((stored.filename || "loaded") + " — from this browser's storage", true);
-      document.getElementById("slatesPanel").classList.remove("open");
+  // Restore persisted slate on load -- build the dropdown from local
+  // storage first (instant), then merge cloud entries and optionally
+  // auto-load the most recently used slate for the active site.
+  renderSlateDropdown(function () {
+    var sel = document.getElementById("slateSelect");
+    // Try to find an entry for the active site in the dropdown.
+    var opts = Array.prototype.slice.call(sel.options);
+    var siteOpt = opts.find(function (o) { return o.value.startsWith(state.activeSite + "|"); });
+    if (siteOpt) {
+      sel.value = siteOpt.value;
+      var parts = siteOpt.value.split("|");
+      var site = parts[0], slateId = parts.slice(1).join("|");
+      loadSlateForActive(site, slateId, function (source, filename) {
+        if (source === "cloud") {
+          setSlateStatus((filename || slateId) + " — loaded from cloud", true);
+          document.getElementById("slatesPanel").classList.remove("open");
+        } else if (source === "local") {
+          setSlateStatus((filename || slateId) + " — from local storage", true);
+          document.getElementById("slatesPanel").classList.remove("open");
+        } else {
+          setSlateStatus(noSlateMessage());
+        }
+        updateDeleteBtnState();
+        renderPlayerList();
+        renderSlateOverview();
+        render();
+      });
     } else {
       setSlateStatus(noSlateMessage());
+      renderPlayerList();
+      renderSlateOverview();
+      render();
     }
-    renderSlateChips();
-    renderPlayerList();
-    renderSlateOverview();
-    render();
   });
 
   renderPlayerList();

@@ -58,14 +58,17 @@ You should see output like `Pulled XXXXX rows for 2025 weekly stats`. If you see
 
 ---
 
-### Step 2d — Choose your slate ID
+### Step 2d — Choose your slate label
 
-Pick a slate ID that identifies this slate uniquely. Use the format:
+Pick a short, descriptive name for this slate. It can be anything — you'll type it into the UI when uploading the CSV. Use something that's unambiguous at a glance:
 
-- **Real NFL slate:** `classic_wk{week}` — e.g. `classic_wk3`
-- **Madden Sim slate:** `madden_{YYYYMMDD}` — e.g. `madden_20260730`
+- **Regular season main slate:** `Classic Wk 3`
+- **Early Sunday only:** `Early Wk 3`
+- **Preseason:** `Preseason Wk 1`
+- **Madden Sim:** `Madden Jul 30`
+- **Thanksgiving:** `Thanksgiving 2026`
 
-You'll use this same slate ID in the next several steps.
+No format requirements — spaces are fine, anything readable works. The UI converts it to a URL-safe key internally. You can have multiple slates active at the same time (e.g. main slate + early-only slate for the same week).
 
 ---
 
@@ -76,6 +79,8 @@ Replace `DKSalaries.csv` with your actual filename, `2025` with the nflverse sea
 ```
 python scripts/ingest_salaries.py --site dk --raw DKSalaries.csv --season 2025 --slate-id classic_wk1
 ```
+
+**Note on `--slate-id`:** This is the backend pipeline identifier used to name the output file (`salaries_dk_{slate_id}.csv`). It still follows the format from Step 2d of the old convention — e.g. `classic_wk3`, `preseason_wk1`, `madden_20260730`. It does not need to match the human-readable label you'll use in the UI (Step 4). Use something short and filesystem-safe here.
 
 **Expected output:** A match rate summary and a line saying `Wrote data\salaries_dk_{slate_id}.csv`.
 
@@ -194,9 +199,16 @@ You don't need to do anything during Stage 3. Just check the UI periodically to 
 
 Open the deployed UI at **https://dfs-optimizer.pages.dev**.
 
-Upload `output/final_projections_dk_{week}.csv` from your local repo to load the current player pool.
+**To load a slate:**
+1. In the **Slates** panel, click **Choose File…** and pick `output/final_projections_dk_{week}.csv` from your local repo.
+2. A name field appears pre-filled with the filename. Change it to something readable (e.g. `Classic Wk 3`, `Preseason Wk 1`) and click **Save**.
+3. The slate appears in the dropdown. Click it to activate it.
 
-Set your desired options (stacking, exposure, lock/exclude, randomization) and run the optimizer. Review lineups using the lineup navigator. Flip through all lineups to spot-check before exporting.
+Once loaded, set your desired options (stacking, exposure, lock/exclude, randomization) and run the optimizer. Review lineups using the lineup navigator. Flip through all lineups to spot-check before exporting.
+
+**To switch between slates:** use the dropdown — multiple slates can be saved at once (e.g. main slate and early-only slate for the same week).
+
+**To delete a slate:** select it in the dropdown and click **Delete**. This removes it from the browser and from cloud sync.
 
 **If lineups look wrong** (garbage projections, salary not maxed, wrong players) — contact Claude before proceeding.
 
