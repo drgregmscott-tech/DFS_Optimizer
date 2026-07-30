@@ -2440,6 +2440,61 @@ All budget totals exact. All three output-integrity checks pass. FD not separate
 
 ---
 
+## Session 7.5 — Frontend UI Improvements (Bulk Exclude, Column Alignment, Mobile)
+**Date completed:** 2026-07-30
+**Status:** ✅ Complete — validated live on desktop and mobile (Pixel 9 Pro XL).
+
+### What was actually built
+
+Three improvements to `dfs_optimizer_frontend/index.html`:
+
+**1. Bulk Exclude / Un-exclude All (functional)**
+
+A `bulk-action-row` is now shown between the filter bar and the player list whenever a slate is loaded. It displays a count of currently-visible players ("X players shown") and two pill buttons:
+
+- **Exclude All Shown** — marks every player currently visible (after all active filters, tab, and search) as excluded, and clears their lock state (locked + excluded is mutually exclusive — same rule as single-player exclude).
+- **Un-exclude All Shown** — removes the excluded flag from every currently-visible player.
+
+Both buttons operate only on the visible filtered set. Players hidden by a filter are never touched. Powered by a `getVisibleRows()` helper that mirrors the exact filter/tab/search logic from `renderPlayerList()`. The bulk row is hidden (CSS `display:none`) when no slate is loaded and becomes `display:flex` on first render with a pool.
+
+**2. Column header alignment fix (desktop)**
+
+Root cause: `player-list-head` was a sibling element *above* the `player-list` scroll container in the HTML. Once the list accumulated enough players to trigger a scrollbar, the scroll container lost ~17px to the scrollbar but the header above it didn't — causing the column headers (Price/Proj/Value/Own%) to drift rightward relative to their data values.
+
+Fix: `playerListHead` is now injected *inside* `playerList` via `innerHTML` as the first element on every render, with `position: sticky; top: 0` and a background fill. Since header and rows are now siblings inside the same scroll container, their widths are always identical regardless of scrollbar presence.
+
+Side effect: `playerListHead` no longer exists in the static HTML at page load, so the old `document.getElementById("playerListHead").addEventListener(...)` for sort-column clicks crashed immediately with `null`, breaking all other button listeners in the process (JS halts on uncaught error). Fixed by converting the sort-click handler to event delegation on `playerList` (which is static), matching on `.sortcol[data-sort]` — the same delegation pattern the lock/exclude handler already used.
+
+**3. Mobile layout cleanup**
+
+Two compounding problems: (a) the value and ownership columns both used class `.pown`, making it impossible to assign them to separate CSS grid areas; (b) the mobile `@media` CSS used fragile `nth-child(5)` / `nth-child(6)` selectors that break on any DOM restructuring.
+
+Fixes: value cell renamed from `.pown` to `.pval`. Mobile CSS updated to use `.pval` and `.pown` class selectors instead of nth-child. Added a `SAL` label prefix to the salary cell on mobile to match the PROJ/VAL/OWN labels — all four stat cells are now consistently labeled on the bottom row.
+
+### Files created/modified
+- `dfs_optimizer_frontend/index.html` (modified)
+
+### Validation results
+- [x] JS syntax check passed (`node --check`)
+- [x] All `getElementById` calls cross-referenced against HTML `id=` attributes — no missing IDs
+- [x] Upload slate, apply Proj Max = 5 filter → "X players shown" count correct
+- [x] Exclude All Shown → all shown players go excluded (red), non-shown players unchanged
+- [x] Un-exclude All Shown → excluded flags clear from shown players only
+- [x] Column headers (Price/Proj/Value/Own%) align with data values on desktop (scrollbar present)
+- [x] Mobile (Pixel 9 Pro XL): SAL/PROJ/VAL/OWN labels appear cleanly on bottom row
+- [x] No regression: lock/unlock, single-player exclude, filter clear, slate switching, Build Lineups all confirmed working
+- [ ] FD validation — same pre-existing gap as all FD items
+
+### Decisions made / assumptions taken
+- `getVisibleRows()` operates on the **full** filtered set, not capped at 200 like the visible list. This means Exclude All operates on every player matching the filter, not just the ones currently scrolled into view — which is the correct behavior.
+- Sort-click delegation moved to `playerList` rather than re-adding `playerListHead` to the static HTML. This is cleaner: the delegation pattern is already used for lock/exclude, and keeping the head dynamic means one fewer static element to keep in sync with the rendered head.
+- `bulk-action-row` uses `style.display` toggling (flex/none) rather than CSS class toggling, consistent with how other conditional-display elements in this file are handled.
+
+### Known issues deferred
+- FD validation — unchanged from all previous entries.
+
+---
+
 ## Session 7.4 — Slate Management Rework
 **Date completed:** 2026-07-30
 **Status:** ✅ Complete — validated live on desktop and mobile.

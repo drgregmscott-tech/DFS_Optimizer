@@ -570,6 +570,28 @@ By far the largest session in this project -- see SESSION_LOG.md's Session 7.3 e
 - [x] Cloud slate sync, ownership display, and the DK-import download feature specifically confirmed live on the deployed site by the user (the latter through two real rounds of bug-fixing).
 - [ ] **Not yet done:** a full live walkthrough of this session's LATER changes specifically -- the Game Stack QB fix, the new team/game chip pickers and multi-pin rotation, the mobile CSS fixes (reported broken once already), the Minimum Salary slider, and the partial-build banner -- on both a desktop browser and the same Pixel 9 Pro XL that surfaced the original mobile bug. Sandbox-validated only as of this session's close.
 
+### Session 7.5 — Frontend UI Improvements ✅ Complete (2026-07-30)
+**Prerequisites:** Session 7.4 complete.
+
+**What this added:**
+- **Bulk Exclude / Un-exclude All** — pill buttons shown between the filter bar and player list whenever a slate is loaded. Operates on the full filtered set (not capped at 200). Players hidden by filters are never touched.
+- **Column alignment fix** — `playerListHead` moved inside the `player-list` scroll container as a `position: sticky` element. Fixes the ~17px rightward drift that appeared when the scrollbar was visible (desktop).
+- **Mobile layout cleanup** — value cell renamed from `.pown` to `.pval` (was colliding with ownership cell class). Mobile CSS updated to class-based selectors (was fragile `nth-child` targeting). SAL label added to salary cell on mobile for consistency.
+- **Bug fix:** sort-column click handler converted from direct `playerListHead.addEventListener` (crashed `null` since head is now dynamic) to event delegation on `playerList`.
+
+**Files modified:**
+- `dfs_optimizer_frontend/index.html`
+
+**Validation:**
+- [x] JS syntax check passed; all `getElementById` cross-referenced — no missing IDs
+- [x] Bulk exclude/un-exclude confirmed correct on desktop and mobile
+- [x] Column headers align with data values with scrollbar present (desktop)
+- [x] Mobile stat labels (SAL/PROJ/VAL/OWN) clean on Pixel 9 Pro XL
+- [x] No regression on existing functionality
+- [ ] FD validation — same pre-existing gap as all FD items
+
+---
+
 ### Session 7.4 — Slate Management Rework ✅ Complete (2026-07-30)
 **Prerequisites:** Session 7.3 complete.
 
