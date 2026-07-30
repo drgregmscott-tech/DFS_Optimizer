@@ -380,22 +380,12 @@ async function handleListSlates(env) {
       const site = base.slice(0, sep);
       const slateId = base.slice(sep + 1);
       if (!validSite(site) || !validSlateId(slateId)) continue;
-      // Fetch the record to get label and savedAt for the dropdown.
-      // list_slates is called once on load and after any delete -- acceptable
-      // to do N fetches here for correctness (typical slate count is small).
-      try {
-        const text = await fetchRepoFile(env, `data/ui_slates/${entry.name}`);
-        if (text) {
-          const rec = JSON.parse(text);
-          slates.push({ site, slateId, label: rec.label || slateId, savedAt: rec.savedAt || "" });
-        }
-      } catch (_) {
-        // If a single file is unreadable, skip it rather than failing the whole list.
-        slates.push({ site, slateId, label: slateId, savedAt: "" });
-      }
+      // No per-file fetches -- that's N+1 GitHub API calls and causes
+      // timeouts on the free Worker plan. label is stored in the frontend's
+      // localStorage index for local slates; for cross-device slates the
+      // frontend falls back to slateId as the display label.
+      slates.push({ site, slateId });
     }
-    // Sort chronologically by savedAt descending (newest first).
-    slates.sort((a, b) => (b.savedAt > a.savedAt ? 1 : b.savedAt < a.savedAt ? -1 : 0));
     return json({ slates });
   } catch (err) {
     return json({ error: `List failed: ${err.message}` }, 502);
