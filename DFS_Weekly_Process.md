@@ -58,29 +58,28 @@ You should see output like `Pulled XXXXX rows for 2025 weekly stats`. If you see
 
 ---
 
-### Step 2d — Choose your slate label
+### Step 2d — Choose a backend slate ID
 
-Pick a short, descriptive name for this slate. It can be anything — you'll type it into the UI when uploading the CSV. Use something that's unambiguous at a glance:
+Pick a short, filesystem-safe identifier for this slate. This is used by the backend pipeline to name output files — it is separate from the human-readable label you'll assign in the UI later (Step 4). Use something lowercase with no spaces:
 
-- **Regular season main slate:** `Classic Wk 3`
-- **Early Sunday only:** `Early Wk 3`
-- **Preseason:** `Preseason Wk 1`
-- **Madden Sim:** `Madden Jul 30`
-- **Thanksgiving:** `Thanksgiving 2026`
+- **Regular season:** `classic_wk3`
+- **Early Sunday only:** `early_wk3`
+- **Afternoon only:** `afternoon_wk3`
+- **Preseason:** `preseason_wk1`
+- **Madden Sim:** `madden_20260730`
+- **Thanksgiving:** `thanksgiving_2026`
 
-No format requirements — spaces are fine, anything readable works. The UI converts it to a URL-safe key internally. You can have multiple slates active at the same time (e.g. main slate + early-only slate for the same week).
+You'll use this same backend slate ID in Steps 2e through 2j. It does not need to match the label you give the slate in the UI.
 
 ---
 
 ### Step 2e — Ingest the salary file
 
-Replace `DKSalaries.csv` with your actual filename, `2025` with the nflverse season year, and `classic_wk1` with your slate ID from Step 2d:
+Replace `DKSalaries.csv` with your actual filename, `2025` with the nflverse season year, and `classic_wk1` with your backend slate ID from Step 2d:
 
 ```
 python scripts/ingest_salaries.py --site dk --raw DKSalaries.csv --season 2025 --slate-id classic_wk1
 ```
-
-**Note on `--slate-id`:** This is the backend pipeline identifier used to name the output file (`salaries_dk_{slate_id}.csv`). It still follows the format from Step 2d of the old convention — e.g. `classic_wk3`, `preseason_wk1`, `madden_20260730`. It does not need to match the human-readable label you'll use in the UI (Step 4). Use something short and filesystem-safe here.
 
 **Expected output:** A match rate summary and a line saying `Wrote data\salaries_dk_{slate_id}.csv`.
 
@@ -168,7 +167,7 @@ git add data/ output/
 ```
 
 ```
-git commit -m "Slate {slate_id} - ingest complete"
+git commit -m "Slate classic_wk1 - ingest complete"
 ```
 
 ```
@@ -199,18 +198,39 @@ You don't need to do anything during Stage 3. Just check the UI periodically to 
 
 Open the deployed UI at **https://dfs-optimizer.pages.dev**.
 
-**To load a slate:**
-1. In the **Slates** panel, click **Choose File…** and pick `output/final_projections_dk_{week}.csv` from your local repo.
-2. A name field appears pre-filled with the filename. Change it to something readable (e.g. `Classic Wk 3`, `Preseason Wk 1`) and click **Save**.
-3. The slate appears in the dropdown. Click it to activate it.
+### Loading a slate
 
-Once loaded, set your desired options (stacking, exposure, lock/exclude, randomization) and run the optimizer. Review lineups using the lineup navigator. Flip through all lineups to spot-check before exporting.
+1. In the **Slates** panel, click **Choose File…** and select `output/final_projections_dk_{week}.csv` from your local repo.
+2. A name field appears, pre-filled with the filename. Replace it with a short, readable label — this is what shows in the dropdown and is just for your own navigation. Examples:
+   - `Classic Wk 3`
+   - `Early Wk 3`
+   - `Afternoon Wk 3`
+   - `Preseason Wk 1`
+   - `Thanksgiving 2026`
+3. Click **Save**. The slate is stored locally and synced to the cloud.
+4. It now appears in the dropdown and is automatically selected and loaded.
 
-**To switch between slates:** use the dropdown — multiple slates can be saved at once (e.g. main slate and early-only slate for the same week).
+**The label has no effect on the backend.** You can name it anything — the optimizer dispatch always uses the week number embedded in the original filename, not the label.
 
-**To delete a slate:** select it in the dropdown and click **Delete**. This removes it from the browser and from cloud sync.
+### Multiple slates for the same week
 
-**If lineups look wrong** (garbage projections, salary not maxed, wrong players) — contact Claude before proceeding.
+You can upload the same CSV multiple times with different labels and they are stored as completely separate entries. For example, if you want separate lineup builds for early and main contests on the same week, upload the file twice with two different labels. Both show in the dropdown and you can switch between them freely.
+
+### Switching between slates
+
+Use the dropdown to switch. Each slate loads its own player pool, projections, and any lineups already built against it. Switching is instant — data is loaded from local storage, not the cloud.
+
+### Cross-device access (desktop → phone)
+
+Slates sync to the cloud automatically when saved. On a second device (e.g. phone), open the UI and wait a moment — the slate will appear in the dropdown and auto-load without any manual action required.
+
+### Deleting a slate
+
+Select it in the dropdown and click **Delete**. Confirms before deleting. Removes it from both this browser and the cloud — it will not reappear on page reload or on other devices.
+
+### Building lineups
+
+Once a slate is loaded, set your options (stacking, exposure, lock/exclude, randomization) in the Build panel and click **Build Lineups**. Review all lineups in the navigator before exporting. If lineups look wrong — contact Claude before proceeding.
 
 ---
 
@@ -227,7 +247,8 @@ Lock hits. Done.
 ## Known gaps and reminders
 
 - **`--week` and `--season` flags** refer to the nflverse data, not the calendar year. Use `--season 2025` and the actual NFL week number until nflverse updates for the 2026 season.
-- **Madden Sim slates:** use `--week 1` everywhere and `madden_{YYYYMMDD}` as the slate ID. These are for pipeline testing only — projections will look reasonable but are not calibrated for Madden Sim game mechanics.
+- **Madden Sim slates:** use `--week 1` everywhere for all backend commands. These are for pipeline testing only — projections will look reasonable but are not calibrated for Madden Sim game mechanics.
+- **Multiple slates, one CSV:** the pipeline produces one `final_projections_dk_{week}.csv` per week. If you want separate lineup builds for early vs. main, upload that same file twice in the UI with two different labels. The backend slate ID and output file are shared; the UI label is the only thing that distinguishes them.
 - **DK is live-validated end to end.** FD is built identically but has not been tested against a real FD salary export — treat FD output as unverified until that happens.
 - **The near-lock cadence** (currently templated to Sunday 11am CT) needs updating once Preseason Week 1's actual lock time is known.
 - **If any step produces an unexpected error,** paste the full error message into a Claude conversation. Don't try to debug it by guessing — the error message is the fastest path to a fix.

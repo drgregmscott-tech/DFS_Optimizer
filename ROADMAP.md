@@ -570,6 +570,37 @@ By far the largest session in this project -- see SESSION_LOG.md's Session 7.3 e
 - [x] Cloud slate sync, ownership display, and the DK-import download feature specifically confirmed live on the deployed site by the user (the latter through two real rounds of bug-fixing).
 - [ ] **Not yet done:** a full live walkthrough of this session's LATER changes specifically -- the Game Stack QB fix, the new team/game chip pickers and multi-pin rotation, the mobile CSS fixes (reported broken once already), the Minimum Salary slider, and the partial-build banner -- on both a desktop browser and the same Pixel 9 Pro XL that surfaced the original mobile bug. Sandbox-validated only as of this session's close.
 
+### Session 7.4 — Slate Management Rework ✅ Complete (2026-07-30)
+**Prerequisites:** Session 7.3 complete.
+
+**What this fixed:** Three user-reported issues with the slate upload/management system: (1) the X/delete button removed a slate from local storage but it reappeared immediately because cloud delete was never wired up, (2) slates were keyed by `{site, week: integer}` making it impossible to have more than one slate per site per week — no way to distinguish preseason wk1 from regular season wk1, or main slate from early/afternoon splits, (3) the chip list grew cluttered; a dropdown scales better.
+
+**Files modified:**
+- `cloudflare_worker/optimizer_api/optimizer_api.js` — slate endpoints reworked (see below); must be redeployed separately from git push: `cd cloudflare_worker/optimizer_api && npx wrangler deploy optimizer_api.js`
+- `dfs_optimizer_frontend/index.html` — Slates panel HTML/CSS/JS fully reworked
+- `DFS_Weekly_Process.md` — Steps 2d and Stage 4 updated
+
+**Key changes:**
+- Slate identity changed from `{site, week: integer}` to `{site, slateId: string}`. SlateId is derived from a user-typed label at upload time (e.g. "Classic Wk 3" → `classic_wk3`). The same CSV can be uploaded multiple times under different labels as fully independent entries.
+- New `delete_slate` Worker endpoint (GitHub Contents API DELETE). Wired to the Delete button in the UI. Fixes the re-appearance bug.
+- `list_slates` simplified to a single GitHub API call (directory listing only — no per-file fetches). Previous N+1 design caused timeouts on Cloudflare's free-tier 10ms CPU limit with as few as 5 slates.
+- Upload is two-step: choose file → label field appears pre-filled from filename → confirm. Week number auto-detected from filename for optimizer dispatch (defaults to `"1"` for Madden Sim / preseason / custom-named files).
+- Chip wall replaced with `<select>` dropdown. Delete button wired to both localStorage and cloud.
+- `loadSlateForActive()` changed to local-first (was cloud-first). Fixed the switching bug where cloud latency caused dropdown selection to drift.
+- On-load init: builds from localStorage synchronously, then fires background cloud merge. If local was empty (mobile / new device), cloud merge auto-loads the first returned slate — restoring cross-device sync.
+- `SLATE_INDEX_KEY` bumped to `v2` — old week-keyed entries ignored cleanly.
+
+**Validation:**
+- [x] Node syntax check on both files
+- [x] All `getElementById` calls cross-referenced against HTML ids — no missing IDs
+- [x] Upload two slates, switch between them — both load correctly (desktop)
+- [x] Delete one — stays gone on reload, does not reappear (desktop)
+- [x] Build lineups on two different slates in the same session — both successful
+- [x] Mobile (Pixel 9 Pro XL): slate uploaded on desktop auto-loads on phone without manual action
+- [ ] FD validation — same pre-existing gap as all FD items
+
+**Note on old cloud files:** After deploying, delete the old week-keyed entries in `data/ui_slates/` (`dk_1.json`, `dk_10.json`, etc.) via the UI's Delete button, then re-upload slates with readable labels.
+
 ---
 
 ## PHASE 8 — Regular Season Go-Live

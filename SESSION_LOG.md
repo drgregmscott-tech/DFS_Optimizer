@@ -2437,3 +2437,88 @@ All budget totals exact. All three output-integrity checks pass. FD not separate
 - First real use: Preseason Week 1 (Aug 13-15). Run `log_ownership.py log` after lock for the DK large-field GPP result. This closes Session 9.3.
 - `data_gate` counter in the `log` output shows progress toward Session 11.1's 4-6 regular-season week minimum. Regular Season Week 1 (Sept 9) is when that clock starts.
 - The `summary` subcommand is the fast way to check how many weeks have been logged before kicking off Session 11.1.
+
+---
+
+## Session 7.4 — Slate Management Rework
+**Date completed:** 2026-07-30
+**Status:** ✅ Complete — validated live on desktop and mobile.
+
+### What was actually built
+
+Reworked the slate upload, storage, and selection system end-to-end. Three user-reported problems drove the session:
+
+1. **Delete didn't stick** — clicking X removed a chip from local storage but `cloudListSlates` re-rendered it from the cloud immediately after, because cloud delete was never wired up.
+2. **Week-number key was too rigid** — slates were keyed by `{site, week: integer}`, making it impossible to have more than one slate per site per week. No way to distinguish preseason wk1 from regular season wk1, or a main slate from an early-only or afternoon-only slate for the same week.
+3. **Chip wall was cluttered** — a flat list of chips grew unwieldy; a dropdown is cleaner and scales to a full season.
+
+### What was built
+
+**`cloudflare_worker/optimizer_api/optimizer_api.js` (modified):**
+
+- `save_slate` / `load_slate` / `list_slates`: query param changed from `?week=` (integer) to `?slate_id=` (user-defined string). Validation changed from `validSiteWeek()` to `validSite()` + `validSlateId()` — alphanumeric/hyphen/underscore, 1–64 chars.
+- Stored record shape gains `label` (display name) and `week` (integer, auto-detected from filename at upload time, used for optimizer dispatch). Old records without these fields degrade gracefully — `label` falls back to `slateId`, `week` defaults to `"1"`.
+- New `handleDeleteSlate()`: GET-for-SHA then GitHub Contents API DELETE. This is what was missing and caused the re-appearance bug. Idempotent — returns `{ok: true, note: "not found"}` if already gone.
+- `handleListSlates()`: **removed per-file fetches** (was doing N sequential GitHub API calls, one per slate file, which caused timeouts on Cloudflare's free-tier 10ms CPU limit). Now returns `{site, slateId}` from the directory listing only — a single GitHub API call regardless of slate count. Labels come from localStorage on the local device; cross-device entries fall back to displaying `slateId`.
+- CORS `Allow-Methods` updated to include `DELETE`; OPTIONS preflight returns 204.
+- `postActions` / method check updated to allow DELETE for `delete_slate`.
+- `SLATE_INDEX_KEY` bumped to `"dfs_slate_index_v2"` in the frontend (Worker-side has no equivalent key).
+
+**`dfs_optimizer_frontend/index.html` (modified):**
+
+- CSS: chip styles removed; new `.slate-select-row`, `.slate-delete-btn`, `.slate-label-row` added.
+- HTML: week number `<input>` removed from Slates panel; replaced with inline label field (`id="slateLabel"`) + Save button (`id="btnSlateConfirm"`); chip `<div>` replaced with `<select id="slateSelect">` + Delete button (`id="btnSlateDelete"`).
+- JS — key changes:
+  - `slateKey()` now takes `(site, slateId)` instead of `(site, week)`.
+  - `persistSlate()` stores `{kind, filename, label, week, payload}` — `week` is auto-detected from the filename at upload time (`final_projections_dk_10.csv` → `10`, falls back to `"1"` for Madden Sim / preseason).
+  - Upload is now two-step: parse file → show label field pre-filled from filename → user confirms → save. `pendingSlate` holds interim state.
+  - `removeSlate()` now calls the cloud `delete_slate` endpoint (DELETE request) after clearing localStorage — fixing the re-appearance bug. Re-renders from local index only (no `cloudListSlates`) so the deleted entry can't race back in.
+  - `renderSlateChips()` / chip click handler removed entirely. Replaced by `buildDropdown()`, `renderSlateDropdown()`, dropdown `change` listener, and Delete button click listener.
+  - `buildDropdown()`: renders `<select>` from a slate index array. Preserves current `sel.value` across re-renders; if `prev` is absent (e.g. after delete), defaults to `selectedIndex = 0` rather than leaving value stale.
+  - `renderSlateDropdown()`: merges local + cloud index, calls `buildDropdown()` once after cloud resolves. Callback fires exactly once (previous version fired twice — once after local, once after cloud — causing selection to reset).
+  - `loadSlateForActive()`: **local-first** — tries localStorage before hitting the cloud. Cloud is now the fallback for cross-device access only. This fixed the switching bug where cloud latency caused dropdown selection to drift.
+  - `initSlates()` (on-load): builds from localStorage synchronously (instant), auto-loads whatever the dropdown defaulted to, then fires a background `cloudListSlates` merge. If local was empty (mobile / new device), the cloud merge auto-loads the first returned slate — fixing mobile cross-device sync.
+  - `refreshForActiveSlate()` (site toggle): calls `buildDropdown(readSlateIndex())` directly instead of `renderSlateDropdown()` to avoid async issues.
+  - `buildDispatchParams()`: reads `week` from the stored slate record in localStorage instead of from the removed `slateWeek` input.
+  - `confirmWithRealSolver()`: guard changed from "week must be set" to "a slate must be selected in the dropdown."
+  - Settings save/load: `dfs_week` localStorage key no longer written or read.
+
+**`DFS_Weekly_Process.md` (modified):**
+- Step 2d rewritten: now labeled "backend slate ID" (the pipeline identifier used in CLI flags and filenames — separate from the UI label).
+- Stage 4 fully rewritten: covers two-step upload flow, multiple slates for one week, switching, cross-device sync, and delete. Notes that the UI label has no effect on the backend optimizer dispatch.
+- Known gaps updated with a note on the one-CSV-uploaded-twice pattern for early/main splits.
+
+### Files created/modified
+- `cloudflare_worker/optimizer_api/optimizer_api.js` (modified)
+- `dfs_optimizer_frontend/index.html` (modified)
+- `DFS_Weekly_Process.md` (modified)
+
+### Validation results
+- [x] Node syntax check passed on `optimizer_api.js`
+- [x] Node syntax check passed on the extracted `<script>` block from `index.html`
+- [x] All `getElementById` calls cross-referenced against HTML `id=` attributes — no missing IDs
+- [x] Upload two slates → both appear in dropdown (desktop)
+- [x] Switch between slates → each loads correctly with player pool (desktop)
+- [x] Delete one slate → stays gone on reload, does not reappear (desktop)
+- [x] Page reload → remaining slate auto-loads (desktop)
+- [x] Build lineups on slate A, switch to slate B, build lineups — both successful (desktop)
+- [x] Mobile (Pixel 9 Pro XL): slate uploaded on desktop auto-appears and loads on phone without manual action
+- [ ] FD validation — same pre-existing gap as all FD items, unchanged
+
+### Decisions made / assumptions taken
+
+- **SlateId derived from label:** label is sanitized at save time (`labelToSlateId()` — lowercase, spaces→underscores, strip non-alphanumeric). User types readable labels; the key stored in localStorage and sent to the cloud is always URL-safe. The same CSV can be uploaded multiple times under different labels and each is a fully independent stored entry.
+- **Week auto-detection from filename:** regex `_(\d{1,3})\.csv$` on the original filename. Covers `final_projections_dk_10.csv` → `10`, `lineup_multi_dk_3.csv` → `3`. Falls back to `"1"` for any file that doesn't match (Madden Sim, preseason, custom-named files). The week number is only used for backend optimizer dispatch (`--week` flag); the UI label is purely for navigation.
+- **`list_slates` returns `{site, slateId}` only** — dropping `label` and `savedAt` from the cloud response. Labels are available from localStorage for local slates; cross-device entries display `slateId` as the fallback label. This was forced by Cloudflare's free-tier 10ms CPU limit — N sequential awaits for N slate files was causing timeouts with as few as 5 slates in the folder.
+- **`SLATE_INDEX_KEY` bumped to `v2`** — old `v1` entries (keyed by `{site, week: number}`) would have conflicted with new `{site, slateId: string}` shape. Bump ensures a clean slate (old entries ignored, not migrated).
+- **Cloud delete is fire-and-forget** — `removeSlate()` updates localStorage and re-renders the dropdown synchronously, then fires the DELETE request without waiting for confirmation. If the DELETE fails, the entry will reappear next time `cloudListSlates` runs (next page load). Acceptable tradeoff — the local removal is instant and the cloud eventually converges.
+- **Old-format files in `data/ui_slates/`** (`dk_10.json`, `dk_23.json`, etc. — week-keyed from pre-7.4 uploads): these parse correctly under the new naming convention (`site=dk`, `slateId=10` etc.) and appear in the dropdown as "DK · 10". They should be manually deleted via the UI's Delete button after upgrading, then slates re-uploaded with readable labels.
+
+### Known issues deferred
+- Old-format slate files in `data/ui_slates/` — see above. Not a code bug; user action required post-deploy.
+- FD validation — unchanged from all previous entries.
+
+### Handoff notes
+- **Deploy order matters:** Worker must be deployed before `index.html` is pushed to Cloudflare Pages. The frontend's `delete_slate` DELETE calls 404 against the old Worker until it's updated. Deploy command: `cd cloudflare_worker/optimizer_api && npx wrangler deploy optimizer_api.js`.
+- After deploying, delete the old `dk_10.json`, `dk_23.json`, `dk_99.json`, `dk_1.json`, `fd_99.json` entries via the UI (select each in the dropdown → Delete), then re-upload with readable labels.
+- The `label`/`savedAt` fields exist in the Worker's stored JSON records (they're written at save time) but are no longer read by `list_slates`. If a future session wants richer dropdown metadata from the cloud, those fields are already there — just re-introduce the per-file fetches with parallelism (`Promise.all`) instead of serial awaits, which avoids the CPU timeout.
