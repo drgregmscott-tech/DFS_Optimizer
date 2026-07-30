@@ -1,0 +1,5 @@
+Position,Name + ID,Name,ID,Roster Position,Salary,Game Info,TeamAbbrev,AvgPointsPerGame,Status,name,site,salary,normalized_name,normalized_team,position_upper,player_id,match_method,match_confidence
+QB,Will Levis (43670221),Will Levis,43670221,QB,5000,GB@TEN 07/30/2026 02:00PM ET,TEN,0.0,,Will Levis,dk,5000,will levis,TEN,QB,,,
+RB,MarShawn Lloyd (43670250),MarShawn Lloyd,43670250,RB/FLEX,3000,GB@TEN 07/30/2026 02:00PM ET,GB,0.3,,MarShawn Lloyd,dk,3000,marshawn lloyd,GB,RB,,,
+RB,Jashaun Corbin (43670258),Jashaun Corbin,43670258,RB/FLEX,3000,ATL@PIT 07/30/2026 04:00PM ET,ATL,0.0,,Jashaun Corbin,dk,3000,jashaun corbin,ATL,RB,,,
+WR,Robert Woods (43670310),Robert Woods,43670310,WR/FLEX,3000,ATL@PIT 07/30/2026 04:00PM ET,PIT,2.4,,Robert Woods,dk,3000,robert woods,PIT,WR,,,
