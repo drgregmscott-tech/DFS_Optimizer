@@ -620,9 +620,21 @@
   .player-list {
     max-height: 320px;
     overflow-y: auto;
-    margin-top: 10px;
+    margin-top: 4px;
     border: 1px solid var(--line-soft);
     border-radius: 8px;
+    position: relative;       /* needed for sticky child */
+  }
+  /* Header lives *inside* the scroll container so its column widths
+     always match the data rows, even when a scrollbar is present.   */
+  .sticky-head {
+    position: sticky;
+    top: 0;
+    background: var(--panel);
+    z-index: 2;
+    border-bottom: 1px solid var(--line-soft);
+    border-radius: 8px 8px 0 0;
+    margin-top: 0 !important;
   }
 
   .player-row {
@@ -953,6 +965,37 @@
 
   .filter-clear-btn:hover { border-color: var(--bad); color: var(--bad); }
 
+  /* ── Bulk exclude / un-exclude row ── */
+  .bulk-action-row {
+    display: none;               /* hidden until a slate is loaded */
+    align-items: center;
+    gap: 8px;
+    padding: 5px 2px 3px;
+    flex-wrap: wrap;
+  }
+  .bulk-count {
+    font-size: 11px;
+    color: var(--dimmer);
+    flex: 1;
+    min-width: 80px;
+  }
+  .bulk-btn {
+    appearance: none;
+    border-radius: 999px;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    padding: 4px 11px;
+    cursor: pointer;
+    border: 1px solid var(--line);
+    background: transparent;
+    color: var(--dim);
+    white-space: nowrap;
+    transition: background 0.12s, color 0.12s, border-color 0.12s;
+  }
+  .bulk-btn.exclude-all-btn:hover { border-color: var(--bad);  color: var(--bad); }
+  .bulk-btn.include-all-btn:hover { border-color: var(--good); color: var(--good); }
+
   /* ---------------- Player pool updated grid (icons left) ---------------- */
 
   .player-list-head {
@@ -1149,7 +1192,7 @@
   .player-list-head .sortcol.active { color: var(--amber); }
   .player-list-head .sortcol.active::after { content: attr(data-arrow); margin-left: 3px; }
 
-  .player-row .pown { font-family: 'Roboto Mono', monospace; font-size: 11px; color: var(--dim); text-align: right; }
+  .player-row .pown, .player-row .pval { font-family: 'Roboto Mono', monospace; font-size: 11px; color: var(--dim); text-align: right; }
 
   /* ---------------- Session 7.3 -- min-salary slider ---------------- */
 
@@ -1236,11 +1279,12 @@
     .player-row > div:nth-child(2) { grid-area: name; }
     .player-row .psal  { grid-area: price; text-align: left; }
     .player-row .pproj { grid-area: proj; text-align: left; }
-    .player-row > div:nth-child(5) { grid-area: value; text-align: left; }
-    .player-row > div:nth-child(6) { grid-area: own; text-align: left; }
+    .player-row .pval { grid-area: value; text-align: left; }
+    .player-row .pown { grid-area: own;   text-align: left; }
+    .player-row .psal::before  { content: "SAL "; color: var(--dimmer); font-size: 9px; }
     .player-row .pproj::before { content: "PROJ "; color: var(--dimmer); font-size: 9px; }
-    .player-row > div:nth-child(5)::before { content: "VAL "; color: var(--dimmer); font-size: 9px; }
-    .player-row > div:nth-child(6)::before { content: "OWN "; color: var(--dimmer); font-size: 9px; }
+    .player-row .pval::before  { content: "VAL "; color: var(--dimmer); font-size: 9px; }
+    .player-row .pown::before  { content: "OWN "; color: var(--dimmer); font-size: 9px; }
   }
 </style>
 </head>
@@ -1482,7 +1526,11 @@
           </div>
           <button class="filter-clear-btn" id="btnFilterClear" type="button">Clear filters</button>
         </div>
-        <div class="player-list-head" id="playerListHead"></div>
+        <div class="bulk-action-row" id="bulkActionRow">
+          <span class="bulk-count" id="bulkCount"></span>
+          <button class="bulk-btn exclude-all-btn" id="btnExcludeAll" type="button">Exclude All Shown</button>
+          <button class="bulk-btn include-all-btn" id="btnIncludeAll" type="button">Un-exclude All Shown</button>
+        </div>
         <div class="player-list" id="playerList"></div>
       </div>
 
@@ -2505,10 +2553,13 @@
     var pool = state.pool[site];
     var listEl = document.getElementById("playerList");
     renderPoolTabs();
-    renderPlayerListHead();
     updateFilterToggleBtn();
     if (!pool) {
-      listEl.innerHTML = '<div class="player-row"><div></div><div class="pmeta">Upload your slate above to lock/exclude players.</div></div>';
+      var bulkRowNP = document.getElementById("bulkActionRow");
+      if (bulkRowNP) bulkRowNP.style.display = "none";
+      listEl.innerHTML = '<div class="player-list-head sticky-head" id="playerListHead"></div>' +
+        '<div class="player-row"><div></div><div class="pmeta">Upload your slate above to lock/exclude players.</div></div>';
+      renderPlayerListHead();
       return;
     }
     var q = state.playerSearch.toLowerCase();
@@ -2547,12 +2598,23 @@
 
     var shown = rows.slice(0, 200);
 
+    // Bulk-action row: show count of visible players
+    var bulkRow = document.getElementById("bulkActionRow");
+    var bulkCountEl = document.getElementById("bulkCount");
+    if (bulkRow) {
+      bulkRow.style.display = "flex";
+      if (bulkCountEl) bulkCountEl.textContent = rows.length + " player" + (rows.length === 1 ? "" : "s") + " shown";
+    }
+
     if (!shown.length) {
-      listEl.innerHTML = '<div class="player-row"><div></div><div class="pmeta">No players match.</div></div>';
+      listEl.innerHTML = '<div class="player-list-head sticky-head" id="playerListHead"></div>' +
+        '<div class="player-row"><div></div><div class="pmeta">No players match.</div></div>';
+      renderPlayerListHead();
       return;
     }
 
-    listEl.innerHTML = shown.map(function (p) {
+    listEl.innerHTML = '<div class="player-list-head sticky-head" id="playerListHead"></div>' +
+      shown.map(function (p) {
       var isLocked = !!state.locked[site][p.player_id];
       var isExcluded = !!state.excluded[site][p.player_id];
       var rowCls = "player-row" + (isLocked ? " is-locked" : "") + (isExcluded ? " is-excluded" : "");
@@ -2563,13 +2625,14 @@
         '<button class="icon-btn exclude-btn' + (isExcluded ? ' active' : '') + '" data-action="exclude" title="' + (isExcluded ? 'Un-exclude' : 'Exclude') + '">&#x2715;</button>' +
         '</div>' +
         '<div><div class="pname">' + escapeHtml(p.player_name) + '</div>' +
-        '<div class="pmeta">' + escapeHtml(p.position) + ' &middot; ' + escapeHtml(p.team) + '</div></div>' +
+        '<div class="pmeta">' + escapeHtml(p.position) + ' · ' + escapeHtml(p.team) + '</div></div>' +
         '<div class="psal">' + fmtMoney(p.salary) + '</div>' +
         '<div class="pproj">' + fmtPts(p.final_projection) + '</div>' +
-        '<div class="pown">' + p.value.toFixed(1) + '</div>' +
+        '<div class="pval">' + p.value.toFixed(1) + '</div>' +
         '<div class="pown">' + (p.ownership != null ? p.ownership.toFixed(1) + '%' : '—') + '</div>' +
         '</div>';
     }).join("");
+    renderPlayerListHead();
   }
 
   document.getElementById("poolTabs").addEventListener("click", function (e) {
@@ -2612,6 +2675,59 @@
   document.getElementById("btnFilterClear").addEventListener("click", function () {
     state.poolFilters = { salMin:"", salMax:"", projMin:"", projMax:"", valMin:"", valMax:"", ownMin:"", ownMax:"" };
     FILTER_FIELD_MAP.forEach(function(m) { document.getElementById(m.id).value = ""; });
+    renderPlayerList();
+  });
+
+  // ── getVisibleRows: same filter/tab/search logic as renderPlayerList ──
+  // Returns the full filtered set (not capped at 200) so bulk ops
+  // affect every matching player, not just the ones currently scrolled into view.
+  function getVisibleRows(site, pool) {
+    var q = state.playerSearch.toLowerCase();
+    var allActive = state.poolTabs.ALL || Object.keys(state.poolTabs).length === 0;
+    var rows = pool.players.filter(function (p) {
+      if (!allActive) {
+        var tabMatch = false;
+        if (state.poolTabs.DST && isDefensePosition(p.position)) tabMatch = true;
+        Object.keys(state.poolTabs).forEach(function(t) {
+          if (t !== "DST" && t !== "ALL" && p.position === t) tabMatch = true;
+        });
+        if (!tabMatch) return false;
+      }
+      if (q) {
+        var nameMatch = p.player_name.toLowerCase().indexOf(q) !== -1 ||
+                        p.team.toLowerCase().indexOf(q) !== -1 ||
+                        p.position.toLowerCase().indexOf(q) !== -1;
+        if (!nameMatch) return false;
+      }
+      return true;
+    });
+    rows = rows.map(function (p) {
+      p.value = p.salary > 0 ? p.final_projection / (p.salary / 1000) : 0;
+      return p;
+    });
+    return rows.filter(passesFilters);
+  }
+
+  // ── Exclude All Shown ──
+  document.getElementById("btnExcludeAll").addEventListener("click", function () {
+    var site = state.activeSite;
+    var pool = state.pool[site];
+    if (!pool) return;
+    getVisibleRows(site, pool).forEach(function (p) {
+      state.excluded[site][p.player_id] = true;
+      delete state.locked[site][p.player_id];   // can't be locked + excluded
+    });
+    renderPlayerList();
+  });
+
+  // ── Un-exclude All Shown ──
+  document.getElementById("btnIncludeAll").addEventListener("click", function () {
+    var site = state.activeSite;
+    var pool = state.pool[site];
+    if (!pool) return;
+    getVisibleRows(site, pool).forEach(function (p) {
+      delete state.excluded[site][p.player_id];
+    });
     renderPlayerList();
   });
 
