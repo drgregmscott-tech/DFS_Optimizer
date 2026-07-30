@@ -3110,6 +3110,7 @@
 
     var sel = document.getElementById("slateSelect");
     if (sel.value) {
+      // Local has slates -- load the currently-selected one immediately.
       var parts = sel.value.split("|");
       var site = parts[0], slateId = parts.slice(1).join("|");
       loadSlateForActive(site, slateId, function (source, filename) {
@@ -3125,23 +3126,48 @@
         render();
       });
     } else {
-      setSlateStatus(noSlateMessage());
+      setSlateStatus("Checking cloud for saved slates…");
       renderPlayerList();
       renderSlateOverview();
       render();
     }
 
-    // Background cloud merge -- adds cross-device slates without blocking.
-    // Does not re-trigger a load; only updates the dropdown list.
+    // Cloud merge -- runs after local init regardless.
+    // If local was empty (mobile / new device), auto-loads the first cloud
+    // slate so the user doesn't have to manually pick from the dropdown.
+    // If local already had something loaded, only updates the dropdown list.
+    var hadLocalSlates = local.length > 0;
     cloudListSlates(function (cloudSlates) {
-      if (!cloudSlates) return;
+      if (!cloudSlates || !cloudSlates.length) {
+        if (!hadLocalSlates) setSlateStatus(noSlateMessage());
+        return;
+      }
       var merged = readSlateIndex().slice();
       cloudSlates.forEach(function (c) {
         if (!merged.some(function (e2) { return e2.site === c.site && e2.slateId === c.slateId; })) {
           merged.push({ site: c.site, slateId: c.slateId, label: c.label || c.slateId });
         }
       });
-      buildDropdown(merged); // preserves current sel.value via prev logic
+      buildDropdown(merged); // preserves sel.value if local was non-empty
+
+      // Auto-load if this device had nothing locally -- cross-device case.
+      if (!hadLocalSlates && sel.value) {
+        var p2 = sel.value.split("|");
+        var s2 = p2[0], sid2 = p2.slice(1).join("|");
+        setSlateStatus("Loading from cloud…");
+        loadSlateForActive(s2, sid2, function (source2, filename2) {
+          if (source2 !== "none") {
+            setSlateStatus((filename2 || sid2) + " — from cloud", true);
+            document.getElementById("slatesPanel").classList.remove("open");
+          } else {
+            setSlateStatus(noSlateMessage());
+          }
+          updateDeleteBtnState();
+          renderPlayerList();
+          renderSlateOverview();
+          render();
+        });
+      }
     });
   }());
 
