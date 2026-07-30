@@ -1,0 +1,14 @@
+optimizer.py failed for this request. Last lines of its output:
+
+Traceback (most recent call last):
+  File "/home/runner/work/DFS_Optimizer/DFS_Optimizer/scripts/optimizer.py", line 2097, in <module>
+    main()
+  File "/home/runner/work/DFS_Optimizer/DFS_Optimizer/scripts/optimizer.py", line 1998, in main
+    lineups, exposure_count, n_generated = build_multi_lineup(
+                                           ^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/work/DFS_Optimizer/DFS_Optimizer/scripts/optimizer.py", line 1529, in build_multi_lineup
+    players_all = load_final_projections(site, week)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/work/DFS_Optimizer/DFS_Optimizer/scripts/optimizer.py", line 783, in load_final_projections
+    raise FileNotFoundError(
+FileNotFoundError: /home/runner/work/DFS_Optimizer/DFS_Optimizer/output/final_projections_dk_23.csv not found. Run build_projections.py --site dk --week 23 first (Session 2.4, extended in Session 3.1 for DST/DEF -- decision #5).
