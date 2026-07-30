@@ -1649,8 +1649,11 @@
       renderPlayerList();
       renderSlateOverview();
     }
-    renderSlateDropdown();
-    // Cloud delete -- fire and forget; UI is already updated.
+    // Re-render from local index only -- deliberately skip cloudListSlates
+    // here so the deleted slate can't race back in from the cloud before
+    // the DELETE request completes.
+    buildDropdown(readSlateIndex());
+    // Cloud delete -- fire and forget after local cleanup is done.
     if (cloudConfigured()) {
       fetch(workerUrl("delete_slate", { site: site, slate_id: slateId }), {
         method: "DELETE", cache: "no-store",
@@ -1724,6 +1727,13 @@
   }
 
   function loadSlateForActive(site, slateId, callback) {
+    // Try local storage first -- it's always written at upload time and is
+    // immediately consistent. Cloud is the fallback for cross-device access
+    // (a slate uploaded on a different device won't be in this browser's
+    // localStorage). Reversing the old cloud-first order fixes the lag and
+    // consistency issues when switching between slates on the same device.
+    var hadLocal = loadStoredSlate(site, slateId);
+    if (hadLocal) { callback("local", null); return; }
     cloudLoadSlate(site, slateId, function (record) {
       if (record) {
         applySlatePayload(site, record.kind, record.filename, record.payload);
@@ -1731,8 +1741,7 @@
         callback("cloud", record.filename);
         return;
       }
-      var hadLocal = loadStoredSlate(site, slateId);
-      callback(hadLocal ? "local" : "none", null);
+      callback("none", null);
     });
   }
 
@@ -1809,12 +1818,13 @@
     setSlateStatus(localMsg, true);
     document.getElementById("slatesPanel").classList.remove("open");
 
-    // Update the dropdown and set this new slate as active.
-    renderSlateDropdown(function () {
-      var sel = document.getElementById("slateSelect");
+    // Update the dropdown synchronously and select the new slate.
+    buildDropdown(readSlateIndex());
+    var sel = document.getElementById("slateSelect");
+    if (sel.querySelector('option[value="' + site + "|" + slateId + '"]')) {
       sel.value = site + "|" + slateId;
-      updateDeleteBtnState();
-    });
+    }
+    updateDeleteBtnState();
     render();
     renderPlayerList();
     renderSlateOverview();
@@ -1831,23 +1841,22 @@
     el.classList.toggle("loaded", !!loaded);
   }
 
-  // ---------------- Slate dropdown ----------------
   // Renders the <select> from the merged local+cloud index.
-  // Optional callback fires after the DOM is updated.
+  // Optional callback fires exactly once, after the final render.
   function renderSlateDropdown(callback) {
     var local = readSlateIndex();
-    buildDropdown(local);
-    if (callback) callback();
+    buildDropdown(local); // immediate local render (no callback yet)
     cloudListSlates(function (cloudSlates) {
-      if (!cloudSlates) { if (callback) callback(); return; }
-      var merged = local.slice();
-      cloudSlates.forEach(function (c) {
-        if (!merged.some(function (e2) { return e2.site === c.site && e2.slateId === c.slateId; })) {
-          // Cloud-only entry (uploaded from another device) -- add it.
-          merged.push({ site: c.site, slateId: c.slateId, label: c.label || c.slateId });
-        }
-      });
-      buildDropdown(merged);
+      if (cloudSlates) {
+        var merged = local.slice();
+        cloudSlates.forEach(function (c) {
+          if (!merged.some(function (e2) { return e2.site === c.site && e2.slateId === c.slateId; })) {
+            merged.push({ site: c.site, slateId: c.slateId, label: c.label || c.slateId });
+          }
+        });
+        buildDropdown(merged);
+      }
+      // Callback fires once here regardless of whether cloud succeeded.
       if (callback) callback();
     });
   }
@@ -1855,7 +1864,7 @@
   function buildDropdown(idx) {
     var sel = document.getElementById("slateSelect");
     var row = document.getElementById("slateSelectRow");
-    if (!idx.length) { row.style.display = "none"; sel.innerHTML = ""; return; }
+    if (!idx.length) { row.style.display = "none"; sel.innerHTML = ""; updateDeleteBtnState(); return; }
     row.style.display = "flex";
     // Sort: active site first, then alphabetically by label.
     idx.sort(function (a, b) {
@@ -1868,7 +1877,13 @@
       var displayLabel = e2.site.toUpperCase() + " · " + (e2.label || e2.slateId);
       return '<option value="' + val + '">' + displayLabel + "</option>";
     }).join("");
-    if (prev && sel.querySelector('option[value="' + prev + '"]')) sel.value = prev;
+    // Restore previous selection if still present; otherwise default to first.
+    // Never leave sel.value pointing at a deleted/absent entry.
+    if (prev && sel.querySelector('option[value="' + prev + '"]')) {
+      sel.value = prev;
+    } else {
+      sel.selectedIndex = 0;
+    }
     updateDeleteBtnState();
   }
 
@@ -2131,11 +2146,12 @@
   function refreshForActiveSlate() {
     var site = state.activeSite;
     var sel = document.getElementById("slateSelect");
+    // Re-sort the dropdown so the new active site floats to top.
+    buildDropdown(readSlateIndex());
     var selVal = sel ? sel.value : "";
-    // If the dropdown has an entry for this site, load it.
     if (selVal && selVal.startsWith(site + "|")) {
       var slateId = selVal.split("|").slice(1).join("|");
-      setSlateStatus("Checking for a saved slate…");
+      setSlateStatus("Loading…");
       loadSlateForActive(site, slateId, function (source, filename) {
         if (source === "cloud") setSlateStatus((filename || slateId) + " — loaded from cloud", true);
         else if (source === "local") setSlateStatus((filename || slateId) + " — from local storage", true);
@@ -2149,8 +2165,7 @@
         renderSlateOverview();
       });
     } else {
-      // No dropdown entry for this site -- see if there's anything in the dropdown for it.
-      renderSlateDropdown();
+      // Dropdown has no entry for this site yet.
       if (!state.pool[site] && !state.data[site]) setSlateStatus(noSlateMessage());
       render();
       renderPlayerList();
@@ -3085,24 +3100,21 @@
   // Load presets from cloud after settings (Worker URL/token) are in place
   refreshPresetDropdown();
 
-  // Restore persisted slate on load -- build the dropdown from local
-  // storage first (instant), then merge cloud entries and optionally
-  // auto-load the most recently used slate for the active site.
-  renderSlateDropdown(function () {
+  // Restore persisted slate on load.
+  // Build from localStorage immediately (synchronous, instant). The local
+  // render is what the user sees first; cloud merge adds cross-device
+  // slates passively in the background without blocking.
+  (function initSlates() {
+    var local = readSlateIndex();
+    buildDropdown(local); // synchronous, no cloud wait
+
     var sel = document.getElementById("slateSelect");
-    // Try to find an entry for the active site in the dropdown.
-    var opts = Array.prototype.slice.call(sel.options);
-    var siteOpt = opts.find(function (o) { return o.value.startsWith(state.activeSite + "|"); });
-    if (siteOpt) {
-      sel.value = siteOpt.value;
-      var parts = siteOpt.value.split("|");
+    if (sel.value) {
+      var parts = sel.value.split("|");
       var site = parts[0], slateId = parts.slice(1).join("|");
       loadSlateForActive(site, slateId, function (source, filename) {
-        if (source === "cloud") {
-          setSlateStatus((filename || slateId) + " — loaded from cloud", true);
-          document.getElementById("slatesPanel").classList.remove("open");
-        } else if (source === "local") {
-          setSlateStatus((filename || slateId) + " — from local storage", true);
+        if (source !== "none") {
+          setSlateStatus((filename || slateId) + (source === "cloud" ? " — from cloud" : " — from local storage"), true);
           document.getElementById("slatesPanel").classList.remove("open");
         } else {
           setSlateStatus(noSlateMessage());
@@ -3118,7 +3130,20 @@
       renderSlateOverview();
       render();
     }
-  });
+
+    // Background cloud merge -- adds cross-device slates without blocking.
+    // Does not re-trigger a load; only updates the dropdown list.
+    cloudListSlates(function (cloudSlates) {
+      if (!cloudSlates) return;
+      var merged = readSlateIndex().slice();
+      cloudSlates.forEach(function (c) {
+        if (!merged.some(function (e2) { return e2.site === c.site && e2.slateId === c.slateId; })) {
+          merged.push({ site: c.site, slateId: c.slateId, label: c.label || c.slateId });
+        }
+      });
+      buildDropdown(merged); // preserves current sel.value via prev logic
+    });
+  }());
 
   renderPlayerList();
   renderSlateOverview();
