@@ -278,3 +278,4 @@ timestamp_utc,trigger_type,site,step,status
 2026-07-30T16:24:53.896846+00:00,full_refresh_scheduled,fd,build_projections,failure
 2026-07-30T16:24:53.896846+00:00,full_refresh_scheduled,dk,status_apply,success
 2026-07-30T16:24:53.896846+00:00,full_refresh_scheduled,fd,status_apply,failure
+2026-07-30T17:40:14.415422+00:00,light_vegas_refresh,both,vegas_odds_pull,success
