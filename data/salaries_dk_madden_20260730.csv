@@ -1,0 +1,96 @@
+Position,Name + ID,Name,ID,Roster Position,Salary,Game Info,TeamAbbrev,AvgPointsPerGame,Status,name,site,salary,normalized_name,normalized_team,position_upper,player_id,match_method,match_confidence
+RB,Bijan Robinson (43670226),Bijan Robinson,43670226,RB/FLEX,8300,ATL@PIT 07/30/2026 04:00PM ET,ATL,20.8,,Bijan Robinson,dk,8300,bijan robinson,ATL,RB,00-0038542,auto_exact,high
+WR,DK Metcalf (43670272),DK Metcalf,43670272,WR/FLEX,8300,ATL@PIT 07/30/2026 04:00PM ET,PIT,20.8,,DK Metcalf,dk,8300,dk metcalf,PIT,WR,00-0035640,auto_exact,high
+RB,Josh Jacobs (43670228),Josh Jacobs,43670228,RB/FLEX,7300,GB@TEN 07/30/2026 02:00PM ET,GB,17.5,,Josh Jacobs,dk,7300,josh jacobs,GB,RB,00-0035700,auto_exact,high
+RB,Bucky Irving (43670230),Bucky Irving,43670230,RB/FLEX,7000,MIN@TB 07/30/2026 12:00PM ET,TB,18.3,,Bucky Irving,dk,7000,bucky irving,TB,RB,00-0039361,auto_exact,high
+QB,Aaron Rodgers (43670214),Aaron Rodgers,43670214,QB,6900,ATL@PIT 07/30/2026 04:00PM ET,PIT,24.6,,Aaron Rodgers,dk,6900,aaron rodgers,PIT,QB,00-0023459,auto_exact,high
+QB,Jordan Love (43670215),Jordan Love,43670215,QB,6800,GB@TEN 07/30/2026 02:00PM ET,GB,24.4,,Jordan Love,dk,6800,jordan love,GB,QB,00-0036264,auto_exact,high
+WR,Christian Watson (43670274),Christian Watson,43670274,WR/FLEX,6800,GB@TEN 07/30/2026 02:00PM ET,GB,16.7,,Christian Watson,dk,6800,christian watson,GB,WR,00-0038124,auto_exact,high
+WR,Mike Evans (43670276),Mike Evans,43670276,WR/FLEX,6700,MIN@TB 07/30/2026 12:00PM ET,TB,17.2,,Mike Evans,dk,6700,mike evans,TB,WR,00-0031408,auto_exact,high
+WR,Justin Jefferson (43670278),Justin Jefferson,43670278,WR/FLEX,6600,MIN@TB 07/30/2026 12:00PM ET,MIN,15.3,,Justin Jefferson,dk,6600,justin jefferson,MIN,WR,00-0036322,auto_exact,high
+RB,Aaron Jones Sr. (43670232),Aaron Jones Sr.,43670232,RB/FLEX,6400,MIN@TB 07/30/2026 12:00PM ET,MIN,15.2,,Aaron Jones Sr.,dk,6400,aaron jones,MIN,RB,00-0033293,auto_exact,high
+RB,Jaylen Warren (43670234),Jaylen Warren,43670234,RB/FLEX,6200,ATL@PIT 07/30/2026 04:00PM ET,PIT,15.1,,Jaylen Warren,dk,6200,jaylen warren,PIT,RB,00-0037228,auto_exact,high
+QB,J.J. McCarthy (43670216),J.J. McCarthy,43670216,QB,6000,MIN@TB 07/30/2026 12:00PM ET,MIN,22.9,,J.J. McCarthy,dk,6000,jj mccarthy,MIN,QB,00-0039923,auto_exact,high
+QB,Baker Mayfield (43670217),Baker Mayfield,43670217,QB,5900,MIN@TB 07/30/2026 12:00PM ET,TB,23.1,,Baker Mayfield,dk,5900,baker mayfield,TB,QB,00-0034855,auto_exact,high
+WR,Calvin Austin III (43670280),Calvin Austin III,43670280,WR/FLEX,5900,ATL@PIT 07/30/2026 04:00PM ET,PIT,14.9,,Calvin Austin III,dk,5900,calvin austin,PIT,WR,00-0037837,auto_exact,high
+WR,Matthew Golden (43670282),Matthew Golden,43670282,WR/FLEX,5800,GB@TEN 07/30/2026 02:00PM ET,GB,15.8,,Matthew Golden,dk,5800,matthew golden,GB,WR,00-0040667,auto_exact,high
+WR,Calvin Ridley (43670284),Calvin Ridley,43670284,WR/FLEX,5600,GB@TEN 07/30/2026 02:00PM ET,TEN,15.3,,Calvin Ridley,dk,5600,calvin ridley,TEN,WR,00-0034837,auto_exact,high
+RB,Tony Pollard (43670236),Tony Pollard,43670236,RB/FLEX,5500,GB@TEN 07/30/2026 02:00PM ET,TEN,15.4,,Tony Pollard,dk,5500,tony pollard,TEN,RB,00-0035261,auto_exact,high
+WR,Chris Godwin Jr. (43670286),Chris Godwin Jr.,43670286,WR/FLEX,5500,MIN@TB 07/30/2026 12:00PM ET,TB,14.0,,Chris Godwin Jr.,dk,5500,chris godwin,TB,WR,00-0033921,auto_exact,high
+QB,Michael Penix Jr. (43670218),Michael Penix Jr.,43670218,QB,5200,ATL@PIT 07/30/2026 04:00PM ET,ATL,19.3,,Michael Penix Jr.,dk,5200,michael penix,ATL,QB,00-0039917,auto_exact,high
+QB,Cam Ward (43670219),Cam Ward,43670219,QB,5100,GB@TEN 07/30/2026 02:00PM ET,TEN,19.2,,Cam Ward,dk,5100,cam ward,TEN,QB,00-0040676,auto_exact,high
+QB,Kirk Cousins (43670220),Kirk Cousins,43670220,QB,5000,ATL@PIT 07/30/2026 04:00PM ET,ATL,0.0,,Kirk Cousins,dk,5000,kirk cousins,ATL,QB,00-0029604,auto_exact,high
+QB,Will Levis (43670221),Will Levis,43670221,QB,5000,GB@TEN 07/30/2026 02:00PM ET,TEN,0.0,,Will Levis,dk,5000,will levis,TEN,QB,,,
+QB,Mason Rudolph (43670222),Mason Rudolph,43670222,QB,5000,ATL@PIT 07/30/2026 04:00PM ET,PIT,0.0,,Mason Rudolph,dk,5000,mason rudolph,PIT,QB,00-0034771,auto_exact,high
+QB,Teddy Bridgewater (43670223),Teddy Bridgewater,43670223,QB,5000,MIN@TB 07/30/2026 12:00PM ET,TB,0.0,,Teddy Bridgewater,dk,5000,teddy bridgewater,TB,QB,00-0031237,auto_exact,high
+QB,Malik Willis (43670224),Malik Willis,43670224,QB,5000,GB@TEN 07/30/2026 02:00PM ET,GB,0.0,,Malik Willis,dk,5000,malik willis,GB,QB,00-0038128,auto_exact,high
+QB,Carson Wentz (43670225),Carson Wentz,43670225,QB,5000,MIN@TB 07/30/2026 12:00PM ET,MIN,0.0,,Carson Wentz,dk,5000,carson wentz,MIN,QB,00-0032950,auto_exact,high
+WR,Jordan Addison (43670288),Jordan Addison,43670288,WR/FLEX,4800,MIN@TB 07/30/2026 12:00PM ET,MIN,12.5,,Jordan Addison,dk,4800,jordan addison,MIN,WR,00-0038994,auto_exact,high
+WR,Emeka Egbuka (43670290),Emeka Egbuka,43670290,WR/FLEX,4700,MIN@TB 07/30/2026 12:00PM ET,TB,12.2,,Emeka Egbuka,dk,4700,emeka egbuka,TB,WR,00-0040129,auto_exact,high
+TE,Tucker Kraft (43670344),Tucker Kraft,43670344,TE/FLEX,4600,GB@TEN 07/30/2026 02:00PM ET,GB,11.6,,Tucker Kraft,dk,4600,tucker kraft,GB,TE,00-0038996,auto_exact,high
+WR,Jayden Reed (43670292),Jayden Reed,43670292,WR/FLEX,4400,GB@TEN 07/30/2026 02:00PM ET,GB,13.1,,Jayden Reed,dk,4400,jayden reed,GB,WR,00-0039146,auto_exact,high
+TE,Chig Okonkwo (43670346),Chig Okonkwo,43670346,TE/FLEX,4300,GB@TEN 07/30/2026 02:00PM ET,TEN,12.3,,Chig Okonkwo,dk,4300,chig okonkwo,TEN,TE,00-0037809,auto_exact,high
+WR,Drake London (43670294),Drake London,43670294,WR/FLEX,4200,ATL@PIT 07/30/2026 04:00PM ET,ATL,10.0,,Drake London,dk,4200,drake london,ATL,WR,00-0037238,auto_exact,high
+TE,T.J. Hockenson (43670348),T.J. Hockenson,43670348,TE/FLEX,4000,MIN@TB 07/30/2026 12:00PM ET,MIN,10.4,,T.J. Hockenson,dk,4000,tj hockenson,MIN,TE,00-0035229,auto_exact,high
+WR,Darnell Mooney (43670296),Darnell Mooney,43670296,WR/FLEX,3900,ATL@PIT 07/30/2026 04:00PM ET,ATL,10.3,,Darnell Mooney,dk,3900,darnell mooney,ATL,WR,00-0036309,auto_exact,high
+WR,Roman Wilson (43670298),Roman Wilson,43670298,WR/FLEX,3800,ATL@PIT 07/30/2026 04:00PM ET,PIT,11.9,,Roman Wilson,dk,3800,roman wilson,PIT,WR,00-0039739,auto_exact,high
+TE,Kyle Pitts Sr. (43670350),Kyle Pitts Sr.,43670350,TE/FLEX,3700,ATL@PIT 07/30/2026 04:00PM ET,ATL,9.7,,Kyle Pitts Sr.,dk,3700,kyle pitts,ATL,TE,00-0036970,auto_exact,high
+WR,Tyler Lockett (43670300),Tyler Lockett,43670300,WR/FLEX,3500,GB@TEN 07/30/2026 02:00PM ET,TEN,9.4,,Tyler Lockett,dk,3500,tyler lockett,TEN,WR,00-0032211,auto_fallback_team_mismatch,medium
+WR,Ray-Ray McCloud III (43670302),Ray-Ray McCloud III,43670302,WR/FLEX,3400,ATL@PIT 07/30/2026 04:00PM ET,ATL,7.7,,Ray-Ray McCloud III,dk,3400,ray ray mccloud,ATL,WR,00-0034407,auto_fallback_team_mismatch,medium
+TE,Pat Freiermuth (43670352),Pat Freiermuth,43670352,TE/FLEX,3400,ATL@PIT 07/30/2026 04:00PM ET,PIT,8.3,,Pat Freiermuth,dk,3400,pat freiermuth,PIT,TE,00-0036894,auto_exact,high
+DST,Vikings (43670380),Vikings,43670380,DST,3400,MIN@TB 07/30/2026 12:00PM ET,MIN,2.6,,Vikings,dk,3400,vikings,MIN,DST,DST_MIN,team_defense,high
+WR,Adam Thielen (43670304),Adam Thielen,43670304,WR/FLEX,3300,MIN@TB 07/30/2026 12:00PM ET,MIN,7.3,,Adam Thielen,dk,3300,adam thielen,MIN,WR,00-0030035,auto_fallback_team_mismatch,medium
+DST,Packers (43670381),Packers,43670381,DST,3300,GB@TEN 07/30/2026 02:00PM ET,GB,3.2,,Packers,dk,3300,packers,GB,DST,DST_GB,team_defense,high
+RB,Jordan Mason (43670238),Jordan Mason,43670238,RB/FLEX,3200,MIN@TB 07/30/2026 12:00PM ET,MIN,1.9,,Jordan Mason,dk,3200,jordan mason,MIN,RB,00-0037525,auto_exact,high
+WR,Van Jefferson (43670306),Van Jefferson,43670306,WR/FLEX,3200,GB@TEN 07/30/2026 02:00PM ET,TEN,8.1,,Van Jefferson,dk,3200,van jefferson,TEN,WR,00-0036415,auto_exact,high
+TE,Cade Otton (43670354),Cade Otton,43670354,TE/FLEX,3200,MIN@TB 07/30/2026 12:00PM ET,TB,9.1,,Cade Otton,dk,3200,cade otton,TB,TE,00-0038129,auto_exact,high
+DST,Buccaneers (43670382),Buccaneers,43670382,DST,3200,MIN@TB 07/30/2026 12:00PM ET,TB,2.8,,Buccaneers,dk,3200,buccaneers,TB,DST,DST_TB,team_defense,high
+RB,Rachaad White (43670240),Rachaad White,43670240,RB/FLEX,3100,MIN@TB 07/30/2026 12:00PM ET,TB,2.7,,Rachaad White,dk,3100,rachaad white,TB,RB,00-0037256,auto_exact,high
+WR,Romeo Doubs (43670308),Romeo Doubs,43670308,WR/FLEX,3100,GB@TEN 07/30/2026 02:00PM ET,GB,2.2,,Romeo Doubs,dk,3100,romeo doubs,GB,WR,00-0037816,auto_exact,high
+DST,Steelers (43670383),Steelers,43670383,DST,3100,ATL@PIT 07/30/2026 04:00PM ET,PIT,2.8,,Steelers,dk,3100,steelers,PIT,DST,DST_PIT,team_defense,high
+RB,Tyler Allgeier (43670242),Tyler Allgeier,43670242,RB/FLEX,3000,ATL@PIT 07/30/2026 04:00PM ET,ATL,1.3,,Tyler Allgeier,dk,3000,tyler allgeier,ATL,RB,00-0037263,auto_exact,high
+RB,Julius Chestnut (43670244),Julius Chestnut,43670244,RB/FLEX,3000,GB@TEN 07/30/2026 02:00PM ET,TEN,0.7,,Julius Chestnut,dk,3000,julius chestnut,TEN,RB,00-0037594,auto_exact,high
+RB,Kaleb Johnson (43670246),Kaleb Johnson,43670246,RB/FLEX,3000,ATL@PIT 07/30/2026 04:00PM ET,PIT,1.4,,Kaleb Johnson,dk,3000,kaleb johnson,PIT,RB,00-0040142,auto_exact,high
+RB,Tyjae Spears (43670248),Tyjae Spears,43670248,RB/FLEX,3000,GB@TEN 07/30/2026 02:00PM ET,TEN,0.8,,Tyjae Spears,dk,3000,tyjae spears,TEN,RB,00-0039032,auto_exact,high
+RB,MarShawn Lloyd (43670250),MarShawn Lloyd,43670250,RB/FLEX,3000,GB@TEN 07/30/2026 02:00PM ET,GB,0.3,,MarShawn Lloyd,dk,3000,marshawn lloyd,GB,RB,,,
+RB,Kenneth Gainwell (43670252),Kenneth Gainwell,43670252,RB/FLEX,3000,ATL@PIT 07/30/2026 04:00PM ET,PIT,0.0,,Kenneth Gainwell,dk,3000,kenneth gainwell,PIT,RB,00-0036919,manual_override,high
+RB,Ty Chandler (43670254),Ty Chandler,43670254,RB/FLEX,3000,MIN@TB 07/30/2026 12:00PM ET,MIN,0.0,,Ty Chandler,dk,3000,ty chandler,MIN,RB,00-0037276,auto_exact,high
+RB,Kalel Mullings (43670256),Kalel Mullings,43670256,RB/FLEX,3000,GB@TEN 07/30/2026 02:00PM ET,TEN,0.0,,Kalel Mullings,dk,3000,kalel mullings,TEN,RB,00-0040205,auto_exact,high
+RB,Jashaun Corbin (43670258),Jashaun Corbin,43670258,RB/FLEX,3000,ATL@PIT 07/30/2026 04:00PM ET,ATL,0.0,,Jashaun Corbin,dk,3000,jashaun corbin,ATL,RB,,,
+RB,Chris Brooks (43670260),Chris Brooks,43670260,RB/FLEX,3000,GB@TEN 07/30/2026 02:00PM ET,GB,0.0,,Chris Brooks,dk,3000,chris brooks,GB,RB,00-0038685,auto_exact,high
+RB,Sean Tucker (43670262),Sean Tucker,43670262,RB/FLEX,3000,MIN@TB 07/30/2026 12:00PM ET,TB,0.0,,Sean Tucker,dk,3000,sean tucker,TB,RB,00-0038951,auto_exact,high
+RB,C.J. Ham (43670264),C.J. Ham,43670264,RB/FLEX,3000,MIN@TB 07/30/2026 12:00PM ET,MIN,0.9,,C.J. Ham,dk,3000,cj ham,MIN,RB,00-0032918,auto_exact,high
+RB,Connor Heyward (43670266),Connor Heyward,43670266,RB/FLEX,3000,ATL@PIT 07/30/2026 04:00PM ET,PIT,1.2,,Connor Heyward,dk,3000,connor heyward,PIT,RB,00-0037304,auto_exact,high
+RB,Ko Kieft (43670268),Ko Kieft,43670268,RB/FLEX,3000,MIN@TB 07/30/2026 12:00PM ET,TB,0.2,,Ko Kieft,dk,3000,ko kieft,TB,RB,00-0037311,auto_fallback_name_only_position_mismatch,low
+RB,Ben Sims (43670270),Ben Sims,43670270,RB/FLEX,3000,GB@TEN 07/30/2026 02:00PM ET,GB,0.8,,Ben Sims,dk,3000,ben sims,GB,RB,00-0038809,auto_fallback_name_only_position_mismatch,low
+WR,Robert Woods (43670310),Robert Woods,43670310,WR/FLEX,3000,ATL@PIT 07/30/2026 04:00PM ET,PIT,2.4,,Robert Woods,dk,3000,robert woods,PIT,WR,,,
+WR,Jalen Nailor (43670312),Jalen Nailor,43670312,WR/FLEX,3000,MIN@TB 07/30/2026 12:00PM ET,MIN,0.0,,Jalen Nailor,dk,3000,jalen nailor,MIN,WR,00-0037291,auto_exact,high
+WR,Jalen McMillan (43670314),Jalen McMillan,43670314,WR/FLEX,3000,MIN@TB 07/30/2026 12:00PM ET,TB,0.6,,Jalen McMillan,dk,3000,jalen mcmillan,TB,WR,00-0039855,auto_exact,high
+WR,KhaDarel Hodge (43670316),KhaDarel Hodge,43670316,WR/FLEX,3000,ATL@PIT 07/30/2026 04:00PM ET,ATL,0.0,,KhaDarel Hodge,dk,3000,khadarel hodge,ATL,WR,00-0034854,auto_exact,high
+WR,Elic Ayomanor (43670318),Elic Ayomanor,43670318,WR/FLEX,3000,GB@TEN 07/30/2026 02:00PM ET,TEN,0.0,,Elic Ayomanor,dk,3000,elic ayomanor,TEN,WR,00-0040170,auto_exact,high
+WR,Dontayvion Wicks (43670320),Dontayvion Wicks,43670320,WR/FLEX,3000,GB@TEN 07/30/2026 02:00PM ET,GB,0.4,,Dontayvion Wicks,dk,3000,dontayvion wicks,GB,WR,00-0038393,auto_exact,high
+WR,Sterling Shepard (43670322),Sterling Shepard,43670322,WR/FLEX,3000,MIN@TB 07/30/2026 12:00PM ET,TB,0.0,,Sterling Shepard,dk,3000,sterling shepard,TB,WR,00-0032385,auto_exact,high
+WR,Jamal Agnew (43670324),Jamal Agnew,43670324,WR/FLEX,3000,ATL@PIT 07/30/2026 04:00PM ET,ATL,0.1,,Jamal Agnew,dk,3000,jamal agnew,ATL,WR,00-0033572,auto_exact,high
+WR,Tai Felton (43670326),Tai Felton,43670326,WR/FLEX,3000,MIN@TB 07/30/2026 12:00PM ET,MIN,0.0,,Tai Felton,dk,3000,tai felton,MIN,WR,00-0040154,auto_exact,high
+WR,Scotty Miller (43670328),Scotty Miller,43670328,WR/FLEX,3000,ATL@PIT 07/30/2026 04:00PM ET,PIT,0.0,,Scotty Miller,dk,3000,scotty miller,PIT,WR,00-0035298,manual_override,high
+WR,Chimere Dike (43670330),Chimere Dike,43670330,WR/FLEX,3000,GB@TEN 07/30/2026 02:00PM ET,TEN,0.0,,Chimere Dike,dk,3000,chimere dike,TEN,WR,00-0040705,auto_exact,high
+WR,Ben Skowronek (43670332),Ben Skowronek,43670332,WR/FLEX,3000,ATL@PIT 07/30/2026 04:00PM ET,PIT,0.0,,Ben Skowronek,dk,3000,ben skowronek,PIT,WR,00-0036862,auto_exact,high
+WR,Savion Williams (43670334),Savion Williams,43670334,WR/FLEX,3000,GB@TEN 07/30/2026 02:00PM ET,GB,0.0,,Savion Williams,dk,3000,savion williams,GB,WR,00-0040009,auto_exact,high
+WR,Xavier Restrepo (43670336),Xavier Restrepo,43670336,WR/FLEX,3000,GB@TEN 07/30/2026 02:00PM ET,TEN,0.0,,Xavier Restrepo,dk,3000,xavier restrepo,TEN,WR,00-0040522,auto_exact,high
+WR,Casey Washington (43670338),Casey Washington,43670338,WR/FLEX,3000,ATL@PIT 07/30/2026 04:00PM ET,ATL,0.0,,Casey Washington,dk,3000,casey washington,ATL,WR,00-0039394,auto_exact,high
+WR,Myles Price (43670340),Myles Price,43670340,WR/FLEX,3000,MIN@TB 07/30/2026 12:00PM ET,MIN,0.0,,Myles Price,dk,3000,myles price,MIN,WR,00-0040506,auto_exact,high
+WR,Ryan Miller (43670342),Ryan Miller,43670342,WR/FLEX,3000,MIN@TB 07/30/2026 12:00PM ET,TB,0.0,,Ryan Miller,dk,3000,ryan miller,TB,WR,00-0038824,auto_exact,high
+DST,Titans (43670384),Titans,43670384,DST,2900,GB@TEN 07/30/2026 02:00PM ET,TEN,1.9,,Titans,dk,2900,titans,TEN,DST,DST_TEN,team_defense,high
+DST,Falcons (43670385),Falcons,43670385,DST,2800,ATL@PIT 07/30/2026 04:00PM ET,ATL,2.5,,Falcons,dk,2800,falcons,ATL,DST,DST_ATL,team_defense,high
+TE,Payne Durham (43670356),Payne Durham,43670356,TE/FLEX,2600,MIN@TB 07/30/2026 12:00PM ET,TB,2.2,,Payne Durham,dk,2600,payne durham,TB,TE,00-0039050,auto_exact,high
+TE,Jonnu Smith (43670358),Jonnu Smith,43670358,TE/FLEX,2500,ATL@PIT 07/30/2026 04:00PM ET,PIT,0.8,,Jonnu Smith,dk,2500,jonnu smith,PIT,TE,00-0033858,auto_exact,high
+TE,Luke Musgrave (43670360),Luke Musgrave,43670360,TE/FLEX,2500,GB@TEN 07/30/2026 02:00PM ET,GB,1.4,,Luke Musgrave,dk,2500,luke musgrave,GB,TE,00-0039144,auto_exact,high
+TE,Gunnar Helm (43670362),Gunnar Helm,43670362,TE/FLEX,2500,GB@TEN 07/30/2026 02:00PM ET,TEN,1.5,,Gunnar Helm,dk,2500,gunnar helm,TEN,TE,00-0040584,auto_exact,high
+TE,Charlie Woerner (43670364),Charlie Woerner,43670364,TE/FLEX,2500,ATL@PIT 07/30/2026 04:00PM ET,ATL,0.6,,Charlie Woerner,dk,2500,charlie woerner,ATL,TE,00-0036429,auto_exact,high
+TE,Josh Oliver (43670366),Josh Oliver,43670366,TE/FLEX,2500,MIN@TB 07/30/2026 12:00PM ET,MIN,1.5,,Josh Oliver,dk,2500,josh oliver,MIN,TE,00-0035249,auto_exact,high
+TE,Darnell Washington (43670368),Darnell Washington,43670368,TE/FLEX,2500,ATL@PIT 07/30/2026 04:00PM ET,PIT,0.0,,Darnell Washington,dk,2500,darnell washington,PIT,TE,00-0038558,auto_exact,high
+TE,Teagan Quitoriano (43670370),Teagan Quitoriano,43670370,TE/FLEX,2500,ATL@PIT 07/30/2026 04:00PM ET,ATL,0.5,,Teagan Quitoriano,dk,2500,teagan quitoriano,ATL,TE,00-0037277,auto_exact,high
+TE,John FitzPatrick (43670372),John FitzPatrick,43670372,TE/FLEX,2500,GB@TEN 07/30/2026 02:00PM ET,GB,0.2,,John FitzPatrick,dk,2500,john fitzpatrick,GB,TE,00-0037306,auto_exact,high
+TE,David Martin-Robinson (43670374),David Martin-Robinson,43670374,TE/FLEX,2500,GB@TEN 07/30/2026 02:00PM ET,TEN,0.1,,David Martin-Robinson,dk,2500,david martin robinson,TEN,TE,00-0039648,auto_exact,high
+TE,Devin Culp (43670376),Devin Culp,43670376,TE/FLEX,2500,MIN@TB 07/30/2026 12:00PM ET,TB,0.1,,Devin Culp,dk,2500,devin culp,TB,TE,00-0039754,auto_exact,high
+TE,Ben Yurosek (43670378),Ben Yurosek,43670378,TE/FLEX,2500,MIN@TB 07/30/2026 12:00PM ET,MIN,0.1,,Ben Yurosek,dk,2500,ben yurosek,MIN,TE,00-0040509,auto_exact,high
