@@ -2731,7 +2731,9 @@
     renderPlayerList();
   });
 
-  document.getElementById("playerListHead").addEventListener("click", function (e) {
+  // Sort column clicks delegated to playerList (playerListHead is injected
+  // dynamically via innerHTML so it never exists at script-init time).
+  document.getElementById("playerList").addEventListener("click", function (e) {
     var col = e.target.closest(".sortcol[data-sort]");
     if (!col) return;
     var key = col.getAttribute("data-sort");
