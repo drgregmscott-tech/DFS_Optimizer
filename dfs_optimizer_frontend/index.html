@@ -1355,7 +1355,7 @@
         <select id="slateSelect"></select>
         <button class="slate-delete-btn" id="btnSlateDelete" title="Delete this slate (removes from this browser and cloud)">Delete</button>
       </div>
-      <div class="hint">Accepts either <code>final_projections_&#123;site&#125;_&#123;slate_id&#125;.csv</code> (to build lineups) or an already-built <code>lineup_*.csv</code> (to view). Give each slate a short name — it can be anything (classic_wk3, preseason_wk1, thanksgiving, early_wk4). Persists across reloads and syncs to cloud.</div>
+      <div class="hint">Accepts either <code>final_projections_&#123;site&#125;_&#123;slate_id&#125;.csv</code> (to build lineups) or an already-built <code>lineup_*.csv</code> (to view). The name field is pre-filled with the real <code>--slate-id</code> from the filename — leave it as-is unless you have a reason to change it, since this exact value is what "Build Lineups" sends to the real solver. Persists across reloads and syncs to cloud.</div>
     </div>
   </div>
 
@@ -1820,8 +1820,21 @@
       }
       // Stash the parsed data and show the label field.
       pendingSlate = { file: file, rows: rows, kind: kind };
-      // Pre-fill label from filename (strip extension).
+      // Pre-fill label from filename. FIX (four-layer architecture gap,
+      // found live 2026-07-31): this used to just strip the .csv extension,
+      // leaving the FULL filename (e.g. "final_projections_dk_madden_07312026")
+      // as the default label. Since this label becomes the slate_id sent to
+      // optimizer.py via dispatch, an un-edited default produced a slate_id
+      // that didn't match the real backend --slate-id build_projections.py
+      // used -- causing optimizer.py to look for a double-prefixed filename
+      // that never existed. Strip the known output-filename prefixes
+      // (final_projections_{site}_, lineup_single_{site}_, lineups_multi_{site}_)
+      // first, so the default label/slate_id matches the backend's real
+      // --slate-id by construction, not just when the user happens to type
+      // it correctly.
       var suggested = file.name.replace(/\.[^.]+$/, "");
+      var prefixMatch = suggested.match(/^(?:final_projections|lineup_single|lineups_multi)_(?:dk|fd)_(.+)$/i);
+      if (prefixMatch) { suggested = prefixMatch[1]; }
       document.getElementById("slateLabel").value = suggested;
       document.getElementById("slateLabelRow").style.display = "flex";
       setSlateStatus(rows.length + (kind === "pool" ? " players" : " lineup rows") + " ready — enter a name then click Save.");
