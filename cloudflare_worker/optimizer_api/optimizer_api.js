@@ -71,14 +71,14 @@
  *
  * API
  * ---
- * GET /?action=dispatch&token=<WORKER_AUTH_TOKEN>&site=dk&week=10
+ * GET /?action=dispatch&token=<WORKER_AUTH_TOKEN>&site=dk&slate_id=classic_wk10
  *     [&mode=single|multi&n_lineups=&max_exposure=&uniqueness=
  *      &randomization_pct=&seed=&stack_mode=&stack_size=&stack_positions=
  *      &bring_back=true&stack_team=&stack_game=&game_stack_min_players=
  *      &mini_stack_type=&stack_candidate_pool=&stack_diversify=
  *      &lock=id1,id2&exclude=id3,id4]
  *   -> 200 { "request_id": "<uuid>" }
- *   Every param besides token/site/week is OPTIONAL and passed through
+ *   Every param besides token/site/slate_id is OPTIONAL and passed through
  *   unchanged to run_optimizer_dispatch.yml, which itself only sets a CLI
  *   flag when the field is present (decision, see that file) -- this
  *   Worker never invents a default on the UI's behalf.
@@ -167,9 +167,9 @@ function json(body, status = 200) {
 
 async function handleDispatch(url, env) {
   const site = url.searchParams.get("site");
-  const week = url.searchParams.get("week");
-  if (!site || !week) {
-    return json({ error: "site and week are required." }, 400);
+  const slateId = url.searchParams.get("slate_id");
+  if (!validSite(site) || !validSlateId(slateId)) {
+    return json({ error: "site must be dk/fd and slate_id must be 1-64 alphanumeric/hyphen/underscore chars." }, 400);
   }
   if (!env.GH_DISPATCH_TOKEN || !env.GITHUB_OWNER || !env.GITHUB_REPO) {
     return json(
@@ -190,7 +190,7 @@ async function handleDispatch(url, env) {
   // real live testing this session: a request combining stacking + lock +
   // exclude hit "422 No more than 10 properties are allowed" with the
   // flat structure). Nesting keeps client_payload at a fixed 4 top-level
-  // keys (request_id, site, week, params) regardless of how many optional
+  // keys (request_id, site, slate_id, params) regardless of how many optional
   // fields are set -- run_optimizer_dispatch.yml's arg-builder reads from
   // client_payload.params accordingly.
   const passthroughKeys = [
@@ -207,7 +207,7 @@ async function handleDispatch(url, env) {
     const v = url.searchParams.get(key);
     if (v !== null && v !== "") params[key] = v;
   }
-  const client_payload = { request_id, site, week, params };
+  const client_payload = { request_id, site, slate_id: slateId, params };
 
   const dispatchUrl = `https://api.github.com/repos/${env.GITHUB_OWNER}/${env.GITHUB_REPO}/dispatches`;
   const ghResponse = await fetch(dispatchUrl, {

@@ -1355,7 +1355,7 @@
         <select id="slateSelect"></select>
         <button class="slate-delete-btn" id="btnSlateDelete" title="Delete this slate (removes from this browser and cloud)">Delete</button>
       </div>
-      <div class="hint">Accepts either <code>final_projections_&#123;site&#125;_&#123;week&#125;.csv</code> (to build lineups) or an already-built <code>lineup_*.csv</code> (to view). Give each slate a short name — it can be anything (classic_wk3, preseason_wk1, thanksgiving, early_wk4). Persists across reloads and syncs to cloud.</div>
+      <div class="hint">Accepts either <code>final_projections_&#123;site&#125;_&#123;slate_id&#125;.csv</code> (to build lineups) or an already-built <code>lineup_*.csv</code> (to view). Give each slate a short name — it can be anything (classic_wk3, preseason_wk1, thanksgiving, early_wk4). Persists across reloads and syncs to cloud.</div>
     </div>
   </div>
 
@@ -1548,7 +1548,7 @@
 
 </div>
 
-<footer class="footer-note">lineup_single_&#123;site&#125;_&#123;week&#125;.csv or lineups_multi_&#123;site&#125;_&#123;week&#125;.csv — parsed locally in your browser, nothing is uploaded anywhere.</footer>
+<footer class="footer-note">lineup_single_&#123;site&#125;_&#123;slate_id&#125;.csv or lineups_multi_&#123;site&#125;_&#123;slate_id&#125;.csv — parsed locally in your browser, nothing is uploaded anywhere.</footer>
 
 <script>
 (function () {
@@ -3036,20 +3036,22 @@
 
   function buildDispatchParams() {
     var site = state.activeSite;
-    // Week is stored in the slate record at upload time (auto-detected from
-    // filename like final_projections_dk_10.csv, else 1 for Madden/preseason).
-    // Read it back from localStorage for the currently-selected slate.
+    // FIX (four-layer architecture gap, found live 2026-07-31): dispatch
+    // used to send `week` (auto-detected from the projections filename,
+    // defaulting to "1" for Madden Sim/preseason since those files no
+    // longer carry a numeric week in the name once build_projections.py
+    // switched its output to final_projections_{site}_{slate_id}.csv).
+    // That silently sent every non-week-numbered slate's build request to
+    // optimizer.py as week=1, which reads final_projections_{site}_1.csv --
+    // a completely different, often-stale file from the one actually
+    // loaded and shown in the UI. slate_id is the correct, unambiguous key
+    // for every downstream layer (optimizer.py --slate-id, the dispatch
+    // workflow's arg builder, and this Worker's client_payload.slate_id)
+    // and is already available here from the active dropdown selection --
+    // no lookup or fallback needed.
     var selVal = document.getElementById("slateSelect").value || "";
     var slateId = selVal.split("|").slice(1).join("|") || "";
-    var week = "1";
-    if (slateId) {
-      try {
-        var raw = localStorage.getItem(slateKey(site, slateId));
-        if (raw) { var rec = JSON.parse(raw); week = String(rec.week || "1"); }
-      } catch (e) { /* fall through to week=1 */ }
-    }
-    if (!week) week = "1";
-    var params = { site: site, week: week, mode: "multi" };
+    var params = { site: site, slate_id: slateId, mode: "multi" };
 
     params.n_lineups = document.getElementById("ctrlNLineups").value;
     params.max_exposure = String(parseFloat(document.getElementById("ctrlMaxExposure").value) / 100);

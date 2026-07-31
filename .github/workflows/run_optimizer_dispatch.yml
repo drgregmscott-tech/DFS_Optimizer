@@ -8,7 +8,7 @@
 # `optimizer.py` (same file, same solver, same constraints as every other
 # session's output -- no second implementation to drift out of sync), and
 # writes its result to a REQUEST-SCOPED file rather than the canonical
-# lineup_single_{site}_{week}.csv / lineups_multi_{site}_{week}.csv path
+# lineup_single_{site}_{slate_id}.csv / lineups_multi_{site}_{slate_id}.csv path
 # (optimizer.py's `--request-id` flag, decision #27) -- so an interactive
 # "try these settings" preview can never clobber the canonical output that
 # live automation (refresh_data.yml) and other consumers read from.
@@ -56,8 +56,8 @@ jobs:
             echo "::error::client_payload.request_id is required -- refusing to run without a scoped output path (decision #27's whole point)."
             exit 1
           fi
-          if [ -z "${{ github.event.client_payload.site }}" ] || [ -z "${{ github.event.client_payload.week }}" ]; then
-            echo "::error::client_payload.site and client_payload.week are required."
+          if [ -z "${{ github.event.client_payload.site }}" ] || [ -z "${{ github.event.client_payload.slate_id }}" ]; then
+            echo "::error::client_payload.site and client_payload.slate_id are required."
             exit 1
           fi
 
@@ -75,7 +75,7 @@ jobs:
         run: pip install -r requirements.txt
 
       # Builds the optimizer.py CLI invocation from the dispatch payload.
-      # Every field is OPTIONAL except site/week/request_id (already
+      # Every field is OPTIONAL except site/slate_id/request_id (already
       # validated above) -- an omitted field means "use optimizer.py's own
       # default," never a value this workflow invents on its behalf. This
       # keeps the exact same "flag, don't silently assume" behavior the CLI
@@ -97,7 +97,7 @@ jobs:
           def bool_flag(name, key):
               return [name] if params.get(key) in (True, "true", "1", 1) else []
 
-          # site/week/request_id stay top-level in client_payload; every
+          # site/slate_id/request_id stay top-level in client_payload; every
           # optional field is nested under client_payload.params (Session
           # 7.2b hotfix -- see optimizer_api.js's own comment: GitHub's
           # repository_dispatch caps client_payload at 10 top-level
@@ -107,7 +107,7 @@ jobs:
 
           args = []
           args += ["--site", str(p["site"])]
-          args += ["--week", str(int(p["week"]))]
+          args += ["--slate-id", str(p["slate_id"])]
           args += ["--request-id", str(p["request_id"])]
 
           if params.get("mode") == "multi":
@@ -154,7 +154,7 @@ jobs:
         # then read by the next step to give the UI a REAL, specific error
         # instead of a generic one. Gap found via real live testing this
         # session: the original version of this step gave no way to tell
-        # "week 1 has no final_projections file" apart from any other
+        # "slate has no final_projections file" apart from any other
         # failure without digging through the Actions log by hand.
         run: python3 scripts/optimizer.py ${{ steps.build_args.outputs.args }} > optimizer_run_output.log 2>&1
 

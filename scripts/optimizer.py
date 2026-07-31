@@ -4,8 +4,8 @@ optimizer.py
 
 Session 3.1 -- Single Lineup Optimizer.
 
-For a given site (DK/FD) and week, reads that site's
-`final_projections_{site}_{week}.csv` (Session 2.4, extended in Session 3.1
+For a given site (DK/FD) and slate, reads that site's
+`final_projections_{site}_{slate_id}.csv` (Session 2.4, extended in Session 3.1
 to include DST/DEF -- see build_projections.py's module docstring, decision
 #5) and solves for the single salary-cap-legal lineup that maximizes total
 projected points, using each site's own cap/roster rules from
@@ -65,11 +65,11 @@ pattern as every prior session):
    exists at the same slot.
 
 Usage:
-    python3 optimizer.py --site dk --week 10
-    python3 optimizer.py --site fd --week 10
+    python3 optimizer.py --site dk --slate-id classic_wk10
+    python3 optimizer.py --site fd --slate-id classic_wk10
 
 Outputs:
-    output/lineup_single_{site}_{week}.csv
+    output/lineup_single_{site}_{slate_id}.csv
     One row per roster slot: roster_slot, player_name, position, team,
     salary, projection. Also prints total salary used, cap remaining,
     and total projected points to stdout.
@@ -777,12 +777,12 @@ def validate_stack(lineup: pd.DataFrame, stack_mode: str,
 # Step 0: Load projections
 # ---------------------------------------------------------------------------
 
-def load_final_projections(site: str, week: int) -> pd.DataFrame:
-    path = OUTPUT_DIR / f"final_projections_{site}_{week}.csv"
+def load_final_projections(site: str, slate_id: str) -> pd.DataFrame:
+    path = OUTPUT_DIR / f"final_projections_{site}_{slate_id}.csv"
     if not path.exists():
         raise FileNotFoundError(
             f"{path} not found. Run build_projections.py --site {site} "
-            f"--week {week} first (Session 2.4, extended in Session 3.1 "
+            f"--slate-id {slate_id} first (Session 2.4, extended in Session 3.1 "
             f"for DST/DEF -- decision #5)."
         )
     # Session 7.3 fix -- site_player_id MUST be read as str, not left to
@@ -1335,7 +1335,7 @@ def _stack_label(cand: dict) -> str:
     return ""
 
 
-def build_single_lineup(site: str, week: int, randomization_pct: float = DEFAULT_RANDOMIZATION_PCT,
+def build_single_lineup(site: str, slate_id: str, randomization_pct: float = DEFAULT_RANDOMIZATION_PCT,
                          rng: np.random.Generator = None,
                          randomization_mode: str = "pct",
                          stack_mode: str = DEFAULT_STACK_MODE, stack_size: int = DEFAULT_STACK_SIZE,
@@ -1352,7 +1352,7 @@ def build_single_lineup(site: str, week: int, randomization_pct: float = DEFAULT
                          min_total_ownership: float = 0.0,
                          flex_positions: set = None) -> pd.DataFrame:
     config = SITE_CONFIGS[site]
-    players = load_final_projections(site, week)
+    players = load_final_projections(site, slate_id)
     fixed_counts, flex_count = parse_roster_requirements(config["roster_slots"])
 
     # Session 7.2 -- exclude (decision #22): filtered once, up front, so the
@@ -1472,7 +1472,7 @@ def build_single_lineup(site: str, week: int, randomization_pct: float = DEFAULT
 # Session 3.2 -- Multi-lineup generation with exposure caps
 # ---------------------------------------------------------------------------
 
-def build_multi_lineup(site: str, week: int, n_lineups: int = DEFAULT_N_LINEUPS,
+def build_multi_lineup(site: str, slate_id: str, n_lineups: int = DEFAULT_N_LINEUPS,
                         max_exposure_pct: float = DEFAULT_MAX_EXPOSURE_PCT,
                         lam: float = 0.0,
                         uniqueness: int = DEFAULT_UNIQUENESS,
@@ -1526,7 +1526,7 @@ def build_multi_lineup(site: str, week: int, n_lineups: int = DEFAULT_N_LINEUPS,
     override, not a conflicting rule -- decision #23), and are exempt from
     the uniqueness swap count inside solve_lineup() for the same reason."""
     config = SITE_CONFIGS[site]
-    players_all = load_final_projections(site, week)
+    players_all = load_final_projections(site, slate_id)
     fixed_counts, flex_count = parse_roster_requirements(config["roster_slots"])
     rng = np.random.default_rng(seed) if randomization_pct > 0 else None
 
@@ -1751,7 +1751,9 @@ def build_multi_lineup(site: str, week: int, n_lineups: int = DEFAULT_N_LINEUPS,
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--site", choices=["dk", "fd"], required=True)
-    parser.add_argument("--week", type=int, required=True)
+    parser.add_argument("--slate-id", required=True,
+        help="e.g. classic_wk10 or madden_07312026 -- matches build_projections.py's "
+             "--slate-id and names the input/output files.")
     parser.add_argument(
         "--n-lineups", type=int, default=None,
         help="If set, generate this many lineups with exposure caps (Session "
@@ -1905,7 +1907,7 @@ def main():
         "--request-id", default=None,
         help="Decision #27: when set, output is written to "
              "output/ui_requests/{request-id}.csv INSTEAD OF the canonical "
-             "lineup_single_{site}_{week}.csv / lineups_multi_{site}_{week}.csv "
+             "lineup_single_{site}_{slate_id}.csv / lineups_multi_{site}_{slate_id}.csv "
              "path. Exists so an ad-hoc/interactive run (e.g. a UI 'try these "
              "settings' request dispatched via GitHub Actions) can never "
              "silently overwrite the canonical output file that live "
@@ -1996,7 +1998,7 @@ def main():
 
     if args.n_lineups:
         lineups, exposure_count, n_generated = build_multi_lineup(
-            args.site, args.week, n_lineups=args.n_lineups,
+            args.site, args.slate_id, n_lineups=args.n_lineups,
             max_exposure_pct=args.max_exposure,
             uniqueness=args.uniqueness,
             randomization_pct=args.randomization_pct,
@@ -2015,14 +2017,14 @@ def main():
             out_path = OUTPUT_DIR / "ui_requests" / f"{args.request_id}.csv"
             out_path.parent.mkdir(parents=True, exist_ok=True)
         else:
-            out_path = OUTPUT_DIR / f"lineups_multi_{args.site}_{args.week}.csv"
+            out_path = OUTPUT_DIR / f"lineups_multi_{args.site}_{args.slate_id}.csv"
         lineups.to_csv(out_path, index=False)
 
         exposure_cap = max(1, math.floor(args.max_exposure * args.n_lineups))
         top_exposure = sorted(exposure_count.items(), key=lambda kv: kv[1], reverse=True)[:10]
 
         print(f"[{config['label']}] Generated {n_generated}/{args.n_lineups} lineups "
-              f"for week {args.week} (exposure cap: {exposure_cap}/{args.n_lineups} "
+              f"for slate {args.slate_id} (exposure cap: {exposure_cap}/{args.n_lineups} "
               f"lineups = {args.max_exposure:.0%}"
               + (f", randomization: {args.randomization_pct:.0f}%)" if args.randomization_pct > 0 else ", randomization: off)"))
         if locked_player_ids or excluded_player_ids:
@@ -2047,7 +2049,7 @@ def main():
         print(f"Wrote {out_path}")
     else:
         lineup = build_single_lineup(
-            args.site, args.week,
+            args.site, args.slate_id,
             randomization_pct=args.randomization_pct,
             randomization_mode=args.randomization_mode,
             rng=np.random.default_rng(args.seed) if args.randomization_pct > 0 else None,
@@ -2063,13 +2065,13 @@ def main():
             out_path = OUTPUT_DIR / "ui_requests" / f"{args.request_id}.csv"
             out_path.parent.mkdir(parents=True, exist_ok=True)
         else:
-            out_path = OUTPUT_DIR / f"lineup_single_{args.site}_{args.week}.csv"
+            out_path = OUTPUT_DIR / f"lineup_single_{args.site}_{args.slate_id}.csv"
         lineup.to_csv(out_path, index=False)
 
         total_salary = lineup["salary"].sum()
         total_points = lineup["projection"].sum()
         lineup_value = round(total_points / (total_salary / 1000), 2) if total_salary else 0.0
-        print(f"[{config['label']}] Optimal single lineup for week {args.week}"
+        print(f"[{config['label']}] Optimal single lineup for slate {args.slate_id}"
               + (f" (randomization: {args.randomization_pct:.0f}%):" if args.randomization_pct > 0 else ":"))
         if locked_player_ids or excluded_player_ids:
             print(f"Locked: {sorted(locked_player_ids) or 'none'} | Excluded: {sorted(excluded_player_ids) or 'none'}")
