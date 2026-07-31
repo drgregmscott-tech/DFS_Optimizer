@@ -1,0 +1,93 @@
+Position,Name + ID,Name,ID,Roster Position,Salary,Game Info,TeamAbbrev,AvgPointsPerGame,Status,name,site,salary,normalized_name,normalized_team,position_upper,player_id,match_method,match_confidence
+RB,Christian McCaffrey (43725072),Christian McCaffrey,43725072,RB/FLEX,9100,CIN@SF 08/03/2026 12:00PM ET,SF,21.9,,Christian McCaffrey,dk,9100,christian mccaffrey,SF,RB,00-0033280,auto_exact,high
+RB,Kenneth Walker III (43725074),Kenneth Walker III,43725074,RB/FLEX,8500,SEA@NYJ 08/03/2026 02:00PM ET,SEA,20.4,,Kenneth Walker III,dk,8500,kenneth walker,SEA,RB,00-0038134,auto_exact,high
+RB,Breece Hall (43725076),Breece Hall,43725076,RB/FLEX,8200,SEA@NYJ 08/03/2026 02:00PM ET,NYJ,18.2,,Breece Hall,dk,8200,breece hall,NYJ,RB,00-0038120,auto_exact,high
+RB,Chase Brown (43725078),Chase Brown,43725078,RB/FLEX,7500,CIN@SF 08/03/2026 12:00PM ET,CIN,19.3,,Chase Brown,dk,7500,chase brown,CIN,RB,00-0038597,auto_exact,high
+RB,D'Andre Swift (43725080),D'Andre Swift,43725080,RB/FLEX,7200,NE@CHI 08/03/2026 04:00PM ET,CHI,16.0,,D'Andre Swift,dk,7200,dandre swift,CHI,RB,00-0036275,auto_exact,high
+WR,Ja'Marr Chase (43725116),Ja'Marr Chase,43725116,WR/FLEX,7100,CIN@SF 08/03/2026 12:00PM ET,CIN,20.0,,Ja'Marr Chase,dk,7100,jamarr chase,CIN,WR,00-0036900,auto_exact,high
+QB,Joe Burrow (43725060),Joe Burrow,43725060,QB,7000,CIN@SF 08/03/2026 12:00PM ET,CIN,25.7,,Joe Burrow,dk,7000,joe burrow,CIN,QB,00-0036442,auto_exact,high
+WR,Garrett Wilson (43725118),Garrett Wilson,43725118,WR/FLEX,6400,SEA@NYJ 08/03/2026 02:00PM ET,NYJ,14.9,,Garrett Wilson,dk,6400,garrett wilson,NYJ,WR,00-0037740,auto_exact,high
+QB,Caleb Williams (43725061),Caleb Williams,43725061,QB,6200,NE@CHI 08/03/2026 04:00PM ET,CHI,23.1,,Caleb Williams,dk,6200,caleb williams,CHI,QB,00-0039918,auto_exact,high
+WR,Stefon Diggs (43725120),Stefon Diggs,43725120,WR/FLEX,6100,NE@CHI 08/03/2026 04:00PM ET,NE,14.7,,Stefon Diggs,dk,6100,stefon diggs,NE,WR,00-0031588,auto_exact,high
+QB,Justin Fields (43725062),Justin Fields,43725062,QB,6000,SEA@NYJ 08/03/2026 02:00PM ET,NYJ,24.2,,Justin Fields,dk,6000,justin fields,NYJ,QB,00-0036945,auto_exact,high
+TE,Hunter Henry (43725186),Hunter Henry,43725186,TE/FLEX,5900,NE@CHI 08/03/2026 04:00PM ET,NE,15.3,,Hunter Henry,dk,5900,hunter henry,NE,TE,00-0033090,auto_exact,high
+QB,Sam Darnold (43725063),Sam Darnold,43725063,QB,5800,SEA@NYJ 08/03/2026 02:00PM ET,SEA,22.4,,Sam Darnold,dk,5800,sam darnold,SEA,QB,00-0034869,auto_exact,high
+QB,Drake Maye (43725064),Drake Maye,43725064,QB,5600,NE@CHI 08/03/2026 04:00PM ET,NE,22.5,,Drake Maye,dk,5600,drake maye,NE,QB,00-0039851,auto_exact,high
+QB,Brock Purdy (43725065),Brock Purdy,43725065,QB,5300,CIN@SF 08/03/2026 12:00PM ET,SF,20.3,,Brock Purdy,dk,5300,brock purdy,SF,QB,00-0037834,auto_exact,high
+RB,TreVeyon Henderson (43725082),TreVeyon Henderson,43725082,RB/FLEX,5300,NE@CHI 08/03/2026 04:00PM ET,NE,13.1,,TreVeyon Henderson,dk,5300,treveyon henderson,NE,RB,00-0040734,auto_exact,high
+WR,Tee Higgins (43725122),Tee Higgins,43725122,WR/FLEX,5300,CIN@SF 08/03/2026 12:00PM ET,CIN,15.0,,Tee Higgins,dk,5300,tee higgins,CIN,WR,00-0036410,auto_exact,high
+QB,Tyrod Taylor (43725066),Tyrod Taylor,43725066,QB,5000,SEA@NYJ 08/03/2026 02:00PM ET,NYJ,0.0,,Tyrod Taylor,dk,5000,tyrod taylor,NYJ,QB,00-0028118,auto_exact,high
+QB,Mac Jones (43725067),Mac Jones,43725067,QB,5000,CIN@SF 08/03/2026 12:00PM ET,SF,0.0,,Mac Jones,dk,5000,mac jones,SF,QB,00-0036972,auto_exact,high
+QB,Joshua Dobbs (43725068),Joshua Dobbs,43725068,QB,5000,NE@CHI 08/03/2026 04:00PM ET,NE,0.0,,Joshua Dobbs,dk,5000,joshua dobbs,NE,QB,00-0033949,auto_exact,high
+QB,Jake Browning (43725069),Jake Browning,43725069,QB,5000,CIN@SF 08/03/2026 12:00PM ET,CIN,0.0,,Jake Browning,dk,5000,jake browning,CIN,QB,00-0035100,auto_exact,high
+QB,Jalen Milroe (43725070),Jalen Milroe,43725070,QB,5000,SEA@NYJ 08/03/2026 02:00PM ET,SEA,0.0,,Jalen Milroe,dk,5000,jalen milroe,SEA,QB,00-0040673,auto_exact,high
+QB,Case Keenum (43725071),Case Keenum,43725071,QB,5000,NE@CHI 08/03/2026 04:00PM ET,CHI,0.0,,Case Keenum,dk,5000,case keenum,CHI,QB,,,
+WR,Brandon Aiyuk (43725124),Brandon Aiyuk,43725124,WR/FLEX,5000,CIN@SF 08/03/2026 12:00PM ET,SF,12.2,,Brandon Aiyuk,dk,5000,brandon aiyuk,SF,WR,,,
+WR,Jaxon Smith-Njigba (43725126),Jaxon Smith-Njigba,43725126,WR/FLEX,4700,SEA@NYJ 08/03/2026 02:00PM ET,SEA,10.4,,Jaxon Smith-Njigba,dk,4700,jaxon smith njigba,SEA,WR,00-0038543,auto_exact,high
+WR,Rome Odunze (43725128),Rome Odunze,43725128,WR/FLEX,4600,NE@CHI 08/03/2026 04:00PM ET,CHI,11.0,,Rome Odunze,dk,4600,rome odunze,CHI,WR,00-0039919,auto_exact,high
+TE,Mike Gesicki (43725188),Mike Gesicki,43725188,TE/FLEX,4600,CIN@SF 08/03/2026 12:00PM ET,CIN,14.0,,Mike Gesicki,dk,4600,mike gesicki,CIN,TE,00-0034829,auto_exact,high
+TE,George Kittle (43725190),George Kittle,43725190,TE/FLEX,4500,CIN@SF 08/03/2026 12:00PM ET,SF,10.9,,George Kittle,dk,4500,george kittle,SF,TE,00-0033288,auto_exact,high
+WR,Luther Burden III (43725130),Luther Burden III,43725130,WR/FLEX,4400,NE@CHI 08/03/2026 04:00PM ET,CHI,10.8,,Luther Burden III,dk,4400,luther burden,CHI,WR,00-0040735,auto_exact,high
+WR,Jauan Jennings (43725132),Jauan Jennings,43725132,WR/FLEX,4300,CIN@SF 08/03/2026 12:00PM ET,SF,10.9,,Jauan Jennings,dk,4300,jauan jennings,SF,WR,00-0036259,auto_exact,high
+WR,Allen Lazard (43725134),Allen Lazard,43725134,WR/FLEX,4200,SEA@NYJ 08/03/2026 02:00PM ET,NYJ,11.1,,Allen Lazard,dk,4200,allen lazard,NYJ,WR,00-0034521,auto_exact,high
+TE,Elijah Arroyo (43725192),Elijah Arroyo,43725192,TE/FLEX,4200,SEA@NYJ 08/03/2026 02:00PM ET,SEA,10.4,,Elijah Arroyo,dk,4200,elijah arroyo,SEA,TE,00-0040739,auto_exact,high
+WR,DJ Moore (43725136),DJ Moore,43725136,WR/FLEX,4100,NE@CHI 08/03/2026 04:00PM ET,CHI,11.6,,DJ Moore,dk,4100,dj moore,CHI,WR,00-0034827,auto_exact,high
+WR,Cooper Kupp (43725138),Cooper Kupp,43725138,WR/FLEX,4000,SEA@NYJ 08/03/2026 02:00PM ET,SEA,10.7,,Cooper Kupp,dk,4000,cooper kupp,SEA,WR,00-0033908,auto_exact,high
+WR,Ricky Pearsall (43725140),Ricky Pearsall,43725140,WR/FLEX,3900,CIN@SF 08/03/2026 12:00PM ET,SF,10.9,,Ricky Pearsall,dk,3900,ricky pearsall,SF,WR,00-0039916,auto_exact,high
+WR,Kayshon Boutte (43725142),Kayshon Boutte,43725142,WR/FLEX,3600,NE@CHI 08/03/2026 04:00PM ET,NE,10.7,,Kayshon Boutte,dk,3600,kayshon boutte,NE,WR,00-0038608,auto_exact,high
+WR,Andrei Iosivas (43725144),Andrei Iosivas,43725144,WR/FLEX,3500,CIN@SF 08/03/2026 12:00PM ET,CIN,11.0,,Andrei Iosivas,dk,3500,andrei iosivas,CIN,WR,00-0038619,auto_exact,high
+TE,Cole Kmet (43725194),Cole Kmet,43725194,TE/FLEX,3500,NE@CHI 08/03/2026 04:00PM ET,CHI,9.4,,Cole Kmet,dk,3500,cole kmet,CHI,TE,00-0036290,auto_exact,high
+RB,Antonio Gibson (43725084),Antonio Gibson,43725084,RB/FLEX,3400,NE@CHI 08/03/2026 04:00PM ET,NE,6.0,,Antonio Gibson,dk,3400,antonio gibson,NE,RB,00-0036328,auto_exact,high
+WR,Tory Horton (43725146),Tory Horton,43725146,WR/FLEX,3400,SEA@NYJ 08/03/2026 02:00PM ET,SEA,9.6,,Tory Horton,dk,3400,tory horton,SEA,WR,00-0040648,auto_exact,high
+TE,Mason Taylor (43725196),Mason Taylor,43725196,TE/FLEX,3400,SEA@NYJ 08/03/2026 02:00PM ET,NYJ,7.5,,Mason Taylor,dk,3400,mason taylor,NYJ,TE,00-0040736,auto_exact,high
+RB,Zach Charbonnet (43725086),Zach Charbonnet,43725086,RB/FLEX,3300,SEA@NYJ 08/03/2026 02:00PM ET,SEA,2.2,,Zach Charbonnet,dk,3300,zach charbonnet,SEA,RB,00-0039165,auto_exact,high
+WR,DeMario Douglas (43725148),DeMario Douglas,43725148,WR/FLEX,3300,NE@CHI 08/03/2026 04:00PM ET,NE,9.6,,DeMario Douglas,dk,3300,demario douglas,NE,WR,00-0038621,auto_exact,high
+DST,49ers (43725220),49ers,43725220,DST,3300,CIN@SF 08/03/2026 12:00PM ET,SF,3.6,,49ers,dk,3300,49ers,SF,DST,DST_SF,team_defense,high
+RB,Rhamondre Stevenson (43725088),Rhamondre Stevenson,43725088,RB/FLEX,3200,NE@CHI 08/03/2026 04:00PM ET,NE,1.3,,Rhamondre Stevenson,dk,3200,rhamondre stevenson,NE,RB,00-0036875,auto_exact,high
+WR,Josh Reynolds (43725150),Josh Reynolds,43725150,WR/FLEX,3200,SEA@NYJ 08/03/2026 02:00PM ET,NYJ,4.0,,Josh Reynolds,dk,3200,josh reynolds,NYJ,WR,00-0033943,auto_exact,high
+DST,Jets (43725221),Jets,43725221,DST,3200,SEA@NYJ 08/03/2026 02:00PM ET,NYJ,3.0,,Jets,dk,3200,jets,NYJ,DST,DST_NYJ,team_defense,high
+RB,Samaje Perine (43725090),Samaje Perine,43725090,RB/FLEX,3100,CIN@SF 08/03/2026 12:00PM ET,CIN,0.4,,Samaje Perine,dk,3100,samaje perine,CIN,RB,00-0033526,auto_exact,high
+WR,Xavier Gipson (43725152),Xavier Gipson,43725152,WR/FLEX,3100,SEA@NYJ 08/03/2026 02:00PM ET,NYJ,1.9,,Xavier Gipson,dk,3100,xavier gipson,NYJ,WR,00-0038496,auto_fallback_team_mismatch,medium
+DST,Patriots (43725222),Patriots,43725222,DST,3100,NE@CHI 08/03/2026 04:00PM ET,NE,3.1,,Patriots,dk,3100,patriots,NE,DST,DST_NE,team_defense,high
+RB,Roschon Johnson (43725092),Roschon Johnson,43725092,RB/FLEX,3000,NE@CHI 08/03/2026 04:00PM ET,CHI,2.1,,Roschon Johnson,dk,3000,roschon johnson,CHI,RB,00-0039021,auto_exact,high
+RB,Kyle Juszczyk (43725094),Kyle Juszczyk,43725094,RB/FLEX,3000,CIN@SF 08/03/2026 12:00PM ET,SF,2.5,,Kyle Juszczyk,dk,3000,kyle juszczyk,SF,RB,00-0029892,auto_exact,high
+RB,Brian Robinson Jr. (43725096),Brian Robinson Jr.,43725096,RB/FLEX,3000,CIN@SF 08/03/2026 12:00PM ET,SF,1.4,,Brian Robinson Jr.,dk,3000,brian robinson,SF,RB,00-0037746,auto_exact,high
+RB,Braelon Allen (43725098),Braelon Allen,43725098,RB/FLEX,3000,SEA@NYJ 08/03/2026 02:00PM ET,NYJ,0.2,,Braelon Allen,dk,3000,braelon allen,NYJ,RB,00-0039794,auto_exact,high
+RB,Isaac Guerendo (43725100),Isaac Guerendo,43725100,RB/FLEX,3000,CIN@SF 08/03/2026 12:00PM ET,SF,0.0,,Isaac Guerendo,dk,3000,isaac guerendo,SF,RB,00-0039363,auto_exact,high
+RB,Kyle Monangai (43725102),Kyle Monangai,43725102,RB/FLEX,3000,NE@CHI 08/03/2026 04:00PM ET,CHI,0.8,,Kyle Monangai,dk,3000,kyle monangai,CHI,RB,00-0040236,auto_exact,high
+RB,Tahj Brooks (43725104),Tahj Brooks,43725104,RB/FLEX,3000,CIN@SF 08/03/2026 12:00PM ET,CIN,-0.0,,Tahj Brooks,dk,3000,tahj brooks,CIN,RB,00-0040208,auto_exact,high
+RB,Damien Martinez (43725106),Damien Martinez,43725106,RB/FLEX,3000,SEA@NYJ 08/03/2026 02:00PM ET,SEA,0.1,,Damien Martinez,dk,3000,damien martinez,SEA,RB,,,
+RB,Isaiah Davis (43725108),Isaiah Davis,43725108,RB/FLEX,3000,SEA@NYJ 08/03/2026 02:00PM ET,NYJ,0.0,,Isaiah Davis,dk,3000,isaiah davis,NYJ,RB,00-0039798,auto_exact,high
+RB,Andrew Beck (43725110),Andrew Beck,43725110,RB/FLEX,3000,SEA@NYJ 08/03/2026 02:00PM ET,NYJ,0.2,,Andrew Beck,dk,3000,andrew beck,NYJ,RB,00-0034959,manual_override,high
+RB,Tanner Hudson (43725112),Tanner Hudson,43725112,RB/FLEX,3000,CIN@SF 08/03/2026 12:00PM ET,CIN,0.4,,Tanner Hudson,dk,3000,tanner hudson,CIN,RB,00-0034613,auto_fallback_name_only_position_mismatch,low
+RB,Brady Russell (43725114),Brady Russell,43725114,RB/FLEX,3000,SEA@NYJ 08/03/2026 02:00PM ET,SEA,1.1,,Brady Russell,dk,3000,brady russell,SEA,RB,00-0038488,auto_exact,high
+WR,Mack Hollins (43725154),Mack Hollins,43725154,WR/FLEX,3000,NE@CHI 08/03/2026 04:00PM ET,NE,0.0,,Mack Hollins,dk,3000,mack hollins,NE,WR,00-0033555,auto_exact,high
+WR,Olamide Zaccheaus (43725156),Olamide Zaccheaus,43725156,WR/FLEX,3000,NE@CHI 08/03/2026 04:00PM ET,CHI,0.0,,Olamide Zaccheaus,dk,3000,olamide zaccheaus,CHI,WR,00-0035208,auto_exact,high
+WR,Skyy Moore (43725158),Skyy Moore,43725158,WR/FLEX,3000,CIN@SF 08/03/2026 12:00PM ET,SF,0.0,,Skyy Moore,dk,3000,skyy moore,SF,WR,00-0038090,auto_exact,high
+WR,Jermaine Burton (43725160),Jermaine Burton,43725160,WR/FLEX,3000,CIN@SF 08/03/2026 12:00PM ET,CIN,0.4,,Jermaine Burton,dk,3000,jermaine burton,CIN,WR,,,
+WR,Jake Bobo (43725162),Jake Bobo,43725162,WR/FLEX,3000,SEA@NYJ 08/03/2026 02:00PM ET,SEA,0.0,,Jake Bobo,dk,3000,jake bobo,SEA,WR,00-0038752,auto_exact,high
+WR,Devin Duvernay (43725164),Devin Duvernay,43725164,WR/FLEX,3000,NE@CHI 08/03/2026 04:00PM ET,CHI,0.0,,Devin Duvernay,dk,3000,devin duvernay,CHI,WR,00-0036331,auto_exact,high
+WR,Kyle Williams (43725166),Kyle Williams,43725166,WR/FLEX,3000,NE@CHI 08/03/2026 04:00PM ET,NE,0.0,,Kyle Williams,dk,3000,kyle williams,NE,WR,00-0040131,auto_exact,high
+WR,Jacob Cowing (43725168),Jacob Cowing,43725168,WR/FLEX,3000,CIN@SF 08/03/2026 12:00PM ET,SF,0.0,,Jacob Cowing,dk,3000,jacob cowing,SF,WR,,,
+WR,Tyler Johnson (43725170),Tyler Johnson,43725170,WR/FLEX,3000,SEA@NYJ 08/03/2026 02:00PM ET,NYJ,0.0,,Tyler Johnson,dk,3000,tyler johnson,NYJ,WR,00-0036427,auto_exact,high
+WR,Mitch Tinsley (43725172),Mitch Tinsley,43725172,WR/FLEX,3000,CIN@SF 08/03/2026 12:00PM ET,CIN,0.0,,Mitch Tinsley,dk,3000,mitch tinsley,CIN,WR,,,
+WR,Dareke Young (43725174),Dareke Young,43725174,WR/FLEX,3000,SEA@NYJ 08/03/2026 02:00PM ET,SEA,0.0,,Dareke Young,dk,3000,dareke young,SEA,WR,00-0037093,auto_exact,high
+WR,Charlie Jones (43725176),Charlie Jones,43725176,WR/FLEX,3000,CIN@SF 08/03/2026 12:00PM ET,CIN,0.1,,Charlie Jones,dk,3000,charlie jones,CIN,WR,00-0038576,auto_exact,high
+WR,Jordan Watkins (43725178),Jordan Watkins,43725178,WR/FLEX,3000,CIN@SF 08/03/2026 12:00PM ET,SF,0.0,,Jordan Watkins,dk,3000,jordan watkins,SF,WR,00-0040172,auto_exact,high
+WR,Efton Chism III (43725180),Efton Chism III,43725180,WR/FLEX,3000,NE@CHI 08/03/2026 04:00PM ET,NE,0.0,,Efton Chism III,dk,3000,efton chism,NE,WR,00-0040563,auto_exact,high
+WR,Arian Smith (43725182),Arian Smith,43725182,WR/FLEX,3000,SEA@NYJ 08/03/2026 02:00PM ET,NYJ,0.0,,Arian Smith,dk,3000,arian smith,NYJ,WR,00-0040582,auto_exact,high
+WR,Cody White (43725184),Cody White,43725184,WR/FLEX,3000,SEA@NYJ 08/03/2026 02:00PM ET,SEA,0.0,,Cody White,dk,3000,cody white,SEA,WR,00-0035891,auto_exact,high
+TE,Colston Loveland (43725198),Colston Loveland,43725198,TE/FLEX,3000,NE@CHI 08/03/2026 04:00PM ET,CHI,3.8,,Colston Loveland,dk,3000,colston loveland,CHI,TE,00-0040126,auto_exact,high
+DST,Bengals (43725223),Bengals,43725223,DST,3000,CIN@SF 08/03/2026 12:00PM ET,CIN,2.5,,Bengals,dk,3000,bengals,CIN,DST,DST_CIN,team_defense,high
+DST,Bears (43725224),Bears,43725224,DST,2900,NE@CHI 08/03/2026 04:00PM ET,CHI,2.3,,Bears,dk,2900,bears,CHI,DST,DST_CHI,team_defense,high
+DST,Seahawks (43725225),Seahawks,43725225,DST,2800,SEA@NYJ 08/03/2026 02:00PM ET,SEA,1.7,,Seahawks,dk,2800,seahawks,SEA,DST,DST_SEA,team_defense,high
+TE,Noah Fant (43725200),Noah Fant,43725200,TE/FLEX,2600,CIN@SF 08/03/2026 12:00PM ET,CIN,2.3,,Noah Fant,dk,2600,noah fant,CIN,TE,00-0035644,auto_exact,high
+TE,Durham Smythe (43725202),Durham Smythe,43725202,TE/FLEX,2500,NE@CHI 08/03/2026 04:00PM ET,CHI,0.4,,Durham Smythe,dk,2500,durham smythe,CHI,TE,00-0034798,auto_exact,high
+TE,Jeremy Ruckert (43725204),Jeremy Ruckert,43725204,TE/FLEX,2500,SEA@NYJ 08/03/2026 02:00PM ET,NYJ,1.3,,Jeremy Ruckert,dk,2500,jeremy ruckert,NYJ,TE,00-0037805,auto_exact,high
+TE,Austin Hooper (43725206),Austin Hooper,43725206,TE/FLEX,2500,NE@CHI 08/03/2026 04:00PM ET,NE,1.9,,Austin Hooper,dk,2500,austin hooper,NE,TE,00-0032392,auto_exact,high
+TE,AJ Barner (43725208),AJ Barner,43725208,TE/FLEX,2500,SEA@NYJ 08/03/2026 02:00PM ET,SEA,1.0,,AJ Barner,dk,2500,aj barner,SEA,TE,00-0039793,auto_exact,high
+TE,Luke Farrell (43725210),Luke Farrell,43725210,TE/FLEX,2500,CIN@SF 08/03/2026 12:00PM ET,SF,1.1,,Luke Farrell,dk,2500,luke farrell,SF,TE,00-0036887,auto_exact,high
+TE,Drew Sample (43725212),Drew Sample,43725212,TE/FLEX,2500,CIN@SF 08/03/2026 12:00PM ET,CIN,0.9,,Drew Sample,dk,2500,drew sample,CIN,TE,00-0035631,auto_exact,high
+TE,Eric Saubert (43725214),Eric Saubert,43725214,TE/FLEX,2500,SEA@NYJ 08/03/2026 02:00PM ET,SEA,0.5,,Eric Saubert,dk,2500,eric saubert,SEA,TE,00-0033576,auto_exact,high
+TE,Stone Smartt (43725216),Stone Smartt,43725216,TE/FLEX,2500,SEA@NYJ 08/03/2026 02:00PM ET,NYJ,0.0,,Stone Smartt,dk,2500,stone smartt,NYJ,TE,00-0037475,auto_exact,high
+TE,Jake Tonges (43725218),Jake Tonges,43725218,TE/FLEX,2500,CIN@SF 08/03/2026 12:00PM ET,SF,0.2,,Jake Tonges,dk,2500,jake tonges,SF,TE,00-0037112,auto_exact,high

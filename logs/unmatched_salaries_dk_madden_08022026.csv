@@ -1,0 +1,7 @@
+Position,Name + ID,Name,ID,Roster Position,Salary,Game Info,TeamAbbrev,AvgPointsPerGame,Status,name,site,salary,normalized_name,normalized_team,position_upper,player_id,match_method,match_confidence
+QB,Case Keenum (43725071),Case Keenum,43725071,QB,5000,NE@CHI 08/03/2026 04:00PM ET,CHI,0.0,,Case Keenum,dk,5000,case keenum,CHI,QB,,,
+WR,Brandon Aiyuk (43725124),Brandon Aiyuk,43725124,WR/FLEX,5000,CIN@SF 08/03/2026 12:00PM ET,SF,12.2,,Brandon Aiyuk,dk,5000,brandon aiyuk,SF,WR,,,
+RB,Damien Martinez (43725106),Damien Martinez,43725106,RB/FLEX,3000,SEA@NYJ 08/03/2026 02:00PM ET,SEA,0.1,,Damien Martinez,dk,3000,damien martinez,SEA,RB,,,
+WR,Jermaine Burton (43725160),Jermaine Burton,43725160,WR/FLEX,3000,CIN@SF 08/03/2026 12:00PM ET,CIN,0.4,,Jermaine Burton,dk,3000,jermaine burton,CIN,WR,,,
+WR,Jacob Cowing (43725168),Jacob Cowing,43725168,WR/FLEX,3000,CIN@SF 08/03/2026 12:00PM ET,SF,0.0,,Jacob Cowing,dk,3000,jacob cowing,SF,WR,,,
+WR,Mitch Tinsley (43725172),Mitch Tinsley,43725172,WR/FLEX,3000,CIN@SF 08/03/2026 12:00PM ET,CIN,0.0,,Mitch Tinsley,dk,3000,mitch tinsley,CIN,WR,,,
