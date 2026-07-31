@@ -1,0 +1,4 @@
+optimizer.py failed for this request. Last lines of its output:
+
+
+Could not generate a lineup with the current settings: No team has both a viable QB/RB and a viable stack partner/DST this week -- cannot auto-select a stack team.
