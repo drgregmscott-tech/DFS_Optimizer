@@ -1,0 +1,4 @@
+Position,Name + ID,Name,ID,Roster Position,Salary,Game Info,TeamAbbrev,AvgPointsPerGame,Status,name,site,salary,normalized_name,normalized_team,position_upper,player_id,match_method,match_confidence
+RB,Joe Mixon (43670606),Joe Mixon,43670606,RB/FLEX,6700,HOU@ARI 07/31/2026 04:00PM ET,HOU,15.3,,Joe Mixon,dk,6700,joe mixon,HOU,RB,,,
+WR,Tank Dell (43670648),Tank Dell,43670648,WR/FLEX,5400,HOU@ARI 07/31/2026 04:00PM ET,HOU,11.6,,Tank Dell,dk,5400,tank dell,HOU,WR,,,
+QB,Case Keenum (43670599),Case Keenum,43670599,QB,5000,CHI@BAL 07/31/2026 12:00PM ET,CHI,0.0,,Case Keenum,dk,5000,case keenum,CHI,QB,,,
