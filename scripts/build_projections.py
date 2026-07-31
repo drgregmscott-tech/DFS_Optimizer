@@ -287,7 +287,8 @@ def _build_dst_distributional(salaries, vegas, site, season, week, sims, seed):
 
 
 def build_dst_projections(salaries, vegas, site, *, model="legacy",
-                           season=None, week=None, sims=None, seed=None):
+                           season=None, week=None, sims=None, seed=None,
+                           opponent_map=None):
     if model not in ("legacy", "distributional"):
         raise SystemExit(f"build_dst_projections: unknown model {model!r}.")
     if model == "distributional":
@@ -317,10 +318,17 @@ def build_dst_projections(salaries, vegas, site, *, model="legacy",
 
     implied_by_team = vegas.drop_duplicates(subset=["team"]).set_index("team")["implied_total"]
     league_avg = vegas["implied_total"].mean()
-    opponent_by_team = vegas.drop_duplicates(subset=["team"]).set_index("team")["opponent"]
     over_under_by_team = None
     if "over_under" in vegas.columns:
         over_under_by_team = vegas.drop_duplicates(subset=["team"]).set_index("team")["over_under"]
+
+    # If a salary-derived opponent_map was provided (decision #9 fallback),
+    # use it instead of the vegas file opponent column -- the vegas file maps
+    # each team to its real NFL opponent, not its Madden Sim opponent.
+    if opponent_map:
+        opponent_by_team = pd.Series(opponent_map)
+    else:
+        opponent_by_team = vegas.drop_duplicates(subset=["team"]).set_index("team")["opponent"]
 
     has_game = dst["team"].isin(opponent_by_team.index)
     n_bye = (~has_game).sum()
@@ -518,7 +526,8 @@ def build_final_projections(site, season, week, slate_id,
 
     dst_out = build_dst_projections(salaries, vegas, site,
                                     model=dst_model_mode, season=season,
-                                    week=week, sims=dst_sims, seed=dst_seed)
+                                    week=week, sims=dst_sims, seed=dst_seed,
+                                    opponent_map=opponent_map if opponent_map else None)
     _dst_extra = None
     if "sigma" in dst_out.columns:
         _dst_extra = dst_out[["player_id", "sigma", "dst_p10", "dst_p90"]].copy()
