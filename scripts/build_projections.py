@@ -153,31 +153,38 @@ def build_opponent_map(schedule, week):
     return opp_map
 
 
-def build_opponent_map_from_vegas(vegas, slate_teams):
-    """Decision #9: infer matchups from over_under when schedule has no entries.
+def build_opponent_map_from_salaries(salaries):
+    """Decision #9: infer matchups directly from the salary file Game Info column.
 
-    Groups slate teams by their over_under value in the vegas file.
-    Two teams sharing the same over_under are opponents in the same game.
-    Only fires as a fallback when the schedule-based map has no slate teams.
+    The DK salary CSV export contains a Game Info column with values like
+    'CHI@BAL 07/31/2026 12:00PM ET'. This is the most reliable source of
+    matchup information for any slate type -- Madden Sim, preseason, or
+    regular season -- because it reflects exactly what DK has on the slate,
+    regardless of whether a matching NFL schedule week exists.
+
+    Parses each unique game string, extracts the two team abbreviations, and
+    builds the bidirectional team -> opponent map. Falls back gracefully if
+    the Game Info column is absent or malformed.
     """
-    if "over_under" not in vegas.columns:
+    if "Game Info" not in salaries.columns:
         return {}
 
-    slate_vegas = vegas[vegas["team"].isin(slate_teams)].copy()
-    slate_vegas = slate_vegas.drop_duplicates(subset=["team"])
-
     opp_map = {}
-    for ou_val, group in slate_vegas.groupby("over_under"):
-        teams = group["team"].tolist()
-        if len(teams) == 2:
-            opp_map[teams[0]] = teams[1]
-            opp_map[teams[1]] = teams[0]
-        elif len(teams) > 2:
-            print(
-                f"WARNING: {len(teams)} slate teams share over_under={ou_val} "
-                f"({teams}) -- cannot infer opponents for this group.",
-                file=sys.stderr,
-            )
+    seen = set()
+    for game_info in salaries["Game Info"].dropna().unique():
+        # Format: "AWAY@HOME DATE TIME ET" e.g. "CHI@BAL 07/31/2026 12:00PM ET"
+        matchup_part = game_info.split(" ")[0]  # "CHI@BAL"
+        if "@" not in matchup_part:
+            continue
+        away, home = matchup_part.split("@", 1)
+        away = away.strip().upper()
+        home = home.strip().upper()
+        game_key = tuple(sorted([away, home]))
+        if game_key in seen:
+            continue
+        seen.add(game_key)
+        opp_map[away] = home
+        opp_map[home] = away
     return opp_map
 
 
@@ -415,14 +422,14 @@ def build_final_projections(site, season, week, slate_id,
             f"falling back to vegas over_under pairing (decision #9, Madden Sim path).",
             file=sys.stderr,
         )
-        opponent_map = build_opponent_map_from_vegas(vegas, slate_teams)
+        opponent_map = build_opponent_map_from_salaries(salaries)
         if opponent_map:
             games_found = sorted(set(
                 tuple(sorted([k, opponent_map[k]])) for k in opponent_map
             ))
-            print(f"  Inferred {len(games_found)} game(s): {games_found}", file=sys.stderr)
+            print(f"  Inferred {len(games_found)} game(s) from salary file: {games_found}", file=sys.stderr)
         else:
-            print("  WARNING: could not infer any opponent pairs. "
+            print("  WARNING: could not infer any opponent pairs from salary file. "
                   "All skill players will get opponent=BYE_OR_UNKNOWN.", file=sys.stderr)
 
     vegas_factors = build_vegas_factors(vegas, opponent_map)
