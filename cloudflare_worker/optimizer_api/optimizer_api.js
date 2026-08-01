@@ -201,6 +201,8 @@ async function handleDispatch(url, env) {
     "min_salary_pct", "flex_positions",
     // Session 8 (this session) -- decisions #34/#35.
     "min_projection", "min_total_ownership",
+    // Session 12 -- decisions #36-38.
+    "max_team_players", "max_game_players",
   ];
   const params = {};
   for (const key of passthroughKeys) {

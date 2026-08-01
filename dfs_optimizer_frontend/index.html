@@ -1414,6 +1414,29 @@
       <div class="stack-explain" id="stackExplain" style="display:none"></div>
 
       <div class="controls-grid">
+        <div style="grid-column:1/-1;">
+          <span class="field-label">Team Exposure Caps (optional -- max players from a specific team, applies to every generated lineup)</span>
+          <div class="preset-row">
+            <select id="teamCapTeamSelect"></select>
+            <input type="number" id="teamCapValueInput" min="0" max="9" value="2" style="width:70px">
+            <button class="upload-btn" id="btnAddTeamCap" type="button">Add Cap</button>
+          </div>
+          <div class="chip-select" id="teamCapList"></div>
+          <div class="hint" style="margin-top:4px">E.g. cap KC at 2 players. Click an added cap to remove it. If a locked player already exceeds a cap, the build will fail with a clear reason.</div>
+        </div>
+        <div style="grid-column:1/-1;">
+          <span class="field-label">Game Exposure Caps (optional -- max combined players from both teams in a game)</span>
+          <div class="preset-row">
+            <select id="gameCapGameSelect"></select>
+            <input type="number" id="gameCapValueInput" min="0" max="9" value="4" style="width:70px">
+            <button class="upload-btn" id="btnAddGameCap" type="button">Add Cap</button>
+          </div>
+          <div class="chip-select" id="gameCapList"></div>
+          <div class="hint" style="margin-top:4px">E.g. cap KC vs DEN at 4 combined players. Independent from (and additive with) a Game Stack's minimum -- a contradictory combination will fail to build.</div>
+        </div>
+      </div>
+
+      <div class="controls-grid">
         <div>
           <span class="field-label">FLEX Eligible Positions</span>
           <div class="controls-grid" style="grid-template-columns:repeat(3,auto); gap:16px; margin-top:6px;">
@@ -1578,7 +1601,10 @@
     poolSort: { key: "final_projection", dir: "desc" },
     poolFilters: { salMin:"", salMax:"", projMin:"", projMax:"", valMin:"", valMax:"", ownMin:"", ownMax:"" },
     stackTeamSelection: { dk: {}, fd: {} },     // team -> true (chip picker, decision #32)
-    stackGameSelection: { dk: {}, fd: {} }      // "TEAM-TEAM" -> true
+    stackGameSelection: { dk: {}, fd: {} },     // "TEAM-TEAM" -> true
+    // ---- Session 12 additions (decisions #36-38) ----
+    maxTeamCaps: { dk: {}, fd: {} },            // team -> cap int
+    maxGameCaps: { dk: {}, fd: {} }             // "TEAM-TEAM" (sorted) -> cap int
   };
 
   // Slate management (slate-mgmt session): index entries are now
@@ -2928,7 +2954,12 @@
     var el = document.getElementById("slateOverview");
     var site = state.activeSite;
     var pool = state.pool[site];
-    if (!pool) { el.innerHTML = ""; renderStackTeamOptions(); renderStackGameOptions(); return; }
+    if (!pool) {
+      el.innerHTML = "";
+      renderStackTeamOptions(); renderStackGameOptions();
+      renderTeamCapSelect(); renderGameCapSelect(); renderTeamCapList(); renderGameCapList();
+      return;
+    }
 
     var games = {};
     pool.players.forEach(function (p) {
@@ -2956,6 +2987,10 @@
     }
     renderStackTeamOptions();
     renderStackGameOptions();
+    renderTeamCapSelect();
+    renderGameCapSelect();
+    renderTeamCapList();
+    renderGameCapList();
   }
 
   // ---------------- Session 7.3, decision #32 -- stack team/game chip pickers ----------------
@@ -3021,6 +3056,115 @@
     if (sel[key]) delete sel[key]; else sel[key] = true;
     renderStackGameOptions();
     updateStackExplain();
+  });
+
+  // ---------------- Session 12, decisions #36-38 -- team/game exposure cap builders ----------------
+  // Same "read teams/games straight off the loaded slate" pattern as the
+  // stack team/game chip pickers above (decision #32) -- avoids the
+  // free-text ambiguity ("Kansas City" vs "KC", typos) that pattern was
+  // built to solve in the first place. Unlike the stack pickers (simple
+  // on/off toggles), each pick here needs an associated cap NUMBER, so
+  // these use a select + number input + "Add" button instead of a bare
+  // chip toggle -- the resulting chip is click-to-remove.
+
+  function getSlateGames(pool) {
+    // Shared with renderStackGameOptions' inline logic -- both sides must
+    // have real pool players (matches optimizer.py's rank_candidate_games),
+    // and BYE_OR_UNKNOWN opponents are excluded.
+    var teamsInPool = new Set(pool.players.map(function (p) { return p.team; }));
+    var games = {};
+    pool.players.forEach(function (p) {
+      if (!p.team || !p.opponent || p.opponent === "BYE_OR_UNKNOWN") return;
+      if (!teamsInPool.has(p.opponent)) return;
+      var pair = [p.team, p.opponent].sort();
+      games[pair.join("-")] = pair;
+    });
+    return games; // { "AAA-BBB": [teamA, teamB] }
+  }
+
+  function renderTeamCapSelect() {
+    var site = state.activeSite;
+    var pool = state.pool[site];
+    var select = document.getElementById("teamCapTeamSelect");
+    if (!pool) { select.innerHTML = '<option value="">Upload a slate first</option>'; return; }
+    var teams = Array.from(new Set(pool.players.map(function (p) { return p.team; }))).filter(Boolean).sort();
+    select.innerHTML = teams.map(function (t) {
+      return '<option value="' + escapeHtml(t) + '">' + escapeHtml(t) + '</option>';
+    }).join("");
+  }
+
+  function renderGameCapSelect() {
+    var site = state.activeSite;
+    var pool = state.pool[site];
+    var select = document.getElementById("gameCapGameSelect");
+    if (!pool) { select.innerHTML = '<option value="">Upload a slate first</option>'; return; }
+    var games = getSlateGames(pool);
+    var keys = Object.keys(games).sort();
+    select.innerHTML = keys.map(function (key) {
+      var pair = games[key];
+      return '<option value="' + escapeHtml(key) + '">' + escapeHtml(pair[0]) + ' vs ' + escapeHtml(pair[1]) + '</option>';
+    }).join("");
+  }
+
+  function renderTeamCapList() {
+    var site = state.activeSite;
+    var caps = state.maxTeamCaps[site];
+    var container = document.getElementById("teamCapList");
+    var teams = Object.keys(caps).sort();
+    if (!teams.length) { container.innerHTML = ""; return; }
+    container.innerHTML = teams.map(function (t) {
+      return '<button type="button" class="tab-btn active" data-cap-team="' + escapeHtml(t) + '">' +
+        escapeHtml(t) + ': max ' + caps[t] + ' \u2715</button>';
+    }).join("");
+  }
+
+  function renderGameCapList() {
+    var site = state.activeSite;
+    var pool = state.pool[site];
+    var caps = state.maxGameCaps[site];
+    var container = document.getElementById("gameCapList");
+    var keys = Object.keys(caps).sort();
+    if (!keys.length) { container.innerHTML = ""; return; }
+    var games = pool ? getSlateGames(pool) : {};
+    container.innerHTML = keys.map(function (key) {
+      var pair = games[key] || key.split("-");
+      return '<button type="button" class="tab-btn active" data-cap-game="' + escapeHtml(key) + '">' +
+        escapeHtml(pair[0]) + ' vs ' + escapeHtml(pair[1]) + ': max ' + caps[key] + ' \u2715</button>';
+    }).join("");
+  }
+
+  document.getElementById("btnAddTeamCap").addEventListener("click", function () {
+    var site = state.activeSite;
+    var team = document.getElementById("teamCapTeamSelect").value;
+    var n = parseInt(document.getElementById("teamCapValueInput").value, 10);
+    if (!team || isNaN(n) || n < 0) return;
+    state.maxTeamCaps[site][team] = n;
+    renderTeamCapList();
+  });
+
+  document.getElementById("btnAddGameCap").addEventListener("click", function () {
+    var site = state.activeSite;
+    var key = document.getElementById("gameCapGameSelect").value;
+    var n = parseInt(document.getElementById("gameCapValueInput").value, 10);
+    if (!key || isNaN(n) || n < 0) return;
+    state.maxGameCaps[site][key] = n;
+    renderGameCapList();
+  });
+
+  document.getElementById("teamCapList").addEventListener("click", function (e) {
+    var btn = e.target.closest("button[data-cap-team]");
+    if (!btn) return;
+    var site = state.activeSite;
+    delete state.maxTeamCaps[site][btn.getAttribute("data-cap-team")];
+    renderTeamCapList();
+  });
+
+  document.getElementById("gameCapList").addEventListener("click", function (e) {
+    var btn = e.target.closest("button[data-cap-game]");
+    if (!btn) return;
+    var site = state.activeSite;
+    delete state.maxGameCaps[site][btn.getAttribute("data-cap-game")];
+    renderGameCapList();
   });
 
   // ---------------- Rendering a solved lineup back into the existing viewer ----------------
@@ -3090,6 +3234,18 @@
     var excludedIds = Object.keys(state.excluded[site]);
     if (lockedIds.length) params.lock = lockedIds.join(",");
     if (excludedIds.length) params.exclude = excludedIds.join(",");
+
+    // Session 12 -- decisions #36-38.
+    var teamCaps = state.maxTeamCaps[site];
+    var teamCapKeys = Object.keys(teamCaps);
+    if (teamCapKeys.length) {
+      params.max_team_players = teamCapKeys.map(function (t) { return t + ":" + teamCaps[t]; }).join(",");
+    }
+    var gameCaps = state.maxGameCaps[site];
+    var gameCapKeys = Object.keys(gameCaps);
+    if (gameCapKeys.length) {
+      params.max_game_players = gameCapKeys.map(function (g) { return g + ":" + gameCaps[g]; }).join(",");
+    }
 
     var randomization = parseFloat(document.getElementById("ctrlRandomization").value);
     if (randomization > 0) params.randomization_pct = String(randomization);

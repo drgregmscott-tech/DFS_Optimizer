@@ -388,6 +388,88 @@ def parse_game_list(raw: str, flag_name: str) -> list:
 
 
 # ---------------------------------------------------------------------------
+# Session 12 -- Team / Game Exposure Caps (decisions #36-38)
+# ---------------------------------------------------------------------------
+# 36. Two independent MAXIMUM constraints, additive to (not a replacement
+#     for) the existing stacking MINIMUMs above -- a game stack's "at least
+#     4 combined" and a game cap's "at most 3 combined" can be requested at
+#     the same time; if they contradict, that surfaces the same way every
+#     other constraint conflict does in this file: the solver returns
+#     non-Optimal and solve_lineup() raises its existing generic RuntimeError
+#     (no special-cased pre-check for this interaction, same reasoning as
+#     decision #24's note that lock-vs-stack conflicts aren't pre-checked
+#     either -- only STRUCTURAL infeasibility, independent of what else was
+#     requested, gets a dedicated upfront check).
+# 37. Multiple simultaneous caps are supported for both flags (e.g.
+#     "KC:2,DEN:1" or "KC-DEN:4,SEA-ARI:3"), matching this file's existing
+#     comma-list convention (decision #32's parse_team_list/parse_game_list).
+# 38. A cap on a team/game with an unknown label (typo, or that team has a
+#     bye and simply isn't in this slate's pool) is NOT a hard error -- it's
+#     a real possibility (byes) as well as a likely typo, so it prints a
+#     non-fatal NOTE (same pattern as an unmatched --exclude id) rather than
+#     stopping the run. The constraint itself is still added -- with no
+#     matching players, the resulting `<= cap` constraint is simply always
+#     satisfied, a harmless no-op.
+def parse_team_cap_list(raw: str, flag_name: str) -> dict:
+    """Parses '--max-team-players KC:2,DEN:1' into {'KC': 2, 'DEN': 1}."""
+    caps = {}
+    for entry in raw.split(","):
+        entry = entry.strip()
+        if not entry:
+            continue
+        if ":" not in entry:
+            raise SystemExit(
+                f"{flag_name} entries must be TEAM:N (e.g. KC:2), got: {entry!r}"
+            )
+        team, _, n_raw = entry.partition(":")
+        team = team.strip().upper()
+        try:
+            n = int(n_raw.strip())
+        except ValueError:
+            raise SystemExit(f"{flag_name} entry {entry!r} has a non-integer cap.")
+        if n < 0:
+            raise SystemExit(f"{flag_name} entry {entry!r} -- cap cannot be negative.")
+        if team in caps:
+            raise SystemExit(f"{flag_name} lists team {team} more than once.")
+        caps[team] = n
+    if not caps:
+        raise SystemExit(f"{flag_name} resolved to an empty cap list: {raw!r}")
+    return caps
+
+
+def parse_game_cap_list(raw: str, flag_name: str) -> dict:
+    """Parses '--max-game-players KC-DEN:4,SEA-ARI:3' into
+    {frozenset({'KC','DEN'}): 4, frozenset({'SEA','ARI'}): 3}. Keyed by
+    frozenset (not the ordered tuple parse_team_pair returns) so KC-DEN
+    and DEN-KC are treated as the same game."""
+    caps = {}
+    for entry in raw.split(","):
+        entry = entry.strip()
+        if not entry:
+            continue
+        if ":" not in entry:
+            raise SystemExit(
+                f"{flag_name} entries must be TEAM-TEAM:N (e.g. KC-DEN:4), "
+                f"got: {entry!r}"
+            )
+        pair_raw, _, n_raw = entry.partition(":")
+        team_a, team_b = parse_team_pair(pair_raw.strip(), flag_name)
+        try:
+            n = int(n_raw.strip())
+        except ValueError:
+            raise SystemExit(f"{flag_name} entry {entry!r} has a non-integer cap.")
+        if n < 0:
+            raise SystemExit(f"{flag_name} entry {entry!r} -- cap cannot be negative.")
+        key = frozenset({team_a, team_b})
+        if key in caps:
+            raise SystemExit(f"{flag_name} lists game {team_a}-{team_b} more than once.")
+        caps[key] = n
+    if not caps:
+        raise SystemExit(f"{flag_name} resolved to an empty cap list: {raw!r}")
+    return caps
+
+
+# ---------------------------------------------------------------------------
 # Session 7.2 -- Lock / Exclude (UI-Optimizer Integration)
 # ---------------------------------------------------------------------------
 # Continuing the numbering from Session 3.3's stacking decisions (#14-21).
@@ -490,6 +572,43 @@ def validate_lock_feasibility(players: pd.DataFrame, locked_player_ids: set,
             f"Locked players alone cost {locked_salary}, exceeding the "
             f"{salary_cap} salary cap -- cannot build a legal lineup."
         )
+
+
+def validate_exposure_cap_feasibility(players: pd.DataFrame, locked_player_ids: set,
+                                       max_team_players: dict = None,
+                                       max_game_players: dict = None):
+    """Decision #36's structural pre-check, same pattern and same scope
+    limitation as validate_lock_feasibility's decision #24: only checks
+    whether the LOCKED players themselves already violate a cap (in which
+    case no legal lineup can ever exist, regardless of what else is
+    requested) -- does not check interaction with stacking minimums or
+    with each other. If a locked player fills a team's cap of 1, every
+    OTHER player from that team is implicitly excluded by the cap
+    constraint itself once added (decision #36) -- no separate mechanism
+    needed for that half of the requested behavior."""
+    if not locked_player_ids:
+        return
+    locked = players[players["player_id"].isin(locked_player_ids)]
+
+    if max_team_players:
+        for team, cap in max_team_players.items():
+            n_locked_here = int((locked["team"] == team).sum())
+            if n_locked_here > cap:
+                raise RuntimeError(
+                    f"Cannot satisfy --max-team-players {team}:{cap} -- "
+                    f"{n_locked_here} locked player(s) are already on {team}, "
+                    f"exceeding that cap by itself."
+                )
+
+    if max_game_players:
+        for game_key, cap in max_game_players.items():
+            n_locked_here = int(locked["team"].isin(game_key).sum())
+            if n_locked_here > cap:
+                raise RuntimeError(
+                    f"Cannot satisfy --max-game-players {'-'.join(sorted(game_key))}:"
+                    f"{cap} -- {n_locked_here} locked player(s) are already in that "
+                    f"game, exceeding that cap by itself."
+                )
 
 
 # ---------------------------------------------------------------------------
@@ -706,6 +825,36 @@ def add_stack_constraints(prob, x: dict, players: pd.DataFrame, stack_mode: str,
         raise ValueError(f"Unknown --stack-mode: {stack_mode}")
 
 
+def add_exposure_cap_constraints(prob, x: dict, players: pd.DataFrame,
+                                  max_team_players: dict = None,
+                                  max_game_players: dict = None):
+    """Decision #36 -- hard `<= cap` ILP constraints, additive alongside
+    whatever add_stack_constraints() already added. No-op (returns
+    immediately, identical to every prior session's behavior) unless at
+    least one cap was actually requested."""
+    if not max_team_players and not max_game_players:
+        return
+
+    def team_pool(team):
+        return [
+            pid for pid in players.loc[players["team"] == team, "player_id"]
+            if pid in x
+        ]
+
+    if max_team_players:
+        for team, cap in max_team_players.items():
+            pool = team_pool(team)
+            if pool:
+                prob += pulp.lpSum(x[pid] for pid in pool) <= cap, f"max_team_{team}"
+
+    if max_game_players:
+        for game_key, cap in max_game_players.items():
+            pool = [pid for team in game_key for pid in team_pool(team)]
+            if pool:
+                label = "_".join(sorted(game_key))
+                prob += pulp.lpSum(x[pid] for pid in pool) <= cap, f"max_game_{label}"
+
+
 def validate_stack(lineup: pd.DataFrame, stack_mode: str,
                     stack_size: int = DEFAULT_STACK_SIZE, stack_positions: set = None,
                     bring_back: bool = False, target_team: str = None,
@@ -908,7 +1057,9 @@ def solve_lineup(players: pd.DataFrame, salary_cap: int, fixed_counts: dict,
                   min_salary: int = 0,
                   min_total_ownership: float = 0.0,
                   flex_positions: set = None,
-                  lam: float = 0.0) -> pd.DataFrame:
+                  lam: float = 0.0,
+                  max_team_players: dict = None,
+                  max_game_players: dict = None) -> pd.DataFrame:
     """`lam` is a Session 10.5 addition (decision #2): the lambda
     coefficient on the variance penalty `sum(mu) - lam*sum(sigma^2)`.
     Defaults to 0.0 -- byte-identical to every prior session's behavior.
@@ -1109,6 +1260,13 @@ def solve_lineup(players: pd.DataFrame, salary_cap: int, fixed_counts: dict,
         target_team=target_team, target_game=target_game,
         game_stack_min_players=game_stack_min_players,
         mini_stack_type=mini_stack_type,
+    )
+
+    # Session 12 -- team/game exposure caps (decision #36). No-op unless
+    # requested, same as every other optional constraint above.
+    add_exposure_cap_constraints(
+        prob, x, players,
+        max_team_players=max_team_players, max_game_players=max_game_players,
     )
 
     status = prob.solve(pulp.PULP_CBC_CMD(msg=False))
@@ -1350,7 +1508,9 @@ def build_single_lineup(site: str, slate_id: str, randomization_pct: float = DEF
                          min_salary: int = 0,
                          min_projection: float = 0.0,
                          min_total_ownership: float = 0.0,
-                         flex_positions: set = None) -> pd.DataFrame:
+                         flex_positions: set = None,
+                         max_team_players: dict = None,
+                         max_game_players: dict = None) -> pd.DataFrame:
     config = SITE_CONFIGS[site]
     players = load_final_projections(site, slate_id)
     fixed_counts, flex_count = parse_roster_requirements(config["roster_slots"])
@@ -1403,6 +1563,10 @@ def build_single_lineup(site: str, slate_id: str, randomization_pct: float = DEF
         )
 
     validate_lock_feasibility(players, locked_player_ids, fixed_counts, flex_count, config["salary_cap"])
+    validate_exposure_cap_feasibility(
+        players, locked_player_ids,
+        max_team_players=max_team_players, max_game_players=max_game_players,
+    )
 
     optimization_projection = None
     if randomization_pct > 0:
@@ -1435,6 +1599,7 @@ def build_single_lineup(site: str, slate_id: str, randomization_pct: float = DEF
         locked_player_ids=locked_player_ids,
         min_salary=min_salary, min_total_ownership=min_total_ownership,
         flex_positions=flex_positions, lam=lam,
+        max_team_players=max_team_players, max_game_players=max_game_players,
     )
     if locked_player_ids:
         missing = locked_player_ids - set(selected["player_id"])
@@ -1491,7 +1656,9 @@ def build_multi_lineup(site: str, slate_id: str, n_lineups: int = DEFAULT_N_LINE
                         min_salary: int = 0,
                         min_projection: float = 0.0,
                         min_total_ownership: float = 0.0,
-                        flex_positions: set = None) -> tuple:
+                        flex_positions: set = None,
+                        max_team_players: dict = None,
+                        max_game_players: dict = None) -> tuple:
     """Generates up to `n_lineups` distinct, salary-cap-legal lineups, none
     of which use any single player in more than `max_exposure_pct` of the
     total requested lineups (decisions #5/#6 above). Returns
@@ -1588,6 +1755,10 @@ def build_multi_lineup(site: str, slate_id: str, n_lineups: int = DEFAULT_N_LINE
         )
 
     validate_lock_feasibility(players_all, locked_player_ids, fixed_counts, flex_count, config["salary_cap"])
+    validate_exposure_cap_feasibility(
+        players_all, locked_player_ids,
+        max_team_players=max_team_players, max_game_players=max_game_players,
+    )
 
     exposure_cap = max(1, math.floor(max_exposure_pct * n_lineups))
 
@@ -1666,6 +1837,7 @@ def build_multi_lineup(site: str, slate_id: str, n_lineups: int = DEFAULT_N_LINE
                     locked_player_ids=locked_player_ids,
                     min_salary=min_salary, min_total_ownership=min_total_ownership,
                     flex_positions=flex_positions, lam=lam,
+                    max_team_players=max_team_players, max_game_players=max_game_players,
                 )
             except RuntimeError as e:
                 stack_infeasible_reason = e
@@ -1961,6 +2133,23 @@ def main():
              "validated by a backtest sweep yet; 0.0 is the only defensible "
              "production default until that sweep runs.",
     )
+    # Session 12 -- Team / Game Exposure Caps (decisions #36-38).
+    parser.add_argument(
+        "--max-team-players", default=None,
+        help="Comma-separated TEAM:N caps on the max number of players "
+             "from that team allowed in the lineup (e.g. 'KC:2,DEN:1'). "
+             "Applies to every generated lineup (decision #36), same as "
+             "stacking. Additive alongside any stacking minimums requested "
+             "-- a contradictory combination surfaces as normal solver "
+             "infeasibility, not a special-cased error.",
+    )
+    parser.add_argument(
+        "--max-game-players", default=None,
+        help="Comma-separated TEAM-TEAM:N caps on the max COMBINED players "
+             "from both teams in that game (e.g. 'KC-DEN:4,SEA-ARI:3'). "
+             "Applies to every generated lineup (decision #36), same as "
+             "stacking.",
+    )
     args = parser.parse_args()
 
     OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
@@ -1996,6 +2185,37 @@ def main():
         candidate_pool_size=args.stack_candidate_pool,
     )
 
+    # Session 12 -- decisions #36-38.
+    max_team_players = (
+        parse_team_cap_list(args.max_team_players, "--max-team-players")
+        if args.max_team_players else None
+    )
+    max_game_players = (
+        parse_game_cap_list(args.max_game_players, "--max-game-players")
+        if args.max_game_players else None
+    )
+    if max_team_players or max_game_players:
+        pool_teams = set(load_final_projections(args.site, args.slate_id)["team"])
+        if max_team_players:
+            unknown_teams = set(max_team_players) - pool_teams
+            if unknown_teams:
+                print(
+                    f"NOTE: --max-team-players references team(s) not in "
+                    f"this slate's pool: {sorted(unknown_teams)} (typo, or "
+                    f"a bye) -- that cap will be a no-op (decision #38).",
+                    file=sys.stderr,
+                )
+        if max_game_players:
+            for game_key in max_game_players:
+                missing = game_key - pool_teams
+                if missing:
+                    print(
+                        f"NOTE: --max-game-players references team(s) not "
+                        f"in this slate's pool: {sorted(missing)} (typo, "
+                        f"or a bye) -- that cap will be a no-op "
+                        f"(decision #38).", file=sys.stderr,
+                    )
+
     if args.n_lineups:
         lineups, exposure_count, n_generated = build_multi_lineup(
             args.site, args.slate_id, n_lineups=args.n_lineups,
@@ -2011,6 +2231,7 @@ def main():
             min_total_ownership=args.min_total_ownership,
             flex_positions=flex_positions,
             lam=args.lam,
+            max_team_players=max_team_players, max_game_players=max_game_players,
             **stack_kwargs,
         )
         if args.request_id:
@@ -2059,6 +2280,7 @@ def main():
             min_total_ownership=args.min_total_ownership,
             flex_positions=flex_positions,
             lam=args.lam,
+            max_team_players=max_team_players, max_game_players=max_game_players,
             **stack_kwargs,
         )
         if args.request_id:

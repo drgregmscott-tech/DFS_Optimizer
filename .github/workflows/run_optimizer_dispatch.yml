@@ -134,6 +134,15 @@ jobs:
           args += flag("--min-salary-pct", "min_salary_pct", float)
           args += flag("--flex-positions", "flex_positions")
 
+          # Session 12 -- decisions #36-38. Same "omit means optimizer.py's
+          # own default (no cap)" convention as every other optional field
+          # above. Values arrive as comma-separated strings already built
+          # by the frontend (e.g. "KC:2,DEN:1" / "KC-DEN:4"), passed through
+          # unchanged -- optimizer.py's own parse_team_cap_list/
+          # parse_game_cap_list do the actual parsing and validation.
+          args += flag("--max-team-players", "max_team_players")
+          args += flag("--max-game-players", "max_game_players")
+
           # Session 8 (this session) -- decisions #34/#35. Same "omit means
           # optimizer.py's own default (0, no floor)" convention as every
           # other optional field above.
