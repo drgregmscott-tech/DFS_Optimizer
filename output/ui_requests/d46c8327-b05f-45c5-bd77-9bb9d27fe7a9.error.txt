@@ -1,0 +1,4 @@
+optimizer.py failed for this request. Last lines of its output:
+
+
+Could not generate a lineup with the current settings: Cannot satisfy --max-team-players SEA:1 -- 2 locked player(s) are already on SEA, exceeding that cap by itself.
