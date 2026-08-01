@@ -295,3 +295,4 @@ timestamp_utc,trigger_type,site,step,status
 2026-07-30T22:03:15.657879+00:00,full_refresh_scheduled,fd,status_apply,failure
 2026-07-31T17:43:24.449539+00:00,light_vegas_refresh,both,vegas_odds_pull,success
 2026-08-01T16:04:13.337057+00:00,light_vegas_refresh,both,vegas_odds_pull,success
+2026-08-01T22:00:04.210472+00:00,light_vegas_refresh,both,vegas_odds_pull,success
