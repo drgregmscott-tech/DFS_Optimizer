@@ -1939,3 +1939,37 @@ A single ownership model predicts neither well at the extremes.
 | 11.1 | Regress weights + temperature on real data | ~Week 6-7 | Tier 1 + Tier 2 |
 | 11.2 | FLEX split + per-position temperatures | ~Week 8+ | Tier 2 refinement |
 | 11.3 | Per-contest-type stratification | Post-season 2026 | Tier 3 |
+
+---
+
+## PHASE 12 — Optimizer Constraint Enhancements
+
+### Session 12.1 — Team / Game Exposure Caps
+**Prerequisites:** Session 7.3 complete (FLEX eligibility / lock-exclude patterns this session's feasibility check mirrors).
+
+**Status:** ✅ Complete (2026-08-01) — see SESSION_LOG.md for full detail.
+
+**Files touched (modified):**
+- `scripts/optimizer.py`
+- `cloudflare_worker/optimizer_api/optimizer_api.js`
+- `.github/workflows/run_optimizer_dispatch.yml`
+- `dfs_optimizer_frontend/index.html`
+
+**Build:**
+- `--max-team-players TEAM:N[,TEAM:N...]` — hard cap on players from a specific team.
+- `--max-game-players TEAM-TEAM:N[,TEAM-TEAM:N...]` — hard cap on combined players from both teams in a specific game.
+- Both additive alongside existing stacking minimums (Session 3.3) — contradictions surface as normal solver infeasibility, not a special-cased error.
+- Pre-solve feasibility check: a locked player that already exceeds a requested cap fails loudly with a specific reason before the solver runs, matching `validate_lock_feasibility()`'s existing pattern (decision #24).
+- Frontend: team/game pickers sourced from the loaded slate (same pattern as the existing stack-team/stack-game chip pickers), each paired with a cap-value input, rendered as removable chips.
+
+**Validation:**
+- [x] Synthetic-pool unit tests (team cap, game cap, combined, locked-player conflict, parser correctness)
+- [x] `optimizer.py` full-file compile check
+- [x] `optimizer_api.js` Node syntax check
+- [x] `run_optimizer_dispatch.yml` YAML parse check
+- [x] `index.html` extracted-script Node syntax check + `getElementById`/`id=` cross-reference
+- [x] Worker deployed, all files pushed
+- [x] Real-slate live test: team cap + game cap both respected in an actual build
+- [x] Real-slate live test: over-limit lock correctly fails the build with a clear reason
+
+**Handoff notes:** Deferred (not requested, not needed): a "global default game cap" that applies to every game not explicitly overridden. Would be a small addition if wanted later — see SESSION_LOG.md Session 12.1 handoff notes.

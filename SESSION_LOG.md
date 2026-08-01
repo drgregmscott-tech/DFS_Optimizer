@@ -2577,3 +2577,49 @@ Reworked the slate upload, storage, and selection system end-to-end. Three user-
 - **Deploy order matters:** Worker must be deployed before `index.html` is pushed to Cloudflare Pages. The frontend's `delete_slate` DELETE calls 404 against the old Worker until it's updated. Deploy command: `cd cloudflare_worker/optimizer_api && npx wrangler deploy optimizer_api.js`.
 - After deploying, delete the old `dk_10.json`, `dk_23.json`, `dk_99.json`, `dk_1.json`, `fd_99.json` entries via the UI (select each in the dropdown → Delete), then re-upload with readable labels.
 - The `label`/`savedAt` fields exist in the Worker's stored JSON records (they're written at save time) but are no longer read by `list_slates`. If a future session wants richer dropdown metadata from the cloud, those fields are already there — just re-introduce the per-file fetches with parallelism (`Promise.all`) instead of serial awaits, which avoids the CPU timeout.
+
+---
+
+## Session 12.1 — Team / Game Exposure Caps
+**Date completed:** 2026-08-01
+**Status:** ✅ Complete
+
+**What was actually built:**
+Two independent, additive MAXIMUM constraints for lineup building, requested by the user after noticing this is a standard feature in commercial DFS optimizers that was missing here:
+- **Team cap** (`--max-team-players`, e.g. `KC:2,DEN:1`) — caps the number of players from a specific team.
+- **Game cap** (`--max-game-players`, e.g. `KC-DEN:4,SEA-ARI:3`) — caps the COMBINED players from both teams in a specific game.
+
+Both apply to every lineup in a build (single or multi), the same way stacking rules do — a hard ILP constraint, not a soft preference. They're additive alongside (not a replacement for) the existing stacking MINIMUM constraints (Session 3.3) — a contradictory combination (e.g. a game stack requiring 4 combined players against a game cap of 3) is not specially pre-checked; it surfaces as the same generic solver-infeasibility RuntimeError every other constraint conflict in this file produces.
+
+**Locked-player interaction (explicit design requirement from the user):** if locked players alone already exceed a requested cap, the build fails loudly BEFORE the solver ever runs, naming the specific team/game and cap in the error message — same pre-solve structural-check pattern as `validate_lock_feasibility()` (decision #24). If a cap of 1 is set and exactly one non-conflicting player is locked, the cap constraint itself (no separate mechanism needed) mechanically blocks every other player from that team/game.
+
+Continued this file's decision-numbering convention: decisions #36-38.
+
+**Files created/modified:**
+- `scripts/optimizer.py` — new `parse_team_cap_list()`, `parse_game_cap_list()`, `validate_exposure_cap_feasibility()`, `add_exposure_cap_constraints()`; `max_team_players`/`max_game_players` params threaded through `solve_lineup()`, `build_single_lineup()`, `build_multi_lineup()`, and two new CLI flags in `main()`.
+- `cloudflare_worker/optimizer_api/optimizer_api.js` — `max_team_players`/`max_game_players` added to `passthroughKeys` (`handleDispatch`).
+- `.github/workflows/run_optimizer_dispatch.yml` — arg-builder forwards both new params as optional flags (omitted entirely when not set, matching every other optional field's existing convention).
+- `dfs_optimizer_frontend/index.html` — new "Team Exposure Caps" / "Game Exposure Caps" UI section: a dropdown of the actual teams/games in the loaded slate (same "read straight off the pool, no free text" pattern as the existing stack-team/stack-game chip pickers, decision #32) + a number input + "Add Cap" button, rendering as click-to-remove chips. New `state.maxTeamCaps`/`state.maxGameCaps` (per site). Wired into `buildDispatchParams()`.
+
+**Validation results:**
+- [x] Synthetic-pool unit tests (5): team cap alone, game cap alone, both simultaneously, locked-player-vs-cap conflict (confirmed it raises before solving), and parser correctness for both comma-list formats — all passed.
+- [x] `optimizer.py` — full-file `py_compile` clean.
+- [x] `optimizer_api.js` — `node --check` clean.
+- [x] `run_optimizer_dispatch.yml` — YAML parses clean.
+- [x] `index.html` — extracted `<script>` block `node --check` clean.
+- [x] `index.html` — every `getElementById` call cross-referenced against `id=` attributes, no missing IDs.
+- [x] Worker deployed (`npx wrangler deploy optimizer_api.js`), frontend/workflow/optimizer.py pushed.
+- [x] **Real-slate, live test by user:** team cap + game cap both applied and respected in a real build. Locking more players onto a team than that team's cap allows correctly failed the build with a clear reason (not a generic error) — confirmed working as designed.
+
+**Decisions made / assumptions taken:**
+- **Game-specific, not just team-specific** — user was explicit both cap types needed to be selectable per team AND per exact game (not just a single global "max per game" default), so both a team dropdown and a game dropdown are exposed in the UI, each independently multi-settable (decision #37).
+- **No special-cased pre-check for cap-vs-stacking conflicts** — only the locked-player-vs-cap case gets a dedicated upfront check (decision #36), consistent with `validate_lock_feasibility()`'s existing precedent of only checking structural infeasibility, not every possible interaction between optional constraints.
+- **Unknown team/game labels are a non-fatal NOTE, not an error** (decision #38) — covers both genuine typos and legitimate byes; the constraint becomes a harmless no-op if the label matches nothing in the pool. Same handling as the frontend's typo protection for the existing stack pickers.
+- **Game caps keyed by frozenset in `optimizer.py`, sorted `"TEAM-TEAM"` string in `index.html`/CLI** — the frontend's game dropdown already produces a sorted-pair key (`[teamA, teamB].sort().join("-")`), so the CLI-to-frontend format matches exactly with no translation needed; `parse_game_cap_list()` converts to a frozenset internally only for constraint-building.
+
+**Known issues deferred:**
+- None specific to this feature — it's fully closed out, real-data validated by the user.
+
+**Handoff notes for next session:**
+- This feature is independent of and doesn't touch the ongoing Phase 10/11 projection/ownership work — no interaction effects to worry about there.
+- If a future session wants a "global default game cap" (e.g. "no game may exceed 4 players, without picking games one by one"), that would be a straightforward addition: apply a default cap to every game in the slate's pool not already explicitly overridden by `--max-game-players`. Not built now since it wasn't requested — the user's explicit ask was per-team/per-game selection, not a blanket default.
