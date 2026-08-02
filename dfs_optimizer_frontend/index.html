@@ -443,6 +443,72 @@
   .own-cell { color: var(--dim); font-family: 'Roboto Mono', monospace; font-size: 12px; }
   .value-cell { color: var(--dim); font-family: 'Roboto Mono', monospace; font-size: 12px; }
 
+  /* ---------------- Pivot panel (Session 4.3 -- Finding 2) ----------------
+     Click a roster row to expand a panel of pivot candidates directly
+     below it, per-lineup, working the same way on desktop and mobile
+     (no hover-only affordance, no separate side panel to manage). */
+  .roster-row.pivot-clickable { cursor: pointer; }
+  .roster-row.pivot-clickable:hover { background: rgba(255,255,255,0.04); }
+  .roster-row.pivot-expanded { background: var(--panel-2); }
+  .pivot-panel {
+    padding: 10px 14px 14px;
+    background: var(--ink-raised);
+    border-bottom: 1px solid var(--line-soft);
+  }
+  .pivot-panel .pivot-head {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--dimmer);
+    margin-bottom: 8px;
+  }
+  .pivot-candidate {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 8px 10px;
+    margin-bottom: 6px;
+    background: var(--panel);
+    border-radius: 8px;
+    border: 1px solid var(--line-soft);
+    flex-wrap: wrap;
+  }
+  .pivot-candidate:last-child { margin-bottom: 0; }
+  .pivot-candidate .pc-info { min-width: 0; }
+  .pivot-candidate .pc-name { font-weight: 500; font-size: 13px; color: var(--bone); }
+  .pivot-candidate .pc-meta { font-size: 11px; color: var(--dim); font-family: 'Roboto Mono', monospace; margin-top: 2px; }
+  .pivot-candidate .pc-meta .own-better { color: var(--good); }
+  .pivot-candidate .pc-meta .proj-worse { color: var(--bad); }
+  .pivot-candidate .pc-meta .proj-better { color: var(--good); }
+  .pivot-swap-btn {
+    background: var(--panel-2);
+    color: var(--bone);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    padding: 6px 12px;
+    font-size: 12px;
+    cursor: pointer;
+    font-weight: 500;
+    white-space: nowrap;
+  }
+  .pivot-swap-btn:hover { border-color: var(--amber); color: var(--amber); }
+  .pivot-swap-btn:disabled { opacity: 0.4; cursor: default; }
+  .pivot-empty { font-size: 12px; color: var(--dimmer); font-style: italic; }
+  .pivot-swapped-flag {
+    display: inline-block;
+    margin-left: 7px;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    color: var(--good);
+    background: rgba(63,191,127,0.12);
+    border-radius: 4px;
+    padding: 1px 5px;
+    vertical-align: middle;
+  }
+
   .proj-cell { color: var(--amber); font-weight: 500; }
   .proj-cell.zero { color: var(--bad); }
 
@@ -1604,7 +1670,14 @@
     stackGameSelection: { dk: {}, fd: {} },     // "TEAM-TEAM" -> true
     // ---- Session 12 additions (decisions #36-38) ----
     maxTeamCaps: { dk: {}, fd: {} },            // team -> cap int
-    maxGameCaps: { dk: {}, fd: {} }             // "TEAM-TEAM" (sorted) -> cap int
+    maxGameCaps: { dk: {}, fd: {} },            // "TEAM-TEAM" (sorted) -> cap int
+    // ---- Session 4.3 additions (Finding 2 -- pivot panel) ----
+    pivots: { dk: null, fd: null },             // each: { filename, byKey: { "name|team": [candidate rows, sorted by pivot_rank] } }
+    // index into the CURRENTLY DISPLAYED lineup's rows array of the
+    // expanded roster row, or null if none expanded. Reset on lineup nav
+    // or site switch so a stale expansion doesn't point at the wrong row.
+    expandedPivotRow: { dk: null, fd: null },
+    swappedSlots: { dk: {}, fd: {} }            // "lineupId|roster_slot" -> true, for the "SWAPPED" flag
   };
 
   // Slate management (slate-mgmt session): index entries are now
@@ -1711,6 +1784,7 @@
   function removeSlate(site, slateId) {
     try {
       localStorage.removeItem(slateKey(site, slateId));
+      localStorage.removeItem(pivotsStorageKey(site, slateId)); // paired pivots, if any
       writeSlateIndex(readSlateIndex().filter(function (e2) { return !(e2.site === site && e2.slateId === slateId); }));
     } catch (e) { /* ignore */ }
     // Clear state if this was the active slate.
@@ -1718,6 +1792,8 @@
     if (sel && sel.value === (site + "|" + slateId)) {
       state.data[site] = null;
       state.pool[site] = null;
+      state.pivots[site] = null;
+      state.expandedPivotRow[site] = null;
       setSlateStatus("Slate deleted.");
       render();
       renderPlayerList();
@@ -1730,6 +1806,9 @@
     // Cloud delete -- fire and forget after local cleanup is done.
     if (cloudConfigured()) {
       fetch(workerUrl("delete_slate", { site: site, slate_id: slateId }), {
+        method: "DELETE", cache: "no-store",
+      }).catch(function () { /* ignore network errors on delete */ });
+      fetch(workerUrl("delete_slate", { site: site, slate_id: slateId + "__pivots" }), {
         method: "DELETE", cache: "no-store",
       }).catch(function () { /* ignore network errors on delete */ });
     }
@@ -1784,10 +1863,92 @@
         var hasBaked = payload.some(function (p) { return p.estimated_ownership_pct != null; });
         setOwnershipStatus(hasBaked ? "Loaded from this slate's estimated_ownership_pct column" : "This slate has no estimated_ownership_pct column — rebuild it with the updated build_projections.py, or upload an override CSV", hasBaked);
       }
+    } else if (kind === "pivots") {
+      applyPivotsPayload(site, filename, payload);
     } else {
       var grouped = groupBySite(payload, site);
       state.data[site] = { filename: filename, lineups: grouped.lineups, ids: grouped.ids, currentIndex: 0 };
     }
+  }
+
+  // ---------------- Pivot suggestions (Session 4.3 -- Finding 2) ----------------
+  // Stored separately from the main pool/lineup slate index -- a
+  // pivot_suggestions file is always PAIRED to one lineup/pool slateId
+  // (it was generated FROM that slate's lineup_single/final_projections
+  // files), never a standalone thing a user would pick from the slate
+  // dropdown on its own. Reuses the same localStorage/cloud primitives
+  // (slateKey/cloudSaveSlate/cloudLoadSlate) as pool/lineup slates, just
+  // keyed under slateId + "__pivots" and deliberately NOT registered in
+  // the slate index/dropdown (readSlateIndex/writeSlateIndex/buildDropdown
+  // untouched), so it doesn't show up as a separately-selectable entry.
+
+  // Join key: pivot_finder.py's cash_player_name/pivot_player_name are
+  // the exact, un-normalized strings from lineup_single/final_projections
+  // -- trim + lowercase name and uppercase team is enough to match
+  // reliably against the roster row's own player_name/team without
+  // needing player_id (which FD's lineup_single still doesn't carry --
+  // see pivot_finder.py decision #2).
+  function pivotKey(name, team) {
+    return (name || "").trim().toLowerCase() + "|" + (team || "").trim().toUpperCase();
+  }
+
+  function groupPivots(rows) {
+    var byKey = {};
+    rows.forEach(function (r) {
+      var k = pivotKey(r.cash_player_name, r.cash_team);
+      if (!byKey[k]) byKey[k] = [];
+      byKey[k].push(r);
+    });
+    Object.keys(byKey).forEach(function (k) {
+      byKey[k].sort(function (a, b) { return (parseInt(a.pivot_rank, 10) || 0) - (parseInt(b.pivot_rank, 10) || 0); });
+    });
+    return byKey;
+  }
+
+  function applyPivotsPayload(site, filename, payload) {
+    state.pivots[site] = { filename: filename, byKey: groupPivots(payload) };
+  }
+
+  function pivotsStorageKey(site, slateId) { return slateKey(site, slateId + "__pivots"); }
+
+  function persistPivots(site, slateId, filename, payload, week, onDone) {
+    try {
+      localStorage.setItem(pivotsStorageKey(site, slateId), JSON.stringify({ filename: filename, payload: payload }));
+    } catch (e) { /* localStorage unavailable -- pivots still work this session */ }
+    cloudSaveSlate(site, slateId + "__pivots", "(pivots)", "pivots", filename, payload, week, function (ok, errMsg) {
+      if (onDone) onDone(ok, errMsg);
+    });
+  }
+
+  function loadStoredPivots(site, slateId) {
+    try {
+      var raw = localStorage.getItem(pivotsStorageKey(site, slateId));
+      if (!raw) return false;
+      var stored = JSON.parse(raw);
+      applyPivotsPayload(site, stored.filename, stored.payload);
+      return true;
+    } catch (e) { return false; }
+  }
+
+  // Best-effort: loads the pivot suggestions paired to whichever
+  // slateId was just loaded as the active pool/lineup. Silently leaves
+  // state.pivots[site] as null if none exist for this slate (a slate
+  // with no pivot_suggestions file yet is a normal, expected state, not
+  // an error -- e.g. Session 4.2 hasn't run for a brand-new slate).
+  function loadPivotsForActive(site, slateId) {
+    state.expandedPivotRow[site] = null;
+    if (loadStoredPivots(site, slateId)) { render(); return; }
+    cloudLoadSlate(site, slateId + "__pivots", function (record) {
+      if (record) {
+        applyPivotsPayload(site, record.filename, record.payload);
+        try {
+          localStorage.setItem(pivotsStorageKey(site, slateId), JSON.stringify({ filename: record.filename, payload: record.payload }));
+        } catch (e) { /* ignore */ }
+      } else {
+        state.pivots[site] = null;
+      }
+      render();
+    });
   }
 
   function loadStoredSlate(site, slateId) {
@@ -1822,9 +1983,16 @@
   // ---------------- File parsing ----------------
   function detectSlateKind(rows) {
     if (!rows.length) return null;
+    var pivotsRequired = ["cash_player_name", "cash_position", "cash_team", "pivot_rank",
+      "pivot_player_name", "pivot_team", "pivot_salary", "pivot_final_projection",
+      "pivot_estimated_ownership_pct", "leverage_score"];
     var poolRequired = ["player_id", "player_name", "position", "team", "salary", "final_projection"];
     var lineupRequired = ["roster_slot", "player_name", "position", "team", "salary", "projection"];
     var hasAll = function (req) { return req.every(function (k) { return Object.prototype.hasOwnProperty.call(rows[0], k); }); };
+    // Pivots checked first -- pivot_suggestions rows also carry
+    // player-name-shaped columns, so check the more distinctive schema
+    // before the more general pool/lineup ones.
+    if (hasAll(pivotsRequired)) return "pivots";
     if (hasAll(poolRequired)) return "pool";
     if (hasAll(lineupRequired)) return "lineup";
     return null;
@@ -1859,11 +2027,11 @@
       // --slate-id by construction, not just when the user happens to type
       // it correctly.
       var suggested = file.name.replace(/\.[^.]+$/, "");
-      var prefixMatch = suggested.match(/^(?:final_projections|lineup_single|lineups_multi)_(?:dk|fd)_(.+)$/i);
+      var prefixMatch = suggested.match(/^(?:final_projections|lineup_single|lineups_multi|pivot_suggestions)_(?:dk|fd)_(.+)$/i);
       if (prefixMatch) { suggested = prefixMatch[1]; }
       document.getElementById("slateLabel").value = suggested;
       document.getElementById("slateLabelRow").style.display = "flex";
-      setSlateStatus(rows.length + (kind === "pool" ? " players" : " lineup rows") + " ready — enter a name then click Save.");
+      setSlateStatus(rows.length + (kind === "pool" ? " players" : kind === "pivots" ? " pivot suggestion rows" : " lineup rows") + " ready — enter a name then click Save.");
     };
     reader.readAsText(file);
   }
@@ -1883,20 +2051,43 @@
     pendingSlate = null;
     document.getElementById("slateLabelRow").style.display = "none";
 
+    // Extract week number from the filename if possible.
+    // Matches patterns like: final_projections_dk_10.csv, lineup_multi_dk_3.csv
+    var weekMatch = file.name.match(/_(\d{1,3})\.csv$/i);
+    var week = weekMatch ? weekMatch[1] : "1"; // default 1 for Madden Sim / preseason
+
+    // Pivots are paired to an existing pool/lineup slateId (the label the
+    // user types here should match the slate they're pivoting off of) --
+    // never registered in the main slate index/dropdown, since a pivot
+    // file isn't something you'd ever want to select as "the active
+    // slate" on its own. See loadPivotsForActive()/persistPivots() for
+    // the matching load-side half of this.
+    if (kind === "pivots") {
+      applyPivotsPayload(site, file.name, rows);
+      var pivotMsg = label + " — " + rows.length + " pivot suggestion row(s) linked to this slate";
+      setSlateStatus(pivotMsg, true);
+      document.getElementById("slatesPanel").classList.remove("open");
+      render();
+      persistPivots(site, slateId, file.name, rows, week, function (ok, errMsg) {
+        setSlateStatus(pivotMsg + (ok ? " · synced to cloud" : (cloudConfigured() ? " · cloud sync failed (" + errMsg + ")" : "")), true);
+      });
+      return;
+    }
+
     var payload = kind === "pool" ? rows.map(function (r) {
       return {
         player_id: r.player_id, player_name: r.player_name.trim(), position: r.position,
         team: r.team, salary: parseFloat(r.salary) || 0, final_projection: parseFloat(r.final_projection) || 0,
         opponent: r.opponent || "", implied_total: parseFloat(r.implied_total) || 0, over_under: parseFloat(r.over_under) || 0,
+        // Carried through so a pivot-applied swap (Session 4.3) can still
+        // populate site_player_id on the resulting lineup row -- without
+        // this, a swapped-in player would silently lose DK/FD bulk-import
+        // support (see downloadLineupsForImport()'s own site_player_id note).
+        site_player_id: r.site_player_id || "",
         estimated_ownership_pct: Object.prototype.hasOwnProperty.call(r, "estimated_ownership_pct") && r.estimated_ownership_pct !== ""
           ? parseFloat(r.estimated_ownership_pct) : null
       };
     }) : rows;
-
-    // Extract week number from the filename if possible.
-    // Matches patterns like: final_projections_dk_10.csv, lineup_multi_dk_3.csv
-    var weekMatch = file.name.match(/_(\d{1,3})\.csv$/i);
-    var week = weekMatch ? weekMatch[1] : "1"; // default 1 for Madden Sim / preseason
 
     applySlatePayload(site, kind, file.name, payload);
     persistSlate(site, slateId, label, kind, file.name, payload, week);
@@ -2000,6 +2191,7 @@
       render();
       renderPlayerList();
       renderSlateOverview();
+      loadPivotsForActive(site, slateId);
     });
   });
 
@@ -2097,6 +2289,9 @@
       '<div class="cap-meter">' + segsHtml + '</div>' +
       '</div></div>';
 
+    var expandedIdx = state.expandedPivotRow[site];
+    var pivotStore = state.pivots[site];
+
     var rowsHtml = rows.map(function (r, i) {
       var isZero = parseFloat(r.projection) === 0;
       var own = rowOwnerships[i];
@@ -2107,10 +2302,12 @@
       // "value" metric. Kept consistent across both views rather than
       // introducing a second definition.
       var value = salaryNum > 0 ? projNum / (salaryNum / 1000) : 0;
-      return '<div class="roster-row">' +
+      var isExpanded = expandedIdx === i;
+      var swappedFlag = state.swappedSlots[site][id + "|" + r.roster_slot] ? '<span class="pivot-swapped-flag">SWAPPED</span>' : "";
+      var rowHtml = '<div class="roster-row pivot-clickable' + (isExpanded ? " pivot-expanded" : "") + '" data-row-index="' + i + '">' +
         '<div class="slot-badge">' + r.roster_slot + '</div>' +
         '<div class="player-cell"><div class="player-name">' + escapeHtml(r.player_name.trim()) +
-        (isZero ? '<span class="zero-flag">0 PTS</span>' : '') + '</div>' +
+        (isZero ? '<span class="zero-flag">0 PTS</span>' : '') + swappedFlag + '</div>' +
         '<div class="player-meta">' + escapeHtml(r.team) + (r.opponent ? " vs " + escapeHtml(r.opponent) : "") + '</div></div>' +
         '<div class="pos-cell">' + escapeHtml(r.position) + '</div>' +
         '<div class="salary-cell mono">' + fmtMoney(salaryNum) + '</div>' +
@@ -2118,6 +2315,10 @@
         '<div class="value-cell mono">' + value.toFixed(2) + '</div>' +
         '<div class="own-cell">' + (own != null ? own.toFixed(1) + '%' : '\u2014') + '</div>' +
         '</div>';
+      if (isExpanded) {
+        rowHtml += renderPivotPanel(site, r, i, pivotStore);
+      }
+      return rowHtml;
     }).join("");
 
     var rosterHtml =
@@ -2153,9 +2354,110 @@
 
     var prevBtn = document.getElementById("prevBtn");
     var nextBtn = document.getElementById("nextBtn");
-    if (prevBtn) prevBtn.onclick = function () { d.currentIndex--; render(); };
-    if (nextBtn) nextBtn.onclick = function () { d.currentIndex++; render(); };
+    if (prevBtn) prevBtn.onclick = function () { d.currentIndex--; state.expandedPivotRow[site] = null; render(); };
+    if (nextBtn) nextBtn.onclick = function () { d.currentIndex++; state.expandedPivotRow[site] = null; render(); };
     document.getElementById("btnDownloadLineups").onclick = downloadLineupsForImport;
+
+    // Pivot panel wiring (Session 4.3 -- Finding 2). Event delegation on
+    // the roster container rather than per-row listeners, since the whole
+    // container is rebuilt on every render() call anyway.
+    var rosterEl = viewer.querySelector(".roster");
+    if (rosterEl) {
+      rosterEl.onclick = function (e) {
+        var swapBtn = e.target.closest(".pivot-swap-btn");
+        if (swapBtn) {
+          applyPivotSwap(site, id, parseInt(swapBtn.getAttribute("data-row-index"), 10),
+            swapBtn.getAttribute("data-pivot-name"), swapBtn.getAttribute("data-pivot-team"),
+            swapBtn.getAttribute("data-pivot-position"));
+          return;
+        }
+        var rowEl = e.target.closest(".roster-row.pivot-clickable");
+        if (!rowEl) return;
+        var idx = parseInt(rowEl.getAttribute("data-row-index"), 10);
+        state.expandedPivotRow[site] = (state.expandedPivotRow[site] === idx) ? null : idx;
+        render();
+      };
+    }
+  }
+
+  // Renders the pivot-candidate panel for one expanded roster row. `r` is
+  // the cash-lineup row object; `pivotStore` is state.pivots[site] (or
+  // null if no pivot_suggestions file has been loaded for this slate).
+  function renderPivotPanel(site, r, rowIndex, pivotStore) {
+    var body;
+    if (!pivotStore) {
+      body = '<div class="pivot-empty">No pivot suggestions loaded for this slate yet -- upload pivot_suggestions_' + site + '_{week}.csv from the Slates panel.</div>';
+    } else {
+      var candidates = pivotStore.byKey[pivotKey(r.player_name, r.team)] || [];
+      if (!candidates.length) {
+        // Decision #7 (pivot_finder.py) -- a genuinely empty result is
+        // legitimate information, not an error, so this is worded as such
+        // rather than looking like something went wrong.
+        body = '<div class="pivot-empty">No eligible pivot found for this player on this slate -- no real same-tier, lower-owned alternative within tolerance.</div>';
+      } else {
+        body = candidates.map(function (c) {
+          var projPct = parseFloat(c.projection_diff_pct) || 0;
+          var projCls = projPct > 0 ? "proj-better" : (projPct < 0 ? "proj-worse" : "");
+          var ownEdge = parseFloat(c.ownership_edge_pts) || 0;
+          var salDiff = parseFloat(c.salary_diff) || 0;
+          return '<div class="pivot-candidate">' +
+            '<div class="pc-info">' +
+            '<div class="pc-name">' + escapeHtml(c.pivot_player_name.trim()) + ' <span style="color:var(--dimmer);">(' + escapeHtml(c.pivot_team) + ')</span></div>' +
+            '<div class="pc-meta">' +
+            'SAL ' + fmtMoney(parseFloat(c.pivot_salary) || 0) + ' (' + (salDiff >= 0 ? "+" : "") + fmtMoney(salDiff) + ') &middot; ' +
+            'PROJ ' + fmtPts(parseFloat(c.pivot_final_projection) || 0) + ' <span class="' + projCls + '">(' + (projPct >= 0 ? "+" : "") + projPct.toFixed(1) + '%)</span> &middot; ' +
+            'OWN ' + (parseFloat(c.pivot_estimated_ownership_pct) || 0).toFixed(1) + '% <span class="own-better">(&minus;' + ownEdge.toFixed(1) + ' pts)</span> &middot; ' +
+            'LEV ' + (parseFloat(c.leverage_score) || 0).toFixed(1) +
+            '</div></div>' +
+            '<button class="pivot-swap-btn" data-row-index="' + rowIndex + '" data-pivot-name="' + escapeHtml(c.pivot_player_name.trim()) +
+            '" data-pivot-team="' + escapeHtml(c.pivot_team) + '" data-pivot-position="' + escapeHtml(r.position) + '">Swap In</button>' +
+            '</div>';
+        }).join("");
+      }
+    }
+    return '<div class="pivot-panel"><div class="pivot-head">Pivot candidates for ' + escapeHtml(r.player_name.trim()) + '</div>' + body + '</div>';
+  }
+
+  // Applies a pivot swap: replaces the roster row at rowIndex in the
+  // CURRENTLY DISPLAYED lineup with the candidate's full player record,
+  // looked up from the active player pool (pivot_suggestions.csv itself
+  // doesn't carry every column a lineup row needs -- player_id,
+  // site_player_id, opponent -- so the pool is the source of truth,
+  // matched by normalized name+team, same join basis pivot_finder.py
+  // itself uses). Works on whichever lineup is currently on screen --
+  // per the user's own framing, every lineup built (cash or GPP-labeled)
+  // is just "a lineup," so this isn't restricted to a single-lineup mode.
+  function applyPivotSwap(site, lineupId, rowIndex, pivotName, pivotTeam, position) {
+    var d = state.data[site];
+    var pool = state.pool[site];
+    if (!d || !d.lineups[lineupId]) return;
+    if (!pool) { setSlateStatus("Load this slate's player pool before applying a swap.", false); return; }
+    var target = pool.players.find(function (p) {
+      return p.player_name.trim().toLowerCase() === pivotName.trim().toLowerCase() &&
+        (p.team || "").trim().toUpperCase() === pivotTeam.trim().toUpperCase() &&
+        p.position === position;
+    });
+    if (!target) {
+      setSlateStatus("Couldn't find " + pivotName + " in the current player pool -- pool may be stale relative to this pivot_suggestions file.", false);
+      return;
+    }
+    var rows = d.lineups[lineupId];
+    var oldRow = rows[rowIndex];
+    if (!oldRow) return;
+    rows[rowIndex] = {
+      roster_slot: oldRow.roster_slot,
+      player_id: target.player_id,
+      player_name: target.player_name,
+      position: target.position,
+      team: target.team,
+      salary: target.salary,
+      projection: target.final_projection,
+      opponent: target.opponent || "",
+      site_player_id: target.site_player_id || ""
+    };
+    state.swappedSlots[site][lineupId + "|" + oldRow.roster_slot] = true;
+    state.expandedPivotRow[site] = null;
+    render();
   }
 
   function escapeHtml(s) {
@@ -2250,6 +2552,7 @@
         render();
         renderPlayerList();
         renderSlateOverview();
+        loadPivotsForActive(site, slateId);
       });
     } else {
       // Dropdown has no entry for this site yet.
@@ -3413,6 +3716,7 @@
         renderPlayerList();
         renderSlateOverview();
         render();
+        loadPivotsForActive(site, slateId);
       });
     } else {
       setSlateStatus("Checking cloud for saved slates…");
@@ -3455,6 +3759,7 @@
           renderPlayerList();
           renderSlateOverview();
           render();
+          loadPivotsForActive(s2, sid2);
         });
       }
     });

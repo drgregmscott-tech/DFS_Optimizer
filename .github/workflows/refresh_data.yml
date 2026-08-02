@@ -18,7 +18,11 @@
 # status_check.py pull (fresh ESPN status) -> build_projections.py, both
 # sites (rebuild the blend against the same salary file but fresh
 # vegas/status) -> status_check.py apply, both sites (re-zero any newly-OUT
-# player). Every run's outcome (success/failure, per site) is appended to
+# player) -> pivot_finder.py, both sites, IF a lineup_single file already
+# exists for that site/week (Session 4.3 addendum -- rebuilds pivot
+# suggestions against the refreshed projections/status, skipped rather than
+# failed if no cash lineup has been built yet for this slate). Every run's
+# outcome (success/failure, per site) is appended to
 # logs/automation_run_log.csv, which is what Session 5.2's validation
 # checklist below is checked against.
 #
@@ -224,6 +228,43 @@ jobs:
             --week ${{ steps.slate.outputs.fd_week }} \
             --status-file "${{ steps.status_file.outputs.path }}"
 
+      # Session 4.3 addendum: pivot_finder.py needs BOTH a freshly-built
+      # final_projections AND an existing lineup_single -- the latter is
+      # only ever produced by the user's own "Build Lineups" dispatch, not
+      # by this workflow, so it may legitimately not exist yet (brand-new
+      # slate, no lineup built) or may be stale relative to the refreshed
+      # projections. Placed AFTER the status-apply steps above (not right
+      # after build_projections) so pivots reflect zeroed-OUT players --
+      # same reasoning as running Apply Status before anything downstream.
+      # Gated on the lineup file actually existing (mirrors the
+      # steps.status_file.outputs.path != '' pattern already used above)
+      # so a missing lineup is a normal "not_run" outcome, not a failure.
+      - name: Locate cash lineup -- DK
+        id: lineup_dk
+        if: steps.trigger.outputs.mode == 'full'
+        run: |
+          f=$(ls output/lineup_single_dk_${{ steps.slate.outputs.dk_week }}.csv 2>/dev/null || true)
+          echo "path=$f" >> "$GITHUB_OUTPUT"
+
+      - name: Locate cash lineup -- FD
+        id: lineup_fd
+        if: steps.trigger.outputs.mode == 'full'
+        run: |
+          f=$(ls output/lineup_single_fd_${{ steps.slate.outputs.fd_week }}.csv 2>/dev/null || true)
+          echo "path=$f" >> "$GITHUB_OUTPUT"
+
+      - name: Rebuild pivot suggestions -- DK
+        id: pivot_dk
+        if: steps.trigger.outputs.mode == 'full' && steps.lineup_dk.outputs.path != ''
+        continue-on-error: true
+        run: python3 scripts/pivot_finder.py --site dk --week ${{ steps.slate.outputs.dk_week }}
+
+      - name: Rebuild pivot suggestions -- FD
+        id: pivot_fd
+        if: steps.trigger.outputs.mode == 'full' && steps.lineup_fd.outputs.path != ''
+        continue-on-error: true
+        run: python3 scripts/pivot_finder.py --site fd --week ${{ steps.slate.outputs.fd_week }}
+
       # Always runs, even if earlier steps failed -- a failed run is exactly
       # the kind of thing this log needs to capture, not swallow.
       - name: Append run-log row(s)
@@ -257,6 +298,8 @@ jobs:
               rows.append({'timestamp_utc': now, 'trigger_type': trigger_type, 'site': 'fd', 'step': 'build_projections', 'status': outcome('PROJ_FD_OUTCOME')})
               rows.append({'timestamp_utc': now, 'trigger_type': trigger_type, 'site': 'dk', 'step': 'status_apply', 'status': outcome('APPLY_DK_OUTCOME')})
               rows.append({'timestamp_utc': now, 'trigger_type': trigger_type, 'site': 'fd', 'step': 'status_apply', 'status': outcome('APPLY_FD_OUTCOME')})
+              rows.append({'timestamp_utc': now, 'trigger_type': trigger_type, 'site': 'dk', 'step': 'pivot_finder', 'status': outcome('PIVOT_DK_OUTCOME')})
+              rows.append({'timestamp_utc': now, 'trigger_type': trigger_type, 'site': 'fd', 'step': 'pivot_finder', 'status': outcome('PIVOT_FD_OUTCOME')})
 
           with log_path.open('a', newline='') as f:
               writer = csv.DictWriter(f, fieldnames=fieldnames)
@@ -274,6 +317,8 @@ jobs:
           PROJ_FD_OUTCOME: ${{ steps.proj_fd.outcome }}
           APPLY_DK_OUTCOME: ${{ steps.apply_dk.outcome }}
           APPLY_FD_OUTCOME: ${{ steps.apply_fd.outcome }}
+          PIVOT_DK_OUTCOME: ${{ steps.pivot_dk.outcome }}
+          PIVOT_FD_OUTCOME: ${{ steps.pivot_fd.outcome }}
 
       # Commit whatever changed (output/*, logs/automation_run_log.csv).
       # Rebase-and-retry once to reduce lost updates when a near-lock
@@ -293,7 +338,7 @@ jobs:
           git push origin HEAD:"${{ github.ref_name }}"
 
       - name: Fail the run if any pipeline step failed
-        if: steps.vegas.outcome == 'failure' || steps.team_stats.outcome == 'failure' || steps.status_pull.outcome == 'failure' || steps.proj_dk.outcome == 'failure' || steps.proj_fd.outcome == 'failure' || steps.apply_dk.outcome == 'failure' || steps.apply_fd.outcome == 'failure'
+        if: steps.vegas.outcome == 'failure' || steps.team_stats.outcome == 'failure' || steps.status_pull.outcome == 'failure' || steps.proj_dk.outcome == 'failure' || steps.proj_fd.outcome == 'failure' || steps.apply_dk.outcome == 'failure' || steps.apply_fd.outcome == 'failure' || steps.pivot_dk.outcome == 'failure' || steps.pivot_fd.outcome == 'failure'
         run: |
           echo "One or more pipeline steps failed -- see the step logs above and logs/automation_run_log.csv."
           exit 1

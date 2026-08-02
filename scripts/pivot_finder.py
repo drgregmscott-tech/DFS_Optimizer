@@ -6,15 +6,35 @@ Session 4.2 -- Cash-to-GPP Pivot Logic.
 
 For a given site (DK/FD) and week, reads that site's single optimal cash
 lineup (`lineup_single_{site}_{week}.csv`, Session 3.1) alongside
-`chalk_scores_{site}_{week}.csv` (Session 4.1) and
-`final_projections_{site}_{week}.csv` (Session 2.4/3.3), and for every
-player in the cash lineup, generates a ranked list of "pivot" candidates --
-same-position, similarly-priced players who are LESS owned than the cash
-play, for use building differentiated GPP lineups off the same cash-lineup
-starting point.
+`final_projections_{site}_{week}.csv` (Session 2.4/3.3, which now carries
+`chalk_score`/`estimated_ownership_pct` natively -- see decision #0 below),
+and for every player in the cash lineup, generates a ranked list of "pivot"
+candidates -- same-position, similarly-PROJECTED players who are LESS
+owned than the cash play, for use building differentiated GPP lineups off
+the same cash-lineup starting point.
 
 Design decisions (same "flag, don't silently assume" pattern as every prior
 session's file):
+
+0. Input fix (this session, found while re-validating on real data): this
+   script originally joined `chalk_scores_{site}_{week}.csv` (Session 4.1's
+   standalone CLI output) onto `final_projections_{site}_{week}.csv` by
+   `player_id` to get `estimated_ownership_pct`. Since then, the frontend's
+   Item 6 change added `add_ownership_columns()` to `build_projections.py`,
+   which now bakes `chalk_score`/`estimated_ownership_pct` directly into
+   `final_projections_{site}_{week}.csv` at write time -- the weekly SOP
+   (`DFS_Weekly_Process.md`) never runs `ownership_heuristic.py`'s
+   standalone CLI as a separate pipeline step any more. The old merge
+   therefore joined two DataFrames that both already had
+   `estimated_ownership_pct`, silently producing `..._x`/`..._y` suffixed
+   columns instead of the expected single column, and crashing downstream
+   with an opaque `KeyError` rather than failing loudly with a clear
+   message. Fixed by reading `estimated_ownership_pct`/`chalk_score`
+   straight off `final_projections`, removing the `chalk_scores` merge
+   entirely (see `load_final_projections()`/`build_candidate_pool()`).
+   `chalk_scores_{site}_{week}.csv` and its standalone CLI are untouched
+   and still work if wanted for other purposes -- this script just no
+   longer depends on them.
 
 1. Ownership signal: `estimated_ownership_pct`, NOT `chalk_score`. Session
    4.1's addendum left this as an explicit open decision for this session
@@ -45,24 +65,41 @@ session's file):
    a silent fallback (e.g. skipping the player) would produce an
    incomplete, misleadingly-quiet pivot_suggestions file.
 
-3. Salary tolerance: a PERCENTAGE OF THAT SITE'S CAP
-   (`SALARY_TOLERANCE_PCT_OF_CAP`, default 10%), not a flat dollar amount.
-   A flat dollar tolerance would mean something different on DK's $50K cap
-   vs FD's $60K cap; a %-of-cap tolerance travels between sites unchanged,
-   same reasoning already applied to `DEFAULT_MAX_EXPOSURE_PCT` in
-   optimizer.py (Session 3.2 decision #8). Explicitly flagged as an unfit
-   starting heuristic -- easy first retuning target once real usage exists,
-   same spirit as `OWNERSHIP_SOFTMAX_TEMPERATURE` (Session 4.1 addendum).
+3. Eligibility basis (REVISED this session -- see NFL_pivot_ui_handoff.md
+   Finding 1): candidates are now filtered by similarity in
+   `final_projection`, NOT salary. This was originally a salary-tolerance
+   filter (`SALARY_TOLERANCE_PCT_OF_CAP`, % of that site's cap). NHL's
+   Session 4.2 port of this same script found, against real NHL slates,
+   that salary is a weak proxy for "similar projected output" at every
+   tolerance tried: loose tolerances let through technically-legal but
+   useless swaps (a big pay-cut to a clearly worse player), while tight
+   tolerances left real cash-lineup players with zero eligible candidates
+   -- a structural wall, since salary also prices in matchup, role
+   certainty, and market perception, not just points. That reasoning is
+   about DFS pricing in general, not NHL-specific, so it applies here too.
+
+   New filter: `PROJECTION_TOLERANCE_PCT_OF_CASH_PROJECTION` (default
+   25.0, tested against this session's real Madden Sim week-10 data for
+   both DK and FD -- see SESSION_LOG.md for the 15/25/35% comparison this
+   value was chosen from, same test-multiple-values-against-real-data
+   approach NHL used; NOT copied from NHL's own fitted 25% without a
+   separate NFL-specific check, per the handoff doc's explicit caution).
+   Symmetric -- a candidate can project a bit higher OR lower than the
+   cash player, off the cash player's own `final_projection`. Salary is
+   demoted to an INFORMATIONAL output column (`salary_diff`,
+   `salary_diff_pct`) -- still shown, no longer a gate. Explicitly
+   flagged as an unfit-to-full-season starting heuristic (Madden Sim data
+   only) -- a retuning target once real regular-season usage exists, same
+   spirit as `OWNERSHIP_SOFTMAX_TEMPERATURE`.
 
 4. Eligibility filters for a pivot candidate (all must hold):
    - Same `position` label as the cash player (site-specific label used
      as-is -- DK's "DST" or FD's "DEF" -- since candidate and cash player
      always come from the same site's file, no cross-site DST/DEF folding
      is needed here, unlike Session 4.1's `position_group`).
-   - Salary within `SALARY_TOLERANCE_PCT_OF_CAP` of the cash player's own
-     salary (both directions -- a pivot can cost more OR less; going
-     slightly more expensive for a much-lower-owned player is a
-     legitimate GPP pivot too, not just downgrades).
+   - `final_projection` within `PROJECTION_TOLERANCE_PCT_OF_CASH_PROJECTION`
+     of the cash player's own `final_projection` (decision #3 -- both
+     directions; a pivot can project a bit higher OR lower).
    - `estimated_ownership_pct` strictly LESS than the cash player's own --
      a "pivot" that isn't less owned isn't leverage, it's just a
      different player.
@@ -76,6 +113,9 @@ session's file):
    - The swap must keep the FULL lineup's total salary under that site's
      cap (decision #5 below) -- an over-cap "suggestion" isn't usable, so
      it's filtered out entirely rather than surfaced with a warning flag.
+     This is now the ONLY place salary acts as a gate -- a legality
+     guarantee, not a similarity filter (unchanged from before this
+     session, per the handoff doc's explicit instruction to leave it).
 
 5. Full-lineup salary cap re-check (roadmap card's second validation
    checkbox): for every candidate, this script computes what the ENTIRE
@@ -118,7 +158,13 @@ session's file):
    descending. If fewer than `TOP_N_PIVOTS` eligible candidates exist for
    a given cash player (thin pool -- see ROADMAP.md's "Known Testing
    Artifact" note), all eligible candidates are returned and this is
-   noted, not treated as an error.
+   noted, not treated as an error. A cash player with ZERO eligible
+   candidates under the projection-band filter (decision #3) is likewise
+   accepted as legitimate information -- "this player has no real
+   same-tier alternative on this slate" -- rather than a signal to widen
+   the tolerance until something appears (same resolution NHL reached
+   after testing; a WARNING is printed to stderr but the tolerance is not
+   auto-relaxed).
 
 Usage:
     python3 pivot_finder.py --site dk --week 10
@@ -142,8 +188,10 @@ from ingest_salaries import SITE_CONFIGS, normalize_name, normalize_team  # noqa
 REPO_ROOT = Path(__file__).resolve().parent.parent
 OUTPUT_DIR = REPO_ROOT / "output"
 
-# Decision #3 -- % of that site's salary cap, not a flat dollar amount.
-SALARY_TOLERANCE_PCT_OF_CAP = 10.0
+# Decision #3 -- % of the cash player's OWN final_projection, symmetric.
+# Chosen from a real-data 15/25/35% comparison against Madden Sim week 10
+# (both sites) -- see SESSION_LOG.md. Flagged as unfit to full-season data.
+PROJECTION_TOLERANCE_PCT_OF_CASH_PROJECTION = 25.0
 
 # Decision #7.
 TOP_N_PIVOTS = 3
@@ -154,7 +202,8 @@ OUTPUT_COLUMNS = [
     "pivot_rank",
     "pivot_player_name", "pivot_team", "pivot_salary",
     "pivot_final_projection", "pivot_estimated_ownership_pct",
-    "salary_diff", "projection_diff", "ownership_edge_pts",
+    "salary_diff", "salary_diff_pct", "projection_diff", "projection_diff_pct",
+    "ownership_edge_pts",
     "outprojects_cash_player", "leverage_score",
     "lineup_salary_after_swap", "site_salary_cap",
 ]
@@ -183,30 +232,6 @@ def load_lineup_single(site: str, week: int) -> pd.DataFrame:
     return df
 
 
-def load_chalk_scores(site: str, week: int) -> pd.DataFrame:
-    path = OUTPUT_DIR / f"chalk_scores_{site}_{week}.csv"
-    if not path.exists():
-        raise FileNotFoundError(
-            f"{path} not found. Run ownership_heuristic.py --site {site} "
-            f"--week {week} first (Session 4.1)."
-        )
-    df = pd.read_csv(path, dtype={"player_id": str})
-    required = {
-        "player_id", "player_name", "position", "salary",
-        "final_projection", "estimated_ownership_pct",
-    }
-    missing = required - set(df.columns)
-    if missing:
-        raise SystemExit(
-            f"{path} is missing expected columns: {sorted(missing)}. "
-            f"ownership_heuristic.py's output schema may have changed (or "
-            f"this file predates the estimated_ownership_pct addendum -- "
-            f"re-run ownership_heuristic.py) -- update this script's "
-            f"load_chalk_scores() to match."
-        )
-    return df
-
-
 def load_final_projections(site: str, week: int) -> pd.DataFrame:
     path = OUTPUT_DIR / f"final_projections_{site}_{week}.csv"
     if not path.exists():
@@ -215,19 +240,26 @@ def load_final_projections(site: str, week: int) -> pd.DataFrame:
             f"--week {week} first (Session 2.4/3.3)."
         )
     df = pd.read_csv(path, dtype={"player_id": str})
-    required = {"player_id", "player_name", "position", "team", "salary"}
+    required = {
+        "player_id", "player_name", "position", "team", "salary",
+        "final_projection", "estimated_ownership_pct",
+    }
     missing = required - set(df.columns)
     if missing:
         raise SystemExit(
             f"{path} is missing expected columns: {sorted(missing)}. "
-            f"build_projections.py's output schema may have changed -- "
-            f"update this script's load_final_projections() to match."
+            f"Note: build_projections.py's add_ownership_columns() bakes "
+            f"chalk_score/estimated_ownership_pct into this file directly "
+            f"-- if those columns are missing, re-run build_projections.py "
+            f"--site {site} --week {week} rather than looking for a "
+            f"separate chalk_scores file. Update this script's "
+            f"load_final_projections() if the schema has changed further."
         )
     return df
 
 
 # ---------------------------------------------------------------------------
-# Step 1: Join cash lineup + chalk_scores + final_projections (decision #2)
+# Step 1: Join cash lineup + final_projections (decision #2)
 # ---------------------------------------------------------------------------
 
 def _join_key(df: pd.DataFrame, site: str, name_col: str, team_col: str,
@@ -240,32 +272,25 @@ def _join_key(df: pd.DataFrame, site: str, name_col: str, team_col: str,
 
 
 def build_candidate_pool(site: str, week: int) -> pd.DataFrame:
-    """Merges chalk_scores (Session 4.1's ownership signal) onto
-    final_projections (Session 2.4/3.3's team/salary/position columns --
-    chalk_scores itself doesn't carry `team`) via `player_id`, both of
-    which come from the SAME build_projections.py run and therefore share
-    player_id natively -- no name/team normalization needed for this
-    join, only for joining against the cash lineup in decision #2."""
-    projections = load_final_projections(site, week)
-    chalk = load_chalk_scores(site, week)
-
-    pool = projections.merge(
-        chalk[["player_id", "estimated_ownership_pct"]],
-        on="player_id", how="inner",
-    )
-    if len(pool) != len(projections):
-        raise SystemExit(
-            f"build_candidate_pool({site!r}, {week}): {len(projections)} "
-            f"players in final_projections but only {len(pool)} matched a "
-            f"chalk_scores row by player_id -- chalk_scores_{site}_{week}.csv "
-            f"may be stale relative to the current final_projections file. "
-            f"Re-run ownership_heuristic.py --site {site} --week {week}."
-        )
-    return pool
+    """As of this session's Finding-3 fix, `final_projections_{site}_
+    {week}.csv` already carries `chalk_score`/`estimated_ownership_pct`
+    natively -- `build_projections.py`'s `add_ownership_columns()` (added
+    for the frontend's automatic-ownership feature) bakes these in at
+    write time. There is no longer a separate join to a standalone
+    `chalk_scores_{site}_{week}.csv` file -- that file's own standalone
+    CLI still exists and still works if wanted for other purposes, but
+    this script no longer depends on it, removing one more file that can
+    silently go stale relative to final_projections (this was the exact
+    failure mode found this session: merging two DataFrames that both
+    already had `estimated_ownership_pct` produced `..._x`/`..._y`
+    suffixed columns instead of a clean single column, crashing
+    downstream with a KeyError rather than failing loudly with a clear
+    message)."""
+    return load_final_projections(site, week)
 
 
 def attach_cash_lineup_context(lineup: pd.DataFrame, pool: pd.DataFrame,
-                                site: str) -> pd.DataFrame:
+                                site: str, week: int) -> pd.DataFrame:
     """Decision #2 -- joins each cash-lineup row to its matching row in
     `pool` (final_projections + estimated_ownership_pct) via the
     normalized (player_name, position, team) triple, since lineup_single
@@ -309,10 +334,12 @@ def attach_cash_lineup_context(lineup: pd.DataFrame, pool: pd.DataFrame,
 def find_pivots_for_player(cash_row: pd.Series, pool: pd.DataFrame,
                             rostered_player_ids: set, site: str,
                             lineup_total_salary: float,
-                            salary_tolerance_pct: float,
+                            projection_tolerance_pct: float,
                             top_n: int) -> pd.DataFrame:
     cap = SITE_CONFIGS[site]["salary_cap"]
-    tolerance_dollars = (salary_tolerance_pct / 100.0) * cap
+    # Decision #3 -- tolerance is a % of the cash player's OWN
+    # final_projection, symmetric, NOT a % of the site's salary cap.
+    tolerance_pts = (projection_tolerance_pct / 100.0) * cash_row["cash_final_projection"]
 
     candidates = pool[
         (pool["position"] == cash_row["cash_position"])
@@ -320,7 +347,7 @@ def find_pivots_for_player(cash_row: pd.Series, pool: pd.DataFrame,
         & (~pool["player_id"].isin(rostered_player_ids))
         & (pool["final_projection"] > 0)  # decision #4 -- never suggest a bye/zero player
         & (pool["estimated_ownership_pct"] < cash_row["cash_estimated_ownership_pct"])
-        & ((pool["salary"] - cash_row["cash_salary"]).abs() <= tolerance_dollars)
+        & ((pool["final_projection"] - cash_row["cash_final_projection"]).abs() <= tolerance_pts)
     ].copy()
 
     if candidates.empty:
@@ -348,8 +375,15 @@ def find_pivots_for_player(cash_row: pd.Series, pool: pd.DataFrame,
         candidates["ownership_edge_pts"] * projection_retention
     ).clip(lower=0, upper=100)
 
+    # Salary is informational-only output now (decision #3) -- no longer
+    # a gate. Reported both in dollars and as a % of the site's cap, since
+    # a raw dollar diff doesn't travel between DK's $50K and FD's $60K cap.
     candidates["salary_diff"] = candidates["salary"] - cash_row["cash_salary"]
+    candidates["salary_diff_pct"] = (candidates["salary_diff"] / cap) * 100.0
     candidates["projection_diff"] = candidates["final_projection"] - cash_row["cash_final_projection"]
+    candidates["projection_diff_pct"] = (
+        candidates["projection_diff"] / cash_row["cash_final_projection"]
+    ) * 100.0
 
     candidates = candidates.sort_values("leverage_score", ascending=False).head(top_n)
     candidates = candidates.reset_index(drop=True)
@@ -369,7 +403,9 @@ def find_pivots_for_player(cash_row: pd.Series, pool: pd.DataFrame,
         "pivot_final_projection": candidates["final_projection"].values,
         "pivot_estimated_ownership_pct": candidates["estimated_ownership_pct"].values,
         "salary_diff": candidates["salary_diff"].values,
+        "salary_diff_pct": candidates["salary_diff_pct"].values,
         "projection_diff": candidates["projection_diff"].values,
+        "projection_diff_pct": candidates["projection_diff_pct"].values,
         "ownership_edge_pts": candidates["ownership_edge_pts"].values,
         "outprojects_cash_player": candidates["outprojects_cash_player"].values,
         "leverage_score": candidates["leverage_score"].values,
@@ -384,20 +420,20 @@ def find_pivots_for_player(cash_row: pd.Series, pool: pd.DataFrame,
 # ---------------------------------------------------------------------------
 
 def validate_pivot_suggestions(suggestions: pd.DataFrame, site: str,
-                                salary_tolerance_pct: float):
+                                projection_tolerance_pct: float):
     if suggestions.empty:
         return
     cap = SITE_CONFIGS[site]["salary_cap"]
-    tolerance_dollars = (salary_tolerance_pct / 100.0) * cap
 
     # Position is enforced structurally in find_pivots_for_player() (the
     # `pool["position"] == cash_row["cash_position"]` filter) -- there is
     # no separate "pivot_position" output column since it's always
     # identical to cash_position by construction. Re-assert that
     # construction guarantee here rather than re-deriving it.
-    assert (suggestions["salary_diff"].abs() <= tolerance_dollars + 1e-6).all(), (
-        "VALIDATION FAILED: a suggested pivot's salary_diff exceeds the "
-        "configured salary tolerance."
+    tolerance_pts = (projection_tolerance_pct / 100.0) * suggestions["cash_final_projection"]
+    assert (suggestions["projection_diff"].abs() <= tolerance_pts + 1e-6).all(), (
+        "VALIDATION FAILED: a suggested pivot's projection_diff exceeds "
+        "the configured projection tolerance (decision #3)."
     )
     assert (suggestions["pivot_estimated_ownership_pct"]
             < suggestions["cash_estimated_ownership_pct"]).all(), (
@@ -417,11 +453,11 @@ def validate_pivot_suggestions(suggestions: pd.DataFrame, site: str,
 # ---------------------------------------------------------------------------
 
 def build_pivot_suggestions(site: str, week: int,
-                             salary_tolerance_pct: float = SALARY_TOLERANCE_PCT_OF_CAP,
+                             projection_tolerance_pct: float = PROJECTION_TOLERANCE_PCT_OF_CASH_PROJECTION,
                              top_n: int = TOP_N_PIVOTS) -> pd.DataFrame:
     lineup = load_lineup_single(site, week)
     pool = build_candidate_pool(site, week)
-    cash_context = attach_cash_lineup_context(lineup, pool, site)
+    cash_context = attach_cash_lineup_context(lineup, pool, site, week)
 
     lineup_total_salary = lineup["salary"].sum()
     rostered_player_ids = set(cash_context["player_id"])
@@ -430,17 +466,20 @@ def build_pivot_suggestions(site: str, week: int,
     for _, cash_row in cash_context.iterrows():
         result = find_pivots_for_player(
             cash_row, pool, rostered_player_ids, site,
-            lineup_total_salary, salary_tolerance_pct, top_n,
+            lineup_total_salary, projection_tolerance_pct, top_n,
         )
         if result.empty:
+            # Decision #7 -- an empty result is accepted as legitimate
+            # information ("no real same-tier alternative on this slate"),
+            # not a signal to widen the tolerance until something appears.
             print(
                 f"WARNING: no eligible pivot candidates found for "
                 f"{cash_row['cash_player_name']} ({cash_row['cash_position']}, "
-                f"{cash_row['cash_team']}) within {salary_tolerance_pct:.0f}% "
-                f"of cap salary tolerance -- thin pool (see ROADMAP.md's "
-                f"'Known Testing Artifact' note) or a genuinely uniquely-"
-                f"cheap/low-owned play with no lower-owned same-position "
-                f"alternative in range.",
+                f"{cash_row['cash_team']}) within {projection_tolerance_pct:.0f}% "
+                f"of cash-player projection tolerance -- thin pool (see "
+                f"ROADMAP.md's 'Known Testing Artifact' note) or a "
+                f"genuinely unique play with no same-tier, lower-owned "
+                f"alternative in range. This is left as-is, not widened.",
                 file=sys.stderr,
             )
         elif len(result) < top_n:
@@ -460,10 +499,12 @@ if __name__ == "__main__":
     parser.add_argument("--site", choices=["dk", "fd"], required=True)
     parser.add_argument("--week", type=int, required=True)
     parser.add_argument(
-        "--salary-tolerance-pct", type=float, default=SALARY_TOLERANCE_PCT_OF_CAP,
-        help=f"Salary tolerance for a pivot candidate, as a percentage of "
-             f"that site's salary cap (decision #3, default "
-             f"{SALARY_TOLERANCE_PCT_OF_CAP:.0f}%).",
+        "--projection-tolerance-pct", type=float,
+        default=PROJECTION_TOLERANCE_PCT_OF_CASH_PROJECTION,
+        help=f"Projection tolerance for a pivot candidate, as a symmetric "
+             f"percentage of the cash player's own final_projection "
+             f"(decision #3, default "
+             f"{PROJECTION_TOLERANCE_PCT_OF_CASH_PROJECTION:.0f}%).",
     )
     parser.add_argument(
         "--top-n", type=int, default=TOP_N_PIVOTS,
@@ -475,10 +516,10 @@ if __name__ == "__main__":
     config = SITE_CONFIGS[args.site]
     suggestions = build_pivot_suggestions(
         args.site, args.week,
-        salary_tolerance_pct=args.salary_tolerance_pct,
+        projection_tolerance_pct=args.projection_tolerance_pct,
         top_n=args.top_n,
     )
-    validate_pivot_suggestions(suggestions, args.site, args.salary_tolerance_pct)
+    validate_pivot_suggestions(suggestions, args.site, args.projection_tolerance_pct)
 
     OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
     out_path = OUTPUT_DIR / f"pivot_suggestions_{args.site}_{args.week}.csv"
@@ -487,8 +528,8 @@ if __name__ == "__main__":
     n_cash_players = suggestions["cash_player_name"].nunique() if not suggestions.empty else 0
     print(f"[{config['label']}] Wrote {len(suggestions)} pivot suggestion row(s) "
           f"covering {n_cash_players} cash-lineup player(s) to {out_path}")
-    print(f"  Salary tolerance: {args.salary_tolerance_pct:.0f}% of "
-          f"${config['salary_cap']:,} cap (${(args.salary_tolerance_pct / 100.0) * config['salary_cap']:,.0f})")
+    print(f"  Projection tolerance: {args.projection_tolerance_pct:.0f}% of "
+          f"cash player's own final_projection (symmetric, decision #3)")
     if not suggestions.empty:
         print(f"  leverage_score range: {suggestions['leverage_score'].min():.1f} "
               f"- {suggestions['leverage_score'].max():.1f}")
