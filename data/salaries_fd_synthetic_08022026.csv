@@ -1,0 +1,120 @@
+Id,Position,First Name,Last Name,Nickname,FPPG,Played,Salary,Game,Team,Opponent,Injury Indicator,Injury Details,name,site,salary,normalized_name,normalized_team,position_upper,player_id,match_method,match_confidence
+200000,QB,Spencer,Rattler,Spencer Rattler,0.0,,6200,SYNTHETIC NO@LA 08/03/2026 05:56PM ET,NO,LA,,,Spencer Rattler,fd,6200,spencer rattler,NO,QB,00-0039376,auto_exact,high
+200001,QB,Tyler,Shough,Tyler Shough,0.0,,5500,SYNTHETIC NO@LA 08/03/2026 05:56PM ET,NO,LA,,,Tyler Shough,fd,5500,tyler shough,NO,QB,00-0040743,auto_exact,high
+200002,RB,Evan,Hull,Evan Hull,0.0,,3700,SYNTHETIC NO@LA 08/03/2026 05:56PM ET,NO,LA,,,Evan Hull,fd,3700,evan hull,NO,RB,00-0038397,auto_exact,high
+200003,RB,Audric,Estimé,Audric Estimé,0.0,,5500,SYNTHETIC NO@LA 08/03/2026 05:56PM ET,NO,LA,,,Audric Estimé,fd,5500,audric estimé,NO,RB,00-0039373,auto_exact,high
+200004,RB,Alvin,Kamara,Alvin Kamara,0.0,,5300,SYNTHETIC NO@LA 08/03/2026 05:56PM ET,NO,LA,,,Alvin Kamara,fd,5300,alvin kamara,NO,RB,00-0033906,auto_exact,high
+200005,RB,Devin,Neal,Devin Neal,0.0,,5200,SYNTHETIC NO@LA 08/03/2026 05:56PM ET,NO,LA,,,Devin Neal,fd,5200,devin neal,NO,RB,00-0040202,auto_exact,high
+200006,WR,Kevin,Austin Jr.,Kevin Austin Jr.,0.0,,7800,SYNTHETIC NO@LA 08/03/2026 05:56PM ET,NO,LA,,,Kevin Austin Jr.,fd,7800,kevin austin,NO,WR,00-0037231,auto_exact,high
+200007,WR,Dante,Pettis,Dante Pettis,0.0,,7400,SYNTHETIC NO@LA 08/03/2026 05:56PM ET,NO,LA,,,Dante Pettis,fd,7400,dante pettis,NO,WR,00-0034860,auto_exact,high
+200008,WR,Ronnie,Bell,Ronnie Bell,0.0,,6200,SYNTHETIC NO@LA 08/03/2026 05:56PM ET,NO,LA,,,Ronnie Bell,fd,6200,ronnie bell,NO,WR,00-0038647,auto_exact,high
+200009,WR,Chris,Olave,Chris Olave,0.0,,8800,SYNTHETIC NO@LA 08/03/2026 05:56PM ET,NO,LA,,,Chris Olave,fd,8800,chris olave,NO,WR,00-0037239,auto_exact,high
+200010,WR,Mason,Tipton,Mason Tipton,0.0,,5300,SYNTHETIC NO@LA 08/03/2026 05:56PM ET,NO,LA,,,Mason Tipton,fd,5300,mason tipton,NO,WR,00-0039623,auto_exact,high
+200011,TE,Zaire,Mitchell-Paden,Zaire Mitchell-Paden,0.0,,6200,SYNTHETIC NO@LA 08/03/2026 05:56PM ET,NO,LA,,,Zaire Mitchell-Paden,fd,6200,zaire mitchell paden,NO,TE,00-0037340,auto_exact,high
+200012,TE,Taysom,Hill,Taysom Hill,0.0,,5300,SYNTHETIC NO@LA 08/03/2026 05:56PM ET,NO,LA,,,Taysom Hill,fd,5300,taysom hill,NO,TE,00-0033357,auto_exact,high
+200013,TE,Jack,Stoll,Jack Stoll,0.0,,6400,SYNTHETIC NO@LA 08/03/2026 05:56PM ET,NO,LA,,,Jack Stoll,fd,6400,jack stoll,NO,TE,00-0036741,auto_exact,high
+200014,D,NO,Defense,NO Defense,0.0,,3900,SYNTHETIC NO@LA 08/03/2026 05:56PM ET,NO,LA,,,NO Defense,fd,3900,no defense,NO,D,DST_NO,team_defense,high
+200015,QB,Jimmy,Garoppolo,Jimmy Garoppolo,0.0,,5200,SYNTHETIC NO@LA 08/03/2026 05:56PM ET,LA,NO,,,Jimmy Garoppolo,fd,5200,jimmy garoppolo,LA,QB,00-0031345,auto_exact,high
+200016,QB,Matthew,Stafford,Matthew Stafford,0.0,,5800,SYNTHETIC NO@LA 08/03/2026 05:56PM ET,LA,NO,,,Matthew Stafford,fd,5800,matthew stafford,LA,QB,00-0026498,auto_exact,high
+200017,RB,Blake,Corum,Blake Corum,0.0,,9400,SYNTHETIC NO@LA 08/03/2026 05:56PM ET,LA,NO,,,Blake Corum,fd,9400,blake corum,LA,RB,00-0039738,auto_exact,high
+200018,RB,Kyren,Williams,Kyren Williams,0.0,,8600,SYNTHETIC NO@LA 08/03/2026 05:56PM ET,LA,NO,,,Kyren Williams,fd,8600,kyren williams,LA,RB,00-0037840,auto_exact,high
+200019,RB,Jarquez,Hunter,Jarquez Hunter,0.0,,8600,SYNTHETIC NO@LA 08/03/2026 05:56PM ET,LA,NO,,,Jarquez Hunter,fd,8600,jarquez hunter,LA,RB,00-0040692,auto_exact,high
+200020,RB,Ronnie,Rivers,Ronnie Rivers,0.0,,5500,SYNTHETIC NO@LA 08/03/2026 05:56PM ET,LA,NO,,,Ronnie Rivers,fd,5500,ronnie rivers,LA,RB,00-0037557,auto_exact,high
+200021,WR,Xavier,Smith,Xavier Smith,0.0,,6800,SYNTHETIC NO@LA 08/03/2026 05:56PM ET,LA,NO,,,Xavier Smith,fd,6800,xavier smith,LA,WR,00-0038359,auto_exact,high
+200022,WR,Tutu,Atwell,Tutu Atwell,0.0,,5200,SYNTHETIC NO@LA 08/03/2026 05:56PM ET,LA,NO,,,Tutu Atwell,fd,5200,tutu atwell,LA,WR,00-0036849,auto_exact,high
+200023,WR,Puka,Nacua,Puka Nacua,0.0,,5200,SYNTHETIC NO@LA 08/03/2026 05:56PM ET,LA,NO,,,Puka Nacua,fd,5200,puka nacua,LA,WR,00-0039075,auto_exact,high
+200024,WR,Davante,Adams,Davante Adams,0.0,,4300,SYNTHETIC NO@LA 08/03/2026 05:56PM ET,LA,NO,,,Davante Adams,fd,4300,davante adams,LA,WR,00-0031381,auto_exact,high
+200025,WR,Konata,Mumpfield,Konata Mumpfield,0.0,,4600,SYNTHETIC NO@LA 08/03/2026 05:56PM ET,LA,NO,,,Konata Mumpfield,fd,4600,konata mumpfield,LA,WR,00-0040590,auto_exact,high
+200026,TE,Tyler,Higbee,Tyler Higbee,0.0,,5200,SYNTHETIC NO@LA 08/03/2026 05:56PM ET,LA,NO,,,Tyler Higbee,fd,5200,tyler higbee,LA,TE,00-0033110,auto_exact,high
+200027,TE,Terrance,Ferguson,Terrance Ferguson,0.0,,3300,SYNTHETIC NO@LA 08/03/2026 05:56PM ET,LA,NO,,,Terrance Ferguson,fd,3300,terrance ferguson,LA,TE,00-0040737,auto_exact,high
+200028,TE,Colby,Parkinson,Colby Parkinson,0.0,,5800,SYNTHETIC NO@LA 08/03/2026 05:56PM ET,LA,NO,,,Colby Parkinson,fd,5800,colby parkinson,LA,TE,00-0036244,auto_exact,high
+200029,D,LA,Defense,LA Defense,0.0,,2900,SYNTHETIC NO@LA 08/03/2026 05:56PM ET,LA,NO,,,LA Defense,fd,2900,la defense,LA,D,DST_LA,team_defense,high
+200030,QB,Justin,Herbert,Justin Herbert,0.0,,5900,SYNTHETIC LAC@TB 08/03/2026 06:56PM ET,LAC,TB,,,Justin Herbert,fd,5900,justin herbert,LAC,QB,00-0036355,auto_exact,high
+200031,QB,Trey,Lance,Trey Lance,0.0,,8200,SYNTHETIC LAC@TB 08/03/2026 06:56PM ET,LAC,TB,,,Trey Lance,fd,8200,trey lance,LAC,QB,00-0037012,auto_exact,high
+200032,RB,Jaret,Patterson,Jaret Patterson,0.0,,7400,SYNTHETIC LAC@TB 08/03/2026 06:56PM ET,LAC,TB,,,Jaret Patterson,fd,7400,jaret patterson,LAC,RB,00-0036755,auto_exact,high
+200033,RB,Amar,Johnson,Amar Johnson,0.0,,8500,SYNTHETIC LAC@TB 08/03/2026 06:56PM ET,LAC,TB,,,Amar Johnson,fd,8500,amar johnson,LAC,RB,00-0040039,auto_exact,high
+200034,RB,Najee,Harris,Najee Harris,0.0,,8000,SYNTHETIC LAC@TB 08/03/2026 06:56PM ET,LAC,TB,,,Najee Harris,fd,8000,najee harris,LAC,RB,00-0036893,auto_exact,high
+200035,RB,Hassan,Haskins,Hassan Haskins,0.0,,4500,SYNTHETIC LAC@TB 08/03/2026 06:56PM ET,LAC,TB,,,Hassan Haskins,fd,4500,hassan haskins,LAC,RB,00-0037617,auto_exact,high
+200036,WR,Ladd,McConkey,Ladd McConkey,0.0,,7800,SYNTHETIC LAC@TB 08/03/2026 06:56PM ET,LAC,TB,,,Ladd McConkey,fd,7800,ladd mcconkey,LAC,WR,00-0039915,auto_exact,high
+200037,WR,KeAndre,Lambert-Smith,KeAndre Lambert-Smith,0.0,,5400,SYNTHETIC LAC@TB 08/03/2026 06:56PM ET,LAC,TB,,,KeAndre Lambert-Smith,fd,5400,keandre lambert smith,LAC,WR,00-0040184,auto_exact,high
+200038,WR,Keenan,Allen,Keenan Allen,0.0,,3400,SYNTHETIC LAC@TB 08/03/2026 06:56PM ET,LAC,TB,,,Keenan Allen,fd,3400,keenan allen,LAC,WR,00-0030279,auto_exact,high
+200039,WR,Quentin,Johnston,Quentin Johnston,0.0,,8500,SYNTHETIC LAC@TB 08/03/2026 06:56PM ET,LAC,TB,,,Quentin Johnston,fd,8500,quentin johnston,LAC,WR,00-0038544,auto_exact,high
+200040,WR,Derius,Davis,Derius Davis,0.0,,6400,SYNTHETIC LAC@TB 08/03/2026 06:56PM ET,LAC,TB,,,Derius Davis,fd,6400,derius davis,LAC,WR,00-0038573,auto_exact,high
+200041,TE,Oronde,Gadsden II,Oronde Gadsden II,0.0,,3500,SYNTHETIC LAC@TB 08/03/2026 06:56PM ET,LAC,TB,,,Oronde Gadsden II,fd,3500,oronde gadsden,LAC,TE,00-0040189,auto_exact,high
+200042,TE,Tucker,Fisk,Tucker Fisk,0.0,,4700,SYNTHETIC LAC@TB 08/03/2026 06:56PM ET,LAC,TB,,,Tucker Fisk,fd,4700,tucker fisk,LAC,TE,00-0037654,auto_exact,high
+200043,TE,Tyler,Conklin,Tyler Conklin,0.0,,6500,SYNTHETIC LAC@TB 08/03/2026 06:56PM ET,LAC,TB,,,Tyler Conklin,fd,6500,tyler conklin,LAC,TE,00-0034270,auto_exact,high
+200044,D,LAC,Defense,LAC Defense,0.0,,4100,SYNTHETIC LAC@TB 08/03/2026 06:56PM ET,LAC,TB,,,LAC Defense,fd,4100,lac defense,LAC,D,DST_LAC,team_defense,high
+200045,QB,Baker,Mayfield,Baker Mayfield,0.0,,5900,SYNTHETIC LAC@TB 08/03/2026 06:56PM ET,TB,LAC,,,Baker Mayfield,fd,5900,baker mayfield,TB,QB,00-0034855,auto_exact,high
+200046,QB,Teddy,Bridgewater,Teddy Bridgewater,0.0,,5900,SYNTHETIC LAC@TB 08/03/2026 06:56PM ET,TB,LAC,,,Teddy Bridgewater,fd,5900,teddy bridgewater,TB,QB,00-0031237,auto_exact,high
+200047,RB,Josh,Williams,Josh Williams,0.0,,7900,SYNTHETIC LAC@TB 08/03/2026 06:56PM ET,TB,LAC,,,Josh Williams,fd,7900,josh williams,TB,RB,00-0040429,auto_exact,high
+200048,RB,Owen,Wright,Owen Wright,0.0,,5800,SYNTHETIC LAC@TB 08/03/2026 06:56PM ET,TB,LAC,,,Owen Wright,fd,5800,owen wright,TB,RB,00-0038458,auto_exact,high
+200049,RB,Bucky,Irving,Bucky Irving,0.0,,6800,SYNTHETIC LAC@TB 08/03/2026 06:56PM ET,TB,LAC,,,Bucky Irving,fd,6800,bucky irving,TB,RB,00-0039361,auto_exact,high
+200050,RB,Rachaad,White,Rachaad White,0.0,,5400,SYNTHETIC LAC@TB 08/03/2026 06:56PM ET,TB,LAC,,,Rachaad White,fd,5400,rachaad white,TB,RB,00-0037256,auto_exact,high
+200051,WR,Jalen,McMillan,Jalen McMillan,0.0,,6100,SYNTHETIC LAC@TB 08/03/2026 06:56PM ET,TB,LAC,,,Jalen McMillan,fd,6100,jalen mcmillan,TB,WR,00-0039855,auto_exact,high
+200052,WR,Mike,Evans,Mike Evans,0.0,,3500,SYNTHETIC LAC@TB 08/03/2026 06:56PM ET,TB,LAC,,,Mike Evans,fd,3500,mike evans,TB,WR,00-0031408,auto_exact,high
+200053,WR,Emeka,Egbuka,Emeka Egbuka,0.0,,3300,SYNTHETIC LAC@TB 08/03/2026 06:56PM ET,TB,LAC,,,Emeka Egbuka,fd,3300,emeka egbuka,TB,WR,00-0040129,auto_exact,high
+200054,WR,Kameron,Johnson,Kameron Johnson,0.0,,3700,SYNTHETIC LAC@TB 08/03/2026 06:56PM ET,TB,LAC,,,Kameron Johnson,fd,3700,kameron johnson,TB,WR,00-0039589,auto_exact,high
+200055,WR,Chris,Godwin Jr.,Chris Godwin Jr.,0.0,,6800,SYNTHETIC LAC@TB 08/03/2026 06:56PM ET,TB,LAC,,,Chris Godwin Jr.,fd,6800,chris godwin,TB,WR,00-0033921,auto_exact,high
+200056,TE,Payne,Durham,Payne Durham,0.0,,5200,SYNTHETIC LAC@TB 08/03/2026 06:56PM ET,TB,LAC,,,Payne Durham,fd,5200,payne durham,TB,TE,00-0039050,auto_exact,high
+200057,TE,Devin,Culp,Devin Culp,0.0,,4200,SYNTHETIC LAC@TB 08/03/2026 06:56PM ET,TB,LAC,,,Devin Culp,fd,4200,devin culp,TB,TE,00-0039754,auto_exact,high
+200058,TE,Ko,Kieft,Ko Kieft,0.0,,5200,SYNTHETIC LAC@TB 08/03/2026 06:56PM ET,TB,LAC,,,Ko Kieft,fd,5200,ko kieft,TB,TE,00-0037311,auto_exact,high
+200059,D,TB,Defense,TB Defense,0.0,,3700,SYNTHETIC LAC@TB 08/03/2026 06:56PM ET,TB,LAC,,,TB Defense,fd,3700,tb defense,TB,D,DST_TB,team_defense,high
+200060,QB,Nick,Mullens,Nick Mullens,0.0,,8400,SYNTHETIC JAX@KC 08/03/2026 07:56PM ET,JAX,KC,,,Nick Mullens,fd,8400,nick mullens,JAX,QB,00-0033319,auto_exact,high
+200061,QB,Trevor,Lawrence,Trevor Lawrence,0.0,,8000,SYNTHETIC JAX@KC 08/03/2026 07:56PM ET,JAX,KC,,,Trevor Lawrence,fd,8000,trevor lawrence,JAX,QB,00-0036971,auto_exact,high
+200062,RB,Travis,Etienne,Travis Etienne,0.0,,7400,SYNTHETIC JAX@KC 08/03/2026 07:56PM ET,JAX,KC,,,Travis Etienne,fd,7400,travis etienne,JAX,RB,00-0036973,auto_exact,high
+200063,RB,DeeJay,Dallas,DeeJay Dallas,0.0,,3700,SYNTHETIC JAX@KC 08/03/2026 07:56PM ET,JAX,KC,,,DeeJay Dallas,fd,3700,deejay dallas,JAX,RB,00-0036425,auto_exact,high
+200064,RB,Bhayshul,Tuten,Bhayshul Tuten,0.0,,8800,SYNTHETIC JAX@KC 08/03/2026 07:56PM ET,JAX,KC,,,Bhayshul Tuten,fd,8800,bhayshul tuten,JAX,RB,00-0040719,auto_exact,high
+200065,RB,LeQuint,Allen Jr.,LeQuint Allen Jr.,0.0,,7900,SYNTHETIC JAX@KC 08/03/2026 07:56PM ET,JAX,KC,,,LeQuint Allen Jr.,fd,7900,lequint allen,JAX,RB,00-0040238,auto_exact,high
+200066,WR,Parker,Washington,Parker Washington,0.0,,3700,SYNTHETIC JAX@KC 08/03/2026 07:56PM ET,JAX,KC,,,Parker Washington,fd,3700,parker washington,JAX,WR,00-0038606,auto_exact,high
+200067,WR,Brian,Thomas Jr.,Brian Thomas Jr.,0.0,,5600,SYNTHETIC JAX@KC 08/03/2026 07:56PM ET,JAX,KC,,,Brian Thomas Jr.,fd,5600,brian thomas,JAX,WR,00-0039893,auto_exact,high
+200068,WR,Tim,Patrick,Tim Patrick,0.0,,5700,SYNTHETIC JAX@KC 08/03/2026 07:56PM ET,JAX,KC,,,Tim Patrick,fd,5700,tim patrick,JAX,WR,00-0033375,auto_exact,high
+200069,WR,Austin,Trammell,Austin Trammell,0.0,,8700,SYNTHETIC JAX@KC 08/03/2026 07:56PM ET,JAX,KC,,,Austin Trammell,fd,8700,austin trammell,JAX,WR,00-0036841,auto_exact,high
+200070,WR,Tim,Jones,Tim Jones,0.0,,8300,SYNTHETIC JAX@KC 08/03/2026 07:56PM ET,JAX,KC,,,Tim Jones,fd,8300,tim jones,JAX,WR,00-0036497,auto_exact,high
+200071,TE,Johnny,Mundt,Johnny Mundt,0.0,,6900,SYNTHETIC JAX@KC 08/03/2026 07:56PM ET,JAX,KC,,,Johnny Mundt,fd,6900,johnny mundt,JAX,TE,00-0033246,auto_exact,high
+200072,TE,Brenton,Strange,Brenton Strange,0.0,,5900,SYNTHETIC JAX@KC 08/03/2026 07:56PM ET,JAX,KC,,,Brenton Strange,fd,5900,brenton strange,JAX,TE,00-0038935,auto_exact,high
+200073,TE,Hunter,Long,Hunter Long,0.0,,4800,SYNTHETIC JAX@KC 08/03/2026 07:56PM ET,JAX,KC,,,Hunter Long,fd,4800,hunter long,JAX,TE,00-0037004,auto_exact,high
+200074,D,JAX,Defense,JAX Defense,0.0,,2800,SYNTHETIC JAX@KC 08/03/2026 07:56PM ET,JAX,KC,,,JAX Defense,fd,2800,jax defense,JAX,D,DST_JAX,team_defense,high
+200075,QB,Gardner,Minshew,Gardner Minshew,0.0,,7900,SYNTHETIC JAX@KC 08/03/2026 07:56PM ET,KC,JAX,,,Gardner Minshew,fd,7900,gardner minshew,KC,QB,00-0035289,auto_exact,high
+200076,QB,Chris,Oladokun,Chris Oladokun,0.0,,6800,SYNTHETIC JAX@KC 08/03/2026 07:56PM ET,KC,JAX,,,Chris Oladokun,fd,6800,chris oladokun,KC,QB,00-0037324,auto_exact,high
+200077,RB,Clyde,Edwards-Helaire,Clyde Edwards-Helaire,0.0,,4000,SYNTHETIC JAX@KC 08/03/2026 07:56PM ET,KC,JAX,,,Clyde Edwards-Helaire,fd,4000,clyde edwards helaire,KC,RB,00-0036360,auto_exact,high
+200078,RB,Elijah,Mitchell,Elijah Mitchell,0.0,,8000,SYNTHETIC JAX@KC 08/03/2026 07:56PM ET,KC,JAX,,,Elijah Mitchell,fd,8000,elijah mitchell,KC,RB,00-0036567,auto_exact,high
+200079,RB,Isiah,Pacheco,Isiah Pacheco,0.0,,6500,SYNTHETIC JAX@KC 08/03/2026 07:56PM ET,KC,JAX,,,Isiah Pacheco,fd,6500,isiah pacheco,KC,RB,00-0037197,auto_exact,high
+200080,RB,Kareem,Hunt,Kareem Hunt,0.0,,8100,SYNTHETIC JAX@KC 08/03/2026 07:56PM ET,KC,JAX,,,Kareem Hunt,fd,8100,kareem hunt,KC,RB,00-0033923,auto_exact,high
+200081,WR,JuJu,Smith-Schuster,JuJu Smith-Schuster,0.0,,6600,SYNTHETIC JAX@KC 08/03/2026 07:56PM ET,KC,JAX,,,JuJu Smith-Schuster,fd,6600,juju smith schuster,KC,WR,00-0033857,auto_exact,high
+200082,WR,Jason,Brownlee,Jason Brownlee,0.0,,5900,SYNTHETIC JAX@KC 08/03/2026 07:56PM ET,KC,JAX,,,Jason Brownlee,fd,5900,jason brownlee,KC,WR,00-0038492,auto_exact,high
+200083,WR,Jalen,Royals,Jalen Royals,0.0,,3700,SYNTHETIC JAX@KC 08/03/2026 07:56PM ET,KC,JAX,,,Jalen Royals,fd,3700,jalen royals,KC,WR,00-0040646,auto_exact,high
+200084,WR,Tyquan,Thornton,Tyquan Thornton,0.0,,5200,SYNTHETIC JAX@KC 08/03/2026 07:56PM ET,KC,JAX,,,Tyquan Thornton,fd,5200,tyquan thornton,KC,WR,00-0038104,auto_exact,high
+200085,WR,Nikko,Remigio,Nikko Remigio,0.0,,8900,SYNTHETIC JAX@KC 08/03/2026 07:56PM ET,KC,JAX,,,Nikko Remigio,fd,8900,nikko remigio,KC,WR,00-0038519,auto_exact,high
+200086,TE,Jared,Wiley,Jared Wiley,0.0,,3600,SYNTHETIC JAX@KC 08/03/2026 07:56PM ET,KC,JAX,,,Jared Wiley,fd,3600,jared wiley,KC,TE,00-0039824,auto_exact,high
+200087,TE,Noah,Gray,Noah Gray,0.0,,3600,SYNTHETIC JAX@KC 08/03/2026 07:56PM ET,KC,JAX,,,Noah Gray,fd,3600,noah gray,KC,TE,00-0036637,auto_exact,high
+200088,TE,Travis,Kelce,Travis Kelce,0.0,,5100,SYNTHETIC JAX@KC 08/03/2026 07:56PM ET,KC,JAX,,,Travis Kelce,fd,5100,travis kelce,KC,TE,00-0030506,auto_exact,high
+200089,D,KC,Defense,KC Defense,0.0,,2700,SYNTHETIC JAX@KC 08/03/2026 07:56PM ET,KC,JAX,,,KC Defense,fd,2700,kc defense,KC,D,DST_KC,team_defense,high
+200090,QB,Carson,Wentz,Carson Wentz,0.0,,7900,SYNTHETIC MIN@CAR 08/03/2026 08:56PM ET,MIN,CAR,,,Carson Wentz,fd,7900,carson wentz,MIN,QB,00-0032950,auto_exact,high
+200091,QB,J.J.,McCarthy,J.J. McCarthy,0.0,,8400,SYNTHETIC MIN@CAR 08/03/2026 08:56PM ET,MIN,CAR,,,J.J. McCarthy,fd,8400,jj mccarthy,MIN,QB,00-0039923,auto_exact,high
+200092,RB,Aaron,Jones,Aaron Jones,0.0,,3800,SYNTHETIC MIN@CAR 08/03/2026 08:56PM ET,MIN,CAR,,,Aaron Jones,fd,3800,aaron jones,MIN,RB,00-0033293,auto_exact,high
+200093,RB,Ty,Chandler,Ty Chandler,0.0,,6100,SYNTHETIC MIN@CAR 08/03/2026 08:56PM ET,MIN,CAR,,,Ty Chandler,fd,6100,ty chandler,MIN,RB,00-0037276,auto_exact,high
+200094,RB,Zavier,Scott,Zavier Scott,0.0,,6600,SYNTHETIC MIN@CAR 08/03/2026 08:56PM ET,MIN,CAR,,,Zavier Scott,fd,6600,zavier scott,MIN,RB,00-0038440,auto_exact,high
+200095,RB,Jordan,Mason,Jordan Mason,0.0,,4700,SYNTHETIC MIN@CAR 08/03/2026 08:56PM ET,MIN,CAR,,,Jordan Mason,fd,4700,jordan mason,MIN,RB,00-0037525,auto_exact,high
+200096,WR,Jordan,Addison,Jordan Addison,0.0,,8800,SYNTHETIC MIN@CAR 08/03/2026 08:56PM ET,MIN,CAR,,,Jordan Addison,fd,8800,jordan addison,MIN,WR,00-0038994,auto_exact,high
+200097,WR,Justin,Jefferson,Justin Jefferson,0.0,,8600,SYNTHETIC MIN@CAR 08/03/2026 08:56PM ET,MIN,CAR,,,Justin Jefferson,fd,8600,justin jefferson,MIN,WR,00-0036322,auto_exact,high
+200098,WR,Jeshaun,Jones,Jeshaun Jones,0.0,,7500,SYNTHETIC MIN@CAR 08/03/2026 08:56PM ET,MIN,CAR,,,Jeshaun Jones,fd,7500,jeshaun jones,MIN,WR,00-0039710,auto_exact,high
+200099,WR,Tai,Felton,Tai Felton,0.0,,7100,SYNTHETIC MIN@CAR 08/03/2026 08:56PM ET,MIN,CAR,,,Tai Felton,fd,7100,tai felton,MIN,WR,00-0040154,auto_exact,high
+200100,WR,Jalen,Nailor,Jalen Nailor,0.0,,7300,SYNTHETIC MIN@CAR 08/03/2026 08:56PM ET,MIN,CAR,,,Jalen Nailor,fd,7300,jalen nailor,MIN,WR,00-0037291,auto_exact,high
+200101,TE,Ben,Yurosek,Ben Yurosek,0.0,,7000,SYNTHETIC MIN@CAR 08/03/2026 08:56PM ET,MIN,CAR,,,Ben Yurosek,fd,7000,ben yurosek,MIN,TE,00-0040509,auto_exact,high
+200102,TE,T.J.,Hockenson,T.J. Hockenson,0.0,,5400,SYNTHETIC MIN@CAR 08/03/2026 08:56PM ET,MIN,CAR,,,T.J. Hockenson,fd,5400,tj hockenson,MIN,TE,00-0035229,auto_exact,high
+200103,TE,Josh,Oliver,Josh Oliver,0.0,,4500,SYNTHETIC MIN@CAR 08/03/2026 08:56PM ET,MIN,CAR,,,Josh Oliver,fd,4500,josh oliver,MIN,TE,00-0035249,auto_exact,high
+200104,D,MIN,Defense,MIN Defense,0.0,,3800,SYNTHETIC MIN@CAR 08/03/2026 08:56PM ET,MIN,CAR,,,MIN Defense,fd,3800,min defense,MIN,D,DST_MIN,team_defense,high
+200105,QB,Bryce,Young,Bryce Young,0.0,,5900,SYNTHETIC MIN@CAR 08/03/2026 08:56PM ET,CAR,MIN,,,Bryce Young,fd,5900,bryce young,CAR,QB,00-0039150,auto_exact,high
+200106,QB,Andy,Dalton,Andy Dalton,0.0,,5200,SYNTHETIC MIN@CAR 08/03/2026 08:56PM ET,CAR,MIN,,,Andy Dalton,fd,5200,andy dalton,CAR,QB,00-0027973,auto_exact,high
+200107,RB,Chuba,Hubbard,Chuba Hubbard,0.0,,6800,SYNTHETIC MIN@CAR 08/03/2026 08:56PM ET,CAR,MIN,,,Chuba Hubbard,fd,6800,chuba hubbard,CAR,RB,00-0036555,auto_exact,high
+200108,RB,Rico,Dowdle,Rico Dowdle,0.0,,4500,SYNTHETIC MIN@CAR 08/03/2026 08:56PM ET,CAR,MIN,,,Rico Dowdle,fd,4500,rico dowdle,CAR,RB,00-0036139,auto_exact,high
+200109,RB,Trevor,Etienne,Trevor Etienne,0.0,,4400,SYNTHETIC MIN@CAR 08/03/2026 08:56PM ET,CAR,MIN,,,Trevor Etienne,fd,4400,trevor etienne,CAR,RB,00-0040644,auto_exact,high
+200110,WR,Xavier,Legette,Xavier Legette,0.0,,7200,SYNTHETIC MIN@CAR 08/03/2026 08:56PM ET,CAR,MIN,,,Xavier Legette,fd,7200,xavier legette,CAR,WR,00-0039342,auto_exact,high
+200111,WR,Jimmy,Horn Jr.,Jimmy Horn Jr.,0.0,,3400,SYNTHETIC MIN@CAR 08/03/2026 08:56PM ET,CAR,MIN,,,Jimmy Horn Jr.,fd,3400,jimmy horn,CAR,WR,00-0040218,auto_exact,high
+200112,WR,Jalen,Coker,Jalen Coker,0.0,,3400,SYNTHETIC MIN@CAR 08/03/2026 08:56PM ET,CAR,MIN,,,Jalen Coker,fd,3400,jalen coker,CAR,WR,00-0039491,auto_exact,high
+200113,WR,Tetairoa,McMillan,Tetairoa McMillan,0.0,,3200,SYNTHETIC MIN@CAR 08/03/2026 08:56PM ET,CAR,MIN,,,Tetairoa McMillan,fd,3200,tetairoa mcmillan,CAR,WR,00-0040124,auto_exact,high
+200114,WR,Brycen,Tremayne,Brycen Tremayne,0.0,,5000,SYNTHETIC MIN@CAR 08/03/2026 08:56PM ET,CAR,MIN,,,Brycen Tremayne,fd,5000,brycen tremayne,CAR,WR,00-0038840,auto_exact,high
+200115,TE,Ja'Tavion,Sanders,Ja'Tavion Sanders,0.0,,3800,SYNTHETIC MIN@CAR 08/03/2026 08:56PM ET,CAR,MIN,,,Ja'Tavion Sanders,fd,3800,jatavion sanders,CAR,TE,00-0039356,auto_exact,high
+200116,TE,James,Mitchell,James Mitchell,0.0,,4700,SYNTHETIC MIN@CAR 08/03/2026 08:56PM ET,CAR,MIN,,,James Mitchell,fd,4700,james mitchell,CAR,TE,00-0037282,auto_exact,high
+200117,TE,Tommy,Tremble,Tommy Tremble,0.0,,4900,SYNTHETIC MIN@CAR 08/03/2026 08:56PM ET,CAR,MIN,,,Tommy Tremble,fd,4900,tommy tremble,CAR,TE,00-0037005,auto_exact,high
+200118,D,CAR,Defense,CAR Defense,0.0,,4300,SYNTHETIC MIN@CAR 08/03/2026 08:56PM ET,CAR,MIN,,,CAR Defense,fd,4300,car defense,CAR,D,DST_CAR,team_defense,high
