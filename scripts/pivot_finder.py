@@ -4,9 +4,9 @@ pivot_finder.py
 
 Session 4.2 -- Cash-to-GPP Pivot Logic.
 
-For a given site (DK/FD) and week, reads that site's single optimal cash
-lineup (`lineup_single_{site}_{week}.csv`, Session 3.1) alongside
-`final_projections_{site}_{week}.csv` (Session 2.4/3.3, which now carries
+For a given site (DK/FD) and slate_id, reads that site's single optimal
+cash lineup (`lineup_single_{site}_{slate_id}.csv`, Session 3.1) alongside
+`final_projections_{site}_{slate_id}.csv` (Session 2.4/3.3, which now carries
 `chalk_score`/`estimated_ownership_pct` natively -- see decision #0 below),
 and for every player in the cash lineup, generates a ranked list of "pivot"
 candidates -- same-position, similarly-PROJECTED players who are LESS
@@ -17,12 +17,12 @@ Design decisions (same "flag, don't silently assume" pattern as every prior
 session's file):
 
 0. Input fix (this session, found while re-validating on real data): this
-   script originally joined `chalk_scores_{site}_{week}.csv` (Session 4.1's
-   standalone CLI output) onto `final_projections_{site}_{week}.csv` by
+   script originally joined `chalk_scores_{site}_{slate_id}.csv` (Session 4.1's
+   standalone CLI output) onto `final_projections_{site}_{slate_id}.csv` by
    `player_id` to get `estimated_ownership_pct`. Since then, the frontend's
    Item 6 change added `add_ownership_columns()` to `build_projections.py`,
    which now bakes `chalk_score`/`estimated_ownership_pct` directly into
-   `final_projections_{site}_{week}.csv` at write time -- the weekly SOP
+   `final_projections_{site}_{slate_id}.csv` at write time -- the weekly SOP
    (`DFS_Weekly_Process.md`) never runs `ownership_heuristic.py`'s
    standalone CLI as a separate pipeline step any more. The old merge
    therefore joined two DataFrames that both already had
@@ -32,9 +32,23 @@ session's file):
    message. Fixed by reading `estimated_ownership_pct`/`chalk_score`
    straight off `final_projections`, removing the `chalk_scores` merge
    entirely (see `load_final_projections()`/`build_candidate_pool()`).
-   `chalk_scores_{site}_{week}.csv` and its standalone CLI are untouched
+   `chalk_scores_{site}_{slate_id}.csv` and its standalone CLI are untouched
    and still work if wanted for other purposes -- this script just no
    longer depends on them.
+
+0b. Filename convention fix (this session, found while running against a
+    real slate with a non-numeric slate_id): this script originally took
+    `--week` and built every filename as `{site}_{week}.csv`. That
+    predates the slate-management rework (see ROADMAP.md/SESSION_LOG.md),
+    which moved EVERY other script (`build_projections.py`, `optimizer.py`)
+    to name output by `--slate-id` (an arbitrary string like
+    `synthetic_08022026`), not by NFL week number. This script's own
+    earlier real-data validation (Madden Sim data) didn't catch the gap
+    because that test happened to use "10" as both a week number AND a
+    literal slate_id, so the mismatch was invisible until a real
+    non-numeric slate_id was used. Fixed by taking `--slate-id` throughout,
+    matching `build_projections.py`/`optimizer.py` exactly -- this script
+    no longer has any concept of "week" as a CLI input at all.
 
 1. Ownership signal: `estimated_ownership_pct`, NOT `chalk_score`. Session
    4.1's addendum left this as an explicit open decision for this session
@@ -48,7 +62,7 @@ session's file):
    against `estimated_ownership_pct` instead of `chalk_score`, not both;
    `chalk_score` is left out of this file's join/output entirely.
 
-2. Join key: `lineup_single_{site}_{week}.csv` (Session 3.1's optimizer
+2. Join key: `lineup_single_{site}_{slate_id}.csv` (Session 3.1's optimizer
    output) does NOT carry `player_id` -- `assign_roster_slots()` in
    optimizer.py only ever wrote `player_name, position, team, salary,
    projection, opponent`, never `player_id`. Rather than change Session
@@ -167,11 +181,11 @@ session's file):
    auto-relaxed).
 
 Usage:
-    python3 pivot_finder.py --site dk --week 10
-    python3 pivot_finder.py --site fd --week 10
+    python3 pivot_finder.py --site dk --slate-id classic_wk10
+    python3 pivot_finder.py --site fd --slate-id classic_wk10
 
 Outputs:
-    output/pivot_suggestions_{site}_{week}.csv
+    output/pivot_suggestions_{site}_{slate_id}.csv
     One row per (cash_player, pivot_candidate) pair. See OUTPUT_COLUMNS
     below for the full schema.
 """
@@ -213,11 +227,11 @@ OUTPUT_COLUMNS = [
 # Step 0: Load inputs
 # ---------------------------------------------------------------------------
 
-def load_lineup_single(site: str, week: int) -> pd.DataFrame:
-    path = OUTPUT_DIR / f"lineup_single_{site}_{week}.csv"
+def load_lineup_single(site: str, slate_id: str) -> pd.DataFrame:
+    path = OUTPUT_DIR / f"lineup_single_{site}_{slate_id}.csv"
     if not path.exists():
         raise FileNotFoundError(
-            f"{path} not found. Run optimizer.py --site {site} --week {week} "
+            f"{path} not found. Run optimizer.py --site {site} --slate-id {slate_id} "
             f"first (Session 3.1)."
         )
     df = pd.read_csv(path)
@@ -232,12 +246,12 @@ def load_lineup_single(site: str, week: int) -> pd.DataFrame:
     return df
 
 
-def load_final_projections(site: str, week: int) -> pd.DataFrame:
-    path = OUTPUT_DIR / f"final_projections_{site}_{week}.csv"
+def load_final_projections(site: str, slate_id: str) -> pd.DataFrame:
+    path = OUTPUT_DIR / f"final_projections_{site}_{slate_id}.csv"
     if not path.exists():
         raise FileNotFoundError(
             f"{path} not found. Run build_projections.py --site {site} "
-            f"--week {week} first (Session 2.4/3.3)."
+            f"--slate-id {slate_id} first (Session 2.4/3.3)."
         )
     df = pd.read_csv(path, dtype={"player_id": str})
     required = {
@@ -251,7 +265,7 @@ def load_final_projections(site: str, week: int) -> pd.DataFrame:
             f"Note: build_projections.py's add_ownership_columns() bakes "
             f"chalk_score/estimated_ownership_pct into this file directly "
             f"-- if those columns are missing, re-run build_projections.py "
-            f"--site {site} --week {week} rather than looking for a "
+            f"--site {site} --slate-id {slate_id} rather than looking for a "
             f"separate chalk_scores file. Update this script's "
             f"load_final_projections() if the schema has changed further."
         )
@@ -271,13 +285,13 @@ def _join_key(df: pd.DataFrame, site: str, name_col: str, team_col: str,
     )
 
 
-def build_candidate_pool(site: str, week: int) -> pd.DataFrame:
+def build_candidate_pool(site: str, slate_id: str) -> pd.DataFrame:
     """As of this session's Finding-3 fix, `final_projections_{site}_
-    {week}.csv` already carries `chalk_score`/`estimated_ownership_pct`
+    {slate_id}.csv` already carries `chalk_score`/`estimated_ownership_pct`
     natively -- `build_projections.py`'s `add_ownership_columns()` (added
     for the frontend's automatic-ownership feature) bakes these in at
     write time. There is no longer a separate join to a standalone
-    `chalk_scores_{site}_{week}.csv` file -- that file's own standalone
+    `chalk_scores_{site}_{slate_id}.csv` file -- that file's own standalone
     CLI still exists and still works if wanted for other purposes, but
     this script no longer depends on it, removing one more file that can
     silently go stale relative to final_projections (this was the exact
@@ -286,11 +300,11 @@ def build_candidate_pool(site: str, week: int) -> pd.DataFrame:
     suffixed columns instead of a clean single column, crashing
     downstream with a KeyError rather than failing loudly with a clear
     message)."""
-    return load_final_projections(site, week)
+    return load_final_projections(site, slate_id)
 
 
 def attach_cash_lineup_context(lineup: pd.DataFrame, pool: pd.DataFrame,
-                                site: str, week: int) -> pd.DataFrame:
+                                site: str, slate_id: str) -> pd.DataFrame:
     """Decision #2 -- joins each cash-lineup row to its matching row in
     `pool` (final_projections + estimated_ownership_pct) via the
     normalized (player_name, position, team) triple, since lineup_single
@@ -311,7 +325,7 @@ def attach_cash_lineup_context(lineup: pd.DataFrame, pool: pd.DataFrame,
                 f"final_projections/chalk_scores by normalized "
                 f"(name, position, team) -- expected exactly 1 (decision #2). "
                 f"Check for a name/team mismatch between lineup_single_"
-                f"{site}_{week}.csv and final_projections_{site}_{week}.csv "
+                f"{site}_{slate_id}.csv and final_projections_{site}_{slate_id}.csv "
                 f"(e.g. files generated from different weeks/runs)."
             )
         match = pool.loc[pool["_key"] == row["_key"]].iloc[0]
@@ -452,12 +466,12 @@ def validate_pivot_suggestions(suggestions: pd.DataFrame, site: str,
 # Main
 # ---------------------------------------------------------------------------
 
-def build_pivot_suggestions(site: str, week: int,
+def build_pivot_suggestions(site: str, slate_id: str,
                              projection_tolerance_pct: float = PROJECTION_TOLERANCE_PCT_OF_CASH_PROJECTION,
                              top_n: int = TOP_N_PIVOTS) -> pd.DataFrame:
-    lineup = load_lineup_single(site, week)
-    pool = build_candidate_pool(site, week)
-    cash_context = attach_cash_lineup_context(lineup, pool, site, week)
+    lineup = load_lineup_single(site, slate_id)
+    pool = build_candidate_pool(site, slate_id)
+    cash_context = attach_cash_lineup_context(lineup, pool, site, slate_id)
 
     lineup_total_salary = lineup["salary"].sum()
     rostered_player_ids = set(cash_context["player_id"])
@@ -497,14 +511,14 @@ def build_pivot_suggestions(site: str, week: int,
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--site", choices=["dk", "fd"], required=True)
-    parser.add_argument("--week", type=int, required=True)
+    parser.add_argument("--slate-id", type=str, required=True)
     parser.add_argument(
         "--projection-tolerance-pct", type=float,
         default=PROJECTION_TOLERANCE_PCT_OF_CASH_PROJECTION,
         help=f"Projection tolerance for a pivot candidate, as a symmetric "
              f"percentage of the cash player's own final_projection "
              f"(decision #3, default "
-             f"{PROJECTION_TOLERANCE_PCT_OF_CASH_PROJECTION:.0f}%).",
+             f"{PROJECTION_TOLERANCE_PCT_OF_CASH_PROJECTION:.0f}%%).",
     )
     parser.add_argument(
         "--top-n", type=int, default=TOP_N_PIVOTS,
@@ -515,14 +529,14 @@ if __name__ == "__main__":
 
     config = SITE_CONFIGS[args.site]
     suggestions = build_pivot_suggestions(
-        args.site, args.week,
+        args.site, args.slate_id,
         projection_tolerance_pct=args.projection_tolerance_pct,
         top_n=args.top_n,
     )
     validate_pivot_suggestions(suggestions, args.site, args.projection_tolerance_pct)
 
     OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
-    out_path = OUTPUT_DIR / f"pivot_suggestions_{args.site}_{args.week}.csv"
+    out_path = OUTPUT_DIR / f"pivot_suggestions_{args.site}_{args.slate_id}.csv"
     suggestions.to_csv(out_path, index=False)
 
     n_cash_players = suggestions["cash_player_name"].nunique() if not suggestions.empty else 0

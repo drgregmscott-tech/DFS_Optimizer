@@ -2386,7 +2386,7 @@
   function renderPivotPanel(site, r, rowIndex, pivotStore) {
     var body;
     if (!pivotStore) {
-      body = '<div class="pivot-empty">No pivot suggestions loaded for this slate yet -- upload pivot_suggestions_' + site + '_{week}.csv from the Slates panel.</div>';
+      body = '<div class="pivot-empty">No pivot suggestions loaded for this slate yet -- upload pivot_suggestions_' + site + '_{slate_id}.csv from the Slates panel.</div>';
     } else {
       var candidates = pivotStore.byKey[pivotKey(r.player_name, r.team)] || [];
       if (!candidates.length) {

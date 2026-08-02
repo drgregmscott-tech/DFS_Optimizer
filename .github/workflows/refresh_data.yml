@@ -243,27 +243,27 @@ jobs:
         id: lineup_dk
         if: steps.trigger.outputs.mode == 'full'
         run: |
-          f=$(ls output/lineup_single_dk_${{ steps.slate.outputs.dk_week }}.csv 2>/dev/null || true)
+          f=$(ls output/lineup_single_dk_${{ steps.slate.outputs.dk_slate_id }}.csv 2>/dev/null || true)
           echo "path=$f" >> "$GITHUB_OUTPUT"
 
       - name: Locate cash lineup -- FD
         id: lineup_fd
         if: steps.trigger.outputs.mode == 'full'
         run: |
-          f=$(ls output/lineup_single_fd_${{ steps.slate.outputs.fd_week }}.csv 2>/dev/null || true)
+          f=$(ls output/lineup_single_fd_${{ steps.slate.outputs.fd_slate_id }}.csv 2>/dev/null || true)
           echo "path=$f" >> "$GITHUB_OUTPUT"
 
       - name: Rebuild pivot suggestions -- DK
         id: pivot_dk
         if: steps.trigger.outputs.mode == 'full' && steps.lineup_dk.outputs.path != ''
         continue-on-error: true
-        run: python3 scripts/pivot_finder.py --site dk --week ${{ steps.slate.outputs.dk_week }}
+        run: python3 scripts/pivot_finder.py --site dk --slate-id ${{ steps.slate.outputs.dk_slate_id }}
 
       - name: Rebuild pivot suggestions -- FD
         id: pivot_fd
         if: steps.trigger.outputs.mode == 'full' && steps.lineup_fd.outputs.path != ''
         continue-on-error: true
-        run: python3 scripts/pivot_finder.py --site fd --week ${{ steps.slate.outputs.fd_week }}
+        run: python3 scripts/pivot_finder.py --site fd --slate-id ${{ steps.slate.outputs.fd_slate_id }}
 
       # Always runs, even if earlier steps failed -- a failed run is exactly
       # the kind of thing this log needs to capture, not swallow.
