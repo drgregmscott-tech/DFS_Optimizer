@@ -346,3 +346,10 @@ timestamp_utc,trigger_type,site,step,status
 2026-08-02T16:00:43.706659+00:00,full_refresh_dispatch,fd,build_projections,failure
 2026-08-02T16:00:43.706659+00:00,full_refresh_dispatch,dk,status_apply,success
 2026-08-02T16:00:43.706659+00:00,full_refresh_dispatch,fd,status_apply,failure
+2026-08-02T16:10:48.643167+00:00,full_refresh_dispatch,both,vegas_odds_pull,success
+2026-08-02T16:10:48.643167+00:00,full_refresh_dispatch,both,team_stats_pull,success
+2026-08-02T16:10:48.643167+00:00,full_refresh_dispatch,both,status_pull,success
+2026-08-02T16:10:48.643167+00:00,full_refresh_dispatch,dk,build_projections,success
+2026-08-02T16:10:48.643167+00:00,full_refresh_dispatch,fd,build_projections,failure
+2026-08-02T16:10:48.643167+00:00,full_refresh_dispatch,dk,status_apply,success
+2026-08-02T16:10:48.643167+00:00,full_refresh_dispatch,fd,status_apply,failure
