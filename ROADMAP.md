@@ -356,6 +356,58 @@
 
 ---
 
+### Session 4.3 — Pivot Eligibility Filter Correction + Frontend Pivot Panel
+**Prerequisites:** Session 4.2 complete. Triggered by a handoff finding from the NHL Optimizer project (`NFL_pivot_ui_handoff.md`), not a scheduled card.
+
+**Files touched (modified):**
+- `scripts/pivot_finder.py`
+- `dfs_optimizer_frontend/index.html`
+- `.github/workflows/refresh_data.yml`
+- `scripts/generate_synthetic_slate.py` (created — kept in the toolkit for future use, not a one-off)
+
+**Inputs:** `output/lineup_single_{site}_{slate_id}.csv`, `output/final_projections_{site}_{slate_id}.csv` (unchanged from 4.2, except see Finding 3 below)
+
+**Outputs:** `output/pivot_suggestions_{site}_{slate_id}.csv` (unchanged shape, new eligibility basis — see below)
+
+**Sites:** Runs per site, unchanged from 4.2.
+
+**Build — four real findings, all fixed in this session:**
+
+1. **Eligibility basis changed from salary-band to projection-band** (the NHL handoff's core finding, confirmed to apply here too): candidates are now filtered by similarity in `final_projection`, not `salary`. Salary is a weak proxy for "similar projected output" since it also prices in matchup/role certainty/market perception, not just points. New default: `PROJECTION_TOLERANCE_PCT_OF_CASH_PROJECTION = 25.0`, symmetric off the cash player's own projection — chosen from a real-data 15/25/35% comparison against this project's own Madden Sim pool (not copied from NHL's fitted value). Salary is now informational-only output (`salary_diff`/`salary_diff_pct` columns), not a gate. Full reasoning: `pivot_finder.py` decision #3.
+2. **`chalk_scores` join bug** (found while re-validating on real data, unrelated to Finding 1): `build_projections.py`'s `add_ownership_columns()` (a frontend-driven change made after Session 4.2 shipped) started baking `chalk_score`/`estimated_ownership_pct` directly into `final_projections_{site}_{slate_id}.csv`. `pivot_finder.py`'s old merge against a separate `chalk_scores` file therefore joined two DataFrames that both already had `estimated_ownership_pct`, silently producing `..._x`/`..._y` suffixed columns and crashing downstream with an opaque `KeyError`. Fixed by reading `estimated_ownership_pct` straight off `final_projections`, dropping the `chalk_scores` dependency entirely. Decision #0.
+3. **`--week` vs `--slate-id` mismatch** (found live, on a real non-numeric slate_id): this script predates the slate-management rework (Session 7.4) and still took `--week`, building every filename as `{site}_{week}.csv`. Every other script (`build_projections.py`, `optimizer.py`) moved to `--slate-id` a while back. The gap was invisible during this session's own earlier real-data test because that test happened to use `"10"` as both a week number and a literal slate_id. Fixed throughout — this script now takes `--slate-id` exclusively, matching `build_projections.py`/`optimizer.py`. The same stale assumption was also found and fixed in `refresh_data.yml` (the automated pivot-suggestion rebuild step) and `index.html`'s pivot-panel empty-state message. Decision #0b.
+4. **Frontend pivot panel** (the handoff's Finding 2): click a roster row → a panel expands below it showing that player's ranked pivot candidates (salary Δ, projection Δ%, ownership edge, leverage score) with a Swap In button per candidate. User-confirmed design: same panel-below-the-row pattern on desktop and mobile (no separate side panel), and swap works against whichever lineup is currently on screen — not restricted to a single "cash lineup" mode, since the user doesn't functionally distinguish cash from GPP builds in how they use the optimizer. Pivot suggestions load as their own file kind (`pivots`), paired to whichever slate/lineup they belong to, reusing the existing cloud-sync plumbing but deliberately NOT registered in the visible slate dropdown (a pivot file isn't something you'd select as "the active slate" on its own).
+
+**Also found and fixed in the same pass (not part of the original 4 findings, surfaced by actually running things on real data):**
+- A latent `NameError` (undefined `week` variable) in a join-failure error message that would have crashed instead of printing a helpful error.
+- A Python 3.14 argparse crash from an unescaped literal `%` in a `--projection-tolerance-pct` help string (same class of issue as the project's known argparse `%`-escaping gotcha).
+- `generate_synthetic_slate.py`'s FD defense rows were labeled position `"D"` instead of the `"DEF"` `optimizer.py`'s `roster_slots` actually requires — a mismatched label that gave FD's DEF slot zero eligible players, making the ILP structurally infeasible regardless of anything else in the pool. Fixed by deriving the label from the intersection of `roster_slots` and `defense_position_values` instead of guessing.
+- The frontend was trusting whichever site the toggle happened to be on at upload time, with no check against the file itself — an FD upload while the toggle sat on DK silently saved as a DK slate. Fixed: site is now detected from the filename itself (every real output filename already has it embedded) and the toggle auto-switches to match, with a status note confirming the switch.
+
+**Validation:**
+- [x] Finding 1 (projection-band filter): validated against the real 245-player DK / 48-player FD Madden Sim pool (tolerance comparison), then full-pipeline smoke-tested end-to-end (24 pivot rows, all passed `validate_pivot_suggestions()`), then re-validated a second time after the slate-id fix against a real, freshly-ingested FD synthetic slate (`synthetic_08022026b`) — 11 pivot suggestion rows, leverage_score range 0.6-40.9, real command output captured.
+- [x] Finding 2 (frontend panel): full click-through by the user in the deployed UI, both DK (`madden_08022026`) and FD (`synthetic_08022026b`) — "looked good," including the Swap In flow.
+- [x] Finding 3 (slate_id fix): re-run against a deliberately non-numeric slate_id (`test_slate_abc`) to prove the fix, then confirmed on the user's own real run.
+- [x] Finding 4 (site-detection fix): fixed after being caught live by the user during the click-through (uploading an FD file showed as DK); no separate synthetic repro needed since the real bug was the reproduction.
+- [x] `node --check` clean on the extracted `index.html` script block after every edit round.
+- [x] `refresh_data.yml` — YAML parses clean (`pyyaml.safe_load`) after every edit round.
+
+**Decisions made / assumptions taken:**
+- **25% projection tolerance is a starting heuristic, not a fitted value** — chosen from real DK/FD pool data this session, explicitly flagged as unfit to full-season data (Madden Sim / synthetic pool only). Retuning target once real regular-season usage exists, same status as `OWNERSHIP_SOFTMAX_TEMPERATURE`.
+- **Empty pivot result is legitimate information, not an error** (decision #7, carried from 4.2, re-confirmed under the new filter) — "no real same-tier alternative on this slate" is accepted as-is, never triggers auto-widening the tolerance.
+- **`generate_synthetic_slate.py` kept in the toolkit** (user-confirmed) rather than treated as a one-off script — reuses real player names/teams via `ingest_salaries.py`'s own `build_player_reference()`, fabricates only salaries/matchups/game info (flagged `ARBITRARY`), and feeds into the real `ingest_salaries.py` exactly like a real download rather than hand-fabricating the post-ingest schema.
+- **FD still has no real (non-synthetic) slate validated** — the synthetic slate proved the pipeline and UI work end-to-end, but says nothing about real pivot-suggestion quality. Real FD validation remains gated on real FD export data (~Aug 13-15), unchanged from every prior session's note.
+
+**Known issues deferred:**
+- None blocking — user confirmed the full click-through "looked good" on both sites, no rough edges flagged.
+- Real FD data validation — carried forward, unchanged gap.
+
+**Handoff notes for next session:**
+- Test artifacts left in place by user's own choice (not cleaned up): `FDSalaries_synthetic.csv` in repo root, `synthtest`/`synthetic_08022026`/`synthetic_08022026b` slate_ids in `data`/`output`. Harmless, not wired into anything that would confuse a future real run — fine to ignore or clean up later.
+- If a future session finds another script still assuming `--week` instead of `--slate-id`, that's the same bug class as Finding 3 here — the slate-management rework (Session 7.4) didn't touch every script that existed before it, and this session found two more instances of it (`pivot_finder.py`, `refresh_data.yml`) that had gone unnoticed. Worth a deliberate audit if time allows.
+
+---
+
 ## PHASE 5 — Status Automation & Scheduling
 *Target: Aug 10-13, parallel with Phase 4*
 
