@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#0D1117">
+<meta name="theme-color" content="#0D1710">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -16,12 +16,12 @@
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Inter:wght@400;500;600&family=Roboto+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
   :root {
-    --ink: #0D1117;
-    --ink-raised: #10151C;
-    --panel: #161C24;
-    --panel-2: #1C2430;
-    --line: #262F3A;
-    --line-soft: #1E2530;
+    --ink: #0D1710;
+    --ink-raised: #112015;
+    --panel: #15261A;
+    --panel-2: #1C3022;
+    --line: #2A4030;
+    --line-soft: #213226;
     --bone: #EDEFF2;
     --dim: #8B94A3;
     --dimmer: #5B6472;
@@ -48,9 +48,23 @@
 
   body {
     min-height: 100vh;
+    background-color: var(--ink);
     background-image:
-      radial-gradient(circle at 15% -10%, rgba(245,166,35,0.05), transparent 45%),
-      radial-gradient(circle at 85% 0%, rgba(61,169,252,0.04), transparent 40%);
+      /* hash-tick column, left */
+      repeating-linear-gradient(180deg, transparent 0, transparent 11.5px, rgba(232,238,232,0.16) 11.5px, rgba(232,238,232,0.16) 13.5px, transparent 13.5px, transparent 25px),
+      /* hash-tick column, right */
+      repeating-linear-gradient(180deg, transparent 0, transparent 11.5px, rgba(232,238,232,0.16) 11.5px, rgba(232,238,232,0.16) 13.5px, transparent 13.5px, transparent 25px),
+      /* horizontal yard lines, repeating down the page */
+      repeating-linear-gradient(180deg, rgba(232,238,232,0.13) 0px, rgba(232,238,232,0.13) 2px, transparent 2px, transparent 100px),
+      /* faint mowed-turf banding, horizontal to match yard-line direction */
+      repeating-linear-gradient(180deg, rgba(255,255,255,0.015) 0px, rgba(255,255,255,0.015) 100px, transparent 100px, transparent 200px),
+      /* dark-green field undertone */
+      radial-gradient(ellipse at 50% 30%, rgba(63,191,127,0.10), transparent 60%),
+      radial-gradient(circle at 15% -10%, rgba(245,166,35,0.04), transparent 45%),
+      radial-gradient(circle at 85% 0%, rgba(61,169,252,0.035), transparent 40%);
+    background-position: 12% 0, 88% 0, 0 0, 0 0, 0 0, 0 0, 0 0;
+    background-size: 12px 100px, 12px 100px, 100% 100px, 100% 200px, 100% 100%, 100% 100%, 100% 100%;
+    background-repeat: repeat-y, repeat-y, repeat-y, repeat-y, no-repeat, no-repeat, no-repeat;
   }
 
   a { color: inherit; }
