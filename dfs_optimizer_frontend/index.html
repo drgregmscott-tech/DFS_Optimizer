@@ -2014,6 +2014,31 @@
       }
       // Stash the parsed data and show the label field.
       pendingSlate = { file: file, rows: rows, kind: kind };
+
+      // FIX (found live -- an FD upload silently saved as a DK slate):
+      // this used to trust whatever state.activeSite/the site toggle
+      // happened to be set to at upload time, with no check against the
+      // file itself. Every real output filename this app already parses
+      // for the slate_id (final_projections_{site}_..., lineup_single_
+      // {site}_..., pivot_suggestions_{site}_...) has the SITE embedded
+      // right in it -- so detect it from there and auto-switch the
+      // toggle/state to match, rather than silently trusting a toggle
+      // position the user may have forgotten to change. Only affects
+      // recognized {kind}_{site}_{slateId} filenames; a custom/renamed
+      // file with no matching prefix falls back to the current toggle,
+      // same as before.
+      var siteMatch = file.name.match(/^(?:final_projections|lineup_single|lineups_multi|pivot_suggestions)_(dk|fd)_/i);
+      var detectedSite = siteMatch ? siteMatch[1].toLowerCase() : null;
+      var siteSwitchNote = "";
+      if (detectedSite && detectedSite !== state.activeSite) {
+        state.activeSite = detectedSite;
+        document.querySelectorAll("#siteToggle button").forEach(function (b) {
+          b.classList.toggle("active", b.getAttribute("data-site") === detectedSite);
+        });
+        siteSwitchNote = " — switched to " + SITE_CONFIG[detectedSite].label + " (detected from filename)";
+      }
+      pendingSlate.site = detectedSite || state.activeSite;
+
       // Pre-fill label from filename. FIX (four-layer architecture gap,
       // found live 2026-07-31): this used to just strip the .csv extension,
       // leaving the FULL filename (e.g. "final_projections_dk_madden_07312026")
@@ -2031,7 +2056,7 @@
       if (prefixMatch) { suggested = prefixMatch[1]; }
       document.getElementById("slateLabel").value = suggested;
       document.getElementById("slateLabelRow").style.display = "flex";
-      setSlateStatus(rows.length + (kind === "pool" ? " players" : kind === "pivots" ? " pivot suggestion rows" : " lineup rows") + " ready — enter a name then click Save.");
+      setSlateStatus(rows.length + (kind === "pool" ? " players" : kind === "pivots" ? " pivot suggestion rows" : " lineup rows") + " ready — enter a name then click Save." + siteSwitchNote);
     };
     reader.readAsText(file);
   }
@@ -2044,7 +2069,12 @@
     var slateId = labelToSlateId(label);
     if (!slateId) { setSlateStatus("Name must contain at least one letter or number."); return; }
 
-    var site = state.activeSite;
+    // Uses the site detected from the filename at read time (handleSlateFile),
+    // not a fresh read of state.activeSite -- state.activeSite WAS already
+    // switched to match at that point (see the fix there), but reading
+    // pendingSlate.site directly is more robust against the toggle being
+    // clicked again in between selecting the file and clicking Save.
+    var site = pendingSlate.site;
     var kind = pendingSlate.kind;
     var rows = pendingSlate.rows;
     var file = pendingSlate.file;
