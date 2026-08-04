@@ -824,62 +824,128 @@
   }
   .stack-explain strong { color: var(--bone); }
 
-  /* ---------------- Connection panel ---------------- */
+  /* ---------------- Connection settings (gear + modal) ---------------- */
 
-  .conn-panel {
+  .gear-btn {
+    appearance: none;
+    border: 1px solid var(--line);
+    background: var(--panel);
+    color: var(--dim);
+    border-radius: 999px;
+    width: 38px;
+    height: 38px;
+    font-size: 16px;
+    line-height: 1;
+    cursor: pointer;
+    transition: border-color 0.15s ease, color 0.15s ease;
+  }
+
+  .gear-btn:hover { border-color: var(--amber); color: var(--amber); }
+
+  .modal-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    z-index: 1000;
+  }
+
+  .modal-backdrop.hidden { display: none; }
+
+  .modal {
     background: var(--panel);
     border: 1px solid var(--line);
     border-radius: var(--radius);
-    margin-bottom: 16px;
-    overflow: hidden;
+    padding: 22px;
+    width: 100%;
+    max-width: 420px;
+    max-height: 90vh;
+    overflow-y: auto;
   }
 
-  .conn-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 13px 18px;
-    cursor: pointer;
-    user-select: none;
-  }
-
-  .conn-header .title {
+  .modal h3 {
     font-family: 'Barlow Condensed', sans-serif;
     text-transform: uppercase;
     letter-spacing: 0.04em;
-    font-size: 15px;
+    font-size: 17px;
     font-weight: 600;
+    margin: 0 0 10px;
+    color: var(--bone);
   }
 
-  .conn-header .chevron {
-    color: var(--dim);
-    transition: transform 0.15s ease;
+  .modal .hint {
     font-size: 12px;
+    color: var(--dim);
+    line-height: 1.5;
+    margin: 0 0 16px;
   }
 
-  .conn-panel.open .chevron { transform: rotate(90deg); }
-
-  .conn-body {
-    display: none;
-    padding: 0 18px 16px;
-    border-top: 1px solid var(--line-soft);
+  .modal .hint code {
+    color: var(--amber);
+    font-family: 'Roboto Mono', monospace;
+    font-size: 11px;
   }
 
-  .conn-panel.open .conn-body { display: block; }
+  .modal label {
+    display: block;
+    font-family: 'Barlow Condensed', sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    font-size: 11px;
+    color: var(--dimmer);
+    margin: 14px 0 6px;
+  }
 
-  .conn-body input[type="text"],
-  .conn-body input[type="password"] {
+  .modal input[type="text"],
+  .modal input[type="password"] {
     background: var(--ink-raised);
     border: 1px solid var(--line);
     border-radius: 6px;
     color: var(--bone);
     font-family: 'Inter', system-ui, sans-serif;
     font-size: 13px;
-    padding: 8px 10px;
+    padding: 9px 10px;
     width: 100%;
   }
 
-  .conn-body input:focus { outline: none; border-color: var(--amber); }
+  .modal input:focus { outline: none; border-color: var(--amber); }
+
+  .modal-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 18px;
+  }
+
+  .primary-btn,
+  .secondary-btn {
+    appearance: none;
+    border-radius: 8px;
+    padding: 9px 16px;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    font-size: 13px;
+    cursor: pointer;
+    flex: 1;
+  }
+
+  .primary-btn {
+    border: 1px solid var(--amber);
+    background: var(--amber);
+    color: var(--ink);
+  }
+
+  .secondary-btn {
+    border: 1px solid var(--line);
+    background: transparent;
+    color: var(--bone);
+  }
+
+  .secondary-btn:hover { border-color: var(--amber); color: var(--amber); }
 
   /* ---------------- Slates panel ---------------- */
 
@@ -1379,35 +1445,29 @@
     <button data-site="dk" class="active"><span class="dot"></span>DraftKings</button>
     <button data-site="fd"><span class="dot"></span>FanDuel</button>
   </div>
+  <button class="gear-btn" id="settingsBtn" title="Solver connection settings">&#9881;</button>
 </header>
 
-<div class="wrap">
+<div class="modal-backdrop hidden" id="settingsModal">
+<div class="modal">
+<h3>Real Solver Connection</h3>
+<p class="hint">"Build Lineups" calls your deployed <code>dfs-optimizer-api</code>
+Cloudflare Worker, which dispatches to GitHub Actions and runs the real
+optimizer.py. Also used for cloud-synced slates and presets. Stored only
+in this browser's localStorage.</p>
+<label for="settingsWorkerUrl">Worker URL</label>
+<input type="text" id="settingsWorkerUrl" placeholder="https://dfs-optimizer-api.yoursubdomain.workers.dev">
+<label for="settingsWorkerToken">Worker Auth Token</label>
+<input type="password" id="settingsWorkerToken" placeholder="WORKER_AUTH_TOKEN">
+<div class="modal-actions">
+<button class="secondary-btn" id="btnTestConnection">Test Connection</button>
+<button class="primary-btn" id="btnSaveSettings">Save</button>
+</div>
+<div class="solve-status" id="connectionTestStatus"></div>
+</div>
+</div>
 
-  <!-- ================= Connection panel ================= -->
-  <div class="conn-panel" id="connPanel">
-    <div class="conn-header" id="connHeader">
-      <div class="title">Connection</div>
-      <div class="chevron">&#9656;</div>
-    </div>
-    <div class="conn-body">
-      <div class="settings-row" id="workerSettingsRow">
-        <div style="flex:2; min-width:200px;">
-          <span class="field-label">Worker URL</span>
-          <input type="text" id="settingsWorkerUrl" placeholder="https://dfs-optimizer-api.yoursubdomain.workers.dev" readonly>
-        </div>
-        <div style="flex:1; min-width:160px;">
-          <span class="field-label">Worker Auth Token</span>
-          <input type="password" id="settingsWorkerToken" placeholder="WORKER_AUTH_TOKEN" readonly>
-        </div>
-        <div style="flex:0 0 auto; align-self:flex-end; display:flex; gap:8px;">
-          <button class="upload-btn" id="btnToggleWorkerLock" type="button" title="Locked by default so a stray click can't disable it at crunch time.">&#128274; Locked</button>
-          <button class="upload-btn" id="btnTestConnection" type="button">Test Connection</button>
-        </div>
-      </div>
-      <div class="hint">Locked by default on every page load to prevent an accidental edit — click "Locked" to unlock and change it. Saved automatically as you type once unlocked.</div>
-      <div class="solve-status" id="connectionTestStatus"></div>
-    </div>
-  </div>
+<div class="wrap">
 
   <!-- ================= Slates panel ================= -->
   <div class="slates-panel open" id="slatesPanel">
@@ -3209,10 +3269,6 @@
     document.getElementById(id).addEventListener("change", updateStackExplain);
   });
 
-  document.getElementById("connHeader").addEventListener("click", function () {
-    document.getElementById("connPanel").classList.toggle("open");
-  });
-
   document.getElementById("slatesHeader").addEventListener("click", function () {
     document.getElementById("slatesPanel").classList.toggle("open");
   });
@@ -3230,23 +3286,27 @@
   document.getElementById("settingsWorkerUrl").addEventListener("change", saveSettings);
   document.getElementById("settingsWorkerToken").addEventListener("change", saveSettings);
 
-  // Session 7.3, item #4: locked (readonly) by default on EVERY page
-  // load, regardless of prior state -- a stray click/keystroke can't
-  // touch these fields until someone deliberately clicks "Locked" to
-  // unlock them. Re-locks automatically when a value is saved (blur),
-  // and always starts locked again on the next visit.
-  function setWorkerFieldsLocked(locked) {
-    var urlEl = document.getElementById("settingsWorkerUrl");
-    var tokenEl = document.getElementById("settingsWorkerToken");
-    var btn = document.getElementById("btnToggleWorkerLock");
-    urlEl.readOnly = locked;
-    tokenEl.readOnly = locked;
-    btn.innerHTML = locked ? "&#128274; Locked" : "&#128275; Unlocked -- click to re-lock";
-    btn.classList.toggle("primary", !locked);
-  }
-  document.getElementById("btnToggleWorkerLock").addEventListener("click", function () {
-    var isLocked = document.getElementById("settingsWorkerUrl").readOnly;
-    setWorkerFieldsLocked(!isLocked);
+  // Gear-icon settings modal (ported from NHL Optimizer's Session 6.2 UI).
+  // Closed by default and only ever open when explicitly clicked -- this
+  // replaces the old readonly-by-default/"Locked" button protection
+  // (Session 7.3, item #4): a closed modal can't be stray-clicked into
+  // the way an always-visible inline panel could.
+  document.getElementById("settingsBtn").addEventListener("click", function () {
+    // Re-populate from localStorage on every open, so an abandoned edit
+    // (typed, then closed via backdrop click without saving) doesn't
+    // linger in the fields next time the modal is reopened.
+    document.getElementById("settingsWorkerUrl").value = localStorage.getItem("dfs_worker_url") || "";
+    document.getElementById("settingsWorkerToken").value = localStorage.getItem("dfs_worker_token") || "";
+    document.getElementById("settingsModal").classList.remove("hidden");
+  });
+  document.getElementById("settingsModal").addEventListener("click", function (e) {
+    if (e.target === this) this.classList.add("hidden");
+  });
+  document.getElementById("btnSaveSettings").addEventListener("click", function () {
+    saveSettings();
+    document.getElementById("settingsModal").classList.add("hidden");
+    refreshPresetDropdown();
+    refreshForActiveSlate();
   });
 
   // Session 7.3 -- "Test Connection" isolates exactly where a failure is,
@@ -3730,7 +3790,6 @@
 
   loadSettings();
   updateControlsVisibility();
-  setWorkerFieldsLocked(true);
   updateMinSalaryBounds();
 
   // Load presets from cloud after settings (Worker URL/token) are in place
