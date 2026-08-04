@@ -2681,3 +2681,150 @@ An ad hoc session triggered by `NFL_pivot_ui_handoff.md`, a handoff document fil
 - If another script turns up still assuming `--week` instead of `--slate-id`, that's the same bug class Finding 3 here caught (`pivot_finder.py`, `refresh_data.yml`) — the Session 7.4 slate-management rework didn't touch every pre-existing script. Worth a deliberate audit across `scripts/` if time allows, rather than waiting to find each instance live.
 - `generate_synthetic_slate.py`'s salary bands (`SALARY_BANDS`) and per-team player counts (`PLAYERS_PER_TEAM`) are both flagged `ARBITRARY` in-code — fine for pipeline/UI testing, not fit to any real site pricing model. Don't use synthetic-slate pivot suggestions to judge real pivot quality.
 - This NHL-handoff-triggered session is a second instance of the exact pattern its own Finding 2 originally described: a real analytical output built and validated in isolation, then found to be unwired from the UI. Worth the same "quick audit of other `/output` files" the handoff doc itself suggested, if a future session has spare time — e.g. confirming Session 9.3's `log_ownership.py` output has a path into something that uses it.
+
+---
+
+## Session 13.1 — Kicker Projection Model
+**Date completed:** 2026-08-04
+**Status:** ✅ Complete
+
+**What was actually built:**
+The first kicker model anywhere in this pipeline -- no K projection existed
+before this session, for either site. Built as a real, backtested model
+(matching Session 10.4's DST-rebuild bar, per explicit user direction),
+not a placeholder, ahead of Showdown/Single-Game support (Phase 13) since
+Showdown pools always include kickers. Structured as a fitter/consumer
+pair, same split as `fit_dst_model.py`/`dst_model.py`.
+
+The headline finding, measured rather than assumed: **FG attempt volume
+has no usable predictive signal** from either team identity or Vegas
+implied total (R²=0.003 vs. own implied total; team-level split-half
+correlation r=0.039 across 3,122 real team-weeks, 2018-2023). This is a
+real contrast with DST, where points-allowed has a genuine team trait and
+a genuine Vegas relationship. Individual kicker ACCURACY, by contrast, is
+a real if modest skill (split-half r=0.23 within a season; career accuracy
+predicts held-out-season accuracy at r=0.175, n=36) -- but because
+per-game point totals are dominated by attempt-count variance (which is
+unpredictable), shrinking toward player-specific accuracy barely moved
+the backtest (MAE 3.7470 flat vs. 3.7489 player-shrunk per game). Shipped
+the player-specific shrinkage anyway since it's free and directionally
+correct, documented honestly rather than oversold -- this model's real
+value is a correctly WIDE, well-calibrated sigma (simulated/real ratio
+1.03-1.04), not sharp point accuracy the data doesn't support.
+
+Also found and resolved during build: wiring kicker rows through the
+EXISTING (classic-slate) ownership heuristic produces `NaN`
+`estimated_ownership_pct` for the K position group, because that heuristic
+normalizes ownership to a position's classic roster-slot budget and K has
+never had one on either site's classic format. Doesn't fire today (every
+classic slate has an empty K pool) but will the moment Session 13.2 puts
+real K rows in a pool -- flagged explicitly rather than silently
+discovered later; Session 13.3's already-planned Showdown-specific
+ownership heuristic is the intended fix, not a new gap.
+
+**Files created/modified:**
+- `scripts/scoring_rules.py` (modified -- added `KICKER_SCORING`,
+  `kicker_scoring_for()`, `score_kicker()`, `KICKER_COMPONENT_COLUMNS`,
+  `verify_kicker_against_actuals()`)
+- `scripts/fit_kicker_model.py` (new)
+- `scripts/kicker_model.py` (new)
+- `scripts/build_projections.py` (modified -- new `_build_kicker_projections()`,
+  wired into `build_final_projections()`'s output concat alongside skill
+  positions and DST)
+- `data/kicker_model.json` (new artifact, written by `fit_kicker_model.py`)
+
+**Validation results:**
+- [x] `scoring_rules.py` DK kicker table CONFIRMED against DK's own
+  published "NFL Showdown Captain Mode" rules page (user-supplied,
+  2026-08-04) -- exact match on all three FG brackets, PAT value, and the
+  "kickers only eligible for FG/PAT" restriction.
+- [x] `scoring_rules.py` FD kicker table CONFIRMED against a real live FD
+  Single Game contest's "Rules & Scoring" page (user-supplied screenshot,
+  2026-08-04) -- FLEX-column FG brackets match DK exactly; MVP column
+  cross-checks as exactly 1.5x the FLEX column on every row (FG AND PAT:
+  MVP PAT=1.5, FLEX PAT=1, user-confirmed separately), validating that
+  FD's MVP multiplier applies uniformly across all kicker stats the same
+  way DK's CPT multiplier does.
+- [x] `score_kicker()`/`verify_kicker_against_actuals()` self-check:
+  reconstructs real 2024-2025 kicker actuals exactly (0.0 mean bias, 100%
+  exact match, both sites) -- expected since kicker scoring is linear
+  (no bracket-integration hazard like DST's step function).
+- [x] `fit_kicker_model.py` run for real against live nflverse data
+  (2018-2023 fit window): `mu_fga=1.926`, `mu_pat=2.277`, real
+  distance-bucket shares and make rates, 79 kickers with career accuracy
+  rows written to `data/kicker_model.json`.
+- [x] `kicker_model.py` real held-out backtest (2024-2025, production code
+  path, not a standalone reimplementation): MAE=3.733, RMSE=4.712 per
+  kicker-week; sigma calibration ratio 1.03-1.04 (simulated sigma vs. real
+  held-out standard deviation); season-level Spearman rank 0.079 (weak,
+  consistent with the volume-noise finding above -- not a bug).
+- [x] `_build_kicker_projections()` smoke-tested against a synthetic pool:
+  real career-shrunk projections for known player_ids, pure league-average
+  fallback for an unknown/rookie player_id, correct zero-out for a
+  bye-week kicker, and a correctly-shaped empty DataFrame for the
+  empty-K-pool case (every classic slate today).
+- [x] Full concat + `add_ownership_columns()` path smoke-tested with mixed
+  skill/kicker rows -- confirmed the `NaN` ownership finding above, did
+  NOT trip the existing `chalk_score`-only hard-fail guard (silent NaN,
+  not a crash) -- tracked as a Session 13.3 handoff item, not fixed here.
+- [x] `python3 -m py_compile` clean on all four touched/created files.
+- [x] `fit_kicker_model.py` CLI entry point (`argparse` path, not just the
+  Python import path) run end-to-end successfully.
+
+**Decisions made / assumptions taken:**
+- Volume (FGA, PAT attempts) modeled as a recency-weighted (half-life 2
+  seasons) LEAGUE AVERAGE, not a team- or Vegas-conditioned regression --
+  a measured null result, not a shortcut (see "What was actually built").
+- Distance-bucket mix (share of FGA that are 0-39/40-49/50+) is also a
+  flat league average -- no stronger signal was tested for this either;
+  flagged as a possible future refinement (e.g. opponent red-zone
+  defense), not built now.
+- Player-specific accuracy shrinkage (K_SHRINK=12 pseudo-attempts) shipped
+  despite near-zero backtest improvement, because it's free at inference
+  time and directionally correct -- explicitly NOT presented as the
+  model's main value-add (see decision #4 in `fit_kicker_model.py`).
+- Sigma uses independent Poisson/Binomial draws with NO latent correlation
+  factor, unlike DST's Monte Carlo -- measured that DST's under-dispersion
+  problem doesn't exist here (calibration ratio ~1.03 with plain
+  independent draws), so the added machinery would solve a problem that
+  isn't there.
+- `_build_kicker_projections()` wires kicker rows into EVERY site's
+  output unconditionally (no slate-type gate) -- harmless today since
+  classic salary files never contain K rows, and this avoids needing a
+  slate-format flag before Session 13.2 defines one.
+
+**Known issues deferred:**
+- FD's Extra Point (PAT) value was confirmed separately by the user
+  (MVP=1.5, FLEX=1) after the FG bracket confirmation -- matches the
+  implementation exactly, no code change needed, logged here for the
+  record.
+- `ownership_heuristic.py`'s classic roster-slot-budget normalization
+  produces `NaN` `estimated_ownership_pct` for the K position group --
+  will surface for real once Session 13.2 ships Showdown ingest. Fix is
+  Session 13.3's dedicated Showdown ownership heuristic, not a patch to
+  the classic path.
+- `salary_anchor.py`'s fitted curves have no entry for position "K" --
+  `anchor_points()` will correctly fail loudly (per its own decision #3)
+  if the salary anchor is ever enabled with kicker rows in the pool.
+  Harmless today (`SALARY_ANCHOR_WEIGHT_DEFAULT=0.0`, anchor off by
+  default; classic pools have no K rows regardless), but noted so it
+  isn't a surprise later -- refit `fit_salary_anchor.py` to include K if
+  the anchor is ever wanted for Showdown kickers.
+- No opponent/game-script-based volume signal (e.g. tough-defense-forces-
+  more-FG-attempts) was built or tested beyond the team-implied-total
+  regression that came back null -- explicitly flagged as a possible
+  future refinement in `fit_kicker_model.py`, not attempted this session.
+
+**Handoff notes for next session:**
+- `data/kicker_model.json` needs periodic refitting as new seasons
+  complete -- the recency-weighting (decision #3) means this artifact is
+  meant to be refreshed, not treated as a static constant. No automation
+  wired for this yet (small, could be added to `refresh_data.yml` or done
+  manually each offseason).
+- Session 13.2 (Showdown/Single-Game salary ingest) is next. Once real K
+  rows start flowing through `ingest_salaries.py`, re-run the
+  `add_ownership_columns()` smoke test from this session against a real
+  (not synthetic) Showdown pool to confirm the NaN finding above behaves
+  as expected before Session 13.3 fixes it.
+- Both sites' kicker scoring tables are now fully real-data confirmed --
+  no remaining unverified numbers in `scoring_rules.py`'s kicker section.

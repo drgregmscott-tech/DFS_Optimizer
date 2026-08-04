@@ -2025,3 +2025,337 @@ A single ownership model predicts neither well at the extremes.
 - [x] Real-slate live test: over-limit lock correctly fails the build with a clear reason
 
 **Handoff notes:** Deferred (not requested, not needed): a "global default game cap" that applies to every game not explicitly overridden. Would be a small addition if wanted later — see SESSION_LOG.md Session 12.1 handoff notes.
+
+---
+
+## PHASE 13 — Showdown / Single-Game Slate Support
+
+**Trigger:** Real preseason Showdown-format slates begin posting on both
+DK and FD starting Thursday preseason games (~Aug 6, 2026). This phase adds
+support for DK's Captain Mode and FD's Single Game format, both sites,
+built on top of the existing classic-slate pipeline rather than as a
+parallel project.
+
+**Confirmed rules (verified against current site documentation, Session
+13.0 scoping conversation):**
+- **DK Captain Mode:** 6 roster spots — 1 CPT + 5 FLEX. Any position
+  eligible in any spot, including K (kickers are NOT currently modeled
+  anywhere in this pipeline — see Session 13.1). CPT scores 1.5x fantasy
+  points AND costs 1.5x the FLEX-listed salary. Minimum 1 player from each
+  team. Salary cap unchanged at $50,000. Both the CPT and FLEX-priced
+  version of each player appear as separate rows in DK's Showdown export.
+- **FD Single Game:** 5 roster spots — 1 MVP + 4 FLEX. Any position
+  eligible in any spot, including K. MVP scores 1.5x fantasy points at the
+  SAME salary as FLEX (no cost multiplier — this is a real mechanical
+  difference from DK, not a simplification). Minimum 1 player from each
+  team. Salary cap unchanged at $60,000.
+- Both sites: exactly 2 teams in the pool (the single game), so
+  cross-game constraints (Session 12.1's game caps, opponent-lookup logic
+  in stacking) either don't apply or need reinterpretation — see Session
+  13.4.
+
+**Why this is multiple sessions, not one:** Showdown isn't a parameter
+change on the classic pipeline — it changes the salary-export shape
+(Session 13.2), requires a scoring layer that doesn't exist yet for an
+entire position (Session 13.1 — kickers), replaces the core ILP's
+fixed-position-count assumption with a totally different roster-construction
+model (Session 13.4, the highest-risk piece), and touches the same
+four-layer wiring (optimizer.py / Worker / Actions / frontend) every prior
+cross-cutting feature in this project has required (Session 13.5). Per this
+project's own validation discipline (a session isn't done until its
+validation step passes on real or synthetic data), these don't compress
+into one sitting without skipping steps that have caught real bugs before
+(see Session 4.3's pattern of finding bugs only by running real data).
+
+**Sequencing note:** Session 13.1 (kicker model) has no Showdown-specific
+dependency and could in principle run any time — it's needed here because
+Showdown pools always include kickers and none exist in the pipeline today.
+Sessions 13.2-13.5 are sequential (each depends on the prior). Session 13.6
+(real-slate validation) is gated on both a real slate AND 13.1-13.5 being
+functionally complete on synthetic data first — if the Thursday slate
+arrives before 13.1-13.5 are done, it can still serve as the real-data
+validation input for whichever of those sessions ARE ready by then, with
+the rest validated later against the next available Showdown slate.
+
+---
+
+### Session 13.1 — Kicker Projection Model
+**Prerequisites:** None (independent of Showdown-specific work; needed
+because no kicker model exists anywhere in the current pipeline).
+
+**Sites:** Both — kicker scoring differs slightly by site (see Build).
+
+**Files touched (created):**
+- `scripts/kicker_model.py` (new — consumer script, same fitter/consumer
+  split discipline as `dst_model.py`/`fit_dst_model.py`)
+- `scripts/fit_kicker_model.py` (new — fits FG-distance-bucket make rates
+  and PAT rates to real historical data, separate from the consumer per
+  this project's established principle)
+
+**Files touched (modified):**
+- `scripts/scoring_rules.py` — add `score_kicker()` and `kicker_scoring_for(site)`,
+  mirroring the existing `score_statline()`/`scoring_for()` and
+  `score_dst()`/`dst_scoring_for()` pairs. DK/FD both score PAT (1 pt) and
+  FG by distance bracket (0-39/40-49/50+) — confirm exact bracket point
+  values for both sites against current official rules before fitting,
+  since minor site differences here would silently bias the model.
+- `scripts/build_projections.py` — wire kicker projections into the main
+  output alongside skill-position and DST projections.
+
+**Inputs:** `data/weekly_stats_{season}.parquet` (nflverse kicking stats —
+FGA/FGM by distance, XPA/XPM), Vegas implied team totals (existing
+`vegas_odds.py` output, reused as the team-scoring-context signal the same
+way DST's model uses it).
+
+**Outputs:** `output/kicker_projections_{site}_{slate_id}.csv` — columns:
+player_id, team, projected_points, sigma (if a distributional approach is
+used, matching DST's Monte Carlo pattern rather than a point estimate —
+decide during build whether kicker variance is worth modeling explicitly
+or if a simpler point-estimate is sufficient given kickers' low DFS
+salary/impact ceiling relative to skill positions).
+
+**Build:**
+- Historical FG-make-rate by distance bucket, PAT-make rate (both very
+  high and stable — mostly a volume question, not an accuracy question)
+- Volume driver: team scoring context (red-zone trips proxy via Vegas
+  implied team total, similar to how `dst_model.py` already uses
+  opponent-implied totals) — a kicker's expected points is mostly "how
+  many scoring drives end in a FG vs TD for this team this week," which
+  ties back to existing Vegas infrastructure, not a from-scratch signal.
+- FLAGGED ARBITRARY: any bucket-boundary or weighting constant chosen
+  without real-data fitting, same discipline as every other model in this
+  project.
+
+**Validation:**
+- [ ] Backtest against real historical kicker actuals (RotoGuru or
+  nflverse), MAE/RMSE reported the same way Session 10.4's DST rebuild
+  reported its numbers, so kicker model quality is comparable/trackable
+  alongside the other position models.
+- [ ] Spot-check 5 known kickers' projections against hand expectations.
+- [ ] `scoring_rules.py`'s new `score_kicker()` verified against real
+  nflverse kicking stats for both DK and FD point values (decision #1's
+  technique, reused).
+
+**Handoff notes to log:** Final chosen FG-bracket point values for DK and
+FD (confirm against current site rules, not memory — kicker scoring
+occasionally changes). Whether variance/sigma was modeled or a simpler
+point estimate was used, and why.
+
+---
+
+### Session 13.2 — Showdown / Single-Game Salary Ingest
+**Prerequisites:** None (independent of Session 13.1; can run in parallel
+if needed, though sequential is fine too).
+
+**Sites:** DraftKings AND FanDuel — both required, same dual-site
+discipline as Session 1.3.
+
+**Files touched (modified):**
+- `scripts/ingest_salaries.py` — add Showdown/Single-Game entries to
+  `SITE_CONFIGS` (or a `slate_format` dimension crossing site ×
+  {classic, showdown} — decide the cleanest structure during build,
+  likely `SITE_CONFIGS[site][format]` nesting to avoid duplicating the
+  team-abbreviation/name-matching logic that's shared across formats).
+  Core new parsing need: both sites' Showdown exports list each player
+  TWICE — once as CPT/MVP-priced, once as FLEX-priced — a different shape
+  than `_load_dk_raw()`/the FD loader handle today. The CPT/MVP row and
+  FLEX row for the same underlying player need to be linked (shared
+  player_id, distinct salary/role) rather than treated as two unrelated
+  players.
+- `scripts/generate_synthetic_slate.py` — add a Showdown-shaped output
+  mode for both sites, since real Showdown exports may not be available
+  for every dev iteration (same rationale as the existing synthetic-slate
+  tool: FD in particular has no reliable free-to-generate real test data).
+
+**Inputs:** Manually downloaded DK Showdown / FD Single Game salary CSV
+exports (place in `/data/raw_salaries/`, same convention as classic).
+
+**Outputs:** `data/salaries_{site}_{slate_id}.csv`, same shape as classic
+output plus a `roster_role` or `cpt_eligible`/`is_captain_row` column
+distinguishing the two rows per player.
+
+**Build:**
+- Site-specific Showdown/Single-Game column parsing.
+- Link CPT/MVP row to FLEX row for the same player (needed downstream so
+  the optimizer can enforce "can't roster both versions of the same
+  player" — Session 13.4).
+- Confirm real DK Showdown column layout against a real export (DK has
+  live Madden Sim-style test data available same as classic). FD Single
+  Game export shape is UNVERIFIED same as FD Classic already is — flag
+  explicitly, same caveat pattern as `SITE_CONFIGS["fd"]` today.
+
+**Validation:**
+- [ ] 100% of players in a real DK Showdown sample file match correctly,
+  CPT/FLEX rows correctly linked to the same player_id.
+- [ ] Synthetic FD Showdown file round-trips through the same linking
+  logic (real FD Showdown data validated later in Session 13.6 once
+  available).
+- [ ] Unmatched players logged clearly, not silently dropped (same bar as
+  Session 1.3).
+
+**Handoff notes to log:** Whether real DK Showdown data was available in
+time to validate against, or synthetic only. FD Showdown column layout
+assumptions, explicitly flagged unverified if no real file was available.
+
+---
+
+### Session 13.3 — Showdown Projection & Scoring-Multiplier Layer
+**Prerequisites:** Session 13.1 complete (kicker projections exist to
+feed the pool). Session 13.2 complete (CPT/MVP-linked salary data exists).
+
+**Files touched (modified):**
+- `scripts/build_projections.py` — derive CPT/MVP row projections from
+  the linked FLEX-priced player's projection: DK CPT = 1.5x points (salary
+  already 1.5x from the raw export, nothing to do there); FD MVP = 1.5x
+  points at unchanged salary. Applies uniformly across whatever
+  position/model produced the FLEX projection (skill-position stat-line
+  model, DST model, or the new Session 13.1 kicker model) — no
+  per-position special-casing needed here, just a multiplier applied
+  post-hoc to whichever projection already exists for that player.
+
+**Explicit decision to make and log:** Ownership modeling (Phase 11) is
+fit entirely on classic-slate position groups and CPT selection behaves
+very differently from FLEX selection (concentration effects the current
+softmax model has never seen). Recommend `chalk_score`/
+`estimated_ownership_pct` are either omitted or clearly marked
+"unavailable — Showdown" in Showdown output, rather than silently
+returning a classic-fit number that would mislead the pivot-finder /
+frontend chalk display. Get explicit sign-off on this rather than assuming.
+
+**Validation:**
+- [ ] CPT/MVP projection = 1.5x the linked FLEX projection, verified for
+  a sample of players across all position types (including K and DST/DEF,
+  which are Showdown-eligible unlike classic).
+- [ ] Ownership/chalk fields confirmed absent or clearly flagged in
+  Showdown output, not silently populated with a misleading classic-fit
+  number.
+
+**Handoff notes to log:** Final decision on ownership field handling for
+Showdown (omitted vs. flagged-placeholder vs. something else), and why.
+
+---
+
+### Session 13.4 — Optimizer ILP for Showdown Roster Construction
+**Prerequisites:** Session 13.3 complete.
+
+**Files touched (modified):**
+- `scripts/optimizer.py` — new solve path for Showdown/Single-Game slates.
+  This is the highest-risk session in the phase: the existing ILP is built
+  entirely around fixed non-FLEX position counts (`parse_roster_requirements()`)
+  and a narrow `FLEX_ELIGIBLE_POSITIONS = {RB, WR, TE}`. Showdown has no
+  position requirements at all — just:
+  - Exactly 1 CPT (DK) or MVP (FD) slot + N FLEX slots (5 for DK, 4 for FD).
+  - Mutual exclusivity: the CPT-row and FLEX-row of the same underlying
+    player can never both be selected (new constraint type, doesn't exist
+    in the classic solver at all).
+  - Minimum 1 player from each of the 2 teams in the pool (new constraint
+    type — classic slates have no equivalent "every team must appear"
+    rule).
+  - DK's captain salary multiplier is already baked into the CPT row's
+    listed salary from Session 13.2's ingest, so the existing
+    `<= salary_cap` constraint needs no special-casing here.
+  - Existing stacking/correlation logic (Session 3.3 minimums, mini-stack,
+    bring-back) needs a decision: keep, disable, or reinterpret for a
+    2-team-only pool — likely still meaningful (Showdown stacking strategy
+    is well-established real DFS strategy) but the "opponent" lookup logic
+    should be trivial here since there's only one possible opponent.
+  - Session 12.1's team/game exposure caps: game caps are meaningless
+    (only one game exists); team caps may still be useful and should carry
+    over unchanged.
+- `scripts/pivot_finder.py` — confirm the existing projection-band
+  eligibility filter (Session 4.3) still makes sense when "eligible
+  positions" is now everyone in the pool rather than a same-position
+  group; likely needs no change since it's already position-agnostic
+  band logic, but verify against Showdown pool structure specifically.
+
+**Validation:**
+- [ ] Synthetic-pool unit tests: CPT/FLEX exclusivity enforced, min-1-per-team
+  enforced, salary cap respected, exactly 6 (DK) / 5 (FD) total slots.
+- [ ] `optimizer.py` full-file compile check.
+- [ ] Solver produces a valid lineup against Session 13.2's synthetic
+  Showdown pool for both sites.
+- [ ] `pivot_finder.py` produces sane suggestions against a Showdown pool
+  (or is explicitly deferred if it needs its own follow-up — decide
+  during the session, don't let it silently half-work).
+
+**Handoff notes to log:** Final decision on stacking-rule applicability
+to Showdown (kept as-is, adjusted, or disabled), and why. Any pivot_finder
+gaps found and whether fixed now or deferred.
+
+---
+
+### Session 13.5 — Frontend Showdown UI + Four-Layer Wiring
+**Prerequisites:** Session 13.4 complete.
+
+**Files touched (modified):**
+- `dfs_optimizer_frontend/index.html` — Showdown-specific roster display
+  (CPT/FLEX or MVP/FLEX slot layout, replacing the hardcoded classic
+  `slotOrder` for Showdown slates), Showdown-specific DK bulk-upload
+  paste/download column format (DK's Showdown entries template uses
+  CPT/FLEX/FLEX/FLEX/FLEX/FLEX columns, not QB/RB/RB/WR/WR/WR/TE/FLEX/DST),
+  file-upload format auto-detection extended to recognize a Showdown-shaped
+  file the same way it already auto-detects site (Session 4.3's
+  site-detection fix, same pattern extended to format).
+- `cloudflare_worker/optimizer_api/optimizer_api.js` — add `slate_format`
+  (or equivalent) to `passthroughKeys`.
+- `.github/workflows/run_optimizer_dispatch.yml` — add `slate_format` to
+  the flag-builder.
+- `.github/workflows/refresh_data.yml` — confirm the automated refresh
+  cycle handles Showdown slate_ids correctly (kicker/DST/CPT-multiplier
+  rebuild steps included).
+
+**Validation:**
+- [ ] `node --check` clean on extracted `index.html` script block.
+- [ ] `optimizer_api.js` Node syntax check.
+- [ ] Both workflow YAML files parse clean.
+- [ ] Worker deployed (separate step from push, per established
+  discipline — `cd cloudflare_worker/optimizer_api && npx wrangler deploy
+  optimizer_api.js`).
+- [ ] Full synthetic-pool click-through in the deployed UI: upload a
+  Showdown pool, build a lineup, confirm CPT/FLEX display, download in
+  DK's Showdown bulk-upload shape.
+
+**Handoff notes to log:** Any UI layout decisions made for the CPT/FLEX
+panel (e.g. whether it's a visually distinct section from classic roster
+display or reuses the same component with conditional labels).
+
+---
+
+### Session 13.6 — Real Showdown Slate Validation (DK & FD)
+**Prerequisites:** Sessions 13.1-13.5 complete on synthetic data. A real
+DK Showdown and/or FD Single Game slate available (first opportunity:
+preseason Thursday games, ~Aug 6, 2026 — exact availability depends on
+whether both sites post Showdown-format contests for that slate).
+
+**Files touched:** None expected (validation-only session) — but per this
+project's established pattern (Session 4.3, Session 12.1), real-data runs
+routinely surface bugs static review and synthetic data don't. Track any
+fixes made here the same as any other session.
+
+**Validation:**
+- [ ] Full real-data pipeline run, DK Showdown: ingest → kicker/skill/DST
+  projections → CPT multiplier → optimizer → frontend build → DK
+  bulk-upload export, end to end.
+- [ ] Full real-data pipeline run, FD Single Game: same chain — this is
+  the first-ever real-data validation of FD's Showdown export shape,
+  same significance as FD Classic's still-pending real-data validation.
+- [ ] Confirms or corrects Session 13.2's UNVERIFIED FD Showdown column
+  assumptions.
+
+**Handoff notes to log:** Whether both sites had real Showdown slates
+available for this validation, or only one — if only DK, FD Showdown
+stays flagged unverified (same status FD Classic carries today) until a
+future slate provides real data.
+
+---
+
+## Summary: Phase 13 sequencing
+
+| Session | What | Depends on | Real-data gate |
+|---|---|---|---|
+| 13.1 | Kicker projection model | None | Historical nflverse kicking data (available now) |
+| 13.2 | Showdown/Single-Game salary ingest | None (13.1 not required) | DK: available now (Madden Sim-style). FD: unverified until 13.6 |
+| 13.3 | Projection scoring-multiplier layer | 13.1, 13.2 | Synthetic sufficient |
+| 13.4 | Optimizer ILP rewrite | 13.3 | Synthetic sufficient |
+| 13.5 | Frontend + four-layer wiring | 13.4 | Synthetic sufficient |
+| 13.6 | Real Showdown slate validation, both sites | 13.1-13.5 | Real DK/FD Showdown slate (first chance: ~Aug 6, 2026) |

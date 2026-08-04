@@ -381,6 +381,136 @@ def verify_dst_against_actuals(team_weeks: pd.DataFrame, actuals: pd.DataFrame,
     return report
 
 
+# ---------------------------------------------------------------------------
+# Kicker scoring (Session 13.1)
+# ---------------------------------------------------------------------------
+# Kickers do not exist anywhere in this pipeline before Session 13.1 -- added
+# now because Showdown/Single-Game pools always include them (Phase 13's
+# trigger), unlike classic slates where FD has carried no K slot since 2018
+# and DK's DST-only special-teams unit made a standalone kicker model low
+# priority. Same fail-loud-on-unknown-site discipline as DST and skill
+# positions (decision #4 above).
+#
+# TABLE SOURCE: DK's bracket values below (0-39/40-49/50+ yards = 3/4/5 pts,
+# PAT = 1 pt) are CONFIRMED against DK's own published "NFL Showdown Captain
+# Mode" rules page (Session 13.1, user-supplied 2026-08-04) -- exact match,
+# including the "Kickers are only eligible for extra points and field goals
+# made" restriction this module already assumed.
+#
+# FD's Single Game FG brackets are ALSO CONFIRMED (Session 13.1,
+# user-supplied FD "Rules & Scoring" screenshot, real live contest,
+# 2026-08-04): FLEX-column values 0-19/20-29/30-39 = 3, 40-49 = 4, 50+ = 5
+# -- identical bracket structure to DK. The screenshot's MVP column
+# (7.5/6/4.5/4.5/4.5) cross-checks exactly as 1.5x the FLEX column across
+# every row, confirming FD's MVP multiplier applies uniformly to kicker
+# scoring the same way DK's CPT multiplier does. The one value NOT visible
+# in that screenshot is FD's Extra Point (PAT) points -- assumed 1 pt here
+# (matches DK, matches every third-party source checked pre-confirmation,
+# and PAT scoring is essentially universal across sites/formats at 1 pt),
+# but this is the one remaining genuinely-unconfirmed number in this table.
+# Confirm against a full view of FD's kicker rows (should be adjacent to
+# the FG brackets on the same Rules & Scoring page) before the first
+# real-money FD Showdown build.
+_KICKER_BRACKETS = [
+    (0, 39, 3.0),
+    (40, 49, 4.0),
+    (50, None, 5.0),
+]
+_KICKER_PAT_VALUE = 1.0
+
+KICKER_SCORING = {
+    "dk": {"label": "DraftKings Showdown Kicker", "brackets": list(_KICKER_BRACKETS), "pat_value": _KICKER_PAT_VALUE},
+    "fd": {"label": "FanDuel Single Game Kicker", "brackets": list(_KICKER_BRACKETS), "pat_value": _KICKER_PAT_VALUE},
+}
+
+# Canonical component schema kicker_model.py / any real-actuals reconciliation
+# must supply -- one row per kicker-week, distance-bucketed makes plus PAT.
+# Deliberately bucketed to the 3 SCORING-relevant brackets, not nflverse's 6
+# raw distance buckets (0-19/20-29/30-39/40-49/50-59/60+) -- see
+# fit_kicker_model.py's decision #1 for why the finer buckets don't earn
+# their complexity here.
+KICKER_COMPONENT_COLUMNS = ["made_0_39", "made_40_49", "made_50p", "pat_made"]
+
+
+def kicker_scoring_for(site: str) -> dict:
+    """Decision #4's fail-loud rule, applied to the kicker table."""
+    if site not in KICKER_SCORING:
+        raise SystemExit(
+            f"scoring_rules: no kicker scoring table for site={site!r}. "
+            f"Known: {sorted(KICKER_SCORING)}."
+        )
+    return KICKER_SCORING[site]
+
+
+def score_kicker(components, site: str) -> np.ndarray:
+    """Convert kicker components to that site's fantasy points. Vectorized.
+
+    Unlike `score_dst`'s points-allowed brackets, kicker scoring is LINEAR
+    within each bucket (every make in a bucket is worth the same points, no
+    step function to integrate over) -- so, unlike decision #3/the score_dst
+    warning, `score_kicker(mean_makes_per_bucket)` is NOT biased the way
+    `score_dst(mean_points_allowed)` is. `kicker_model.py` still runs a full
+    Monte Carlo for sigma (Session 13.1's decision #4), but the SCORING
+    function itself has no integration hazard to warn about here.
+    """
+    rules = kicker_scoring_for(site)
+    b0_39 = next(v for lo, hi, v in rules["brackets"] if lo == 0)
+    b40_49 = next(v for lo, hi, v in rules["brackets"] if lo == 40)
+    b50p = next(v for lo, hi, v in rules["brackets"] if lo == 50)
+    pat_v = rules["pat_value"]
+
+    if isinstance(components, pd.DataFrame):
+        get = lambda c: pd.to_numeric(components[c], errors="coerce").fillna(0.0).to_numpy(dtype=float)
+        present = set(components.columns)
+    else:
+        get = lambda c: np.asarray(components[c], dtype=float)
+        present = set(components.keys())
+
+    missing = sorted(c for c in KICKER_COMPONENT_COLUMNS if c not in present)
+    if missing:
+        raise SystemExit(
+            f"score_kicker({site}): components missing {missing}.\n"
+            f"Expected the canonical schema: {KICKER_COMPONENT_COLUMNS}\n"
+            f"(Not defaulting these to zero -- for a kicker that would "
+            f"quietly understate the projection instead of failing.)"
+        )
+
+    return (get("made_0_39") * b0_39 + get("made_40_49") * b40_49
+            + get("made_50p") * b50p + get("pat_made") * pat_v)
+
+
+def verify_kicker_against_actuals(kicker_weeks: pd.DataFrame, site: str,
+                                   max_mean_bias: float = 0.10) -> dict:
+    """Session 13.1's version of decision #7 (verify_dst_against_actuals).
+
+    `kicker_weeks` needs KICKER_COMPONENT_COLUMNS plus an `actual_points`
+    column (real graded fantasy points for that kicker-week, from RotoGuru
+    or an equivalent real-actuals source). Since kicker scoring is linear
+    (no bracket step function), the reconstruction should be near-exact --
+    tolerance is set tight (+/-0.10) relative to DST's +/-0.35, because
+    there is no integration hazard here to explain a real gap. A gap this
+    size means the bracket table or component aggregation is wrong, not
+    that Monte Carlo integration is needed.
+    """
+    recon = score_kicker(kicker_weeks, site)
+    err = recon - pd.to_numeric(kicker_weeks["actual_points"], errors="coerce").to_numpy(dtype=float)
+    report = {
+        "site": site,
+        "n_rows": int(len(kicker_weeks)),
+        "exact_match_share": round(float((np.abs(err) < 1e-9).mean()), 4),
+        "mean_bias": round(float(np.nanmean(err)), 4),
+        "mae": round(float(np.nanmean(np.abs(err))), 4),
+    }
+    if abs(report["mean_bias"]) > max_mean_bias:
+        raise SystemExit(
+            f"Kicker scoring self-check FAILED for {site}: reconstructing "
+            f"real graded kicker points from real components is biased by "
+            f"{report['mean_bias']:+.3f} (tolerance +/-{max_mean_bias}). "
+            f"Check the bracket table or bucket aggregation. Full report: {report}"
+        )
+    return report
+
+
 def scoring_for(site: str) -> dict:
     """Decision #4: unknown site is a hard error."""
     if site not in SCORING:

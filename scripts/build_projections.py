@@ -286,6 +286,75 @@ def _build_dst_distributional(salaries, vegas, site, season, week, sims, seed):
     ]]
 
 
+def _build_kicker_projections(salaries, site, opponent_map):
+    """Session 13.1 -- wires kicker_model.py into the main projections
+    output, alongside skill positions and DST.
+
+    Unlike DST, the kicker model itself is NOT team- or matchup-conditioned
+    (fit_kicker_model.py decision #2 -- no measured volume signal from
+    team identity or Vegas implied total), so this function's only real
+    jobs are: (a) select the K rows from the salary pool, (b) hand them to
+    kicker_model.project_kickers(), and (c) zero out any kicker whose team
+    has no game this week -- same fail-loud bye handling as
+    _build_dst_distributional's decision #16 equivalent, since a bye-week
+    kicker with a nonzero projection would be a real bug, not a modeling
+    nuance.
+
+    Returns an empty (correctly-columned) DataFrame when the slate has no
+    K rows at all -- true for every classic DK/FD slate today (FD has
+    carried no K slot since 2018; DK classic has never had one), and
+    expected to be nonempty once Session 13.2's Showdown ingest ships.
+    """
+    import kicker_model
+
+    site_id_col = SITE_CONFIGS[site]["site_id_col"]
+    k = salaries[salaries["position_upper"] == "K"].copy()
+    k = k[k["player_id"].notna()]
+    k = k.rename(columns={
+        "normalized_team": "team", "position_upper": "position",
+        "name": "player_name", site_id_col: "site_player_id",
+    })[["player_id", "player_name", "position", "team", "salary", "site_player_id"]]
+
+    empty_cols = [
+        "player_id", "player_name", "position", "team", "salary", "site_player_id",
+        "season_avg", "recent_form", "matchup_factor", "vegas_factor",
+        "final_projection", "opponent", "implied_total", "over_under",
+        "sigma", "dst_p10", "dst_p90",
+    ]
+    if k.empty:
+        return pd.DataFrame(columns=empty_cols)
+
+    model_obj = kicker_model.load_model()
+    proj = kicker_model.project_kickers(k[["player_id", "team"]], model_obj, site=site)
+    k = k.merge(proj[["player_id", "final_projection", "sigma", "p10", "p90"]],
+                on="player_id", how="left")
+
+    k["opponent"] = k["team"].map(opponent_map)
+    played = k["opponent"].notna()
+    n_bye = int((~played).sum())
+    k.loc[~played, ["final_projection", "sigma", "p10", "p90"]] = 0.0
+    k["opponent"] = k["opponent"].fillna(NO_GAME_SENTINEL)
+
+    # season_avg/recent_form/matchup_factor/vegas_factor/implied_total/
+    # over_under have no equivalent in this model (decision #2 -- no
+    # team-conditioned signal exists to put in them) -- carried as neutral
+    # placeholders so the output schema matches skill/DST rows exactly,
+    # same pattern DST uses for the columns skill positions don't have.
+    k["season_avg"] = k["final_projection"]
+    k["recent_form"] = k["final_projection"]
+    k["matchup_factor"] = 1.0
+    k["vegas_factor"] = 1.0
+    k["implied_total"] = 0.0
+    k["over_under"] = 0.0
+    k = k.rename(columns={"p10": "dst_p10", "p90": "dst_p90"})  # reuse DST's p10/p90 column names, not position-specific
+
+    print(f"Kicker model (Session 13.1): {len(k)} kicker(s) in pool, {n_bye} bye/no-game. "
+          f"mean projection {k.loc[played, 'final_projection'].mean() if played.any() else 0.0:.2f}, "
+          f"mean sigma {k.loc[played, 'sigma'].mean() if played.any() else 0.0:.2f}.")
+
+    return k[empty_cols]
+
+
 def build_dst_projections(salaries, vegas, site, *, model="legacy",
                            season=None, week=None, sims=None, seed=None,
                            opponent_map=None):
@@ -540,7 +609,14 @@ def build_final_projections(site, season, week, slate_id,
         ).astype(int)
     )
 
-    out = pd.concat([skill_out, dst_out], ignore_index=True)
+    kicker_out = _build_kicker_projections(salaries, site, opponent_map)
+    kicker_out = kicker_out.assign(
+        _anchor_games=(kicker_out["season_avg"] > 0).map(
+            {True: DST_ASSUMED_GAMES_PLAYED, False: 0}
+        ).astype(int) if len(kicker_out) else pd.Series(dtype=int)
+    )
+
+    out = pd.concat([skill_out, dst_out, kicker_out], ignore_index=True)
 
     anchor_on = anchor_weight > 0 or anchor_cold_start
     if anchor_on:
