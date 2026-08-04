@@ -80,11 +80,88 @@ Adding a new manual override:
 
 CAVEAT (see SESSION_LOG.md): the FD column layout and FD-specific team
 abbreviation handling below are based on documented FanDuel export format,
-NOT yet verified against a real current-season FD download (no FD
+NOT yet verified against a real current-season FD CLASSIC download (no FD
 equivalent of DK's Madden Stream exists to test against right now). If a
 real FD file's columns don't match SITE_CONFIGS["fd"], the script fails
 loudly with expected-vs-actual columns rather than silently misparsing --
 fix SITE_CONFIGS here.
+
+===============================================================================
+Session 13.2 -- Showdown / Single-Game Salary Ingest
+===============================================================================
+Adds --format {classic,showdown} (default "classic"). Backward compatible
+for existing consumers -- every column classic mode produced before this
+session is unchanged -- but NOT byte-for-byte identical: a new
+`slate_format` column ("classic"/"showdown") is now stamped on every row
+regardless of format, same precedent as Phase 11's `slate_type` column.
+Confirmed via a real regression run (Session 13.2): classic mode with
+--format omitted produces the exact same match results, row count, and
+pre-existing columns against a real classic file as before this session's
+changes -- only the one additive column differs.
+
+REAL DATA USED THIS SESSION (both sites -- user-supplied live Thursday
+08/06/2026 CAR@ARI preseason Showdown/Single-Game exports, not synthetic):
+this replaced two assumptions in the original roadmap card that measured
+FALSE against real files:
+
+  1. The card's premise "both sites' Showdown exports list each player
+     TWICE" is only true for DK. FD's real Single Game export is ONE ROW
+     PER PLAYER, carrying both a "Salary" (FLEX-priced) column and an
+     "MVP 1.5x Salary" column on the same row -- there is no second row.
+  2. DK's Position column retains the player's TRUE position (QB/RB/WR/
+     TE/K/DST) on BOTH the CPT and FLEX row -- it is NOT overwritten to
+     "CPT"/"FLEX" the way the Roster Position column is. This means the
+     EXISTING (name, team, position) matching pipeline works completely
+     unchanged for DK Showdown; no fallback matching strategy was needed.
+
+Because of #1, this script NORMALIZES both sites' OUTPUT to two rows per
+player (one FLEX-priced, one CPT/MVP-priced), regardless of the raw input
+shape -- this matches the output contract the roadmap card itself specifies
+("same shape as classic output plus a roster_role ... column distinguishing
+the two rows per player") and keeps Sessions 13.3/13.4 site-agnostic, the
+same way this script already normalizes classic DK/FD differences today.
+
+RESOLVED DURING THIS SESSION (was an open question, confirmed before
+close-out, not deferred to 13.4): user-supplied screenshots of a LIVE FD
+Single Game roster builder (same CAR@ARI slate) confirm FD's MVP slot
+DOES cost 1.5x salary -- same mechanic as DK's CPT, not the "same as
+FLEX" rule ROADMAP.md's Phase 13 intro had previously stated. Verified
+directly against the live cap math, not just inferred from the export
+file: MVP $12,000 + 5 FLEX x $8,000 = $52,000 of the $60,000 cap, leaving
+exactly $8,000 remaining -- matches the live "Salary Remaining" readout
+exactly. **ROADMAP.md's Phase 13 "confirmed rule" for FD was WRONG and
+needs correcting** when ROADMAP.md is updated to close this session.
+Session 13.4 can treat both sites' cap math as identical (1.5x salary AND
+1.5x points for the captain-equivalent slot) -- no further verification
+needed there.
+
+DK Showdown roster: 1 CPT + 5 FLEX (6 total), captain scores 1.5x AND costs
+1.5x the FLEX salary (MEASURED: real file's CPT salary / FLEX salary =
+11400 / 7600 = 1.5 exactly). FD Single Game roster: 1 MVP + 4 FLEX (5
+total), MVP scores 1.5x (salary question above still open). Both sites:
+exactly 2 teams, minimum 1 player per team (Phase 13 intro's confirmed
+rules) -- this script validates the ingested pool has exactly 2 teams when
+--format showdown and fails loudly otherwise.
+
+Showdown usage:
+  python scripts/ingest_salaries.py \
+      --site dk --format showdown \
+      --raw data/raw_salaries/DKSalaries_showdown.csv \
+      --season 2025 --slate-id showdown_car_ari_wk1
+
+  python scripts/ingest_salaries.py \
+      --site fd --format showdown \
+      --raw data/raw_salaries/FDSalaries_showdown.csv \
+      --season 2025 --slate-id showdown_car_ari_wk1
+
+Showdown output adds two columns beyond classic's player_id/match_method/
+match_confidence: `roster_role` (raw site role label -- "CPT"/"FLEX" for
+DK, "MVP"/"FLEX" for FD) and `slate_format` ("classic" or "showdown",
+stamped on every row so downstream scripts can branch on one column
+instead of re-deriving it). The SAME player_id appears on both of a
+player's two rows -- that IS the CPT/FLEX or MVP/FLEX link; no separate
+linking table is needed, same principle as how classic DST rows already
+share a synthetic "DST_{team}" id instead of a real player_id.
 """
 
 import argparse
@@ -176,6 +253,29 @@ SITE_CONFIGS = {
         "salary_cap": 50000,
         "roster_slots": ["QB", "RB", "RB", "WR", "WR", "WR", "TE", "FLEX", "DST"],
         "scoring": "full_ppr",   # 1 pt/reception
+        # Session 13.2 -- Showdown/Captain Mode. Nested here (not a
+        # restructure of the flat keys above into SITE_CONFIGS[site][format])
+        # on purpose: 9 other scripts already read SITE_CONFIGS[site][key]
+        # flat, assuming classic. Nesting only the showdown-specific delta
+        # keeps every existing consumer byte-identical and untouched.
+        "showdown": {
+            "roster_position_col": "Roster Position",   # MEASURED real file: carries "CPT"/"FLEX" per row
+            "captain_role_value": "CPT",
+            "flex_role_value": "FLEX",
+            # MEASURED against real 08/06/2026 CAR@ARI file: every CPT row
+            # salary (11400) / its paired FLEX row salary (7600) = 1.5
+            # exactly. Real per-row salaries are captured as-is; this is
+            # only used for a soft validation warning, not to compute salary.
+            "captain_salary_multiplier": 1.5,
+            "captain_score_multiplier": 1.5,   # confirmed, ROADMAP.md Phase 13 intro + Session 13.1 kicker validation
+            "roster_slots": ["CPT", "FLEX", "FLEX", "FLEX", "FLEX", "FLEX"],
+            "salary_cap": 50000,   # unchanged from classic, per Phase 13 intro
+            "n_teams": 2,
+            "min_per_team": 1,
+            # DK's real Showdown export already lists each player TWICE
+            # (one CPT row, one FLEX row) -- MEASURED, no expansion needed.
+            "row_shape": "two_rows_per_player",
+        },
     },
     "fd": {
         "label": "FanDuel",
@@ -204,6 +304,34 @@ SITE_CONFIGS = {
         "salary_cap": 60000,
         "roster_slots": ["QB", "RB", "RB", "WR", "WR", "WR", "TE", "FLEX", "DEF"],
         "scoring": "half_ppr",   # 0.5 pt/reception
+        # Session 13.2 -- Single Game. See dk's "showdown" key above for why
+        # this is nested rather than a full SITE_CONFIGS restructure.
+        "showdown": {
+            # MEASURED real file: FD does NOT duplicate rows like DK --
+            # ONE row per player, carrying both a base "Salary" column and
+            # an "MVP 1.5x Salary" column on that same row. roster_position_col
+            # is NOT role-distinguishing here (every row reads literally
+            # "MVP - 1.5X Points/AnyFLEX" since one row covers both
+            # eligibilities) -- kept as a raw passthrough only, not used
+            # to derive roster_role the way DK's is.
+            "roster_position_col": "Roster Position",
+            "mvp_salary_col": "MVP 1.5x Salary",   # MEASURED real column name/casing
+            "captain_role_value": "MVP",
+            "flex_role_value": "FLEX",
+            # CONFIRMED, not just measured from the export -- user-supplied
+            # screenshots of a LIVE FD roster builder verified the 1.5x
+            # salary deduction actually happens against the real $60,000
+            # cap (see module docstring). ROADMAP.md's Phase 13 "confirmed
+            # rule" that FD's MVP costs the SAME salary as FLEX was WRONG;
+            # corrected here and in ROADMAP.md at session close-out.
+            "captain_salary_multiplier": 1.5,   # CONFIRMED against a live FD roster builder, same mechanic as DK's CPT
+            "captain_score_multiplier": 1.5,   # confirmed, ROADMAP.md Phase 13 intro + Session 13.1 kicker validation
+            "roster_slots": ["MVP", "FLEX", "FLEX", "FLEX", "FLEX"],
+            "salary_cap": 60000,   # unchanged from classic, per Phase 13 intro
+            "n_teams": 2,
+            "min_per_team": 1,
+            "row_shape": "one_row_per_player",   # MEASURED -- contradicts the roadmap card's speculative "both sites list twice" premise
+        },
     },
 }
 
@@ -292,7 +420,113 @@ def _load_fd_raw(path: Path) -> pd.DataFrame:
     return df
 
 
-def load_raw_salary_csv(path: Path, site: str) -> pd.DataFrame:
+def _prepare_dk_showdown(df: pd.DataFrame, site: str) -> pd.DataFrame:
+    """DK's real Showdown export already has 2 rows/player (row_shape =
+    two_rows_per_player, MEASURED) -- no expansion needed. Just validate
+    the shape assumption holds and tag `roster_role` from the real
+    Roster Position column values."""
+    cfg = SITE_CONFIGS[site]["showdown"]
+    col = cfg["roster_position_col"]
+    if col not in df.columns:
+        raise SystemExit(
+            f"--format showdown was requested for site=dk but the raw file "
+            f"has no '{col}' column (found: {sorted(df.columns)}). This "
+            f"doesn't look like a real DK Showdown export -- check the "
+            f"downloaded file, or omit --format showdown for a classic file."
+        )
+    df = df.copy()
+    df["roster_role"] = df[col]
+    known_roles = {cfg["captain_role_value"], cfg["flex_role_value"]}
+    unknown = set(df["roster_role"].unique()) - known_roles
+    if unknown:
+        raise SystemExit(
+            f"DK Showdown file's '{col}' column has unexpected value(s) "
+            f"{sorted(unknown)} -- expected only {sorted(known_roles)}. "
+            f"DK may have changed its export format; update "
+            f"SITE_CONFIGS['dk']['showdown'] to match."
+        )
+    return df
+
+
+def _prepare_fd_showdown(df: pd.DataFrame, site: str) -> pd.DataFrame:
+    """FD's real Single Game export is ONE row/player (row_shape =
+    one_row_per_player, MEASURED -- contradicts the roadmap card's
+    speculative "both sites list twice" premise). Expand into 2 output
+    rows (FLEX-priced + MVP-priced) so downstream sessions see the same
+    two-rows-per-player shape as DK, per this script's own output
+    contract."""
+    cfg = SITE_CONFIGS[site]["showdown"]
+    mvp_col = cfg["mvp_salary_col"]
+    if mvp_col not in df.columns:
+        raise SystemExit(
+            f"--format showdown was requested for site=fd but the raw file "
+            f"has no '{mvp_col}' column (found: {sorted(df.columns)}). This "
+            f"doesn't look like a real FD Single Game export -- check the "
+            f"downloaded file, or omit --format showdown for a classic file."
+        )
+    salary_col = SITE_CONFIGS[site]["salary_col"]
+
+    flex_rows = df.copy()
+    flex_rows["roster_role"] = cfg["flex_role_value"]
+    # salary_col already holds the FLEX-priced value -- nothing to change.
+
+    mvp_rows = df.copy()
+    mvp_rows["roster_role"] = cfg["captain_role_value"]
+    mvp_rows[salary_col] = mvp_rows[mvp_col]   # overwrite Salary with the MVP-priced value for this synthesized row
+
+    # NOTE: both synthesized rows carry the SAME raw site_id_col value
+    # (FD's real file only has one "Id" per player -- there's no second id
+    # to give the MVP row). This is faithful to reality, not a bug, but a
+    # future session building an FD upload-template feature (the DK
+    # equivalent already exists per site_id_col's module docstring note)
+    # needs to know FD's own upload format likely expects one id per
+    # player + a separate role designation, not two distinct ids like DK.
+    return pd.concat([flex_rows, mvp_rows], ignore_index=True)
+
+
+def _validate_showdown_pool(df: pd.DataFrame, site: str) -> None:
+    """Fail loud (not silently) if the ingested pool doesn't look like a
+    real single-game slate -- per Phase 13's confirmed rule of exactly 2
+    teams. Also soft-warns (does not crash) on DK's captain salary
+    multiplier deviating from the measured 1.5x, since real differentiated
+    pricing might round slightly differently than the flat test-slate
+    pricing this was measured against."""
+    cfg = SITE_CONFIGS[site]["showdown"]
+    n_teams = df["normalized_team"].nunique()
+    expected = cfg["n_teams"]
+    if n_teams != expected:
+        raise SystemExit(
+            f"--format showdown expects exactly {expected} teams in the "
+            f"pool (Phase 13's confirmed single-game rule) but found "
+            f"{n_teams}: {sorted(df['normalized_team'].unique())}. Check "
+            f"this is really a Showdown/Single-Game export, not classic."
+        )
+
+    if site == "dk":
+        mult = cfg["captain_salary_multiplier"]
+        pairs = df.dropna(subset=["player_id"]).groupby("player_id")
+        bad = []
+        for pid, g in pairs:
+            if set(g["roster_role"]) != {cfg["captain_role_value"], cfg["flex_role_value"]}:
+                continue  # incomplete pair -- covered by the unmatched/role-count check in main()
+            cpt_sal = g.loc[g["roster_role"] == cfg["captain_role_value"], "salary"].iloc[0]
+            flex_sal = g.loc[g["roster_role"] == cfg["flex_role_value"], "salary"].iloc[0]
+            # Tolerance 0.05 (not 0.01): real file matched the multiplier
+            # EXACTLY (11400/7600=1.5), but salaries independently rounded
+            # to the nearest $100 (both real exports and this project's own
+            # synthetic generator round that way) can drift a ratio by a
+            # few percent at the low end of the salary range without any
+            # actual bug -- confirmed by testing this check against
+            # generate_synthetic_slate.py's own showdown output.
+            if flex_sal and abs(cpt_sal / flex_sal - mult) > 0.05:
+                bad.append((pid, cpt_sal, flex_sal))
+        if bad:
+            print(f"  WARNING: {len(bad)} player(s) have a CPT/FLEX salary "
+                  f"ratio != {mult} (expected from the measured rule) -- "
+                  f"first few: {bad[:5]}")
+
+
+def load_raw_salary_csv(path: Path, site: str, fmt: str = "classic") -> pd.DataFrame:
     if site == "dk":
         df = _load_dk_raw(path)
     elif site == "fd":
@@ -301,6 +535,12 @@ def load_raw_salary_csv(path: Path, site: str) -> pd.DataFrame:
         raise SystemExit(f"Unknown site '{site}' -- expected 'dk' or 'fd'.")
 
     cfg = SITE_CONFIGS[site]
+
+    if fmt == "showdown":
+        if site == "dk":
+            df = _prepare_dk_showdown(df, site)
+        else:
+            df = _prepare_fd_showdown(df, site)
 
     # Derive a single `name` column
     if cfg["name_col"]:
@@ -321,6 +561,7 @@ def load_raw_salary_csv(path: Path, site: str) -> pd.DataFrame:
     df["normalized_name"] = df["name"].map(normalize_name)
     df["normalized_team"] = df[cfg["team_col"]].map(lambda t: normalize_team(t, site))
     df["position_upper"] = df[cfg["position_col"]].astype(str).str.upper()
+    df["slate_format"] = fmt
     return df
 
 
@@ -479,6 +720,10 @@ def match_players(salaries: pd.DataFrame, reference: pd.DataFrame,
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--site", required=True, choices=["dk", "fd"])
+    parser.add_argument("--format", default="classic", choices=["classic", "showdown"],
+                         help="Session 13.2 -- 'showdown' for DK Captain Mode / FD Single "
+                              "Game exports. Default 'classic' preserves all pre-13.2 "
+                              "columns/behavior (adds one new slate_format column only).")
     parser.add_argument("--raw", required=True, help="Path to raw salary CSV")
     parser.add_argument("--season", type=int, required=True)
     parser.add_argument("--slate-id", required=True, help="e.g. classic_wk1")
@@ -497,11 +742,24 @@ def main():
     out_path = Path(args.out_dir) / f"salaries_{args.site}_{args.slate_id}.csv"
     unmatched_path = Path(args.log_dir) / f"unmatched_salaries_{args.site}_{args.slate_id}.csv"
 
-    salaries = load_raw_salary_csv(raw_path, args.site)
+    salaries = load_raw_salary_csv(raw_path, args.site, args.format)
     reference = build_player_reference(weekly_stats_path)
     name_mapping = load_name_mapping(name_mapping_path, args.site)
 
     matched = match_players(salaries, reference, name_mapping, args.site)
+
+    if args.format == "showdown":
+        _validate_showdown_pool(matched, args.site)
+        # Confirm CPT/FLEX (or MVP/FLEX) linking worked: every matched
+        # player_id should have exactly one row per expected role.
+        cfg = SITE_CONFIGS[args.site]["showdown"]
+        expected_roles = {cfg["captain_role_value"], cfg["flex_role_value"]}
+        role_counts = matched.dropna(subset=["player_id"]).groupby("player_id")["roster_role"].apply(set)
+        incomplete = role_counts[role_counts != expected_roles]
+        if len(incomplete):
+            print(f"  WARNING: {len(incomplete)} matched player(s) don't have both "
+                  f"{sorted(expected_roles)} rows linked to the same player_id -- "
+                  f"first few: {incomplete.head().to_dict()}")
 
     out_path.parent.mkdir(parents=True, exist_ok=True)
     unmatched_path.parent.mkdir(parents=True, exist_ok=True)

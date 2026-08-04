@@ -2828,3 +2828,123 @@ ownership heuristic is the intended fix, not a new gap.
   as expected before Session 13.3 fixes it.
 - Both sites' kicker scoring tables are now fully real-data confirmed --
   no remaining unverified numbers in `scoring_rules.py`'s kicker section.
+
+---
+
+## Session 13.2 — Showdown / Single-Game Salary Ingest
+**Date completed:** 2026-08-04
+**Status:** ✅ Complete
+
+**What was actually built:**
+- `ingest_salaries.py`: new `--format {classic,showdown}` flag (default
+  `classic`, backward compatible -- every pre-existing column is unchanged,
+  though NOT byte-for-byte identical since a new `slate_format` column is
+  now stamped on every row regardless of format, same precedent as Phase
+  11's `slate_type`). `SITE_CONFIGS[site]["showdown"]` added as a nested
+  sub-dict for both sites rather than the roadmap card's speculative
+  `SITE_CONFIGS[site][format]` restructure -- 9 other scripts
+  (`optimizer.py`, `ownership_heuristic.py`, `ingest_rotoguru.py`,
+  `fit_salary_anchor.py`, `build_projections_statline.py`,
+  `build_projections.py`, `backtest_harness.py`, `pivot_finder.py`,
+  `log_ownership.py`) already read `SITE_CONFIGS[site][key]` flat assuming
+  classic; nesting only the showdown delta keeps all of them untouched.
+  Output is normalized to 2 rows/player for BOTH sites regardless of the
+  raw input's actual shape (DK already is; FD is expanded from its real
+  1-row shape) -- matches the roadmap card's own stated output contract
+  and keeps Sessions 13.3/13.4 site-agnostic.
+- `generate_synthetic_slate.py`: new `--format showdown` mode -- forces
+  exactly 1 game/2 teams (real Showdown/Single-Game structure), adds K to
+  the synthetic pool (Showdown-only; classic pool is untouched), builds
+  DK's real 2-row shape and FD's real 1-row-plus-MVP-column shape, both
+  reproduced from the actual measured files this session, not
+  documentation guesses.
+
+**Files created/modified:**
+- `/dfs_optimizer/scripts/ingest_salaries.py` (modified)
+- `/dfs_optimizer/scripts/generate_synthetic_slate.py` (modified)
+
+**Validation results:**
+- [x] Real DK Showdown file (user-supplied, live 08/06/2026 CAR@ARI
+  Madden Sim-style slate): 126/126 rows (63 players x 2) matched, 100%,
+  CPT/FLEX rows correctly linked to the same player_id. DK's `Position`
+  column was found to retain the player's TRUE position on BOTH the CPT
+  and FLEX row (NOT overwritten to "CPT"/"FLEX" -- only `Roster Position`
+  is) -- this meant the existing (name, team, position) matching pipeline
+  from Session 1.3 worked completely unchanged, no fallback matching
+  strategy was needed.
+- [x] Real FD Single Game file (same slate, same session -- an upgrade
+  over the card's synthetic-only expectation for FD): 122/122 rows (61
+  players x 2, after this session's row-expansion) matched, 100%,
+  MVP/FLEX rows correctly linked to the same player_id.
+- [x] Synthetic FD Showdown file round-trips through the same linking
+  logic (card's originally-planned validation) -- also done, on top of
+  the real-file validation above.
+- [x] Unmatched players logged clearly (existing mechanism, unchanged) --
+  0 unmatched on both real files.
+- [x] Classic-mode regression: real classic DK file (`DKSalaries_MOCK_Slate.csv`)
+  still ingests cleanly with `--format` omitted -- same pre-existing
+  columns, same code path, only the one additive `slate_format` column
+  differs. (0% match rate against this particular mock file is expected
+  and unrelated to this session's changes -- the mock file uses fictional
+  player names not present in any real nflverse reference.)
+- [x] `python3 -m py_compile` clean on both modified files.
+
+**Decisions made / assumptions taken:**
+- Nested `SITE_CONFIGS[site]["showdown"]` rather than the card's suggested
+  `SITE_CONFIGS[site][format]` restructure -- see "What was actually
+  built" above for the blast-radius reasoning.
+- Showdown matching reuses the classic (name, team, position) pipeline
+  unchanged for DK, rather than the originally-planned "match on name+team
+  only, source true position from the reference table" fallback -- the
+  fallback turned out to be unnecessary once the real file showed
+  `Position` already holds the true player position on both rows. Kept as
+  a documented near-miss, not built.
+- FD's real single-row shape is expanded into 2 output rows (FLEX-priced +
+  MVP-priced) at ingest time, rather than leaving FD's raw shape as-is and
+  making downstream sessions branch on `row_shape` per site -- keeps
+  13.3/13.4 identical logic across both sites.
+- CPT/FLEX salary-ratio validation uses a 5% tolerance, not exact-match --
+  tightened from an initial 1% after the synthetic generator's own
+  nearest-$100 rounding on both the FLEX and CPT salary independently
+  produced harmless ratio drift above 1% at the low end of the salary
+  range. The real file's ratio was exactly 1.5; 5% comfortably separates
+  real bugs from synthetic rounding noise.
+
+**Known issues deferred:** None. The one open item during this session
+(see "Two premises..." below) was resolved live before close-out, not
+deferred to 13.4.
+
+**Two premises from the original roadmap card that measured FALSE against
+real data (both sites' exports, and in one case a live roster builder,
+supplied by the user this session):**
+1. "Both sites' Showdown exports list each player TWICE" -- FALSE for FD.
+   FD's real Single Game export is ONE row per player, carrying both a
+   base `Salary` column and an `MVP 1.5x Salary` column on that same row.
+2. ROADMAP.md's Phase 13 intro "confirmed rule" that FD's MVP slot costs
+   the SAME salary as FLEX (no cost multiplier) -- FALSE. User-supplied
+   screenshots of a LIVE FD Single Game roster builder (same CAR@ARI
+   slate) confirmed the real cap math: MVP $12,000 + 5 FLEX x $8,000 =
+   $52,000 of the $60,000 cap, leaving exactly $8,000 remaining, matching
+   the live "Salary Remaining" readout exactly. FD's MVP costs 1.5x
+   salary, same mechanic as DK's CPT (which was independently confirmed
+   the same way: CPT $11,400 vs FLEX $7,600 = 1.5x, and a live DK roster
+   builder screenshot showing the same 1.5x language). Corrected in
+   ROADMAP.md's Phase 13 intro as part of this session's close-out.
+
+**Handoff notes for next session:**
+- Session 13.3 (Showdown projection & scoring-multiplier layer) can treat
+  both sites' cap math AND scoring math as identical -- 1.5x salary AND
+  1.5x points for the captain-equivalent slot on both DK and FD. No
+  remaining ambiguity to verify there.
+- New output columns for 13.3/13.4 to consume: `roster_role` (raw site
+  role label -- "CPT"/"FLEX" for DK, "MVP"/"FLEX" for FD) and
+  `slate_format` ("classic"/"showdown", present on every row of every
+  format going forward).
+- FD's two synthesized output rows per player share the SAME raw
+  `site_id_col` ("Id") value, since FD's real file only has one id per
+  player -- faithful to reality, not a bug, but relevant if a future
+  session builds an FD upload-template feature (the DK equivalent already
+  exists per `site_id_col`'s original module docstring note).
+- `PLAYERS_PER_TEAM_SHOWDOWN` and `SALARY_BANDS["K"]` in
+  `generate_synthetic_slate.py` are FLAGGED ARBITRARY, loosely shaped
+  after the real file's position counts but not fit to anything.

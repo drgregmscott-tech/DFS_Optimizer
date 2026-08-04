@@ -64,6 +64,29 @@ Usage:
 python3 generate_synthetic_slate.py --site fd --season 2025 --num-games 4 --out DKSalaries_synthetic.csv
 # then, exactly like a real download:
 python3 ingest_salaries.py --site fd --raw DKSalaries_synthetic.csv --season 2025 --slate-id synthetic_08022026
+
+===============================================================================
+Session 13.2 addendum -- Showdown/Single-Game mode (--format showdown)
+===============================================================================
+Adds a Showdown-shaped output mode, built against REAL DK Showdown /
+FD Single Game exports the user supplied this session (live 08/06/2026
+CAR@ARI slate), not documentation guesses -- see ingest_salaries.py's own
+Session 13.2 docstring section for the two premises that measured FALSE
+against those real files (FD does NOT duplicate rows like DK; FD's real
+"MVP 1.5x Salary" column contradicts the previously "confirmed" no-cost-
+multiplier rule). This generator reproduces DK's real two-row shape and
+FD's real one-row-with-both-salary-columns shape exactly.
+
+--format showdown implies exactly 1 game (2 teams) -- real Showdown/Single
+Game slates are always a single game; --num-games is ignored (forced to 1,
+with a printed note) rather than silently accepted-but-wrong.
+
+Kickers are included ONLY in showdown mode (POSITIONS + ["K"]) -- Phase 13
+confirmed K is roster-eligible in Showdown/Single Game (any position, any
+spot) and Session 13.1 built the kicker model specifically because
+Showdown pools always include kickers. Classic mode is untouched -- the
+classic optimizer/roster-slot structure has no K slot today, so adding K
+there would just be dead weight in the synthetic pool.
 """
 
 import argparse
@@ -92,6 +115,7 @@ SALARY_BANDS = {
     "WR": (3000, 9000),
     "TE": (2500, 7000),
     "DEF": (2500, 5000),
+    "K": (2500, 5500),   # Session 13.2 addition, FLAGGED ARBITRARY -- roughly DEF-sized band, not fit to any real K pricing
 }
 
 # How many of each position to include PER TEAM in the synthetic pool --
@@ -99,10 +123,29 @@ SALARY_BANDS = {
 # starters per site need real depth, not just starters). FLAGGED ARBITRARY.
 PLAYERS_PER_TEAM = {"QB": 2, "RB": 4, "WR": 5, "TE": 3}
 
+# Session 13.2 addition -- Showdown pools are full-roster-depth, single
+# game, so a deeper per-team pool is more realistic than classic's
+# multi-game pool (roughly shaped after the real 08/06/2026 CAR@ARI
+# DK Showdown file's ~31-32 players/team split across positions).
+# FLAGGED ARBITRARY -- not fit to any specific real distribution.
+PLAYERS_PER_TEAM_SHOWDOWN = {"QB": 4, "RB": 6, "WR": 10, "TE": 6, "K": 1}
 
-def build_synthetic_slate(site: str, season: int, num_games: int, seed: int) -> pd.DataFrame:
+
+def build_synthetic_slate(site: str, season: int, num_games: int, seed: int,
+                           fmt: str = "classic") -> pd.DataFrame:
     rng = random.Random(seed)
     cfg = SITE_CONFIGS[site]
+
+    if fmt == "showdown":
+        if num_games != 1:
+            print(f"NOTE: --format showdown always builds exactly 1 game "
+                  f"(2 teams) -- ignoring --num-games={num_games}.")
+        num_games = 1
+        positions = POSITIONS + ["K"]
+        players_per_team = PLAYERS_PER_TEAM_SHOWDOWN
+    else:
+        positions = POSITIONS
+        players_per_team = PLAYERS_PER_TEAM
 
     weekly_stats_path = DATA_DIR / f"weekly_stats_{season}.parquet"
     if not weekly_stats_path.exists():
@@ -113,7 +156,7 @@ def build_synthetic_slate(site: str, season: int, num_games: int, seed: int) -> 
             f"else about the slate is fabricated."
         )
     reference = build_player_reference(weekly_stats_path)
-    reference = reference[reference["position"].isin(POSITIONS)]
+    reference = reference[reference["position"].isin(positions)]
 
     teams = reference["team"].dropna().unique().tolist()
     if len(teams) < num_games * 2:
@@ -135,9 +178,9 @@ def build_synthetic_slate(site: str, season: int, num_games: int, seed: int) -> 
         for team in (team_a, team_b):
             opp = team_b if team == team_a else team_a
             pool = reference[reference["team"] == team]
-            for pos in POSITIONS:
+            for pos in positions:
                 pos_pool = pool[pool["position"] == pos]
-                n = min(PLAYERS_PER_TEAM[pos], len(pos_pool))
+                n = min(players_per_team[pos], len(pos_pool))
                 if n == 0:
                     continue
                 picks = pos_pool.sample(n=n, random_state=rng.randint(0, 2**31))
@@ -234,13 +277,91 @@ def to_fd_raw(df: pd.DataFrame) -> pd.DataFrame:
     return out
 
 
+def to_dk_showdown_raw(df: pd.DataFrame) -> pd.DataFrame:
+    # Reproduces the REAL DK Showdown export shape measured this session
+    # (live 08/06/2026 CAR@ARI file): Position,Name + ID,Name,ID,Roster
+    # Position,Salary,Game Info,TeamAbbrev,AvgPointsPerGame,Status -- one
+    # CPT row + one FLEX row per player, Position holds the TRUE player
+    # position on BOTH rows (measured, not overwritten to CPT/FLEX the way
+    # Roster Position is). CPT salary = 1.5x the FLEX salary, matching the
+    # measured real-file ratio (11400/7600).
+    showdown_cfg = SITE_CONFIGS["dk"]["showdown"]
+    mult = showdown_cfg["captain_salary_multiplier"]
+    rows = []
+    next_id = [300000]
+    for _, p in df.iterrows():
+        flex_salary = p["_salary"]
+        cpt_salary = int(round(flex_salary * mult, -2))
+        for role, salary in ((showdown_cfg["captain_role_value"], cpt_salary),
+                              (showdown_cfg["flex_role_value"], flex_salary)):
+            fake_id = next_id[0]
+            next_id[0] += 1
+            rows.append({
+                "Position": p["_position"],
+                "Name": p["_name"],
+                "Name + ID": f"{p['_name']} ({fake_id})",
+                "ID": fake_id,
+                "Roster Position": role,
+                "Salary": salary,
+                "Game Info": p["_game_label"],
+                "TeamAbbrev": p["_team"],
+                "AvgPointsPerGame": 0.0,   # FLAGGED ARBITRARY, not used by ingest_salaries.py's required columns
+                "Status": "",
+            })
+    return pd.DataFrame(rows)
+
+
+def to_fd_showdown_raw(df: pd.DataFrame) -> pd.DataFrame:
+    # Reproduces the REAL FD Single Game export shape measured this
+    # session: ONE row per player (NOT two, unlike DK -- this contradicts
+    # the original roadmap card's speculative premise, see
+    # ingest_salaries.py's Session 13.2 docstring), carrying both a base
+    # "Salary" column and an "MVP 1.5x Salary" column on that same row.
+    # The two truly-blank trailing header columns in the real file (before
+    # "Roster Position") are omitted here -- cosmetic only, doesn't affect
+    # ingest_salaries.py's required_columns subset check.
+    showdown_cfg = SITE_CONFIGS["fd"]["showdown"]
+    mult = showdown_cfg["captain_salary_multiplier"]
+    rows = []
+    next_id = [400000]
+    for _, p in df.iterrows():
+        fake_id = next_id[0]
+        next_id[0] += 1
+        name_parts = p["_name"].split(" ", 1)
+        base_salary = p["_salary"]
+        rows.append({
+            "Id": fake_id,
+            "Position": p["_position"],
+            "First Name": name_parts[0],
+            "Last Name": name_parts[1] if len(name_parts) > 1 else "",
+            "Nickname": p["_name"],
+            "FPPG": 0.0,   # FLAGGED ARBITRARY, not used by ingest_salaries.py's required columns
+            "Played": "",
+            "Salary": base_salary,
+            "MVP 1.5x Salary": int(round(base_salary * mult, -2)),
+            "Game": p["_game_label"],
+            "Team": p["_team"],
+            "Opponent": p["_opponent"],
+            "Injury Indicator": "",
+            "Injury Details": "",
+            "Tier": "",
+            "Roster Position": "MVP - 1.5X Points/AnyFLEX",   # MEASURED literal value, same on every real row
+        })
+    return pd.DataFrame(rows)
+
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--site", choices=["dk", "fd"], required=True)
+    parser.add_argument("--format", default="classic", choices=["classic", "showdown"],
+        help="Session 13.2 -- 'showdown' builds a DK Captain Mode / FD Single "
+             "Game shaped file (forces exactly 1 game, includes K). Default "
+             "'classic' reproduces pre-13.2 behavior exactly.")
     parser.add_argument("--season", type=int, required=True,
         help="nflverse season year to pull real player names/teams from (decision #1).")
     parser.add_argument("--num-games", type=int, default=4,
-        help="Number of synthetic games (default 4, FLAGGED ARBITRARY).")
+        help="Number of synthetic games (default 4, FLAGGED ARBITRARY). Ignored "
+             "(forced to 1) when --format showdown.")
     parser.add_argument("--seed", type=int, default=42,
         help="Random seed for reproducibility (default 42, FLAGGED ARBITRARY).")
     parser.add_argument("--out", required=True,
@@ -248,14 +369,20 @@ if __name__ == "__main__":
              "ingest_salaries.py --raw exactly like a real download.")
     args = parser.parse_args()
 
-    slate = build_synthetic_slate(args.site, args.season, args.num_games, args.seed)
-    raw = to_dk_raw(slate) if args.site == "dk" else to_fd_raw(slate)
+    slate = build_synthetic_slate(args.site, args.season, args.num_games, args.seed, args.format)
+
+    if args.format == "showdown":
+        raw = to_dk_showdown_raw(slate) if args.site == "dk" else to_fd_showdown_raw(slate)
+    else:
+        raw = to_dk_raw(slate) if args.site == "dk" else to_fd_raw(slate)
 
     out_path = Path(args.out)
     raw.to_csv(out_path, index=False)
-    print(f"Wrote {len(raw)} synthetic {SITE_CONFIGS[args.site]['label']} salary rows to {out_path}")
+    print(f"Wrote {len(raw)} synthetic {SITE_CONFIGS[args.site]['label']} "
+          f"({args.format}) salary rows to {out_path}")
     print(f"NOTE: this is FABRICATED data (real players, fake salaries/games) -- "
           f"see module docstring decision #2 before using it for anything beyond "
           f"pipeline/UI testing.")
-    print(f"Next: python3 ingest_salaries.py --site {args.site} --raw {out_path} "
+    fmt_flag = " --format showdown" if args.format == "showdown" else ""
+    print(f"Next: python3 ingest_salaries.py --site {args.site}{fmt_flag} --raw {out_path} "
           f"--season {args.season} --slate-id <your-slate-id>")

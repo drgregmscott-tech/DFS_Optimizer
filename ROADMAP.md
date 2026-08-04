@@ -2037,18 +2037,28 @@ built on top of the existing classic-slate pipeline rather than as a
 parallel project.
 
 **Confirmed rules (verified against current site documentation, Session
-13.0 scoping conversation):**
+13.0 scoping conversation; FD's MVP salary rule CORRECTED in Session 13.2
+against a live FD roster builder -- the original text below was wrong,
+struck through and replaced):**
 - **DK Captain Mode:** 6 roster spots — 1 CPT + 5 FLEX. Any position
   eligible in any spot, including K (kickers are NOT currently modeled
   anywhere in this pipeline — see Session 13.1). CPT scores 1.5x fantasy
   points AND costs 1.5x the FLEX-listed salary. Minimum 1 player from each
   team. Salary cap unchanged at $50,000. Both the CPT and FLEX-priced
   version of each player appear as separate rows in DK's Showdown export.
+  Re-confirmed in Session 13.2 against a real live 08/06/2026 CAR@ARI
+  export (CPT $11,400 / FLEX $7,600 = 1.5x exactly) and a live DK roster
+  builder screenshot.
 - **FD Single Game:** 5 roster spots — 1 MVP + 4 FLEX. Any position
-  eligible in any spot, including K. MVP scores 1.5x fantasy points at the
-  SAME salary as FLEX (no cost multiplier — this is a real mechanical
-  difference from DK, not a simplification). Minimum 1 player from each
-  team. Salary cap unchanged at $60,000.
+  eligible in any spot, including K. MVP scores 1.5x fantasy points ~~at
+  the SAME salary as FLEX (no cost multiplier — this is a real mechanical
+  difference from DK, not a simplification)~~ **AND costs 1.5x the
+  FLEX-listed salary, same mechanic as DK's CPT — CORRECTED in Session
+  13.2.** The "no cost multiplier" claim above was wrong: a live FD Single
+  Game roster builder (same 08/06/2026 CAR@ARI slate) showed MVP $12,000 +
+  5 FLEX x $8,000 = $52,000 of the $60,000 cap, leaving exactly $8,000
+  remaining, matching the live "Salary Remaining" readout exactly. Minimum
+  1 player from each team. Salary cap unchanged at $60,000.
 - Both sites: exactly 2 teams in the pool (the single game), so
   cross-game constraints (Session 12.1's game caps, opponent-lookup logic
   in stacking) either don't apply or need reinterpretation — see Session
@@ -2143,9 +2153,19 @@ point estimate was used, and why.
 
 ---
 
-### Session 13.2 — Showdown / Single-Game Salary Ingest
+### Session 13.2 — Showdown / Single-Game Salary Ingest ✅ Complete (2026-08-04)
 **Prerequisites:** None (independent of Session 13.1; can run in parallel
 if needed, though sequential is fine too).
+
+**Outcome in one line:** shipped against REAL exports for BOTH sites
+(user supplied live 08/06/2026 CAR@ARI DK Showdown and FD Single Game
+files this session, not just synthetic) -- 100% match on both (126/126 DK
+rows, 122/122 FD rows post-expansion). Two premises in this card measured
+FALSE against real data: FD does NOT duplicate rows like DK (one row per
+player, two salary columns on it), and the Phase 13 intro's "FD MVP costs
+the same as FLEX" rule was wrong (corrected above -- MVP costs 1.5x, same
+as DK's CPT, confirmed via a live FD roster builder). Full detail in
+SESSION_LOG.md's Session 13.2 entry.
 
 **Sites:** DraftKings AND FanDuel — both required, same dual-site
 discipline as Session 1.3.
@@ -2161,7 +2181,10 @@ discipline as Session 1.3.
   than `_load_dk_raw()`/the FD loader handle today. The CPT/MVP row and
   FLEX row for the same underlying player need to be linked (shared
   player_id, distinct salary/role) rather than treated as two unrelated
-  players.
+  players. **CORRECTION (measured against a real file): this "list each
+  player TWICE" premise is FALSE for FD — see SESSION_LOG.md.** Shipped as
+  `SITE_CONFIGS[site]["showdown"]` nesting (not a full `[site][format]`
+  restructure — 9 other scripts read the flat classic structure).
 - `scripts/generate_synthetic_slate.py` — add a Showdown-shaped output
   mode for both sites, since real Showdown exports may not be available
   for every dev iteration (same rationale as the existing synthetic-slate
@@ -2171,8 +2194,10 @@ discipline as Session 1.3.
 exports (place in `/data/raw_salaries/`, same convention as classic).
 
 **Outputs:** `data/salaries_{site}_{slate_id}.csv`, same shape as classic
-output plus a `roster_role` or `cpt_eligible`/`is_captain_row` column
-distinguishing the two rows per player.
+output plus a `roster_role` column (shipped instead of `cpt_eligible`/
+`is_captain_row` — carries the raw site label directly: "CPT"/"FLEX" for
+DK, "MVP"/"FLEX" for FD) distinguishing the two rows per player, plus a
+`slate_format` column ("classic"/"showdown") on every row.
 
 **Build:**
 - Site-specific Showdown/Single-Game column parsing.
@@ -2180,22 +2205,29 @@ distinguishing the two rows per player.
   the optimizer can enforce "can't roster both versions of the same
   player" — Session 13.4).
 - Confirm real DK Showdown column layout against a real export (DK has
-  live Madden Sim-style test data available same as classic). FD Single
-  Game export shape is UNVERIFIED same as FD Classic already is — flag
-  explicitly, same caveat pattern as `SITE_CONFIGS["fd"]` today.
+  live Madden Sim-style test data available same as classic). **DONE —
+  DK's `Position` column retains the TRUE player position on both CPT and
+  FLEX rows (not overwritten), so the existing classic matching pipeline
+  worked unchanged for DK.** FD Single Game export shape — **DONE, real
+  file supplied this session (upgrade over the card's synthetic-only
+  expectation).**
 
 **Validation:**
-- [ ] 100% of players in a real DK Showdown sample file match correctly,
-  CPT/FLEX rows correctly linked to the same player_id.
-- [ ] Synthetic FD Showdown file round-trips through the same linking
-  logic (real FD Showdown data validated later in Session 13.6 once
-  available).
-- [ ] Unmatched players logged clearly, not silently dropped (same bar as
-  Session 1.3).
+- [x] 100% of players in a real DK Showdown sample file match correctly,
+  CPT/FLEX rows correctly linked to the same player_id. (126/126, real
+  08/06/2026 CAR@ARI file.)
+- [x] Synthetic FD Showdown file round-trips through the same linking
+  logic — done, AND validated against a real FD file this session too
+  (122/122, upgrade over the card's original "real FD data in 13.6"
+  expectation).
+- [x] Unmatched players logged clearly, not silently dropped (same bar as
+  Session 1.3). 0 unmatched on both real files.
 
-**Handoff notes to log:** Whether real DK Showdown data was available in
-time to validate against, or synthetic only. FD Showdown column layout
-assumptions, explicitly flagged unverified if no real file was available.
+**Handoff notes:** Session 13.3 can treat both sites' cap math and scoring
+math as identical (1.5x salary AND 1.5x points for the captain-equivalent
+slot) — no remaining ambiguity. See SESSION_LOG.md for the full list of
+new columns and deferred/flagged items (`PLAYERS_PER_TEAM_SHOWDOWN`,
+`SALARY_BANDS["K"]` in the synthetic generator).
 
 ---
 
@@ -2327,6 +2359,12 @@ DK Showdown and/or FD Single Game slate available (first opportunity:
 preseason Thursday games, ~Aug 6, 2026 — exact availability depends on
 whether both sites post Showdown-format contests for that slate).
 
+**Note (Session 13.2):** the *ingest* layer's real-data validation for
+both sites already happened in Session 13.2, ahead of schedule — both
+sites' 08/06/2026 CAR@ARI exports were used, not just synthetic. This
+session's scope is validating the FULL pipeline (13.3 projections/scoring
+through 13.5 frontend), not re-validating ingest from scratch.
+
 **Files touched:** None expected (validation-only session) — but per this
 project's established pattern (Session 4.3, Session 12.1), real-data runs
 routinely surface bugs static review and synthetic data don't. Track any
@@ -2336,8 +2374,9 @@ fixes made here the same as any other session.
 - [ ] Full real-data pipeline run, DK Showdown: ingest → kicker/skill/DST
   projections → CPT multiplier → optimizer → frontend build → DK
   bulk-upload export, end to end.
-- [ ] Full real-data pipeline run, FD Single Game: same chain — this is
-  the first-ever real-data validation of FD's Showdown export shape,
+- [ ] Full real-data pipeline run, FD Single Game: same chain — ingest
+  itself is already real-data-validated (Session 13.2); this covers
+  13.3-13.5's first real-data pass,
   same significance as FD Classic's still-pending real-data validation.
 - [ ] Confirms or corrects Session 13.2's UNVERIFIED FD Showdown column
   assumptions.
