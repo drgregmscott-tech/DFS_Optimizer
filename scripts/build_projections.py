@@ -55,6 +55,13 @@ SALARY_ANCHOR_WEIGHT_DEFAULT = 0.0
 NO_GAME_SENTINEL = "BYE_OR_UNKNOWN"
 DST_ASSUMED_GAMES_PLAYED = 99
 
+# Session 13.3 -- Showdown / Single-Game projection & scoring multiplier.
+# Both sites confirmed identical (Session 13.2 handoff): the captain-
+# equivalent slot (DK's CPT, FD's MVP) scores 1.5x the FLEX-priced
+# player's points. No per-site special-casing needed here.
+CAPTAIN_MULTIPLIER = 1.5
+CAPTAIN_ROLES = {"CPT", "MVP"}
+
 
 # ---------------------------------------------------------------------------
 # Step 0: Load inputs
@@ -470,6 +477,115 @@ def apply_salary_anchor(df, site, weight, cold_start, k):
 
 
 # ---------------------------------------------------------------------------
+# Session 13.3 -- Showdown / Single-Game projection & scoring multiplier
+# ---------------------------------------------------------------------------
+
+def is_showdown_slate(salaries):
+    """Detect a Showdown/Single-Game salary file via the `slate_format`
+    column Session 13.2 added to ingest_salaries.py's output. Falls back
+    to False (classic behavior) if the column is entirely absent -- e.g.
+    a salary file produced by a pre-13.2 build of ingest_salaries.py --
+    preserving full backward compatibility, same discipline Session 13.2
+    itself followed for this same column.
+
+    Fails loudly if the column is present but mixed (more than one
+    distinct value) -- a single salary file should never span two
+    formats; that would indicate two slates got concatenated or the
+    ingest step is corrupted, not a legitimate state to silently handle.
+    """
+    if "slate_format" not in salaries.columns:
+        return False
+    formats = salaries["slate_format"].dropna().unique()
+    if len(formats) > 1:
+        raise SystemExit(
+            f"Salary file has mixed slate_format values {sorted(formats)} -- "
+            f"expected exactly one format for the whole slate. "
+            f"ingest_salaries.py output may be corrupted, or two slates' "
+            f"salary files got concatenated by mistake."
+        )
+    return bool(len(formats)) and formats[0] == "showdown"
+
+
+def apply_captain_multiplier(flex_out, captain_salaries, site):
+    """Session 13.3: derive the CPT (DK) / MVP (FD) row's projection from
+    the already-built FLEX-priced player's projection, rather than
+    re-running the full projection pipeline a second time. Applies
+    uniformly across whichever model produced the FLEX projection (skill
+    stat-line model, DST model, or Session 13.1's kicker model) -- no
+    per-position special-casing, matching the roadmap card's explicit
+    intent.
+
+    Salary and site_player_id are NOT re-derived -- they're taken as-is
+    from the raw ingest, which already carries the site's real 1.5x
+    captain-priced salary (Session 13.2).
+
+    sigma/dst_p10/dst_p90 (present for DST/kicker rows only) are also
+    scaled by 1.5x: captain points are a deterministic 1.5x rescaling of
+    the same underlying points distribution, not an independent draw, so
+    Var(1.5X) = 1.5^2 * Var(X) -> sigma scales by exactly 1.5x, and the
+    percentile bounds (also linear functions of the same distribution)
+    scale the same way.
+
+    Fails loudly (not a silent left-join drop) if any FLEX player has no
+    matching CPT/MVP row -- Showdown salary files should always carry
+    both linked rows for every player (Session 13.2's ingest contract).
+    """
+    site_id_col = SITE_CONFIGS[site]["site_id_col"]
+    link_cols = captain_salaries[["player_id", "salary", site_id_col, "roster_role"]].rename(
+        columns={site_id_col: "site_player_id"}
+    )
+
+    base = flex_out.drop(columns=["salary", "site_player_id", "roster_role"], errors="ignore")
+    cap = base.merge(link_cols, on="player_id", how="left")
+
+    unlinked = cap[cap["roster_role"].isna()]
+    if not unlinked.empty:
+        raise SystemExit(
+            f"apply_captain_multiplier: {len(unlinked)} FLEX player(s) had no "
+            f"matching CPT/MVP row in the salary file -- every player in a "
+            f"Showdown pool should have both rows (Session 13.2). Unlinked "
+            f"player_id(s): {unlinked['player_id'].tolist()[:10]}"
+            f"{'...' if len(unlinked) > 10 else ''}."
+        )
+
+    for col in ["final_projection", "season_avg", "recent_form",
+                "sigma", "dst_p10", "dst_p90"]:
+        if col in cap.columns:
+            cap[col] = cap[col] * CAPTAIN_MULTIPLIER
+
+    return cap
+
+
+def add_showdown_ownership_placeholder(df):
+    """Session 13.3 explicit decision (see ROADMAP.md Session 13.3 card
+    and SESSION_LOG.md for the full rationale): Phase 11's ownership
+    model (chalk_score/estimated_ownership_pct) is fit entirely on
+    classic-slate position groups and hard roster-slot budgets
+    (ownership_heuristic.py decision #5) -- concepts that don't exist for
+    Showdown, where every position shares one undifferentiated FLEX pool
+    plus one CPT/MVP slot, with concentration effects the classic softmax
+    model has never seen. Rather than silently returning a classic-fit
+    number that would mislead the pivot-finder / frontend chalk display,
+    both fields are explicitly NaN for Showdown output, with a boolean
+    `ownership_available=False` flag so downstream consumers (frontend,
+    pivot_finder.py) can detect this without a NaN check specifically on
+    these two columns.
+    """
+    df = df.copy()
+    df["chalk_score"] = np.nan
+    df["estimated_ownership_pct"] = np.nan
+    df["ownership_available"] = False
+    print(
+        "NOTE: Showdown slate -- chalk_score/estimated_ownership_pct set to NaN "
+        "(Phase 11's ownership model isn't fit for Showdown position groups; "
+        "see Session 13.3 decision). ownership_available=False flags this "
+        "explicitly for downstream consumers.",
+        file=sys.stderr,
+    )
+    return df
+
+
+# ---------------------------------------------------------------------------
 # Main build function
 # ---------------------------------------------------------------------------
 
@@ -486,12 +602,37 @@ def build_final_projections(site, season, week, slate_id,
     salaries = load_salaries(site, slate_id)
     schedule = load_schedule(season)
 
+    # Session 13.3: Showdown/Single-Game pools carry TWO linked rows per
+    # player (FLEX-priced + CPT/MVP-priced, Session 13.2). Running the
+    # existing projection pipeline on both would double-process every
+    # player and silently give the CPT/MVP row an un-multiplied
+    # projection. Instead, the whole pipeline below runs on the FLEX-only
+    # rows (build_salaries) -- which look exactly like a classic pool, so
+    # every downstream function is reused completely unchanged -- and the
+    # CPT/MVP rows are derived afterward via apply_captain_multiplier().
+    showdown = is_showdown_slate(salaries)
+    if showdown:
+        build_salaries = salaries[salaries["roster_role"] == "FLEX"].copy()
+        captain_salaries = salaries[salaries["roster_role"].isin(CAPTAIN_ROLES)].copy()
+        if build_salaries.empty or captain_salaries.empty:
+            raise SystemExit(
+                f"{slate_id}: slate_format='showdown' but roster_role values "
+                f"don't split into FLEX + {sorted(CAPTAIN_ROLES)} as expected "
+                f"(Session 13.2 ingest contract). roster_role values present: "
+                f"{sorted(salaries['roster_role'].dropna().unique())}."
+            )
+        print(f"Showdown slate detected (Session 13.3): {len(build_salaries)} FLEX row(s), "
+              f"{len(captain_salaries)} captain-equivalent row(s).")
+    else:
+        build_salaries = salaries
+        captain_salaries = None
+
     # Primary: schedule-based opponent map.
     opponent_map = build_opponent_map(schedule, week)
 
     # Decision #9: if the schedule has no entries for any slate team,
     # fall back to inferring matchups from vegas over_under values.
-    slate_teams = set(salaries["normalized_team"].dropna().unique())
+    slate_teams = set(build_salaries["normalized_team"].dropna().unique())
     schedule_covered = slate_teams & set(opponent_map.keys())
     if not schedule_covered:
         print(
@@ -499,7 +640,7 @@ def build_final_projections(site, season, week, slate_id,
             f"falling back to vegas over_under pairing (decision #9, Madden Sim path).",
             file=sys.stderr,
         )
-        opponent_map = build_opponent_map_from_salaries(salaries)
+        opponent_map = build_opponent_map_from_salaries(build_salaries)
         if opponent_map:
             games_found = sorted(set(
                 tuple(sorted([k, opponent_map[k]])) for k in opponent_map
@@ -512,7 +653,7 @@ def build_final_projections(site, season, week, slate_id,
     vegas_factors = build_vegas_factors(vegas, opponent_map)
 
     # Skill-player pool from salary file.
-    players = salaries[salaries["position_upper"].isin(POSITIONS)].copy()
+    players = build_salaries[build_salaries["position_upper"].isin(POSITIONS)].copy()
     players = players[players["player_id"].notna()]
     players = players.rename(columns={"normalized_team": "team", "position_upper": "position"})
     site_id_col = SITE_CONFIGS[site]["site_id_col"]
@@ -593,7 +734,7 @@ def build_final_projections(site, season, week, slate_id,
     ]
     skill_out = df[out_cols]
 
-    dst_out = build_dst_projections(salaries, vegas, site,
+    dst_out = build_dst_projections(build_salaries, vegas, site,
                                     model=dst_model_mode, season=season,
                                     week=week, sims=dst_sims, seed=dst_seed,
                                     opponent_map=opponent_map if opponent_map else None)
@@ -609,7 +750,7 @@ def build_final_projections(site, season, week, slate_id,
         ).astype(int)
     )
 
-    kicker_out = _build_kicker_projections(salaries, site, opponent_map)
+    kicker_out = _build_kicker_projections(build_salaries, site, opponent_map)
     kicker_out = kicker_out.assign(
         _anchor_games=(kicker_out["season_avg"] > 0).map(
             {True: DST_ASSUMED_GAMES_PLAYED, False: 0}
@@ -623,7 +764,22 @@ def build_final_projections(site, season, week, slate_id,
         out = apply_salary_anchor(out, site, anchor_weight, anchor_cold_start, anchor_k)
     out = out.drop(columns=["_anchor_games"])
 
-    out = add_ownership_columns(out, site)
+    # Session 13.3: derive CPT/MVP rows from the FLEX-priced projections
+    # just built, apply the ownership decision (see module docstring), and
+    # stamp roster_role/slate_format on every row so the output schema is
+    # identical in shape for classic and Showdown (Session 13.2 precedent).
+    if showdown:
+        out["roster_role"] = "FLEX"
+        captain_out = apply_captain_multiplier(out, captain_salaries, site)
+        out = pd.concat([out, captain_out], ignore_index=True)
+        out["slate_format"] = "showdown"
+        out = add_showdown_ownership_placeholder(out)
+    else:
+        out = add_ownership_columns(out, site)
+        out["roster_role"] = None
+        out["slate_format"] = "classic"
+        out["ownership_available"] = True
+
     out = out.sort_values("final_projection", ascending=False).reset_index(drop=True)
     return out
 
@@ -660,14 +816,55 @@ if __name__ == "__main__":
     result.to_csv(out_path, index=False)
     print(f"Wrote {len(result)} rows to {out_path}")
 
-    nulls = result.isnull().any(axis=1).sum()
+    # Session 13.3: chalk_score/estimated_ownership_pct are intentionally
+    # NaN for Showdown output (add_showdown_ownership_placeholder decision)
+    # -- a plain isnull()/range check would either falsely flag these two
+    # columns as a bug, or (for the range check, since NaN comparisons are
+    # always False) silently report 0 bad rows for the wrong reason. Both
+    # checks are adjusted explicitly rather than either of those.
+    is_showdown_output = bool(result["ownership_available"].eq(False).any()) if \
+        "ownership_available" in result.columns else False
+
+    null_check_cols = [c for c in result.columns if c not in
+                       ("chalk_score", "estimated_ownership_pct")] if is_showdown_output else result.columns
+    nulls = result[null_check_cols].isnull().any(axis=1).sum()
     neg = (result["final_projection"] < 0).sum()
-    chalk_bad = ((result["chalk_score"] < 0) | (result["chalk_score"] > 100)).sum()
-    own_bad = ((result["estimated_ownership_pct"] < 0) | (result["estimated_ownership_pct"] > 100)).sum()
-    site_id_col = SITE_CONFIGS[args.site]["site_id_col"]
-    missing_id = result[site_id_col].isna().sum() if site_id_col in result.columns else "N/A"
-    print(f"  Nulls in any column: {nulls} (should be 0)")
+    # PRE-EXISTING BUG (found incidentally during Session 13.3 validation, fixed
+    # here since it's a one-line correction, not a 13.3 feature): this checked
+    # site_id_col (the RAW salary file's ID column name, e.g. "ID"/"Id"), which
+    # never exists in `result` -- the pipeline renames it to `site_player_id`
+    # early on. The check always silently reported "N/A" instead of actually
+    # validating, for both classic and Showdown output, since this script was
+    # first written.
+    missing_id = result["site_player_id"].isna().sum() if "site_player_id" in result.columns else "N/A"
+
+    print(f"  Nulls in any column (excluding chalk_score/estimated_ownership_pct "
+          f"if Showdown): {nulls} (should be 0)")
     print(f"  Negative final_projection: {neg} (should be 0)")
-    print(f"  chalk_score out of [0,100] range: {chalk_bad} (should be 0)")
-    print(f"  estimated_ownership_pct out of [0,100] range: {own_bad} (should be 0)")
+
+    if is_showdown_output:
+        print("  chalk_score / estimated_ownership_pct: N/A -- Showdown slate, "
+              "intentionally NaN (Session 13.3 decision, ownership_available=False).")
+        cpt_roles = result[result["roster_role"].isin(CAPTAIN_ROLES)]
+        flex_roles = result[result["roster_role"] == "FLEX"]
+        check = cpt_roles.merge(flex_roles[["player_id", "final_projection"]],
+                                 on="player_id", suffixes=("_cpt", "_flex"))
+        ratio = check["final_projection_cpt"] / check["final_projection_flex"].replace(0, np.nan)
+        bad_ratio = ((ratio - CAPTAIN_MULTIPLIER).abs() > 1e-6).sum()
+        n_no_flex_signal = check["final_projection_flex"].eq(0).sum()
+        print(f"  CPT/MVP final_projection == {CAPTAIN_MULTIPLIER}x linked FLEX "
+              f"projection: {len(check) - bad_ratio}/{len(check)} rows match "
+              f"exactly ({bad_ratio} mismatch, should be 0; "
+              f"{n_no_flex_signal} row(s) had 0 FLEX projection so ratio is "
+              f"undefined -- checked separately below).")
+        zero_mismatch = check[check["final_projection_flex"].eq(0) &
+                              check["final_projection_cpt"].ne(0)]
+        print(f"  Zero-FLEX-projection rows with a nonzero CPT/MVP projection: "
+              f"{len(zero_mismatch)} (should be 0).")
+    else:
+        chalk_bad = ((result["chalk_score"] < 0) | (result["chalk_score"] > 100)).sum()
+        own_bad = ((result["estimated_ownership_pct"] < 0) | (result["estimated_ownership_pct"] > 100)).sum()
+        print(f"  chalk_score out of [0,100] range: {chalk_bad} (should be 0)")
+        print(f"  estimated_ownership_pct out of [0,100] range: {own_bad} (should be 0)")
+
     print(f"  Missing site_player_id (DK/FD's own ID -- needed for the Download Lineups import feature): {missing_id} (should be 0)")
