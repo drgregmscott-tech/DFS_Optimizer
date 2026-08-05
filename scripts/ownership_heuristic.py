@@ -324,16 +324,26 @@ def build_position_group(df: pd.DataFrame, site: str) -> pd.Series:
     return df["position"].where(~df["position"].isin(defense_values), "DST")
 
 
-def compute_chalk_scores(df: pd.DataFrame, site: str) -> pd.DataFrame:
+def compute_chalk_scores(df: pd.DataFrame, site: str, group_col: str = None) -> pd.DataFrame:
+    """Session 13.3b: `group_col` lets a caller supply an alternate grouping
+    column instead of the default classic `position_group` (built via
+    build_position_group()) -- added so Showdown pools can group by
+    roster_role (CPT/MVP vs FLEX, see build_showdown_role_group()) instead,
+    since Showdown has no position-based roster slots for percentile-ranking
+    to be meaningful against. Classic behavior is unchanged when group_col
+    is omitted -- same code path, same default column, byte-identical
+    output to every prior session's classic run."""
     df = df.copy()
-    df["position_group"] = build_position_group(df, site)
+    if group_col is None:
+        df["position_group"] = build_position_group(df, site)
+        group_col = "position_group"
 
-    group_counts = df.groupby("position_group").size()
+    group_counts = df.groupby(group_col).size()
     thin_groups = group_counts[group_counts < MIN_GROUP_SIZE_FOR_RELIABLE_PERCENTILE]
     if not thin_groups.empty:
         print(
             f"WARNING: value_percentile/salary_tier_score/raw_projection_percentile "
-            f"are less meaningful for thin position groups (same distortion "
+            f"are less meaningful for thin '{group_col}' groups (same distortion "
             f"ROADMAP.md's 'Known Testing Artifact' note already flags "
             f"for this project's current test pool) -- group sizes: "
             f"{thin_groups.to_dict()}",
@@ -341,26 +351,26 @@ def compute_chalk_scores(df: pd.DataFrame, site: str) -> pd.DataFrame:
         )
 
     # Decision #1: value = projected points per $1K salary, percentile-
-    # ranked within position_group so positions with structurally
-    # different raw value ranges are comparable.
+    # ranked within group_col so groups with structurally different raw
+    # value ranges are comparable.
     # Defensive guard: a salary <= 0 would make this divide 0/0 -> NaN,
     # which propagates to a NaN chalk_score and hard-stops
     # build_projections.py's add_ownership_columns. A non-positive salary
     # yields value 0.0 (correctly the worst value), not NaN.
     safe_salary = df["salary"].where(df["salary"] > 0)
     df["value"] = (df["final_projection"] / (safe_salary / 1000.0)).fillna(0.0)
-    df["value_percentile"] = df.groupby("position_group")["value"].rank(pct=True) * 100
+    df["value_percentile"] = df.groupby(group_col)["value"].rank(pct=True) * 100
 
     # Decision #6 (Session 11.0): raw projected points, percentile-ranked
-    # within position_group. Distinct from value -- captures "expected
+    # within group_col. Distinct from value -- captures "expected
     # ceiling" signal that value efficiency misses.
     df["raw_projection_percentile"] = (
-        df.groupby("position_group")["final_projection"].rank(pct=True) * 100
+        df.groupby(group_col)["final_projection"].rank(pct=True) * 100
     )
 
-    # Decision #2: salary tier, U-shaped -- both ends of a position
-    # group's salary range score high, the middle scores low.
-    salary_pct = df.groupby("position_group")["salary"].rank(pct=True)
+    # Decision #2: salary tier, U-shaped -- both ends of a group's salary
+    # range score high, the middle scores low.
+    salary_pct = df.groupby(group_col)["salary"].rank(pct=True)
     df["salary_tier_score"] = (salary_pct - 0.5).abs() * 2 * 100
 
     # Decision #3: vegas implied total, percentile-ranked across the WHOLE
@@ -444,13 +454,50 @@ def compute_position_slot_budgets(site: str) -> dict:
     return budgets
 
 
-def compute_estimated_ownership(df: pd.DataFrame, site: str) -> pd.DataFrame:
+def compute_showdown_role_budgets(site: str) -> dict:
+    """Session 13.3b: Showdown's equivalent of decision #5's roster-slot
+    budget math, keyed by roster_role (CPT_MVP vs FLEX) instead of
+    position. Showdown's real roster construction
+    (SITE_CONFIGS[site]['showdown']['roster_slots'] -- Session 13.2,
+    confirmed against real DK/FD exports and live roster builders) is
+    exactly 1 CPT/MVP slot + N FLEX slots, with ANY position eligible in
+    either -- so classic's position-based FLEX_ELIGIBLE_POSITIONS 3-way
+    split has no meaning here; the FLEX budget stays as ONE undivided
+    group instead. Still real roster-slot math, not a guess -- same
+    anchor principle as compute_position_slot_budgets(), just regrouped
+    for a pool structure that has no position-based slots at all."""
+    slots = SITE_CONFIGS[site]["showdown"]["roster_slots"]
+    n_flex = slots.count("FLEX")
+    n_captain = len(slots) - n_flex
+    return {"FLEX": n_flex * 100.0, "CPT_MVP": n_captain * 100.0}
+
+
+def build_showdown_role_group(df: pd.DataFrame) -> pd.Series:
+    """Session 13.3b: folds DK's 'CPT' / FD's 'MVP' roster_role values
+    into one 'CPT_MVP' bucket, mirroring build_position_group()'s
+    DST-label-folding pattern -- both sites' captain-equivalent slot
+    shares the same 1.5x salary/scoring mechanic (Session 13.2/13.1), so
+    they belong in the same ownership group for percentile-ranking
+    purposes, exactly like DK's 'DST' and FD's 'D'/'DEF' do today."""
+    return df["roster_role"].map({"CPT": "CPT_MVP", "MVP": "CPT_MVP", "FLEX": "FLEX"})
+
+
+def compute_estimated_ownership(df: pd.DataFrame, site: str, group_col: str = None,
+                                 budgets: dict = None) -> pd.DataFrame:
     """Decision #5 (see module docstring): converts chalk_score's relative
     ranking into an ESTIMATED ownership percentage, anchored to real
     roster-slot math, not to any real ownership data (none exists yet).
-    Temperature and FLEX split are retuning targets for Session 11.1/11.2."""
+    Temperature and FLEX split are retuning targets for Session 11.1/11.2.
+
+    Session 13.3b: `group_col`/`budgets` let a caller supply Showdown's
+    roster_role grouping + compute_showdown_role_budgets() instead of the
+    classic position_group/compute_position_slot_budgets() default.
+    Classic behavior is unchanged when both are omitted."""
     df = df.copy()
-    budgets = compute_position_slot_budgets(site)
+    if group_col is None:
+        group_col = "position_group"
+    if budgets is None:
+        budgets = compute_position_slot_budgets(site)
 
     # Bye/no-real-game players (final_projection == 0) get an explicit 0
     # weight so their share of the group's budget is fully redistributed
@@ -461,14 +508,14 @@ def compute_estimated_ownership(df: pd.DataFrame, site: str) -> pd.DataFrame:
         df.loc[has_signal, "chalk_score"] / OWNERSHIP_SOFTMAX_TEMPERATURE
     )
 
-    group_weight_sum = df.groupby("position_group")["_weight"].transform("sum")
-    group_size = df.groupby("position_group")["position_group"].transform("count")
+    group_weight_sum = df.groupby(group_col)["_weight"].transform("sum")
+    group_size = df.groupby(group_col)[group_col].transform("count")
 
     all_zero = group_weight_sum == 0
     if all_zero.any():
-        affected = sorted(df.loc[all_zero, "position_group"].unique().tolist())
+        affected = sorted(df.loc[all_zero, group_col].unique().tolist())
         print(
-            f"WARNING: position group(s) {affected} have final_projection "
+            f"WARNING: '{group_col}' group(s) {affected} have final_projection "
             f"== 0 for EVERY player this week -- estimated_ownership_pct "
             f"falls back to an even split of that group's budget, since "
             f"there's no nonzero signal to weight by. A real live slate's "
@@ -482,14 +529,14 @@ def compute_estimated_ownership(df: pd.DataFrame, site: str) -> pd.DataFrame:
     df["_group_share"] = df["_weight"] / denom
     df.loc[all_zero, "_group_share"] = 1.0 / group_size[all_zero]
 
-    df["_group_budget"] = df["position_group"].map(budgets)
+    df["_group_budget"] = df[group_col].map(budgets)
     df["estimated_ownership_pct"] = (
         df["_group_share"] * df["_group_budget"]
     ).clip(lower=0, upper=100)
 
-    group_totals = df.groupby("position_group")["estimated_ownership_pct"].sum()
+    group_totals = df.groupby(group_col)["estimated_ownership_pct"].sum()
     print(
-        "estimated_ownership_pct summed per position group "
+        f"estimated_ownership_pct summed per '{group_col}' group "
         "(should equal that group's roster-slot budget):"
     )
     for group, total in group_totals.sort_index().items():

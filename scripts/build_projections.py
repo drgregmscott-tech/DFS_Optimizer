@@ -41,7 +41,10 @@ import pandas as pd
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from ingest_salaries import SITE_CONFIGS
-from ownership_heuristic import compute_chalk_scores, compute_estimated_ownership
+from ownership_heuristic import (
+    compute_chalk_scores, compute_estimated_ownership,
+    build_showdown_role_group, compute_showdown_role_budgets,
+)
 import salary_anchor
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
@@ -556,33 +559,67 @@ def apply_captain_multiplier(flex_out, captain_salaries, site):
     return cap
 
 
-def add_showdown_ownership_placeholder(df):
-    """Session 13.3 explicit decision (see ROADMAP.md Session 13.3 card
-    and SESSION_LOG.md for the full rationale): Phase 11's ownership
-    model (chalk_score/estimated_ownership_pct) is fit entirely on
-    classic-slate position groups and hard roster-slot budgets
-    (ownership_heuristic.py decision #5) -- concepts that don't exist for
-    Showdown, where every position shares one undifferentiated FLEX pool
-    plus one CPT/MVP slot, with concentration effects the classic softmax
-    model has never seen. Rather than silently returning a classic-fit
-    number that would mislead the pivot-finder / frontend chalk display,
-    both fields are explicitly NaN for Showdown output, with a boolean
-    `ownership_available=False` flag so downstream consumers (frontend,
-    pivot_finder.py) can detect this without a NaN check specifically on
-    these two columns.
+def add_showdown_ownership_columns(df, site):
+    """Session 13.3b: real Showdown ownership computation, replacing
+    Session 13.3's original NaN placeholder (see that decision's original
+    rationale below -- still correct as far as it goes, it just stopped
+    one step short of actually building the fix it called for).
+
+    Reuses ownership_heuristic.py's existing 5-feature chalk_score blend
+    and softmax ownership-share mechanism completely unchanged -- the
+    only thing that differs for Showdown is the GROUPING unit: classic
+    groups by position_group (roster slots are position-specific);
+    Showdown has no position-based slots at all, just one CPT/MVP-
+    equivalent slot and N FLEX slots with ANY position eligible in
+    either. build_showdown_role_group()/compute_showdown_role_budgets()
+    supply that alternate grouping, anchored to the same real
+    roster-slot math as classic's decision #5 (SITE_CONFIGS[site]
+    ['showdown']['roster_slots'], Session 13.2), not a guess.
+
+    Same UNFIT starting-guess blend weights and softmax temperature as
+    classic -- no real Showdown ownership data exists any more than real
+    classic ownership data does, so this doesn't pretend to be better
+    calibrated than the classic heuristic it's built from. Session
+    11.1's already-planned retuning (once real ownership data exists)
+    now covers both classic and Showdown groupings, not a second
+    separate set of magic numbers to track.
+
+    Original Session 13.3 rationale for why this couldn't just reuse
+    classic's add_ownership_columns() unchanged: Phase 11's model was FIT
+    (informally, as an unfit starting guess) against classic's
+    position-grouped concentration pattern, and CPT selection behaves
+    very differently from FLEX selection. That's still true -- it's why
+    the grouping had to change, not why ownership had to be skipped
+    entirely.
     """
     df = df.copy()
-    df["chalk_score"] = np.nan
-    df["estimated_ownership_pct"] = np.nan
-    df["ownership_available"] = False
-    print(
-        "NOTE: Showdown slate -- chalk_score/estimated_ownership_pct set to NaN "
-        "(Phase 11's ownership model isn't fit for Showdown position groups; "
-        "see Session 13.3 decision). ownership_available=False flags this "
-        "explicitly for downstream consumers.",
-        file=sys.stderr,
+    df["_showdown_role_group"] = build_showdown_role_group(df)
+    budgets = compute_showdown_role_budgets(site)
+
+    scored = compute_chalk_scores(df, site, group_col="_showdown_role_group")
+    scored = compute_estimated_ownership(
+        scored, site, group_col="_showdown_role_group", budgets=budgets
     )
-    return df
+
+    # Merge on (player_id, roster_role), NOT player_id alone -- a Showdown
+    # pool has TWO rows per player_id (FLEX + CPT/MVP), and a player's CPT
+    # ownership share is a genuinely different real-world quantity from
+    # their FLEX ownership share (different salary, different group, often
+    # a different chalk_score), unlike classic where player_id is unique
+    # per pool.
+    ownership_cols = scored[["player_id", "roster_role", "chalk_score", "estimated_ownership_pct"]]
+    merged = df.drop(columns=["_showdown_role_group"]).merge(
+        ownership_cols, on=["player_id", "roster_role"], how="left"
+    )
+    n_missing = merged["chalk_score"].isna().sum()
+    if n_missing:
+        raise SystemExit(
+            f"add_showdown_ownership_columns: {n_missing} player-role row(s) "
+            f"got no chalk_score -- player_id/roster_role dtype or duplicate "
+            f"mismatch?"
+        )
+    merged["ownership_available"] = True
+    return merged
 
 
 # ---------------------------------------------------------------------------
@@ -773,7 +810,7 @@ def build_final_projections(site, season, week, slate_id,
         captain_out = apply_captain_multiplier(out, captain_salaries, site)
         out = pd.concat([out, captain_out], ignore_index=True)
         out["slate_format"] = "showdown"
-        out = add_showdown_ownership_placeholder(out)
+        out = add_showdown_ownership_columns(out, site)
     else:
         out = add_ownership_columns(out, site)
         out["roster_role"] = None
@@ -816,18 +853,11 @@ if __name__ == "__main__":
     result.to_csv(out_path, index=False)
     print(f"Wrote {len(result)} rows to {out_path}")
 
-    # Session 13.3: chalk_score/estimated_ownership_pct are intentionally
-    # NaN for Showdown output (add_showdown_ownership_placeholder decision)
-    # -- a plain isnull()/range check would either falsely flag these two
-    # columns as a bug, or (for the range check, since NaN comparisons are
-    # always False) silently report 0 bad rows for the wrong reason. Both
-    # checks are adjusted explicitly rather than either of those.
-    is_showdown_output = bool(result["ownership_available"].eq(False).any()) if \
-        "ownership_available" in result.columns else False
-
-    null_check_cols = [c for c in result.columns if c not in
-                       ("chalk_score", "estimated_ownership_pct")] if is_showdown_output else result.columns
-    nulls = result[null_check_cols].isnull().any(axis=1).sum()
+    # Session 13.3b: ownership is now real for both classic AND Showdown
+    # (Showdown's original NaN placeholder was replaced once the
+    # roster_role-grouped heuristic was built -- see add_showdown_ownership_columns).
+    # A plain isnull() check is correct again for every column.
+    nulls = result.isnull().any(axis=1).sum()
     neg = (result["final_projection"] < 0).sum()
     # PRE-EXISTING BUG (found incidentally during Session 13.3 validation, fixed
     # here since it's a one-line correction, not a 13.3 feature): this checked
@@ -838,13 +868,16 @@ if __name__ == "__main__":
     # first written.
     missing_id = result["site_player_id"].isna().sum() if "site_player_id" in result.columns else "N/A"
 
-    print(f"  Nulls in any column (excluding chalk_score/estimated_ownership_pct "
-          f"if Showdown): {nulls} (should be 0)")
+    print(f"  Nulls in any column: {nulls} (should be 0)")
     print(f"  Negative final_projection: {neg} (should be 0)")
 
+    chalk_bad = ((result["chalk_score"] < 0) | (result["chalk_score"] > 100)).sum()
+    own_bad = ((result["estimated_ownership_pct"] < 0) | (result["estimated_ownership_pct"] > 100)).sum()
+    print(f"  chalk_score out of [0,100] range: {chalk_bad} (should be 0)")
+    print(f"  estimated_ownership_pct out of [0,100] range: {own_bad} (should be 0)")
+
+    is_showdown_output = "slate_format" in result.columns and result["slate_format"].eq("showdown").any()
     if is_showdown_output:
-        print("  chalk_score / estimated_ownership_pct: N/A -- Showdown slate, "
-              "intentionally NaN (Session 13.3 decision, ownership_available=False).")
         cpt_roles = result[result["roster_role"].isin(CAPTAIN_ROLES)]
         flex_roles = result[result["roster_role"] == "FLEX"]
         check = cpt_roles.merge(flex_roles[["player_id", "final_projection"]],
@@ -861,10 +894,9 @@ if __name__ == "__main__":
                               check["final_projection_cpt"].ne(0)]
         print(f"  Zero-FLEX-projection rows with a nonzero CPT/MVP projection: "
               f"{len(zero_mismatch)} (should be 0).")
-    else:
-        chalk_bad = ((result["chalk_score"] < 0) | (result["chalk_score"] > 100)).sum()
-        own_bad = ((result["estimated_ownership_pct"] < 0) | (result["estimated_ownership_pct"] > 100)).sum()
-        print(f"  chalk_score out of [0,100] range: {chalk_bad} (should be 0)")
-        print(f"  estimated_ownership_pct out of [0,100] range: {own_bad} (should be 0)")
+        role_totals = result.groupby("roster_role")["estimated_ownership_pct"].sum()
+        print(f"  estimated_ownership_pct summed per roster_role (sanity spot-check, "
+              f"printed above in more detail by add_showdown_ownership_columns): "
+              f"{role_totals.round(1).to_dict()}")
 
     print(f"  Missing site_player_id (DK/FD's own ID -- needed for the Download Lineups import feature): {missing_id} (should be 0)")

@@ -1374,6 +1374,24 @@ cross-reference continuity; the authoritative card is Session 11.2 below.*
 on fewer than 4 weeks -- the model will overfit to noise. The script can
 be written before data exists; the fit itself must wait.
 
+**ADDED Session 13.3b (2026-08-05) -- Showdown data gate, separate from
+classic's:** Session 13.3b built a real Showdown-specific ownership
+heuristic (roster_role-grouped: CPT/MVP vs FLEX), but it's fit on the same
+UNFIT starting-guess weights/temperature as classic, since no real
+Showdown ownership data exists yet either. This session's scope now
+covers retuning BOTH groupings, not just classic's -- but they're gated
+independently: classic's 4-6-week data gate above is unaffected and can
+still be met on its own schedule, while Showdown's gate cannot even START
+until two things happen, neither built yet: (1) real Showdown slates need
+to be posting (first chance ~Aug 6, 2026 preseason, Phase 13's trigger
+date), AND (2) `log_ownership.py` (Session 9.3) needs an additive
+`roster_role` column before it can log Showdown ownership at all -- its
+current schema has no way to distinguish a player's CPT-role ownership
+from their FLEX-role ownership, which are different real quantities under
+13.3b's model. Not built as of 13.3b's close-out -- flagged here so it's
+the obvious next step once real Showdown data starts arriving, not
+rediscovered cold.
+
 **Data gate:** ~4-6 player-weeks per position × ~50 players per slate =
 ~200-300 observations minimum before fitting. At 16+ weeks of real data the
 fit becomes genuinely stable.
@@ -2231,9 +2249,16 @@ new columns and deferred/flagged items (`PLAYERS_PER_TEAM_SHOWDOWN`,
 
 ---
 
-### Session 13.3 — Showdown Projection & Scoring-Multiplier Layer
+### Session 13.3 — Showdown Projection & Scoring-Multiplier Layer ✅ Complete (2026-08-05)
 **Prerequisites:** Session 13.1 complete (kicker projections exist to
 feed the pool). Session 13.2 complete (CPT/MVP-linked salary data exists).
+
+**Outcome in one line:** CPT/MVP projections derive as an exact 1.5x
+multiplier on the linked FLEX-priced player's projection (verified 41/41
+exact match, both sites, synthetic pool spanning QB/RB/WR/TE/DST/K). The
+ownership question below was originally punted (NaN placeholder) and then
+resolved for real in Session 13.3b immediately after -- see that card.
+Full detail in SESSION_LOG.md's Session 13.3 entry.
 
 **Files touched (modified):**
 - `scripts/build_projections.py` — derive CPT/MVP row projections from
@@ -2253,22 +2278,125 @@ softmax model has never seen). Recommend `chalk_score`/
 "unavailable — Showdown" in Showdown output, rather than silently
 returning a classic-fit number that would mislead the pivot-finder /
 frontend chalk display. Get explicit sign-off on this rather than assuming.
+**RESOLVED (Session 13.3b, same day): the user flagged that ownership/pivot
+signal is a stated priority for Showdown, not something to leave
+unaddressed. The NaN placeholder below was replaced with a real
+roster_role-grouped ownership heuristic -- see Session 13.3b's card
+immediately following this one.**
 
 **Validation:**
-- [ ] CPT/MVP projection = 1.5x the linked FLEX projection, verified for
+- [x] CPT/MVP projection = 1.5x the linked FLEX projection, verified for
   a sample of players across all position types (including K and DST/DEF,
-  which are Showdown-eligible unlike classic).
-- [ ] Ownership/chalk fields confirmed absent or clearly flagged in
+  which are Showdown-eligible unlike classic). 41/41 DK, 41/41 FD, exact
+  match to 4+ decimals on a synthetic Showdown pool built from real
+  nflverse player data.
+- [x] Ownership/chalk fields confirmed absent or clearly flagged in
   Showdown output, not silently populated with a misleading classic-fit
-  number.
+  number. (Superseded same-day by Session 13.3b -- see that card for the
+  real values now shipped instead of a placeholder.)
 
 **Handoff notes to log:** Final decision on ownership field handling for
-Showdown (omitted vs. flagged-placeholder vs. something else), and why.
+Showdown: shipped first as an explicit NaN + `ownership_available=False`
+flag (this card's original ask), then upgraded same-day to a real
+Showdown-specific heuristic once the user flagged that leaving it
+unaddressed wasn't acceptable -- see Session 13.3b.
+
+---
+
+### Session 13.3b — Showdown Ownership Heuristic ✅ Complete (2026-08-05)
+**Prerequisites:** Session 13.3 complete (Showdown final_projections pipeline
+exists to attach ownership columns to).
+
+**Why this exists as its own card:** not on the original roadmap. Added
+same-day when the user pointed out that neither 13.3 (which punted via NaN)
+nor 13.4 (which per its own card only touches pivot_finder.py's existing
+band-eligibility filter, not ownership computation) actually builds real
+Showdown ownership -- and that accurate pivot/ownership signal was stated
+as a real priority for Showdown early in Phase 13's scoping, just secondary
+to accurate projections. Sequenced between 13.3 and 13.4 so pivot_finder
+has real scores to test against in 13.4 instead of NaN placeholders.
+
+**Files touched (modified):**
+- `scripts/ownership_heuristic.py` -- `compute_chalk_scores()` and
+  `compute_estimated_ownership()` both gained an optional `group_col`
+  parameter (and the latter an optional `budgets` parameter), defaulting
+  to `None` = exact original classic behavior (position_group /
+  compute_position_slot_budgets), byte-identical output confirmed against
+  a pre-refactor baseline run. New functions: `build_showdown_role_group()`
+  (folds DK's "CPT"/FD's "MVP" into one "CPT_MVP" bucket, mirroring
+  build_position_group()'s DST-label-folding pattern) and
+  `compute_showdown_role_budgets()` (derives the real budget split --
+  1 CPT/MVP slot + N FLEX slots -- directly from
+  `SITE_CONFIGS[site]["showdown"]["roster_slots"]`, same real-roster-slot-math
+  anchor as classic's decision #5, not a guess).
+- `scripts/build_projections.py` -- `add_showdown_ownership_placeholder()`
+  (13.3's NaN stub) replaced by `add_showdown_ownership_columns()`, which
+  calls the above with Showdown's grouping and merges the result back onto
+  `(player_id, roster_role)` -- not just `player_id`, since a Showdown pool
+  has two rows per player and a CPT ownership share is a genuinely
+  different real-world quantity from that same player's FLEX share.
+
+**Design decision -- why roster_role instead of position_group:** Showdown
+has no position-based roster slots at all (any position eligible in either
+the 1 CPT/MVP slot or the N FLEX slots), so classic's per-position
+percentile grouping has no meaning here. The blend's 5 features and their
+weights are otherwise unchanged and reused as-is -- same UNFIT starting
+guesses as classic, since no real ownership data (Showdown OR classic)
+exists yet to fit against. Session 11.1's already-planned retuning now
+covers both groupings, not a second separate set of magic numbers.
+
+**Validation:**
+- [x] `estimated_ownership_pct` sums to exactly the real roster-slot budget
+  per role group: DK CPT_MVP 100.0%/FLEX 500.0% (1 CPT + 5 FLEX), FD
+  CPT_MVP 100.0%/FLEX 400.0% (1 MVP + 4 FLEX) -- both exact, not
+  approximate, on a synthetic Showdown pool.
+- [x] chalk_score/estimated_ownership_pct both stay in [0,100] range on
+  both sites' Showdown output.
+- [x] Spot-checked a real player pair (Joe Burrow, DK): FLEX
+  estimated_ownership_pct 19.85% vs. CPT 3.97% -- correctly reflects the
+  much thinner CPT budget (100% total across the whole pool vs. FLEX's
+  500%), matching real-world Showdown ownership fragmentation patterns.
+- [x] chalk_score came out nearly-but-not-exactly identical between a
+  player's CPT and FLEX rows (max diff ~0.85 of 100) -- expected, from
+  tie-breaking in the pool-wide (not role-grouped) vegas/over_under
+  percentile columns, not an error.
+- [x] Classic regression: re-ran a classic DK slate through the refactored
+  `ownership_heuristic.py` -- position-group budget totals numerically
+  identical to the pre-refactor baseline (DST 100.0%, QB 100.0%, RB
+  233.3%, TE 133.3%, WR 333.3%).
+
+**Known issues deferred (flagged explicitly, not silently skipped):**
+- **No real Showdown ownership data exists yet to fit against** -- same
+  gap classic ownership has always had, now shared by two groupings
+  instead of one. Real preseason Showdown slates start posting ~Aug 6,
+  2026 (Phase 13's own trigger date) -- this is the point to start
+  collecting.
+- **`log_ownership.py` (Session 9.3) cannot currently log Showdown
+  ownership at all** -- its logged schema
+  (`data/ownership_actual_log.csv`: field_size, player_id, player_name,
+  actual_ownership_pct, etc.) has no `roster_role` column, so it has no
+  way to distinguish "this player's ownership when rostered as CPT" from
+  "as FLEX" -- two different real quantities under this session's model.
+  Before any real Showdown ownership data can be logged, `log_ownership.py`
+  needs an additive `roster_role` column (and probably `slate_format`,
+  matching the precedent Session 13.2 already set for
+  `final_projections_*.csv`). Not built this session -- flagged as the
+  concrete next step, needed before Session 11.1 can retune the Showdown
+  grouping specifically (11.1 can still retune the classic grouping alone
+  once its existing 4-6 week gate is met, independent of this gap).
+
+**Handoff notes for next session:** Session 13.4 (Optimizer ILP) can now
+assume Showdown output always carries real chalk_score/estimated_ownership_pct
+-- no NaN handling needed in pivot_finder.py's Showdown path. Session 11.1's
+prerequisites section has been updated with the log_ownership.py gap above
+so it isn't rediscovered cold when real Showdown data starts arriving.
 
 ---
 
 ### Session 13.4 — Optimizer ILP for Showdown Roster Construction
-**Prerequisites:** Session 13.3 complete.
+**Prerequisites:** Session 13.3 AND 13.3b complete (pivot_finder.py's
+Showdown validation below wants real chalk_score/estimated_ownership_pct
+to test against, not NaN placeholders).
 
 **Files touched (modified):**
 - `scripts/optimizer.py` — new solve path for Showdown/Single-Game slates.
@@ -2394,7 +2522,8 @@ future slate provides real data.
 |---|---|---|---|
 | 13.1 | Kicker projection model | None | Historical nflverse kicking data (available now) |
 | 13.2 | Showdown/Single-Game salary ingest | None (13.1 not required) | DK: available now (Madden Sim-style). FD: unverified until 13.6 |
-| 13.3 | Projection scoring-multiplier layer | 13.1, 13.2 | Synthetic sufficient |
-| 13.4 | Optimizer ILP rewrite | 13.3 | Synthetic sufficient |
+| 13.3 | Projection scoring-multiplier layer ✅ | 13.1, 13.2 | Synthetic sufficient |
+| 13.3b | Showdown ownership heuristic ✅ | 13.3 | Synthetic sufficient for the heuristic itself; real Showdown ownership DATA (for eventual retuning, Session 11.1) gated on real slates ~Aug 6, 2026 + a log_ownership.py schema change, neither built yet |
+| 13.4 | Optimizer ILP rewrite | 13.3, 13.3b | Synthetic sufficient |
 | 13.5 | Frontend + four-layer wiring | 13.4 | Synthetic sufficient |
 | 13.6 | Real Showdown slate validation, both sites | 13.1-13.5 | Real DK/FD Showdown slate (first chance: ~Aug 6, 2026) |
