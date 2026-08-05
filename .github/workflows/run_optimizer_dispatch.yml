@@ -110,6 +110,15 @@ jobs:
           args += ["--slate-id", str(p["slate_id"])]
           args += ["--request-id", str(p["request_id"])]
 
+          # Session 13.5 -- Showdown/Single-Game wiring. Omitted means
+          # optimizer.py's own "auto" default (detect from the loaded
+          # final_projections file's slate_format column) -- same "omit
+          # means the CLI's own default" convention as every other
+          # optional field here. The frontend only ever sends "showdown"
+          # explicitly (never "classic"), so this stays a no-op for every
+          # classic build.
+          args += flag("--format", "format")
+
           if params.get("mode") == "multi":
               args += flag("--n-lineups", "n_lineups", int)
           args += flag("--max-exposure", "max_exposure", float)
@@ -142,6 +151,15 @@ jobs:
           # parse_game_cap_list do the actual parsing and validation.
           args += flag("--max-team-players", "max_team_players")
           args += flag("--max-game-players", "max_game_players")
+
+          # Session 13.5 -- decision #47's Showdown-only one-sided-lineup
+          # floor (the mirror of --max-team-players above, which applies to
+          # both formats). Same "TEAM:N,TEAM:N" shape, passed through
+          # unchanged -- optimizer.py's own parse_team_cap_list/
+          # validate_min_team_players_feasibility do the actual parsing,
+          # validation, and Showdown-only enforcement (a classic slate
+          # sending this errors loudly there, not silently here).
+          args += flag("--min-team-players", "min_team_players")
 
           # Session 8 (this session) -- decisions #34/#35. Same "omit means
           # optimizer.py's own default (0, no floor)" convention as every

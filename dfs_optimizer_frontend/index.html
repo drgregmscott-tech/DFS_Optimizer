@@ -1520,7 +1520,7 @@ in this browser's localStorage.</p>
           <span class="field-label">Uniqueness</span>
           <input type="number" id="ctrlUniqueness" min="0" max="9" value="1">
         </div>
-        <div>
+        <div id="wrapStackModeField">
           <span class="field-label">Stack Mode</span>
           <select id="ctrlStackMode">
             <option value="none">None</option>
@@ -1539,12 +1539,12 @@ in this browser's localStorage.</p>
           <input type="range" id="ctrlMinSalarySlider" min="0" max="50000" step="100" value="49700" style="width:100%; margin-top:6px;">
           <div class="hint" style="margin-top:4px">Lineups must spend at least this much (cap is $50,000 on DK, $60,000 on FD -- the slider adjusts automatically when you switch sites).</div>
         </div>
-        <div>
+        <div id="wrapMinProjectionField">
           <span class="field-label">Minimum Projection</span>
           <input type="number" id="ctrlMinProjection" min="0" step="0.5" value="0" placeholder="0 = no floor">
           <div class="hint" style="margin-top:4px">Excludes any player projected below this many points from the pool entirely, before the solver runs (0 = no floor). Locked players are always exempt.</div>
         </div>
-        <div>
+        <div id="wrapMinTotalOwnershipField">
           <span class="field-label">Minimum Total Ownership</span>
           <input type="number" id="ctrlMinTotalOwnership" min="0" step="1" value="0" placeholder="0 = no floor">
           <div class="hint" style="margin-top:4px">Requires the lineup's summed ownership to be at least this much (0 = no floor; same units as "Total Own" on a built lineup, e.g. 130). Set very high to see a "super chalk" build for comparison against the true optimal.</div>
@@ -1564,7 +1564,7 @@ in this browser's localStorage.</p>
           <div class="chip-select" id="teamCapList"></div>
           <div class="hint" style="margin-top:4px">E.g. cap KC at 2 players. Click an added cap to remove it. If a locked player already exceeds a cap, the build will fail with a clear reason.</div>
         </div>
-        <div style="grid-column:1/-1;">
+        <div id="wrapGameCapsField" style="grid-column:1/-1;">
           <span class="field-label">Game Exposure Caps (optional -- max combined players from both teams in a game)</span>
           <div class="preset-row">
             <select id="gameCapGameSelect"></select>
@@ -1574,10 +1574,23 @@ in this browser's localStorage.</p>
           <div class="chip-select" id="gameCapList"></div>
           <div class="hint" style="margin-top:4px">E.g. cap KC vs DEN at 4 combined players. Independent from (and additive with) a Game Stack's minimum -- a contradictory combination will fail to build.</div>
         </div>
+        <!-- Session 13.5 -- Showdown-only min-team-players floor (decision
+             #47), the mirror of Team Exposure Caps above. Only shown when
+             the loaded pool is a Showdown pool -- see updateControlsVisibility(). -->
+        <div id="wrapMinTeamPlayersField" style="grid-column:1/-1; display:none;">
+          <span class="field-label">Min Team Players (Showdown only -- force a one-sided lineup)</span>
+          <div class="preset-row">
+            <select id="minTeamTeamSelect"></select>
+            <input type="number" id="minTeamValueInput" min="0" max="9" value="4" style="width:70px">
+            <button class="upload-btn" id="btnAddMinTeamFloor" type="button">Add Floor</button>
+          </div>
+          <div class="chip-select" id="minTeamList"></div>
+          <div class="hint" style="margin-top:4px">E.g. floor KC at 4 to force at least 4 of the roster's players from KC. The other team must still have at least 1 player -- an impossible floor fails loudly before the solver runs, not as a silent no-op.</div>
+        </div>
       </div>
 
       <div class="controls-grid">
-        <div>
+        <div id="wrapFlexPositionsField">
           <span class="field-label">FLEX Eligible Positions</span>
           <div class="controls-grid" style="grid-template-columns:repeat(3,auto); gap:16px; margin-top:6px;">
             <label class="checkbox-row" style="margin-top:0;"><input type="checkbox" id="ctrlFlexRb" checked> RB</label>
@@ -1720,10 +1733,51 @@ in this browser's localStorage.</p>
 
   var SITE_CONFIG = {
     dk: { label: "DraftKings", cap: 50000, defSlot: "DST", slotOrder: ["QB","RB1","RB2","WR1","WR2","WR3","TE","FLEX","DST"],
-          fixedCounts: { QB: 1, DST: 1 }, flexFixed: { RB: 2, WR: 3, TE: 1 }, flexCount: 1, defensePositions: ["DST"] },
+          fixedCounts: { QB: 1, DST: 1 }, flexFixed: { RB: 2, WR: 3, TE: 1 }, flexCount: 1, defensePositions: ["DST"],
+          // Session 13.5 -- Showdown/Single-Game shape, mirrors optimizer.py's
+          // SITE_CONFIGS[site]["showdown"] (ingest_salaries.py): 1 CPT slot
+          // (1.5x salary/points) + 5 FLEX slots, same $50,000 cap as classic.
+          showdown: { cap: 50000, captainLabel: "CPT", flexLabel: "FLEX", slotOrder: ["CPT","FLEX1","FLEX2","FLEX3","FLEX4","FLEX5"] } },
     fd: { label: "FanDuel",    cap: 60000, defSlot: "DEF", slotOrder: ["QB","RB1","RB2","WR1","WR2","WR3","TE","FLEX","DEF"],
-          fixedCounts: { QB: 1, DEF: 1 }, flexFixed: { RB: 2, WR: 3, TE: 1 }, flexCount: 1, defensePositions: ["D","DEF"] }
+          fixedCounts: { QB: 1, DEF: 1 }, flexFixed: { RB: 2, WR: 3, TE: 1 }, flexCount: 1, defensePositions: ["D","DEF"],
+          // Session 13.5 -- FD's Showdown: 1 MVP slot (1.5x salary/points) +
+          // 4 FLEX slots, same $60,000 cap as classic.
+          showdown: { cap: 60000, captainLabel: "MVP", flexLabel: "FLEX", slotOrder: ["MVP","FLEX1","FLEX2","FLEX3","FLEX4"] } }
   };
+
+  // Session 13.5 -- Showdown detection. A LINEUP row set is Showdown iff it
+  // carries a roster_role column at all (optimizer.py's assign_showdown_
+  // roster_slots() adds it only for Showdown output -- classic lineup CSVs
+  // never have this column). A POOL row set (final_projections) is Showdown
+  // iff its slate_format column reads "showdown" (build_projections.py
+  // stamps this on every row, Session 13.2/13.3). Checking both here means
+  // one helper works for both file kinds without the caller needing to know
+  // which one it has.
+  function isShowdownRows(rows) {
+    if (!rows || !rows.length) return false;
+    var r0 = rows[0];
+    if (Object.prototype.hasOwnProperty.call(r0, "slate_format")) {
+      return String(r0.slate_format).toLowerCase() === "showdown";
+    }
+    return Object.prototype.hasOwnProperty.call(r0, "roster_role");
+  }
+
+  function poolIsShowdown(site) {
+    var pool = state.pool[site];
+    return !!(pool && pool.players && pool.players.length && isShowdownRows(pool.players));
+  }
+
+  // Returns a classic-shaped or Showdown-shaped view of SITE_CONFIG[site]
+  // (same cap/slotOrder/defSlot/label keys either way) so render(),
+  // downloadLineupsForImport(), etc. don't need their own Showdown
+  // branching -- they just ask for "today's" config.
+  function effectiveCfg(site, isShowdown) {
+    var base = SITE_CONFIG[site];
+    if (!isShowdown) return { cap: base.cap, slotOrder: base.slotOrder, defSlot: base.defSlot, label: base.label };
+    var sd = base.showdown;
+    return { cap: sd.cap, slotOrder: sd.slotOrder, defSlot: sd.captainLabel, label: base.label,
+             captainLabel: sd.captainLabel, flexLabel: sd.flexLabel };
+  }
 
   var state = {
     activeSite: "dk",
@@ -1745,6 +1799,9 @@ in this browser's localStorage.</p>
     // ---- Session 12 additions (decisions #36-38) ----
     maxTeamCaps: { dk: {}, fd: {} },            // team -> cap int
     maxGameCaps: { dk: {}, fd: {} },            // "TEAM-TEAM" (sorted) -> cap int
+    // ---- Session 13.5 addition -- Showdown-only --min-team-players floor
+    // (decision #47's UI lever, the mirror of maxTeamCaps above) ----
+    minTeamFloors: { dk: {}, fd: {} },          // team -> floor int
     // ---- Session 4.3 additions (Finding 2 -- pivot panel) ----
     pivots: { dk: null, fd: null },             // each: { filename, byKey: { "name|team": [candidate rows, sorted by pivot_rank] } }
     // index into the CURRENTLY DISPLAYED lineup's rows array of the
@@ -1806,7 +1863,13 @@ in this browser's localStorage.</p>
       if (!lineups[id]) { lineups[id] = []; ids.push(id); }
       lineups[id].push(row);
     });
-    var order = SITE_CONFIG[site].slotOrder;
+    // Session 13.5 -- a Showdown lineup's roster_slot values (CPT/MVP,
+    // FLEX1..FLEXN) don't appear in the classic slotOrder at all, so they
+    // used to all fall back to the same "unknown" bucket and sort by
+    // upload/CSV order alone (usually fine since optimizer.py already
+    // writes CPT/MVP first, but not guaranteed for a hand-edited or
+    // re-ordered file) -- pick the matching slotOrder explicitly instead.
+    var order = isShowdownRows(rows) ? SITE_CONFIG[site].showdown.slotOrder : SITE_CONFIG[site].slotOrder;
     ids.forEach(function (id) {
       lineups[id].sort(function (a, b) {
         var ai = order.indexOf(a.roster_slot), bi = order.indexOf(b.roster_slot);
@@ -1962,14 +2025,22 @@ in this browser's localStorage.</p>
   // reliably against the roster row's own player_name/team without
   // needing player_id (which FD's lineup_single still doesn't carry --
   // see pivot_finder.py decision #2).
-  function pivotKey(name, team) {
-    return (name || "").trim().toLowerCase() + "|" + (team || "").trim().toUpperCase();
+  // Session 13.5 -- role is optional (3rd arg) so this same function keys
+  // both classic pivot files (no cash_roster_role column, role omitted)
+  // and Showdown ones (role included) without a separate code path. A
+  // Showdown player has 2 cash-lineup appearances (CPT and FLEX rows share
+  // the same player_id/name/team) with genuinely different pivot
+  // candidates (pivot_finder.py's Session 13.4 fix), so name+team alone
+  // would collide the two roles' candidate lists together.
+  function pivotKey(name, team, role) {
+    return (name || "").trim().toLowerCase() + "|" + (team || "").trim().toUpperCase() +
+      (role ? "|" + String(role).trim().toUpperCase() : "");
   }
 
   function groupPivots(rows) {
     var byKey = {};
     rows.forEach(function (r) {
-      var k = pivotKey(r.cash_player_name, r.cash_team);
+      var k = pivotKey(r.cash_player_name, r.cash_team, r.cash_roster_role);
       if (!byKey[k]) byKey[k] = [];
       byKey[k].push(r);
     });
@@ -2189,7 +2260,15 @@ in this browser's localStorage.</p>
         // support (see downloadLineupsForImport()'s own site_player_id note).
         site_player_id: r.site_player_id || "",
         estimated_ownership_pct: Object.prototype.hasOwnProperty.call(r, "estimated_ownership_pct") && r.estimated_ownership_pct !== ""
-          ? parseFloat(r.estimated_ownership_pct) : null
+          ? parseFloat(r.estimated_ownership_pct) : null,
+        // Session 13.5 -- carried through so the Build panel can detect a
+        // Showdown pool (slate_format) and, for Showdown, distinguish a
+        // player's CPT/MVP pool row from their FLEX pool row (roster_role)
+        // -- a Showdown pool has 2 rows per player_id with different
+        // salary/projection, and dropping this here (as the pre-13.5
+        // whitelist did) made the two indistinguishable in the UI.
+        slate_format: r.slate_format || "classic",
+        roster_role: r.roster_role || ""
       };
     }) : rows;
 
@@ -2333,6 +2412,8 @@ in this browser's localStorage.</p>
 
     var id = d.ids[d.currentIndex];
     var rows = d.lineups[id];
+    var isShowdown = isShowdownRows(rows);
+    cfg = effectiveCfg(site, isShowdown);
 
     var totalSalary = rows.reduce(function (s, r) { return s + (parseFloat(r.salary) || 0); }, 0);
     var totalPts = rows.reduce(function (s, r) { return s + (parseFloat(r.projection) || 0); }, 0);
@@ -2450,7 +2531,9 @@ in this browser's localStorage.</p>
     var downloadHtml =
       '<div class="download-row">' +
       '<button class="action-btn" id="btnDownloadLineups">Download ' + d.ids.length + ' Lineup' + (d.ids.length === 1 ? "" : "s") + ' for ' + cfg.label + ' Import</button>' +
-      '<div class="hint" id="downloadHint">Paste the downloaded rows into the QB/RB/RB/WR/WR/WR/TE/FLEX/' + cfg.defSlot + ' columns of your ' + cfg.label + ' entries file, in order, one row per entry.' +
+      '<div class="hint" id="downloadHint">Paste the downloaded rows into the ' +
+      (isShowdown ? cfg.captainLabel + '/' + cfg.flexLabel + ' x' + (cfg.slotOrder.length - 1) : "QB/RB/RB/WR/WR/WR/TE/FLEX/" + cfg.defSlot) +
+      ' columns of your ' + cfg.label + (isShowdown ? ' Showdown/Single-Game' : '') + ' entries file, in order, one row per entry.' +
       (site === "fd" ? " FD's exact bulk-upload column format hasn't been verified against a real FD export yet -- double check the result before uploading." : "") + '</div>' +
       '</div>';
 
@@ -2472,7 +2555,7 @@ in this browser's localStorage.</p>
         if (swapBtn) {
           applyPivotSwap(site, id, parseInt(swapBtn.getAttribute("data-row-index"), 10),
             swapBtn.getAttribute("data-pivot-name"), swapBtn.getAttribute("data-pivot-team"),
-            swapBtn.getAttribute("data-pivot-position"));
+            swapBtn.getAttribute("data-pivot-position"), swapBtn.getAttribute("data-pivot-role"));
           return;
         }
         var rowEl = e.target.closest(".roster-row.pivot-clickable");
@@ -2492,7 +2575,7 @@ in this browser's localStorage.</p>
     if (!pivotStore) {
       body = '<div class="pivot-empty">No pivot suggestions loaded for this slate yet -- upload pivot_suggestions_' + site + '_{slate_id}.csv from the Slates panel.</div>';
     } else {
-      var candidates = pivotStore.byKey[pivotKey(r.player_name, r.team)] || [];
+      var candidates = pivotStore.byKey[pivotKey(r.player_name, r.team, r.roster_role)] || [];
       if (!candidates.length) {
         // Decision #7 (pivot_finder.py) -- a genuinely empty result is
         // legitimate information, not an error, so this is worded as such
@@ -2514,7 +2597,8 @@ in this browser's localStorage.</p>
             'LEV ' + (parseFloat(c.leverage_score) || 0).toFixed(1) +
             '</div></div>' +
             '<button class="pivot-swap-btn" data-row-index="' + rowIndex + '" data-pivot-name="' + escapeHtml(c.pivot_player_name.trim()) +
-            '" data-pivot-team="' + escapeHtml(c.pivot_team) + '" data-pivot-position="' + escapeHtml(r.position) + '">Swap In</button>' +
+            '" data-pivot-team="' + escapeHtml(c.pivot_team) + '" data-pivot-position="' + escapeHtml(r.position) +
+            '" data-pivot-role="' + escapeHtml(c.pivot_roster_role || "") + '">Swap In</button>' +
             '</div>';
         }).join("");
       }
@@ -2531,15 +2615,20 @@ in this browser's localStorage.</p>
   // itself uses). Works on whichever lineup is currently on screen --
   // per the user's own framing, every lineup built (cash or GPP-labeled)
   // is just "a lineup," so this isn't restricted to a single-lineup mode.
-  function applyPivotSwap(site, lineupId, rowIndex, pivotName, pivotTeam, position) {
+  function applyPivotSwap(site, lineupId, rowIndex, pivotName, pivotTeam, position, pivotRole) {
     var d = state.data[site];
     var pool = state.pool[site];
     if (!d || !d.lineups[lineupId]) return;
     if (!pool) { setSlateStatus("Load this slate's player pool before applying a swap.", false); return; }
+    // Session 13.5 -- a Showdown pool has 2 rows per player_id (CPT/MVP and
+    // FLEX, different salary/projection), so name+team+position alone is no
+    // longer unique -- match on pivotRole too when the candidate carried one
+    // (pivot_roster_role, empty/absent for classic, where this is a no-op).
     var target = pool.players.find(function (p) {
       return p.player_name.trim().toLowerCase() === pivotName.trim().toLowerCase() &&
         (p.team || "").trim().toUpperCase() === pivotTeam.trim().toUpperCase() &&
-        p.position === position;
+        p.position === position &&
+        (!pivotRole || p.roster_role === pivotRole);
     });
     if (!target) {
       setSlateStatus("Couldn't find " + pivotName + " in the current player pool -- pool may be stale relative to this pivot_suggestions file.", false);
@@ -2557,7 +2646,8 @@ in this browser's localStorage.</p>
       salary: target.salary,
       projection: target.final_projection,
       opponent: target.opponent || "",
-      site_player_id: target.site_player_id || ""
+      site_player_id: target.site_player_id || "",
+      roster_role: target.roster_role || oldRow.roster_role || ""
     };
     state.swappedSlots[site][lineupId + "|" + oldRow.roster_slot] = true;
     state.expandedPivotRow[site] = null;
@@ -2587,10 +2677,18 @@ in this browser's localStorage.</p>
 
   function downloadLineupsForImport() {
     var site = state.activeSite;
-    var cfg = SITE_CONFIG[site];
     var d = state.data[site];
     if (!d) return;
+    // Session 13.5 -- detect from whichever lineup is actually loaded
+    // (d.ids[0]'s rows), not the pool, so this still works if a lineup CSV
+    // was uploaded directly without its matching pool.
+    var isShowdown = d.ids.length ? isShowdownRows(d.lineups[d.ids[0]]) : false;
+    var cfg = effectiveCfg(site, isShowdown);
 
+    // Stripping trailing digits turns RB1/RB2->RB, FLEX1..FLEXN->FLEX, etc.
+    // -- for Showdown this already produces exactly DK/FD's own bulk-upload
+    // header shape (CPT,FLEX,FLEX,FLEX,FLEX,FLEX / MVP,FLEX,FLEX,FLEX,FLEX)
+    // with no separate branch needed.
     var header = cfg.slotOrder.map(function (s) { return s.replace(/[0-9]+$/, ""); });
     var lines = [header.map(csvField).join(",")];
     var missingIds = 0;
@@ -2626,7 +2724,8 @@ in this browser's localStorage.</p>
         hintEl.textContent = "Downloaded " + d.ids.length + " lineup(s), but " + missingIds + " player slot(s) had no " + cfg.label + " ID and were written as name-only -- " + cfg.label + " will reject those cells. Rebuild this slate with the current build_projections.py (needs its site_player_id column) and re-download.";
         hintEl.classList.add("warn-text");
       } else {
-        hintEl.textContent = "Downloaded " + d.ids.length + " lineup(s) -- paste the rows into the QB/RB/RB/WR/WR/WR/TE/FLEX/" + cfg.defSlot + " columns of your " + cfg.label + " entries file, in order.";
+        var cols = isShowdown ? cfg.captainLabel + "/" + cfg.flexLabel + " x" + (cfg.slotOrder.length - 1) : "QB/RB/RB/WR/WR/WR/TE/FLEX/" + cfg.defSlot;
+        hintEl.textContent = "Downloaded " + d.ids.length + " lineup(s) -- paste the rows into the " + cols + " columns of your " + cfg.label + (isShowdown ? " Showdown/Single-Game" : "") + " entries file, in order.";
         hintEl.classList.remove("warn-text");
       }
     }
@@ -2937,7 +3036,7 @@ in this browser's localStorage.</p>
   // ---------------- Session 7.3 -- Player list: tabs, sorting, value column,
   // ownership column (item #10; item #6's ownership display) ----------------
 
-  var POOL_TABS = ["ALL", "QB", "RB", "WR", "TE", "DST"];
+  var POOL_TABS = ["ALL", "QB", "RB", "WR", "TE", "DST", "K"];
   var SORT_COLUMNS = [
     { key: "salary", label: "Price" },
     { key: "final_projection", label: "Proj" },
@@ -3070,7 +3169,8 @@ in this browser's localStorage.</p>
         '<button class="icon-btn lock-btn' + (isLocked ? ' active' : '') + '" data-action="lock" title="' + (isLocked ? 'Unlock' : 'Lock') + '">' + lockIcon + '</button>' +
         '<button class="icon-btn exclude-btn' + (isExcluded ? ' active' : '') + '" data-action="exclude" title="' + (isExcluded ? 'Un-exclude' : 'Exclude') + '">&#x2715;</button>' +
         '</div>' +
-        '<div><div class="pname">' + escapeHtml(p.player_name) + '</div>' +
+        '<div><div class="pname">' + escapeHtml(p.player_name) +
+        (p.roster_role ? ' <span style="color:var(--amber);font-size:11px;">(' + escapeHtml(p.roster_role) + ')</span>' : '') + '</div>' +
         '<div class="pmeta">' + escapeHtml(p.position) + ' · ' + escapeHtml(p.team) + '</div></div>' +
         '<div class="psal">' + fmtMoney(p.salary) + '</div>' +
         '<div class="pproj">' + fmtPts(p.final_projection) + '</div>' +
@@ -3246,8 +3346,24 @@ in this browser's localStorage.</p>
   }
 
   function updateControlsVisibility() {
+    // Session 13.5 -- optimizer.py's main() hard-rejects --stack-mode,
+    // --max-game-players, --flex-positions, --min-total-ownership, and
+    // --min-projection for a Showdown pool (decision #45), and
+    // --min-team-players ONLY applies to Showdown (decision #47). Hide the
+    // former (rather than let a build fail with a parser.error the UI
+    // never explained) and show the latter, based on whichever pool is
+    // currently loaded for the active site.
+    var isShowdown = poolIsShowdown(state.activeSite);
+    ["wrapStackModeField", "wrapMinProjectionField", "wrapMinTotalOwnershipField",
+     "wrapGameCapsField", "wrapFlexPositionsField"].forEach(function (id) {
+      var el = document.getElementById(id);
+      if (el) el.style.display = isShowdown ? "none" : "";
+    });
+    var minTeamEl = document.getElementById("wrapMinTeamPlayersField");
+    if (minTeamEl) minTeamEl.style.display = isShowdown ? "" : "none";
+
     var stackMode = document.getElementById("ctrlStackMode").value;
-    var showStack = stackMode !== "none";
+    var showStack = !isShowdown && stackMode !== "none";
     document.getElementById("stackSubFields").style.display = showStack ? "" : "none";
     document.getElementById("wrapMiniType").style.display = stackMode === "mini" ? "" : "none";
     document.getElementById("wrapStackSize").style.display = stackMode === "qb" ? "" : "none";
@@ -3365,6 +3481,8 @@ in this browser's localStorage.</p>
       el.innerHTML = "";
       renderStackTeamOptions(); renderStackGameOptions();
       renderTeamCapSelect(); renderGameCapSelect(); renderTeamCapList(); renderGameCapList();
+      renderMinTeamSelect(); renderMinTeamList();
+      updateControlsVisibility();
       return;
     }
 
@@ -3398,6 +3516,9 @@ in this browser's localStorage.</p>
     renderGameCapSelect();
     renderTeamCapList();
     renderGameCapList();
+    renderMinTeamSelect();
+    renderMinTeamList();
+    updateControlsVisibility();
   }
 
   // ---------------- Session 7.3, decision #32 -- stack team/game chip pickers ----------------
@@ -3540,6 +3661,50 @@ in this browser's localStorage.</p>
     }).join("");
   }
 
+  // Session 13.5 -- Showdown-only min-team-players floor UI (decision #47).
+  // Same select-driven "read teams straight off the loaded slate" pattern
+  // as renderTeamCapSelect/List above, just against state.minTeamFloors
+  // instead of state.maxTeamCaps.
+  function renderMinTeamSelect() {
+    var site = state.activeSite;
+    var pool = state.pool[site];
+    var select = document.getElementById("minTeamTeamSelect");
+    if (!pool) { select.innerHTML = '<option value="">Upload a slate first</option>'; return; }
+    var teams = Array.from(new Set(pool.players.map(function (p) { return p.team; }))).filter(Boolean).sort();
+    select.innerHTML = teams.map(function (t) {
+      return '<option value="' + escapeHtml(t) + '">' + escapeHtml(t) + '</option>';
+    }).join("");
+  }
+
+  function renderMinTeamList() {
+    var site = state.activeSite;
+    var floors = state.minTeamFloors[site];
+    var container = document.getElementById("minTeamList");
+    var teams = Object.keys(floors).sort();
+    if (!teams.length) { container.innerHTML = ""; return; }
+    container.innerHTML = teams.map(function (t) {
+      return '<button type="button" class="tab-btn active" data-floor-team="' + escapeHtml(t) + '">' +
+        escapeHtml(t) + ': min ' + floors[t] + ' \u2715</button>';
+    }).join("");
+  }
+
+  document.getElementById("btnAddMinTeamFloor").addEventListener("click", function () {
+    var site = state.activeSite;
+    var team = document.getElementById("minTeamTeamSelect").value;
+    var n = parseInt(document.getElementById("minTeamValueInput").value, 10);
+    if (!team || isNaN(n) || n < 0) return;
+    state.minTeamFloors[site][team] = n;
+    renderMinTeamList();
+  });
+
+  document.getElementById("minTeamList").addEventListener("click", function (e) {
+    var btn = e.target.closest("button[data-floor-team]");
+    if (!btn) return;
+    var site = state.activeSite;
+    delete state.minTeamFloors[site][btn.getAttribute("data-floor-team")];
+    renderMinTeamList();
+  });
+
   document.getElementById("btnAddTeamCap").addEventListener("click", function () {
     var site = state.activeSite;
     var team = document.getElementById("teamCapTeamSelect").value;
@@ -3617,11 +3782,25 @@ in this browser's localStorage.</p>
     var slateId = selVal.split("|").slice(1).join("|") || "";
     var params = { site: site, slate_id: slateId, mode: "multi" };
 
+    // Session 13.5 -- explicit rather than left to optimizer.py's own
+    // "auto" default: this UI already knows (from the loaded pool's
+    // slate_format) whether this is a Showdown build, so sending it
+    // catches an accidental wrong-file mismatch as a clear dispatch error
+    // instead of a confusing downstream one. Classic is left unsent
+    // (auto already resolves to classic correctly) so classic dispatch
+    // behavior stays byte-identical to every prior session's.
+    var isShowdown = poolIsShowdown(site);
+    if (isShowdown) params.format = "showdown";
+
     params.n_lineups = document.getElementById("ctrlNLineups").value;
     params.max_exposure = String(parseFloat(document.getElementById("ctrlMaxExposure").value) / 100);
     params.uniqueness = document.getElementById("ctrlUniqueness").value;
 
-    var stackMode = document.getElementById("ctrlStackMode").value;
+    // Session 13.5 -- Stacking has no Showdown support yet (decision #45)
+    // -- the control is hidden in the UI (updateControlsVisibility()) but
+    // guard here too, in case ctrlStackMode's value is stale from a
+    // classic slate viewed earlier in the same session.
+    var stackMode = isShowdown ? "none" : document.getElementById("ctrlStackMode").value;
     if (stackMode !== "none") {
       params.stack_mode = stackMode;
       if (stackMode === "qb") {
@@ -3648,10 +3827,24 @@ in this browser's localStorage.</p>
     if (teamCapKeys.length) {
       params.max_team_players = teamCapKeys.map(function (t) { return t + ":" + teamCaps[t]; }).join(",");
     }
-    var gameCaps = state.maxGameCaps[site];
-    var gameCapKeys = Object.keys(gameCaps);
-    if (gameCapKeys.length) {
-      params.max_game_players = gameCapKeys.map(function (g) { return g + ":" + gameCaps[g]; }).join(",");
+    if (!isShowdown) {
+      var gameCaps = state.maxGameCaps[site];
+      var gameCapKeys = Object.keys(gameCaps);
+      if (gameCapKeys.length) {
+        params.max_game_players = gameCapKeys.map(function (g) { return g + ":" + gameCaps[g]; }).join(",");
+      }
+    }
+
+    // Session 13.5 -- decision #47's Showdown-only floor, the mirror of
+    // max_team_players above (which DOES still apply to Showdown, unlike
+    // max_game_players -- a Showdown pool is only ever 1 game, so a game
+    // cap is meaningless there, but a team cap/floor still is).
+    if (isShowdown) {
+      var minFloors = state.minTeamFloors[site];
+      var minFloorKeys = Object.keys(minFloors);
+      if (minFloorKeys.length) {
+        params.min_team_players = minFloorKeys.map(function (t) { return t + ":" + minFloors[t]; }).join(",");
+      }
     }
 
     var randomization = parseFloat(document.getElementById("ctrlRandomization").value);
@@ -3674,27 +3867,33 @@ in this browser's localStorage.</p>
     // here rather than sending an explicit 0 (matches optimizer.py's own
     // argparse default either way, but keeps the sent request minimal and
     // consistent with the rest of this function).
-    var minProjection = parseFloat(document.getElementById("ctrlMinProjection").value);
-    if (!isNaN(minProjection) && minProjection > 0) {
-      params.min_projection = String(minProjection);
-    }
-    var minTotalOwnership = parseFloat(document.getElementById("ctrlMinTotalOwnership").value);
-    if (!isNaN(minTotalOwnership) && minTotalOwnership > 0) {
-      params.min_total_ownership = String(minTotalOwnership);
+    if (!isShowdown) {
+      var minProjection = parseFloat(document.getElementById("ctrlMinProjection").value);
+      if (!isNaN(minProjection) && minProjection > 0) {
+        params.min_projection = String(minProjection);
+      }
+      var minTotalOwnership = parseFloat(document.getElementById("ctrlMinTotalOwnership").value);
+      if (!isNaN(minTotalOwnership) && minTotalOwnership > 0) {
+        params.min_total_ownership = String(minTotalOwnership);
+      }
     }
 
     // Session 7.3, item #8: FLEX-eligible positions. Only sent when a
     // strict subset is chosen -- all three checked (the default) omits the
     // param entirely, matching optimizer.py's own "unset = all three" default.
-    var flexPositions = [];
-    if (document.getElementById("ctrlFlexRb").checked) flexPositions.push("RB");
-    if (document.getElementById("ctrlFlexWr").checked) flexPositions.push("WR");
-    if (document.getElementById("ctrlFlexTe").checked) flexPositions.push("TE");
-    if (flexPositions.length === 0) {
-      setSolveStatus("At least one FLEX-eligible position (RB/WR/TE) must stay checked.", "error");
-      return null;
+    // Session 13.5 -- skipped entirely for Showdown (decision #45: any
+    // position is eligible in every slot, --flex-positions is rejected).
+    if (!isShowdown) {
+      var flexPositions = [];
+      if (document.getElementById("ctrlFlexRb").checked) flexPositions.push("RB");
+      if (document.getElementById("ctrlFlexWr").checked) flexPositions.push("WR");
+      if (document.getElementById("ctrlFlexTe").checked) flexPositions.push("TE");
+      if (flexPositions.length === 0) {
+        setSolveStatus("At least one FLEX-eligible position (RB/WR/TE) must stay checked.", "error");
+        return null;
+      }
+      if (flexPositions.length < 3) params.flex_positions = flexPositions.join(",");
     }
-    if (flexPositions.length < 3) params.flex_positions = flexPositions.join(",");
 
     return params;
   }
