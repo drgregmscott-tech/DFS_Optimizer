@@ -1122,7 +1122,23 @@ def solve_lineup(players: pd.DataFrame, salary_cap: int, fixed_counts: dict,
     # Precompute sigma^2 per player from the REAL sigma column (not the
     # randomized draw). getattr default 0.0 keeps this backward-compatible
     # with legacy pools that predate Session 10.3a.
-    real_sigma = players.set_index("player_id")["sigma"] if "sigma" in players.columns else (
+    #
+    # Bug fix (Session 13.4, found via Greg's real-data Showdown run and
+    # backported here since classic has the IDENTICAL latent exposure):
+    # build_projections.py's `sigma` column can be PRESENT but only
+    # PARTIALLY populated -- Session 13.1's kicker model writes real sigma
+    # for kicker rows, but skill/DST rows never get a sigma value merged
+    # back in (dst_out's sigma is computed then dropped before the final
+    # concat, never re-merged -- see build_projections.py's `_dst_extra`).
+    # A `sigma` column that's NaN for most rows previously crashed PuLP
+    # ("Cannot multiply variables with NaN/inf values") building the
+    # objective below -- for ANY lam, including the default lam=0.0, since
+    # 0 * NaN is NaN, not 0 (this is a real LP coefficient being built, not
+    # a Python float that could short-circuit). `.fillna(0.0)` is the
+    # correct fix, not a workaround -- a row with no real sigma should
+    # never have contributed a variance penalty, identical to how this
+    # exact fallback already behaves when the column is absent entirely.
+    real_sigma = players.set_index("player_id")["sigma"].fillna(0.0) if "sigma" in players.columns else (
         players.set_index("player_id")["final_projection"] * 0.0
     )
     var = (real_sigma ** 2)
@@ -2154,7 +2170,24 @@ def solve_showdown_lineup(players: pd.DataFrame, site: str,
     team = indexed["team"]
     role = indexed["roster_role"]
 
-    real_sigma = indexed["sigma"] if "sigma" in players.columns else pd.Series(0.0, index=indexed.index)
+    # Bug fix (found via Greg's real-data run, Session 13.4): build_projections.py
+    # (the legacy path) leaves a `sigma` column PRESENT but only PARTIALLY
+    # populated -- Session 13.1's kicker model writes real sigma values for
+    # kicker rows, but skill/DST rows never get a sigma column merged back in
+    # (dst_out's sigma is computed then dropped before the final concat --
+    # see build_projections.py's `_dst_extra`, never re-merged). The result is
+    # a `sigma` column that EXISTS but is NaN for most rows, not absent. PuLP
+    # raises "Cannot multiply variables with NaN/inf values" building the
+    # objective the moment ANY coefficient is NaN -- this happens regardless
+    # of lam's value (0 * NaN is NaN, not 0; there's no short-circuit,
+    # this is building a real LP coefficient, not evaluating a Python float).
+    # `.fillna(0.0)` is the correct fix, not a workaround: it's the exact
+    # same "missing sigma = 0.0" fallback this file already uses when the
+    # column is absent entirely (getattr(row, "sigma", 0.0) in
+    # assign_showdown_roster_slots) -- a row with no real sigma should
+    # never have contributed a variance penalty, present-but-NaN or
+    # absent-column should behave identically.
+    real_sigma = indexed["sigma"].fillna(0.0) if "sigma" in players.columns else pd.Series(0.0, index=indexed.index)
     var = real_sigma ** 2
 
     if lam != 0.0:
