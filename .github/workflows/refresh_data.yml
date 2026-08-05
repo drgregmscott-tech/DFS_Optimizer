@@ -162,7 +162,16 @@ jobs:
       - name: Pull fresh Vegas lines
         id: vegas
         continue-on-error: true
-        run: python3 scripts/vegas_odds.py --week ${{ steps.slate.outputs.dk_week }}
+        # Session 13.5-pause Bug Fix: was --week ${{ steps.slate.outputs.dk_week }}.
+        # --week was only ever a filename label here (vegas_odds.py always pulls
+        # every currently-live game regardless), borrowed from the unrelated
+        # stats-lookback week -- caused a real bug where a stale/unrelated
+        # vegas_implied_totals_{week}.csv got silently reused for a slate that
+        # shared that week number for stats-carryover purposes only. Pulled
+        # once here under DK's slate_id; both sites' builds below point at
+        # this same pull via --vegas-slate-id, since vegas lines are
+        # site-agnostic.
+        run: python3 scripts/vegas_odds.py --slate-id ${{ steps.slate.outputs.dk_slate_id }}
 
       - name: Pull fresh injury/active status
         id: status_pull
@@ -198,7 +207,8 @@ jobs:
           python3 scripts/build_projections.py --site dk \
             --season ${{ steps.slate.outputs.season }} \
             --week ${{ steps.slate.outputs.dk_week }} \
-            --slate-id ${{ steps.slate.outputs.dk_slate_id }}
+            --slate-id ${{ steps.slate.outputs.dk_slate_id }} \
+            --vegas-slate-id ${{ steps.slate.outputs.dk_slate_id }}
 
       - name: Rebuild projections -- FD
         id: proj_fd
@@ -208,7 +218,8 @@ jobs:
           python3 scripts/build_projections.py --site fd \
             --season ${{ steps.slate.outputs.season }} \
             --week ${{ steps.slate.outputs.fd_week }} \
-            --slate-id ${{ steps.slate.outputs.fd_slate_id }}
+            --slate-id ${{ steps.slate.outputs.fd_slate_id }} \
+            --vegas-slate-id ${{ steps.slate.outputs.dk_slate_id }}
 
       - name: Apply status (zero OUT players) -- DK
         id: apply_dk

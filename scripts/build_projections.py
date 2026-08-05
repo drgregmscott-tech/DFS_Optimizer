@@ -90,11 +90,22 @@ def load_matchup_factors(site, season, week):
     return pd.read_csv(path)
 
 
-def load_vegas_implied_totals(week):
-    path = OUTPUT_DIR / f"vegas_implied_totals_{week}.csv"
+def load_vegas_implied_totals(slate_id):
+    """Session 13.5-pause Bug Fix (decision #10 continued): was keyed by
+    `week`, not `slate_id`. `week` here was never anything but a filename
+    label borrowed from the (unrelated) historical-stats-lookback week --
+    see vegas_odds.py's module docstring for the full reasoning and the
+    real slate this caused a wrong-data-reused bug on. Keying by slate_id
+    instead removes the NFL-week concept from vegas lookup entirely, so
+    preseason/Madden-Sim/Thanksgiving/playoff slates -- none of which have
+    a clean "NFL week" -- no longer need one just to find their own vegas
+    file, and two different slates can never collide on a shared week
+    number the way vegas_implied_totals_23.csv did here.
+    """
+    path = OUTPUT_DIR / f"vegas_implied_totals_{slate_id}.csv"
     if not path.exists():
         raise FileNotFoundError(
-            f"{path} not found. Run vegas_odds.py --week {week} first (Session 2.3)."
+            f"{path} not found. Run vegas_odds.py --slate-id {slate_id} first (Session 2.3)."
         )
     return pd.read_csv(path)
 
@@ -680,10 +691,23 @@ def build_final_projections(site, season, week, slate_id,
                              anchor_k=salary_anchor.DEFAULT_COLD_START_K,
                              dst_model_mode="legacy",
                              dst_sims=None,
-                             dst_seed=None):
+                             dst_seed=None,
+                             vegas_slate_id=None):
+    """`vegas_slate_id` (Session 13.5-pause Bug Fix, decision #10
+    continued): defaults to `slate_id` -- the common case, one vegas pull
+    per slate. Vegas lines are site-agnostic (vegas_odds.py's own
+    docstring), and DK/FD normally share the same slate_id string for the
+    same real-world slate (confirmed in data/current_slate.json), so a
+    site's own slate_id is the right default. Only needs to be passed
+    explicitly when a site's own slate_id genuinely diverges from the
+    slate_id vegas_odds.py was actually run with (e.g. an automation run
+    that pulls vegas once under DK's slate_id and reuses it for FD's
+    build) -- refresh_data.yml passes this explicitly for exactly that
+    reason.
+    """
     baseline = load_baseline_recent_form(site, season, week)
     matchup = load_matchup_factors(site, season, week)
-    vegas = load_vegas_implied_totals(week)
+    vegas = load_vegas_implied_totals(vegas_slate_id if vegas_slate_id else slate_id)
     salaries = load_salaries(site, slate_id)
     schedule = load_schedule(season)
 
@@ -878,6 +902,10 @@ if __name__ == "__main__":
     parser.add_argument("--slate-id", required=True,
                         help="e.g. classic_wk10 or madden_07312026. "
                              "Names the salary input file AND the output file.")
+    parser.add_argument("--vegas-slate-id", default=None,
+                        help="Which vegas_implied_totals_{X}.csv to read, if it's NOT "
+                             "the same as --slate-id (e.g. FD build reusing a vegas "
+                             "pull made under DK's slate_id). Defaults to --slate-id.")
     parser.add_argument("--salary-anchor-weight", type=float, default=SALARY_ANCHOR_WEIGHT_DEFAULT)
     parser.add_argument("--salary-anchor-cold-start", action="store_true")
     parser.add_argument("--salary-anchor-k", type=float, default=salary_anchor.DEFAULT_COLD_START_K)
@@ -895,6 +923,7 @@ if __name__ == "__main__":
         dst_model_mode=args.dst_model,
         dst_sims=args.dst_sims,
         dst_seed=args.dst_seed,
+        vegas_slate_id=args.vegas_slate_id,
     )
 
     # FIX: output named by slate_id, not week -- two slates in same week never collide.

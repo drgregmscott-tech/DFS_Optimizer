@@ -33,16 +33,32 @@ card -- flagged here and in SESSION_LOG so it doesn't get silently
 relitigated later.
 
 IMPORTANT -- the API returns EVERY currently-listed upcoming game, not just
-one week's slate. `--week` only labels the output filename; it does not
+one slate's games. `--slate-id` only labels the output filename; it does not
 filter which games are pulled. This means a single team can appear in
 multiple rows (one per upcoming game it's part of) in the same output file.
 The `opponent` and `commence_time` columns exist specifically so a
 downstream consumer (e.g. Session 2.4's blend pipeline) can disambiguate
 which row corresponds to the game it actually cares about, rather than
-assuming one row per team. Filtering the pull down to a single specific
-NFL week's date range is a real gap, deliberately deferred -- flagged in
-SESSION_LOG rather than solved here, since it needs a date-to-week mapping
-that's really a Session 5.2 scheduling concern.
+assuming one row per team.
+
+Session 13.5-pause Bug Fix Session (decision #1, this file): was `--week`,
+not `--slate-id`, through Session 13.5. That was a real, recurring problem
+-- `--week` was never anything more than a filename label here (this
+script always pulls "every currently live game" regardless of its value),
+but downstream code borrowed the SAME week number used for historical
+stats lookback (a legitimate, deliberate carryover -- see build_projections
+.py decision #4/#19) to also key vegas lookups (not legitimate -- a
+preseason/Madden-Sim/Thanksgiving/playoff slate has no real relationship
+between "which past week's stats to borrow" and "which vegas file has this
+slate's actual lines"). Concretely this caused an output/vegas_implied_
+totals_23.csv left over from an unrelated earlier pull to get silently
+reused for a real preseason Week 1 Showdown slate, because both happened
+to reuse week=23 for stats-lookback purposes. Renamed to --slate-id to
+match the salaries/projections files (Session 2.4's `final_projections_
+{site}_{slate_id}.csv` fix, same reasoning), removing the NFL-week concept
+from vegas entirely -- every slate now gets its own explicitly-named vegas
+snapshot with no collision risk across different logical periods that
+happen to share a week number.
 
 Credit cost: 2 per call (spreads + totals markets, us region only). See
 SESSION_LOG for the weekly polling cadence this was budgeted against.
@@ -55,7 +71,7 @@ Setup required before this script will run:
      see Session 2.3's SESSION_LOG entry / README's Config section).
 
 Usage:
-  python3 vegas_odds.py --week 10
+  python3 vegas_odds.py --slate-id showdown_preseason_wk1_ari_car
 """
 
 import argparse
@@ -291,8 +307,12 @@ def build_implied_totals(games_json: list[dict]) -> list[dict]:
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("--week", type=int, required=True,
-                         help="Slate week, used only in the output filename")
+    parser.add_argument("--slate-id", required=True,
+                         help="Slate identifier, used only in the output filename -- "
+                              "same string passed to ingest_salaries.py/build_projections.py "
+                              "for the slate this pull is for. Does not filter which games "
+                              "are pulled (see module docstring); just names the file so "
+                              "downstream code loads the right snapshot.")
     args = parser.parse_args()
 
     try:
@@ -310,7 +330,7 @@ if __name__ == "__main__":
     rows = build_implied_totals(games)
 
     OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
-    out_path = OUTPUT_DIR / f"vegas_implied_totals_{args.week}.csv"
+    out_path = OUTPUT_DIR / f"vegas_implied_totals_{args.slate_id}.csv"
 
     import csv
     with out_path.open("w", newline="") as f:
