@@ -569,7 +569,30 @@ def load_raw_salary_csv(path: Path, site: str, fmt: str = "classic") -> pd.DataF
 # Step 2: Build the player reference table from Session 1.2's weekly_stats
 # ---------------------------------------------------------------------------
 
-def build_player_reference(weekly_stats_path: Path) -> pd.DataFrame:
+def build_player_reference(weekly_stats_path: Path,
+                           weekly_rosters_path: Path | None = None) -> pd.DataFrame:
+    """Decision #X (Session 13.5-pause Bug Fix B): `weekly_rosters_path` is
+    new. Before this fix, the whole matching universe came from
+    weekly_stats -- players with >=1 logged snap that season. A true
+    rookie or anyone with zero snaps has no row there at all, so
+    name_mapping.csv (which can only redirect an existing row, never
+    manufacture a new one) could never resolve them, and build_projections
+    .py's `players[players["player_id"].notna()]` gate silently dropped
+    them downstream. The cold-start salary-anchor blend (Session 10.0-
+    10.2) already exists specifically for zero-history players -- it just
+    never got a chance to run, because this gate filtered them out first.
+    Confirmed real via a real DK preseason ingest this session: Carson
+    Beck (2026 draft prospect, ARI's real starting QB per the salary file)
+    and 43 others, 34.9% unmatched.
+
+    weekly_rosters' player-identifier column is `gsis_id`, not `player_id`
+    -- CONFIRMED the same ID scheme/values as weekly_stats' `player_id`
+    (verified against real 2025 data this session: Patrick Mahomes'
+    gsis_id and player_id are both '00-0033873'; ingest_historical.py's
+    Session 1.2 ROSTER_KEY comment independently confirms the same thing).
+    No crosswalk file needed -- gsis_id IS player_id, just a differently-
+    named column.
+    """
     weekly = pd.read_parquet(weekly_stats_path)
     name_col = "player_display_name" if "player_display_name" in weekly.columns else "player_name"
 
@@ -588,6 +611,37 @@ def build_player_reference(weekly_stats_path: Path) -> pd.DataFrame:
     most_recent["normalized_team"] = most_recent["team"].map(
         lambda t: BASE_TEAM_ABBREV_MAP.get(str(t).strip().upper(), str(t).strip().upper())
     )
+
+    if weekly_rosters_path is not None and Path(weekly_rosters_path).exists():
+        rosters = pd.read_parquet(weekly_rosters_path)
+        rosters = rosters.dropna(subset=["gsis_id", "full_name", "position", "team"])
+        rosters = rosters.sort_values(["gsis_id", "week"])
+        roster_recent = (
+            rosters.groupby("gsis_id")
+            .tail(1)[["gsis_id", "full_name", "position", "team"]]
+            .rename(columns={"gsis_id": "player_id", "full_name": "player_display_name"})
+        )
+        # Only ADD players weekly_stats doesn't already cover -- a player
+        # with real stat history keeps using their weekly_stats row. A
+        # roster snapshot can lag an in-season move; weekly_stats reflects
+        # where they actually played, which is the more reliable signal
+        # when both exist.
+        new_players = roster_recent[~roster_recent["player_id"].isin(most_recent["player_id"])].copy()
+        if len(new_players):
+            new_players["normalized_name"] = new_players["player_display_name"].map(normalize_name)
+            new_players["normalized_team"] = new_players["team"].map(
+                lambda t: BASE_TEAM_ABBREV_MAP.get(str(t).strip().upper(), str(t).strip().upper())
+            )
+            print(f"build_player_reference: added {len(new_players)} roster-only player(s) "
+                  f"with no weekly_stats row (true rookies / zero-snap players) from "
+                  f"{weekly_rosters_path}.")
+            most_recent = pd.concat([most_recent, new_players], ignore_index=True)
+    elif weekly_rosters_path is not None:
+        print(f"NOTE: {weekly_rosters_path} not found -- skipping roster-only player "
+              f"union (Bug Fix B). Rookies/zero-snap players will still be dropped. "
+              f"Run: python3 scripts/ingest_historical.py --season <season>",
+              file=sys.stderr)
+
     return most_recent
 
 
@@ -729,6 +783,13 @@ def main():
     parser.add_argument("--slate-id", required=True, help="e.g. classic_wk1")
     parser.add_argument("--weekly-stats", default=None,
                          help="Override path to weekly_stats parquet (default: data/weekly_stats_{season}.parquet)")
+    parser.add_argument("--weekly-rosters", default=None,
+                         help="Override path to weekly_rosters parquet, used to catch true "
+                              "rookies/zero-snap players missing from weekly_stats (Bug Fix "
+                              "B). Default: data/weekly_rosters_{season+1}.parquet -- the "
+                              "CURRENT season's roster, not --season's (which is last "
+                              "completed season, for stats lookback). Pass --weekly-rosters "
+                              "'' explicitly to disable this (pre-fix behavior).")
     parser.add_argument("--name-mapping", default="data/name_mapping.csv")
     parser.add_argument("--out-dir", default="data")
     parser.add_argument("--log-dir", default="logs")
@@ -738,12 +799,28 @@ def main():
     weekly_stats_path = Path(args.weekly_stats) if args.weekly_stats else Path(
         f"data/weekly_stats_{args.season}.parquet"
     )
+    if args.weekly_rosters == "":
+        weekly_rosters_path = None
+    elif args.weekly_rosters:
+        weekly_rosters_path = Path(args.weekly_rosters)
+    else:
+        # NOT args.season -- this project's established convention (see
+        # DFS_Weekly_Process.md / Handoff_13.5_Pause_BugFixes.md) is that
+        # --season is always "last completed season" (2025), used for
+        # stats-LOOKBACK. Bug Fix B's whole point is catching a CURRENT-
+        # season rookie (e.g. a 2026 draft prospect) who has no games in
+        # any completed season at all -- defaulting this to weekly_rosters_
+        # {args.season}.parquet would silently point at last year's roster,
+        # which never has this year's rookies on it, and the fix would look
+        # broken for a reason that's easy to miss. current season = last
+        # completed season + 1, matching that same established convention.
+        weekly_rosters_path = Path(f"data/weekly_rosters_{args.season + 1}.parquet")
     name_mapping_path = Path(args.name_mapping)
     out_path = Path(args.out_dir) / f"salaries_{args.site}_{args.slate_id}.csv"
     unmatched_path = Path(args.log_dir) / f"unmatched_salaries_{args.site}_{args.slate_id}.csv"
 
     salaries = load_raw_salary_csv(raw_path, args.site, args.format)
-    reference = build_player_reference(weekly_stats_path)
+    reference = build_player_reference(weekly_stats_path, weekly_rosters_path)
     name_mapping = load_name_mapping(name_mapping_path, args.site)
 
     matched = match_players(salaries, reference, name_mapping, args.site)
