@@ -228,7 +228,39 @@ def build_vegas_factors(vegas, opponent_map):
 # Session 10.4 -- distributional DST
 # ---------------------------------------------------------------------------
 
-def _build_dst_distributional(salaries, vegas, site, season, week, sims, seed):
+def _build_dst_distributional(salaries, vegas, site, season, week, sims, seed,
+                              opponent_map=None, vegas_factors=None):
+    """Decision #10 (Session 13.5-pause Bug Fix A): `opponent_map` and
+    `vegas_factors` are new. Before this fix, DST's opponent/opp_implied/
+    opp_sack_allowed_rate/opp_dropbacks/opponent-QB were all resolved
+    independently of the Game-Info opponent_map that skill players and
+    kickers already use (build_opponent_map_from_salaries(), decision #9),
+    straight from the raw vegas file's real-2025-schedule opponent column.
+    On any slate where the in-slate pairing differs from the real schedule
+    (every Madden Sim slate, every preseason Showdown slate so far), that
+    meant a defense's own simulation ran against the wrong offense's rates
+    AND its own displayed opponent/implied_total/over_under disagreed with
+    its own team's skill players in the output CSV / Slate Overview panel.
+    Confirmed real via a real ARI/CAR Showdown slate and a real Madden
+    slate -- see Handoff_13.5_Pause_BugFixes.md, Bug Fix Session A.
+
+    `opponent_map` is threaded into dst_model.build_features() so the
+    SIMULATION's opponent-conditioned inputs use the correct in-slate
+    opponent (dst_model.py decision #23).
+
+    `vegas_factors` (already built by build_vegas_factors() for skill
+    players) is used to source the DISPLAYED implied_total/over_under --
+    option 2, full consistency: a DST row and its own team's skill players
+    must show identical opponent/implied_total/over_under, including
+    falling back to the same 0.0 default when no matching vegas line exists
+    for the in-slate pairing (a real, separate data-availability gap on
+    preseason/Madden slates -- Handoff's "Bug/Question B", not fixed here).
+    This is display-only: the simulation itself still uses the real
+    per-team vegas/team-stats data for the corrected opponent (best real
+    signal available), even on rows where the stricter "matched a vegas
+    line for this exact in-slate pairing" filter used for display comes up
+    empty.
+    """
     import dst_model
 
     defense_values = SITE_CONFIGS[site]["defense_position_values"]
@@ -247,7 +279,8 @@ def _build_dst_distributional(salaries, vegas, site, season, week, sims, seed):
         games = pd.read_parquet(games_path)
 
     teams = sorted(dst["team"].dropna().unique())
-    feat = dst_model.build_features(season, week, teams, vegas, model_obj, games=games)
+    feat = dst_model.build_features(season, week, teams, vegas, model_obj, games=games,
+                                    opponent_map=opponent_map)
     sim = dst_model.simulate(
         feat, site, model_obj,
         n_sims=sims or dst_model.DEFAULT_SIMS,
@@ -277,7 +310,21 @@ def _build_dst_distributional(salaries, vegas, site, season, week, sims, seed):
         played & (league_proj > 0), dst["final_projection"] / max(league_proj, 1e-9), 1.0)
 
     dst["opponent"] = dst["opponent"].where(played).fillna("BYE_OR_UNKNOWN")
-    dst["implied_total"] = dst["own_implied"].where(played).fillna(0.0)
+
+    # Decision #10 continued -- see this function's docstring. Display-only:
+    # source implied_total/over_under from the same vegas_factors table
+    # skill players/kickers use, not the raw per-team vegas row, so a
+    # defense agrees with its own team's skill players in the output.
+    if vegas_factors is not None:
+        vf = vegas_factors.drop_duplicates(subset=["team"]).set_index("team")
+        dst["implied_total"] = dst["team"].map(vf["implied_total"]) if "implied_total" in vf.columns else np.nan
+        dst["over_under"] = dst["team"].map(vf["over_under"]) if "over_under" in vf.columns else np.nan
+    else:
+        # Safety net only -- build_projections.py's own pipeline always
+        # passes vegas_factors. Falls back to the pre-fix raw-vegas value
+        # rather than crashing if some other caller doesn't supply it.
+        dst["implied_total"] = dst["own_implied"]
+    dst["implied_total"] = dst["implied_total"].where(played).fillna(0.0)
     dst["over_under"] = dst["over_under"].where(played).fillna(0.0)
     dst["dst_p10"] = dst["p10"].fillna(0.0).where(played, 0.0)
     dst["dst_p90"] = dst["p90"].fillna(0.0).where(played, 0.0)
@@ -367,13 +414,14 @@ def _build_kicker_projections(salaries, site, opponent_map):
 
 def build_dst_projections(salaries, vegas, site, *, model="legacy",
                            season=None, week=None, sims=None, seed=None,
-                           opponent_map=None):
+                           opponent_map=None, vegas_factors=None):
     if model not in ("legacy", "distributional"):
         raise SystemExit(f"build_dst_projections: unknown model {model!r}.")
     if model == "distributional":
         if season is None or week is None:
             raise SystemExit("build_dst_projections(model='distributional') needs season and week.")
-        return _build_dst_distributional(salaries, vegas, site, season, week, sims, seed)
+        return _build_dst_distributional(salaries, vegas, site, season, week, sims, seed,
+                                         opponent_map=opponent_map, vegas_factors=vegas_factors)
 
     defense_values = SITE_CONFIGS[site]["defense_position_values"]
     site_id_col = SITE_CONFIGS[site]["site_id_col"]
@@ -774,7 +822,8 @@ def build_final_projections(site, season, week, slate_id,
     dst_out = build_dst_projections(build_salaries, vegas, site,
                                     model=dst_model_mode, season=season,
                                     week=week, sims=dst_sims, seed=dst_seed,
-                                    opponent_map=opponent_map if opponent_map else None)
+                                    opponent_map=opponent_map if opponent_map else None,
+                                    vegas_factors=vegas_factors)
     _dst_extra = None
     if "sigma" in dst_out.columns:
         _dst_extra = dst_out[["player_id", "sigma", "dst_p10", "dst_p90"]].copy()

@@ -278,12 +278,25 @@ def _season_totals(team_stats: pd.DataFrame, upto_week: int | None) -> pd.DataFr
 
 
 def build_features(season: int, week: int, teams, vegas: pd.DataFrame,
-                   model: dict, games: pd.DataFrame | None = None) -> pd.DataFrame:
+                   model: dict, games: pd.DataFrame | None = None,
+                   opponent_map: dict | None = None) -> pd.DataFrame:
     """Assemble one feature row per defense in `teams`.
 
     `vegas` is `vegas_implied_totals_{week}.csv` as build_projections.py
     loads it (columns: team, opponent, implied_total, over_under). A team
     absent from it has no game -- decision #16.
+
+    `opponent_map` (Session 13.5-pause Bug Fix A): optional team -> opponent
+    override, the SAME Game-Info-derived map skill players and kickers
+    already use (build_projections.py decision #9). Without this, a
+    defense's opponent/opp_implied/opp_sack_allowed_rate/opp_dropbacks/
+    opponent-QB were all resolved from `vegas`'s own "opponent" column --
+    that team's REAL 2025-schedule opponent that week, which is not
+    necessarily who it's actually facing on this slate (Madden Sim and
+    preseason Showdown slates routinely pair teams that never play each
+    other in real life). Confirmed real via a real ARI/CAR Showdown slate
+    and a real Madden slate, not hypothetical -- see
+    Handoff_13.5_Pause_BugFixes.md, Bug Fix Session A.
     """
     # Decision #12 -- normalise the caller's team codes before anything
     # joins on them. The vegas file comes from a site-normalised source and
@@ -399,7 +412,14 @@ def build_features(season: int, week: int, teams, vegas: pd.DataFrame,
     vg = vegas.drop_duplicates(subset=["team"]).set_index("team")
     for team in teams:
         has_game = team in vg.index
-        opp = vg.at[team, "opponent"] if has_game else None
+        # Decision #23: prefer the Game-Info-resolved opponent (passed in as
+        # opponent_map) over the raw vegas file's real-schedule opponent --
+        # see docstring above. Falls back to the old vegas-derived value when
+        # no override is supplied (opponent_map=None, e.g. actuals/backtest
+        # callers) or the team isn't in the map, so this is a no-op for every
+        # existing real-season classic-slate caller.
+        vegas_opp = vg.at[team, "opponent"] if has_game else None
+        opp = opponent_map.get(team, vegas_opp) if opponent_map else vegas_opp
         opp_implied = float(vg.at[opp, "implied_total"]) if (has_game and opp in vg.index) else np.nan
         rec = {"team": team, "has_game": bool(has_game and not np.isnan(opp_implied)),
                "opponent": opp, "opp_implied": opp_implied,
