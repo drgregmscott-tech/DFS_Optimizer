@@ -3151,3 +3151,226 @@ in `pivot_finder.py`'s Showdown path. When real Showdown slates start
 (~Aug 6, 2026), the first concrete task is extending `log_ownership.py`'s
 schema per the deferred item above, before any real ownership data can
 start accumulating toward Session 11.1's retuning gate.
+
+## Session 13.4 — Optimizer ILP for Showdown Roster Construction
+**Date completed:** 2026-08-05
+**Status:** ✅ Complete
+
+**What was actually built:**
+- New, entirely PARALLEL Showdown ILP solve path in `optimizer.py`, not a
+  retrofit of classic's `solve_lineup()`. Confirmed during scoping that
+  classic's `x = {pid: ... for pid in players["player_id"]}` dict
+  comprehension would silently COLLAPSE a Showdown pool's 2 rows/player
+  (FLEX + CPT/MVP, same `player_id`) down to 1, dropping half the pool
+  with no error -- this is why the roadmap card called this the
+  highest-risk session in the phase. Row-keyed on `player_id::roster_role`
+  instead. Zero lines of the classic formulation touched (until the
+  sigma bug fix below, which is separate).
+- Constraints: exact captain-slot count (1) + FLEX-slot count (5 DK / 4
+  FD), CPT/FLEX mutual exclusivity per player (new constraint type,
+  doesn't exist in classic), min-1-per-team (new constraint type), salary
+  cap (the captain multiplier is already baked into the row-level salary
+  from Session 13.2's ingest -- no special-casing needed, exactly as the
+  original card anticipated).
+- Reused classic's supporting machinery wherever the concept translates
+  directly: locks (forces the player into the lineup in EITHER role --
+  the solver picks whichever is actually optimal, no role-specific lock
+  built), excludes, exposure caps across a batch, uniqueness (counted by
+  underlying player, not role -- a player who was CPT in one lineup and
+  FLEX in another still counts as "the same player" for diversity),
+  `--max-team-players` (unchanged reuse), the lambda mean-variance
+  objective, and projection randomization (a new row-keyed
+  `randomize_showdown_projections()` -- classic's player_id-indexed
+  version would collide on a Showdown pool's duplicate player_ids).
+- `--format {auto,classic,showdown}` CLI flag, default `auto` (detects
+  via the `slate_format` column, same pattern `build_projections.py`
+  already uses) -- no flag needed for a normal run; `classic`/`showdown`
+  are available to force-and-fail-loud if the wrong file gets pointed at.
+- Stacking (`--stack-mode`) and `--max-game-players` explicitly REJECTED
+  for Showdown with a clear `parser.error()`, not silently ignored or
+  half-applied -- deferred per this session's own scoping conversation
+  (see Decisions below).
+- Same-session addendum, added after discussing the stacking deferral
+  with the user: `--min-team-players TEAM:N`, a Showdown-only "one-sided
+  lineup" lever (the mirror of `--max-team-players`) that turned out to
+  cover the actual want ("force 4/5/6 players from one team, make sure
+  it's one-sided") without needing full stacking's opponent-lookup/
+  game-selection/bring-back machinery re-derived for a positionless
+  2-team pool. Structural feasibility (can this floor and the other
+  team's own required min-1 both fit in the roster?) is pre-checked
+  before the solver ever runs, same "fail loud, with a specific reason,
+  before wasting a solve" discipline as every other constraint in this
+  file.
+- `pivot_finder.py` fix: the roadmap card's own premise that this script
+  "likely needs no change" for Showdown was FALSE -- a real bug, not a
+  hypothetical. A Showdown pool's 2 rows/player_id share the exact same
+  normalized (player_name, position, team) triple the existing join key
+  used, so `attach_cash_lineup_context()`'s "exactly 1 match expected"
+  check would always find 2 and crash with `SystemExit` the first time
+  this ran against real or synthetic Showdown output -- not caught by
+  the roadmap card's own text, only by actually tracing the join logic.
+  Fixed by extending the join key with `roster_role` whenever the pool
+  is a Showdown pool, sourced from `optimizer.py`'s own Showdown lineup
+  output (which now carries `roster_role` via `assign_showdown_roster_
+  slots()` -- a schema addition specific to Showdown; classic's
+  `lineup_single_*.csv` schema is unchanged). Pivot candidates are now
+  also required to match the cash player's own `roster_role` -- a CPT
+  alternative should be compared against other CPT rows, not FLEX rows
+  at a different salary/point scale.
+- Bug found and fixed during real-data validation (not caught by any
+  synthetic pool built during development -- only surfaced once the user
+  ran this against a real `build_projections.py` output): that script's
+  `sigma` column can be PRESENT but only PARTIALLY populated (Session
+  13.1's kicker model writes real sigma for kicker rows; DST's sigma is
+  computed then dropped before the final concat and never merged back --
+  see `build_projections.py`'s unused `_dst_extra` variable, flagged
+  below, not fixed this session since `build_projections.py` wasn't
+  otherwise in scope). A `sigma` column that's NaN for most rows crashed
+  PuLP's objective-building step ("Cannot multiply variables with
+  NaN/inf values") regardless of `--lambda`'s value, including the
+  default `lam=0` -- `0 * NaN` is `NaN`, not `0`; this is a real LP
+  coefficient being built, not a Python float that could short-circuit.
+  Fixed with `.fillna(0.0)` where sigma is read, in BOTH the new
+  Showdown path AND the pre-existing classic `solve_lineup()` -- the
+  identical latent bug was confirmed present there too (classic pools go
+  through the same kicker-model-inclusive `build_projections.py`), so
+  this would have broken the next real classic slate run for a reason
+  nobody would have connected back to this session. This is the one
+  classic-path code change this session made -- justified because it's a
+  strict, provably-safe fix (a no-op on any pool where sigma has no
+  nulls, which is every pool this project's existing regression coverage
+  used) and re-verified byte-identical classic regression after applying
+  it.
+
+**Files created/modified:**
+- `scripts/optimizer.py` (modified -- new Showdown section added before
+  `main()`; plus the 2-line sigma-NaN fix inside the pre-existing classic
+  `solve_lineup()`)
+- `scripts/pivot_finder.py` (modified -- join-key + candidate-filter fix
+  for Showdown, described above)
+
+**Validation results:**
+- [x] Synthetic-pool unit tests: CPT/FLEX exclusivity, min-1-per-team,
+  salary cap, exactly 6 (DK) / 5 (FD) total slots -- all enforced,
+  confirmed via `validate_showdown_lineup()` running clean on every test
+  plus manual inspection of output.
+- [x] `optimizer.py` full-file compile check (`python3 -m py_compile`) --
+  clean, both before and after the sigma-NaN fix.
+- [x] Solver produces a valid lineup against a synthetic Showdown pool
+  for BOTH sites (DK: CPT role, 6 slots, $50K cap; FD: MVP role, 5 slots,
+  $60K cap -- both tested).
+- [x] Optimality independently verified by brute force, not just
+  trusted: the unconstrained single-lineup solve, a `--max-team-players`-
+  constrained solve, and a `--min-team-players`-constrained solve all
+  matched their brute-force-computed optimum exactly, checked against two
+  different synthetic pools.
+- [x] `pivot_finder.py` produces sane suggestions against a Showdown pool
+  -- NOT deferred, per the roadmap card's own instruction to decide one
+  way or the other rather than let it silently half-work. Verified on a
+  richer synthetic pool with real lower-owned same-role alternatives;
+  confirmed suggestions never mix CPT and FLEX `roster_role`s.
+- [x] Real-data end-to-end run (this session's most load-bearing
+  validation): pulled real 2025 nflverse player data and ran the ACTUAL
+  `generate_synthetic_slate.py --format showdown` -> `ingest_salaries.py
+  --format showdown` -> (user's own machine, with a fabricated stand-in
+  Vegas file to bypass the Odds API key for this test only --
+  `vegas_odds.py` itself is untouched) `build_projections.py` ->
+  `optimizer.py` -> `pivot_finder.py`. Real player names (Trey McBride,
+  Jacoby Brissett, Rico Dowdle, Marvin Harrison Jr., etc.), real DST/
+  kicker models, real captain-multiplier math (46/46 CPT rows exactly
+  1.5x their linked FLEX row in `build_projections.py`'s own printed
+  check). This run is what surfaced the sigma-NaN bug above -- another
+  instance of this project's "bugs found only by running real data"
+  pattern (Session 4.3's precedent, repeated here).
+- [x] Classic-path regression: `optimizer.py`/`pivot_finder.py` output
+  confirmed BYTE-IDENTICAL against the pre-Session-13.4 originals
+  (diffed directly against files pulled fresh from GitHub, not
+  eyeballed), re-confirmed again after the sigma-NaN fix landed.
+
+**Decisions made / assumptions taken:**
+- Parallel solve path, not a retrofit -- see "What was actually built"
+  above for the concrete reason (classic's dict-comprehension would
+  silently drop half a Showdown pool).
+- Stacking explicitly DEFERRED for Showdown, not built and not silently
+  half-applied. User-confirmed this session that a simpler "min N players
+  from one team" lever fully covers the actual desired behavior ("make
+  sure the lineup is one-sided") -- full stacking's qb/game/mini modes
+  with opponent-lookup/bring-back/candidate-rotation, correctly
+  reinterpreted for a positionless 2-team pool, would have been
+  substantial separately-testable scope for a want that `--min-team-
+  players` already satisfies.
+- `--max-game-players` rejected outright for Showdown, not reinterpreted
+  -- a Showdown pool is always exactly 1 game by definition (Phase 13's
+  own confirmed rule), so "max players per game" is meaningless;
+  `--max-team-players` already covers the only real lever a 2-team pool
+  has.
+- Locking a Showdown player locks them in EITHER role, not a specific
+  one -- not requested, not built. Flag if real usage ever wants a
+  role-specific lock.
+- `pivot_finder.py`'s fix required adding `roster_role` to `optimizer.py`
+  's `lineup_single_*.csv`/`lineups_multi_*.csv` schema (Showdown rows
+  only -- classic's schema is unchanged).
+- The sigma-NaN fix was applied to classic's `solve_lineup()` as well as
+  the new Showdown path, even though `build_projections.py` itself is
+  outside this session's stated scope -- justified as a strict,
+  provably-safe bug fix (see "What was actually built" above) that would
+  otherwise have broken the next real classic slate run for a reason
+  nobody would have connected back to this session.
+
+**Known issues deferred (explicitly, not silently):**
+- **Stacking for Showdown slates** -- not built. `--min-team-players`
+  covers the "one-sided lineup" use case that was the actual ask; full
+  qb/game/mini stack modes for a positionless 2-team pool remain a real,
+  separately-scoped follow-up if ever wanted later.
+- **`--min-total-ownership`, `--flex-positions`, `--min-projection` are
+  not supported for Showdown** -- all three explicitly rejected with a
+  clear CLI error rather than silently ignored. `--flex-positions` has no
+  real meaning for Showdown (no position-restricted slots to restrict
+  further). The other two are real, buildable features just not built
+  this session.
+- **`build_projections.py`'s unused `_dst_extra` variable** (found while
+  diagnosing the sigma-NaN bug) -- DST's real sigma/dst_p10/dst_p90
+  values are computed, captured into `_dst_extra`, and then never merged
+  back into the final output. Not fixed this session (`build_
+  projections.py` wasn't otherwise in scope this session) -- means DST
+  rows currently carry no sigma at all in the legacy `build_
+  projections.py` path, a missed-opportunity gap rather than a
+  correctness bug (the `.fillna(0.0)` fix means this no longer crashes
+  anything). Worth closing in a future `build_projections.py`-focused
+  session.
+- **`pivot_finder.py` produced 0 suggestions on the real Showdown test
+  run** -- explained as a thin-pool artifact (a Showdown pool is always
+  exactly 2 teams by construction, so it has structurally fewer
+  same-position/same-role alternatives than a full classic slate),
+  consistent with this project's existing "Known Testing Artifact"
+  pattern, but not yet confirmed against a real, full-size preseason
+  Showdown slate. Re-check once one is available (~Aug 13-15, this
+  phase's own trigger) -- if pivots are still consistently empty against
+  a real 40+ player pool, that needs a closer look then, not assumed
+  away.
+- **Cosmetic only**: `assign_showdown_roster_slots()`'s (and classic's
+  pre-existing `assign_roster_slots()`'s) `float(getattr(row, "sigma",
+  0.0) or 0.0)` pattern doesn't correctly fall back to 0.0 when `sigma`
+  is a real NaN value (as opposed to a missing column) -- `float('nan')
+  or 0.0` evaluates to NaN in Python, since NaN is truthy. Purely a
+  display quirk in the per-player `sigma` output column (individual
+  cells show NaN instead of 0.0); `sigma_total` is unaffected since
+  pandas' `.sum()` skips NaN by default (confirmed). Not fixed this
+  session -- trivial future cleanup, same pattern in both classic and
+  Showdown output.
+
+**Handoff notes for next session:** Session 13.5 (Frontend Showdown UI +
+Four-Layer Wiring) can now assume a working, real-data-validated
+`optimizer.py`/`pivot_finder.py` Showdown path with this CLI surface:
+`--format`, `--min-team-players` (new), plus every reused classic flag
+(`--lock`, `--exclude`, `--n-lineups`, `--max-exposure`, `--uniqueness`,
+`--randomization-pct`/`--randomization-mode`, `--lambda`,
+`--max-team-players`, `--request-id`). The four explicitly-rejected flags
+(`--stack-mode`, `--max-game-players`, `--flex-positions`,
+`--min-total-ownership`, `--min-projection`) should surface as disabled/
+hidden in the UI for Showdown mode, not left clickable and erroring.
+The Cloudflare Worker's `passthroughKeys` and the GitHub Actions
+flag-builder both need `--min-team-players` added alongside the existing
+team-cap flags -- this project's own "four-layer architecture awareness"
+principle (a new optimizer parameter silently dropped if not added in
+all four places).
