@@ -50,6 +50,20 @@ Madden Sim slates are supported for pipeline testing. A few things to know:
 
 ---
 
+## Showdown/Single-Game slates — what to expect
+
+Showdown (DK "Captain Mode") and Single Game (FD) slates follow the exact same Stage 1–5 flow as a classic slate, with a small number of concrete differences called out at each step below (search this doc for "Showdown" to find them all). The high-level shape:
+
+- **Roster:** 1 Captain/MVP slot (1.5x salary AND 1.5x points) + 5 FLEX slots on DK, or 1 MVP slot + 4 FLEX slots on FD. Any position is eligible in every slot — there's no QB/RB/WR/TE/DST breakdown like classic.
+- **One extra flag at ingest:** `ingest_salaries.py --format showdown` (Step 2f). This is the one step where forgetting the flag doesn't error — it silently ingests as classic instead, so it's worth double-checking.
+- **Everything downstream auto-detects:** `build_projections.py` and the UI both detect Showdown from the ingested file itself — no other command changes.
+- **UI adapts automatically:** once a Showdown pool is loaded, the Build panel hides Stack Mode, Min Projection, Min Total Ownership, FLEX Eligible Positions, and Game Exposure Caps (none of these apply to a 2-team, no-stacking-yet Showdown pool) and shows a **Min Team Players** control instead — a floor (not a cap) on how many players must come from one team, useful for forcing a lopsided build. The Player Pool list also gets a **K** tab (kickers only show up on Showdown slates) and shows `(CPT)`/`(MVP)` badges next to a player's name, since each player appears twice in the pool — once at Captain price/points, once at FLEX price/points.
+- **Bulk-upload export shape is different:** the Stage 5 download produces `CPT,FLEX,FLEX,FLEX,FLEX,FLEX` (DK) or `MVP,FLEX,FLEX,FLEX,FLEX` (FD) columns instead of classic's `QB,RB,RB,WR,WR,WR,TE,FLEX,DST`. Paste into the Showdown/Captain Mode (or FD Single Game) entries file, not the Classic one.
+- **Validation status:** DK Showdown's column shapes (CPT/FLEX salary and role linking) were measured against a real DK Captain Mode export. FD Showdown's 1.5x MVP salary mechanic was confirmed against a live FD roster builder, but a full FD Showdown slate hasn't been run end to end through this pipeline yet — same "DK first, FD second" caution as classic slates.
+- **`current_slate.json` tracks one slate per site.** If you want a classic slate AND a Showdown slate both refreshing automatically at the same time for the same site (e.g. a Sunday main slate plus a Sunday/Monday-night Showdown), Stage 3's automation can only track whichever slate_id is currently set for that site — you'll need to manually re-run `build_projections.py` for the other one when you want it refreshed, or accept it'll go stale between manual runs.
+
+---
+
 ## Stage 1 — New slate posted
 
 DK and FD post the week's contests. Nothing in the pipeline reacts to this automatically — it's just your trigger to start Stage 2.
@@ -75,6 +89,8 @@ On DK and/or FD, reserve your max entries in the target contest(s) using placeho
 ### Step 2b — Export the salary CSV
 
 On the DK or FD contest page, click **Export to CSV**. Save the file anywhere convenient — the repo root folder is fine. Leave the filename as whatever DK/FD named it.
+
+**Showdown:** export from the DK **Captain Mode** contest page or FD **Single Game** contest page specifically — this is a separate export button from the Classic contest page, not the same file.
 
 ---
 
@@ -112,6 +128,7 @@ Pick a short, filesystem-safe identifier. This names both the salary file and th
 | Preseason | `preseason_wk1` |
 | Madden Sim | `madden_07312026` |
 | Thanksgiving | `thanksgiving_2026` |
+| Showdown/Single-Game | `showdown_wk3` |
 
 You'll use this same slate ID in Steps 2f through 2k. The output file will be named `output/final_projections_dk_{slate_id}.csv`.
 
@@ -126,6 +143,18 @@ python scripts/ingest_salaries.py --site dk --raw DKSalaries.csv --season 2025 -
 ```
 
 Expected output: a match rate summary and `Wrote data\salaries_dk_{slate_id}.csv`.
+
+**Showdown:** add `--format showdown`. This defaults to `classic` if omitted, and omitting it on a Showdown file does NOT error — it silently ingests the file as if it were a classic slate (wrong roster shape, no CPT/FLEX role linking), so double-check this flag is present:
+
+```
+python scripts/ingest_salaries.py --site dk --raw DKSalaries.csv --season 2025 --slate-id showdown_wk3 --format showdown
+```
+
+With `--format showdown`, you may also see a warning like:
+```
+WARNING: 2 matched player(s) don't have both {'CPT', 'FLEX'} rows linked to the same player_id
+```
+This means a player's Captain-priced row and FLEX-priced row matched to different (or missing) player_ids — usually an unmatched-player issue (see below), not a bug. Resolve it the same way as any other unmatched player, then re-run and confirm the warning clears.
 
 **Handling unmatched players:**
 
@@ -192,6 +221,8 @@ python scripts/projections_baseline.py --site dk --season 2025 --week 23
 
 No output means success. For week 23 (post-season), this writes `baseline_recent_form_dk_2025_23.csv` with full 2025 season history for all players. An error means contact Claude.
 
+**Showdown:** no changes here — this script runs per `--site --season --week` and doesn't know or care about slate format.
+
 ---
 
 ### Step 2j — Build matchup projections
@@ -220,6 +251,8 @@ NOTE: schedule has no week-23 games for slate teams -- falling back to salary fi
   Inferred 3 game(s) from salary file: [('ARI', 'HOU'), ('BAL', 'CHI'), ('CAR', 'NYJ')]
 ```
 This is expected and correct. If you see an error about a missing `.parquet` file, run Step 2d and retry.
+
+**Showdown:** no flag needed here either — this script auto-detects Showdown from the `--format showdown` tag `ingest_salaries.py` stamped onto the salary file in Step 2f, and builds the CPT/MVP + FLEX pool rows automatically.
 
 ---
 
@@ -290,11 +323,21 @@ Select it in the dropdown and click **Delete**. Removes it from this browser and
 
 Set your options in the Build panel and click **Build Lineups**. Review all lineups before exporting. If lineups look wrong, contact Claude before proceeding.
 
+### Showdown slates in the UI
+
+Loading a Showdown pool changes the Build panel and Player Pool automatically — nothing to toggle by hand:
+
+- **Player Pool:** a **K** tab appears (kickers only show up on Showdown slates), and each player's name shows a `(CPT)` or `(MVP)` badge next to their FLEX-priced row's counterpart, since every player has 2 pool rows (Captain-priced and FLEX-priced) with different salary/projection. Locking or excluding a player applies to either role — there's no way to lock someone specifically as Captain vs. FLEX yet.
+- **Build panel:** Stack Mode, Minimum Projection, Minimum Total Ownership, FLEX Eligible Positions, and Game Exposure Caps all disappear (none apply to Showdown). **Min Team Players** appears in their place — a floor, not a cap, on how many roster spots must come from one team. Use it to force a lopsided build (e.g. floor one team at 4 of the 6 DK slots). Team Exposure Caps still works normally for Showdown.
+- **Roster display:** built lineups show Captain/MVP first, then FLEX1–FLEXN, in that order.
+
 ---
 
 ## Stage 5 — Export & re-upload
 
 Click **Download Lineups for DraftKings Import**. Upload that file back into DK to replace your placeholder lineups.
+
+**Showdown:** the downloaded file uses `CPT,FLEX,FLEX,FLEX,FLEX,FLEX` columns on DK or `MVP,FLEX,FLEX,FLEX,FLEX` on FD — different from classic's `QB,RB,RB,WR,WR,WR,TE,FLEX,DST`. Make sure you're uploading into the Captain Mode / Single Game bulk-entry template, not the Classic one, or DK/FD will reject it.
 
 Lock hits. Done.
 
@@ -313,6 +356,8 @@ python scripts/ingest_historical.py --season 2025
 ```
 python scripts/ingest_salaries.py --site dk --raw DKSalaries.csv --season 2025 --slate-id {slate_id}
 ```
+*(Showdown: add `--format showdown` to the command above)*
+
 *(check `type data\current_slate.json` for the week number, then update it)*
 ```
 python scripts/projections_baseline.py --site dk --season 2025 --week {week}
@@ -342,5 +387,8 @@ git push
 - **Output filenames use `--slate-id`**, not `--week`: `final_projections_dk_{slate_id}.csv`. Two slates in the same week will not overwrite each other.
 - **Madden Sim game totals panel** shows real NFL games, not Madden matchups. This is cosmetic only and does not affect lineup building.
 - **DK is live-validated end to end.** FD is built identically but has not been tested against a real FD salary export.
+- **Showdown: `--format showdown` on `ingest_salaries.py` (Step 2f) is the one flag that fails silently if forgotten** — it ingests as classic instead of erroring. Everything downstream (`build_projections.py`, the UI) auto-detects from there.
+- **Showdown + classic on the same site can't both auto-refresh at once** — `current_slate.json` tracks one slate_id per site, so pointing it at a Showdown slate stops Stage 3 from refreshing whatever classic slate was live for that site.
+- **DK Showdown's column shapes are measured against a real export; FD Showdown's 1.5x MVP mechanic is confirmed against a live FD roster builder, but neither has been run through a full FD Showdown slate end to end yet.**
 - **The near-lock cadence** (currently templated to Sunday 11am CT) needs updating once Preseason Week 1's actual lock time is known.
 - **If any step produces an unexpected error**, paste the full error message into a Claude conversation. The error message is the fastest path to a fix.
