@@ -180,9 +180,38 @@ session's file):
    after testing; a WARNING is printed to stderr but the tolerance is not
    auto-relaxed).
 
+0c. Session 13.4 fix (found while validating the roadmap card's Session
+    13.4 assumption that this script "likely needs no change" for
+    Showdown): FALSE -- a real bug. A Showdown `final_projections_
+    {site}_{slate_id}.csv` has TWO rows per player_id (Session 13.2/13.3's
+    FLEX row + CPT/MVP row), which share the exact same normalized
+    (player_name, position, team) triple decision #2's join key uses.
+    Against a Showdown pool, `attach_cash_lineup_context()`'s "exactly 1
+    match expected" check would therefore always find 2 matches and raise
+    a SystemExit the very first time this script ran against real or
+    synthetic Showdown output -- not a "no change needed" gap, an
+    unvalidated crash. Fixed by extending the join key to also include
+    `roster_role` whenever the pool is a Showdown pool (detected the same
+    way build_projections.py/optimizer.py detect it -- a `slate_format`
+    column stamped "showdown" on every row, Session 13.3), sourced from
+    `lineup_single_{site}_{slate_id}.csv`'s own `roster_role` column
+    (Session 13.4's `optimizer.py` change -- `assign_showdown_roster_
+    slots()` now carries it through, since a Showdown cash lineup's
+    player_name/position/team alone no longer uniquely identifies a pool
+    row). Classic behavior is completely unchanged: the join key only
+    grows an extra component when `roster_role` actually varies per
+    player_id in the pool (i.e. Showdown), which never happens in a
+    classic pool. A pivot candidate is additionally required to share the
+    cash player's own `roster_role` (a CPT alternative should be priced/
+    scored like a CPT, not compared against FLEX rows at a different
+    salary and 1.5x point scale) -- same "same tier, real alternative"
+    spirit as decision #3/#4's existing position + projection-band filter,
+    just extended to the one additional real-world axis Showdown adds.
+
 Usage:
     python3 pivot_finder.py --site dk --slate-id classic_wk10
     python3 pivot_finder.py --site fd --slate-id classic_wk10
+    python3 pivot_finder.py --site dk --slate-id showdown_car_ari_wk1
 
 Outputs:
     output/pivot_suggestions_{site}_{slate_id}.csv
@@ -213,9 +242,16 @@ TOP_N_PIVOTS = 3
 OUTPUT_COLUMNS = [
     "cash_player_name", "cash_position", "cash_team", "cash_salary",
     "cash_final_projection", "cash_estimated_ownership_pct",
+    # Session 13.4 addition: None for classic (unchanged schema meaning),
+    # the real CPT/MVP-vs-FLEX role for a Showdown pool -- see decision #0c
+    # below. Always present so the output schema is identical in shape for
+    # classic and Showdown, same precedent build_projections.py's
+    # roster_role column already set (Session 13.2/13.3).
+    "cash_roster_role",
     "pivot_rank",
     "pivot_player_name", "pivot_team", "pivot_salary",
     "pivot_final_projection", "pivot_estimated_ownership_pct",
+    "pivot_roster_role",
     "salary_diff", "salary_diff_pct", "projection_diff", "projection_diff_pct",
     "ownership_edge_pts",
     "outprojects_cash_player", "leverage_score",
@@ -276,13 +312,30 @@ def load_final_projections(site: str, slate_id: str) -> pd.DataFrame:
 # Step 1: Join cash lineup + final_projections (decision #2)
 # ---------------------------------------------------------------------------
 
-def _join_key(df: pd.DataFrame, site: str, name_col: str, team_col: str,
-              position_col: str) -> pd.Series:
+def _is_showdown_pool(pool: pd.DataFrame) -> bool:
+    """Session 13.4 -- same detection pattern as build_projections.py's
+    is_showdown_slate() / optimizer.py's is_showdown_pool(): a `slate_format`
+    column stamped "showdown" on every row (Session 13.3)."""
     return (
+        "slate_format" in pool.columns
+        and bool(len(pool))
+        and pool["slate_format"].astype(str).eq("showdown").any()
+    )
+
+
+def _join_key(df: pd.DataFrame, site: str, name_col: str, team_col: str,
+              position_col: str, role_col: str = None) -> pd.Series:
+    key = (
         df[name_col].apply(normalize_name) + "|"
         + df[position_col].astype(str).str.strip().str.upper() + "|"
         + df[team_col].apply(lambda t: normalize_team(t, site))
     )
+    # Decision #0c -- only added when a role column is actually supplied
+    # (Showdown pools). Classic callers never pass role_col, so classic's
+    # join key is byte-identical to every prior session.
+    if role_col is not None:
+        key = key + "|" + df[role_col].astype(str).str.strip().str.upper()
+    return key
 
 
 def build_candidate_pool(site: str, slate_id: str) -> pd.DataFrame:
@@ -308,11 +361,35 @@ def attach_cash_lineup_context(lineup: pd.DataFrame, pool: pd.DataFrame,
     """Decision #2 -- joins each cash-lineup row to its matching row in
     `pool` (final_projections + estimated_ownership_pct) via the
     normalized (player_name, position, team) triple, since lineup_single
-    has no player_id. Fails loudly on any zero- or multi-match."""
+    has no player_id. Fails loudly on any zero- or multi-match.
+
+    Decision #0c (Session 13.4) -- for a Showdown pool, the triple alone is
+    NOT enough (a player has 2 pool rows, one per roster_role) -- the join
+    key grows a 4th component, `roster_role`, sourced from the cash
+    lineup's own `roster_role` column (optimizer.py's Session 13.4
+    `assign_showdown_roster_slots()`). Fails loudly, with a specific
+    instruction, if a Showdown pool is detected but the cash lineup has no
+    `roster_role` column -- almost certainly means `lineup_single_
+    {site}_{slate_id}.csv` was produced by a pre-13.4 optimizer.py build."""
     lineup = lineup.copy()
     pool = pool.copy()
-    lineup["_key"] = _join_key(lineup, site, "player_name", "team", "position")
-    pool["_key"] = _join_key(pool, site, "player_name", "team", "position")
+
+    showdown = _is_showdown_pool(pool)
+    role_col = None
+    if showdown:
+        if "roster_role" not in lineup.columns:
+            raise SystemExit(
+                f"final_projections_{site}_{slate_id}.csv is a Showdown pool "
+                f"(slate_format='showdown') but lineup_single_{site}_"
+                f"{slate_id}.csv has no roster_role column -- this cash "
+                f"lineup was likely built by a pre-Session-13.4 optimizer.py. "
+                f"Re-run optimizer.py --site {site} --slate-id {slate_id} "
+                f"first, then re-run pivot_finder.py."
+            )
+        role_col = "roster_role"
+
+    lineup["_key"] = _join_key(lineup, site, "player_name", "team", "position", role_col=role_col)
+    pool["_key"] = _join_key(pool, site, "player_name", "team", "position", role_col=role_col)
 
     match_counts = pool.groupby("_key").size()
     enriched_rows = []
@@ -321,12 +398,15 @@ def attach_cash_lineup_context(lineup: pd.DataFrame, pool: pd.DataFrame,
         if n_matches != 1:
             raise SystemExit(
                 f"Cash lineup player {row['player_name']!r} ({row['position']}, "
-                f"{row['team']}) matched {n_matches} row(s) in "
-                f"final_projections/chalk_scores by normalized "
-                f"(name, position, team) -- expected exactly 1 (decision #2). "
-                f"Check for a name/team mismatch between lineup_single_"
-                f"{site}_{slate_id}.csv and final_projections_{site}_{slate_id}.csv "
-                f"(e.g. files generated from different weeks/runs)."
+                f"{row['team']}"
+                f"{', role=' + str(row['roster_role']) if showdown else ''}) "
+                f"matched {n_matches} row(s) in final_projections by "
+                f"normalized (name, position, team"
+                f"{', role' if showdown else ''}) -- expected exactly 1 "
+                f"(decision #2, extended by #0c for Showdown). Check for a "
+                f"name/team mismatch between lineup_single_{site}_{slate_id}.csv "
+                f"and final_projections_{site}_{slate_id}.csv (e.g. files "
+                f"generated from different weeks/runs)."
             )
         match = pool.loc[pool["_key"] == row["_key"]].iloc[0]
         enriched_rows.append({
@@ -337,6 +417,7 @@ def attach_cash_lineup_context(lineup: pd.DataFrame, pool: pd.DataFrame,
             "cash_salary": row["salary"],
             "cash_final_projection": match["final_projection"],
             "cash_estimated_ownership_pct": match["estimated_ownership_pct"],
+            "cash_roster_role": match["roster_role"] if showdown else None,
         })
     return pd.DataFrame(enriched_rows)
 
@@ -355,14 +436,26 @@ def find_pivots_for_player(cash_row: pd.Series, pool: pd.DataFrame,
     # final_projection, symmetric, NOT a % of the site's salary cap.
     tolerance_pts = (projection_tolerance_pct / 100.0) * cash_row["cash_final_projection"]
 
-    candidates = pool[
+    mask = (
         (pool["position"] == cash_row["cash_position"])
         & (pool["player_id"] != cash_row["player_id"])
         & (~pool["player_id"].isin(rostered_player_ids))
         & (pool["final_projection"] > 0)  # decision #4 -- never suggest a bye/zero player
         & (pool["estimated_ownership_pct"] < cash_row["cash_estimated_ownership_pct"])
         & ((pool["final_projection"] - cash_row["cash_final_projection"]).abs() <= tolerance_pts)
-    ].copy()
+    )
+    # Decision #0c (Session 13.4) -- a Showdown candidate must share the
+    # cash player's own roster_role. CPT and FLEX rows of the SAME
+    # underlying player are priced and scored on completely different
+    # scales (1.5x salary/points) -- comparing a cash FLEX play against a
+    # pool's CPT rows (or vice versa) isn't a like-for-like "similar tier"
+    # swap, it's comparing two different quantities. `cash_roster_role` is
+    # None for classic (attach_cash_lineup_context) -- this filter is a
+    # no-op there since pool["roster_role"] is also None/absent-equivalent
+    # for every classic row.
+    if pd.notna(cash_row.get("cash_roster_role")):
+        mask &= (pool["roster_role"] == cash_row["cash_roster_role"])
+    candidates = pool[mask].copy()
 
     if candidates.empty:
         return pd.DataFrame(columns=OUTPUT_COLUMNS)
@@ -410,12 +503,14 @@ def find_pivots_for_player(cash_row: pd.Series, pool: pd.DataFrame,
         "cash_salary": cash_row["cash_salary"],
         "cash_final_projection": cash_row["cash_final_projection"],
         "cash_estimated_ownership_pct": cash_row["cash_estimated_ownership_pct"],
+        "cash_roster_role": cash_row.get("cash_roster_role"),
         "pivot_rank": candidates["pivot_rank"],
         "pivot_player_name": candidates["player_name"].values,
         "pivot_team": candidates["team"].values,
         "pivot_salary": candidates["salary"].values,
         "pivot_final_projection": candidates["final_projection"].values,
         "pivot_estimated_ownership_pct": candidates["estimated_ownership_pct"].values,
+        "pivot_roster_role": candidates["roster_role"].values if "roster_role" in candidates.columns else None,
         "salary_diff": candidates["salary_diff"].values,
         "salary_diff_pct": candidates["salary_diff_pct"].values,
         "projection_diff": candidates["projection_diff"].values,

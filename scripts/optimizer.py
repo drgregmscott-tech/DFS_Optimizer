@@ -1920,12 +1920,668 @@ def build_multi_lineup(site: str, slate_id: str, n_lineups: int = DEFAULT_N_LINE
     return all_lineups, exposure_count, n_generated
 
 
+# ---------------------------------------------------------------------------
+# Session 13.4 -- Optimizer ILP for Showdown Roster Construction
+# ---------------------------------------------------------------------------
+# Showdown/Single-Game pools (Session 13.2 ingest, Session 13.3/13.3b
+# projections+ownership) have a structurally different shape than every
+# classic pool this file has handled so far: each real player appears
+# TWICE -- once as a FLEX-priced row, once as a CPT (DK) / MVP (FD) row at
+# 1.5x salary AND 1.5x projection (`roster_role` column distinguishes the
+# two, `player_id` is the SAME for both rows). The entire classic ILP above
+# assumes one row == one player == one decision variable
+# (`x = {pid: ... for pid in players["player_id"]}` at the top of
+# solve_lineup() -- a dict comprehension, which would silently COLLAPSE a
+# Showdown pool's two rows per player_id down to one, dropping half the
+# pool's rows without even an error). Rather than retrofit that assumption
+# out of the classic path (high risk of subtly changing classic's
+# already-validated behavior for zero benefit -- classic pools will never
+# have duplicate player_ids), this section adds a PARALLEL, self-contained
+# solve path keyed on `_row_key` (`f"{player_id}::{roster_role}"`, unique
+# per row) instead of `player_id`. Every classic function above is
+# untouched.
+#
+# Decisions (continuing this file's numbering, #39+):
+#
+# 39. Decision variables are per ROW (`_row_key`), not per player. Three
+#     ILP constraints replace classic's position-count machinery entirely,
+#     since Showdown has no position-based roster slots at all -- any
+#     position is eligible in either the 1 CPT/MVP slot or the N FLEX
+#     slots (SITE_CONFIGS[site]["showdown"]["roster_slots"], Session 13.2):
+#       - exactly 1 row with roster_role == captain_role_value selected
+#       - exactly N rows with roster_role == "FLEX" selected
+#       - total selected == roster size (6 DK / 5 FD)
+#
+# 40. Mutual exclusivity (NEW constraint type, doesn't exist in the classic
+#     solver): for every player_id, at most 1 of their 2 rows (CPT + FLEX)
+#     may be selected -- a real player can only occupy one of the six/five
+#     real roster spots, priced one way or the other, never both.
+#
+# 41. Minimum 1 player per team (NEW constraint type): both teams in the
+#     2-team pool must have >= `min_per_team` (1) selected player, reusing
+#     `SITE_CONFIGS[site]["showdown"]["min_per_team"]` rather than a guess.
+#     Summing selected rows by team is equivalent to summing selected
+#     DISTINCT PLAYERS by team here specifically because decision #40's
+#     mutual-exclusivity constraint already guarantees at most one row per
+#     player is ever selected.
+#
+# 42. Salary: DK's captain-priced row already carries its real 1.5x salary
+#     from the raw export (Session 13.2's ingest, confirmed against a real
+#     08/06/2026 CAR@ARI file); FD's synthesized MVP row does the same
+#     (`_prepare_fd_showdown`, same session). The existing single
+#     `<= salary_cap` sum-of-selected-salaries constraint therefore needs
+#     no special-casing for the captain multiplier -- it's already baked
+#     into the per-row salary value, exactly as the roadmap card's Build
+#     section anticipated.
+#
+# 43. Locking a player (`--lock`) locks them into the lineup in EITHER
+#     role (`sum(both rows) == 1`), not a specific one -- the solver picks
+#     whichever role (CPT or FLEX) is actually optimal given everything
+#     else, same "structural guarantee, letting the solver decide what it
+#     does best" philosophy as every other constraint in this file. A
+#     role-specific lock (e.g. "must be captain") is not built this
+#     session -- flagged as a possible follow-up if real usage wants it,
+#     not guessed at without a stated need.
+#
+# 44. Uniqueness (multi-lineup diversity, decision #7's Showdown
+#     counterpart) counts DISTINCT PLAYERS between two lineups, not rows/
+#     roles -- a player who was CPT in lineup 1 and is FLEX in lineup 2 is
+#     still "the same player" for diversity purposes; counting roles as
+#     different would understate how repetitive two lineups actually are
+#     to a real end user filling out two entries.
+#
+# 45. Stacking (Session 3.3's --stack-mode) is EXPLICITLY NOT SUPPORTED
+#     for Showdown this session -- main() raises a clear parser.error()
+#     rather than silently ignoring the flag or half-applying classic's
+#     team-pool logic to a 2-team pool it was never built for. The
+#     roadmap card flagged this as a real decision to make, not a given:
+#     Showdown stacking (e.g. "at least N combined from this 2-team game")
+#     is well-established real DFS strategy and the opponent-lookup logic
+#     really would be simpler with only one possible opponent, but
+#     correctly reinterpreting classic's 4 stack modes (qb/game/mini +
+#     bring-back) against a positionless, CPT/FLEX-role pool is a
+#     substantial, separately-testable piece of work in its own right --
+#     bolting it on inside this already-highest-risk session risked
+#     shipping either path half-validated. DEFERRED to a dedicated
+#     follow-up (see SESSION_LOG.md/ROADMAP.md), not silently dropped.
+#     `--max-game-players` is similarly rejected for Showdown (the
+#     roadmap card's own note: game caps are meaningless when only one
+#     game exists in the pool) -- `--max-team-players` carries over
+#     unchanged and IS supported (decision below). `--flex-positions` and
+#     `--min-total-ownership` are also rejected for Showdown this session
+#     -- the former has no meaning (no position-restricted roster slots to
+#     restrict further), the latter would need Showdown's own role-grouped
+#     ownership budget threaded through a min-ownership floor, which is a
+#     real feature but not built/validated this session -- same "decide,
+#     don't half-work" discipline as stacking.
+#
+# 46. `--max-team-players` (Session 12's team exposure cap) DOES carry over
+#     to Showdown unchanged -- it's a simple `<= cap` sum over a team's
+#     selected rows, no reinterpretation needed, and team-level exposure
+#     control is exactly as meaningful in a 2-team pool as a full slate.
+DEFAULT_SHOWDOWN_N_LINEUPS = DEFAULT_N_LINEUPS
+ROW_KEY_COL = "_row_key"
+
+
+def is_showdown_pool(df: pd.DataFrame) -> bool:
+    """Session 13.4 -- detects a Showdown/Single-Game final_projections
+    file via the `slate_format` column Session 13.3 stamps on every row
+    ("showdown" or "classic"). Mirrors build_projections.py's own
+    is_showdown_slate() detection pattern (module docstring decision #0
+    there) rather than requiring a separate always-remember-to-set CLI
+    flag."""
+    return (
+        "slate_format" in df.columns
+        and bool(len(df))
+        and df["slate_format"].astype(str).eq("showdown").any()
+    )
+
+
+def load_showdown_pool(site: str, slate_id: str) -> pd.DataFrame:
+    """Loads and validates a Showdown pool via the existing
+    load_final_projections() (unchanged), then adds this section's
+    `_row_key` (decision #39) and fails loudly (not silently) on any
+    schema mismatch -- same "flag, don't silently assume" discipline as
+    every other loader in this file."""
+    df = load_final_projections(site, slate_id)
+    if not is_showdown_pool(df):
+        raise SystemExit(
+            f"load_showdown_pool: final_projections_{site}_{slate_id}.csv "
+            f"has no slate_format='showdown' rows -- this doesn't look like "
+            f"a Showdown/Single-Game pool. Use the classic solve path "
+            f"instead (omit --format showdown, or let --format auto detect "
+            f"it), or re-run build_projections.py against a Showdown salary "
+            f"file (Session 13.2/13.3) if one was expected."
+        )
+    cfg = SITE_CONFIGS[site]["showdown"]
+    captain_role = cfg["captain_role_value"]
+    flex_role = cfg["flex_role_value"]
+    if "roster_role" not in df.columns:
+        raise SystemExit(
+            f"final_projections_{site}_{slate_id}.csv has slate_format="
+            f"'showdown' but no roster_role column -- re-run "
+            f"build_projections.py (Session 13.3)."
+        )
+    known_roles = {captain_role, flex_role}
+    unknown = set(df["roster_role"].dropna().unique()) - known_roles
+    if unknown:
+        raise SystemExit(
+            f"final_projections_{site}_{slate_id}.csv has unexpected "
+            f"roster_role value(s) {sorted(unknown)} -- expected only "
+            f"{sorted(known_roles)}."
+        )
+    role_counts = df["roster_role"].value_counts()
+    n_cpt, n_flex = role_counts.get(captain_role, 0), role_counts.get(flex_role, 0)
+    if n_cpt != n_flex:
+        raise SystemExit(
+            f"final_projections_{site}_{slate_id}.csv has an unbalanced "
+            f"Showdown pool: {n_cpt} {captain_role} row(s) vs {n_flex} "
+            f"{flex_role} row(s) -- every player should have exactly one "
+            f"of each (Session 13.2/13.3 ingest contract)."
+        )
+    df = df.copy()
+    df[ROW_KEY_COL] = df["player_id"].astype(str) + "::" + df["roster_role"].astype(str)
+    return df
+
+
+def randomize_showdown_projections(players: pd.DataFrame, randomization_pct: float,
+                                    rng: np.random.Generator, mode: str = "pct",
+                                    n_lineups: int = 1) -> pd.Series:
+    """Row-keyed counterpart to randomize_projections() (decisions #9-14) --
+    that function indexes by player_id, which collides for a Showdown pool
+    (2 rows share the same player_id). Identical distribution/clipping/
+    sigma-mode logic, indexed by `_row_key` instead."""
+    base = players.set_index(ROW_KEY_COL)["final_projection"]
+    if randomization_pct <= 0:
+        return base
+
+    if mode == "sigma":
+        if "sigma" not in players.columns:
+            raise RuntimeError(
+                "randomization_mode='sigma' requires a 'sigma' column in "
+                "the pool -- build projections with "
+                "build_projections_statline.py --sigma-recalibration "
+                "(Session 10.5)."
+            )
+        sigma_s = players.set_index(ROW_KEY_COL)["sigma"]
+        if int((sigma_s > 0).sum()) == 0:
+            raise RuntimeError(
+                "randomization_mode='sigma' requested but every row has "
+                "sigma=0. Use build_projections_statline.py "
+                "--sigma-recalibration."
+            )
+        entry_scale = min(1.0, max(0.0, (n_lineups - 1) /
+                                   max(1, DEFAULT_SIGMA_RAND_FULL_LINEUPS - 1)))
+        std_dev = sigma_s * (randomization_pct / 100.0) * entry_scale
+    else:
+        std_dev = base * (randomization_pct / 100.0)
+
+    noisy = rng.normal(loc=base.to_numpy(), scale=std_dev.to_numpy())
+    return pd.Series(noisy, index=base.index).clip(lower=0.0)
+
+
+def solve_showdown_lineup(players: pd.DataFrame, site: str,
+                           previous_player_sets: list = None,
+                           uniqueness: int = 0,
+                           optimization_projection: pd.Series = None,
+                           locked_player_ids: set = None,
+                           min_salary: int = 0,
+                           lam: float = 0.0,
+                           max_team_players: dict = None,
+                           min_team_players: dict = None) -> pd.DataFrame:
+    """Session 13.4 core ILP -- see decisions #39-46 above. `players` must
+    already carry `_row_key` (load_showdown_pool()). Returns the selected
+    rows (one per filled roster spot -- exactly 1 captain-role row + N
+    flex-role rows)."""
+    cfg = SITE_CONFIGS[site]["showdown"]
+    salary_cap = cfg["salary_cap"]
+    captain_role = cfg["captain_role_value"]
+    flex_role = cfg["flex_role_value"]
+    roster_slots = cfg["roster_slots"]
+    captain_count = sum(1 for s in roster_slots if s == captain_role)
+    flex_count = sum(1 for s in roster_slots if s == flex_role)
+    total_slots = len(roster_slots)
+    min_per_team = cfg["min_per_team"]
+
+    prob = pulp.LpProblem("dfs_showdown_lineup", pulp.LpMaximize)
+
+    row_keys = players[ROW_KEY_COL].tolist()
+    x = {rk: pulp.LpVariable(f"x_{rk}", cat="Binary") for rk in row_keys}
+
+    indexed = players.set_index(ROW_KEY_COL)
+    proj = optimization_projection if optimization_projection is not None else indexed["final_projection"]
+    salary = indexed["salary"]
+    team = indexed["team"]
+    role = indexed["roster_role"]
+
+    real_sigma = indexed["sigma"] if "sigma" in players.columns else pd.Series(0.0, index=indexed.index)
+    var = real_sigma ** 2
+
+    if lam != 0.0:
+        if int((real_sigma > 0).sum()) == 0:
+            raise RuntimeError(
+                f"lam={lam} was requested but every row in this Showdown "
+                f"pool has sigma=0. Either use lam=0 (the default) or build "
+                f"projections with build_projections_statline.py "
+                f"--sigma-recalibration so the pool carries real per-row "
+                f"sigma values."
+            )
+
+    prob += (
+        pulp.lpSum(x[rk] * proj[rk] for rk in x)
+        - lam * pulp.lpSum(x[rk] * var[rk] for rk in x)
+    ), "mean_variance_objective"
+
+    prob += pulp.lpSum(x[rk] * salary[rk] for rk in x) <= salary_cap, "salary_cap"
+    if min_salary > 0:
+        prob += pulp.lpSum(x[rk] * salary[rk] for rk in x) >= min_salary, "min_salary_floor"
+
+    # Decision #39 -- role slot counts + total roster size.
+    captain_rows = [rk for rk in row_keys if role[rk] == captain_role]
+    flex_rows = [rk for rk in row_keys if role[rk] == flex_role]
+    prob += pulp.lpSum(x[rk] for rk in captain_rows) == captain_count, "captain_slot_count"
+    prob += pulp.lpSum(x[rk] for rk in flex_rows) == flex_count, "flex_slot_count"
+    prob += pulp.lpSum(x[rk] for rk in x) == total_slots, "total_roster_size"
+
+    # Decision #40 -- CPT/FLEX mutual exclusivity per underlying player.
+    for player_id, group in players.groupby("player_id"):
+        rks = [rk for rk in group[ROW_KEY_COL] if rk in x]
+        if len(rks) > 1:
+            prob += pulp.lpSum(x[rk] for rk in rks) <= 1, f"mutex_{player_id}"
+
+    # Decision #41 -- minimum 1 player per team.
+    for t in players["team"].dropna().unique():
+        rks = [rk for rk in row_keys if team[rk] == t]
+        if rks:
+            prob += pulp.lpSum(x[rk] for rk in rks) >= min_per_team, f"min_per_team_{t}"
+
+    # Decision #43 -- locks (either role).
+    locked_player_ids = locked_player_ids or set()
+    known_pids = set(players["player_id"])
+    missing_locks = locked_player_ids - known_pids
+    if missing_locks:
+        raise RuntimeError(
+            f"Cannot lock player_id(s) {sorted(missing_locks)} -- not "
+            f"present in this solve's candidate pool."
+        )
+    for locked_pid in locked_player_ids:
+        rks = [rk for rk in players.loc[players["player_id"] == locked_pid, ROW_KEY_COL] if rk in x]
+        prob += pulp.lpSum(x[rk] for rk in rks) == 1, f"locked_{locked_pid}"
+
+    # Decision #44 -- uniqueness vs. previous lineups, counted by player,
+    # not row/role. `previous_player_sets` is a list of sets of player_id
+    # (NOT row_key) -- see build_multi_showdown_lineup().
+    if previous_player_sets:
+        for i, prev_pids in enumerate(previous_player_sets):
+            relevant_pids = [p for p in prev_pids if p in known_pids and p not in locked_player_ids]
+            if not relevant_pids:
+                continue
+            relevant_rks = [
+                rk for p in relevant_pids
+                for rk in players.loc[players["player_id"] == p, ROW_KEY_COL]
+                if rk in x
+            ]
+            prob += (
+                pulp.lpSum(x[rk] for rk in relevant_rks) <= len(relevant_pids) - uniqueness,
+                f"uniqueness_vs_lineup_{i}",
+            )
+
+    # Decision #46 -- team exposure caps (max_game_players is rejected for
+    # Showdown up front in main(), decision #45 -- never reaches here).
+    if max_team_players:
+        for t, cap in max_team_players.items():
+            rks = [rk for rk in row_keys if team[rk] == t]
+            if rks:
+                prob += pulp.lpSum(x[rk] for rk in rks) <= cap, f"max_team_{t}"
+
+    # Decision #47 (this session's addendum, user-requested) -- MINIMUM
+    # team count, the mirror of decision #46's maximum. This is the
+    # "one-sided lineup" lever the user actually wanted in place of full
+    # stacking (decision #45): "force 4/5/6 players from the same team"
+    # is exactly `--min-team-players TEAM:N`. Reuses decision #41's
+    # min-1-per-team mechanism (a plain `>= N` sum constraint) rather than
+    # introducing a new constraint type -- min_per_team=1 is just this
+    # same mechanism's default floor for every team; a user-supplied
+    # min_team_players entry overrides that floor to something higher for
+    # the specific team(s) named. Structural feasibility (can this team's
+    # floor and the other team's own min_per_team floor both fit in
+    # total_slots?) is pre-checked in main() before the solver ever runs
+    # (same "fail loud, with a specific reason, before wasting a solve"
+    # discipline as decision #21/#24 in the classic path), so an
+    # impossible combination surfaces clearly rather than as an opaque
+    # solver infeasibility.
+    if min_team_players:
+        for t, floor in min_team_players.items():
+            rks = [rk for rk in row_keys if team[rk] == t]
+            if rks:
+                prob += pulp.lpSum(x[rk] for rk in rks) >= floor, f"min_team_{t}"
+
+    status = prob.solve(pulp.PULP_CBC_CMD(msg=False))
+    if pulp.LpStatus[status] != "Optimal":
+        raise RuntimeError(
+            f"Solver did not find an optimal solution for this Showdown "
+            f"lineup (status: {pulp.LpStatus[status]}). Check salary cap, "
+            f"the min-1-per-team requirement, and lock/exposure settings."
+        )
+
+    selected_keys = [rk for rk in x if x[rk].value() == 1]
+    return players[players[ROW_KEY_COL].isin(selected_keys)].copy()
+
+
+def assign_showdown_roster_slots(selected: pd.DataFrame, site: str) -> pd.DataFrame:
+    """Cosmetic post-solve labeling, mirroring assign_roster_slots()'s
+    pattern: the captain-role row gets its site's own label (CPT/MVP), and
+    FLEX rows are numbered FLEX1..FLEXN by descending projection (arbitrary
+    deterministic tie-break, same as classic -- doesn't affect optimality,
+    already solved). `roster_role` is carried through into the output
+    (unlike classic's `assign_roster_slots()`, which has no equivalent
+    column to carry) -- pivot_finder.py's Session 13.4 fix needs it to
+    join a Showdown cash lineup back to its pool row unambiguously (a
+    player has 2 pool rows in Showdown; player_name/position/team alone no
+    longer uniquely identifies one)."""
+    cfg = SITE_CONFIGS[site]["showdown"]
+    captain_role = cfg["captain_role_value"]
+    flex_role = cfg["flex_role_value"]
+
+    captain_rows = selected[selected["roster_role"] == captain_role]
+    flex_rows = selected[selected["roster_role"] == flex_role].sort_values(
+        "final_projection", ascending=False
+    )
+
+    rows = [(captain_role, row) for row in captain_rows.itertuples()]
+    rows += [
+        (f"{flex_role}{i}", row)
+        for i, row in enumerate(flex_rows.itertuples(), start=1)
+    ]
+
+    out = pd.DataFrame([
+        {
+            "roster_slot": label,
+            "player_id": row.player_id,
+            "player_name": row.player_name,
+            "position": row.position,
+            "team": row.team,
+            "roster_role": row.roster_role,
+            "salary": row.salary,
+            "projection": row.final_projection,
+            "value": round(row.final_projection / (row.salary / 1000), 2) if row.salary else 0.0,
+            "opponent": row.opponent,
+            "site_player_id": _clean_site_id(getattr(row, "site_player_id", None)),
+            "sigma": float(getattr(row, "sigma", 0.0) or 0.0),
+            "sigma_source": getattr(row, "sigma_source", "") or "",
+        }
+        for label, row in rows
+    ])
+    return out
+
+
+def validate_showdown_lineup(lineup: pd.DataFrame, site: str):
+    """Session 13.4's counterpart to validate_lineup() -- an automated
+    structural assertion, not eyeballing, matching this file's standing
+    "guarantee, not eyeballing" discipline. Directly answers the roadmap
+    card's first Showdown validation checkbox."""
+    cfg = SITE_CONFIGS[site]["showdown"]
+    salary_cap = cfg["salary_cap"]
+    roster_slots = cfg["roster_slots"]
+    captain_role = cfg["captain_role_value"]
+    flex_role = cfg["flex_role_value"]
+    min_per_team = cfg["min_per_team"]
+
+    total_salary = lineup["salary"].sum()
+    assert total_salary <= salary_cap, (
+        f"VALIDATION FAILED: Showdown lineup salary {total_salary} exceeds cap {salary_cap}"
+    )
+    assert len(lineup) == len(roster_slots), (
+        f"VALIDATION FAILED: Showdown lineup has {len(lineup)} players, roster needs {len(roster_slots)}"
+    )
+    n_captain = int((lineup["roster_role"] == captain_role).sum())
+    n_flex = int((lineup["roster_role"] == flex_role).sum())
+    expected_captain = sum(1 for s in roster_slots if s == captain_role)
+    expected_flex = sum(1 for s in roster_slots if s == flex_role)
+    assert n_captain == expected_captain, (
+        f"VALIDATION FAILED: {n_captain} {captain_role} slot(s) filled, need exactly {expected_captain}"
+    )
+    assert n_flex == expected_flex, (
+        f"VALIDATION FAILED: {n_flex} {flex_role} slot(s) filled, need exactly {expected_flex}"
+    )
+    assert lineup["player_id"].is_unique, (
+        "VALIDATION FAILED: the same underlying player was selected in more "
+        "than one roster slot (decision #40's CPT/FLEX mutual exclusivity "
+        "was violated)"
+    )
+    n_teams_in_lineup = lineup["team"].nunique()
+    assert n_teams_in_lineup == cfg["n_teams"], (
+        f"VALIDATION FAILED: lineup has players from {n_teams_in_lineup} "
+        f"team(s), need exactly {cfg['n_teams']}"
+    )
+    team_counts = lineup["team"].value_counts()
+    assert (team_counts >= min_per_team).all(), (
+        f"VALIDATION FAILED: a team has fewer than {min_per_team} player(s) "
+        f"in lineup (decision #41): {team_counts.to_dict()}"
+    )
+
+
+def validate_min_team_players_feasibility(site: str, min_team_players: dict):
+    """Decision #47's structural pre-check -- same "fail loud, before
+    wasting a solve" discipline as classic's validate_lock_feasibility()/
+    validate_exposure_cap_feasibility(). Two failure modes:
+    1. A single team's floor exceeds what's structurally possible (total
+       slots minus the OTHER team's own required min_per_team floor).
+    2. Floors for both teams in a 2-team pool sum to more than total_slots
+       (can't have >= 4 from team A AND >= 4 from team B in a 6-slot
+       lineup)."""
+    if not min_team_players:
+        return
+    cfg = SITE_CONFIGS[site]["showdown"]
+    total_slots = len(cfg["roster_slots"])
+    min_per_team = cfg["min_per_team"]
+
+    for t, floor in min_team_players.items():
+        max_possible_one_sided = total_slots - min_per_team
+        if floor > max_possible_one_sided:
+            raise SystemExit(
+                f"--min-team-players {t}:{floor} is impossible -- a "
+                f"{total_slots}-slot Showdown lineup must leave at least "
+                f"{min_per_team} slot(s) for the other team (decision #41), "
+                f"so {t} can have at most {max_possible_one_sided}."
+            )
+
+    if len(min_team_players) > 1 and sum(min_team_players.values()) > total_slots:
+        raise SystemExit(
+            f"--min-team-players floors {min_team_players} sum to more than "
+            f"the {total_slots} total roster slots -- cannot satisfy both "
+            f"at once."
+        )
+
+
+def build_single_showdown_lineup(site: str, slate_id: str,
+                                  randomization_pct: float = DEFAULT_RANDOMIZATION_PCT,
+                                  rng: np.random.Generator = None,
+                                  randomization_mode: str = "pct",
+                                  lam: float = 0.0,
+                                  locked_player_ids: set = None,
+                                  excluded_player_ids: set = None,
+                                  min_salary: int = 0,
+                                  max_team_players: dict = None,
+                                  min_team_players: dict = None) -> pd.DataFrame:
+    players = load_showdown_pool(site, slate_id)
+    validate_min_team_players_feasibility(site, min_team_players)
+    locked_player_ids = locked_player_ids or set()
+    excluded_player_ids = excluded_player_ids or set()
+
+    if excluded_player_ids:
+        missing_excl = excluded_player_ids - set(players["player_id"])
+        if missing_excl:
+            print(
+                f"NOTE: --exclude player_id(s) {sorted(missing_excl)} not "
+                f"found in this pool -- ignored.", file=sys.stderr,
+            )
+        players = players[~players["player_id"].isin(excluded_player_ids)].copy()
+
+    optimization_projection = None
+    if randomization_pct > 0:
+        rng = rng if rng is not None else np.random.default_rng()
+        optimization_projection = randomize_showdown_projections(
+            players, randomization_pct, rng, mode=randomization_mode, n_lineups=1,
+        )
+
+    selected = solve_showdown_lineup(
+        players, site,
+        optimization_projection=optimization_projection,
+        locked_player_ids=locked_player_ids,
+        min_salary=min_salary, lam=lam,
+        max_team_players=max_team_players,
+        min_team_players=min_team_players,
+    )
+    if locked_player_ids:
+        missing = locked_player_ids - set(selected["player_id"])
+        assert not missing, (
+            f"LOCK VALIDATION FAILED: player_id(s) {sorted(missing)} "
+            f"requested locked but not present in the solved lineup"
+        )
+
+    lineup = assign_showdown_roster_slots(selected, site)
+    lineup.attrs["sigma_total"] = round(float(lineup["sigma"].sum()), 4)
+    validate_showdown_lineup(lineup, site)
+
+    zero_proj_selected = lineup[lineup["projection"] == 0.0]
+    if len(zero_proj_selected):
+        print(
+            f"WARNING: {len(zero_proj_selected)} zero-projection player(s) "
+            f"selected ({', '.join(zero_proj_selected['player_name'])}) -- "
+            f"same decision #4 concern as classic: investigate before "
+            f"trusting this lineup.", file=sys.stderr,
+        )
+
+    return lineup
+
+
+def build_multi_showdown_lineup(site: str, slate_id: str,
+                                 n_lineups: int = DEFAULT_SHOWDOWN_N_LINEUPS,
+                                 max_exposure_pct: float = DEFAULT_MAX_EXPOSURE_PCT,
+                                 uniqueness: int = DEFAULT_UNIQUENESS,
+                                 randomization_pct: float = DEFAULT_RANDOMIZATION_PCT,
+                                 randomization_mode: str = "pct",
+                                 seed: int = None,
+                                 lam: float = 0.0,
+                                 locked_player_ids: set = None,
+                                 excluded_player_ids: set = None,
+                                 min_salary: int = 0,
+                                 max_team_players: dict = None,
+                                 min_team_players: dict = None) -> tuple:
+    """Showdown counterpart to build_multi_lineup() -- same exposure-cap /
+    uniqueness-relaxation loop (decisions #5-7), no stacking rotation
+    (decision #45 -- not supported for Showdown this session)."""
+    players_all = load_showdown_pool(site, slate_id)
+    validate_min_team_players_feasibility(site, min_team_players)
+
+    rng = np.random.default_rng(seed) if randomization_pct > 0 else None
+    locked_player_ids = locked_player_ids or set()
+    excluded_player_ids = excluded_player_ids or set()
+    if excluded_player_ids:
+        missing_excl = excluded_player_ids - set(players_all["player_id"])
+        if missing_excl:
+            print(
+                f"NOTE: --exclude player_id(s) {sorted(missing_excl)} not "
+                f"found in this pool -- ignored.", file=sys.stderr,
+            )
+        players_all = players_all[~players_all["player_id"].isin(excluded_player_ids)].copy()
+
+    exposure_cap = max(1, math.floor(max_exposure_pct * n_lineups))
+    exposure_count = {pid: 0 for pid in players_all["player_id"].unique()}
+    previous_player_sets = []
+    all_lineup_frames = []
+    current_uniqueness = uniqueness
+    n_generated = 0
+
+    while n_generated < n_lineups:
+        locked_out = {
+            pid for pid, cnt in exposure_count.items()
+            if cnt >= exposure_cap and pid not in locked_player_ids
+        }
+        pool = players_all[~players_all["player_id"].isin(locked_out)]
+
+        optimization_projection = None
+        if randomization_pct > 0:
+            optimization_projection = randomize_showdown_projections(
+                pool, randomization_pct, rng, mode=randomization_mode, n_lineups=n_lineups,
+            )
+
+        try:
+            selected = solve_showdown_lineup(
+                pool, site,
+                previous_player_sets=previous_player_sets,
+                uniqueness=current_uniqueness,
+                optimization_projection=optimization_projection,
+                locked_player_ids=locked_player_ids,
+                min_salary=min_salary, lam=lam,
+                max_team_players=max_team_players,
+                min_team_players=min_team_players,
+            )
+        except RuntimeError as e:
+            if current_uniqueness > 0:
+                print(
+                    f"WARNING: Showdown lineup {n_generated + 1}/{n_lineups} "
+                    f"infeasible with uniqueness={current_uniqueness} (pool "
+                    f"too thin -- last reason: {e}). Relaxing to "
+                    f"{current_uniqueness - 1} and retrying.", file=sys.stderr,
+                )
+                current_uniqueness -= 1
+                continue
+            print(
+                f"WARNING: stopping early at {n_generated} of {n_lineups} "
+                f"requested Showdown lineups -- no further legal lineup "
+                f"exists even with uniqueness fully relaxed to 0. Last "
+                f"reason: {e}", file=sys.stderr,
+            )
+            break
+
+        if locked_player_ids:
+            missing = locked_player_ids - set(selected["player_id"])
+            assert not missing, (
+                f"LOCK VALIDATION FAILED: player_id(s) {sorted(missing)} "
+                f"requested locked but not present in lineup {n_generated + 1}"
+            )
+        lineup = assign_showdown_roster_slots(selected, site)
+        lineup.attrs["sigma_total"] = round(float(lineup["sigma"].sum()), 4)
+        validate_showdown_lineup(lineup, site)
+        lineup.insert(0, "lineup_id", n_generated + 1)
+        all_lineup_frames.append(lineup)
+
+        for pid in selected["player_id"]:
+            exposure_count[pid] += 1
+        previous_player_sets.append(set(selected["player_id"]))
+        n_generated += 1
+        current_uniqueness = uniqueness
+
+    if not all_lineup_frames:
+        raise RuntimeError(
+            "No Showdown lineups could be generated at all -- check pool "
+            "size vs. the 6/5-slot roster + min-1-per-team requirement, "
+            "exposure_cap, and lock settings."
+        )
+
+    all_lineups = pd.concat(all_lineup_frames, ignore_index=True)
+    return all_lineups, exposure_count, n_generated
+
+
 def main():
+
     parser = argparse.ArgumentParser()
     parser.add_argument("--site", choices=["dk", "fd"], required=True)
     parser.add_argument("--slate-id", required=True,
         help="e.g. classic_wk10 or madden_07312026 -- matches build_projections.py's "
              "--slate-id and names the input/output files.")
+    # Session 13.4 -- Showdown/Single-Game support.
+    parser.add_argument(
+        "--format", choices=["auto", "classic", "showdown"], default="auto",
+        help="'auto' (default) detects Showdown vs. classic from the "
+             "loaded final_projections file's slate_format column (Session "
+             "13.2/13.3) -- normal runs never need to set this. 'classic'/"
+             "'showdown' force that solve path and fail loudly up front if "
+             "the file doesn't actually match (catches an accidental "
+             "wrong-file run before wasting a solve attempt).",
+    )
     parser.add_argument(
         "--n-lineups", type=int, default=None,
         help="If set, generate this many lineups with exposure caps (Session "
@@ -2150,10 +2806,87 @@ def main():
              "Applies to every generated lineup (decision #36), same as "
              "stacking.",
     )
+    # Session 13.4 addendum (decision #47, user-requested) -- Showdown-only
+    # "one-sided lineup" lever, the mirror of --max-team-players.
+    parser.add_argument(
+        "--min-team-players", default=None,
+        help="Showdown ONLY: comma-separated TEAM:N floors on the minimum "
+             "number of players from that team required in the lineup "
+             "(e.g. 'KC:5' to force a lopsided KC-heavy build, up to "
+             "roster_size - min_per_team since the other team must still "
+             "have >= 1 player). This is the lever for 'make the lineup "
+             "one-sided' without full stacking support (decision #45's "
+             "deferral) -- fails loudly up front (not a solver "
+             "infeasibility) if the requested floor(s) are structurally "
+             "impossible.",
+    )
     args = parser.parse_args()
 
     OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
     config = SITE_CONFIGS[args.site]
+
+    # Session 13.4 -- Showdown/Single-Game format detection (decision #45).
+    # Loaded once here for detection; build_single_lineup()/build_multi_lineup()
+    # (classic) and build_single_showdown_lineup()/build_multi_showdown_lineup()
+    # (Showdown) each reload it themselves -- an extra read of a small
+    # final_projections file is cheap and keeps every function's own
+    # loading/validation self-contained rather than threading a pre-loaded
+    # DataFrame through every call site.
+    _format_probe = load_final_projections(args.site, args.slate_id)
+    _detected_showdown = is_showdown_pool(_format_probe)
+    if args.format == "classic" and _detected_showdown:
+        parser.error(
+            f"--format classic was requested but final_projections_"
+            f"{args.site}_{args.slate_id}.csv is a Showdown pool "
+            f"(slate_format='showdown')."
+        )
+    if args.format == "showdown" and not _detected_showdown:
+        parser.error(
+            f"--format showdown was requested but final_projections_"
+            f"{args.site}_{args.slate_id}.csv is not a Showdown pool."
+        )
+    showdown_mode = _detected_showdown if args.format == "auto" else (args.format == "showdown")
+
+    if showdown_mode:
+        # Decision #45 -- explicitly rejected for Showdown this session,
+        # not silently ignored or half-applied.
+        if args.stack_mode != "none":
+            parser.error(
+                "--stack-mode is not supported for Showdown slates yet "
+                "(Session 13.4 deferred this -- see ROADMAP.md/"
+                "SESSION_LOG.md). Omit --stack-mode (or leave it at "
+                "'none') for a Showdown run."
+            )
+        if args.max_game_players:
+            parser.error(
+                "--max-game-players has no meaning on a Showdown slate "
+                "(only one game exists in a 2-team pool by definition) -- "
+                "use --max-team-players instead, or omit."
+            )
+        if args.flex_positions:
+            parser.error(
+                "--flex-positions has no meaning on a Showdown slate -- "
+                "any position is eligible in both the CPT/MVP slot and "
+                "every FLEX slot."
+            )
+        if args.min_total_ownership:
+            parser.error(
+                "--min-total-ownership is not supported for Showdown "
+                "slates yet (Session 13.4 scope is the core ILP only -- "
+                "see ROADMAP.md/SESSION_LOG.md)."
+            )
+        if args.min_projection:
+            parser.error(
+                "--min-projection is not supported for Showdown slates yet "
+                "(Session 13.4 scope is the core ILP only -- see "
+                "ROADMAP.md/SESSION_LOG.md)."
+            )
+    elif args.min_team_players:
+        parser.error(
+            "--min-team-players only applies to Showdown slates -- classic "
+            "slates already have full stacking support via --stack-mode "
+            "(e.g. --stack-mode game for a shootout-style build)."
+        )
 
     stack_positions = parse_stack_positions(args.stack_positions) if args.stack_mode == "qb" else None
     stack_teams = parse_team_list(args.stack_team, "--stack-team") if args.stack_team else None
@@ -2215,6 +2948,98 @@ def main():
                         f"or a bye) -- that cap will be a no-op "
                         f"(decision #38).", file=sys.stderr,
                     )
+
+    # Decision #47 -- Showdown-only min-team-players floor.
+    min_team_players = (
+        parse_team_cap_list(args.min_team_players, "--min-team-players")
+        if args.min_team_players else None
+    )
+    if min_team_players:
+        validate_min_team_players_feasibility(args.site, min_team_players)
+        pool_teams = set(load_final_projections(args.site, args.slate_id)["team"])
+        unknown_teams = set(min_team_players) - pool_teams
+        if unknown_teams:
+            parser.error(
+                f"--min-team-players references team(s) not in this "
+                f"Showdown pool: {sorted(unknown_teams)} -- a Showdown "
+                f"pool only has 2 teams, so (unlike --max-team-players) an "
+                f"unknown team here can never be satisfied and isn't "
+                f"treated as a harmless no-op."
+            )
+
+    if showdown_mode:
+        if args.n_lineups:
+            lineups, exposure_count, n_generated = build_multi_showdown_lineup(
+                args.site, args.slate_id, n_lineups=args.n_lineups,
+                max_exposure_pct=args.max_exposure, uniqueness=args.uniqueness,
+                randomization_pct=args.randomization_pct,
+                randomization_mode=args.randomization_mode,
+                seed=args.seed, lam=args.lam,
+                locked_player_ids=locked_player_ids,
+                excluded_player_ids=excluded_player_ids,
+                min_salary=min_salary, max_team_players=max_team_players,
+                min_team_players=min_team_players,
+            )
+            if args.request_id:
+                out_path = OUTPUT_DIR / "ui_requests" / f"{args.request_id}.csv"
+                out_path.parent.mkdir(parents=True, exist_ok=True)
+            else:
+                out_path = OUTPUT_DIR / f"lineups_multi_{args.site}_{args.slate_id}.csv"
+            lineups.to_csv(out_path, index=False)
+
+            exposure_cap = max(1, math.floor(args.max_exposure * args.n_lineups))
+            top_exposure = sorted(exposure_count.items(), key=lambda kv: kv[1], reverse=True)[:10]
+            print(f"[{config['label']}] Generated {n_generated}/{args.n_lineups} Showdown "
+                  f"lineup(s) for slate {args.slate_id} (exposure cap: "
+                  f"{exposure_cap}/{args.n_lineups} lineups = {args.max_exposure:.0%})")
+            if locked_player_ids or excluded_player_ids:
+                print(f"Locked: {sorted(locked_player_ids) or 'none'} | Excluded: {sorted(excluded_player_ids) or 'none'}")
+            print("Top exposure (player_id: times used):")
+            for pid, cnt in top_exposure:
+                if cnt > 0:
+                    print(f"  {pid}: {cnt}/{n_generated}")
+            summary = lineups.groupby("lineup_id").agg(
+                total_salary=("salary", "sum"), total_projection=("projection", "sum")
+            )
+            summary["lineup_value"] = (
+                summary["total_projection"] / (summary["total_salary"] / 1000)
+            ).round(2)
+            summary["total_projection"] = summary["total_projection"].round(2)
+            print("Per-lineup summary (lineup_id: salary used, total projection, value):")
+            print(summary.to_string())
+            print(f"Wrote {out_path}")
+        else:
+            lineup = build_single_showdown_lineup(
+                args.site, args.slate_id,
+                randomization_pct=args.randomization_pct,
+                randomization_mode=args.randomization_mode,
+                rng=np.random.default_rng(args.seed) if args.randomization_pct > 0 else None,
+                locked_player_ids=locked_player_ids,
+                excluded_player_ids=excluded_player_ids,
+                min_salary=min_salary, lam=args.lam,
+                max_team_players=max_team_players,
+                min_team_players=min_team_players,
+            )
+            if args.request_id:
+                out_path = OUTPUT_DIR / "ui_requests" / f"{args.request_id}.csv"
+                out_path.parent.mkdir(parents=True, exist_ok=True)
+            else:
+                out_path = OUTPUT_DIR / f"lineup_single_{args.site}_{args.slate_id}.csv"
+            lineup.to_csv(out_path, index=False)
+
+            showdown_cap = SITE_CONFIGS[args.site]["showdown"]["salary_cap"]
+            total_salary = lineup["salary"].sum()
+            total_points = lineup["projection"].sum()
+            lineup_value = round(total_points / (total_salary / 1000), 2) if total_salary else 0.0
+            print(f"[{config['label']}] Optimal single Showdown lineup for slate {args.slate_id}:")
+            if locked_player_ids or excluded_player_ids:
+                print(f"Locked: {sorted(locked_player_ids) or 'none'} | Excluded: {sorted(excluded_player_ids) or 'none'}")
+            print(lineup.to_string(index=False))
+            print(f"Total salary: {total_salary} / {showdown_cap} ({showdown_cap - total_salary} remaining)")
+            print(f"Total projected points: {total_points:.2f}")
+            print(f"Lineup value: {lineup_value} pts/$1000")
+            print(f"Wrote {out_path}")
+        return
 
     if args.n_lineups:
         lineups, exposure_count, n_generated = build_multi_lineup(
