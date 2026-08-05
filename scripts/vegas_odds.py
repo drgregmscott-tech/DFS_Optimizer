@@ -141,6 +141,14 @@ def load_api_key() -> str:
     is a one-line parse) -- consistent with the project's preference for
     small dependency-light utilities over adding a package for something
     this simple (same reasoning as nflverse_fetch.py replacing nfl_data_py).
+
+    Reads with encoding="utf-8-sig" (Session 13.5-pause Bug Fix): a bare
+    read on Windows silently glues a UTF-8 BOM onto the first line if the
+    file was ever saved by an editor that adds one (Notepad does, by
+    default) -- "\ufeffODDS_API_KEY" != "ODDS_API_KEY" fails the key-name
+    match with no visible sign anything's wrong, since the key really is
+    sitting right there in the file. utf-8-sig strips a BOM if present and
+    is a no-op if not, so this is safe either way.
     """
     env_path = CONFIG_DIR / "api_keys.env"
     if not env_path.exists():
@@ -150,7 +158,7 @@ def load_api_key() -> str:
             f"'ODDS_API_KEY=your_key_here' to {env_path}. "
             f"See SESSION_LOG.md, Session 2.3, for the full setup steps."
         )
-    for line in env_path.read_text().splitlines():
+    for line in env_path.read_text(encoding="utf-8-sig").splitlines():
         line = line.strip()
         if not line or line.startswith("#") or "=" not in line:
             continue
