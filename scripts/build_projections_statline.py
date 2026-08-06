@@ -186,6 +186,7 @@ from build_projections import (  # noqa: E402
     apply_captain_multiplier,
     build_dst_projections,
     build_opponent_map,
+    build_opponent_map_from_salaries,
     build_vegas_factors,
     is_showdown_slate,
     load_matchup_factors,
@@ -260,14 +261,14 @@ def build_statline_projections(site: str, season: int, week: int, slate_id: str,
     schedule = load_schedule(season)
 
     opponent_map = build_opponent_map(schedule, week)
-    vegas_factors = build_vegas_factors(vegas, opponent_map)
 
     # Session 14.0: Showdown/Single-Game support, ported from
     # build_projections.py's build_final_projections() (Session 13.3).
     # Same reasoning as there -- run the whole pipeline on FLEX-priced rows
     # only, derive CPT/MVP rows afterward via apply_captain_multiplier()
     # rather than double-running the pipeline. This engine previously had
-    # no Showdown handling at all.
+    # no Showdown handling at all. Must happen BEFORE the opponent-map
+    # fallback below, which needs build_salaries.
     showdown = is_showdown_slate(salaries)
     if showdown:
         build_salaries = salaries[salaries["roster_role"] == "FLEX"].copy()
@@ -285,6 +286,37 @@ def build_statline_projections(site: str, season: int, week: int, slate_id: str,
     else:
         build_salaries = salaries
         captain_salaries = None
+
+    # Session 14.0 FIX (found via a real run, not caught in the original
+    # audit): decision #9 from build_projections.py -- if the schedule has
+    # no entries for any slate team (true for EVERY slate right now, since
+    # DFS_Weekly_Process.md's --week 23 sentinel exists specifically to
+    # guarantee that), fall back to inferring matchups from the salary
+    # file's own Game Info column. This engine had no fallback at all,
+    # meaning vegas_factor silently went neutral 1.0 for everyone AND the
+    # Vegas-anchored team volume in apply_volume_prior() below had no real
+    # per-team implied_total to anchor to -- which is what actually tripped
+    # the share-reconciliation fail-loud on the real Week 1 slate that
+    # surfaced this gap.
+    slate_teams = set(build_salaries["normalized_team"].dropna().unique())
+    schedule_covered = slate_teams & set(opponent_map.keys())
+    if not schedule_covered:
+        print(
+            f"NOTE: schedule has no week-{week} games for slate teams -- "
+            f"falling back to vegas over_under pairing (decision #9, Madden Sim path).",
+            file=sys.stderr,
+        )
+        opponent_map = build_opponent_map_from_salaries(build_salaries)
+        if opponent_map:
+            games_found = sorted(set(
+                tuple(sorted([k, opponent_map[k]])) for k in opponent_map
+            ))
+            print(f"  Inferred {len(games_found)} game(s) from salary file: {games_found}", file=sys.stderr)
+        else:
+            print("  WARNING: could not infer any opponent pairs from salary file. "
+                  "All skill players will get opponent=BYE_OR_UNKNOWN.", file=sys.stderr)
+
+    vegas_factors = build_vegas_factors(vegas, opponent_map)
 
     site_id_col = SITE_CONFIGS[site]["site_id_col"]
     players = build_salaries[build_salaries["position_upper"].isin(POSITIONS)].copy()
