@@ -842,6 +842,12 @@ def build_final_projections(site, season, week, slate_id,
         "final_projection", "opponent", "implied_total", "over_under",
     ]
     skill_out = df[out_cols]
+    # Decision #11 (Session 13.5-pause Bug Fix, closes Session 13.4's
+    # flagged _dst_extra gap): skill players have no per-player uncertainty
+    # model today, so sigma/dst_p10/dst_p90 are a neutral 0.0 placeholder
+    # here -- same pattern kicker_out already uses for columns ITS model
+    # has no signal for (season_avg/recent_form/etc, see that function).
+    skill_out = skill_out.assign(sigma=0.0, dst_p10=0.0, dst_p90=0.0)
 
     dst_out = build_dst_projections(build_salaries, vegas, site,
                                     model=dst_model_mode, season=season,
@@ -852,6 +858,10 @@ def build_final_projections(site, season, week, slate_id,
     if "sigma" in dst_out.columns:
         _dst_extra = dst_out[["player_id", "sigma", "dst_p10", "dst_p90"]].copy()
         dst_out = dst_out.drop(columns=["sigma", "dst_p10", "dst_p90"])
+    # Same 0.0 placeholder as skill_out -- overwritten with the real values
+    # below for the distributional model (legacy DST never computed sigma
+    # at all, so this stays 0.0 there, same as before this fix).
+    dst_out = dst_out.assign(sigma=0.0, dst_p10=0.0, dst_p90=0.0)
 
     skill_out = skill_out.assign(_anchor_games=df["games_played"].to_numpy())
     dst_out = dst_out.assign(
@@ -868,6 +878,23 @@ def build_final_projections(site, season, week, slate_id,
     )
 
     out = pd.concat([skill_out, dst_out, kicker_out], ignore_index=True)
+
+    # Decision #11 continued: merge DST's real sigma/dst_p10/dst_p90 back in.
+    # These were already computed by the distributional model (dst_model.
+    # simulate) but got dropped into _dst_extra and never reattached --
+    # Session 13.4's flagged gap, closed here. `player_id` is guaranteed
+    # unique at this point in the pipeline (one row per skill/DST/kicker
+    # player) -- Showdown's CPT-role duplicate rows don't exist yet, those
+    # get derived further down via apply_captain_multiplier(), which
+    # correctly carries these columns forward from the FLEX row it copies
+    # (see that function's column-scaling loop). .update() overrides the
+    # 0.0 placeholder above only for the player_ids _dst_extra actually
+    # has -- everyone else (skill players; DST under the legacy model,
+    # which never computed sigma) keeps the 0.0 placeholder unchanged.
+    if _dst_extra is not None:
+        out = out.set_index("player_id")
+        out.update(_dst_extra.set_index("player_id"))
+        out = out.reset_index()
 
     anchor_on = anchor_weight > 0 or anchor_cold_start
     if anchor_on:

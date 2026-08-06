@@ -44,24 +44,42 @@ ROSTER_KEY = ["gsis_id", "season", "week"]
 TEAM_STATS_KEY = ["team", "season", "week", "season_type", "game_id"]
 
 
-def ingest_weekly_stats(seasons: list[int]) -> Path:
-    df = import_weekly_data(seasons)
-    before = len(df)
-    df = df.drop_duplicates(subset=WEEKLY_STATS_KEY)
-    dropped = before - len(df)
-    if dropped:
-        print(f"  Dropped {dropped} duplicate rows on key {WEEKLY_STATS_KEY}")
-
-    # One file per season, matching the roadmap's naming convention
-    # (weekly_stats_{season}.parquet), so re-running for one season never
-    # touches another season's file.
+def ingest_weekly_stats(seasons: list[int]) -> list[Path]:
+    """Session 13.5-pause Bug Fix: pulls each season INDEPENDENTLY now, not
+    as one combined `import_weekly_data(seasons)` batch. nflverse only
+    publishes stats_player_week_{season}.parquet once that season's games
+    have actually been played -- a season requested before its own kickoff
+    (e.g. --season 2025 2026 run before any 2026 game has happened) 404s.
+    The old combined-batch call meant that one missing season aborted the
+    ENTIRE call, silently skipping 2025's refresh too even though 2025 was
+    perfectly available -- confirmed real, not hypothetical, this session.
+    A 404 for a specific season is expected/recoverable (that season just
+    hasn't started) and is reported as a clear note, not a crash; any OTHER
+    error still raises, since silently swallowing a genuine problem (e.g. a
+    real nflverse release rename) would be the "silent fallback" failure
+    mode this project explicitly avoids elsewhere.
+    """
     paths = []
     for season in seasons:
-        season_df = df[df["season"] == season]
+        try:
+            df = import_weekly_data([season])
+        except RuntimeError as e:
+            if "404" in str(e):
+                print(f"  NOTE: no weekly stats available yet for season {season} "
+                      f"(season hasn't started / no games played yet) -- skipping. "
+                      f"Re-run once games begin.")
+                continue
+            raise
+        before = len(df)
+        df = df.drop_duplicates(subset=WEEKLY_STATS_KEY)
+        dropped = before - len(df)
+        if dropped:
+            print(f"  Dropped {dropped} duplicate rows on key {WEEKLY_STATS_KEY}")
+
         out_path = DATA_DIR / f"weekly_stats_{season}.parquet"
-        season_df.to_parquet(out_path, engine="pyarrow", index=False)
+        df.to_parquet(out_path, engine="pyarrow", index=False)
         paths.append(out_path)
-        print(f"  Wrote {out_path} ({len(season_df)} rows, {len(season_df.columns)} cols)")
+        print(f"  Wrote {out_path} ({len(df)} rows, {len(df.columns)} cols)")
     return paths
 
 
@@ -98,21 +116,34 @@ def ingest_weekly_rosters(seasons: list[int]) -> Path:
 
 
 def ingest_team_stats(seasons: list[int]) -> list:
-    """Session 10.4 -- team-week stats, needed by the DST model."""
-    df = import_team_stats(seasons)
-    before = len(df)
-    df = df.drop_duplicates(subset=TEAM_STATS_KEY)
-    dropped = before - len(df)
-    if dropped:
-        print(f"  Dropped {dropped} duplicate rows on key {TEAM_STATS_KEY}")
+    """Session 10.4 -- team-week stats, needed by the DST model.
 
+    Session 13.5-pause Bug Fix: same per-season independence fix as
+    ingest_weekly_stats() above, same reasoning -- stats_team_week_
+    {season}.parquet also 404s until that season's games have actually
+    been played.
+    """
     paths = []
     for season in seasons:
-        season_df = df[df["season"] == season]
+        try:
+            df = import_team_stats([season])
+        except RuntimeError as e:
+            if "404" in str(e):
+                print(f"  NOTE: no team stats available yet for season {season} "
+                      f"(season hasn't started / no games played yet) -- skipping. "
+                      f"Re-run once games begin.")
+                continue
+            raise
+        before = len(df)
+        df = df.drop_duplicates(subset=TEAM_STATS_KEY)
+        dropped = before - len(df)
+        if dropped:
+            print(f"  Dropped {dropped} duplicate rows on key {TEAM_STATS_KEY}")
+
         out_path = DATA_DIR / f"team_stats_{season}.parquet"
-        season_df.to_parquet(out_path, engine="pyarrow", index=False)
+        df.to_parquet(out_path, engine="pyarrow", index=False)
         paths.append(out_path)
-        print(f"  Wrote {out_path} ({len(season_df)} rows, {len(season_df.columns)} cols)")
+        print(f"  Wrote {out_path} ({len(df)} rows, {len(df.columns)} cols)")
     return paths
 
 
