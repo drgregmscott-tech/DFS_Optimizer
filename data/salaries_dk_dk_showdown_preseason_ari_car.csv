@@ -1,0 +1,133 @@
+Position,Name + ID,Name,ID,Roster Position,Salary,Game Info,TeamAbbrev,AvgPointsPerGame,Status,roster_role,name,site,salary,normalized_name,normalized_team,position_upper,slate_format,player_id,match_method,match_confidence
+QB,Jacoby Brissett (43716743),Jacoby Brissett,43716743,CPT,11400,CAR@ARI 08/06/2026 08:00PM ET,ARI,18.0,,CPT,Jacoby Brissett,dk,11400,jacoby brissett,ARI,QB,showdown,00-0033119,auto_exact,high
+QB,Bryce Young (43716744),Bryce Young,43716744,CPT,11400,CAR@ARI 08/06/2026 08:00PM ET,CAR,15.4,,CPT,Bryce Young,dk,11400,bryce young,CAR,QB,showdown,00-0039150,auto_exact,high
+RB,Chuba Hubbard (43716745),Chuba Hubbard,43716745,CPT,11400,CAR@ARI 08/06/2026 08:00PM ET,CAR,9.1,,CPT,Chuba Hubbard,dk,11400,chuba hubbard,CAR,RB,showdown,00-0036555,auto_exact,high
+RB,Jeremiyah Love (43716746),Jeremiyah Love,43716746,CPT,11400,CAR@ARI 08/06/2026 08:00PM ET,ARI,0.0,,CPT,Jeremiyah Love,dk,11400,jeremiyah love,ARI,RB,showdown,00-0041027,auto_exact,high
+WR,Tetairoa McMillan (43716747),Tetairoa McMillan,43716747,CPT,11400,CAR@ARI 08/06/2026 08:00PM ET,CAR,12.9,,CPT,Tetairoa McMillan,dk,11400,tetairoa mcmillan,CAR,WR,showdown,00-0040124,auto_exact,high
+WR,Marvin Harrison Jr. (43716748),Marvin Harrison Jr.,43716748,CPT,11400,CAR@ARI 08/06/2026 08:00PM ET,ARI,10.7,,CPT,Marvin Harrison Jr.,dk,11400,marvin harrison,ARI,WR,showdown,00-0039849,auto_exact,high
+TE,Trey McBride (43716749),Trey McBride,43716749,CPT,11400,CAR@ARI 08/06/2026 08:00PM ET,ARI,19.1,,CPT,Trey McBride,dk,11400,trey mcbride,ARI,TE,showdown,00-0037744,auto_exact,high
+TE,Tommy Tremble (43716750),Tommy Tremble,43716750,CPT,11400,CAR@ARI 08/06/2026 08:00PM ET,CAR,3.8,,CPT,Tommy Tremble,dk,11400,tommy tremble,CAR,TE,showdown,00-0037005,auto_exact,high
+K,Ryan Fitzgerald (43716751),Ryan Fitzgerald,43716751,CPT,11400,CAR@ARI 08/06/2026 08:00PM ET,CAR,6.6,,CPT,Ryan Fitzgerald,dk,11400,ryan fitzgerald,CAR,K,showdown,00-0040279,auto_exact,high
+K,Chad Ryland (43716752),Chad Ryland,43716752,CPT,11400,CAR@ARI 08/06/2026 08:00PM ET,ARI,7.6,,CPT,Chad Ryland,dk,11400,chad ryland,ARI,K,showdown,00-0038567,auto_exact,high
+DST,Panthers (43716753),Panthers,43716753,CPT,11400,CAR@ARI 08/06/2026 08:00PM ET,CAR,5.9,,CPT,Panthers,dk,11400,panthers,CAR,DST,showdown,DST_CAR,team_defense,high
+DST,Cardinals (43716754),Cardinals,43716754,CPT,11400,CAR@ARI 08/06/2026 08:00PM ET,ARI,4.3,,CPT,Cardinals,dk,11400,cardinals,ARI,DST,showdown,DST_ARI,team_defense,high
+QB,Kenny Pickett (43716755),Kenny Pickett,43716755,CPT,11400,CAR@ARI 08/06/2026 08:00PM ET,CAR,1.8,,CPT,Kenny Pickett,dk,11400,kenny pickett,CAR,QB,showdown,00-0038102,auto_fallback_team_mismatch,medium
+QB,Gardner Minshew II (43716756),Gardner Minshew II,43716756,CPT,11400,CAR@ARI 08/06/2026 08:00PM ET,ARI,0.2,,CPT,Gardner Minshew II,dk,11400,gardner minshew,ARI,QB,showdown,00-0035289,auto_fallback_team_mismatch,medium
+RB,Tyler Allgeier (43716757),Tyler Allgeier,43716757,CPT,11400,CAR@ARI 08/06/2026 08:00PM ET,ARI,7.2,,CPT,Tyler Allgeier,dk,11400,tyler allgeier,ARI,RB,showdown,00-0037263,auto_fallback_team_mismatch,medium
+RB,Jonathon Brooks (43716758),Jonathon Brooks,43716758,CPT,11400,CAR@ARI 08/06/2026 08:00PM ET,CAR,0.0,,CPT,Jonathon Brooks,dk,11400,jonathon brooks,CAR,RB,showdown,00-0039344,auto_exact,high
+WR,Michael Wilson (43716759),Michael Wilson,43716759,CPT,11400,CAR@ARI 08/06/2026 08:00PM ET,ARI,13.5,,CPT,Michael Wilson,dk,11400,michael wilson,ARI,WR,showdown,00-0038559,auto_exact,high
+WR,Jalen Coker (43716760),Jalen Coker,43716760,CPT,11400,CAR@ARI 08/06/2026 08:00PM ET,CAR,10.2,,CPT,Jalen Coker,dk,11400,jalen coker,CAR,WR,showdown,00-0039491,auto_exact,high
+TE,Ja'Tavion Sanders (43716761),Ja'Tavion Sanders,43716761,CPT,11400,CAR@ARI 08/06/2026 08:00PM ET,CAR,4.2,Q,CPT,Ja'Tavion Sanders,dk,11400,jatavion sanders,CAR,TE,showdown,00-0039356,auto_exact,high
+TE,Tip Reiman (43716762),Tip Reiman,43716762,CPT,11400,CAR@ARI 08/06/2026 08:00PM ET,ARI,1.0,OUT,CPT,Tip Reiman,dk,11400,tip reiman,ARI,TE,showdown,00-0039737,auto_exact,high
+QB,Haynes King (43716763),Haynes King,43716763,CPT,11400,CAR@ARI 08/06/2026 08:00PM ET,CAR,0.0,,CPT,Haynes King,dk,11400,haynes king,CAR,QB,showdown,00-0041149,auto_exact,high
+QB,Carson Beck (43716764),Carson Beck,43716764,CPT,11400,CAR@ARI 08/06/2026 08:00PM ET,ARI,0.0,,CPT,Carson Beck,dk,11400,carson beck,ARI,QB,showdown,00-0041561,auto_exact,high
+RB,James Conner (43716765),James Conner,43716765,CPT,11400,CAR@ARI 08/06/2026 08:00PM ET,ARI,11.1,Q,CPT,James Conner,dk,11400,james conner,ARI,RB,showdown,00-0033553,auto_exact,high
+RB,Trevor Etienne (43716766),Trevor Etienne,43716766,CPT,11400,CAR@ARI 08/06/2026 08:00PM ET,CAR,0.7,,CPT,Trevor Etienne,dk,11400,trevor etienne,CAR,RB,showdown,00-0040644,auto_exact,high
+WR,Xavier Legette (43716767),Xavier Legette,43716767,CPT,11400,CAR@ARI 08/06/2026 08:00PM ET,CAR,5.7,Q,CPT,Xavier Legette,dk,11400,xavier legette,CAR,WR,showdown,00-0039342,auto_exact,high
+WR,Kendrick Bourne (43716768),Kendrick Bourne,43716768,CPT,11400,CAR@ARI 08/06/2026 08:00PM ET,ARI,5.5,,CPT,Kendrick Bourne,dk,11400,kendrick bourne,ARI,WR,showdown,00-0033307,auto_fallback_team_mismatch,medium
+TE,Elijah Higgins (43716769),Elijah Higgins,43716769,CPT,11400,CAR@ARI 08/06/2026 08:00PM ET,ARI,3.5,,CPT,Elijah Higgins,dk,11400,elijah higgins,ARI,TE,showdown,00-0039041,auto_exact,high
+TE,Mitchell Evans (43716770),Mitchell Evans,43716770,CPT,11400,CAR@ARI 08/06/2026 08:00PM ET,CAR,2.7,,CPT,Mitchell Evans,dk,11400,mitchell evans,CAR,TE,showdown,00-0040187,auto_exact,high
+QB,Kedon Slovis (43716771),Kedon Slovis,43716771,CPT,11400,CAR@ARI 08/06/2026 08:00PM ET,ARI,-0.0,,CPT,Kedon Slovis,dk,11400,kedon slovis,ARI,QB,showdown,00-0039577,auto_exact,high
+RB,Trey Benson (43716772),Trey Benson,43716772,CPT,11400,CAR@ARI 08/06/2026 08:00PM ET,ARI,8.9,,CPT,Trey Benson,dk,11400,trey benson,ARI,RB,showdown,00-0039921,auto_exact,high
+RB,A.J. Dillon (43716773),A.J. Dillon,43716773,CPT,11400,CAR@ARI 08/06/2026 08:00PM ET,CAR,1.4,,CPT,A.J. Dillon,dk,11400,aj dillon,CAR,RB,showdown,00-0036265,auto_fallback_team_mismatch,medium
+WR,Xavier Weaver (43716774),Xavier Weaver,43716774,CPT,11400,CAR@ARI 08/06/2026 08:00PM ET,ARI,1.4,,CPT,Xavier Weaver,dk,11400,xavier weaver,ARI,WR,showdown,00-0039521,auto_exact,high
+WR,Chris Brazzell II (43716775),Chris Brazzell II,43716775,CPT,11400,CAR@ARI 08/06/2026 08:00PM ET,CAR,0.0,IR,CPT,Chris Brazzell II,dk,11400,chris brazzell,CAR,WR,showdown,00-0041047,auto_exact,high
+TE,Feleipe Franks (43716776),Feleipe Franks,43716776,CPT,11400,CAR@ARI 08/06/2026 08:00PM ET,CAR,0.0,,CPT,Feleipe Franks,dk,11400,feleipe franks,CAR,TE,showdown,00-0036825,auto_fallback_team_mismatch,medium
+TE,Teagan Quitoriano (43716777),Teagan Quitoriano,43716777,CPT,11400,CAR@ARI 08/06/2026 08:00PM ET,ARI,0.0,,CPT,Teagan Quitoriano,dk,11400,teagan quitoriano,ARI,TE,showdown,00-0037277,auto_fallback_team_mismatch,medium
+RB,Zonovan Knight (43716778),Zonovan Knight,43716778,CPT,11400,CAR@ARI 08/06/2026 08:00PM ET,ARI,7.8,,CPT,Zonovan Knight,dk,11400,zonovan knight,ARI,RB,showdown,,,
+RB,Anthony Tyus III (43716779),Anthony Tyus III,43716779,CPT,11400,CAR@ARI 08/06/2026 08:00PM ET,CAR,0.0,,CPT,Anthony Tyus III,dk,11400,anthony tyus,CAR,RB,showdown,00-0040394,auto_exact,high
+WR,Jimmy Horn Jr. (43716780),Jimmy Horn Jr.,43716780,CPT,11400,CAR@ARI 08/06/2026 08:00PM ET,CAR,1.9,,CPT,Jimmy Horn Jr.,dk,11400,jimmy horn,CAR,WR,showdown,00-0040218,auto_exact,high
+WR,Reggie Virgil (43716781),Reggie Virgil,43716781,CPT,11400,CAR@ARI 08/06/2026 08:00PM ET,ARI,0.0,,CPT,Reggie Virgil,dk,11400,reggie virgil,ARI,WR,showdown,00-0041070,auto_exact,high
+TE,James Mitchell (43716782),James Mitchell,43716782,CPT,11400,CAR@ARI 08/06/2026 08:00PM ET,CAR,1.0,,CPT,James Mitchell,dk,11400,james mitchell,CAR,TE,showdown,00-0037282,auto_exact,high
+TE,Kenny Yeboah (43716783),Kenny Yeboah,43716783,CPT,11400,CAR@ARI 08/06/2026 08:00PM ET,ARI,0.0,,CPT,Kenny Yeboah,dk,11400,kenny yeboah,ARI,TE,showdown,,,
+RB,Corey Kiner (43716784),Corey Kiner,43716784,CPT,11400,CAR@ARI 08/06/2026 08:00PM ET,ARI,2.3,,CPT,Corey Kiner,dk,11400,corey kiner,ARI,RB,showdown,00-0040556,auto_exact,high
+RB,Miles Davis (43716785),Miles Davis,43716785,CPT,11400,CAR@ARI 08/06/2026 08:00PM ET,CAR,0.0,,CPT,Miles Davis,dk,11400,miles davis,CAR,RB,showdown,00-0041485,auto_exact,high
+WR,John Metchie III (43716786),John Metchie III,43716786,CPT,11400,CAR@ARI 08/06/2026 08:00PM ET,CAR,4.5,,CPT,John Metchie III,dk,11400,john metchie,CAR,WR,showdown,00-0037614,auto_fallback_team_mismatch,medium
+WR,Devin Duvernay (43716787),Devin Duvernay,43716787,CPT,11400,CAR@ARI 08/06/2026 08:00PM ET,ARI,0.2,,CPT,Devin Duvernay,dk,11400,devin duvernay,ARI,WR,showdown,00-0036331,auto_fallback_team_mismatch,medium
+TE,Rivaldo Fairweather (43716788),Rivaldo Fairweather,43716788,CPT,11400,CAR@ARI 08/06/2026 08:00PM ET,ARI,0.0,,CPT,Rivaldo Fairweather,dk,11400,rivaldo fairweather,ARI,TE,showdown,00-0040046,auto_exact,high
+TE,Caden Prieskorn (43716789),Caden Prieskorn,43716789,CPT,11400,CAR@ARI 08/06/2026 08:00PM ET,CAR,0.0,,CPT,Caden Prieskorn,dk,11400,caden prieskorn,CAR,TE,showdown,,,
+WR,Brycen Tremayne (43716790),Brycen Tremayne,43716790,CPT,11400,CAR@ARI 08/06/2026 08:00PM ET,CAR,1.8,,CPT,Brycen Tremayne,dk,11400,brycen tremayne,CAR,WR,showdown,00-0038840,auto_exact,high
+WR,Simi Fehoko (43716791),Simi Fehoko,43716791,CPT,11400,CAR@ARI 08/06/2026 08:00PM ET,ARI,0.0,,CPT,Simi Fehoko,dk,11400,simi fehoko,ARI,WR,showdown,00-0036646,auto_exact,high
+TE,Jameson Geers (43716792),Jameson Geers,43716792,CPT,11400,CAR@ARI 08/06/2026 08:00PM ET,ARI,0.0,,CPT,Jameson Geers,dk,11400,jameson geers,ARI,TE,showdown,00-0041366,auto_exact,high
+WR,Jalen Brooks (43716793),Jalen Brooks,43716793,CPT,11400,CAR@ARI 08/06/2026 08:00PM ET,ARI,1.2,,CPT,Jalen Brooks,dk,11400,jalen brooks,ARI,WR,showdown,00-0038640,auto_exact,high
+WR,David Moore (43716794),David Moore,43716794,CPT,11400,CAR@ARI 08/06/2026 08:00PM ET,CAR,0.7,,CPT,David Moore,dk,11400,david moore,CAR,WR,showdown,00-0033589,auto_exact,high
+WR,Tejhaun Palmer (43716795),Tejhaun Palmer,43716795,CPT,11400,CAR@ARI 08/06/2026 08:00PM ET,ARI,0.0,,CPT,Tejhaun Palmer,dk,11400,tejhaun palmer,ARI,WR,showdown,00-0039397,auto_exact,high
+WR,Dan Chisena (43716796),Dan Chisena,43716796,CPT,11400,CAR@ARI 08/06/2026 08:00PM ET,CAR,0.0,IR,CPT,Dan Chisena,dk,11400,dan chisena,CAR,WR,showdown,00-0035976,auto_exact,high
+WR,Harrison Wallace III (43716797),Harrison Wallace III,43716797,CPT,11400,CAR@ARI 08/06/2026 08:00PM ET,ARI,0.0,,CPT,Harrison Wallace III,dk,11400,harrison wallace,ARI,WR,showdown,00-0041368,auto_exact,high
+WR,Ainias Smith (43716798),Ainias Smith,43716798,CPT,11400,CAR@ARI 08/06/2026 08:00PM ET,CAR,0.0,IR,CPT,Ainias Smith,dk,11400,ainias smith,CAR,WR,showdown,00-0039747,auto_exact,high
+WR,Bryson Green (43716799),Bryson Green,43716799,CPT,11400,CAR@ARI 08/06/2026 08:00PM ET,ARI,0.0,,CPT,Bryson Green,dk,11400,bryson green,ARI,WR,showdown,00-0040383,auto_exact,high
+WR,Ja'seem Reed (43716800),Ja'seem Reed,43716800,CPT,11400,CAR@ARI 08/06/2026 08:00PM ET,CAR,0.0,,CPT,Ja'seem Reed,dk,11400,jaseem reed,CAR,WR,showdown,00-0040265,auto_exact,high
+WR,Malick Meiga (43716801),Malick Meiga,43716801,CPT,11400,CAR@ARI 08/06/2026 08:00PM ET,CAR,0.0,,CPT,Malick Meiga,dk,11400,malick meiga,CAR,WR,showdown,00-0041542,auto_exact,high
+RB,Evan Hull (43761177),Evan Hull,43761177,CPT,11400,CAR@ARI 08/06/2026 08:00PM ET,ARI,1.1,,CPT,Evan Hull,dk,11400,evan hull,ARI,RB,showdown,00-0038397,auto_fallback_team_mismatch,medium
+WR,Gabriel Benyard (43761178),Gabriel Benyard,43761178,CPT,11400,CAR@ARI 08/06/2026 08:00PM ET,CAR,0.0,,CPT,Gabriel Benyard,dk,11400,gabriel benyard,CAR,WR,showdown,00-0041222,auto_fallback_team_mismatch,medium
+TE,Chamon Metayer (43761179),Chamon Metayer,43761179,CPT,11400,CAR@ARI 08/06/2026 08:00PM ET,CAR,0.0,,CPT,Chamon Metayer,dk,11400,chamon metayer,CAR,TE,showdown,,,
+WR,Casey Washington (43761180),Casey Washington,43761180,CPT,11400,CAR@ARI 08/06/2026 08:00PM ET,CAR,2.2,,CPT,Casey Washington,dk,11400,casey washington,CAR,WR,showdown,00-0039394,auto_fallback_team_mismatch,medium
+WR,Roc Taylor (43766901),Roc Taylor,43766901,CPT,11400,CAR@ARI 08/06/2026 08:00PM ET,CAR,0.0,,CPT,Roc Taylor,dk,11400,roc taylor,CAR,WR,showdown,,,
+WR,Elijah Cooks (43766902),Elijah Cooks,43766902,CPT,11400,CAR@ARI 08/06/2026 08:00PM ET,CAR,0.0,,CPT,Elijah Cooks,dk,11400,elijah cooks,CAR,WR,showdown,,,
+WR,Ihmir Smith-Marsette (43769786),Ihmir Smith-Marsette,43769786,CPT,11400,CAR@ARI 08/06/2026 08:00PM ET,ARI,0.0,,CPT,Ihmir Smith-Marsette,dk,11400,ihmir smith marsette,ARI,WR,showdown,00-0036635,auto_exact,high
+QB,Jacoby Brissett (43716684),Jacoby Brissett,43716684,FLEX,7600,CAR@ARI 08/06/2026 08:00PM ET,ARI,18.0,,FLEX,Jacoby Brissett,dk,7600,jacoby brissett,ARI,QB,showdown,00-0033119,auto_exact,high
+QB,Bryce Young (43716685),Bryce Young,43716685,FLEX,7600,CAR@ARI 08/06/2026 08:00PM ET,CAR,15.4,,FLEX,Bryce Young,dk,7600,bryce young,CAR,QB,showdown,00-0039150,auto_exact,high
+RB,Chuba Hubbard (43716686),Chuba Hubbard,43716686,FLEX,7600,CAR@ARI 08/06/2026 08:00PM ET,CAR,9.1,,FLEX,Chuba Hubbard,dk,7600,chuba hubbard,CAR,RB,showdown,00-0036555,auto_exact,high
+RB,Jeremiyah Love (43716687),Jeremiyah Love,43716687,FLEX,7600,CAR@ARI 08/06/2026 08:00PM ET,ARI,0.0,,FLEX,Jeremiyah Love,dk,7600,jeremiyah love,ARI,RB,showdown,00-0041027,auto_exact,high
+WR,Tetairoa McMillan (43716688),Tetairoa McMillan,43716688,FLEX,7600,CAR@ARI 08/06/2026 08:00PM ET,CAR,12.9,,FLEX,Tetairoa McMillan,dk,7600,tetairoa mcmillan,CAR,WR,showdown,00-0040124,auto_exact,high
+WR,Marvin Harrison Jr. (43716689),Marvin Harrison Jr.,43716689,FLEX,7600,CAR@ARI 08/06/2026 08:00PM ET,ARI,10.7,,FLEX,Marvin Harrison Jr.,dk,7600,marvin harrison,ARI,WR,showdown,00-0039849,auto_exact,high
+TE,Trey McBride (43716690),Trey McBride,43716690,FLEX,7600,CAR@ARI 08/06/2026 08:00PM ET,ARI,19.1,,FLEX,Trey McBride,dk,7600,trey mcbride,ARI,TE,showdown,00-0037744,auto_exact,high
+TE,Tommy Tremble (43716691),Tommy Tremble,43716691,FLEX,7600,CAR@ARI 08/06/2026 08:00PM ET,CAR,3.8,,FLEX,Tommy Tremble,dk,7600,tommy tremble,CAR,TE,showdown,00-0037005,auto_exact,high
+K,Ryan Fitzgerald (43716692),Ryan Fitzgerald,43716692,FLEX,7600,CAR@ARI 08/06/2026 08:00PM ET,CAR,6.6,,FLEX,Ryan Fitzgerald,dk,7600,ryan fitzgerald,CAR,K,showdown,00-0040279,auto_exact,high
+K,Chad Ryland (43716693),Chad Ryland,43716693,FLEX,7600,CAR@ARI 08/06/2026 08:00PM ET,ARI,7.6,,FLEX,Chad Ryland,dk,7600,chad ryland,ARI,K,showdown,00-0038567,auto_exact,high
+DST,Panthers (43716694),Panthers,43716694,FLEX,7600,CAR@ARI 08/06/2026 08:00PM ET,CAR,5.9,,FLEX,Panthers,dk,7600,panthers,CAR,DST,showdown,DST_CAR,team_defense,high
+DST,Cardinals (43716695),Cardinals,43716695,FLEX,7600,CAR@ARI 08/06/2026 08:00PM ET,ARI,4.3,,FLEX,Cardinals,dk,7600,cardinals,ARI,DST,showdown,DST_ARI,team_defense,high
+QB,Kenny Pickett (43716696),Kenny Pickett,43716696,FLEX,7600,CAR@ARI 08/06/2026 08:00PM ET,CAR,1.8,,FLEX,Kenny Pickett,dk,7600,kenny pickett,CAR,QB,showdown,00-0038102,auto_fallback_team_mismatch,medium
+QB,Gardner Minshew II (43716697),Gardner Minshew II,43716697,FLEX,7600,CAR@ARI 08/06/2026 08:00PM ET,ARI,0.2,,FLEX,Gardner Minshew II,dk,7600,gardner minshew,ARI,QB,showdown,00-0035289,auto_fallback_team_mismatch,medium
+RB,Tyler Allgeier (43716698),Tyler Allgeier,43716698,FLEX,7600,CAR@ARI 08/06/2026 08:00PM ET,ARI,7.2,,FLEX,Tyler Allgeier,dk,7600,tyler allgeier,ARI,RB,showdown,00-0037263,auto_fallback_team_mismatch,medium
+RB,Jonathon Brooks (43716699),Jonathon Brooks,43716699,FLEX,7600,CAR@ARI 08/06/2026 08:00PM ET,CAR,0.0,,FLEX,Jonathon Brooks,dk,7600,jonathon brooks,CAR,RB,showdown,00-0039344,auto_exact,high
+WR,Michael Wilson (43716700),Michael Wilson,43716700,FLEX,7600,CAR@ARI 08/06/2026 08:00PM ET,ARI,13.5,,FLEX,Michael Wilson,dk,7600,michael wilson,ARI,WR,showdown,00-0038559,auto_exact,high
+WR,Jalen Coker (43716701),Jalen Coker,43716701,FLEX,7600,CAR@ARI 08/06/2026 08:00PM ET,CAR,10.2,,FLEX,Jalen Coker,dk,7600,jalen coker,CAR,WR,showdown,00-0039491,auto_exact,high
+TE,Ja'Tavion Sanders (43716702),Ja'Tavion Sanders,43716702,FLEX,7600,CAR@ARI 08/06/2026 08:00PM ET,CAR,4.2,Q,FLEX,Ja'Tavion Sanders,dk,7600,jatavion sanders,CAR,TE,showdown,00-0039356,auto_exact,high
+TE,Tip Reiman (43716703),Tip Reiman,43716703,FLEX,7600,CAR@ARI 08/06/2026 08:00PM ET,ARI,1.0,OUT,FLEX,Tip Reiman,dk,7600,tip reiman,ARI,TE,showdown,00-0039737,auto_exact,high
+QB,Haynes King (43716704),Haynes King,43716704,FLEX,7600,CAR@ARI 08/06/2026 08:00PM ET,CAR,0.0,,FLEX,Haynes King,dk,7600,haynes king,CAR,QB,showdown,00-0041149,auto_exact,high
+QB,Carson Beck (43716705),Carson Beck,43716705,FLEX,7600,CAR@ARI 08/06/2026 08:00PM ET,ARI,0.0,,FLEX,Carson Beck,dk,7600,carson beck,ARI,QB,showdown,00-0041561,auto_exact,high
+RB,James Conner (43716706),James Conner,43716706,FLEX,7600,CAR@ARI 08/06/2026 08:00PM ET,ARI,11.1,Q,FLEX,James Conner,dk,7600,james conner,ARI,RB,showdown,00-0033553,auto_exact,high
+RB,Trevor Etienne (43716707),Trevor Etienne,43716707,FLEX,7600,CAR@ARI 08/06/2026 08:00PM ET,CAR,0.7,,FLEX,Trevor Etienne,dk,7600,trevor etienne,CAR,RB,showdown,00-0040644,auto_exact,high
+WR,Xavier Legette (43716708),Xavier Legette,43716708,FLEX,7600,CAR@ARI 08/06/2026 08:00PM ET,CAR,5.7,Q,FLEX,Xavier Legette,dk,7600,xavier legette,CAR,WR,showdown,00-0039342,auto_exact,high
+WR,Kendrick Bourne (43716709),Kendrick Bourne,43716709,FLEX,7600,CAR@ARI 08/06/2026 08:00PM ET,ARI,5.5,,FLEX,Kendrick Bourne,dk,7600,kendrick bourne,ARI,WR,showdown,00-0033307,auto_fallback_team_mismatch,medium
+TE,Elijah Higgins (43716710),Elijah Higgins,43716710,FLEX,7600,CAR@ARI 08/06/2026 08:00PM ET,ARI,3.5,,FLEX,Elijah Higgins,dk,7600,elijah higgins,ARI,TE,showdown,00-0039041,auto_exact,high
+TE,Mitchell Evans (43716711),Mitchell Evans,43716711,FLEX,7600,CAR@ARI 08/06/2026 08:00PM ET,CAR,2.7,,FLEX,Mitchell Evans,dk,7600,mitchell evans,CAR,TE,showdown,00-0040187,auto_exact,high
+QB,Kedon Slovis (43716712),Kedon Slovis,43716712,FLEX,7600,CAR@ARI 08/06/2026 08:00PM ET,ARI,-0.0,,FLEX,Kedon Slovis,dk,7600,kedon slovis,ARI,QB,showdown,00-0039577,auto_exact,high
+RB,Trey Benson (43716713),Trey Benson,43716713,FLEX,7600,CAR@ARI 08/06/2026 08:00PM ET,ARI,8.9,,FLEX,Trey Benson,dk,7600,trey benson,ARI,RB,showdown,00-0039921,auto_exact,high
+RB,A.J. Dillon (43716714),A.J. Dillon,43716714,FLEX,7600,CAR@ARI 08/06/2026 08:00PM ET,CAR,1.4,,FLEX,A.J. Dillon,dk,7600,aj dillon,CAR,RB,showdown,00-0036265,auto_fallback_team_mismatch,medium
+WR,Xavier Weaver (43716715),Xavier Weaver,43716715,FLEX,7600,CAR@ARI 08/06/2026 08:00PM ET,ARI,1.4,,FLEX,Xavier Weaver,dk,7600,xavier weaver,ARI,WR,showdown,00-0039521,auto_exact,high
+WR,Chris Brazzell II (43716716),Chris Brazzell II,43716716,FLEX,7600,CAR@ARI 08/06/2026 08:00PM ET,CAR,0.0,IR,FLEX,Chris Brazzell II,dk,7600,chris brazzell,CAR,WR,showdown,00-0041047,auto_exact,high
+TE,Feleipe Franks (43716717),Feleipe Franks,43716717,FLEX,7600,CAR@ARI 08/06/2026 08:00PM ET,CAR,0.0,,FLEX,Feleipe Franks,dk,7600,feleipe franks,CAR,TE,showdown,00-0036825,auto_fallback_team_mismatch,medium
+TE,Teagan Quitoriano (43716718),Teagan Quitoriano,43716718,FLEX,7600,CAR@ARI 08/06/2026 08:00PM ET,ARI,0.0,,FLEX,Teagan Quitoriano,dk,7600,teagan quitoriano,ARI,TE,showdown,00-0037277,auto_fallback_team_mismatch,medium
+RB,Zonovan Knight (43716719),Zonovan Knight,43716719,FLEX,7600,CAR@ARI 08/06/2026 08:00PM ET,ARI,7.8,,FLEX,Zonovan Knight,dk,7600,zonovan knight,ARI,RB,showdown,,,
+RB,Anthony Tyus III (43716720),Anthony Tyus III,43716720,FLEX,7600,CAR@ARI 08/06/2026 08:00PM ET,CAR,0.0,,FLEX,Anthony Tyus III,dk,7600,anthony tyus,CAR,RB,showdown,00-0040394,auto_exact,high
+WR,Jimmy Horn Jr. (43716721),Jimmy Horn Jr.,43716721,FLEX,7600,CAR@ARI 08/06/2026 08:00PM ET,CAR,1.9,,FLEX,Jimmy Horn Jr.,dk,7600,jimmy horn,CAR,WR,showdown,00-0040218,auto_exact,high
+WR,Reggie Virgil (43716722),Reggie Virgil,43716722,FLEX,7600,CAR@ARI 08/06/2026 08:00PM ET,ARI,0.0,,FLEX,Reggie Virgil,dk,7600,reggie virgil,ARI,WR,showdown,00-0041070,auto_exact,high
+TE,James Mitchell (43716723),James Mitchell,43716723,FLEX,7600,CAR@ARI 08/06/2026 08:00PM ET,CAR,1.0,,FLEX,James Mitchell,dk,7600,james mitchell,CAR,TE,showdown,00-0037282,auto_exact,high
+TE,Kenny Yeboah (43716724),Kenny Yeboah,43716724,FLEX,7600,CAR@ARI 08/06/2026 08:00PM ET,ARI,0.0,,FLEX,Kenny Yeboah,dk,7600,kenny yeboah,ARI,TE,showdown,,,
+RB,Corey Kiner (43716725),Corey Kiner,43716725,FLEX,7600,CAR@ARI 08/06/2026 08:00PM ET,ARI,2.3,,FLEX,Corey Kiner,dk,7600,corey kiner,ARI,RB,showdown,00-0040556,auto_exact,high
+RB,Miles Davis (43716726),Miles Davis,43716726,FLEX,7600,CAR@ARI 08/06/2026 08:00PM ET,CAR,0.0,,FLEX,Miles Davis,dk,7600,miles davis,CAR,RB,showdown,00-0041485,auto_exact,high
+WR,John Metchie III (43716727),John Metchie III,43716727,FLEX,7600,CAR@ARI 08/06/2026 08:00PM ET,CAR,4.5,,FLEX,John Metchie III,dk,7600,john metchie,CAR,WR,showdown,00-0037614,auto_fallback_team_mismatch,medium
+WR,Devin Duvernay (43716728),Devin Duvernay,43716728,FLEX,7600,CAR@ARI 08/06/2026 08:00PM ET,ARI,0.2,,FLEX,Devin Duvernay,dk,7600,devin duvernay,ARI,WR,showdown,00-0036331,auto_fallback_team_mismatch,medium
+TE,Rivaldo Fairweather (43716729),Rivaldo Fairweather,43716729,FLEX,7600,CAR@ARI 08/06/2026 08:00PM ET,ARI,0.0,,FLEX,Rivaldo Fairweather,dk,7600,rivaldo fairweather,ARI,TE,showdown,00-0040046,auto_exact,high
+TE,Caden Prieskorn (43716730),Caden Prieskorn,43716730,FLEX,7600,CAR@ARI 08/06/2026 08:00PM ET,CAR,0.0,,FLEX,Caden Prieskorn,dk,7600,caden prieskorn,CAR,TE,showdown,,,
+WR,Brycen Tremayne (43716731),Brycen Tremayne,43716731,FLEX,7600,CAR@ARI 08/06/2026 08:00PM ET,CAR,1.8,,FLEX,Brycen Tremayne,dk,7600,brycen tremayne,CAR,WR,showdown,00-0038840,auto_exact,high
+WR,Simi Fehoko (43716732),Simi Fehoko,43716732,FLEX,7600,CAR@ARI 08/06/2026 08:00PM ET,ARI,0.0,,FLEX,Simi Fehoko,dk,7600,simi fehoko,ARI,WR,showdown,00-0036646,auto_exact,high
+TE,Jameson Geers (43716733),Jameson Geers,43716733,FLEX,7600,CAR@ARI 08/06/2026 08:00PM ET,ARI,0.0,,FLEX,Jameson Geers,dk,7600,jameson geers,ARI,TE,showdown,00-0041366,auto_exact,high
+WR,Jalen Brooks (43716734),Jalen Brooks,43716734,FLEX,7600,CAR@ARI 08/06/2026 08:00PM ET,ARI,1.2,,FLEX,Jalen Brooks,dk,7600,jalen brooks,ARI,WR,showdown,00-0038640,auto_exact,high
+WR,David Moore (43716735),David Moore,43716735,FLEX,7600,CAR@ARI 08/06/2026 08:00PM ET,CAR,0.7,,FLEX,David Moore,dk,7600,david moore,CAR,WR,showdown,00-0033589,auto_exact,high
+WR,Tejhaun Palmer (43716736),Tejhaun Palmer,43716736,FLEX,7600,CAR@ARI 08/06/2026 08:00PM ET,ARI,0.0,,FLEX,Tejhaun Palmer,dk,7600,tejhaun palmer,ARI,WR,showdown,00-0039397,auto_exact,high
+WR,Dan Chisena (43716737),Dan Chisena,43716737,FLEX,7600,CAR@ARI 08/06/2026 08:00PM ET,CAR,0.0,IR,FLEX,Dan Chisena,dk,7600,dan chisena,CAR,WR,showdown,00-0035976,auto_exact,high
+WR,Harrison Wallace III (43716738),Harrison Wallace III,43716738,FLEX,7600,CAR@ARI 08/06/2026 08:00PM ET,ARI,0.0,,FLEX,Harrison Wallace III,dk,7600,harrison wallace,ARI,WR,showdown,00-0041368,auto_exact,high
+WR,Ainias Smith (43716739),Ainias Smith,43716739,FLEX,7600,CAR@ARI 08/06/2026 08:00PM ET,CAR,0.0,IR,FLEX,Ainias Smith,dk,7600,ainias smith,CAR,WR,showdown,00-0039747,auto_exact,high
+WR,Bryson Green (43716740),Bryson Green,43716740,FLEX,7600,CAR@ARI 08/06/2026 08:00PM ET,ARI,0.0,,FLEX,Bryson Green,dk,7600,bryson green,ARI,WR,showdown,00-0040383,auto_exact,high
+WR,Ja'seem Reed (43716741),Ja'seem Reed,43716741,FLEX,7600,CAR@ARI 08/06/2026 08:00PM ET,CAR,0.0,,FLEX,Ja'seem Reed,dk,7600,jaseem reed,CAR,WR,showdown,00-0040265,auto_exact,high
+WR,Malick Meiga (43716742),Malick Meiga,43716742,FLEX,7600,CAR@ARI 08/06/2026 08:00PM ET,CAR,0.0,,FLEX,Malick Meiga,dk,7600,malick meiga,CAR,WR,showdown,00-0041542,auto_exact,high
+RB,Evan Hull (43761173),Evan Hull,43761173,FLEX,7600,CAR@ARI 08/06/2026 08:00PM ET,ARI,1.1,,FLEX,Evan Hull,dk,7600,evan hull,ARI,RB,showdown,00-0038397,auto_fallback_team_mismatch,medium
+WR,Gabriel Benyard (43761174),Gabriel Benyard,43761174,FLEX,7600,CAR@ARI 08/06/2026 08:00PM ET,CAR,0.0,,FLEX,Gabriel Benyard,dk,7600,gabriel benyard,CAR,WR,showdown,00-0041222,auto_fallback_team_mismatch,medium
+TE,Chamon Metayer (43761175),Chamon Metayer,43761175,FLEX,7600,CAR@ARI 08/06/2026 08:00PM ET,CAR,0.0,,FLEX,Chamon Metayer,dk,7600,chamon metayer,CAR,TE,showdown,,,
+WR,Casey Washington (43761176),Casey Washington,43761176,FLEX,7600,CAR@ARI 08/06/2026 08:00PM ET,CAR,2.2,,FLEX,Casey Washington,dk,7600,casey washington,CAR,WR,showdown,00-0039394,auto_fallback_team_mismatch,medium
+WR,Roc Taylor (43766899),Roc Taylor,43766899,FLEX,7600,CAR@ARI 08/06/2026 08:00PM ET,CAR,0.0,,FLEX,Roc Taylor,dk,7600,roc taylor,CAR,WR,showdown,,,
+WR,Elijah Cooks (43766900),Elijah Cooks,43766900,FLEX,7600,CAR@ARI 08/06/2026 08:00PM ET,CAR,0.0,,FLEX,Elijah Cooks,dk,7600,elijah cooks,CAR,WR,showdown,,,
+WR,Ihmir Smith-Marsette (43769785),Ihmir Smith-Marsette,43769785,FLEX,7600,CAR@ARI 08/06/2026 08:00PM ET,ARI,0.0,,FLEX,Ihmir Smith-Marsette,dk,7600,ihmir smith marsette,ARI,WR,showdown,00-0036635,auto_exact,high
