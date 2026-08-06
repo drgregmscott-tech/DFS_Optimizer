@@ -697,6 +697,8 @@ def apply_volume_prior(pool: pd.DataFrame, artifact: dict,
         df[f"{comp}_price_volume"] = 0.0
 
     # --- price-implied share, and the volume it implies -------------------
+    # Pass 1: raw price-implied share per (position, component), straight
+    # from the salary curve, no cross-player awareness yet.
     for pos, cs in COMPONENTS.items():
         mask = df["position"].astype(str) == pos
         if not mask.any():
@@ -705,11 +707,53 @@ def apply_volume_prior(pool: pd.DataFrame, artifact: dict,
             ps = volume_prior.share_from_salary(
                 artifact, pos, comp, df.loc[mask, "salary"])
             df.loc[mask, f"{comp}_price_share"] = ps
+
+    # Session 14.0b FIX: share_from_salary() answers "what's THIS player's
+    # expected share of team volume" independently per player -- nothing
+    # constrains the SUM across a team's roster to stay at or below 1.0.
+    # Harmless when only one or two players sit near the salary floor;
+    # broken when several zero-history players share an identical floor
+    # salary, because the curve is degenerate at the boundary and hands
+    # every one of them the SAME share, stacking on top of the real
+    # contributors instead of splitting one finite pool. Found on a real DK
+    # Week 1 2026 slate: four zero-history RBs at GB's $4000 floor
+    # collectively claimed ~85% of the team's rush volume on top of the
+    # real starter and backup -- which is what actually tripped Session
+    # 10's reconciliation fail-loud. Session 14.0's engine cutover didn't
+    # cause this; it's a pre-existing Phase 10 gap that a real slate with
+    # this many legitimately-included zero-history floor-priced players
+    # (Session 13.5b's rookie-matching fix) had never exercised before.
+    #
+    # Fix: normalize {comp}_price_share within (team, component), summed
+    # ACROSS every position that contributes to that component -- rush
+    # isn't RB-exclusive (a QB scramble or WR jet sweep both count), so the
+    # normalization has to match how reconciliation itself already treats
+    # a component, not split further by position. Only rescales when the
+    # raw sum exceeds 1.0; a sum UNDER 1.0 is left untouched, since that's
+    # the legitimate case where the pool doesn't fully cover team volume,
+    # which the existing _pool_share()/reconciliation machinery already
+    # handles correctly and is not this bug.
+    for comp in comps:
+        col = f"{comp}_price_share"
+        team_sum = df.groupby("team")[col].transform("sum")
+        with np.errstate(divide="ignore", invalid="ignore"):
+            scale = np.where(team_sum > 1.0, 1.0 / team_sum, 1.0)
+        df[col] = df[col] * scale
+
+    # Pass 2: price_volume from the NORMALIZED share, plus hist_share
+    # (unrelated to price_share itself -- kept in this pass, same
+    # structural position as the original single-pass loop had it).
+    for pos, cs in COMPONENTS.items():
+        mask = df["position"].astype(str) == pos
+        if not mask.any():
+            continue
+        for comp, _v, _y, _t in cs:
             col = _TEAM_PRED_COL[comp]
             team_pred = df.loc[mask, "team"].map(
                 tv[col] if (len(tv) and col in tv.columns) else {})
             team_pred = pd.to_numeric(team_pred, errors="coerce").fillna(0.0)
-            df.loc[mask, f"{comp}_price_volume"] = ps * team_pred.to_numpy(float)
+            df.loc[mask, f"{comp}_price_volume"] = (
+                df.loc[mask, f"{comp}_price_share"] * team_pred.to_numpy(float))
 
             # hist_share against the HISTORY team volume, never the anchored
             # one -- see vegas_anchored_team_volume()'s docstring.

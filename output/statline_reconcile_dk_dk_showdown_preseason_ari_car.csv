@@ -1,0 +1,7 @@
+team,component,pool_share,share_basis,raw_sum,target,scale,abs_delta
+CAR,rush,0.5573,recent,23.38,12.44,0.532,10.94
+CAR,pass,1.0,exclusive,46.87,29.13,0.6215,17.74
+ARI,recv,0.8678,recent,42.07,28.14,0.6689,13.93
+ARI,pass,1.0,exclusive,50.68,34.97,0.69,15.71
+CAR,recv,1.0,recent,36.75,25.95,0.7061,10.8
+ARI,rush,0.9767,recent,21.22,16.35,0.7705,4.87
