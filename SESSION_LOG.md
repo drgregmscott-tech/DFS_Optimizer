@@ -3792,3 +3792,225 @@ deferred below.
 real gate is Session 6.x's preseason dry runs / Session 8.1's regular-
 season go-live, both already on the roadmap and blocked on real slates
 becoming available (which they now are, as of this session).
+
+---
+
+## Session 14.0 — Production Engine Cutover (Stat-Line → Live)
+**Date completed:** 2026-08-06
+**Status:** ✅ Complete
+
+**What was actually built:**
+Cut the live pipeline over from `build_projections.py` (the Session 2.4
+placeholder engine, still running for every real slate up to this
+session) to `build_projections_statline.py` (the Phase 10 rebuild --
+stat-line projection, Monte Carlo mean+sigma, price-as-volume-prior,
+role-change handling -- built and backtested across Sessions 10.3a
+through 10.5b but never actually wired into `refresh_data.yml`).
+
+A code audit before any build found the parallel engine was NOT a safe
+drop-in as-is -- three real bugs, all found by static review before
+touching real data:
+1. Vegas lookup crashed on any real slate: `load_vegas_implied_totals()`
+   was fixed in Session 13.5b to key off `slate_id`, but this engine's
+   own `main()` still called it with the bare `week` integer.
+2. Output filename collision: still wrote `final_projections_{site}_
+   {week}.csv`, the exact bug Session 2.4 already fixed elsewhere.
+3. Zero Showdown/Single-Game support and zero kicker support -- both of
+   Session 13.x's additions post-date this file's last real touch.
+
+Fixed all three, ported Showdown support (CAPTAIN_MULTIPLIER, FLEX/
+captain salary split, `apply_captain_multiplier()`, Showdown-aware
+ownership) and kicker support (`_build_kicker_projections()`) from
+`build_projections.py`, reusing those functions directly rather than
+duplicating logic. Extended `apply_captain_multiplier()`'s scaled-column
+list to cover this engine's `statline_p10`/`statline_p90` audit columns
+(no-op for the legacy engine). Wired `refresh_data.yml` to call the
+fixed script with `--volume-prior --sigma-recalibration --dst-model
+distributional` explicitly passed -- both volume-prior and sigma
+recalibration are opt-in/off-by-default in that script, and omitting
+them would have silently shipped only Session 10.3a's bare rewrite.
+
+**A fourth real bug was found only by running against a real slate,
+not by the static audit:** decision #9 from `build_projections.py` (the
+salary-file Game Info fallback for opponent resolution, which fires
+whenever the schedule has no games for the given week) was never
+factored into a separate importable function -- it lived inline in
+`build_final_projections()`. This engine had no fallback at all. Per
+`DFS_Weekly_Process.md`'s `--week 23` sentinel convention, that fallback
+fires on EVERY real slate right now (Week 1 of any season, preseason,
+Madden Sim), so this wasn't an edge case -- it broke the very first real
+run. Ported the identical fallback logic (`build_opponent_map_from_
+salaries()`), with a fix to the ordering of my own first patch attempt
+(the fallback needs the Showdown FLEX/captain split to have already
+happened, since it operates on `build_salaries`, not raw `salaries`) --
+caught and corrected before sending to the user.
+
+**Files created/modified:**
+- `scripts/build_projections_statline.py` (fixed: vegas call site,
+  output filename, reconciliation-report filename, Showdown support
+  added, kicker support added, opponent-map fallback added)
+- `scripts/build_projections.py` (modified: `apply_captain_multiplier()`
+  scaled-column list extended -- see above)
+- `.github/workflows/refresh_data.yml` (both DK and FD build steps
+  swapped to `build_projections_statline.py` with the new flags)
+
+**Validation results:**
+- [x] Fixed script runs end-to-end on a real slate without the vegas/
+  filename bugs reproducing -- confirmed via real DK Week 1 2026
+  classic slate (`dk_classic_wk1`) and real preseason Showdown slate
+  (`dk_showdown_preseason_ari_car`)
+- [x] Showdown slate builds correctly through the swapped engine --
+  confirmed real run: 66 FLEX rows, 66 captain-equivalent rows, 2
+  kickers, correct CPT_MVP/FLEX ownership-budget split (100%/500%)
+- [x] Full pipeline validated on real data for both slates (see Session
+  14.0b below -- closed together since 14.0b's fix was required before
+  either slate's output could be trusted)
+- [ ] `DFS_Weekly_Process.md` updated -- done this session, see below
+
+**Decisions made / assumptions taken:**
+- Kept λ (optimizer's mean-variance objective coefficient) at its
+  existing default of 0.0 -- this session's job was fixing the mean
+  projection and making sigma available, not changing lineup-
+  construction strategy in the same session as an engine swap.
+- Did not attempt to reconcile the module-docstring's stale reference
+  to a function called `build_opponent_map_from_vegas()` (the actual
+  function is `build_opponent_map_from_salaries()`) in
+  `build_projections.py` -- pre-existing documentation drift, unrelated
+  to this session's scope, not fixed.
+
+**Known issues deferred:**
+- Preseason Showdown vegas coverage is thin -- the real ARI/CAR run
+  still shows `vegas_factor=1.0` for all players even with the
+  opponent map correctly resolved (`Inferred 1 game(s): [('ARI',
+  'CAR')]`). Very likely a genuine market-data gap (The Odds API's
+  preseason coverage), not a code bug -- not investigated further this
+  session, flagged for Session 14.1's data-source work if it recurs on
+  real regular-season Showdown slates.
+- FD validation remains an open gap across the whole project, unchanged
+  by this session.
+
+**Handoff notes for next session:** Session 14.0b (below) was required
+before either slate's output could be trusted -- read that entry too.
+The real before/after projection comparison that actually validates
+this cutover's purpose (closing the user's original "25% high"
+observation) is documented in 14.0b's entry, since it wasn't possible
+to do a meaningful comparison until 14.0b's fix landed.
+
+---
+
+## Session 14.0b — Volume-Prior Price-Share Normalization Fix
+**Date completed:** 2026-08-06
+**Status:** ✅ Complete
+
+**What was actually built:**
+Real bug found via Session 14.0's own real-slate validation, not part
+of the original session's planned scope. First real run of the cut-over
+engine against a real DK Week 1 2026 slate hit the mandatory share-
+reconciliation fail-loud (`statline_model.py` decision #7): 43-49% of
+material team/component pairs needed a rescale beyond the 25% threshold
+-- systemic, not one odd depth chart.
+
+Traced with a throwaway diagnostic (`probe_reconcile_gap.py`, not
+committed as a permanent script) against the two worst offenders (GB
+rush, CAR rush). Root cause: `volume_prior.share_from_salary()` answers
+"what's this one player's expected share of team volume" independently
+per player, with nothing constraining the SUM across a team's roster to
+stay at or below 1.0. Harmless with one or two players near the salary
+floor; broken with several zero-history players sharing an identical
+floor salary, since the curve is degenerate at that boundary and hands
+every one of them the same share, stacking on top of the real
+contributors. Real example: four zero-history RBs at GB's $4000 floor
+collectively claimed ~85% of the team's rush volume on top of Josh
+Jacobs (the real starter) and Chris Brooks (the real backup).
+
+This is pre-existing Phase 10 logic (`apply_volume_prior()`,
+`share_from_salary()`) that Session 14.0 did not touch. Best-supported
+explanation for why it surfaced only now: Session 10.3b's own accuracy
+validation was explicitly "week-1-excluded," and Session 13.5b's
+rookie/zero-history matching fix (which stopped exactly these players
+from being silently dropped before the cold-start logic ever saw them)
+predates this being the first real slate to combine real full-roster
+zero-history density with `--volume-prior` and reconciliation together.
+
+**Fix (user-directed, Option A of three discussed):** normalize
+`{comp}_price_share` within (team, component), summed ACROSS every
+position that contributes to that component -- not position-by-
+position, per the user's explicit call, matching how reconciliation
+itself already treats a component. Only rescales when the raw sum
+exceeds 1.0; a sum under 1.0 is left untouched, since that's the
+legitimate case the existing `_pool_share()`/reconciliation machinery
+already handles correctly. Implemented as a second pass in
+`apply_volume_prior()`, between the raw price-share computation and the
+price-volume computation that consumes it.
+
+**Files created/modified:**
+- `scripts/statline_model.py` (`apply_volume_prior()` split into two
+  passes with the normalization step between them)
+- `scripts/probe_reconcile_gap.py` (new, throwaway diagnostic -- not
+  intended to be a permanent part of the pipeline)
+
+**Validation results:**
+- [x] Sanity-checked the normalization math against the real GB probe
+  numbers before shipping: raw rush-share sum 2.207 (121% over-
+  allocated) normalizes to exactly 1.0, Josh Jacobs correctly retains
+  the largest individual share (0.248) after scaling
+- [x] Re-ran both real slates: classic went from 43-49% material-pair
+  violations (SystemExit) to 2/72 isolated pairs (GB rush 0.49x, BAL
+  rush 0.56x); Showdown went from failing to 1/6 (CAR rush 0.53x).
+  Both counts are consistent with this project's own established
+  tolerance for a single real depth-chart situation (see
+  `reconcile_team_shares()`'s own Russell Wilson 2021 example) --
+  isolated and expected, not investigated further.
+- [x] Real before/after comparison, old engine (`build_projections.py`)
+  vs. fixed new engine, on the real DK Week 1 2026 classic slate (352
+  players with a positive projection in both) and the real preseason
+  Showdown slate (70 players): skill-position `final_projection` ran
+  ~66% of the old engine's aggregate sum on classic, ~63% on Showdown.
+  DST unchanged (0.998x -- expected, shared model between engines).
+  Confirmed the shift originates from the model's own `season_avg`, not
+  `matchup_factor`/`vegas_factor` (both within floating-point noise
+  between engines, max diff 0.015). The shift is NOT uniform: an
+  established workhorse back (Jahmyr Gibbs) barely moved (0.89x) while
+  committee/role-uncertain backs and pass-catchers dropped harder
+  (Brock Bowers 0.35x, De'Von Achane 0.43x) -- consistent with the new
+  engine correctly pricing real usage uncertainty the old flat-average
+  engine had no mechanism for.
+- [x] User's own DFS judgment check against real-world expectations:
+  Joe Burrow ($6900, plus matchup) landed at 18.39 post-fix, within
+  ~10% of the user's own ~20-point expectation for a good QB in a plus
+  matchup (their stated ceiling reference: prime Mahomes-tier around
+  23). User confirmed this as "in the ballpark within reason" and
+  approved closing the session on that basis.
+
+**Decisions made / assumptions taken:**
+- Normalization scope is (team, component) across ALL positions
+  contributing to that component (e.g. rush includes RB/QB/WR
+  scrambles/jet sweeps together), not split further by position --
+  explicit user decision, matching how `_pool_share()`/reconciliation
+  already treat a component.
+- Did not lower or adjust `RECONCILE_MAX_VIOLATION_SHARE`/`fail_
+  threshold` as an alternative fix -- considered and explicitly
+  rejected (see the three options discussed with the user): the
+  fail-loud was working correctly and catching a real bug; loosening it
+  would have hidden the problem rather than fixed it.
+
+**Known issues deferred:**
+- GB rush (0.49x) and BAL rush (0.56x) post-fix rescales, and CAR rush
+  (0.53x) on Showdown, were not individually investigated against real
+  depth-chart context -- treated as ordinary, expected reconciliation
+  activity per the project's own established tolerance, not a new gap.
+- Whether ~63-66% of the old engine's baseline is the CORRECT level, or
+  whether it's now undershooting, is not something this session's
+  before/after diff can answer on its own -- that's Session 9.1's job
+  once real games exist (gated on real Week 1 games being played,
+  ~Sept 13 2026). This session's validation is a directional/sanity
+  check against the user's real-world DFS judgment, not a backtest.
+
+**Handoff notes for next session:** `probe_reconcile_gap.py` is a
+throwaway diagnostic, not a permanent script -- fine to leave in the
+repo for now (matches the project's existing `probe_*.py` convention)
+but not wired into any workflow. Session 9.1, once it has real data,
+is the thing that actually confirms or corrects this session's
+92%-confidence-not-100% validation. `DFS_Weekly_Process.md` updated
+this session to reflect the new engine and its flags -- see that file's
+own Quick Reference and Showdown sections.

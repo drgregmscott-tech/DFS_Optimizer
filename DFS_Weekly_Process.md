@@ -22,8 +22,8 @@ Stages 1, 2, 4, and 5 are things you do. Stage 3 runs unattended once Stage 2 is
 
 **Updated 2026-08-05** — this section changed after a real Week 1 2026 run surfaced the actual rule. There are two *separate* concepts that used to be conflated under one `--week`/`--season` pair, and now aren't:
 
-1. **Stats lookback** (`projections_baseline.py`, `projections_matchup.py`, and the `--season`/`--week` you pass to `build_projections.py`) — which season/week of player history to average. Both scripts filter strictly to games *before* the target week, within that one season's file — there's no cross-season carryover built into them.
-2. **Schedule/opponent resolution AND vegas lines** — figuring out who's actually playing whom this slate, and what the real vegas lines are. Vegas is now handled entirely separately (see below); schedule/opponent resolution is still driven by `--season`/`--week` inside `build_projections.py`.
+1. **Stats lookback** (`projections_baseline.py`, `projections_matchup.py`, and the `--season`/`--week` you pass to `build_projections_statline.py`) — which season/week of player history to average. Both scripts filter strictly to games *before* the target week, within that one season's file — there's no cross-season carryover built into them.
+2. **Schedule/opponent resolution AND vegas lines** — figuring out who's actually playing whom this slate, and what the real vegas lines are. Vegas is now handled entirely separately (see below); schedule/opponent resolution is still driven by `--season`/`--week` inside `build_projections_statline.py`.
 
 **The rule:**
 
@@ -57,11 +57,11 @@ Showdown (DK "Captain Mode") and Single Game (FD) slates follow the exact same S
 
 - **Roster:** 1 Captain/MVP slot (1.5x salary AND 1.5x points) + 5 FLEX slots on DK, or 1 MVP slot + 4 FLEX slots on FD. Any position is eligible in every slot — there's no QB/RB/WR/TE/DST breakdown like classic.
 - **One extra flag at ingest:** `ingest_salaries.py --format showdown` (Step 2f). This is the one step where forgetting the flag doesn't error — it silently ingests as classic instead, so it's worth double-checking.
-- **Everything downstream auto-detects:** `build_projections.py` and the UI both detect Showdown from the ingested file itself — no other command changes.
+- **Everything downstream auto-detects:** `build_projections_statline.py` and the UI both detect Showdown from the ingested file itself — no other command changes.
 - **UI adapts automatically:** once a Showdown pool is loaded, the Build panel hides Stack Mode, Min Projection, Min Total Ownership, FLEX Eligible Positions, and Game Exposure Caps (none of these apply to a 2-team, no-stacking-yet Showdown pool) and shows a **Min Team Players** control instead — a floor (not a cap) on how many players must come from one team, useful for forcing a lopsided build. The Player Pool list also gets a **K** tab (kickers only show up on Showdown slates) and shows `(CPT)`/`(MVP)` badges next to a player's name, since each player appears twice in the pool — once at Captain price/points, once at FLEX price/points.
 - **Bulk-upload export shape is different:** the Stage 5 download produces `CPT,FLEX,FLEX,FLEX,FLEX,FLEX` (DK) or `MVP,FLEX,FLEX,FLEX,FLEX` (FD) columns instead of classic's `QB,RB,RB,WR,WR,WR,TE,FLEX,DST`. Paste into the Showdown/Captain Mode (or FD Single Game) entries file, not the Classic one.
 - **Validation status:** DK Showdown's column shapes (CPT/FLEX salary and role linking) were measured against a real DK Captain Mode export, and a real preseason ARI/CAR Showdown slate has now been run fully end to end, including a correct DST opponent/implied_total/over_under fix (Session 13.5b). FD Showdown's 1.5x MVP salary mechanic was confirmed against a live FD roster builder, but a full FD Showdown slate hasn't been run end to end through this pipeline yet — same "DK first, FD second" caution as classic slates.
-- **`current_slate.json` tracks one slate per site.** If you want a classic slate AND a Showdown slate both refreshing automatically at the same time for the same site (e.g. a Sunday main slate plus a Sunday/Monday-night Showdown), Stage 3's automation can only track whichever slate_id is currently set for that site — you'll need to manually re-run `build_projections.py` for the other one when you want it refreshed, or accept it'll go stale between manual runs.
+- **`current_slate.json` tracks one slate per site.** If you want a classic slate AND a Showdown slate both refreshing automatically at the same time for the same site (e.g. a Sunday main slate plus a Sunday/Monday-night Showdown), Stage 3's automation can only track whichever slate_id is currently set for that site — you'll need to manually re-run `build_projections_statline.py` (with the flags from Step 2i below) for the other one when you want it refreshed, or accept it'll go stale between manual runs.
 
 ---
 
@@ -249,15 +249,19 @@ No output (beyond the write confirmation) means success. An error means contact 
 
 ### Step 2i — Build final projections
 
-Use the same `--week`/`--season` and `--slate-id`:
+**Session 14.0 (2026-08-06): this step now uses `build_projections_statline.py`, not `build_projections.py`.** The old script is still in the repo (kept for reference/rollback) but is no longer part of the live pipeline — `refresh_data.yml`'s automated refresh switched over in the same session, so this manual step needs to match it.
+
+Use the same `--week`/`--season` and `--slate-id`, and **explicitly pass `--volume-prior --sigma-recalibration --dst-model distributional`** — the first two are opt-in/off-by-default in this script, and omitting them silently ships a weaker version of the engine (no price-implied volume prior, no sigma dispersion correction):
 
 ```
-python scripts/build_projections.py --site dk --season 2025 --week 23 --slate-id classic_wk5
+python scripts/build_projections_statline.py --site dk --season 2025 --week 23 --slate-id classic_wk5 --volume-prior --sigma-recalibration --dst-model distributional
 ```
 
 `--vegas-slate-id` defaults to `--slate-id` automatically, so you don't need to pass it unless DK and FD ended up with different slate_id strings for the same real slate (see Step 2c) — in that case add `--vegas-slate-id {the-id-you-actually-pulled-vegas-under}` to FD's build command.
 
-Expected output: several informational lines, no ERROR. The file `output/final_projections_dk_{slate_id}.csv` is created. Check the last few lines for validation output — `Nulls in any column (excl. roster_role): 0`, `Negative final_projection: 0`, etc. should all read 0. If any of these are nonzero, the output will now tell you exactly which column is affected — contact Claude with that detail.
+Expected output: several informational lines, no ERROR. The file `output/final_projections_dk_{slate_id}.csv` is created. Check the last few lines for validation output — `Nulls in any legacy column: 0`, `Negative final_projection: 0`, `Positive projection but zero sigma: 0`, etc. should all read 0. If any of these are nonzero, the output will now tell you exactly which column is affected — contact Claude with that detail.
+
+**You may also see a `NOTE share reconciliation:` block listing a small number of team/component pairs needing a rescale.** This is normal and expected — it means the model is correcting for real depth-chart situations (an injury, a backup taking over). One or two teams showing up here on an ordinary week is healthy, not a bug. What's NOT normal is a `statline share reconciliation FAILED` message with `SystemExit` — that's the mandatory fail-loud stopping the run because something is structurally wrong (widespread violations across many teams at once, not one team's real situation). If you see that, stop and contact Claude with the full output rather than re-running or trying to work around it.
 
 For Madden Sim, preseason, and real Week 1 slates you will also see:
 ```
@@ -386,7 +390,7 @@ python scripts/projections_baseline.py --site dk --season {season} --week {week}
 python scripts/projections_matchup.py --site dk --season {season} --week {week}
 ```
 ```
-python scripts/build_projections.py --site dk --season {season} --week {week} --slate-id {slate_id}
+python scripts/build_projections_statline.py --site dk --season {season} --week {week} --slate-id {slate_id} --volume-prior --sigma-recalibration --dst-model distributional
 ```
 ```
 git add data/ output/
@@ -407,10 +411,10 @@ git push
 - **Week 1 of ANY season (real, preseason, or Madden) uses `--season 2025 --week 23`.** Real Week 2+ switches to the actual current season/week. See the season/week table near the top of this doc.
 - **`ingest_historical.py --season 2025 2026`** should be run for every slate now, not just once per season — 2026 is needed for the rookie-matching fix (Step 2d). A `NOTE: no weekly stats available yet for season 2026` message before games start is expected, not an error; other seasons in the same call still succeed independently.
 - **A "roster-only player(s) added" line from `ingest_salaries.py` is expected and good** — it means a true rookie/zero-snap player was successfully matched instead of silently dropped (Session 13.5b fix).
-- **`ingest_historical.py` (Step 2d)** must have been run at least once for the current season. If `build_projections.py` fails with a `.parquet not found` error, run Step 2d and retry.
+- **`ingest_historical.py` (Step 2d)** must have been run at least once for the current season. If `build_projections_statline.py` fails with a `.parquet not found` error, run Step 2d and retry.
 - **Output filenames use `--slate-id`**, not `--week`: `final_projections_dk_{slate_id}.csv`. Two slates in the same week will not overwrite each other.
 - **DK is live-validated end to end** against a real preseason Showdown slate, a real Madden Sim slate, and a real Week 1 2026 regular-season classic slate (all through Session 13.5b). **FD is built identically but has not been tested against a real FD salary export.**
-- **Showdown: `--format showdown` on `ingest_salaries.py` (Step 2f) is the one flag that fails silently if forgotten** — it ingests as classic instead of erroring. Everything downstream (`build_projections.py`, the UI) auto-detects from there.
+- **Showdown: `--format showdown` on `ingest_salaries.py` (Step 2f) is the one flag that fails silently if forgotten** — it ingests as classic instead of erroring. Everything downstream (`build_projections_statline.py`, the UI) auto-detects from there.
 - **Showdown + classic on the same site can't both auto-refresh at once** — `current_slate.json` tracks one slate_id per site, so pointing it at a Showdown slate stops Stage 3 from refreshing whatever classic slate was live for that site.
 - **DK Showdown's column shapes are measured against a real export and a real ARI/CAR slate; FD Showdown's 1.5x MVP mechanic is confirmed against a live FD roster builder, but neither has been run through a full FD Showdown slate end to end yet.**
 - **The near-lock cadence** (currently templated to Sunday 11am CT) needs updating once the actual regular-season lock time pattern is confirmed.

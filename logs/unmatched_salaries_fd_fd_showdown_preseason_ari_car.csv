@@ -1,0 +1,7 @@
+Id,Position,First Name,Nickname,Last Name,FPPG,Played,Salary,MVP 1.5x Salary,Game,Team,Opponent,Injury Indicator,Injury Details,Tier,Unnamed: 15,Unnamed: 16,Roster Position,roster_role,name,site,salary,normalized_name,normalized_team,position_upper,slate_format,player_id,match_method,match_confidence
+132913-128681,TE,Caden,Caden Prieskorn,Prieskorn,,0,8000,12000,CAR@ARI,CAR,ARI,,,,,,MVP - 1.5X Points/AnyFLEX,FLEX,Caden Prieskorn,fd,8000,caden prieskorn,CAR,TE,showdown,,,
+132913-103252,RB,Zonovan,Zonovan Knight,Knight,6.825000127156575,12,8000,12000,CAR@ARI,ARI,CAR,,,,,,MVP - 1.5X Points/AnyFLEX,FLEX,Zonovan Knight,fd,8000,zonovan knight,ARI,RB,showdown,,,
+132913-72665,TE,Kenny,Kenny Yeboah,Yeboah,2.199999968210856,6,8000,12000,CAR@ARI,ARI,CAR,,,,,,MVP - 1.5X Points/AnyFLEX,FLEX,Kenny Yeboah,fd,8000,kenny yeboah,ARI,TE,showdown,,,
+132913-128681,TE,Caden,Caden Prieskorn,Prieskorn,,0,12000,12000,CAR@ARI,CAR,ARI,,,,,,MVP - 1.5X Points/AnyFLEX,MVP,Caden Prieskorn,fd,12000,caden prieskorn,CAR,TE,showdown,,,
+132913-103252,RB,Zonovan,Zonovan Knight,Knight,6.825000127156575,12,12000,12000,CAR@ARI,ARI,CAR,,,,,,MVP - 1.5X Points/AnyFLEX,MVP,Zonovan Knight,fd,12000,zonovan knight,ARI,RB,showdown,,,
+132913-72665,TE,Kenny,Kenny Yeboah,Yeboah,2.199999968210856,6,12000,12000,CAR@ARI,ARI,CAR,,,,,,MVP - 1.5X Points/AnyFLEX,MVP,Kenny Yeboah,fd,12000,kenny yeboah,ARI,TE,showdown,,,
