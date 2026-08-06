@@ -1,0 +1,13 @@
+Position,Name + ID,Name,ID,Roster Position,Salary,Game Info,TeamAbbrev,AvgPointsPerGame,Status,roster_role,name,site,salary,normalized_name,normalized_team,position_upper,slate_format,player_id,match_method,match_confidence
+RB,Zonovan Knight (43716778),Zonovan Knight,43716778,CPT,11400,CAR@ARI 08/06/2026 08:00PM ET,ARI,7.8,,CPT,Zonovan Knight,dk,11400,zonovan knight,ARI,RB,showdown,,,
+TE,Kenny Yeboah (43716783),Kenny Yeboah,43716783,CPT,11400,CAR@ARI 08/06/2026 08:00PM ET,ARI,0.0,,CPT,Kenny Yeboah,dk,11400,kenny yeboah,ARI,TE,showdown,,,
+TE,Caden Prieskorn (43716789),Caden Prieskorn,43716789,CPT,11400,CAR@ARI 08/06/2026 08:00PM ET,CAR,0.0,,CPT,Caden Prieskorn,dk,11400,caden prieskorn,CAR,TE,showdown,,,
+TE,Chamon Metayer (43761179),Chamon Metayer,43761179,CPT,11400,CAR@ARI 08/06/2026 08:00PM ET,CAR,0.0,,CPT,Chamon Metayer,dk,11400,chamon metayer,CAR,TE,showdown,,,
+WR,Roc Taylor (43766901),Roc Taylor,43766901,CPT,11400,CAR@ARI 08/06/2026 08:00PM ET,CAR,0.0,,CPT,Roc Taylor,dk,11400,roc taylor,CAR,WR,showdown,,,
+WR,Elijah Cooks (43766902),Elijah Cooks,43766902,CPT,11400,CAR@ARI 08/06/2026 08:00PM ET,CAR,0.0,,CPT,Elijah Cooks,dk,11400,elijah cooks,CAR,WR,showdown,,,
+RB,Zonovan Knight (43716719),Zonovan Knight,43716719,FLEX,7600,CAR@ARI 08/06/2026 08:00PM ET,ARI,7.8,,FLEX,Zonovan Knight,dk,7600,zonovan knight,ARI,RB,showdown,,,
+TE,Kenny Yeboah (43716724),Kenny Yeboah,43716724,FLEX,7600,CAR@ARI 08/06/2026 08:00PM ET,ARI,0.0,,FLEX,Kenny Yeboah,dk,7600,kenny yeboah,ARI,TE,showdown,,,
+TE,Caden Prieskorn (43716730),Caden Prieskorn,43716730,FLEX,7600,CAR@ARI 08/06/2026 08:00PM ET,CAR,0.0,,FLEX,Caden Prieskorn,dk,7600,caden prieskorn,CAR,TE,showdown,,,
+TE,Chamon Metayer (43761175),Chamon Metayer,43761175,FLEX,7600,CAR@ARI 08/06/2026 08:00PM ET,CAR,0.0,,FLEX,Chamon Metayer,dk,7600,chamon metayer,CAR,TE,showdown,,,
+WR,Roc Taylor (43766899),Roc Taylor,43766899,FLEX,7600,CAR@ARI 08/06/2026 08:00PM ET,CAR,0.0,,FLEX,Roc Taylor,dk,7600,roc taylor,CAR,WR,showdown,,,
+WR,Elijah Cooks (43766900),Elijah Cooks,43766900,FLEX,7600,CAR@ARI 08/06/2026 08:00PM ET,CAR,0.0,,FLEX,Elijah Cooks,dk,7600,elijah cooks,CAR,WR,showdown,,,
