@@ -3660,3 +3660,135 @@ other workflow references `vegas_odds.py --week`.
   -- same "DK first, FD second" gap this project has carried since Phase
   1. `--vegas-slate-id` defaults correctly for the common case (DK/FD
   share one slate_id string), confirmed via `data/current_slate.json`.
+
+---
+
+## Session 13.5 — Frontend Showdown UI + Four-Layer Wiring ✅ Complete (2026-08-05)
+**Status:** Paused mid-session pending Session 13.5b (two real bugs found
+during this session's own real-slate Showdown testing -- see
+`Handoff_13.5_Pause_BugFixes.md`). Resumed and closed out after 13.5b's
+fixes were real-data validated.
+
+**What was actually built:**
+- `dfs_optimizer_frontend/index.html` — Showdown-aware `SITE_CONFIG`
+  (DK: CPT + 5×FLEX/$50k; FD: MVP + 4×FLEX/$60k, pulled directly from
+  `ingest_salaries.py`'s `SITE_CONFIGS[site]["showdown"]`), `isShowdownRows()`/
+  `poolIsShowdown()`/`effectiveCfg()` detection helpers (pool files via
+  `slate_format`, lineup files via presence of `roster_role`, which
+  classic lineups never carry), Showdown-aware `groupBySite()` sort
+  order, Showdown-aware `render()`/`downloadLineupsForImport()` (DK/FD
+  Showdown bulk-upload column shapes — `CPT,FLEX,FLEX,FLEX,FLEX,FLEX` /
+  `MVP,FLEX,FLEX,FLEX,FLEX` — fall out of the existing trailing-digit-
+  strip regex with no new logic needed once `slotOrder` is right), a `K`
+  tab and `(CPT)`/`(MVP)` role badges in the Player Pool (a Showdown pool
+  has 2 rows per `player_id` with different salary/projection — this was
+  previously silently dropped by the pool-payload whitelist, a real bug
+  caught before shipping, not just a missing feature), role-aware
+  `pivotKey()`/`groupPivots()`/`applyPivotSwap()` matching `pivot_finder.py`'s
+  Session 13.4 `cash_roster_role`/`pivot_roster_role` columns, a new **Min
+  Team Players** Build panel control (Showdown-only one-sided-lineup
+  floor, mirrors the Team Exposure Caps UI pattern), and
+  `updateControlsVisibility()`/`buildDispatchParams()` extended to hide
+  Stack Mode/Min Projection/Min Total Ownership/FLEX Positions/Game Caps
+  and send `format`/`min_team_players` for a detected Showdown pool.
+- `cloudflare_worker/optimizer_api/optimizer_api.js` — added `format`
+  and `min_team_players` to `passthroughKeys`.
+- `.github/workflows/run_optimizer_dispatch.yml` — added `--format` and
+  `--min-team-players` flag-building, following the file's existing
+  "omit means the CLI's own default" convention.
+- `.github/workflows/refresh_data.yml` — confirmed (no change needed):
+  already auto-detects Showdown through `build_projections.py`/
+  `pivot_finder.py`'s own detection, same as classic.
+- `DFS_Weekly_Process.md` — added a full "Showdown/Single-Game slates —
+  what to expect" section plus inline Showdown notes at every affected
+  step (export page, slate-ID convention, `--format showdown` flag,
+  bulk-upload column shape), and fixed a pre-existing staleness issue
+  (doc referenced the old `final_projections_{site}_{week}.csv` naming;
+  actual output is `_{slate_id}.csv` post slate-mgmt overhaul, predates
+  this session).
+
+**Real bug found and NOT code-fixed (operating-convention workaround
+instead):** `labelToSlateId()` in `index.html` always lowercases the
+label to build the slate_id it sends to `optimizer.py`, but the backend
+CLI preserves whatever case was typed at `--slate-id`. Any uppercase
+character in a `--slate-id` (e.g. team codes like `ARI_CAR`) causes a
+dispatch-time `FileNotFoundError` since GitHub Actions runners are
+case-sensitive. Discovered live via a real `showdown_ARI_CAR_preseason_wk1`
+slate. Fixed the immediate blocker by renaming the two committed files to
+lowercase (`git mv` two-step, case-only renames need it on Windows); did
+NOT patch `labelToSlateId()` itself. **Still open** — see Known issues
+deferred below.
+
+**Validation:**
+- DK Showdown validated end to end multiple times this session,
+  including the final real preseason ARI/CAR slate after 13.5b's fixes:
+  K tab, CPT/MVP badges, Stack/Min Projection/Min Total Ownership/FLEX
+  Positions/Game Caps correctly hidden, Min Team Players correctly
+  shown, Team Exposure Caps working normally, lineups built successfully
+  through the real dispatch path, roster correctly ordered CPT→FLEX.
+- FD Showdown, the pivot panel's role-aware matching against a real
+  `pivot_suggestions` file, and a mixed classic→Showdown→classic UI
+  session — all three were the explicitly tracked open items from
+  Session 13.5b's handoff. **User tested all three directly and
+  confirmed working** ("i tested the three remaining open items and
+  we're good there"); not independently re-verified by Claude in this
+  conversation.
+- Also serves as Session 13.6 (Real Showdown Slate Validation, DK & FD)'s
+  validation — see that ROADMAP card, closed alongside this one rather
+  than run as a separate session, since the real-slate testing that
+  closed out 13.5 covers the same ground 13.6 was scoped for.
+
+**Decisions made / assumptions taken:**
+- Discovered DK's real preseason Showdown salary export prices EVERY
+  player identically ($7,600 FLEX / $11,400 CPT, no variation at all) —
+  confirmed by the user as real, expected DK preseason behavior, not a
+  corrupted export. This means salary carries zero differentiating
+  signal for preseason Showdown specifically; regular-season Showdown
+  slates get normal tiered pricing.
+- User's explicit call: let the "no real signal to project a true
+  cold-start rookie in preseason" situation stand as-is for preseason
+  (accept salary-anchor's flat-pricing limitation there) rather than
+  build a manual-override or depth-chart-signal mechanism now. Revisit
+  once real regular-season salary + Vegas data is flowing normally.
+- Confirmed `--salary-anchor-cold-start` (existing flag, off by default,
+  `SALARY_ANCHOR_WEIGHT_DEFAULT = 0.0`) is the correct lever for a
+  genuine cold-start player when real salary variation exists: with
+  `games_played=0`, `effective_weight()`'s shrinkage schedule
+  (`weight_floor + (1-weight_floor) * (k/(k+games_played))`) evaluates
+  to exactly 1.0 at the default `k=4.0`, fully replacing a 0.0 model
+  projection with the salary-anchor curve's value. Not usable to full
+  effect on THIS particular slate given the flat-pricing finding above.
+
+**Known issues deferred:**
+- **`labelToSlateId()`'s lowercase-forcing is still unfixed in code.**
+  Operating convention until then: always type `--slate-id` in lowercase
+  at the CLI (already reflected in `DFS_Weekly_Process.md`'s examples).
+  Affects any slate type, not just Showdown.
+- **Preseason Showdown rookie/cold-start projections have no real
+  differentiating signal** (see Decisions above) — explicitly deferred
+  to regular season, not fixed this session.
+- **Player props as a projection input** — user flagged that sharp
+  DFS players commonly estimate player-level projections from Vegas
+  player props (TD props, yardage O/Us, etc.) rather than (or in
+  addition to) game-level totals, and asked whether this pipeline could
+  incorporate that. Not currently possible: The Odds API is used for
+  game-level lines/totals only (Session 2.3's `vegas_odds.py`), no
+  player-prop endpoint is wired in. Needs its own scoping session —
+  data source/cost TBD (props are typically a separate, often pricier,
+  API tier), plus a design decision on how a per-player prop line would
+  fold into the existing season_avg/recent_form/matchup_factor/
+  vegas_factor blend. Not built or scoped further this session — pure
+  backlog capture. See PHASE 9 section below for where this is tracked.
+- **User observed projections trending high "across the board"** on the
+  slates built this session (consistent overshoot, not isolated to
+  specific players) — noted but NOT investigated this session (no actual
+  results exist yet to compare against; preseason box scores are the
+  first real chance). Flagged as a specific thing to check once Session
+  9.1's actual-vs-projected logging has real data, rather than a new
+  ad-hoc investigation now. See PHASE 9 section below.
+
+**Handoff notes for next session:** None outstanding for 13.x specifically
+-- Phase 13 (Showdown/Single-Game support) is now fully closed. Next
+real gate is Session 6.x's preseason dry runs / Session 8.1's regular-
+season go-live, both already on the roadmap and blocked on real slates
+becoming available (which they now are, as of this session).

@@ -775,6 +775,33 @@ By far the largest session in this project -- see SESSION_LOG.md's Session 7.3 e
 
 ---
 
+### Backlog idea — Player props as a projection input
+*Flagged during Session 13.5's closeout (2026-08-05), not yet scoped or
+built.* User observed that sharp DFS players commonly estimate
+player-level projections from Vegas player props (TD props, yardage
+O/Us, etc.) rather than relying on game-level totals alone, and asked
+whether this pipeline could incorporate that. Currently not possible:
+`vegas_odds.py` (Session 2.3) pulls game-level lines/totals via The Odds
+API only — no player-prop endpoint is wired in. Needs its own scoping
+session before any build starts (Design-before-build): confirm a props
+data source and its cost (typically a separate, pricier API tier than
+game lines), and design how a per-player prop line would fold into the
+existing season_avg/recent_form/matchup_factor/vegas_factor blend
+without just duplicating what vegas_factor/implied_total already do at
+the team level.
+
+### Backlog idea — Investigate systematic high bias in projections
+*Flagged during Session 13.5's closeout (2026-08-05).* User observed
+projections trending high "across the board" (consistent overshoot, not
+isolated to specific players) on the slates built that session. Not
+investigated yet — no real actual-vs-projected data exists to confirm or
+quantify it against (preseason box scores are the first real chance).
+This is exactly what Session 9.1's actual-vs-projected logging is built
+to catch — check this specifically once that data exists, rather than
+guessing at a fix now.
+
+---
+
 ## PHASE 10 — Projection System Redesign
 *Opened 2026-07-25. A ground-up redesign of the projection engine, deliberately specced from first principles BEFORE re-reading the existing `build_projections.py`, to avoid anchoring on the current recency-weighted-average approach. The original engine (Sessions 2.1-2.4) was intentionally a get-something-working placeholder; this phase replaces it. The design below is settled and user-agreed; the cards implement it in dependency order.*
 
@@ -2485,53 +2512,51 @@ disable the four Showdown-rejected flags rather than leave them clickable.
 
 ---
 
-### Session 13.5 — Frontend Showdown UI + Four-Layer Wiring
-**Status note (added 2026-08-05):** Paused mid-session pending Session
-13.5b (two real bugs found during real-slate Showdown testing, documented
-in `Handoff_13.5_Pause_BugFixes.md`). 13.5b is now ✅ complete and real-data
-validated (Showdown, Madden, and a real Week 1 classic slate) -- this
-session's own work (below) can now be resumed/reassessed for completeness,
-including finally trusting the Slate Overview panel and DST projections
-enough to judge the rest of it end to end.
+### Session 13.5 — Frontend Showdown UI + Four-Layer Wiring ✅ Complete (2026-08-05)
+**Status note:** Paused mid-session pending Session 13.5b (two real bugs
+found during real-slate Showdown testing, documented in `Handoff_13.5_
+Pause_BugFixes.md`). Resumed after 13.5b's fixes were real-data validated
+and closed out. Also serves as Session 13.6's closure — see that card.
 
 **Prerequisites:** Session 13.4 complete.
 
 **Files touched (modified):**
-- `dfs_optimizer_frontend/index.html` — Showdown-specific roster display
-  (CPT/FLEX or MVP/FLEX slot layout, replacing the hardcoded classic
-  `slotOrder` for Showdown slates), Showdown-specific DK bulk-upload
-  paste/download column format (DK's Showdown entries template uses
-  CPT/FLEX/FLEX/FLEX/FLEX/FLEX columns, not QB/RB/RB/WR/WR/WR/TE/FLEX/DST),
-  file-upload format auto-detection extended to recognize a Showdown-shaped
-  file the same way it already auto-detects site (Session 4.3's
-  site-detection fix, same pattern extended to format).
-- `cloudflare_worker/optimizer_api/optimizer_api.js` — add `slate_format`
-  (or equivalent) AND `--min-team-players` (Session 13.4's new Showdown
-  one-sided-lineup flag) to `passthroughKeys`.
-- `.github/workflows/run_optimizer_dispatch.yml` — add `slate_format` AND
-  `--min-team-players` to the flag-builder. Also confirm the four flags
-  Session 13.4 rejects for Showdown (`--stack-mode`, `--max-game-players`,
-  `--flex-positions`, `--min-total-ownership`, `--min-projection`) are
-  hidden/disabled in the UI for Showdown mode rather than left clickable
-  and erroring server-side.
-- `.github/workflows/refresh_data.yml` — confirm the automated refresh
-  cycle handles Showdown slate_ids correctly (kicker/DST/CPT-multiplier
-  rebuild steps included).
+- `dfs_optimizer_frontend/index.html` — Showdown-aware `SITE_CONFIG` +
+  detection helpers, Showdown-aware roster sort/render/download (DK/FD
+  bulk-upload column shapes), `K` tab + CPT/MVP role badges in Player
+  Pool, role-aware pivot panel matching, new Min Team Players control,
+  Build panel hide/show + dispatch param wiring for Showdown.
+- `cloudflare_worker/optimizer_api/optimizer_api.js` — `format` and
+  `min_team_players` added to `passthroughKeys`.
+- `.github/workflows/run_optimizer_dispatch.yml` — `--format` and
+  `--min-team-players` flag-building added.
+- `.github/workflows/refresh_data.yml` — confirmed, no change needed.
+- `DFS_Weekly_Process.md` — full Showdown section + inline notes added.
 
 **Validation:**
-- [ ] `node --check` clean on extracted `index.html` script block.
-- [ ] `optimizer_api.js` Node syntax check.
-- [ ] Both workflow YAML files parse clean.
-- [ ] Worker deployed (separate step from push, per established
-  discipline — `cd cloudflare_worker/optimizer_api && npx wrangler deploy
-  optimizer_api.js`).
-- [ ] Full synthetic-pool click-through in the deployed UI: upload a
-  Showdown pool, build a lineup, confirm CPT/FLEX display, download in
-  DK's Showdown bulk-upload shape.
+- [x] `node --check` clean on extracted `index.html` script block.
+- [x] `optimizer_api.js` Node syntax check.
+- [x] Both workflow YAML files parse clean.
+- [x] Worker deployed.
+- [x] Real DK Showdown slate (not just synthetic) validated end to end
+  multiple times, including after 13.5b's fixes: K tab, CPT/MVP badges,
+  Build panel hide/show, Min Team Players, Team Exposure Caps, lineup
+  build through real dispatch, CPT→FLEX roster order.
+- [x] FD Showdown, pivot panel role-aware matching, mixed classic/
+  Showdown UI session — user-confirmed working, not independently
+  re-verified by Claude. See SESSION_LOG.md's Session 13.5 entry.
 
-**Handoff notes to log:** Any UI layout decisions made for the CPT/FLEX
-panel (e.g. whether it's a visually distinct section from classic roster
-display or reuses the same component with conditional labels).
+**Real bug found, NOT code-fixed (deferred):** `labelToSlateId()` always
+lowercases the slate_id it sends on dispatch, but the backend CLI
+preserves whatever case was typed at `--slate-id` — a mismatch causes a
+dispatch-time `FileNotFoundError`. Workaround: always use lowercase
+`--slate-id` at the CLI (reflected in `DFS_Weekly_Process.md`). Code fix
+not done this session — affects any slate type, not just Showdown.
+
+**Handoff notes logged:** See SESSION_LOG.md's Session 13.5 entry —
+covers the flat-preseason-Showdown-salary finding, the player-props
+backlog item, and the "projections trending high" observation (both
+now tracked under PHASE 9 below).
 
 ---
 
@@ -2576,7 +2601,13 @@ Session 13.5b entry, "Handoff notes for next session," for the full list.
 
 ---
 
-### Session 13.6 — Real Showdown Slate Validation (DK & FD)
+### Session 13.6 — Real Showdown Slate Validation (DK & FD) ✅ Complete (2026-08-05)
+**Status note:** Closed alongside Session 13.5 rather than run as a
+separate session — the real-slate testing that resumed/closed 13.5 (real
+DK Showdown end to end, plus user-confirmed FD Showdown) covers this
+card's full scope. See Session 13.5's card and SESSION_LOG.md entry for
+the actual validation detail; not duplicated here.
+
 **Prerequisites:** Sessions 13.1-13.5 complete on synthetic data. A real
 DK Showdown and/or FD Single Game slate available (first opportunity:
 preseason Thursday games, ~Aug 6, 2026 — exact availability depends on
@@ -2588,26 +2619,21 @@ sites' 08/06/2026 CAR@ARI exports were used, not just synthetic. This
 session's scope is validating the FULL pipeline (13.3 projections/scoring
 through 13.5 frontend), not re-validating ingest from scratch.
 
-**Files touched:** None expected (validation-only session) — but per this
-project's established pattern (Session 4.3, Session 12.1), real-data runs
-routinely surface bugs static review and synthetic data don't. Track any
-fixes made here the same as any other session.
+**Files touched:** None from this card directly — the real fixes real-data
+testing surfaced (DST opponent resolution, rookie/zero-history matching,
+vegas/week decoupling) are tracked under Session 13.5b, not here.
 
 **Validation:**
-- [ ] Full real-data pipeline run, DK Showdown: ingest → kicker/skill/DST
+- [x] Full real-data pipeline run, DK Showdown: ingest → kicker/skill/DST
   projections → CPT multiplier → optimizer → frontend build → DK
   bulk-upload export, end to end.
-- [ ] Full real-data pipeline run, FD Single Game: same chain — ingest
-  itself is already real-data-validated (Session 13.2); this covers
-  13.3-13.5's first real-data pass,
-  same significance as FD Classic's still-pending real-data validation.
-- [ ] Confirms or corrects Session 13.2's UNVERIFIED FD Showdown column
-  assumptions.
+- [x] Full real-data pipeline run, FD Single Game — user-confirmed, not
+  independently re-verified by Claude (see Session 13.5's entry).
+- [x] Session 13.2's previously-UNVERIFIED FD Showdown column assumptions
+  confirmed via this real FD Showdown test.
 
-**Handoff notes to log:** Whether both sites had real Showdown slates
-available for this validation, or only one — if only DK, FD Showdown
-stays flagged unverified (same status FD Classic carries today) until a
-future slate provides real data.
+**Handoff notes logged:** Both sites had real Showdown slates available
+for this validation (the real preseason ARI@CAR Showdown, DK and FD).
 
 ---
 
@@ -2620,6 +2646,10 @@ future slate provides real data.
 | 13.3 | Projection scoring-multiplier layer ✅ | 13.1, 13.2 | Synthetic sufficient |
 | 13.3b | Showdown ownership heuristic ✅ | 13.3 | Synthetic sufficient for the heuristic itself; real Showdown ownership DATA (for eventual retuning, Session 11.1) gated on real slates ~Aug 6, 2026 + a log_ownership.py schema change, neither built yet |
 | 13.4 | Optimizer ILP rewrite ✅ | 13.3, 13.3b | Real-data validated (user's own machine, real 2025 nflverse players through the full pipeline) — stacking deferred, `--min-team-players` shipped instead |
-| 13.5 | Frontend + four-layer wiring | 13.4 | Synthetic sufficient |
+| 13.5 | Frontend + four-layer wiring ✅ | 13.4 | Real-data validated: real DK Showdown end to end, FD Showdown/pivot panel/mixed UI user-confirmed |
 | 13.5b | Bug fixes: DST opponent resolution, rookie matching, vegas/week decoupling ✅ | 13.4 | Real-data validated: real Showdown slate, real Madden slate, real Week 1 2026 classic slate end to end |
-| 13.6 | Real Showdown slate validation, both sites | 13.1-13.5 | Real DK/FD Showdown slate (first chance: ~Aug 6, 2026) |
+| 13.6 | Real Showdown slate validation, both sites ✅ | 13.1-13.5 | Closed alongside 13.5 — same real-slate testing covers both cards |
+
+**Phase 13 is now fully closed** as of 2026-08-05. Next real gates on the
+roadmap are Phase 6 (preseason dry runs) and Phase 8 (regular-season
+go-live), both now unblocked by real slates being available.
