@@ -2486,6 +2486,14 @@ disable the four Showdown-rejected flags rather than leave them clickable.
 ---
 
 ### Session 13.5 — Frontend Showdown UI + Four-Layer Wiring
+**Status note (added 2026-08-05):** Paused mid-session pending Session
+13.5b (two real bugs found during real-slate Showdown testing, documented
+in `Handoff_13.5_Pause_BugFixes.md`). 13.5b is now ✅ complete and real-data
+validated (Showdown, Madden, and a real Week 1 classic slate) -- this
+session's own work (below) can now be resumed/reassessed for completeness,
+including finally trusting the Slate Overview panel and DST projections
+enough to judge the rest of it end to end.
+
 **Prerequisites:** Session 13.4 complete.
 
 **Files touched (modified):**
@@ -2524,6 +2532,47 @@ disable the four Showdown-rejected flags rather than leave them clickable.
 **Handoff notes to log:** Any UI layout decisions made for the CPT/FLEX
 panel (e.g. whether it's a visually distinct section from classic roster
 display or reuses the same component with conditional labels).
+
+---
+
+### Session 13.5b — Bug Fixes: DST Opponent Resolution, Rookie/
+Zero-History Matching, Vegas Decoupled from Week ✅ Complete (2026-08-05)
+**Prerequisites:** Session 13.4 complete. Not dependent on 13.5 itself --
+both bugs fixed here are confirmed NOT Showdown-specific (affect classic
+and Madden slates too), which is why this is numbered separately rather
+than folded into 13.5's own card.
+
+**Trigger:** Two real bugs found during Session 13.5's own real-slate
+Showdown testing, documented in `Handoff_13.5_Pause_BugFixes.md`:
+Bug A (DST's opponent resolution bypassed the Game-Info fallback skill
+players/kickers already use) and Bug B (rookies/zero-history players
+silently dropped from the pool before the cold-start salary-anchor logic
+ever saw them).
+
+**Files touched (modified):** `scripts/dst_model.py`, `scripts/build_
+projections.py`, `scripts/vegas_odds.py`, `scripts/ingest_salaries.py`,
+`scripts/ingest_historical.py`, `.github/workflows/refresh_data.yml`. See
+SESSION_LOG.md's Session 13.5b entry for the full per-file breakdown --
+three additional real bugs (an `api_keys.env` BOM issue, `ingest_
+historical.py` aborting an entire multi-season pull when only one season
+404'd, and Session 13.4's flagged-but-unfixed `_dst_extra` sigma gap) were
+also found and fixed in this same session via real-data validation, plus
+a structural fix decoupling vegas data from `--week` entirely (now keyed
+by `--slate-id`, matching the existing salary/projections convention).
+
+**Validation:** Real-data validated end to end against three different
+real slates this session -- a real preseason ARI/CAR Showdown slate, a
+re-run Madden slate, and (most load-bearing) a full real DK Week 1 2026
+regular-season classic slate carried all the way through to lineups built
+via the live GitHub Actions/Cloudflare Worker dispatch path. Full details
+and numbers in SESSION_LOG.md.
+
+**Handoff notes to log:** `DFS_Weekly_Process.md` still needs a rewrite
+pass reflecting everything this session changed (vegas via `--slate-id`,
+the Week-1-vs-Week-2+ `--season`/`--week` split, the corrected Madden
+game-totals-panel note, the new `--weekly-rosters` flag) -- explicitly
+deferred to its own follow-up, not done this session. See SESSION_LOG.md's
+Session 13.5b entry, "Handoff notes for next session," for the full list.
 
 ---
 
@@ -2572,4 +2621,5 @@ future slate provides real data.
 | 13.3b | Showdown ownership heuristic ✅ | 13.3 | Synthetic sufficient for the heuristic itself; real Showdown ownership DATA (for eventual retuning, Session 11.1) gated on real slates ~Aug 6, 2026 + a log_ownership.py schema change, neither built yet |
 | 13.4 | Optimizer ILP rewrite ✅ | 13.3, 13.3b | Real-data validated (user's own machine, real 2025 nflverse players through the full pipeline) — stacking deferred, `--min-team-players` shipped instead |
 | 13.5 | Frontend + four-layer wiring | 13.4 | Synthetic sufficient |
+| 13.5b | Bug fixes: DST opponent resolution, rookie matching, vegas/week decoupling ✅ | 13.4 | Real-data validated: real Showdown slate, real Madden slate, real Week 1 2026 classic slate end to end |
 | 13.6 | Real Showdown slate validation, both sites | 13.1-13.5 | Real DK/FD Showdown slate (first chance: ~Aug 6, 2026) |

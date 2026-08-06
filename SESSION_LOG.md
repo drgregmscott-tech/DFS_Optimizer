@@ -3374,3 +3374,289 @@ flag-builder both need `--min-team-players` added alongside the existing
 team-cap flags -- this project's own "four-layer architecture awareness"
 principle (a new optimizer parameter silently dropped if not added in
 all four places).
+
+---
+
+## Session 13.5b -- Bug Fixes: DST Opponent Resolution, Rookie/
+Zero-History Matching, Vegas Decoupled from Week
+**Date completed:** 2026-08-05
+**Status:** ✅ Complete
+
+**What was actually built:** Two bugs discovered during real-slate Showdown
+testing (documented in `Handoff_13.5_Pause_BugFixes.md`, written to pause
+13.5 pending these fixes) plus three more real problems this session's own
+real-data validation surfaced along the way -- consistent with this
+project's established "bugs found only by running real data" pattern
+(Session 4.3, 12.1, 13.4's precedent, repeated three more times here).
+Not Showdown-specific -- confirmed to affect classic and Madden slates
+too, per the handoff's own framing.
+
+**Bug A -- DST opponent resolution bypassed the Game-Info fallback.**
+`_build_dst_distributional()` called `dst_model.build_features()` without
+the `opponent_map` skill players/kickers already used (`build_projections
+.py` decision #9), so a defense's opponent/opp_implied/opp_sack_allowed_
+rate/opp_dropbacks/opponent-QB were all resolved from the raw vegas
+file's real-2025-schedule opponent column -- wrong whenever the in-slate
+pairing differs from the real schedule (every Madden Sim slate, every
+preseason Showdown slate). This was a real simulation-accuracy bug, not
+just a mislabeled column: `opp_implied`/`opp_sack_allowed_rate`/`opp_
+dropbacks` all fed the DST Monte Carlo model directly.
+
+Fixed with the user's chosen "full consistency" option: `dst_model.build_
+features()` now accepts `opponent_map` and overrides the vegas-derived
+opponent for any team the map covers (decision #23, dst_model.py) --
+this governs the SIMULATION inputs. Separately, `_build_dst_distributional
+()` now also sources DST's DISPLAYED implied_total/over_under from the
+same `vegas_factors` table skill players/kickers already use (decision
+#10, build_projections.py), instead of the raw per-team vegas row -- so a
+defense and its own team's skill players always show identical opponent/
+implied_total/over_under in the CSV and the frontend's Slate Overview
+panel, including falling back to the same 0.0 when no matching vegas line
+exists. Both are no-ops when `opponent_map`/`vegas_factors` aren't
+supplied (classic slates unaffected).
+
+**Bug B -- rookies/zero-history players silently dropped from the pool.**
+`ingest_salaries.py`'s `build_player_reference()` built its entire
+matching universe from `weekly_stats_{season}.parquet` only -- players
+with >=1 logged snap. A true rookie or zero-snap player has no row there
+at all, so `name_mapping.csv` (which can only redirect to an EXISTING
+row) could never resolve them, and `build_projections.py`'s `players
+[players["player_id"].notna()]` gate silently dropped them downstream,
+before the existing cold-start salary-anchor logic (Session 10.0-10.2,
+built specifically for zero-history players) ever got a chance to run.
+
+Investigated (not assumed) before fixing, per this session's real-data
+checks: `weekly_rosters_2026.parquet` IS pullable and populated in
+preseason (2,930 rows checked this session). `weekly_rosters`'s `gsis_id`
+and `weekly_stats`'s `player_id` are CONFIRMED the same ID scheme, not two
+schemes needing a crosswalk (verified against real 2025 data: Patrick
+Mahomes' gsis_id and player_id are both `00-0033873`; `ingest_historical
+.py`'s own Session 1.2 ROSTER_KEY comment already documented the same
+fact independently). Fixed by having `build_player_reference()` union in
+any player present in `weekly_rosters_{season+1}.parquet` (the CURRENT
+season, not `--season`'s "last completed season" stats-lookback meaning
+-- a real subtlety caught before it caused a second, quieter version of
+the same bug) but absent from `weekly_stats`, using `gsis_id` directly as
+`player_id`. New CLI flag `--weekly-rosters` (defaults automatically,
+overridable, `''` disables for old behavior).
+
+**Three more real bugs found via this session's own real-data validation
+runs (not from the original handoff), fixed in the same session rather
+than deferred, since each was small and load-bearing for validating A/B
+properly:**
+
+1. **`config/api_keys.env` BOM breaks `vegas_odds.py`'s key lookup.** A
+   bare `Path.read_text()` silently glues a UTF-8 BOM onto the first line
+   if the file was ever saved by an editor that adds one (Notepad does,
+   by default) -- `"\ufeffODDS_API_KEY" != "ODDS_API_KEY"` fails the match
+   with no visible sign anything's wrong, since the key really is in the
+   file. Fixed with `encoding="utf-8-sig"` (safe no-op if no BOM present).
+   Reproduced the user's exact error with a synthetic BOM'd file before
+   and after the fix to confirm.
+
+2. **`ingest_historical.py --season 2025 2026` aborted BOTH seasons when
+   only 2026 failed.** `stats_player_week_2026.parquet` / `stats_team_
+   week_2026.parquet` 404 until that season's games are actually played
+   (rosters populate earlier, in preseason, and did pull fine -- this is
+   what Bug B's fix depends on). The old combined-batch `import_weekly_
+   data(seasons)` call meant one missing season took the whole call down,
+   silently skipping 2025's refresh too even though 2025 was available.
+   Fixed by pulling each season independently in `ingest_weekly_stats()`
+   and `ingest_team_stats()`, catching a 404 specifically (any OTHER
+   error still raises -- not a blanket silent-fallback).
+
+3. **`_dst_extra` gap flagged (not fixed) in Session 13.4 -- closed now.**
+   DST's real sigma/dst_p10/dst_p90 (computed by the distributional model)
+   were captured into an unused `_dst_extra` variable and never merged
+   back, so every skill/DST row's sigma was NaN in the final output --
+   surfaced for the first time by this session's "Nulls in any column"
+   validation check, on literally the first real classic slate ever run
+   through it (prior real-data runs were Showdown/Madden). Fixed:
+   skill_out/dst_out now get a neutral 0.0 sigma/dst_p10/dst_p90
+   placeholder (matching kicker_out's existing pattern for columns its
+   own model has no signal for), and `_dst_extra`'s real DST values are
+   merged back in via `.update()` after the concat, before Showdown's
+   captain-multiplier step (which already correctly scales these columns
+   -- it just never had real values to scale before). Also fixed the null
+   check itself to exclude `roster_role` (intentionally None for every
+   classic-slate row, a false alarm this check had never actually hit
+   before today) and to name which column(s) are affected if it fires for
+   real, instead of a bare uninformative count.
+
+**Vegas decoupled from `--week` entirely (structural fix, user-requested
+after this was the recurring root cause of 3-4 separate problems across
+this project):** `vegas_odds.py`'s `--week` was never a data filter (the
+Odds API always returns every live game regardless) -- it was purely a
+filename label borrowed from the unrelated stats-lookback week, which
+caused a real bug this session: an old `vegas_implied_totals_23.csv` from
+an unrelated earlier pull got silently reused for a real preseason
+Showdown slate because both happened to reuse week=23. Renamed to
+`--slate-id` (`vegas_implied_totals_{slate_id}.csv`), matching the
+convention `final_projections_{site}_{slate_id}.csv` already established
+in Session 2.4 for the identical reason. `build_projections.py`'s `load_
+vegas_implied_totals()` now takes `slate_id`; new `--vegas-slate-id` CLI
+flag (defaults to `--slate-id`) lets FD point at a vegas pull made under
+DK's slate_id when they share one (the common case -- vegas is site-
+agnostic). `refresh_data.yml`'s vegas-pull and both sites' `build_
+projections.py` steps updated accordingly -- confirmed via `grep` that no
+other workflow references `vegas_odds.py --week`.
+
+**Files created/modified:**
+- `scripts/dst_model.py` (`build_features()` -- new `opponent_map` param,
+  decision #23)
+- `scripts/build_projections.py` (`_build_dst_distributional()`, `build_
+  dst_projections()`, `load_vegas_implied_totals()`, `build_final_
+  projections()`, new `--vegas-slate-id` CLI flag, sigma-merge fix, null-
+  check fix -- decisions #10, #11)
+- `scripts/vegas_odds.py` (`--week` -> `--slate-id`, `load_api_key()`
+  utf-8-sig fix)
+- `scripts/ingest_salaries.py` (`build_player_reference()` roster union,
+  new `--weekly-rosters` CLI flag)
+- `scripts/ingest_historical.py` (`ingest_weekly_stats()`, `ingest_team_
+  stats()` -- per-season independence)
+- `.github/workflows/refresh_data.yml` (vegas pull + both sites' `build_
+  projections.py` steps use `--slate-id`/`--vegas-slate-id`)
+
+**Validation results:**
+- [x] Bug A: isolated logic test reproducing the exact real ARI/CAR
+  Showdown scenario -- confirmed ARI resolves to CAR (not LAC) with CAR's
+  real opp_implied (21.51, not LAC's 17.89); teams not in the map
+  unaffected; `opponent_map=None` exactly reproduces pre-fix output
+  (classic-slate regression-safe).
+- [x] Bug A: real ARI/CAR Showdown CSV re-pulled and directly inspected --
+  ARI's DST shows opponent=CAR (not LAC), and its implied_total/over_under
+  (0.0/0.0) now exactly match all 21 of ARI's own skill players. Same for
+  CAR's DST vs CHI. User separately confirmed a re-run Madden slate looks
+  correct.
+- [x] Bug A: classic-slate regression -- deferred by user (no real classic
+  slate existed yet at the time), effectively superseded by the full real
+  Week 1 classic run below.
+- [x] Bug B: synthetic test mirroring the real Carson Beck scenario --
+  existing player (has weekly_stats) not duplicated; roster-only player
+  correctly added with real gsis_id-as-player_id; `weekly_rosters_
+  path=None` exactly reproduces pre-fix behavior.
+- [x] Bug B: real DK Week 1 2026 regular-season classic slate (`classic_
+  wk1`, real Sun 9/13 slate) -- `build_player_reference` added 1,172
+  roster-only players; ingest matched 686/715 (95.9%) vs. a materially
+  worse rate pre-fix; remaining 29 unmatched are genuine name-spelling
+  mismatches (nicknames, suffix formatting), not the rookie-dropping bug --
+  expected `name_mapping.csv` residual, not a regression.
+- [x] Vegas/slate_id migration: `refresh_data.yml` parses as valid YAML
+  post-edit; the three changed `run:` lines confirmed to resolve exactly
+  as intended.
+- [x] api_keys.env BOM fix: reproduced the user's exact `ODDS_API_KEY not
+  found` error with a synthetic BOM'd file, confirmed the fix resolves it.
+- [x] ingest_historical.py fix: reproduced the user's exact `--season 2025
+  2026` failure (2026 404, 2025 silently skipped) with a stubbed network
+  call, confirmed 2025 now writes successfully regardless of 2026's
+  status.
+- [x] sigma-merge fix: synthetic test of the exact concat mechanics --
+  confirmed zero nulls post-fix, DST's real sigma restored, skill players
+  keep the neutral 0.0 placeholder.
+- [x] Null-check fix: synthetic test confirming a classic slate (roster_
+  role null, everything else clean) now reports 0, while a genuinely
+  injected gap is still caught and names the affected column.
+- [x] Full real-data end-to-end run, this session's most load-bearing
+  validation: real DK Week 1 2026 regular-season classic slate, start to
+  finish -- `ingest_historical.py` (both seasons) -> `vegas_odds.py
+  --slate-id` -> `ingest_salaries.py` -> `projections_baseline.py` ->
+  `projections_matchup.py` -> `build_projections.py` -> committed/pushed
+  -> lineups built successfully through the real GitHub Actions/
+  Cloudflare Worker dispatch path in the deployed UI. Real games correctly
+  inferred from the salary file's own Game Info column (12 real Week 1
+  matchups: ARI@LAC, ATL@PIT, BAL@IND, etc. -- see "Decisions made" below
+  for why the schedule-based path correctly falls back to this one even
+  on a real slate). 0 unmatched matchup_factor, 0 unmatched vegas_factor
+  (real Week 1 vegas lines fully resolved, unlike the preseason ARI/CAR
+  case). DST model: mean projection 7.21, sigma range 5.82-6.50 (sane).
+  Final null check: 0 (after the sigma fix). Negative final_projection: 0.
+  chalk_score/estimated_ownership_pct both in-range.
+
+**Decisions made / assumptions taken:**
+- User's explicit choice for Bug A: "full consistency" (option 2) over the
+  narrower fix that would've left DST's own implied_total/over_under
+  independently sourced from skill players'.
+- User's explicit choice: fold both bugs into one session under the 13.x
+  numbering rather than separate session numbers, since neither is
+  Showdown-specific; user's explicit choice to tackle Bug A fully before
+  starting Bug B investigation, in the same session.
+- **`--season`/`--week`'s established "always use last completed season,
+  currently 2025/23" convention was confirmed correct even for a REAL
+  Week 1 regular-season slate, not just preseason/Madden** -- verified by
+  reading `projections_baseline.py`/`projections_matchup.py` directly
+  rather than assumed: both filter strictly to `week < N` WITHIN one
+  season's own file, no cross-season carryover, so ANY week 1 (preseason,
+  Madden, or real) has zero same-season history by construction. Week 23
+  is additionally a safe sentinel for opponent resolution specifically
+  because nflverse's real schedule only goes up to week 22 (REG 1-18,
+  POST 19-22) -- `--week 23` reliably has zero real schedule matches,
+  correctly forcing the salary-file Game-Info fallback (decision #9),
+  which reads DK's real Game Info text and produces the correct real
+  pairings on a real slate. **This convention is expected to change once
+  real Week 2+ arrives** -- see "Handoff notes" below.
+- `--weekly-rosters` defaults to `data/weekly_rosters_{season + 1}.parquet`
+  (CURRENT season), deliberately NOT `{season}.parquet` (which is last
+  completed season, for stats lookback) -- caught before shipping, since
+  the wrong default would have silently defeated Bug B's whole purpose
+  (a 2026 rookie was never going to be on a 2025 roster).
+- Legacy DST model (`model="legacy"`) was NOT given the same opponent_map/
+  vegas_factors full-consistency treatment as the distributional model --
+  legacy already correctly accepted and used `opponent_map` (it was the
+  distributional path specifically that never got it), and legacy isn't
+  the production default, so out of scope for this session.
+
+**Known issues deferred:**
+- **Bug/Question B from the original handoff (skill players' implied_
+  total/over_under = 0.00 for the real ARI@CAR Showdown game)** -- still
+  open, still unconfirmed whether it's a genuine preseason-lines-not-
+  posted-yet gap or something else. User explicitly deferred this ("not a
+  dealbreaker... let it go for now").
+- **29 unmatched players on the real Week 1 classic slate** -- genuine
+  name-spelling/nickname mismatches (e.g. "Hollywood Brown", "Juice Wells
+  Jr."), the expected `name_mapping.csv` workflow category, not a Bug B
+  regression. Not resolved this session; routine per-slate maintenance.
+- **`DFS_Weekly_Process.md` rewrite** -- explicitly NOT done yet. The doc
+  currently documents the OLD `--week`-keyed vegas convention (now wrong),
+  the OLD Madden game-totals-panel note (now describes the pre-Bug-A
+  behavior as "expected," which it no longer is), and has no explicit
+  Week-1-vs-Week-2+ distinction for `--season`/`--week`. User's explicit
+  plan: do this as a follow-up now that the real workflow has been proven
+  end to end, not before.
+- **Real classic-slate DST regression check for Bug A** was originally
+  planned as a synthetic/prior-output diff; no real classic slate existed
+  yet at the time, so this was effectively superseded by (not literally
+  performed as) the full real Week 1 run, which exercises the same code
+  path. If a byte-level pre/post diff is ever wanted specifically, no
+  pre-fix classic output was preserved to diff against.
+
+**Handoff notes for next session:**
+- `DFS_Weekly_Process.md` needs a full rewrite pass covering: (1) vegas is
+  now pulled via `--slate-id` in Stage 2 (manual kickoff), not implicitly
+  relied upon from Stage 3's cron -- explicit "pull fresh vegas" step
+  needs adding, since its absence from the documented manual flow was
+  itself part of how the original stale-vegas-file bug happened; (2) the
+  `--week`/`--season` table needs an explicit Week-1-vs-Week-2+ split for
+  real regular-season slates -- Week 1 uses the same 2025/23 convention as
+  preseason/Madden (no real same-season history exists yet, full stop);
+  Week 2+ should switch to the REAL `--season 2026 --week <N>` once real
+  in-season history exists, which also flips schedule/opponent resolution
+  from the Game-Info fallback to the real nflverse schedule as the primary
+  path; (3) the Madden game-totals-panel note needs rewriting -- it
+  currently describes showing "real NFL Week 1 games rather than your
+  Madden matchups" as expected/cosmetic, which was actually Bug A's
+  pre-fix symptom, not a real design choice; (4) new `--weekly-rosters`
+  flag on `ingest_salaries.py` and the "added N roster-only player(s)"
+  console line should be documented as expected/good; (5) file-save
+  location/naming convention (`data/raw_salaries/dk_{slate_id}.csv`) was
+  never actually stated clearly in the doc before -- should be explicit.
+- Session 13.5 (Frontend Showdown UI + Four-Layer Wiring) can now resume
+  being assessed for completeness -- both bugs that paused it are fixed
+  and real-data validated (Showdown, Madden, AND real classic Week 1, a
+  broader validation surface than 13.5 originally required). The Slate
+  Overview panel and DST projections can now be trusted for that
+  reassessment.
+- FD side of everything built this session (vegas sharing via `--vegas-
+  slate-id`, Bug A, Bug B) is implemented but not yet real-data validated
+  -- same "DK first, FD second" gap this project has carried since Phase
+  1. `--vegas-slate-id` defaults correctly for the common case (DK/FD
+  share one slate_id string), confirmed via `data/current_slate.json`.
