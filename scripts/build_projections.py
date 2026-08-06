@@ -611,7 +611,13 @@ def apply_captain_multiplier(flex_out, captain_salaries, site):
         )
 
     for col in ["final_projection", "season_avg", "recent_form",
-                "sigma", "dst_p10", "dst_p90"]:
+                "sigma", "dst_p10", "dst_p90",
+                # Session 14.0: build_projections_statline.py's own p10/p90
+                # audit columns use a different name than DST/kicker's
+                # dst_p10/dst_p90 -- scaled the same way for the same reason
+                # (a deterministic 1.5x rescaling of the same distribution).
+                # Absent (and therefore a no-op) on the legacy engine.
+                "statline_p10", "statline_p90"]:
         if col in cap.columns:
             cap[col] = cap[col] * CAPTAIN_MULTIPLIER
 

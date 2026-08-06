@@ -199,27 +199,36 @@ jobs:
           python3 scripts/ingest_historical.py \
             --season ${{ steps.slate.outputs.season }}
 
+      # Session 14.0: cut over from build_projections.py (the Session 2.4
+      # placeholder engine) to build_projections_statline.py (the Phase 10
+      # rebuild, backtested at 75.6/96.5 median/max-percentile). --volume-prior
+      # and --sigma-recalibration are opt-in/off-by-default in that script and
+      # MUST be passed explicitly, or this silently ships only Session 10.3a's
+      # bare rewrite. --dst-model is passed explicitly for clarity even though
+      # it matches that script's own default.
       - name: Rebuild projections -- DK
         id: proj_dk
         if: steps.trigger.outputs.mode == 'full'
         continue-on-error: true
         run: |
-          python3 scripts/build_projections.py --site dk \
+          python3 scripts/build_projections_statline.py --site dk \
             --season ${{ steps.slate.outputs.season }} \
             --week ${{ steps.slate.outputs.dk_week }} \
             --slate-id ${{ steps.slate.outputs.dk_slate_id }} \
-            --vegas-slate-id ${{ steps.slate.outputs.dk_slate_id }}
+            --vegas-slate-id ${{ steps.slate.outputs.dk_slate_id }} \
+            --volume-prior --sigma-recalibration --dst-model distributional
 
       - name: Rebuild projections -- FD
         id: proj_fd
         if: steps.trigger.outputs.mode == 'full'
         continue-on-error: true
         run: |
-          python3 scripts/build_projections.py --site fd \
+          python3 scripts/build_projections_statline.py --site fd \
             --season ${{ steps.slate.outputs.season }} \
             --week ${{ steps.slate.outputs.fd_week }} \
             --slate-id ${{ steps.slate.outputs.fd_slate_id }} \
-            --vegas-slate-id ${{ steps.slate.outputs.dk_slate_id }}
+            --vegas-slate-id ${{ steps.slate.outputs.dk_slate_id }} \
+            --volume-prior --sigma-recalibration --dst-model distributional
 
       - name: Apply status (zero OUT players) -- DK
         id: apply_dk

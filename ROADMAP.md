@@ -776,29 +776,28 @@ By far the largest session in this project -- see SESSION_LOG.md's Session 7.3 e
 ---
 
 ### Backlog idea — Player props as a projection input
-*Flagged during Session 13.5's closeout (2026-08-05), not yet scoped or
-built.* User observed that sharp DFS players commonly estimate
-player-level projections from Vegas player props (TD props, yardage
-O/Us, etc.) rather than relying on game-level totals alone, and asked
-whether this pipeline could incorporate that. Currently not possible:
-`vegas_odds.py` (Session 2.3) pulls game-level lines/totals via The Odds
-API only — no player-prop endpoint is wired in. Needs its own scoping
-session before any build starts (Design-before-build): confirm a props
-data source and its cost (typically a separate, pricier API tier than
-game lines), and design how a per-player prop line would fold into the
-existing season_avg/recent_form/matchup_factor/vegas_factor blend
-without just duplicating what vegas_factor/implied_total already do at
-the team level.
+*Flagged during Session 13.5's closeout (2026-08-05).* **Promoted to
+Session 14.1 (2026-08-06)** — see PHASE 14 below for the scoped session
+card. Kept here as the historical record of when/why this was first
+flagged: sharp DFS players commonly estimate player-level projections
+from Vegas player props (TD props, yardage O/Us, etc.) rather than
+relying on game-level totals alone.
 
 ### Backlog idea — Investigate systematic high bias in projections
-*Flagged during Session 13.5's closeout (2026-08-05).* User observed
-projections trending high "across the board" (consistent overshoot, not
-isolated to specific players) on the slates built that session. Not
-investigated yet — no real actual-vs-projected data exists to confirm or
-quantify it against (preseason box scores are the first real chance).
-This is exactly what Session 9.1's actual-vs-projected logging is built
-to catch — check this specifically once that data exists, rather than
-guessing at a fix now.
+*Flagged during Session 13.5's closeout (2026-08-05).* **Root cause
+identified 2026-08-06, NOT via Session 9.1's logging (that's still
+gated on real games being played, ~Sept 13) but via a direct code audit:
+the live pipeline (`refresh_data.yml`) has been calling the Session 2.4
+placeholder engine (`build_projections.py`) the entire time — the Phase
+10 stat-line rebuild (`build_projections_statline.py`) was built,
+backtested, and validated, but never actually wired into production.
+See Session 14.0 below.** This doesn't retroactively rule out other
+contributing causes (Session 9.1 still needs to run once real games
+exist, to confirm the fix and catch anything else), but it's very
+likely the dominant one — the legacy engine has no participation
+weighting, no price-implied volume prior, and stacks two market
+multipliers (`matchup_factor` x `vegas_factor`) directly on a naive
+season/recent-form average.
 
 ---
 
@@ -2653,3 +2652,313 @@ for this validation (the real preseason ARI@CAR Showdown, DK and FD).
 **Phase 13 is now fully closed** as of 2026-08-05. Next real gates on the
 roadmap are Phase 6 (preseason dry runs) and Phase 8 (regular-season
 go-live), both now unblocked by real slates being available.
+
+---
+
+## PHASE 14 — Production Engine Cutover & Market Data Expansion
+*Opened 2026-08-06. Triggered by two user observations on a real DK Week 1
+2026 test slate: projections running ~25% high versus what the user
+normally expects, and a question about why player props aren't used
+anywhere in the pipeline. A code audit (not a guess) traced the first
+issue to a real gap — see Session 14.0's trigger note below — and
+confirmed the second as a genuine, already-flagged backlog item. Both
+get their own session rather than a quick patch, per this project's
+design-before-build discipline.*
+
+### Session 14.0 — Production Engine Cutover (Stat-Line → Live)
+**Prerequisites:** Sessions 10.3a, 10.3b, 10.4, 10.4b, 10.5, 10.5b
+(the stat-line engine itself — all already complete and backtested).
+
+**Trigger:** Code audit (2026-08-06) found that `refresh_data.yml` —
+the workflow that builds every real slate's projections — has always
+called `scripts/build_projections.py`, the Session 2.4 placeholder
+engine, for QB/RB/WR/TE:
+`final_projection = (0.5*season_avg + 0.5*recent_form) * matchup_factor * vegas_factor`.
+`scripts/build_projections_statline.py` — the actual Phase 10 rebuild
+(stat-line projection, Monte Carlo mean+sigma, price-as-volume-prior,
+role-change handling), backtested over 65 weeks at 75.6/96.5
+median/max-percentile — was built as a schema-compatible drop-in
+("co-exist with `build_projections.py` until the harness says it
+wins," per its own docstring) but the actual cutover step in
+`refresh_data.yml` was never done. Only DST (`dst_model.py`, Session
+10.4) and Kicker (`kicker_model.py`, Session 13.1) actually made it
+into the live path. `optimizer.py` itself documents the consequence:
+its own comment notes "the legacy production path carries no sigma
+column," meaning Session 10.5's variance-aware objective has never
+operated on any real slate either.
+
+**A second code audit (same day), comparing `build_projections_statline.py`
+against the CURRENT `build_projections.py`, found the parallel engine is
+NOT a safe drop-in as-is** — it predates several fixes and an entire
+feature area added to the legacy engine after Session 10.3a:
+
+1. **Vegas lookup would crash on any real slate.** Session 13.5b fixed
+   `load_vegas_implied_totals()` to key off `slate_id` (not `week`).
+   `build_projections_statline.py`'s own `main()` still calls it as
+   `load_vegas_implied_totals(week)` — passes a bare integer into a
+   function that now expects a slate_id string. Raises
+   `FileNotFoundError` on any slate where `slate_id != str(week)`,
+   which is effectively all of them post slate-management overhaul.
+2. **Output filename collision.** Still writes
+   `final_projections_{site}_{week}.csv` — the exact bug Session 2.4
+   already fixed elsewhere (`{slate_id}` naming, so two slates in the
+   same week don't overwrite each other).
+3. **Zero Showdown/Single-Game support.** No `CAPTAIN_MULTIPLIER`, no
+   `--format` flag, no CPT/MVP handling anywhere — all of Phase 13 was
+   built after this file was last touched.
+4. **`--volume-prior` and `--sigma-recalibration` are opt-in flags,
+   off by default.** Without explicitly passing both, `refresh_data.yml`
+   would get only Session 10.3a's bare rewrite — silently losing
+   10.3b's price-implied volume prior and 10.4b's sigma recalibration,
+   which is most of what actually validated well in the backtest.
+
+DST, salary ingest, and opponent-map logic are safe as-is — the
+stat-line script imports those functions directly from
+`build_projections.py` rather than duplicating them, so fixes made
+there already carry over.
+
+**Sites:** DK and FD both, same as every projection-build session.
+
+**Files touched (modified):**
+- `scripts/build_projections_statline.py` — fix vegas call site
+  (`slate_id` not `week`), fix output filename (`{slate_id}` not
+  `{week}`), port Showdown/Single-Game support (CAPTAIN_MULTIPLIER,
+  `--format`, CPT/MVP role handling — likely extract into a function
+  shared with `build_projections.py` rather than duplicate; decide
+  during build)
+- `.github/workflows/refresh_data.yml` — swap the `build_projections.py`
+  call to `build_projections_statline.py` for both DK and FD steps,
+  with `--volume-prior --sigma-recalibration` explicitly passed, and
+  `--dst-model distributional` confirmed passed (matching current
+  production default)
+- `DFS_Weekly_Process.md` — update if the CLI invocation changes
+
+**Inputs:** Same as `build_projections.py` currently uses (salaries,
+baseline/recent-form, matchup factors, vegas implied totals) plus
+`data/volume_prior_dk.json` / `_fd.json` and sigma recalibration
+artifacts from Sessions 10.3b/10.4b.
+
+**Outputs:** `output/final_projections_{site}_{slate_id}.csv`, same
+schema as today plus `sigma`, `statline_p10`, `statline_p90`, and
+`proj_*` audit columns (per `build_projections_statline.py`'s decision
+#1).
+
+**Build:**
+- Fix the three concrete bugs above (vegas call site, output filename,
+  opt-in flags) before touching anything else
+- Port Showdown support
+- Wire `refresh_data.yml` to the fixed script
+- Do NOT change `optimizer.py`'s default `--lambda 0.0` as part of this
+  session — the point is fixing the mean projection and finally
+  activating sigma as an available input, not changing lineup-
+  construction strategy in the same session as a mean-projection fix.
+  A future session can revisit λ once sigma has been live and observed
+  for a few real weeks.
+
+**Validation:**
+- [ ] `node`/Python syntax checks pass on all modified files
+- [ ] Fixed script runs end-to-end on a real slate without the vegas/
+  filename bugs reproducing
+- [ ] Showdown slate still builds correctly through the swapped engine
+  (real DK and/or FD Showdown slate, not just synthetic)
+- [ ] **Real DK Week 1 2026 slate, both engines run side by side,
+  output diffed player-by-player** — this is what actually confirms
+  whether the swap closes the user's 25%-high observation, not just
+  whether the script runs
+- [ ] Full pipeline (ingest → projections → optimizer → frontend →
+  export) validated end to end post-swap, both sites
+- [ ] `DFS_Weekly_Process.md` updated if CLI changed
+
+**Handoff notes to log:** the actual before/after projection numbers on
+the real Week 1 slate — this is the evidence for whether the inflation
+issue is closed, partially closed, or unrelated to the engine.
+
+---
+
+### Session 14.1 — Player Props as a Projection Input (Scoping + Design)
+**Prerequisites:** Session 14.0 (props should fold into whichever
+engine is live — no point designing against the pipeline being
+replaced).
+
+**Trigger:** User asked why the pipeline doesn't use player props,
+flagged during Session 13.5's closeout as a backlog idea, promoted to
+a full session on 2026-08-06 alongside 14.0. See "Backlog idea — Player
+props as a projection input" above (PHASE 9 section) for the original
+flag.
+
+**This is explicitly a design/scoping session, not a full build** — per
+this project's design-before-build discipline, no code touches
+`volume_prior.py` or `statline_model.py` until the data-source and
+blend-placement decisions below are made explicitly.
+
+**Data source decision — options identified 2026-08-06:**
+
+The project already has an account with **The Odds API** (used by
+`vegas_odds.py`), which added NFL player props as a market on a
+separate endpoint (`/v4/sports/{sport}/events/{eventId}/odds`, one
+event at a time — the current game-level pull uses the whole-sport
+`/v4/sports/{sport}/odds` endpoint instead). No new vendor is
+*required*. Real numbers, verified against the provider's own docs:
+
+- **Cost formula:** `[unique markets returned] x [regions]`, per event.
+  A ~14-game week at, say, 8 relevant markets (see narrowed list
+  below), 1 region = ~112 credits per full pull. Compare to the
+  current spreads+totals pull, which costs 2 credits for the ENTIRE
+  week in one call (different endpoint). Free tier is 500 credits/
+  month — likely insufficient if `refresh_data.yml`'s near-lock
+  polling pulls props on every cycle the way it does game lines. Paid
+  tiers start at $30/mo (20,000 credits).
+- **Historical/backtest data is a real constraint, not just a cost
+  one.** Historical player-props data is a separate, pricier paid tier
+  even on The Odds API, and only available from May 2023 forward —
+  there's no equivalent to the 2014-2021 RotoGuru archive Phase 10 was
+  backtested against. Props validation will have to be forward
+  (live, a few real weeks), not backtested — slower, weaker evidence
+  than the rest of this project's validation bar. Decide explicitly
+  whether that's acceptable before building.
+
+**Alternative evaluated: SportsGameOdds** (`sportsgameodds.com`).
+Structurally different pricing — bills one "object" per event
+regardless of how many markets/bookmakers are pulled, versus The Odds
+API's per-market-per-region credit meter. Verified against their own
+pricing page (2026-08-06): free "Amateur" tier is 2,500 objects/month,
+10-minute update interval, includes DraftKings and FanDuel among 9
+bookmakers, and explicitly includes player props at that tier. For a
+once-or-twice-per-week refresh cadence pulling ~14 NFL games, that's
+comfortably inside the free tier where The Odds API's props usage
+likely would not be — a genuinely better fit for this project's
+free-to-operate goal, if the coverage and reliability hold up in
+practice. Trade-offs to weigh: newer service (public launch ~2024,
+versus The Odds API operating since 2017 — shorter track record on a
+real football weekend), and historical data (needed for any future
+backtest) is gated to their $299+/mo Pro tier, worse than The Odds
+API's already-flagged gap. A neutral third-party source independently
+corroborates the free-tier bookmaker count and update interval, which
+is reassuring, but the head-to-head comparison content itself is
+vendor-authored (SportsGameOdds's own comparison page) and should be
+read as a starting point, not taken at face value — spot-check via a
+real free-tier signup and probe call before committing either way.
+
+**Not deeply evaluated, flagged for awareness only:** OddsPapi (flat
+per-request pricing, historical bundled at every tier per their own
+marketing — worth a look if both options above disappoint),
+Sportradar's Odds Comparison Player Props API (enterprise-oriented,
+likely priced above this project's bar). Not worth session time unless
+both primary options fail the probe step.
+
+**Props relevance — narrowed from the full NFL market list, first
+pass (2026-08-06), to work through together:**
+
+*Core — direct 1:1 with existing stat-line components in
+`statline_model.py`, clear scoring relevance:*
+- `player_pass_yds`, `player_pass_tds`, `player_pass_interceptions`
+  (QB — INT is real negative scoring on both sites)
+- `player_rush_yds`, `player_rush_tds`
+- `player_receptions`, `player_reception_yds`, `player_reception_tds`
+- `player_anytime_td` — different shape (Yes/No, not an over/under
+  line) but useful as a cross-check against summed rush_tds +
+  reception_tds for the same player, and may end up being the more
+  reliable TD signal on its own
+
+*Secondary — volume-only signal, not a direct scoring stat, marginal
+value over what `volume_prior.py` already extracts from price:*
+- `player_pass_attempts`, `player_rush_attempts` — worth testing
+  whether these add anything once props are live, not worth the
+  credit cost to include from day one
+
+*Worth adding given Session 13.1's kicker model already exists:*
+- `player_field_goals`, `player_kicking_points`
+
+*Excluded — no direct DK/FD scoring correspondence:*
+- `player_pass_completions` (redundant with attempts+yards)
+- `player_pass_longest_completion`, `player_reception_longest`,
+  `player_rush_longest` (no "longest" bonus in standard DK/FD classic
+  scoring)
+- `player_pats` (minor, low value for the credit cost)
+- `player_1st_td`, `player_last_td` (low liquidity, largely redundant
+  with `player_anytime_td`, order-specific noise)
+- `player_pass_rush_yds`, `player_pass_rush_reception_tds`,
+  `player_pass_rush_reception_yds`, `player_rush_reception_tds`,
+  `player_rush_reception_yds` (combo markets — redundant with the
+  individual splits already listed; possible future use as a
+  reconciliation cross-check, not core)
+
+*Not applicable at all:*
+- `player_sacks`, `player_solo_tackles`, `player_tackles_assists` —
+  individual defensive-player props. This project's DST scoring is
+  team-level (DK `DST`/FD `DEF`), not IDP. No use for these regardless
+  of source.
+
+This is a first pass — flagged explicitly as something to work through
+together rather than settled unilaterally, since the user has the DFS
+domain judgment call on which of these genuinely move a projection.
+
+**Files touched (new, once design is settled):**
+- `scripts/probe_player_props.py` — throwaway probe script, run
+  against a real upcoming slate with the user's own API key, to
+  measure real market coverage and real credit/object cost before
+  committing to a source
+- Eventually (NOT this session): `scripts/vegas_props.py` (new,
+  parallel to `vegas_odds.py`) and modifications to `volume_prior.py`
+  / `statline_model.py`
+
+**Build, phased:**
+1. Probe both candidate sources against a real slate — confirm actual
+   market coverage this early in the season (preseason bookmaker
+   coverage is often thinner than regular season) and actual real cost
+2. Make the data-source decision explicitly, budget-aware
+3. Finalize the props market list (the narrowed list above, worked
+   through together)
+4. Design where props enter the blend without duplicating
+   `vegas_factor`/team `implied_total` — leading candidate: a third
+   source alongside usage-history and price-implied volume in
+   `volume_prior.py`, own empirical weight, consistent with Session
+   10's "blend at stat-line level, decorrelated sources" principle.
+   TD props are probably the single highest-value addition, since TD
+   rate is the hardest thing for a usage-based model to get right.
+5. Design de-vig methodology — the over/under `point` line isn't free
+   of house edge, and `anytime_td`-style Yes/No markets need a real
+   implied-probability treatment, not a naive read of the posted line.
+
+**Validation:**
+- [ ] Probe confirms real market coverage and real cost against a live
+  slate, for whichever source(s) are tested
+- [ ] Data-source decision made explicitly, budget-aware, written down
+- [ ] Final props market list agreed
+- [ ] Blend-placement design written and agreed before any production
+  code touches `volume_prior.py`
+- [ ] Forward-validated (not backtested, per the historical-data gap
+  above) against at least a few live weeks before being trusted in the
+  live blend
+
+**Handoff notes to log:** which source was chosen and why, the real
+measured cost against a real slate, and the final market list —
+future sessions extending this need the actual numbers, not the
+estimate above.
+
+---
+
+### Session 14.2 — Post-14.0/14.1 Reassessment
+**Prerequisites:** Sessions 14.0 and 14.1 both complete (14.1 meaning
+its own scope — likely data-source decision plus initial build, not
+necessarily full forward-validation, which takes real weeks regardless
+of session boundaries).
+
+**Purpose:** explicit checkpoint, not a new build. Sessions 14.0 and
+14.1 both came out of two real observations on one real test slate —
+after both land, reassess where the projection system actually stands
+against those two original flags (the 25%-high observation, and
+props as a missing signal) plus anything else surfaced along the way,
+before deciding what (if anything) comes next. User's own framing
+(2026-08-06): "we are clearly pointing out some gaps and we need to
+see where things land after the updates are applied."
+
+**Build:** None — this is a review session. Compare real slate output
+before/after both sessions, revisit whether Session 9.1 (actual-vs-
+projected logging, still gated on real games ~Sept 13) changes the
+picture once it has data, and decide whether further projection work
+is warranted or whether the system is in good enough shape to shift
+focus elsewhere (FD validation, Phase 6 preseason dry runs, etc.).
+
+**Validation:** N/A — defer scoping until 14.0/14.1 are actually done
+and there's real output to look at.

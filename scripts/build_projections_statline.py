@@ -171,18 +171,29 @@ import sigma_recalibration
 import volume_prior  # noqa: E402
 from ingest_salaries import SITE_CONFIGS  # noqa: E402
 # Decisions #2 and #7: reuse, never re-implement.
+# Session 14.0 additions: CAPTAIN_ROLES, is_showdown_slate,
+# apply_captain_multiplier, add_showdown_ownership_columns, and
+# _build_kicker_projections -- this engine had none of Phase 13's
+# Showdown/Single-Game support or Session 13.1's kicker model wired in.
+# Reused directly from build_projections.py for the same reason DST
+# already was: one implementation, not a second copy that can drift.
 from build_projections import (  # noqa: E402
+    CAPTAIN_ROLES,
     NO_GAME_SENTINEL,
     POSITIONS,
     add_ownership_columns,
+    add_showdown_ownership_columns,
+    apply_captain_multiplier,
     build_dst_projections,
     build_opponent_map,
     build_vegas_factors,
+    is_showdown_slate,
     load_matchup_factors,
     load_real_team_for_week,
     load_salaries,
     load_schedule,
     load_vegas_implied_totals,
+    _build_kicker_projections,
 )
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
@@ -224,7 +235,14 @@ def build_statline_projections(site: str, season: int, week: int, slate_id: str,
                                prior_k: float = None,
                                role_change: bool = True,
                                sigma_recal: bool = False,
+                               vegas_slate_id: str = None,
                                ) -> pd.DataFrame:
+    """`vegas_slate_id` (Session 14.0 -- this engine never had Session
+    13.5-pause's fix at all): defaults to `slate_id`. See
+    build_projections.py's build_final_projections() docstring for the
+    full reasoning; identical convention, kept so a caller passing
+    --vegas-slate-id doesn't need to know which engine is running.
+    """
     variance = statline_model.load_variance()
     prior_art = volume_prior.load_prior(site) if use_volume_prior else None
     if prior_art is not None:
@@ -233,15 +251,43 @@ def build_statline_projections(site: str, season: int, week: int, slate_id: str,
               f"k {prior_k if prior_k is not None else volume_prior.DEFAULT_COLD_START_K}, "
               f"role-change {'on' if role_change else 'OFF'}.")
     matchup = load_matchup_factors(site, season, week)
-    vegas = load_vegas_implied_totals(week)
+    # Session 14.0 FIX: was load_vegas_implied_totals(week) -- crashed on
+    # any real slate, since Session 13.5-pause keyed that function's vegas
+    # file by slate_id, not week. Same default convention as the legacy
+    # engine: falls back to slate_id when vegas_slate_id isn't given.
+    vegas = load_vegas_implied_totals(vegas_slate_id if vegas_slate_id else slate_id)
     salaries = load_salaries(site, slate_id)
     schedule = load_schedule(season)
 
     opponent_map = build_opponent_map(schedule, week)
     vegas_factors = build_vegas_factors(vegas, opponent_map)
 
+    # Session 14.0: Showdown/Single-Game support, ported from
+    # build_projections.py's build_final_projections() (Session 13.3).
+    # Same reasoning as there -- run the whole pipeline on FLEX-priced rows
+    # only, derive CPT/MVP rows afterward via apply_captain_multiplier()
+    # rather than double-running the pipeline. This engine previously had
+    # no Showdown handling at all.
+    showdown = is_showdown_slate(salaries)
+    if showdown:
+        build_salaries = salaries[salaries["roster_role"] == "FLEX"].copy()
+        captain_salaries = salaries[salaries["roster_role"].isin(CAPTAIN_ROLES)].copy()
+        if build_salaries.empty or captain_salaries.empty:
+            raise SystemExit(
+                f"{slate_id}: slate_format='showdown' but roster_role values "
+                f"don't split into FLEX + {sorted(CAPTAIN_ROLES)} as expected "
+                f"(Session 13.2 ingest contract). roster_role values present: "
+                f"{sorted(salaries['roster_role'].dropna().unique())}."
+            )
+        print(f"Showdown slate detected (Session 14.0, stat-line engine): "
+              f"{len(build_salaries)} FLEX row(s), {len(captain_salaries)} "
+              f"captain-equivalent row(s).")
+    else:
+        build_salaries = salaries
+        captain_salaries = None
+
     site_id_col = SITE_CONFIGS[site]["site_id_col"]
-    players = salaries[salaries["position_upper"].isin(POSITIONS)].copy()
+    players = build_salaries[build_salaries["position_upper"].isin(POSITIONS)].copy()
     players = players[players["player_id"].notna()]
     players = players.rename(columns={"normalized_team": "team",
                                       "position_upper": "position"})
@@ -354,7 +400,9 @@ def build_statline_projections(site: str, season: int, week: int, slate_id: str,
             OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
             recon_report.sort_values(
                 "scale", key=lambda c: (c - 1.0).abs(), ascending=False
-            ).to_csv(OUTPUT_DIR / f"statline_reconcile_{site}_{week}.csv", index=False)
+            # Session 14.0 FIX: was named by {week}, same collision class as
+            # the main output filename bug -- see that fix's comment.
+            ).to_csv(OUTPUT_DIR / f"statline_reconcile_{site}_{slate_id}.csv", index=False)
 
     # --- simulate ----------------------------------------------------------
     # Belt-and-suspenders with statline_model._num(): a player with no usage
@@ -404,7 +452,12 @@ def build_statline_projections(site: str, season: int, week: int, slate_id: str,
                                      "statline_p90"] + PROJ_STAT_COLUMNS]
 
     # --- DST (decisions #2, #3; Session 10.4) ------------------------------
-    dst_out = build_dst_projections(salaries, vegas, site, model=dst_model_mode,
+    # Session 14.0 FIX: was build_dst_projections(salaries, ...). Now takes
+    # build_salaries, matching build_projections.py's own
+    # build_final_projections() call exactly -- keeps this engine's Showdown
+    # handling consistent with the skill pool above, which already uses
+    # build_salaries.
+    dst_out = build_dst_projections(build_salaries, vegas, site, model=dst_model_mode,
                                     season=season, week=week)
     if "sigma" in dst_out.columns:
         # Session 10.4's distributional path returns a real simulated sigma,
@@ -436,7 +489,30 @@ def build_statline_projections(site: str, season: int, week: int, slate_id: str,
         dst_out[c] = 0.0
     dst_out = dst_out[skill_out.columns]
 
-    out = pd.concat([skill_out, dst_out], ignore_index=True)
+    # --- Kicker (Session 13.1 -- this engine never had it wired in at all)
+    # Only produces rows for a Showdown/Single-Game pool (classic DK/FD carry
+    # no K slot at all, same as build_projections.py's own
+    # _build_kicker_projections() docstring notes), but must be built
+    # unconditionally -- a classic slate just gets an empty, correctly-
+    # columned frame back, same behavior as the legacy engine.
+    kicker_out = _build_kicker_projections(build_salaries, site, opponent_map)
+    if len(kicker_out):
+        # kicker_out's schema is LEGACY_COLUMNS + sigma/dst_p10/dst_p90 (the
+        # legacy engine's naming) -- reconcile onto this engine's own
+        # sigma_source/statline_p10/statline_p90/PROJ_STAT_COLUMNS schema
+        # rather than teaching _build_kicker_projections() a second output
+        # shape.
+        kicker_out = kicker_out.rename(
+            columns={"dst_p10": "statline_p10", "dst_p90": "statline_p90"})
+        kicker_out["sigma_source"] = np.where(
+            kicker_out["final_projection"] > 0,
+            "kicker_session_13_1", "no_game")
+        for c in PROJ_STAT_COLUMNS:
+            kicker_out[c] = 0.0
+    kicker_out = kicker_out[skill_out.columns] if len(kicker_out) else \
+        pd.DataFrame(columns=skill_out.columns)
+
+    out = pd.concat([skill_out, dst_out, kicker_out], ignore_index=True)
 
     # Session 10.4b (decision #12 of this file) -- sigma dispersion
     # recalibration. OFF by default, so an existing stat-line run is
@@ -456,7 +532,22 @@ def build_statline_projections(site: str, season: int, week: int, slate_id: str,
     if sigma_recal:
         out = sigma_recalibration.apply_recalibration(out, site)
 
-    out = add_ownership_columns(out, site)
+    # Session 14.0: derive CPT/MVP rows from the FLEX-priced projections
+    # just built (same pattern as build_projections.py's Session 13.3),
+    # and route to the Showdown-aware ownership grouping. This engine
+    # previously had neither.
+    if showdown:
+        out["roster_role"] = "FLEX"
+        captain_out = apply_captain_multiplier(out, captain_salaries, site)
+        out = pd.concat([out, captain_out], ignore_index=True)
+        out["slate_format"] = "showdown"
+        out = add_showdown_ownership_columns(out, site)
+    else:
+        out = add_ownership_columns(out, site)
+        out["roster_role"] = None
+        out["slate_format"] = "classic"
+        out["ownership_available"] = True
+
     out = out.sort_values("final_projection", ascending=False).reset_index(drop=True)
 
     print(f"{n_no_history} player(s) had no usage history before week {week} "
@@ -471,6 +562,11 @@ if __name__ == "__main__":
     parser.add_argument("--season", type=int, required=True)
     parser.add_argument("--week", type=int, required=True)
     parser.add_argument("--slate-id", required=True)
+    parser.add_argument("--vegas-slate-id", default=None,
+                        help="Which vegas_implied_totals_{X}.csv to read, if "
+                             "it's NOT the same as --slate-id. Defaults to "
+                             "--slate-id (Session 14.0 -- same convention as "
+                             "the legacy engine).")
     parser.add_argument("--statline-sims", type=int, default=statline_model.DEFAULT_SIMS,
                         help="Monte-Carlo draws per player (decision #1).")
     parser.add_argument("--statline-seed", type=int, default=statline_model.DEFAULT_SEED,
@@ -535,7 +631,8 @@ if __name__ == "__main__":
         prior_floor=args.volume_prior_floor,
         prior_k=args.volume_prior_k,
         role_change=not args.no_role_change,
-        sigma_recal=args.sigma_recalibration)
+        sigma_recal=args.sigma_recalibration,
+        vegas_slate_id=args.vegas_slate_id)
 
     def _clean_site_id(value):
         if pd.isna(value):
@@ -547,7 +644,11 @@ if __name__ == "__main__":
     result["site_player_id"] = result["site_player_id"].map(_clean_site_id)
 
     OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
-    out_path = OUTPUT_DIR / f"final_projections_{args.site}_{args.week}.csv"
+    # Session 14.0 FIX: was named by {week}, not {slate_id} -- the exact bug
+    # Session 2.4 already fixed in the legacy engine. Two slates sharing a
+    # week (Madden Sim, Showdown/classic same week, etc.) would silently
+    # overwrite each other's output.
+    out_path = OUTPUT_DIR / f"final_projections_{args.site}_{args.slate_id}.csv"
     result.to_csv(out_path, index=False)
 
     n_null = result[LEGACY_COLUMNS].isna().any(axis=1).sum()
