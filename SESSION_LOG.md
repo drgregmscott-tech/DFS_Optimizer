@@ -4014,3 +4014,237 @@ is the thing that actually confirms or corrects this session's
 92%-confidence-not-100% validation. `DFS_Weekly_Process.md` updated
 this session to reflect the new engine and its flags -- see that file's
 own Quick Reference and Showdown sections.
+
+## Session 14.1 -- Player Props as a Projection Input (Scoping + Design)
+**Date completed:** 2026-08-06
+**Status:** ✅ Complete -- Resolution: Deferred (not built, not abandoned)
+
+**What was actually built:** No production code. Per this session's own
+design-before-build boundary (held throughout, never crossed): two
+throwaway probe scripts, `scripts/probe_player_props.py` (The Odds API)
+and `scripts/probe_player_props_sgo.py` (SportsGameOdds), neither wired
+into any workflow. Real probes were run against three real Preseason
+Week 1 2026 games (New England @ Seattle, SF @ LA Rams, Atlanta @
+Pittsburgh) via the first script; the second was built but never run
+(see Decisions below for why).
+
+The session's actual arc: started as "which data source, which
+markets" scoping, but resolved into a more fundamental question once
+real credit-cost math and a real coverage probe were run -- whether
+player props are worth building at all, given what Phase 10 (once
+wired into production via Session 14.0) already extracts from the
+market. Final answer: not right now, existing signals judged sufficient
+pending real evidence otherwise.
+
+**Files created/modified:**
+- `scripts/probe_player_props.py` (new -- throwaway probe, not wired
+  into any workflow)
+- `scripts/probe_player_props_sgo.py` (new -- throwaway probe, not
+  wired into any workflow, never run against real data -- see below)
+- No changes to `volume_prior.py`, `statline_model.py`, `refresh_data.yml`,
+  or any other production file.
+
+**Validation results:**
+- [x] Real probe run (The Odds API) against 3 real Preseason Week 1
+  games -- confirmed zero player-props coverage. Traced to a genuine,
+  documented vendor limitation (the-odds-api.com's own NFL preseason
+  page: player props "not covered for NFL preseason since bookmakers
+  usually have very limited coverage"), not a code bug, not a
+  billing/plan-tier gate. Explicitly ruled out a plan-tier explanation
+  by confirming the paid-tier player-props gate exists on a different,
+  similarly-named vendor (`theoddsapi.com`, no hyphen) that this
+  project does not use and has never used.
+- [x] A code-correctness sanity check (`--sport-key baseball_mlb`, a
+  sport with real live props right now) caught a real error in the
+  probe's own guessed market keys (`player_home_runs` vs. the vendor's
+  actual `batter_home_runs`) -- confirms the probe surfaces real schema
+  mismatches (422s) rather than masking them. Not fixed/rerun, since
+  MLB was only ever a code check, not the actual target.
+- [x] Real credit/object-cost modeling against the project's actual
+  `refresh_data.yml` polling cadence (user-confirmed as ~8x/week,
+  meaningfully more than an early rough estimate of 3x/week): The Odds
+  API's per-market billing projects to ~6,054 credits/month at that
+  cadence (~11 credits/event worst case x 16 games x 8 pulls/week x 4.3
+  weeks) -- about 12x over the 500/month free tier, though comfortably
+  inside the $30/mo/20,000-credit paid tier. SportsGameOdds' per-event
+  billing modeled at ~4,128 objects/month under a realistic 5-kickoff-
+  window week -- also over its 2,500/month free tier, contrary to this
+  session's own earlier (too optimistic) read of its pricing page.
+- [x] Real credit-cost math confirms production-cadence usage would
+  exceed BOTH vendors' free tiers; validation-scale usage (a handful of
+  pulls, not a weekly cadence) fits comfortably inside The Odds API's
+  existing free tier with no new vendor needed.
+- [N/A] Market list, blend-placement design, and forward validation --
+  not reached. Props deferred before any of these became necessary (see
+  Decisions below).
+
+**Decisions made / assumptions taken:**
+- **Core decision: defer player props, don't build them, given what
+  Phase 10 already does.** Once Session 14.0 is understood as already
+  wiring in `vegas_factor` (team-level implied totals) and
+  price-as-volume-prior (player-level, via salary) as two market-derived
+  signals, the user's own side-by-side comparison against a "market-
+  blended simulation" reference framework judged the existing
+  volume-level market anchoring as a more principled design than a
+  naive points-level market blend would have been (avoids the
+  redundant-with-ILP-salary-cap problem Session 10 already found).
+  Given that, the marginal case for adding player props as a THIRD
+  market-derived signal was judged not strong enough to justify the
+  real, distinct risks identified this session: double-counting via
+  correlation (not just mis-weighting -- three market-derived inputs
+  saying the same thing through different doors can overweight market
+  consensus even if each individual weight looks correct), unvalidated
+  de-vig math, interaction with Session 14.0b's (team, component)
+  share-reconciliation fix, and small-sample weight-fitting with no
+  historical props backtest available (props history is a separate
+  paid tier, May 2023+ only -- no equivalent to the 2014-2021 RotoGuru
+  archive the rest of Phase 10 was backtested against).
+- **Explicit reopening trigger set -- not indefinite deferral.** Once
+  Session 9.1's actual-vs-projected logging has real data (gated on
+  real games, ~Sept 13 2026), check whether real projection error is
+  CONCENTRATED in cold-start/low-history/committee-role players
+  specifically (the pattern that would actually implicate a missing
+  market signal like props) versus BROAD/uniform across player types
+  (the pattern that implicates usage-modeling/calibration -- e.g. λ,
+  sigma, volume-prior tuning -- which adding props would not fix).
+  Only the first pattern is grounds to reopen this.
+- SportsGameOdds was scoped and probed (script built, real API
+  structure verified against their docs -- `/v2/events`, `fairOdds`/
+  `fairOverUnder` no-vig fields, per-event billing) but never actually
+  signed up for. Not needed once the production-cadence question (the
+  only reason SGO was being considered) was deferred entirely alongside
+  the rest of the props build.
+- Slate-type multiplication (Classic/Showdown/early-only each separately
+  polling props) identified as solvable BY DESIGN, not a reason to cut
+  cadence further: any future props ingest should cache by date/game,
+  not by slate_id, since props are properties of a real game, not a
+  DK/FD slate configuration -- `vegas_odds.py`'s own per-slate_id output
+  filename convention should NOT be mirrored if this reopens.
+- ParlayAPI (third candidate vendor -- "same billing model as The Odds
+  API, ~6x cheaper," free tier 1,000 requests/month) identified but not
+  probed -- deprioritized once production cadence was deferred; worth
+  a look first if/when the cost question becomes live again.
+
+**Known issues deferred:**
+- **Player props as a projection input, in full** -- explicitly
+  deferred, not abandoned, pending the Session 9.1 error-pattern check
+  described above. All groundwork from this session (vendor comparison,
+  real credit-cost math, first-pass market list, both probe scripts, the
+  cache-by-game design note) is preserved in this project's ROADMAP.md
+  so none of it needs to be re-derived if reopened.
+- `probe_player_props_sgo.py` was never run for real (no SGO account
+  created) -- left in the repo, unused, not wired into anything. Starting
+  point if the production-cadence/vendor question becomes live again.
+- Real coverage/market-list data for The Odds API is still unconfirmed
+  beyond "zero, preseason" -- gated on the calendar (real Week 1 lines,
+  ~early September), not on any remaining design work. Not run this
+  session.
+
+**Handoff notes for next session:** The real trigger to reopen this is
+Session 9.1 (actual-vs-projected logging), once real games exist --
+specifically the cold-start-concentrated vs. broad-error check described
+above, not a general "did props help" instinct. If/when that happens,
+this entry plus `probe_player_props.py` / `probe_player_props_sgo.py`
+and the ROADMAP.md card are the actual starting point -- data sources,
+real cost numbers, and a first-pass market list already exist and don't
+need to be re-scoped from scratch.
+
+---
+
+## Real-Data Check -- ARI/CAR Preseason Showdown (Aug 6 slate)
+**Date completed:** 2026-08-08
+**Status:** Informational -- not a build session, no code changed
+
+**What this was:** An opportunistic real-vs-projected comparison, not a
+formal session. The user provided `final_projections_dk_dk_showdown_
+preseason_ari_car.csv` (the model's real output for the Aug 6 ARI/CAR
+preseason Showdown slate) alongside a real DK contest-standings export
+(actual FPTS and `%Drafted` ownership for that same slate) and asked
+whether the comparison was worth doing. It was -- this is the first
+real actual-vs-projected data point this project has had access to,
+though it comes with real caveats (see below) that limit how far it
+generalizes.
+
+**Analysis performed:** Merged the two files on `player_name` +
+`roster_role` (CPT/FLEX). 112 of 120 model rows matched to a real
+contest row; 8 model rows had no real-field match (0% owned -- not a
+data problem, just genuinely undrafted); 6 real players in the contest
+field were not in the model's pool at all (see Finding 3 below).
+
+**Finding 1 -- projected points and actual points were essentially
+uncorrelated (r = -0.11).** Of the model's top 15 projected players, 11
+scored exactly 0 actual points -- including all 4 of its top CPT picks
+(Trey McBride, Jacoby Brissett, Bryce Young, Michael Wilson). Real
+production came almost entirely from players with near-zero season
+history (Haynes King 37.65 CPT pts on a 4.4-pt projection; Corey Kiner
+21.9 on 3.2; Jalen Brooks 19.35 on 1.2; Carson Beck 17.73 on 3.6).
+
+**Root cause, and why this does NOT indicate a scoring-model bug:** the
+model was asked to project real per-snap production, which it did
+correctly based on real historical performance -- McBride, Brissett,
+and Young are genuinely good real players. What it has no signal for at
+all is *who actually plays* in a specific deep-preseason game, where
+established players typically see a handful of snaps or none, and
+roster-bubble/camp players play the majority of the game. That's a
+participation/snap-share gap, not a per-snap accuracy gap, and it's
+already the reason ROADMAP.md's Phase 6 is explicitly scoped as "a
+pipeline reliability gate, not an accuracy gate." This slate confirms
+that framing rather than contradicting it.
+
+**Finding 2 -- this does NOT satisfy Session 14.1's player-props
+reopening trigger, and should not reopen that card.** The trigger was
+specifically errors concentrating in cold-start players *because of a
+missing market signal*. Here the miss is a missing *participation*
+signal -- Vegas doesn't post props for camp-body players in exhibition
+games, so player props would not have caught this either. Logged here
+explicitly so this data point isn't later mistaken for trigger
+evidence and doesn't get re-litigated.
+
+**Finding 3 -- 6 real players were missing from the model's pool
+entirely:** Zonovan Knight (real: 26.93% CPT / 6.66% FLEX ownership,
+meaningful real snaps), Kenny Yeboah, Roc Taylor, Caden Prieskorn,
+Chamon Metayer, Elijah Cooks. Unlike Findings 1-2, this is a genuine,
+checkable pipeline-completeness question -- not an inherent preseason
+accuracy limitation. **Not yet root-caused.** Two candidate
+explanations, not distinguished yet: (a) these players were in the real
+DK salary export and got dropped during `ingest_salaries.py`'s
+name-matching against nflverse, or (b) they were never in the export,
+or exist in DK's pool but not in nflverse's player universe at all
+(plausible for deep camp/UDFA bodies). Needs the raw salary CSV or that
+session's unmatched-player log to resolve -- **left as an open,
+specifically-scoped follow-up, not investigated further this check.**
+
+**Finding 4 -- estimated ownership correlated at 0.53 in aggregate, but
+that's misleading; the model's own top-estimated-ownership players were
+the SAME over-projected veterans as Finding 1** (McBride predicted
+24.6% FLEX-owned vs. 2.81% actual; Brissett 23.3% vs. 2.24%; Young 22.0%
+vs. 2.17%). The ownership miss is inherited directly from the
+scoring-model's participation blind spot (via `chalk_score`), not a
+separate ownership-model defect. The real field's actual chalk (Carson
+Beck 50.13%, Haynes King 39.16%, Chad Ryland 37.36%) tracked who the
+public knew would play extended snaps -- information not present
+anywhere in this pipeline today.
+
+**Finding 5 (positive) -- DST ownership was accurate:** Cardinals FLEX
+predicted 47.9% vs. actual 38.6%; Panthers FLEX predicted 45.5% vs.
+actual 40.8%. No action needed, noted as a working part of the model.
+
+**Known issues deferred:**
+- Finding 3 (6 missing players) -- open, needs the raw salary export or
+  unmatched-player log for this slate to root-cause. Flagged as the one
+  actionable item from this check.
+- The participation/snap-share gap (Finding 1) is NOT proposed as new
+  build scope -- it's a distinct idea from player props (which was
+  already scoped and deferred in Session 14.1) and from anything
+  currently on the roadmap. Left as an unscoped backlog idea only if it
+  becomes relevant again; not built, not designed, not committed to.
+
+**Handoff notes for next session:** This was a preseason Showdown slate
+with two known confounds already on record before this check even ran
+-- DK's flat CPT/FLEX preseason pricing (Session 13.5b) removed
+salary's differentiating signal, and this is deep-preseason roster
+churn, not a regular-season slate. Real regular-season Week 1 data
+(gated on ~Sept 13, same as Session 9.1) is still the actual test of
+projection accuracy under normal conditions -- this check should not be
+read as a verdict on the model, just as the first real look at where
+today's known limitations actually show up in real numbers.
