@@ -1,7 +1,7 @@
 team,component,pool_share,share_basis,raw_sum,target,scale,abs_delta
 ATL,pass,1.0,exclusive,14.61,32.6,2.2313,17.99
 GB,rush,0.5493,recent,30.83,15.05,0.488,15.79
-BAL,rush,0.8023,recent,41.34,23.2,0.5611,18.15
+BAL,rush,0.8023,recent,41.34,23.19,0.561,18.15
 NYJ,pass,1.0,exclusive,54.18,31.69,0.5848,22.5
 CAR,rush,0.5573,recent,23.07,13.95,0.6045,9.12
 MIA,rush,1.0,recent,43.86,26.72,0.6092,17.14
@@ -24,9 +24,9 @@ JAX,recv,0.9198,recent,42.93,29.74,0.6928,13.19
 IND,recv,0.7562,recent,36.44,25.6,0.7025,10.84
 PIT,pass,1.0,exclusive,50.26,35.34,0.7031,14.92
 CIN,rush,1.0,recent,37.91,26.67,0.7034,11.25
-IND,rush,0.8968,recent,32.12,22.6,0.7035,9.52
 CHI,recv,0.8289,recent,38.92,27.38,0.7035,11.54
-LAC,rush,1.0,recent,40.01,28.21,0.705,11.81
+IND,rush,0.8968,recent,32.12,22.61,0.7037,9.52
+LAC,rush,1.0,recent,40.0,28.18,0.7044,11.82
 LAC,recv,0.7329,recent,34.3,24.39,0.711,9.91
 PHI,recv,0.7447,recent,33.52,24.17,0.7212,9.35
 HOU,rush,1.0,recent,38.45,27.79,0.7228,10.66
@@ -40,7 +40,7 @@ ARI,recv,0.8678,recent,38.18,29.07,0.7614,9.11
 IND,pass,1.0,exclusive,28.28,35.0,1.2375,6.72
 NYJ,rush,0.8667,recent,29.96,22.91,0.7647,7.05
 ATL,recv,0.9085,recent,37.04,28.58,0.7716,8.46
-ARI,pass,1.0,exclusive,45.16,35.0,0.775,10.16
+ARI,pass,1.0,exclusive,45.15,34.99,0.775,10.16
 DET,recv,0.8978,recent,41.02,32.16,0.784,8.86
 GB,recv,0.6949,recent,25.99,20.47,0.7875,5.52
 PIT,rush,1.0,recent,34.48,27.26,0.7905,7.22
@@ -63,10 +63,10 @@ CAR,recv,1.0,recent,36.48,31.33,0.8586,5.16
 NO,pass,1.0,exclusive,40.71,35.63,0.8753,5.08
 TB,pass,1.0,exclusive,39.91,34.95,0.8756,4.97
 GB,pass,1.0,exclusive,27.59,30.8,1.1163,3.21
-ARI,rush,0.9767,recent,24.06,21.75,0.9041,2.31
+ARI,rush,0.9767,recent,24.06,21.77,0.9049,2.29
 BUF,recv,1.0,recent,34.55,31.33,0.9068,3.22
 DET,rush,1.0,recent,28.98,26.59,0.9175,2.39
-LAC,pass,1.0,exclusive,32.53,34.85,1.0713,2.32
+LAC,pass,1.0,exclusive,32.53,34.86,1.0714,2.32
 TEN,pass,1.0,exclusive,34.98,32.54,0.9301,2.45
 PHI,pass,1.0,exclusive,36.16,34.36,0.9503,1.8
 BAL,pass,1.0,exclusive,29.99,30.96,1.0322,0.97
