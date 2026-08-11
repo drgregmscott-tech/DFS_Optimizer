@@ -1,0 +1,370 @@
+{
+ "schema_version": 1,
+ "fit_date": "2026-08-11",
+ "site": "fd",
+ "seasons": [
+  2021
+ ],
+ "n_rows": 4897,
+ "n_bins_requested": 10,
+ "guards": {
+  "min_rows_per_position": 400,
+  "min_rows_per_bin": 50,
+  "min_usable_bins": 6
+ },
+ "notes": "Session 10.4b. Corrects the OVER-DISPERSION of the stat-line engine's per-player sigma measured by probe_sigma_quality.py's probe B3. Fit on within-bin residual SD with the bin's own mean bias removed (consumer decision #1) -- the per-position MEAN bias is a separate, uncorrected finding. Site-keyed: sigma is in fantasy points and does not transfer between DK and FD.",
+ "positions": {
+  "QB": {
+   "a": 5.489232,
+   "b": 0.144293,
+   "b_raw": 0.144293,
+   "b_clamped": false,
+   "a_refit_on_clamp": false,
+   "loglog_r2": 0.3231,
+   "sigma_fit_range": [
+    0.736,
+    22.4245
+   ],
+   "n_rows": 508,
+   "n_bins": 10,
+   "calibration_before": 1.018,
+   "calibration_after": 1.1488,
+   "bins": [
+    {
+     "bin": 0,
+     "n": 51,
+     "mean_sigma": 2.6174,
+     "mean_error": 1.4712,
+     "resid_sd": 5.9166
+    },
+    {
+     "bin": 1,
+     "n": 51,
+     "mean_sigma": 4.1036,
+     "mean_error": 0.0255,
+     "resid_sd": 6.2425
+    },
+    {
+     "bin": 2,
+     "n": 51,
+     "mean_sigma": 5.4491,
+     "mean_error": 4.0472,
+     "resid_sd": 9.2102
+    },
+    {
+     "bin": 3,
+     "n": 50,
+     "mean_sigma": 6.794,
+     "mean_error": 2.9828,
+     "resid_sd": 7.4146
+    },
+    {
+     "bin": 4,
+     "n": 51,
+     "mean_sigma": 7.755,
+     "mean_error": 0.7862,
+     "resid_sd": 7.0185
+    },
+    {
+     "bin": 5,
+     "n": 51,
+     "mean_sigma": 8.552,
+     "mean_error": 1.4883,
+     "resid_sd": 6.5616
+    },
+    {
+     "bin": 6,
+     "n": 50,
+     "mean_sigma": 9.3615,
+     "mean_error": 1.3366,
+     "resid_sd": 7.4623
+    },
+    {
+     "bin": 7,
+     "n": 51,
+     "mean_sigma": 10.4914,
+     "mean_error": -0.1468,
+     "resid_sd": 8.0743
+    },
+    {
+     "bin": 8,
+     "n": 51,
+     "mean_sigma": 11.9259,
+     "mean_error": -1.5997,
+     "resid_sd": 8.1439
+    },
+    {
+     "bin": 9,
+     "n": 51,
+     "mean_sigma": 15.7595,
+     "mean_error": -11.4448,
+     "resid_sd": 7.8125
+    }
+   ]
+  },
+  "RB": {
+   "a": 2.774234,
+   "b": 0.436561,
+   "b_raw": 0.436561,
+   "b_clamped": false,
+   "a_refit_on_clamp": false,
+   "loglog_r2": 0.8734,
+   "sigma_fit_range": [
+    0.2008,
+    31.9928
+   ],
+   "n_rows": 1227,
+   "n_bins": 10,
+   "calibration_before": 0.9863,
+   "calibration_after": 1.0836,
+   "bins": [
+    {
+     "bin": 0,
+     "n": 123,
+     "mean_sigma": 1.3967,
+     "mean_error": 1.187,
+     "resid_sd": 2.9626
+    },
+    {
+     "bin": 1,
+     "n": 123,
+     "mean_sigma": 2.2452,
+     "mean_error": 1.6594,
+     "resid_sd": 3.9145
+    },
+    {
+     "bin": 2,
+     "n": 122,
+     "mean_sigma": 2.8354,
+     "mean_error": 1.0982,
+     "resid_sd": 3.9948
+    },
+    {
+     "bin": 3,
+     "n": 123,
+     "mean_sigma": 3.491,
+     "mean_error": 2.1899,
+     "resid_sd": 5.743
+    },
+    {
+     "bin": 4,
+     "n": 123,
+     "mean_sigma": 4.4745,
+     "mean_error": 1.3777,
+     "resid_sd": 4.6782
+    },
+    {
+     "bin": 5,
+     "n": 122,
+     "mean_sigma": 5.5091,
+     "mean_error": 2.013,
+     "resid_sd": 6.4793
+    },
+    {
+     "bin": 6,
+     "n": 123,
+     "mean_sigma": 7.0135,
+     "mean_error": 3.8974,
+     "resid_sd": 7.9788
+    },
+    {
+     "bin": 7,
+     "n": 122,
+     "mean_sigma": 8.9208,
+     "mean_error": 2.0349,
+     "resid_sd": 6.6636
+    },
+    {
+     "bin": 8,
+     "n": 123,
+     "mean_sigma": 11.5143,
+     "mean_error": 0.6383,
+     "resid_sd": 8.4624
+    },
+    {
+     "bin": 9,
+     "n": 123,
+     "mean_sigma": 17.1202,
+     "mean_error": -2.4324,
+     "resid_sd": 8.2536
+    }
+   ]
+  },
+  "WR": {
+   "a": 2.527822,
+   "b": 0.432841,
+   "b_raw": 0.432841,
+   "b_clamped": false,
+   "a_refit_on_clamp": false,
+   "loglog_r2": 0.956,
+   "sigma_fit_range": [
+    0.3273,
+    30.6034
+   ],
+   "n_rows": 1854,
+   "n_bins": 10,
+   "calibration_before": 0.8878,
+   "calibration_after": 1.0726,
+   "bins": [
+    {
+     "bin": 0,
+     "n": 186,
+     "mean_sigma": 1.1971,
+     "mean_error": 0.7875,
+     "resid_sd": 2.8551
+    },
+    {
+     "bin": 1,
+     "n": 185,
+     "mean_sigma": 2.1465,
+     "mean_error": 1.1454,
+     "resid_sd": 3.9269
+    },
+    {
+     "bin": 2,
+     "n": 185,
+     "mean_sigma": 2.8905,
+     "mean_error": 1.3112,
+     "resid_sd": 3.6513
+    },
+    {
+     "bin": 3,
+     "n": 186,
+     "mean_sigma": 3.8319,
+     "mean_error": 1.0612,
+     "resid_sd": 4.0043
+    },
+    {
+     "bin": 4,
+     "n": 185,
+     "mean_sigma": 4.8107,
+     "mean_error": 1.2719,
+     "resid_sd": 4.6966
+    },
+    {
+     "bin": 5,
+     "n": 185,
+     "mean_sigma": 5.9715,
+     "mean_error": 1.6754,
+     "resid_sd": 5.5228
+    },
+    {
+     "bin": 6,
+     "n": 186,
+     "mean_sigma": 7.2912,
+     "mean_error": 1.8113,
+     "resid_sd": 6.3039
+    },
+    {
+     "bin": 7,
+     "n": 185,
+     "mean_sigma": 8.9128,
+     "mean_error": 1.1087,
+     "resid_sd": 6.4333
+    },
+    {
+     "bin": 8,
+     "n": 185,
+     "mean_sigma": 10.9954,
+     "mean_error": 1.7375,
+     "resid_sd": 7.6444
+    },
+    {
+     "bin": 9,
+     "n": 186,
+     "mean_sigma": 16.2158,
+     "mean_error": -1.9378,
+     "resid_sd": 8.4568
+    }
+   ]
+  },
+  "TE": {
+   "a": 1.818249,
+   "b": 0.566303,
+   "b_raw": 0.566303,
+   "b_clamped": false,
+   "a_refit_on_clamp": false,
+   "loglog_r2": 0.951,
+   "sigma_fit_range": [
+    0.3271,
+    22.8188
+   ],
+   "n_rows": 890,
+   "n_bins": 10,
+   "calibration_before": 0.9924,
+   "calibration_after": 1.1079,
+   "bins": [
+    {
+     "bin": 0,
+     "n": 89,
+     "mean_sigma": 1.0092,
+     "mean_error": 0.7805,
+     "resid_sd": 1.6051
+    },
+    {
+     "bin": 1,
+     "n": 89,
+     "mean_sigma": 1.5503,
+     "mean_error": 1.4266,
+     "resid_sd": 2.7685
+    },
+    {
+     "bin": 2,
+     "n": 89,
+     "mean_sigma": 2.0403,
+     "mean_error": 0.8108,
+     "resid_sd": 2.4537
+    },
+    {
+     "bin": 3,
+     "n": 89,
+     "mean_sigma": 2.5872,
+     "mean_error": 0.9897,
+     "resid_sd": 3.3266
+    },
+    {
+     "bin": 4,
+     "n": 89,
+     "mean_sigma": 3.2543,
+     "mean_error": 1.6158,
+     "resid_sd": 3.805
+    },
+    {
+     "bin": 5,
+     "n": 89,
+     "mean_sigma": 3.9376,
+     "mean_error": 0.7113,
+     "resid_sd": 3.6455
+    },
+    {
+     "bin": 6,
+     "n": 89,
+     "mean_sigma": 4.8215,
+     "mean_error": 0.5058,
+     "resid_sd": 4.4194
+    },
+    {
+     "bin": 7,
+     "n": 89,
+     "mean_sigma": 5.9492,
+     "mean_error": 0.4707,
+     "resid_sd": 5.2629
+    },
+    {
+     "bin": 8,
+     "n": 89,
+     "mean_sigma": 7.5566,
+     "mean_error": 0.8914,
+     "resid_sd": 5.9321
+    },
+    {
+     "bin": 9,
+     "n": 89,
+     "mean_sigma": 11.8615,
+     "mean_error": -2.8103,
+     "resid_sd": 6.8038
+    }
+   ]
+  }
+ }
+}
