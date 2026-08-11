@@ -966,6 +966,34 @@ def load_final_projections(site: str, slate_id: str) -> pd.DataFrame:
             f"re-run build_projections.py) -- update this script's "
             f"load_final_projections() to match."
         )
+
+    # Found via a real FD roster build going fully infeasible even at
+    # uniqueness=0, no stack, no salary floor, with a healthy real pool
+    # (92 QB / 150 RB / 170 TE / 299 WR / 24 DST). Root cause: FD's real
+    # raw export labels a defense row's position "D" (confirmed against a
+    # real FD Week 1 2026 export), but SITE_CONFIGS["fd"]["roster_slots"]
+    # names FD's defense slot "DEF". ingest_salaries.py already recognizes
+    # "D" as a defense via defense_position_values (assigns it a DST_{team}
+    # player_id), but never remaps the position LABEL itself to match the
+    # roster slot name. parse_roster_requirements() builds fixed_counts
+    # straight from roster_slots (so {"DEF": 1} for FD), and solve_lineup()
+    # keys its player pool by the literal position string in this
+    # DataFrame -- "D" != "DEF" meant the DEF slot's required player pool
+    # was silently EMPTY on every FD build, an infeasible constraint (sum
+    # of zero players must equal 1) with no error naming the real cause,
+    # just "no legal lineup exists." DK never hit this: its roster slot
+    # name ("DST") and its raw position label ("DST") already happened to
+    # be the same string. Canonicalizing here, once, at load time, means
+    # every downstream consumer (the ILP's by_position dict, stacking's
+    # DST/mini-stack lookups, FLEX-eligibility checks) sees one consistent
+    # label without needing its own fix.
+    site_roster_slots = SITE_CONFIGS[site]["roster_slots"]
+    canonical_def = next(
+        (s for s in site_roster_slots if s in DEFENSE_POSITION_LABELS), None)
+    if canonical_def:
+        is_def = df["position"].astype(str).str.upper().isin(DEFENSE_POSITION_LABELS)
+        df.loc[is_def, "position"] = canonical_def
+
     return df
 
 
