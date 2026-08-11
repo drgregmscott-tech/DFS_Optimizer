@@ -279,25 +279,24 @@ SITE_CONFIGS = {
     },
     "fd": {
         "label": "FanDuel",
-        # UNVERIFIED against a real current FD export -- standard documented
-        # FD Classic column layout: Id, Position, First Name, Nickname,
-        # Last Name, FPPG, Played, Salary, Game, Team, Opponent,
-        # Injury Indicator, Injury Details
+        # CONFIRMED against a real FD Classic Week 1 2026 export (site work,
+        # 2026-08-11): Id, Position, First Name, Nickname, Last Name, FPPG,
+        # Played, Salary, Game, Team, Opponent, Injury Indicator, Injury
+        # Details, Tier. Real position values for defenses are "D" (see
+        # defense_position_values below and optimizer.py's canonicalization
+        # of it) -- everything else here matched the previously-documented
+        # guess exactly.
         "required_columns": {"Position", "Team", "Salary"},
         "name_col": None,   # derived from First Name/Last Name/Nickname
         "team_col": "Team",
         "position_col": "Position",
         "salary_col": "Salary",
         # Session 7.3 addition -- same purpose as dk's site_id_col above.
-        # UNVERIFIED, same caveat as required_columns above -- FD's own
-        # entry-upload template/column name hasn't been confirmed against
-        # a real export yet.
+        # CONFIRMED against the same real export above -- "Id" is the
+        # literal first column.
         "site_id_col": "Id",
         # FD names the season-average PPG column "FPPG" (not "AvgPointsPerGame"
-        # like DK). UNVERIFIED against a real FD export -- confirmed from FD's
-        # documented column layout (see module docstring), same status as
-        # required_columns and site_id_col above. Fix here when a real FD
-        # export confirms or corrects this.
+        # like DK). CONFIRMED against the same real export above.
         "avg_ppg_col": "FPPG",
         "defense_position_values": {"D", "DEF"},
         "team_abbrev_overrides": {},
