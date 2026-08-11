@@ -40,7 +40,7 @@ import numpy as np
 import pandas as pd
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from ingest_salaries import SITE_CONFIGS
+from ingest_salaries import SITE_CONFIGS, normalize_team
 from ownership_heuristic import (
     compute_chalk_scores, compute_estimated_ownership,
     build_showdown_role_group, compute_showdown_role_budgets,
@@ -174,32 +174,59 @@ def build_opponent_map(schedule, week):
     return opp_map
 
 
-def build_opponent_map_from_salaries(salaries):
-    """Decision #9: infer matchups directly from the salary file Game Info column.
+def build_opponent_map_from_salaries(salaries, site):
+    """Decision #9 (extended -- real FD Week 1 2026 slate): infer matchups
+    directly from the salary file's own game-pairing column.
 
-    The DK salary CSV export contains a Game Info column with values like
-    'CHI@BAL 07/31/2026 12:00PM ET'. This is the most reliable source of
-    matchup information for any slate type -- Madden Sim, preseason, or
-    regular season -- because it reflects exactly what DK has on the slate,
-    regardless of whether a matching NFL schedule week exists.
+    DK's salary CSV export carries this as a column literally named
+    'Game Info', with values like 'CHI@BAL 07/31/2026 12:00PM ET'. This
+    function originally only recognized that exact column name, on the
+    (untested) assumption FD's export matched it. It does not: a real FD
+    Week 1 2026 export carries the same AWAY@HOME pairing under a
+    differently-named column, 'Game', with no trailing date/time (e.g.
+    'NO@DET'). Both strings parse identically with the existing logic
+    below, since FD's is a strict prefix of DK's format -- only the
+    column name needed to change.
 
-    Parses each unique game string, extracts the two team abbreviations, and
-    builds the bidirectional team -> opponent map. Falls back gracefully if
-    the Game Info column is absent or malformed.
+    Team codes are then run through normalize_team(), which the original
+    version did not do. This is not a defensive add: the same real FD
+    export uses 'JAC' for Jacksonville, while every other part of this
+    pipeline (schedules, vegas, DST) normalizes to 'JAX'
+    (BASE_TEAM_ABBREV_MAP). Without normalizing here, a Jacksonville game
+    would parse successfully but produce an opponent-map key that never
+    matches normalized_team anywhere downstream -- silently, with no
+    error, exactly the NOR/NO failure mode BASE_TEAM_ABBREV_MAP's own
+    comment already describes for a different team. `site` is required
+    (not optional) so this can never silently normalize against the
+    wrong site's overrides.
+
+    This is the most reliable source of matchup information for any
+    slate type -- Madden Sim, preseason, or regular season -- because it
+    reflects exactly what the site has on the slate, regardless of
+    whether a matching NFL schedule week exists.
+
+    Parses each unique game string, extracts the two team abbreviations,
+    and builds the bidirectional team -> opponent map. Falls back
+    gracefully (empty map) if neither known column is present or a value
+    is malformed.
     """
-    if "Game Info" not in salaries.columns:
+    game_col = next(
+        (c for c in ("Game Info", "Game") if c in salaries.columns), None)
+    if game_col is None:
         return {}
 
     opp_map = {}
     seen = set()
-    for game_info in salaries["Game Info"].dropna().unique():
-        # Format: "AWAY@HOME DATE TIME ET" e.g. "CHI@BAL 07/31/2026 12:00PM ET"
-        matchup_part = game_info.split(" ")[0]  # "CHI@BAL"
+    for game_info in salaries[game_col].dropna().unique():
+        # DK: "AWAY@HOME DATE TIME ET" e.g. "CHI@BAL 07/31/2026 12:00PM ET"
+        # FD: "AWAY@HOME" e.g. "NO@DET" -- split(" ")[0] is a no-op on FD's
+        # string and strips DK's trailing date/time, so one line handles both.
+        matchup_part = game_info.split(" ")[0]
         if "@" not in matchup_part:
             continue
         away, home = matchup_part.split("@", 1)
-        away = away.strip().upper()
-        home = home.strip().upper()
+        away = normalize_team(away.strip(), site)
+        home = normalize_team(home.strip(), site)
         game_key = tuple(sorted([away, home]))
         if game_key in seen:
             continue
@@ -755,7 +782,7 @@ def build_final_projections(site, season, week, slate_id,
             f"falling back to vegas over_under pairing (decision #9, Madden Sim path).",
             file=sys.stderr,
         )
-        opponent_map = build_opponent_map_from_salaries(build_salaries)
+        opponent_map = build_opponent_map_from_salaries(build_salaries, site)
         if opponent_map:
             games_found = sorted(set(
                 tuple(sorted([k, opponent_map[k]])) for k in opponent_map

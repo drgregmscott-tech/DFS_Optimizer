@@ -134,9 +134,27 @@ import pandas as pd
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 DATA_DIR = REPO_ROOT / "data"
-ARTIFACT_PATH = DATA_DIR / "sigma_recalibration.json"
 
 SCHEMA_VERSION = 1
+
+# Decision #2 continued (real FD Week 1 2026 slate): this artifact was
+# originally ONE shared file, data/sigma_recalibration.json, with the site
+# recorded only inside the JSON's own "site" field. That was harmless while
+# only DK had ever been fit -- but the moment FD is fit too, the two sites
+# fight over the same filename: whichever site is fit LAST silently becomes
+# the only site that can load, and the OTHER site starts hard-erroring
+# instead (load()'s site check is doing exactly its job, but on a shared
+# resource that job means "block someone"). Matches volume_prior.py's and
+# salary_anchor.py's naming convention (data/{name}_{site}.json), which
+# already avoids this because each site gets its own file.
+#
+# path_for_site() is the single source of truth for the filename. The old
+# bare data/sigma_recalibration.json is not read by default anymore -- the
+# existing DK fit should be renamed to data/sigma_recalibration_dk.json
+# (a plain file rename preserves the fit; no refit needed) rather than
+# silently reinterpreted.
+def path_for_site(site: str) -> Path:
+    return DATA_DIR / f"sigma_recalibration_{site}.json"
 
 # Both sites' defense labels, matching optimizer.py's own set.
 DEFENSE_LABELS = {"DST", "D", "DEF"}
@@ -156,7 +174,7 @@ def load(site: str, path: Path = None) -> dict:
     that quietly did nothing would be indistinguishable, in every downstream
     number, from one that worked.
     """
-    path = Path(path) if path else ARTIFACT_PATH
+    path = Path(path) if path else path_for_site(site)
     if not path.exists():
         raise RuntimeError(
             f"{path.name} not found -- run fit_sigma_recalibration.py "
@@ -169,12 +187,13 @@ def load(site: str, path: Path = None) -> dict:
             f"this consumer expects {SCHEMA_VERSION}."
         )
     if blob.get("site") != site:
+        # Should be structurally impossible now that the path itself is
+        # site-keyed -- kept as a safety net (e.g. a manually renamed or
+        # copied file), not the primary guard it used to be.
         raise RuntimeError(
             f"{path.name} was fit for site '{blob.get('site')}', not '{site}'. "
             f"Decision #2: sigma is in fantasy points and DK's full PPR is not "
-            f"FD's half PPR, so this artifact does NOT transfer between sites. "
-            f"FD has no real data to fit against -- the same standing gap as "
-            f"every other FD item in this project."
+            f"FD's half PPR, so this artifact does NOT transfer between sites."
         )
     return blob
 

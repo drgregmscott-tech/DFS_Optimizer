@@ -4,7 +4,8 @@ fit_sigma_recalibration.py
 
 Session 10.4b -- Sigma Dispersion Recalibration (FITTER).
 
-Writes `data/sigma_recalibration.json`. Deliberately separate from the
+Writes `data/sigma_recalibration_{site}.json` (Decision #2 extended -- see
+`sigma_recalibration.py`'s `path_for_site()`). Deliberately separate from the
 consumer (`sigma_recalibration.py`) so the production projection path never
 imports fitting machinery -- same split as Session 10.2's
 `salary_anchor`/`fit_salary_anchor` and Session 10.4's
@@ -104,7 +105,7 @@ SCRIPTS_DIR = Path(__file__).resolve().parent
 sys.path.insert(0, str(SCRIPTS_DIR))
 from ingest_salaries import normalize_team  # noqa: E402
 from sigma_recalibration import (  # noqa: E402
-    ARTIFACT_PATH, SCHEMA_VERSION, normalize_position,
+    SCHEMA_VERSION, normalize_position, path_for_site,
 )
 
 POSITIONS = ["QB", "RB", "WR", "TE", "DST"]
@@ -447,7 +448,7 @@ def main():
 
     artifact = fit(args.site, rows, seasons, args.n_bins)
 
-    out_path = Path(args.out) if args.out else ARTIFACT_PATH
+    out_path = Path(args.out) if args.out else path_for_site(args.site)
     out_path.parent.mkdir(parents=True, exist_ok=True)
     out_path.write_text(json.dumps(artifact, indent=1))
     print(f"\nWrote {out_path} (schema_version {SCHEMA_VERSION}).")

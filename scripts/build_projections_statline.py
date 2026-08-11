@@ -306,7 +306,7 @@ def build_statline_projections(site: str, season: int, week: int, slate_id: str,
             f"falling back to vegas over_under pairing (decision #9, Madden Sim path).",
             file=sys.stderr,
         )
-        opponent_map = build_opponent_map_from_salaries(build_salaries)
+        opponent_map = build_opponent_map_from_salaries(build_salaries, site)
         if opponent_map:
             games_found = sorted(set(
                 tuple(sorted([k, opponent_map[k]])) for k in opponent_map
@@ -642,7 +642,7 @@ if __name__ == "__main__":
     parser.add_argument("--sigma-recalibration", action="store_true",
                         help="Apply the Session 10.4b per-position sigma "
                              "dispersion correction from "
-                             "data/sigma_recalibration.json. OFF by default. "
+                             "data/sigma_recalibration_{site}.json. OFF by default. "
                              "Corrects a measured over-dispersion that no "
                              "single lambda in Session 10.5's objective could "
                              "undo, because the distortion is non-linear in "

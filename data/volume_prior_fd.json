@@ -1,0 +1,501 @@
+{
+  "schema_version": 1,
+  "site": "fd",
+  "fitted_on": "2026-08-11",
+  "fit_seasons": [
+    2021
+  ],
+  "diagnostic_seasons": [
+    2021
+  ],
+  "fit_source": "salaries_{site}_rotoguru_*.csv joined to weekly_stats_*.parquet (decision #1)",
+  "share_curves": {
+    "QB|pass": {
+      "n": 668,
+      "salary_min": 6000.0,
+      "salary_max": 9000.0,
+      "share_mean": 0.8097,
+      "knots": [
+        [
+          6154.2,
+          0.41222
+        ],
+        [
+          6675.4,
+          0.91226
+        ],
+        [
+          7268.4,
+          0.95388
+        ],
+        [
+          8199.4,
+          0.96531
+        ],
+        [
+          9000.0,
+          0.99158
+        ]
+      ]
+    },
+    "QB|rush": {
+      "n": 668,
+      "salary_min": 6000.0,
+      "salary_max": 9000.0,
+      "share_mean": 0.12063,
+      "knots": [
+        [
+          6154.2,
+          0.07366
+        ],
+        [
+          6675.4,
+          0.11626
+        ],
+        [
+          7268.4,
+          0.11811
+        ],
+        [
+          8199.4,
+          0.17804
+        ],
+        [
+          9000.0,
+          0.21219
+        ]
+      ]
+    },
+    "RB|recv": {
+      "n": 1608,
+      "salary_min": 4500.0,
+      "salary_max": 11000.0,
+      "share_mean": 0.06604,
+      "knots": [
+        [
+          4532.6,
+          0.02578
+        ],
+        [
+          4746.7,
+          0.04598
+        ],
+        [
+          4950.9,
+          0.05079
+        ],
+        [
+          5209.8,
+          0.06408
+        ],
+        [
+          5492.8,
+          0.07244
+        ],
+        [
+          5796.9,
+          0.07668
+        ],
+        [
+          6271.2,
+          0.08576
+        ],
+        [
+          7074.7,
+          0.11139
+        ],
+        [
+          8577.2,
+          0.11759
+        ],
+        [
+          11000.0,
+          0.14804
+        ]
+      ]
+    },
+    "RB|rush": {
+      "n": 1608,
+      "salary_min": 4500.0,
+      "salary_max": 11000.0,
+      "share_mean": 0.27615,
+      "knots": [
+        [
+          4532.6,
+          0.06129
+        ],
+        [
+          4746.7,
+          0.11649
+        ],
+        [
+          4950.9,
+          0.15605
+        ],
+        [
+          5209.8,
+          0.2115
+        ],
+        [
+          5492.8,
+          0.31574
+        ],
+        [
+          5796.9,
+          0.36832
+        ],
+        [
+          6271.2,
+          0.42185
+        ],
+        [
+          7074.7,
+          0.5401
+        ],
+        [
+          8577.2,
+          0.60761
+        ],
+        [
+          11000.0,
+          0.79176
+        ]
+      ]
+    },
+    "TE|recv": {
+      "n": 1168,
+      "salary_min": 4000.0,
+      "salary_max": 8700.0,
+      "share_mean": 0.09824,
+      "knots": [
+        [
+          4048.6,
+          0.03693
+        ],
+        [
+          4200.0,
+          0.04905
+        ],
+        [
+          4411.1,
+          0.07071
+        ],
+        [
+          4643.8,
+          0.09773
+        ],
+        [
+          4894.6,
+          0.11385
+        ],
+        [
+          5302.6,
+          0.14587
+        ],
+        [
+          6498.8,
+          0.19879
+        ],
+        [
+          8700.0,
+          0.26837
+        ]
+      ]
+    },
+    "WR|recv": {
+      "n": 2450,
+      "salary_min": 4500.0,
+      "salary_max": 10200.0,
+      "share_mean": 0.13078,
+      "knots": [
+        [
+          4536.2,
+          0.03826
+        ],
+        [
+          4700.0,
+          0.07044
+        ],
+        [
+          4800.0,
+          0.08027
+        ],
+        [
+          4900.0,
+          0.09474
+        ],
+        [
+          5000.0,
+          0.09689
+        ],
+        [
+          5154.7,
+          0.12297
+        ],
+        [
+          5300.0,
+          0.13351
+        ],
+        [
+          5455.8,
+          0.15736
+        ],
+        [
+          5651.9,
+          0.18024
+        ],
+        [
+          5845.9,
+          0.18035
+        ],
+        [
+          6115.3,
+          0.20721
+        ],
+        [
+          6637.7,
+          0.2332
+        ],
+        [
+          7235.6,
+          0.2332
+        ],
+        [
+          8158.3,
+          0.25474
+        ],
+        [
+          10200.0,
+          0.28525
+        ]
+      ]
+    },
+    "WR|rush": {
+      "n": 2450,
+      "salary_min": 4500.0,
+      "salary_max": 10200.0,
+      "share_mean": 0.00645,
+      "knots": [
+        [
+          4536.2,
+          0.00274
+        ],
+        [
+          4700.0,
+          0.00404
+        ],
+        [
+          4800.0,
+          0.00404
+        ],
+        [
+          4900.0,
+          0.00404
+        ],
+        [
+          5000.0,
+          0.00482
+        ],
+        [
+          5154.7,
+          0.00613
+        ],
+        [
+          5300.0,
+          0.00777
+        ],
+        [
+          5455.8,
+          0.00777
+        ],
+        [
+          5651.9,
+          0.00777
+        ],
+        [
+          5845.9,
+          0.00777
+        ],
+        [
+          6115.3,
+          0.00777
+        ],
+        [
+          6637.7,
+          0.00777
+        ],
+        [
+          7235.6,
+          0.00777
+        ],
+        [
+          8158.3,
+          0.02007
+        ],
+        [
+          10200.0,
+          0.0271
+        ]
+      ]
+    }
+  },
+  "unfitted_pairs": [],
+  "team_volume": {
+    "pass": {
+      "league_mean": 34.3971,
+      "with_history": {
+        "terms": [
+          "const",
+          "hist",
+          "implied_total",
+          "spread"
+        ],
+        "beta": [
+          4.768876,
+          0.2638,
+          0.875864,
+          0.391166
+        ],
+        "t": [
+          1.146,
+          4.199,
+          5.044,
+          3.971
+        ],
+        "n": 512,
+        "r2_oos": 0.0994
+      },
+      "no_history": {
+        "terms": [
+          "const",
+          "implied_total",
+          "spread"
+        ],
+        "beta": [
+          10.621333,
+          1.023624,
+          0.467352
+        ],
+        "t": [
+          2.656,
+          5.967,
+          4.744
+        ],
+        "n": 544,
+        "r2_oos": 0.06312
+      }
+    },
+    "rush": {
+      "league_mean": 26.6415,
+      "with_history": {
+        "terms": [
+          "const",
+          "hist",
+          "implied_total",
+          "spread"
+        ],
+        "beta": [
+          30.93045,
+          0.196666,
+          -0.406541,
+          -0.380657
+        ],
+        "t": [
+          7.075,
+          2.735,
+          -2.457,
+          -3.991
+        ],
+        "n": 512,
+        "r2_oos": 0.06017
+      },
+      "no_history": {
+        "terms": [
+          "const",
+          "implied_total",
+          "spread"
+        ],
+        "beta": [
+          36.520513,
+          -0.425322,
+          -0.39769
+        ],
+        "t": [
+          9.741,
+          -2.645,
+          -4.306
+        ],
+        "n": 544,
+        "r2_oos": 0.04176
+      }
+    },
+    "recv": {
+      "league_mean": 33.1949,
+      "with_history": {
+        "terms": [
+          "const",
+          "hist",
+          "implied_total",
+          "spread"
+        ],
+        "beta": [
+          4.70531,
+          0.293757,
+          0.798279,
+          0.331724
+        ],
+        "t": [
+          1.158,
+          4.699,
+          4.698,
+          3.443
+        ],
+        "n": 512,
+        "r2_oos": 0.10421
+      },
+      "no_history": {
+        "terms": [
+          "const",
+          "implied_total",
+          "spread"
+        ],
+        "beta": [
+          11.033233,
+          0.954131,
+          0.413057
+        ],
+        "t": [
+          2.811,
+          5.668,
+          4.272
+        ],
+        "n": 544,
+        "r2_oos": 0.05902
+      }
+    }
+  },
+  "role_change": {
+    "slope": 0.673176,
+    "intercept": 0.007127,
+    "se": 0.011298,
+    "t": 59.585,
+    "n": 9531,
+    "r2": 0.27145,
+    "cross_fit_curves_on": [
+      2021
+    ],
+    "cross_fit_slope_on": [
+      2021
+    ],
+    "fit_on": "cross-fit INSIDE the fit window (decision #6) -- no measurement-window season contributes"
+  },
+  "params": {
+    "n_bins": 20,
+    "min_bin_rows": 150
+  },
+  "caveats": [
+    "BOOTSTRAP DATA: RotoGuru tops out at 2021 while this project's current-state weekly_stats is 2025. Fit on a real but OLDER market -- refit from live exports once real weeks accumulate.",
+    "Prior-season team-volume carryover is deliberately NOT used: it measured worse than the league mean (volume_prior.py decision #6). This does NOT apply to dst_model.py's decision #15.",
+    "Share curves are fit on players who recorded a stat line that week, so a listed-but-inactive player is absent from the fit. Availability is handled separately by status_check.py, same split as fit_salary_anchor.py decision #4."
+  ]
+}
