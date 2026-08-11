@@ -542,7 +542,7 @@ def run_projection_pipeline(site: str, season: int, week: int, slate_id: str,
     # Session 10.5: sigma_recal=False default means every existing call site
     # is byte-identical. Only meaningful with engine="statline".
     """Drive the REAL component scripts + build_projections.py via their
-    file interfaces. Returns the path to final_projections_{site}_{week}.csv.
+    file interfaces. Returns the path to final_projections_{site}_{slate_id}.csv.
     Raises RuntimeError with the failing step's stderr on any failure.
 
     `anchor` (Session 10.2, decision #8) is passed straight through to
@@ -568,7 +568,19 @@ def run_projection_pipeline(site: str, season: int, week: int, slate_id: str,
                else "build_projections.py")
     cmd = [sys.executable, str(SCRIPTS_DIR / builder),
            "--site", site, "--season", str(season), "--week", str(week),
-           "--slate-id", slate_id]
+           "--slate-id", slate_id,
+           # Decision #10 continued -- real FD sigma-recalibration fit run
+           # surfaced this: load_vegas_implied_totals() moved to slate_id
+           # keying in Session 13.5-pause (see build_projections.py's own
+           # decision #10 docstring), but build_vegas_file() above still
+           # names its output vegas_implied_totals_{week}.csv, and this cmd
+           # never told the builder that -- so it fell back to looking for
+           # vegas_implied_totals_{slate_id}.csv, which build_vegas_file
+           # never wrote. Nothing here overlapped with real usage until a
+           # historical backtest/fit actually ran again post-13.5-pause;
+           # this is that first real run catching it. Affects BOTH engines
+           # and every site -- not FD-specific, not new to this session.
+           "--vegas-slate-id", str(week)]
     # Session 10.4 (decision #14 below). Passed through, never applied here --
     # the harness runs the real engine, it does not reimplement a model.
     #
@@ -625,7 +637,7 @@ def run_projection_pipeline(site: str, season: int, week: int, slate_id: str,
     if p.returncode != 0:
         raise RuntimeError(f"{builder} failed:\n{(p.stderr or p.stdout).strip()[-1500:]}")
 
-    proj_path = OUTPUT_DIR / f"final_projections_{site}_{week}.csv"
+    proj_path = OUTPUT_DIR / f"final_projections_{site}_{slate_id}.csv"
     if not proj_path.exists():
         raise RuntimeError(f"{builder} ran but {proj_path.name} was not written.")
     return proj_path
