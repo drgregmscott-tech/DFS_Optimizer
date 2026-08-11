@@ -2525,16 +2525,15 @@ in this browser's localStorage.</p>
 
     // Session 7.3 -- "Download Lineups" (item: DK/FD bulk-entry import).
     // Exports EVERY lineup currently loaded for this site (not just the
-    // one on screen) in the exact horizontal shape DK's own bulk-upload
-    // template expects -- see downloadLineupsForImport() for the full
-    // reasoning and the FD-unverified caveat.
+    // one on screen), DK as "Name (ID)" and FD as ID-only -- see
+    // downloadLineupsForImport() for why the two sites need different cell
+    // formats, confirmed against a real FD bulk-upload rejection.
     var downloadHtml =
       '<div class="download-row">' +
       '<button class="action-btn" id="btnDownloadLineups">Download ' + d.ids.length + ' Lineup' + (d.ids.length === 1 ? "" : "s") + ' for ' + cfg.label + ' Import</button>' +
       '<div class="hint" id="downloadHint">Paste the downloaded rows into the ' +
       (isShowdown ? cfg.captainLabel + '/' + cfg.flexLabel + ' x' + (cfg.slotOrder.length - 1) : "QB/RB/RB/WR/WR/WR/TE/FLEX/" + cfg.defSlot) +
-      ' columns of your ' + cfg.label + (isShowdown ? ' Showdown/Single-Game' : '') + ' entries file, in order, one row per entry.' +
-      (site === "fd" ? " FD's exact bulk-upload column format hasn't been verified against a real FD export yet -- double check the result before uploading." : "") + '</div>' +
+      ' columns of your ' + cfg.label + (isShowdown ? ' Showdown/Single-Game' : '') + ' entries file, in order, one row per entry.' + '</div>' +
       '</div>';
 
     viewer.innerHTML = head + rosterHtml + integrityHtml + downloadHtml;
@@ -2700,7 +2699,20 @@ in this browser's localStorage.</p>
         var r = bySlot[slot];
         if (!r) return ""; // shouldn't happen for a valid lineup, but never crash the download over it
         var pid = r.site_player_id;
-        if (!pid) { missingIds++; return csvField(r.player_name.trim()); } // best-effort fallback -- DK will reject a name-only cell, but this at least surfaces which player needs attention rather than silently blanking the cell
+        if (!pid) { missingIds++; return csvField(r.player_name.trim()); } // best-effort fallback -- site will reject a name-only cell, but this at least surfaces which player needs attention rather than silently blanking the cell
+        // Session [FD parity] -- confirmed via a real FD bulk-upload attempt
+        // (2026-08-11): FD's file-upload validator rejects "Name (ID)" cells
+        // outright ("Failed to validate field 'lineup' list schema") even
+        // though FD's own on-site instructions describe that format as
+        // valid -- that instruction text is written for their manual
+        // web-grid entry, not their CSV bulk-upload parser. Cross-checked
+        // the rejected file's names, IDs, and column order against a real
+        // FD salary export first: all three matched exactly, so this was
+        // never a data problem, only a format one. DK's bulk uploader
+        // tolerates "Name (ID)" and stays on that format; FD switches to
+        // ID-only, which the same real attempt's error implies is what its
+        // parser actually wants.
+        if (site === "fd") return csvField(pid);
         return csvField(r.player_name.trim() + " (" + pid + ")");
       });
       lines.push(cells.join(","));
