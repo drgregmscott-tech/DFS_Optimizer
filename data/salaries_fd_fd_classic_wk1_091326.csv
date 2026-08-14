@@ -299,7 +299,7 @@ Id,Position,First Name,Nickname,Last Name,FPPG,Played,Salary,Game,Team,Opponent,
 133104-12556,D,Houston,Houston Texans,Texans,10.842105263157896,19,4400,BUF@HOU,HOU,BUF,,,,,,DEF,Houston Texans,fd,4400,houston texans,HOU,D,classic,DST_HOU,team_defense,high
 133104-60712,TE,Foster,Foster Moreau,Moreau,1.3428570883614677,7,4400,BUF@HOU,HOU,BUF,,,,,,TE/FLEX,Foster Moreau,fd,4400,foster moreau,HOU,TE,classic,00-0034981,auto_fallback_team_mismatch,medium
 133104-87432,WR,Cedric,Cedric Tillman,Tillman,4.125,12,4400,CLE@JAC,CLE,JAC,,,,,,WR/FLEX,Cedric Tillman,fd,4400,cedric tillman,CLE,WR,classic,00-0038979,auto_exact,high
-133104-92606,WR,Bo,Bo Melton,Melton,1.850000063578288,12,4400,GB@MIN,GB,MIN,,,,,,WR/FLEX,Bo Melton,fd,4400,bo melton,GB,WR,classic,00-0037091,auto_fallback_name_only_position_mismatch,low
+133104-92606,WR,Bo,Bo Melton,Melton,1.850000063578288,12,4400,GB@MIN,GB,MIN,,,,,,WR/FLEX,Bo Melton,fd,4400,bo melton,GB,WR,classic,00-0037091,auto_exact,high
 133104-157150,RB,Audric,Audric Estime,Estime,8.419999694824218,5,4400,NO@DET,NO,DET,,,,,,RB/FLEX,Audric Estime,fd,4400,audric estime,NO,RB,classic,,,
 133104-154245,TE,Seydou,Seydou Traore,Traore,,0,4400,MIA@LV,MIA,LV,,,,,,TE/FLEX,Seydou Traore,fd,4400,seydou traore,MIA,TE,classic,00-0041579,auto_exact,high
 133104-158402,WR,Skyler,Skyler Bell,Bell,,0,4400,BUF@HOU,BUF,HOU,,,,,,WR/FLEX,Skyler Bell,fd,4400,skyler bell,BUF,WR,classic,00-0041443,auto_exact,high
