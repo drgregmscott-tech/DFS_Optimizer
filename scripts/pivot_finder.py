@@ -303,11 +303,30 @@ def load_lineup_players(site: str, slate_id: str) -> pd.DataFrame:
     lineups, which is normal and expected. Deduped here, once, to one row
     per unique player (by name/team/position, plus roster_role for a
     Showdown pool, where the same player can appear separately as CPT and
-    as FLEX) -- everything downstream (attach_cash_lineup_context() etc.)
-    already expects exactly one row per player and needs no other change;
-    a player's salary/projection is identical across every lineup he's in,
-    only which lineup_id/roster_slot he landed in varies, so keeping the
-    first occurrence loses no information.
+    as FLEX) for name/position/salary/projection purposes -- those are
+    identical across every lineup a player's in, only which lineup_id/
+    roster_slot he landed in varies, so keeping the first occurrence loses
+    no information THERE.
+
+    Session 15 correction (found via real Week 1 2026 data, not assumed):
+    that dedup DOES lose information relevant to one specific downstream
+    use -- decision #5's salary-cap re-check in find_pivots_for_player()
+    needs "the total salary of the ONE lineup being improved," and that
+    concept doesn't survive a naive dedupe-then-sum the way it did when
+    this script only ever read a single 9-player lineup. Real evidence:
+    a real 20-lineup DK build, 33 unique players, correctly deduped
+    salaries summing to $175,900 -- three and a half times the $50,000
+    cap, because it's summing ACROSS 20 lineups' worth of players, not
+    one lineup's. That number silently made every single pivot swap look
+    cap-infeasible, for every one of the 33 players, with no error --
+    just an empty, technically-correct-looking result. Fixed by computing,
+    per unique player (before the dedupe above, while lineup_id is still
+    available), the total salary of the SINGLE most-expensive lineup he
+    appears in -- his "tightest" lineup. A pivot that fits there fits in
+    every other lineup he's also in. This is attached as
+    `_worst_case_lineup_salary` and carried through by
+    attach_cash_lineup_context() below; build_pivot_suggestions() uses it
+    per-player instead of one shared (and wrong) scalar.
     """
     multi_path = OUTPUT_DIR / f"lineups_multi_{site}_{slate_id}.csv"
     single_path = OUTPUT_DIR / f"lineup_single_{site}_{slate_id}.csv"
@@ -323,10 +342,21 @@ def load_lineup_players(site: str, slate_id: str) -> pd.DataFrame:
                 f"optimizer.py's output schema may have changed -- update "
                 f"this script's load_lineup_players() to match."
             )
-        n_lineups = df["lineup_id"].nunique() if "lineup_id" in df.columns else 1
+        if "lineup_id" not in df.columns:
+            df["lineup_id"] = 1
+        n_lineups = df["lineup_id"].nunique()
+        # Per-lineup total salary, computed BEFORE the dedupe below, while
+        # each row still knows which lineup_id it came from.
+        per_lineup_salary = df.groupby("lineup_id")["salary"].sum()
+        df["_worst_case_lineup_salary"] = df["lineup_id"].map(per_lineup_salary)
         dedup_keys = ["player_name", "team", "position"]
         if "roster_role" in df.columns:
             dedup_keys.append("roster_role")
+        # keep="first" is no longer arbitrary for _worst_case_lineup_salary --
+        # sort so the first occurrence of each player is his OWN
+        # highest-total (tightest) lineup, not whichever happened to be
+        # read first from the file.
+        df = df.sort_values("_worst_case_lineup_salary", ascending=False)
         deduped = df.drop_duplicates(subset=dedup_keys, keep="first").reset_index(drop=True)
         print(
             f"Loaded {path.name}: {n_lineups} built lineup(s), "
@@ -347,6 +377,15 @@ def load_lineup_players(site: str, slate_id: str) -> pd.DataFrame:
             )
         print(f"Loaded {path.name}: single-lineup mode, {len(df)} player(s).",
               file=sys.stderr)
+        # Session 15 -- same _worst_case_lineup_salary column the multi
+        # path attaches above, so downstream code (attach_cash_lineup_
+        # context(), build_pivot_suggestions()) doesn't need to know or
+        # care which path a given player came through. Only one lineup
+        # exists here, so it's simply that lineup's own total for every
+        # row -- exactly what this used to compute anyway, before Session
+        # 15 made "which lineup" an actual question this script has to
+        # answer.
+        df["_worst_case_lineup_salary"] = df["salary"].sum()
         return df
 
     raise FileNotFoundError(
@@ -400,9 +439,28 @@ def _is_showdown_pool(pool: pd.DataFrame) -> bool:
 
 def _join_key(df: pd.DataFrame, site: str, name_col: str, team_col: str,
               position_col: str, role_col: str = None) -> pd.Series:
+    # Session 15 -- REAL BUG, found via a real FD Week 1 2026 crash, not
+    # assumed: final_projections_fd_*.csv's position column for a defense
+    # is FD's raw ingest label, "D" (sourced straight from FD's salary
+    # export). lineups_multi_fd_*.csv's position column for the same
+    # player is "DEF" -- the canonical roster-slot label optimizer.py's
+    # own roster-slot assignment uses (the FD parity fix that corrected
+    # "D" -> "DEF" for roster-slot PURPOSES never touched final_
+    # projections' own position column, which was never the thing that
+    # fix was about). Same real player, same real team, two different
+    # spellings of "defense" -- the join key treated them as two
+    # different positions and matched nothing. DEFENSE_POSITION_LABELS
+    # mirrors optimizer.py's own constant of the same name (not imported
+    # from there -- optimizer.py pulls in pulp and a lot of unrelated
+    # code for one 3-item set) -- canonicalized to "DST" here, in the key
+    # only, so a defense matches regardless of which of the two real
+    # sites' labels either input file happens to be using.
+    DEFENSE_POSITION_LABELS = {"DST", "D", "DEF"}
+    pos_upper = df[position_col].astype(str).str.strip().str.upper()
+    pos_canonical = pos_upper.where(~pos_upper.isin(DEFENSE_POSITION_LABELS), "DST")
     key = (
         df[name_col].apply(normalize_name) + "|"
-        + df[position_col].astype(str).str.strip().str.upper() + "|"
+        + pos_canonical + "|"
         + df[team_col].apply(lambda t: normalize_team(t, site))
     )
     # Decision #0c -- only added when a role column is actually supplied
@@ -488,12 +546,25 @@ def attach_cash_lineup_context(lineup: pd.DataFrame, pool: pd.DataFrame,
         enriched_rows.append({
             "player_id": match["player_id"],
             "cash_player_name": row["player_name"],
-            "cash_position": row["position"],
+            # Session 15 -- sourced from the POOL's own row (match), not
+            # the lineup row (row["position"]), on purpose. cash_position
+            # only ever gets used downstream to filter THIS SAME POOL by
+            # position (find_pivots_for_player()'s mask) -- sourcing it
+            # from the pool's own value guarantees it's always spelled the
+            # way the pool itself spells it, regardless of which label the
+            # built-lineup file happens to use (see _join_key()'s own
+            # comment for the real FD "D" vs "DEF" case this fixes).
+            "cash_position": match["position"],
             "cash_team": row["team"],
             "cash_salary": row["salary"],
             "cash_final_projection": match["final_projection"],
             "cash_estimated_ownership_pct": match["estimated_ownership_pct"],
             "cash_roster_role": match["roster_role"] if showdown else None,
+            # Session 15 -- see load_lineup_players()'s docstring. Carried
+            # through here so find_pivots_for_player() can check the
+            # salary-cap re-check against THIS player's own tightest
+            # lineup, not one shared (and, before this fix, wrong) number.
+            "cash_lineup_salary_ref": row["_worst_case_lineup_salary"],
         })
     return pd.DataFrame(enriched_rows)
 
@@ -504,7 +575,7 @@ def attach_cash_lineup_context(lineup: pd.DataFrame, pool: pd.DataFrame,
 
 def find_pivots_for_player(cash_row: pd.Series, pool: pd.DataFrame,
                             rostered_player_ids: set, site: str,
-                            lineup_total_salary: float,
+                            lineup_salary_ref: float,
                             projection_tolerance_pct: float,
                             top_n: int) -> pd.DataFrame:
     cap = SITE_CONFIGS[site]["salary_cap"]
@@ -536,9 +607,13 @@ def find_pivots_for_player(cash_row: pd.Series, pool: pd.DataFrame,
     if candidates.empty:
         return pd.DataFrame(columns=OUTPUT_COLUMNS)
 
-    # Decision #5 -- hard full-lineup salary cap re-check.
+    # Decision #5 -- hard full-lineup salary cap re-check. lineup_salary_ref
+    # (Session 15: renamed from lineup_total_salary, and now passed per-
+    # player -- see build_pivot_suggestions()'s comment) is the total
+    # salary of THIS cash player's own tightest lineup -- a swap that fits
+    # there fits in every other lineup he's also rostered in.
     candidates["lineup_salary_after_swap"] = (
-        lineup_total_salary - cash_row["cash_salary"] + candidates["salary"]
+        lineup_salary_ref - cash_row["cash_salary"] + candidates["salary"]
     )
     candidates = candidates[candidates["lineup_salary_after_swap"] <= cap]
     if candidates.empty:
@@ -644,14 +719,25 @@ def build_pivot_suggestions(site: str, slate_id: str,
     pool = build_candidate_pool(site, slate_id)
     cash_context = attach_cash_lineup_context(lineup, pool, site, slate_id)
 
-    lineup_total_salary = lineup["salary"].sum()
+    # Session 15 -- REAL BUG, found and fixed against real Week 1 2026
+    # data, not assumed: this used to be one shared scalar,
+    # `lineup["salary"].sum()`. That was correct when `lineup` was always
+    # exactly one 9-player lineup (pre-Session-15), but load_lineup_
+    # players() now returns every unique player across potentially 20
+    # lineups -- summing THEIR salaries together produced $175,900 on a
+    # real 20-lineup DK build (cap: $50,000), which made decision #5's
+    # cap re-check below fail for every single candidate, for every
+    # single player, silently. No shared scalar anymore -- each cash
+    # player carries his own correct reference salary (his tightest
+    # single lineup) via cash_lineup_salary_ref, attached in
+    # attach_cash_lineup_context() above.
     rostered_player_ids = set(cash_context["player_id"])
 
     all_suggestions = []
     for _, cash_row in cash_context.iterrows():
         result = find_pivots_for_player(
             cash_row, pool, rostered_player_ids, site,
-            lineup_total_salary, projection_tolerance_pct, top_n,
+            cash_row["cash_lineup_salary_ref"], projection_tolerance_pct, top_n,
         )
         if result.empty:
             # Decision #7 -- an empty result is accepted as legitimate
