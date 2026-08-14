@@ -171,6 +171,31 @@ DEFAULT_UNIQUENESS = 1
 # objective happened to prefer it.
 DEFAULT_MIN_SALARY_PCT = 0.0
 
+# Session 15 (Pre-Season Hardening) -- decision #A2. Real Week 1 2026 data
+# (a real DK slate, Colts QBs) showed a genuine current starter (Daniel
+# Jones, back from a late-2025 injury, 13 real starts before that) ranked
+# BELOW his own team's QB3 (Riley Leonard, 5 relevant games, one fluky
+# season-ending garbage-time outing) -- traced to statline_model.py's
+# participation signal, which cannot tell "missed the last month hurt, full
+# workload now" from "is a permanent backup" (that gap is named explicitly
+# in statline_model.py's own decision #9). Rather than build a second,
+# unproven heuristic to guess which case a low-participation player is in,
+# this is a hard floor: below threshold, out of the pool, full stop. The
+# `--lock` flag (already existed, decisions #22/#23) is the deliberate
+# human override for a case like Jones, where you know the real-world
+# context the model can't see. ON by default -- a safety net that has to be
+# remembered every slate isn't much of one. QB is strict (the position is
+# structurally closest to winner-take-all: one real starter almost every
+# week); RB/TE are moderate (real committees still show up on the field
+# most weeks, so this only catches players who are genuinely inactive more
+# often than not); WR is unrestricted by default (deep, egalitarian
+# rotations make a low participation reading far less diagnostic there).
+# User-confirmed defaults, 2026-08-14 -- not fit to data, a considered
+# judgment call the same way SALARY_TOLERANCE_PCT_OF_CAP and other
+# starting heuristics in this project were. First retuning target once
+# real-season roster-decision outcomes exist to check it against.
+DEFAULT_PARTICIPATION_FLOORS = "QB:0.6,RB:0.4,TE:0.4"
+
 # ---------------------------------------------------------------------------
 # Session 3.2 (addendum) -- Projection randomization
 # ---------------------------------------------------------------------------
@@ -410,6 +435,91 @@ def parse_game_list(raw: str, flag_name: str) -> list:
 #     stopping the run. The constraint itself is still added -- with no
 #     matching players, the resulting `<= cap` constraint is simply always
 #     satisfied, a harmless no-op.
+def parse_participation_floors(raw: str, flag_name: str) -> dict:
+    """Parses '--participation-floors QB:0.6,RB:0.4,TE:0.4' into
+    {'QB': 0.6, 'RB': 0.4, 'TE': 0.4}. A position simply absent from the
+    string has no floor (0.0 -- unrestricted), matching WR's own default.
+    Same parse shape as parse_team_cap_list() below, kept as a separate
+    function rather than a generalized one because the value here is a
+    0.0-1.0 participation share, not an integer roster-slot count, and the
+    error messages should say so specifically rather than genericize."""
+    floors = {}
+    for entry in raw.split(","):
+        entry = entry.strip()
+        if not entry:
+            continue
+        if ":" not in entry:
+            raise SystemExit(
+                f"{flag_name} entries must be POSITION:FLOOR (e.g. QB:0.6), "
+                f"got: {entry!r}"
+            )
+        pos, _, floor_raw = entry.partition(":")
+        pos = pos.strip().upper()
+        try:
+            floor = float(floor_raw.strip())
+        except ValueError:
+            raise SystemExit(f"{flag_name} entry {entry!r} has a non-numeric floor.")
+        if not (0.0 <= floor <= 1.0):
+            raise SystemExit(
+                f"{flag_name} entry {entry!r} -- floor must be between 0.0 "
+                f"and 1.0 (it's a share of games played, not a percentage)."
+            )
+        if pos in floors:
+            raise SystemExit(f"{flag_name} lists position {pos} more than once.")
+        floors[pos] = floor
+    return floors
+
+
+def apply_participation_floor(players: pd.DataFrame, participation_floors: dict,
+                              locked_player_ids: set) -> pd.DataFrame:
+    """Session 15, decision #A2. Shared by build_single_lineup() and
+    build_multi_lineup() -- same filter, same exemptions, one place to
+    fix it. Excludes any player whose position has a configured floor AND
+    whose participation_effective is below it, UNLESS locked (decision
+    #22/#23's existing override) or exempt (no games-played history at
+    all, or a confirmed no-game week this slate -- see
+    build_projections_statline.py's AUDIT_COLUMNS comment for why those
+    read as NaN rather than 0.0). A position absent from
+    participation_floors, or an empty participation_floors dict entirely
+    (e.g. --participation-floors ''), is a no-op -- identical behavior to
+    today, same convention as --min-projection at 0.0."""
+    if not participation_floors:
+        return players
+    if "participation_effective" not in players.columns:
+        print(
+            "NOTE: --participation-floors was requested but this pool's "
+            "final_projections file has no participation_effective column "
+            "(built before this fix, or built without --volume-prior) -- "
+            "floor skipped for this build. Re-run build_projections_"
+            "statline.py --volume-prior to enable it.",
+            file=sys.stderr,
+        )
+        return players
+
+    pos = players["position"].astype(str)
+    floor = pos.map(participation_floors).fillna(0.0)
+    part = pd.to_numeric(players["participation_effective"], errors="coerce")
+    below_floor = players[
+        part.notna() & (part < floor) & (floor > 0.0)
+        & (~players["player_id"].isin(locked_player_ids))
+    ]
+    if len(below_floor):
+        print(
+            f"Pool filter: excluding {len(below_floor)} player(s) below "
+            f"their position's --participation-floors threshold "
+            f"(decision #A2): " + ", ".join(
+                f"{r.player_name} ({r.position}, participation "
+                f"{r.participation_effective:.2f} < {participation_floors.get(r.position, 0.0):.2f})"
+                for r in below_floor.itertuples()
+            ),
+            file=sys.stderr,
+        )
+    return players[
+        ~(part.notna() & (part < floor) & (floor > 0.0))
+        | players["player_id"].isin(locked_player_ids)
+    ].copy()
+
+
 def parse_team_cap_list(raw: str, flag_name: str) -> dict:
     """Parses '--max-team-players KC:2,DEN:1' into {'KC': 2, 'DEN': 1}."""
     caps = {}
@@ -1554,7 +1664,8 @@ def build_single_lineup(site: str, slate_id: str, randomization_pct: float = DEF
                          min_total_ownership: float = 0.0,
                          flex_positions: set = None,
                          max_team_players: dict = None,
-                         max_game_players: dict = None) -> pd.DataFrame:
+                         max_game_players: dict = None,
+                         participation_floors: dict = None) -> pd.DataFrame:
     config = SITE_CONFIGS[site]
     players = load_final_projections(site, slate_id)
     fixed_counts, flex_count = parse_roster_requirements(config["roster_slots"])
@@ -1590,6 +1701,11 @@ def build_single_lineup(site: str, slate_id: str, randomization_pct: float = DEF
             (players["final_projection"] >= min_projection)
             | (players["player_id"].isin(locked_player_ids))
         ].copy()
+
+    # Session 15, decision #A2 -- see apply_participation_floor()'s own
+    # docstring for the full rationale. Applied after --min-projection/
+    # --exclude, same "narrow the pool down in independent passes" pattern.
+    players = apply_participation_floor(players, participation_floors or {}, locked_player_ids)
 
     # Decision #35 -- validated once, upfront, here -- NOT left to
     # solve_lineup()'s own check. solve_lineup() is called inside a
@@ -1702,7 +1818,8 @@ def build_multi_lineup(site: str, slate_id: str, n_lineups: int = DEFAULT_N_LINE
                         min_total_ownership: float = 0.0,
                         flex_positions: set = None,
                         max_team_players: dict = None,
-                        max_game_players: dict = None) -> tuple:
+                        max_game_players: dict = None,
+                        participation_floors: dict = None) -> tuple:
     """Generates up to `n_lineups` distinct, salary-cap-legal lineups, none
     of which use any single player in more than `max_exposure_pct` of the
     total requested lineups (decisions #5/#6 above). Returns
@@ -1782,6 +1899,13 @@ def build_multi_lineup(site: str, slate_id: str, n_lineups: int = DEFAULT_N_LINE
             (players_all["final_projection"] >= min_projection)
             | (players_all["player_id"].isin(locked_player_ids))
         ].copy()
+
+    # Session 15, decision #A2 -- see apply_participation_floor()'s own
+    # docstring. Applied after --min-projection/--exclude, before the
+    # lock-feasibility check below, so a lock that only "works" because a
+    # thin-participation player would otherwise have been filtered out
+    # still gets validated against the REAL final pool.
+    players_all = apply_participation_floor(players_all, participation_floors or {}, locked_player_ids)
 
     # Decision #35 -- validated once, upfront, here -- NOT left to
     # solve_lineup()'s own check, which sits inside a try/except
@@ -2832,6 +2956,30 @@ def main():
              "available at that step, not because it was ever a good "
              "pick. Locked players (decision #22) are always exempt.",
     )
+    # Session 15 (Pre-Season Hardening) -- participation floor.
+    parser.add_argument(
+        "--participation-floors", default=DEFAULT_PARTICIPATION_FLOORS,
+        help="Comma-separated POSITION:FLOOR pairs (e.g. 'QB:0.6,RB:0.4,"
+             "TE:0.4'). A player whose participation_effective (share of "
+             "his team's last 5 played games he actually appeared in, "
+             "post role-change-correction) falls below his position's "
+             "floor is excluded from the candidate pool entirely, before "
+             "optimization runs -- same pattern and same pass as "
+             "--min-projection (decision #34), but on games-played "
+             "evidence instead of point projection, since a low-sample "
+             "fluke game can inflate a real backup's projection past a "
+             "point floor without ever giving him real volume. Locked "
+             "players (decision #22) are always exempt -- use --lock for "
+             "a known exception (e.g. a starter you know is back from "
+             "injury at full workload, whose recent-games history hasn't "
+             "caught up yet). A position not listed has no floor. Players "
+             "with no games-played history at all (true rookies, first "
+             "career game) or a confirmed no-game week (bye/OUT) are "
+             "always exempt -- this floor only applies where there IS "
+             "real history to judge. Defaults to "
+             f"{DEFAULT_PARTICIPATION_FLOORS!r} -- ON by default, not opt-"
+             "in. Pass an empty string ('') to disable entirely.",
+    )
     # Session 10.5 (decision #2) -- lambda variance penalty.
     parser.add_argument(
         "--lambda", dest="lam", type=float, default=0.0,
@@ -3010,6 +3158,31 @@ def main():
                         f"(decision #38).", file=sys.stderr,
                     )
 
+    # Session 15 -- participation floor. Scoped to classic slates only for
+    # now (Showdown's role/position model -- one player can occupy CPT or
+    # FLEX, any position eligible anywhere -- doesn't map onto a QB/RB/TE
+    # position-keyed floor the same way; out of scope for this pass, same
+    # "classic first" boundary Session 13.4 drew for other features).
+    # Unlike --min-projection/--min-total-ownership's Showdown guards
+    # (which error because the USER explicitly asked for something
+    # unsupported), this one defaults ON -- erroring on every Showdown
+    # build because of a default the user never touched would be a much
+    # worse outcome than quietly not applying it. A NOTE either way, never
+    # silent.
+    if showdown_mode:
+        if args.participation_floors and args.participation_floors != DEFAULT_PARTICIPATION_FLOORS:
+            print(
+                "NOTE: --participation-floors is not supported for "
+                "Showdown slates yet -- ignored for this build.",
+                file=sys.stderr,
+            )
+        participation_floors = {}
+    else:
+        participation_floors = (
+            parse_participation_floors(args.participation_floors, "--participation-floors")
+            if args.participation_floors else {}
+        )
+
     # Decision #47 -- Showdown-only min-team-players floor.
     min_team_players = (
         parse_team_cap_list(args.min_team_players, "--min-team-players")
@@ -3118,14 +3291,39 @@ def main():
             flex_positions=flex_positions,
             lam=args.lam,
             max_team_players=max_team_players, max_game_players=max_game_players,
+            participation_floors=participation_floors,
             **stack_kwargs,
         )
         if args.request_id:
             out_path = OUTPUT_DIR / "ui_requests" / f"{args.request_id}.csv"
             out_path.parent.mkdir(parents=True, exist_ok=True)
+            lineups.to_csv(out_path, index=False)
+            # Session 15 (Pre-Season Hardening), decision #B2 -- REAL BUG,
+            # found while tracing why pivot suggestions never generate for
+            # a real UI-built batch, not assumed. Every real "Build
+            # Lineups" click in the deployed UI goes through
+            # optimizer_api.js's dispatch, which always supplies a
+            # request_id (a fresh UUID every click) -- so this branch, not
+            # the `else` below, is what ACTUALLY runs for every real slate.
+            # Before this fix, the only file written was the request_id-
+            # keyed one above, used solely for the UI's poll-and-download
+            # round trip -- output/lineups_multi_{site}_{slate_id}.csv (the
+            # deterministic, slate-keyed name refresh_data.yml's pivot gate
+            # and pivot_finder.py's load_lineup_players() both look for)
+            # was NEVER written by a real UI build, only by a manual CLI
+            # run with no --request-id, which real usage never does either.
+            # Fixed by ALSO writing the slate-keyed copy here -- "most
+            # recent batch wins" is the correct semantics for a pivot
+            # source (pivots should reflect what you most recently built,
+            # not some earlier historical batch), and this is a pure
+            # addition: the request_id file and the UI's poll/download
+            # behavior are completely unchanged.
+            slate_path = OUTPUT_DIR / f"lineups_multi_{args.site}_{args.slate_id}.csv"
+            lineups.to_csv(slate_path, index=False)
+            out_path = slate_path  # for the "Wrote {out_path}" log line below
         else:
             out_path = OUTPUT_DIR / f"lineups_multi_{args.site}_{args.slate_id}.csv"
-        lineups.to_csv(out_path, index=False)
+            lineups.to_csv(out_path, index=False)
 
         exposure_cap = max(1, math.floor(args.max_exposure * args.n_lineups))
         top_exposure = sorted(exposure_count.items(), key=lambda kv: kv[1], reverse=True)[:10]
@@ -3167,6 +3365,7 @@ def main():
             flex_positions=flex_positions,
             lam=args.lam,
             max_team_players=max_team_players, max_game_players=max_game_players,
+            participation_floors=participation_floors,
             **stack_kwargs,
         )
         if args.request_id:

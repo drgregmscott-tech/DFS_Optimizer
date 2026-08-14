@@ -208,6 +208,16 @@ async function handleDispatch(url, env) {
     "min_salary_pct", "flex_positions",
     // Session 8 (this session) -- decisions #34/#35.
     "min_projection", "min_total_ownership",
+    // Session 15 (Pre-Season Hardening) -- decision #A2. Comma-separated
+    // POSITION:FLOOR string (e.g. "QB:0.6,RB:0.4,TE:0.4"), same shape as
+    // max_team_players below -- passed through unchanged, optimizer.py's
+    // own parse_participation_floors() does the real parsing/validation.
+    // Same "omit means optimizer.py's own CLI default applies" convention
+    // as every other field here -- and this one's CLI default is ON
+    // (DEFAULT_PARTICIPATION_FLOORS), not off, so an omitted field still
+    // means the floor runs. The frontend only needs to send this when the
+    // user actually changes it from the UI's own default control value.
+    "participation_floors",
     // Session 12 -- decisions #36-38.
     "max_team_players", "max_game_players",
     // Session 13.5 -- Showdown/Single-Game wiring. "format" mirrors

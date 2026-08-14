@@ -3,18 +3,40 @@ pivot_finder.py
 ================
 
 Session 4.2 -- Cash-to-GPP Pivot Logic.
+Session 15 (Pre-Season Hardening) -- decision #B1 (see below): reads
+lineups_multi_{site}_{slate_id}.csv (real usage) instead of requiring
+lineup_single_{site}_{slate_id}.csv (Session 3.1's single-lineup mode,
+which real usage never builds -- see decision #B1).
 
-For a given site (DK/FD) and slate_id, reads that site's single optimal
-cash lineup (`lineup_single_{site}_{slate_id}.csv`, Session 3.1) alongside
-`final_projections_{site}_{slate_id}.csv` (Session 2.4/3.3, which now carries
+For a given site (DK/FD) and slate_id, reads every player rostered across
+that slate's built lineups (`lineups_multi_{site}_{slate_id}.csv`, falling
+back to `lineup_single_{site}_{slate_id}.csv` for old single-lineup runs)
+alongside `final_projections_{site}_{slate_id}.csv` (Session 2.4/3.3, which now carries
 `chalk_score`/`estimated_ownership_pct` natively -- see decision #0 below),
-and for every player in the cash lineup, generates a ranked list of "pivot"
+and for every one of those players, generates a ranked list of "pivot"
 candidates -- same-position, similarly-PROJECTED players who are LESS
-owned than the cash play, for use building differentiated GPP lineups off
-the same cash-lineup starting point.
+owned than that play, for use building differentiated GPP lineups off
+whatever's already been built.
 
 Design decisions (same "flag, don't silently assume" pattern as every prior
 session's file):
+
+B1. Session 15 -- REAL ROOT CAUSE OF "PIVOTS DON'T WORK", FOUND VIA A REAL
+    REPO AUDIT, NOT ASSUMED. This script always read lineup_single_
+    {site}_{slate_id}.csv, the output of optimizer.py's single-best-
+    lineup mode (Session 3.1). Real usage never runs that mode -- the
+    actual weekly workflow always builds 20+ lineups via multi-lineup
+    mode, which writes a DIFFERENTLY NAMED file, lineups_multi_{site}_
+    {slate_id}.csv. So this script's one input file never existed for a
+    real slate, and refresh_data.yml's own gate ("only rebuild pivots if
+    lineup_single exists for this site/week") silently skipped every real
+    automated run, indefinitely, with no error anywhere to surface it.
+    Fixed in load_lineup_players() (was load_lineup_single()): try
+    lineups_multi first, fall back to lineup_single. lineups_multi has
+    multiple rows per player (one per built lineup he landed in) --
+    deduped once, up front, to one row per unique player; everything
+    downstream is unchanged since it already only cared about one row per
+    player, never about lineup_id or multiplicity.
 
 0. Input fix (this session, found while re-validating on real data): this
    script originally joined `chalk_scores_{site}_{slate_id}.csv` (Session 4.1's
@@ -263,23 +285,76 @@ OUTPUT_COLUMNS = [
 # Step 0: Load inputs
 # ---------------------------------------------------------------------------
 
-def load_lineup_single(site: str, slate_id: str) -> pd.DataFrame:
-    path = OUTPUT_DIR / f"lineup_single_{site}_{slate_id}.csv"
-    if not path.exists():
-        raise FileNotFoundError(
-            f"{path} not found. Run optimizer.py --site {site} --slate-id {slate_id} "
-            f"first (Session 3.1)."
-        )
-    df = pd.read_csv(path)
+def load_lineup_players(site: str, slate_id: str) -> pd.DataFrame:
+    """Session 15 (Pre-Season Hardening), decision #B1. Was
+    load_lineup_single() -- read ONLY lineup_single_{site}_{slate_id}.csv
+    (Session 3.1's single-best-lineup mode). Real usage never builds that
+    file: the actual weekly workflow always uses optimizer.py's multi-
+    lineup mode (20+ lineups for GPP), which writes a differently-named
+    file, lineups_multi_{site}_{slate_id}.csv -- so this script's one
+    input file never existed for a real slate, and refresh_data.yml's own
+    gate ("only rebuild pivots if lineup_single exists") silently skipped
+    every real run, forever. Confirmed via a real repo audit, not assumed.
+
+    Fix: try lineups_multi first (what real usage actually produces),
+    fall back to lineup_single (old single-lineup workflows, unaffected).
+    lineups_multi has one row per (lineup_id, roster_slot) -- multiple
+    rows per player if he's rostered in more than one of the built
+    lineups, which is normal and expected. Deduped here, once, to one row
+    per unique player (by name/team/position, plus roster_role for a
+    Showdown pool, where the same player can appear separately as CPT and
+    as FLEX) -- everything downstream (attach_cash_lineup_context() etc.)
+    already expects exactly one row per player and needs no other change;
+    a player's salary/projection is identical across every lineup he's in,
+    only which lineup_id/roster_slot he landed in varies, so keeping the
+    first occurrence loses no information.
+    """
+    multi_path = OUTPUT_DIR / f"lineups_multi_{site}_{slate_id}.csv"
+    single_path = OUTPUT_DIR / f"lineup_single_{site}_{slate_id}.csv"
     required = {"roster_slot", "player_name", "position", "team", "salary", "projection"}
-    missing = required - set(df.columns)
-    if missing:
-        raise SystemExit(
-            f"{path} is missing expected columns: {sorted(missing)}. "
-            f"optimizer.py's output schema may have changed -- update this "
-            f"script's load_lineup_single() to match."
+
+    if multi_path.exists():
+        path = multi_path
+        df = pd.read_csv(path)
+        missing = required - set(df.columns)
+        if missing:
+            raise SystemExit(
+                f"{path} is missing expected columns: {sorted(missing)}. "
+                f"optimizer.py's output schema may have changed -- update "
+                f"this script's load_lineup_players() to match."
+            )
+        n_lineups = df["lineup_id"].nunique() if "lineup_id" in df.columns else 1
+        dedup_keys = ["player_name", "team", "position"]
+        if "roster_role" in df.columns:
+            dedup_keys.append("roster_role")
+        deduped = df.drop_duplicates(subset=dedup_keys, keep="first").reset_index(drop=True)
+        print(
+            f"Loaded {path.name}: {n_lineups} built lineup(s), "
+            f"{len(deduped)} unique player(s) across them.",
+            file=sys.stderr,
         )
-    return df
+        return deduped
+
+    if single_path.exists():
+        path = single_path
+        df = pd.read_csv(path)
+        missing = required - set(df.columns)
+        if missing:
+            raise SystemExit(
+                f"{path} is missing expected columns: {sorted(missing)}. "
+                f"optimizer.py's output schema may have changed -- update "
+                f"this script's load_lineup_players() to match."
+            )
+        print(f"Loaded {path.name}: single-lineup mode, {len(df)} player(s).",
+              file=sys.stderr)
+        return df
+
+    raise FileNotFoundError(
+        f"Neither {multi_path} nor {single_path} found. Build a lineup "
+        f"first -- either optimizer.py --site {site} --slate-id {slate_id} "
+        f"--n-lineups N (the normal GPP workflow) or the UI's Build "
+        f"Lineups button -- then re-run pivot_finder.py."
+    )
 
 
 def load_final_projections(site: str, slate_id: str) -> pd.DataFrame:
@@ -369,8 +444,9 @@ def attach_cash_lineup_context(lineup: pd.DataFrame, pool: pd.DataFrame,
     lineup's own `roster_role` column (optimizer.py's Session 13.4
     `assign_showdown_roster_slots()`). Fails loudly, with a specific
     instruction, if a Showdown pool is detected but the cash lineup has no
-    `roster_role` column -- almost certainly means `lineup_single_
-    {site}_{slate_id}.csv` was produced by a pre-13.4 optimizer.py build."""
+    `roster_role` column -- almost certainly means the built-lineup file
+    (lineups_multi or lineup_single) was produced by a pre-13.4
+    optimizer.py build."""
     lineup = lineup.copy()
     pool = pool.copy()
 
@@ -380,11 +456,11 @@ def attach_cash_lineup_context(lineup: pd.DataFrame, pool: pd.DataFrame,
         if "roster_role" not in lineup.columns:
             raise SystemExit(
                 f"final_projections_{site}_{slate_id}.csv is a Showdown pool "
-                f"(slate_format='showdown') but lineup_single_{site}_"
-                f"{slate_id}.csv has no roster_role column -- this cash "
-                f"lineup was likely built by a pre-Session-13.4 optimizer.py. "
-                f"Re-run optimizer.py --site {site} --slate-id {slate_id} "
-                f"first, then re-run pivot_finder.py."
+                f"(slate_format='showdown') but this slate's built-lineup "
+                f"file has no roster_role column -- it was likely built by "
+                f"a pre-Session-13.4 optimizer.py. Re-run optimizer.py "
+                f"--site {site} --slate-id {slate_id} first, then re-run "
+                f"pivot_finder.py."
             )
         role_col = "roster_role"
 
@@ -404,7 +480,7 @@ def attach_cash_lineup_context(lineup: pd.DataFrame, pool: pd.DataFrame,
                 f"normalized (name, position, team"
                 f"{', role' if showdown else ''}) -- expected exactly 1 "
                 f"(decision #2, extended by #0c for Showdown). Check for a "
-                f"name/team mismatch between lineup_single_{site}_{slate_id}.csv "
+                f"name/team mismatch between this slate's built-lineup file "
                 f"and final_projections_{site}_{slate_id}.csv (e.g. files "
                 f"generated from different weeks/runs)."
             )
@@ -564,7 +640,7 @@ def validate_pivot_suggestions(suggestions: pd.DataFrame, site: str,
 def build_pivot_suggestions(site: str, slate_id: str,
                              projection_tolerance_pct: float = PROJECTION_TOLERANCE_PCT_OF_CASH_PROJECTION,
                              top_n: int = TOP_N_PIVOTS) -> pd.DataFrame:
-    lineup = load_lineup_single(site, slate_id)
+    lineup = load_lineup_players(site, slate_id)
     pool = build_candidate_pool(site, slate_id)
     cash_context = attach_cash_lineup_context(lineup, pool, site, slate_id)
 

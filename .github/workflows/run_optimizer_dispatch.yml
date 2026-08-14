@@ -167,6 +167,23 @@ jobs:
           args += flag("--min-projection", "min_projection", float)
           args += flag("--min-total-ownership", "min_total_ownership", float)
 
+          # Session 15 (Pre-Season Hardening) -- decision #A2. NOT built with
+          # the shared flag() helper above, on purpose: flag() treats an
+          # empty string the same as an absent key (both omit the CLI flag
+          # entirely, falling back to optimizer.py's own default). That's
+          # correct for every other field, whose off-state IS the CLI
+          # default -- but this field's CLI default is ON
+          # (DEFAULT_PARTICIPATION_FLOORS), so treating "user cleared the
+          # box to turn it off" the same as "user never touched this
+          # field" would silently keep the floor on when the user's whole
+          # point was to disable it. index.html always sends this key
+          # (never omits it, even when blank -- see its own comment), so
+          # the distinction that matters here is present-with-empty-string
+          # ("--participation-floors ''", explicit disable) vs. genuinely
+          # absent from params (fall through to optimizer.py's default).
+          if "participation_floors" in params:
+              args += ["--participation-floors", str(params["participation_floors"])]
+
           print(f"args={shlex.join(args)}")
           PYEOF
         env:
@@ -215,13 +232,25 @@ jobs:
       # Request-scoped files only -- deliberately narrower than
       # refresh_data.yml's `git add output/` (which is fine there since that
       # workflow owns the canonical files). This workflow must never commit
-      # anything outside output/ui_requests/.
+      # anything outside output/ui_requests/, with ONE deliberate,
+      # explicit exception (Session 15, decision #B2): a classic multi-
+      # lineup build also writes a slate-keyed copy,
+      # output/lineups_multi_{site}_{slate_id}.csv (see optimizer.py's own
+      # comment at that write site for why -- refresh_data.yml's pivot
+      # gate and pivot_finder.py both need a deterministic, slate-keyed
+      # filename to find, which the request_id-keyed file can never be).
+      # Added by exact path, not a wildcard, so this stays a narrow,
+      # auditable exception rather than a reopened door -- `|| true`
+      # because a Showdown or single-lineup build never produces this
+      # file, and `git add` on a path that doesn't exist is a normal,
+      # expected outcome here, not an error.
       - name: Commit request result
         if: always()
         run: |
           git config user.name "dfs-optimizer-bot"
           git config user.email "actions@users.noreply.github.com"
           git add output/ui_requests/
+          git add "output/lineups_multi_${{ github.event.client_payload.site }}_${{ github.event.client_payload.slate_id }}.csv" 2>/dev/null || true
           if git diff --cached --quiet; then
             echo "No output produced (unexpected if optimizer.py succeeded) -- nothing to commit."
             exit 0

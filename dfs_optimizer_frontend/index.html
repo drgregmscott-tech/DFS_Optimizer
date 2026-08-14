@@ -1549,6 +1549,11 @@ in this browser's localStorage.</p>
           <input type="number" id="ctrlMinTotalOwnership" min="0" step="1" value="0" placeholder="0 = no floor">
           <div class="hint" style="margin-top:4px">Requires the lineup's summed ownership to be at least this much (0 = no floor; same units as "Total Own" on a built lineup, e.g. 130). Set very high to see a "super chalk" build for comparison against the true optimal.</div>
         </div>
+        <div id="wrapParticipationFloorsField">
+          <span class="field-label">Participation Floors</span>
+          <input type="text" id="ctrlParticipationFloors" value="QB:0.6,RB:0.4,TE:0.4" placeholder="e.g. QB:0.6,RB:0.4,TE:0.4 -- blank disables">
+          <div class="hint" style="margin-top:4px">Excludes a player from the pool if his participation (share of his team's last 5 played games he actually appeared in) falls below his position's floor here -- catches a backup or a still-injured player a point projection alone can miss. ON by default. Locked players are always exempt -- lock in a player you know is a real exception (e.g. a starter confirmed back from injury). Format: POSITION:FLOOR comma-separated, 0.0-1.0. Clear the field to disable entirely.</div>
+        </div>
       </div>
 
       <div class="stack-explain" id="stackExplain" style="display:none"></div>
@@ -2839,7 +2844,9 @@ in this browser's localStorage.</p>
     "ctrlMinSalary", "ctrlMinProjection", "ctrlMinTotalOwnership",
     "ctrlStackMode", "ctrlStackSize", "ctrlStackPositions",
     "ctrlMiniType", "ctrlBringBack", "ctrlGameStackMin",
-    "ctrlFlexRb", "ctrlFlexWr", "ctrlFlexTe"
+    "ctrlFlexRb", "ctrlFlexWr", "ctrlFlexTe",
+    // Session 15, decision #A2.
+    "ctrlParticipationFloors"
   ];
 
   function readPresetValues() {
@@ -3367,7 +3374,12 @@ in this browser's localStorage.</p>
     // currently loaded for the active site.
     var isShowdown = poolIsShowdown(state.activeSite);
     ["wrapStackModeField", "wrapMinProjectionField", "wrapMinTotalOwnershipField",
-     "wrapGameCapsField", "wrapFlexPositionsField"].forEach(function (id) {
+     "wrapGameCapsField", "wrapFlexPositionsField",
+     // Session 15 -- optimizer.py scopes --participation-floors to classic
+     // slates only (see that file's showdown_mode guard); same "hide
+     // rather than let a build silently no-op with an unexplained NOTE"
+     // reasoning as the fields above.
+     "wrapParticipationFloorsField"].forEach(function (id) {
       var el = document.getElementById(id);
       if (el) el.style.display = isShowdown ? "none" : "";
     });
@@ -3888,6 +3900,17 @@ in this browser's localStorage.</p>
       if (!isNaN(minTotalOwnership) && minTotalOwnership > 0) {
         params.min_total_ownership = String(minTotalOwnership);
       }
+      // Session 15, decision #A2. Unlike min_projection/min_total_ownership
+      // above, this field's UI default (QB:0.6,RB:0.4,TE:0.4) is NOT
+      // empty -- it mirrors optimizer.py's own DEFAULT_PARTICIPATION_FLOORS
+      // so the floor is genuinely on by default, not just documented as
+      // such. Sent whenever the box is non-blank (including the untouched
+      // default); clearing the box sends an explicit empty string, which
+      // optimizer.py's own CLI treats as "disabled" -- not omitted, since
+      // omitting this one field would fall back to ITS OWN CLI default
+      // (ON), not to "off."
+      var participationFloors = document.getElementById("ctrlParticipationFloors").value.trim();
+      params.participation_floors = participationFloors;
     }
 
     // Session 7.3, item #8: FLEX-eligible positions. Only sent when a

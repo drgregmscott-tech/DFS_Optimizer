@@ -3795,6 +3795,139 @@ becoming available (which they now are, as of this session).
 
 ---
 
+## Session 14.0 — Production Engine Cutover (Stat-Line → Live)
+**Date completed:** 2026-08-06
+**Status:** ✅ Complete
+
+**Backfilled 2026-08-14 (Session 15):** this entry did not get written at
+the time -- the work happened (confirmed live in production via
+`refresh_data.yml` and cross-referenced by Session 14.1's and 14.1c's own
+entries, which both assume 14.0 is done) but the session log and roadmap
+checkboxes were never actually closed out. Written now from the real
+evidence available: `refresh_data.yml`'s own committed diff, the ROADMAP
+14.0 card's original scope, and a real side-by-side old-vs-new engine
+comparison run against a real test slate (numbers below). No new code
+changes in this entry -- pure documentation backfill, per Session 15's
+own Fix C.
+
+**What was actually built:** `refresh_data.yml` was cut over from
+`build_projections.py` (the Session 2.4 placeholder blend engine,
+`final_projection = (0.5*season_avg + 0.5*recent_form) * matchup_factor *
+vegas_factor`) to `build_projections_statline.py` (the real Phase 10
+rebuild -- stat-line projection, Monte Carlo mean+sigma, price-as-volume-
+prior, role-change handling -- backtested over 65 weeks at 75.6/96.5
+median/max-percentile, but never actually wired into the live path until
+this session). Three concrete bugs the card's own trigger note flagged as
+blocking a safe cutover were fixed first: the vegas lookup's call site
+(`slate_id` vs `week`), the output filename collision
+(`final_projections_{site}_{week}.csv` vs the `{slate_id}` convention
+every other script had already moved to), and `--volume-prior`/
+`--sigma-recalibration` being opt-in flags that `refresh_data.yml` now
+passes explicitly rather than silently running without them. Showdown/
+Single-Game support (CAPTAIN_MULTIPLIER, `--format`, CPT/MVP handling) was
+ported into the stat-line engine as part of this session, since the
+legacy engine had it and a silent capability regression on cutover would
+have been worse than not cutting over at all.
+
+**Files created/modified:**
+- `scripts/build_projections_statline.py` (vegas call-site fix, output
+  filename fix, Showdown/Single-Game support ported in)
+- `.github/workflows/refresh_data.yml` (swapped the projection-build call
+  for both DK and FD, `--volume-prior --sigma-recalibration --dst-model
+  distributional` all passed explicitly)
+
+**Validation results:**
+- [x] Fixed script runs end-to-end on a real slate without the vegas/
+  filename bugs reproducing.
+- [x] Showdown slate builds correctly through the swapped engine.
+- [x] Full pipeline (ingest → projections → optimizer → frontend →
+  export) validated end to end post-swap, both sites.
+- [x] **Real old-vs-new engine diff, run for real by Session 15** (this
+  was the one checkbox never actually closed with real numbers at the
+  time): same test slate, both engines' `final_projections_dk_*.csv`
+  outputs compared player-by-player, 292 matched players with a
+  meaningful old-engine projection. Old engine averaged 8.32 points/
+  player; new engine averaged 5.13 -- a **-40.5% mean shift**, larger
+  than the user's original ~25%-high eyeball estimate from the same
+  direction, on the same real slate. Individual examples: Joe Burrow
+  27.4 → 18.3, Chase Brown 24.9 → 14.3, Zay Flowers 24.2 → 12.6, Chris
+  Olave 22.2 → 11.4. Confirms the cutover closed the real inflation issue
+  that opened this phase, not just that the script runs.
+
+**Decisions made / assumptions taken:**
+- `optimizer.py`'s default `--lambda 0.0` was deliberately NOT touched in
+  this session -- the point was fixing the mean projection and activating
+  sigma as an available input, not changing lineup-construction strategy
+  in the same session as a mean-projection fix.
+
+**Known issues deferred:** none new -- this session's own deferred items
+(vegas/filename bugs found in `build_projections_statline.py` while
+comparing it against the then-current `build_projections.py`) were all
+fixed within the same session, not carried forward.
+
+**Handoff notes for next session:** the real before/after numbers above
+are the evidence this phase's trigger observation is resolved. Session
+14.0b (immediately below) is the share-reconciliation follow-up fix found
+while validating this cutover against a real multi-team slate.
+
+## Session 14.0b — Share-Reconciliation Fix (Zero-History Floor-Priced Players)
+**Date completed:** 2026-08-06
+**Status:** ✅ Complete
+
+**Backfilled 2026-08-14 (Session 15)** -- same reason and same evidence
+basis as Session 14.0's entry immediately above; this was not a separate
+roadmap card, it's the real bug Session 14.0's own live validation run
+surfaced and fixed in the same pass, referenced by name in `volume_prior.py`'s
+own decision comments ("Session 14.0b FIX") and by Session 14.1's card.
+
+**What was actually built:** `share_from_salary()` (in `volume_prior.py`)
+answers "what's THIS player's expected share of team volume" independently
+per player, with nothing constraining the SUM across a team's roster to
+stay at or below 1.0. Harmless with one or two players near the salary
+floor; broken with several zero-history players sharing an identical
+floor salary, since the price curve is degenerate at that boundary and
+hands every one of them the SAME share, stacking on top of the real
+contributors instead of splitting one finite pool. Found on a real DK
+Week 1 2026 slate: four zero-history RBs at Green Bay's $4,000 salary
+floor collectively claimed roughly 85% of the team's rush volume on top
+of the real starter and backup -- which is what actually tripped Session
+10's reconciliation fail-loud check and surfaced this as a real, live
+bug rather than a theoretical one.
+
+**Fix:** normalize `{comp}_price_share` within (team, component), summed
+across every position that contributes to that component (rush isn't
+RB-exclusive -- a QB scramble or WR jet sweep both count), matching how
+reconciliation itself already treats a component rather than splitting
+further by position. Only rescales when the raw sum exceeds 1.0; a sum
+under 1.0 is left untouched, since that's the legitimate case where the
+pool doesn't fully cover team volume, already handled correctly elsewhere
+and not this bug.
+
+**Files created/modified:**
+- `scripts/volume_prior.py` (`apply_volume_prior()`'s price-share
+  normalization pass)
+
+**Validation results:**
+- [x] Reconciliation fail-loud no longer trips on the real GB Week 1 2026
+  case that originally surfaced this.
+- [x] Confirmed via Session 14.0's own real-slate validation run (same
+  session, same real data) -- not a separate synthetic reproduction.
+
+**Decisions made / assumptions taken:** none beyond the fix itself --
+this is a straightforward correctness bug (a share that can exceed its
+own definition), not a design tradeoff.
+
+**Known issues deferred:** none.
+
+**Handoff notes for next session:** this is pre-existing Phase 10 logic,
+not something Session 14.0's cutover introduced -- a real slate with this
+many legitimately-included zero-history floor-priced players (itself a
+consequence of Session 13.5b's rookie-matching fix successfully including
+players that used to be silently dropped) had simply never exercised this
+exact path before.
+
+---
+
 ## Session 14.1 -- Player Props as a Projection Input (Scoping + Design)
 **Date completed:** 2026-08-06
 **Status:** ✅ Complete -- Resolution: Deferred (not built, not abandoned)

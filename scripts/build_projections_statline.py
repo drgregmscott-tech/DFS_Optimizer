@@ -225,6 +225,24 @@ LEGACY_COLUMNS = [
     "final_projection", "opponent", "implied_total", "over_under",
 ]
 
+# Session 15 (Pre-Season Hardening) -- decision #A2. games_played/
+# participation_effective were always computed internally (statline_model.py
+# build_usage()/apply_volume_prior()) but dropped before the final CSV was
+# written, so optimizer.py had no way to see them. Exposed here as plain
+# passthrough columns -- NOT a new calculation, just stopping the existing
+# numbers from being thrown away. participation_effective is used (the
+# post-role-change-override value, i.e. the pipeline's own best-effort
+# number) rather than raw participation, so this doesn't fight the existing
+# volume_prior.py correction, only adds a downstream consumer for it.
+#
+# NaN in either column means "not applicable / no history to judge from"
+# (a true zero-history rookie, or a DST/kicker row, which never go through
+# the skill-position usage model at all) -- optimizer.py's floor treats NaN
+# as exempt, never as a reason to exclude. This is deliberate: the floor is
+# only meaningful when there IS a real games-played history that's thin;
+# it is not a stand-in for "we don't know."
+AUDIT_COLUMNS = ["games_played", "participation_effective"]
+
 
 def build_statline_projections(site: str, season: int, week: int, slate_id: str,
                                n_sims: int = statline_model.DEFAULT_SIMS,
@@ -400,6 +418,20 @@ def build_statline_projections(site: str, season: int, week: int, slate_id: str,
         team_vol = statline_model.vegas_anchored_team_volume(
             team_vol, vg, prior_art, teams=pool_teams)
 
+        # Session 15 -- AUDIT_COLUMNS. Captured BEFORE the fill below --
+        # statline_model.apply_volume_prior() unconditionally fillna(0)s
+        # both games_played and participation internally (it has to, for
+        # its own math), so this is the only point where "never had a
+        # usage row at all" (a true zero-history rookie/first career game)
+        # is still distinguishable from "has history, currently near zero."
+        # Only the former should be exempt from optimizer.py's floor.
+        # Restored (not applied yet -- several later steps still need the
+        # 0.0-filled working values for their own math) right before
+        # skill_out is built, below.
+        df["_no_usage_history"] = (
+            df["games_played"].isna() if "games_played" in df.columns
+            else pd.Series(True, index=df.index)
+        )
         for c in ("participation", "games_played"):
             if c not in df.columns:
                 df[c] = 0.0
@@ -411,6 +443,17 @@ def build_statline_projections(site: str, season: int, week: int, slate_id: str,
         print(f"Volume prior applied: {n_flag} role-change flag(s), "
               f"{n_cold} player(s) at 0-1 games of history "
               f"(mean price weight {df['volume_prior_weight'].mean():.3f}).")
+    else:
+        # Session 15 -- AUDIT_COLUMNS never get computed without
+        # --volume-prior (games_played/participation only exist as a
+        # by-product of that branch). optimizer.py's participation floor
+        # treats a missing/NaN value as exempt (see AUDIT_COLUMNS comment
+        # above), so an all-NaN column here is the correct, honest "we
+        # have nothing to judge this pool by" state -- NOT a reason to
+        # invent a 0.0 that would look like real thin-history evidence.
+        df["_no_usage_history"] = True
+        df["games_played"] = np.nan
+        df["participation_effective"] = np.nan
 
     recon_pool = df[~df["no_real_game_this_week"]].copy()
     if not recon_pool.empty and not team_vol.empty:
@@ -480,8 +523,19 @@ def build_statline_projections(site: str, season: int, week: int, slate_id: str,
     df["implied_total"] = df["implied_total"].fillna(0.0)
     df["over_under"] = df["over_under"].fillna(0.0)
 
-    skill_out = df[LEGACY_COLUMNS + ["sigma", "sigma_source", "statline_p10",
-                                     "statline_p90"] + PROJ_STAT_COLUMNS]
+    # Session 15 -- AUDIT_COLUMNS, restored now that every earlier step that
+    # needed 0.0-filled working values (reconciliation, the volume blend,
+    # simulation) is done. A confirmed-no-game player (bye, injury this
+    # exact week -- decision #7 above) is ALSO exempted here, same reasoning
+    # as a true rookie: his final_projection is already forced to 0.0, so a
+    # participation-based exclusion would be redundant at best and a
+    # misleading NOTE at worst.
+    df.loc[df["_no_usage_history"] | no_game, "games_played"] = np.nan
+    df.loc[df["_no_usage_history"] | no_game, "participation_effective"] = np.nan
+
+    skill_out = df[LEGACY_COLUMNS + AUDIT_COLUMNS +
+                   ["sigma", "sigma_source", "statline_p10",
+                    "statline_p90"] + PROJ_STAT_COLUMNS]
 
     # --- DST (decisions #2, #3; Session 10.4) ------------------------------
     # Session 14.0 FIX: was build_dst_projections(salaries, ...). Now takes
@@ -519,6 +573,12 @@ def build_statline_projections(site: str, season: int, week: int, slate_id: str,
         )
     for c in PROJ_STAT_COLUMNS:
         dst_out[c] = 0.0
+    # Session 15 -- AUDIT_COLUMNS. DST never goes through the skill-position
+    # usage model, so NaN here (== "not applicable"), not 0.0 -- 0.0 would
+    # read as "real thin-history evidence" to optimizer.py's floor and
+    # exclude every defense by accident.
+    for c in AUDIT_COLUMNS:
+        dst_out[c] = np.nan
     dst_out = dst_out[skill_out.columns]
 
     # --- Kicker (Session 13.1 -- this engine never had it wired in at all)
@@ -541,6 +601,12 @@ def build_statline_projections(site: str, season: int, week: int, slate_id: str,
             "kicker_session_13_1", "no_game")
         for c in PROJ_STAT_COLUMNS:
             kicker_out[c] = 0.0
+        # Session 15 -- AUDIT_COLUMNS. Same reasoning as DST above: kickers
+        # never go through the skill-position usage model, so NaN (exempt),
+        # not 0.0 (which would look like real evidence and get every
+        # kicker excluded by the participation floor).
+        for c in AUDIT_COLUMNS:
+            kicker_out[c] = np.nan
     kicker_out = kicker_out[skill_out.columns] if len(kicker_out) else \
         pd.DataFrame(columns=skill_out.columns)
 

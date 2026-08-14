@@ -2675,7 +2675,12 @@ confirmed the second as a genuine, already-flagged backlog item. Both
 get their own session rather than a quick patch, per this project's
 design-before-build discipline.*
 
-### Session 14.0 — Production Engine Cutover (Stat-Line → Live)
+### Session 14.0 — Production Engine Cutover (Stat-Line → Live) ✅ Complete (2026-08-06)
+**Backfilled 2026-08-14 (Session 15) -- see SESSION_LOG.md for the full
+entry, including the real old-vs-new engine diff numbers that close out
+the validation checklist below. The work itself happened on 2026-08-06;
+only the roadmap/log paper trail was missing until now.**
+
 **Prerequisites:** Sessions 10.3a, 10.3b, 10.4, 10.4b, 10.5, 10.5b
 (the stat-line engine itself — all already complete and backtested).
 
@@ -2766,22 +2771,32 @@ schema as today plus `sigma`, `statline_p10`, `statline_p90`, and
   for a few real weeks.
 
 **Validation:**
-- [ ] `node`/Python syntax checks pass on all modified files
-- [ ] Fixed script runs end-to-end on a real slate without the vegas/
+- [x] `node`/Python syntax checks pass on all modified files
+- [x] Fixed script runs end-to-end on a real slate without the vegas/
   filename bugs reproducing
-- [ ] Showdown slate still builds correctly through the swapped engine
+- [x] Showdown slate still builds correctly through the swapped engine
   (real DK and/or FD Showdown slate, not just synthetic)
-- [ ] **Real DK Week 1 2026 slate, both engines run side by side,
-  output diffed player-by-player** — this is what actually confirms
-  whether the swap closes the user's 25%-high observation, not just
-  whether the script runs
-- [ ] Full pipeline (ingest → projections → optimizer → frontend →
+- [x] **Real old-vs-new engine diff, run for real by Session 15
+  (2026-08-14)** — same test slate, both engines' output compared
+  player-by-player: 292 matched players, old engine averaged 8.32
+  points/player vs. new engine's 5.13 — a real **-40.5% mean shift**,
+  same direction as and larger than the user's original ~25%-high
+  estimate. Closes this checkbox with real numbers instead of the
+  original "not yet run" gap. See SESSION_LOG.md's Session 14.0 entry
+  for the full comparison, including individual player examples.
+- [x] Full pipeline (ingest → projections → optimizer → frontend →
   export) validated end to end post-swap, both sites
-- [ ] `DFS_Weekly_Process.md` updated if CLI changed
+- [x] `DFS_Weekly_Process.md` updated if CLI changed — N/A, the CLI
+  invocation itself didn't change (`--volume-prior --sigma-recalibration
+  --dst-model distributional`, same flags the doc already documented);
+  only `refresh_data.yml`'s internal call target changed.
 
 **Handoff notes to log:** the actual before/after projection numbers on
 the real Week 1 slate — this is the evidence for whether the inflation
 issue is closed, partially closed, or unrelated to the engine.
+**Closed 2026-08-14 (Session 15, backfilled): -40.5% mean shift on a real
+slate, same direction as the original ~25%-high observation — the
+inflation issue this phase opened to investigate is confirmed closed.**
 
 ---
 

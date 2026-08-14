@@ -15,14 +15,18 @@
 #     or 15-minute cadence would just burn CI minutes for no new data.
 #
 # What THIS workflow refreshes, per run: vegas_odds.py (fresh lines) ->
-# status_check.py pull (fresh ESPN status) -> build_projections.py, both
+# status_check.py pull (fresh ESPN status) -> build_projections_statline.py
+# (Session 14.0's production engine, not the Session 2.4 placeholder), both
 # sites (rebuild the blend against the same salary file but fresh
 # vegas/status) -> status_check.py apply, both sites (re-zero any newly-OUT
-# player) -> pivot_finder.py, both sites, IF a lineup_single file already
-# exists for that site/week (Session 4.3 addendum -- rebuilds pivot
-# suggestions against the refreshed projections/status, skipped rather than
-# failed if no cash lineup has been built yet for this slate). Every run's
-# outcome (success/failure, per site) is appended to
+# player) -> pivot_finder.py, both sites, IF a built-lineup file already
+# exists for that site/slate (checks lineups_multi first, the file real
+# usage actually produces, falling back to lineup_single -- Session 15
+# fix, see the "Locate built lineup" steps below for why the old
+# lineup_single-only check never actually fired on a real slate). Rebuilds
+# pivot suggestions against the refreshed projections/status, skipped
+# rather than failed if no lineup has been built yet for this slate. Every
+# run's outcome (success/failure, per site) is appended to
 # logs/automation_run_log.csv, which is what Session 5.2's validation
 # checklist below is checked against.
 #
@@ -249,28 +253,48 @@ jobs:
             --status-file "${{ steps.status_file.outputs.path }}"
 
       # Session 4.3 addendum: pivot_finder.py needs BOTH a freshly-built
-      # final_projections AND an existing lineup_single -- the latter is
-      # only ever produced by the user's own "Build Lineups" dispatch, not
-      # by this workflow, so it may legitimately not exist yet (brand-new
-      # slate, no lineup built) or may be stale relative to the refreshed
-      # projections. Placed AFTER the status-apply steps above (not right
-      # after build_projections) so pivots reflect zeroed-OUT players --
-      # same reasoning as running Apply Status before anything downstream.
-      # Gated on the lineup file actually existing (mirrors the
-      # steps.status_file.outputs.path != '' pattern already used above)
-      # so a missing lineup is a normal "not_run" outcome, not a failure.
-      - name: Locate cash lineup -- DK
+      # final_projections AND an existing built-lineup file -- the latter
+      # is only ever produced by the user's own "Build Lineups" dispatch,
+      # not by this workflow, so it may legitimately not exist yet (brand-
+      # new slate, no lineup built) or may be stale relative to the
+      # refreshed projections. Placed AFTER the status-apply steps above
+      # (not right after build_projections) so pivots reflect zeroed-OUT
+      # players -- same reasoning as running Apply Status before anything
+      # downstream. Gated on the lineup file actually existing (mirrors
+      # the steps.status_file.outputs.path != '' pattern already used
+      # above) so a missing lineup is a normal "not_run" outcome, not a
+      # failure.
+      #
+      # Session 15 (Pre-Season Hardening), decision #B1: checks
+      # lineups_multi_{site}_{slate_id}.csv FIRST now, not lineup_single.
+      # Real usage always builds via multi-lineup mode (20+ lineups for
+      # GPP) -- lineup_single is Session 3.1's single-best-lineup mode,
+      # which real usage never runs. This gate checking only for
+      # lineup_single was the actual, confirmed root cause of pivots never
+      # rebuilding on any real slate: the file it checked for never
+      # existed, so this step silently, permanently no-op'd every real
+      # automated run, with nothing anywhere flagging it as wrong. Falls
+      # back to lineup_single for anyone still using single-lineup mode
+      # (pivot_finder.py's own load_lineup_players() handles either file
+      # transparently -- this gate only needs to know whether TO run it).
+      - name: Locate built lineup -- DK
         id: lineup_dk
         if: steps.trigger.outputs.mode == 'full'
         run: |
-          f=$(ls output/lineup_single_dk_${{ steps.slate.outputs.dk_slate_id }}.csv 2>/dev/null || true)
+          f=$(ls output/lineups_multi_dk_${{ steps.slate.outputs.dk_slate_id }}.csv 2>/dev/null || true)
+          if [ -z "$f" ]; then
+            f=$(ls output/lineup_single_dk_${{ steps.slate.outputs.dk_slate_id }}.csv 2>/dev/null || true)
+          fi
           echo "path=$f" >> "$GITHUB_OUTPUT"
 
-      - name: Locate cash lineup -- FD
+      - name: Locate built lineup -- FD
         id: lineup_fd
         if: steps.trigger.outputs.mode == 'full'
         run: |
-          f=$(ls output/lineup_single_fd_${{ steps.slate.outputs.fd_slate_id }}.csv 2>/dev/null || true)
+          f=$(ls output/lineups_multi_fd_${{ steps.slate.outputs.fd_slate_id }}.csv 2>/dev/null || true)
+          if [ -z "$f" ]; then
+            f=$(ls output/lineup_single_fd_${{ steps.slate.outputs.fd_slate_id }}.csv 2>/dev/null || true)
+          fi
           echo "path=$f" >> "$GITHUB_OUTPUT"
 
       - name: Rebuild pivot suggestions -- DK
