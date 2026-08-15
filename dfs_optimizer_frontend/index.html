@@ -1995,6 +1995,22 @@ in this browser's localStorage.</p>
       .catch(function () { onDone(null); });
   }
 
+  // Session 15, decision #B3 -- deliberately separate from cloudLoadSlate
+  // above, not a variant of it. cloudLoadSlate returns whatever was saved
+  // at upload time; this always reads output/pivot_suggestions_{site}_
+  // {slate_id}.csv fresh off GitHub, matching handleLoadPivots() on the
+  // Worker side. onDone(csvText) on success/found, onDone(null) if the
+  // file doesn't exist yet or the Worker call fails -- the caller
+  // (loadPivotsForActive()) decides what "not found" means, this function
+  // only fetches.
+  function cloudLoadPivotsLive(site, slateId, onDone) {
+    if (!cloudConfigured()) { onDone(null); return; }
+    fetch(workerUrl("load_pivots", { site: site, slate_id: slateId }), { cache: "no-store" })
+      .then(function (r) { return r.json(); })
+      .then(function (data) { onDone(data.found ? data.csv : null); })
+      .catch(function () { onDone(null); });
+  }
+
   // ---------------- Slate payload application ----------------
   function applySlatePayload(site, kind, filename, payload) {
     if (kind === "pool") {
@@ -2080,24 +2096,48 @@ in this browser's localStorage.</p>
     } catch (e) { return false; }
   }
 
-  // Best-effort: loads the pivot suggestions paired to whichever
-  // slateId was just loaded as the active pool/lineup. Silently leaves
-  // state.pivots[site] as null if none exist for this slate (a slate
-  // with no pivot_suggestions file yet is a normal, expected state, not
-  // an error -- e.g. Session 4.2 hasn't run for a brand-new slate).
+  // Session 15, decision #B3 -- rewritten. Used to be localStorage cache
+  // first, then a frozen cloud snapshot from whenever a pivots CSV was
+  // last manually uploaded (Choose File) -- both go stale the moment
+  // refresh_data.yml regenerates the real file, with no way for either
+  // path to know that happened. Now tries the live GitHub read FIRST,
+  // every time -- correct by construction, since it's reading the same
+  // file the automated refresh writes to, not a copy of it. The old
+  // upload-and-cache path (loadStoredPivots/cloudLoadSlate below) is kept
+  // as a fallback ONLY -- if the Worker is unreachable or misconfigured,
+  // whatever was last manually loaded is better than nothing. Manual
+  // upload (Choose File) itself still works if you ever want it (e.g. to
+  // compare against an older pivot file), it's just no longer the normal
+  // path -- see DFS_Weekly_Process.md's "Pivot suggestions" section.
   function loadPivotsForActive(site, slateId) {
     state.expandedPivotRow[site] = null;
-    if (loadStoredPivots(site, slateId)) { render(); return; }
-    cloudLoadSlate(site, slateId + "__pivots", function (record) {
-      if (record) {
-        applyPivotsPayload(site, record.filename, record.payload);
+    cloudLoadPivotsLive(site, slateId, function (csvText) {
+      if (csvText) {
+        var rows = parseCSV(csvText);
+        applyPivotsPayload(site, "pivot_suggestions_" + site + "_" + slateId + ".csv", rows);
         try {
-          localStorage.setItem(pivotsStorageKey(site, slateId), JSON.stringify({ filename: record.filename, payload: record.payload }));
-        } catch (e) { /* ignore */ }
-      } else {
-        state.pivots[site] = null;
+          localStorage.setItem(pivotsStorageKey(site, slateId), JSON.stringify({
+            filename: "pivot_suggestions_" + site + "_" + slateId + ".csv", payload: rows,
+          }));
+        } catch (e) { /* ignore -- live read already succeeded, caching is best-effort */ }
+        render();
+        return;
       }
-      render();
+      // Live read found nothing (not yet generated for this slate, or the
+      // Worker call failed) -- fall back to whatever was last manually
+      // loaded, same as before this session.
+      if (loadStoredPivots(site, slateId)) { render(); return; }
+      cloudLoadSlate(site, slateId + "__pivots", function (record) {
+        if (record) {
+          applyPivotsPayload(site, record.filename, record.payload);
+          try {
+            localStorage.setItem(pivotsStorageKey(site, slateId), JSON.stringify({ filename: record.filename, payload: record.payload }));
+          } catch (e) { /* ignore */ }
+        } else {
+          state.pivots[site] = null;
+        }
+        render();
+      });
     });
   }
 

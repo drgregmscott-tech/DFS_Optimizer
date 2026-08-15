@@ -113,7 +113,7 @@ Pick a short, filesystem-safe identifier. This names the salary file, the vegas 
 
 **Use the SAME slate ID for both DK and FD when they're the same real-world slate.** Vegas lines are pulled once and shared between sites via this ID (`--vegas-slate-id`, Step 2e) — if DK and FD get different slate_id strings for the same slate, you'll need to pass `--vegas-slate-id` explicitly when building FD's projections (Step 2i) to point at the same vegas pull, or you'll end up pulling and paying for vegas lines twice.
 
-You'll use this same slate ID in Steps 2b through 2i. The output file will be named `output/final_projections_dk_{slate_id}.csv`.
+You'll use this same slate ID in Steps 2b through 2k. The output file will be named `output/final_projections_dk_{slate_id}.csv`.
 
 ---
 
@@ -276,7 +276,31 @@ If you see an error about a missing `.parquet` file, run Step 2d and retry.
 
 ---
 
-### Step 2j — Commit and push
+### Step 2j — Build a first lineup batch and generate pivot suggestions (optional, recommended)
+
+This step is optional, but doing it now — right after projections, before pushing — means Stage 3's automated refresh loop keeps your pivot suggestions current for the rest of the week without you touching anything again, right up to lock.
+
+**Why here, not later:** `pivot_finder.py` needs a built-lineup file to work from, and the automated refresh only regenerates pivots once one already exists for a slate. Seeding that now means Stage 3 keeps both projections AND pivots fresh from here on automatically. Build a lineup batch directly (not through the deployed UI — the UI's Build Lineups button dispatches to GitHub, which only sees what's already been pushed; this runs locally, against the file Step 2i just wrote, before anything's pushed):
+
+```
+python scripts/optimizer.py --site dk --slate-id classic_wk5 --n-lineups 20
+```
+
+Then generate pivot suggestions from that batch:
+
+```
+python scripts/pivot_finder.py --site dk --slate-id classic_wk5
+```
+
+Repeat both for FD if you're building there too. `pivot_finder.py`'s output will include `WARNING`/`NOTE` lines for individual players — each line explains itself (a thin pool at that tier, or a partial candidate list) and is expected, not something to fix.
+
+**This lineup batch is NOT your real lineup** — it's a rough, disposable batch built purely to give `pivot_finder.py` something to work from. Build your actual lineups the normal way, later, through the deployed UI (Stage 4), with your real stacking/exposure/randomization settings. Rebuilding your real lineups later doesn't invalidate anything here — it overwrites this rough batch at the same file path, and Stage 3's next automated refresh will regenerate pivots from that newer, real batch automatically.
+
+**Once pivots exist for a slate, the UI shows them with no upload step.** As of Session 15, the deployed UI reads `output/pivot_suggestions_{site}_{slate_id}.csv` live from GitHub every time you load that slate — not a manual upload, not a cached snapshot. Generate it once here, push it in Step 2k below, and every automated refresh for the rest of the week keeps it current with zero further action from you. Click any roster row on a built lineup in the UI to see the pivot panel.
+
+---
+
+### Step 2k — Commit and push
 
 ```
 git add data/ output/
@@ -306,7 +330,7 @@ Once Stage 2 is pushed, this runs unattended until lock:
 
 A full refresh rebuilds `output/final_projections_{site}_{slate_id}.csv`. Players ruled OUT are zeroed. Players flagged DOUBTFUL/QUESTIONABLE are marked but not zeroed. Vegas is pulled fresh each time under the slate_id tracked in `data/current_slate.json` — DK's own slate_id is used for both sites' vegas pulls when they share one.
 
-You don't need to do anything during Stage 3. Check the UI periodically to see projections update as injury news comes in.
+You don't need to do anything during Stage 3 for **building** to benefit — every "Build Lineups" click always reads whatever's freshest on GitHub at that moment, regardless of what's in your browser. What you *see* in the UI's pool table is a different story: it's a frozen snapshot from whenever you last uploaded it (**Choose File** → **Save**, Stage 4), and does not visually update on its own. If you want the displayed numbers themselves to reflect the latest refresh — not just what a build will actually use — re-upload the current `final_projections_{site}_{slate_id}.csv` the same way. **Pivot suggestions (Step 2j) are the one exception to all of this — they display live, automatically, with no re-upload ever needed (Session 15).** The underlying file still only gets *generated* from a lineup batch that has to exist first (Step 2j creates that), but once it does, Stage 3's refreshes keep it current on GitHub and the UI always shows whatever's there.
 
 ---
 
@@ -347,28 +371,7 @@ Set your options in the Build panel and click **Build Lineups**. Review all line
 
 ### Pivot suggestions (cash-to-GPP)
 
-**What this is:** for every player rostered in your built lineups, a ranked list of same-position, similarly-projected, lower-owned alternatives — a starting point for differentiating your GPP entries off whatever you already built.
-
-**Why it needs an extra step (Session 15 fix):** pivot suggestions are generated by a separate script (`pivot_finder.py`), not by the Build Lineups button itself, and — as of Session 15 — that script now correctly reads your real built-lineup file, but the file it produces still isn't picked up by the UI automatically. Two ways to get it:
-
-1. **Wait for the automated refresh.** Once you've built lineups for a slate, the next scheduled refresh cycle (runs automatically, several times a day — see Stage 3) will detect the built-lineup file and generate `output/pivot_suggestions_{site}_{slate_id}.csv`, committed to the repo.
-2. **Or run it yourself, right after building, for an immediate result:**
-   ```
-   python scripts/pivot_finder.py --site dk --slate-id {slate_id}
-   ```
-   ```
-   git add output/pivot_suggestions_dk_{slate_id}.csv
-   ```
-   ```
-   git commit -m "Pivot suggestions - slate {slate_id}"
-   ```
-   ```
-   git push
-   ```
-
-Either way, once `output/pivot_suggestions_{site}_{slate_id}.csv` exists in the repo: download it from GitHub, then upload it into the UI the same way you uploaded your pool/lineup file (**Choose File…** in the Slates panel). The UI detects it automatically as pivot data and pairs it to the current slate — after that, clicking any roster row on a built lineup shows the pivot panel.
-
-**If you rebuild lineups after loading pivots**, the pivot suggestions won't reflect the new batch until you regenerate and re-upload them the same way — they're not live-linked to whatever's currently on screen.
+Generated back in **Step 2j**, not here — see that step for how to create or refresh them. If you did that step, pivot suggestions are already showing: the UI reads `output/pivot_suggestions_{site}_{slate_id}.csv` live from GitHub every time you load a slate, no upload needed. Click any roster row on a built lineup to see the pivot panel. If nothing shows, either Step 2j hasn't been run for this slate yet, or the file hasn't been pushed (Step 2k).
 
 ### Slate Overview — Game Totals panel
 
@@ -446,5 +449,5 @@ git push
 - **DK Showdown's column shapes are measured against a real export and a real ARI/CAR slate; FD Showdown's 1.5x MVP mechanic is confirmed against a live FD roster builder, but neither has been run through a full FD Showdown slate end to end yet.**
 - **The near-lock cadence** (currently templated to Sunday 11am CT) needs updating once the actual regular-season lock time pattern is confirmed.
 - **Participation Floors (Session 15) default ON for classic slates** (`QB:0.6,RB:0.4,TE:0.4`) — a player barely showing up in his team's last 5 games gets excluded from the pool automatically. If a build comes back thinner than expected at QB/RB/TE, this is the first thing to check; lock a known exception back in rather than turning the floor off broadly.
-- **Pivot suggestions need an extra manual step** (build lineups → generate `pivot_suggestions_{site}_{slate_id}.csv`, automatically or via `pivot_finder.py` — Stage 4's "Pivot suggestions" section → download and re-upload into the UI). This isn't yet a single-click flow; see Stage 4 for the full sequence.
+- **Pivot suggestions need a lineup batch to exist, generated at Step 2j, but the display itself is fully automatic (Session 15).** The UI reads `output/pivot_suggestions_{site}_{slate_id}.csv` live from GitHub every time you load a slate — no upload, no caching. As long as Step 2j has been run once for a slate and pushed, every automated refresh for the rest of the week keeps it current with zero further action.
 - **If any step produces an unexpected error**, paste the full error message into a Claude conversation. The error message is the fastest path to a fix.

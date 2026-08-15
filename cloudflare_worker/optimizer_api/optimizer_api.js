@@ -117,6 +117,7 @@
  *   because a full player pool as a query string risks URL-length limits.
  *
  * GET /?action=load_slate&token=<WORKER_AUTH_TOKEN>&site=dk&slate_id=classic_wk3
+ * GET /?action=load_pivots&token=<WORKER_AUTH_TOKEN>&site=dk&slate_id=classic_wk3
  *   -> 200 { "found": true, "kind": ..., "filename": ..., "label": ..., "payload": ..., "savedAt": ... }
  *   -> 200 { "found": false }   (nothing saved yet for this site/slateId)
  *
@@ -392,6 +393,44 @@ async function handleLoadSlate(url, env) {
   }
 }
 
+// Session 15 (Pre-Season Hardening), decision #B3. Deliberately NOT built
+// on handleSaveSlate/handleLoadSlate's frozen-snapshot pattern above --
+// those store whatever payload the browser uploaded AT UPLOAD TIME and
+// hand back that exact same frozen copy every time, same as a pool/lineup
+// slate (correct for those -- the point of a saved slate is that it's
+// YOUR chosen snapshot, not a moving target).
+//
+// Pivots need the opposite property: refresh_data.yml already regenerates
+// output/pivot_suggestions_{site}_{slate_id}.csv automatically all week
+// (same cadence as final_projections), completely independent of anything
+// the browser has ever uploaded -- so a frozen upload snapshot goes stale
+// the moment the very first automated refresh runs after it, with no way
+// for the UI to know. This reads that file fresh from GitHub on every
+// call instead, mirroring how a "Build Lineups" dispatch already always
+// uses whatever's currently committed (see optimizer_api.js's dispatch
+// docstring) rather than anything cached in the browser. No separate
+// "save" action needed or wanted -- there is nothing for the user to
+// upload anymore; the file already exists because pivot_finder.py (run
+// manually or by the automated refresh) wrote it.
+async function handleLoadPivots(url, env) {
+  const site = url.searchParams.get("site");
+  const slateId = url.searchParams.get("slate_id");
+  if (!validSite(site) || !validSlateId(slateId)) {
+    return json({ error: "site must be dk/fd and slate_id must be 1-64 alphanumeric/hyphen/underscore chars." }, 400);
+  }
+  try {
+    // A slate with no pivot_suggestions file yet (never built a lineup
+    // for it, or pivot_finder.py hasn't run) is a normal, expected state
+    // -- fetchRepoFile() returns null on a 404, not an error, and that
+    // maps straight to found:false here, same as handleLoadSlate above.
+    const csv = await fetchRepoFile(env, `output/pivot_suggestions_${site}_${slateId}.csv`);
+    if (csv === null) return json({ found: false });
+    return json({ found: true, csv: csv });
+  } catch (err) {
+    return json({ error: `Load failed: ${err.message}` }, 502);
+  }
+}
+
 async function handleListSlates(env) {
   try {
     const entries = await listRepoDir(env, "data/ui_slates");
@@ -546,11 +585,15 @@ export default {
     if (action === "poll") return handlePoll(url, env);
     if (action === "save_slate") return handleSaveSlate(request, url, env);
     if (action === "load_slate") return handleLoadSlate(url, env);
+    // Session 15, decision #B3 -- see handleLoadPivots()'s own docstring
+    // for why this is a separate action rather than a special case of
+    // load_slate above.
+    if (action === "load_pivots") return handleLoadPivots(url, env);
     if (action === "list_slates") return handleListSlates(env);
     if (action === "delete_slate") return handleDeleteSlate(url, env);
     if (action === "get_presets") return handleGetPresets(env);
     if (action === "save_presets") return handleSavePresets(request, env);
     if (action === "ping") return json({ ok: true }); // deliberately no GitHub call -- see docstring
-    return json({ error: "action must be 'dispatch', 'poll', 'save_slate', 'load_slate', 'list_slates', 'delete_slate', 'get_presets', 'save_presets', or 'ping'." }, 400);
+    return json({ error: "action must be 'dispatch', 'poll', 'save_slate', 'load_slate', 'load_pivots', 'list_slates', 'delete_slate', 'get_presets', 'save_presets', or 'ping'." }, 400);
   },
 };
