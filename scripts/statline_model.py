@@ -994,7 +994,7 @@ _RECONCILE_SPECS = [
 RECENT_SHARE_MIN_VOLUME = 25.0
 
 
-def _pool_share(comp, sub, tv, team, team_hist_col, team_recent_col,
+def _pool_share(comp, sub, hist_sub, tv, team, team_hist_col, team_recent_col,
                 hist_vol_col, recent_vol_col):
     """What share of the team's volume should these pool players receive?
 
@@ -1021,6 +1021,28 @@ def _pool_share(comp, sub, tv, team, team_hist_col, team_recent_col,
     the recent window rather than the full season, so a mid-season backfield
     or target-share change is reflected instead of averaged away. Falls back
     to the full-season share when the recent window is too thin to trust.
+
+    Session 15.2 -- `hist_sub` vs `sub`. `sub` is the pool grouped by each
+    player's CURRENT team (this slate's roster). `hist_sub` is the pool
+    grouped by each player's team AS OF the games his own recent/hist
+    volume was actually produced in. For the large majority of players
+    these are the same team and this distinction is a no-op. For a player
+    who changed teams over the offseason, they are not -- and asking "how
+    much of team X's own recent history does our pool capture" using
+    `sub` (current team) answers a different, wrong question: it credits
+    team X with a traded-away player's production that team X no longer
+    has, while failing to credit the player's OWN real recent production
+    to the team it actually happened for. Confirmed real and material on
+    the real Week 1 2026 slate: 70 players league-wide had a current team
+    different from their 2025 team, several with substantial volume
+    (Travis Etienne Jr., 79 recent rush attempts, JAX in 2025 -> NO on
+    this slate; Rico Dowdle, 62, CAR -> PIT). Carolina's own rush pool
+    share came out at 55.7% purely from Dowdle's real production being
+    attributed to Pittsburgh instead. `sub` (current team) is still what
+    price_share and the eventual rescale use below -- a traded player's
+    SALARY and his own final projection still need to reflect his new
+    team's context. Only the numerator of "how much of team X's own
+    history survives in today's pool" changes.
     """
     if comp in EXCLUSIVE_COMPONENTS:
         return 1.0, "exclusive"
@@ -1028,7 +1050,9 @@ def _pool_share(comp, sub, tv, team, team_hist_col, team_recent_col,
     # have a price-implied one -- the sum of the pool's price-predicted
     # shares IS an estimate of the pool's share of team volume, and it is
     # the only such estimate available before a game is played. Used only
-    # when the history-based bases below are unavailable.
+    # when the history-based bases below are unavailable. Price reflects
+    # the player's CURRENT-team role, so this deliberately uses `sub`
+    # (current team), not `hist_sub`.
     price_col = f"{comp}_price_share"
     have_history = team_recent_col in tv.columns and team in tv.index
     if not have_history and price_col in sub:
@@ -1036,11 +1060,11 @@ def _pool_share(comp, sub, tv, team, team_hist_col, team_recent_col,
         if ps > 0:
             return min(ps, 1.0), "price"
     team_recent = float(tv.at[team, team_recent_col])
-    pool_recent = float(sub[recent_vol_col].fillna(0.0).sum()) if recent_vol_col in sub else 0.0
+    pool_recent = float(hist_sub[recent_vol_col].fillna(0.0).sum()) if recent_vol_col in hist_sub else 0.0
     if team_recent >= RECENT_SHARE_MIN_VOLUME and pool_recent > 0:
         return min(pool_recent / team_recent, 1.0), "recent"
     team_hist = float(tv.at[team, team_hist_col])
-    pool_hist = float(sub[hist_vol_col].fillna(0.0).sum())
+    pool_hist = float(hist_sub[hist_vol_col].fillna(0.0).sum())
     if team_hist <= 1e-9 or pool_hist <= 1e-9:
         return None, "unavailable"
     return min(pool_hist / team_hist, 1.0), "full_season"
@@ -1059,6 +1083,16 @@ def reconcile_team_shares(pool: pd.DataFrame, team_vol: pd.DataFrame,
     report = []
     violations = []
 
+    # Session 15.2 -- grouped once, by each player's HISTORICAL team (see
+    # _pool_share()'s docstring for the full "why"). Falls back to current
+    # team when hist_team is missing/NaN (a true no-history rookie has
+    # nothing to misattribute either way, and an older pool built before
+    # this session's build_projections_statline.py change simply won't
+    # have the column -- same graceful degradation, not a hard dependency).
+    hist_team_series = (pool["hist_team"] if "hist_team" in pool.columns
+                        else pool["team"]).fillna(pool["team"])
+    hist_groups = pool.groupby(hist_team_series).groups
+
     for (comp, mu_col, team_pred_col, team_hist_col, team_recent_col,
          hist_vol_col, recent_vol_col) in _RECONCILE_SPECS:
         if mu_col not in pool.columns:
@@ -1070,8 +1104,10 @@ def reconcile_team_shares(pool: pd.DataFrame, team_vol: pd.DataFrame,
             raw_sum = float(sub[mu_col].fillna(0.0).sum())
             if raw_sum <= 1e-9:
                 continue
+            hist_idx = hist_groups.get(team, pd.Index([]))
+            hist_sub = pool.loc[hist_idx] if len(hist_idx) else sub
             pool_share, share_basis = _pool_share(
-                comp, sub, tv, team, team_hist_col, team_recent_col,
+                comp, sub, hist_sub, tv, team, team_hist_col, team_recent_col,
                 hist_vol_col, recent_vol_col)
             if pool_share is None:
                 continue

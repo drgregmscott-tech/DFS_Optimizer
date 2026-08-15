@@ -366,7 +366,12 @@ def build_statline_projections(site: str, season: int, week: int, slate_id: str,
         print(f"No usage history before week {week}: building from the price "
               f"prior alone (statline_model decision #14).")
 
-    df = players.merge(usage.drop(columns=["position", "hist_team"], errors="ignore"),
+    # Session 15.2: hist_team is kept now (was dropped here before) --
+    # reconcile_team_shares() needs it to tell "this player's own real
+    # recent production" apart from "whichever team he happens to be
+    # rostered under after an offseason trade." Only "position" collides
+    # with the salary file's own column and needs dropping.
+    df = players.merge(usage.drop(columns=["position"], errors="ignore"),
                        on="player_id", how="left")
     n_no_history = int(df["games_played"].isna().sum()) if "games_played" in df else len(df)
     if "games_played" in df:
