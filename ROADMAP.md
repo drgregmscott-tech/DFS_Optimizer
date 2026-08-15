@@ -3069,3 +3069,35 @@ and there's real output to look at.
 - [x] All internal Step 2i/2j/2k cross-references in `DFS_Weekly_Process.md` grep-verified consistent after renumbering.
 
 **Closes the loop opened by Session 15's original trigger report** — nothing outstanding remains from either the backup-QB or the pivot report.
+
+---
+
+### Session 15.2 — Pre-Season Deep Dive: Projections *(planned, not started)*
+
+**Prerequisites:** none blocking — can start anytime. Deliberately kept as a separate chat/session from 15/15.1, per user's explicit call (2026-08-15): scoped now, started later.
+
+**Trigger:** user's original open-ended ask (2026-08-14, same conversation that produced Session 15) to deep-dive projections/ownership/lineup-construction while there's still time before real games start, beyond just the two specific issues reported that session. Lineup construction was judged sufficiently addressed by Session 15's participation floor (user's explicit call, 2026-08-15) — this card is the projections portion of what's left.
+
+**Purpose:** neither projections nor ownership can be calibrated against real outcomes yet — no 2026 regular-season game has been played (same gate as Session 9.1). That doesn't make a deep dive pointless, it changes what kind of deep dive is possible now. The Daniel Jones/Riley Leonard bug (Session 15) wasn't found by code review, it was found by running real data through and noticing something that didn't look right. This session applies that same method systematically and proactively, rather than waiting for the next bug to get reported.
+
+**Planned approach:** pull several more real 2026 teams/players through the pipeline — not just the Colts QBs the original bug happened to surface — and specifically hunt for other Jones/Leonard-shaped situations: committee backfields, players who changed teams in the offseason, rookies inserted as Week 1 starters, anyone else who missed time late in the 2025 season. Also a sanity pass on sigma/uncertainty calibration — wide where it should be, tight where it should be — since that's the input the participation floor's whole "don't roster a scrub" logic ultimately depends on.
+
+**Build:** none yet — scoping only, this session.
+
+**Validation:** N/A — defer until real analysis work happens.
+
+---
+
+### Session 15.3 — Pre-Season Deep Dive: Ownership *(planned, not started)*
+
+**Prerequisites:** none blocking — can start anytime, independent of Session 15.2. Deliberately kept as a separate chat/session, same user call as 15.2's card above.
+
+**Trigger:** same as Session 15.2's card — the ownership portion of the original open-ended deep-dive ask.
+
+**Purpose:** same real-data-anomaly method as Session 15.2, applied to `chalk_score`/`estimated_ownership_pct` instead of raw projections. Same constraint applies — no real 2026 ownership data exists yet to calibrate against (Showdown ownership specifically is flagged elsewhere in this file as never validated against real data at all).
+
+**Planned approach:** does the model's real-player, real-price ownership ranking match what an experienced DFS player would actually expect, checked against enough real 2026 players to be more than anecdotal? Specific attention to the Showdown ownership heuristic (Session 13.3b), given it's never been checked against real data of any kind.
+
+**Build:** none yet — scoping only, this session.
+
+**Validation:** N/A — defer until real analysis work happens.
