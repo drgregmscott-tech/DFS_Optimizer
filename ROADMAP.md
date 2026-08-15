@@ -1140,6 +1140,9 @@ These are all instances of the same underlying problem: several data sources (Th
 
 - ~~**`index.html`'s FD "Download Lineups" export was rejected by FanDuel's real uploader (found live, Session 14.1c, 2026-08-11).**~~ ✅ **RESOLVED.** FD's file-upload validator rejects the `"Name (ID)"` cell format DK's uploader tolerates, despite FD's own on-screen instructions describing it as valid (that text is for their manual web-grid entry, not the file-upload parser). FD export switched to ID-only; DK unchanged. Confirmed live: FanDuel accepted the re-exported file.
 
+- **Session 15's participation floor has not been independently re-validated against one specific real violation post-fix, unlike Session 15's own pivot fixes (B1/B2), which were.** Resting on the user's own real-build confirmation ("not seeing any flags... i think we're good") rather than a traced example the way Daniel Jones/Riley Leonard was traced pre-fix. **First point this closes for real:** if a backup-shaped player ever reappears in a real build, or the next time a real Jones/Leonard-shaped case (a starter returning from a late-season injury) shows up on a real slate to check the floor against directly.
+- **Session 15's participation floor is scoped to classic slates only — Showdown deferred, not built.** Showdown's CPT/FLEX role model doesn't map onto a position-keyed floor the same way classic's roster slots do; silently no-ops there with a printed NOTE rather than erroring. **First point this would need addressing:** if a Showdown-specific version of the backup-QB problem is ever reported for real.
+
 Until Preseason Week 1: treat Session 2.4 (and by extension anything built on top of it in Phase 3+) as validated for correctness-of-logic only, not for real-world data quality. Re-run Session 2.4's validation checklist in full once real data exists for both sites.
 
 - **FD's salary-anchor curve cannot be fit, and is now BLOCKED rather than deferred by assumption (Session 10.2).** This one is different in kind from the other FD gaps in this list: it isn't "untested," it's "demonstrably not fittable on the data that exists." With only 2021 matched (RotoGuru has no FD before 2011 and nothing after 2021, and only 2021 was matched in Session 10.0), QB bins to 4 knots and the defense to 3, and the top-endpoint extension hits its cap at **QB, RB, WR and TE simultaneously** — WR's top bin mean is $7,045 against a $10,200 salary maximum, a $3,155 gap the extension cannot honestly span. A capped top means expensive players compress onto a near-flat anchor, which is precisely the region that decides lineups. `fit_salary_anchor.py` now treats both conditions as hard errors before writing anything, and `data/salary_anchor_fd.json` was deleted so a stale unfit curve can't be silently picked up. Note this also exposed and fixed a real hole in the fitter's own guard — it counted ROWS, not BINS, and let a 3-knot curve through twice. **User's explicit call (Session 14.1c, 2026-08-11): stays blocked, no action taken.** Largely moot regardless — the production stat-line engine (`build_projections_statline.py`) never used the salary anchor at all (decision #4), only the legacy engine did. **First point this would close for real, if ever revisited:** whenever enough real FD Classic slates accumulate to fit against.
@@ -3033,3 +3036,36 @@ focus elsewhere (FD validation, Phase 6 preseason dry runs, etc.).
 
 **Validation:** N/A — defer scoping until 14.0/14.1 are actually done
 and there's real output to look at.
+
+---
+
+### Session 15 — Pre-Season Hardening: Participation Floor + Pivot Pipeline Fixes ✅ Complete (2026-08-14)
+
+**Trigger:** two real, user-reported problems from the first real production use of the Phase 14 engine — a backup QB (Riley Leonard, IND) outranking the actual starter (Daniel Jones) in a real Week 1 2026 DK build, and the cash-to-GPP pivot feature (Session 4.2/4.3) never having produced output on any real slate, ever.
+
+**Build:** `apply_participation_floor()` in `optimizer.py`, a new `--participation-floors` flag (default `QB:0.6,RB:0.4,TE:0.4`, ON by default, classic slates only) that excludes a player from the candidate pool if he's barely appeared in his team's last 5 games — `--lock` overrides it for a known exception. `games_played`/`participation_effective` now survive into `final_projections_*.csv` (previously computed internally, dropped before the final CSV) to make the floor possible at all. Separately, `pivot_finder.py` fixed to read the file real usage actually produces (`lineups_multi_*.csv`, not `lineup_single_*.csv`, which was the entire reason pivots had never worked), plus two further real bugs found and fixed while validating that fix against real data: a salary-cap re-check that summed the wrong thing (was checking a swap against the sum of ALL rostered players across 20 lineups, not one lineup — $175,900 against a $50,000 cap, failing every candidate silently), and an FD defense position-label mismatch ("D" vs "DEF") that crashed the script outright. Also found: the real UI build path never wrote the slate-keyed lineup file pivots depend on at all (it only wrote a per-request file used for polling) — fixed with a second write.
+
+**Files:** `scripts/optimizer.py`, `scripts/build_projections_statline.py`, `scripts/pivot_finder.py`, `cloudflare_worker/optimizer_api/optimizer_api.js`, `.github/workflows/run_optimizer_dispatch.yml`, `dfs_optimizer_frontend/index.html`. Full decision-by-decision detail in SESSION_LOG.md.
+
+**Validation:**
+- [x] Participation floor unit-tested against synthetic data shaped like the real Jones/Leonard/Richardson case; user-confirmed on a real production build (no backup-QB-shaped rosterings observed) — see SESSION_LOG.md for the caveat on how directly this was re-traced vs. B1/B2 below.
+- [x] Pivot fixes confirmed end-to-end against the user's real Week 1 2026 DK and FD builds — real output (29 rows/14 players DK, 19 rows/12 players FD, 0 salary-cap violations either site), remaining "no candidates" cases hand-verified as genuine, not bugs.
+- [x] User confirmed uploading and viewing correct pivot suggestions in the deployed UI.
+- [x] All modified files pass their respective syntax/compile checks (`py_compile`, `node --check`, YAML parse, `getElementById` cross-reference).
+
+---
+
+### Session 15.1 — Pivot Live Auto-Load + Weekly Process Reorg ✅ Complete (2026-08-15)
+
+**Trigger:** with Session 15's pivot pipeline confirmed working, the remaining friction was that the user still had to manually re-upload the pivot file into the UI every time they wanted current data — exactly what's easy to forget under real time pressure near lock. User's own framing: "I'm not scrambling for pivots in the last hour."
+
+**Build:** new Worker action `load_pivots` reads `output/pivot_suggestions_{site}_{slate_id}.csv` live from GitHub on every call, mirroring how a lineup build already always reads whatever's currently committed rather than anything cached. Frontend's pivot-loading function tries this live read first, falling back to the old upload-and-cache path only if the Worker is unreachable — manual upload still works, just no longer required. Separately, reorganized `DFS_Weekly_Process.md` per user request: pivot generation moved from Stage 4 (after lineup building) to a new Step 2j, inserted between the old "build final projections" (2i) and "commit and push" (renumbered 2j → 2k) — builds a rough, disposable local lineup batch purely to seed pivots, so projections/lineups/pivots all push together in one cycle instead of two.
+
+**Files:** `cloudflare_worker/optimizer_api/optimizer_api.js`, `dfs_optimizer_frontend/index.html`, `DFS_Weekly_Process.md`.
+
+**Validation:**
+- [x] `node --check` clean on both JS files; `getElementById` cross-reference clean.
+- [x] User-confirmed working on the real deployed Worker/UI post-redeploy: "appears to be working correctly" — pivots load with no upload step.
+- [x] All internal Step 2i/2j/2k cross-references in `DFS_Weekly_Process.md` grep-verified consistent after renumbering.
+
+**Closes the loop opened by Session 15's original trigger report** — nothing outstanding remains from either the backup-QB or the pivot report.

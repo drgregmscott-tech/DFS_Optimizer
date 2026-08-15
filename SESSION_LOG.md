@@ -4111,3 +4111,105 @@ need to be re-scoped from scratch.
 - **cron-job.org real near-lock schedule + `current_slate.json` real values** — explicit user decision to wait until closer to lock rather than set now.
 
 **Handoff notes for next session:** FD is now at genuine feature parity with DK across ingestion → projections → optimizer → frontend export, confirmed with real data at every layer, not assumed from DK's parity alone. The one open thread is `backtest_week()`'s unverified filename references (see above) — check that first if a future backtest run throws an unexpected file-not-found.
+
+---
+
+## Session 15 — Pre-Season Hardening: Participation Floor + Pivot Pipeline Fixes (2026-08-14)
+**Status:** ✅ Complete
+
+**Trigger:** two real, user-reported problems from the first real production use of the Phase 14 engine, one month before regular-season kickoff. (1) A real 20-lineup DK build rostered a backup QB (Riley Leonard, IND) over the team's actual starter (Daniel Jones) on a real Week 1 2026 slate. (2) The cash-to-GPP pivot feature (Session 4.2/4.3) had never produced output on any real slate, ever — user suspected the file it depends on was never being generated.
+
+### Decision #A1 — considered and rejected: auto-correcting participation for a "returning starter"
+
+Initial design called for teaching `statline_model.py`'s participation calc to detect "was hurt, is healthy now" (Daniel Jones) and distinguish it from "is a genuine backup" (Riley Leonard) or "is still on a snap count easing back" (a hypothetical mid-season RB/WR/TE return). Rejected after working through the third case with the user: a model correction can't reliably tell "full unrestricted return" from "still ramping up" from box-score history alone — both look identical (low recent appearances). Building that heuristic would mean stacking one unproven correction on top of another. The decision #A2 floor below, paired with the existing `--lock` override, already covers all three cases correctly without it: a genuine backup gets excluded (correct), a still-ramping-up player gets excluded (also correct — reduced volume is a real reason not to roster him), and a fully-healthy returning starter gets excluded by default but the user locks him in with real-world knowledge the model doesn't have. No code follows from A1 — noted here so the reasoning isn't lost, not because anything was built.
+
+### Decision #A2 — hard participation floor in the optimizer pool, on by default
+
+**Root cause, traced with real data, not assumed:** `statline_model.py`'s `_participation()` looks at a team's last 5 played weeks. Daniel Jones (IND's real 2025 starter, 13 straight starts before missing the season's final 4 weeks to injury) appeared in only 1 of IND's last 5 played weeks (a bye plus the injury absence) → participation 0.20. Riley Leonard (real IND QB3, career-backup usage plus one fluky 22.6-point Week 18 mop-up game) landed in a similar range by comparison. Real evidence: `baseline_recent_form_dk_2025_23.csv` (the correctly-computed raw input) shows Jones's true per-game rate at 17.42 across his 13 real starts — the existing role-change override (Session 10.3b) partially compensates but not nearly enough.
+
+**Fix:** `games_played`/`participation_effective` (already computed internally, previously dropped before the final CSV) now survive into `final_projections_{site}_{slate_id}.csv` as passthrough columns (NaN for true zero-history rookies, DST, kickers, and confirmed no-game/bye weeks — never a fabricated 0.0, which would look like real evidence to the floor below). `optimizer.py` gained `apply_participation_floor()` and a new `--participation-floors` CLI flag (default `"QB:0.6,RB:0.4,TE:0.4"`, ON by default — not opt-in), wired into both `build_single_lineup()` and `build_multi_lineup()`, scoped to classic slates only this session (Showdown's CPT/FLEX role model doesn't map onto a position-keyed floor the same way — silently no-ops there with a NOTE, doesn't error, since the default is ON and erroring on every Showdown build over a default the user never touched would be worse). Locked players are always exempt. Thresholds are a considered judgment call (QB strict — the position is close to winner-take-all; RB/TE moderate — real committees still show up on the field most weeks; WR unrestricted — deep, egalitarian rotations make a low reading far less diagnostic there), not fitted to data — first retuning candidate once real-season roster-decision outcomes exist to check them against.
+
+**Files created/modified:**
+- `scripts/build_projections_statline.py` (`AUDIT_COLUMNS` passthrough)
+- `scripts/optimizer.py` (`apply_participation_floor()`, `parse_participation_floors()`, `--participation-floors`, wired into both build functions and both call sites)
+- `cloudflare_worker/optimizer_api/optimizer_api.js` (`passthroughKeys`)
+- `.github/workflows/run_optimizer_dispatch.yml` (flag-builder)
+- `dfs_optimizer_frontend/index.html` (Build panel field, Showdown hide-list, presets list)
+
+### Decision #B1 — pivot_finder.py was reading a file real usage never produces
+
+**Root cause, confirmed via a real repo audit:** `pivot_finder.py` only ever read `lineup_single_{site}_{slate_id}.csv` (Session 3.1's single-best-lineup mode). Real usage always builds via multi-lineup mode (20+ lineups for GPP), which writes a differently-named file, `lineups_multi_{site}_{slate_id}.csv`. That file never existed for a real slate, so `refresh_data.yml`'s own gate ("only rebuild pivots if `lineup_single` exists") silently, permanently no-op'd on every real automated run, with nothing anywhere flagging it as wrong.
+
+**Fix:** new `load_lineup_players()` (was `load_lineup_single()`) reads `lineups_multi` first, falling back to `lineup_single` for old single-lineup workflows. Dedupes to one row per unique player across however many lineups were built.
+
+**Two further real bugs found and fixed while validating B1 against the user's actual Week 1 2026 DK/FD builds (not synthetic data):**
+- **Salary-cap re-check used the wrong total.** Decision #5's existing hard cap re-check (`lineup_total_salary - cash_salary + candidate_salary <= cap`) used to compute `lineup_total_salary` as one lineup's total — correct when `pivot_finder.py` only ever saw one lineup. With B1 now feeding it every unique player across 20 lineups, that same sum became $175,900 on a real DK build (cap: $50,000), making the cap check fail for literally every candidate, every player, silently. Fixed: each cash player now carries his own reference salary — the total of the single most-expensive ("tightest") lineup he's actually rostered in, computed before the dedupe above. Confirmed against real data: Joe Burrow, previously 0 candidates, now correctly returns Trevor Lawrence/Jalen Hurts/Justin Herbert.
+- **FD defense position label mismatch crashed the script outright.** `final_projections_fd_*.csv` carries FD's raw ingest label ("D") for a defense; `lineups_multi_fd_*.csv` carries the canonical roster-slot label ("DEF") from the Session ~14.x FD parity fix — same real player, two spellings, zero matches, hard crash (`Tennessee Titans` matched 0 rows). Fixed in `_join_key()`: "D"/"DEF"/"DST" all canonicalize to one token for matching purposes only (mirrors, doesn't import, `optimizer.py`'s own `DEFENSE_POSITION_LABELS` constant). `cash_position` is now sourced from the pool's own row rather than the lineup file's, so the downstream candidate-position filter can't hit the same mismatch a second time.
+
+**Files created/modified:**
+- `scripts/pivot_finder.py` (`load_lineup_players()`, `_worst_case_lineup_salary` tracking, `_join_key()` defense canonicalization, `cash_lineup_salary_ref`)
+
+### Decision #B2 — the real UI build path never wrote the file B1 needs
+
+**Root cause, found while confirming B1's fix against a real UI-built batch, not assumed:** every real "Build Lineups" click in the deployed UI dispatches with a `request_id` (a fresh UUID per click). `optimizer.py`'s multi-lineup write path only ever wrote the request_id-keyed file (`output/ui_requests/{request_id}.csv`, used solely for the UI's poll-and-download) when a request_id was present — the deterministic, slate-keyed file B1 (and `refresh_data.yml`'s pivot gate) both look for was only ever written by a manual CLI run with no `--request-id`, which real usage never does either.
+
+**Fix:** the multi-lineup write path now writes BOTH files when a request_id is present — "most recent batch wins" is the correct semantics for a pivot source. `run_optimizer_dispatch.yml`'s commit step (deliberately narrow-scoped to `output/ui_requests/` only, by design) got one explicit, narrow exception added for this exact new file, by exact path, not a wildcard.
+
+**Files created/modified:**
+- `scripts/optimizer.py` (dual-write in the multi-lineup request_id branch)
+- `.github/workflows/run_optimizer_dispatch.yml` (git-add scope)
+
+### Validation results
+- [x] `apply_participation_floor()` unit-tested against synthetic data shaped exactly like the real Jones/Leonard/Richardson case (Jones/Leonard/Richardson all correctly excluded; a lock brings Jones back; an empty string genuinely disables the floor). `optimizer.py`, `build_projections_statline.py` all `py_compile` clean.
+- [x] **User-confirmed on a real production build (2026-08-14):** built real DK/FD lineups against the pulled fix — "the participation floor is doing its job... not seeing any flags when I build lineups currently" (i.e., no backup-QB-shaped rosterings observed). Not independently traced against one specific real violation the way B1/B2 were below — the earlier confirmed bug (Leonard over Jones) simply stopped recurring in real use.
+- [x] `optimizer_api.js`/`run_optimizer_dispatch.yml`/`index.html` (`node --check`, YAML parse, embedded-Python compile, `getElementById` cross-reference) all clean.
+- [x] **B1/B2 fix confirmed end-to-end against the user's real Week 1 2026 DK and FD builds** (not synthetic): downloaded the real `lineups_multi_*.csv` and `final_projections_*.csv` the user's own pipeline produced, replicated the candidate-matching logic by hand to confirm expected output before shipping the fix, then had the user run the actual fixed script against the actual repo. Real output: DK — 29 pivot suggestion rows across 14 cash players (0 salary-cap violations); FD — 19 rows across 12 cash players (0 violations), including working defense pivots post-label-fix. Remaining "no candidates" warnings spot-checked by hand (Jahmyr Gibbs, Tennessee Titans) and confirmed genuine (no lower-owned same-tier alternative exists, or the cheapest alternative would break the cap in one of the player's actual lineups) — not further bugs.
+- [x] User confirmed uploading both real `pivot_suggestions_*.csv` files into the UI and seeing correct pivot plays displayed.
+
+**Decisions made / assumptions taken:**
+- Participation-floor thresholds (`QB:0.6,RB:0.4,TE:0.4`) are a considered judgment call, not fitted — flagged above as the first retuning candidate once real-season data exists.
+- Scoped the participation floor to classic slates only this session; Showdown deferred (see decision #A2).
+
+**Known issues deferred (explicit, not oversights):**
+- Participation floor has not been independently re-validated against one specific real violation post-fix, unlike B1/B2 — resting on the user's own real-build confirmation. Revisit if a backup-shaped player ever reappears in a real build.
+- Showdown participation floor — out of scope this session, same boundary Session 13.4 drew for other classic-first features.
+
+**Handoff notes for next session:** the pivot pipeline is now confirmed working end-to-end on real data for the first time ever, including two real bugs (B1's salary-cap check, B2's dual-write gap) that were only discoverable once real data actually flowed through it — both fixed and validated, not just theorized. Session 15.1 (immediately below) covers the same-day follow-up that made the resulting file auto-load in the UI.
+
+---
+
+## Session 15.1 — Pivot Live Auto-Load + Weekly Process Reorg (2026-08-15)
+**Status:** ✅ Complete
+
+**Trigger:** with Session 15's pivot pipeline confirmed working, the remaining friction was manual — the user still had to re-upload `pivot_suggestions_{site}_{slate_id}.csv` into the UI every time they wanted current data, exactly the kind of thing that's easy to forget under real time pressure in the last hour before lock. User's own framing: "I make the pivot file mid week and then let the automatic updates do the rest of the work... that way I'm not scrambling for pivots in the last hour."
+
+### Decision #B3 — pivots now read live from GitHub, no upload
+
+**Root cause of the remaining friction, confirmed by reading the actual Worker code before proposing a fix (not assumed):** `handleSaveSlate`/`handleLoadSlate` store and return a frozen snapshot of whatever was uploaded at upload time — correct for a pool/lineup slate (the point of a saved slate is that it's a chosen snapshot), wrong for pivots, which `refresh_data.yml` already regenerates automatically all week independent of anything ever uploaded. Confirmed the same pattern does NOT limit lineup building itself: a "Build Lineups" dispatch never sends pool data at all (checked `optimizer_api.js`'s `passthroughKeys` directly) — it always reads whatever's currently committed on GitHub, live, at build time. Pivots had no equivalent live-read path.
+
+**Fix:** new Worker action `load_pivots` (`handleLoadPivots()`) reads `output/pivot_suggestions_{site}_{slate_id}.csv` directly from GitHub on every call — no separate "save" action, since there's nothing left for the user to upload. Frontend's `loadPivotsForActive()` now tries this live read first on every slate load; the old upload-and-cache path is kept as a fallback only, for if the Worker is ever unreachable. Manual upload (Choose File) still works if ever wanted (e.g. comparing an older file), just no longer the normal path.
+
+**Files created/modified:**
+- `cloudflare_worker/optimizer_api/optimizer_api.js` (`handleLoadPivots()`, `load_pivots` action)
+- `dfs_optimizer_frontend/index.html` (`cloudLoadPivotsLive()`, `loadPivotsForActive()` rewritten to try it first)
+
+### Weekly process reorganization
+
+User-requested: relocate pivot generation from Stage 4 (after lineup building) to a new **Step 2j**, inserted between the old Step 2i (build final projections) and Step 2j (commit and push, renumbered to 2k) — "a more logical flow of work." Step 2j builds a rough, disposable lineup batch locally (not through the deployed UI, which can't dispatch against projections that haven't been pushed yet) purely to give `pivot_finder.py` something to work from, then generates pivots from it — so projections, that rough batch, and pivots all go into one push at Step 2k instead of two separate cycles. Building real lineups later through the UI simply overwrites the rough batch at the same file path; the next automated refresh regenerates pivots from that newer, real batch automatically. Stage 4's old "Pivot suggestions" section replaced with a short pointer to Step 2j. Stage 3's explanation of what is/isn't automatic corrected to state the live-read exception plainly.
+
+**Files created/modified:**
+- `DFS_Weekly_Process.md` (Step 2j inserted, old 2j renumbered 2k, Stage 4 pivot section replaced with a pointer, Stage 3 explanation corrected, "Known gaps" bullet updated)
+
+### Validation results
+- [x] `optimizer_api.js`: `node --check` clean.
+- [x] `index.html`: `node --check` clean on extracted JS; `getElementById` cross-reference clean both directions. One real bug caught and fixed during this session's own validation, not shipped: a brace-matching error left over from the `loadPivotsForActive()` rewrite, caught by the same syntax check before delivery.
+- [x] **User-confirmed working on the real deployed Worker/UI (2026-08-15):** "appears to be working correctly" after redeploy — pivots load with no upload step.
+- [x] All internal `Step 2i`/`Step 2j`/`Step 2k` cross-references in `DFS_Weekly_Process.md` checked for consistency after renumbering (grep-verified, not just visually skimmed).
+
+**Decisions made / assumptions taken:**
+- Kept manual pivot upload as a fallback path rather than removing it outright — low cost to leave, real value if the Worker's ever misconfigured.
+- Did not touch `handleSaveSlate`/`handleLoadSlate`'s existing frozen-snapshot behavior for pool/lineup data — correct as-is, out of scope for this fix.
+
+**Known issues deferred:** none new.
+
+**Handoff notes for next session:** pivots are now a fully closed loop — generate once (Step 2j), push, and every automated refresh for the rest of the week keeps the displayed suggestions current with zero further manual action, right up to lock. This was the last open thread from the original Session 15 backup-QB/pivot report; nothing outstanding from that report remains.
