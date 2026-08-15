@@ -3072,19 +3072,45 @@ and there's real output to look at.
 
 ---
 
-### Session 15.2 — Pre-Season Deep Dive: Projections *(planned, not started)*
+Session 15.2 — Pre-Season Deep Dive: Projections ✅ Complete, one item pending push (2026-08-15)
 
-**Prerequisites:** none blocking — can start anytime. Deliberately kept as a separate chat/session from 15/15.1, per user's explicit call (2026-08-15): scoped now, started later.
+Trigger: user's original open-ended ask (2026-08-14) to deep-dive projections while there's still time before real games start. Planned approach: pull real 2026 teams/players through the pipeline hunting for other Jones/Leonard-shaped situations (committee backfields, offseason team changes, rookie Week 1 starters, anyone who missed time late in 2025), plus a sigma/uncertainty sanity pass.
 
-**Trigger:** user's original open-ended ask (2026-08-14, same conversation that produced Session 15) to deep-dive projections/ownership/lineup-construction while there's still time before real games start, beyond just the two specific issues reported that session. Lineup construction was judged sufficiently addressed by Session 15's participation floor (user's explicit call, 2026-08-15) — this card is the projections portion of what's left.
+Build: found and fixed two real production bugs, diagnosed two further real statistical limitations (deferred to Session 15.2b below), reassessed against fresh live data to confirm the fixes and check for anything missed.
 
-**Purpose:** neither projections nor ownership can be calibrated against real outcomes yet — no 2026 regular-season game has been played (same gate as Session 9.1). That doesn't make a deep dive pointless, it changes what kind of deep dive is possible now. The Daniel Jones/Riley Leonard bug (Session 15) wasn't found by code review, it was found by running real data through and noticing something that didn't look right. This session applies that same method systematically and proactively, rather than waiting for the next bug to get reported.
+The confirmed-starter override. Six real Week 1 2026 players (Sam LaPorta, Tucker Kraft, Garrett Wilson, Rome Odunze, Alvin Kamara, Michael Penix Jr.) projected at a literal 0.0 despite being real, rostered players — traced to the existing role-change override's own divide-by-zero guard always blocking at exactly-zero participation, and confirmed that patching the guard alone doesn't help (a real injury-returning starter's price runs BELOW his established share, not above — the override's whole shape points backward for this group). Fixed by checking nflverse's real daily depth-chart feed instead of inferring role from price: a confirmed #1 with zero recent participation gets full credit for his established role; a genuine backup (Kamara, Penix — both real #2s) is correctly left alone. Live and confirmed in production (Run #153).
+status_check.py's stale filename convention, found while validating #1 live: the automated "zero out OUT players" step had been silently overwriting an orphaned legacy-engine filename since the Session 14.0 cutover, on both sites, never touching the real file optimizer.py reads. Fixed in refresh_data.yml. Live and confirmed in production (Run #153) — 6 real OUT players correctly zeroed on the real file, both sites, for the first time since the cutover.
+Reconciliation misattributes traded players to the wrong team. 70 players on the real Week 1 2026 slate had a current team different from their 2025 team; their real historical volume was being credited to their NEW team's share estimate instead of the team that actually produced it (Carolina's real rush pool share came out at 55.7% purely from Rico Dowdle's real production being counted toward Pittsburgh). Fixed — confirmed against real data (Carolina 55.7%→99.2%; team-level correlation with real 2025 identity -0.183→+0.239). Built and validated, NOT yet pushed — see SESSION_LOG.md's Handoff notes.
+Diagnosed, not built: the team-volume model's weak history coefficient (Mechanism 1) and sigma's failure to reflect team-volume prediction uncertainty (Mechanism 3) — both real, quantified findings needing proper backtesting before a fix. Deferred to new Session 15.2b, user's explicit call.
+Judged genuinely unfixable, not deferred: Calvin Ridley (TEN) and James Conner (ARI) both sit behind real, currently-unresolved depth-chart competitions — any assigned number would be a guess dressed up as a signal. Left as documented, accepted limitations.
 
-**Planned approach:** pull several more real 2026 teams/players through the pipeline — not just the Colts QBs the original bug happened to surface — and specifically hunt for other Jones/Leonard-shaped situations: committee backfields, players who changed teams in the offseason, rookies inserted as Week 1 starters, anyone else who missed time late in the 2025 season. Also a sanity pass on sigma/uncertainty calibration — wide where it should be, tight where it should be — since that's the input the participation floor's whole "don't roster a scrub" logic ultimately depends on.
+Files: scripts/nflverse_fetch.py, scripts/ingest_historical.py, scripts/statline_model.py, scripts/build_projections_statline.py, .github/workflows/refresh_data.yml, scripts/status_check.py. Full decision-by-decision detail in SESSION_LOG.md.
 
-**Build:** none yet — scoping only, this session.
+Validation:
 
-**Validation:** N/A — defer until real analysis work happens.
+ Items 1-2 confirmed live in real production (GitHub Actions Run #153, 2026-08-15) — not just probed/validated locally.
+ Item 3 validated end-to-end against real data, no regression to items 1-2 confirmed.
+ Item 3 pending push to the repo — the one concrete action remaining from this session.
+ Items 4-5 are diagnostics/decisions, not builds — no validation checkboxes apply; see SESSION_LOG.md.
+
+---
+
+Session 15.2b — Team Volume Modeling: History Weight + Sigma Propagation (planned, not started)
+
+Prerequisites: Session 15.2 complete. Independent of Session 15.3 (ownership) — can run in either order.
+
+Trigger: two real, quantified findings from Session 15.2's diagnostics, both in the same root-cause area (team-level volume modeling), both judged too large to build without proper backtesting in that session. User's explicit call to combine them into one dedicated session rather than open a third.
+
+Purpose:
+
+The team-volume "with_history" regression under-weights a team's own real identity. Confirmed real (not a fitting artifact — checked for collinearity, found weak; checked coefficient stability with/without the Vegas terms, found stable) on real, held-out 2022-2024 data: the shipped rush coefficient (0.237) lands in the same range fresh data independently produces (0.306), and R² stays low (0.08 full model, 0.05 history-only) no matter which of the three current inputs get used. Real fix needs genuinely new predictors this specification doesn't have access to at all right now — most promising candidate identified: opponent run-defense strength.
+Sigma doesn't reflect team-volume prediction uncertainty. The Monte Carlo simulator treats each player's expected volume (mu) as a known constant; the only modeled variance is how a player deviates from HIS OWN mean, never whether that mean itself might be wrong. Quantified on the same real panel: team-level rush volume has a real residual SD of 7.31 attempts (27% of the average predicted total) that currently reaches zero players' sigma. A real fix isn't just adding variance — per-player volume draws are currently independent even within one team's own backfield, which is itself unrealistic; a real fix means drawing team volume once per simulation and letting it flow down to every player sharing that pool.
+
+Planned approach: for (1), scope and test candidate new predictors (opponent run-defense strength first) against real historical data the same way Session 15.2's diagnostic did — probe before build, real backtest before shipping a new coefficient. For (2), design the correlated-draw simulator change, and validate it doesn't over- or under-correct against real historical outcomes before shipping.
+
+Build: none yet — scoping only, carried over from Session 15.2's diagnostics.
+
+Validation: N/A — defer until real design/build work happens, matching the standing bar every other statistical-modeling change in this project has been held to (role-change slope, confirmed-starter override, reconciliation fix).
 
 ---
 

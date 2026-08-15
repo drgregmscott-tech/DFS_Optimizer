@@ -4213,3 +4213,132 @@ User-requested: relocate pivot generation from Stage 4 (after lineup building) t
 **Known issues deferred:** none new.
 
 **Handoff notes for next session:** pivots are now a fully closed loop — generate once (Step 2j), push, and every automated refresh for the rest of the week keeps the displayed suggestions current with zero further manual action, right up to lock. This was the last open thread from the original Session 15 backup-QB/pivot report; nothing outstanding from that report remains.
+
+---
+
+Session 15.2 — Pre-Season Deep Dive: Projections (2026-08-15)
+
+Status: ⚠️ Complete with one caveat — Decision #3's fix is built and validated but not yet pushed to the repo. See "Handoff notes for next session."
+
+Trigger: the roadmap card's own plan — pull real 2026 teams/players through the pipeline and hunt for other Jones/Leonard-shaped situations (committee backfields, offseason team changes, rookies inserted as Week 1 starters, anyone who missed time late in 2025), plus a sanity pass on sigma/uncertainty calibration.
+
+What was actually built: the hunt found two real, confirmed production bugs (both fixed, one deployed and one pending push), diagnosed two further real, quantified statistical limitations (deliberately deferred to a new Session 15.2b rather than built here), and closed with a reassessment pass that confirmed the fixes are working correctly on live data and found one additional case judged genuinely unfixable rather than a gap. Full detail below, decision by decision.
+
+Decision #1 — the confirmed-starter override (the session's main finding)
+
+Root cause: hunted the real Week 1 2026 DK/FD final_projections files for more Jones/Leonard-shaped situations and found six: Sam LaPorta, Tucker Kraft, Garrett Wilson, Rome Odunze, Alvin Kamara, and Michael Penix Jr. all projected at a literal 0.0 despite being real, rostered, real-money-priced players. Traced to apply_volume_prior()'s existing role-change override (Session 10.3b): a player at raw participation EXACTLY 0.0 (missed every one of his team's last 5 played games) has hist_share collapse to exactly 0.0 too, since hist_share is itself built by multiplying by that same zero participation — the override's own "no divide by near-zero" guard (ROLE_CHANGE_MIN_HIST_SHARE) blocks it from ever running for this group.
+
+First candidate fixes tried and rejected, with real data (probe scripts, not guesses): patching the divide-by-zero guard alone doesn't work — probed against real 2025 history and the real Week 1 2026 salary files, a real injury-returning starter's price consistently runs at 40-70% of his OWN established share, not above it (DK/FD price in a caution discount for re-injury risk, they don't predict a bigger role than history shows). The override's very shape — raise participation only when price implies MORE role than history — points backward for this specific group. Confirmed on real data: swapping in an unshrunk hist share (hist_share_raw) still didn't fix a single one of the six target players, and independently disturbed ~18 unrelated partial-participation players elsewhere in the pool who were already correctly handled.
+
+Real fix: discovered nflverse also publishes a real, daily-refreshed team depth chart (ESPN-sourced). New function apply_confirmed_starter_override() (statline_model.py): for a player at raw participation ~0 who is the CONFIRMED #1 on today's real depth chart at his position, AND whose own established share from games he actually played (hist_share_raw) clears the same minimum-share bar the existing override uses — give him full credit for that established role (participation_effective = 1.0) and recompute every one of his components' volume from his own raw history accordingly. Everyone else, including a genuine committee/lost-job case, is left untouched.
+
+Deliberately scoped to raw participation ~0 ONLY, not partial cases (Daniel Jones, Jayden Daniels — still at their existing partial credit). Probed both ways: widening to partial-participation players does fix Jones/Daniels, but also moves 30+ ordinary healthy players (Josh Allen, Justin Herbert, Saquon Barkley among others) who simply missed one game in their own last-5 window for a normal, non-injury reason — real, already-correct behavior that widening would disturb for no proven benefit. Left out of scope.
+
+Files created/modified:
+
+scripts/nflverse_fetch.py (import_depth_charts())
+scripts/ingest_historical.py (ingest_depth_charts() — tries season+1 then season for the real current-season file, non-fatal on failure, writes to a fixed data/depth_charts_current.parquet path rather than season-suffixed, since this is a rolling current-state feed, not accumulated history)
+scripts/statline_model.py (load_depth_chart(), apply_confirmed_starter_override())
+scripts/build_projections_statline.py (wired in right after apply_volume_prior(), before reconciliation; new --no-confirmed-starter-override opt-out flag, ON by default alongside --volume-prior)
+
+Validation results:
+
+ Probed against real 2025 history + real Week 1 2026 DK/FD salaries, using the actual production functions (build_usage(), team_volume_history(), vegas_anchored_team_volume(), role_change_participation()), not reimplemented logic.
+ Full-pool blast radius check: exactly the 5 confirmed cases moved (Kyler Murray also confirmed as a "changed teams" variant of the same bug), zero unintended movement across the other 336+ real-history players in the pool, both sites.
+ Correctly leaves Alvin Kamara and Michael Penix Jr. untouched — both confirmed genuinely #2 on the real depth chart (Travis Etienne Jr. and Tua Tagovailoa are the real #1s), not #1s the fix incorrectly missed.
+ Validated against the REAL edited code (not probe stand-ins) via validate_real_code.py — same 5-player result on both sites, first pass caught and fixed a real gap in the validation harness itself (needed real Vegas-anchored team volume for hist_share to compute at all — confirmed both apply_volume_prior()'s existing role-change mechanism and the new override both need this).
+ reconcile_team_shares() run before/after on the real pool, both sites: zero fail-loud violations either way. The affected teams needing a bigger post-fix rescale is the function's own documented, intended behavior for a returning player (cites a real SEA 2021 week 10 case).
+ Confirmed live in production, real GitHub Actions run (#153, 2026-08-15): raw run logs show Confirmed-starter override applied: 5 player(s) restored from 0.0 participation to a confirmed #1 depth-chart role. on both DK and FD.
+Decision #2 — status_check.py's stale filename convention (found while validating Decision #1 live)
+
+Root cause, found live, not by code review: the first real on-demand workflow run (#152) after Decision #1 shipped failed — but the failure was in "Apply status (zero OUT players) -- FD", unrelated to the confirmed-starter override itself (which ran clean on both sites in that same run). status_check.py's apply command defaults to overwriting output/final_projections_{site}_{week}.csv — the legacy engine's (build_projections.py, pre-Session-14.0) filename convention. The current engine (build_projections_statline.py, since Session 14.0) writes final_projections_{site}_{slate_id}.csv instead, and optimizer.py's load_final_projections() has read that slate_id-keyed name ever since. refresh_data.yml's two "Apply status" steps were never updated to pass --projections-file pointing at the real file, so every automated run since the Session 14.0 cutover had been silently overwriting an orphaned legacy file nothing downstream reads. DK's copy of that step "succeeded" every time only because a stale leftover file from July 30 manual testing happened to still exist at that path; FD's identical call hard-failed because no such file had ever existed for FD — which is what actually surfaced this. Net effect: OUT players had not been getting zeroed on the real, currently-used projections file, on either site, since the Session 14.0 engine cutover.
+
+Fix: .github/workflows/refresh_data.yml's two "Apply status" steps now explicitly pass --projections-file output/final_projections_{site}_{slate_id}.csv. status_check.py's docstring and --projections-file help text corrected (was actively misleading — claimed to overwrite "the exact filename optimizer.py reads," which stopped being true at the Session 14.0 cutover and was never updated). Confirmed via GitHub code search this was the only call site in the repo.
+
+Files created/modified:
+
+.github/workflows/refresh_data.yml
+scripts/status_check.py (docstring/help text only — no functional change to apply's own merge/zero-out logic, which was already correct once pointed at the right file)
+
+Validation results:
+
+ Confirmed the corrected path exactly matches what the real build step writes (checked against Run #152's own log).
+ Confirmed --week isn't used for anything else inside run_apply() that passing --projections-file explicitly would break.
+ Both files parse/compile clean (py_compile, YAML parse).
+ Confirmed live (Run #153, 2026-08-15): both sites' "Apply status" steps succeeded against the real slate_id file. Real numbers: 6 real OUT players correctly zeroed on the file optimizer.py actually reads, on both sites, for the first time since the engine cutover.
+Decision #3 — reconciliation misattributes traded players to the wrong team (Bug #2) — ⚠️ FIX BUILT, NOT YET DEPLOYED
+
+Root cause: with Decision #1 confirmed live, checked the broader team-volume picture the original James Cook III (BUF) report had flagged. Systematic check across all 24 teams on the real Week 1 2026 DK slate: correlation between each team's real 2025 rush-volume identity and this slate's Week 1 model projection was -0.183 — backward, not just noisy. Traced to two distinct mechanisms:
+
+A weak fitted history coefficient in the team-volume "with_history" regression (0.237 on DK) — real, but a separate, deferred item (see Decision #4 below).
+The bug fixed here: reconcile_team_shares()'s _pool_share() groups pooled players by CURRENT team to estimate "how much of this team's real recent volume does our pool capture" — but each player's own {comp}_mu/recent_vol is computed from his HISTORICAL team (hist_team, the team he actually produced that volume for). For any player whose current team differs from his 2025 team — 70 such players found on this single slate, several with major volume (Travis Etienne Jr., 79 recent rush attempts, JAX→NO; Rico Dowdle, 62, CAR→PIT) — this double-misattributes: his old team's pool undercounts (loses real credit for production it actually had), and his new team's pool gets credited with volume that has nothing to do with what that team will actually do. Carolina's real rush pool share came out at 55.7% purely from Dowdle's real 2025 production being counted toward Pittsburgh instead.
+
+Fix: _pool_share() now takes two separate frames — sub (current-team-grouped, unchanged, still what price_share and the final rescale target use, since a traded player's salary and his own final number correctly need to reflect his new team) and a new hist_sub (historical-team-grouped, used only for the recent/full_season share NUMERATOR). reconcile_team_shares() builds hist_team-based groups once per call. build_projections_statline.py's merge no longer drops hist_team (only position needs dropping — that's the real collision).
+
+Files created/modified:
+
+scripts/statline_model.py (_pool_share() signature change, reconcile_team_shares())
+scripts/build_projections_statline.py (one-line merge fix — stop dropping hist_team)
+
+Validation results (all against real data, both sites):
+
+ Carolina rush pool share: 55.7% → 99.2%. Green Bay: 55.6% → 68.3% (partial — the remainder is Emanuel Wilson, who isn't on ANY current team's roster in the pool at all, a genuinely different and unrecoverable case, not a fix gap).
+ Hand-verified Pittsburgh (56.5%) and New Orleans (50.4%) fit the identical two-part pattern — real, unrecoverable roster departures plus correctly-reattributed trades — confirmed to 4 decimal places by hand-recomputing from real weekly_stats.
+ Team-level rush-total correlation with real 2025 identity: -0.183 → +0.239.
+ Confirmed no regression to Decision #1's fix — re-ran that validation on top of this change, same 5-player result, both sites.
+ reconcile_team_shares() still raises zero fail-loud violations on the real pool, both sites, before and after.
+ NOT yet confirmed live — this fix has not been pushed to the repo. See "Handoff notes."
+Diagnostic #4 — the weak team-history coefficient (Mechanism 1) — deferred to Session 15.2b
+
+Rebuilt fit_volume_prior.py's exact panel-construction methodology using real, held-out 2022-2024 data (outside the original 2014-2021 fit window) to determine whether the shipped rush "with_history" coefficient (0.237 — a team's own real recent rushing history gets barely a quarter credit) is a fitting artifact (multicollinearity with the Vegas terms) or a genuine, correctly-measured limitation.
+
+Findings: collinearity between hist_rush and the Vegas terms is weak (corr with implied_total 0.138, spread -0.165). The history coefficient barely moves between a full model (0.306) and a history-only model (0.347) on this fresh data — the opposite of what collinearity-suppression would predict. R² stays low across every specification tried: full model 0.080, history-only 0.050, Vegas-only 0.042. Verdict: genuine, reproducible limitation — team-level weekly rush volume just isn't well predicted by these inputs, confirmed independently on data the original fit never saw, landing in the same range as the shipped coefficient (0.306 vs 0.237).
+
+Decision: not worth refitting the same three-input specification (already shown fresh data agrees). A real improvement needs genuinely new predictors (e.g., opponent run-defense strength) — real feature engineering and a real backtest, sized like its own session. Deferred to Session 15.2b, user's explicit call.
+
+Diagnostic #5 — sigma doesn't account for team-volume prediction uncertainty (Mechanism 3, formerly "3") — deferred to Session 15.2b
+
+Checked whether the Monte Carlo simulation's per-player sigma reflects the team-volume model's own real uncertainty (Diagnostic #4's low R²) or treats team volume as a known constant. Traced _draw_volume(): mu is a fixed input to a negative-binomial draw: all modeled variance (comp["r"], from fit_statline_variance.py) is about how a player deviates from HIS OWN known mean — nothing models whether that mean itself might be wrong this week.
+
+Quantified using the same real 2022-2024 panel: team-level rush volume residual SD around the model's own prediction is 7.31 attempts (27% of the average predicted team total) — real, substantial, and currently invisible to every player's sigma. For a representative lead RB (mu=15, real fitted r=6.0692) at a 55% team share, adding this source would move his volume SD from ~7.2 to ~8.3 attempts — roughly a 10-15% increase, likely larger for exactly the high-uncertainty situations this session focused on (Week 1, trades, injury returns) versus a typical in-season week.
+
+Decision: a real fix needs more than adding variance — per-player volume draws are currently fully independent even within the same team's backfield, which is itself unrealistic (a real team-wide rushing swing should move every back on that team together, not one at random). That's a real simulator architecture change needing its own backtest. Deferred to Session 15.2b alongside Diagnostic #4 — same root-cause area (team volume modeling), user's explicit call to fold both into one future session rather than open a third.
+
+Reassessment — looping back to the original hunt, two cases judged genuinely unfixable
+
+Before closing the session, redid the original hunt against the freshest live data to confirm the fixes are working and check for anything missed. Confirmed Decision #1 and Decision #2 both live and correct (Alec Pierce's real, live injury_status: OUT correctly zeroing him — direct proof Decision #2 is working end-to-end). Re-ran the sigma CV sanity check from the start of the session — unchanged, consistent with Diagnostic #5's now-quantified finding.
+
+Found Calvin Ridley (TEN) still stuck at 0.0 despite Decision #1 being live — traced to a real scope gap: Tennessee's real, current depth chart runs a 3-receiver starting set (Ridley, Wan'Dale Robinson, rookie Carnell Tate all genuine starters), and apply_confirmed_starter_override()'s depth_rank == 1 criterion, correctly restrictive for QB/RB (one real starter), is too narrow for WR specifically.
+
+Discussed with the user and judged NOT fixable, deliberately, not deferred: Ridley's real-world situation (an aging, injury-prone veteran genuinely contesting his role against a hot rookie) and a parallel case found in the same pass — Arizona's RB room (James Conner, last year's starter, currently real depth_rank 3 — behind a rookie AND a free-agent signing, Jeremiyah Love and Tyler Allgeier) — both have a real, currently-unresolved hierarchy. Neither team has actually settled who starts. Any rule assigning either player a nonzero number right now would be a guess dressed up as a signal, not a real fix — worse than the visibly-wrong 0.0, because it would look confident while being no better informed. Left as-is, documented here rather than silently dropped. Not added to Session 15.2b — there's no design/build work that would resolve genuine real-world uncertainty; this closes only once the teams themselves establish a real hierarchy (games played, snap counts).
+
+Files created/modified (session total):
+
+scripts/nflverse_fetch.py
+scripts/ingest_historical.py
+scripts/statline_model.py
+scripts/build_projections_statline.py
+.github/workflows/refresh_data.yml
+scripts/status_check.py (docstring/help text only)
+
+Decisions made / assumptions taken:
+
+Confirmed-starter override scoped to raw participation ~0 only (Decision #1) — partial-participation widening explicitly probed and rejected as too broad for this session's scope.
+depth_charts_current.parquet uses a fixed, non-season-suffixed filename — deliberate, since this is a rolling current-state feed (like Vegas odds/injury status), not accumulated history like every other data/*_{season}.parquet file.
+Depth-chart season resolution tries season+1 before falling back to season itself — self-correcting across the point where the history-lookback season eventually shifts to match, rather than a hardcoded offset.
+Mechanism 1 and Mechanism 3 (Diagnostics #4/#5) both deliberately deferred to a combined Session 15.2b rather than built now — real, quantified findings, but both need proper backtesting before shipping, matching this project's standing "probe before build" bar. User's explicit call.
+Ridley (TEN)/Conner (ARI) judged genuinely unfixable given real, currently-unresolved team hierarchies — not a pipeline gap, a fact about the world. User's explicit call, see Reassessment section above.
+
+Known issues deferred:
+
+Session 15.2b (new session, scoped, not started): Mechanism 1 (team-volume history coefficient — needs new predictors + backtest) and Mechanism 3 (sigma doesn't propagate team-volume prediction uncertainty — needs correlated per-team volume draws in the simulator + backtest). See Diagnostics #4/#5 above for full findings to carry forward.
+Calvin Ridley (TEN) / James Conner (ARI) — real, contested depth-chart situations, correctly left at their current (low) projections. Revisit only once each team's real 2026 usage settles the question, not before.
+depth_rank == 1-only criterion is a real, accepted scope limit of Decision #1's fix for multi-starter WR sets generally, not just Ridley's case — noted here in case it recurs with a cleaner (unambiguous, uncontested) example later.
+
+Handoff notes for next session:
+
+Decision #3's fix (statline_model.py, build_projections_statline.py) is validated but NOT YET PUSHED. Confirmed directly against the live repo before starting the reassessment pass — hist_sub isn't present in production statline_model.py as of session close. This is the single concrete next action before the reconciliation fix takes effect live; everything else this session shipped is already confirmed working in production.
+Session 15.2b is scoped (see Diagnostics #4/#5) but not started — both pieces share a root cause (team volume modeling) and should likely be worked together.
+Alec Pierce's real, live injury_status: OUT in this session's validation is a good future example to point to if anyone asks "does the OUT-zeroing actually work now" — it's real, current, and directly attributable to Decision #2's fix.
+
+---
