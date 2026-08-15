@@ -234,6 +234,22 @@ jobs:
             --vegas-slate-id ${{ steps.slate.outputs.dk_slate_id }} \
             --volume-prior --sigma-recalibration --dst-model distributional
 
+      # Session 15.2 FIX: these two steps were calling status_check.py
+      # apply WITHOUT --projections-file, so each fell back to that
+      # script's own default path -- final_projections_{site}_{week}.csv,
+      # a naming convention the LEGACY engine (build_projections.py) used
+      # and this project's current engine (build_projections_statline.py,
+      # since Session 14.0) does not. The real file optimizer.py reads is
+      # final_projections_{site}_{slate_id}.csv, built two steps above.
+      # Confirmed for real on 2026-08-15 (Run #152): DK's legacy-named
+      # file happened to still exist from July testing, so DK's apply
+      # silently "succeeded" against an orphaned file nothing downstream
+      # reads; FD's legacy file never existed, so the identical call
+      # hard-failed instead -- which is what surfaced this gap. Every
+      # automated run since the Session 14.0 cutover had been leaving OUT
+      # players un-zeroed on the real slate file, on BOTH sites, without
+      # error. See status_check.py's own docstring (Decision #4, Session
+      # 15.2 correction) for the full history.
       - name: Apply status (zero OUT players) -- DK
         id: apply_dk
         if: steps.trigger.outputs.mode == 'full' && steps.status_file.outputs.path != ''
@@ -241,7 +257,8 @@ jobs:
         run: |
           python3 scripts/status_check.py apply --site dk \
             --week ${{ steps.slate.outputs.dk_week }} \
-            --status-file "${{ steps.status_file.outputs.path }}"
+            --status-file "${{ steps.status_file.outputs.path }}" \
+            --projections-file "output/final_projections_dk_${{ steps.slate.outputs.dk_slate_id }}.csv"
 
       - name: Apply status (zero OUT players) -- FD
         id: apply_fd
@@ -250,7 +267,8 @@ jobs:
         run: |
           python3 scripts/status_check.py apply --site fd \
             --week ${{ steps.slate.outputs.fd_week }} \
-            --status-file "${{ steps.status_file.outputs.path }}"
+            --status-file "${{ steps.status_file.outputs.path }}" \
+            --projections-file "output/final_projections_fd_${{ steps.slate.outputs.fd_slate_id }}.csv"
 
       # Session 4.3 addendum: pivot_finder.py needs BOTH a freshly-built
       # final_projections AND an existing built-lineup file -- the latter

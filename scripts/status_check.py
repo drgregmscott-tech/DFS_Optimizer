@@ -124,10 +124,33 @@ Decision #4 -- two subcommands:
               column doesn't break it.
 
               By default OVERWRITES output/final_projections_{site}_
-              {week}.csv in place -- the exact filename optimizer.py
-              reads, which has no path override of its own. `--out` can
-              redirect elsewhere for a dry run before committing to the
-              overwrite.
+              {week}.csv in place. Session 15.2 CORRECTION: that was
+              accurate when this was written (Session 5.1, pre-Session-
+              14.0), back when build_projections.py -- the legacy engine,
+              which really did use that exact filename -- was the only
+              engine that existed. Session 14.0 replaced it with
+              build_projections_statline.py, which writes
+              final_projections_{site}_{slate_id}.csv instead (a
+              deliberate change -- see that script's own Session 14.0 FIX
+              comment on why slate_id replaced week as the filename key).
+              optimizer.py's load_final_projections() has read the
+              slate_id-keyed name ever since. This function's OWN default
+              was never updated to match, so every automated `apply` since
+              the Session 14.0 cutover has been overwriting an orphaned
+              file nothing downstream reads, while the real file
+              optimizer.py opens never got OUT/QUESTIONABLE applied to it
+              at all -- confirmed for real on 2026-08-15 (see
+              SESSION_LOG.md, Session 15.2): DK's legacy file happened to
+              still exist from July testing so `apply` silently "succeeded"
+              against it, FD's never existed so the same call hard-failed
+              instead, which is what surfaced this. There was nothing
+              wrong with `apply`'s OWN merge/zero-out logic -- confirmed
+              working correctly once pointed at the right file -- this was
+              purely a stale default path. ALWAYS pass `--projections-file
+              output/final_projections_{site}_{slate_id}.csv` explicitly
+              now; don't rely on this function's own default. `--out` can
+              still redirect elsewhere for a dry run before committing to
+              the overwrite.
 
 ---------------------------------------------------------------------------
 Decision #5 -- KNOWN GAP, same shape as this project's other "can't
@@ -155,7 +178,8 @@ Usage:
         --teams KC,BUF,DAL
 
     python3 scripts/status_check.py apply --site dk --week 10 \
-        --status-file output/player_status_10_20260722_140000.csv
+        --status-file output/player_status_10_20260722_140000.csv \
+        --projections-file output/final_projections_dk_dk_classic_wk10_XXXXXX.csv
 """
 
 import argparse
@@ -512,7 +536,15 @@ def main():
     p_apply.add_argument("--site", choices=["dk", "fd"], required=True)
     p_apply.add_argument("--week", type=int, required=True)
     p_apply.add_argument("--status-file", required=True, help="Path to a player_status_*.csv from `pull`.")
-    p_apply.add_argument("--projections-file", default=None, help="Override path (default: output/final_projections_{site}_{week}.csv).")
+    p_apply.add_argument("--projections-file", default=None,
+                         help="Path to the real, currently-used projections "
+                              "file: output/final_projections_{site}_{slate_id}.csv "
+                              "(the one optimizer.py actually reads). ALWAYS "
+                              "pass this explicitly (Session 15.2) -- the "
+                              "default below is a stale, pre-Session-14.0 "
+                              "path kept only for backward compatibility, "
+                              "not something to rely on. Default if omitted: "
+                              "output/final_projections_{site}_{week}.csv.")
     p_apply.add_argument("--out", default=None, help="Override output path (default: overwrite --projections-file in place).")
 
     args = parser.parse_args()
