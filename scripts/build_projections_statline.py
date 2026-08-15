@@ -253,6 +253,7 @@ def build_statline_projections(site: str, season: int, week: int, slate_id: str,
                                prior_floor: float = None,
                                prior_k: float = None,
                                role_change: bool = True,
+                               confirmed_starter_override: bool = True,
                                sigma_recal: bool = False,
                                vegas_slate_id: str = None,
                                ) -> pd.DataFrame:
@@ -443,6 +444,25 @@ def build_statline_projections(site: str, season: int, week: int, slate_id: str,
         print(f"Volume prior applied: {n_flag} role-change flag(s), "
               f"{n_cold} player(s) at 0-1 games of history "
               f"(mean price weight {df['volume_prior_weight'].mean():.3f}).")
+
+        # Session 15.2 -- the confirmed-starter override. Same position in
+        # the pipeline the role-change override above already occupies:
+        # AFTER apply_volume_prior(), BEFORE reconciliation, so a fixed
+        # player's restored volume flows through reconciliation like
+        # everyone else's. See statline_model.apply_confirmed_starter_
+        # override()'s docstring for the full "why" -- short version, the
+        # role-change override just above this can never fire for a player
+        # at raw participation EXACTLY 0.0 (Sam LaPorta, Tucker Kraft,
+        # Garrett Wilson, Rome Odunze, Kyler Murray on the real Week 1 2026
+        # slates), so this checks a real depth chart instead of trying to
+        # infer role from price.
+        if confirmed_starter_override:
+            depth_chart = statline_model.load_depth_chart()
+            df = statline_model.apply_confirmed_starter_override(df, team_vol, depth_chart)
+            n_starter_flag = int(df["confirmed_starter_flag"].sum())
+            print(f"Confirmed-starter override applied: {n_starter_flag} "
+                  f"player(s) restored from 0.0 participation to a "
+                  f"confirmed #1 depth-chart role.")
     else:
         # Session 15 -- AUDIT_COLUMNS never get computed without
         # --volume-prior (games_played/participation only exist as a
@@ -702,6 +722,18 @@ if __name__ == "__main__":
                         help="Disable the participation override only, "
                              "keeping cold start and Vegas team volume. For "
                              "attributing a result to one mechanism.")
+    # Session 15.2. ON by default alongside --volume-prior (both gated on
+    # the same flag, not a separate opt-in, since a player at raw
+    # participation 0.0 has no usable projection at all without it -- this
+    # isn't a measured-improvement card the way --volume-prior itself was,
+    # it's a fix for a confirmed real bug). Opt-out kept for attributing a
+    # result to one mechanism, same reasoning as --no-role-change above.
+    parser.add_argument("--no-confirmed-starter-override", action="store_true",
+                        help="Disable the Session 15.2 confirmed-starter "
+                             "override only, keeping the rest of the "
+                             "volume prior. For attributing a result to "
+                             "one mechanism, or if data/depth_charts_"
+                             "current.parquet is known stale.")
     # Session 10.4b. OFF by default: this session ships the correction, and
     # the default is flipped only once the probe re-run confirms probe B3's
     # ratio column flattens. "Never silently change existing behavior."
@@ -729,6 +761,7 @@ if __name__ == "__main__":
         prior_floor=args.volume_prior_floor,
         prior_k=args.volume_prior_k,
         role_change=not args.no_role_change,
+        confirmed_starter_override=not args.no_confirmed_starter_override,
         sigma_recal=args.sigma_recalibration,
         vegas_slate_id=args.vegas_slate_id)
 

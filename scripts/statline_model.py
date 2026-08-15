@@ -505,6 +505,36 @@ def build_usage(season: int, week: int, variance: dict) -> pd.DataFrame:
     return usage
 
 
+def load_depth_chart() -> pd.DataFrame:
+    """Session 15.2. The latest real depth-chart snapshot -- see
+    ingest_historical.py's ingest_depth_charts() for how/why it's written
+    to a fixed, non-season-suffixed path (data/depth_charts_current.parquet)
+    rather than the season-suffixed convention every other load_*/import_*
+    function here uses. Returns [player_id, team, position, depth_rank]
+    for QB/RB/WR/TE only -- the only positions
+    apply_confirmed_starter_override() has a use for.
+
+    Non-fatal if the file is missing, mirroring ingest_depth_charts()'s own
+    non-fatal handling of a failed pull: returns an empty, correctly-shaped
+    frame rather than raising, so a missing depth-chart pull degrades the
+    confirmed-starter override back to a no-op instead of aborting the
+    whole projection build over one enrichment feed.
+    """
+    path = DATA_DIR / "depth_charts_current.parquet"
+    if not path.exists():
+        print(f"NOTE: {path} not found -- confirmed-starter override "
+              f"unavailable this run (see ingest_historical.py's "
+              f"ingest_depth_charts()).")
+        return pd.DataFrame(columns=["player_id", "team", "position", "depth_rank"])
+    df = pd.read_parquet(path)
+    df["dt"] = pd.to_datetime(df["dt"])
+    latest = df[df["dt"] == df["dt"].max()].copy()
+    latest = latest[latest["pos_abb"].isin(["QB", "RB", "WR", "TE"])]
+    latest = latest.rename(columns={"gsis_id": "player_id", "pos_abb": "position",
+                                    "pos_rank": "depth_rank"})
+    return latest[["player_id", "team", "position", "depth_rank"]].dropna(subset=["player_id"])
+
+
 def team_volume_history(season: int, week: int) -> pd.DataFrame:
     """Recency-weighted team-level volume, for decision #7's reconciliation."""
     hist = load_history(season, week)
@@ -808,6 +838,140 @@ def apply_volume_prior(pool: pd.DataFrame, artifact: dict,
         df[mu] = volume_prior.blend_volume(
             df[mu], df[f"{comp}_price_volume"], w)
     return df
+
+
+# ---------------------------------------------------------------------------
+# Confirmed-starter override (Session 15.2)
+# ---------------------------------------------------------------------------
+
+def apply_confirmed_starter_override(pool: pd.DataFrame, team_vol: pd.DataFrame,
+                                     depth_chart: pd.DataFrame) -> pd.DataFrame:
+    """Session 15.2, decision #1 -- fixes a real production bug the Session
+    15 preseason dry run's hunt for more Jones/Leonard-shaped situations
+    turned up: a returning-from-injury (or newly-traded) starter with
+    EXACTLY 0.0 raw participation -- appeared in none of his team's last 5
+    played games -- gets a literal 0.0 final_projection, not merely a low
+    one. Confirmed on the real Week 1 2026 DK/FD slates: Sam LaPorta,
+    Tucker Kraft, Garrett Wilson, Rome Odunze and Kyler Murray all came out
+    at 0.0 despite being real, rostered, real-money-priced players.
+
+    Root cause: apply_volume_prior()'s role-change override above (decisions
+    #2-#5) can only RAISE participation by comparing a player's own
+    history-derived share (hist_share) against his price-implied share
+    (price_share) -- and at raw participation EXACTLY 0.0 that comparison
+    is broken twice over. First, hist_share is itself built from mu, which
+    is mu_raw multiplied by that same zero, so hist_share is always 0.0
+    too -- the override's own "no divide by near-zero" guard
+    (ROLE_CHANGE_MIN_HIST_SHARE) blocks it from running at all. Second,
+    even patching that guard doesn't help: probed against real 2025
+    history and the real Week 1 2026 DK/FD salary files (Session 15.2), a
+    real injury-returning starter's price consistently runs at 40-70% of
+    his OWN established share, not above it -- DK/FD price in a caution
+    discount for re-injury risk, they don't predict a bigger role than his
+    history shows. The override's very shape -- raise participation only
+    when price implies MORE role than history -- points the wrong
+    direction for this specific group. No amount of guard-patching fixes a
+    formula built to detect the opposite pattern.
+
+    What this does instead: for a player at raw participation ~0, check a
+    REAL signal rather than inferring one from price -- today's actual
+    team depth chart (`depth_chart`, see load_depth_chart()). If he's the
+    confirmed #1 at his position AND his own established share from games
+    he actually played (`{comp}_mu_raw`, never touched by the participation
+    multiplier, so it survives a total recent absence) clears the same
+    ROLE_CHANGE_MIN_HIST_SHARE bar the existing override already uses --
+    give him full credit for that established role
+    (participation_effective = 1.0) and recompute every one of his
+    components' mu from mu_raw accordingly (same recompute-from-raw
+    pattern as decision #12 above). A player who ISN'T the confirmed #1 --
+    a real committee/lost-job case -- is left completely untouched.
+    Session 15.2 confirmed this correctly distinguishes Alvin Kamara and
+    Michael Penix Jr. (both genuinely #2 on today's real depth chart --
+    Travis Etienne Jr. and Tua Tagovailoa are the actual #1s) from LaPorta/
+    Kraft/Wilson/Odunze/Murray (all confirmed #1s). A player with no
+    depth-chart match at all is likewise left untouched, not zeroed --
+    same "absence of a signal is not itself a signal" handling
+    build_projections_statline.py's AUDIT_COLUMNS comment already
+    documents for participation_effective elsewhere in this pipeline.
+
+    Deliberately scoped to raw participation ~0 ONLY, not partial cases
+    (Daniel Jones/Jayden Daniels, currently at partial credit via the
+    existing role-change override above). Probed both ways (Session 15.2):
+    widening this rule to partial-participation players does fix Jones/
+    Daniels, but also moves 30+ ordinary healthy players (Josh Allen,
+    Justin Herbert, Saquon Barkley, among others) who simply missed one
+    game somewhere in their own last-5 window for a normal, non-injury
+    reason -- real, already-reasonable behavior that widening would
+    disturb for no proven benefit. Left for a separately-scoped,
+    separately-probed follow-up if wanted, not folded in here.
+
+    Validated against real reconciliation (Session 15.2): running the real
+    reconcile_team_shares() before and after this override on the real
+    Week 1 2026 DK/FD pools raised zero fail-loud violations on either
+    side. The affected teams needing a bigger rescale afterward is the
+    documented, intended reconciliation behavior for a returning player
+    (see reconcile_team_shares()'s own docstring, which cites SEA's real
+    2021 week 10 1.59x rescale for an actual four-week-absence return as
+    the template for "real football, not breakage").
+
+    Called AFTER apply_volume_prior() and BEFORE reconcile_team_shares(),
+    same position in the pipeline the role-change override already
+    occupies -- so a fixed player's restored volume flows through
+    reconciliation exactly like everyone else's, rather than bypassing it.
+
+    Returns `pool` with `participation_effective`, every `{comp}_mu`, and
+    two new audit columns updated: `confirmed_starter_flag` (bool, mirrors
+    `role_change_flag`'s existing pattern) and `hist_share_raw` (the
+    share-from-games-actually-played number this override is built on --
+    logged for the same reason every other volume adjustment in this file
+    is logged: an unlogged adjustment is untraceable after the fact).
+    """
+    import volume_prior
+    from fit_statline_variance import COMPONENTS
+
+    df = pool.copy()
+    df["confirmed_starter_flag"] = False
+    df["hist_share_raw"] = np.nan
+
+    if depth_chart is None or depth_chart.empty or "team" not in df.columns:
+        return df
+
+    df = df.merge(depth_chart[["player_id", "depth_rank"]], on="player_id", how="left")
+
+    prim = df["position"].astype(str).map(volume_prior.PRIMARY_COMPONENT)
+    tv = team_vol.set_index("team") if len(team_vol) else pd.DataFrame()
+    hist_share_raw = pd.Series(np.nan, index=df.index, dtype=float)
+    for comp, col in _TEAM_PRED_COL.items():
+        m = prim == comp
+        hcol = f"{col}_history"
+        if not m.any() or hcol not in tv.columns:
+            continue
+        denom = pd.to_numeric(df.loc[m, "team"].map(tv[hcol]), errors="coerce")
+        raw = pd.to_numeric(df.loc[m, f"{comp}_mu_raw"], errors="coerce")
+        hist_share_raw.loc[m] = np.where(denom.to_numpy(float) > 1e-9,
+                                         raw.to_numpy(float) / denom.to_numpy(float),
+                                         np.nan)
+    df["hist_share_raw"] = hist_share_raw
+
+    zero_participation = pd.to_numeric(df["participation"], errors="coerce").fillna(0.0) <= 1e-9
+    confirmed_starter = df["depth_rank"] == 1
+    established_role = df["hist_share_raw"] > volume_prior.ROLE_CHANGE_MIN_HIST_SHARE
+    eligible = zero_participation & confirmed_starter & established_role
+
+    df.loc[eligible, "confirmed_starter_flag"] = True
+    df.loc[eligible, "participation_effective"] = 1.0
+
+    for pos, cs in COMPONENTS.items():
+        pos_mask = eligible & (df["position"].astype(str) == pos)
+        if not pos_mask.any():
+            continue
+        for name, _v, _y, _t in cs:
+            raw_col, mu_col = f"{name}_mu_raw", f"{name}_mu"
+            if raw_col in df.columns and mu_col in df.columns:
+                df.loc[pos_mask, mu_col] = pd.to_numeric(
+                    df.loc[pos_mask, raw_col], errors="coerce").fillna(0.0)
+
+    return df.drop(columns=["depth_rank"], errors="ignore")
 
 
 # ---------------------------------------------------------------------------

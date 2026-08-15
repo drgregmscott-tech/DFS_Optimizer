@@ -42,6 +42,14 @@ URL_TEMPLATES = {
     # Session 10.4 uses it instead of the play-by-play release: pbp is ~20 MB
     # per season and the only thing it was wanted for was EPA, which is here.
     "team_stats": f"{BASE_URL}/stats_team/stats_team_week_{{season}}.parquet",
+    # Real, daily-refreshed team depth charts (ESPN-sourced), Session 15.2.
+    # One row per (snapshot date, team, position slot, player) -- NOT
+    # historical game stats, a rolling "who does the team currently have
+    # penciled in" feed. This is what apply_confirmed_starter_override()
+    # (statline_model.py) uses to tell "hurt but still QB1" apart from
+    # "genuinely lost the job" -- see that function's docstring for why a
+    # price/history-only signal can't make that distinction on its own.
+    "depth_charts": f"{BASE_URL}/depth_charts/depth_charts_{{season}}.parquet",
 }
 
 
@@ -95,6 +103,20 @@ def import_weekly_rosters(years: list[int]) -> pd.DataFrame:
     """Pull weekly roster/status data for the given seasons."""
     frames = [_read_parquet(URL_TEMPLATES["weekly_rosters"].format(season=y)) for y in years]
     return pd.concat(frames, ignore_index=True)
+
+
+def import_depth_charts(season: int) -> pd.DataFrame:
+    """Pull the real depth-chart feed for ONE season (Session 15.2).
+
+    Unlike the other import_* functions here, this is never called with a
+    list of seasons -- there is only ever one "current" depth chart worth
+    having, and the caller (ingest_historical.py's ingest_depth_charts())
+    is responsible for figuring out which season number that actually is
+    right now, including a fallback if this 404s. Kept as a single-season
+    fetch here, not a range, so that fallback logic has one clean call to
+    retry rather than a batch that partially succeeds.
+    """
+    return _read_parquet(URL_TEMPLATES["depth_charts"].format(season=season))
 
 
 if __name__ == "__main__":

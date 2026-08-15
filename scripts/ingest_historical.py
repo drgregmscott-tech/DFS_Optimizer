@@ -26,9 +26,12 @@ import argparse
 import sys
 from pathlib import Path
 
+import pandas as pd
+
 sys.path.insert(0, str(Path(__file__).parent))
 from nflverse_fetch import (import_weekly_data, import_schedules,
-                            import_weekly_rosters, import_team_stats)
+                            import_weekly_rosters, import_team_stats,
+                            import_depth_charts)
 
 DATA_DIR = Path(__file__).parent.parent / "data"
 
@@ -147,6 +150,69 @@ def ingest_team_stats(seasons: list[int]) -> list:
     return paths
 
 
+def ingest_depth_charts(seasons: list[int]) -> Path | None:
+    """Session 15.2 -- pull the real, current team depth chart.
+
+    Deliberately DIFFERENT from every ingest_* function above it in two
+    ways, both because a depth chart is a different KIND of thing from
+    weekly stats/rosters/team-stats:
+
+    1. WHICH SEASON NUMBER TO ASK FOR. The other ingests here are asked for
+       whatever season(s) the caller passes -- e.g. right now that's 2025,
+       because 2025 is the last season with completed games and that's
+       what build_usage()'s history lookback needs. A depth chart is not
+       history, it's "who does the team have penciled in RIGHT NOW" -- for
+       a 2026 slate, that has to be the 2026 file, not 2025's, regardless
+       of which season number the history pull is using this month. Rather
+       than hard-code "the current season is history-season + 1" (true
+       today, but wrong again the moment 2026 games start being played and
+       the history pull itself moves to season=2026), this tries
+       max(seasons) + 1 FIRST, and only falls back to max(seasons) itself
+       if that 404s. That self-corrects across the boundary without a
+       calendar-math special case: right now 2025+1=2026 succeeds; once
+       the history pull itself is on season=2026, 2026+1=2027 will 404 and
+       the fallback to 2026 will succeed instead.
+    2. WHERE IT'S WRITTEN. Every other file here is season-suffixed because
+       it's meant to accumulate/retain history across seasons. A depth
+       chart has no "history" this pipeline uses -- statline_model.py's
+       apply_confirmed_starter_override() only ever wants the LATEST
+       snapshot -- so this always overwrites one fixed path,
+       data/depth_charts_current.parquet, regardless of which underlying
+       season number the fetch above actually succeeded on. That gives the
+       reader (statline_model.load_depth_chart()) one name to look for
+       without needing to guess or duplicate the season-resolution logic.
+
+    Non-fatal on failure (unlike ingest_weekly_stats/ingest_team_stats'
+    404-only tolerance above): a missing or broken depth chart pull should
+    degrade the confirmed-starter override back to "not available this
+    run", not abort team_stats/games ingestion below it in main(), which
+    the rest of the pipeline already depends on. Matches this workflow's
+    own continue-on-error precedent for other current-state pulls (vegas
+    odds, injury status).
+    """
+    base = max(seasons)
+    for candidate in (base + 1, base):
+        try:
+            df = import_depth_charts(candidate)
+        except RuntimeError as e:
+            if "404" in str(e):
+                print(f"  NOTE: no depth chart release for season {candidate} -- trying next.")
+                continue
+            print(f"  WARNING: depth chart pull for season {candidate} failed "
+                  f"non-404 ({e}) -- confirmed-starter override will be "
+                  f"unavailable this run, rest of ingestion continuing.")
+            return None
+        out_path = DATA_DIR / "depth_charts_current.parquet"
+        df.to_parquet(out_path, engine="pyarrow", index=False)
+        print(f"  Wrote {out_path} (season {candidate} feed, {len(df)} rows, "
+              f"latest snapshot {pd.to_datetime(df['dt']).max()})")
+        return out_path
+    print(f"  WARNING: no depth chart release found for season {base} or "
+          f"{base + 1} -- confirmed-starter override will be unavailable "
+          f"this run, rest of ingestion continuing.")
+    return None
+
+
 def ingest_games(seasons: list[int]) -> Path:
     """Session 10.4 -- the schedules release under the plain name
     `games.parquet`, which is what the DST model and the backtest harness
@@ -176,6 +242,13 @@ def main():
 
     print(f"\nIngesting weekly rosters for seasons {args.season}...")
     ingest_weekly_rosters(args.season)
+
+    # Session 15.2 -- current team depth chart, for the confirmed-starter
+    # override. Placed before team stats so a depth-chart failure (see that
+    # function's own non-fatal handling) can never prevent team stats/games
+    # below it from running.
+    print(f"\nIngesting current depth chart...")
+    ingest_depth_charts(args.season)
 
     # Session 10.4 -- both needed by the DST model (dst_model.py) and by
     # fit_dst_model.py.
