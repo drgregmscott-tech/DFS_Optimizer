@@ -71,6 +71,31 @@ Numbered decisions:
      volume_prior.py decision #3 should be reconsidered rather than shipped
      on a stale artifact. The number is printed, not buried.
 
+  6. SESSION 15.2B -- RUSH's with_history SPEC GAINS A FOURTH TERM,
+     opp_rush_allowed (the upcoming opponent's own recency-weighted
+     carries-allowed), BECAUSE THE TEAM'S OWN HISTORY TERM WAS MEASURED
+     GENUINELY WEAK (Session 15.2's Diagnostic #4: shipped coefficient
+     0.237, fresh-data-independent refit 0.306, R2 stuck at 0.05-0.08 no
+     matter which of the original three inputs get used) AND A REAL
+     BACKTEST SHOWED THIS NEW TERM HELPS WITHOUT FIXING THAT WEAKNESS.
+     Probed on real, held-out 2022-2024 data across three rotated holdout
+     splits (t = 2.34 to 3.71, coefficient 0.12-0.19 every time, max
+     correlation with the existing three terms 0.30) and confirmed again
+     on this file's own production convention (train 2014-17, test
+     2018-21: t = 3.48, R2_oos 0.0677 -> 0.0728). hist_rush's own
+     coefficient barely moves with the new term present (0.194 -> 0.199 on
+     that same split) -- confirming this is a genuine ADDITIVE signal, not
+     a collinearity artifact that happened to be suppressing hist_rush.
+
+     PASS and RECV do not get an equivalent term. Nobody has probed
+     whether "opponent pass-defense strength" or "opponent coverage
+     strength" would do the same thing for those components, and this
+     project's standing rule is not to ship a change nothing has measured
+     -- see decision #4's own "omitted, never faked" rule for the same
+     principle applied to a different case. If either component's own
+     history coefficient is ever found similarly weak, that is a new,
+     separate probe, not an assumed extension of this one.
+
 Usage:
     # measurement fit (holdout -- this is the default)
     python3 scripts/fit_volume_prior.py --site dk
@@ -188,6 +213,34 @@ def team_totals(week_stats: pd.DataFrame) -> pd.DataFrame:
     g = week_stats.groupby("team")[["attempts", "carries", "targets"]].sum()
     return g.rename(columns={"attempts": "team_pass", "carries": "team_rush",
                              "targets": "team_recv"})
+
+
+def _team_rush_and_opponent(stats: pd.DataFrame) -> pd.DataFrame:
+    """Session 15.2b. One row per (week, team) for a SINGLE season's raw
+    weekly stats: that team's own real rush volume, its real opponent that
+    week, and -- via a self-join of the same table against itself -- how
+    many rushes ITS OPPONENT had, i.e. how many rushes this team allowed
+    on defense that week.
+
+    `opponent_team` comes straight through from nflverse's own weekly-stats
+    release (nflverse_fetch.py pulls the full parquet, no column
+    filtering), so no new data source is needed. A team's opponent is the
+    mode of every one of its players' `opponent_team` values that week --
+    every real player row for a team in a game names the same opponent, so
+    this is exact, not a heuristic; a row with no opponent (bye, or a
+    non-active-roster row nflverse still lists) is dropped before the mode
+    rather than allowed to win a tie.
+    """
+    off = stats.groupby(["week", "team"], as_index=False)["carries"].sum()
+    off = off.rename(columns={"carries": "team_rush"})
+    opp = stats.dropna(subset=["opponent_team"]).groupby(
+        ["week", "team"])["opponent_team"].agg(
+        lambda s: s.value_counts().idxmax()).reset_index()
+    out = off.merge(opp, on=["week", "team"], how="left")
+    allowed = off.rename(columns={"team": "opponent_team",
+                                  "team_rush": "carries_allowed"})
+    out = out.merge(allowed, on=["week", "opponent_team"], how="left")
+    return out
 
 
 def build_player_panel(site: str, seasons: list) -> pd.DataFrame:
@@ -312,6 +365,27 @@ def build_team_panel(site: str, seasons: list) -> pd.DataFrame:
     rows = []
     for season in seasons:
         stats = season_history(season)
+
+        # Session 15.2b -- opp_rush_allowed: the upcoming opponent's own
+        # recency-weighted carries-allowed, built the identical way
+        # hist_rush is built below, just pointed at the opponent's
+        # defensive side instead of this team's own offense. Probed and
+        # validated on real, held-out data (2022-2024, then re-checked on
+        # this exact 2014-17/2018-21 production split) before shipping --
+        # see SESSION_LOG.md Session 15.2b for both runs' numbers.
+        #
+        # Built once per season (dict of each team's own week-indexed
+        # rush-defense history), not inside the per-team-per-week loop
+        # below -- the loop already re-slices `hist` on every iteration
+        # for the existing hist_pass/hist_rush/hist_recv computation, and
+        # doing the same for a second team (the opponent) inside that
+        # loop would be the same quadratic-rebuild mistake
+        # build_player_panel()'s own comment already flags a few
+        # functions up.
+        rush_def = _team_rush_and_opponent(stats)
+        rush_def_by_team = {t: g.set_index("week").sort_index()
+                            for t, g in rush_def.groupby("team")}
+
         for week in sorted(stats["week"].unique().tolist()):
             hist = stats[stats["week"] < week]
             tt = team_totals(stats[stats["week"] == week])
@@ -334,6 +408,20 @@ def build_team_panel(site: str, seasons: list) -> pd.DataFrame:
                             pw["carries"].to_numpy()),
                         hist_recv=statline_model._recency_weighted(
                             pw["targets"].to_numpy()))
+
+                team_row = rush_def_by_team.get(team)
+                opp = (team_row.at[week, "opponent_team"]
+                       if team_row is not None and week in team_row.index
+                       else None)
+                opp_row = rush_def_by_team.get(opp) if opp is not None else None
+                if opp_row is None:
+                    rec["opp_rush_allowed"] = np.nan
+                else:
+                    prior_allowed = opp_row.loc[opp_row.index < week,
+                                                "carries_allowed"].dropna().to_numpy()
+                    rec["opp_rush_allowed"] = statline_model._recency_weighted(
+                        prior_allowed) if len(prior_allowed) else np.nan
+
                 rows.append(rec)
     tp = pd.DataFrame(rows)
     merged = tp.merge(lines, on=["season", "week", "team_norm"], how="left")
@@ -407,21 +495,37 @@ def fit_share_curve(df: pd.DataFrame, n_bins=SHARE_N_BINS,
 
 def fit_team_volume(tp: pd.DataFrame, component: str, test: pd.DataFrame) -> dict:
     """Both specifications for one component. Decision #7 of volume_prior.py:
-    total and spread are always fit together, never one alone."""
+    total and spread are always fit together, never one alone.
+
+    Session 15.2b: RUSH's with_history spec additionally carries
+    opp_rush_allowed (the upcoming opponent's own recency-weighted
+    carries-allowed) -- probed on real, held-out data and confirmed
+    non-redundant with the existing three terms (max correlation 0.30)
+    before shipping; see SESSION_LOG.md Session 15.2b for the full probe.
+    PASS and RECV are deliberately unchanged: an equivalent opponent-
+    strength term was never probed for those components, and this
+    project's standing rule is not to ship an unprobed change even when
+    the mechanism looks like it should generalize.
+    """
     real, histc = f"real_{component}", f"hist_{component}"
     out = {"league_mean": round(float(tp[real].mean()), 4)}
+    extra = ["opp_rush_allowed"] if component == "rush" else []
 
-    with_h = tp.dropna(subset=[histc])
-    Xf = np.column_stack([np.ones(len(with_h)), with_h[histc].to_numpy(float),
-                          with_h["implied_total"].to_numpy(float),
-                          with_h["team_spread"].to_numpy(float)])
+    with_h = tp.dropna(subset=[histc] + extra)
+    Xf_cols = [np.ones(len(with_h)), with_h[histc].to_numpy(float),
+              with_h["implied_total"].to_numpy(float),
+              with_h["team_spread"].to_numpy(float)]
+    Xf_cols += [with_h[c].to_numpy(float) for c in extra]
+    Xf = np.column_stack(Xf_cols)
     beta, se, t = ols(Xf, with_h[real].to_numpy(float))
-    th = test.dropna(subset=[histc])
-    Xt = np.column_stack([np.ones(len(th)), th[histc].to_numpy(float),
-                          th["implied_total"].to_numpy(float),
-                          th["team_spread"].to_numpy(float)])
+    th = test.dropna(subset=[histc] + extra)
+    Xt_cols = [np.ones(len(th)), th[histc].to_numpy(float),
+              th["implied_total"].to_numpy(float),
+              th["team_spread"].to_numpy(float)]
+    Xt_cols += [th[c].to_numpy(float) for c in extra]
+    Xt = np.column_stack(Xt_cols)
     out["with_history"] = {
-        "terms": ["const", "hist", "implied_total", "spread"],
+        "terms": ["const", "hist", "implied_total", "spread"] + extra,
         "beta": [round(float(b), 6) for b in beta],
         "t": [round(float(x), 3) for x in t],
         "n": int(len(with_h)),
@@ -529,11 +633,17 @@ def main():
         team_volume[comp] = fit_team_volume(fit_t, comp, test_t)
         wh, nh = team_volume[comp]["with_history"], team_volume[comp]["no_history"]
         print(f"  {comp:<5} league mean {team_volume[comp]['league_mean']:6.2f}")
-        print(f"        with history  R2 {wh['r2_oos']}  "
-              f"t: hist={wh['t'][1]:+.2f} it={wh['t'][2]:+.2f} "
-              f"spread={wh['t'][3]:+.2f}")
-        print(f"        no history    R2 {nh['r2_oos']}  "
-              f"t: it={nh['t'][1]:+.2f} spread={nh['t'][2]:+.2f}   "
+        # Session 15.2b: printed generically off each spec's own `terms`
+        # list (skipping the const at index 0) rather than a hardcoded
+        # hist/it/spread triple -- rush's with_history spec now carries a
+        # 4th term (opp_rush_allowed) and a hardcoded print would have
+        # silently hidden its t-stat from every future fit run's output.
+        wh_t = "  ".join(f"{name}={tt:+.2f}"
+                         for name, tt in zip(wh["terms"][1:], wh["t"][1:]))
+        print(f"        with history  R2 {wh['r2_oos']}  t: {wh_t}")
+        nh_t = "  ".join(f"{name}={tt:+.2f}"
+                         for name, tt in zip(nh["terms"][1:], nh["t"][1:]))
+        print(f"        no history    R2 {nh['r2_oos']}  t: {nh_t}   "
               f"<- week 1 path")
 
     # --- 3. role-change slope --------------------------------------------

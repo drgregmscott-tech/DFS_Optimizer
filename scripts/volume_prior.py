@@ -372,7 +372,8 @@ def blend_volume(history_volume, price_volume, weight) -> np.ndarray:
 # ---------------------------------------------------------------------------
 
 def predict_team_volume(artifact: dict, component: str, implied_total,
-                        spread, history_volume=None) -> np.ndarray:
+                        spread, history_volume=None,
+                        opp_defense_allowed=None) -> np.ndarray:
     """Predicted team volume for one component.
 
     `history_volume=None` selects the NO-HISTORY specification, which is the
@@ -382,9 +383,20 @@ def predict_team_volume(artifact: dict, component: str, implied_total,
 
     Both specifications always carry BOTH Vegas terms -- see decision #7. A
     caller cannot select one, on purpose.
+
+    Session 15.2b: `opp_defense_allowed` is the upcoming opponent's own
+    recency-weighted volume-allowed on this component -- currently only
+    ever fitted for rush (fit_volume_prior.py's fit_team_volume()). Column
+    assembly is driven by the fitted spec's own `terms` list, not a
+    component check here, so this stays correct automatically if another
+    component is ever fit with the same term. If the spec WAS fit with it
+    and the caller passes None, that is refused rather than silently
+    dropping a real fitted coefficient's input -- the same fail-loud
+    stance decision #4 in fit_volume_prior.py takes for a thin curve.
     """
     spec_key = "no_history" if history_volume is None else "with_history"
     spec = artifact["team_volume"][component][spec_key]
+    terms = spec.get("terms", [])
     it = pd.to_numeric(pd.Series(implied_total), errors="coerce").to_numpy(float)
     sp = pd.to_numeric(pd.Series(spread), errors="coerce").to_numpy(float)
     n = len(it)
@@ -406,6 +418,16 @@ def predict_team_volume(artifact: dict, component: str, implied_total,
         cols.append(hv)
     cols.append(np.where(np.isfinite(it), it, 0.0))
     cols.append(sp)
+    if "opp_rush_allowed" in terms:
+        if opp_defense_allowed is None:
+            raise SystemExit(
+                f"volume_prior team_volume[{component}][{spec_key}] was "
+                f"fit with opp_rush_allowed but no opp_defense_allowed was "
+                f"passed to predict_team_volume() -- refusing to silently "
+                f"drop a real fitted term (Session 15.2b).")
+        oda = pd.to_numeric(pd.Series(opp_defense_allowed), errors="coerce") \
+                .fillna(league_mean).to_numpy(float)
+        cols.append(oda)
     X = np.column_stack(cols)
     beta = np.array(spec["beta"], dtype=float)
     if X.shape[1] != len(beta):

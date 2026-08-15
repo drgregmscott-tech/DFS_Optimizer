@@ -535,6 +535,49 @@ def load_depth_chart() -> pd.DataFrame:
     return latest[["player_id", "team", "position", "depth_rank"]].dropna(subset=["player_id"])
 
 
+def team_defense_history(season: int, week: int) -> pd.DataFrame:
+    """Session 15.2b. Recency-weighted CARRIES ALLOWED per team -- the
+    defensive mirror of team_volume_history()'s own-offense numbers,
+    computed the identical way (same RECENCY_WEIGHTS, same "strictly
+    before `week`" cutoff via load_history()).
+
+    Feeds the rush with_history specification's opp_rush_allowed term
+    (fit_volume_prior.py / volume_prior.py decision #6 -- see that file's
+    docstring for the full probe). Only rush is fit with this term right
+    now, so only carries_allowed is computed here; if pass or recv are
+    ever probed and shipped with an equivalent term, this function is
+    where their allowed-volume columns would be added too.
+
+    A team's opponent in a given week is the mode of every one of its
+    players' `opponent_team` values that week (exact, not inferred --
+    every real player row names the same opponent). Returns one row per
+    team that has played at least one game with a recorded opponent;
+    empty at week 1, same as team_volume_history().
+    """
+    hist = load_history(season, week)
+    lookback = len(RECENCY_WEIGHTS)
+    if hist.empty or "opponent_team" not in hist.columns:
+        return pd.DataFrame(columns=["team", "carries_allowed"])
+
+    off = hist.groupby(["week", "team"], as_index=False)["carries"].sum()
+    off = off.rename(columns={"carries": "team_rush"})
+    opp = hist.dropna(subset=["opponent_team"]).groupby(
+        ["week", "team"])["opponent_team"].agg(
+        lambda s: s.value_counts().idxmax()).reset_index()
+    tw = off.merge(opp, on=["week", "team"], how="left")
+    allowed = off.rename(columns={"team": "opponent_team",
+                                  "team_rush": "carries_allowed"})
+    tw = tw.merge(allowed, on=["week", "opponent_team"], how="left")
+
+    out = []
+    for team, g in tw.groupby("team"):
+        recent = g.sort_values("week")["carries_allowed"].dropna().to_numpy()
+        recent = recent[-lookback:]
+        if len(recent):
+            out.append({"team": team, "carries_allowed": _recency_weighted(recent)})
+    return pd.DataFrame(out)
+
+
 def team_volume_history(season: int, week: int) -> pd.DataFrame:
     """Recency-weighted team-level volume, for decision #7's reconciliation."""
     hist = load_history(season, week)
@@ -573,7 +616,8 @@ _TEAM_PRED_COL = {"pass": "team_attempts", "rush": "team_carries",
 
 
 def vegas_anchored_team_volume(team_vol: pd.DataFrame, vegas: pd.DataFrame,
-                               artifact: dict, teams=None) -> pd.DataFrame:
+                               artifact: dict, teams=None,
+                               opp_rush_allowed: pd.Series = None) -> pd.DataFrame:
     """Decision #13/#14. Replace each team's predicted volume with the fitted
     function of (team history, implied total, spread).
 
@@ -586,6 +630,17 @@ def vegas_anchored_team_volume(team_vol: pd.DataFrame, vegas: pd.DataFrame,
     number: comparing a player's history-derived volume against a
     Vegas-derived team total would fold the team change into what is supposed
     to be a PLAYER-level divergence.
+
+    Session 15.2b: `opp_rush_allowed`, if given, is a Series indexed by
+    team naming that team's UPCOMING opponent's own recency-weighted
+    carries-allowed (team_defense_history(), already resolved through the
+    opponent map by the caller -- this function only ever dealt in
+    per-team history before, and resolving "my opponent's number" here
+    would need the opponent map as a second new argument for no benefit).
+    Only passed through for the rush component; volume_prior.py's own
+    `terms` check is what actually decides whether a fitted spec needs it,
+    so passing this for a site/artifact that hasn't been refit with the
+    new term is harmless.
     """
     import volume_prior
 
@@ -602,14 +657,18 @@ def vegas_anchored_team_volume(team_vol: pd.DataFrame, vegas: pd.DataFrame,
 
     it = out["team"].map(vegas["implied_total"]) if "implied_total" in vegas else np.nan
     sp = out["team"].map(vegas["spread"]) if "spread" in vegas else np.nan
+    oda = out["team"].map(opp_rush_allowed) if opp_rush_allowed is not None else None
 
     for comp, col in _TEAM_PRED_COL.items():
         hist_vals = None
         if not week1 and col in out.columns:
             out[f"{col}_history"] = out[col]
             hist_vals = out[col]
+        kwargs = {}
+        if comp == "rush" and oda is not None:
+            kwargs["opp_defense_allowed"] = oda
         out[col] = volume_prior.predict_team_volume(
-            artifact, comp, it, sp, history_volume=hist_vals)
+            artifact, comp, it, sp, history_volume=hist_vals, **kwargs)
     return out
 
 

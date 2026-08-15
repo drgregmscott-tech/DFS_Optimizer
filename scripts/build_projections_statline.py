@@ -421,8 +421,27 @@ def build_statline_projections(site: str, season: int, week: int, slate_id: str,
 
         pool_teams = sorted(df.loc[~df["no_real_game_this_week"], "team"]
                             .dropna().astype(str).unique().tolist())
+
+        # Session 15.2b: opponent run-defense strength, the rush
+        # with_history spec's new term (probed and validated on real,
+        # held-out data -- see SESSION_LOG.md Session 15.2b). Resolved
+        # here, not inside vegas_anchored_team_volume(), because this is
+        # the one place that already has both team_defense_history()'s
+        # per-team numbers AND opponent_map -- passing both into that
+        # function would just move the same lookup one level down for no
+        # benefit. Harmless no-op for a site/artifact not yet refit with
+        # the new term (volume_prior.py's own terms check decides whether
+        # it's actually used).
+        team_defense = statline_model.team_defense_history(season, week)
+        defense_by_team = team_defense.set_index("team")["carries_allowed"] \
+            if not team_defense.empty else pd.Series(dtype=float)
+        opp_rush_allowed = pd.Series(
+            {t: defense_by_team.get(o) for t, o in opponent_map.items()
+             if o in defense_by_team.index})
+
         team_vol = statline_model.vegas_anchored_team_volume(
-            team_vol, vg, prior_art, teams=pool_teams)
+            team_vol, vg, prior_art, teams=pool_teams,
+            opp_rush_allowed=opp_rush_allowed)
 
         # Session 15 -- AUDIT_COLUMNS. Captured BEFORE the fill below --
         # statline_model.apply_volume_prior() unconditionally fillna(0)s
