@@ -805,3 +805,4 @@ timestamp_utc,trigger_type,site,step,status
 2026-08-15T16:45:38.253868+00:00,manual_workflow_dispatch,fd,status_apply,success
 2026-08-15T16:45:38.253868+00:00,manual_workflow_dispatch,dk,pivot_finder,success
 2026-08-15T16:45:38.253868+00:00,manual_workflow_dispatch,fd,pivot_finder,success
+2026-08-15T21:25:34.843616+00:00,light_vegas_refresh,both,vegas_odds_pull,success
