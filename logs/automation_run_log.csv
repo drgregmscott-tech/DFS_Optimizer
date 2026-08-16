@@ -890,3 +890,12 @@ timestamp_utc,trigger_type,site,step,status
 2026-08-16T16:30:16.872899+00:00,manual_workflow_dispatch,dk,pivot_finder,success
 2026-08-16T16:30:16.872899+00:00,manual_workflow_dispatch,fd,pivot_finder,success
 2026-08-16T17:09:10.448835+00:00,light_vegas_refresh,both,vegas_odds_pull,success
+2026-08-16T17:34:21.443335+00:00,manual_workflow_dispatch,both,vegas_odds_pull,success
+2026-08-16T17:34:21.443335+00:00,manual_workflow_dispatch,both,team_stats_pull,success
+2026-08-16T17:34:21.443335+00:00,manual_workflow_dispatch,both,status_pull,failure
+2026-08-16T17:34:21.443335+00:00,manual_workflow_dispatch,dk,build_projections,failure
+2026-08-16T17:34:21.443335+00:00,manual_workflow_dispatch,fd,build_projections,failure
+2026-08-16T17:34:21.443335+00:00,manual_workflow_dispatch,dk,status_apply,success
+2026-08-16T17:34:21.443335+00:00,manual_workflow_dispatch,fd,status_apply,success
+2026-08-16T17:34:21.443335+00:00,manual_workflow_dispatch,dk,pivot_finder,success
+2026-08-16T17:34:21.443335+00:00,manual_workflow_dispatch,fd,pivot_finder,success
