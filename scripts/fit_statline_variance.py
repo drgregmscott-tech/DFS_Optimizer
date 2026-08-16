@@ -69,20 +69,37 @@ Numbered decisions:
      change to the simulator breaks the calibration, re-running this fitter
      is what re-establishes it.
 
+  7. SESSION 15.2B -- team_shock IS A NEW ARTIFACT SECTION, AND A NEW
+     ORDERING DEPENDENCY: this fitter must now run AFTER fit_volume_prior.py
+     has written a team-volume artifact, because fit_team_shock() computes
+     real residuals against that model's own predictions rather than a
+     second, independent measurement of team volume. Two real numbers per
+     component (residual_sd, pass_through_slope) -- kept separate rather
+     than multiplied into one, because the slope is a real, measured,
+     component-specific football fact (0.51 rush, 0.76 pass, 0.84 recv on
+     2021 data, t = 8-20 in every case) and folding it away would hide
+     that. See fit_team_shock()'s own docstring for the full reasoning and
+     SESSION_LOG.md Session 15.2b for the probe that established both
+     numbers before this was built.
+
 Usage:
   python3 scripts/fit_statline_variance.py --seasons 2014 2015 2016 2017 2018 2019 2020 2021
 """
 
 import argparse
 import json
+import sys
 from datetime import date
 from pathlib import Path
 
 import numpy as np
 import pandas as pd
 
+from statline_model import _recency_weighted  # noqa: E402 -- Session 15.2b
+
 REPO_ROOT = Path(__file__).resolve().parent.parent
 DATA_DIR = REPO_ROOT / "data"
+sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 SCHEMA_VERSION = 1
 ARTIFACT_PATH = DATA_DIR / "statline_variance.json"
@@ -103,6 +120,12 @@ COMPONENTS = {
            ("rush", "carries", "rushing_yards", "rushing_tds")],
     "TE": [("recv", "targets", "receiving_yards", "receiving_tds")],
 }
+
+# Session 15.2b: the team-shock fit's own component->real-stat mapping.
+# Deliberately separate from COMPONENTS above (which is position-keyed and
+# whitelist-shaped) -- this one only needs the three team-level volume
+# stats fit_volume_prior.py's own team_volume model predicts.
+TEAM_SHOCK_STAT_COL = {"pass": "attempts", "rush": "carries", "recv": "targets"}
 
 # Ratio in [0,1] clipping for the efficiency CV fit -- guards against a
 # divide-by-near-zero producing a 40x ratio that dominates an SD.
@@ -235,6 +258,164 @@ def calibrate_latent_sd(cv: float, corr_target: float, td_rate: float,
     return round(0.5 * (lo + hi), 4)
 
 
+def fit_team_shock(seasons: list) -> dict:
+    """Session 15.2b. Two real, measured numbers per component (pass, rush,
+    recv), both needed to give the simulator a real team-level volume shock
+    instead of treating a team's predicted total as a known constant:
+
+    * residual_sd -- how far off fit_volume_prior.py's own team-total
+      prediction typically lands on a real week, in the same units as the
+      stat itself (attempts/carries/targets). This is NOT what gets drawn
+      straight into a player's own mean -- see pass_through_slope.
+
+    * pass_through_slope -- of a real team-week's total-volume surprise
+      (actual minus predicted), how much of it a given player's own volume
+      actually absorbs, proportional to his own historical share of the
+      team. Measured by regressing each player's own (actual - expected)
+      volume against (team's actual - team's predicted) x that player's
+      own historical share, through the origin, on real weekly stats. A
+      slope of 1 would mean a player's volume moves in perfect lockstep
+      with his expected share of a team-level surprise; 0 would mean
+      team-level surprises never reach individual players at all -- which
+      is what the simulator has implicitly assumed until now (every
+      player's volume drawn fully independently; see statline_model.py's
+      decision #15).
+
+    THESE ARE KEPT SEPARATE, NOT MULTIPLIED TOGETHER HERE, because the
+    slope is not the same across components and folding it into a single
+    scalar would hide a real football fact: measured on 2021 (t = 8-20 in
+    every component, real and not close to zero), rush's slope is 0.51 but
+    pass's is 0.76 and recv's is 0.84. Rush volume gets redistributed
+    between backs in ways a share-of-history number does not anticipate
+    (which back the coaches actually leaned on that specific game); pass
+    attempts and targets concentrate predictably on the same few players.
+    A single shared constant here would have understated the pass/recv
+    shock by roughly a third and this is exactly the kind of thing decision
+    #2's "measured, not assumed" rule exists to catch.
+
+    Needs a fitted team-volume artifact to compute real residuals against
+    (fit_volume_prior.py must run first -- a new ordering dependency
+    between these two fitters that did not exist before this session).
+    Reads data/volume_prior_dk.json specifically: team_volume's own
+    coefficients come out numerically identical for dk and fd, since real
+    NFL game stats and Vegas lines do not know what site is being played,
+    so the DK file is exactly as valid as the FD one here and picking one
+    arbitrarily beats reading both and asserting they agree.
+    """
+    import fit_volume_prior as fvp
+    import volume_prior as vp
+
+    tv_path = DATA_DIR / "volume_prior_dk.json"
+    if not tv_path.exists():
+        raise SystemExit(
+            f"{tv_path} not found. fit_team_shock() needs a fitted team-volume "
+            f"artifact to compute real prediction residuals against -- run "
+            f"fit_volume_prior.py (either site) before fit_statline_variance.py.")
+    with open(tv_path) as f:
+        team_volume = json.load(f)["team_volume"]
+
+    panel = fvp.build_team_panel("dk", seasons)
+    stats = load_history(seasons)
+    out = {}
+
+    for comp in ("pass", "rush", "recv"):
+        needed = [f"hist_{comp}", "implied_total", "team_spread"]
+        if comp == "rush":
+            needed.append("opp_rush_allowed")
+        p = panel.dropna(subset=needed).copy()
+
+        kwargs = {}
+        if comp == "rush":
+            kwargs["opp_defense_allowed"] = p["opp_rush_allowed"].to_numpy(float)
+        pred = vp.predict_team_volume(
+            {"team_volume": team_volume}, comp,
+            p["implied_total"].to_numpy(float), p["team_spread"].to_numpy(float),
+            history_volume=p[f"hist_{comp}"].to_numpy(float), **kwargs)
+        p["team_pred"] = pred
+        p["team_residual"] = p[f"real_{comp}"] - p["team_pred"]
+
+        if len(p) < MIN_GROUPS:
+            raise SystemExit(
+                f"fit_team_shock: only {len(p)} team-weeks for {comp} (need "
+                f"{MIN_GROUPS}). Decision #5's standing rule -- refusing to "
+                f"ship a shock SD fit on this little.")
+        residual_sd = float(p["team_residual"].std())
+
+        # Player-level pass-through regression. Real team code (not
+        # team_norm) throughout, matching load_history()'s own key space --
+        # see build_team_panel()'s own `team` column, added in this same
+        # session specifically so this join would not need a second,
+        # divergent copy of the panel-building logic.
+        col = TEAM_SHOCK_STAT_COL[comp]
+        pred_lookup = p.set_index(["season", "week", "team"])[["team_pred", "team_residual"]]
+        d = stats[stats["position"].isin(POSITIONS)]
+
+        rows = []
+        for (season, team), g in d.groupby(["season", "team"]):
+            g = g.sort_values("week")
+            weeks = sorted(g["week"].unique().tolist())
+            # Session 15.2b perf note: team_hist and each player's own
+            # recency-weighted history are the SAME number for every
+            # player sharing a (season, team, week) -- computed once per
+            # team-week here, not once per player as an earlier draft of
+            # this loop did, which was redoing identical work ~10x per
+            # week for no reason and made a full-history refit
+            # impractically slow.
+            weekly_team_totals = g.groupby("week")[col].sum().sort_index()
+            player_hist_by_week = {}  # week -> {player_id: recency-weighted own history}
+            for week in weeks:
+                prior = g[g["week"] < week]
+                phist = {}
+                for pid, pg in prior.groupby("player_id"):
+                    phist[pid] = _recency_weighted(
+                        pg.sort_values("week")[col].to_numpy(float))
+                player_hist_by_week[week] = phist
+
+            for week in weeks:
+                key = (season, week, team)
+                if key not in pred_lookup.index:
+                    continue
+                team_pred, team_residual = pred_lookup.loc[key]
+                team_hist = _recency_weighted(
+                    weekly_team_totals[weekly_team_totals.index < week].to_numpy(float))
+                if not np.isfinite(team_hist) or team_hist <= 0:
+                    continue
+                this_week = dict(zip(g.loc[g["week"] == week, "player_id"],
+                                    g.loc[g["week"] == week, col]))
+                for pid, own_hist in player_hist_by_week[week].items():
+                    if not np.isfinite(own_hist) or own_hist <= 0.5:
+                        continue
+                    hist_share = own_hist / team_hist
+                    if not (0.0 <= hist_share <= 1.5):
+                        continue
+                    player_actual = float(this_week.get(pid, 0.0))
+                    player_expected = hist_share * team_pred
+                    rows.append({"x": team_residual * hist_share,
+                                "y": player_actual - player_expected})
+
+        reg = pd.DataFrame(rows)
+        if len(reg) < MIN_GROUPS:
+            raise SystemExit(
+                f"fit_team_shock: only {len(reg)} player-weeks for {comp}'s "
+                f"pass-through regression (need {MIN_GROUPS}). Refusing to "
+                f"ship a slope fit on this little.")
+        x, y = reg["x"].to_numpy(float), reg["y"].to_numpy(float)
+        slope = float(np.sum(x * y) / np.sum(x * x))
+        resid = y - slope * x
+        se = float(np.sqrt(np.sum(resid ** 2) / (len(x) - 1)) / np.sqrt(np.sum(x ** 2)))
+        t = slope / se if se > 0 else 0.0
+
+        out[comp] = {"residual_sd": round(residual_sd, 4),
+                    "pass_through_slope": round(slope, 4),
+                    "pass_through_t": round(t, 3),
+                    "n_team_weeks": int(len(p)),
+                    "n_player_weeks": int(len(reg))}
+        print(f"  team_shock {comp:<5} residual_sd={residual_sd:6.2f}  "
+              f"pass_through_slope={slope:.4f} (t={t:.2f}, n={len(reg)})")
+
+    return out
+
+
 def fit(seasons: list) -> dict:
     df = load_history(seasons)
     print(f"Fitting on {len(df):,} REG player-weeks, seasons {min(seasons)}-{max(seasons)}.")
@@ -264,6 +445,9 @@ def fit(seasons: list) -> dict:
             entry["int_per_attempt"] = fit_int_rate(df)
         positions[pos] = entry
 
+    print("\nTeam-shock calibration (Session 15.2b):")
+    team_shock = fit_team_shock(seasons)
+
     return {
         "schema_version": SCHEMA_VERSION,
         "fit_date": date.today().isoformat(),
@@ -273,8 +457,11 @@ def fit(seasons: list) -> dict:
         "notes": ("Site-agnostic by design (decision #1) -- a stat line is real "
                   "football; only scoring_rules.py is site-specific. Component "
                   "whitelist per position is decision #3; anything outside it is "
-                  "never simulated."),
+                  "never simulated. team_shock (Session 15.2b) needs a fitted "
+                  "team-volume artifact to exist first -- see fit_team_shock()'s "
+                  "own docstring."),
         "positions": positions,
+        "team_shock": team_shock,
     }
 
 

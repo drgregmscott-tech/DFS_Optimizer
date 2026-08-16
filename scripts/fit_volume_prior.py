@@ -391,7 +391,7 @@ def build_team_panel(site: str, seasons: list) -> pd.DataFrame:
             tt = team_totals(stats[stats["week"] == week])
             for team in tt.index:
                 th = hist[hist["team"] == team]
-                rec = {"season": season, "week": week,
+                rec = {"season": season, "week": week, "team": team,
                        "team_norm": normalize_team(team, site),
                        "real_pass": float(tt.at[team, "team_pass"]),
                        "real_rush": float(tt.at[team, "team_rush"]),

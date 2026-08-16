@@ -1281,6 +1281,24 @@ def simulate(pool: pd.DataFrame, site: str, variance: dict,
 
     `pool` needs: player_id, position, and the usage columns build_usage()
     produced, plus `market_factor` (matchup x vegas, decision #10).
+
+    Session 15.2b considered, built, and REJECTED a correlated team-level
+    volume shock here (every player's volume is still drawn fully
+    independently, as before). The real, measured teammate pass-through
+    (fit_statline_variance.py's fit_team_shock(): 0.74-0.76 across all
+    three components, t = 28-60) is genuine -- teammates' real volumes do
+    move together. But a real coverage backtest on 1,062 held-out
+    team-weeks showed today's independent draws ALREADY land close to
+    real team-total variance (84.5% actual coverage of a nominal 80%
+    interval) BEFORE any shock is added, and adding one only pushed
+    coverage further away from nominal at every scale tested (up to 92% at
+    full scale) -- there was no scale-down that fixed it, because summing
+    ANY positive correlation on top of an already-adequate baseline can
+    only inflate the sum's variance further, never reduce it. A correct
+    fix needs fit_volume_dispersion()'s own `r` recalibrated net of
+    team-level variance, jointly with the correlation, not a shock added
+    beside an unchanged `r` -- a larger undertaking than this session
+    scoped. See SESSION_LOG.md Session 15.2b for the full backtest.
     """
     from fit_statline_variance import COMPONENTS
 
