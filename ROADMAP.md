@@ -3138,16 +3138,27 @@ This also resolves Session 15.2b's own carried-forward "Mechanism 3" item (the s
 
 ---
 
-### Session 15.3 — Pre-Season Deep Dive: Ownership *(planned, not started)*
+### Session 15.3 — Pre-Season Deep Dive: Ownership, Plus a Real-Deployment Debugging Chain ✅ Complete (2026-08-16)
 
-**Prerequisites:** none blocking — can start anytime, independent of Session 15.2. Deliberately kept as a separate chat/session, same user call as 15.2's card above.
+Prerequisites: none blocking — started independent of Session 15.2, same user call as that session's card.
 
-**Trigger:** same as Session 15.2's card — the ownership portion of the original open-ended deep-dive ask.
+Trigger: same as Session 15.2's card — the ownership half of the original open-ended deep-dive ask.
 
-**Purpose:** same real-data-anomaly method as Session 15.2, applied to `chalk_score`/`estimated_ownership_pct` instead of raw projections. Same constraint applies — no real 2026 ownership data exists yet to calibrate against (Showdown ownership specifically is flagged elsewhere in this file as never validated against real data at all).
+Opened as a scoping pass against real 2026 data (the real Week 1 Classic slate and the one real preseason Showdown slate available at the time) and turned into ten real, validated fixes across six files once the real NE@SEA season-opener Showdown slate was run through the pipeline for the first time with `current_slate.json`'s `season` field finally correct. Each fix was found by running real data, not by reading code, and several were only found because fixing the previous one exposed the next: a Showdown DST Vegas-line mismatch on anomalous-schedule slates (`build_projections_statline.py`, `dst_model.py` decision #24); a `current_slate.json` season-field bug that had silently defeated the model's own Week-1 carryover design on every real 2026 build to date, found while chasing a min-priced-player ownership complaint (`statline_model.py` decision #19, made the season correction safe); three more missing-file crashes surfaced one real GitHub Actions run at a time once the season field was corrected (`projections_matchup.py`, `ingest_salaries.py`, `status_check.py`); a true-Week-1 regression in the session's own first ownership fix, where every skill player showing zero current-season participation got punished relative to defenses that never had a participation concept at all (`ownership_heuristic.py` decisions #8 and #9); the value-ratio blowup that decision #9 correctly re-exposed, fixed with a salary floor on the two ownership features that broke down at a slate's price minimum (`ownership_heuristic.py` decision #10); and, found immediately after, a real projections-layer bug where multiple same-team Showdown QBs saturated a Classic-fit price-to-share curve simultaneously, producing a near-even split across a real team's whole QB depth chart instead of concentrating volume on the real starter (`statline_model.py` decision #20, composing with rather than replacing an existing normalization fix from an earlier session). A real integer-overflow bug was caught and fixed during decision #20's own validation before it shipped. Full decision-by-decision detail, exact before/after numbers, and the real-data validation for each fix are in SESSION_LOG.md.
 
-**Planned approach:** does the model's real-player, real-price ownership ranking match what an experienced DFS player would actually expect, checked against enough real 2026 players to be more than anecdotal? Specific attention to the Showdown ownership heuristic (Session 13.3b), given it's never been checked against real data of any kind.
+Files: scripts/build_projections_statline.py, scripts/dst_model.py, scripts/statline_model.py, scripts/ownership_heuristic.py, scripts/projections_matchup.py, scripts/ingest_salaries.py, scripts/status_check.py, data/current_slate.json (user-applied season correction).
 
-**Build:** none yet — scoping only, this session.
+Validation:
 
-**Validation:** N/A — defer until real analysis work happens.
+ Every fix designed and validated against real, live 2026 data, not synthetic test data — the real Week 1 Classic slate and the real NE@SEA Showdown season opener.
+ Each fix regression-checked against a real, normal-case comparison before being confirmed safe (real Classic DST, 26 real Classic teams byte-identical, a synthetic mixed-participation pool, real Classic top-15 and cheapest-DST-tier, and an isolated real-data before/after confirming zero effect on RB/WR/TE).
+ python3 -m py_compile clean on every modified file.
+ Every fix pushed and confirmed via real GitHub Actions runs, including three genuine real-run failures diagnosed from real Actions logs and fixed in sequence, not just local validation.
+ Final state confirmed by the user directly against the real, live optimizer UI: no remaining flags.
+
+Known issues deferred: defense still sits modestly atop real Captain ownership on Showdown (~6%, down from dominant pre-fix) — no feature yet captures "ceiling relative to cost," a future design question, not urgent. Session 11.1 (ownership constant retuning against real logged data) remains fully blocked pending `data/ownership_actual_log.csv`, now with four more constants on its eventual list. This session's own "Known Deferred Validations" note below describing `current_slate.json` as a placeholder is now stale (see that section).
+
+This closes the original open-ended projections+ownership deep-dive ask opened across Sessions 15/15.2/15.2b/15.2c/15.3.
+
+---
+
