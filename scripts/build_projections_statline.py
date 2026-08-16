@@ -587,8 +587,30 @@ def build_statline_projections(site: str, season: int, week: int, slate_id: str,
     # build_final_projections() call exactly -- keeps this engine's Showdown
     # handling consistent with the skill pool above, which already uses
     # build_salaries.
+    #
+    # Session 15.3 FIX: this call was never updated to pass opponent_map/
+    # vegas_factors -- both already built above (lines ~282, ~338) for the
+    # skill-player pool -- through to build_dst_projections(). Without them,
+    # _build_dst_distributional() silently fell back to its pre-fix
+    # behavior (Session 13.5-pause Bug Fix A never actually took effect
+    # through this engine): a defense's opponent/opp_implied/own_implied/
+    # over_under were resolved from the raw vegas file's real-schedule
+    # opponent column, with no check that it matches this slate's real
+    # in-slate pairing. On any slate where the two differ -- preseason
+    # Showdown, Madden Sim -- that meant a defense's SIMULATION ran against
+    # the wrong offense's rates (not just a display mismatch), and its
+    # displayed implied_total/over_under silently carried a different real
+    # team's numbers instead of falling back to the same 0.0 "no real line"
+    # default every skill player on that same team correctly gets. Confirmed
+    # via a real preseason ARI/CAR Showdown slate (Session 15.3): the
+    # Cardinals/Panthers DST rows carried Arizona's/Carolina's real Week 1
+    # REGULAR-SEASON implied_total (17.89 / 21.51) while every other player
+    # on those same two teams correctly showed 0.0. No effect on any real
+    # Classic regular-season slate -- there, opponent_map already agrees
+    # with the vegas file's own opponent column, so this is a no-op.
     dst_out = build_dst_projections(build_salaries, vegas, site, model=dst_model_mode,
-                                    season=season, week=week)
+                                    season=season, week=week,
+                                    opponent_map=opponent_map, vegas_factors=vegas_factors)
     if "sigma" in dst_out.columns:
         # Session 10.4's distributional path returns a real simulated sigma,
         # conditioned on the opponent's implied total. This is the column
