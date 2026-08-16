@@ -245,6 +245,34 @@ Numbered decisions:
      that would require a specific column to exist on it -- `build_usage()`
      then falls straight through to decision #16's own already-correct
      schema-carrying empty result, unchanged.
+
+ 20. SESSION 15.3 -- A SATURATED CURVE CAN'T DIFFERENTIATE PLAYERS IT WAS
+     NEVER ASKED TO TELL APART. apply_volume_prior()'s Session 14.0b fix
+     normalizes a team's price_share down when it sums past 1.0 -- correct
+     when the underlying values still carry real information, broken when
+     share_from_salary()'s curve has already flattened near its ceiling
+     for MULTIPLE teammates at once, since proportionally normalizing
+     near-identical numbers just splits evenly, discarding whatever real
+     salary gap remains. Confirmed on a real live Showdown slate: three
+     same-team QBs priced $9,400/$7,400/$6,000 (a real ~57% gap) all
+     evaluated to 0.97-0.98 pre-normalization, because the curve was fit
+     almost entirely on Classic salaries, where a real backup is rarely
+     priced anywhere near this zone -- it was never asked to differentiate
+     WITHIN it. The existing fix then divided three near-equal numbers by
+     their own sum: a dead-even ~33/33/33 split.
+
+     Fixed by falling back to real salary (raised to a power, since the
+     curve can no longer express the gap but salary still can) among any
+     (team, component) group with 2+ saturated players, before the
+     existing Session 14.0b normalization runs -- the two compose rather
+     than one replacing the other. Checked directly against every other
+     position's own fitted curve in this exact artifact: RB/WR/TE top out
+     at 0.775/0.308/0.276 respectively even at their fitted salary
+     maximums, nowhere near the saturation threshold, because those roles
+     are genuinely shared even among real starters -- confirmed to have
+     ZERO effect on them on this same real slate. Only a position whose
+     real-world role is genuinely winner-take-all can saturate multiple
+     teammates at once, which in practice is QB alone.
 """
 
 import json
@@ -278,6 +306,20 @@ RECONCILE_FAIL_THRESHOLD = 0.40
 # Below this predicted team-component volume the relative test carries no
 # information, so it is not allowed to fail the run. ARBITRARY, flagged.
 RECONCILE_MIN_VOLUME = 10.0
+
+# Decision #20 (Session 15.3): a share_from_salary() curve stops
+# differentiating players once it flattens out near its ceiling -- see
+# apply_volume_prior()'s own note at the normalization step below for the
+# full real-slate finding. SATURATED_SHARE_THRESHOLD marks "the curve has
+# effectively stopped telling players apart here"; SATURATED_SALARY_POWER
+# is the exponent used to fall back to real salary (which the curve can no
+# longer express) among players caught in that flat zone. Both are UNFIT
+# starting guesses -- chosen so a real $9,400/$7,400/$6,000 same-team QB
+# trio split roughly 71/22/8 rather than the ~33/33/33 a saturated curve's
+# own values would otherwise produce -- retuning targets for Session 11.1
+# once real logged ownership/actuals exist to fit them against.
+SATURATED_SHARE_THRESHOLD = 0.90
+SATURATED_SALARY_POWER = 5
 # Systemic-breakage gates (decision #7). All ARBITRARY, flagged.
 RECONCILE_MAX_VIOLATION_SHARE = 0.25   # share of material pairs allowed to violate
 RECONCILE_EXTREME_SCALE = 3.0          # ratio part of the single-pair breakage test
@@ -932,6 +974,54 @@ def apply_volume_prior(pool: pd.DataFrame, artifact: dict,
                 artifact, pos, comp, df.loc[mask, "salary"])
             df.loc[mask, f"{comp}_price_share"] = ps
 
+    # Decision #20 (Session 15.3): the Session 14.0b fix just below handles
+    # a team's price_share SUM exceeding 1.0 -- but it assumes the
+    # individual pre-normalization values still carry real information to
+    # normalize BY. That breaks when share_from_salary()'s curve has
+    # already flattened out near its ceiling for MULTIPLE teammates at
+    # once: the curve was fit almost entirely on Classic salaries, where a
+    # real backup is essentially never priced anywhere near the zone where
+    # the curve stops differentiating players, so it was never asked to
+    # tell two saturated players apart. Confirmed on a real live Showdown
+    # slate: three same-team QBs priced $9,400 / $7,400 / $6,000 (a real,
+    # meaningful ~57% salary gap top to bottom) ALL evaluated to
+    # 0.97-0.98 pre-normalization. The Session 14.0b fix below then
+    # divides three near-identical numbers by their own sum, producing a
+    # dead-even ~33/33/33 split that throws the real salary gap away
+    # entirely -- proportional normalization cannot recover information
+    # the curve's own output no longer contains.
+    #
+    # Fix: within any (team, component) group where 2+ players are at or
+    # above SATURATED_SHARE_THRESHOLD, replace their price_share with real
+    # salary (raised to SATURATED_SALARY_POWER, which the curve can no
+    # longer express but salary still can), normalized among just that
+    # saturated subgroup. Only ever touches players already indistinguishable
+    # to the curve -- a group with at most one saturated player is
+    # completely untouched, same as before this fix.
+    #
+    # Self-scoping, not a QB-specific special case: RB/WR/TE's own fitted
+    # curves top out at 0.775/0.308/0.276 respectively even at the top of
+    # their fitted salary range (checked directly against this artifact),
+    # nowhere near SATURATED_SHARE_THRESHOLD, because those roles are
+    # genuinely shared even among real starters. Only a position whose
+    # real-world role is genuinely winner-take-all can ever saturate
+    # multiple teammates at once, which in practice is QB alone.
+    for comp in comps:
+        col = f"{comp}_price_share"
+        saturated = df[col] >= SATURATED_SHARE_THRESHOLD
+        n_saturated_on_team = df[col].where(saturated).groupby(df["team"]).transform("count")
+        is_multi_saturated = saturated & (n_saturated_on_team >= 2)
+        if is_multi_saturated.any():
+            salary_pow = pd.to_numeric(df["salary"], errors="coerce").astype(float) \
+                .fillna(0.0).clip(lower=0.0) ** SATURATED_SALARY_POWER
+            group_total = salary_pow.where(is_multi_saturated) \
+                .groupby(df["team"]).transform("sum")
+            df[col] = np.where(
+                is_multi_saturated & (group_total > 0),
+                salary_pow / group_total,
+                df[col],
+            )
+
     # Session 14.0b FIX: share_from_salary() answers "what's THIS player's
     # expected share of team volume" independently per player -- nothing
     # constrains the SUM across a team's roster to stay at or below 1.0.
@@ -957,6 +1047,14 @@ def apply_volume_prior(pool: pd.DataFrame, artifact: dict,
     # the legitimate case where the pool doesn't fully cover team volume,
     # which the existing _pool_share()/reconciliation machinery already
     # handles correctly and is not this bug.
+    #
+    # Runs AFTER decision #20 above, on purpose: with an entirely-saturated
+    # team/component group, decision #20 already normalizes that group to
+    # sum to exactly 1.0, so this step is a no-op for it (scale=1.0). It
+    # still does real work if some OTHER, non-saturated player on the same
+    # team/component also carries a small price_share -- their share adds
+    # on top, and this rescales the whole group back down to 1.0, exactly
+    # as it already did before decision #20 existed.
     for comp in comps:
         col = f"{comp}_price_share"
         team_sum = df.groupby("team")[col].transform("sum")
