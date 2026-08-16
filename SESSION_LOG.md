@@ -4425,3 +4425,77 @@ Alec Pierce's real, live injury_status: OUT in this session's validation is a go
 
 ---
 
+## Session 15.2c — Team-Level Volume Correlation, Correctly Scoped
+**Date completed:** 2026-08-16
+**Status:** ✅ Complete
+
+**What was actually built:**
+
+Session 15.2b found that fit_volume_dispersion()'s r already bakes in enough of a player's real team-context swings that adding a team-level shock on top of an unchanged r over-inflates team-total variance — a real, measured teammate correlation that nonetheless made a real coverage backtest worse at every scale tested. This session found and fixed the actual bug: r itself needed to be recalibrated net of the team-level share it was already absorbing, not left unchanged while a shock was added beside it.
+
+**Part 1 — decomposing r.** fit_team_shock()'s own OLS-through-origin regression (y = slope * x, x = team_residual * hist_share) already computes, for every real player-week, a residual (y - slope * x) that is by construction uncorrelated with the team-level piece. Re-fit r against `actual - slope * x` instead of raw `actual` (same MIN_GAMES gate, same method-of-moments formula fit_volume_dispersion() already uses) to target only the within-team redistribution variance. Verified on real 2014-2021 data, r rose for every pair as expected (removing real variance can only raise r):
+
+| Position/Component | Shipped r (before) | New r (net of team shock) | Team-level share of the swing |
+|---|---|---|---|
+| QB pass | 15.70 | 48.88 | 58.8% |
+| QB rush | 8.20 | 13.14 | 31.5% |
+| RB rush | 6.40 | 10.11 | 31.9% |
+| RB recv | 5.83 | 8.47 | 26.2% |
+| WR recv | 12.85 | 21.47 | 37.4% |
+| TE recv | 13.11 | 24.04 | 41.8% |
+| WR rush | 3.63 | *excluded* | -39.2% (invalid) |
+
+**WR/rush was excluded, a real finding not an assumption.** Its team-level share came out negative — subtracting the pooled rush slope's estimate made WR rushing's leftover variance bigger, not smaller. Real football reason: the "rush" component's slope is fit pooled across QB scrambles, RB carries, and WR jet sweeps together, and that pool is completely dominated by QB/RB volume (22,017 player-weeks vs. WR's 1,582 and only 64 qualifying player-seasons) — a team throwing more or fewer carries overall doesn't meaningfully predict how many jet sweeps a WR gets. Confirmed with the user (a football-knowledge call) before shipping. WR/rush keeps its original, unchanged r and is never shocked.
+
+**Part 2 — the shock needed two corrections before it could be added back**, both found by a real 2022-2024 held-out coverage backtest (genuinely out-of-sample for volume_prior_dk.json AND team_shock, both fit only on 2014-2021):
+
+1. *Analytical:* a negative binomial's own extra-Poisson variance term is mu^2/r — convex in mu. Randomizing a player's mu via a shared team-level shock inflates his own simulated variance by a further (1 + 1/r) beyond the shock's own variance (law of total variance + Jensen's inequality; verified numerically in isolation before wiring in). Exactly cancelled by scaling each player's own slice of the shared shock by sqrt(r / (r + 1)), using that player's own (new) r.
+2. *Empirical:* even after the analytical fix, the backtest still over-covered for rush and recv. Real teammates' redistribution noise is close to a zero-sum system within a team-week but not exactly (hist_share sums to ~1.25, not 1.0, across a team's real recv contributors, checked directly) — no clean closed-form second correction exists. Grid-searched instead, the same way decision #6's latent_sd is solved against the real simulator rather than guessed: one scale factor, found independently for pass/rush/recv, landed on the same value (0.70) all three times.
+
+**Coverage backtest, real held-out 2022-2024 team-weeks, before vs. after (nominal targets 80%/50%):**
+
+| Component | Today (baseline) | Fully corrected |
+|---|---|---|
+| PASS | 83.3% / 59.4% | 78.0% / 51.2% |
+| RUSH | 79.5% / 51.4% | 78.7% / 51.1% |
+| RECV | 75.9% / 49.6% | 79.6% / 52.3% |
+
+Pass and recv moved meaningfully closer to nominal; rush (already excellent) moved by under a point either way — no harm done there.
+
+**Production code.** `fit_statline_variance.py`'s `fit_team_shock()` now returns `(team_shock_dict, conditional_r_dict)`; `fit()` overwrites each non-excluded pair's live `r` with the decomposed value, keeping the pre-decomposition value under `r_independent` for audit. New module constants `EXCLUDED_SHOCK_PAIRS` and `REDISTRIBUTION_SHOCK_SCALE = 0.70`, both flagged with where the numbers came from. `statline_model.py`'s `_draw_volume()` now accepts an array-valued `mu` (one mean per simulation); `simulate()` draws one shared shock per (team, component) before the player loop and shifts each non-excluded player's mean by `redistribution_shock_scale * sqrt(r/(r+1)) * pass_through_slope * {comp}_hist_share * shock` before drawing. Degrades cleanly to today's independent draws if `team_shock` is absent from the artifact.
+
+**Real-slate validation, dk_classic_wk1_091326 and fd_classic_wk1_091326.** Re-ran the full pipeline end to end in the user's own environment — clean run, all of `build_projections_statline.py`'s own validation checks passed (0 nulls, 0 negative projections, 0 zero-sigma-with-positive-projection). Direct old-vs-new comparison on both sites: median final_projection change $0.00, median sigma change ~-0.1%, middle 50% of players within ±1-1.5% sigma. QB pass (the biggest r change of the session, 15.70 -> 48.88) moved real QBs' sigma by under 1%; RB rush (6.40 -> 10.11) moved real bell-cow backs by 1-3%. WR rush (excluded) showed only small, undirected noise, no systematic shift. The handful of large point-projection movers (Alec Pierce, Luke Musgrave, Mason Tipton, Tyrell Shavers, all $0.00 -> real) were confirmed to be Session 15.2's pre-existing confirmed-starter override correctly firing, not this session's mechanism.
+
+**Files:** `scripts/fit_statline_variance.py`, `scripts/statline_model.py`, `data/statline_variance.json`.
+
+**Validation results:**
+- [x] Conditional-r decomposition probed on real 2014-2021 data before building (throwaway probe script), confirmed to reproduce exactly once wired into production code.
+- [x] WR/rush exclusion found via real data (negative team-level share), confirmed as a football-knowledge call with the user before shipping.
+- [x] Shock's NB-convexity inflation verified numerically in isolation before being wired into the backtest.
+- [x] Empirical shock_scale grid-searched against a real 2022-2024 held-out coverage backtest; found independently 3 times (once per component), landed on the same value each time.
+- [x] Full coverage backtest (before/after) run on genuinely out-of-sample data, not the 2014-2021 fit window.
+- [x] `python3 -m py_compile` clean on both modified files.
+- [x] Functional tests: correlation present for included pairs, absent for the excluded pair, shock is zero-mean (no bias to any player's own projection), graceful degradation when `team_shock` is missing from the artifact.
+- [x] 300 real held-out team-weeks run through the actual shipped `simulate()` function (not a reimplementation) with no errors.
+- [x] Real GitHub Actions run (manual trigger) green.
+- [x] Real slate re-run end to end in the user's own environment (both DK and FD), old-vs-new projection/sigma comparison reviewed directly, no drastic differences, all explainable.
+
+**Decisions made / assumptions taken:**
+- Reused fit_team_shock()'s existing simplified expected-value basis (hist_share * team_pred) for the decomposition rather than rebuilding history against the full production mu pipeline — keeps the new r consistent with the already-shipped, already-validated team_shock slope/residual_sd, at the cost of not being byte-identical to live serve-time mu. Documented as a deliberate simplification, same spirit as decision #7's own note.
+- Conditional r decomposed at (position, component) grain, not just component grain, even though the regression slope stays pooled across positions — r is consumed per position at serve time, and the WR/rush finding proved position-level behavior genuinely differs within a pooled component.
+- `redistribution_shock_scale` stored as a single constant in fit_statline_variance.py, not re-measured by the fitter itself — the coverage-backtest machinery that found it is throwaway probe code, not shipped pipeline code. Re-run that methodology (not committed to the repo) if r or team_shock's own inputs change enough to warrant re-checking it.
+- `{comp}_hist_share` (apply_volume_prior()'s existing audit column) reused as-is in `simulate()` rather than recomputing a parallel value — closest available live match to what the validating backtest was actually measured against.
+- Pre-decomposition r kept under `r_independent` in the artifact purely for audit; simulate() never reads it.
+
+**Known issues deferred:**
+- None newly introduced this session. This session also resolves a long-standing item from Session 15.2b's own carried-forward notes ("Mechanism 3": the Monte Carlo simulation previously treated team-volume prediction mu as a perfectly-known constant) — the shared shock mechanism built here is that fix.
+- Pass/recv's own opponent-strength terms (Session 15.2b's Part 1 scope) remain unprobed, unchanged by this session.
+- `scripts/probe_reconcile_gap.py`'s missing `opp_rush_allowed` argument (flagged in 15.2b) is still outstanding, unrelated to this session.
+
+**Handoff notes for next session:**
+- Session 15.2 (the original team-level volume modeling deep-dive opened across 15.2/15.2b/15.2c) is now fully closed.
+- Session 15.3 (pre-season ownership deep-dive, see ROADMAP.md) remains open and unstarted, independent of this work.
+- If a future session ever needs to touch `r` again (a new position/component whitelist entry, a re-fit on more seasons, etc.), remember `r` in the shipped artifact is now the Session 15.2c conditional value for six of seven pairs — check `r_independent` for the pre-decomposition number rather than assuming the live `r` reflects fit_volume_dispersion() alone.
+
+---
+

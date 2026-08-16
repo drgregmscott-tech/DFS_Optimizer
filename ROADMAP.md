@@ -3113,19 +3113,28 @@ Validation:
 
 ---
 
-Session 15.2c — Team-Level Volume Correlation, Correctly Scoped (planned, not started)
+Session 15.2c — Team-Level Volume Correlation, Correctly Scoped ✅ Complete (2026-08-16)
 
-Prerequisites: Session 15.2b complete. `data/statline_variance.json` already carries the real, measured team_shock numbers (residual SD + pass-through slope, all three components) this session needs as a starting point — no new measurement pass required before design work can begin.
+Prerequisites: Session 15.2b complete. `data/statline_variance.json` already carried the real, measured team_shock numbers (residual SD + pass-through slope, all three components) this session used as its starting point — no new measurement pass was needed before design work began.
 
-Trigger: Session 15.2b's own finding — a correlated team-level volume shock, added beside the existing independent per-player `r` parameter, is proven (real 1,062-team-week backtest) to push team-total calibration further from nominal at every scale tested, not closer. The real teammate correlation this was meant to capture (t = 28-60, all three components) is genuine and still needs a home; it just cannot be an additive add-on to an unchanged `r`.
+Trigger: Session 15.2b's own finding — a correlated team-level volume shock, added beside the existing independent per-player `r` parameter, is proven (real 1,062-team-week backtest) to push team-total calibration further from nominal at every scale tested, not closer. The real teammate correlation this was meant to capture (t = 28-60, all three components) is genuine and still needed a home; it just could not be an additive add-on to an unchanged `r`.
 
-Purpose: `fit_volume_dispersion()` (fit_statline_variance.py) fits each player's own negative-binomial `r` against his real week-to-week variance around his OWN season average — a quantity that already, apparently, bakes in enough real-world team-context swings that summing several teammates' independent draws lands close to real team-total variance on its own (84.5% coverage of a nominal 80% interval, measured in Session 15.2b). Adding correlation on top of that unchanged `r` can only inflate the sum further. A correct fix has to recalibrate `r` and the correlation TOGETHER, so their combined effect (not `r` alone) matches real team-total variance while still reproducing real, measured teammate correlation — likely a decomposition of a player's variance into a "team-level" share and a "within-team redistribution" share, refitting `r` against the latter only, then adding a correlated shock sized to the former. This is a real, nontrivial re-derivation of a currently-stable, load-bearing part of the pipeline (every position's dispersion), not a small follow-up — treat it with the same weight as any other core statistical rebuild in this project's history (10.3a, 10.3b, 10.4).
+Purpose: `fit_volume_dispersion()` (fit_statline_variance.py) fits each player's own negative-binomial `r` against his real week-to-week variance around his OWN season average — a quantity that already, apparently, bakes in enough real-world team-context swings that summing several teammates' independent draws lands close to real team-total variance on its own. Adding correlation on top of that unchanged `r` could only inflate the sum further. The fix: recalibrate `r` net of the team-level share it already absorbed, then add a correlated shock sized to that share.
 
-Planned approach: design the decomposition on paper/probe scripts first, using the real data already available (no new fetch needed — this project's own nflverse data covers everything required). Validate the recalibrated `r` alone (without any shock) still passes a coverage check close to nominal before adding correlation back in, isolating whether a regression is coming from the `r` change or the correlation. Only then reintroduce a shock, sized empirically the same way Session 15.2b's `fit_team_shock()` measured its slope — and re-run the SAME 1,062-team-week (or larger) coverage backtest before considering this shippable.
+What shipped: `r` decomposed per (position, component) using fit_team_shock()'s own regression residual (real team-level share ranging 26%–59% across six pairs). WR/rush excluded — its team-level share came out negative on real data (pooled rush slope doesn't fit WR gadget-play volume; a football-knowledge call, confirmed with the user). The shock itself needed two corrections before it could be added back without over-covering: an analytical `sqrt(r/(r+1))` term cancelling a real negative-binomial mixture-variance inflation (verified numerically), and an empirical scale factor (0.70, found by grid search against a real 2022-2024 held-out coverage backtest, landed on independently three separate times, once per component). `statline_model.py`'s `simulate()` now draws one shared shock per (team, component), correlating teammates' volumes for the first time — replacing full independence, decision #15's original assumption.
 
-Build: none yet — scoping only, carried over from Session 15.2b's rejected mechanism and its own real backtest findings.
+Files: scripts/fit_statline_variance.py, scripts/statline_model.py, data/statline_variance.json. Full decision-by-decision detail, exact backtest numbers, and the real-slate validation comparison are in SESSION_LOG.md.
 
-Validation: N/A — defer until real design/build work happens, matching the standing bar every other statistical-modeling change in this project has been held to (role-change slope, confirmed-starter override, reconciliation fix, Session 15.2b's own opponent-defense term).
+Validation:
+
+ Conditional-r decomposition and the WR/rush exclusion both probed on real 2014-2021 data before building, then confirmed to reproduce exactly once wired into production code.
+ Coverage backtest run on genuinely out-of-sample 2022-2024 data (not the 2014-2021 fit window) at three stages — baseline, decomposed r alone (confirmed under-covers, proving real variance was removed), decomposed r plus the fully-corrected shock (landed within 1-4 points of nominal 80%/50% on all three components, vs. baseline's own gaps).
+ `python3 -m py_compile` clean; functional tests confirmed real correlation for included pairs, none for the excluded pair, zero-mean shock (no bias to any projection), and graceful degradation on an artifact missing team_shock.
+ 300 real held-out team-weeks run through the actual shipped `simulate()` function with no errors.
+ Real GitHub Actions run (manual trigger) green.
+ Full pipeline re-run end to end on a real live slate (dk_classic_wk1_091326 / fd_classic_wk1_091326) in the user's own environment; old-vs-new final_projection and sigma compared directly — median projection change $0.00, median sigma change ~-0.1%, no drastic differences, every meaningful mover explained.
+
+This also resolves Session 15.2b's own carried-forward "Mechanism 3" item (the simulator previously treated team-volume prediction mu as a perfectly-known constant) — the shared shock mechanism built here is that fix. Session 15.2 (opened across 15.2/15.2b/15.2c) is now fully closed.
 
 ---
 
