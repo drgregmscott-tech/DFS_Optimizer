@@ -375,13 +375,22 @@ def run_pull(season: int, week: int, teams_arg: str | None, weekly_stats_overrid
     weekly_stats_path = Path(weekly_stats_override) if weekly_stats_override else (
         DATA_DIR / f"weekly_stats_{season}.parquet"
     )
-    if not weekly_stats_path.exists():
-        raise SystemExit(
-            f"{weekly_stats_path} not found -- this is a Session 1.2 output, "
-            f"needed to build the player_id reference table (decision #3). "
-            f"Run ingest_historical.py --season {season} first."
-        )
-    reference = build_player_reference(weekly_stats_path)
+    # Session 15.3: this used to hard-stop here if weekly_stats_path didn't
+    # exist. That guard fired for the wrong reason on a genuine Week 1 --
+    # a season with no games played yet has no weekly_stats file by design
+    # (ingest_historical.py's own ingest_weekly_stats() never writes a
+    # placeholder for one), the same real condition already handled
+    # elsewhere this session (statline_model.py decision #19,
+    # projections_matchup.py decision #1). build_player_reference() now
+    # falls back to weekly_rosters_{season}.parquet -- a roster snapshot,
+    # which needs no games played to exist -- instead of crashing, and
+    # only fails loud if that's ALSO unavailable, since at that point
+    # there is genuinely no way to match ESPN's report to a real player_id
+    # at all. weekly_rosters_path was never actually passed here before
+    # this fix -- Bug Fix B's roster fallback existed in
+    # build_player_reference() but this caller never wired it in.
+    weekly_rosters_path = DATA_DIR / f"weekly_rosters_{season}.parquet"
+    reference = build_player_reference(weekly_stats_path, weekly_rosters_path)
 
     all_rows = []
     unmapped_statuses = set()

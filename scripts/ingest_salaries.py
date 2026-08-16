@@ -592,24 +592,58 @@ def build_player_reference(weekly_stats_path: Path,
     No crosswalk file needed -- gsis_id IS player_id, just a differently-
     named column.
     """
-    weekly = pd.read_parquet(weekly_stats_path)
-    name_col = "player_display_name" if "player_display_name" in weekly.columns else "player_name"
+    # Decision #Y (Session 15.3): weekly_stats_path can now be GENUINELY
+    # ABSENT -- not just present-but-missing-some-players (this function's
+    # original Bug Fix B case above), but the file itself not existing at
+    # all. That's the normal state before a season's first game -- the
+    # same real condition statline_model.py's load_history() (decision
+    # #19) and projections_matchup.py's load_weekly_data() (decision #1)
+    # already handle. When it happens, fall through to building the WHOLE
+    # reference table from weekly_rosters_path instead of just using it to
+    # patch in a few missing rookies -- a roster snapshot needs no games
+    # played to exist, unlike weekly stats. If weekly_rosters_path is ALSO
+    # missing or not supplied, there is genuinely no source to build a
+    # reference table from, and this still fails loud: silently returning
+    # an empty table would mean every caller (status_check.py included)
+    # matches zero players against real data without ever saying so.
+    if Path(weekly_stats_path).exists():
+        weekly = pd.read_parquet(weekly_stats_path)
+        name_col = "player_display_name" if "player_display_name" in weekly.columns else "player_name"
 
-    weekly = weekly.dropna(subset=["player_id", name_col, "position", "team"])
-    weekly = weekly.sort_values(["player_id", "week"])
+        weekly = weekly.dropna(subset=["player_id", name_col, "position", "team"])
+        weekly = weekly.sort_values(["player_id", "week"])
 
-    # Most recent team per player (handles in-season trades: site salary
-    # data reflects a player's CURRENT team, weekly_stats has all teams
-    # they've played for this season).
-    most_recent = (
-        weekly.groupby("player_id")
-        .tail(1)[["player_id", name_col, "position", "team"]]
-        .rename(columns={name_col: "player_display_name"})
-    )
-    most_recent["normalized_name"] = most_recent["player_display_name"].map(normalize_name)
-    most_recent["normalized_team"] = most_recent["team"].map(
-        lambda t: BASE_TEAM_ABBREV_MAP.get(str(t).strip().upper(), str(t).strip().upper())
-    )
+        # Most recent team per player (handles in-season trades: site salary
+        # data reflects a player's CURRENT team, weekly_stats has all teams
+        # they've played for this season).
+        most_recent = (
+            weekly.groupby("player_id")
+            .tail(1)[["player_id", name_col, "position", "team"]]
+            .rename(columns={name_col: "player_display_name"})
+        )
+        most_recent["normalized_name"] = most_recent["player_display_name"].map(normalize_name)
+        most_recent["normalized_team"] = most_recent["team"].map(
+            lambda t: BASE_TEAM_ABBREV_MAP.get(str(t).strip().upper(), str(t).strip().upper())
+        )
+    else:
+        if weekly_rosters_path is None or not Path(weekly_rosters_path).exists():
+            raise SystemExit(
+                f"build_player_reference: neither {weekly_stats_path} nor a usable "
+                f"weekly_rosters_path exists -- no source to build a player_id "
+                f"reference table from at all. Run scripts/ingest_historical.py "
+                f"--season <season> first."
+            )
+        print(
+            f"NOTE: {weekly_stats_path} not found -- treating this as a season "
+            f"with no games played yet (same condition statline_model.py's "
+            f"load_history() and projections_matchup.py's load_weekly_data() "
+            f"already handle). Building the player_id reference table entirely "
+            f"from {weekly_rosters_path} instead."
+        )
+        most_recent = pd.DataFrame(columns=[
+            "player_id", "player_display_name", "position", "team",
+            "normalized_name", "normalized_team",
+        ])
 
     if weekly_rosters_path is not None and Path(weekly_rosters_path).exists():
         rosters = pd.read_parquet(weekly_rosters_path)
@@ -624,7 +658,9 @@ def build_player_reference(weekly_stats_path: Path,
         # with real stat history keeps using their weekly_stats row. A
         # roster snapshot can lag an in-season move; weekly_stats reflects
         # where they actually played, which is the more reliable signal
-        # when both exist.
+        # when both exist. When weekly_stats was absent entirely (above),
+        # `most_recent` starts empty, so every roster player lands here --
+        # this is the SAME union logic, just with nothing to compare against.
         new_players = roster_recent[~roster_recent["player_id"].isin(most_recent["player_id"])].copy()
         if len(new_players):
             new_players["normalized_name"] = new_players["player_display_name"].map(normalize_name)
@@ -632,8 +668,9 @@ def build_player_reference(weekly_stats_path: Path,
                 lambda t: BASE_TEAM_ABBREV_MAP.get(str(t).strip().upper(), str(t).strip().upper())
             )
             print(f"build_player_reference: added {len(new_players)} roster-only player(s) "
-                  f"with no weekly_stats row (true rookies / zero-snap players) from "
-                  f"{weekly_rosters_path}.")
+                  f"with no weekly_stats row (true rookies / zero-snap players, or the "
+                  f"entire reference table when weekly_stats itself is absent -- Session "
+                  f"15.3) from {weekly_rosters_path}.")
             most_recent = pd.concat([most_recent, new_players], ignore_index=True)
     elif weekly_rosters_path is not None:
         print(f"NOTE: {weekly_rosters_path} not found -- skipping roster-only player "
