@@ -1,0 +1,127 @@
+Position,Name + ID,Name,ID,Roster Position,Salary,Game Info,TeamAbbrev,AvgPointsPerGame,Status,roster_role,name,site,salary,normalized_name,normalized_team,position_upper,slate_format,player_id,match_method,match_confidence
+WR,Jaxon Smith-Njigba (43782097),Jaxon Smith-Njigba,43782097,CPT,15900,NE@SEA 09/09/2026 08:20PM ET,SEA,22.0,,CPT,Jaxon Smith-Njigba,dk,15900,jaxon smith njigba,SEA,WR,showdown,00-0038543,auto_exact,high
+QB,Drake Maye (43782098),Drake Maye,43782098,CPT,15000,NE@SEA 09/09/2026 08:20PM ET,NE,20.9,,CPT,Drake Maye,dk,15000,drake maye,NE,QB,showdown,00-0039851,auto_exact,high
+WR,A.J. Brown (43782099),A.J. Brown,43782099,CPT,14400,NE@SEA 09/09/2026 08:20PM ET,NE,15.1,,CPT,A.J. Brown,dk,14400,aj brown,NE,WR,showdown,00-0035676,auto_fallback_team_mismatch,medium
+QB,Sam Darnold (43782100),Sam Darnold,43782100,CPT,14100,NE@SEA 09/09/2026 08:20PM ET,SEA,15.6,,CPT,Sam Darnold,dk,14100,sam darnold,SEA,QB,showdown,00-0034869,auto_exact,high
+RB,Rhamondre Stevenson (43782101),Rhamondre Stevenson,43782101,CPT,12600,NE@SEA 09/09/2026 08:20PM ET,NE,13.2,,CPT,Rhamondre Stevenson,dk,12600,rhamondre stevenson,NE,RB,showdown,00-0036875,auto_exact,high
+RB,Zach Charbonnet (43782102),Zach Charbonnet,43782102,CPT,12300,NE@SEA 09/09/2026 08:20PM ET,SEA,11.0,OUT,CPT,Zach Charbonnet,dk,12300,zach charbonnet,SEA,RB,showdown,00-0039165,auto_exact,high
+QB,Tommy DeVito (43782103),Tommy DeVito,43782103,CPT,12000,NE@SEA 09/09/2026 08:20PM ET,NE,0.0,,CPT,Tommy DeVito,dk,12000,tommy devito,NE,QB,showdown,00-0038476,auto_exact,high
+RB,TreVeyon Henderson (43782104),TreVeyon Henderson,43782104,CPT,11400,NE@SEA 09/09/2026 08:20PM ET,NE,10.9,,CPT,TreVeyon Henderson,dk,11400,treveyon henderson,NE,RB,showdown,00-0040734,auto_exact,high
+QB,Drew Lock (43782105),Drew Lock,43782105,CPT,11100,NE@SEA 09/09/2026 08:20PM ET,SEA,0.0,,CPT,Drew Lock,dk,11100,drew lock,SEA,QB,showdown,00-0035704,auto_exact,high
+RB,Jadarian Price (43782106),Jadarian Price,43782106,CPT,10800,NE@SEA 09/09/2026 08:20PM ET,SEA,0.0,Q,CPT,Jadarian Price,dk,10800,jadarian price,SEA,RB,showdown,00-0041512,auto_exact,high
+WR,Jaxon Smith-Njigba (43782034),Jaxon Smith-Njigba,43782034,FLEX,10600,NE@SEA 09/09/2026 08:20PM ET,SEA,22.0,,FLEX,Jaxon Smith-Njigba,dk,10600,jaxon smith njigba,SEA,WR,showdown,00-0038543,auto_exact,high
+QB,Drake Maye (43782035),Drake Maye,43782035,FLEX,10000,NE@SEA 09/09/2026 08:20PM ET,NE,20.9,,FLEX,Drake Maye,dk,10000,drake maye,NE,QB,showdown,00-0039851,auto_exact,high
+WR,Romeo Doubs (43782107),Romeo Doubs,43782107,CPT,9900,NE@SEA 09/09/2026 08:20PM ET,NE,11.5,,CPT,Romeo Doubs,dk,9900,romeo doubs,NE,WR,showdown,00-0037816,auto_fallback_team_mismatch,medium
+WR,A.J. Brown (43782036),A.J. Brown,43782036,FLEX,9600,NE@SEA 09/09/2026 08:20PM ET,NE,15.1,,FLEX,A.J. Brown,dk,9600,aj brown,NE,WR,showdown,00-0035676,auto_fallback_team_mismatch,medium
+WR,Rashid Shaheed (43782108),Rashid Shaheed,43782108,CPT,9600,NE@SEA 09/09/2026 08:20PM ET,SEA,8.6,,CPT,Rashid Shaheed,dk,9600,rashid shaheed,SEA,WR,showdown,00-0037545,auto_exact,high
+QB,Sam Darnold (43782037),Sam Darnold,43782037,FLEX,9400,NE@SEA 09/09/2026 08:20PM ET,SEA,15.6,,FLEX,Sam Darnold,dk,9400,sam darnold,SEA,QB,showdown,00-0034869,auto_exact,high
+QB,Behren Morton (43782109),Behren Morton,43782109,CPT,9000,NE@SEA 09/09/2026 08:20PM ET,NE,0.0,,CPT,Behren Morton,dk,9000,behren morton,NE,QB,showdown,00-0041123,auto_exact,high
+QB,Jalen Milroe (43782110),Jalen Milroe,43782110,CPT,9000,NE@SEA 09/09/2026 08:20PM ET,SEA,-0.2,,CPT,Jalen Milroe,dk,9000,jalen milroe,SEA,QB,showdown,00-0040673,auto_exact,high
+RB,Rhamondre Stevenson (43782038),Rhamondre Stevenson,43782038,FLEX,8400,NE@SEA 09/09/2026 08:20PM ET,NE,13.2,,FLEX,Rhamondre Stevenson,dk,8400,rhamondre stevenson,NE,RB,showdown,00-0036875,auto_exact,high
+WR,Kayshon Boutte (43782111),Kayshon Boutte,43782111,CPT,8400,NE@SEA 09/09/2026 08:20PM ET,NE,8.8,,CPT,Kayshon Boutte,dk,8400,kayshon boutte,NE,WR,showdown,00-0038608,auto_exact,high
+RB,Zach Charbonnet (43782039),Zach Charbonnet,43782039,FLEX,8200,NE@SEA 09/09/2026 08:20PM ET,SEA,11.0,OUT,FLEX,Zach Charbonnet,dk,8200,zach charbonnet,SEA,RB,showdown,00-0039165,auto_exact,high
+K,Jason Myers (43782112),Jason Myers,43782112,CPT,8100,NE@SEA 09/09/2026 08:20PM ET,SEA,12.0,,CPT,Jason Myers,dk,8100,jason myers,SEA,K,showdown,00-0031492,auto_exact,high
+QB,Tommy DeVito (43782040),Tommy DeVito,43782040,FLEX,8000,NE@SEA 09/09/2026 08:20PM ET,NE,0.0,,FLEX,Tommy DeVito,dk,8000,tommy devito,NE,QB,showdown,00-0038476,auto_exact,high
+WR,Cooper Kupp (43782113),Cooper Kupp,43782113,CPT,7800,NE@SEA 09/09/2026 08:20PM ET,SEA,8.2,,CPT,Cooper Kupp,dk,7800,cooper kupp,SEA,WR,showdown,00-0033908,auto_exact,high
+RB,TreVeyon Henderson (43782041),TreVeyon Henderson,43782041,FLEX,7600,NE@SEA 09/09/2026 08:20PM ET,NE,10.9,,FLEX,TreVeyon Henderson,dk,7600,treveyon henderson,NE,RB,showdown,00-0040734,auto_exact,high
+K,Andy Borregales (43782114),Andy Borregales,43782114,CPT,7500,NE@SEA 09/09/2026 08:20PM ET,NE,8.0,,CPT,Andy Borregales,dk,7500,andy borregales,NE,K,showdown,00-0040200,auto_exact,high
+QB,Drew Lock (43782042),Drew Lock,43782042,FLEX,7400,NE@SEA 09/09/2026 08:20PM ET,SEA,0.0,,FLEX,Drew Lock,dk,7400,drew lock,SEA,QB,showdown,00-0035704,auto_exact,high
+RB,Jadarian Price (43782043),Jadarian Price,43782043,FLEX,7200,NE@SEA 09/09/2026 08:20PM ET,SEA,0.0,Q,FLEX,Jadarian Price,dk,7200,jadarian price,SEA,RB,showdown,00-0041512,auto_exact,high
+TE,Hunter Henry (43782115),Hunter Henry,43782115,CPT,7200,NE@SEA 09/09/2026 08:20PM ET,NE,9.9,,CPT,Hunter Henry,dk,7200,hunter henry,NE,TE,showdown,00-0033090,auto_exact,high
+TE,AJ Barner (43782116),AJ Barner,43782116,CPT,6900,NE@SEA 09/09/2026 08:20PM ET,SEA,8.3,,CPT,AJ Barner,dk,6900,aj barner,SEA,TE,showdown,00-0039793,auto_exact,high
+WR,Romeo Doubs (43782044),Romeo Doubs,43782044,FLEX,6600,NE@SEA 09/09/2026 08:20PM ET,NE,11.5,,FLEX,Romeo Doubs,dk,6600,romeo doubs,NE,WR,showdown,00-0037816,auto_fallback_team_mismatch,medium
+DST,Seahawks (43782117),Seahawks,43782117,CPT,6600,NE@SEA 09/09/2026 08:20PM ET,SEA,11.3,,CPT,Seahawks,dk,6600,seahawks,SEA,DST,showdown,DST_SEA,team_defense,high
+WR,Rashid Shaheed (43782045),Rashid Shaheed,43782045,FLEX,6400,NE@SEA 09/09/2026 08:20PM ET,SEA,8.6,,FLEX,Rashid Shaheed,dk,6400,rashid shaheed,SEA,WR,showdown,00-0037545,auto_exact,high
+RB,George Holani (43782118),George Holani,43782118,CPT,6300,NE@SEA 09/09/2026 08:20PM ET,SEA,1.9,,CPT,George Holani,dk,6300,george holani,SEA,RB,showdown,00-0039299,auto_exact,high
+QB,Behren Morton (43782046),Behren Morton,43782046,FLEX,6000,NE@SEA 09/09/2026 08:20PM ET,NE,0.0,,FLEX,Behren Morton,dk,6000,behren morton,NE,QB,showdown,00-0041123,auto_exact,high
+QB,Jalen Milroe (43782047),Jalen Milroe,43782047,FLEX,6000,NE@SEA 09/09/2026 08:20PM ET,SEA,-0.2,,FLEX,Jalen Milroe,dk,6000,jalen milroe,SEA,QB,showdown,00-0040673,auto_exact,high
+RB,Emanuel Wilson (43782119),Emanuel Wilson,43782119,CPT,6000,NE@SEA 09/09/2026 08:20PM ET,SEA,5.4,Q,CPT,Emanuel Wilson,dk,6000,emanuel wilson,SEA,RB,showdown,00-0038797,auto_fallback_team_mismatch,medium
+WR,Kayshon Boutte (43782048),Kayshon Boutte,43782048,FLEX,5600,NE@SEA 09/09/2026 08:20PM ET,NE,8.8,,FLEX,Kayshon Boutte,dk,5600,kayshon boutte,NE,WR,showdown,00-0038608,auto_exact,high
+K,Jason Myers (43782049),Jason Myers,43782049,FLEX,5400,NE@SEA 09/09/2026 08:20PM ET,SEA,12.0,,FLEX,Jason Myers,dk,5400,jason myers,SEA,K,showdown,00-0031492,auto_exact,high
+WR,Mack Hollins (43782120),Mack Hollins,43782120,CPT,5400,NE@SEA 09/09/2026 08:20PM ET,NE,8.3,,CPT,Mack Hollins,dk,5400,mack hollins,NE,WR,showdown,00-0033555,auto_exact,high
+WR,Cooper Kupp (43782050),Cooper Kupp,43782050,FLEX,5200,NE@SEA 09/09/2026 08:20PM ET,SEA,8.2,,FLEX,Cooper Kupp,dk,5200,cooper kupp,SEA,WR,showdown,00-0033908,auto_exact,high
+DST,Patriots (43782121),Patriots,43782121,CPT,5100,NE@SEA 09/09/2026 08:20PM ET,NE,8.4,,CPT,Patriots,dk,5100,patriots,NE,DST,showdown,DST_NE,team_defense,high
+K,Andy Borregales (43782051),Andy Borregales,43782051,FLEX,5000,NE@SEA 09/09/2026 08:20PM ET,NE,8.0,,FLEX,Andy Borregales,dk,5000,andy borregales,NE,K,showdown,00-0040200,auto_exact,high
+TE,Hunter Henry (43782052),Hunter Henry,43782052,FLEX,4800,NE@SEA 09/09/2026 08:20PM ET,NE,9.9,,FLEX,Hunter Henry,dk,4800,hunter henry,NE,TE,showdown,00-0033090,auto_exact,high
+TE,AJ Barner (43782053),AJ Barner,43782053,FLEX,4600,NE@SEA 09/09/2026 08:20PM ET,SEA,8.3,,FLEX,AJ Barner,dk,4600,aj barner,SEA,TE,showdown,00-0039793,auto_exact,high
+WR,DeMario Douglas (43782122),DeMario Douglas,43782122,CPT,4500,NE@SEA 09/09/2026 08:20PM ET,NE,5.8,,CPT,DeMario Douglas,dk,4500,demario douglas,NE,WR,showdown,00-0038621,auto_exact,high
+DST,Seahawks (43782054),Seahawks,43782054,FLEX,4400,NE@SEA 09/09/2026 08:20PM ET,SEA,11.3,,FLEX,Seahawks,dk,4400,seahawks,SEA,DST,showdown,DST_SEA,team_defense,high
+RB,George Holani (43782055),George Holani,43782055,FLEX,4200,NE@SEA 09/09/2026 08:20PM ET,SEA,1.9,,FLEX,George Holani,dk,4200,george holani,SEA,RB,showdown,00-0039299,auto_exact,high
+WR,Tory Horton (43782123),Tory Horton,43782123,CPT,4200,NE@SEA 09/09/2026 08:20PM ET,SEA,8.1,,CPT,Tory Horton,dk,4200,tory horton,SEA,WR,showdown,00-0040648,auto_exact,high
+RB,Emanuel Wilson (43782056),Emanuel Wilson,43782056,FLEX,4000,NE@SEA 09/09/2026 08:20PM ET,SEA,5.4,Q,FLEX,Emanuel Wilson,dk,4000,emanuel wilson,SEA,RB,showdown,00-0038797,auto_fallback_team_mismatch,medium
+WR,Kyle Williams (43782124),Kyle Williams,43782124,CPT,3900,NE@SEA 09/09/2026 08:20PM ET,NE,2.5,,CPT,Kyle Williams,dk,3900,kyle williams,NE,WR,showdown,00-0040131,auto_exact,high
+WR,Mack Hollins (43782057),Mack Hollins,43782057,FLEX,3600,NE@SEA 09/09/2026 08:20PM ET,NE,8.3,,FLEX,Mack Hollins,dk,3600,mack hollins,NE,WR,showdown,00-0033555,auto_exact,high
+RB,Terrell Jennings (43782125),Terrell Jennings,43782125,CPT,3600,NE@SEA 09/09/2026 08:20PM ET,NE,2.2,Q,CPT,Terrell Jennings,dk,3600,terrell jennings,NE,RB,showdown,00-0039757,auto_exact,high
+DST,Patriots (43782058),Patriots,43782058,FLEX,3400,NE@SEA 09/09/2026 08:20PM ET,NE,8.4,,FLEX,Patriots,dk,3400,patriots,NE,DST,showdown,DST_NE,team_defense,high
+WR,DeMario Douglas (43782059),DeMario Douglas,43782059,FLEX,3000,NE@SEA 09/09/2026 08:20PM ET,NE,5.8,,FLEX,DeMario Douglas,dk,3000,demario douglas,NE,WR,showdown,00-0038621,auto_exact,high
+RB,Velus Jones Jr. (43782126),Velus Jones Jr.,43782126,CPT,3000,NE@SEA 09/09/2026 08:20PM ET,SEA,0.5,,CPT,Velus Jones Jr.,dk,3000,velus jones,SEA,RB,showdown,00-0037745,auto_fallback_name_only_position_mismatch,low
+WR,Tory Horton (43782060),Tory Horton,43782060,FLEX,2800,NE@SEA 09/09/2026 08:20PM ET,SEA,8.1,,FLEX,Tory Horton,dk,2800,tory horton,SEA,WR,showdown,00-0040648,auto_exact,high
+TE,Eli Raridon (43782127),Eli Raridon,43782127,CPT,2700,NE@SEA 09/09/2026 08:20PM ET,NE,0.0,,CPT,Eli Raridon,dk,2700,eli raridon,NE,TE,showdown,00-0041395,auto_exact,high
+WR,Kyle Williams (43782061),Kyle Williams,43782061,FLEX,2600,NE@SEA 09/09/2026 08:20PM ET,NE,2.5,,FLEX,Kyle Williams,dk,2600,kyle williams,NE,WR,showdown,00-0040131,auto_exact,high
+RB,Terrell Jennings (43782062),Terrell Jennings,43782062,FLEX,2400,NE@SEA 09/09/2026 08:20PM ET,NE,2.2,Q,FLEX,Terrell Jennings,dk,2400,terrell jennings,NE,RB,showdown,00-0039757,auto_exact,high
+TE,Elijah Arroyo (43782128),Elijah Arroyo,43782128,CPT,2400,NE@SEA 09/09/2026 08:20PM ET,SEA,2.7,,CPT,Elijah Arroyo,dk,2400,elijah arroyo,SEA,TE,showdown,00-0040739,auto_exact,high
+RB,Jam Miller (43782129),Jam Miller,43782129,CPT,2100,NE@SEA 09/09/2026 08:20PM ET,NE,0.0,,CPT,Jam Miller,dk,2100,jam miller,NE,RB,showdown,00-0041129,auto_exact,high
+RB,Velus Jones Jr. (43782063),Velus Jones Jr.,43782063,FLEX,2000,NE@SEA 09/09/2026 08:20PM ET,SEA,0.5,,FLEX,Velus Jones Jr.,dk,2000,velus jones,SEA,RB,showdown,00-0037745,auto_fallback_name_only_position_mismatch,low
+TE,Eli Raridon (43782064),Eli Raridon,43782064,FLEX,1800,NE@SEA 09/09/2026 08:20PM ET,NE,0.0,,FLEX,Eli Raridon,dk,1800,eli raridon,NE,TE,showdown,00-0041395,auto_exact,high
+WR,Jake Bobo (43782130),Jake Bobo,43782130,CPT,1800,NE@SEA 09/09/2026 08:20PM ET,SEA,1.1,,CPT,Jake Bobo,dk,1800,jake bobo,SEA,WR,showdown,00-0038752,auto_exact,high
+TE,Elijah Arroyo (43782065),Elijah Arroyo,43782065,FLEX,1600,NE@SEA 09/09/2026 08:20PM ET,SEA,2.7,,FLEX,Elijah Arroyo,dk,1600,elijah arroyo,SEA,TE,showdown,00-0040739,auto_exact,high
+WR,Efton Chism III (43782131),Efton Chism III,43782131,CPT,1500,NE@SEA 09/09/2026 08:20PM ET,NE,2.0,,CPT,Efton Chism III,dk,1500,efton chism,NE,WR,showdown,00-0040563,auto_exact,high
+RB,Jam Miller (43782066),Jam Miller,43782066,FLEX,1400,NE@SEA 09/09/2026 08:20PM ET,NE,0.0,,FLEX,Jam Miller,dk,1400,jam miller,NE,RB,showdown,00-0041129,auto_exact,high
+WR,Jake Bobo (43782067),Jake Bobo,43782067,FLEX,1200,NE@SEA 09/09/2026 08:20PM ET,SEA,1.1,,FLEX,Jake Bobo,dk,1200,jake bobo,SEA,WR,showdown,00-0038752,auto_exact,high
+WR,Cody White (43782132),Cody White,43782132,CPT,1200,NE@SEA 09/09/2026 08:20PM ET,SEA,1.8,,CPT,Cody White,dk,1200,cody white,SEA,WR,showdown,00-0035891,auto_exact,high
+WR,Efton Chism III (43782068),Efton Chism III,43782068,FLEX,1000,NE@SEA 09/09/2026 08:20PM ET,NE,2.0,,FLEX,Efton Chism III,dk,1000,efton chism,NE,WR,showdown,00-0040563,auto_exact,high
+TE,Eric Saubert (43782133),Eric Saubert,43782133,CPT,900,NE@SEA 09/09/2026 08:20PM ET,SEA,0.7,,CPT,Eric Saubert,dk,900,eric saubert,SEA,TE,showdown,00-0033576,auto_exact,high
+WR,Cody White (43782069),Cody White,43782069,FLEX,800,NE@SEA 09/09/2026 08:20PM ET,SEA,1.8,,FLEX,Cody White,dk,800,cody white,SEA,WR,showdown,00-0035891,auto_exact,high
+TE,Eric Saubert (43782070),Eric Saubert,43782070,FLEX,600,NE@SEA 09/09/2026 08:20PM ET,SEA,0.7,,FLEX,Eric Saubert,dk,600,eric saubert,SEA,TE,showdown,00-0033576,auto_exact,high
+RB,Lan Larison (43782134),Lan Larison,43782134,CPT,600,NE@SEA 09/09/2026 08:20PM ET,NE,0.0,,CPT,Lan Larison,dk,600,lan larison,NE,RB,showdown,00-0040568,auto_exact,high
+RB,Lan Larison (43782071),Lan Larison,43782071,FLEX,400,NE@SEA 09/09/2026 08:20PM ET,NE,0.0,,FLEX,Lan Larison,dk,400,lan larison,NE,RB,showdown,00-0040568,auto_exact,high
+RB,Reggie Gilliam (43782135),Reggie Gilliam,43782135,CPT,300,NE@SEA 09/09/2026 08:20PM ET,NE,0.3,,CPT,Reggie Gilliam,dk,300,reggie gilliam,NE,RB,showdown,00-0036187,auto_fallback_team_mismatch,medium
+RB,Jacardia Wright (43782136),Jacardia Wright,43782136,CPT,300,NE@SEA 09/09/2026 08:20PM ET,SEA,2.0,,CPT,Jacardia Wright,dk,300,jacardia wright,SEA,RB,showdown,00-0040067,auto_exact,high
+RB,Brady Russell (43782137),Brady Russell,43782137,CPT,300,NE@SEA 09/09/2026 08:20PM ET,SEA,0.0,,CPT,Brady Russell,dk,300,brady russell,SEA,RB,showdown,00-0038488,auto_exact,high
+RB,Robbie Ouzts (43782138),Robbie Ouzts,43782138,CPT,300,NE@SEA 09/09/2026 08:20PM ET,SEA,0.0,IR,CPT,Robbie Ouzts,dk,300,robbie ouzts,SEA,RB,showdown,00-0040649,auto_exact,high
+RB,Myles Montgomery (43782139),Myles Montgomery,43782139,CPT,300,NE@SEA 09/09/2026 08:20PM ET,NE,0.0,IR,CPT,Myles Montgomery,dk,300,myles montgomery,NE,RB,showdown,00-0041323,auto_exact,high
+WR,Tejhaun Palmer (43782140),Tejhaun Palmer,43782140,CPT,300,NE@SEA 09/09/2026 08:20PM ET,NE,0.0,,CPT,Tejhaun Palmer,dk,300,tejhaun palmer,NE,WR,showdown,00-0039397,auto_fallback_team_mismatch,medium
+WR,Rashad Rochelle (43782141),Rashad Rochelle,43782141,CPT,300,NE@SEA 09/09/2026 08:20PM ET,SEA,0.0,,CPT,Rashad Rochelle,dk,300,rashad rochelle,SEA,WR,showdown,00-0041476,auto_exact,high
+WR,Kobe Prentice (43782142),Kobe Prentice,43782142,CPT,300,NE@SEA 09/09/2026 08:20PM ET,NE,0.0,,CPT,Kobe Prentice,dk,300,kobe prentice,NE,WR,showdown,00-0041152,auto_fallback_team_mismatch,medium
+WR,Montorie Foster Jr. (43782143),Montorie Foster Jr.,43782143,CPT,300,NE@SEA 09/09/2026 08:20PM ET,SEA,0.0,,CPT,Montorie Foster Jr.,dk,300,montorie foster,SEA,WR,showdown,00-0040621,auto_exact,high
+WR,Nick DeGennaro (43782144),Nick DeGennaro,43782144,CPT,300,NE@SEA 09/09/2026 08:20PM ET,NE,0.0,,CPT,Nick DeGennaro,dk,300,nick degennaro,NE,WR,showdown,00-0041317,auto_exact,high
+WR,Irvin Charles (43782145),Irvin Charles,43782145,CPT,300,NE@SEA 09/09/2026 08:20PM ET,SEA,0.0,,CPT,Irvin Charles,dk,300,irvin charles,SEA,WR,showdown,00-0037156,auto_exact,high
+WR,Cameron Dorner (43782146),Cameron Dorner,43782146,CPT,300,NE@SEA 09/09/2026 08:20PM ET,NE,0.0,,CPT,Cameron Dorner,dk,300,cameron dorner,NE,WR,showdown,00-0041319,auto_exact,high
+WR,Ricky White III (43782147),Ricky White III,43782147,CPT,300,NE@SEA 09/09/2026 08:20PM ET,SEA,0.0,,CPT,Ricky White III,dk,300,ricky white,SEA,WR,showdown,00-0040653,auto_exact,high
+WR,Kyle Dixon (43782148),Kyle Dixon,43782148,CPT,300,NE@SEA 09/09/2026 08:20PM ET,NE,0.0,,CPT,Kyle Dixon,dk,300,kyle dixon,NE,WR,showdown,00-0041318,auto_exact,high
+WR,Emmanuel Henderson Jr. (43782149),Emmanuel Henderson Jr.,43782149,CPT,300,NE@SEA 09/09/2026 08:20PM ET,SEA,0.0,,CPT,Emmanuel Henderson Jr.,dk,300,emmanuel henderson,SEA,WR,showdown,00-0040895,auto_exact,high
+WR,Jimmy Kibble (43782150),Jimmy Kibble,43782150,CPT,300,NE@SEA 09/09/2026 08:20PM ET,NE,0.0,IR,CPT,Jimmy Kibble,dk,300,jimmy kibble,NE,WR,showdown,00-0041322,auto_exact,high
+WR,Jeremiah Webb (43782151),Jeremiah Webb,43782151,CPT,300,NE@SEA 09/09/2026 08:20PM ET,NE,0.0,IR,CPT,Jeremiah Webb,dk,300,jeremiah webb,NE,WR,showdown,00-0040570,auto_exact,high
+TE,Jack Westover (43782152),Jack Westover,43782152,CPT,300,NE@SEA 09/09/2026 08:20PM ET,NE,0.1,,CPT,Jack Westover,dk,300,jack westover,NE,TE,showdown,00-0039305,auto_exact,high
+TE,Lance Mason (43782153),Lance Mason,43782153,CPT,300,NE@SEA 09/09/2026 08:20PM ET,SEA,0.0,,CPT,Lance Mason,dk,300,lance mason,SEA,TE,showdown,00-0040974,auto_exact,high
+TE,Nick Kallerup (43782154),Nick Kallerup,43782154,CPT,300,NE@SEA 09/09/2026 08:20PM ET,SEA,0.0,,CPT,Nick Kallerup,dk,300,nick kallerup,SEA,TE,showdown,00-0040058,auto_exact,high
+TE,Mitch Van Vooren (43782155),Mitch Van Vooren,43782155,CPT,300,NE@SEA 09/09/2026 08:20PM ET,NE,0.0,,CPT,Mitch Van Vooren,dk,300,mitch van vooren,NE,TE,showdown,,,
+TE,Tanner Arkin (43782156),Tanner Arkin,43782156,CPT,300,NE@SEA 09/09/2026 08:20PM ET,NE,0.0,,CPT,Tanner Arkin,dk,300,tanner arkin,NE,TE,showdown,00-0041314,auto_exact,high
+TE,Nick Vannett (43782157),Nick Vannett,43782157,CPT,300,NE@SEA 09/09/2026 08:20PM ET,SEA,0.0,,CPT,Nick Vannett,dk,300,nick vannett,SEA,TE,showdown,,,
+TE,CJ Dippre (43782158),CJ Dippre,43782158,CPT,300,NE@SEA 09/09/2026 08:20PM ET,NE,0.0,,CPT,CJ Dippre,dk,300,cj dippre,NE,TE,showdown,00-0040566,auto_exact,high
+TE,Julian Hill (43782159),Julian Hill,43782159,CPT,300,NE@SEA 09/09/2026 08:20PM ET,NE,2.2,IR,CPT,Julian Hill,dk,300,julian hill,NE,TE,showdown,00-0038720,auto_fallback_team_mismatch,medium
+RB,Reggie Gilliam (43782072),Reggie Gilliam,43782072,FLEX,200,NE@SEA 09/09/2026 08:20PM ET,NE,0.3,,FLEX,Reggie Gilliam,dk,200,reggie gilliam,NE,RB,showdown,00-0036187,auto_fallback_team_mismatch,medium
+RB,Jacardia Wright (43782073),Jacardia Wright,43782073,FLEX,200,NE@SEA 09/09/2026 08:20PM ET,SEA,2.0,,FLEX,Jacardia Wright,dk,200,jacardia wright,SEA,RB,showdown,00-0040067,auto_exact,high
+RB,Brady Russell (43782074),Brady Russell,43782074,FLEX,200,NE@SEA 09/09/2026 08:20PM ET,SEA,0.0,,FLEX,Brady Russell,dk,200,brady russell,SEA,RB,showdown,00-0038488,auto_exact,high
+RB,Robbie Ouzts (43782075),Robbie Ouzts,43782075,FLEX,200,NE@SEA 09/09/2026 08:20PM ET,SEA,0.0,IR,FLEX,Robbie Ouzts,dk,200,robbie ouzts,SEA,RB,showdown,00-0040649,auto_exact,high
+RB,Myles Montgomery (43782076),Myles Montgomery,43782076,FLEX,200,NE@SEA 09/09/2026 08:20PM ET,NE,0.0,IR,FLEX,Myles Montgomery,dk,200,myles montgomery,NE,RB,showdown,00-0041323,auto_exact,high
+WR,Tejhaun Palmer (43782077),Tejhaun Palmer,43782077,FLEX,200,NE@SEA 09/09/2026 08:20PM ET,NE,0.0,,FLEX,Tejhaun Palmer,dk,200,tejhaun palmer,NE,WR,showdown,00-0039397,auto_fallback_team_mismatch,medium
+WR,Rashad Rochelle (43782078),Rashad Rochelle,43782078,FLEX,200,NE@SEA 09/09/2026 08:20PM ET,SEA,0.0,,FLEX,Rashad Rochelle,dk,200,rashad rochelle,SEA,WR,showdown,00-0041476,auto_exact,high
+WR,Kobe Prentice (43782079),Kobe Prentice,43782079,FLEX,200,NE@SEA 09/09/2026 08:20PM ET,NE,0.0,,FLEX,Kobe Prentice,dk,200,kobe prentice,NE,WR,showdown,00-0041152,auto_fallback_team_mismatch,medium
+WR,Montorie Foster Jr. (43782080),Montorie Foster Jr.,43782080,FLEX,200,NE@SEA 09/09/2026 08:20PM ET,SEA,0.0,,FLEX,Montorie Foster Jr.,dk,200,montorie foster,SEA,WR,showdown,00-0040621,auto_exact,high
+WR,Nick DeGennaro (43782081),Nick DeGennaro,43782081,FLEX,200,NE@SEA 09/09/2026 08:20PM ET,NE,0.0,,FLEX,Nick DeGennaro,dk,200,nick degennaro,NE,WR,showdown,00-0041317,auto_exact,high
+WR,Irvin Charles (43782082),Irvin Charles,43782082,FLEX,200,NE@SEA 09/09/2026 08:20PM ET,SEA,0.0,,FLEX,Irvin Charles,dk,200,irvin charles,SEA,WR,showdown,00-0037156,auto_exact,high
+WR,Cameron Dorner (43782083),Cameron Dorner,43782083,FLEX,200,NE@SEA 09/09/2026 08:20PM ET,NE,0.0,,FLEX,Cameron Dorner,dk,200,cameron dorner,NE,WR,showdown,00-0041319,auto_exact,high
+WR,Ricky White III (43782084),Ricky White III,43782084,FLEX,200,NE@SEA 09/09/2026 08:20PM ET,SEA,0.0,,FLEX,Ricky White III,dk,200,ricky white,SEA,WR,showdown,00-0040653,auto_exact,high
+WR,Kyle Dixon (43782085),Kyle Dixon,43782085,FLEX,200,NE@SEA 09/09/2026 08:20PM ET,NE,0.0,,FLEX,Kyle Dixon,dk,200,kyle dixon,NE,WR,showdown,00-0041318,auto_exact,high
+WR,Emmanuel Henderson Jr. (43782086),Emmanuel Henderson Jr.,43782086,FLEX,200,NE@SEA 09/09/2026 08:20PM ET,SEA,0.0,,FLEX,Emmanuel Henderson Jr.,dk,200,emmanuel henderson,SEA,WR,showdown,00-0040895,auto_exact,high
+WR,Jimmy Kibble (43782087),Jimmy Kibble,43782087,FLEX,200,NE@SEA 09/09/2026 08:20PM ET,NE,0.0,IR,FLEX,Jimmy Kibble,dk,200,jimmy kibble,NE,WR,showdown,00-0041322,auto_exact,high
+WR,Jeremiah Webb (43782088),Jeremiah Webb,43782088,FLEX,200,NE@SEA 09/09/2026 08:20PM ET,NE,0.0,IR,FLEX,Jeremiah Webb,dk,200,jeremiah webb,NE,WR,showdown,00-0040570,auto_exact,high
+TE,Jack Westover (43782089),Jack Westover,43782089,FLEX,200,NE@SEA 09/09/2026 08:20PM ET,NE,0.1,,FLEX,Jack Westover,dk,200,jack westover,NE,TE,showdown,00-0039305,auto_exact,high
+TE,Lance Mason (43782090),Lance Mason,43782090,FLEX,200,NE@SEA 09/09/2026 08:20PM ET,SEA,0.0,,FLEX,Lance Mason,dk,200,lance mason,SEA,TE,showdown,00-0040974,auto_exact,high
+TE,Nick Kallerup (43782091),Nick Kallerup,43782091,FLEX,200,NE@SEA 09/09/2026 08:20PM ET,SEA,0.0,,FLEX,Nick Kallerup,dk,200,nick kallerup,SEA,TE,showdown,00-0040058,auto_exact,high
+TE,Mitch Van Vooren (43782092),Mitch Van Vooren,43782092,FLEX,200,NE@SEA 09/09/2026 08:20PM ET,NE,0.0,,FLEX,Mitch Van Vooren,dk,200,mitch van vooren,NE,TE,showdown,,,
+TE,Tanner Arkin (43782093),Tanner Arkin,43782093,FLEX,200,NE@SEA 09/09/2026 08:20PM ET,NE,0.0,,FLEX,Tanner Arkin,dk,200,tanner arkin,NE,TE,showdown,00-0041314,auto_exact,high
+TE,Nick Vannett (43782094),Nick Vannett,43782094,FLEX,200,NE@SEA 09/09/2026 08:20PM ET,SEA,0.0,,FLEX,Nick Vannett,dk,200,nick vannett,SEA,TE,showdown,,,
+TE,CJ Dippre (43782095),CJ Dippre,43782095,FLEX,200,NE@SEA 09/09/2026 08:20PM ET,NE,0.0,,FLEX,CJ Dippre,dk,200,cj dippre,NE,TE,showdown,00-0040566,auto_exact,high
+TE,Julian Hill (43782096),Julian Hill,43782096,FLEX,200,NE@SEA 09/09/2026 08:20PM ET,NE,2.2,IR,FLEX,Julian Hill,dk,200,julian hill,NE,TE,showdown,00-0038720,auto_fallback_team_mismatch,medium
