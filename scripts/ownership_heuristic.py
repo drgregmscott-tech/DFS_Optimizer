@@ -213,6 +213,36 @@ New design decisions from Session 11.0:
    the pool has accumulated true in-season history, decision #8's
    original per-player dampening resumes automatically.
 
+10. THE STRUCTURAL MIN-SALARY RATIO BLOWUP (Session 15.3, real root cause
+    of a real complaint -- several $200 Showdown players marked chalk that
+    had no real business being there). Decision #8/#9 address WHO gets
+    dampened and when; this addresses a completely separate mechanism that
+    exists independent of participation, week, or season, and that
+    decision #9's fix (correctly) stopped masking: value_percentile
+    (decision #1) is points divided by salary, and salary_tier_score
+    (decision #2) is a percentile rank of salary itself. Both derive
+    directly from raw salary, and both break down the same way for any
+    player priced at or near a slate's minimum -- a $200 salary makes even
+    a thin, low-confidence projection divide out to a value ratio bigger
+    than a real $10,000+ star's, and separately ranks as an extreme-tier
+    salary_tier_score purely for being at the price floor, regardless of
+    whether that price reflects a real role. Confirmed on a real live
+    slate: a Seattle WR with zero career snaps outranked the slate's best
+    real, established receiver on BOTH features, tied its overall
+    chalk_score exactly, well before decision #8/#9 (participation) ever
+    entered the picture -- this is a salary-math problem, not a
+    participation problem.
+
+    Fixed with a floor (VALUE_SALARY_FLOOR) on the salary figure these two
+    features use -- NOT on the real `salary` column, which stays untouched
+    everywhere else (display, the optimizer's own cap-space math). Below
+    the floor, small real salary differences ($200 vs $300) don't reflect
+    a real difference in expected role, so they shouldn't drive one in
+    either feature. A no-op for Classic QB/RB/WR/TE (their real minimums
+    already sit above the floor); a small, appropriate nudge for Classic's
+    cheapest DST tier (already visibly elevated before this fix); the main
+    correction for Showdown's much lower $200 floor.
+
 5. estimated_ownership_pct -- added Session 4.1 as a follow-up to
    chalk_score, after the user asked directly: chalk_score alone is a
    RELATIVE ranking (0-100 scale, no real-world anchor) and was never
@@ -317,6 +347,19 @@ MAX_NAME_RECOGNITION_BONUS = 20  # sanity ceiling on any single flag_weight row
 # softmax temperature below -- retuning target for Session 11.1 once real
 # logged ownership data exists to fit it against.
 PARTICIPATION_CONFIDENCE_FLOOR = 0.35
+
+# Decision #10 (Session 15.3): floor on the salary figure used to compute
+# value_percentile AND salary_tier_score -- see that decision in the
+# module docstring. Both features derive from raw salary; both break down
+# the same way for any player priced at or near a slate's minimum, since
+# that's a structural property of the ratio/percentile math, independent
+# of participation, week, or season. UNFIT starting guess, same status as
+# the other constants above -- validated against a real live slate tonight
+# (Session 15.3) but not fit to real logged ownership data. A no-op for
+# Classic QB/RB/WR/TE (their real minimum salaries already sit well above
+# this), a small nudge for Classic's cheapest DST tier, and the main
+# correction for Showdown's much lower $200 floor.
+VALUE_SALARY_FLOOR = 2400
 
 MIN_GROUP_SIZE_FOR_RELIABLE_PERCENTILE = 5  # below this, warn -- see ROADMAP.md "Known Testing Artifact"
 
@@ -433,6 +476,13 @@ def compute_chalk_scores(df: pd.DataFrame, site: str, group_col: str = None) -> 
             file=sys.stderr,
         )
 
+    # Decision #10 (Session 15.3, see module docstring): a floor on the
+    # salary figure used below for value AND salary_tier -- NOT on the raw
+    # `salary` column itself, which stays untouched for every other use
+    # (display, the optimizer's actual cap-space math). Only these two
+    # derived, ranking-only features use it.
+    effective_salary = df["salary"].clip(lower=VALUE_SALARY_FLOOR)
+
     # Decision #1: value = projected points per $1K salary, percentile-
     # ranked within group_col so groups with structurally different raw
     # value ranges are comparable.
@@ -440,7 +490,7 @@ def compute_chalk_scores(df: pd.DataFrame, site: str, group_col: str = None) -> 
     # which propagates to a NaN chalk_score and hard-stops
     # build_projections.py's add_ownership_columns. A non-positive salary
     # yields value 0.0 (correctly the worst value), not NaN.
-    safe_salary = df["salary"].where(df["salary"] > 0)
+    safe_salary = effective_salary.where(effective_salary > 0)
     df["value"] = (df["final_projection"] / (safe_salary / 1000.0)).fillna(0.0)
     df["value_percentile"] = df.groupby(group_col)["value"].rank(pct=True) * 100
 
@@ -452,8 +502,12 @@ def compute_chalk_scores(df: pd.DataFrame, site: str, group_col: str = None) -> 
     )
 
     # Decision #2: salary tier, U-shaped -- both ends of a group's salary
-    # range score high, the middle scores low.
-    salary_pct = df.groupby(group_col)["salary"].rank(pct=True)
+    # range score high, the middle scores low. Uses effective_salary (see
+    # decision #10) for the same reason value does: below the floor, real
+    # salary differences (e.g. $200 vs $300) don't reflect a real
+    # difference in expected role, so they shouldn't drive a real
+    # difference in how "cheap-tier chalk" this feature says a player is.
+    salary_pct = df.assign(_eff_salary=effective_salary).groupby(group_col)["_eff_salary"].rank(pct=True)
     df["salary_tier_score"] = (salary_pct - 0.5).abs() * 2 * 100
 
     # Decision #3: vegas implied total, percentile-ranked across the WHOLE
