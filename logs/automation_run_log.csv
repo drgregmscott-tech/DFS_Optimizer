@@ -935,3 +935,12 @@ timestamp_utc,trigger_type,site,step,status
 2026-08-16T18:11:53.317698+00:00,manual_workflow_dispatch,fd,status_apply,success
 2026-08-16T18:11:53.317698+00:00,manual_workflow_dispatch,dk,pivot_finder,success
 2026-08-16T18:11:53.317698+00:00,manual_workflow_dispatch,fd,pivot_finder,success
+2026-08-16T18:23:09.793618+00:00,full_refresh_scheduled,both,vegas_odds_pull,success
+2026-08-16T18:23:09.793618+00:00,full_refresh_scheduled,both,team_stats_pull,success
+2026-08-16T18:23:09.793618+00:00,full_refresh_scheduled,both,status_pull,success
+2026-08-16T18:23:09.793618+00:00,full_refresh_scheduled,dk,build_projections,success
+2026-08-16T18:23:09.793618+00:00,full_refresh_scheduled,fd,build_projections,success
+2026-08-16T18:23:09.793618+00:00,full_refresh_scheduled,dk,status_apply,success
+2026-08-16T18:23:09.793618+00:00,full_refresh_scheduled,fd,status_apply,success
+2026-08-16T18:23:09.793618+00:00,full_refresh_scheduled,dk,pivot_finder,success
+2026-08-16T18:23:09.793618+00:00,full_refresh_scheduled,fd,pivot_finder,success
