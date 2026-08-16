@@ -56,13 +56,41 @@ SITE_SCORING = {
 
 def load_weekly_data(season: int, week: int) -> pd.DataFrame:
     """Load weekly stats for the season, restricted to REG-season games
-    strictly before the target week (lookahead-bias guard)."""
+    strictly before the target week (lookahead-bias guard).
+
+    Decision #1 (Session 15.3): a season whose weekly_stats_{season}.
+    parquet doesn't exist AT ALL is the normal state before that season's
+    first game, not a config mistake -- ingest_historical.py's own
+    ingest_weekly_stats() deliberately never writes a placeholder file for
+    a season with no games played yet (see that function's docstring).
+    This module's own matchup_factor documentation at the top of this file
+    already anticipated the correct outcome for this case ("matchup_factor
+    == 1.0 -> exactly league average ... or a position/team combo with no
+    data yet"): an empty result here, rather than a crash, lets that
+    already-intended neutral fallback (build_projections.py's
+    matchup_lookup.get(...).fillna(1.0), applied to every player once this
+    file is loaded downstream) actually take effect for a genuine week 1,
+    instead of stopping the whole matchup-factor build before it starts.
+
+    Same real condition, and same fix shape, as statline_model.py's
+    load_history() (decision #19) -- this script keeps its own
+    self-contained data loader rather than importing that one, so it needs
+    the identical guard applied here separately.
+    """
     path = DATA_DIR / f"weekly_stats_{season}.parquet"
     if not path.exists():
-        raise FileNotFoundError(
-            f"{path} not found. Run scripts/ingest_historical.py --season {season} first "
-            f"(Session 1.2)."
+        print(
+            f"NOTE: {path} not found -- treating season {season} as having "
+            f"no games played yet. Every team/position will get a neutral "
+            f"matchup_factor once this (empty) result reaches "
+            f"build_projections.py's own fillna(1.0) fallback. If season "
+            f"{season} should already have real data, double-check: run "
+            f"scripts/ingest_historical.py --season {season} to confirm."
         )
+        return pd.DataFrame(columns=[
+            "opponent_team", "position", "week", "season_type",
+            "fantasy_points_ppr", "fantasy_points", "receptions",
+        ])
     df = pd.read_parquet(path, engine="pyarrow")
     df = df[df["position"].isin(POSITIONS)]
     df = df[df["season_type"] == "REG"]
