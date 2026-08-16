@@ -96,6 +96,27 @@ Numbered decisions (continuing fit_dst_model.py's numbering):
      decision #4. Session 10.2 measured the points-level blend neutral and
      explained why. A DST's price carries the same information as its
      opponent's implied total, only noisier.
+
+ 24. (Session 15.3) A VEGAS ROW IS ONLY TRUSTED FOR THIS GAME IF IT SAYS SO
+     ITSELF. Decision #23 fixed WHO a defense's in-slate opponent is
+     (opponent_map). It did not fix whether the vegas row found for that
+     opponent actually pertains to a game against this team, versus some
+     other real game the same team happens to be playing elsewhere in the
+     vegas file (true of every preseason Showdown and Madden Sim slate,
+     since this pipeline's only vegas source is a real-season file with no
+     coverage of those games). Confirmed via a real ARI/CAR preseason
+     Showdown slate: opp_implied silently picked up Carolina's real
+     week-1-vs-Chicago number, which then fed directly into simulate()'s
+     mu_pa/mu_db means.
+
+     Fixed by validating each row (`vg.at[x,"opponent"] == opp`) before
+     trusting it, falling back to the league-average implied_total/
+     over_under across the vegas file handed in when it doesn't validate --
+     not 0.0, which would tell the simulation this team scores nothing.
+     Same "no real signal -> neutral" convention as vegas_factor=1.0
+     elsewhere, on implied_total's additive scale. Does not change decision
+     #16: whether a team HAS a game still depends only on `opp` resolving to
+     a real team, never on a matching vegas row existing.
 """
 
 import json
@@ -284,19 +305,25 @@ def build_features(season: int, week: int, teams, vegas: pd.DataFrame,
 
     `vegas` is `vegas_implied_totals_{week}.csv` as build_projections.py
     loads it (columns: team, opponent, implied_total, over_under). A team
-    absent from it has no game -- decision #16.
+    with no real opponent (via opponent_map, or via `vegas`'s own
+    "opponent" column when no map is supplied) has no game -- decision #16.
+    NOTE: a team CAN be absent from `vegas` entirely and still have a real
+    game -- decision #24 gives that case a league-average neutral prior
+    rather than treating vegas-absence itself as a bye.
 
     `opponent_map` (Session 13.5-pause Bug Fix A): optional team -> opponent
     override, the SAME Game-Info-derived map skill players and kickers
     already use (build_projections.py decision #9). Without this, a
-    defense's opponent/opp_implied/opp_sack_allowed_rate/opp_dropbacks/
-    opponent-QB were all resolved from `vegas`'s own "opponent" column --
-    that team's REAL 2025-schedule opponent that week, which is not
-    necessarily who it's actually facing on this slate (Madden Sim and
-    preseason Showdown slates routinely pair teams that never play each
-    other in real life). Confirmed real via a real ARI/CAR Showdown slate
-    and a real Madden slate, not hypothetical -- see
-    Handoff_13.5_Pause_BugFixes.md, Bug Fix Session A.
+    defense's opponent/opp_sack_allowed_rate/opp_dropbacks/opponent-QB were
+    all resolved from `vegas`'s own "opponent" column -- that team's REAL
+    2025-schedule opponent that week, which is not necessarily who it's
+    actually facing on this slate (Madden Sim and preseason Showdown slates
+    routinely pair teams that never play each other in real life). Confirmed
+    real via a real ARI/CAR Showdown slate and a real Madden slate, not
+    hypothetical -- see Handoff_13.5_Pause_BugFixes.md, Bug Fix Session A.
+    This fixed WHO the opponent is; decision #24 separately fixes whether
+    own_implied/opp_implied/over_under are trusted from a vegas row for
+    that opponent, or fall back to a league-average neutral prior.
     """
     # Decision #12 -- normalise the caller's team codes before anything
     # joins on them. The vegas file comes from a site-normalised source and
@@ -410,21 +437,74 @@ def build_features(season: int, week: int, teams, vegas: pd.DataFrame,
     rate_idx = cur_rates.set_index("team")
     rows = []
     vg = vegas.drop_duplicates(subset=["team"]).set_index("team")
+
+    # Decision #24 (Session 15.3): a team's own row in `vg` is only real
+    # signal for THIS game if that row's OWN recorded opponent agrees with
+    # `opp` (below) -- not merely because the team or its opponent happens
+    # to appear SOMEWHERE in the vegas file. Decision #23 fixed `opp` itself
+    # (via opponent_map) but left `own_implied`/`opp_implied`/`over_under`
+    # trusting whatever row they found by team/opponent CODE alone. Confirmed
+    # broken on the real ARI/CAR preseason Showdown slate: opponent_map
+    # correctly resolved ARI's in-slate opponent to CAR, but CAR ALSO has an
+    # unrelated real row in the vegas file (its actual week-1-vs-Chicago
+    # line, because this pipeline's only vegas source is a real 2026 season
+    # file with no preseason coverage -- Handoff_13.5_Pause_BugFixes.md's
+    # "Bug/Question B"), and that unrelated row's implied_total was silently
+    # accepted as opp_implied -- a real simulation input (see simulate()'s
+    # mu_pa/mu_db), not just a display value.
+    #
+    # Fix: validate the row before trusting it. When it doesn't validate,
+    # fall back to the LEAGUE-AVERAGE implied_total/over_under across the
+    # whole vegas file handed in -- not 0.0. Zero would tell the simulation
+    # "this team is expected to score nothing," a worse distortion than the
+    # wrong-game number it replaces. League-average is the same "no real
+    # signal -> neutral" convention build_vegas_factors()'s vegas_factor=1.0
+    # already uses for skill players, expressed on implied_total's additive
+    # scale instead of vegas_factor's multiplicative one.
+    #
+    # This does NOT change decision #16's "no opponent -> bye -> zero" rule.
+    # Whether a team has a real game still depends only on whether `opp`
+    # resolves to a real team (via opponent_map, or the raw vegas opponent
+    # column when no map is supplied) -- never on whether a matching vegas
+    # ROW exists. A real preseason or Madden Sim game with no vegas coverage
+    # is a real game with a neutral prior, not a bye.
+    league_avg_implied = float(vegas["implied_total"].mean()) if len(vegas) else np.nan
+    league_avg_over_under = (
+        float(vegas["over_under"].mean())
+        if "over_under" in vegas.columns and len(vegas) else np.nan
+    )
+
     for team in teams:
-        has_game = team in vg.index
+        has_vegas_row = team in vg.index
         # Decision #23: prefer the Game-Info-resolved opponent (passed in as
         # opponent_map) over the raw vegas file's real-schedule opponent --
         # see docstring above. Falls back to the old vegas-derived value when
         # no override is supplied (opponent_map=None, e.g. actuals/backtest
         # callers) or the team isn't in the map, so this is a no-op for every
         # existing real-season classic-slate caller.
-        vegas_opp = vg.at[team, "opponent"] if has_game else None
+        vegas_opp = vg.at[team, "opponent"] if has_vegas_row else None
         opp = opponent_map.get(team, vegas_opp) if opponent_map else vegas_opp
-        opp_implied = float(vg.at[opp, "implied_total"]) if (has_game and opp in vg.index) else np.nan
-        rec = {"team": team, "has_game": bool(has_game and not np.isnan(opp_implied)),
+        has_game = opp is not None and not (isinstance(opp, float) and np.isnan(opp))
+
+        # Decision #24: only trust a row's implied_total/over_under when its
+        # own recorded opponent matches the real in-slate opponent.
+        team_row_valid = has_vegas_row and (vg.at[team, "opponent"] == opp)
+        opp_row_valid = has_game and (opp in vg.index) and (vg.at[opp, "opponent"] == team)
+
+        if not has_game:
+            own_implied, opp_implied, over_under = 0.0, np.nan, 0.0
+        else:
+            own_implied = (float(vg.at[team, "implied_total"]) if team_row_valid
+                           else league_avg_implied)
+            opp_implied = (float(vg.at[opp, "implied_total"]) if opp_row_valid
+                           else league_avg_implied)
+            over_under = (float(vg.at[team, "over_under"])
+                         if (team_row_valid and "over_under" in vg.columns)
+                         else league_avg_over_under)
+
+        rec = {"team": team, "has_game": bool(has_game),
                "opponent": opp, "opp_implied": opp_implied,
-               "own_implied": float(vg.at[team, "implied_total"]) if has_game else 0.0,
-               "over_under": float(vg.at[team, "over_under"]) if (has_game and "over_under" in vg.columns) else 0.0}
+               "own_implied": own_implied, "over_under": over_under}
         for c in ("own_sack_rate", "own_int_rate", "own_fum_rate"):
             rec[c] = float(rate_idx.at[team, c]) if team in rate_idx.index else np.nan
         for c in ("opp_sack_allowed_rate", "opp_dropbacks"):

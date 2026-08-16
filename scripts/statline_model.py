@@ -221,6 +221,30 @@ Numbered decisions:
      redistribution_shock_scale absent) degrades to exactly today's
      independent draws -- this is additive to decision #15's mechanism,
      never a hard requirement of it.
+
+ 19. SESSION 15.3 -- A GENUINELY MISSING CURRENT-SEASON FILE IS WEEK 1,
+     NOT AN ERROR. `load_history()` used to hard-stop (`SystemExit`) if
+     `weekly_stats_{season}.parquet` didn't exist at all. That guard was
+     right for the wrong reason: it never actually fired on a real live
+     build, because `current_slate.json`'s season field had been left on
+     the prior completed season, so `load_history()` always found a
+     populated (if stale) file. Corrected to the slate's real season, a
+     genuine real-season week 1 build hits exactly the case decision #14
+     already exists to handle -- except `ingest_historical.py`'s own
+     `ingest_weekly_stats()` deliberately never writes a placeholder file
+     for a season with no games played yet (see its docstring), so that
+     file's total absence is the NORMAL week-1 state, not a sign of a
+     broken setup.
+
+     `load_history()` now prints a clear note and returns an empty frame
+     instead of raising, mirroring `load_depth_chart()`'s own established
+     graceful-degradation pattern rather than inventing a second one.
+     `build_usage()`, `team_defense_history()`, and `team_volume_history()`
+     each guard against this now being a genuinely COLUMNLESS empty frame
+     (not just zero rows in an otherwise-real frame) before doing anything
+     that would require a specific column to exist on it -- `build_usage()`
+     then falls straight through to decision #16's own already-correct
+     schema-carrying empty result, unchanged.
 """
 
 import json
@@ -428,12 +452,52 @@ def _recency_weighted(values: np.ndarray) -> float:
 
 
 def load_history(season: int, week: int) -> pd.DataFrame:
-    """Decision #5: REG games strictly before the target week."""
+    """Decision #5: REG games strictly before the target week.
+
+    Decision #19 (Session 15.3): a season whose weekly_stats_{season}.
+    parquet doesn't exist AT ALL -- not "exists but has zero rows before
+    this week", genuinely absent -- is treated the same real, expected
+    condition ingest_historical.py's own ingest_weekly_stats() already
+    treats a season with no games played yet: not a config mistake.
+    That ingestion function deliberately never writes a placeholder file
+    for such a season (see its own docstring), so this case is the normal
+    result of asking for a brand-new season's history before its first
+    game, not a sign anything is broken.
+
+    Confirmed real, not hypothetical (Session 15.3): current_slate.json's
+    season field had been left on the prior completed season rather than
+    the slate's real season, which meant every real call here always found
+    a populated (if stale) file and this path never actually ran. With the
+    field corrected to the slate's real season, a genuine real-season week
+    1 build hits exactly this case.
+
+    Mirrors load_depth_chart()'s established "missing file -> print a
+    clear note, return an empty frame, degrade gracefully" pattern rather
+    than dst_model.py's separate allow_missing parameter -- every real
+    caller here (build_usage(), team_defense_history(),
+    team_volume_history()) always wants this same behavior for THIS
+    season; there is no second, must-exist "prior season" call to this
+    function the way dst_model.py has to distinguish current vs. prior, so
+    a parameter to opt in/out would have nothing to switch between.
+
+    A genuine setup mistake (e.g. a season that SHOULD have real data,
+    simply never ingested) still prints the same NOTE -- visible in the
+    run's own output -- so this does not silently swallow a real problem,
+    it just no longer hard-stops the whole build over the one condition
+    (a brand-new season, week 1) decision #14 already exists to handle.
+    """
     path = DATA_DIR / f"weekly_stats_{season}.parquet"
     if not path.exists():
-        raise SystemExit(
-            f"{path} not found. Run ingest_historical.py --season {season} "
-            f"first (Session 1.2).")
+        print(
+            f"NOTE: {path} not found -- treating season {season} as having "
+            f"no games played yet (same condition ingest_historical.py's "
+            f"ingest_weekly_stats() already expects and skips -- see its "
+            f"docstring). Falling back to decision #14's week-1 cold-start "
+            f"path for every position. If season {season} should already "
+            f"have real data, double-check: run scripts/ingest_historical.py "
+            f"--season {season} to confirm."
+        )
+        return pd.DataFrame()
     df = pd.read_parquet(path)
     season_type_col = "season_type" if "season_type" in df.columns else "game_type"
     df = df[(df[season_type_col] == "REG") & (df["week"] < week)].copy()
@@ -478,11 +542,18 @@ def build_usage(season: int, week: int, variance: dict) -> pd.DataFrame:
     hist = load_history(season, week)
     from fit_statline_variance import COMPONENTS  # whitelist only; no fitting
 
-    team_wks = team_weeks_played(hist)
+    # Decision #19 (Session 15.3): hist can now be a genuinely columnless
+    # empty frame (load_history()'s missing-file case), not only a
+    # populated-file-but-zero-matching-rows empty frame. team_weeks_played()
+    # and the groupby below both require a real "team"/"player_id" column
+    # to exist even on zero rows -- guard both rather than let either raise
+    # a KeyError before decision #16's own schema-carrying empty result
+    # (below) is ever reached.
+    team_wks = team_weeks_played(hist) if not hist.empty else {}
     lookback = len(RECENCY_WEIGHTS)
 
     rows = []
-    for pid, g in hist.groupby("player_id"):
+    for pid, g in (hist.groupby("player_id") if not hist.empty else []):
         g = g.sort_values("week")
         pos = str(g["position"].iloc[-1])
         if pos not in COMPONENTS:
@@ -632,8 +703,19 @@ def team_defense_history(season: int, week: int) -> pd.DataFrame:
 
 
 def team_volume_history(season: int, week: int) -> pd.DataFrame:
-    """Recency-weighted team-level volume, for decision #7's reconciliation."""
+    """Recency-weighted team-level volume, for decision #7's reconciliation.
+    Empty at week 1, same as team_defense_history() just above -- decision
+    #19 (Session 15.3): hist can now be empty because the season's file
+    doesn't exist yet, not only because it exists with zero rows before
+    this week. Same empty-columns-would-KeyError reasoning as that
+    function's own guard."""
     hist = load_history(season, week)
+    if hist.empty:
+        return pd.DataFrame(columns=[
+            "team", "team_attempts", "team_carries", "team_targets",
+            "hist_attempts", "hist_carries", "hist_targets",
+            "recent_attempts", "recent_carries", "recent_targets",
+        ])
     lookback = len(RECENCY_WEIGHTS)
     out = []
     for (team,), g in hist.groupby(["team"]):

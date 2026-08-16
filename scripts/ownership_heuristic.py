@@ -140,6 +140,53 @@ New design decisions from Session 11.0:
    has a very different DFS ownership profile than the same team in a 38
    O/U game, even with identical point spreads.
 
+8. PARTICIPATION-CONFIDENCE DAMPENING (Session 15.3) -- value_percentile
+   (decision #1) is a ratio, final_projection divided by salary, and
+   ratios break down at the bottom of the salary range: ANY nonzero
+   projection, however thin the basis for it, produces a huge ratio
+   against a tiny salary denominator. Confirmed on a real Week 1 2026
+   Showdown slate: a Seattle WR with ZERO career NFL participation
+   (games_played == 0, participation_effective == 0.0), priced at DK
+   Showdown's $200 floor and projected for 1.4 points, produced
+   value_percentile == 100 -- the single highest value ranking in the
+   whole 61-player pool -- and an outright TIED chalk_score (76.25) with
+   the slate's best real, established player (a $10,600+ WR projected for
+   19-28 points). A real fullback with an actual small role (11 games
+   played, participation_effective == 0.8) ranked BELOW several
+   zero-participation players for the opposite reason: his genuinely
+   small real role produces a smaller raw_projection_percentile than the
+   noisier baseline projection given to totally unproven players.
+
+   `participation_effective` (Session 15.2) already exists in
+   final_projections_*.csv specifically to answer "how much real evidence
+   exists that this player sees the field" -- 0.0 for a confirmed
+   zero-history bench/inactive-risk player, 1.0 for an established
+   full-season role, already corrected upward for confirmed depth-chart
+   #1 starters even in their first game
+   (apply_confirmed_starter_override(), Session 15.2), so a genuine
+   rookie starter is not wrongly dampened here.
+
+   Applied as a multiplier on the WHOLE blended chalk_score (all five
+   inputs plus the name-recognition bonus), not a single sub-feature --
+   every input is, to some degree, built from a projection whose
+   reliability depends on this same participation signal. A floor (not a
+   hard zero) is used deliberately: a real, if small, chance exists that
+   an unproven player sees the field and becomes a differentiation play,
+   and estimated_ownership_pct already has its own explicit-zero
+   mechanism (decision #5) for the genuinely-impossible case
+   (final_projection == 0, confirmed no game). PARTICIPATION_CONFIDENCE_
+   FLOOR is an UNFIT starting guess, same status as the blend weights and
+   softmax temperature -- retuning target for Session 11.1.
+
+   Only applied where the signal exists: DST/K have no participation_
+   effective concept at all (NaN in final_projections_*.csv -- a defense
+   or kicker has no "bench" the way a skill-position player does), so
+   they get a confidence multiplier of 1.0 (unchanged), not a spurious
+   dampening from a signal that was never computed for them. A
+   projections file missing the column entirely (older schema) degrades
+   the same way -- multiplier 1.0 for everyone, with a stderr note -- so
+   this is additive, not a hard schema requirement.
+
 5. estimated_ownership_pct -- added Session 4.1 as a follow-up to
    chalk_score, after the user asked directly: chalk_score alone is a
    RELATIVE ranking (0-100 scale, no real-world anchor) and was never
@@ -234,6 +281,16 @@ SALARY_TIER_WEIGHT = 0.15     # U-shaped salary tier score
 VEGAS_WEIGHT = 0.20           # implied team total, percentile across full pool
 OVER_UNDER_WEIGHT = 0.15      # game over/under, percentile across full pool (NEW Session 11.0)
 MAX_NAME_RECOGNITION_BONUS = 20  # sanity ceiling on any single flag_weight row
+
+# Decision #8 (Session 15.3): floor on the participation-confidence
+# multiplier applied to the WHOLE blended chalk_score -- see that decision
+# in the module docstring. A confirmed zero-participation player's
+# chalk_score is scaled to this fraction of what the raw 5-feature blend
+# would otherwise produce (1.0 = no dampening, at participation_effective
+# == 1.0). UNFIT starting guess, same status as the blend weights and
+# softmax temperature below -- retuning target for Session 11.1 once real
+# logged ownership data exists to fit it against.
+PARTICIPATION_CONFIDENCE_FLOOR = 0.35
 
 MIN_GROUP_SIZE_FOR_RELIABLE_PERCENTILE = 5  # below this, warn -- see ROADMAP.md "Known Testing Artifact"
 
@@ -400,15 +457,39 @@ def compute_chalk_scores(df: pd.DataFrame, site: str, group_col: str = None) -> 
         f"from {NAME_RECOGNITION_PATH.name}."
     )
 
-    # 5-feature blend (Session 11.0). Weights are UNFIT starting guesses;
+    # Decision #8 (see module docstring): participation-confidence
+    # dampening. `participation_confidence` scales from
+    # PARTICIPATION_CONFIDENCE_FLOOR (no real evidence this player sees
+    # the field) up to 1.0 (established full-season role). Only applied
+    # where the signal exists -- DST/K have no participation_effective
+    # concept and get 1.0 (unchanged), same as a projections file that
+    # predates this column entirely.
+    if "participation_effective" in df.columns:
+        participation = pd.to_numeric(df["participation_effective"], errors="coerce")
+        df["participation_confidence"] = (
+            PARTICIPATION_CONFIDENCE_FLOOR
+            + (1 - PARTICIPATION_CONFIDENCE_FLOOR) * participation
+        ).fillna(1.0)
+    else:
+        print(
+            "NOTE: 'participation_effective' not found in this projections "
+            "file -- chalk_score's participation-confidence dampening "
+            "(decision #8) is skipped; every player gets a 1.0 (unchanged) "
+            "multiplier.",
+            file=sys.stderr,
+        )
+        df["participation_confidence"] = 1.0
+
+    # 5-feature blend (Session 11.0), scaled by participation-confidence
+    # (Session 15.3, decision #8). Weights are UNFIT starting guesses;
     # retuning target for Session 11.1.
     df["chalk_score"] = (
-        VALUE_WEIGHT        * df["value_percentile"]
+        (VALUE_WEIGHT        * df["value_percentile"]
         + PROJECTION_WEIGHT * df["raw_projection_percentile"]
         + SALARY_TIER_WEIGHT * df["salary_tier_score"]
         + VEGAS_WEIGHT      * df["vegas_percentile"]
         + OVER_UNDER_WEIGHT * df["over_under_percentile"]
-        + df["flag_weight"]
+        + df["flag_weight"]) * df["participation_confidence"]
     ).clip(lower=0, upper=100)
 
     return df
