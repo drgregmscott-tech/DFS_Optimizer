@@ -186,6 +186,41 @@ Numbered decisions:
      Flagged as a decision, not a discovered truth: at a uniform factor the
      two choices are nearly the same on the mean and differ mainly in the
      variance structure and in how often a bonus threshold is crossed.
+
+ 18. SESSION 15.2C -- TEAMMATE VOLUME IS NOW CORRELATED WITHIN simulate(),
+     replacing decision #15's note (in fit_statline_variance.py's own
+     docstring) that every player was drawn fully independently. Session
+     15.2b tried this and rejected it because it made a real coverage
+     backtest WORSE; Session 15.2c found why (r already absorbed the
+     team-level swing, so adding a shock on top double-counted it) and
+     fixed it at the source: fit_statline_variance.py's r is now fit NET
+     of the team-level share (its own decision #8), so the shock this
+     module adds back is additive information, not a duplicate.
+
+     Mechanically: before the per-player loop, one shared shock array
+     (length n_sims) is drawn per (team, component) present in
+     variance["team_shock"] -- every player on that team who isn't in
+     team_shock["excluded_pairs"] uses the SAME shock array, which is
+     what makes their simulated volumes move together instead of
+     independently. Each player's own mean is shifted by
+     `redistribution_shock_scale * sqrt(r / (r + 1)) * pass_through_slope
+     * his own {comp}_hist_share * shock` before drawing -- the
+     `sqrt(r/(r+1))` term exactly cancels a real, verified inflation the
+     negative binomial's own mu^2/r term otherwise introduces when its
+     mean is randomized (Jensen's inequality on a convex function); the
+     `redistribution_shock_scale` in the artifact is a second, empirical
+     correction found by grid search against a real held-out coverage
+     backtest, not derivable in closed form. Both corrections are
+     fit_statline_variance.py's to own (decision #9); this module only
+     reads and applies them. `{comp}_hist_share` is apply_volume_prior()'s
+     own existing audit column, reused as-is rather than recomputed --
+     it is the closest available live match to what the backtest that
+     validated this mechanism was actually measured against.
+
+     A missing/old artifact (no "team_shock" key, or
+     redistribution_shock_scale absent) degrades to exactly today's
+     independent draws -- this is additive to decision #15's mechanism,
+     never a hard requirement of it.
 """
 
 import json
@@ -312,13 +347,31 @@ def _draw_latent(rng, latent_sd, size):
 
 
 def _draw_volume(rng, mu, r, size):
-    """Negative binomial with mean mu, Var = mu + mu^2/r."""
-    mu = _num(mu, 0.0)
-    if mu <= 1e-9:
-        return np.zeros(size, dtype=float)
+    """Negative binomial with mean mu, Var = mu + mu^2/r.
+
+    Session 15.2c, decision #18: `mu` may now be a scalar (today's plain
+    independent draw) OR an array of length `size` -- one mean per
+    simulation, used when a player's mean has been shifted by a shared
+    team-level shock so his draw is correlated with his teammates'.
+    """
     r = max(_num(r, 1.0), 1e-3)
-    p = r / (r + mu)
-    return rng.negative_binomial(r, p, size=size).astype(float)
+    mu_arr = np.asarray(mu, dtype=float)
+    if mu_arr.ndim == 0:
+        mu_val = _num(mu, 0.0)
+        if mu_val <= 1e-9:
+            return np.zeros(size, dtype=float)
+        p = r / (r + mu_val)
+        return rng.negative_binomial(r, p, size=size).astype(float)
+    # Array-valued mu: one draw per simulation, at that simulation's own
+    # (shocked) mean. Clipped at 0 -- a shock can push a small mu negative,
+    # which has no meaning for a volume count.
+    mu_arr = np.clip(mu_arr, 0.0, None)
+    p = np.clip(r / (r + mu_arr), 1e-9, 1.0)
+    out = np.zeros(size, dtype=float)
+    nonzero = mu_arr > 1e-9
+    if nonzero.any():
+        out[nonzero] = rng.negative_binomial(r, p[nonzero]).astype(float)
+    return out
 
 
 def _draw_yards(rng, mean_yards, cv):
@@ -1279,31 +1332,39 @@ def simulate(pool: pd.DataFrame, site: str, variance: dict,
     """Simulate every player's stat line, score each draw with `site`'s exact
     rules, and return per-player mean/sigma plus the mean stat line.
 
-    `pool` needs: player_id, position, and the usage columns build_usage()
-    produced, plus `market_factor` (matchup x vegas, decision #10).
+    `pool` needs: player_id, position, team, and the usage columns
+    build_usage()/apply_volume_prior() produced (including {comp}_hist_share),
+    plus `market_factor` (matchup x vegas, decision #10).
 
-    Session 15.2b considered, built, and REJECTED a correlated team-level
-    volume shock here (every player's volume is still drawn fully
-    independently, as before). The real, measured teammate pass-through
-    (fit_statline_variance.py's fit_team_shock(): 0.74-0.76 across all
-    three components, t = 28-60) is genuine -- teammates' real volumes do
-    move together. But a real coverage backtest on 1,062 held-out
-    team-weeks showed today's independent draws ALREADY land close to
-    real team-total variance (84.5% actual coverage of a nominal 80%
-    interval) BEFORE any shock is added, and adding one only pushed
-    coverage further away from nominal at every scale tested (up to 92% at
-    full scale) -- there was no scale-down that fixed it, because summing
-    ANY positive correlation on top of an already-adequate baseline can
-    only inflate the sum's variance further, never reduce it. A correct
-    fix needs fit_volume_dispersion()'s own `r` recalibrated net of
-    team-level variance, jointly with the correlation, not a shock added
-    beside an unchanged `r` -- a larger undertaking than this session
-    scoped. See SESSION_LOG.md Session 15.2b for the full backtest.
+    Session 15.2c, decision #18: teammates' volumes are now correlated via
+    a shared per-(team, component) shock, drawn once before the per-player
+    loop below so every player on a team uses the SAME shock realization.
+    Session 15.2b tried this and rejected it (see its own note, preserved
+    in fit_statline_variance.py's decision #7, for why an unchanged `r`
+    made it worse); Session 15.2c found why and fixed it at the source --
+    `r` itself is now fit net of the team-level share, so this module adds
+    real, additive information rather than double-counting. See decision
+    #18 above for the full mechanics and SESSION_LOG.md Session 15.2c for
+    the coverage-backtest numbers that validated it.
     """
     from fit_statline_variance import COMPONENTS
 
     rng = np.random.default_rng(seed)  # decision #2: never the global RNG
     results = []
+
+    # --- decision #18: one shared shock per (team, component) ------------
+    team_shock_cfg = variance.get("team_shock", {})
+    shock_scale = _num(team_shock_cfg.get("redistribution_shock_scale"), 0.0)
+    excluded_pairs = {tuple(p) for p in team_shock_cfg.get("excluded_pairs", [])}
+    team_shocks = {}  # (team, comp_name) -> shock array, length n_sims
+    if shock_scale > 0 and "team" in pool.columns:
+        for team, _ in pool.groupby("team"):
+            for name in ("pass", "rush", "recv"):
+                cfg = team_shock_cfg.get(name)
+                if not cfg:
+                    continue
+                team_shocks[(team, name)] = rng.normal(
+                    0.0, cfg["residual_sd"], size=n_sims)
 
     for row in pool.itertuples(index=False):
         pos = getattr(row, "position")
@@ -1313,17 +1374,34 @@ def simulate(pool: pd.DataFrame, site: str, variance: dict,
         factor = _num(getattr(row, "market_factor", 1.0), 1.0)
         if factor <= 0:
             factor = 1.0
+        team = getattr(row, "team", None)
 
         draws = {c: np.zeros(n_sims, dtype=float) for c in scoring_rules.STATLINE_COLUMNS}
 
         for name, vol_stat, yd_stat, td_stat in COMPONENTS[pos]:
             comp = vpos["components"][name]
             mu = _num(getattr(row, f"{name}_mu", 0.0))
+
+            # Decision #18: shift mu by this player's slice of his team's
+            # shared shock, unless this (position, component) pair is
+            # excluded (WR/rush -- see fit_statline_variance.py decision
+            # #8) or no shock exists for this team/component/artifact.
+            mu_for_draw = mu
+            shock = team_shocks.get((team, name)) if team is not None else None
+            if (shock is not None and (pos, name) not in excluded_pairs
+                    and mu > 1e-9):
+                hist_share = _num(getattr(row, f"{name}_hist_share", None), 0.0)
+                r_val = _num(comp.get("r"), 0.0)
+                if hist_share > 0 and r_val > 0:
+                    slope = team_shock_cfg[name]["pass_through_slope"]
+                    c = np.sqrt(r_val / (r_val + 1.0))
+                    mu_for_draw = mu + shock_scale * c * slope * hist_share * shock
+
             # Decision #10: the market factor scales efficiency, not volume.
             yd_rate = _num(getattr(row, f"{name}_yd_rate", 0.0)) * factor
             td_rate = _num(getattr(row, f"{name}_td_rate", 0.0)) * factor
             vol, yards, tds = _draw_component(
-                rng, n_sims, mu, comp["r"], yd_rate, td_rate,
+                rng, n_sims, mu_for_draw, comp["r"], yd_rate, td_rate,
                 comp["yards_cv"], comp["latent_sd"])
             vcol, ycol, tcol = _COMPONENT_STATS[name]
             draws[vcol] += vol

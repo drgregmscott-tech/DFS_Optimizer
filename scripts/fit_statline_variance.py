@@ -82,6 +82,74 @@ Numbered decisions:
      SESSION_LOG.md Session 15.2b for the probe that established both
      numbers before this was built.
 
+  8. SESSION 15.2C -- CONDITIONAL r, NET OF THE TEAM-LEVEL SHOCK. Session
+     15.2b found that fit_volume_dispersion()'s r ALREADY bakes in enough
+     of a player's real team-context swings that adding team_shock on top
+     of an unchanged r over-inflates team-total variance (a real,
+     measured teammate correlation, t = 28-60, that nonetheless made a
+     1,062-team-week coverage backtest WORSE at every scale tested).
+     fit_team_shock()'s own OLS-through-origin regression (y = slope * x,
+     x = team_residual * hist_share) already computes, for every real
+     player-week, a residual (y - slope * x) that is BY CONSTRUCTION
+     uncorrelated with the team-level piece -- so re-fitting r against
+     `actual - slope * x` instead of raw `actual` (same MIN_GAMES gate,
+     same method-of-moments formula fit_volume_dispersion() already uses)
+     targets ONLY the within-team redistribution variance, leaving the
+     team-level share to be carried by team_shock instead of double-
+     counted. Verified on real 2014-2021 data: r rises for every
+     (position, component) pair as expected (removing real variance can
+     only raise r), with the team-level share of each pair's excess
+     variance ranging 26%-59% -- except WR/rush (EXCLUDED_PAIRS below).
+
+     EXCLUDED_PAIRS: WR/rush's team-level share came out NEGATIVE (-39%)
+     on real data -- subtracting the pooled rush slope's estimate made
+     WR rushing's leftover variance BIGGER, not smaller. Real football
+     reason: the "rush" component's slope is fit pooled across QB
+     scrambles, RB carries, and WR jet sweeps together, and that pool is
+     completely dominated by QB/RB volume (22,017 player-weeks vs. WR's
+     1,582) -- a team throwing more or fewer carries overall doesn't
+     meaningfully predict how many jet sweeps a WR gets. WR/rush keeps
+     fit_volume_dispersion()'s own r untouched and is never shocked.
+     Confirmed with the user (a football-knowledge call, not the
+     pipeline's to make) before shipping.
+
+  9. SESSION 15.2C -- THE SHOCK ITSELF NEEDS TWO CORRECTIONS BEFORE IT
+     CAN BE ADDED BACK, both found by a real 2022-2024 held-out coverage
+     backtest (genuinely out-of-sample for volume_prior_dk.json AND
+     team_shock, both fit only on 2014-2021):
+
+     a. A negative binomial's own extra-Poisson variance term is
+        mu^2/r -- convex in mu. Randomizing a player's mu via a shared
+        team-level shock therefore inflates his OWN simulated variance
+        by a further (1 + 1/r) beyond the shock's own variance (law of
+        total variance + Jensen's inequality; verified numerically
+        before shipping). Exactly cancelled by scaling that player's own
+        slice of the shared shock by sqrt(r / (r + 1)) -- using THAT
+        player's own (new, decomposed) r -- before adding it to his mu.
+        Computed at simulate() time from the live r, not stored, so a
+        future refit of r can never silently drift out of sync with this
+        correction.
+
+     b. Even after (a), the backtest still over-covered for rush and
+        recv. Real teammates' redistribution noise is CLOSE TO a
+        zero-sum system within a team-week (one player getting more than
+        his historical share predicts usually means a teammate got
+        less, because the real team total is fixed) but not exactly --
+        hist_share doesn't sum to exactly 1.0 across a team's real
+        contributors (1.25 on average for recv, checked directly), so
+        this has no clean closed-form second correction. Empirically
+        grid-searched instead, the same way decision #6's latent_sd is
+        solved against the real simulator rather than guessed: one
+        scale factor, REDISTRIBUTION_SHOCK_SCALE below, found
+        independently for pass/rush/recv and landing on the same value
+        (0.70) all three times -- not a coincidence one would expect
+        from three separately-noisy searches, more likely a generic
+        property of the mixture rather than a component-specific
+        football fact (unlike pass_through_slope, which genuinely does
+        differ by component). Confirmed this restores near-nominal
+        coverage on the same real held-out backtest before shipping.
+        See SESSION_LOG.md Session 15.2c for the full grid and numbers.
+
 Usage:
   python3 scripts/fit_statline_variance.py --seasons 2014 2015 2016 2017 2018 2019 2020 2021
 """
@@ -126,6 +194,19 @@ COMPONENTS = {
 # whitelist-shaped) -- this one only needs the three team-level volume
 # stats fit_volume_prior.py's own team_volume model predicts.
 TEAM_SHOCK_STAT_COL = {"pass": "attempts", "rush": "carries", "recv": "targets"}
+
+# Session 15.2c decision #8 -- (position, component) pairs excluded from
+# the conditional-r decomposition and the shock, football judgment call,
+# not the pipeline's to make on its own. See decision #8's own text.
+EXCLUDED_SHOCK_PAIRS = {("WR", "rush")}
+
+# Session 15.2c decision #9b -- found by grid search against a real
+# 2022-2024 held-out coverage backtest (SESSION_LOG.md Session 15.2c),
+# NOT re-measured by this fitter every run (the backtest itself is a
+# throwaway probe, not shipped pipeline code). Re-run that backtest
+# methodology if r or team_shock's own inputs change materially enough
+# that this constant's validity should be re-checked.
+REDISTRIBUTION_SHOCK_SCALE = 0.70
 
 # Ratio in [0,1] clipping for the efficiency CV fit -- guards against a
 # divide-by-near-zero producing a 40x ratio that dominates an SD.
@@ -258,8 +339,13 @@ def calibrate_latent_sd(cv: float, corr_target: float, td_rate: float,
     return round(0.5 * (lo + hi), 4)
 
 
-def fit_team_shock(seasons: list) -> dict:
-    """Session 15.2b. Two real, measured numbers per component (pass, rush,
+def fit_team_shock(seasons: list) -> tuple:
+    """Returns (team_shock_dict, conditional_r_dict) -- the second element
+    is Session 15.2c's {(position, comp): r} decomposition, consumed by
+    fit() to overwrite each non-excluded pair's live r in `positions`. See
+    decisions #8/#9 above for the full reasoning.
+
+    Session 15.2b. Two real, measured numbers per component (pass, rush,
     recv), both needed to give the simulator a real team-level volume shock
     instead of treating a team's predicted total as a known constant:
 
@@ -317,6 +403,7 @@ def fit_team_shock(seasons: list) -> dict:
     panel = fvp.build_team_panel("dk", seasons)
     stats = load_history(seasons)
     out = {}
+    conditional_r = {}  # Session 15.2c: {(position, comp): r_new}
 
     for comp in ("pass", "rush", "recv"):
         needed = [f"hist_{comp}", "implied_total", "team_spread"]
@@ -380,8 +467,9 @@ def fit_team_shock(seasons: list) -> dict:
                     weekly_team_totals[weekly_team_totals.index < week].to_numpy(float))
                 if not np.isfinite(team_hist) or team_hist <= 0:
                     continue
-                this_week = dict(zip(g.loc[g["week"] == week, "player_id"],
-                                    g.loc[g["week"] == week, col]))
+                week_rows = g.loc[g["week"] == week, ["player_id", "position", col]]
+                this_week = dict(zip(week_rows["player_id"], week_rows[col]))
+                this_week_pos = dict(zip(week_rows["player_id"], week_rows["position"]))
                 for pid, own_hist in player_hist_by_week[week].items():
                     if not np.isfinite(own_hist) or own_hist <= 0.5:
                         continue
@@ -390,8 +478,14 @@ def fit_team_shock(seasons: list) -> dict:
                         continue
                     player_actual = float(this_week.get(pid, 0.0))
                     player_expected = hist_share * team_pred
+                    # Session 15.2c: position/player_id/season/actual kept
+                    # (not just x, y) so the SAME regression basis can be
+                    # reused below to decompose r -- see decision #8.
                     rows.append({"x": team_residual * hist_share,
-                                "y": player_actual - player_expected})
+                                "y": player_actual - player_expected,
+                                "position": this_week_pos.get(pid),
+                                "player_id": pid, "season": season,
+                                "actual": player_actual})
 
         reg = pd.DataFrame(rows)
         if len(reg) < MIN_GROUPS:
@@ -413,8 +507,51 @@ def fit_team_shock(seasons: list) -> dict:
         print(f"  team_shock {comp:<5} residual_sd={residual_sd:6.2f}  "
               f"pass_through_slope={slope:.4f} (t={t:.2f}, n={len(reg)})")
 
-    return out
+        # Session 15.2c decision #8: decompose r per POSITION for this
+        # component (the regression above is pooled across positions,
+        # but r is consumed per position -- see decision #8's own text
+        # for why these need different grains). `adjusted_actual` removes
+        # exactly the team-level piece (slope * x) that the regression
+        # above already fit, leaving only the within-team redistribution
+        # variance for r to target -- same MIN_GAMES gate, same
+        # method-of-moments formula fit_volume_dispersion() uses, so the
+        # two r's are directly comparable and only ever differ in which
+        # series' variance goes in.
+        for pos, comps_for_pos in COMPONENTS.items():
+            if comp not in [c for c, *_ in comps_for_pos]:
+                continue
+            if (pos, comp) in EXCLUDED_SHOCK_PAIRS:
+                continue
+            sub = reg[reg["position"] == pos].copy()
+            if sub.empty:
+                continue
+            sub["adjusted_actual"] = sub["actual"] - slope * sub["x"]
+            g2 = sub.groupby(["player_id", "season"]).agg(
+                mean=("actual", "mean"), var_adj=("adjusted_actual", "var"),
+                n=("actual", "count"))
+            g2 = g2[(g2["n"] >= MIN_GAMES) & (g2["mean"] > 0.5)]
+            if len(g2) < MIN_GROUPS:
+                raise SystemExit(
+                    f"fit_team_shock: only {len(g2)} qualifying player-seasons "
+                    f"for {pos}/{comp}'s conditional r (need {MIN_GROUPS}). "
+                    f"Decision #5's standing rule -- refusing to ship a "
+                    f"dispersion constant fit on this little data.")
+            excess = (g2["var_adj"] - g2["mean"]).clip(lower=0.0)
+            den = float(excess.sum())
+            r_new = float((g2["mean"] ** 2).sum() / den) if den > 0 else 1e6
+            conditional_r[(pos, comp)] = round(r_new, 4)
+            print(f"    conditional r  {pos:>3} {comp:<5} -> {r_new:7.2f} "
+                  f"(n_player_seasons={len(g2)})")
 
+    out["excluded_pairs"] = [list(k) for k in sorted(EXCLUDED_SHOCK_PAIRS)]
+    out["redistribution_shock_scale"] = REDISTRIBUTION_SHOCK_SCALE
+    # Audit convenience only -- the live values actually consumed by
+    # simulate() are positions[pos]["components"][comp]["r"], set by
+    # fit()'s caller below. This is just a readable record, in one place,
+    # of what this decomposition produced.
+    out["conditional_r_reference"] = {f"{pos}/{comp}": r
+                                      for (pos, comp), r in conditional_r.items()}
+    return out, conditional_r
 
 def fit(seasons: list) -> dict:
     df = load_history(seasons)
@@ -445,8 +582,22 @@ def fit(seasons: list) -> dict:
             entry["int_per_attempt"] = fit_int_rate(df)
         positions[pos] = entry
 
-    print("\nTeam-shock calibration (Session 15.2b):")
-    team_shock = fit_team_shock(seasons)
+    print("\nTeam-shock calibration (Session 15.2b/15.2c):")
+    team_shock, conditional_r = fit_team_shock(seasons)
+
+    # Session 15.2c decision #8: replace each non-excluded pair's live r
+    # with the team-shock-decomposed value (net of team-level variance).
+    # The pre-decomposition value is kept under r_independent purely for
+    # audit -- statline_model.simulate() only ever reads `r`. Excluded
+    # pairs (WR/rush) are simply absent from conditional_r and keep
+    # fit_volume_dispersion()'s own r untouched.
+    print("\nApplying Session 15.2c conditional-r decomposition:")
+    for (pos, comp), r_new in conditional_r.items():
+        entry = positions[pos]["components"][comp]
+        entry["r_independent"] = entry["r"]
+        entry["r"] = r_new
+        print(f"  {pos:>3} {comp:<5} r_independent={entry['r_independent']:7.2f} "
+              f"-> r={r_new:7.2f}")
 
     return {
         "schema_version": SCHEMA_VERSION,
@@ -457,9 +608,15 @@ def fit(seasons: list) -> dict:
         "notes": ("Site-agnostic by design (decision #1) -- a stat line is real "
                   "football; only scoring_rules.py is site-specific. Component "
                   "whitelist per position is decision #3; anything outside it is "
-                  "never simulated. team_shock (Session 15.2b) needs a fitted "
-                  "team-volume artifact to exist first -- see fit_team_shock()'s "
-                  "own docstring."),
+                  "never simulated. team_shock (Session 15.2b/15.2c) needs a "
+                  "fitted team-volume artifact to exist first -- see "
+                  "fit_team_shock()'s own docstring. Each non-excluded "
+                  "position/component's live `r` is the Session 15.2c "
+                  "conditional value (net of team-level variance, decision #8); "
+                  "the pre-decomposition value is under r_independent. "
+                  "team_shock.redistribution_shock_scale and .excluded_pairs "
+                  "(decision #9) are read directly by statline_model.simulate() "
+                  "-- see its own docstring."),
         "positions": positions,
         "team_shock": team_shock,
     }
