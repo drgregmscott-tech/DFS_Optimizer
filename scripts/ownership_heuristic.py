@@ -187,6 +187,32 @@ New design decisions from Session 11.0:
    the same way -- multiplier 1.0 for everyone, with a stderr note -- so
    this is additive, not a hard schema requirement.
 
+9. THE TRUE-WEEK-1 CASE (Session 15.3, found via a real live run):
+   decision #8 as first shipped could not tell "this ONE player has no
+   track record, relative to established teammates" (its intended case)
+   apart from "NO player in the pool has current-season history yet,
+   because the season's actual first game hasn't been played" (a
+   completely different, degenerate case) -- both show
+   participation_effective == 0.0. In the true-Week-1 case that number is
+   uninformative for every skill player, proven veteran and rookie alike,
+   because statline_model.py's cold-start path (its own decision #14) has
+   no current-season data for ANYONE yet. Decision #8 dampened every real
+   skill player regardless, while DST/K -- which never had a
+   participation_effective concept to dampen -- kept full strength.
+   Confirmed real on an actual NE/SEA season-opener Showdown slate: the
+   Seahawks defense reached 98.7% estimated Captain ownership, ahead of
+   every real skill player in the game.
+
+   Fixed by checking whether the pool has ANY real signal to act on
+   before applying decision #8 at all: if not one player anywhere shows
+   participation_effective > 0, the dampening is skipped entirely (every
+   player gets confidence 1.0, same treatment DST/K already get) rather
+   than uniformly deflating the whole skill-position pool against
+   positions that were never subject to it. This is a property of the
+   data, not a week-number check -- the moment even one real player in
+   the pool has accumulated true in-season history, decision #8's
+   original per-player dampening resumes automatically.
+
 5. estimated_ownership_pct -- added Session 4.1 as a follow-up to
    chalk_score, after the user asked directly: chalk_score alone is a
    RELATIVE ranking (0-100 scale, no real-world anchor) and was never
@@ -464,12 +490,52 @@ def compute_chalk_scores(df: pd.DataFrame, site: str, group_col: str = None) -> 
     # where the signal exists -- DST/K have no participation_effective
     # concept and get 1.0 (unchanged), same as a projections file that
     # predates this column entirely.
+    #
+    # Decision #9 (Session 15.3, found via a real live run): a GENUINE
+    # Week 1 -- the season's actual first slate, before any 2026 game has
+    # been played -- gives EVERY skill player participation_effective ==
+    # 0.0, established veteran or true rookie alike (statline_model.py
+    # decision #14's cold-start path has no current-season history for
+    # ANYONE to distinguish them by yet). Decision #8 as first shipped
+    # could not tell that degenerate case apart from its intended one (a
+    # normal week where SOME players are established and others aren't),
+    # so it dampened every real skill player by the same amount while
+    # leaving DST/K -- which never had a participation concept to dampen
+    # in the first place -- untouched. Confirmed real on the actual NE/SEA
+    # season-opener Showdown slate: the Seahawks defense reached 98.7%
+    # estimated Captain ownership, ahead of every real player in the game,
+    # for exactly this reason.
+    #
+    # Fixed by checking whether the pool has ANY real signal to act on at
+    # all: if not one player anywhere shows participation_effective > 0,
+    # there is nothing genuine to differentiate by, and the dampening is
+    # skipped entirely (every player gets 1.0, matching how DST/K are
+    # already treated) rather than uniformly deflating the whole skill
+    # position pool relative to positions that were never subject to it.
+    # The moment even one real player in the pool has accumulated true
+    # in-season history (participation_effective > 0), this reverts to
+    # decision #8's original per-player behavior automatically -- no
+    # season-awareness or week-number logic needed, this is a property of
+    # the data itself.
     if "participation_effective" in df.columns:
         participation = pd.to_numeric(df["participation_effective"], errors="coerce")
-        df["participation_confidence"] = (
-            PARTICIPATION_CONFIDENCE_FLOOR
-            + (1 - PARTICIPATION_CONFIDENCE_FLOOR) * participation
-        ).fillna(1.0)
+        has_real_signal = (participation.fillna(0) > 0).any()
+        if has_real_signal:
+            df["participation_confidence"] = (
+                PARTICIPATION_CONFIDENCE_FLOOR
+                + (1 - PARTICIPATION_CONFIDENCE_FLOOR) * participation
+            ).fillna(1.0)
+        else:
+            print(
+                "NOTE: every skill-position player in this slate has "
+                "participation_effective == 0.0 -- a true Week 1/no-history "
+                "slate, not a mix of established and unproven players. "
+                "Decision #8's dampening (decision #9) is skipped entirely "
+                "this run so real players aren't uniformly punished relative "
+                "to DST/K, which have no participation concept at all.",
+                file=sys.stderr,
+            )
+            df["participation_confidence"] = 1.0
     else:
         print(
             "NOTE: 'participation_effective' not found in this projections "
