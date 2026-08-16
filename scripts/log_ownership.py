@@ -3,42 +3,81 @@ log_ownership.py
 ================
 
 Session 9.3 -- Actual Ownership Logging.
+Extended (this fix) to support Showdown ownership logging.
 
 Logs real post-lock DFS ownership percentages alongside this pipeline's
 pre-lock estimates, building the dataset Sessions 11.1 and 11.2 will fit
 ownership model parameters against.
 
-Schema defined in Session 11.0 (see ROADMAP.md's Session 9.3 card and
-SESSION_LOG.md's Session 11.0 entry). That schema is fixed before the
-first real ownership number is logged -- contest_type, field_size, and
-slate_type cannot be retrofitted from old data and are required for
-Sessions 11.1 and 11.3.
+Schema originally defined in Session 11.0 (see ROADMAP.md's Session 9.3
+card and SESSION_LOG.md's Session 11.0 entry), extended by this fix with
+two additive columns -- roster_role and slate_format -- so Showdown
+ownership (Captain/MVP vs. FLEX are separate real ownership quantities for
+the same player) can be logged at all. See DECISIONS #6/#7 below. This
+extension was flagged as the concrete next step back in Session 13.3b and
+Session 15.3 and is not a speculative redesign.
 
 USAGE
 -----
 
-Log ownership from a specific contest/week:
+Log ownership from a specific contest/slate (classic example):
 
     python scripts/log_ownership.py \\
         --site dk \\
         --season 2026 \\
         --week 1 \\
+        --slate-id dk_classic_wk1_091326 \\
         --slate-type regular_season \\
         --contest-type single_entry_gpp \\
         --field-size 150000 \\
         --input data/ownership_raw_dk_2026_wk1.csv
 
-The raw input is a two-column CSV (player_name, actual_ownership_pct)
-manually copied from the DK/FD contest results page. The script matches
-players to the pipeline's player_id via the most recent final_projections
-file for that site/week, joins in the pre-lock estimated_ownership_pct
-from chalk_scores_{site}_{week}.csv, and appends all rows to
+Showdown example (raw CSV needs an extra roster_role column -- see
+"RAW INPUT CSV SHAPE" below):
+
+    python scripts/log_ownership.py \\
+        --site dk \\
+        --season 2026 \\
+        --week 2 \\
+        --slate-id dk_showdown_wk2_091826 \\
+        --slate-type regular_season \\
+        --contest-type single_entry_gpp \\
+        --field-size 20000 \\
+        --input data/ownership_raw_dk_showdown_2026_wk2.csv
+
+--slate-id must match the --slate-id used when
+final_projections_{site}_{slate_id}.csv was built for this slate (i.e. the
+same value passed to build_projections_statline.py). It is NOT the same
+thing as --week -- a site can have more than one slate_id in the same
+week (e.g. a classic main slate and a Showdown slate), and each needs its
+own --slate-id to find the right reference file (decision #6).
+
+The script matches players to the pipeline's player_id (and, for
+Showdown, roster_role) via that slate's own final_projections file, which
+already carries the pipeline's pre-lock estimated_ownership_pct alongside
+each player -- no separate join needed. It then appends all rows to
 data/ownership_actual_log.csv.
 
 For the Millionaire Maker and similar large-field GPPs, DraftKings posts
 ownership percentages on the contest results page after lock. FanDuel does
-the same on their My Contests page. Copy player names and percentages into
-a two-column CSV manually -- there is no stable API for this.
+the same on their My Contests page. Copy player names (and, for Showdown,
+roster role) and percentages into a CSV manually -- there is no stable API
+for this.
+
+RAW INPUT CSV SHAPE
+--------------------
+Classic slates -- two columns:
+    player_name, actual_ownership_pct
+
+Showdown slates -- three columns:
+    player_name, roster_role, actual_ownership_pct
+
+roster_role must be exactly one of the site's real role labels
+(DK: "CPT"/"FLEX", FD: "MVP"/"FLEX") for every row -- DK's and FD's own
+Showdown contest-results pages report Captain/MVP ownership and FLEX
+ownership as separate line items for the same player, since a real DFS
+player can (and often does) roster the same player in either slot at very
+different rates. One raw row per (player, roster_role) pair.
 
 SLATE_TYPE VALUES
 -----------------
@@ -72,9 +111,15 @@ contest_type              -- cash | single_entry_gpp | 3max_gpp | unknown
 field_size                -- number of entries in the contest (integer)
 player_id                 -- nflverse player_id (matched via name lookup)
 player_name               -- as it appears in the raw ownership source
+roster_role               -- "" for classic. "CPT"/"FLEX" (DK) or
+                              "MVP"/"FLEX" (FD) for Showdown -- same raw
+                              site role labels final_projections_*.csv
+                              carries (decision #6).
+slate_format               -- classic | showdown
 actual_ownership_pct      -- real post-lock ownership percentage (0-100)
-estimated_ownership_pct_at_lock -- pipeline's pre-lock estimate from
-                              chalk_scores_{site}_{week}.csv
+estimated_ownership_pct_at_lock -- pipeline's pre-lock estimate, read
+                              directly off this slate's own
+                              final_projections_{site}_{slate_id}.csv
 source                    -- human-readable description of where the actual
                               ownership data came from (e.g.
                               "DK Millionaire Maker results page 2026-09-14")
@@ -82,13 +127,15 @@ logged_at                 -- ISO timestamp when this row was appended
 
 MATCHING
 --------
-Players are matched by normalized name against final_projections_{site}_{week}.csv
-(which carries player_id from the salary ingestion step). The same
-normalize_name() function used throughout this pipeline is used here, so
-existing name_mapping.csv overrides apply.
+Players are matched by normalized name (and, for Showdown, roster_role)
+against final_projections_{site}_{slate_id}.csv (which carries player_id,
+roster_role, slate_format, and estimated_ownership_pct straight from the
+salary/projection pipeline). The same normalize_name() function used
+throughout this pipeline is used here, so existing name_mapping.csv
+overrides apply.
 
 Unmatched players (names that don't resolve to a player_id) are logged to
-data/ownership_unmatched_{site}_{season}_wk{week}.csv rather than dropped
+data/ownership_unmatched_{site}_{slate_id}.csv rather than dropped
 silently -- same fail-loud pattern as ingest_salaries.py. They do NOT enter
 the main log.
 
@@ -99,19 +146,19 @@ DECISIONS
    this script twice for the same (site, season, week, contest_id) detects
    the duplicate by checking existing rows and raises a clear error rather
    than silently doubling the data. If contest_id is "" (not available),
-   the duplicate check uses (site, season, week, slate_type, contest_type)
-   instead.
+   the duplicate check uses (site, season, week, slate_type, contest_type,
+   slate_format) instead -- slate_format added by decision #7 below, so
+   logging a classic slate and a Showdown slate for the same site/week/
+   slate_type/contest_type no longer collide as a false duplicate.
 
-2. ESTIMATED OWNERSHIP IS CAPTURED AT LOG TIME from the chalk_scores file.
-   The chalk_scores file for a given week is overwritten on every projection
-   rebuild -- after lock, it reflects the final pre-lock state, which is
-   what we want. Logging immediately after lock is the correct workflow.
-   If chalk_scores_{site}_{week}.csv doesn't exist, estimated_ownership_pct
-   is recorded as NaN with a warning rather than blocking the log -- real
-   actuals are more important than the estimate column.
+2. [SUPERSEDED by decision #6.] Originally: estimated ownership captured
+   at log time from a separate chalk_scores_{site}_{week}.csv file. That
+   file is not part of the live production pipeline (build_projections_
+   statline.py writes ownership columns straight into final_projections),
+   so this script no longer depends on it at all -- see decision #6.
 
 3. PLAYER_ID IS THE JOIN KEY for Sessions 11.1/11.2. Name matching here
-   uses normalize_name() + the most recent final_projections file (which
+   uses normalize_name() + this slate's own final_projections file (which
    already has player_id matched). DST/DEF rows match on team name since
    defenses have a synthetic player_id format.
 
@@ -124,6 +171,51 @@ DECISIONS
    a growing dataset that must persist across weeks and be committed to the
    repo -- it is not a per-run output that gets regenerated. Same treatment
    as name_mapping.csv, salary_anchor_dk.json, etc.
+
+6. ROSTER_ROLE + SLATE_FORMAT ADDED; REFERENCE SOURCE SWITCHED TO
+   final_projections_{site}_{slate_id}.csv, KEYED BY --slate-id NOT
+   --week. Two real, separate problems, fixed together because the second
+   was found while fixing the first:
+     (a) A Showdown pool has TWO reference rows per player (one CPT/MVP,
+         one FLEX) with the SAME normalized name -- Session 13.3b
+         established these are genuinely different real-world ownership
+         quantities (e.g. a real Joe Burrow: ~4% CPT vs. ~20% FLEX on the
+         validated slate). Without a roster_role column, this script had
+         no way to log which one a given real number referred to, so it
+         could not log Showdown ownership at all -- the gap flagged in
+         Session 13.3b and re-flagged in Session 15.3.
+     (b) While wiring that fix, this script's file lookup was found to
+         be pointed at a filename the live pipeline hasn't written since
+         Session 13.2: it looked for final_projections_{site}_{week}.csv
+         (and, failing that, chalk_scores_{site}_{week}.csv), but
+         build_projections_statline.py has written
+         final_projections_{site}_{slate_id}.csv (slate_id, not week --
+         see DFS_Weekly_Process.md's "Output filenames use --slate-id"
+         note) since Showdown support shipped. That means this script's
+         reference lookup could never have found a real file for any
+         real slate whose slate_id isn't literally the week number as a
+         string -- a pre-existing bug, not something this fix introduced,
+         caught before the first real end-to-end run rather than during
+         one, because Session 9.3's real end-to-end run never actually
+         happened (see SESSION_LOG.md).
+   Fix: this script now takes a required --slate-id, reads player_id,
+   player_name, position, roster_role, slate_format, and
+   estimated_ownership_pct all from ONE file
+   (final_projections_{site}_{slate_id}.csv), and drops the separate
+   chalk_scores join entirely -- the same fix already applied to
+   pivot_finder.py (Session 13.5b) for the identical reason (two files
+   that could independently go stale vs. one source of truth).
+
+7. SHOWDOWN RAW INPUT CSV NEEDS ITS OWN roster_role COLUMN, VALIDATED
+   AGAINST SITE_CONFIGS. DK's and FD's real Showdown/Single-Game contest
+   results report Captain/MVP ownership and FLEX ownership as separate
+   line items for the same player. load_raw_ownership() requires a third
+   "roster_role" column whenever the target slate's slate_format is
+   "showdown" (detected from final_projections_{site}_{slate_id}.csv, not
+   guessed), and fails loud if any value isn't exactly this site's real
+   captain_role_value/flex_role_value from SITE_CONFIGS (e.g. "CPT"/
+   "FLEX" for DK). Classic slates are unaffected -- no roster_role column
+   required, matching behavior unchanged from before this fix.
 """
 
 import argparse
@@ -147,8 +239,9 @@ LOG_PATH = DATA_DIR / "ownership_actual_log.csv"
 
 LOG_COLUMNS = [
     "site", "season", "week", "slate_type", "contest_id", "contest_type",
-    "field_size", "player_id", "player_name", "actual_ownership_pct",
-    "estimated_ownership_pct_at_lock", "source", "logged_at",
+    "field_size", "player_id", "player_name", "roster_role", "slate_format",
+    "actual_ownership_pct", "estimated_ownership_pct_at_lock", "source",
+    "logged_at",
 ]
 
 VALID_SLATE_TYPES = {"regular_season", "preseason", "madden_sim"}
@@ -175,11 +268,15 @@ def load_log() -> pd.DataFrame:
 
 
 def check_duplicate(existing: pd.DataFrame, site: str, season: int, week: int,
-                    slate_type: str, contest_type: str, contest_id: str) -> None:
+                    slate_type: str, contest_type: str, contest_id: str,
+                    slate_format: str) -> None:
     """Raise if this (site, season, week, contest) combination is already logged.
 
-    Decision #1: duplicate detection. Uses contest_id when present; falls back
-    to (site, season, week, slate_type, contest_type) when contest_id is empty.
+    Decision #1 (extended by decision #7): duplicate detection. Uses
+    contest_id when present; falls back to (site, season, week, slate_type,
+    contest_type, slate_format) when contest_id is empty -- slate_format is
+    included so a classic slate and a Showdown slate in the same site/week/
+    slate_type/contest_type don't falsely collide.
     """
     if existing.empty:
         return
@@ -197,10 +294,12 @@ def check_duplicate(existing: pd.DataFrame, site: str, season: int, week: int,
             (existing["season"] == season) &
             (existing["week"] == week) &
             (existing["slate_type"] == slate_type) &
-            (existing["contest_type"] == contest_type)
+            (existing["contest_type"] == contest_type) &
+            (existing["slate_format"] == slate_format)
         )
         key_desc = (f"site={site}, season={season}, week={week}, "
-                    f"slate_type={slate_type}, contest_type={contest_type}")
+                    f"slate_type={slate_type}, contest_type={contest_type}, "
+                    f"slate_format={slate_format}")
 
     if mask.any():
         n = int(mask.sum())
@@ -216,19 +315,48 @@ def check_duplicate(existing: pd.DataFrame, site: str, season: int, week: int,
 # Raw ownership input parsing
 # ---------------------------------------------------------------------------
 
-def load_raw_ownership(path: Path) -> pd.DataFrame:
-    """Load the manually-prepared two-column ownership CSV.
+def load_raw_ownership(path: Path, slate_format: str, site: str) -> pd.DataFrame:
+    """Load the manually-prepared ownership CSV.
 
-    Expected columns: player_name, actual_ownership_pct.
+    Classic: two required columns -- player_name, actual_ownership_pct.
+    Showdown: three required columns -- player_name, roster_role,
+    actual_ownership_pct (decision #7).
+
     Ownership values may be expressed as "23.4%" or "23.4" -- both accepted.
     Extra columns are silently ignored.
     """
     df = pd.read_csv(path)
-    if "player_name" not in df.columns or "actual_ownership_pct" not in df.columns:
+    required = {"player_name", "actual_ownership_pct"}
+    if slate_format == "showdown":
+        required.add("roster_role")
+    missing = required - set(df.columns)
+    if missing:
+        shape = ("player_name, roster_role, actual_ownership_pct"
+                  if slate_format == "showdown"
+                  else "player_name, actual_ownership_pct")
         raise SystemExit(
-            f"Raw ownership CSV at {path} must have columns 'player_name' and "
-            f"'actual_ownership_pct'. Columns found: {sorted(df.columns)}."
+            f"Raw ownership CSV at {path} is missing column(s) {sorted(missing)}. "
+            f"Columns found: {sorted(df.columns)}. "
+            f"Expected shape for a {slate_format} slate: {shape}."
         )
+
+    if slate_format == "showdown":
+        cfg = SITE_CONFIGS[site]["showdown"]
+        valid_roles = {cfg["captain_role_value"], cfg["flex_role_value"]}
+        df["roster_role"] = df["roster_role"].astype(str).str.strip()
+        bad_roles = ~df["roster_role"].isin(valid_roles)
+        if bad_roles.any():
+            bad_vals = sorted(df.loc[bad_roles, "roster_role"].unique())
+            raise SystemExit(
+                f"{int(bad_roles.sum())} row(s) have a roster_role not in "
+                f"{sorted(valid_roles)} for site={site}: {bad_vals}. Every "
+                f"row of a Showdown ownership CSV must be labeled "
+                f"'{cfg['captain_role_value']}' or '{cfg['flex_role_value']}' "
+                f"(decision #7)."
+            )
+    else:
+        df["roster_role"] = ""
+
     # Strip trailing "%" if present
     df["actual_ownership_pct"] = (
         df["actual_ownership_pct"]
@@ -250,91 +378,103 @@ def load_raw_ownership(path: Path) -> pd.DataFrame:
             f"{int(out_of_range.sum())} ownership value(s) are outside [0, 100]. "
             f"Check the source data."
         )
-    return df[["player_name", "actual_ownership_pct"]].copy()
+    return df[["player_name", "roster_role", "actual_ownership_pct"]].copy()
 
 
 # ---------------------------------------------------------------------------
 # Player matching
 # ---------------------------------------------------------------------------
 
-def build_name_to_player_id(site: str, season: int, week: int) -> pd.DataFrame:
-    """Build a normalized-name -> player_id lookup from final_projections.
+def build_reference(site: str, slate_id: str) -> pd.DataFrame:
+    """Build a normalized-name (+ roster_role) -> player_id lookup.
 
-    Falls back to chalk_scores if final_projections doesn't exist for the
-    target week. Returns a DataFrame with columns:
-      normalized_name, player_id, player_name (canonical), position
+    Decision #6: reads directly off final_projections_{site}_{slate_id}.csv
+    -- the single real source of truth for a slate's player pool,
+    roster_role, slate_format, and pre-lock estimated_ownership_pct --
+    rather than a separate chalk_scores_{site}_{week}.csv file (not part of
+    the live pipeline) keyed by the wrong identifier (week, not slate_id).
+
+    Returns a DataFrame with columns:
+      normalized_name, player_id, player_name, position, roster_role,
+      slate_format, estimated_ownership_pct
     """
-    proj_path = OUTPUT_DIR / f"final_projections_{site}_{week}.csv"
-    chalk_path = OUTPUT_DIR / f"chalk_scores_{site}_{week}.csv"
-
-    if proj_path.exists():
-        ref = pd.read_csv(proj_path, dtype={"player_id": str,
-                                             "site_player_id": str})
-        source = proj_path.name
-    elif chalk_path.exists():
-        ref = pd.read_csv(chalk_path, dtype={"player_id": str})
-        source = chalk_path.name
-    else:
+    proj_path = OUTPUT_DIR / f"final_projections_{site}_{slate_id}.csv"
+    if not proj_path.exists():
         raise SystemExit(
-            f"No projection file found for site={site}, week={week}. "
-            f"Looked for:\n  {proj_path}\n  {chalk_path}\n"
-            f"Run build_projections.py (or ownership_heuristic.py) for this "
-            f"site/week before logging ownership."
+            f"No projection file found at {proj_path}. Run "
+            f"build_projections_statline.py for this site/slate before "
+            f"logging ownership -- double check --slate-id matches the "
+            f"slate you're logging (the same value passed to "
+            f"build_projections_statline.py's own --slate-id, not the "
+            f"week number)."
         )
 
-    print(f"Loaded {len(ref)} player reference rows from {source}.")
+    ref = pd.read_csv(proj_path, dtype={"player_id": str, "site_player_id": str})
+    print(f"Loaded {len(ref)} player reference rows from {proj_path.name}.")
+
+    missing_cols = ({"player_id", "player_name", "position", "roster_role",
+                     "slate_format", "estimated_ownership_pct"} - set(ref.columns))
+    if missing_cols:
+        raise SystemExit(
+            f"{proj_path} is missing expected column(s): {sorted(missing_cols)}. "
+            f"Was this file built by an older version of the pipeline? "
+            f"Re-run build_projections_statline.py for this slate."
+        )
+
     ref = ref.dropna(subset=["player_id"])
     ref["normalized_name"] = ref["player_name"].map(normalize_name)
-    return ref[["normalized_name", "player_id", "player_name", "position"]].copy()
-
-
-def load_chalk_estimates(site: str, week: int) -> pd.Series:
-    """Load estimated_ownership_pct from chalk_scores_{site}_{week}.csv.
-
-    Returns a Series indexed by player_id. Returns an empty Series with a
-    warning if the file doesn't exist (decision #2).
-    """
-    chalk_path = OUTPUT_DIR / f"chalk_scores_{site}_{week}.csv"
-    if not chalk_path.exists():
-        print(
-            f"WARNING: {chalk_path} not found. estimated_ownership_pct_at_lock "
-            f"will be NaN for all players this run. Log immediately after lock "
-            f"before the chalk_scores file is regenerated for a future week.",
-            file=sys.stderr,
-        )
-        return pd.Series(dtype=float)
-    chalk = pd.read_csv(chalk_path, dtype={"player_id": str})
-    return chalk.set_index("player_id")["estimated_ownership_pct"]
+    # roster_role is None/NaN for classic rows (matches
+    # build_projections_statline.py's own out["roster_role"] = None
+    # convention) -- normalize to "" so nothing downstream has to
+    # special-case NaN.
+    ref["roster_role"] = ref["roster_role"].fillna("")
+    return ref[["normalized_name", "player_id", "player_name", "position",
+                "roster_role", "slate_format", "estimated_ownership_pct"]].copy()
 
 
 def match_ownership_rows(raw: pd.DataFrame, ref: pd.DataFrame,
                          site: str) -> tuple[pd.DataFrame, pd.DataFrame]:
-    """Match raw ownership rows to player_id via normalized name.
+    """Match raw ownership rows to player_id (+ roster_role) via normalized name.
 
     Returns (matched_df, unmatched_df).
+
+    Decision #6: a Showdown pool has TWO reference rows per player (one
+    CPT/MVP, one FLEX) with the SAME normalized name. For a showdown slate,
+    each raw row is first filtered to candidates sharing its own
+    roster_role before the name match runs, so a raw CPT row can only match
+    the CPT reference row, never the FLEX one. Classic slates are
+    unaffected -- one reference row per player, roster_role plays no role
+    in the match (every candidate's roster_role is "").
 
     DST/DEF rows are matched by team abbreviation embedded in the player name
     (e.g. "Kansas City Chiefs D/ST" -> team "KC") rather than normalized name,
     since defense names vary widely across platforms.
     """
+    slate_format = ref["slate_format"].iloc[0] if not ref.empty else "classic"
     defense_values = SITE_CONFIGS[site]["defense_position_values"]
-    ref_skill = ref[~ref["position"].str.upper().isin(defense_values)].copy()
-    ref_dst = ref[ref["position"].str.upper().isin(defense_values)].copy()
 
     matched_rows, unmatched_rows = [], []
 
     for _, row in raw.iterrows():
         raw_name = str(row["player_name"]).strip()
         actual_pct = row["actual_ownership_pct"]
+        raw_role = row["roster_role"] if slate_format == "showdown" else ""
         norm = normalize_name(raw_name)
+
+        candidates = ref[ref["roster_role"] == raw_role] if slate_format == "showdown" else ref
+        ref_skill = candidates[~candidates["position"].str.upper().isin(defense_values)]
+        ref_dst = candidates[candidates["position"].str.upper().isin(defense_values)]
 
         # Try skill-player exact normalized match first
         skill_hit = ref_skill[ref_skill["normalized_name"] == norm]
         if len(skill_hit) == 1:
+            hit = skill_hit.iloc[0]
             matched_rows.append({
                 "raw_name": raw_name,
-                "player_id": skill_hit.iloc[0]["player_id"],
-                "player_name": skill_hit.iloc[0]["player_name"],
+                "player_id": hit["player_id"],
+                "player_name": hit["player_name"],
+                "roster_role": hit["roster_role"],
+                "estimated_ownership_pct": hit["estimated_ownership_pct"],
                 "actual_ownership_pct": actual_pct,
             })
             continue
@@ -346,6 +486,8 @@ def match_ownership_rows(raw: pd.DataFrame, ref: pd.DataFrame,
                 "raw_name": raw_name,
                 "player_id": dst_match["player_id"],
                 "player_name": dst_match["player_name"],
+                "roster_role": dst_match["roster_role"],
+                "estimated_ownership_pct": dst_match["estimated_ownership_pct"],
                 "actual_ownership_pct": actual_pct,
             })
             continue
@@ -354,8 +496,10 @@ def match_ownership_rows(raw: pd.DataFrame, ref: pd.DataFrame,
         unmatched_rows.append({
             "raw_name": raw_name,
             "normalized_name": norm,
+            "roster_role": raw_role,
             "actual_ownership_pct": actual_pct,
-            "reason": "no exact name match in final_projections; not a recognized DST format",
+            "reason": "no exact name match in final_projections for this "
+                      "roster_role; not a recognized DST format",
         })
 
     return pd.DataFrame(matched_rows), pd.DataFrame(unmatched_rows)
@@ -388,7 +532,9 @@ def _match_dst(raw_name: str, ref_dst: pd.DataFrame, site: str) -> dict | None:
         # or the raw name contains the canonical as a substring
         if raw_stripped == canonical_stripped or canonical_stripped in raw_lower:
             return {"player_id": dst_row["player_id"],
-                    "player_name": dst_row["player_name"]}
+                    "player_name": dst_row["player_name"],
+                    "roster_role": dst_row["roster_role"],
+                    "estimated_ownership_pct": dst_row["estimated_ownership_pct"]}
     return None
 
 
@@ -400,6 +546,7 @@ def log_ownership(
     site: str,
     season: int,
     week: int,
+    slate_id: str,
     slate_type: str,
     contest_type: str,
     field_size: int,
@@ -422,6 +569,12 @@ def log_ownership(
         )
     if field_size < 1:
         raise SystemExit(f"--field-size must be >= 1, got {field_size}.")
+    if not slate_id.strip():
+        raise SystemExit(
+            "--slate-id is required (decision #6) -- it must match the "
+            "--slate-id used when final_projections_{site}_{slate_id}.csv "
+            "was built for this slate. It is NOT the same thing as --week."
+        )
 
     if slate_type in ("preseason", "madden_sim"):
         print(
@@ -430,16 +583,19 @@ def log_ownership(
             f"Only regular_season rows count toward the 4-6 week data gate."
         )
 
+    # --- Build name->player_id reference (also tells us slate_format) ---
+    ref = build_reference(site, slate_id)
+    slate_format = ref["slate_format"].iloc[0] if not ref.empty else "classic"
+    print(f"Detected slate_format={slate_format!r} from slate_id={slate_id!r}.")
+
     # --- Load existing log and check for duplicates ---
     existing = load_log()
-    check_duplicate(existing, site, season, week, slate_type, contest_type, contest_id)
+    check_duplicate(existing, site, season, week, slate_type, contest_type,
+                    contest_id, slate_format)
 
-    # --- Load raw ownership input ---
-    raw = load_raw_ownership(raw_path)
+    # --- Load raw ownership input (shape depends on slate_format) ---
+    raw = load_raw_ownership(raw_path, slate_format, site)
     print(f"Loaded {len(raw)} raw ownership rows from {raw_path.name}.")
-
-    # --- Build name->player_id reference ---
-    ref = build_name_to_player_id(site, season, week)
 
     # --- Match players ---
     matched, unmatched = match_ownership_rows(raw, ref, site)
@@ -452,8 +608,7 @@ def log_ownership(
 
     # --- Write unmatched log ---
     if n_unmatched > 0:
-        unmatched_path = (DATA_DIR /
-                          f"ownership_unmatched_{site}_{season}_wk{week}.csv")
+        unmatched_path = DATA_DIR / f"ownership_unmatched_{site}_{slate_id}.csv"
         unmatched.to_csv(unmatched_path, index=False)
         print(
             f"WARNING: {n_unmatched} player(s) could not be matched to a "
@@ -466,19 +621,15 @@ def log_ownership(
     if n_matched == 0:
         raise SystemExit(
             "No players matched. The log was not updated. "
-            "Check that the raw ownership file uses player names consistent "
-            "with the pipeline's salary data for this site/week."
+            "Check that the raw ownership file uses player names (and, for "
+            "Showdown, roster_role values) consistent with this slate's "
+            "final_projections file."
         )
-
-    # --- Load estimated ownership (decision #2) ---
-    estimates = load_chalk_estimates(site, week)
 
     # --- Build log rows ---
     logged_at = datetime.now(timezone.utc).isoformat(timespec="seconds")
     new_rows = []
     for _, m in matched.iterrows():
-        pid = m["player_id"]
-        est = float(estimates.get(pid, float("nan")))
         new_rows.append({
             "site": site,
             "season": season,
@@ -487,10 +638,12 @@ def log_ownership(
             "contest_id": contest_id,
             "contest_type": contest_type,
             "field_size": field_size,
-            "player_id": pid,
+            "player_id": m["player_id"],
             "player_name": m["player_name"],
+            "roster_role": m["roster_role"],
+            "slate_format": slate_format,
             "actual_ownership_pct": m["actual_ownership_pct"],
-            "estimated_ownership_pct_at_lock": est,
+            "estimated_ownership_pct_at_lock": m["estimated_ownership_pct"],
             "source": source,
             "logged_at": logged_at,
         })
@@ -504,8 +657,9 @@ def log_ownership(
 
     # --- Summary ---
     print(f"\nLogged {len(new_rows)} rows to {LOG_PATH}.")
-    print(f"  site={site}, season={season}, week={week}, "
-          f"slate_type={slate_type}, contest_type={contest_type}")
+    print(f"  site={site}, season={season}, week={week}, slate_id={slate_id}, "
+          f"slate_format={slate_format}, slate_type={slate_type}, "
+          f"contest_type={contest_type}")
     print(f"  field_size={field_size:,}, contest_id={contest_id!r}")
     print(f"  source: {source}")
 
@@ -513,8 +667,9 @@ def log_ownership(
     if est_present < len(new_df):
         print(
             f"  WARNING: estimated_ownership_pct_at_lock is NaN for "
-            f"{len(new_df) - est_present} player(s). "
-            f"(chalk_scores_{site}_{week}.csv missing or player not in it.)",
+            f"{len(new_df) - est_present} player(s) -- not present in "
+            f"final_projections_{site}_{slate_id}.csv's own "
+            f"estimated_ownership_pct column.",
             file=sys.stderr,
         )
 
@@ -578,14 +733,15 @@ def print_summary(site: str | None = None) -> None:
         if stype == "regular_season" and weeks < 6:
             print(f"    -> {weeks}/6 weeks toward Session 11.1 data gate")
     print()
-    by_week = (
-        log.groupby(["site", "season", "week", "slate_type", "contest_type"])
+    by_slate = (
+        log.groupby(["site", "season", "week", "slate_format", "slate_type",
+                     "contest_type"])
         .agg(n_players=("player_id", "count"),
              mean_actual=("actual_ownership_pct", "mean"),
              mean_est=("estimated_ownership_pct_at_lock", "mean"))
         .reset_index()
     )
-    print(by_week.to_string(index=False))
+    print(by_slate.to_string(index=False))
 
 
 # ---------------------------------------------------------------------------
@@ -616,6 +772,16 @@ def main() -> None:
         help="NFL week number (1-18 for regular season).",
     )
     log_parser.add_argument(
+        "--slate-id", required=True,
+        help=(
+            "The slate_id used when final_projections_{site}_{slate_id}.csv "
+            "was built for this slate (the same value passed to "
+            "build_projections_statline.py's own --slate-id). NOT the week "
+            "number -- a site can have more than one slate_id in the same "
+            "week (e.g. classic + Showdown)."
+        ),
+    )
+    log_parser.add_argument(
         "--slate-type",
         choices=sorted(VALID_SLATE_TYPES),
         required=True,
@@ -637,8 +803,9 @@ def main() -> None:
     log_parser.add_argument(
         "--input", type=Path, required=True,
         help=(
-            "Path to a two-column CSV: player_name, actual_ownership_pct. "
-            "Ownership values may be '23.4' or '23.4%%'."
+            "Path to the raw ownership CSV. Classic: player_name, "
+            "actual_ownership_pct. Showdown: player_name, roster_role, "
+            "actual_ownership_pct. Ownership values may be '23.4' or '23.4%%'."
         ),
     )
     log_parser.add_argument(
@@ -671,14 +838,15 @@ def main() -> None:
     if args.command == "log":
         if not args.input.exists():
             raise SystemExit(
-                f"Input file not found: {args.input}. "
-                f"Create a two-column CSV (player_name, actual_ownership_pct) "
-                f"from the contest results page before running."
+                f"Input file not found: {args.input}. Create the raw "
+                f"ownership CSV (see --input's help for the expected "
+                f"columns) from the contest results page before running."
             )
         log_ownership(
             site=args.site,
             season=args.season,
             week=args.week,
+            slate_id=args.slate_id,
             slate_type=args.slate_type,
             contest_type=args.contest_type,
             field_size=args.field_size,
