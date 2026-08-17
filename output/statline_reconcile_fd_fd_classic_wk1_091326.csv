@@ -3,8 +3,8 @@ ARI,recv,1.0,price,32.48,32.48,1.0,0.0
 ATL,recv,1.0,price,30.95,30.95,1.0,0.0
 BAL,recv,1.0,price,34.26,34.26,1.0,0.0
 BUF,recv,1.0,price,32.25,32.25,1.0,0.0
-CAR,recv,1.0,price,33.37,33.37,1.0,0.0
-CHI,recv,1.0,price,33.69,33.69,1.0,0.0
+CAR,recv,1.0,price,33.43,33.43,1.0,0.0
+CHI,recv,1.0,price,33.75,33.75,1.0,0.0
 CIN,recv,1.0,price,35.77,35.77,1.0,0.0
 CLE,recv,1.0,price,29.87,29.87,1.0,0.0
 DET,recv,1.0,price,34.91,34.91,1.0,0.0
@@ -27,8 +27,8 @@ ARI,rush,1.0,price,24.76,24.76,1.0,0.0
 ATL,rush,1.0,price,27.0,27.0,1.0,0.0
 BAL,rush,1.0,price,26.9,26.9,1.0,0.0
 BUF,rush,1.0,price,27.02,27.02,1.0,0.0
-CAR,rush,1.0,price,26.03,26.03,1.0,0.0
-CHI,rush,1.0,price,26.95,26.95,1.0,0.0
+CAR,rush,1.0,price,26.0,26.0,1.0,0.0
+CHI,rush,1.0,price,26.93,26.93,1.0,0.0
 CIN,rush,1.0,price,26.24,26.24,1.0,0.0
 CLE,rush,1.0,price,26.52,26.52,1.0,0.0
 DET,rush,1.0,price,27.37,27.37,1.0,0.0
@@ -51,8 +51,8 @@ ARI,pass,1.0,exclusive,33.88,33.88,1.0,0.0
 ATL,pass,1.0,exclusive,32.07,32.07,1.0,0.0
 BAL,pass,1.0,exclusive,35.45,35.45,1.0,0.0
 BUF,pass,1.0,exclusive,33.39,33.39,1.0,0.0
-CAR,pass,1.0,exclusive,34.65,34.65,1.0,0.0
-CHI,pass,1.0,exclusive,34.87,34.87,1.0,0.0
+CAR,pass,1.0,exclusive,34.71,34.71,1.0,0.0
+CHI,pass,1.0,exclusive,34.93,34.93,1.0,0.0
 CIN,pass,1.0,exclusive,37.07,37.07,1.0,0.0
 CLE,pass,1.0,exclusive,31.02,31.02,1.0,0.0
 DET,pass,1.0,exclusive,36.07,36.07,1.0,0.0
