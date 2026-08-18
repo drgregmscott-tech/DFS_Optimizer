@@ -1,6 +1,6 @@
 team,component,pool_share,share_basis,raw_sum,target,scale,abs_delta
 ARI,recv,1.0,price,32.48,32.48,1.0,0.0
-ATL,recv,1.0,price,31.01,31.01,1.0,0.0
+ATL,recv,1.0,price,30.95,30.95,1.0,0.0
 BAL,recv,1.0,price,34.26,34.26,1.0,0.0
 BUF,recv,1.0,price,32.25,32.25,1.0,0.0
 CAR,recv,1.0,price,33.59,33.59,1.0,0.0
@@ -19,12 +19,12 @@ MIN,recv,1.0,price,32.55,32.55,1.0,0.0
 NO,recv,1.0,price,34.04,34.04,1.0,0.0
 NYJ,recv,1.0,price,29.58,29.58,1.0,0.0
 PHI,recv,1.0,price,33.64,33.64,1.0,0.0
-PIT,recv,1.0,price,31.4,31.4,1.0,0.0
+PIT,recv,1.0,price,31.34,31.34,1.0,0.0
 TB,recv,1.0,price,35.32,35.32,1.0,0.0
 TEN,recv,1.0,price,29.9,29.9,1.0,0.0
 WAS,recv,1.0,price,33.05,33.05,1.0,0.0
 ARI,rush,1.0,price,24.76,24.76,1.0,0.0
-ATL,rush,1.0,price,26.97,26.97,1.0,0.0
+ATL,rush,1.0,price,27.0,27.0,1.0,0.0
 BAL,rush,1.0,price,26.9,26.9,1.0,0.0
 BUF,rush,1.0,price,27.02,27.02,1.0,0.0
 CAR,rush,1.0,price,25.95,25.95,1.0,0.0
@@ -43,12 +43,12 @@ MIN,rush,1.0,price,27.08,27.08,1.0,0.0
 NO,rush,1.0,price,24.77,24.77,1.0,0.0
 NYJ,rush,1.0,price,27.72,27.72,1.0,0.0
 PHI,rush,1.0,price,27.43,27.43,1.0,0.0
-PIT,rush,1.0,price,28.08,28.08,1.0,0.0
+PIT,rush,1.0,price,28.11,28.11,1.0,0.0
 TB,rush,1.0,price,24.95,24.95,1.0,0.0
 TEN,rush,1.0,price,28.64,28.64,1.0,0.0
 WAS,rush,1.0,price,25.72,25.72,1.0,0.0
 ARI,pass,1.0,exclusive,33.88,33.88,1.0,0.0
-ATL,pass,1.0,exclusive,32.13,32.13,1.0,0.0
+ATL,pass,1.0,exclusive,32.07,32.07,1.0,0.0
 BAL,pass,1.0,exclusive,35.45,35.45,1.0,0.0
 BUF,pass,1.0,exclusive,33.39,33.39,1.0,0.0
 CAR,pass,1.0,exclusive,34.88,34.88,1.0,0.0
@@ -67,7 +67,7 @@ MIN,pass,1.0,exclusive,33.68,33.68,1.0,0.0
 NO,pass,1.0,exclusive,35.47,35.47,1.0,0.0
 NYJ,pass,1.0,exclusive,30.58,30.58,1.0,0.0
 PHI,pass,1.0,exclusive,34.76,34.76,1.0,0.0
-PIT,pass,1.0,exclusive,32.39,32.39,1.0,0.0
+PIT,pass,1.0,exclusive,32.33,32.33,1.0,0.0
 TB,pass,1.0,exclusive,36.76,36.76,1.0,0.0
 TEN,pass,1.0,exclusive,30.81,30.81,1.0,0.0
 WAS,pass,1.0,exclusive,34.35,34.35,1.0,0.0
