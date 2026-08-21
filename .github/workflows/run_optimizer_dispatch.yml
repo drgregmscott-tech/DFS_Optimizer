@@ -161,6 +161,20 @@ jobs:
           # sending this errors loudly there, not silently here).
           args += flag("--min-team-players", "min_team_players")
 
+          # Session 16 -- decisions #48-55. Same "omit means optimizer.py's
+          # own default (no override)" convention as every other optional
+          # field above. --player-exposure arrives as a comma-separated
+          # "PLAYER_ID:FRACTION" string already built by the frontend (same
+          # shape as --max-team-players' "TEAM:N" above, but a 0.0-1.0
+          # fraction, matching --max-exposure's own convention);
+          # --thumbs-up/--thumbs-down are plain comma-separated player_id
+          # lists, same shape as --lock/--exclude. optimizer.py's own
+          # parse_player_exposure_list()/compute_thumbs_projection() do the
+          # actual parsing and validation.
+          args += flag("--player-exposure", "player_exposure")
+          args += flag("--thumbs-up", "thumbs_up")
+          args += flag("--thumbs-down", "thumbs_down")
+
           # Session 8 (this session) -- decisions #34/#35. Same "omit means
           # optimizer.py's own default (0, no floor)" convention as every
           # other optional field above.

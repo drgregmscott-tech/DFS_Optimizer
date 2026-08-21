@@ -1023,6 +1023,36 @@
   .icon-btn.exclude-btn.active { background: rgba(239,68,68,0.18); border-color: var(--bad); color: var(--bad); }
   .icon-btn:hover:not(.active) { border-color: var(--dimmer); color: var(--bone); }
 
+  /* ---------------- Session 16 -- thumbs up/down + exposure override ---------------- */
+
+  .icon-btn.thumb-btn { width: 24px; height: 24px; font-size: 11px; }
+  .icon-btn.thumb-up-btn.active { background: rgba(63,191,127,0.18); border-color: var(--good); color: var(--good); }
+  .icon-btn.thumb-down-btn.active { background: rgba(239,68,68,0.18); border-color: var(--bad); color: var(--bad); }
+
+  .player-row.is-thumb-up { background: rgba(63,191,127,0.05); }
+  .player-row.is-thumb-down { background: rgba(239,68,68,0.05); }
+
+  .exp-override {
+    display: inline-flex;
+    align-items: center;
+    gap: 2px;
+    margin-left: 6px;
+  }
+  .exp-override input[type="number"] {
+    width: 34px;
+    background: var(--panel-2);
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    color: var(--bone);
+    font-size: 10px;
+    font-family: 'Roboto Mono', monospace;
+    padding: 2px 3px;
+    text-align: right;
+  }
+  .exp-override input[type="number"]:focus { outline: none; border-color: var(--amber); }
+  .exp-override input[type="number"].has-override { border-color: var(--amber); color: var(--amber); }
+  .exp-override .exp-pct-label { font-size: 9px; color: var(--dimmer); }
+
   /* ---------------- Filter bar ---------------- */
 
   .filter-toggle-row {
@@ -1153,8 +1183,9 @@
   }
 
   .player-row .pactions {
-    display: flex;
-    gap: 4px;
+    display: grid;
+    grid-template-columns: repeat(2, auto);
+    gap: 3px;
     justify-content: flex-start;
     align-items: center;
   }
@@ -1408,20 +1439,20 @@
     .own-cell::before   { content: "OWN "; color: var(--dimmer); }
 
     .player-list-head {
-      grid-template-columns: 44px 1fr 1fr 1fr 1fr !important;
+      grid-template-columns: 54px 1fr 1fr 1fr 1fr !important;
       padding: 8px 12px;
     }
     .player-list-head > div:last-child { display: none; }
     .player-list-head .sortcol { text-align: left; }
 
     .player-row {
-      grid-template-columns: 44px 1fr 1fr 1fr 1fr !important;
+      grid-template-columns: 54px 1fr 1fr 1fr 1fr !important;
       grid-template-areas:
         "act  name  name  name  name"
         "act  price proj  value own";
       row-gap: 6px;
     }
-    .player-row .pactions { grid-area: act; flex-direction: column; gap: 4px; justify-content: center; align-items: center; }
+    .player-row .pactions { grid-area: act; grid-template-columns: repeat(2, auto); gap: 3px; justify-content: center; align-items: center; }
     .player-row > div:nth-child(2) { grid-area: name; }
     .player-row .psal  { grid-area: price; text-align: left; }
     .player-row .pproj { grid-area: proj; text-align: left; }
@@ -1791,6 +1822,9 @@ in this browser's localStorage.</p>
     pool: { dk: null, fd: null },              // each: { filename, players: [...] }
     locked: { dk: {}, fd: {} },                // player_id -> true
     excluded: { dk: {}, fd: {} },               // player_id -> true
+    // ---- Session 16 additions ----
+    playerExposure: { dk: {}, fd: {} },        // player_id -> 1-100 integer (own exposure cap override)
+    thumbs: { dk: {}, fd: {} },                // player_id -> "up" | "down"
     playerSearch: "",
     activeRequestId: null,
     pollTimer: null,
@@ -3221,16 +3255,37 @@ in this browser's localStorage.</p>
       shown.map(function (p) {
       var isLocked = !!state.locked[site][p.player_id];
       var isExcluded = !!state.excluded[site][p.player_id];
-      var rowCls = "player-row" + (isLocked ? " is-locked" : "") + (isExcluded ? " is-excluded" : "");
+      var thumbState = state.thumbs[site][p.player_id]; // "up" | "down" | undefined
+      var isThumbUp = thumbState === "up";
+      var isThumbDown = thumbState === "down";
+      var expOverride = state.playerExposure[site][p.player_id]; // 1-100 | undefined
+      var rowCls = "player-row"
+        + (isLocked ? " is-locked" : "")
+        + (isExcluded ? " is-excluded" : "")
+        + (isThumbUp ? " is-thumb-up" : "")
+        + (isThumbDown ? " is-thumb-down" : "");
       var lockIcon = isLocked ? "&#128274;" : "&#128275;";
+      var globalExpPlaceholder = document.getElementById("ctrlMaxExposure").value || "100";
       return '<div class="' + rowCls + '" data-pid="' + escapeHtml(p.player_id) + '">' +
         '<div class="pactions">' +
         '<button class="icon-btn lock-btn' + (isLocked ? ' active' : '') + '" data-action="lock" title="' + (isLocked ? 'Unlock' : 'Lock') + '">' + lockIcon + '</button>' +
         '<button class="icon-btn exclude-btn' + (isExcluded ? ' active' : '') + '" data-action="exclude" title="' + (isExcluded ? 'Un-exclude' : 'Exclude') + '">&#x2715;</button>' +
+        '<button class="icon-btn thumb-btn thumb-up-btn' + (isThumbUp ? ' active' : '') + '" data-action="thumb-up" title="' + (isThumbUp ? 'Remove thumbs up' : 'Thumbs up (boosts this build\u2019s projection)') + '">&#128077;</button>' +
+        '<button class="icon-btn thumb-btn thumb-down-btn' + (isThumbDown ? ' active' : '') + '" data-action="thumb-down" title="' + (isThumbDown ? 'Remove thumbs down' : 'Thumbs down (reduces this build\u2019s projection)') + '">&#128078;</button>' +
         '</div>' +
         '<div><div class="pname">' + escapeHtml(p.player_name) +
         (p.roster_role ? ' <span style="color:var(--amber);font-size:11px;">(' + escapeHtml(p.roster_role) + ')</span>' : '') + '</div>' +
-        '<div class="pmeta">' + escapeHtml(p.position) + ' · ' + escapeHtml(p.team) + '</div></div>' +
+        '<div class="pmeta">' + escapeHtml(p.position) + ' · ' + escapeHtml(p.team) +
+        '<span class="exp-override">' +
+        '<input type="number" class="exp-input' + (expOverride != null ? ' has-override' : '') + '"' +
+        ' data-pid="' + escapeHtml(p.player_id) + '" min="1" max="100" step="1"' +
+        (isLocked
+          ? ' disabled title="Locked players always use 100% exposure"'
+          : ' title="This player\u2019s own max exposure %  -- blank uses the global Max Exposure setting above"') +
+        (expOverride != null ? (' value="' + expOverride + '"') : (' placeholder="' + escapeHtml(globalExpPlaceholder) + '"')) +
+        '><span class="exp-pct-label">%</span>' +
+        '</span>' +
+        '</div></div>' +
         '<div class="psal">' + fmtMoney(p.salary) + '</div>' +
         '<div class="pproj">' + fmtPts(p.final_projection) + '</div>' +
         '<div class="pval">' + p.value.toFixed(1) + '</div>' +
@@ -3360,10 +3415,51 @@ in this browser's localStorage.</p>
     var action = btn.getAttribute("data-action");
     if (action === "lock") {
       if (state.locked[site][pid]) { delete state.locked[site][pid]; }
-      else { state.locked[site][pid] = true; delete state.excluded[site][pid]; } // decision #25 -- mutually exclusive
+      else {
+        state.locked[site][pid] = true;
+        delete state.excluded[site][pid]; // decision #25 -- mutually exclusive
+        // Session 16, decision #54/Greg's own call: a lock already means
+        // 100% exposure, so any per-player override on the same id is
+        // moot the moment it's locked -- cleared here rather than left to
+        // error out server-side at build time.
+        delete state.playerExposure[site][pid];
+      }
     } else if (action === "exclude") {
       if (state.excluded[site][pid]) { delete state.excluded[site][pid]; }
       else { state.excluded[site][pid] = true; delete state.locked[site][pid]; }
+    } else if (action === "thumb-up") {
+      // Session 16 (decisions #48-51) -- mutually exclusive with thumb-
+      // down, same "not a silent precedence rule" pattern lock/exclude
+      // already use; a second click on the same button clears it.
+      state.thumbs[site][pid] = (state.thumbs[site][pid] === "up") ? undefined : "up";
+      if (!state.thumbs[site][pid]) delete state.thumbs[site][pid];
+    } else if (action === "thumb-down") {
+      state.thumbs[site][pid] = (state.thumbs[site][pid] === "down") ? undefined : "down";
+      if (!state.thumbs[site][pid]) delete state.thumbs[site][pid];
+    }
+    renderPlayerList();
+  });
+
+  // Session 16 (decisions #52-55) -- per-player exposure override. Uses
+  // "change" (fires on blur/Enter), NOT "input" -- this field lives
+  // inside a row that gets fully re-rendered by renderPlayerList(), and
+  // re-rendering on every keystroke would rebuild the DOM node the user
+  // is actively typing into, losing focus and cursor position mid-edit.
+  document.getElementById("playerList").addEventListener("change", function (e) {
+    if (!e.target.classList.contains("exp-input")) return;
+    var pid = e.target.getAttribute("data-pid");
+    var site = state.activeSite;
+    var raw = e.target.value.trim();
+    if (raw === "") {
+      delete state.playerExposure[site][pid];
+    } else {
+      var pct = Math.round(parseFloat(raw));
+      if (isNaN(pct) || pct < 1 || pct > 100) {
+        setSlateStatus("Exposure override must be a whole number between 1 and 100.", false);
+        renderPlayerList();
+        return;
+      }
+      state.playerExposure[site][pid] = pct;
     }
     renderPlayerList();
   });
@@ -3884,6 +3980,26 @@ in this browser's localStorage.</p>
     var excludedIds = Object.keys(state.excluded[site]);
     if (lockedIds.length) params.lock = lockedIds.join(",");
     if (excludedIds.length) params.exclude = excludedIds.join(",");
+
+    // Session 16 (decisions #52-55) -- per-player exposure override. UI
+    // stores a 1-100 integer (matching ctrlMaxExposure's own display
+    // convention); optimizer.py's --player-exposure takes a 0.0-1.0
+    // fraction (matching --max-exposure's own convention), same /100
+    // conversion ctrlMaxExposure itself already goes through above.
+    var expOverrides = state.playerExposure[site];
+    var expOverrideKeys = Object.keys(expOverrides);
+    if (expOverrideKeys.length) {
+      params.player_exposure = expOverrideKeys
+        .map(function (pid) { return pid + ":" + (expOverrides[pid] / 100); })
+        .join(",");
+    }
+
+    // Session 16 (decisions #48-51) -- thumbs up/down.
+    var thumbsState = state.thumbs[site];
+    var thumbsUpIds = Object.keys(thumbsState).filter(function (pid) { return thumbsState[pid] === "up"; });
+    var thumbsDownIds = Object.keys(thumbsState).filter(function (pid) { return thumbsState[pid] === "down"; });
+    if (thumbsUpIds.length) params.thumbs_up = thumbsUpIds.join(",");
+    if (thumbsDownIds.length) params.thumbs_down = thumbsDownIds.join(",");
 
     // Session 12 -- decisions #36-38.
     var teamCaps = state.maxTeamCaps[site];

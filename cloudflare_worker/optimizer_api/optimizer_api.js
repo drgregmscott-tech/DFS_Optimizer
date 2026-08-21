@@ -77,13 +77,19 @@
  *      &bring_back=true&stack_team=&stack_game=&game_stack_min_players=
  *      &mini_stack_type=&stack_candidate_pool=&stack_diversify=
  *      &lock=id1,id2&exclude=id3,id4
- *      &format=showdown&min_team_players=KC:4]
+ *      &format=showdown&min_team_players=KC:4
+ *      &player_exposure=id1:0.5,id2:0.3&thumbs_up=id1,id2&thumbs_down=id3]
  *   (Session 13.5) format mirrors optimizer.py's --format {auto,classic,
  *   showdown} -- the frontend sends "showdown" explicitly when it knows
  *   its loaded pool is one, omitted for classic (auto-detection there is
  *   unchanged). min_team_players is Showdown-only (decision #47's
  *   one-sided-lineup floor, "TEAM:N,TEAM:N" -- same shape as
  *   max_team_players below, just a floor instead of a cap).
+ *   (Session 16) player_exposure gives named players their own exposure
+ *   cap instead of max_exposure's shared default ("PLAYER_ID:FRACTION",
+ *   same 0.0-1.0 convention as max_exposure itself); thumbs_up/thumbs_down
+ *   nudge those players' projection up/down for this solve only (plain
+ *   comma-separated player_id lists, same shape as lock/exclude).
  *   -> 200 { "request_id": "<uuid>" }
  *   Every param besides token/site/slate_id is OPTIONAL and passed through
  *   unchanged to run_optimizer_dispatch.yml, which itself only sets a CLI
@@ -228,6 +234,14 @@ async function handleDispatch(url, env) {
     // is decision #47's Showdown-only one-sided-lineup floor (the mirror
     // of max_team_players above, which stays classic+Showdown both).
     "format", "min_team_players",
+    // Session 16 -- decisions #48-55. "player_exposure" is a comma-
+    // separated "PLAYER_ID:FRACTION" string (mirrors max_team_players'
+    // "TEAM:N" shape above, but a 0.0-1.0 fraction, matching
+    // max_exposure's own convention); "thumbs_up"/"thumbs_down" are plain
+    // comma-separated player_id lists (same shape as lock/exclude above).
+    // All three passed through unchanged, same convention as every other
+    // field here -- optimizer.py's own parsing/validation does the rest.
+    "player_exposure", "thumbs_up", "thumbs_down",
   ];
   const params = {};
   for (const key of passthroughKeys) {

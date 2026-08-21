@@ -520,6 +520,97 @@ def apply_participation_floor(players: pd.DataFrame, participation_floors: dict,
     ].copy()
 
 
+# ---------------------------------------------------------------------------
+# Session 16 -- Thumbs Up/Down Projection Nudge (decisions #48-51)
+# ---------------------------------------------------------------------------
+# 48. A fixed, symmetric multiplier used ONLY as (or to center) the ILP
+#     objective -- the exact same seam randomize_projections() already
+#     established for --randomization-pct (decision #11): players
+#     [\"final_projection\"] itself is NEVER touched, so a flagged player's
+#     real, pipeline-calculated projection is always what's reported in
+#     the output CSV and every downstream total (lineup_value, Total
+#     projected points, etc.) -- never an inflated/deflated number. sigma
+#     (the variance figure driving GPP scoring) is also left untouched: a
+#     thumbs vote is a belief about the mean outcome, not new statistical
+#     confidence about its spread.
+# 49. Applied here, inside optimizer.py, at the same point randomization's
+#     own draw is built -- well downstream of the real pipeline
+#     (build_projections_statline.py) and the ownership model
+#     (ownership_heuristic.py), which have both already finished by the
+#     time this file ever runs. That means the user's personal opinion
+#     never contaminates the ownership model's field-consensus estimate
+#     (already computed and merged into final_projections before this
+#     file runs) or the real actual-vs-projected accuracy log this
+#     project is waiting on for Session 9.1/11.1. Deliberately NOT wired
+#     into --min-projection/--participation-floors (both still filter on
+#     the real number, same as every build before this session) -- a
+#     thumbs vote nudges the solver's preference among already-eligible
+#     players, it does not override a floor that exists to keep a
+#     genuinely bad play out of consideration, matching this session's own
+#     decision to skip a minimum-exposure floor for the same reason.
+# 50. THUMBS_UP_MULTIPLIER / THUMBS_DOWN_MULTIPLIER are FLAGGED ARBITRARY,
+#     same status as this project's other hand-picked, not-yet-fit
+#     constants -- but not a blind guess: chosen from a real probe against
+#     the live Week 1 FD Classic pool. A 10% boost moved three real fringe
+#     players (RB/WR/TE, all previously 0/20 in a real 20-lineup batch at
+#     40% max exposure) into a real, meaningfully-sized fraction of
+#     lineups (5-25%) without maxing out the exposure cap the way 15%+
+#     did for two of the three. Because the exposure cap (decision #5/#6,
+#     unchanged here) is always the hard ceiling, this multiplier can
+#     never functionally reproduce --lock (100%, every lineup) regardless
+#     of its size -- it can only ever push a player up toward whatever cap
+#     is already active.
+# 51. A player_id in both --thumbs-up and --thumbs-down is a hard CLI
+#     error, same "not a silent precedence rule" convention as decision
+#     #25's --lock/--exclude overlap check. An id not found in the current
+#     pool is a non-fatal NOTE (same as an unmatched --exclude id) --
+#     ignored, since a since-scratched or renamed player shouldn't hard-
+#     fail an otherwise-valid build.
+THUMBS_UP_MULTIPLIER = 1.10
+THUMBS_DOWN_MULTIPLIER = 0.90
+
+
+def compute_thumbs_projection(players: pd.DataFrame, thumbs_up_ids: set,
+                               thumbs_down_ids: set):
+    """Returns None if no player is flagged -- callers use that to mean
+    'no override, behave exactly as before this session' (same convention
+    as optimization_projection=None already means for solve_lineup()).
+    When non-None: a pd.Series indexed by player_id, equal to
+    players['final_projection'] for every player EXCEPT those flagged,
+    whose value is multiplied by THUMBS_UP_MULTIPLIER/THUMBS_DOWN_
+    MULTIPLIER (decisions #48-51 above). Classic-pool version -- player_id
+    is unique here. See compute_thumbs_projection_showdown() for the
+    Showdown counterpart (player_id collides across CPT/FLEX rows)."""
+    thumbs_up_ids = thumbs_up_ids or set()
+    thumbs_down_ids = thumbs_down_ids or set()
+    if not thumbs_up_ids and not thumbs_down_ids:
+        return None
+
+    base = players.set_index("player_id")["final_projection"]
+    missing = (thumbs_up_ids | thumbs_down_ids) - set(base.index)
+    if missing:
+        print(
+            f"NOTE: --thumbs-up/--thumbs-down player_id(s) {sorted(missing)} "
+            f"not found in this pool -- ignored.", file=sys.stderr,
+        )
+
+    adjusted = base.copy()
+    up = [pid for pid in thumbs_up_ids if pid in adjusted.index]
+    down = [pid for pid in thumbs_down_ids if pid in adjusted.index]
+    if up:
+        adjusted.loc[up] = adjusted.loc[up] * THUMBS_UP_MULTIPLIER
+    if down:
+        adjusted.loc[down] = adjusted.loc[down] * THUMBS_DOWN_MULTIPLIER
+    print(
+        f"Projection adjustment for THIS SOLVE only (decisions #48-49) -- "
+        f"the output still reports each player's real projection: {len(up)} "
+        f"player(s) boosted {THUMBS_UP_MULTIPLIER:.0%}, {len(down)} "
+        f"player(s) reduced to {THUMBS_DOWN_MULTIPLIER:.0%} of real "
+        f"projection for solving purposes."
+    )
+    return adjusted
+
+
 def parse_team_cap_list(raw: str, flag_name: str) -> dict:
     """Parses '--max-team-players KC:2,DEN:1' into {'KC': 2, 'DEN': 1}."""
     caps = {}
@@ -576,6 +667,62 @@ def parse_game_cap_list(raw: str, flag_name: str) -> dict:
         caps[key] = n
     if not caps:
         raise SystemExit(f"{flag_name} resolved to an empty cap list: {raw!r}")
+    return caps
+
+
+# ---------------------------------------------------------------------------
+# Session 16 -- Per-Player Exposure Override (decisions #52-55)
+# ---------------------------------------------------------------------------
+# 52. --player-exposure PID:PCT,PID:PCT (PCT is a 0.0-1.0 fraction, the
+#     same convention --max-exposure itself already uses -- NOT a 0-100
+#     integer like --max-team-players' counts above, since this is a
+#     share of lineups, not a roster-slot count). A player named here uses
+#     HIS OWN cap for the whole batch instead of --max-exposure's shared
+#     default; every other player is unaffected.
+# 53. Showdown: capped by real player_id, which already (pre-existing,
+#     unchanged) tracks a player's Captain and FLEX rows as ONE combined
+#     exposure count. Decision #52's override follows that same existing
+#     convention automatically -- one cap per person, covering both roles,
+#     not a separate cap per role.
+# 54. A player who is BOTH locked AND given an explicit override is a hard
+#     error, checked in validate_exposure_cap_feasibility() below (same
+#     spot the other exposure-cap structural conflicts are already
+#     checked) -- a lock already means "100% of lineups", so a lower
+#     override on the same id can never be satisfiable.
+# 55. An id not found in the current pool is a non-fatal NOTE, same as an
+#     unmatched --exclude id -- checked in the same place as decision #54.
+def parse_player_exposure_list(raw: str, flag_name: str) -> dict:
+    """Parses '--player-exposure 00-0012345:0.5,00-0067890:0.3' into
+    {'00-0012345': 0.5, '00-0067890': 0.3}. Same comma-list shape as
+    parse_team_cap_list() above, but a 0.0-1.0 fraction (matching
+    --max-exposure's own convention), not an integer count."""
+    caps = {}
+    for entry in raw.split(","):
+        entry = entry.strip()
+        if not entry:
+            continue
+        if ":" not in entry:
+            raise SystemExit(
+                f"{flag_name} entries must be PLAYER_ID:PCT (e.g. "
+                f"00-0012345:0.5), got: {entry!r}"
+            )
+        pid, _, pct_raw = entry.partition(":")
+        pid = pid.strip()
+        try:
+            pct = float(pct_raw.strip())
+        except ValueError:
+            raise SystemExit(f"{flag_name} entry {entry!r} has a non-numeric percentage.")
+        if not (0.0 < pct <= 1.0):
+            raise SystemExit(
+                f"{flag_name} entry {entry!r} -- percentage must be greater "
+                f"than 0.0 and at most 1.0 (it's a fraction of lineups, e.g. "
+                f"0.5 for 50%%, not a 0-100 integer)."
+            )
+        if pid in caps:
+            raise SystemExit(f"{flag_name} lists player_id {pid} more than once.")
+        caps[pid] = pct
+    if not caps:
+        raise SystemExit(f"{flag_name} resolved to an empty list: {raw!r}")
     return caps
 
 
@@ -686,7 +833,8 @@ def validate_lock_feasibility(players: pd.DataFrame, locked_player_ids: set,
 
 def validate_exposure_cap_feasibility(players: pd.DataFrame, locked_player_ids: set,
                                        max_team_players: dict = None,
-                                       max_game_players: dict = None):
+                                       max_game_players: dict = None,
+                                       player_exposure: dict = None):
     """Decision #36's structural pre-check, same pattern and same scope
     limitation as validate_lock_feasibility's decision #24: only checks
     whether the LOCKED players themselves already violate a cap (in which
@@ -695,7 +843,34 @@ def validate_exposure_cap_feasibility(players: pd.DataFrame, locked_player_ids: 
     with each other. If a locked player fills a team's cap of 1, every
     OTHER player from that team is implicitly excluded by the cap
     constraint itself once added (decision #36) -- no separate mechanism
-    needed for that half of the requested behavior."""
+    needed for that half of the requested behavior.
+
+    Session 16 (decisions #54-55): --player-exposure gets its own two
+    checks here, run regardless of whether any locks were requested at
+    all (unlike the team/game checks below, which only matter once a lock
+    exists) -- an unknown player_id is a non-fatal NOTE, and a player who
+    is BOTH locked and given an explicit override is a hard error, since a
+    lock already means 100% of lineups and a lower cap on the same id can
+    never be satisfied."""
+    if player_exposure:
+        unknown = set(player_exposure) - set(players["player_id"])
+        if unknown:
+            print(
+                f"NOTE: --player-exposure references player_id(s) not "
+                f"found in this pool: {sorted(unknown)} -- ignored.",
+                file=sys.stderr,
+            )
+        if locked_player_ids:
+            conflict = locked_player_ids & set(player_exposure)
+            if conflict:
+                raise RuntimeError(
+                    f"player_id(s) {sorted(conflict)} are both --lock'd "
+                    f"and given a --player-exposure override -- a lock "
+                    f"already means 100% of lineups, so a lower cap on "
+                    f"the same id can never be satisfied (decision #54). "
+                    f"Remove one or the other."
+                )
+
     if not locked_player_ids:
         return
     locked = players[players["player_id"].isin(locked_player_ids)]
@@ -1133,7 +1308,8 @@ def parse_roster_requirements(roster_slots: list) -> tuple:
 def randomize_projections(players: pd.DataFrame, randomization_pct: float,
                            rng: np.random.Generator,
                            mode: str = "pct",
-                           n_lineups: int = 1) -> pd.Series:
+                           n_lineups: int = 1,
+                           base_override: pd.Series = None) -> pd.Series:
     """Returns a pd.Series indexed by player_id for use as the ILP objective.
 
     Session 3.2 (decisions #9-13): `mode="pct"` (default) draws from
@@ -1147,10 +1323,24 @@ def randomize_projections(players: pd.DataFrame, randomization_pct: float,
     DEFAULT_SIGMA_RAND_FULL_LINEUPS). FLAGGED ARBITRARY: the ramp has no
     data behind it (decision #14). Hard error if sigma is absent or all-zero.
 
+    Session 16 addition: `base_override` (decisions #48-49), when
+    supplied, replaces players['final_projection'] as the CENTER of the
+    noise draw -- e.g. compute_thumbs_projection()'s output, so a
+    thumbs-up player's randomized draws land around his boosted number,
+    not his real one. Reindexed to `players` here (the caller may pass a
+    Series computed against a larger pool, e.g. before an exposure
+    lock-out filter) so it always aligns with this call's own salary/sigma
+    Series below. None (default) is every prior session's behavior,
+    unchanged.
+
     Neither mode modifies `players` itself; output always reports the real
     final_projection (decision #11).
     """
-    base = players.set_index("player_id")["final_projection"]
+    base = (
+        base_override.reindex(players["player_id"].values)
+        if base_override is not None
+        else players.set_index("player_id")["final_projection"]
+    )
     if randomization_pct <= 0:
         return base
 
@@ -1647,6 +1837,22 @@ def _stack_label(cand: dict) -> str:
     return ""
 
 
+def _print_control_summary(locked_player_ids: set, excluded_player_ids: set,
+                            thumbs_up_ids: set = None, thumbs_down_ids: set = None,
+                            player_exposure: dict = None):
+    """Session 16 -- one shared printer for main()'s per-player-control
+    summary line(s), used at all four build call sites (classic/Showdown x
+    single/multi) so the four don't drift out of sync with each other the
+    way four hand-duplicated print statements could."""
+    if locked_player_ids or excluded_player_ids:
+        print(f"Locked: {sorted(locked_player_ids) or 'none'} | Excluded: {sorted(excluded_player_ids) or 'none'}")
+    if thumbs_up_ids or thumbs_down_ids:
+        print(f"Thumbs up: {sorted(thumbs_up_ids or []) or 'none'} | Thumbs down: {sorted(thumbs_down_ids or []) or 'none'}")
+    if player_exposure:
+        overrides = ", ".join(f"{pid}:{pct:.0%}" for pid, pct in sorted(player_exposure.items()))
+        print(f"Player exposure overrides: {overrides}")
+
+
 def build_single_lineup(site: str, slate_id: str, randomization_pct: float = DEFAULT_RANDOMIZATION_PCT,
                          rng: np.random.Generator = None,
                          randomization_mode: str = "pct",
@@ -1665,7 +1871,9 @@ def build_single_lineup(site: str, slate_id: str, randomization_pct: float = DEF
                          flex_positions: set = None,
                          max_team_players: dict = None,
                          max_game_players: dict = None,
-                         participation_floors: dict = None) -> pd.DataFrame:
+                         participation_floors: dict = None,
+                         thumbs_up_ids: set = None,
+                         thumbs_down_ids: set = None) -> pd.DataFrame:
     config = SITE_CONFIGS[site]
     players = load_final_projections(site, slate_id)
     fixed_counts, flex_count = parse_roster_requirements(config["roster_slots"])
@@ -1728,13 +1936,21 @@ def build_single_lineup(site: str, slate_id: str, randomization_pct: float = DEF
         max_team_players=max_team_players, max_game_players=max_game_players,
     )
 
+    # Session 16 (decisions #48-49) -- computed once, used either directly
+    # as the objective or as randomization's center, exactly like
+    # build_multi_lineup() below.
+    thumbs_projection = compute_thumbs_projection(players, thumbs_up_ids, thumbs_down_ids)
+
     optimization_projection = None
     if randomization_pct > 0:
         rng = rng if rng is not None else np.random.default_rng()
         # n_lineups=1: entry_scale=0 in sigma-mode (off for single-entry, decision #14).
         optimization_projection = randomize_projections(
             players, randomization_pct, rng, mode=randomization_mode, n_lineups=1,
+            base_override=thumbs_projection,
         )
+    elif thumbs_projection is not None:
+        optimization_projection = thumbs_projection
 
     # Session 3.3 -- single-lineup mode always uses the single BEST
     # candidate (no diversification concept for one lineup) unless pinned.
@@ -1819,7 +2035,10 @@ def build_multi_lineup(site: str, slate_id: str, n_lineups: int = DEFAULT_N_LINE
                         flex_positions: set = None,
                         max_team_players: dict = None,
                         max_game_players: dict = None,
-                        participation_floors: dict = None) -> tuple:
+                        participation_floors: dict = None,
+                        thumbs_up_ids: set = None,
+                        thumbs_down_ids: set = None,
+                        player_exposure: dict = None) -> tuple:
     """Generates up to `n_lineups` distinct, salary-cap-legal lineups, none
     of which use any single player in more than `max_exposure_pct` of the
     total requested lineups (decisions #5/#6 above). Returns
@@ -1852,7 +2071,15 @@ def build_multi_lineup(site: str, slate_id: str, n_lineups: int = DEFAULT_N_LINE
     are forced into EVERY lineup in the batch via a hard constraint, are
     exempt from the exposure lock-out check below (a lock is an explicit
     override, not a conflicting rule -- decision #23), and are exempt from
-    the uniqueness swap count inside solve_lineup() for the same reason."""
+    the uniqueness swap count inside solve_lineup() for the same reason.
+
+    Session 16 params: `thumbs_up_ids`/`thumbs_down_ids` (decisions #48-51)
+    nudge the ILP objective only, computed once below and reused for every
+    lineup in the batch -- players_all['final_projection'] itself, and
+    therefore the real output, are never touched (see
+    compute_thumbs_projection()). `player_exposure` (decisions #52-55)
+    gives named players their own exposure cap instead of
+    `max_exposure_pct`'s shared default -- everyone else is unaffected."""
     config = SITE_CONFIGS[site]
     players_all = load_final_projections(site, slate_id)
     fixed_counts, flex_count = parse_roster_requirements(config["roster_slots"])
@@ -1926,9 +2153,17 @@ def build_multi_lineup(site: str, slate_id: str, n_lineups: int = DEFAULT_N_LINE
     validate_exposure_cap_feasibility(
         players_all, locked_player_ids,
         max_team_players=max_team_players, max_game_players=max_game_players,
+        player_exposure=player_exposure,
     )
 
-    exposure_cap = max(1, math.floor(max_exposure_pct * n_lineups))
+    # Session 16 (decisions #52-55): a per-player cap dict instead of one
+    # shared scalar. A player_id absent from `player_exposure` falls back
+    # to `max_exposure_pct`, identical to every build before this session.
+    player_exposure = player_exposure or {}
+    exposure_cap_by_pid = {
+        pid: max(1, math.floor(player_exposure.get(pid, max_exposure_pct) * n_lineups))
+        for pid in players_all["player_id"]
+    }
 
     candidates = [{"target_team": None, "target_game": None}]
     diversify_active = False
@@ -1957,10 +2192,15 @@ def build_multi_lineup(site: str, slate_id: str, n_lineups: int = DEFAULT_N_LINE
     current_uniqueness = uniqueness
     n_generated = 0
 
+    # Session 16 (decisions #48-49) -- computed once against the full pool,
+    # reused for every lineup in the batch (a thumbs vote is fixed for the
+    # whole build, unlike randomization's fresh per-lineup draw below).
+    thumbs_projection = compute_thumbs_projection(players_all, thumbs_up_ids, thumbs_down_ids)
+
     while n_generated < n_lineups:
         locked_out = {
             pid for pid, cnt in exposure_count.items()
-            if cnt >= exposure_cap and pid not in locked_player_ids
+            if cnt >= exposure_cap_by_pid[pid] and pid not in locked_player_ids
         }
         pool = players_all[~players_all["player_id"].isin(locked_out)]
 
@@ -1970,7 +2210,10 @@ def build_multi_lineup(site: str, slate_id: str, n_lineups: int = DEFAULT_N_LINE
         if randomization_pct > 0:
             optimization_projection = randomize_projections(
                 pool, randomization_pct, rng, mode=randomization_mode, n_lineups=n_lineups,
+                base_override=thumbs_projection,
             )
+        elif thumbs_projection is not None:
+            optimization_projection = thumbs_projection
 
         # Decision #33 (supersedes decision #17's rotation schedule) --
         # TRUE GREEDY SELECTION. A lineup optimizer's job is to return the
@@ -2252,14 +2495,61 @@ def load_showdown_pool(site: str, slate_id: str) -> pd.DataFrame:
     return df
 
 
+def compute_thumbs_projection_showdown(players: pd.DataFrame, thumbs_up_ids: set,
+                                        thumbs_down_ids: set):
+    """Row-keyed counterpart to compute_thumbs_projection() (decisions
+    #48-51) -- player_id collides across a Showdown pool's CPT/FLEX rows,
+    so this indexes by ROW_KEY_COL instead. thumbs_up_ids/thumbs_down_ids
+    are still real player_id values (decision #53): a flagged player's
+    multiplier applies to BOTH his CPT and FLEX row -- same existing
+    convention the per-player exposure cap already follows. Returns None
+    if no player is flagged, same convention as the classic version."""
+    thumbs_up_ids = thumbs_up_ids or set()
+    thumbs_down_ids = thumbs_down_ids or set()
+    if not thumbs_up_ids and not thumbs_down_ids:
+        return None
+
+    missing = (thumbs_up_ids | thumbs_down_ids) - set(players["player_id"])
+    if missing:
+        print(
+            f"NOTE: --thumbs-up/--thumbs-down player_id(s) {sorted(missing)} "
+            f"not found in this pool -- ignored.", file=sys.stderr,
+        )
+
+    indexed = players.set_index(ROW_KEY_COL)
+    adjusted = indexed["final_projection"].copy()
+    up_rks = indexed.index[indexed["player_id"].isin(thumbs_up_ids)]
+    down_rks = indexed.index[indexed["player_id"].isin(thumbs_down_ids)]
+    if len(up_rks):
+        adjusted.loc[up_rks] = adjusted.loc[up_rks] * THUMBS_UP_MULTIPLIER
+    if len(down_rks):
+        adjusted.loc[down_rks] = adjusted.loc[down_rks] * THUMBS_DOWN_MULTIPLIER
+    print(
+        f"Projection adjustment for THIS SOLVE only (decisions #48-49, "
+        f"#53) -- the output still reports each player's real projection: "
+        f"{len(up_rks)} row(s) (CPT+FLEX combined) boosted "
+        f"{THUMBS_UP_MULTIPLIER:.0%}, {len(down_rks)} row(s) reduced to "
+        f"{THUMBS_DOWN_MULTIPLIER:.0%} of real projection for solving "
+        f"purposes."
+    )
+    return adjusted
+
+
 def randomize_showdown_projections(players: pd.DataFrame, randomization_pct: float,
                                     rng: np.random.Generator, mode: str = "pct",
-                                    n_lineups: int = 1) -> pd.Series:
+                                    n_lineups: int = 1,
+                                    base_override: pd.Series = None) -> pd.Series:
     """Row-keyed counterpart to randomize_projections() (decisions #9-14) --
     that function indexes by player_id, which collides for a Showdown pool
     (2 rows share the same player_id). Identical distribution/clipping/
-    sigma-mode logic, indexed by `_row_key` instead."""
-    base = players.set_index(ROW_KEY_COL)["final_projection"]
+    sigma-mode logic, indexed by `_row_key` instead. `base_override`
+    (Session 16, decisions #48-49) works the same way as the classic
+    version -- see that function's docstring."""
+    base = (
+        base_override.reindex(players[ROW_KEY_COL].values)
+        if base_override is not None
+        else players.set_index(ROW_KEY_COL)["final_projection"]
+    )
     if randomization_pct <= 0:
         return base
 
@@ -2588,7 +2878,9 @@ def build_single_showdown_lineup(site: str, slate_id: str,
                                   excluded_player_ids: set = None,
                                   min_salary: int = 0,
                                   max_team_players: dict = None,
-                                  min_team_players: dict = None) -> pd.DataFrame:
+                                  min_team_players: dict = None,
+                                  thumbs_up_ids: set = None,
+                                  thumbs_down_ids: set = None) -> pd.DataFrame:
     players = load_showdown_pool(site, slate_id)
     validate_min_team_players_feasibility(site, min_team_players)
     locked_player_ids = locked_player_ids or set()
@@ -2603,12 +2895,18 @@ def build_single_showdown_lineup(site: str, slate_id: str,
             )
         players = players[~players["player_id"].isin(excluded_player_ids)].copy()
 
+    # Session 16 (decisions #48-49, #53).
+    thumbs_projection = compute_thumbs_projection_showdown(players, thumbs_up_ids, thumbs_down_ids)
+
     optimization_projection = None
     if randomization_pct > 0:
         rng = rng if rng is not None else np.random.default_rng()
         optimization_projection = randomize_showdown_projections(
             players, randomization_pct, rng, mode=randomization_mode, n_lineups=1,
+            base_override=thumbs_projection,
         )
+    elif thumbs_projection is not None:
+        optimization_projection = thumbs_projection
 
     selected = solve_showdown_lineup(
         players, site,
@@ -2653,10 +2951,16 @@ def build_multi_showdown_lineup(site: str, slate_id: str,
                                  excluded_player_ids: set = None,
                                  min_salary: int = 0,
                                  max_team_players: dict = None,
-                                 min_team_players: dict = None) -> tuple:
+                                 min_team_players: dict = None,
+                                 thumbs_up_ids: set = None,
+                                 thumbs_down_ids: set = None,
+                                 player_exposure: dict = None) -> tuple:
     """Showdown counterpart to build_multi_lineup() -- same exposure-cap /
     uniqueness-relaxation loop (decisions #5-7), no stacking rotation
-    (decision #45 -- not supported for Showdown this session)."""
+    (decision #45 -- not supported for Showdown this session). Session 16
+    params (thumbs_up_ids/thumbs_down_ids/player_exposure) mirror
+    build_multi_lineup()'s own -- see that function's docstring and
+    decisions #48-55 above."""
     players_all = load_showdown_pool(site, slate_id)
     validate_min_team_players_feasibility(site, min_team_players)
 
@@ -2672,17 +2976,43 @@ def build_multi_showdown_lineup(site: str, slate_id: str,
             )
         players_all = players_all[~players_all["player_id"].isin(excluded_player_ids)].copy()
 
-    exposure_cap = max(1, math.floor(max_exposure_pct * n_lineups))
+    # Session 16 side-effect, worth flagging explicitly: build_multi_
+    # showdown_lineup() never called validate_exposure_cap_feasibility()
+    # before this session -- a locked player who already busts
+    # --max-team-players on a Showdown slate previously only surfaced as
+    # an opaque solver infeasibility. Needed here regardless for the new
+    # --player-exposure checks (decisions #54-55), and extending it to the
+    # pre-existing --max-team-players/lock conflict too is a pure
+    # improvement (same upfront, specific error classic already had) --
+    # not a behavior change for any build that doesn't hit that conflict.
+    validate_exposure_cap_feasibility(
+        players_all, locked_player_ids,
+        max_team_players=max_team_players, player_exposure=player_exposure,
+    )
+
+    # Session 16 (decisions #52-55) -- per-player cap dict, same shape and
+    # same fallback-to-shared-default as build_multi_lineup() above. A
+    # showdown player_id is shared by his CPT and FLEX rows (decision #53)
+    # so one cap here already covers both roles, unchanged pre-existing
+    # behavior.
+    player_exposure = player_exposure or {}
+    exposure_cap_by_pid = {
+        pid: max(1, math.floor(player_exposure.get(pid, max_exposure_pct) * n_lineups))
+        for pid in players_all["player_id"].unique()
+    }
     exposure_count = {pid: 0 for pid in players_all["player_id"].unique()}
     previous_player_sets = []
     all_lineup_frames = []
     current_uniqueness = uniqueness
     n_generated = 0
 
+    # Session 16 (decisions #48-49, #53).
+    thumbs_projection = compute_thumbs_projection_showdown(players_all, thumbs_up_ids, thumbs_down_ids)
+
     while n_generated < n_lineups:
         locked_out = {
             pid for pid, cnt in exposure_count.items()
-            if cnt >= exposure_cap and pid not in locked_player_ids
+            if cnt >= exposure_cap_by_pid[pid] and pid not in locked_player_ids
         }
         pool = players_all[~players_all["player_id"].isin(locked_out)]
 
@@ -2690,7 +3020,10 @@ def build_multi_showdown_lineup(site: str, slate_id: str,
         if randomization_pct > 0:
             optimization_projection = randomize_showdown_projections(
                 pool, randomization_pct, rng, mode=randomization_mode, n_lineups=n_lineups,
+                base_override=thumbs_projection,
             )
+        elif thumbs_projection is not None:
+            optimization_projection = thumbs_projection
 
         try:
             selected = solve_showdown_lineup(
@@ -3029,6 +3362,34 @@ def main():
              "infeasibility) if the requested floor(s) are structurally "
              "impossible.",
     )
+    # Session 16 -- Per-Player Exposure Override + Thumbs Up/Down (decisions
+    # #48-55).
+    parser.add_argument(
+        "--player-exposure", default=None,
+        help="Comma-separated PLAYER_ID:PCT caps (e.g. "
+             "'00-0012345:0.5,00-0067890:0.3') giving named players their "
+             "OWN max-exposure ceiling instead of --max-exposure's shared "
+             "default -- everyone else is unaffected. PCT is a 0.0-1.0 "
+             "fraction, same convention as --max-exposure itself (decision "
+             "#52). Only used with --n-lineups -- exposure has no meaning "
+             "for a single lineup. On Showdown, one cap covers both a "
+             "player's Captain and FLEX rows (decision #53), matching how "
+             "--max-exposure already behaves there.",
+    )
+    parser.add_argument(
+        "--thumbs-up", default=None,
+        help=f"Comma-separated player_id(s) whose final_projection is "
+             f"boosted to {THUMBS_UP_MULTIPLIER:.0%} of its real value for "
+             f"this build (decision #48). Works in single- or multi-"
+             f"lineup mode, classic or Showdown.",
+    )
+    parser.add_argument(
+        "--thumbs-down", default=None,
+        help=f"Comma-separated player_id(s) whose final_projection is "
+             f"reduced to {THUMBS_DOWN_MULTIPLIER:.0%} of its real value "
+             f"for this build (decision #48). Works in single- or multi-"
+             f"lineup mode, classic or Showdown.",
+    )
     args = parser.parse_args()
 
     OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
@@ -3110,6 +3471,33 @@ def main():
         parser.error(
             f"player_id(s) {sorted(overlap)} cannot be both --lock and "
             f"--exclude (decision #25)."
+        )
+
+    # Session 16 -- decisions #48-51. Same "hard CLI error, not a silent
+    # precedence rule" pattern as the --lock/--exclude overlap check above.
+    thumbs_up_ids = parse_id_list(args.thumbs_up)
+    thumbs_down_ids = parse_id_list(args.thumbs_down)
+    thumbs_overlap = thumbs_up_ids & thumbs_down_ids
+    if thumbs_overlap:
+        parser.error(
+            f"player_id(s) {sorted(thumbs_overlap)} cannot be both "
+            f"--thumbs-up and --thumbs-down (decision #51)."
+        )
+
+    # Session 16 -- decisions #52-55. Unknown-id and lock-conflict checks
+    # happen inside validate_exposure_cap_feasibility() below (both build
+    # paths already call it), not here -- same split as --max-team-players'
+    # own checks (structural feasibility inside the build function; only
+    # this session's CLI-level parsing happens here).
+    player_exposure = (
+        parse_player_exposure_list(args.player_exposure, "--player-exposure")
+        if args.player_exposure else None
+    )
+    if player_exposure and not args.n_lineups:
+        print(
+            "NOTE: --player-exposure was set but --n-lineups was not -- "
+            "exposure has no meaning for a single lineup, ignored for "
+            "this build.", file=sys.stderr,
         )
 
     # Session 7.3 -- decisions #28-29.
@@ -3213,6 +3601,8 @@ def main():
                 excluded_player_ids=excluded_player_ids,
                 min_salary=min_salary, max_team_players=max_team_players,
                 min_team_players=min_team_players,
+                thumbs_up_ids=thumbs_up_ids, thumbs_down_ids=thumbs_down_ids,
+                player_exposure=player_exposure,
             )
             if args.request_id:
                 out_path = OUTPUT_DIR / "ui_requests" / f"{args.request_id}.csv"
@@ -3222,12 +3612,13 @@ def main():
             lineups.to_csv(out_path, index=False)
 
             exposure_cap = max(1, math.floor(args.max_exposure * args.n_lineups))
+            override_note = f", {len(player_exposure)} player(s) using a custom cap" if player_exposure else ""
             top_exposure = sorted(exposure_count.items(), key=lambda kv: kv[1], reverse=True)[:10]
             print(f"[{config['label']}] Generated {n_generated}/{args.n_lineups} Showdown "
                   f"lineup(s) for slate {args.slate_id} (exposure cap: "
-                  f"{exposure_cap}/{args.n_lineups} lineups = {args.max_exposure:.0%})")
-            if locked_player_ids or excluded_player_ids:
-                print(f"Locked: {sorted(locked_player_ids) or 'none'} | Excluded: {sorted(excluded_player_ids) or 'none'}")
+                  f"{exposure_cap}/{args.n_lineups} lineups = {args.max_exposure:.0%}{override_note})")
+            _print_control_summary(locked_player_ids, excluded_player_ids,
+                                    thumbs_up_ids, thumbs_down_ids, player_exposure)
             print("Top exposure (player_id: times used):")
             for pid, cnt in top_exposure:
                 if cnt > 0:
@@ -3253,6 +3644,7 @@ def main():
                 min_salary=min_salary, lam=args.lam,
                 max_team_players=max_team_players,
                 min_team_players=min_team_players,
+                thumbs_up_ids=thumbs_up_ids, thumbs_down_ids=thumbs_down_ids,
             )
             if args.request_id:
                 out_path = OUTPUT_DIR / "ui_requests" / f"{args.request_id}.csv"
@@ -3266,8 +3658,7 @@ def main():
             total_points = lineup["projection"].sum()
             lineup_value = round(total_points / (total_salary / 1000), 2) if total_salary else 0.0
             print(f"[{config['label']}] Optimal single Showdown lineup for slate {args.slate_id}:")
-            if locked_player_ids or excluded_player_ids:
-                print(f"Locked: {sorted(locked_player_ids) or 'none'} | Excluded: {sorted(excluded_player_ids) or 'none'}")
+            _print_control_summary(locked_player_ids, excluded_player_ids, thumbs_up_ids, thumbs_down_ids)
             print(lineup.to_string(index=False))
             print(f"Total salary: {total_salary} / {showdown_cap} ({showdown_cap - total_salary} remaining)")
             print(f"Total projected points: {total_points:.2f}")
@@ -3292,6 +3683,8 @@ def main():
             lam=args.lam,
             max_team_players=max_team_players, max_game_players=max_game_players,
             participation_floors=participation_floors,
+            thumbs_up_ids=thumbs_up_ids, thumbs_down_ids=thumbs_down_ids,
+            player_exposure=player_exposure,
             **stack_kwargs,
         )
         if args.request_id:
@@ -3326,14 +3719,15 @@ def main():
             lineups.to_csv(out_path, index=False)
 
         exposure_cap = max(1, math.floor(args.max_exposure * args.n_lineups))
+        override_note = f", {len(player_exposure)} player(s) using a custom cap" if player_exposure else ""
         top_exposure = sorted(exposure_count.items(), key=lambda kv: kv[1], reverse=True)[:10]
 
         print(f"[{config['label']}] Generated {n_generated}/{args.n_lineups} lineups "
               f"for slate {args.slate_id} (exposure cap: {exposure_cap}/{args.n_lineups} "
-              f"lineups = {args.max_exposure:.0%}"
+              f"lineups = {args.max_exposure:.0%}{override_note}"
               + (f", randomization: {args.randomization_pct:.0f}%)" if args.randomization_pct > 0 else ", randomization: off)"))
-        if locked_player_ids or excluded_player_ids:
-            print(f"Locked: {sorted(locked_player_ids) or 'none'} | Excluded: {sorted(excluded_player_ids) or 'none'}")
+        _print_control_summary(locked_player_ids, excluded_player_ids,
+                                thumbs_up_ids, thumbs_down_ids, player_exposure)
         print("Top exposure (player_id: times used):")
         for pid, cnt in top_exposure:
             if cnt > 0:
@@ -3366,6 +3760,7 @@ def main():
             lam=args.lam,
             max_team_players=max_team_players, max_game_players=max_game_players,
             participation_floors=participation_floors,
+            thumbs_up_ids=thumbs_up_ids, thumbs_down_ids=thumbs_down_ids,
             **stack_kwargs,
         )
         if args.request_id:
@@ -3380,8 +3775,7 @@ def main():
         lineup_value = round(total_points / (total_salary / 1000), 2) if total_salary else 0.0
         print(f"[{config['label']}] Optimal single lineup for slate {args.slate_id}"
               + (f" (randomization: {args.randomization_pct:.0f}%):" if args.randomization_pct > 0 else ":"))
-        if locked_player_ids or excluded_player_ids:
-            print(f"Locked: {sorted(locked_player_ids) or 'none'} | Excluded: {sorted(excluded_player_ids) or 'none'}")
+        _print_control_summary(locked_player_ids, excluded_player_ids, thumbs_up_ids, thumbs_down_ids)
         print(lineup.to_string(index=False))
         print(f"Total salary: {total_salary} / {config['salary_cap']} "
               f"({config['salary_cap'] - total_salary} remaining)")
