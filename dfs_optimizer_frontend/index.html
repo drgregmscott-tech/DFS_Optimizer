@@ -1039,7 +1039,7 @@
     margin-left: 6px;
   }
   .exp-override input[type="number"] {
-    width: 34px;
+    width: 42px;
     background: var(--panel-2);
     border: 1px solid var(--line);
     border-radius: 4px;
@@ -3461,6 +3461,18 @@ in this browser's localStorage.</p>
       }
       state.playerExposure[site][pid] = pct;
     }
+    renderPlayerList();
+  });
+
+  // Session 16 addendum (Greg's real feedback after trying this live) --
+  // the global Max Exposure field's current value is baked into every
+  // row's placeholder text at render time (a blank per-player field means
+  // "use the global setting"), so that placeholder only updates when the
+  // list re-renders. Without this listener, typing a new global value and
+  // clicking away did NOT update the per-player placeholders below it --
+  // this is what makes that sync actually happen. "change" (fires on
+  // blur/Enter), same convention as the per-player field itself.
+  document.getElementById("ctrlMaxExposure").addEventListener("change", function () {
     renderPlayerList();
   });
 
