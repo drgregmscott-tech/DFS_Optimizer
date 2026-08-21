@@ -3162,3 +3162,30 @@ This closes the original open-ended projections+ownership deep-dive ask opened a
 
 ---
 
+
+### Session 16 — Per-Player Exposure Override + Thumbs Up/Down Projection Nudge ✅ Complete (2026-08-21)
+
+Prerequisites: none blocking — a pre-season, off-cycle session (Sept 9 regular-season start still the gate on Sessions 9.x/11.x), triggered by Greg's real use of the PGA optimizer surfacing two commercial-optimizer functions the NFL pipeline didn't have yet.
+
+Trigger: Greg's explicit ask to scope, then build, both in the same session: (1) a per-player override on max exposure, alongside the existing shared `--max-exposure` default; (2) a thumbs up/down vote that nudges a player's projection for one build without overwriting the real, pipeline-calculated number.
+
+Feature 1 shipped as `--player-exposure PLAYER_ID:FRACTION,...`, layered on top of the existing exposure-cap mechanism (Session 3.2) rather than replacing it — a named player uses his own ceiling, everyone else keeps using the global default. Locking a player while also giving him an override is a hard, upfront error (a lock already means 100%). Confirmed Showdown already tracks a player's exposure as one combined count across his CPT/FLEX rows (pre-existing, unchanged), so the override follows that same convention automatically. A related, deliberately-declined third idea — a minimum-exposure floor tied to a thumbs-up, so a truly favored player is guaranteed at least some lineups — was scoped and talked through with Greg but not built: it's a strictly weaker, redundant version of the existing Lock feature, and would override the solver's real signal without adding genuinely new information. Not on the roadmap; Lock remains the tool for that.
+
+Feature 2 shipped as `--thumbs-up`/`--thumbs-down` (plain player_id lists), a fixed ±10% multiplier for one build only. Went through a real mid-session design correction: the first version multiplied `final_projection` directly, which would have shown a flagged player's boosted/reduced number in the output CSV and every downstream total instead of his real one. Rebuilt to route through the same `optimization_projection` seam `--randomization-pct` already established — a solver-input-only adjustment, `final_projection` and `sigma` both untouched, verified directly against real output. The ±10% multiplier itself was empirically probed (not guessed) against the real, live Week 1 FD Classic pool: ran the real 20-lineup solver at several boost levels against three real fringe players (RB/WR/TE) and read off the resulting exposure counts before settling on 10% as the smallest round number that reliably produced a real, non-trivial move without maxing out the exposure cap. `THUMBS_UP_MULTIPLIER`/`THUMBS_DOWN_MULTIPLIER` are FLAGGED ARBITRARY, same status as this project's other real-but-unfit constants.
+
+Two real UI bugs found by Greg after using both features live, both fixed same session: the global Max Exposure field had no listener telling the per-player placeholder text to refresh when it changed; and the per-player exposure input was too narrow to display "100" on desktop (rendered as "10") due to browser spinner-arrow rendering differences between desktop and mobile.
+
+Files: scripts/optimizer.py, .github/workflows/run_optimizer_dispatch.yml, cloudflare_worker/optimizer_api/optimizer_api.js, dfs_optimizer_frontend/index.html. Full decision-by-decision detail (#48-55), the exact real-data probe numbers, and the mid-session design corrections are in SESSION_LOG.md.
+
+Validation:
+
+ Every mechanism tested directly against real, live data (the real Week 1 FD Classic pool and the real NE@SEA DK Showdown pool), covering both features across classic/Showdown and single/multi-lineup modes, plus every conflict/edge case (lock+override conflict, thumbs-up/down overlap, unknown ids, exposure with no --n-lineups, thumbs+randomization composition).
+ Confirmed directly in real output that a flagged player's reported projection is always his real number, never the adjusted one, including when selected into an actual lineup.
+ python3 -m py_compile / node --check / YAML parse clean on all four files; index.html id cross-reference clean.
+ A realistic dispatch payload run through the actual arg-builder logic end-to-end into the real optimizer.py against real data.
+ Two real UI bugs found via Greg's own live use, fixed and re-validated same session.
+ Not yet done: a from-scratch confirmation through the actual live deployed site (dispatch → Worker → real GitHub Actions run) the way past sessions (e.g. 12.1) closed out — Greg has informally confirmed both features work live, but that was UI spot-checking, not a fresh end-to-end Actions run trace.
+
+A portable handoff summary of both features' architecture, the pitfalls found and corrected, and what needs re-deriving per sport (the ±10% multiplier is NFL/DK/FD-specific, not portable as a number) was written separately for Greg to bring into `DFS_Optimizer_NHL` and `DFS_Optimizer_PGA` — not part of this repo.
+
+---
