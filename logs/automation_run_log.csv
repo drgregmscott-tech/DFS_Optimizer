@@ -1186,3 +1186,4 @@ timestamp_utc,trigger_type,site,step,status
 2026-08-23T15:18:30.482049+00:00,full_refresh_scheduled,dk,pivot_finder,success
 2026-08-23T15:18:30.482049+00:00,full_refresh_scheduled,fd,pivot_finder,success
 2026-08-23T16:09:37.091549+00:00,light_vegas_refresh,both,vegas_odds_pull,success
+2026-08-23T17:09:49.857871+00:00,light_vegas_refresh,both,vegas_odds_pull,success
