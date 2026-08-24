@@ -1259,3 +1259,12 @@ timestamp_utc,trigger_type,site,step,status
 2026-08-24T15:36:04.015677+00:00,full_refresh_scheduled,fd,status_apply,success
 2026-08-24T15:36:04.015677+00:00,full_refresh_scheduled,dk,pivot_finder,success
 2026-08-24T15:36:04.015677+00:00,full_refresh_scheduled,fd,pivot_finder,success
+2026-08-24T18:35:22.831496+00:00,full_refresh_scheduled,both,vegas_odds_pull,success
+2026-08-24T18:35:22.831496+00:00,full_refresh_scheduled,both,team_stats_pull,success
+2026-08-24T18:35:22.831496+00:00,full_refresh_scheduled,both,status_pull,failure
+2026-08-24T18:35:22.831496+00:00,full_refresh_scheduled,dk,build_projections,success
+2026-08-24T18:35:22.831496+00:00,full_refresh_scheduled,fd,build_projections,success
+2026-08-24T18:35:22.831496+00:00,full_refresh_scheduled,dk,status_apply,success
+2026-08-24T18:35:22.831496+00:00,full_refresh_scheduled,fd,status_apply,success
+2026-08-24T18:35:22.831496+00:00,full_refresh_scheduled,dk,pivot_finder,success
+2026-08-24T18:35:22.831496+00:00,full_refresh_scheduled,fd,pivot_finder,success
