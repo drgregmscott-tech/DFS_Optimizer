@@ -1427,3 +1427,6 @@ timestamp_utc,trigger_type,site,step,status
 2026-09-03T18:41:18.049627+00:00,full_refresh_dispatch,dk,dk_showdown_NE_SEA_090926,build_projections,failure
 2026-09-03T18:41:18.049627+00:00,full_refresh_dispatch,dk,dk_showdown_NE_SEA_090926,status_apply,success
 2026-09-03T18:41:18.049627+00:00,full_refresh_dispatch,dk,dk_showdown_NE_SEA_090926,pivot_finder,success
+2026-09-03T19:19:53.549145+00:00,manual_workflow_dispatch,dk,dk_classic_wk1_main_13Sep2026,build_projections,success
+2026-09-03T19:19:53.549145+00:00,manual_workflow_dispatch,dk,dk_classic_wk1_main_13Sep2026,status_apply,success
+2026-09-03T19:19:53.549145+00:00,manual_workflow_dispatch,dk,dk_classic_wk1_main_13Sep2026,pivot_finder,success
