@@ -3379,14 +3379,14 @@ def main():
     parser.add_argument(
         "--thumbs-up", default=None,
         help=f"Comma-separated player_id(s) whose final_projection is "
-             f"boosted to {THUMBS_UP_MULTIPLIER:.0%} of its real value for "
+             f"boosted to {THUMBS_UP_MULTIPLIER:.0%}% of its real value for "
              f"this build (decision #48). Works in single- or multi-"
              f"lineup mode, classic or Showdown.",
     )
     parser.add_argument(
         "--thumbs-down", default=None,
         help=f"Comma-separated player_id(s) whose final_projection is "
-             f"reduced to {THUMBS_DOWN_MULTIPLIER:.0%} of its real value "
+             f"reduced to {THUMBS_DOWN_MULTIPLIER:.0%}% of its real value "
              f"for this build (decision #48). Works in single- or multi-"
              f"lineup mode, classic or Showdown.",
     )

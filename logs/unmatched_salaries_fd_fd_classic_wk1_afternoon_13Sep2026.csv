@@ -1,0 +1,11 @@
+Id,Position,First Name,Nickname,Last Name,FPPG,Played,Salary,Game,Team,Opponent,Injury Indicator,Injury Details,Tier,Unnamed: 14,Unnamed: 15,Roster Position,name,site,salary,normalized_name,normalized_team,position_upper,slate_format,player_id,match_method,match_confidence
+133647-86687,WR,Hollywood,Hollywood Brown,Brown,7.074999809265137,16,5100,WAS@PHI,PHI,WAS,,,,,,WR/FLEX,Hollywood Brown,fd,5100,hollywood brown,PHI,WR,classic,,,
+133647-85672,WR,Terrace,Terrace Marshall Jr.,Marshall Jr.,1.1199999809265138,5,4200,MIA@LV,MIA,LV,,,,,,WR/FLEX,Terrace Marshall Jr.,fd,4200,terrace marshall,MIA,WR,classic,,,
+133647-104019,TE,Matt,Matt Orzech,Orzech,0.0,2,4000,GB@MIN,GB,MIN,,,,,,TE/FLEX,Matt Orzech,fd,4000,matt orzech,GB,TE,classic,,,
+133647-46200,TE,Daniel,Daniel Brunskill,Brunskill,0.0,1,4000,WAS@PHI,WAS,PHI,,,,,,TE/FLEX,Daniel Brunskill,fd,4000,daniel brunskill,WAS,TE,classic,,,
+133647-135824,WR,Luke,Luke Grimm,Grimm,,0,4000,ARI@LAC,LAC,ARI,Q,Undisclosed,,,,WR/FLEX,Luke Grimm,fd,4000,luke grimm,LAC,WR,classic,,,
+133647-63646,TE,Lawrence,Lawrence Cager,Cager,,0,4000,WAS@PHI,WAS,PHI,,,,,,TE/FLEX,Lawrence Cager,fd,4000,lawrence cager,WAS,TE,classic,,,
+133647-25813,WR,Phillip,Phillip Dorsett II,Dorsett II,,0,4000,MIA@LV,LV,MIA,,,,,,WR/FLEX,Phillip Dorsett II,fd,4000,phillip dorsett,LV,WR,classic,,,
+133647-136970,WR,Danny,Danny Gray,Gray,0.0,1,4000,WAS@PHI,PHI,WAS,,,,,,WR/FLEX,Danny Gray,fd,4000,danny gray,PHI,WR,classic,,,
+133647-138636,WR,Brandon,Brandon Hayes,Hayes,,0,4000,WAS@PHI,PHI,WAS,,,,,,WR/FLEX,Brandon Hayes,fd,4000,brandon hayes,PHI,WR,classic,,,
+133647-73687,WR,Quez,Quez Watkins,Watkins,,0,4000,WAS@PHI,PHI,WAS,,,,,,WR/FLEX,Quez Watkins,fd,4000,quez watkins,PHI,WR,classic,,,

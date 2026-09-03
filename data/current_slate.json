@@ -10,20 +10,52 @@
   },
   "slates": [
     {
-      "slate_id": "dk_showdown_NE_SEA_090926",
+      "slate_id": "dk_classic_wk1_main_13Sep2026",
       "site": "dk",
-      "format": "showdown",
-      "season": 2026,
-      "week": 24,
-      "lock_time_utc": "REPLACE_ME"
+      "format": "classic",
+      "season": 2025,
+      "week": 23,
+      "lock_time_utc": "2026-09-13T17:00:00Z"
     },
     {
-      "slate_id": "fd_classic_wk1_091326",
+      "slate_id": "dk_showdown_09Sep2026_ne_sea",
+      "site": "dk",
+      "format": "showdown",
+      "season": 2025,
+      "week": 23,
+      "lock_time_utc": "2026-09-10T00:20:00Z"
+    },
+    {
+      "slate_id": "fd_classic_wk1_main_13Sep2026",
       "site": "fd",
       "format": "classic",
-      "season": 2026,
+      "season": 2025,
       "week": 23,
-      "lock_time_utc": "REPLACE_ME"
-    }
+      "lock_time_utc": "2026-09-13T17:00:00Z"
+    },
+    {
+      "slate_id": "fd_classic_wk1_early_13Sep2026",
+      "site": "fd",
+      "format": "classic",
+      "season": 2025,
+      "week": 23,
+      "lock_time_utc": "2026-09-13T17:00:00Z"
+    },
+    {
+      "slate_id": "fd_classic_wk1_afternoon_13Sep2026",
+      "site": "fd",
+      "format": "classic",
+      "season": 2025,
+      "week": 23,
+      "lock_time_utc": "2026-09-13T20:35:00Z"
+    },
+    {
+      "slate_id": "fd_showdown_09Sep2026_ne_sea",
+      "site": "fd",
+      "format": "showdown",
+      "season": 2025,
+      "week": 23,
+      "lock_time_utc": "2026-09-10T00:20:00Z"
+    },
   ]
 }
