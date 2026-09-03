@@ -61,7 +61,7 @@ Showdown (DK "Captain Mode") and Single Game (FD) slates follow the exact same S
 - **UI adapts automatically:** once a Showdown pool is loaded, the Build panel hides Stack Mode, Min Projection, Min Total Ownership, FLEX Eligible Positions, and Game Exposure Caps (none of these apply to a 2-team, no-stacking-yet Showdown pool) and shows a **Min Team Players** control instead — a floor (not a cap) on how many players must come from one team, useful for forcing a lopsided build. The Player Pool list also gets a **K** tab (kickers only show up on Showdown slates) and shows `(CPT)`/`(MVP)` badges next to a player's name, since each player appears twice in the pool — once at Captain price/points, once at FLEX price/points.
 - **Bulk-upload export shape is different:** the Stage 5 download produces `CPT,FLEX,FLEX,FLEX,FLEX,FLEX` (DK) or `MVP,FLEX,FLEX,FLEX,FLEX` (FD) columns instead of classic's `QB,RB,RB,WR,WR,WR,TE,FLEX,DST`. Paste into the Showdown/Captain Mode (or FD Single Game) entries file, not the Classic one.
 - **Validation status:** DK Showdown's column shapes (CPT/FLEX salary and role linking) were measured against a real DK Captain Mode export, and a real preseason ARI/CAR Showdown slate has now been run fully end to end, including a correct DST opponent/implied_total/over_under fix (Session 13.5b). FD Showdown's 1.5x MVP salary mechanic was confirmed against a live FD roster builder, but a full FD Showdown slate hasn't been run end to end through this pipeline yet — same "DK first, FD second" caution as classic slates.
-- **`current_slate.json` tracks one slate per site.** If you want a classic slate AND a Showdown slate both refreshing automatically at the same time for the same site (e.g. a Sunday main slate plus a Sunday/Monday-night Showdown), Stage 3's automation can only track whichever slate_id is currently set for that site — you'll need to manually re-run `build_projections_statline.py` (with the flags from Step 2i below) for the other one when you want it refreshed, or accept it'll go stale between manual runs.
+- ~~**`current_slate.json` tracks one slate per site.**~~ **RESOLVED (Session 16.x).** `current_slate.json` now holds a list, so a Classic slate and a Showdown slate (or any other combination) can both refresh automatically at the same time for the same site — add a separate entry for each in Step 2g. No manual re-running needed just to keep both current.
 
 ---
 
@@ -206,26 +206,34 @@ If you get an unexpected error, contact Claude.
 
 ---
 
-### Step 2g — Update `data/current_slate.json`
+### Step 2g — Add this slate to `data/current_slate.json`
 
-Open `data/current_slate.json` in any text editor. Update the `dk` (and/or `fd`) block with your week and slate ID — `week` here follows the stats-lookback table above (23 for Week 1/preseason/Madden, the real week number for Week 2+):
+**Updated (Session 16.x rework):** `current_slate.json` used to hold exactly one DK slate and one FD slate at a time — that broke down as soon as you wanted to play more than one slate per site in the same week (main + early-only, or a Showdown alongside a Classic slate). It now holds a `"slates"` list with room for as many active slates as you're actually playing, across both sites, at once.
+
+Open `data/current_slate.json` in any text editor and **add one new entry to the `"slates"` list** — don't replace the whole file, just append:
 
 ```json
 {
-  "_comment": "...",
+  "slate_id": "classic_wk5",
+  "site": "dk",
+  "format": "classic",
   "season": 2025,
-  "dk": {
-    "week": 23,
-    "slate_id": "classic_wk5"
-  },
-  "fd": {
-    "week": 23,
-    "slate_id": "classic_wk5"
-  }
+  "week": 23,
+  "lock_time_utc": "2026-10-12T17:00:00Z"
 }
 ```
 
-Only update the block for the site you ingested. `season` here stays `2025` (the stats-lookback season) even during Week 2+ of a real season — this file feeds automation that hasn't been updated to track a separate real-season value, so leave it as-is unless told otherwise.
+Field by field:
+- **`slate_id`** — the same ID you chose in Step 2c.
+- **`site`** — `"dk"` or `"fd"`.
+- **`format`** — `"classic"` or `"showdown"`, matching Step 2f's ingest.
+- **`season`** — same meaning this field always had here: the stats-lookback season from the table above (`2025` for Week 1/preseason/Madden, the real current season for Week 2+).
+- **`week`** — same meaning as before: `23` for Week 1/preseason/Madden, the real week number for Week 2+.
+- **`lock_time_utc`** — new field. This slate's real lock time, converted to UTC, in the exact format shown (`YYYY-MM-DDTHH:MM:SSZ`). **DK and FD always display lock times in Eastern — you must convert to UTC before entering it here.** Eastern-to-UTC is +4 hours during Daylight Time (roughly March–November, which covers the entire NFL regular season) or +5 hours during Standard Time. Example: a 1:00 PM ET Sunday lock becomes `17:00:00Z` the same calendar day. This field controls only one thing — whether the automated refresh keeps updating this slate or treats it as done. It has no effect on when cron-job.org's near-lock ping fires (that's a separate setting, covered under Finding 2).
+
+**If you're playing multiple slates this week** (e.g. DK Main + DK Early-only + DK Showdown), repeat this step once per slate — add a separate entry for each, all in the same `"slates"` list. There's no limit on how many can be active at once, and each is refreshed independently.
+
+**Cleanup:** once a slate's lock has passed, you can leave its entry in place (the workflow automatically skips anything past `lock_time_utc` plus a 5-minute buffer) or remove it by hand to keep the file tidy. Neither is required.
 
 ---
 
@@ -325,10 +333,16 @@ Once Stage 2 is pushed, this runs unattended until lock:
 | Trigger | Cadence | What it refreshes |
 |---|---|---|
 | Light Vegas refresh | Tue–Fri 1x/day, Sat 2x/day, Sun hourly | Vegas lines only |
-| Full refresh (scheduled) | Every 3 hours, Thu/Sun/Mon | Vegas + injury/active status + full projection rebuild |
-| Full refresh (near-lock) | Every 10 min, final hour before lock | Same as above, fired by Cloudflare Worker |
+| Full refresh (scheduled) | Every 3 hours, Thu/Sun/Mon | Vegas + injury/active status + full projection rebuild, every active slate |
+| Full refresh (near-lock) | Every ~10 min, during each configured near-lock window | Same as above, fired by Cloudflare Worker |
 
-A full refresh rebuilds `output/final_projections_{site}_{slate_id}.csv`. Players ruled OUT are zeroed. Players flagged DOUBTFUL/QUESTIONABLE are marked but not zeroed. Vegas is pulled fresh each time under the slate_id tracked in `data/current_slate.json` — DK's own slate_id is used for both sites' vegas pulls when they share one.
+**Updated (Session 16.x rework):** a full refresh now rebuilds `output/final_projections_{site}_{slate_id}.csv` for **every slate currently listed in `data/current_slate.json`**, not just one per site — if you added three entries in Step 2g, all three get refreshed on the same run. Players ruled OUT are zeroed, per slate. Players flagged DOUBTFUL/QUESTIONABLE are marked but not zeroed.
+
+**Vegas and injury/active status are pulled once per run, not once per slate**, and shared across every active slate that run refreshes — these are properties of the real game, not the slate, so there's no reason to pull them twice for, say, DK Main and DK Early-only covering the same Sunday games. If that shared pull fails for any reason, every slate falls back automatically to whatever Vegas/status data was last pulled successfully, and a warning is logged — a slate never goes fully unrefreshed just because one shared pull had a bad moment.
+
+A slate whose `lock_time_utc` (Step 2g) has already passed is automatically skipped by the refresh loop — no action needed to "turn it off."
+
+Check `logs/automation_run_log.csv` if you want to confirm a specific slate actually got refreshed on a given run — it now has a `slate_id` column so you can see each active slate's own build/apply/pivot outcome per run, not just a single pass/fail for "both sites."
 
 You don't need to do anything during Stage 3 for **building** to benefit — every "Build Lineups" click always reads whatever's freshest on GitHub at that moment, regardless of what's in your browser. What you *see* in the UI's pool table is a different story: it's a frozen snapshot from whenever you last uploaded it (**Choose File** → **Save**, Stage 4), and does not visually update on its own. If you want the displayed numbers themselves to reflect the latest refresh — not just what a build will actually use — re-upload the current `final_projections_{site}_{slate_id}.csv` the same way. **Pivot suggestions (Step 2j) are the one exception to all of this — they display live, automatically, with no re-upload ever needed (Session 15).** The underlying file still only gets *generated* from a lineup batch that has to exist first (Step 2j creates that), but once it does, Stage 3's refreshes keep it current on GitHub and the UI always shows whatever's there.
 
@@ -412,7 +426,7 @@ python scripts/ingest_salaries.py --site dk --raw data/raw_salaries/dk_{slate_id
 ```
 *(Showdown: add `--format showdown` to the command above)*
 
-*(update `data/current_slate.json` with your week/slate_id)*
+*(add an entry for this slate to `data/current_slate.json`'s `"slates"` list -- season/week/slate_id/site/format/lock_time_utc, see Step 2g)*
 ```
 python scripts/projections_baseline.py --site dk --season {season} --week {week}
 ```
@@ -445,9 +459,9 @@ git push
 - **Output filenames use `--slate-id`**, not `--week`: `final_projections_dk_{slate_id}.csv`. Two slates in the same week will not overwrite each other.
 - **DK is live-validated end to end** against a real preseason Showdown slate, a real Madden Sim slate, and a real Week 1 2026 regular-season classic slate (all through Session 13.5b). **FD is built identically but has not been tested against a real FD salary export.**
 - **Showdown: `--format showdown` on `ingest_salaries.py` (Step 2f) is the one flag that fails silently if forgotten** — it ingests as classic instead of erroring. Everything downstream (`build_projections_statline.py`, the UI) auto-detects from there.
-- **Showdown + classic on the same site can't both auto-refresh at once** — `current_slate.json` tracks one slate_id per site, so pointing it at a Showdown slate stops Stage 3 from refreshing whatever classic slate was live for that site.
+- ~~**Showdown + classic on the same site can't both auto-refresh at once.**~~ **RESOLVED (Session 16.x).** `current_slate.json` now tracks a list of slates, not one per site — a Showdown entry and a Classic entry (or main + early-only + afternoon) can all sit in the list and refresh together. See Step 2g above.
 - **DK Showdown's column shapes are measured against a real export and a real ARI/CAR slate; FD Showdown's 1.5x MVP mechanic is confirmed against a live FD roster builder, but neither has been run through a full FD Showdown slate end to end yet.**
-- **The near-lock cadence** (currently templated to Sunday 11am CT) needs updating once the actual regular-season lock time pattern is confirmed.
+- **The near-lock cadence** is configured in cron-job.org, separately from `current_slate.json`. With multiple slates now possible in one week (Thursday, Sunday early/main/afternoon, Sunday night, Monday night), you may need more than one near-lock window configured there — one per distinct lock time you're actually playing that week, not just one flat weekly template. See Finding 2 / Session 16.x's cron-job.org notes for current status.
 - **Participation Floors (Session 15) default ON for classic slates** (`QB:0.6,RB:0.4,TE:0.4`) — a player barely showing up in his team's last 5 games gets excluded from the pool automatically. If a build comes back thinner than expected at QB/RB/TE, this is the first thing to check; lock a known exception back in rather than turning the floor off broadly.
 - **Pivot suggestions need a lineup batch to exist, generated at Step 2j, but the display itself is fully automatic (Session 15).** The UI reads `output/pivot_suggestions_{site}_{slate_id}.csv` live from GitHub every time you load a slate — no upload, no caching. As long as Step 2j has been run once for a slate and pushed, every automated refresh for the rest of the week keeps it current with zero further action.
 - **If any step produces an unexpected error**, paste the full error message into a Claude conversation. The error message is the fastest path to a fix.
