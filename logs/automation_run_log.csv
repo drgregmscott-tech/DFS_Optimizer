@@ -1394,3 +1394,12 @@ timestamp_utc,trigger_type,site,step,status
 2026-09-01T00:21:48.678529+00:00,full_refresh_scheduled,fd,pivot_finder,success
 2026-09-01T19:17:32.772460+00:00,light_vegas_refresh,both,vegas_odds_pull,success
 2026-09-02T19:17:51.705113+00:00,light_vegas_refresh,both,vegas_odds_pull,success
+2026-09-03T02:48:49.438862+00:00,full_refresh_scheduled,both,vegas_odds_pull,success
+2026-09-03T02:48:49.438862+00:00,full_refresh_scheduled,both,team_stats_pull,success
+2026-09-03T02:48:49.438862+00:00,full_refresh_scheduled,both,status_pull,failure
+2026-09-03T02:48:49.438862+00:00,full_refresh_scheduled,dk,build_projections,success
+2026-09-03T02:48:49.438862+00:00,full_refresh_scheduled,fd,build_projections,success
+2026-09-03T02:48:49.438862+00:00,full_refresh_scheduled,dk,status_apply,success
+2026-09-03T02:48:49.438862+00:00,full_refresh_scheduled,fd,status_apply,success
+2026-09-03T02:48:49.438862+00:00,full_refresh_scheduled,dk,pivot_finder,success
+2026-09-03T02:48:49.438862+00:00,full_refresh_scheduled,fd,pivot_finder,success
