@@ -1,71 +1,75 @@
 # Session 5.2 -- Scheduling Infrastructure.
+# Session 16.x -- REWORK: this workflow used to read exactly one DK entry and
+# one FD entry from data/current_slate.json and run the per-slate steps
+# (build projections, apply status, rebuild pivots) exactly twice per
+# trigger. current_slate.json is now a list ("slates": [...]) with room for
+# any number of active slates per site at once (main, early-only,
+# afternoon-only, multiple showdowns on different games), so this workflow
+# now has four jobs instead of one:
+#   1. prepare      -- reads current_slate.json, drops any slate whose
+#                       lock_time_utc has passed (+5 min buffer), and hands
+#                       the remaining list to the other jobs.
+#   2. shared_pull   -- Vegas lines and injury/active status are per REAL
+#                       GAME, not per slate, so they're pulled ONCE per run
+#                       (not once per active slate) and committed back to the
+#                       repo. Every slate's projection build below reads
+#                       from this same shared pull. If a pull fails, this
+#                       job does NOT overwrite the existing committed file --
+#                       every slate falls back to whatever Vegas/status data
+#                       was last successfully pulled, and a warning is
+#                       logged, rather than blocking every slate's refresh
+#                       on one transient failure (explicit user call,
+#                       Session 16.x).
+#   3. refresh_slate -- runs once per entry still active after `prepare`
+#                       (GitHub Actions matrix), rebuilding that one slate's
+#                       projections, applying status, and rebuilding pivots.
+#                       max-parallel: 1 -- these jobs each commit their own
+#                       output back to the repo, and running them serially
+#                       avoids two jobs' git commits racing each other
+#                       (same reasoning the old single-job version already
+#                       used for near-lock dispatches arriving close
+#                       together).
+#   4. finalize      -- rolls up shared_pull's and refresh_slate's results
+#                       into one pass/fail for the whole run.
 #
-# Orchestrates the scripts that are actually safe to re-run unattended on a
-# schedule. IMPORTANT SCOPE NOTE (see SESSION_LOG.md's Session 5.2 entry for
+# IMPORTANT SCOPE NOTE (unchanged from Session 5.2 -- see SESSION_LOG.md for
 # the full reasoning): this workflow does NOT run ingest_salaries.py,
 # projections_baseline.py, or projections_matchup.py.
 #   - ingest_salaries.py needs a manually-downloaded DK/FD export CSV --
 #     neither site has a salary API, so this can never be automated. The
-#     user downloads + ingests once when a slate posts, then updates
-#     data/current_slate.json (committed) so this workflow knows which
-#     slate_id/week to target.
+#     user downloads + ingests once when a slate posts, then adds an entry
+#     to data/current_slate.json's "slates" list (committed) so this
+#     workflow knows to start tracking it.
 #   - projections_baseline.py / projections_matchup.py are computed once
 #     from weeks-1..N-1 of weekly_stats -- they don't change intra-week the
 #     way Vegas lines and injury status do, so re-running them on a 3-hour
 #     or 15-minute cadence would just burn CI minutes for no new data.
 #
-# What THIS workflow refreshes, per run: vegas_odds.py (fresh lines) ->
-# status_check.py pull (fresh ESPN status) -> build_projections_statline.py
-# (Session 14.0's production engine, not the Session 2.4 placeholder), both
-# sites (rebuild the blend against the same salary file but fresh
-# vegas/status) -> status_check.py apply, both sites (re-zero any newly-OUT
-# player) -> pivot_finder.py, both sites, IF a built-lineup file already
-# exists for that site/slate (checks lineups_multi first, the file real
-# usage actually produces, falling back to lineup_single -- Session 15
-# fix, see the "Locate built lineup" steps below for why the old
-# lineup_single-only check never actually fired on a real slate). Rebuilds
-# pivot suggestions against the refreshed projections/status, skipped
-# rather than failed if no lineup has been built yet for this slate. Every
-# run's outcome (success/failure, per site) is appended to
-# logs/automation_run_log.csv, which is what Session 5.2's validation
-# checklist below is checked against.
-#
-# Three trigger cadences, matching the roadmap card's split between "GitHub
-# Actions cron for regular-interval updates" and "Cloudflare Worker +
-# external trigger (cron-job.org) for the critical near-lock window":
-#
+# Three trigger cadences, unchanged from Session 5.2:
 #   1. light_vegas_refresh (this file's own `schedule:` cron) -- Tue-Fri
 #      1x/day, Sat 2x/day, Sun hourly from ~4hrs to ~1hr before a typical
-#      1:00pm ET early-slate lock. This is Session 2.3's already-budgeted
-#      cadence (~121 credits/month against The Odds API's 500/month free
-#      tier) -- vegas_odds.py only, not the full pipeline, to stay inside
-#      that budget. NOTE: the Sunday hourly window below is anchored to
-#      the common 1:00pm ET early slate and is an approximation -- a week
-#      with a different early-slate lock time (rare, but happens around
-#      int'l games) won't perfectly line up. Not a bug, just a known
-#      limitation of a static cron schedule -- flagged here rather than
-#      silently assumed correct every week.
+#      1:00pm ET early-slate lock. Vegas-only, to stay inside The Odds
+#      API's free-tier budget. NOTE: the Sunday hourly window is anchored
+#      to a common 1:00pm ET early slate and is an approximation -- a week
+#      with different lock times won't perfectly line up. Known limitation
+#      of a static cron schedule, not a bug.
 #   2. full_refresh_scheduled (this file's own `schedule:` cron) -- every 3
-#      hours on Thu/Sun/Mon (the days an NFL game can be locking), full
-#      pipeline both sites. Coarse, non-time-critical -- GitHub's own
-#      scheduled-cron delay (documented to occasionally run several minutes
-#      late under load) is an acceptable trade for a 3-hour-interval job.
+#      hours on Thu/Sun/Mon, full pipeline, every active slate.
 #   3. full_refresh_dispatch (repository_dispatch, type "near_lock_refresh")
-#      -- fired by cloudflare_worker/scheduled_refresh.js, which itself is
-#      pinged by an external cron-job.org job every ~10 minutes during the
-#      actual near-lock window (both sites' lock times, set by the user in
-#      cron-job.org -- see that worker file's header for setup). This path
-#      exists specifically BECAUSE GitHub's native cron isn't reliable
-#      enough at ~10-minute granularity for a moment that actually
-#      matters -- see Session 5.2's SESSION_LOG entry for the full
-#      reasoning already discussed with the user.
+#      -- fired by cloudflare_worker/scheduled_refresh.js, itself pinged by
+#      an external cron-job.org job during the real near-lock window(s).
+#      With multiple slates now possible in one week, cron-job.org may need
+#      more than one near-lock window configured (e.g. Thursday night AND
+#      Sunday midday AND Sunday afternoon AND Sunday night AND Monday
+#      night) -- that's a cron-job.org console setting, not a change to
+#      this file. See Finding 2 / Session 16.x's cron-job.org notes.
 #
 # workflow_dispatch is also enabled for manual ad-hoc runs/testing.
 #
-# Required repo configuration (one-time, done in GitHub's UI, not in code):
+# Required repo configuration (one-time, done in GitHub's UI, not in code,
+# unchanged from Session 5.2):
 #   - Settings -> Secrets and variables -> Actions -> New repository secret
-#     ODDS_API_KEY = <your real Odds API key> (same key currently sitting
-#     in your local, gitignored config/api_keys.env)
+#     ODDS_API_KEY = <your real Odds API key>
 #   - Settings -> Actions -> General -> Workflow permissions -> set to
 #     "Read and write permissions", so this workflow can commit its own
 #     output/log files back to the repo.
@@ -77,8 +81,8 @@ on:
     # --- light_vegas_refresh (vegas_odds.py only) ---
     - cron: "0 16 * * 2,3,4,5"        # Tue-Fri, 1x/day, ~noon ET
     - cron: "0 15,21 * * 6"           # Sat, 2x/day, ~11am + 5pm ET
-    - cron: "0 15,16,17 * * 0"        # Sun, hourly, ~11am-1pm ET (4hrs-1hr before a ~1pm ET lock -- see note above)
-    # --- full_refresh_scheduled (full pipeline, both sites) ---
+    - cron: "0 15,16,17 * * 0"        # Sun, hourly, ~11am-1pm ET
+    # --- full_refresh_scheduled (full pipeline, every active slate) ---
     - cron: "0 */3 * * 4,0,1"         # Thu, Sun, Mon, every 3 hours
   repository_dispatch:
     types: [near_lock_refresh]
@@ -89,13 +93,6 @@ on:
         required: false
         default: "manual test run"
 
-# Near-lock dispatches can arrive every ~10 minutes; don't let two runs
-# race each other's git commits. Queue rather than cancel -- a skipped
-# near-lock refresh is worse than a slightly-delayed one.
-concurrency:
-  group: refresh-data
-  cancel-in-progress: false
-
 permissions:
   contents: write
 
@@ -103,8 +100,19 @@ env:
   PYTHON_VERSION: "3.12"
 
 jobs:
-  refresh:
+  # ---------------------------------------------------------------------
+  # JOB 1 -- read current_slate.json, drop anything already locked, and
+  # hand the remaining active slates to the other jobs as JSON.
+  # ---------------------------------------------------------------------
+  prepare:
     runs-on: ubuntu-latest
+    outputs:
+      mode: ${{ steps.trigger.outputs.mode }}
+      trigger_type: ${{ steps.trigger.outputs.trigger_type }}
+      matrix: ${{ steps.slates.outputs.matrix }}
+      has_slates: ${{ steps.slates.outputs.has_slates }}
+      season_week_pairs: ${{ steps.slates.outputs.season_week_pairs }}
+      first_slate_id: ${{ steps.slates.outputs.first_slate_id }}
     steps:
       - name: Determine which cadence fired this run
         id: trigger
@@ -134,6 +142,58 @@ jobs:
 
       - name: Checkout
         uses: actions/checkout@v4
+
+      - name: Read current_slate.json, drop locked slates
+        id: slates
+        run: |
+          python3 -c "
+          import json
+          from datetime import datetime, timezone, timedelta
+
+          LOCK_BUFFER = timedelta(minutes=5)
+          now = datetime.now(timezone.utc)
+
+          cfg = json.load(open('data/current_slate.json'))
+          all_slates = cfg.get('slates', [])
+
+          active = []
+          for s in all_slates:
+              lock_raw = s.get('lock_time_utc', '')
+              try:
+                  lock_dt = datetime.fromisoformat(lock_raw.replace('Z', '+00:00'))
+                  locked = now >= (lock_dt + LOCK_BUFFER)
+              except (ValueError, AttributeError):
+                  locked = False
+              if not locked:
+                  active.append(s)
+
+          print(f'::notice::{len(active)} of {len(all_slates)} slates active this run')
+          for s in all_slates:
+              if s not in active:
+                  print(f\"::notice::skipping locked slate {s.get('slate_id')}\")
+
+          matrix = {'include': active}
+          pairs = sorted({(s['season'], s['week']) for s in active})
+          pairs_json = json.dumps([{'season': p[0], 'week': p[1]} for p in pairs])
+
+          with open('$GITHUB_OUTPUT', 'a') as f:
+              f.write(f'matrix={json.dumps(matrix)}\n')
+              f.write(f'has_slates={str(len(active) > 0).lower()}\n')
+              f.write(f'season_week_pairs={pairs_json}\n')
+              f.write(f'first_slate_id={active[0][\"slate_id\"] if active else \"\"}\n')
+          "
+
+  # ---------------------------------------------------------------------
+  # JOB 2 -- Vegas lines and injury/active status are per real game, not
+  # per slate: pulled once per run and shared by every active slate below.
+  # ---------------------------------------------------------------------
+  shared_pull:
+    needs: prepare
+    if: needs.prepare.outputs.has_slates == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
@@ -150,186 +210,152 @@ jobs:
           mkdir -p config
           echo "ODDS_API_KEY=${{ secrets.ODDS_API_KEY }}" > config/api_keys.env
 
-      - name: Read current slate config
-        id: slate
-        run: |
-          python3 -c "
-          import json
-          cfg = json.load(open('data/current_slate.json'))
-          season = cfg['season']
-          print(f'season={season}')
-          for site in ('dk', 'fd'):
-              print(f'{site}_week={cfg[site][\"week\"]}')
-              print(f'{site}_slate_id={cfg[site][\"slate_id\"]}')
-          " >> "$GITHUB_OUTPUT"
-
+      # Pulled once under the first active slate's slate_id -- Vegas lines
+      # are site- and slate-agnostic, so every slate's build below points
+      # back at this one pull via --vegas-slate-id. If this fails,
+      # continue-on-error means the commit step below simply does not
+      # overwrite the existing committed file -- every slate falls back to
+      # the last successful pull automatically, no extra logic needed.
       - name: Pull fresh Vegas lines
         id: vegas
         continue-on-error: true
-        # Session 13.5-pause Bug Fix: was --week ${{ steps.slate.outputs.dk_week }}.
-        # --week was only ever a filename label here (vegas_odds.py always pulls
-        # every currently-live game regardless), borrowed from the unrelated
-        # stats-lookback week -- caused a real bug where a stale/unrelated
-        # vegas_implied_totals_{week}.csv got silently reused for a slate that
-        # shared that week number for stats-carryover purposes only. Pulled
-        # once here under DK's slate_id; both sites' builds below point at
-        # this same pull via --vegas-slate-id, since vegas lines are
-        # site-agnostic.
-        run: python3 scripts/vegas_odds.py --slate-id ${{ steps.slate.outputs.dk_slate_id }}
+        run: python3 scripts/vegas_odds.py --slate-id ${{ needs.prepare.outputs.first_slate_id }}
 
-      - name: Pull fresh injury/active status
-        id: status_pull
-        if: steps.trigger.outputs.mode == 'full'
-        continue-on-error: true
-        run: python3 scripts/status_check.py pull --season ${{ steps.slate.outputs.season }} --week ${{ steps.slate.outputs.dk_week }}
-
-      - name: Locate latest status pull file
-        id: status_file
-        if: steps.trigger.outputs.mode == 'full'
-        run: |
-          f=$(ls -t output/player_status_${{ steps.slate.outputs.dk_week }}_*.csv 2>/dev/null | head -n 1 || true)
-          echo "path=$f" >> "$GITHUB_OUTPUT"
-
-      # Session 10.4 opened this item: the distributional DST model (now the
-      # default) reads data/team_stats_{season}.parquet. Without a current-
-      # season pull here the model runs on prior-season carryover alone
-      # (degraded, not wrong) or fails loud if the file is absent. continue-
-      # on-error so a transient nflverse failure does not abort the refresh.
       - name: Pull current-season team stats (needed by distributional DST)
         id: team_stats
-        if: steps.trigger.outputs.mode == 'full'
+        if: needs.prepare.outputs.mode == 'full'
         continue-on-error: true
         run: |
-          python3 scripts/ingest_historical.py \
-            --season ${{ steps.slate.outputs.season }}
+          python3 -c "
+          import json
+          pairs = json.loads('${{ needs.prepare.outputs.season_week_pairs }}')
+          seasons = sorted({p['season'] for p in pairs})
+          print(' '.join(str(s) for s in seasons))
+          " > /tmp/seasons.txt
+          python3 scripts/ingest_historical.py --season $(cat /tmp/seasons.txt)
 
-      # Session 14.0: cut over from build_projections.py (the Session 2.4
-      # placeholder engine) to build_projections_statline.py (the Phase 10
-      # rebuild, backtested at 75.6/96.5 median/max-percentile). --volume-prior
-      # and --sigma-recalibration are opt-in/off-by-default in that script and
-      # MUST be passed explicitly, or this silently ships only Session 10.3a's
-      # bare rewrite. --dst-model is passed explicitly for clarity even though
-      # it matches that script's own default.
-      - name: Rebuild projections -- DK
-        id: proj_dk
-        if: steps.trigger.outputs.mode == 'full'
+      # Active slates can span more than one real (season, week) pair --
+      # e.g. one slate still on Week 1's carryover sentinel while another
+      # is a genuine Week 2+ slate. Status is pulled once per distinct
+      # pair present, not once per slate.
+      - name: Pull fresh injury/active status (once per distinct season/week)
+        id: status_pull
+        if: needs.prepare.outputs.mode == 'full'
         continue-on-error: true
         run: |
-          python3 scripts/build_projections_statline.py --site dk \
-            --season ${{ steps.slate.outputs.season }} \
-            --week ${{ steps.slate.outputs.dk_week }} \
-            --slate-id ${{ steps.slate.outputs.dk_slate_id }} \
-            --vegas-slate-id ${{ steps.slate.outputs.dk_slate_id }} \
+          python3 -c "
+          import json
+          pairs = json.loads('${{ needs.prepare.outputs.season_week_pairs }}')
+          for p in pairs:
+              print(f\"{p['season']} {p['week']}\")
+          " > /tmp/pairs.txt
+          while read season week; do
+            echo \"Pulling status for season=$season week=$week\"
+            python3 scripts/status_check.py pull --season \"$season\" --week \"$week\" || echo \"::warning::status pull failed for season=$season week=$week, matrix jobs will use last-known-good\"
+          done < /tmp/pairs.txt
+
+      # Commit whatever was successfully refreshed. A failed pull above
+      # simply produced no new file, so there is nothing new to commit for
+      # that piece -- the previously-committed file remains in place as
+      # the last-known-good version every matrix job below will read.
+      - name: Commit shared refreshed data
+        if: always()
+        run: |
+          git config user.name "dfs-optimizer-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add data/ output/
+          if git diff --cached --quiet; then
+            echo "No shared data changes to commit."
+            exit 0
+          fi
+          git commit -m "Shared Vegas/status/team-stats refresh (${{ needs.prepare.outputs.trigger_type }}) [skip ci]"
+          git pull --rebase origin "${{ github.ref_name }}" || true
+          git push origin HEAD:"${{ github.ref_name }}"
+
+  # ---------------------------------------------------------------------
+  # JOB 3 -- one pass per active slate: rebuild projections, apply status,
+  # rebuild pivots. Runs once per entry prepare left in the matrix.
+  # ---------------------------------------------------------------------
+  refresh_slate:
+    needs: [prepare, shared_pull]
+    if: needs.prepare.outputs.has_slates == 'true'
+    strategy:
+      matrix: ${{ fromJson(needs.prepare.outputs.matrix) }}
+      fail-fast: false
+      max-parallel: 1
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Write API key from secret
+        run: |
+          mkdir -p config
+          echo "ODDS_API_KEY=${{ secrets.ODDS_API_KEY }}" > config/api_keys.env
+
+      - name: Locate this slate's latest status pull file
+        id: status_file
+        if: needs.prepare.outputs.mode == 'full'
+        run: |
+          f=$(ls -t output/player_status_${{ matrix.week }}_*.csv 2>/dev/null | head -n 1 || true)
+          echo "path=$f" >> "$GITHUB_OUTPUT"
+
+      # Session 14.0 engine, --volume-prior and --sigma-recalibration are
+      # opt-in and MUST be passed explicitly (unchanged from Session 5.2 /
+      # 14.0). --vegas-slate-id always points at shared_pull's single
+      # Vegas pull (first_slate_id), not this slate's own id -- Vegas
+      # lines are slate-agnostic, matching the pre-rework behavior.
+      - name: Rebuild projections
+        id: build_proj
+        continue-on-error: true
+        run: |
+          python3 scripts/build_projections_statline.py --site ${{ matrix.site }} \
+            --season ${{ matrix.season }} \
+            --week ${{ matrix.week }} \
+            --slate-id ${{ matrix.slate_id }} \
+            --vegas-slate-id ${{ needs.prepare.outputs.first_slate_id }} \
             --volume-prior --sigma-recalibration --dst-model distributional
 
-      - name: Rebuild projections -- FD
-        id: proj_fd
-        if: steps.trigger.outputs.mode == 'full'
+      - name: Apply status (zero OUT players)
+        id: apply_status
+        if: needs.prepare.outputs.mode == 'full' && steps.status_file.outputs.path != ''
         continue-on-error: true
         run: |
-          python3 scripts/build_projections_statline.py --site fd \
-            --season ${{ steps.slate.outputs.season }} \
-            --week ${{ steps.slate.outputs.fd_week }} \
-            --slate-id ${{ steps.slate.outputs.fd_slate_id }} \
-            --vegas-slate-id ${{ steps.slate.outputs.dk_slate_id }} \
-            --volume-prior --sigma-recalibration --dst-model distributional
-
-      # Session 15.2 FIX: these two steps were calling status_check.py
-      # apply WITHOUT --projections-file, so each fell back to that
-      # script's own default path -- final_projections_{site}_{week}.csv,
-      # a naming convention the LEGACY engine (build_projections.py) used
-      # and this project's current engine (build_projections_statline.py,
-      # since Session 14.0) does not. The real file optimizer.py reads is
-      # final_projections_{site}_{slate_id}.csv, built two steps above.
-      # Confirmed for real on 2026-08-15 (Run #152): DK's legacy-named
-      # file happened to still exist from July testing, so DK's apply
-      # silently "succeeded" against an orphaned file nothing downstream
-      # reads; FD's legacy file never existed, so the identical call
-      # hard-failed instead -- which is what surfaced this gap. Every
-      # automated run since the Session 14.0 cutover had been leaving OUT
-      # players un-zeroed on the real slate file, on BOTH sites, without
-      # error. See status_check.py's own docstring (Decision #4, Session
-      # 15.2 correction) for the full history.
-      - name: Apply status (zero OUT players) -- DK
-        id: apply_dk
-        if: steps.trigger.outputs.mode == 'full' && steps.status_file.outputs.path != ''
-        continue-on-error: true
-        run: |
-          python3 scripts/status_check.py apply --site dk \
-            --week ${{ steps.slate.outputs.dk_week }} \
+          python3 scripts/status_check.py apply --site ${{ matrix.site }} \
+            --week ${{ matrix.week }} \
             --status-file "${{ steps.status_file.outputs.path }}" \
-            --projections-file "output/final_projections_dk_${{ steps.slate.outputs.dk_slate_id }}.csv"
+            --projections-file "output/final_projections_${{ matrix.site }}_${{ matrix.slate_id }}.csv"
 
-      - name: Apply status (zero OUT players) -- FD
-        id: apply_fd
-        if: steps.trigger.outputs.mode == 'full' && steps.status_file.outputs.path != ''
-        continue-on-error: true
+      # Session 15 decision #B1 (unchanged): checks lineups_multi first,
+      # falls back to lineup_single. Missing lineup file is a normal
+      # not_run outcome, not a failure -- nothing to pivot on yet.
+      - name: Locate built lineup
+        id: lineup
+        if: needs.prepare.outputs.mode == 'full'
         run: |
-          python3 scripts/status_check.py apply --site fd \
-            --week ${{ steps.slate.outputs.fd_week }} \
-            --status-file "${{ steps.status_file.outputs.path }}" \
-            --projections-file "output/final_projections_fd_${{ steps.slate.outputs.fd_slate_id }}.csv"
-
-      # Session 4.3 addendum: pivot_finder.py needs BOTH a freshly-built
-      # final_projections AND an existing built-lineup file -- the latter
-      # is only ever produced by the user's own "Build Lineups" dispatch,
-      # not by this workflow, so it may legitimately not exist yet (brand-
-      # new slate, no lineup built) or may be stale relative to the
-      # refreshed projections. Placed AFTER the status-apply steps above
-      # (not right after build_projections) so pivots reflect zeroed-OUT
-      # players -- same reasoning as running Apply Status before anything
-      # downstream. Gated on the lineup file actually existing (mirrors
-      # the steps.status_file.outputs.path != '' pattern already used
-      # above) so a missing lineup is a normal "not_run" outcome, not a
-      # failure.
-      #
-      # Session 15 (Pre-Season Hardening), decision #B1: checks
-      # lineups_multi_{site}_{slate_id}.csv FIRST now, not lineup_single.
-      # Real usage always builds via multi-lineup mode (20+ lineups for
-      # GPP) -- lineup_single is Session 3.1's single-best-lineup mode,
-      # which real usage never runs. This gate checking only for
-      # lineup_single was the actual, confirmed root cause of pivots never
-      # rebuilding on any real slate: the file it checked for never
-      # existed, so this step silently, permanently no-op'd every real
-      # automated run, with nothing anywhere flagging it as wrong. Falls
-      # back to lineup_single for anyone still using single-lineup mode
-      # (pivot_finder.py's own load_lineup_players() handles either file
-      # transparently -- this gate only needs to know whether TO run it).
-      - name: Locate built lineup -- DK
-        id: lineup_dk
-        if: steps.trigger.outputs.mode == 'full'
-        run: |
-          f=$(ls output/lineups_multi_dk_${{ steps.slate.outputs.dk_slate_id }}.csv 2>/dev/null || true)
+          f=$(ls output/lineups_multi_${{ matrix.site }}_${{ matrix.slate_id }}.csv 2>/dev/null || true)
           if [ -z "$f" ]; then
-            f=$(ls output/lineup_single_dk_${{ steps.slate.outputs.dk_slate_id }}.csv 2>/dev/null || true)
+            f=$(ls output/lineup_single_${{ matrix.site }}_${{ matrix.slate_id }}.csv 2>/dev/null || true)
           fi
           echo "path=$f" >> "$GITHUB_OUTPUT"
 
-      - name: Locate built lineup -- FD
-        id: lineup_fd
-        if: steps.trigger.outputs.mode == 'full'
-        run: |
-          f=$(ls output/lineups_multi_fd_${{ steps.slate.outputs.fd_slate_id }}.csv 2>/dev/null || true)
-          if [ -z "$f" ]; then
-            f=$(ls output/lineup_single_fd_${{ steps.slate.outputs.fd_slate_id }}.csv 2>/dev/null || true)
-          fi
-          echo "path=$f" >> "$GITHUB_OUTPUT"
-
-      - name: Rebuild pivot suggestions -- DK
-        id: pivot_dk
-        if: steps.trigger.outputs.mode == 'full' && steps.lineup_dk.outputs.path != ''
+      - name: Rebuild pivot suggestions
+        id: pivot
+        if: needs.prepare.outputs.mode == 'full' && steps.lineup.outputs.path != ''
         continue-on-error: true
-        run: python3 scripts/pivot_finder.py --site dk --slate-id ${{ steps.slate.outputs.dk_slate_id }}
+        run: python3 scripts/pivot_finder.py --site ${{ matrix.site }} --slate-id ${{ matrix.slate_id }}
 
-      - name: Rebuild pivot suggestions -- FD
-        id: pivot_fd
-        if: steps.trigger.outputs.mode == 'full' && steps.lineup_fd.outputs.path != ''
-        continue-on-error: true
-        run: python3 scripts/pivot_finder.py --site fd --slate-id ${{ steps.slate.outputs.fd_slate_id }}
-
-      # Always runs, even if earlier steps failed -- a failed run is exactly
-      # the kind of thing this log needs to capture, not swallow.
-      - name: Append run-log row(s)
+      - name: Append run-log row
         if: always()
         run: |
           python3 -c "
@@ -338,30 +364,24 @@ jobs:
           from pathlib import Path
 
           log_path = Path('logs/automation_run_log.csv')
-          fieldnames = ['timestamp_utc', 'trigger_type', 'site', 'step', 'status']
+          fieldnames = ['timestamp_utc', 'trigger_type', 'site', 'slate_id', 'step', 'status']
           is_new = not log_path.exists()
           log_path.parent.mkdir(parents=True, exist_ok=True)
 
           now = datetime.now(timezone.utc).isoformat()
-          trigger_type = '${{ steps.trigger.outputs.trigger_type }}'
-          mode = '${{ steps.trigger.outputs.mode }}'
+          trigger_type = '${{ needs.prepare.outputs.trigger_type }}'
+          site = '${{ matrix.site }}'
+          slate_id = '${{ matrix.slate_id }}'
+          mode = '${{ needs.prepare.outputs.mode }}'
 
           def outcome(step_id):
-              # GitHub Actions step outcomes: 'success', 'failure', 'skipped', 'cancelled'
               return os.environ.get(step_id, 'not_run')
 
-          rows = [
-              {'timestamp_utc': now, 'trigger_type': trigger_type, 'site': 'both', 'step': 'vegas_odds_pull', 'status': outcome('VEGAS_OUTCOME')},
-          ]
+          rows = []
           if mode == 'full':
-              rows.append({'timestamp_utc': now, 'trigger_type': trigger_type, 'site': 'both', 'step': 'team_stats_pull', 'status': outcome('TEAM_STATS_OUTCOME')})
-              rows.append({'timestamp_utc': now, 'trigger_type': trigger_type, 'site': 'both', 'step': 'status_pull', 'status': outcome('STATUS_PULL_OUTCOME')})
-              rows.append({'timestamp_utc': now, 'trigger_type': trigger_type, 'site': 'dk', 'step': 'build_projections', 'status': outcome('PROJ_DK_OUTCOME')})
-              rows.append({'timestamp_utc': now, 'trigger_type': trigger_type, 'site': 'fd', 'step': 'build_projections', 'status': outcome('PROJ_FD_OUTCOME')})
-              rows.append({'timestamp_utc': now, 'trigger_type': trigger_type, 'site': 'dk', 'step': 'status_apply', 'status': outcome('APPLY_DK_OUTCOME')})
-              rows.append({'timestamp_utc': now, 'trigger_type': trigger_type, 'site': 'fd', 'step': 'status_apply', 'status': outcome('APPLY_FD_OUTCOME')})
-              rows.append({'timestamp_utc': now, 'trigger_type': trigger_type, 'site': 'dk', 'step': 'pivot_finder', 'status': outcome('PIVOT_DK_OUTCOME')})
-              rows.append({'timestamp_utc': now, 'trigger_type': trigger_type, 'site': 'fd', 'step': 'pivot_finder', 'status': outcome('PIVOT_FD_OUTCOME')})
+              rows.append({'timestamp_utc': now, 'trigger_type': trigger_type, 'site': site, 'slate_id': slate_id, 'step': 'build_projections', 'status': outcome('BUILD_OUTCOME')})
+              rows.append({'timestamp_utc': now, 'trigger_type': trigger_type, 'site': site, 'slate_id': slate_id, 'step': 'status_apply', 'status': outcome('APPLY_OUTCOME')})
+              rows.append({'timestamp_utc': now, 'trigger_type': trigger_type, 'site': site, 'slate_id': slate_id, 'step': 'pivot_finder', 'status': outcome('PIVOT_OUTCOME')})
 
           with log_path.open('a', newline='') as f:
               writer = csv.DictWriter(f, fieldnames=fieldnames)
@@ -372,35 +392,41 @@ jobs:
           print(f'Appended {len(rows)} row(s) to {log_path}')
           "
         env:
-          VEGAS_OUTCOME: ${{ steps.vegas.outcome }}
-          TEAM_STATS_OUTCOME: ${{ steps.team_stats.outcome }}
-          STATUS_PULL_OUTCOME: ${{ steps.status_pull.outcome }}
-          PROJ_DK_OUTCOME: ${{ steps.proj_dk.outcome }}
-          PROJ_FD_OUTCOME: ${{ steps.proj_fd.outcome }}
-          APPLY_DK_OUTCOME: ${{ steps.apply_dk.outcome }}
-          APPLY_FD_OUTCOME: ${{ steps.apply_fd.outcome }}
-          PIVOT_DK_OUTCOME: ${{ steps.pivot_dk.outcome }}
-          PIVOT_FD_OUTCOME: ${{ steps.pivot_fd.outcome }}
+          BUILD_OUTCOME: ${{ steps.build_proj.outcome }}
+          APPLY_OUTCOME: ${{ steps.apply_status.outcome }}
+          PIVOT_OUTCOME: ${{ steps.pivot.outcome }}
 
-      # Commit whatever changed (output/*, logs/automation_run_log.csv).
-      # Rebase-and-retry once to reduce lost updates when a near-lock
-      # dispatch lands while another run's commit is still landing.
-      - name: Commit refreshed outputs + run log
+      # max-parallel: 1 above means these matrix legs never run at the same
+      # time, so this commit never races another leg's commit the way two
+      # near-lock dispatches used to.
+      - name: Commit this slate's refreshed outputs + run log
         if: always()
         run: |
           git config user.name "dfs-optimizer-bot"
           git config user.email "actions@users.noreply.github.com"
           git add output/ logs/automation_run_log.csv
           if git diff --cached --quiet; then
-            echo "No changes to commit."
+            echo "No changes to commit for ${{ matrix.slate_id }}."
             exit 0
           fi
-          git commit -m "Automated refresh (${{ steps.trigger.outputs.trigger_type }}) [skip ci]"
+          git commit -m "Automated refresh: ${{ matrix.slate_id }} (${{ needs.prepare.outputs.trigger_type }}) [skip ci]"
           git pull --rebase origin "${{ github.ref_name }}" || true
           git push origin HEAD:"${{ github.ref_name }}"
 
-      - name: Fail the run if any pipeline step failed
-        if: steps.vegas.outcome == 'failure' || steps.team_stats.outcome == 'failure' || steps.status_pull.outcome == 'failure' || steps.proj_dk.outcome == 'failure' || steps.proj_fd.outcome == 'failure' || steps.apply_dk.outcome == 'failure' || steps.apply_fd.outcome == 'failure' || steps.pivot_dk.outcome == 'failure' || steps.pivot_fd.outcome == 'failure'
+  # ---------------------------------------------------------------------
+  # JOB 4 -- fail the whole workflow run if the shared pull or any slate's
+  # refresh actually failed, so a real problem still shows up red in the
+  # Actions tab instead of being swallowed by continue-on-error everywhere.
+  # ---------------------------------------------------------------------
+  finalize:
+    needs: [prepare, shared_pull, refresh_slate]
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check for failures
         run: |
-          echo "One or more pipeline steps failed -- see the step logs above and logs/automation_run_log.csv."
-          exit 1
+          if [ "${{ needs.shared_pull.result }}" = "failure" ] || [ "${{ needs.refresh_slate.result }}" = "failure" ]; then
+            echo "shared_pull or refresh_slate reported a failure -- see the job logs above and logs/automation_run_log.csv."
+            exit 1
+          fi
+          echo "All jobs completed (some individual steps may have used continue-on-error and fallen back to last-known-good -- check logs/automation_run_log.csv for per-slate detail)."

@@ -1,12 +1,29 @@
 {
-  "_comment": "Session 5.2 -- read by refresh_data.yml on every automated run to know which season/week/slate_id to target per site. Update this by hand each week (or via a small manual step) right after you've downloaded that week's DK/FD salary files and run ingest_salaries.py -- the automation does NOT do salary ingestion itself (see ROADMAP.md / SESSION_LOG.md Session 5.2 entry for why: there is no API for DK/FD salary exports, only a manual 'Export to CSV' download on their own sites). If this file's week/slate_id is stale relative to what's actually been ingested, build_projections.py will either 404 on a missing salaries_{site}_{slate_id}.csv or silently rebuild against last week's slate -- check this file first if a run's output looks wrong.",
-  "season": 2026,
-  "dk": {
-    "week": 24,
-    "slate_id": "dk_showdown_NE_SEA_090926"
+  "_comment": "Session 16.x -- REWORK: replaces the old two-slot {dk:{...}, fd:{...}} shape with a single 'slates' list. Reason: a real week can have more than one active slate per site at once (main, early-only, afternoon-only, multiple showdowns), and the old shape only had room for one per site -- see ROADMAP.md / SESSION_LOG.md Session 16.x entry for the full reasoning. refresh_data.yml now loops over every entry in this list on each run, instead of reading one fixed 'dk' entry and one fixed 'fd' entry. Add an entry here right after you've downloaded that slate's DK/FD salary file and run ingest_salaries.py against it. Remove an entry once you're done playing that slate for the week (or leave it -- the workflow auto-skips any slate whose lock_time_utc has passed, plus a 5-minute buffer, so a stale leftover entry is harmless, just wasted refresh time until you clean it up).",
+  "_field_notes": {
+    "slate_id": "Your own naming convention, must be unique across the whole list -- e.g. dk_classic_wk1_main_09092026, dk_classic_wk1_early_09092026, dk_classic_wk1_afternoon_09092026, dk_showdown_09092026_NE_SEA. Also doubles as the key the pipeline scripts already use via --slate-id.",
+    "site": "'dk' or 'fd'.",
+    "format": "'classic' or 'showdown'. The ingestion/projection scripts already auto-detect this from the salary file itself -- this field just lets the refresh workflow route each entry to the right build flags without re-deriving it every run.",
+    "season": "Same meaning this field has always had in this file -- the real schedule year used for opponent/matchup resolution (NOT the --season sentinel value passed to build_projections_statline.py for stats lookback -- see DFS_Weekly_Process.md's season/week table for that separate rule, unchanged by this rework).",
+    "week": "Same meaning this field has always had -- passed through to status_check.py and build_projections_statline.py as-is.",
+    "lock_time_utc": "ISO 8601, UTC, explicit -- e.g. 2026-09-10T00:20:00Z. DK/FD always display lock times in Eastern; convert to UTC before entering here (script support for this conversion is a follow-up item, see handoff notes). Used ONLY to decide whether the refresh workflow should still process this slate -- has no effect on when cron-job.org fires the near-lock dispatch, which is a separate schedule set in that console."
   },
-  "fd": {
-    "week": 23,
-    "slate_id": "fd_classic_wk1_091326"
-  }
+  "slates": [
+    {
+      "slate_id": "dk_showdown_NE_SEA_090926",
+      "site": "dk",
+      "format": "showdown",
+      "season": 2026,
+      "week": 24,
+      "lock_time_utc": "REPLACE_ME"
+    },
+    {
+      "slate_id": "fd_classic_wk1_091326",
+      "site": "fd",
+      "format": "classic",
+      "season": 2026,
+      "week": 23,
+      "lock_time_utc": "REPLACE_ME"
+    }
+  ]
 }
