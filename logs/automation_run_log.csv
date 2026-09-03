@@ -1421,3 +1421,9 @@ timestamp_utc,trigger_type,site,step,status
 2026-09-03T13:13:54.845153+00:00,full_refresh_scheduled,fd,status_apply,success
 2026-09-03T13:13:54.845153+00:00,full_refresh_scheduled,dk,pivot_finder,success
 2026-09-03T13:13:54.845153+00:00,full_refresh_scheduled,fd,pivot_finder,success
+2026-09-03T18:21:20.158618+00:00,full_refresh_dispatch,dk,dk_showdown_NE_SEA_090926,build_projections,failure
+2026-09-03T18:21:20.158618+00:00,full_refresh_dispatch,dk,dk_showdown_NE_SEA_090926,status_apply,success
+2026-09-03T18:21:20.158618+00:00,full_refresh_dispatch,dk,dk_showdown_NE_SEA_090926,pivot_finder,success
+2026-09-03T18:41:18.049627+00:00,full_refresh_dispatch,dk,dk_showdown_NE_SEA_090926,build_projections,failure
+2026-09-03T18:41:18.049627+00:00,full_refresh_dispatch,dk,dk_showdown_NE_SEA_090926,status_apply,success
+2026-09-03T18:41:18.049627+00:00,full_refresh_dispatch,dk,dk_showdown_NE_SEA_090926,pivot_finder,success
