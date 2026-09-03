@@ -263,13 +263,25 @@ jobs:
         run: |
           git config user.name "dfs-optimizer-bot"
           git config user.email "actions@users.noreply.github.com"
+          # Session 16.x fix -- without this, Git's own line-ending
+          # renormalization (CRLF vs LF) can make the working tree look
+          # "dirty" again immediately after a clean commit, which then
+          # makes `git pull --rebase` refuse to proceed with "you have
+          # unstaged changes" even though nothing was actually left
+          # uncommitted on purpose. Turning renormalization off removes
+          # the phantom diff at its source.
+          git config core.autocrlf false
           git add data/ output/
           if git diff --cached --quiet; then
             echo "No shared data changes to commit."
             exit 0
           fi
           git commit -m "Shared Vegas/status/team-stats refresh (${{ needs.prepare.outputs.trigger_type }}) [skip ci]"
-          git pull --rebase origin "${{ github.ref_name }}" || true
+          # --autostash is a second, independent safety net: if anything
+          # else is sitting uncommitted in the working tree for any other
+          # reason, it gets stashed before the rebase and restored after,
+          # instead of blocking the rebase outright.
+          git pull --rebase --autostash origin "${{ github.ref_name }}" || true
           git push origin HEAD:"${{ github.ref_name }}"
 
   # ---------------------------------------------------------------------
@@ -396,21 +408,37 @@ jobs:
           APPLY_OUTCOME: ${{ steps.apply_status.outcome }}
           PIVOT_OUTCOME: ${{ steps.pivot.outcome }}
 
-      # max-parallel: 1 above means these matrix legs never run at the same
-      # time, so this commit never races another leg's commit the way two
-      # near-lock dispatches used to.
+      # max-parallel: 1 above means these matrix legs never run AT THE SAME
+      # TIME, but each one still starts from its own fresh checkout, and a
+      # prior leg's commit (or shared_pull's) may have already landed on
+      # the remote branch by the time this leg is ready to push -- so a
+      # rebase here is still genuinely needed, just never a true
+      # simultaneous race. Session 16.x correction: an earlier version of
+      # this comment claimed no rebase conflict was possible here at all,
+      # which real testing (Session 16.x's six-slate live run) disproved --
+      # every one of six legs needed and got a real rebase against a
+      # commit that had landed since its own checkout.
       - name: Commit this slate's refreshed outputs + run log
         if: always()
         run: |
           git config user.name "dfs-optimizer-bot"
           git config user.email "actions@users.noreply.github.com"
+          # Session 16.x fix -- same root cause and same fix as
+          # shared_pull's commit step above: without this, line-ending
+          # renormalization can make the working tree look dirty again
+          # right after a clean commit, which then makes `git pull
+          # --rebase` refuse to proceed with "you have unstaged changes"
+          # even though nothing was genuinely left uncommitted. Confirmed
+          # live: this exact failure hit all six matrix legs in Session
+          # 16.x's real six-slate test run before this fix was added.
+          git config core.autocrlf false
           git add output/ logs/automation_run_log.csv
           if git diff --cached --quiet; then
             echo "No changes to commit for ${{ matrix.slate_id }}."
             exit 0
           fi
           git commit -m "Automated refresh: ${{ matrix.slate_id }} (${{ needs.prepare.outputs.trigger_type }}) [skip ci]"
-          git pull --rebase origin "${{ github.ref_name }}" || true
+          git pull --rebase --autostash origin "${{ github.ref_name }}" || true
           git push origin HEAD:"${{ github.ref_name }}"
 
   # ---------------------------------------------------------------------
