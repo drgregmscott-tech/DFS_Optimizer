@@ -93,6 +93,20 @@ on:
         required: false
         default: "manual test run"
 
+# Session 16.x correction: this guard existed in the original single-job
+# version of this workflow (Session 5.2) and was accidentally dropped
+# during the multi-slate rework -- confirmed as a real, live gap when a
+# scheduled run (#251) and a near-lock dispatch (#250) queued and began
+# running at the same time during real testing, each one's jobs able to
+# race the other's git commits on top of the CRLF/rebase issue fixed
+# elsewhere in this file. Restored: overlapping runs now queue instead of
+# running concurrently. cancel-in-progress: false, unchanged from the
+# original reasoning -- a delayed refresh is better than a skipped one,
+# especially for a near-lock dispatch.
+concurrency:
+  group: refresh-data
+  cancel-in-progress: false
+
 permissions:
   contents: write
 
