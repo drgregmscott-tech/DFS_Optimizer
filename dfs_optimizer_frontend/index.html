@@ -1777,8 +1777,14 @@ in this browser's localStorage.</p>
     fd: { label: "FanDuel",    cap: 60000, defSlot: "DEF", slotOrder: ["QB","RB1","RB2","WR1","WR2","WR3","TE","FLEX","DEF"],
           fixedCounts: { QB: 1, DEF: 1 }, flexFixed: { RB: 2, WR: 3, TE: 1 }, flexCount: 1, defensePositions: ["D","DEF"],
           // Session 13.5 -- FD's Showdown: 1 MVP slot (1.5x salary/points) +
-          // 4 FLEX slots, same $60,000 cap as classic.
-          showdown: { cap: 60000, captainLabel: "MVP", flexLabel: "FLEX", slotOrder: ["MVP","FLEX1","FLEX2","FLEX3","FLEX4"] } }
+          // 5 FLEX slots, same $60,000 cap as classic.
+          // Bug fix (found live, Sep 2026): this listed only 4 FLEX slots
+          // (5 total). A real FD Single Game contest is 1 MVP + 5 FLEX = 6
+          // total, confirmed against a live FD Showdown contest. Mirrors
+          // the same fix in ingest_salaries.py's SITE_CONFIGS["fd"]
+          // ["showdown"]["roster_slots"] -- this file keeps its own copy
+          // of the shape since JS can't import the Python one directly.
+          showdown: { cap: 60000, captainLabel: "MVP", flexLabel: "FLEX", slotOrder: ["MVP","FLEX1","FLEX2","FLEX3","FLEX4","FLEX5"] } }
   };
 
   // Session 13.5 -- Showdown detection. A LINEUP row set is Showdown iff it
@@ -2774,8 +2780,10 @@ in this browser's localStorage.</p>
 
     // Stripping trailing digits turns RB1/RB2->RB, FLEX1..FLEXN->FLEX, etc.
     // -- for Showdown this already produces exactly DK/FD's own bulk-upload
-    // header shape (CPT,FLEX,FLEX,FLEX,FLEX,FLEX / MVP,FLEX,FLEX,FLEX,FLEX)
-    // with no separate branch needed.
+    // header shape (CPT,FLEX,FLEX,FLEX,FLEX,FLEX / MVP,FLEX,FLEX,FLEX,FLEX,FLEX)
+    // with no separate branch needed. Reads live from cfg.slotOrder, so
+    // the FD 5-vs-6 slot fix above (Sep 2026) already fixes this export
+    // automatically -- nothing else in this function needed to change.
     var header = cfg.slotOrder.map(function (s) { return s.replace(/[0-9]+$/, ""); });
     var lines = [header.map(csvField).join(",")];
     var missingIds = 0;
