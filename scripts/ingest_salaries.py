@@ -325,7 +325,14 @@ SITE_CONFIGS = {
             # corrected here and in ROADMAP.md at session close-out.
             "captain_salary_multiplier": 1.5,   # CONFIRMED against a live FD roster builder, same mechanic as DK's CPT
             "captain_score_multiplier": 1.5,   # confirmed, ROADMAP.md Phase 13 intro + Session 13.1 kicker validation
-            "roster_slots": ["MVP", "FLEX", "FLEX", "FLEX", "FLEX"],
+            # Bug fix (found live, Sep 2026): this read ["MVP","FLEX","FLEX",
+            # "FLEX","FLEX"] -- 5 total roster spots. A real FD Single Game
+            # contest has 1 MVP + 5 FLEX = 6 total (confirmed against a live
+            # FD Showdown contest, Sep 2026). The 5-slot version was carried
+            # over from early development and never re-verified against a
+            # real 6-man FD Showdown contest -- see DK's own "showdown"
+            # block above, which already had the correct 1+5=6 shape.
+            "roster_slots": ["MVP", "FLEX", "FLEX", "FLEX", "FLEX", "FLEX"],
             "salary_cap": 60000,   # unchanged from classic, per Phase 13 intro
             "n_teams": 2,
             "min_per_team": 1,
