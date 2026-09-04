@@ -1,0 +1,8 @@
+optimizer.py failed for this request. Last lines of its output:
+
+Pool filter: excluding 1 player(s) below their position's --participation-floors threshold (decision #A2): Tua Tagovailoa (QB, participation 0.40 < 0.60)
+WARNING: lineup 1/10 infeasible with uniqueness=1 across all 4 candidate(s) tried (pool too thin -- see decision #7; last reason: Stack request impossible (decision #21): NO has 1 available QB(s) and 0 available partner(s) at ['TE', 'WR'] in the current candidate pool, need 1 QB + 1 partner(s).). Relaxing to 0 and retrying.
+WARNING: stopping early at 0 of 10 requested lineups -- no further legal lineup exists even with uniqueness fully relaxed to 0 and every stack candidate tried (exposure caps still enforced, decision #5). Last reason: Stack request impossible (decision #21): NO has 1 available QB(s) and 0 available partner(s) at ['TE', 'WR'] in the current candidate pool, need 1 QB + 1 partner(s).. See ROADMAP.md's 'Known Testing Artifact' note if this is the small real-data test pool.
+
+Could not generate a lineup with the current settings: No lineups could be generated at all -- check pool size vs. roster requirements, exposure_cap (decision #6), and stack feasibility (decision #21) if stacking was requested.
+Stacking: evaluating 4 candidate team(s) for every lineup, keeping whichever scores highest each time (decision #33): ['team:CIN', 'team:TB', 'team:DET', 'team:NO']
