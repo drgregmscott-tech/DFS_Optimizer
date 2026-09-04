@@ -1,6 +1,5 @@
 Id,Position,First Name,Nickname,Last Name,FPPG,Played,Salary,Game,Team,Opponent,Injury Indicator,Injury Details,Tier,Unnamed: 14,Unnamed: 15,Roster Position,name,site,salary,normalized_name,normalized_team,position_upper,slate_format,player_id,match_method,match_confidence
 133646-69304,QB,Kyle,Kyle Trask,Trask,-0.050000000745058,4,6000,CHI@CAR,CAR,CHI,,,,,,QB,Kyle Trask,fd,6000,kyle trask,CAR,QB,classic,,,
-133646-139985,QB,Bailey,Bailey Zappe,Zappe,4.5,2,6000,NYJ@TEN,NYJ,TEN,,,,,,QB,Bailey Zappe,fd,6000,bailey zappe,NYJ,QB,classic,,,
 133646-87418,WR,Joshua,Joshua Palmer,Palmer,3.441666603088379,12,4600,BUF@HOU,BUF,HOU,,,,,,WR/FLEX,Joshua Palmer,fd,4600,joshua palmer,BUF,WR,classic,,,
 133646-166898,RB,Nick,Nick Singleton,Singleton,,0,4600,NYJ@TEN,TEN,NYJ,,,,,,RB/FLEX,Nick Singleton,fd,4600,nick singleton,TEN,RB,classic,,,
 133646-128912,WR,Mitch,Mitch Tinsley,Tinsley,3.450000047683716,8,4500,BUF@HOU,HOU,BUF,,,,,,WR/FLEX,Mitch Tinsley,fd,4500,mitch tinsley,HOU,WR,classic,,,
@@ -13,5 +12,4 @@ Id,Position,First Name,Nickname,Last Name,FPPG,Played,Salary,Game,Team,Opponent,
 133646-226866,WR,Joaquin,Joaquin Davis,Davis,,0,4000,ATL@PIT,PIT,ATL,,,,,,WR/FLEX,Joaquin Davis,fd,4000,joaquin davis,PIT,WR,classic,,,
 133646-138039,TE,Matt,Matt Hibner,Hibner,,0,4000,BAL@IND,BAL,IND,,,,,,TE/FLEX,Matt Hibner,fd,4000,matt hibner,BAL,TE,classic,,,
 133646-185215,RB,Kadarius,Kadarius Calloway,Calloway,,0,4000,TB@CIN,TB,CIN,Q,Undisclosed,,,,RB/FLEX,Kadarius Calloway,fd,4000,kadarius calloway,TB,RB,classic,,,
-133646-94094,TE,Brevin,Brevin Jordan,Jordan,0.8500000238418579,2,4000,BUF@HOU,HOU,BUF,Q,Knee,,,,TE/FLEX,Brevin Jordan,fd,4000,brevin jordan,HOU,TE,classic,,,
 133646-64405,WR,Dan,Dan Chisena,Chisena,1.2999999523162842,4,4000,CHI@CAR,CAR,CHI,Q,Undisclosed,,,,WR/FLEX,Dan Chisena,fd,4000,dan chisena,CAR,WR,classic,,,

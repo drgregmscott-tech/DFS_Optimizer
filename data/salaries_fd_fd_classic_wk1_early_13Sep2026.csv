@@ -86,7 +86,7 @@ Id,Position,First Name,Nickname,Last Name,FPPG,Played,Salary,Game,Team,Opponent,
 133646-69294,QB,Skylar,Skylar Thompson,Thompson,2.626666704813639,3,6000,BAL@IND,BAL,IND,IR,Undisclosed,,,,QB,Skylar Thompson,fd,6000,skylar thompson,BAL,QB,classic,00-0037327,auto_exact,high
 133646-69304,QB,Kyle,Kyle Trask,Trask,-0.050000000745058,4,6000,CHI@CAR,CAR,CHI,,,,,,QB,Kyle Trask,fd,6000,kyle trask,CAR,QB,classic,,,
 133646-166588,TE,Colston,Colston Loveland,Loveland,9.411110772026907,18,6000,CHI@CAR,CHI,CAR,,,,,,TE/FLEX,Colston Loveland,fd,6000,colston loveland,CHI,TE,classic,00-0040126,auto_exact,high
-133646-139985,QB,Bailey,Bailey Zappe,Zappe,4.5,2,6000,NYJ@TEN,NYJ,TEN,,,,,,QB,Bailey Zappe,fd,6000,bailey zappe,NYJ,QB,classic,,,
+133646-139985,QB,Bailey,Bailey Zappe,Zappe,4.5,2,6000,NYJ@TEN,NYJ,TEN,,,,,,QB,Bailey Zappe,fd,6000,bailey zappe,NYJ,QB,classic,00-0038108,auto_exact,high
 133646-38628,QB,Mitchell,Mitchell Trubisky,Trubisky,7.78000020980835,4,6000,NYJ@TEN,TEN,NYJ,Q,Biceps,,,,QB,Mitchell Trubisky,fd,6000,mitchell trubisky,TEN,QB,classic,00-0033869,auto_fallback_team_mismatch,medium
 133646-61157,QB,Brett,Brett Rypien,Rypien,0.0,1,6000,BUF@HOU,HOU,BUF,,,,,,QB,Brett Rypien,fd,6000,brett rypien,HOU,QB,classic,00-0034955,auto_fallback_team_mismatch,medium
 133646-92975,QB,Malik,Malik Cunningham,Cunningham,0.1000000014901161,1,6000,NO@DET,DET,NO,,,,,,QB,Malik Cunningham,fd,6000,malik cunningham,DET,QB,classic,00-0038911,auto_fallback_name_only_position_mismatch,low
@@ -393,7 +393,7 @@ Id,Position,First Name,Nickname,Last Name,FPPG,Played,Salary,Game,Team,Opponent,
 133646-152128,WR,Dominic,Dominic Lovett,Lovett,0.0,1,4000,NO@DET,DET,NO,,,,,,WR/FLEX,Dominic Lovett,fd,4000,dominic lovett,DET,WR,classic,00-0040241,auto_exact,high
 133646-104008,TE,Stephen,Stephen Carlson,Carlson,,0,4000,CHI@CAR,CHI,CAR,,,,,,TE/FLEX,Stephen Carlson,fd,4000,stephen carlson,CHI,TE,classic,00-0035039,auto_exact,high
 133646-138854,WR,Ke'Shawn,Ke'Shawn Williams,Williams,0.0,11,4000,TB@CIN,CIN,TB,,,,,,WR/FLEX,Ke'Shawn Williams,fd,4000,keshawn williams,CIN,WR,classic,00-0040534,auto_exact,high
-133646-206447,RB,Max,Max Hurleman,Hurleman,,0,4000,ATL@PIT,PIT,ATL,,,,,,RB/FLEX,Max Hurleman,fd,4000,max hurleman,PIT,RB,classic,00-0040618,auto_exact,high
+133646-206447,RB,Max,Max Hurleman,Hurleman,,0,4000,ATL@PIT,PIT,ATL,,,,,,RB/FLEX,Max Hurleman,fd,4000,max hurleman,PIT,RB,classic,00-0040618,auto_fallback_name_only_position_mismatch,low
 133646-86646,RB,Trey,Trey Sermon,Sermon,0.0,1,4000,ATL@PIT,ATL,PIT,IR,Undisclosed,,,,RB/FLEX,Trey Sermon,fd,4000,trey sermon,ATL,RB,classic,00-0036984,auto_fallback_team_mismatch,medium
 133646-158338,WR,Max,Max Tomczak,Tomczak,,0,4000,BUF@HOU,BUF,HOU,,,,,,WR/FLEX,Max Tomczak,fd,4000,max tomczak,BUF,WR,classic,00-0041274,auto_exact,high
 133646-135812,WR,Quentin,Quentin Skinner,Skinner,3.5,1,4000,BUF@HOU,BUF,HOU,,,,,,WR/FLEX,Quentin Skinner,fd,4000,quentin skinner,BUF,WR,classic,00-0040406,auto_fallback_team_mismatch,medium
@@ -431,7 +431,7 @@ Id,Position,First Name,Nickname,Last Name,FPPG,Played,Salary,Game,Team,Opponent,
 133646-119615,RB,Roydell,Roydell Williams,Williams,,0,4000,NO@DET,DET,NO,,,,,,RB/FLEX,Roydell Williams,fd,4000,roydell williams,DET,RB,classic,00-0041572,auto_exact,high
 133646-120641,RB,Dominic,Dominic Richardson,Richardson,,0,4000,NYJ@TEN,NYJ,TEN,IR,Undisclosed,,,,RB/FLEX,Dominic Richardson,fd,4000,dominic richardson,NYJ,RB,classic,00-0040937,auto_exact,high
 133646-158529,WR,Josh,Josh Cameron,Cameron,,0,4000,CLE@JAC,JAC,CLE,,,,,,WR/FLEX,Josh Cameron,fd,4000,josh cameron,JAX,WR,classic,00-0041100,auto_exact,high
-133646-185153,RB,Davon,Davon Booth,Booth,,0,4000,BAL@IND,IND,BAL,,,,,,RB/FLEX,Davon Booth,fd,4000,davon booth,IND,RB,classic,00-0041277,auto_fallback_team_mismatch,medium
+133646-185153,RB,Davon,Davon Booth,Booth,,0,4000,BAL@IND,IND,BAL,,,,,,RB/FLEX,Davon Booth,fd,4000,davon booth,IND,RB,classic,00-0041277,auto_exact,high
 133646-159559,WR,Roc,Roc Taylor,Taylor,,0,4000,CHI@CAR,CAR,CHI,,,,,,WR/FLEX,Roc Taylor,fd,4000,roc taylor,CAR,WR,classic,00-0040531,auto_exact,high
 133646-69451,TE,Jack,Jack Stoll,Stoll,1.7000000476837158,8,4000,CLE@JAC,CLE,JAC,Q,Undisclosed,,,,TE/FLEX,Jack Stoll,fd,4000,jack stoll,CLE,TE,classic,00-0036741,auto_fallback_team_mismatch,medium
 133646-41806,WR,Laquon,Laquon Treadwell,Treadwell,0.0,5,4000,BAL@IND,IND,BAL,,,,,,WR/FLEX,Laquon Treadwell,fd,4000,laquon treadwell,IND,WR,classic,00-0032951,auto_exact,high
@@ -450,7 +450,7 @@ Id,Position,First Name,Nickname,Last Name,FPPG,Played,Salary,Game,Team,Opponent,
 133646-185215,RB,Kadarius,Kadarius Calloway,Calloway,,0,4000,TB@CIN,TB,CIN,Q,Undisclosed,,,,RB/FLEX,Kadarius Calloway,fd,4000,kadarius calloway,TB,RB,classic,,,
 133646-103302,WR,Courtney,Courtney Jackson,Jackson,,0,4000,NYJ@TEN,TEN,NYJ,,,,,,WR/FLEX,Courtney Jackson,fd,4000,courtney jackson,TEN,WR,classic,00-0040445,auto_exact,high
 133646-160655,WR,Brock,Brock Rechsteiner,Rechsteiner,,0,4000,NO@DET,NO,DET,IR,Suspension,,,,WR/FLEX,Brock Rechsteiner,fd,4000,brock rechsteiner,NO,WR,classic,00-0041451,auto_exact,high
-133646-94094,TE,Brevin,Brevin Jordan,Jordan,0.8500000238418579,2,4000,BUF@HOU,HOU,BUF,Q,Knee,,,,TE/FLEX,Brevin Jordan,fd,4000,brevin jordan,HOU,TE,classic,,,
+133646-94094,TE,Brevin,Brevin Jordan,Jordan,0.8500000238418579,2,4000,BUF@HOU,HOU,BUF,Q,Knee,,,,TE/FLEX,Brevin Jordan,fd,4000,brevin jordan,HOU,TE,classic,00-0036556,auto_exact,high
 133646-158610,TE,Drew,Drew Biber,Biber,,0,4000,CLE@JAC,CLE,JAC,,,,,,TE/FLEX,Drew Biber,fd,4000,drew biber,CLE,TE,classic,00-0041576,auto_exact,high
 133646-64405,WR,Dan,Dan Chisena,Chisena,1.2999999523162842,4,4000,CHI@CAR,CAR,CHI,Q,Undisclosed,,,,WR/FLEX,Dan Chisena,fd,4000,dan chisena,CAR,WR,classic,,,
 133646-128920,RB,Noah,Noah Whittington,Whittington,,0,4000,BUF@HOU,HOU,BUF,,,,,,RB/FLEX,Noah Whittington,fd,4000,noah whittington,HOU,RB,classic,00-0041312,auto_exact,high

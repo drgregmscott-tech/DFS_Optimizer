@@ -162,7 +162,7 @@ Id,Position,First Name,Nickname,Last Name,FPPG,Played,Salary,Game,Team,Opponent,
 133647-146527,WR,Kisean,Kisean Johnson,Johnson,,0,4000,GB@MIN,GB,MIN,,,,,,WR/FLEX,Kisean Johnson,fd,4000,kisean johnson,GB,WR,classic,00-0040616,auto_exact,high
 133647-176732,WR,Marcus,Marcus Sanders Jr.,Sanders Jr.,,0,4000,GB@MIN,MIN,GB,,,,,,WR/FLEX,Marcus Sanders Jr.,fd,4000,marcus sanders,MIN,WR,classic,00-0041352,auto_exact,high
 133647-152669,TE,Jameson,Jameson Geers,Geers,,0,4000,ARI@LAC,ARI,LAC,IR,Undisclosed,,,,TE/FLEX,Jameson Geers,fd,4000,jameson geers,ARI,TE,classic,00-0041366,auto_exact,high
-133647-129641,WR,Will,Will Sheppard,Sheppard,,0,4000,MIA@LV,MIA,LV,,,,,,WR/FLEX,Will Sheppard,fd,4000,will sheppard,MIA,WR,classic,00-0040753,auto_fallback_team_mismatch,medium
+133647-129641,WR,Will,Will Sheppard,Sheppard,,0,4000,MIA@LV,MIA,LV,,,,,,WR/FLEX,Will Sheppard,fd,4000,will sheppard,MIA,WR,classic,00-0040753,auto_exact,high
 133647-56947,TE,Chris,Chris Myarick,Myarick,,0,4000,MIA@LV,LV,MIA,,,,,,TE/FLEX,Chris Myarick,fd,4000,chris myarick,LV,TE,classic,00-0035345,auto_exact,high
 133647-46200,TE,Daniel,Daniel Brunskill,Brunskill,0.0,1,4000,WAS@PHI,WAS,PHI,,,,,,TE/FLEX,Daniel Brunskill,fd,4000,daniel brunskill,WAS,TE,classic,,,
 133647-201342,RB,Chris,Chris Collier,Collier,0.2166666587193807,6,4000,MIA@LV,LV,MIA,IR,Undisclosed,,,,RB/FLEX,Chris Collier,fd,4000,chris collier,LV,RB,classic,00-0039244,auto_exact,high
@@ -193,7 +193,7 @@ Id,Position,First Name,Nickname,Last Name,FPPG,Played,Salary,Game,Team,Opponent,
 133647-110834,WR,Tahj,Tahj Washington,Washington,1.600000023841858,2,4000,WAS@PHI,PHI,WAS,,,,,,WR/FLEX,Tahj Washington,fd,4000,tahj washington,PHI,WR,classic,00-0039884,auto_fallback_team_mismatch,medium
 133647-12540,D,Minnesota,Minnesota Vikings,Vikings,8.0,17,4000,GB@MIN,MIN,GB,,,,,,DEF,Minnesota Vikings,fd,4000,minnesota vikings,MIN,D,classic,DST_MIN,team_defense,high
 133647-137990,TE,Tip,Tip Reiman,Reiman,1.099999984105428,3,4000,ARI@LAC,ARI,LAC,,Ankle,,,,TE/FLEX,Tip Reiman,fd,4000,tip reiman,ARI,TE,classic,00-0039737,auto_exact,high
-133647-136970,WR,Danny,Danny Gray,Gray,0.0,1,4000,WAS@PHI,PHI,WAS,,,,,,WR/FLEX,Danny Gray,fd,4000,danny gray,PHI,WR,classic,,,
+133647-136970,WR,Danny,Danny Gray,Gray,0.0,1,4000,WAS@PHI,PHI,WAS,,,,,,WR/FLEX,Danny Gray,fd,4000,danny gray,PHI,WR,classic,00-0037828,auto_exact,high
 133647-157973,WR,J. Michael,J. Michael Sturdivant,Sturdivant,,0,4000,GB@MIN,GB,MIN,,,,,,WR/FLEX,J. Michael Sturdivant,fd,4000,j michael sturdivant,GB,WR,classic,00-0040948,auto_exact,high
 133647-152363,TE,Gavin,Gavin Bartholomew,Bartholomew,,0,4000,GB@MIN,MIN,GB,,,,,,TE/FLEX,Gavin Bartholomew,fd,4000,gavin bartholomew,MIN,TE,classic,00-0040215,auto_exact,high
 133647-158511,RB,Max,Max Bredeson,Bredeson,,0,4000,GB@MIN,MIN,GB,,,,,,RB/FLEX,Max Bredeson,fd,4000,max bredeson,MIN,RB,classic,00-0041081,auto_exact,high

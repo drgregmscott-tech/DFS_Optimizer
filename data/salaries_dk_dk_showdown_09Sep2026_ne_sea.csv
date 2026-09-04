@@ -103,8 +103,8 @@ TE,Lance Mason (43782153),Lance Mason,43782153,CPT,300,NE@SEA 09/09/2026 08:20PM
 TE,Nick Kallerup (43782154),Nick Kallerup,43782154,CPT,300,NE@SEA 09/09/2026 08:20PM ET,SEA,0.0,,CPT,Nick Kallerup,dk,300,nick kallerup,SEA,TE,showdown,00-0040058,auto_exact,high
 TE,Mitch Van Vooren (43782155),Mitch Van Vooren,43782155,CPT,300,NE@SEA 09/09/2026 08:20PM ET,NE,0.0,OUT,CPT,Mitch Van Vooren,dk,300,mitch van vooren,NE,TE,showdown,00-0040702,auto_fallback_team_mismatch,medium
 TE,Tanner Arkin (43782156),Tanner Arkin,43782156,CPT,300,NE@SEA 09/09/2026 08:20PM ET,NE,0.0,,CPT,Tanner Arkin,dk,300,tanner arkin,NE,TE,showdown,00-0041314,auto_exact,high
-TE,Nick Vannett (43782157),Nick Vannett,43782157,CPT,300,NE@SEA 09/09/2026 08:20PM ET,SEA,0.0,OUT,CPT,Nick Vannett,dk,300,nick vannett,SEA,TE,showdown,,,
-TE,CJ Dippre (43782158),CJ Dippre,43782158,CPT,300,NE@SEA 09/09/2026 08:20PM ET,NE,0.0,OUT,CPT,CJ Dippre,dk,300,cj dippre,NE,TE,showdown,00-0040566,auto_exact,high
+TE,Nick Vannett (43782157),Nick Vannett,43782157,CPT,300,NE@SEA 09/09/2026 08:20PM ET,SEA,0.0,OUT,CPT,Nick Vannett,dk,300,nick vannett,SEA,TE,showdown,00-0032394,auto_fallback_team_mismatch,medium
+TE,CJ Dippre (43782158),CJ Dippre,43782158,CPT,300,NE@SEA 09/09/2026 08:20PM ET,NE,0.0,OUT,CPT,CJ Dippre,dk,300,cj dippre,NE,TE,showdown,00-0040566,auto_fallback_team_mismatch,medium
 TE,Julian Hill (43782159),Julian Hill,43782159,CPT,300,NE@SEA 09/09/2026 08:20PM ET,NE,2.2,IR,CPT,Julian Hill,dk,300,julian hill,NE,TE,showdown,00-0038720,auto_fallback_team_mismatch,medium
 TE,Shane Zylstra (44034595),Shane Zylstra,44034595,CPT,300,NE@SEA 09/09/2026 08:20PM ET,NE,0.8,,CPT,Shane Zylstra,dk,300,shane zylstra,NE,TE,showdown,00-0036534,auto_fallback_team_mismatch,medium
 WR,Julian Hicks (44034596),Julian Hicks,44034596,CPT,300,NE@SEA 09/09/2026 08:20PM ET,SEA,0.0,,CPT,Julian Hicks,dk,300,julian hicks,SEA,WR,showdown,00-0039329,auto_exact,high
@@ -130,8 +130,8 @@ TE,Lance Mason (43782090),Lance Mason,43782090,FLEX,200,NE@SEA 09/09/2026 08:20P
 TE,Nick Kallerup (43782091),Nick Kallerup,43782091,FLEX,200,NE@SEA 09/09/2026 08:20PM ET,SEA,0.0,,FLEX,Nick Kallerup,dk,200,nick kallerup,SEA,TE,showdown,00-0040058,auto_exact,high
 TE,Mitch Van Vooren (43782092),Mitch Van Vooren,43782092,FLEX,200,NE@SEA 09/09/2026 08:20PM ET,NE,0.0,OUT,FLEX,Mitch Van Vooren,dk,200,mitch van vooren,NE,TE,showdown,00-0040702,auto_fallback_team_mismatch,medium
 TE,Tanner Arkin (43782093),Tanner Arkin,43782093,FLEX,200,NE@SEA 09/09/2026 08:20PM ET,NE,0.0,,FLEX,Tanner Arkin,dk,200,tanner arkin,NE,TE,showdown,00-0041314,auto_exact,high
-TE,Nick Vannett (43782094),Nick Vannett,43782094,FLEX,200,NE@SEA 09/09/2026 08:20PM ET,SEA,0.0,OUT,FLEX,Nick Vannett,dk,200,nick vannett,SEA,TE,showdown,,,
-TE,CJ Dippre (43782095),CJ Dippre,43782095,FLEX,200,NE@SEA 09/09/2026 08:20PM ET,NE,0.0,OUT,FLEX,CJ Dippre,dk,200,cj dippre,NE,TE,showdown,00-0040566,auto_exact,high
+TE,Nick Vannett (43782094),Nick Vannett,43782094,FLEX,200,NE@SEA 09/09/2026 08:20PM ET,SEA,0.0,OUT,FLEX,Nick Vannett,dk,200,nick vannett,SEA,TE,showdown,00-0032394,auto_fallback_team_mismatch,medium
+TE,CJ Dippre (43782095),CJ Dippre,43782095,FLEX,200,NE@SEA 09/09/2026 08:20PM ET,NE,0.0,OUT,FLEX,CJ Dippre,dk,200,cj dippre,NE,TE,showdown,00-0040566,auto_fallback_team_mismatch,medium
 TE,Julian Hill (43782096),Julian Hill,43782096,FLEX,200,NE@SEA 09/09/2026 08:20PM ET,NE,2.2,IR,FLEX,Julian Hill,dk,200,julian hill,NE,TE,showdown,00-0038720,auto_fallback_team_mismatch,medium
 TE,Shane Zylstra (44034590),Shane Zylstra,44034590,FLEX,200,NE@SEA 09/09/2026 08:20PM ET,NE,0.8,,FLEX,Shane Zylstra,dk,200,shane zylstra,NE,TE,showdown,00-0036534,auto_fallback_team_mismatch,medium
 WR,Julian Hicks (44034591),Julian Hicks,44034591,FLEX,200,NE@SEA 09/09/2026 08:20PM ET,SEA,0.0,,FLEX,Julian Hicks,dk,200,julian hicks,SEA,WR,showdown,00-0039329,auto_exact,high

@@ -1,6 +1,5 @@
 Position,Name + ID,Name,ID,Roster Position,Salary,Game Info,TeamAbbrev,AvgPointsPerGame,Status,name,site,salary,normalized_name,normalized_team,position_upper,slate_format,player_id,match_method,match_confidence
 RB,Nick Singleton (43727405),Nick Singleton,43727405,RB/FLEX,4800,NYJ@TEN 09/13/2026 01:00PM ET,TEN,0.0,,Nick Singleton,dk,4800,nick singleton,TEN,RB,classic,,,
-QB,Bailey Zappe (43727282),Bailey Zappe,43727282,QB,4000,NYJ@TEN 09/13/2026 01:00PM ET,NYJ,0.0,,Bailey Zappe,dk,4000,bailey zappe,NYJ,QB,classic,,,
 QB,Kyron Drones (43727287),Kyron Drones,43727287,QB,4000,GB@MIN 09/13/2026 04:25PM ET,GB,0.0,,Kyron Drones,dk,4000,kyron drones,GB,QB,classic,,,
 RB,Nathan Carter (43727469),Nathan Carter,43727469,RB/FLEX,4000,ATL@PIT 09/13/2026 01:00PM ET,ATL,0.7,,Nathan Carter,dk,4000,nathan carter,ATL,RB,classic,,,
 RB,Jackson Acker (43727477),Jackson Acker,43727477,RB/FLEX,4000,BUF@HOU 09/13/2026 01:00PM ET,BUF,0.0,,Jackson Acker,dk,4000,jackson acker,BUF,RB,classic,,,
@@ -31,7 +30,6 @@ WR,Gee Scott Jr. (43728069),Gee Scott Jr.,43728069,WR/FLEX,3000,NYJ@TEN 09/13/20
 WR,Jalen Walthall (43728071),Jalen Walthall,43728071,WR/FLEX,3000,NYJ@TEN 09/13/2026 01:00PM ET,NYJ,0.0,Q,Jalen Walthall,dk,3000,jalen walthall,NYJ,WR,classic,,,
 WR,DT Sheffield (43728075),DT Sheffield,43728075,WR/FLEX,3000,NYJ@TEN 09/13/2026 01:00PM ET,NYJ,0.0,Q,DT Sheffield,dk,3000,dt sheffield,NYJ,WR,classic,,,
 WR,Quez Watkins (43728087),Quez Watkins,43728087,WR/FLEX,3000,WAS@PHI 09/13/2026 04:25PM ET,PHI,0.0,,Quez Watkins,dk,3000,quez watkins,PHI,WR,classic,,,
-WR,Danny Gray (43728091),Danny Gray,43728091,WR/FLEX,3000,WAS@PHI 09/13/2026 04:25PM ET,PHI,0.0,,Danny Gray,dk,3000,danny gray,PHI,WR,classic,,,
 WR,Bryson Green (43728107),Bryson Green,43728107,WR/FLEX,3000,ARI@LAC 09/13/2026 04:25PM ET,ARI,0.0,,Bryson Green,dk,3000,bryson green,ARI,WR,classic,,,
 WR,Joaquin Davis (43728119),Joaquin Davis,43728119,WR/FLEX,3000,ATL@PIT 09/13/2026 01:00PM ET,PIT,0.0,,Joaquin Davis,dk,3000,joaquin davis,PIT,WR,classic,,,
 WR,Luke Grimm (43728129),Luke Grimm,43728129,WR/FLEX,3000,ARI@LAC 09/13/2026 04:25PM ET,LAC,0.0,Q,Luke Grimm,dk,3000,luke grimm,LAC,WR,classic,,,
@@ -40,7 +38,6 @@ WR,Dan Chisena (43728171),Dan Chisena,43728171,WR/FLEX,3000,CHI@CAR 09/13/2026 0
 WR,Ainias Smith (43728173),Ainias Smith,43728173,WR/FLEX,3000,CHI@CAR 09/13/2026 01:00PM ET,CAR,0.0,Q,Ainias Smith,dk,3000,ainias smith,CAR,WR,classic,,,
 WR,Malick Meiga (43728177),Malick Meiga,43728177,WR/FLEX,3000,CHI@CAR 09/13/2026 01:00PM ET,CAR,0.0,Q,Malick Meiga,dk,3000,malick meiga,CAR,WR,classic,,,
 WR,Gabriel Benyard (43728211),Gabriel Benyard,43728211,WR/FLEX,3000,CHI@CAR 09/13/2026 01:00PM ET,CAR,0.0,,Gabriel Benyard,dk,3000,gabriel benyard,CAR,WR,classic,,,
-TE,Brevin Jordan (43728323),Brevin Jordan,43728323,TE/FLEX,2500,BUF@HOU 09/13/2026 01:00PM ET,HOU,0.0,Q,Brevin Jordan,dk,2500,brevin jordan,HOU,TE,classic,,,
 TE,Miles Kitselman (43728365),Miles Kitselman,43728365,TE/FLEX,2500,NO@DET 09/13/2026 01:00PM ET,DET,0.0,Q,Miles Kitselman,dk,2500,miles kitselman,DET,TE,classic,,,
 TE,Luke Lachey (43728373),Luke Lachey,43728373,TE/FLEX,2500,GB@MIN 09/13/2026 04:25PM ET,GB,0.0,Q,Luke Lachey,dk,2500,luke lachey,GB,TE,classic,,,
 TE,RJ Maryland (43728375),RJ Maryland,43728375,TE/FLEX,2500,GB@MIN 09/13/2026 04:25PM ET,GB,0.0,Q,RJ Maryland,dk,2500,rj maryland,GB,TE,classic,,,
@@ -50,4 +47,3 @@ TE,Dae'Quan Wright (43728451),Dae'Quan Wright,43728451,TE/FLEX,2500,CLE@JAX 09/1
 TE,Kenny Yeboah (43728461),Kenny Yeboah,43728461,TE/FLEX,2500,ARI@LAC 09/13/2026 04:25PM ET,ARI,0.0,Q,Kenny Yeboah,dk,2500,kenny yeboah,ARI,TE,classic,,,
 TE,Lawrence Cager (43728497),Lawrence Cager,43728497,TE/FLEX,2500,WAS@PHI 09/13/2026 04:25PM ET,WAS,0.0,,Lawrence Cager,dk,2500,lawrence cager,WAS,TE,classic,,,
 TE,Matt Hibner (43728519),Matt Hibner,43728519,TE/FLEX,2500,BAL@IND 09/13/2026 01:00PM ET,BAL,0.0,,Matt Hibner,dk,2500,matt hibner,BAL,TE,classic,,,
-TE,Nick Vannett (44034644),Nick Vannett,44034644,TE/FLEX,2500,BAL@IND 09/13/2026 01:00PM ET,BAL,0.0,,Nick Vannett,dk,2500,nick vannett,BAL,TE,classic,,,

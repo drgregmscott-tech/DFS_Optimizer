@@ -1939,10 +1939,19 @@ in this browser's localStorage.</p>
     try { localStorage.setItem(SLATE_INDEX_KEY, JSON.stringify(list)); } catch (e) { /* ignore */ }
   }
 
-  // Sanitise a label into a valid slateId: lowercase, spaces→underscores,
-  // strip anything that isn't alphanumeric/hyphen/underscore, cap at 64.
+  // Sanitise a label into a valid slateId: spaces→underscores, strip
+  // anything that isn't alphanumeric/hyphen/underscore, cap at 64.
+  // FIX (found live, Sep 2026): this used to force everything to
+  // lowercase. GitHub Actions runs on Linux, which is case-sensitive,
+  // so a slate built locally as "..._13Sep2026" and then saved here
+  // became "..._13sep2026" -- a filename that never existed on disk.
+  // optimizer.py's "Build Lineups" dispatch then failed with a real
+  // FileNotFoundError, even though the local PowerShell pipeline
+  // (Windows, case-insensitive) had run clean. Case must now be
+  // preserved end to end so the UI's slateId matches the real
+  // --slate-id used to build the file.
   function labelToSlateId(label) {
-    return label.toLowerCase().replace(/\s+/g, "_").replace(/[^a-z0-9_-]/g, "").slice(0, 64) || "slate";
+    return label.replace(/\s+/g, "_").replace(/[^a-zA-Z0-9_-]/g, "").slice(0, 64) || "slate";
   }
 
   function persistSlate(site, slateId, label, kind, filename, payload, week) {
