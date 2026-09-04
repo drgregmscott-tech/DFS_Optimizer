@@ -3270,7 +3270,9 @@ in this browser's localStorage.</p>
 
     listEl.innerHTML = '<div class="player-list-head sticky-head" id="playerListHead"></div>' +
       shown.map(function (p) {
-      var isLocked = !!state.locked[site][p.player_id];
+      var isLocked = p.roster_role
+        ? state.locked[site][p.player_id] === p.roster_role
+        : !!state.locked[site][p.player_id];
       var isExcluded = !!state.excluded[site][p.player_id];
       var thumbState = state.thumbs[site][p.player_id]; // "up" | "down" | undefined
       var isThumbUp = thumbState === "up";
@@ -3283,9 +3285,22 @@ in this browser's localStorage.</p>
         + (isThumbDown ? " is-thumb-down" : "");
       var lockIcon = isLocked ? "&#128274;" : "&#128275;";
       var globalExpPlaceholder = document.getElementById("ctrlMaxExposure").value || "100";
-      return '<div class="' + rowCls + '" data-pid="' + escapeHtml(p.player_id) + '">' +
+      // Bug fix (found live, Sep 2026): a Showdown pool lists each player
+      // TWICE -- once as his Captain/MVP row, once as his FLEX row (same
+      // player_id, different p.roster_role). Lock used to be keyed only
+      // by player_id, so locking him on either row locked BOTH -- there
+      // was no way to say "as Captain specifically" vs "as FLEX
+      // specifically". data-role carries which row this button belongs
+      // to; the click handler below uses it to lock/switch to exactly
+      // one role, never both. Absent entirely on a classic pool (no
+      // roster_role there), so classic behavior is untouched.
+      var roleAttr = p.roster_role ? ' data-role="' + escapeHtml(p.roster_role) + '"' : "";
+      var lockTitle = isLocked
+        ? "Unlock"
+        : (p.roster_role ? "Lock as " + p.roster_role : "Lock");
+      return '<div class="' + rowCls + '" data-pid="' + escapeHtml(p.player_id) + '"' + roleAttr + '>' +
         '<div class="pactions">' +
-        '<button class="icon-btn lock-btn' + (isLocked ? ' active' : '') + '" data-action="lock" title="' + (isLocked ? 'Unlock' : 'Lock') + '">' + lockIcon + '</button>' +
+        '<button class="icon-btn lock-btn' + (isLocked ? ' active' : '') + '" data-action="lock" title="' + lockTitle + '">' + lockIcon + '</button>' +
         '<button class="icon-btn exclude-btn' + (isExcluded ? ' active' : '') + '" data-action="exclude" title="' + (isExcluded ? 'Un-exclude' : 'Exclude') + '">&#x2715;</button>' +
         '<button class="icon-btn thumb-btn thumb-up-btn' + (isThumbUp ? ' active' : '') + '" data-action="thumb-up" title="' + (isThumbUp ? 'Remove thumbs up' : 'Thumbs up (boosts this build\u2019s projection)') + '">&#128077;</button>' +
         '<button class="icon-btn thumb-btn thumb-down-btn' + (isThumbDown ? ' active' : '') + '" data-action="thumb-down" title="' + (isThumbDown ? 'Remove thumbs down' : 'Thumbs down (reduces this build\u2019s projection)') + '">&#128078;</button>' +
@@ -3428,10 +3443,23 @@ in this browser's localStorage.</p>
     var row = e.target.closest(".player-row[data-pid]");
     if (!row) return;
     var pid = row.getAttribute("data-pid");
+    var rowRole = row.getAttribute("data-role"); // null on a classic pool
     var site = state.activeSite;
     var action = btn.getAttribute("data-action");
     if (action === "lock") {
-      if (state.locked[site][pid]) { delete state.locked[site][pid]; }
+      if (rowRole) {
+        // Showdown: lock/switch to exactly this row's role. Clicking the
+        // FLEX row's Lock button while he's locked as Captain moves the
+        // lock to FLEX, never adds a second lock -- "either MVP/CPT or
+        // FLEX, not both" (Greg, Sep 2026).
+        if (state.locked[site][pid] === rowRole) {
+          delete state.locked[site][pid];
+        } else {
+          state.locked[site][pid] = rowRole;
+          delete state.excluded[site][pid];
+          delete state.playerExposure[site][pid];
+        }
+      } else if (state.locked[site][pid]) { delete state.locked[site][pid]; }
       else {
         state.locked[site][pid] = true;
         delete state.excluded[site][pid]; // decision #25 -- mutually exclusive
@@ -4005,7 +4033,16 @@ in this browser's localStorage.</p>
       if (pickedGames.length) params.stack_game = pickedGames.join(",");
     }
 
-    var lockedIds = Object.keys(state.locked[site]);
+    // Bug fix (found live, Sep 2026): state.locked[site][pid] now holds
+    // either `true` (classic -- role-agnostic, unchanged) or a role
+    // string like "CPT"/"MVP"/"FLEX" (Showdown -- see the click handler
+    // above). optimizer.py's --lock accepts 'pid:ROLE' to pin that exact
+    // role (parse_lock_spec()); a bare 'pid' keeps the old either-role
+    // behavior, so this only changes the payload for Showdown locks.
+    var lockedIds = Object.keys(state.locked[site]).map(function (pid) {
+      var v = state.locked[site][pid];
+      return (v === true) ? pid : (pid + ":" + v);
+    });
     var excludedIds = Object.keys(state.excluded[site]);
     if (lockedIds.length) params.lock = lockedIds.join(",");
     if (excludedIds.length) params.exclude = excludedIds.join(",");
