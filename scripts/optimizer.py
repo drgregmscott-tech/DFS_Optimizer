@@ -779,6 +779,43 @@ def parse_id_list(raw: str) -> set:
     return {p.strip() for p in raw.split(",") if p.strip()} if raw else set()
 
 
+def parse_lock_spec(raw: str) -> tuple:
+    """Bug fix (found live, Sep 2026): --lock previously only accepted a
+    bare player_id, which on a Showdown pool locks that player into EITHER
+    of his two rows (Captain/MVP or FLEX) -- decision #43's original
+    behavior -- with no way to say which one. Since the solver was always
+    free to pick whichever role happened to be optimal, a user trying to
+    lock a specific guy in AS CAPTAIN had no way to stop the solver from
+    playing him at FLEX instead.
+
+    Extends the same comma-separated --lock string to optionally carry a
+    ':ROLE' suffix per player_id, e.g. '00-0012345:CPT' or
+    '00-0012345:MVP' to pin that player into the Captain/MVP slot
+    specifically, or '00-0012345:FLEX' to pin him into a FLEX slot.
+    A bare 'player_id' with no colon keeps the original either-role
+    behavior unchanged -- this is purely additive.
+
+    Returns (player_ids: set, role_map: dict) where role_map only has
+    entries for tokens that specified a role. Classic slates have no
+    roles at all -- callers on the classic path use player_ids and never
+    look at role_map, so a stray ':ROLE' suffix there is simply inert."""
+    ids = set()
+    role_map = {}
+    for token in (raw.split(",") if raw else []):
+        token = token.strip()
+        if not token:
+            continue
+        if ":" in token:
+            pid, role = token.split(":", 1)
+            pid = pid.strip()
+            role = role.strip().upper()
+            ids.add(pid)
+            role_map[pid] = role
+        else:
+            ids.add(token)
+    return ids, role_map
+
+
 def validate_lock_feasibility(players: pd.DataFrame, locked_player_ids: set,
                                fixed_counts: dict, flex_count: int, salary_cap: int):
     """Decision #24 -- structural pre-check for a lock request, independent
@@ -2583,6 +2620,7 @@ def solve_showdown_lineup(players: pd.DataFrame, site: str,
                            uniqueness: int = 0,
                            optimization_projection: pd.Series = None,
                            locked_player_ids: set = None,
+                           locked_role_map: dict = None,
                            min_salary: int = 0,
                            lam: float = 0.0,
                            max_team_players: dict = None,
@@ -2679,9 +2717,35 @@ def solve_showdown_lineup(players: pd.DataFrame, site: str,
             f"Cannot lock player_id(s) {sorted(missing_locks)} -- not "
             f"present in this solve's candidate pool."
         )
+    # Bug fix (found live, Sep 2026, see parse_lock_spec()): a locked
+    # player with a requested role pins that EXACT row, instead of
+    # letting the solver freely pick between his Captain/MVP row and his
+    # FLEX row as long as one of the two is selected.
+    locked_role_map = locked_role_map or {}
     for locked_pid in locked_player_ids:
         rks = [rk for rk in players.loc[players["player_id"] == locked_pid, ROW_KEY_COL] if rk in x]
-        prob += pulp.lpSum(x[rk] for rk in rks) == 1, f"locked_{locked_pid}"
+        requested_role = locked_role_map.get(locked_pid)
+        if requested_role:
+            role_aliases = {"CAPTAIN": captain_role, "CPT": captain_role, "MVP": captain_role, "FLEX": flex_role}
+            resolved_role = role_aliases.get(requested_role, requested_role)
+            if resolved_role not in (captain_role, flex_role):
+                raise RuntimeError(
+                    f"Cannot lock player_id {locked_pid} into role "
+                    f"{requested_role!r} -- valid roles on this site's "
+                    f"Showdown pool are {captain_role!r} (captain/MVP) "
+                    f"and {flex_role!r}."
+                )
+            matching_rks = [rk for rk in rks if role[rk] == resolved_role]
+            if not matching_rks:
+                raise RuntimeError(
+                    f"Cannot lock player_id {locked_pid} into role "
+                    f"{resolved_role!r} -- no such row for this player "
+                    f"exists in the current candidate pool (already "
+                    f"excluded, or an invalid player_id)."
+                )
+            prob += pulp.lpSum(x[rk] for rk in matching_rks) == 1, f"locked_{locked_pid}_{resolved_role}"
+        else:
+            prob += pulp.lpSum(x[rk] for rk in rks) == 1, f"locked_{locked_pid}"
 
     # Decision #44 -- uniqueness vs. previous lineups, counted by player,
     # not row/role. `previous_player_sets` is a list of sets of player_id
@@ -2875,6 +2939,7 @@ def build_single_showdown_lineup(site: str, slate_id: str,
                                   randomization_mode: str = "pct",
                                   lam: float = 0.0,
                                   locked_player_ids: set = None,
+                                  locked_role_map: dict = None,
                                   excluded_player_ids: set = None,
                                   min_salary: int = 0,
                                   max_team_players: dict = None,
@@ -2912,6 +2977,7 @@ def build_single_showdown_lineup(site: str, slate_id: str,
         players, site,
         optimization_projection=optimization_projection,
         locked_player_ids=locked_player_ids,
+        locked_role_map=locked_role_map,
         min_salary=min_salary, lam=lam,
         max_team_players=max_team_players,
         min_team_players=min_team_players,
@@ -2948,6 +3014,7 @@ def build_multi_showdown_lineup(site: str, slate_id: str,
                                  seed: int = None,
                                  lam: float = 0.0,
                                  locked_player_ids: set = None,
+                                 locked_role_map: dict = None,
                                  excluded_player_ids: set = None,
                                  min_salary: int = 0,
                                  max_team_players: dict = None,
@@ -3032,6 +3099,7 @@ def build_multi_showdown_lineup(site: str, slate_id: str,
                 uniqueness=current_uniqueness,
                 optimization_projection=optimization_projection,
                 locked_player_ids=locked_player_ids,
+                locked_role_map=locked_role_map,
                 min_salary=min_salary, lam=lam,
                 max_team_players=max_team_players,
                 min_team_players=min_team_players,
@@ -3222,7 +3290,12 @@ def main():
         "--lock", default=None,
         help="Comma-separated player_id(s) to force into every generated "
              "lineup (decision #22). Fails loudly before solving if the "
-             "request is structurally impossible (decision #24).",
+             "request is structurally impossible (decision #24). Showdown "
+             "only: append ':CPT' / ':MVP' / ':FLEX' to a player_id (e.g. "
+             "'00-0012345:CPT') to pin that exact role instead of letting "
+             "the solver pick freely between his Captain/MVP row and his "
+             "FLEX row -- a bare player_id keeps the original either-role "
+             "behavior. No effect on classic slates (no roles to pin).",
     )
     parser.add_argument(
         "--exclude", default=None,
@@ -3464,13 +3537,19 @@ def main():
     if args.stack_mode == "mini" and not args.mini_stack_type:
         parser.error("--stack-mode mini requires --mini-stack-type {rb-dst,opposing-pass-catchers}")
 
-    locked_player_ids = parse_id_list(args.lock)
+    locked_player_ids, locked_role_map = parse_lock_spec(args.lock)
     excluded_player_ids = parse_id_list(args.exclude)
     overlap = locked_player_ids & excluded_player_ids
     if overlap:
         parser.error(
             f"player_id(s) {sorted(overlap)} cannot be both --lock and "
             f"--exclude (decision #25)."
+        )
+    if locked_role_map and not showdown_mode:
+        print(
+            f"NOTE: --lock role suffix(es) for {sorted(locked_role_map)} "
+            f"ignored -- classic slates have no Captain/FLEX roles, this "
+            f"only does anything on a Showdown slate.", file=sys.stderr,
         )
 
     # Session 16 -- decisions #48-51. Same "hard CLI error, not a silent
@@ -3598,6 +3677,7 @@ def main():
                 randomization_mode=args.randomization_mode,
                 seed=args.seed, lam=args.lam,
                 locked_player_ids=locked_player_ids,
+                locked_role_map=locked_role_map,
                 excluded_player_ids=excluded_player_ids,
                 min_salary=min_salary, max_team_players=max_team_players,
                 min_team_players=min_team_players,
@@ -3640,6 +3720,7 @@ def main():
                 randomization_mode=args.randomization_mode,
                 rng=np.random.default_rng(args.seed) if args.randomization_pct > 0 else None,
                 locked_player_ids=locked_player_ids,
+                locked_role_map=locked_role_map,
                 excluded_player_ids=excluded_player_ids,
                 min_salary=min_salary, lam=args.lam,
                 max_team_players=max_team_players,
