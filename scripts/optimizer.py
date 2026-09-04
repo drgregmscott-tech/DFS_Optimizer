@@ -2944,6 +2944,7 @@ def build_single_showdown_lineup(site: str, slate_id: str,
                                   min_salary: int = 0,
                                   max_team_players: dict = None,
                                   min_team_players: dict = None,
+                                  participation_floors: dict = None,
                                   thumbs_up_ids: set = None,
                                   thumbs_down_ids: set = None) -> pd.DataFrame:
     players = load_showdown_pool(site, slate_id)
@@ -2959,6 +2960,11 @@ def build_single_showdown_lineup(site: str, slate_id: str,
                 f"found in this pool -- ignored.", file=sys.stderr,
             )
         players = players[~players["player_id"].isin(excluded_player_ids)].copy()
+
+    # Bug fix (found live, Sep 2026) -- see main()'s participation_floors
+    # comment above. Same filter, same lock exemption, classic already
+    # applies at this exact point (after --exclude, before the solve).
+    players = apply_participation_floor(players, participation_floors or {}, locked_player_ids)
 
     # Session 16 (decisions #48-49, #53).
     thumbs_projection = compute_thumbs_projection_showdown(players, thumbs_up_ids, thumbs_down_ids)
@@ -3019,6 +3025,7 @@ def build_multi_showdown_lineup(site: str, slate_id: str,
                                  min_salary: int = 0,
                                  max_team_players: dict = None,
                                  min_team_players: dict = None,
+                                 participation_floors: dict = None,
                                  thumbs_up_ids: set = None,
                                  thumbs_down_ids: set = None,
                                  player_exposure: dict = None) -> tuple:
@@ -3042,6 +3049,12 @@ def build_multi_showdown_lineup(site: str, slate_id: str,
                 f"found in this pool -- ignored.", file=sys.stderr,
             )
         players_all = players_all[~players_all["player_id"].isin(excluded_player_ids)].copy()
+
+    # Bug fix (found live, Sep 2026) -- see main()'s participation_floors
+    # comment above. Same filter, same lock exemption, classic already
+    # applies at this exact point (after --exclude, before exposure-cap
+    # feasibility validation and the solve loop).
+    players_all = apply_participation_floor(players_all, participation_floors or {}, locked_player_ids)
 
     # Session 16 side-effect, worth flagging explicitly: build_multi_
     # showdown_lineup() never called validate_exposure_cap_feasibility()
@@ -3625,30 +3638,26 @@ def main():
                         f"(decision #38).", file=sys.stderr,
                     )
 
-    # Session 15 -- participation floor. Scoped to classic slates only for
-    # now (Showdown's role/position model -- one player can occupy CPT or
-    # FLEX, any position eligible anywhere -- doesn't map onto a QB/RB/TE
-    # position-keyed floor the same way; out of scope for this pass, same
-    # "classic first" boundary Session 13.4 drew for other features).
-    # Unlike --min-projection/--min-total-ownership's Showdown guards
-    # (which error because the USER explicitly asked for something
-    # unsupported), this one defaults ON -- erroring on every Showdown
-    # build because of a default the user never touched would be a much
-    # worse outcome than quietly not applying it. A NOTE either way, never
-    # silent.
-    if showdown_mode:
-        if args.participation_floors and args.participation_floors != DEFAULT_PARTICIPATION_FLOORS:
-            print(
-                "NOTE: --participation-floors is not supported for "
-                "Showdown slates yet -- ignored for this build.",
-                file=sys.stderr,
-            )
-        participation_floors = {}
-    else:
-        participation_floors = (
-            parse_participation_floors(args.participation_floors, "--participation-floors")
-            if args.participation_floors else {}
-        )
+    # Session 15 -- participation floor. Originally scoped to classic
+    # slates only, on the theory that Showdown's role/position model
+    # (one player occupies Captain/MVP or FLEX, any position eligible
+    # anywhere) wouldn't map onto a QB/RB/TE position-keyed floor the
+    # same way. Bug fix (found live, Sep 2026, Greg's real Week 1 FD
+    # Showdown build): that theory was wrong -- apply_participation_
+    # floor() only ever filters the candidate pool by position +
+    # participation_effective before the solve even starts; it has no
+    # dependency on roster-slot structure at all, and a Showdown pool's
+    # duplicated CPT/FLEX rows share the same player_id/position/
+    # participation_effective, so filtering drops both rows for a
+    # suppressed player cleanly. With this gap, an inactive/emergency
+    # QB priced at the salary floor (e.g. a real Week 1 build rostering
+    # a $1,000 third-string QB with 0.8% ownership purely as cap filler)
+    # had nothing stopping him from filling a FLEX slot on a Showdown
+    # build, same failure mode Session 15 already fixed for classic.
+    participation_floors = (
+        parse_participation_floors(args.participation_floors, "--participation-floors")
+        if args.participation_floors else {}
+    )
 
     # Decision #47 -- Showdown-only min-team-players floor.
     min_team_players = (
@@ -3681,6 +3690,7 @@ def main():
                 excluded_player_ids=excluded_player_ids,
                 min_salary=min_salary, max_team_players=max_team_players,
                 min_team_players=min_team_players,
+                participation_floors=participation_floors,
                 thumbs_up_ids=thumbs_up_ids, thumbs_down_ids=thumbs_down_ids,
                 player_exposure=player_exposure,
             )
@@ -3725,6 +3735,7 @@ def main():
                 min_salary=min_salary, lam=args.lam,
                 max_team_players=max_team_players,
                 min_team_players=min_team_players,
+                participation_floors=participation_floors,
                 thumbs_up_ids=thumbs_up_ids, thumbs_down_ids=thumbs_down_ids,
             )
             if args.request_id:
