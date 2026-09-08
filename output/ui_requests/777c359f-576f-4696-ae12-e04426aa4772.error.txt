@@ -1,0 +1,11 @@
+optimizer.py failed for this request. Last lines of its output:
+
+Traceback (most recent call last):
+  File "/home/runner/work/DFS_Optimizer/DFS_Optimizer/scripts/optimizer.py", line 4005, in <module>
+    main()
+  File "/home/runner/work/DFS_Optimizer/DFS_Optimizer/scripts/optimizer.py", line 3602, in main
+    _format_probe = load_final_projections(args.site, args.slate_id)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/work/DFS_Optimizer/DFS_Optimizer/scripts/optimizer.py", line 1332, in load_final_projections
+    raise FileNotFoundError(
+FileNotFoundError: /home/runner/work/DFS_Optimizer/DFS_Optimizer/output/final_projections_dk_dk_showdown_ne_sea_090926.csv not found. Run build_projections.py --site dk --slate-id dk_showdown_ne_sea_090926 first (Session 2.4, extended in Session 3.1 for DST/DEF -- decision #5).
