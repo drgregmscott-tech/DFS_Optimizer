@@ -242,6 +242,10 @@ async function handleDispatch(url, env) {
     // All three passed through unchanged, same convention as every other
     // field here -- optimizer.py's own parsing/validation does the rest.
     "player_exposure", "thumbs_up", "thumbs_down",
+    // Session 17, decision #56 -- skill-vs-opposing-DST exclusion override.
+    // "allow_skill_vs_opp_dst" is a boolean flag (present = override is on;
+    // absent = optimizer.py's own default, which is the exclusion ON).
+    "allow_skill_vs_opp_dst",
   ];
   const params = {};
   for (const key of passthroughKeys) {

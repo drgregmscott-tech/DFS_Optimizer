@@ -198,6 +198,13 @@ jobs:
           if "participation_floors" in params:
               args += ["--participation-floors", str(params["participation_floors"])]
 
+          # Session 17, decision #56 -- skill-vs-opposing-DST exclusion.
+          # Boolean flag: present means "allow the combination" (lift the
+          # default exclusion). Omitted means optimizer.py's own default
+          # (exclusion ON) -- same bool_flag() convention as --bring-back
+          # above.
+          args += bool_flag("--allow-skill-vs-opp-dst", "allow_skill_vs_opp_dst")
+
           print(f"args={shlex.join(args)}")
           PYEOF
         env:

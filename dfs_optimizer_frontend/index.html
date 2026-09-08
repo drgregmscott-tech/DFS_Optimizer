@@ -1585,6 +1585,15 @@ in this browser's localStorage.</p>
           <input type="text" id="ctrlParticipationFloors" value="QB:0.6,RB:0.4,TE:0.4" placeholder="e.g. QB:0.6,RB:0.4,TE:0.4 -- blank disables">
           <div class="hint" style="margin-top:4px">Excludes a player from the pool if his participation (share of his team's last 5 played games he actually appeared in) falls below his position's floor here -- catches a backup or a still-injured player a point projection alone can miss. ON by default. Locked players are always exempt -- lock in a player you know is a real exception (e.g. a starter confirmed back from injury). Format: POSITION:FLOOR comma-separated, 0.0-1.0. Clear the field to disable entirely.</div>
         </div>
+        <!-- Session 17, decision #56 -->
+        <div id="wrapAllowSkillVsOppDst">
+          <span class="field-label">Skill Player vs. Opposing DST</span>
+          <label style="display:flex;align-items:center;gap:8px;margin-top:4px;cursor:pointer;">
+            <input type="checkbox" id="ctrlAllowSkillVsOppDst">
+            Allow skill players from the team your DST is playing against
+          </label>
+          <div class="hint" style="margin-top:4px">By default the optimizer refuses to roster a skill player (QB/RB/WR/TE) from the same team your own DST/DEF is facing this week — the two are negatively correlated (your DST scores better when that offense struggles). Check this box to lift that restriction. Recommended for small slates or Showdowns, where the player pool is thin and avoiding the pairing may cost more than it saves.</div>
+        </div>
       </div>
 
       <div class="stack-explain" id="stackExplain" style="display:none"></div>
@@ -2937,7 +2946,9 @@ in this browser's localStorage.</p>
     "ctrlMiniType", "ctrlBringBack", "ctrlGameStackMin",
     "ctrlFlexRb", "ctrlFlexWr", "ctrlFlexTe",
     // Session 15, decision #A2.
-    "ctrlParticipationFloors"
+    "ctrlParticipationFloors",
+    // Session 17, decision #56.
+    "ctrlAllowSkillVsOppDst"
   ];
 
   function readPresetValues() {
@@ -4150,6 +4161,16 @@ in this browser's localStorage.</p>
         return null;
       }
       if (flexPositions.length < 3) params.flex_positions = flexPositions.join(",");
+    }
+
+    // Session 17, decision #56 -- skill-vs-opposing-DST exclusion. ON by
+    // default in optimizer.py; the checkbox here overrides it to OFF.
+    // Sent for both classic and Showdown; optimizer.py's Showdown path
+    // does not yet enforce this constraint but accepts the flag gracefully
+    // (it becomes active the moment Showdown stacking-style constraints
+    // are wired in).
+    if (document.getElementById("ctrlAllowSkillVsOppDst").checked) {
+      params.allow_skill_vs_opp_dst = "true";
     }
 
     return params;
