@@ -1177,6 +1177,84 @@ def add_exposure_cap_constraints(prob, x: dict, players: pd.DataFrame,
                 prob += pulp.lpSum(x[pid] for pid in pool) <= cap, f"max_game_{label}"
 
 
+# ---------------------------------------------------------------------------
+# Session 17 -- Skill-vs-Opposing-DST Exclusion (decision #56)
+# ---------------------------------------------------------------------------
+# 56. Real DFS strategy: a skill player (QB/RB/WR/TE, or any future
+#     non-DST roster position) scores well largely BECAUSE his own
+#     offense is moving the ball -- which is the same thing that makes
+#     the opposing DEFENSE score WORSE (fewer sacks/turnovers/points-
+#     allowed bonus). The two are structurally negatively correlated,
+#     so rostering your own DST/DEF alongside a skill player from that
+#     DST's own opponent this week works against the lineup's own
+#     internal correlation. User-confirmed via real generated lineups:
+#     the solver, left alone, does pick exactly this combination when a
+#     single good-value skill player in a good matchup outscores the
+#     marginal alternative -- nothing before this session stopped it.
+#     Default is a HARD exclusion, same "hard constraint, not a soft
+#     nudge" pattern as every other rule in this file (decision #15's
+#     stacking, decision #36's exposure caps, etc.) -- not a small
+#     penalty in the objective, which could still let the combination
+#     through if nothing else scored as well.
+#
+#     Both sides of the pair are decision variables -- WHICH DST the
+#     solver ends up choosing is not known ahead of the solve -- so
+#     this adds one `x[dst] + x[skill] <= 1` constraint per (DST
+#     candidate, that DST's-opponent skill player) pair actually
+#     present in the pool, rather than a fixed team-based pre-filter.
+#     This is correct regardless of which DST the solver lands on, the
+#     same reasoning `add_stack_constraints()` already uses for QB/
+#     partner pools.
+#
+#     `--allow-skill-vs-opp-dst` turns the exclusion OFF for a run.
+#     User's own real-lineup experience: this effect is much weaker on
+#     small slates and Showdown, where the player pool is thin enough
+#     that avoiding it can cost more than it saves -- the flag is the
+#     override for exactly that case. Showdown does not reach this
+#     code path yet regardless (full stacking-style constraints aren't
+#     wired in for Showdown -- Session 13.4 deferred that), so today
+#     the flag only has an effect on classic slates; it's still wired
+#     up front so a future Showdown build only needs to stop skipping
+#     it, not add new plumbing.
+#
+#     "Skill player" here is deliberately EVERY position that is NOT
+#     DST/DEF (`DEFENSE_POSITION_LABELS`), not a hardcoded QB/RB/WR/TE
+#     list -- so a future roster slot (e.g. K) is covered automatically
+#     without a second place in the code to remember to update.
+DEFAULT_EXCLUDE_SKILL_VS_OPP_DST = True
+
+
+def add_skill_vs_opp_dst_constraints(prob, x: dict, players: pd.DataFrame):
+    """Decision #56 -- for every DST/DEF candidate in the current pool,
+    forbids the ILP from selecting both that DST and any skill player
+    (any non-DST position) on the team it plays against this week.
+    No-op for a DST row with no real opponent this week (bye/unknown),
+    same `BYE_OR_UNKNOWN` handling used elsewhere in this file. Only
+    players present in `x` are referenced, same defensive pattern as
+    `add_stack_constraints()`, so an already-filtered pool (exposure
+    lock-outs, --exclude, participation floors, etc.) never raises a
+    KeyError here."""
+    dst_rows = players[players["position"].isin(DEFENSE_POSITION_LABELS)]
+    for dst_row in dst_rows.itertuples():
+        dst_pid = dst_row.player_id
+        if dst_pid not in x:
+            continue
+        opp_team = dst_row.opponent
+        if not opp_team or opp_team == "BYE_OR_UNKNOWN":
+            continue
+        skill_pool = players.loc[
+            (players["team"] == opp_team)
+            & (~players["position"].isin(DEFENSE_POSITION_LABELS)),
+            "player_id",
+        ]
+        for pid in skill_pool:
+            if pid in x:
+                prob += (
+                    x[dst_pid] + x[pid] <= 1,
+                    f"no_skill_vs_opp_dst_{dst_pid}_{pid}",
+                )
+
+
 def validate_stack(lineup: pd.DataFrame, stack_mode: str,
                     stack_size: int = DEFAULT_STACK_SIZE, stack_positions: set = None,
                     bring_back: bool = False, target_team: str = None,
@@ -1424,8 +1502,17 @@ def solve_lineup(players: pd.DataFrame, salary_cap: int, fixed_counts: dict,
                   flex_positions: set = None,
                   lam: float = 0.0,
                   max_team_players: dict = None,
-                  max_game_players: dict = None) -> pd.DataFrame:
-    """`lam` is a Session 10.5 addition (decision #2): the lambda
+                  max_game_players: dict = None,
+                  exclude_skill_vs_opp_dst: bool = DEFAULT_EXCLUDE_SKILL_VS_OPP_DST) -> pd.DataFrame:
+    """`exclude_skill_vs_opp_dst` is a Session 17 addition (decision #56):
+    True (default) adds a hard constraint forbidding the lineup's own
+    DST/DEF from sharing a roster with a skill player on that DST's
+    opponent this week -- see add_skill_vs_opp_dst_constraints() above
+    for the full rationale. Pass False (wired up via --allow-skill-
+    vs-opp-dst) to solve exactly as every prior session did, with no
+    such constraint added.
+
+    `lam` is a Session 10.5 addition (decision #2): the lambda
     coefficient on the variance penalty `sum(mu) - lam*sum(sigma^2)`.
     Defaults to 0.0 -- byte-identical to every prior session's behavior.
     Positive values penalize variance (floor-seeking, cash games); negative
@@ -1649,6 +1736,12 @@ def solve_lineup(players: pd.DataFrame, salary_cap: int, fixed_counts: dict,
         prob, x, players,
         max_team_players=max_team_players, max_game_players=max_game_players,
     )
+
+    # Session 17 -- skill-vs-opposing-DST exclusion (decision #56). No-op
+    # only if explicitly disabled via --allow-skill-vs-opp-dst; ON by
+    # default, unlike every other optional constraint above.
+    if exclude_skill_vs_opp_dst:
+        add_skill_vs_opp_dst_constraints(prob, x, players)
 
     status = prob.solve(pulp.PULP_CBC_CMD(msg=False))
     if pulp.LpStatus[status] != "Optimal":
@@ -1910,7 +2003,8 @@ def build_single_lineup(site: str, slate_id: str, randomization_pct: float = DEF
                          max_game_players: dict = None,
                          participation_floors: dict = None,
                          thumbs_up_ids: set = None,
-                         thumbs_down_ids: set = None) -> pd.DataFrame:
+                         thumbs_down_ids: set = None,
+                         exclude_skill_vs_opp_dst: bool = DEFAULT_EXCLUDE_SKILL_VS_OPP_DST) -> pd.DataFrame:
     config = SITE_CONFIGS[site]
     players = load_final_projections(site, slate_id)
     fixed_counts, flex_count = parse_roster_requirements(config["roster_slots"])
@@ -2013,6 +2107,7 @@ def build_single_lineup(site: str, slate_id: str, randomization_pct: float = DEF
         min_salary=min_salary, min_total_ownership=min_total_ownership,
         flex_positions=flex_positions, lam=lam,
         max_team_players=max_team_players, max_game_players=max_game_players,
+        exclude_skill_vs_opp_dst=exclude_skill_vs_opp_dst,
     )
     if locked_player_ids:
         missing = locked_player_ids - set(selected["player_id"])
@@ -2075,7 +2170,8 @@ def build_multi_lineup(site: str, slate_id: str, n_lineups: int = DEFAULT_N_LINE
                         participation_floors: dict = None,
                         thumbs_up_ids: set = None,
                         thumbs_down_ids: set = None,
-                        player_exposure: dict = None) -> tuple:
+                        player_exposure: dict = None,
+                        exclude_skill_vs_opp_dst: bool = DEFAULT_EXCLUDE_SKILL_VS_OPP_DST) -> tuple:
     """Generates up to `n_lineups` distinct, salary-cap-legal lineups, none
     of which use any single player in more than `max_exposure_pct` of the
     total requested lineups (decisions #5/#6 above). Returns
@@ -2286,6 +2382,7 @@ def build_multi_lineup(site: str, slate_id: str, n_lineups: int = DEFAULT_N_LINE
                     min_salary=min_salary, min_total_ownership=min_total_ownership,
                     flex_positions=flex_positions, lam=lam,
                     max_team_players=max_team_players, max_game_players=max_game_players,
+                    exclude_skill_vs_opp_dst=exclude_skill_vs_opp_dst,
                 )
             except RuntimeError as e:
                 stack_infeasible_reason = e
@@ -3476,6 +3573,20 @@ def main():
              f"for this build (decision #48). Works in single- or multi-"
              f"lineup mode, classic or Showdown.",
     )
+    # Session 17 -- Skill-vs-Opposing-DST Exclusion (decision #56).
+    parser.add_argument(
+        "--allow-skill-vs-opp-dst", action="store_true",
+        help="Turns OFF the default hard exclusion (decision #56) that "
+             "forbids rostering a skill player (any non-DST position) from "
+             "the team your own DST/DEF is playing against this week -- "
+             "the two are negatively correlated (your DST scores better "
+             "when that offense scores worse), so this combination is "
+             "excluded by default. Pass this flag to allow it anyway -- "
+             "e.g. small slates, where the effect is much weaker and a "
+             "thin pool can make avoiding it cost more than it saves. No "
+             "effect on Showdown builds yet (full stacking-style "
+             "constraints aren't wired in there -- Session 13.4).",
+    )
     args = parser.parse_args()
 
     OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
@@ -3777,6 +3888,7 @@ def main():
             participation_floors=participation_floors,
             thumbs_up_ids=thumbs_up_ids, thumbs_down_ids=thumbs_down_ids,
             player_exposure=player_exposure,
+            exclude_skill_vs_opp_dst=not args.allow_skill_vs_opp_dst,
             **stack_kwargs,
         )
         if args.request_id:
@@ -3853,6 +3965,7 @@ def main():
             max_team_players=max_team_players, max_game_players=max_game_players,
             participation_floors=participation_floors,
             thumbs_up_ids=thumbs_up_ids, thumbs_down_ids=thumbs_down_ids,
+            exclude_skill_vs_opp_dst=not args.allow_skill_vs_opp_dst,
             **stack_kwargs,
         )
         if args.request_id:
