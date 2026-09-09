@@ -1585,10 +1585,13 @@ in this browser's localStorage.</p>
           <input type="text" id="ctrlParticipationFloors" value="QB:0.6,RB:0.4,TE:0.4" placeholder="e.g. QB:0.6,RB:0.4,TE:0.4 -- blank disables">
           <div class="hint" style="margin-top:4px">Excludes a player from the pool if his participation (share of his team's last 5 played games he actually appeared in) falls below his position's floor here -- catches a backup or a still-injured player a point projection alone can miss. ON by default. Locked players are always exempt -- lock in a player you know is a real exception (e.g. a starter confirmed back from injury). Format: POSITION:FLOOR comma-separated, 0.0-1.0. Clear the field to disable entirely.</div>
         </div>
-        <!-- Session 17, decision #56 -->
-        <div id="wrapAllowSkillVsOppDst">
+      </div>
+
+      <!-- Session 17, decision #56 -->
+      <div class="controls-grid">
+        <div id="wrapAllowSkillVsOppDst" style="grid-column:1/-1;">
           <span class="field-label">Skill Player vs. Opposing DST</span>
-          <label style="display:flex;align-items:center;gap:8px;margin-top:4px;cursor:pointer;">
+          <label class="checkbox-row" style="margin-top:0;cursor:pointer;">
             <input type="checkbox" id="ctrlAllowSkillVsOppDst">
             Allow skill players from the team your DST is playing against
           </label>
