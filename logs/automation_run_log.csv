@@ -1499,3 +1499,6 @@ timestamp_utc,trigger_type,site,step,status
 2026-09-07T23:16:29.909450+00:00,full_refresh_scheduled,dk,dk_classic_wk1_main_13Sep2026,build_projections,success
 2026-09-07T23:16:29.909450+00:00,full_refresh_scheduled,dk,dk_classic_wk1_main_13Sep2026,status_apply,success
 2026-09-07T23:16:29.909450+00:00,full_refresh_scheduled,dk,dk_classic_wk1_main_13Sep2026,pivot_finder,success
+2026-09-09T23:01:31.211478+00:00,full_refresh_dispatch,dk,dk_classic_wk1_main_13Sep2026,build_projections,success
+2026-09-09T23:01:31.211478+00:00,full_refresh_dispatch,dk,dk_classic_wk1_main_13Sep2026,status_apply,success
+2026-09-09T23:01:31.211478+00:00,full_refresh_dispatch,dk,dk_classic_wk1_main_13Sep2026,pivot_finder,success
