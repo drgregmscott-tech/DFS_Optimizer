@@ -3248,7 +3248,7 @@ Also separately confirmed via ROADMAP's own "Known Deferred Validations" section
 ---
 
 ### Ad Hoc Session A3 — Optimizer Saved Presets (Cash / Single-Entry-3Max GPP / MME GPP)
-**Status:** 🔲 Not started — Greg's explicit request, scoped during the lineup-construction readiness review.
+**Status:** 🟡 Built, not yet validated live — backend (`data/optimizer_presets.json` + `optimizer.py --preset`) and frontend (three built-in presets in the dropdown, including a new Lambda control wired end-to-end through the Worker and dispatch workflow) are both implemented and passed offline checks (preset-default precedence, unknown-preset error, JS/Python syntax). No real build against a live slate has been run yet through any of the three presets — see this card's own validation checklist below.
 
 **Prerequisites:** none blocking. Independent of A1/A2/A4/A5, though its lambda values should be revisited once A5's backtest sweep runs.
 
@@ -3268,11 +3268,11 @@ Also separately confirmed via ROADMAP's own "Known Deferred Validations" section
 | `--allow-skill-vs-opp-dst` | off (keep exclusion) | off | off |
 
 **Scope:**
-1. Backend: named config bundles (e.g. `data/optimizer_presets.json` or similar) that `optimizer.py` and/or the dispatch workflow can load by name, populating every flag above in one shot.
-2. Frontend: three buttons/a dropdown in `dfs_optimizer_frontend/index.html` that apply a preset's full control state at once, same interaction pattern as an existing saved-settings control if one already exists in the UI.
-3. Ship with the placeholder lambda values above, clearly flagged the same way this project flags every other unfit constant — update once A5 lands.
+1. ✅ Backend: `data/optimizer_presets.json` (`cash`/`se_gpp`/`mme_gpp`) loaded by `optimizer.py`'s new `--preset` flag — pre-scans `sys.argv` for `--preset` before the parser is built and uses the bundle's values as each flag's `default=`, so any flag also passed explicitly on the command line still overrides the preset (verified both paths).
+2. ✅ Frontend: three built-in presets ("Cash", "SE / 3-Max GPP", "MME GPP (20-150)") always populated in the existing `presetSelect` dropdown (`dfs_optimizer_frontend/index.html`) — reuses the pre-existing cloud-preset Load/Save/Delete mechanism, with built-ins protected from being overwritten or deleted. Also added a "Lambda (variance penalty)" UI control that didn't previously exist, wired end-to-end (`ctrlLambda` → dispatch params → `optimizer_api.js` passthrough allowlist → `run_optimizer_dispatch.yml`'s arg-builder → `optimizer.py --lambda`) since presets setting lambda would otherwise be silently dropped on the UI path.
+3. ✅ Shipped with the placeholder lambda values from the table above, flagged FLAGGED ARBITRARY in both `data/optimizer_presets.json` and the frontend's Lambda field hint text and built-in-preset comment — single-place update once A5 lands.
 
-**Files likely touched:** `scripts/optimizer.py`, `dfs_optimizer_frontend/index.html`, `.github/workflows/run_optimizer_dispatch.yml`, `cloudflare_worker/optimizer_api/optimizer_api.js`, a new preset-definition file.
+**Files touched:** `scripts/optimizer.py`, `dfs_optimizer_frontend/index.html`, `.github/workflows/run_optimizer_dispatch.yml`, `cloudflare_worker/optimizer_api/optimizer_api.js`, `data/optimizer_presets.json` (new).
 
 **Validation:**
 - [ ] Selecting each of the three presets in the real UI and running a build produces a lineup/batch with exactly the intended flag values (spot-check the dispatch payload or CLI invocation, not just the output).

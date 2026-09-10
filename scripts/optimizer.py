@@ -76,6 +76,7 @@ Outputs:
 """
 
 import argparse
+import json
 import math
 import sys
 from pathlib import Path
@@ -3261,10 +3262,59 @@ def build_multi_showdown_lineup(site: str, slate_id: str,
     return all_lineups, exposure_count, n_generated
 
 
+PRESETS_PATH = REPO_ROOT / "data" / "optimizer_presets.json"
+
+
+def _load_preset_overrides():
+    """Ad Hoc Session A3: scan sys.argv for --preset up front (before the
+    parser exists) and return (overrides_dict, preset_name). Pre-scanning
+    argv rather than reading args.preset after parse_args() is what lets the
+    preset's values become each flag's `default=` at add_argument() time --
+    argparse then handles "explicit CLI flag wins over preset" for free,
+    with no separate merge/precedence logic to get wrong."""
+    argv = sys.argv[1:]
+    preset_name = None
+    for i, tok in enumerate(argv):
+        if tok == "--preset" and i + 1 < len(argv):
+            preset_name = argv[i + 1]
+        elif tok.startswith("--preset="):
+            preset_name = tok.split("=", 1)[1]
+    if preset_name is None:
+        return {}, None
+    if not PRESETS_PATH.exists():
+        sys.exit(f"--preset {preset_name!r} requested but {PRESETS_PATH} not found.")
+    presets = json.loads(PRESETS_PATH.read_text())
+    presets.pop("_comment", None)
+    if preset_name not in presets:
+        sys.exit(
+            f"Unknown --preset {preset_name!r}. Available: "
+            f"{', '.join(sorted(presets))} (see {PRESETS_PATH})."
+        )
+    return presets[preset_name], preset_name
+
+
 def main():
+
+    _preset_overrides, _preset_name = _load_preset_overrides()
+
+    def pdef(flag_key, fallback):
+        """Preset-aware default: the preset's value for `flag_key` (the
+        option string minus "--") if --preset was given and defines it,
+        else the flag's normal built-in default."""
+        return _preset_overrides.get(flag_key, fallback)
 
     parser = argparse.ArgumentParser()
     parser.add_argument("--site", choices=["dk", "fd"], required=True)
+    parser.add_argument(
+        "--preset", default=None,
+        help="Ad Hoc Session A3: name of a starter flag bundle from "
+             f"{PRESETS_PATH.relative_to(REPO_ROOT)} (e.g. 'cash', 'se_gpp', "
+             "'mme_gpp') applied as this run's defaults -- any flag also "
+             "passed explicitly on the command line overrides the preset's "
+             "value for that flag. Purely a convenience for not having to "
+             "reconfigure every flag by hand for a lineup type you build "
+             "often; omit for the existing flag-by-flag behavior, unchanged.",
+    )
     parser.add_argument("--slate-id", required=True,
         help="e.g. classic_wk10 or madden_07312026 -- matches build_projections.py's "
              "--slate-id and names the input/output files.")
@@ -3279,23 +3329,23 @@ def main():
              "wrong-file run before wasting a solve attempt).",
     )
     parser.add_argument(
-        "--n-lineups", type=int, default=None,
+        "--n-lineups", type=int, default=pdef("n-lineups", None),
         help="If set, generate this many lineups with exposure caps (Session "
              "3.2) instead of a single optimal lineup (Session 3.1).",
     )
     parser.add_argument(
-        "--max-exposure", type=float, default=DEFAULT_MAX_EXPOSURE_PCT,
+        "--max-exposure", type=float, default=pdef("max-exposure", DEFAULT_MAX_EXPOSURE_PCT),
         help=f"Max fraction of lineups any one player may appear in "
              f"(default {DEFAULT_MAX_EXPOSURE_PCT:.0%}%). Only used with --n-lineups.",
     )
     parser.add_argument(
-        "--uniqueness", type=int, default=DEFAULT_UNIQUENESS,
+        "--uniqueness", type=int, default=pdef("uniqueness", DEFAULT_UNIQUENESS),
         help=f"Minimum number of different players required between any two "
              f"generated lineups (default {DEFAULT_UNIQUENESS}). Only used "
              f"with --n-lineups.",
     )
     parser.add_argument(
-        "--randomization-pct", type=float, default=DEFAULT_RANDOMIZATION_PCT,
+        "--randomization-pct", type=float, default=pdef("randomization-pct", DEFAULT_RANDOMIZATION_PCT),
         help="Optional projection randomization (Session 3.2 addendum, decisions "
              "#9-13): 0 (default) uses each player's real final_projection "
              "unchanged. A value > 0 (typically 1-40) draws each player's "
@@ -3325,7 +3375,7 @@ def main():
     )
     # Session 3.3 -- Stacking Rules (decisions #14-21).
     parser.add_argument(
-        "--stack-mode", choices=["none", "qb", "game", "mini"], default=DEFAULT_STACK_MODE,
+        "--stack-mode", choices=["none", "qb", "game", "mini"], default=pdef("stack-mode", DEFAULT_STACK_MODE),
         help="Stacking mode (default 'none' -- no stacking, existing behavior "
              "unchanged). 'qb': QB + N teammates (Standard/Double/Triple/QB+RB, "
              "optionally with --bring-back). 'game': Game Stack/Shootout, no QB "
@@ -3334,7 +3384,7 @@ def main():
              "(decision #15).",
     )
     parser.add_argument(
-        "--stack-size", type=int, default=DEFAULT_STACK_SIZE,
+        "--stack-size", type=int, default=pdef("stack-size", DEFAULT_STACK_SIZE),
         help=f"Number of QB-stack partners required (default {DEFAULT_STACK_SIZE} "
              f"= Standard stack; 2 = Double; 3 = Triple). Only used with "
              f"--stack-mode qb.",
@@ -3347,7 +3397,7 @@ def main():
              f"Only used with --stack-mode qb.",
     )
     parser.add_argument(
-        "--bring-back", action="store_true",
+        "--bring-back", action="store_true", default=pdef("bring-back", False),
         help="Add-on to --stack-mode qb: require >=1 player from the stacked "
              "QB's opponent (decision #19 -- QB/RB/WR/TE only, never the "
              "opponent's DST/DEF).",
@@ -3498,7 +3548,7 @@ def main():
     )
     # Session 10.5 (decision #2) -- lambda variance penalty.
     parser.add_argument(
-        "--lambda", dest="lam", type=float, default=0.0,
+        "--lambda", dest="lam", type=float, default=pdef("lambda", 0.0),
         help="Session 10.5: lambda coefficient in the mean-variance objective "
              "sum(mu) - lambda*sum(sigma^2). Default 0.0 = pure-mean maximization "
              "(every prior session's behavior, unchanged). Positive values "

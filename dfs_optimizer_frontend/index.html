@@ -1585,6 +1585,11 @@ in this browser's localStorage.</p>
           <input type="text" id="ctrlParticipationFloors" value="QB:0.6,RB:0.4,TE:0.4" placeholder="e.g. QB:0.6,RB:0.4,TE:0.4 -- blank disables">
           <div class="hint" style="margin-top:4px">Excludes a player from the pool if his participation (share of his team's last 5 played games he actually appeared in) falls below his position's floor here -- catches a backup or a still-injured player a point projection alone can miss. ON by default. Locked players are always exempt -- lock in a player you know is a real exception (e.g. a starter confirmed back from injury). Format: POSITION:FLOOR comma-separated, 0.0-1.0. Clear the field to disable entirely.</div>
         </div>
+        <div>
+          <span class="field-label">Lambda (variance penalty)</span>
+          <input type="number" id="ctrlLambda" step="0.001" value="0" placeholder="0 = pure point-maximization">
+          <div class="hint" style="margin-top:4px">Session 10.5's mean-variance objective: sum(mean) - lambda*sum(sigma&sup2;). 0 (default) maximizes projected points only. Positive = floor-seeking (cash); negative = upside-seeking (GPP). Requires a projection build with --sigma-recalibration -- the solve fails loudly if the pool has no per-player sigma. FLAGGED ARBITRARY: the built-in presets' lambda values are un-swept placeholders (see ROADMAP.md Ad Hoc Session A5) -- treat them as a starting point to test, not a validated number.</div>
+        </div>
       </div>
 
       <!-- Session 17, decision #56 -->
@@ -2951,7 +2956,9 @@ in this browser's localStorage.</p>
     // Session 15, decision #A2.
     "ctrlParticipationFloors",
     // Session 17, decision #56.
-    "ctrlAllowSkillVsOppDst"
+    "ctrlAllowSkillVsOppDst",
+    // Ad Hoc Session A3 -- mean-variance objective coefficient (--lambda).
+    "ctrlLambda"
   ];
 
   function readPresetValues() {
@@ -2978,6 +2985,34 @@ in this browser's localStorage.</p>
     el.textContent = text;
     el.className = "solve-status" + (kind ? " " + kind : "");
   }
+
+  // Ad Hoc Session A3 -- three built-in starter bundles (Cash / SE-3Max GPP /
+  // MME GPP) so a lineup type doesn't require reconfiguring every control by
+  // hand. These always appear in the dropdown, even with no Worker configured
+  // (unlike user-saved cloud presets below), and can't be deleted. Lambda
+  // values here match data/optimizer_presets.json's cash/se_gpp/mme_gpp
+  // bundles (kept in sync by hand -- there are only three, and they're only
+  // meant to change once, when Ad Hoc Session A5's backtest sweep lands) and
+  // are FLAGGED ARBITRARY -- see this control's own hint text and
+  // ROADMAP.md Ad Hoc Session A5.
+  var BUILTIN_PRESET_NAMES = ["Cash", "SE / 3-Max GPP", "MME GPP (20-150)"];
+  var BUILTIN_PRESETS = {
+    "Cash": {
+      ctrlNLineups: "3", ctrlMaxExposure: "100", ctrlUniqueness: "0",
+      ctrlRandomization: "0", ctrlStackMode: "none",
+      ctrlAllowSkillVsOppDst: false, ctrlLambda: "0.06"
+    },
+    "SE / 3-Max GPP": {
+      ctrlNLineups: "3", ctrlMaxExposure: "100", ctrlUniqueness: "3",
+      ctrlRandomization: "3", ctrlStackMode: "qb", ctrlStackSize: "1",
+      ctrlBringBack: true, ctrlAllowSkillVsOppDst: false, ctrlLambda: "-0.02"
+    },
+    "MME GPP (20-150)": {
+      ctrlNLineups: "100", ctrlMaxExposure: "35", ctrlUniqueness: "1",
+      ctrlRandomization: "18", ctrlStackMode: "qb", ctrlStackSize: "1",
+      ctrlBringBack: true, ctrlAllowSkillVsOppDst: false, ctrlLambda: "-0.06"
+    }
+  };
 
   // Presets stored in the Worker under key "presets" (shared across all devices with the token)
   function workerPresetUrl(action, params) {
@@ -3017,8 +3052,15 @@ in this browser's localStorage.</p>
     var sel = document.getElementById("presetSelect");
     var current = sel.value;
     sel.innerHTML = '<option value="">— Load a preset —</option>';
+    BUILTIN_PRESET_NAMES.forEach(function(name) {
+      var opt = document.createElement("option");
+      opt.value = name;
+      opt.textContent = name;
+      sel.appendChild(opt);
+    });
     if (presets) {
       Object.keys(presets).sort().forEach(function(name) {
+        if (BUILTIN_PRESET_NAMES.indexOf(name) !== -1) return; // built-ins take precedence
         var opt = document.createElement("option");
         opt.value = name;
         opt.textContent = name;
@@ -3028,12 +3070,15 @@ in this browser's localStorage.</p>
     if (current) sel.value = current;
   }
 
-  // Cache presets locally so we don't re-fetch on every interaction
-  var cachedPresets = null;
+  // Cache presets locally so we don't re-fetch on every interaction.
+  // Seeded with the built-ins so Load works even before any cloud fetch
+  // completes (or with no Worker configured at all).
+  var cachedPresets = Object.assign({}, BUILTIN_PRESETS);
 
   function refreshPresetDropdown() {
+    populatePresetDropdown(cachedPresets);
     loadPresetsFromCloud(function(presets) {
-      cachedPresets = presets || {};
+      cachedPresets = Object.assign({}, BUILTIN_PRESETS, presets || {});
       populatePresetDropdown(cachedPresets);
     });
   }
@@ -3051,6 +3096,10 @@ in this browser's localStorage.</p>
   document.getElementById("btnSavePreset").addEventListener("click", function() {
     var name = (window.prompt("Name this preset (e.g. Cash, 20-max GPP):") || "").trim();
     if (!name) return;
+    if (BUILTIN_PRESET_NAMES.indexOf(name) !== -1) {
+      setPresetStatus("\"" + name + "\" is a built-in preset name -- choose a different name.", "error");
+      return;
+    }
     if (!cachedPresets) cachedPresets = {};
     cachedPresets[name] = readPresetValues();
     setPresetStatus("Saving…", "");
@@ -3068,6 +3117,10 @@ in this browser's localStorage.</p>
   document.getElementById("btnDeletePreset").addEventListener("click", function() {
     var name = document.getElementById("presetSelect").value;
     if (!name) { setPresetStatus("Select a preset to delete.", ""); return; }
+    if (BUILTIN_PRESET_NAMES.indexOf(name) !== -1) {
+      setPresetStatus("\"" + name + "\" is a built-in preset and can't be deleted.", "error");
+      return;
+    }
     if (!window.confirm("Delete preset \"" + name + "\"?")) return;
     if (cachedPresets) delete cachedPresets[name];
     savePresetsToCloud(cachedPresets || {}, function(ok, err) {
@@ -4174,6 +4227,15 @@ in this browser's localStorage.</p>
     // are wired in).
     if (document.getElementById("ctrlAllowSkillVsOppDst").checked) {
       params.allow_skill_vs_opp_dst = "true";
+    }
+
+    // Ad Hoc Session A3 -- mean-variance objective coefficient (--lambda).
+    // 0 (default) omits the param entirely, matching optimizer.py's own
+    // pure-mean default; requires a --sigma-recalibration projection build,
+    // same as running --lambda from the CLI directly (fails loud otherwise).
+    var lam = parseFloat(document.getElementById("ctrlLambda").value);
+    if (!isNaN(lam) && lam !== 0) {
+      params.lambda = String(lam);
     }
 
     return params;

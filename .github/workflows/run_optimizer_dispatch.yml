@@ -205,6 +205,12 @@ jobs:
           # above.
           args += bool_flag("--allow-skill-vs-opp-dst", "allow_skill_vs_opp_dst")
 
+          # Ad Hoc Session A3 -- mean-variance objective coefficient
+          # (optimizer.py's --lambda, Session 10.5). Same "omit means
+          # optimizer.py's own default (0.0, pure-mean)" convention as every
+          # other optional field above.
+          args += flag("--lambda", "lambda", float)
+
           print(f"args={shlex.join(args)}")
           PYEOF
         env:

@@ -246,6 +246,13 @@ async function handleDispatch(url, env) {
     // "allow_skill_vs_opp_dst" is a boolean flag (present = override is on;
     // absent = optimizer.py's own default, which is the exclusion ON).
     "allow_skill_vs_opp_dst",
+    // Ad Hoc Session A3 -- mean-variance objective coefficient (optimizer.py's
+    // --lambda, Session 10.5). A plain float string, positive = floor-seeking
+    // (cash), negative = upside-seeking (GPP); absent = optimizer.py's own
+    // 0.0 (pure-mean) default. Requires a --sigma-recalibration projection
+    // build -- optimizer.py fails loud if the pool has no sigma column, same
+    // as running it from the CLI directly.
+    "lambda",
   ];
   const params = {};
   for (const key of passthroughKeys) {
