@@ -239,10 +239,12 @@ jobs:
         id: team_stats
         if: needs.prepare.outputs.mode == 'full'
         continue-on-error: true
+        env:
+          SEASON_WEEK_PAIRS: ${{ needs.prepare.outputs.season_week_pairs }}
         run: |
           python3 -c "
-          import json
-          pairs = json.loads('${{ needs.prepare.outputs.season_week_pairs }}')
+          import json, os
+          pairs = json.loads(os.environ['SEASON_WEEK_PAIRS'])
           seasons = sorted({p['season'] for p in pairs})
           print(' '.join(str(s) for s in seasons))
           " > /tmp/seasons.txt
@@ -256,10 +258,12 @@ jobs:
         id: status_pull
         if: needs.prepare.outputs.mode == 'full'
         continue-on-error: true
+        env:
+          SEASON_WEEK_PAIRS: ${{ needs.prepare.outputs.season_week_pairs }}
         run: |
           python3 -c "
-          import json
-          pairs = json.loads('${{ needs.prepare.outputs.season_week_pairs }}')
+          import json, os
+          pairs = json.loads(os.environ['SEASON_WEEK_PAIRS'])
           for p in pairs:
               print(f\"{p['season']} {p['week']}\")
           " > /tmp/pairs.txt

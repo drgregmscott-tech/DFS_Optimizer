@@ -239,6 +239,7 @@ STATUS_MAP = {
     "pup": "OUT",
     "suspended": "OUT",
     "reserve/suspended": "OUT",
+    "suspension": "OUT",
     "doubtful": "DOUBTFUL",
     "questionable": "QUESTIONABLE",
     "day-to-day": "QUESTIONABLE",
