@@ -112,7 +112,7 @@ Id,Position,First Name,Nickname,Last Name,FPPG,Played,Salary,Game,Team,Opponent,
 133104-25079,WR,Stefon,Stefon Diggs,Diggs,9.847619192940847,21,6000,WAS@PHI,WAS,PHI,,,,,,WR/FLEX,Stefon Diggs,fd,6000,stefon diggs,WAS,WR,classic,00-0031588,auto_fallback_team_mismatch,medium
 133104-134655,QB,Hunter,Hunter Dekkers,Dekkers,,0,6000,NO@DET,NO,DET,,,,,,QB,Hunter Dekkers,fd,6000,hunter dekkers,NO,QB,classic,00-0040656,auto_exact,high
 133104-89607,QB,Tanner,Tanner McKee,McKee,3.690000057220459,4,6000,WAS@PHI,PHI,WAS,,,,,,QB,Tanner McKee,fd,6000,tanner mckee,PHI,QB,classic,00-0038400,auto_exact,high
-133104-160265,QB,Mark,Mark Gronowski,Gronowski,,0,6000,MIA@LV,MIA,LV,,,,,,QB,Mark Gronowski,fd,6000,mark gronowski,MIA,QB,classic,00-0041156,auto_exact,high
+133104-160265,QB,Mark,Mark Gronowski,Gronowski,,0,6000,MIA@LV,MIA,LV,,,,,,QB,Mark Gronowski,fd,6000,mark gronowski,MIA,QB,classic,00-0041156,auto_fallback_team_mismatch,medium
 133104-102933,QB,Kedon,Kedon Slovis,Slovis,-0.0399999991059303,2,6000,GB@MIN,GB,MIN,,,,,,QB,Kedon Slovis,fd,6000,kedon slovis,GB,QB,classic,00-0039577,auto_fallback_team_mismatch,medium
 133104-89628,QB,Davis,Davis Mills,Mills,11.59999974568685,6,6000,BUF@HOU,HOU,BUF,,,,,,QB,Davis Mills,fd,6000,davis mills,HOU,QB,classic,00-0036898,auto_exact,high
 133104-87594,QB,Sam,Sam Hartman,Hartman,,0,6000,WAS@PHI,WAS,PHI,,,,,,QB,Sam Hartman,fd,6000,sam hartman,WAS,QB,classic,00-0039677,auto_exact,high
@@ -388,7 +388,7 @@ Id,Position,First Name,Nickname,Last Name,FPPG,Played,Salary,Game,Team,Opponent,
 133104-86682,TE,Grant,Grant Calcaterra,Calcaterra,2.0111111534966364,9,4100,WAS@PHI,PHI,WAS,IR,Back,,,,TE/FLEX,Grant Calcaterra,fd,4100,grant calcaterra,PHI,TE,classic,00-0037086,auto_exact,high
 133104-71351,TE,Charlie,Charlie Woerner,Woerner,1.100000023841858,8,4100,ATL@PIT,ATL,PIT,,,,,,TE/FLEX,Charlie Woerner,fd,4100,charlie woerner,ATL,TE,classic,00-0036429,auto_exact,high
 133104-71352,WR,Mecole,Mecole Hardman Jr.,Hardman Jr.,1.6333333651224773,3,4100,BUF@HOU,BUF,HOU,,,,,,WR/FLEX,Mecole Hardman Jr.,fd,4100,mecole hardman,BUF,WR,classic,00-0035140,auto_exact,high
-133104-110274,WR,Bub,Bub Means,Means,5.574999809265137,4,4100,NO@DET,NO,DET,,,,,,WR/FLEX,Bub Means,fd,4100,bub means,NO,WR,classic,00-0039386,auto_exact,high
+133104-110274,WR,Bub,Bub Means,Means,5.574999809265137,4,4100,NO@DET,NO,DET,,,,,,WR/FLEX,Bub Means,fd,4100,bub means,NO,WR,classic,00-0039386,auto_fallback_team_mismatch,medium
 133104-86747,WR,Dylan,Dylan Drummond,Drummond,1.5399999618530271,5,4100,ATL@PIT,ATL,PIT,,,,,,WR/FLEX,Dylan Drummond,fd,4100,dylan drummond,ATL,WR,classic,00-0038953,auto_exact,high
 133104-157438,WR,Jimmy,Jimmy Horn Jr.,Horn Jr.,2.109090978449041,11,4100,CHI@CAR,CAR,CHI,,,,,,WR/FLEX,Jimmy Horn Jr.,fd,4100,jimmy horn,CAR,WR,classic,00-0040218,auto_exact,high
 133104-72515,TE,Ian,Ian Thomas,Thomas,2.557142802647182,7,4100,MIA@LV,LV,MIA,,,,,,TE/FLEX,Ian Thomas,fd,4100,ian thomas,LV,TE,classic,00-0034365,auto_exact,high
@@ -421,7 +421,7 @@ Id,Position,First Name,Nickname,Last Name,FPPG,Played,Salary,Game,Team,Opponent,
 133104-88109,RB,Gary,Gary Brightwell,Brightwell,0.0,2,4000,TB@CIN,CIN,TB,,,,,,RB/FLEX,Gary Brightwell,fd,4000,gary brightwell,CIN,RB,classic,00-0036569,auto_exact,high
 133104-175154,TE,Jack,Jack Endries,Endries,,0,4000,TB@CIN,CIN,TB,,,,,,TE/FLEX,Jack Endries,fd,4000,jack endries,CIN,TE,classic,00-0041116,auto_exact,high
 133104-152631,WR,Samori,Samori Toure,Toure,0.800000011920929,1,4000,WAS@PHI,PHI,WAS,,,,,,WR/FLEX,Samori Toure,fd,4000,samori toure,PHI,WR,classic,00-0037098,auto_fallback_team_mismatch,medium
-133104-129081,RB,Ahmani,Ahmani Marshall,Marshall,,0,4000,CHI@CAR,CAR,CHI,,,,,,RB/FLEX,Ahmani Marshall,fd,4000,ahmani marshall,CAR,RB,classic,00-0040260,auto_fallback_team_mismatch,medium
+133104-129081,RB,Ahmani,Ahmani Marshall,Marshall,,0,4000,CHI@CAR,CAR,CHI,,,,,,RB/FLEX,Ahmani Marshall,fd,4000,ahmani marshall,CAR,RB,classic,00-0040260,auto_exact,high
 133104-173113,RB,Eli,Eli Heidenreich,Heidenreich,,0,4000,ATL@PIT,PIT,ATL,,,,,,RB/FLEX,Eli Heidenreich,fd,4000,eli heidenreich,PIT,RB,classic,00-0041490,auto_exact,high
 133104-155715,WR,Devonte,Devonte Ross,Ross,,0,4000,ARI@LAC,LAC,ARI,,,,,,WR/FLEX,Devonte Ross,fd,4000,devonte ross,LAC,WR,classic,00-0041380,auto_exact,high
 133104-87109,WR,Bryce,Bryce Oliver,Oliver,1.2999999523162842,1,4000,CLE@JAC,CLE,JAC,,,,,,WR/FLEX,Bryce Oliver,fd,4000,bryce oliver,CLE,WR,classic,00-0039650,auto_fallback_team_mismatch,medium
@@ -637,7 +637,7 @@ Id,Position,First Name,Nickname,Last Name,FPPG,Played,Salary,Game,Team,Opponent,
 133104-107286,WR,Jha'Quan,Jha'Quan Jackson,Jackson,-0.2666666706403096,12,4000,TB@CIN,TB,CIN,,,,,,WR/FLEX,Jha'Quan Jackson,fd,4000,jhaquan jackson,TB,WR,classic,00-0039392,auto_exact,high
 133104-152350,RB,Jamal,Jamal Haynes,Haynes,,0,4000,TB@CIN,CIN,TB,,,,,,RB/FLEX,Jamal Haynes,fd,4000,jamal haynes,CIN,RB,classic,00-0041244,auto_exact,high
 133104-170783,WR,Omari,Omari Kelly,Kelly,,0,4000,CHI@CAR,CHI,CAR,,,,,,WR/FLEX,Omari Kelly,fd,4000,omari kelly,CHI,WR,classic,00-0041168,auto_exact,high
-133104-167714,TE,Kenny,Kenny Fletcher Jr.,Fletcher Jr.,,0,4000,TB@CIN,TB,CIN,,,,,,TE/FLEX,Kenny Fletcher Jr.,fd,4000,kenny fletcher,TB,TE,classic,00-0041252,auto_exact,high
+133104-167714,TE,Kenny,Kenny Fletcher Jr.,Fletcher Jr.,,0,4000,TB@CIN,TB,CIN,,,,,,TE/FLEX,Kenny Fletcher Jr.,fd,4000,kenny fletcher,TB,TE,classic,00-0041252,auto_fallback_team_mismatch,medium
 133104-119584,TE,Carson,Carson Towt,Towt,,0,4000,BAL@IND,IND,BAL,IR,Undisclosed,,,,TE/FLEX,Carson Towt,fd,4000,carson towt,IND,TE,classic,00-0040853,auto_exact,high
 133104-71459,RB,Brittain,Brittain Brown,Brown,4.849999904632568,2,4000,CHI@CAR,CHI,CAR,IR,Undisclosed,,,,RB/FLEX,Brittain Brown,fd,4000,brittain brown,CHI,RB,classic,00-0037329,auto_exact,high
 133104-152363,TE,Gavin,Gavin Bartholomew,Bartholomew,,0,4000,GB@MIN,MIN,GB,,,,,,TE/FLEX,Gavin Bartholomew,fd,4000,gavin bartholomew,MIN,TE,classic,00-0040215,auto_exact,high

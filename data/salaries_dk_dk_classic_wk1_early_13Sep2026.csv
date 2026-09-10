@@ -183,7 +183,7 @@ RB,Kentrel Bullock (44069940),Kentrel Bullock,44069940,RB/FLEX,4000,TB@CIN 09/13
 RB,Kendall Milton (44069942),Kendall Milton,44069942,RB/FLEX,4000,TB@CIN 09/13/2026 01:00PM ET,CIN,0.2,,Kendall Milton,dk,4000,kendall milton,CIN,RB,classic,00-0039266,auto_exact,high
 WR,Adonai Mitchell (44070016),Adonai Mitchell,44070016,WR/FLEX,4000,NYJ@TEN 09/13/2026 01:00PM ET,NYJ,5.7,,Adonai Mitchell,dk,4000,adonai mitchell,NYJ,WR,classic,00-0039890,auto_exact,high
 WR,Keon Coleman (44070018),Keon Coleman,44070018,WR/FLEX,4000,BUF@HOU 09/13/2026 01:00PM ET,BUF,7.9,Q,Keon Coleman,dk,4000,keon coleman,BUF,WR,classic,00-0039901,auto_exact,high
-QB,Mark Gronowski (44095891),Mark Gronowski,44095891,QB,4000,BUF@HOU 09/13/2026 01:00PM ET,HOU,0.0,,Mark Gronowski,dk,4000,mark gronowski,HOU,QB,classic,00-0041156,auto_fallback_team_mismatch,medium
+QB,Mark Gronowski (44095891),Mark Gronowski,44095891,QB,4000,BUF@HOU 09/13/2026 01:00PM ET,HOU,0.0,,Mark Gronowski,dk,4000,mark gronowski,HOU,QB,classic,00-0041156,auto_exact,high
 RB,Jabari Small (44095892),Jabari Small,44095892,RB/FLEX,4000,NO@DET 09/13/2026 01:00PM ET,DET,0.0,OUT,Jabari Small,dk,4000,jabari small,DET,RB,classic,00-0039652,auto_exact,high
 WR,Germie Bernard (44070020),Germie Bernard,44070020,WR/FLEX,3900,ATL@PIT 09/13/2026 01:00PM ET,PIT,0.0,,Germie Bernard,dk,3900,germie bernard,PIT,WR,classic,00-0041489,auto_exact,high
 WR,Isaac TeSlaa (44070022),Isaac TeSlaa,44070022,WR/FLEX,3900,NO@DET 09/13/2026 01:00PM ET,DET,4.5,,Isaac TeSlaa,dk,3900,isaac teslaa,DET,WR,classic,00-0040669,auto_exact,high
@@ -315,7 +315,7 @@ WR,Jordan Moore (44070236),Jordan Moore,44070236,WR/FLEX,3000,TB@CIN 09/13/2026 
 TE,Darnell Washington (44070276),Darnell Washington,44070276,TE/FLEX,3000,ATL@PIT 09/13/2026 01:00PM ET,PIT,4.7,,Darnell Washington,dk,3000,darnell washington,PIT,TE,classic,00-0038558,auto_exact,high
 TE,Jackson Meeks (44070278),Jackson Meeks,44070278,TE/FLEX,3000,NO@DET 09/13/2026 01:00PM ET,DET,0.0,,Jackson Meeks,dk,3000,jackson meeks,DET,TE,classic,00-0040390,auto_exact,high
 DST,Ravens (44070417),Ravens,44070417,DST,3000,BAL@IND 09/13/2026 01:00PM ET,BAL,5.7,,Ravens,dk,3000,ravens,BAL,DST,classic,DST_BAL,team_defense,high
-WR,Bub Means (44095894),Bub Means,44095894,WR/FLEX,3000,CLE@JAX 09/13/2026 01:00PM ET,CLE,0.0,,Bub Means,dk,3000,bub means,CLE,WR,classic,00-0039386,auto_fallback_team_mismatch,medium
+WR,Bub Means (44095894),Bub Means,44095894,WR/FLEX,3000,CLE@JAX 09/13/2026 01:00PM ET,CLE,0.0,,Bub Means,dk,3000,bub means,CLE,WR,classic,00-0039386,auto_exact,high
 TE,Tommy Tremble (44070280),Tommy Tremble,44070280,TE/FLEX,2900,CHI@CAR 09/13/2026 01:00PM ET,CAR,3.8,,Tommy Tremble,dk,2900,tommy tremble,CAR,TE,classic,00-0037005,auto_exact,high
 TE,Brock Wright (44070282),Brock Wright,44070282,TE/FLEX,2900,NO@DET 09/13/2026 01:00PM ET,DET,3.3,,Brock Wright,dk,2900,brock wright,DET,TE,classic,00-0036754,auto_exact,high
 DST,Texans (44070418),Texans,44070418,DST,2900,BUF@HOU 09/13/2026 01:00PM ET,HOU,10.6,,Texans,dk,2900,texans,HOU,DST,classic,DST_HOU,team_defense,high
@@ -389,7 +389,7 @@ TE,Tanner Hudson (44070408),Tanner Hudson,44070408,TE/FLEX,2500,TB@CIN 09/13/202
 TE,William Wagner (44070410),William Wagner,44070410,TE/FLEX,2500,TB@CIN 09/13/2026 01:00PM ET,CIN,0.0,,William Wagner,dk,2500,william wagner,CIN,TE,classic,00-0040379,auto_fallback_name_only_position_mismatch,low
 DST,Panthers (44070423),Panthers,44070423,DST,2500,CHI@CAR 09/13/2026 01:00PM ET,CAR,5.9,,Panthers,dk,2500,panthers,CAR,DST,classic,DST_CAR,team_defense,high
 DST,Jets (44070424),Jets,44070424,DST,2500,NYJ@TEN 09/13/2026 01:00PM ET,NYJ,2.8,,Jets,dk,2500,jets,NYJ,DST,classic,DST_NYJ,team_defense,high
-TE,Kenny Fletcher Jr. (44095896),Kenny Fletcher Jr.,44095896,TE/FLEX,2500,BAL@IND 09/13/2026 01:00PM ET,IND,0.0,,Kenny Fletcher Jr.,dk,2500,kenny fletcher,IND,TE,classic,00-0041252,auto_fallback_team_mismatch,medium
+TE,Kenny Fletcher Jr. (44095896),Kenny Fletcher Jr.,44095896,TE/FLEX,2500,BAL@IND 09/13/2026 01:00PM ET,IND,0.0,,Kenny Fletcher Jr.,dk,2500,kenny fletcher,IND,TE,classic,00-0041252,auto_exact,high
 DST,Colts (44070425),Colts,44070425,DST,2400,BAL@IND 09/13/2026 01:00PM ET,IND,5.8,,Colts,dk,2400,colts,IND,DST,classic,DST_IND,team_defense,high
 DST,Saints (44070426),Saints,44070426,DST,2200,NO@DET 09/13/2026 01:00PM ET,NO,6.9,,Saints,dk,2200,saints,NO,DST,classic,DST_NO,team_defense,high
 DST,Browns (44070427),Browns,44070427,DST,2100,CLE@JAX 09/13/2026 01:00PM ET,CLE,7.8,,Browns,dk,2100,browns,CLE,DST,classic,DST_CLE,team_defense,high

@@ -196,7 +196,7 @@ QB,Aidan O'Connell (43727292),Aidan O'Connell,43727292,QB,4000,MIA@LV 09/13/2026
 QB,Jacob Clark (43727293),Jacob Clark,43727293,QB,4000,MIA@LV 09/13/2026 04:25PM ET,LV,0.0,,Jacob Clark,dk,4000,jacob clark,LV,QB,classic,00-0040996,auto_exact,high
 QB,Quinn Ewers (43727294),Quinn Ewers,43727294,QB,4000,CLE@JAX 09/13/2026 01:00PM ET,JAX,9.0,,Quinn Ewers,dk,4000,quinn ewers,JAX,QB,classic,00-0040234,auto_fallback_team_mismatch,medium
 QB,Cam Miller (43727295),Cam Miller,43727295,QB,4000,MIA@LV 09/13/2026 04:25PM ET,MIA,0.0,,Cam Miller,dk,4000,cam miller,MIA,QB,classic,00-0040222,auto_exact,high
-QB,Mark Gronowski (43727296),Mark Gronowski,43727296,QB,4000,MIA@LV 09/13/2026 04:25PM ET,MIA,0.0,,Mark Gronowski,dk,4000,mark gronowski,MIA,QB,classic,00-0041156,auto_exact,high
+QB,Mark Gronowski (43727296),Mark Gronowski,43727296,QB,4000,MIA@LV 09/13/2026 04:25PM ET,MIA,0.0,,Mark Gronowski,dk,4000,mark gronowski,MIA,QB,classic,00-0041156,auto_fallback_team_mismatch,medium
 QB,Carson Wentz (43727297),Carson Wentz,43727297,QB,4000,GB@MIN 09/13/2026 04:25PM ET,MIN,16.3,,Carson Wentz,dk,4000,carson wentz,MIN,QB,classic,00-0032950,auto_exact,high
 QB,Max Brosmer (43727298),Max Brosmer,43727298,QB,4000,GB@MIN 09/13/2026 04:25PM ET,MIN,1.3,,Max Brosmer,dk,4000,max brosmer,MIN,QB,classic,00-0040494,auto_exact,high
 QB,Spencer Rattler (43727299),Spencer Rattler,43727299,QB,4000,NO@DET 09/13/2026 01:00PM ET,NO,11.8,,Spencer Rattler,dk,4000,spencer rattler,NO,QB,classic,00-0039376,auto_exact,high
@@ -245,7 +245,7 @@ RB,Kendall Milton (43727499),Kendall Milton,43727499,RB/FLEX,4000,TB@CIN 09/13/2
 RB,Kentrel Bullock (43727501),Kentrel Bullock,43727501,RB/FLEX,4000,TB@CIN 09/13/2026 01:00PM ET,CIN,0.0,,Kentrel Bullock,dk,4000,kentrel bullock,CIN,RB,classic,00-0041241,auto_exact,high
 RB,Jamal Haynes (43727503),Jamal Haynes,43727503,RB/FLEX,4000,TB@CIN 09/13/2026 01:00PM ET,CIN,0.0,,Jamal Haynes,dk,4000,jamal haynes,CIN,RB,classic,00-0041244,auto_exact,high
 RB,Raheim Sanders (43727505),Raheim Sanders,43727505,RB/FLEX,4000,CLE@JAX 09/13/2026 01:00PM ET,CLE,4.1,,Raheim Sanders,dk,4000,raheim sanders,CLE,RB,classic,00-0040466,auto_exact,high
-RB,Ahmani Marshall (43727507),Ahmani Marshall,43727507,RB/FLEX,4000,CLE@JAX 09/13/2026 01:00PM ET,CLE,0.0,,Ahmani Marshall,dk,4000,ahmani marshall,CLE,RB,classic,00-0040260,auto_exact,high
+RB,Ahmani Marshall (43727507),Ahmani Marshall,43727507,RB/FLEX,4000,CLE@JAX 09/13/2026 01:00PM ET,CLE,0.0,,Ahmani Marshall,dk,4000,ahmani marshall,CLE,RB,classic,00-0040260,auto_fallback_team_mismatch,medium
 RB,Davon Booth (43727509),Davon Booth,43727509,RB/FLEX,4000,BAL@IND 09/13/2026 01:00PM ET,IND,0.0,,Davon Booth,dk,4000,davon booth,IND,RB,classic,00-0041277,auto_exact,high
 RB,TJ Harden (43727511),TJ Harden,43727511,RB/FLEX,4000,CLE@JAX 09/13/2026 01:00PM ET,CLE,0.0,,TJ Harden,dk,4000,tj harden,CLE,RB,classic,,,
 RB,Michael Burton (43727513),Michael Burton,43727513,RB/FLEX,4000,CLE@JAX 09/13/2026 01:00PM ET,CLE,0.0,,Michael Burton,dk,4000,michael burton,CLE,RB,classic,00-0031595,auto_exact,high
@@ -501,7 +501,7 @@ WR,Barion Brown (43728045),Barion Brown,43728045,WR/FLEX,3000,NO@DET 09/13/2026 
 WR,Mason Tipton (43728047),Mason Tipton,43728047,WR/FLEX,3000,NO@DET 09/13/2026 01:00PM ET,NO,1.5,OUT,Mason Tipton,dk,3000,mason tipton,NO,WR,classic,00-0039623,auto_exact,high
 WR,Ronnie Bell (43728049),Ronnie Bell,43728049,WR/FLEX,3000,NO@DET 09/13/2026 01:00PM ET,NO,5.2,,Ronnie Bell,dk,3000,ronnie bell,NO,WR,classic,00-0038647,auto_exact,high
 WR,Trey Palmer (43728051),Trey Palmer,43728051,WR/FLEX,3000,NO@DET 09/13/2026 01:00PM ET,NO,0.0,,Trey Palmer,dk,3000,trey palmer,NO,WR,classic,00-0039052,auto_exact,high
-WR,Bub Means (43728053),Bub Means,43728053,WR/FLEX,3000,NO@DET 09/13/2026 01:00PM ET,NO,0.0,,Bub Means,dk,3000,bub means,NO,WR,classic,00-0039386,auto_exact,high
+WR,Bub Means (43728053),Bub Means,43728053,WR/FLEX,3000,NO@DET 09/13/2026 01:00PM ET,NO,0.0,,Bub Means,dk,3000,bub means,NO,WR,classic,00-0039386,auto_fallback_team_mismatch,medium
 WR,Kevin Austin Jr. (43728055),Kevin Austin Jr.,43728055,WR/FLEX,3000,NO@DET 09/13/2026 01:00PM ET,NO,4.1,,Kevin Austin Jr.,dk,3000,kevin austin,NO,WR,classic,00-0037231,auto_exact,high
 WR,Jalen Moreno-Cropper (43728057),Jalen Moreno-Cropper,43728057,WR/FLEX,3000,NO@DET 09/13/2026 01:00PM ET,NO,0.0,,Jalen Moreno-Cropper,dk,3000,jalen moreno cropper,NO,WR,classic,00-0038740,auto_fallback_team_mismatch,medium
 WR,Brock Rechsteiner (43728059),Brock Rechsteiner,43728059,WR/FLEX,3000,NO@DET 09/13/2026 01:00PM ET,NO,0.0,OUT,Brock Rechsteiner,dk,3000,brock rechsteiner,NO,WR,classic,00-0041451,auto_exact,high
@@ -707,7 +707,7 @@ TE,Payne Durham (43728481),Payne Durham,43728481,TE/FLEX,2500,TB@CIN 09/13/2026 
 TE,Ko Kieft (43728483),Ko Kieft,43728483,TE/FLEX,2500,TB@CIN 09/13/2026 01:00PM ET,TB,0.0,,Ko Kieft,dk,2500,ko kieft,TB,TE,classic,00-0037311,auto_exact,high
 TE,Bauer Sharp (43728485),Bauer Sharp,43728485,TE/FLEX,2500,TB@CIN 09/13/2026 01:00PM ET,TB,0.0,,Bauer Sharp,dk,2500,bauer sharp,TB,TE,classic,00-0041094,auto_exact,high
 TE,Devin Culp (43728487),Devin Culp,43728487,TE/FLEX,2500,TB@CIN 09/13/2026 01:00PM ET,TB,0.6,,Devin Culp,dk,2500,devin culp,TB,TE,classic,00-0039754,auto_exact,high
-TE,Kenny Fletcher Jr. (43728489),Kenny Fletcher Jr.,43728489,TE/FLEX,2500,TB@CIN 09/13/2026 01:00PM ET,TB,0.0,,Kenny Fletcher Jr.,dk,2500,kenny fletcher,TB,TE,classic,00-0041252,auto_exact,high
+TE,Kenny Fletcher Jr. (43728489),Kenny Fletcher Jr.,43728489,TE/FLEX,2500,TB@CIN 09/13/2026 01:00PM ET,TB,0.0,,Kenny Fletcher Jr.,dk,2500,kenny fletcher,TB,TE,classic,00-0041252,auto_fallback_team_mismatch,medium
 TE,Evan Deckers (43728491),Evan Deckers,43728491,TE/FLEX,2500,TB@CIN 09/13/2026 01:00PM ET,TB,0.0,,Evan Deckers,dk,2500,evan deckers,TB,TE,classic,00-0038817,auto_fallback_name_only_position_mismatch,low
 TE,John Bates (43728493),John Bates,43728493,TE/FLEX,2500,WAS@PHI 09/13/2026 04:25PM ET,WAS,1.8,Q,John Bates,dk,2500,john bates,WAS,TE,classic,00-0036628,auto_exact,high
 TE,Colson Yankoff (43728495),Colson Yankoff,43728495,TE/FLEX,2500,WAS@PHI 09/13/2026 04:25PM ET,WAS,0.3,,Colson Yankoff,dk,2500,colson yankoff,WAS,TE,classic,00-0039686,auto_exact,high

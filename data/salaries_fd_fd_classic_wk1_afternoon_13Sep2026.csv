@@ -25,7 +25,7 @@ Id,Position,First Name,Nickname,Last Name,FPPG,Played,Salary,Game,Team,Opponent,
 133647-56250,WR,Terry,Terry McLaurin,McLaurin,9.519999694824218,10,6200,WAS@PHI,WAS,PHI,,,,,,WR/FLEX,Terry McLaurin,fd,6200,terry mclaurin,WAS,WR,classic,00-0035659,auto_exact,high
 133647-129210,WR,Jordan,Jordan Addison,Addison,8.578571319580078,14,6100,GB@MIN,MIN,GB,,,,,,WR/FLEX,Jordan Addison,fd,6100,jordan addison,MIN,WR,classic,00-0038994,auto_exact,high
 133647-89607,QB,Tanner,Tanner McKee,McKee,3.690000057220459,4,6000,WAS@PHI,PHI,WAS,,,,,,QB,Tanner McKee,fd,6000,tanner mckee,PHI,QB,classic,00-0038400,auto_exact,high
-133647-160265,QB,Mark,Mark Gronowski,Gronowski,,0,6000,MIA@LV,MIA,LV,,,,,,QB,Mark Gronowski,fd,6000,mark gronowski,MIA,QB,classic,00-0041156,auto_exact,high
+133647-160265,QB,Mark,Mark Gronowski,Gronowski,,0,6000,MIA@LV,MIA,LV,,,,,,QB,Mark Gronowski,fd,6000,mark gronowski,MIA,QB,classic,00-0041156,auto_fallback_team_mismatch,medium
 133647-102933,QB,Kedon,Kedon Slovis,Slovis,-0.0399999991059303,2,6000,GB@MIN,GB,MIN,,,,,,QB,Kedon Slovis,fd,6000,kedon slovis,GB,QB,classic,00-0039577,auto_fallback_team_mismatch,medium
 133647-103444,QB,Jacob,Jacob Clark,Clark,,0,6000,MIA@LV,LV,MIA,,,,,,QB,Jacob Clark,fd,6000,jacob clark,LV,QB,classic,00-0040996,auto_exact,high
 133647-14377,QB,Tyrod,Tyrod Taylor,Taylor,10.743333180745443,6,6000,GB@MIN,GB,MIN,,,,,,QB,Tyrod Taylor,fd,6000,tyrod taylor,GB,QB,classic,00-0028118,auto_fallback_team_mismatch,medium

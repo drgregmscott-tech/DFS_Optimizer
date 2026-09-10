@@ -256,7 +256,7 @@ Id,Position,First Name,Nickname,Last Name,FPPG,Played,Salary,Game,Team,Opponent,
 133646-147049,TE,Drew,Drew Ogletree,Ogletree,2.1399999618530274,5,4100,BAL@IND,IND,BAL,,,,,,TE/FLEX,Drew Ogletree,fd,4100,drew ogletree,IND,TE,classic,,,
 133646-71351,TE,Charlie,Charlie Woerner,Woerner,1.100000023841858,8,4100,ATL@PIT,ATL,PIT,,,,,,TE/FLEX,Charlie Woerner,fd,4100,charlie woerner,ATL,TE,classic,00-0036429,auto_exact,high
 133646-71352,WR,Mecole,Mecole Hardman Jr.,Hardman Jr.,1.6333333651224773,3,4100,BUF@HOU,BUF,HOU,,,,,,WR/FLEX,Mecole Hardman Jr.,fd,4100,mecole hardman,BUF,WR,classic,00-0035140,auto_exact,high
-133646-110274,WR,Bub,Bub Means,Means,5.574999809265137,4,4100,NO@DET,NO,DET,,,,,,WR/FLEX,Bub Means,fd,4100,bub means,NO,WR,classic,00-0039386,auto_exact,high
+133646-110274,WR,Bub,Bub Means,Means,5.574999809265137,4,4100,NO@DET,NO,DET,,,,,,WR/FLEX,Bub Means,fd,4100,bub means,NO,WR,classic,00-0039386,auto_fallback_team_mismatch,medium
 133646-86747,WR,Dylan,Dylan Drummond,Drummond,1.5399999618530271,5,4100,ATL@PIT,ATL,PIT,,,,,,WR/FLEX,Dylan Drummond,fd,4100,dylan drummond,ATL,WR,classic,00-0038953,auto_exact,high
 133646-157438,WR,Jimmy,Jimmy Horn Jr.,Horn Jr.,2.109090978449041,11,4100,CHI@CAR,CAR,CHI,,,,,,WR/FLEX,Jimmy Horn Jr.,fd,4100,jimmy horn,CAR,WR,classic,00-0040218,auto_exact,high
 133646-61273,WR,Scotty,Scotty Miller,Miller,2.1399999618530274,5,4100,CHI@CAR,CHI,CAR,,,,,,WR/FLEX,Scotty Miller,fd,4100,scotty miller,CHI,WR,classic,,,
@@ -280,7 +280,7 @@ Id,Position,First Name,Nickname,Last Name,FPPG,Played,Salary,Game,Team,Opponent,
 133646-243752,WR,Daniel,Daniel Sobkowicz,Sobkowicz,,0,4000,BUF@HOU,HOU,BUF,,,,,,WR/FLEX,Daniel Sobkowicz,fd,4000,daniel sobkowicz,HOU,WR,classic,00-0041309,auto_exact,high
 133646-88109,RB,Gary,Gary Brightwell,Brightwell,0.0,2,4000,TB@CIN,CIN,TB,,,,,,RB/FLEX,Gary Brightwell,fd,4000,gary brightwell,CIN,RB,classic,00-0036569,auto_exact,high
 133646-175154,TE,Jack,Jack Endries,Endries,,0,4000,TB@CIN,CIN,TB,,,,,,TE/FLEX,Jack Endries,fd,4000,jack endries,CIN,TE,classic,00-0041116,auto_exact,high
-133646-129081,RB,Ahmani,Ahmani Marshall,Marshall,,0,4000,CHI@CAR,CAR,CHI,,,,,,RB/FLEX,Ahmani Marshall,fd,4000,ahmani marshall,CAR,RB,classic,00-0040260,auto_fallback_team_mismatch,medium
+133646-129081,RB,Ahmani,Ahmani Marshall,Marshall,,0,4000,CHI@CAR,CAR,CHI,,,,,,RB/FLEX,Ahmani Marshall,fd,4000,ahmani marshall,CAR,RB,classic,00-0040260,auto_exact,high
 133646-173113,RB,Eli,Eli Heidenreich,Heidenreich,,0,4000,ATL@PIT,PIT,ATL,,,,,,RB/FLEX,Eli Heidenreich,fd,4000,eli heidenreich,PIT,RB,classic,00-0041490,auto_exact,high
 133646-87109,WR,Bryce,Bryce Oliver,Oliver,1.2999999523162842,1,4000,CLE@JAC,CLE,JAC,,,,,,WR/FLEX,Bryce Oliver,fd,4000,bryce oliver,CLE,WR,classic,00-0039650,auto_fallback_team_mismatch,medium
 133646-168005,WR,CJ,CJ Williams,Williams,,0,4000,CLE@JAC,JAC,CLE,,,,,,WR/FLEX,CJ Williams,fd,4000,cj williams,JAX,WR,classic,00-0041106,auto_exact,high
@@ -420,7 +420,7 @@ Id,Position,First Name,Nickname,Last Name,FPPG,Played,Salary,Game,Team,Opponent,
 133646-71444,RB,Travis,Travis Homer,Homer,-0.0400000005960464,5,4000,ATL@PIT,PIT,ATL,,,,,,RB/FLEX,Travis Homer,fd,4000,travis homer,PIT,RB,classic,00-0035594,auto_fallback_team_mismatch,medium
 133646-152350,RB,Jamal,Jamal Haynes,Haynes,,0,4000,TB@CIN,CIN,TB,,,,,,RB/FLEX,Jamal Haynes,fd,4000,jamal haynes,CIN,RB,classic,00-0041244,auto_exact,high
 133646-170783,WR,Omari,Omari Kelly,Kelly,,0,4000,CHI@CAR,CHI,CAR,,,,,,WR/FLEX,Omari Kelly,fd,4000,omari kelly,CHI,WR,classic,00-0041168,auto_exact,high
-133646-167714,TE,Kenny,Kenny Fletcher Jr.,Fletcher Jr.,,0,4000,TB@CIN,TB,CIN,,,,,,TE/FLEX,Kenny Fletcher Jr.,fd,4000,kenny fletcher,TB,TE,classic,00-0041252,auto_exact,high
+133646-167714,TE,Kenny,Kenny Fletcher Jr.,Fletcher Jr.,,0,4000,TB@CIN,TB,CIN,,,,,,TE/FLEX,Kenny Fletcher Jr.,fd,4000,kenny fletcher,TB,TE,classic,00-0041252,auto_fallback_team_mismatch,medium
 133646-119584,TE,Carson,Carson Towt,Towt,,0,4000,BAL@IND,IND,BAL,IR,Undisclosed,,,,TE/FLEX,Carson Towt,fd,4000,carson towt,IND,TE,classic,00-0040853,auto_exact,high
 133646-71459,RB,Brittain,Brittain Brown,Brown,4.849999904632568,2,4000,CHI@CAR,CHI,CAR,IR,Undisclosed,,,,RB/FLEX,Brittain Brown,fd,4000,brittain brown,CHI,RB,classic,00-0037329,auto_exact,high
 133646-158506,TE,Louis,Louis Hansen,Hansen,,0,4000,BUF@HOU,HOU,BUF,,,,,,TE/FLEX,Louis Hansen,fd,4000,louis hansen,HOU,TE,classic,00-0041535,auto_exact,high
