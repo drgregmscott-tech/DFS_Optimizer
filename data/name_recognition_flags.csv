@@ -1,2 +1,13 @@
 player_id,player_name,flag_weight,notes
-00-0033873,Patrick Mahomes,15,example only -- replace/expand with real judgment calls before relying on this for real chalk_score output
+00-0033873,Patrick Mahomes,15,Perennial #1-owned QB regardless of matchup -- brand/highlight-reel recognition alone drives chalk ownership above what any projection model would predict.
+00-0036322,Justin Jefferson,14,"Top-of-market recognizable WR1 -- consistently overowned relative to pure projection due to name-brand pull, even on an average week."
+00-0036900,Ja'Marr Chase,12,Elite recognizable WR who anchors public GPP builds around his team's whole passing game -- Wk1 2026 main slate.
+00-0039139,Jahmyr Gibbs,13,Breakout-star RB with heavy highlight-reel/hype momentum entering Wk1 2026 -- public gravitates to him beyond raw volume projection.
+00-0036963,Amon-Ra St. Brown,10,"Recognizable target-share alpha WR1 in a good matchup -- public chalk beyond model-implied ownership, Wk1 2026 main slate."
+00-0032764,Derrick Henry,10,Legacy star-power RB (former MVP-caliber workhorse) -- public defaults to him on name recognition even when the raw workload split doesn't fully support it.
+00-0036223,Jonathan Taylor,9,Recognizable bell-cow RB brand -- public ownership tends to run ahead of game-script-adjusted projection.
+00-0038597,Chase Brown,6,Post-breakout hype carrying into Wk1 2026 after a strong prior season -- public overweights recent narrative.
+00-0040126,Colston Loveland,8,Hyped rookie TE (first-round pedigree) -- name recognition/rookie-hype ownership bump independent of early-season target share uncertainty.
+00-0039919,Rome Odunze,6,Second-year hype WR with preseason buzz -- public ownership skews above what a rookie-year target share model alone would project.
+00-0034855,Baker Mayfield,5,Recognizable bounce-back-narrative QB -- media storyline drives public ownership modestly above pure projection.
+00-0034753,Mark Andrews,6,Established name-brand TE -- public defaults to him in TE-thin builds on reputation even amid a crowded Baltimore passing game.

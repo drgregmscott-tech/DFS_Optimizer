@@ -13,8 +13,9 @@
 | 3 | Automated refresh loop | GitHub Actions + Cloudflare Worker | Runs unattended until lock |
 | 4 | Build & preview lineups | **You**, via the deployed UI | Anytime before lock |
 | 5 | Export & re-upload | **You**, back into DK/FD | Near lock |
+| 6 | Log actual ownership | **You** | After DK/FD post contest results |
 
-Stages 1, 2, 4, and 5 are things you do. Stage 3 runs unattended once Stage 2 is complete and pushed.
+Stages 1, 2, 4, 5, and 6 are things you do. Stage 3 runs unattended once Stage 2 is complete and pushed.
 
 ---
 
@@ -381,6 +382,10 @@ Select it in the dropdown and click **Delete**. Removes it from this browser and
 
 Set your options in the Build panel and click **Build Lineups**. Review all lineups before exporting. If lineups look wrong, contact Claude before proceeding.
 
+### Before lock — review name-recognition flags
+
+Spend 15-20 minutes on `data/name_recognition_flags.csv` before you finalize lineups. This is the manual "fame/hype" ownership bonus (chalk names, hyped rookies, big names returning from injury) that the chalk-score model can't infer on its own. Add/update rows for this week's real judgment calls — the file ships with only one example row (Patrick Mahomes) and needs real entries to do anything useful for the current slate.
+
 **Participation Floors** (Session 15): a new Build panel field, on by default (`QB:0.6,RB:0.4,TE:0.4`). Excludes a player from the pool if he's barely shown up in his team's last 5 games — catches a real backup, or a player still out injured, that a point projection alone can miss. If you know a player is a legitimate exception (e.g. a starter you know is back from injury at full workload, even though his recent-games history hasn't caught up to that yet), **Lock** him in — a lock always overrides the floor. Clear the field entirely to turn the floor off for a build.
 
 ### Pivot suggestions (cash-to-GPP)
@@ -408,6 +413,43 @@ Click **Download Lineups for DraftKings Import**. Upload that file back into DK 
 **Showdown:** the downloaded file uses `CPT,FLEX,FLEX,FLEX,FLEX,FLEX` columns on DK or `MVP,FLEX,FLEX,FLEX,FLEX` on FD — different from classic's `QB,RB,RB,WR,WR,WR,TE,FLEX,DST`. Make sure you're uploading into the Captain Mode / Single Game bulk-entry template, not the Classic one, or DK/FD will reject it.
 
 Lock hits. Done.
+
+---
+
+## Stage 6 — Log actual ownership
+
+**This is a real, required weekly step — not optional.** `scripts/log_ownership.py` builds the dataset Sessions 11.1/11.2 need to fit ownership model parameters against reality (a 4-6 week data gate). It does nothing unless you actually run it every week.
+
+Do this once DK and/or FD post post-lock ownership percentages on the contest results page — usually within an hour or two of lock, for large-field GPPs (DK Millionaire Maker and similar). FanDuel posts the same on its My Contests page. There is no API for this; it's a manual copy-paste.
+
+1. **Build the raw ownership CSV.** Copy player names and ownership percentages off the results page into a new CSV under `data/`, e.g. `data/ownership_raw_dk_2026_wk5.csv`.
+   - Classic slates: two columns — `player_name, actual_ownership_pct`
+   - Showdown slates: three columns — `player_name, roster_role, actual_ownership_pct` (`roster_role` must be exactly `CPT`/`FLEX` for DK or `MVP`/`FLEX` for FD)
+   - See `scripts/log_ownership.py`'s own module docstring for full details on the raw CSV shape.
+
+2. **Run the logger:**
+
+```
+python scripts/log_ownership.py log --site dk --season 2026 --week 5 --slate-id classic_wk5 --slate-type regular_season --contest-type single_entry_gpp --field-size 150000 --input data/ownership_raw_dk_2026_wk5.csv --source "DK Millionaire Maker results page 2026-10-12"
+```
+
+Use the SAME `--slate-id` you used for this slate all week (Step 2c) — the script reads `output/final_projections_{site}_{slate_id}.csv` to match players. Repeat once per site/slate you played (DK and FD are logged separately; a Classic and Showdown slate in the same week are also logged separately).
+
+3. **Check the output.** It reports match rate and prints a `DATA GATE:` line showing how many regular-season weeks are logged toward the 4-6 week minimum. Any unmatched players are written to `data/ownership_unmatched_{site}_{slate_id}.csv` — add real fixes to `data/name_mapping.csv` and re-run if it's worth resolving.
+
+4. **Commit the result** — `data/ownership_actual_log.csv` is a growing dataset that lives in the repo, same treatment as `name_mapping.csv`:
+
+```
+git add data/ownership_actual_log.csv data/ownership_raw_dk_2026_wk5.csv
+```
+```
+git commit -m "Log actual ownership - DK wk5"
+```
+```
+git push
+```
+
+Run `python scripts/log_ownership.py summary` any time to see what's been logged so far without adding anything.
 
 ---
 

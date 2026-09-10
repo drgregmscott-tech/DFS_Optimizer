@@ -3226,7 +3226,7 @@ Also separately confirmed via ROADMAP's own "Known Deferred Validations" section
 ---
 
 ### Ad Hoc Session A2 — Ownership Data Collection Kickoff + Name-Recognition Seeding
-**Status:** 🔲 Not started — low effort, high long-term payoff; best started this week since Week 1 is the first real data point available.
+**Status:** 🟡 In progress — steps 2 and 3 done (2026-09-10). Step 1 (the actual `log_ownership.py log` run) is blocked until the real Week 1 slate locks and DK/FD post post-lock ownership on the contest results page.
 
 **Prerequisites:** none blocking.
 
@@ -3240,10 +3240,10 @@ Also separately confirmed via ROADMAP's own "Known Deferred Validations" section
 **Files likely touched:** `data/ownership_actual_log.csv` (created), `data/name_recognition_flags.csv`, `DFS_Weekly_Process.md`.
 
 **Validation:**
-- [ ] `data/ownership_actual_log.csv` exists with at least one real `regular_season` row after Week 1.
-- [ ] `log_ownership.py summary` prints a nonzero data-gate count.
-- [ ] `DFS_Weekly_Process.md` has an explicit post-slate ownership-logging step.
-- [ ] `name_recognition_flags.csv` has more than the one placeholder row, with real Week 1 names.
+- [ ] `data/ownership_actual_log.csv` exists with at least one real `regular_season` row after Week 1. **Still open — requires the real Week 1 slate to lock and DK/FD to post post-lock ownership before `log_ownership.py log` can be run for the first time.**
+- [ ] `log_ownership.py summary` prints a nonzero data-gate count. **Still open — depends on the row above.**
+- [x] `DFS_Weekly_Process.md` has an explicit post-slate ownership-logging step. Added as Stage 6 (2026-09-10), plus a pre-lock reminder to review `name_recognition_flags.csv` under Stage 4.
+- [x] `name_recognition_flags.csv` has more than the one placeholder row, with real Week 1 names. Now has 12 rows (Mahomes plus 11 real Week 1 2026 chalk/hype judgment calls, keyed to real `player_id`s off the actual Wk1 main-slate projections file), 2026-09-10.
 
 ---
 
