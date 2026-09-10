@@ -1,0 +1,18 @@
+player_id,player_name,team,position,status,raw_status,last_updated,match_method
+00-0040081,Jake Briningstool,KC,TE,ACTIVE,,,auto_exact
+00-0036945,Justin Fields,KC,QB,ACTIVE,,,auto_fallback_name_only
+00-0036637,Noah Gray,KC,TE,ACTIVE,,,auto_exact
+00-0030506,Travis Kelce,KC,TE,ACTIVE,,,auto_exact
+00-0033873,Patrick Mahomes,KC,QB,QUESTIONABLE,Questionable,2026-09-08T17:14Z,auto_exact
+00-0038145,Thomas Odukoya,KC,TE,ACTIVE,,,auto_fallback_name_only
+00-0038519,Nikko Remigio,KC,WR,ACTIVE,,,auto_exact
+00-0039067,Rashee Rice,KC,WR,ACTIVE,,,auto_exact
+00-0040646,Jalen Royals,KC,WR,ACTIVE,,,auto_exact
+00-0040078,Brashard Smith,KC,RB,ACTIVE,,,auto_exact
+00-0038104,Tyquan Thornton,KC,WR,ACTIVE,,,auto_exact
+00-0038134,Kenneth Walker III,KC,RB,ACTIVE,,,auto_fallback_name_only
+00-0039824,Jared Wiley,KC,TE,ACTIVE,,,auto_exact
+00-0039894,Xavier Worthy,KC,WR,ACTIVE,,,auto_exact
+00-0040120,Jimmy Holiday,KC,WR,OUT,Injured Reserve,2026-08-31T17:40Z,auto_exact
+00-0040298,Andrew Armstrong,KC,WR,ACTIVE,,,auto_fallback_name_only
+00-0038489,Ben VanSumeren,KC,FB,ACTIVE,,,auto_fallback_name_only

@@ -3189,3 +3189,133 @@ Validation:
 A portable handoff summary of both features' architecture, the pitfalls found and corrected, and what needs re-deriving per sport (the ±10% multiplier is NFL/DK/FD-specific, not portable as a number) was written separately for Greg to bring into `DFS_Optimizer_NHL` and `DFS_Optimizer_PGA` — not part of this repo.
 
 ---
+
+## Ad Hoc Sessions — Pre-Season Readiness Assessment Findings (2026-09-10)
+
+Not part of the original Phase numbering above. Opened from a deliberate, slow, one-area-at-a-time readiness review (projections, then ownership, then lineup construction/optimizer tuning) three days before the real 2026 Week 1 Sunday slate, done as pure assessment — no code changed during the review itself. Each card below is a finding from that review, scoped into its own session so it can be picked up independently, in whatever order the real calendar allows. Numbered A1-A5 (not continuing the Session N sequence above) specifically so they never collide with an in-progress or future Phase session number.
+
+### Ad Hoc Session A1 — Injury/Active-Status Pipeline Emergency Fix
+**Status:** 🔲 Not started — highest priority, time-sensitive (found 3 days before Week 1 Sunday).
+
+**Prerequisites:** none blocking — should run before or immediately alongside Week 1 itself, not deferred behind anything else on this list.
+
+**Trigger:** found during the projections readiness review. Two real, confirmed problems, live right now:
+1. No `output/player_status_*.csv` has been committed since **2026-09-03**, even though `current_slate.json` was updated that same day to point at the real Week 1 slates, and multiple `full_refresh_scheduled`/`full_refresh_dispatch` GitHub Actions runs have completed successfully since then. The ESPN roster-injuries endpoint itself was confirmed live and working (hit directly during the review — real, current Week 1 2026 data, e.g. Patrick Mahomes genuinely "Questionable" as of 2026-09-08). The failure is somewhere in the CI path specifically, not the data source, and could not be root-caused further without the actual GitHub Actions run logs.
+2. A real, confirmed `STATUS_MAP` gap in `scripts/status_check.py`: ESPN is returning a raw status string `"Suspension"` (6 real Week 1 2026 players — James Pearce Jr., Phidarian Mathis, Cam Taylor-Britt, Jeshaun Jones, Brock Rechsteiner, Dorance Armstrong) that isn't in `STATUS_MAP`, tripping the script's fail-loud exit. Present since at least 2026-08-19; does not fully explain finding #1's exact Sep-3 cutoff, but is a confirmed, independent bug regardless.
+
+Also separately confirmed via ROADMAP's own "Known Deferred Validations" section: **the OUT/DOUBTFUL zero-out mechanism has never been cross-checked against a real regular-season game-day designation** (deferred at Session 5.1, never revisited since — SESSION_LOG.md's own log ends at Session 16, 2026-08-21, with no later re-validation entry).
+
+**Scope:**
+1. Get a real GitHub Actions run log for a recent failed/no-op `status_pull` step and find the actual CI-side failure (rate limiting on ESPN from the runner IP, a dependency issue, an unhandled exception not reproducible locally — the review could not access Actions logs to narrow this further).
+2. Add `"suspension": "OUT"` (or the correct real-world mapping) to `STATUS_MAP` in `scripts/status_check.py`.
+3. Once fixed, do one full manual `status_check.py pull` + `apply` pass against the real Week 1 slate(s) and manually spot-check 3-4 known real injury situations against what actually lands in `final_projections_{site}_*.csv` — don't trust the automation blindly on the first real run back.
+4. Close (or explicitly re-open with a new date) the long-standing "real OUT/DOUBTFUL cross-checked against NFL.com" deferred validation in this file's "Known Deferred Validations" section, now that a real regular-season game week finally exists to check it against.
+
+**Files likely touched:** `scripts/status_check.py`, `.github/workflows/refresh_data.yml` (only if the CI root cause turns out to be workflow-side).
+
+**Validation:**
+- [ ] A fresh `status_check.py pull --season 2025 --week 23` (or whatever season/week sentinel is live) succeeds in real GitHub Actions and a new `output/player_status_*.csv` is actually committed.
+- [ ] `"Suspension"` (and any other newly-discovered unmapped raw status) no longer trips the fail-loud exit.
+- [ ] A real OUT player from a real, current slate is confirmed zeroed in `final_projections_{site}_{slate_id}.csv` after `apply` — the specific validation this project's own roadmap has been carrying as deferred since Session 5.1.
+- [ ] Root cause of the Sep-3 CI gap documented in SESSION_LOG.md, whatever it turns out to be.
+
+---
+
+### Ad Hoc Session A2 — Ownership Data Collection Kickoff + Name-Recognition Seeding
+**Status:** 🔲 Not started — low effort, high long-term payoff; best started this week since Week 1 is the first real data point available.
+
+**Prerequisites:** none blocking.
+
+**Trigger:** found during the ownership readiness review. `scripts/log_ownership.py` — the mechanism that logs real post-lock DK/FD ownership so Session 11.1's blend-weight/temperature retuning can eventually fit against reality — was built back in Session 9.3/11.0 (2026-07-28). `data/ownership_actual_log.csv` does not exist: **zero rows have ever been logged**, across every preseason and Madden Sim slate that's happened since. Root cause: `log_ownership.py` is never mentioned anywhere in `DFS_Weekly_Process.md`, so nothing in the actual weekly routine prompts logging it. Separately, `data/name_recognition_flags.csv` — the manual fame/name-recognition ownership bonus — has exactly one row (Patrick Mahomes), explicitly labeled in the file itself as "example only."
+
+**Scope:**
+1. After a real Week 1 large-field GPP contest closes, copy its post-lock ownership results into a raw CSV and run `log_ownership.py log` for real, for the first time ever — this is the first data point toward Session 11.1's 4-6 week gate.
+2. Add a step to `DFS_Weekly_Process.md` documenting this as a normal part of the weekly routine, so it doesn't lapse again.
+3. Spend 15-20 minutes populating `data/name_recognition_flags.csv` with real, current Week 1 judgment calls (known chalk names, hype rookies, big names coming off injury) before lock.
+
+**Files likely touched:** `data/ownership_actual_log.csv` (created), `data/name_recognition_flags.csv`, `DFS_Weekly_Process.md`.
+
+**Validation:**
+- [ ] `data/ownership_actual_log.csv` exists with at least one real `regular_season` row after Week 1.
+- [ ] `log_ownership.py summary` prints a nonzero data-gate count.
+- [ ] `DFS_Weekly_Process.md` has an explicit post-slate ownership-logging step.
+- [ ] `name_recognition_flags.csv` has more than the one placeholder row, with real Week 1 names.
+
+---
+
+### Ad Hoc Session A3 — Optimizer Saved Presets (Cash / Single-Entry-3Max GPP / MME GPP)
+**Status:** 🔲 Not started — Greg's explicit request, scoped during the lineup-construction readiness review.
+
+**Prerequisites:** none blocking. Independent of A1/A2/A4/A5, though its lambda values should be revisited once A5's backtest sweep runs.
+
+**Trigger:** Greg's ask — one-click saved settings for the optimizer, so building a cash lineup vs. a single-entry/3-max GPP vs. a 20+ lineup MME GPP doesn't require re-configuring every control by hand each time. Scoped against real gaps found during the optimizer review: `--stack-mode` defaults to `none` in both the CLI and the frontend UI (confirmed: the dropdown's default option is "None," and `DFS_Weekly_Process.md`'s own documented example command doesn't stack either), and `--lambda` defaults to `0.0` (pure point-maximization, no cash/GPP risk-shaping) even though a real, measured lambda grid already exists from a 2018-2021 DK backtest (floor-seeking: 0.039-0.188; upside-seeking: -0.003 to -0.095) that was never swept to pick a validated value.
+
+**Proposed starting-point flag bundles** (placeholder values — see A5 for making the lambda column real):
+
+| Setting | Cash | Single-Entry / 3-Max GPP | MME GPP (20-150) |
+|---|---|---|---|
+| `--n-lineups` | 1-3 | 1-3 | 20-150 |
+| `--max-exposure` | 100% | 100% | 30-40% |
+| `--uniqueness` | 0-1 | 2-3 | 1 |
+| `--stack-mode` | none | `qb` + `--bring-back` | `qb`/`game` + `--bring-back` |
+| `--randomization-pct` | 0 | 0-5% | 15-20% |
+| `--lambda` | +0.06 (FLAGGED ARBITRARY until A5) | -0.01 to -0.03 (FLAGGED ARBITRARY until A5) | -0.03 to -0.09 (FLAGGED ARBITRARY until A5) |
+| `--participation-floors` | default or tighter | default | default |
+| `--allow-skill-vs-opp-dst` | off (keep exclusion) | off | off |
+
+**Scope:**
+1. Backend: named config bundles (e.g. `data/optimizer_presets.json` or similar) that `optimizer.py` and/or the dispatch workflow can load by name, populating every flag above in one shot.
+2. Frontend: three buttons/a dropdown in `dfs_optimizer_frontend/index.html` that apply a preset's full control state at once, same interaction pattern as an existing saved-settings control if one already exists in the UI.
+3. Ship with the placeholder lambda values above, clearly flagged the same way this project flags every other unfit constant — update once A5 lands.
+
+**Files likely touched:** `scripts/optimizer.py`, `dfs_optimizer_frontend/index.html`, `.github/workflows/run_optimizer_dispatch.yml`, `cloudflare_worker/optimizer_api/optimizer_api.js`, a new preset-definition file.
+
+**Validation:**
+- [ ] Selecting each of the three presets in the real UI and running a build produces a lineup/batch with exactly the intended flag values (spot-check the dispatch payload or CLI invocation, not just the output).
+- [ ] All three presets tested against a real, live Week 1 slate — a real Cash build, a real 3-lineup SE/3-Max build, and a real 20+ lineup MME build.
+- [ ] Preset values remain easy to update in one place once A5's real lambda numbers exist.
+
+---
+
+### Ad Hoc Session A4 — In-Week Injury-Driven Role-Change & Questionable/Doubtful Discount
+**Status:** 🔲 Not started — structural design question, not urgent for this Sunday specifically, but directly addresses Greg's original stated concern about backups gaining/losing role due to injury news.
+
+**Prerequisites:** A1 (the injury pipeline needs to be reliably producing fresh status data before it's worth feeding into projections).
+
+**Trigger:** found during the projections readiness review, and already flagged honestly in this project's own code (ROADMAP.md line ~831, `volume_prior.py`'s role-change docstring): the only mechanism that raises a backup's projection when a starter is out is `role_change_participation()`, which compares DFS **salary-implied** usage share against recent-game usage share — i.e. it only works once DK/FD's own pricing has caught up to the news. There is currently no mechanism at all for the classic in-week scenario (a starter ruled OUT Thursday/Saturday/Sunday morning, after salaries already locked) — the backup's price never moves, so nothing reacts. Separately: a merely Questionable/Doubtful starter gets **zero discount** to his own projection today — `status_check.py`'s `apply` explicitly leaves `final_projection` untouched for anything short of OUT, by original design ("flags but doesn't exclude").
+
+**Scope (design question first, then build):**
+1. Decide whether/how to feed `injury_status` (once A1 makes it reliable) into `apply_confirmed_starter_override()`'s existing depth-chart logic, so a freshly-OUT starter's real backup (per `data/depth_charts_current.parquet`) gets a same-week participation boost, not just a price-implied one.
+2. Decide whether Questionable/Doubtful should apply any flat or graduated discount to the player's own projection (even a fixed haircut), and if so, how it should be reversed if the player is later upgraded to Active before lock.
+3. Build and validate against a real in-season case once one occurs (this is the kind of fix that's hard to validate on preseason/Week-1 data alone, since Week 1 has no in-week role-change history to compare against).
+
+**Files likely touched:** `scripts/statline_model.py`, `scripts/volume_prior.py`, `scripts/status_check.py`, `scripts/build_projections_statline.py`.
+
+**Validation:**
+- [ ] A real, live in-season case (a starter ruled OUT mid-week after salaries locked) produces a visibly higher `final_projection` for the real backup, traceable to this mechanism specifically.
+- [ ] A real Questionable/Doubtful starter's projection reflects the intended treatment (discounted or explicitly left alone by documented decision), and reverts correctly if his status later clears before lock.
+- [ ] No regression to Week-1-shaped pools (the true cold-start case, where the confirmed-starter override already has special handling — see `statline_model.py` decision #14/Session 15.2).
+
+---
+
+### Ad Hoc Session A5 — Calibration Sweeps (Lambda Backtest + Ownership Retuning Trigger)
+**Status:** 🔲 Not started — data/time-gated, lowest urgency of the five, but unlocks real (not placeholder) numbers for A2 and A3.
+
+**Prerequisites:** For the lambda half — none blocking, the historical backtest data already exists (2018-2021 DK, 65 weeks, per Session 10.5's probe A3). For the ownership half — A2 must be running and Session 11.1's existing 4-6 real regular-season week data gate must be met (see that card above in this file).
+
+**Trigger:** two separate "the mechanism exists, the final calibration step never ran" gaps found across the lineup-construction and ownership reviews:
+1. Session 10.5's mean-variance objective (`sum(mean) - lambda*sum(sigma²)`) has real, derived candidate lambda grids for both cash (floor-seeking) and GPP (upside-seeking) play, but the actual backtest sweep to pick a validated value from each grid was never run — `optimizer.py`'s own `--lambda` help text calls 0.0 "the only defensible production default until that sweep runs."
+2. Session 11.1's ownership blend-weight/temperature retuning has been fully blocked since design time on `ownership_actual_log.csv` having 4-6 weeks of real data — a gate that could not even begin until Ad Hoc Session A2 above produces its first real row.
+
+**Scope:**
+1. Run Session 10.5's backtest sweep over the existing candidate lambda grids (cash and GPP separately, both sites if data allows) and land on a validated default for each of Ad Hoc Session A3's three presets, replacing the FLAGGED ARBITRARY placeholders there.
+2. Once A2 has produced 4-6 real regular-season weeks of logged ownership, run Session 11.1's existing (already-designed, see that card above) regression retuning of `ownership_heuristic.py`'s blend weights and softmax temperature.
+3. Not urgent to run early or all at once — the lambda half can happen independently and as soon as convenient; the ownership half is naturally gated by real-season data accumulating over several weeks regardless of when this card is picked up.
+
+**Files likely touched:** new/existing fitter scripts per Session 10.5 and Session 11.1's own cards, `scripts/optimizer.py` (consuming the fitted lambda values), `scripts/ownership_heuristic.py` (consuming Session 11.1's fitted artifact, per that card's existing design).
+
+**Validation:**
+- [ ] Lambda sweep validated against real held-out data, per Session 10.5's own backtest methodology; resulting values updated into Ad Hoc Session A3's presets.
+- [ ] Session 11.1's own validation checklist (holdout MAE improves over baseline, budget constraint still holds, top-5-owned rank ordering correct) — see that card above, unchanged.
+
+---
