@@ -3558,11 +3558,17 @@ def main():
              "if the pool has no per-player sigma. The derived coarse grid from "
              "probe A3 (2018-2021 DK, 65 weeks): floor-seeking cash "
              "[0.039, 0.063, 0.104, 0.139, 0.188]; upside-seeking GPP "
-             "[-0.003, -0.005, -0.014, -0.030, -0.095]. These are derived "
-             "from the data -- not guessed -- and are the input to Session "
-             "10.5's backtest sweep. FLAGGED ARBITRARY: no lambda has been "
-             "validated by a backtest sweep yet; 0.0 is the only defensible "
-             "production default until that sweep runs.",
+             "[-0.003, -0.005, -0.014, -0.030, -0.095]. Session 10.5b swept "
+             "this grid (DK, 2018-2021, 65 weeks, holdout): cash (beat@p44) "
+             "best at lambda=0.063 (+0.006 over 0.0, <1 SE, suggestive not "
+             "conclusive); 3-max GPP (beat@p50) also best at 0.063 but no "
+             "clear winner over 0.0; large-field GPP (top@p90) best at "
+             "lambda=-0.005, with any positive lambda actively harmful "
+             "(median-pctile falls). lambda>=0.188 is harmful everywhere. "
+             "This flag's own default stays 0.0 (unchanged historical "
+             "behavior); the sweep's validated values are what Ad Hoc "
+             "Session A3's cash/se_gpp/mme_gpp presets use -- see "
+             "data/optimizer_presets.json and ROADMAP.md Ad Hoc Session A5.",
     )
     # Session 12 -- Team / Game Exposure Caps (decisions #36-38).
     parser.add_argument(

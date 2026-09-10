@@ -1588,7 +1588,7 @@ in this browser's localStorage.</p>
         <div>
           <span class="field-label">Lambda (variance penalty)</span>
           <input type="number" id="ctrlLambda" step="0.001" value="0" placeholder="0 = pure point-maximization">
-          <div class="hint" style="margin-top:4px">Session 10.5's mean-variance objective: sum(mean) - lambda*sum(sigma&sup2;). 0 (default) maximizes projected points only. Positive = floor-seeking (cash); negative = upside-seeking (GPP). Requires a projection build with --sigma-recalibration -- the solve fails loudly if the pool has no per-player sigma. FLAGGED ARBITRARY: the built-in presets' lambda values are un-swept placeholders (see ROADMAP.md Ad Hoc Session A5) -- treat them as a starting point to test, not a validated number.</div>
+          <div class="hint" style="margin-top:4px">Session 10.5's mean-variance objective: sum(mean) - lambda*sum(sigma&sup2;). 0 (default) maximizes projected points only. Positive = floor-seeking (cash); negative = upside-seeking (GPP). Requires a projection build with --sigma-recalibration -- the solve fails loudly if the pool has no per-player sigma. Built-in presets' lambda values are Session 10.5b's swept defaults (DK, 2018-2021, 65 weeks, holdout; see ROADMAP.md Ad Hoc Session A5) -- cash/SE-3Max at 0.063 (best on their own metric, though the 3-Max case was not a clear winner over 0.0), MME at -0.005 (positive lambda measurably hurts large-field GPP).</div>
         </div>
       </div>
 
@@ -2991,26 +2991,25 @@ in this browser's localStorage.</p>
   // hand. These always appear in the dropdown, even with no Worker configured
   // (unlike user-saved cloud presets below), and can't be deleted. Lambda
   // values here match data/optimizer_presets.json's cash/se_gpp/mme_gpp
-  // bundles (kept in sync by hand -- there are only three, and they're only
-  // meant to change once, when Ad Hoc Session A5's backtest sweep lands) and
-  // are FLAGGED ARBITRARY -- see this control's own hint text and
-  // ROADMAP.md Ad Hoc Session A5.
+  // bundles (kept in sync by hand -- there are only three) and are the
+  // validated defaults from Session 10.5b's backtest sweep -- see this
+  // control's own hint text and ROADMAP.md Ad Hoc Session A5.
   var BUILTIN_PRESET_NAMES = ["Cash", "SE / 3-Max GPP", "MME GPP (20-150)"];
   var BUILTIN_PRESETS = {
     "Cash": {
       ctrlNLineups: "3", ctrlMaxExposure: "100", ctrlUniqueness: "0",
       ctrlRandomization: "0", ctrlStackMode: "none",
-      ctrlAllowSkillVsOppDst: false, ctrlLambda: "0.06"
+      ctrlAllowSkillVsOppDst: false, ctrlLambda: "0.063"
     },
     "SE / 3-Max GPP": {
       ctrlNLineups: "3", ctrlMaxExposure: "100", ctrlUniqueness: "3",
       ctrlRandomization: "3", ctrlStackMode: "qb", ctrlStackSize: "1",
-      ctrlBringBack: true, ctrlAllowSkillVsOppDst: false, ctrlLambda: "-0.02"
+      ctrlBringBack: true, ctrlAllowSkillVsOppDst: false, ctrlLambda: "0.063"
     },
     "MME GPP (20-150)": {
       ctrlNLineups: "100", ctrlMaxExposure: "35", ctrlUniqueness: "1",
       ctrlRandomization: "18", ctrlStackMode: "qb", ctrlStackSize: "1",
-      ctrlBringBack: true, ctrlAllowSkillVsOppDst: false, ctrlLambda: "-0.06"
+      ctrlBringBack: true, ctrlAllowSkillVsOppDst: false, ctrlLambda: "-0.005"
     }
   };
 

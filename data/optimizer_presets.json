@@ -1,12 +1,12 @@
 {
-  "_comment": "Ad Hoc Session A3 -- built-in starter flag bundles for optimizer.py's --preset flag. Not a config format for user-saved presets (those live in the frontend's cloud-synced preset store, a separate mechanism) -- this file is the CLI's one-shot starting point for the three lineup types Greg builds: Cash, SE/3-Max GPP, and MME GPP (20-150 lineups). Any flag explicitly passed on the command line overrides the matching value here (see main()'s _load_preset_overrides()). lambda values are FLAGGED ARBITRARY -- see optimizer.py's --lambda help text and ROADMAP.md Ad Hoc Session A5; update once that backtest sweep validates real values.",
+  "_comment": "Ad Hoc Session A3 -- built-in starter flag bundles for optimizer.py's --preset flag. Not a config format for user-saved presets (those live in the frontend's cloud-synced preset store, a separate mechanism) -- this file is the CLI's one-shot starting point for the three lineup types Greg builds: Cash, SE/3-Max GPP, and MME GPP (20-150 lineups). Any flag explicitly passed on the command line overrides the matching value here (see main()'s _load_preset_overrides()). lambda values are the validated defaults from Session 10.5b's backtest sweep (DK, 2018-2021, 65 weeks, holdout) -- see optimizer.py's --lambda help text and ROADMAP.md Ad Hoc Session A5. Cash and se_gpp use lambda=0.063, the grid's best value for their own metric (cash beat@p44 +0.006 over 0.0, <1 SE, suggestive not conclusive; se_gpp/3-max beat@p50 also best at 0.063 but no clear winner over 0.0). mme_gpp uses lambda=-0.005, the grid's best value for large-field top@p90, where any positive lambda measurably hurts.",
   "cash": {
     "n-lineups": 3,
     "max-exposure": 1.0,
     "uniqueness": 0,
     "stack-mode": "none",
     "randomization-pct": 0,
-    "lambda": 0.06
+    "lambda": 0.063
   },
   "se_gpp": {
     "n-lineups": 3,
@@ -16,7 +16,7 @@
     "stack-size": 1,
     "bring-back": true,
     "randomization-pct": 3,
-    "lambda": -0.02
+    "lambda": 0.063
   },
   "mme_gpp": {
     "n-lineups": 100,
@@ -26,6 +26,6 @@
     "stack-size": 1,
     "bring-back": true,
     "randomization-pct": 18,
-    "lambda": -0.06
+    "lambda": -0.005
   }
 }

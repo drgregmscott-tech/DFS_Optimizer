@@ -3250,11 +3250,11 @@ Also separately confirmed via ROADMAP's own "Known Deferred Validations" section
 ### Ad Hoc Session A3 — Optimizer Saved Presets (Cash / Single-Entry-3Max GPP / MME GPP)
 **Status:** 🟡 Built, not yet validated live — backend (`data/optimizer_presets.json` + `optimizer.py --preset`) and frontend (three built-in presets in the dropdown, including a new Lambda control wired end-to-end through the Worker and dispatch workflow) are both implemented and passed offline checks (preset-default precedence, unknown-preset error, JS/Python syntax). No real build against a live slate has been run yet through any of the three presets — see this card's own validation checklist below.
 
-**Prerequisites:** none blocking. Independent of A1/A2/A4/A5, though its lambda values should be revisited once A5's backtest sweep runs.
+**Prerequisites:** none blocking. Independent of A1/A2/A4/A5.
 
-**Trigger:** Greg's ask — one-click saved settings for the optimizer, so building a cash lineup vs. a single-entry/3-max GPP vs. a 20+ lineup MME GPP doesn't require re-configuring every control by hand each time. Scoped against real gaps found during the optimizer review: `--stack-mode` defaults to `none` in both the CLI and the frontend UI (confirmed: the dropdown's default option is "None," and `DFS_Weekly_Process.md`'s own documented example command doesn't stack either), and `--lambda` defaults to `0.0` (pure point-maximization, no cash/GPP risk-shaping) even though a real, measured lambda grid already exists from a 2018-2021 DK backtest (floor-seeking: 0.039-0.188; upside-seeking: -0.003 to -0.095) that was never swept to pick a validated value.
+**Trigger:** Greg's ask — one-click saved settings for the optimizer, so building a cash lineup vs. a single-entry/3-max GPP vs. a 20+ lineup MME GPP doesn't require re-configuring every control by hand each time. Scoped against real gaps found during the optimizer review: `--stack-mode` defaults to `none` in both the CLI and the frontend UI (confirmed: the dropdown's default option is "None," and `DFS_Weekly_Process.md`'s own documented example command doesn't stack either), and `--lambda` defaults to `0.0` (pure point-maximization, no cash/GPP risk-shaping) even though a real, measured lambda grid already exists from a 2018-2021 DK backtest (floor-seeking: 0.039-0.188; upside-seeking: -0.003 to -0.095).
 
-**Proposed starting-point flag bundles** (placeholder values — see A5 for making the lambda column real):
+**Flag bundles** (lambda values updated 2026-09-10 to A5's Session 10.5b sweep results, replacing the original placeholders):
 
 | Setting | Cash | Single-Entry / 3-Max GPP | MME GPP (20-150) |
 |---|---|---|---|
@@ -3263,21 +3263,21 @@ Also separately confirmed via ROADMAP's own "Known Deferred Validations" section
 | `--uniqueness` | 0-1 | 2-3 | 1 |
 | `--stack-mode` | none | `qb` + `--bring-back` | `qb`/`game` + `--bring-back` |
 | `--randomization-pct` | 0 | 0-5% | 15-20% |
-| `--lambda` | +0.06 (FLAGGED ARBITRARY until A5) | -0.01 to -0.03 (FLAGGED ARBITRARY until A5) | -0.03 to -0.09 (FLAGGED ARBITRARY until A5) |
+| `--lambda` | +0.063 (Session 10.5b: best beat@p44, +0.006 over 0.0, <1 SE, suggestive not conclusive) | +0.063 (Session 10.5b: best beat@p50, but no clear winner over 0.0) | -0.005 (Session 10.5b: best top@p90; positive lambda measurably hurts) |
 | `--participation-floors` | default or tighter | default | default |
 | `--allow-skill-vs-opp-dst` | off (keep exclusion) | off | off |
 
 **Scope:**
 1. ✅ Backend: `data/optimizer_presets.json` (`cash`/`se_gpp`/`mme_gpp`) loaded by `optimizer.py`'s new `--preset` flag — pre-scans `sys.argv` for `--preset` before the parser is built and uses the bundle's values as each flag's `default=`, so any flag also passed explicitly on the command line still overrides the preset (verified both paths).
 2. ✅ Frontend: three built-in presets ("Cash", "SE / 3-Max GPP", "MME GPP (20-150)") always populated in the existing `presetSelect` dropdown (`dfs_optimizer_frontend/index.html`) — reuses the pre-existing cloud-preset Load/Save/Delete mechanism, with built-ins protected from being overwritten or deleted. Also added a "Lambda (variance penalty)" UI control that didn't previously exist, wired end-to-end (`ctrlLambda` → dispatch params → `optimizer_api.js` passthrough allowlist → `run_optimizer_dispatch.yml`'s arg-builder → `optimizer.py --lambda`) since presets setting lambda would otherwise be silently dropped on the UI path.
-3. ✅ Shipped with the placeholder lambda values from the table above, flagged FLAGGED ARBITRARY in both `data/optimizer_presets.json` and the frontend's Lambda field hint text and built-in-preset comment — single-place update once A5 lands.
+3. ✅ Shipped with placeholder lambda values initially; updated 2026-09-10 to A5's Session 10.5b-validated defaults (cash/se_gpp 0.063, mme_gpp -0.005) in `data/optimizer_presets.json`, the frontend's Lambda field hint text, and the built-in-preset table, replacing the FLAGGED ARBITRARY placeholders.
 
 **Files touched:** `scripts/optimizer.py`, `dfs_optimizer_frontend/index.html`, `.github/workflows/run_optimizer_dispatch.yml`, `cloudflare_worker/optimizer_api/optimizer_api.js`, `data/optimizer_presets.json` (new).
 
 **Validation:**
 - [ ] Selecting each of the three presets in the real UI and running a build produces a lineup/batch with exactly the intended flag values (spot-check the dispatch payload or CLI invocation, not just the output).
 - [ ] All three presets tested against a real, live Week 1 slate — a real Cash build, a real 3-lineup SE/3-Max build, and a real 20+ lineup MME build.
-- [ ] Preset values remain easy to update in one place once A5's real lambda numbers exist.
+- [x] Preset values remain easy to update in one place once A5's real lambda numbers exist. Done 2026-09-10 — `data/optimizer_presets.json` is the single source both the CLI and frontend built-ins were updated from.
 
 ---
 
@@ -3308,7 +3308,7 @@ Also separately confirmed via ROADMAP's own "Known Deferred Validations" section
 ---
 
 ### Ad Hoc Session A5 — Calibration Sweeps (Lambda Backtest + Ownership Retuning Trigger)
-**Status:** 🔲 Not started — data/time-gated, lowest urgency of the five, but unlocks real (not placeholder) numbers for A2 and A3.
+**Status:** 🟡 Lambda half done (2026-09-10) — the backtest sweep itself already ran back in Session 10.5b (2026-07-28) but was never wired downstream; this session closed that gap by carrying its results into A3's presets, the CLI help text, and the frontend. Ownership half still fully blocked: `data/ownership_actual_log.csv` still has zero rows (A2 step 1 hasn't run yet — see A2's card above).
 
 **Prerequisites:** For the lambda half — none blocking, the historical backtest data already exists (2018-2021 DK, 65 weeks, per Session 10.5's probe A3). For the ownership half — A2 must be running and Session 11.1's existing 4-6 real regular-season week data gate must be met (see that card above in this file).
 
@@ -3324,7 +3324,7 @@ Also separately confirmed via ROADMAP's own "Known Deferred Validations" section
 **Files likely touched:** new/existing fitter scripts per Session 10.5 and Session 11.1's own cards, `scripts/optimizer.py` (consuming the fitted lambda values), `scripts/ownership_heuristic.py` (consuming Session 11.1's fitted artifact, per that card's existing design).
 
 **Validation:**
-- [ ] Lambda sweep validated against real held-out data, per Session 10.5's own backtest methodology; resulting values updated into Ad Hoc Session A3's presets.
-- [ ] Session 11.1's own validation checklist (holdout MAE improves over baseline, budget constraint still holds, top-5-owned rank ordering correct) — see that card above, unchanged.
+- [x] Lambda sweep validated against real held-out data, per Session 10.5's own backtest methodology; resulting values updated into Ad Hoc Session A3's presets. The sweep ran in Session 10.5b (2026-07-28, DK, 2018-2021, 65 weeks); this session (2026-09-10) is what actually carried its results into `data/optimizer_presets.json`, `optimizer.py`'s `--lambda` help text, and the frontend's built-in presets and hint text — previously all still said FLAGGED ARBITRARY despite the sweep having already run.
+- [ ] Session 11.1's own validation checklist (holdout MAE improves over baseline, budget constraint still holds, top-5-owned rank ordering correct) — see that card above, unchanged. **Blocked**: `data/ownership_actual_log.csv` has zero rows; requires A2 step 1 (a real Week 1 slate closing and `log_ownership.py log` running for the first time) before this can even begin, then 4-6 real weeks beyond that.
 
 ---
