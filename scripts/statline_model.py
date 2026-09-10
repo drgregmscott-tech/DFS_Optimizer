@@ -701,6 +701,28 @@ def load_depth_chart() -> pd.DataFrame:
     return latest[["player_id", "team", "position", "depth_rank"]].dropna(subset=["player_id"])
 
 
+def load_injury_status(week: int) -> pd.DataFrame:
+    """Ad Hoc Session A4. The latest real `status_check.py pull` output for
+    this week (output/player_status_{week}_{timestamp}.csv -- see
+    status_check.py's run_pull()), picked by filename timestamp since
+    unlike load_depth_chart() there's no single fixed-path file to read.
+
+    Non-fatal if none exists, same reasoning as load_depth_chart(): a
+    missing/not-yet-run pull degrades the injury-driven role-change boost
+    in apply_confirmed_starter_override() back to a no-op rather than
+    aborting the build. Returns [player_id, team, position, status].
+    """
+    out_dir = REPO_ROOT / "output"
+    matches = sorted(out_dir.glob(f"player_status_{week}_*.csv"))
+    if not matches:
+        print(f"NOTE: no output/player_status_{week}_*.csv found -- "
+              f"injury-driven role-change boost unavailable this run "
+              f"(see status_check.py pull).")
+        return pd.DataFrame(columns=["player_id", "team", "position", "status"])
+    latest = pd.read_csv(matches[-1])
+    return latest[["player_id", "team", "position", "status"]]
+
+
 def team_defense_history(season: int, week: int) -> pd.DataFrame:
     """Session 15.2b. Recency-weighted CARRIES ALLOWED per team -- the
     defensive mirror of team_volume_history()'s own-offense numbers,
@@ -1137,7 +1159,8 @@ def apply_volume_prior(pool: pd.DataFrame, artifact: dict,
 # ---------------------------------------------------------------------------
 
 def apply_confirmed_starter_override(pool: pd.DataFrame, team_vol: pd.DataFrame,
-                                     depth_chart: pd.DataFrame) -> pd.DataFrame:
+                                     depth_chart: pd.DataFrame,
+                                     injury_status: pd.DataFrame | None = None) -> pd.DataFrame:
     """Session 15.2, decision #1 -- fixes a real production bug the Session
     15 preseason dry run's hunt for more Jones/Leonard-shaped situations
     turned up: a returning-from-injury (or newly-traded) starter with
@@ -1217,12 +1240,33 @@ def apply_confirmed_starter_override(pool: pd.DataFrame, team_vol: pd.DataFrame,
     share-from-games-actually-played number this override is built on --
     logged for the same reason every other volume adjustment in this file
     is logged: an unlogged adjustment is untraceable after the fact).
+
+    Ad Hoc Session A4, decision #1 -- extends the same "check a real
+    signal, not price" pattern to the in-week case this was originally
+    built for but didn't yet cover: a starter ruled OUT mid-week, AFTER
+    salaries already locked, whose backup's price never moves because
+    nothing in the pricing feed re-runs post-lock. `injury_status`
+    (optional, see load_injury_status() -- a real `status_check.py pull`
+    for the week) is joined against the depth chart's #1 at each
+    team/position; if that #1 is OUT, his #2 is boosted the identical way
+    a confirmed #1 returning from absence is boosted above (participation_
+    effective -> 1.0, every {comp}_mu recomputed from mu_raw) gated on the
+    SAME established-role bar (his own hist_share_raw clearing
+    ROLE_CHANGE_MIN_HIST_SHARE from games he's actually played). A backup
+    with no games of his own to judge by is deliberately left untouched --
+    this mechanism checks a real signal, it doesn't guess one for a
+    total unknown. Flagged via a separate `role_change_injury_flag`
+    column so this path stays traceable apart from the returning-starter
+    path above. `injury_status=None` (the default) makes this whole block
+    a no-op, matching the missing-depth-chart no-op above -- so existing
+    callers that don't pass it are unaffected.
     """
     import volume_prior
     from fit_statline_variance import COMPONENTS
 
     df = pool.copy()
     df["confirmed_starter_flag"] = False
+    df["role_change_injury_flag"] = False
     df["hist_share_raw"] = np.nan
 
     if depth_chart is None or depth_chart.empty or "team" not in df.columns:
@@ -1252,6 +1296,27 @@ def apply_confirmed_starter_override(pool: pd.DataFrame, team_vol: pd.DataFrame,
 
     df.loc[eligible, "confirmed_starter_flag"] = True
     df.loc[eligible, "participation_effective"] = 1.0
+
+    # Ad Hoc Session A4, decision #1 -- the in-week OUT-after-lock case.
+    injury_eligible = pd.Series(False, index=df.index)
+    if injury_status is not None and not injury_status.empty:
+        out_ids = set(
+            injury_status.loc[injury_status["status"] == "OUT", "player_id"])
+        starters_out = (depth_chart["depth_rank"] == 1) & (
+            depth_chart["player_id"].isin(out_ids))
+        out_team_pos = set(
+            zip(depth_chart.loc[starters_out, "team"],
+                depth_chart.loc[starters_out, "position"]))
+        backup = df["depth_rank"] == 2
+        backup_of_out_starter = pd.Series(
+            list(zip(df["team"], df["position"])), index=df.index
+        ).isin(out_team_pos)
+        injury_eligible = (
+            backup & backup_of_out_starter & established_role & ~eligible)
+
+    df.loc[injury_eligible, "role_change_injury_flag"] = True
+    df.loc[injury_eligible, "participation_effective"] = 1.0
+    eligible = eligible | injury_eligible
 
     for pos, cs in COMPONENTS.items():
         pos_mask = eligible & (df["position"].astype(str) == pos)

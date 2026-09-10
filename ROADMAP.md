@@ -3282,23 +3282,28 @@ Also separately confirmed via ROADMAP's own "Known Deferred Validations" section
 ---
 
 ### Ad Hoc Session A4 — In-Week Injury-Driven Role-Change & Questionable/Doubtful Discount
-**Status:** 🔲 Not started — structural design question, not urgent for this Sunday specifically, but directly addresses Greg's original stated concern about backups gaining/losing role due to injury news.
+**Status:** 🟡 Mechanism built, unvalidated — the design question is answered and the code is in place; the only remaining gate is a real in-week OUT case, which hasn't occurred yet this season.
 
-**Prerequisites:** A1 (the injury pipeline needs to be reliably producing fresh status data before it's worth feeding into projections).
+**Prerequisites:** A1 (the injury pipeline needs to be reliably producing fresh status data before it's worth feeding into projections). ✅ Done, see A1's own entry above.
 
 **Trigger:** found during the projections readiness review, and already flagged honestly in this project's own code (ROADMAP.md line ~831, `volume_prior.py`'s role-change docstring): the only mechanism that raises a backup's projection when a starter is out is `role_change_participation()`, which compares DFS **salary-implied** usage share against recent-game usage share — i.e. it only works once DK/FD's own pricing has caught up to the news. There is currently no mechanism at all for the classic in-week scenario (a starter ruled OUT Thursday/Saturday/Sunday morning, after salaries already locked) — the backup's price never moves, so nothing reacts. Separately: a merely Questionable/Doubtful starter gets **zero discount** to his own projection today — `status_check.py`'s `apply` explicitly leaves `final_projection` untouched for anything short of OUT, by original design ("flags but doesn't exclude").
 
-**Scope (design question first, then build):**
-1. Decide whether/how to feed `injury_status` (once A1 makes it reliable) into `apply_confirmed_starter_override()`'s existing depth-chart logic, so a freshly-OUT starter's real backup (per `data/depth_charts_current.parquet`) gets a same-week participation boost, not just a price-implied one.
-2. Decide whether Questionable/Doubtful should apply any flat or graduated discount to the player's own projection (even a fixed haircut), and if so, how it should be reversed if the player is later upgraded to Active before lock.
-3. Build and validate against a real in-season case once one occurs (this is the kind of fix that's hard to validate on preseason/Week-1 data alone, since Week 1 has no in-week role-change history to compare against).
+**Decisions (Greg, 2026-09-10):**
+1. Role-change mechanism: **extend `apply_confirmed_starter_override()`**, not a standalone function. Reuses the already-validated Session 15.2 pattern (real depth chart as the signal, not inferred price) rather than a parallel code path.
+2. Questionable/Doubtful discount: **leave unchanged.** `final_projection` stays undiscounted for Q/D — flag-don't-exclude remains the design, players are expected to make their own game-time-decision call. Not revisited this session.
 
-**Files likely touched:** `scripts/statline_model.py`, `scripts/volume_prior.py`, `scripts/status_check.py`, `scripts/build_projections_statline.py`.
+**What was built (this session, unvalidated — see below):**
+- `statline_model.load_injury_status(week)` — reads the latest real `output/player_status_{week}_*.csv` from `status_check.py pull` (picked by filename timestamp, same non-fatal-if-missing pattern as `load_depth_chart()`).
+- `apply_confirmed_starter_override()` gained an optional `injury_status` param: when a depth-chart #1 has a real `status == "OUT"`, his #2 (same team+position) is boosted the identical way a returning confirmed #1 is boosted — `participation_effective -> 1.0`, every `{comp}_mu` recomputed from `mu_raw` — gated on the SAME established-own-role bar (`hist_share_raw > ROLE_CHANGE_MIN_HIST_SHARE`) so a backup with no real games of his own is deliberately left untouched rather than guessed at. Flagged via a new `role_change_injury_flag` column, kept separate from `confirmed_starter_flag` for traceability. `injury_status=None` (default) is a no-op — existing callers unaffected.
+- `build_projections_statline.py` wired to call `load_injury_status(week)` and pass it through when `--confirmed-starter-override` is on; prints the count of injury-boosted backups alongside the existing confirmed-starter count.
+- Smoke-tested against synthetic data only (a #1 RB flagged OUT, #2 RB with an established own share correctly boosted; the OUT starter himself and an unrelated player correctly left alone) — this is a unit-level shape check, NOT the real in-season validation below.
 
-**Validation:**
-- [ ] A real, live in-season case (a starter ruled OUT mid-week after salaries locked) produces a visibly higher `final_projection` for the real backup, traceable to this mechanism specifically.
-- [ ] A real Questionable/Doubtful starter's projection reflects the intended treatment (discounted or explicitly left alone by documented decision), and reverts correctly if his status later clears before lock.
+**Files touched:** `scripts/statline_model.py`, `scripts/build_projections_statline.py`. (`volume_prior.py`, `status_check.py` untouched — Q/D discount was decided against, and the OUT-zeroing/flagging logic in `status_check.py apply` already does its job unchanged.)
+
+**Validation (still open — this is what keeps this card 🟡 not ✅):**
+- [ ] A real, live in-week case (a starter ruled OUT mid-week after salaries locked) produces a visibly higher `final_projection` for the real depth-chart #2, traceable via `role_change_injury_flag`.
 - [ ] No regression to Week-1-shaped pools (the true cold-start case, where the confirmed-starter override already has special handling — see `statline_model.py` decision #14/Session 15.2).
+- [ ] Confirm `load_injury_status()` actually finds and parses a real `status_check.py pull` output file once one exists for an in-week (not pre-lock) scenario — only tested against synthetic frames this session, not a real file on disk.
 
 ---
 

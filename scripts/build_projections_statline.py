@@ -482,11 +482,20 @@ def build_statline_projections(site: str, season: int, week: int, slate_id: str,
         # infer role from price.
         if confirmed_starter_override:
             depth_chart = statline_model.load_depth_chart()
-            df = statline_model.apply_confirmed_starter_override(df, team_vol, depth_chart)
+            # Ad Hoc Session A4, decision #1 -- real in-week OUT news
+            # (status_check.py pull, applied here BEFORE final_projections
+            # exist, not just post-hoc zeroing after the fact) can now also
+            # boost a real depth-chart backup's participation, same
+            # mechanism as the confirmed-#1-returning case above.
+            injury_status = statline_model.load_injury_status(week)
+            df = statline_model.apply_confirmed_starter_override(
+                df, team_vol, depth_chart, injury_status=injury_status)
             n_starter_flag = int(df["confirmed_starter_flag"].sum())
+            n_injury_flag = int(df["role_change_injury_flag"].sum())
             print(f"Confirmed-starter override applied: {n_starter_flag} "
                   f"player(s) restored from 0.0 participation to a "
-                  f"confirmed #1 depth-chart role.")
+                  f"confirmed #1 depth-chart role, {n_injury_flag} "
+                  f"backup(s) boosted for a real in-week OUT starter.")
     else:
         # Session 15 -- AUDIT_COLUMNS never get computed without
         # --volume-prior (games_played/participation only exist as a
