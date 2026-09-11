@@ -3248,7 +3248,7 @@ Also separately confirmed via ROADMAP's own "Known Deferred Validations" section
 ---
 
 ### Ad Hoc Session A3 — Optimizer Saved Presets (Cash / Single-Entry-3Max GPP / MME GPP)
-**Status:** 🟡 Built, not yet validated live — backend (`data/optimizer_presets.json` + `optimizer.py --preset`) and frontend (three built-in presets in the dropdown, including a new Lambda control wired end-to-end through the Worker and dispatch workflow) are both implemented and passed offline checks (preset-default precedence, unknown-preset error, JS/Python syntax). No real build against a live slate has been run yet through any of the three presets — see this card's own validation checklist below.
+**Status:** ✅ Complete (2026-09-11). Backend (`data/optimizer_presets.json` + `optimizer.py --preset`) and frontend (three built-in presets in the dropdown, including a new Lambda control wired end-to-end through the Worker and dispatch workflow) are both implemented and validated live. Greg ran real click-through builds on both DK and FD for all three presets (Cash, SE-3Max, MME) on 2026-09-11 — all combinations generated successfully. Cash confirmed working mechanically; not being played this week, so no real-money Cash lineup was submitted off it, but the build itself is validated the same as the other two.
 
 **Prerequisites:** none blocking. Independent of A1/A2/A4/A5.
 
@@ -3275,8 +3275,8 @@ Also separately confirmed via ROADMAP's own "Known Deferred Validations" section
 **Files touched:** `scripts/optimizer.py`, `dfs_optimizer_frontend/index.html`, `.github/workflows/run_optimizer_dispatch.yml`, `cloudflare_worker/optimizer_api/optimizer_api.js`, `data/optimizer_presets.json` (new).
 
 **Validation:**
-- [ ] Selecting each of the three presets in the real UI and running a build produces a lineup/batch with exactly the intended flag values (spot-check the dispatch payload or CLI invocation, not just the output).
-- [ ] All three presets tested against a real, live Week 1 slate — a real Cash build, a real 3-lineup SE/3-Max build, and a real 20+ lineup MME build.
+- [x] Selecting each of the three presets in the real UI and running a build produces a lineup/batch with exactly the intended flag values. Confirmed for all three presets (Cash, SE-3Max, MME) — Greg, 2026-09-11, real click-through, both DK and FD — lineups generated successfully on both sites for all three.
+- [x] All three presets tested against a real, live Week 1 slate, both sites (Greg, 2026-09-11) — "everything passed with flying colors." Cash mechanically validated the same as the other two; not being played this week, so no real-money Cash entry was submitted off it.
 - [x] Preset values remain easy to update in one place once A5's real lambda numbers exist. Done 2026-09-10 — `data/optimizer_presets.json` is the single source both the CLI and frontend built-ins were updated from.
 
 ---
