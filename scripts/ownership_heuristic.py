@@ -600,17 +600,43 @@ def compute_chalk_scores(df: pd.DataFrame, site: str, group_col: str = None) -> 
         )
         df["participation_confidence"] = 1.0
 
-    # 5-feature blend (Session 11.0), scaled by participation-confidence
-    # (Session 15.3, decision #8). Weights are UNFIT starting guesses;
+    # 5-feature blend (Session 11.0). Weights are UNFIT starting guesses;
     # retuning target for Session 11.1.
-    df["chalk_score"] = (
-        (VALUE_WEIGHT        * df["value_percentile"]
+    base_blend = (
+        VALUE_WEIGHT        * df["value_percentile"]
         + PROJECTION_WEIGHT * df["raw_projection_percentile"]
         + SALARY_TIER_WEIGHT * df["salary_tier_score"]
         + VEGAS_WEIGHT      * df["vegas_percentile"]
         + OVER_UNDER_WEIGHT * df["over_under_percentile"]
-        + df["flag_weight"]) * df["participation_confidence"]
-    ).clip(lower=0, upper=100)
+    )
+
+    # Real-data bug found while investigating "chalkiest plays get no pivot
+    # suggestions" (pivot_finder.py): the weights above sum to 1.0, so
+    # base_blend is already 0-100 on its own -- but the several best players
+    # in a group are all percentile-ranked near 100 across every feature
+    # (that's what makes them the best plays), leaving almost no headroom.
+    # The OLD code then added flag_weight (0-20) flat and clipped to 100.
+    # On a real slate this collapsed multiple genuinely-different star RBs
+    # (base_blend ~99.6, ~93.5, ~91.4) to an IDENTICAL chalk_score of
+    # exactly 100 the instant each got even a modest name-recognition bonus
+    # -- which then produced identical estimated_ownership_pct for all of
+    # them (see compute_estimated_ownership() below), so the single biggest
+    # chalk play could never find a "less owned" alternative even though
+    # one obviously existed.
+    #
+    # Fixed by scaling flag_weight into the REMAINING headroom instead of
+    # adding it flat: a player already at 99.6 has only 0.4 points of
+    # headroom left, so even a large name-recognition bonus can only close
+    # a fraction of that tiny gap, rather than flattening him and his
+    # nearest rivals to the same ceiling. This preserves flag_weight's
+    # documented intent ("a modest nudge, not a dominant factor," decision
+    # #4 above) instead of letting it silently become a dominant,
+    # tie-creating factor exactly at the top of the distribution, where
+    # ownership differentiation matters most.
+    headroom = 100 - base_blend
+    boosted_blend = base_blend + df["flag_weight"] * (headroom / 100.0)
+
+    df["chalk_score"] = (boosted_blend * df["participation_confidence"]).clip(lower=0, upper=100)
 
     return df
 

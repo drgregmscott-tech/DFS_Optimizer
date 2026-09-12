@@ -133,19 +133,39 @@ B1. Session 15 -- REAL ROOT CAUSE OF "PIVOTS DON'T WORK", FOUND VIA A REAL
      as-is -- DK's "DST" or FD's "DEF" -- since candidate and cash player
      always come from the same site's file, no cross-site DST/DEF folding
      is needed here, unlike Session 4.1's `position_group`).
-   - `final_projection` within `PROJECTION_TOLERANCE_PCT_OF_CASH_PROJECTION`
-     of the cash player's own `final_projection` (decision #3 -- both
-     directions; a pivot can project a bit higher OR lower).
-   - `estimated_ownership_pct` strictly LESS than the cash player's own --
-     a "pivot" that isn't less owned isn't leverage, it's just a
-     different player.
+   - `final_projection` within the asymmetric band around the cash
+     player's own `final_projection` (decision #3, revised -- see the
+     "chalk has no pivots" investigation above PROJECTION_TOLERANCE_
+     DOWNSIDE_PCT/UPSIDE_PCT's own comments).
+   - `estimated_ownership_pct` at least `MIN_OWNERSHIP_EDGE_PTS` LESS than
+     the cash player's own (decision #3b) -- a "pivot" that doesn't save a
+     meaningful amount of ownership isn't leverage, it's just a different,
+     probably-worse player.
    - `final_projection > 0` -- a bye/no-real-game player (Session 2.4
      decision #4b) is never a usable pivot suggestion regardless of how
      low its (correctly zeroed) ownership is.
-   - Not the cash player themselves, and not any OTHER player already
-     rostered elsewhere in the same cash lineup (e.g. a FLEX-eligible
-     player already filling a different slot) -- suggesting a swap into a
-     player who's already in the lineup is not a real pivot.
+   - Not the cash player themselves. (REMOVED this session -- see "chalk
+     has no pivots" investigation: this filter used to ALSO exclude any
+     player rostered in ANY of the cash lineup file's built lineups. That
+     made sense pre-Session-15, when this script only ever saw ONE real
+     lineup (so "already rostered elsewhere" meant "already in this same
+     9-player lineup, e.g. a FLEX-eligible player filling a different
+     slot"). Session 15 changed the input to `lineups_multi_*.csv` -- 20+
+     diversified GPP lineups -- and this filter was never revisited for
+     that: with 20 lineups built from the same ~50-player pool, nearly
+     every viable player at every position appears in at least ONE of
+     them, so this filter silently emptied the candidate pool for almost
+     every cash player, chalk plays hit hardest (their real alternatives
+     are exactly the other well-projected players most likely to also be
+     rostered somewhere in a diversified 20-lineup build). Confirmed on
+     real data: Jahmyr Gibbs's most sensible RB pivots -- Chase Brown,
+     Derrick Henry, Jonathan Taylor, Kenny Gainwell -- were ALL already
+     rostered in a different one of his slate's 20 built lineups, so
+     every one of them was filtered out before the ownership/projection
+     checks even ran. A pivot suggestion pointing to a player used in a
+     DIFFERENT one of your 20 lineups is not a mistake -- that's the
+     normal, correct case for a diversified GPP portfolio -- so this
+     filter is dropped rather than reworked to some other scope.
    - The swap must keep the FULL lineup's total salary under that site's
      cap (decision #5 below) -- an over-cap "suggestion" isn't usable, so
      it's filtered out entirely rather than surfaced with a warning flag.
@@ -253,10 +273,41 @@ from ingest_salaries import SITE_CONFIGS, normalize_name, normalize_team  # noqa
 REPO_ROOT = Path(__file__).resolve().parent.parent
 OUTPUT_DIR = REPO_ROOT / "output"
 
-# Decision #3 -- % of the cash player's OWN final_projection, symmetric.
-# Chosen from a real-data 15/25/35% comparison against Madden Sim week 10
-# (both sites) -- see SESSION_LOG.md. Flagged as unfit to full-season data.
-PROJECTION_TOLERANCE_PCT_OF_CASH_PROJECTION = 25.0
+# Decision #3 (REVISED -- see "chalk has no pivots" investigation below):
+# was a single symmetric % of the cash player's OWN final_projection.
+# Real-data bug found while investigating a user report that the
+# chalkiest plays on a slate surfaced NO pivot candidates while low-owned
+# players surfaced several: a symmetric band is the wrong shape for what
+# a "pivot off chalk" actually is. A true pivot's whole point is trading
+# SOME projection for meaningfully less ownership -- for the single
+# highest-owned, highest-projected player at a position, there is often
+# nobody else within a tight symmetric band who ISN'T also chalk (nothing
+# projects higher, and anything similar below is priced/owned similarly
+# too), so the old symmetric filter legitimately found nothing. Meanwhile
+# a low-owned player always has a long tail of similar-or-lower-projected,
+# lower-owned players below him, so he always got several -- even when
+# those were both lower-owned AND lower-projected (a worse play, not
+# leverage).
+#
+# Fixed with an ASYMMETRIC band: more downside room (a real pivot can
+# meaningfully punt production for ownership) than upside room (a
+# candidate that projects much HIGHER than the cash player usually isn't
+# actually lower-owned -- projection and ownership are correlated by
+# construction, see ownership_heuristic.py's chalk_score). Still an unfit
+# starting heuristic (Madden Sim / early real-week data only) -- flagged
+# as a retuning target, same as PROJECTION_TOLERANCE_PCT_OF_CASH_PROJECTION
+# was before this revision.
+PROJECTION_TOLERANCE_DOWNSIDE_PCT = 40.0
+PROJECTION_TOLERANCE_UPSIDE_PCT = 10.0
+
+# Decision #3b (new, same investigation): a candidate merely being
+# SOMEWHAT less owned isn't real leverage -- the old strict "< cash
+# player's ownership" check let through candidates saving a fraction of a
+# percentage point of ownership while giving up real projection, which
+# isn't a meaningful trade. Requires a minimum ownership-percentage-point
+# edge for a candidate to count as a genuine pivot at all. Same
+# unfit-starting-heuristic caveat as the tolerance constants above.
+MIN_OWNERSHIP_EDGE_PTS = 3.0
 
 # Decision #7.
 TOP_N_PIVOTS = 3
@@ -574,22 +625,29 @@ def attach_cash_lineup_context(lineup: pd.DataFrame, pool: pd.DataFrame,
 # ---------------------------------------------------------------------------
 
 def find_pivots_for_player(cash_row: pd.Series, pool: pd.DataFrame,
-                            rostered_player_ids: set, site: str,
+                            site: str,
                             lineup_salary_ref: float,
-                            projection_tolerance_pct: float,
+                            downside_tolerance_pct: float,
+                            upside_tolerance_pct: float,
+                            min_ownership_edge_pts: float,
                             top_n: int) -> pd.DataFrame:
     cap = SITE_CONFIGS[site]["salary_cap"]
-    # Decision #3 -- tolerance is a % of the cash player's OWN
-    # final_projection, symmetric, NOT a % of the site's salary cap.
-    tolerance_pts = (projection_tolerance_pct / 100.0) * cash_row["cash_final_projection"]
+    # Decision #3 (revised) -- asymmetric band around the cash player's OWN
+    # final_projection, NOT a % of the site's salary cap. More downside
+    # room than upside room -- see the constants' own comments above for
+    # why.
+    lower_bound = cash_row["cash_final_projection"] * (1 - downside_tolerance_pct / 100.0)
+    upper_bound = cash_row["cash_final_projection"] * (1 + upside_tolerance_pct / 100.0)
 
     mask = (
         (pool["position"] == cash_row["cash_position"])
         & (pool["player_id"] != cash_row["player_id"])
-        & (~pool["player_id"].isin(rostered_player_ids))
         & (pool["final_projection"] > 0)  # decision #4 -- never suggest a bye/zero player
-        & (pool["estimated_ownership_pct"] < cash_row["cash_estimated_ownership_pct"])
-        & ((pool["final_projection"] - cash_row["cash_final_projection"]).abs() <= tolerance_pts)
+        # Decision #3b -- a candidate must save a MEANINGFUL amount of
+        # ownership, not just any nonzero amount, to count as a real pivot.
+        & ((cash_row["cash_estimated_ownership_pct"] - pool["estimated_ownership_pct"]) >= min_ownership_edge_pts)
+        & (pool["final_projection"] >= lower_bound)
+        & (pool["final_projection"] <= upper_bound)
     )
     # Decision #0c (Session 13.4) -- a Showdown candidate must share the
     # cash player's own roster_role. CPT and FLEX rows of the SAME
@@ -680,7 +738,9 @@ def find_pivots_for_player(cash_row: pd.Series, pool: pd.DataFrame,
 # ---------------------------------------------------------------------------
 
 def validate_pivot_suggestions(suggestions: pd.DataFrame, site: str,
-                                projection_tolerance_pct: float):
+                                downside_tolerance_pct: float,
+                                upside_tolerance_pct: float,
+                                min_ownership_edge_pts: float):
     if suggestions.empty:
         return
     cap = SITE_CONFIGS[site]["salary_cap"]
@@ -690,17 +750,22 @@ def validate_pivot_suggestions(suggestions: pd.DataFrame, site: str,
     # no separate "pivot_position" output column since it's always
     # identical to cash_position by construction. Re-assert that
     # construction guarantee here rather than re-deriving it.
-    tolerance_pts = (projection_tolerance_pct / 100.0) * suggestions["cash_final_projection"]
-    assert (suggestions["projection_diff"].abs() <= tolerance_pts + 1e-6).all(), (
-        "VALIDATION FAILED: a suggested pivot's projection_diff exceeds "
-        "the configured projection tolerance (decision #3)."
+    lower_bound_diff_pct = -downside_tolerance_pct
+    upper_bound_diff_pct = upside_tolerance_pct
+    assert (suggestions["projection_diff_pct"] >= lower_bound_diff_pct - 1e-6).all(), (
+        "VALIDATION FAILED: a suggested pivot's projection_diff_pct exceeds "
+        "the configured downside projection tolerance (decision #3)."
     )
-    assert (suggestions["pivot_estimated_ownership_pct"]
-            < suggestions["cash_estimated_ownership_pct"]).all(), (
-        "VALIDATION FAILED: a suggested pivot does not have a lower "
-        "estimated_ownership_pct than the cash player it replaces "
-        "(decision #1 -- this session validates against "
-        "estimated_ownership_pct, not chalk_score)."
+    assert (suggestions["projection_diff_pct"] <= upper_bound_diff_pct + 1e-6).all(), (
+        "VALIDATION FAILED: a suggested pivot's projection_diff_pct exceeds "
+        "the configured upside projection tolerance (decision #3)."
+    )
+    assert ((suggestions["cash_estimated_ownership_pct"]
+             - suggestions["pivot_estimated_ownership_pct"]) >= min_ownership_edge_pts - 1e-6).all(), (
+        "VALIDATION FAILED: a suggested pivot does not save at least "
+        "min_ownership_edge_pts of estimated_ownership_pct vs. the cash "
+        "player it replaces (decision #3b -- this session validates "
+        "against estimated_ownership_pct, not chalk_score, per decision #1)."
     )
     assert (suggestions["lineup_salary_after_swap"] <= suggestions["site_salary_cap"]).all(), (
         "VALIDATION FAILED: a suggested pivot's full-lineup salary after "
@@ -713,7 +778,9 @@ def validate_pivot_suggestions(suggestions: pd.DataFrame, site: str,
 # ---------------------------------------------------------------------------
 
 def build_pivot_suggestions(site: str, slate_id: str,
-                             projection_tolerance_pct: float = PROJECTION_TOLERANCE_PCT_OF_CASH_PROJECTION,
+                             downside_tolerance_pct: float = PROJECTION_TOLERANCE_DOWNSIDE_PCT,
+                             upside_tolerance_pct: float = PROJECTION_TOLERANCE_UPSIDE_PCT,
+                             min_ownership_edge_pts: float = MIN_OWNERSHIP_EDGE_PTS,
                              top_n: int = TOP_N_PIVOTS) -> pd.DataFrame:
     lineup = load_lineup_players(site, slate_id)
     pool = build_candidate_pool(site, slate_id)
@@ -731,13 +798,21 @@ def build_pivot_suggestions(site: str, slate_id: str,
     # player carries his own correct reference salary (his tightest
     # single lineup) via cash_lineup_salary_ref, attached in
     # attach_cash_lineup_context() above.
-    rostered_player_ids = set(cash_context["player_id"])
+    #
+    # NOTE: this used to also build `rostered_player_ids` (every player
+    # across every one of the cash-lineup file's built lineups) to exclude
+    # from every cash player's candidate pool. Removed this session -- see
+    # decision #4's docstring above ("chalk has no pivots" investigation)
+    # for why that filter was actively wrong once this script started
+    # reading 20-lineup GPP builds instead of one lineup.
 
     all_suggestions = []
     for _, cash_row in cash_context.iterrows():
         result = find_pivots_for_player(
-            cash_row, pool, rostered_player_ids, site,
-            cash_row["cash_lineup_salary_ref"], projection_tolerance_pct, top_n,
+            cash_row, pool, site,
+            cash_row["cash_lineup_salary_ref"],
+            downside_tolerance_pct, upside_tolerance_pct,
+            min_ownership_edge_pts, top_n,
         )
         if result.empty:
             # Decision #7 -- an empty result is accepted as legitimate
@@ -746,8 +821,9 @@ def build_pivot_suggestions(site: str, slate_id: str,
             print(
                 f"WARNING: no eligible pivot candidates found for "
                 f"{cash_row['cash_player_name']} ({cash_row['cash_position']}, "
-                f"{cash_row['cash_team']}) within {projection_tolerance_pct:.0f}% "
-                f"of cash-player projection tolerance -- thin pool (see "
+                f"{cash_row['cash_team']}) within -{downside_tolerance_pct:.0f}%/"
+                f"+{upside_tolerance_pct:.0f}% of cash-player projection tolerance "
+                f"and >= {min_ownership_edge_pts:.1f}pt ownership edge -- thin pool (see "
                 f"ROADMAP.md's 'Known Testing Artifact' note) or a "
                 f"genuinely unique play with no same-tier, lower-owned "
                 f"alternative in range. This is left as-is, not widened.",
@@ -770,12 +846,27 @@ if __name__ == "__main__":
     parser.add_argument("--site", choices=["dk", "fd"], required=True)
     parser.add_argument("--slate-id", type=str, required=True)
     parser.add_argument(
-        "--projection-tolerance-pct", type=float,
-        default=PROJECTION_TOLERANCE_PCT_OF_CASH_PROJECTION,
-        help=f"Projection tolerance for a pivot candidate, as a symmetric "
-             f"percentage of the cash player's own final_projection "
-             f"(decision #3, default "
-             f"{PROJECTION_TOLERANCE_PCT_OF_CASH_PROJECTION:.0f}%%).",
+        "--downside-tolerance-pct", type=float,
+        default=PROJECTION_TOLERANCE_DOWNSIDE_PCT,
+        help=f"How much LOWER a pivot candidate may project than the cash "
+             f"player, as a percentage of the cash player's own "
+             f"final_projection (decision #3, default "
+             f"{PROJECTION_TOLERANCE_DOWNSIDE_PCT:.0f}%%).",
+    )
+    parser.add_argument(
+        "--upside-tolerance-pct", type=float,
+        default=PROJECTION_TOLERANCE_UPSIDE_PCT,
+        help=f"How much HIGHER a pivot candidate may project than the cash "
+             f"player, as a percentage of the cash player's own "
+             f"final_projection (decision #3, default "
+             f"{PROJECTION_TOLERANCE_UPSIDE_PCT:.0f}%%).",
+    )
+    parser.add_argument(
+        "--min-ownership-edge-pts", type=float,
+        default=MIN_OWNERSHIP_EDGE_PTS,
+        help=f"Minimum estimated_ownership_pct a candidate must save vs. "
+             f"the cash player to count as a real pivot (decision #3b, "
+             f"default {MIN_OWNERSHIP_EDGE_PTS:.1f}).",
     )
     parser.add_argument(
         "--top-n", type=int, default=TOP_N_PIVOTS,
@@ -787,10 +878,16 @@ if __name__ == "__main__":
     config = SITE_CONFIGS[args.site]
     suggestions = build_pivot_suggestions(
         args.site, args.slate_id,
-        projection_tolerance_pct=args.projection_tolerance_pct,
+        downside_tolerance_pct=args.downside_tolerance_pct,
+        upside_tolerance_pct=args.upside_tolerance_pct,
+        min_ownership_edge_pts=args.min_ownership_edge_pts,
         top_n=args.top_n,
     )
-    validate_pivot_suggestions(suggestions, args.site, args.projection_tolerance_pct)
+    validate_pivot_suggestions(
+        suggestions, args.site,
+        args.downside_tolerance_pct, args.upside_tolerance_pct,
+        args.min_ownership_edge_pts,
+    )
 
     OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
     out_path = OUTPUT_DIR / f"pivot_suggestions_{args.site}_{args.slate_id}.csv"
@@ -799,8 +896,10 @@ if __name__ == "__main__":
     n_cash_players = suggestions["cash_player_name"].nunique() if not suggestions.empty else 0
     print(f"[{config['label']}] Wrote {len(suggestions)} pivot suggestion row(s) "
           f"covering {n_cash_players} cash-lineup player(s) to {out_path}")
-    print(f"  Projection tolerance: {args.projection_tolerance_pct:.0f}% of "
-          f"cash player's own final_projection (symmetric, decision #3)")
+    print(f"  Projection tolerance: -{args.downside_tolerance_pct:.0f}%/"
+          f"+{args.upside_tolerance_pct:.0f}% of cash player's own "
+          f"final_projection (decision #3); min ownership edge: "
+          f"{args.min_ownership_edge_pts:.1f}pt (decision #3b)")
     if not suggestions.empty:
         print(f"  leverage_score range: {suggestions['leverage_score'].min():.1f} "
               f"- {suggestions['leverage_score'].max():.1f}")
