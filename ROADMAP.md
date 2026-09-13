@@ -3328,3 +3328,34 @@ Also separately confirmed via ROADMAP's own "Known Deferred Validations" section
 - [ ] Session 11.1's own validation checklist (holdout MAE improves over baseline, budget constraint still holds, top-5-owned rank ordering correct) — see that card above, unchanged. **Blocked**: `data/ownership_actual_log.csv` has zero rows; requires A2 step 1 (a real Week 1 slate closing and `log_ownership.py log` running for the first time) before this can even begin, then 4-6 real weeks beyond that.
 
 ---
+
+### Ad Hoc Session A6 — Dart Exposure Cap (MME per-player floor guard)
+**Status:** ✅ Complete (2026-09-13)
+
+**Trigger:** walking a real Week 1 DK MME (20-lineup, `mme_gpp` preset) build in chat, a hand-inspection of the exposure printout found Kevin Austin Jr. — a $3,000 WR3/bring-back filler with `statline_p10 = 0.07` (roughly a coin flip on scoring anything at all) — sitting at 20% exposure (4/20 lineups), purely because he was the cheapest legal filler in several lineups, not for any real correlation reasoning. Re-running with a manually-computed `--player-exposure` override fixed that one player, but required first eyeballing the exposure table and hand-picking the offending `player_id` every time. Greg asked for this to become a permanent, automatic optimizer setting rather than a one-off manual fix.
+
+**What was built:** two new CLI flags, classic slates only:
+- `--dart-floor-threshold` (default 1.0) — a non-DST player whose `statline_p10` falls below this is a "dart."
+- `--dart-exposure-cap` (default unset = off) — caps every dart-tier player at this fraction of the `--n-lineups` batch, UNLESS he's on this batch's own stack-candidate team (resolved via the same `resolve_stack_candidates()`/decision #33 team-level pool `build_multi_lineup()` already ranks). An explicit `--player-exposure` entry for a player always wins over this flag's computed cap for that same id.
+
+Wired into `data/optimizer_presets.json`'s `mme_gpp` preset only (`dart-exposure-cap: 0.10`, `dart-floor-threshold: 1.0`) — not added to `cash`/`se_gpp`, where 1-3 lineups don't have meaningful "exposure" to spread a dart across in the first place.
+
+**Real design correction made mid-session, not assumed:** the first version also exempted each stack-candidate team's real opponent this week (the bring-back side), on the theory that a low floor there is the correlation trade you're paying for. Testing directly against the real motivating case disproved that: with `--bring-back` on, the solver satisfies its "one opponent-team player" requirement with whichever legal name is *cheapest*, regardless of that player's own floor — so Kevin Austin Jr. himself kept showing up at full exposure even with the cap active, exempted purely for sitting on Detroit's opponent's roster, which is exactly the disguised-filler pattern this flag exists to catch. Removed the bring-back-side exemption entirely. Verified this doesn't collateral-damage a genuine bring-back: Michael Wilson (ARI), the real bring-back piece for a Herbert/LAC stack, has `statline_p10 = 2.40` and clears the floor threshold on his own merits regardless of team, so he was never at risk from the fix.
+
+**Deliberately NOT backtested/swept.** Unlike `--lambda` (Session 10.5b's real historical grid sweep), there's no historical data pipeline for "how often should a near-zero-floor filler appear across an MME batch" — the 0.10/1.0 defaults are a heuristic guard against a concrete, observed failure mode, not a fit/validated constant. Flagged as such in both the CLI help text and the preset file's own comment; a good future retuning candidate once there's a real backtest harness for MME-portfolio-level outcomes (not just single-lineup mean/variance the way Session 10.5's sweep worked).
+
+**Files created/modified:**
+- `scripts/optimizer.py` — `compute_dart_exposure_overrides()` (new), two new CLI flags wired through `pdef()` for preset support, merge-into-`player_exposure` logic in `main()` (explicit user overrides always win), Showdown rejection + no-`--n-lineups` NOTE following existing flag conventions.
+- `data/optimizer_presets.json` — `mme_gpp` preset gains `dart-exposure-cap`/`dart-floor-threshold`; top comment updated to flag these as heuristic, not swept.
+
+**Validation:**
+- [x] Real motivating case fixed and verified: Kevin Austin Jr. (DK, real Week 1 pool) drops from 4/20 (20%) to 2/20 (10%) with the flag on, seed held constant for a clean before/after.
+- [x] Verified the fix doesn't touch legitimate correlation: Oronde Gadsden II (Herbert's own LAC stack teammate, `statline_p10 = 0.54`) stays at its natural 7/20 (35%) exposure throughout, both before and after the bring-back-exemption fix.
+- [x] DST exemption confirmed structurally necessary and working: every DST's `statline_p10` is a flat 0.0 regardless of matchup quality (the DST sim doesn't produce real percentile bands), so without the exemption the flag would have capped the *best*-matchup defense as hard as the worst; Jaguars DST (the correct matchup play that week) stays at its natural 7/20 throughout.
+- [x] Explicit `--player-exposure` precedence confirmed: an explicit `00-0037231:0.25` alongside `--dart-exposure-cap 0.10` produces Austin at 4/20, respecting the explicit 25% ceiling, not the computed 10% one.
+- [x] Regression-checked: `--preset mme_gpp` with no dart flags passed and `--preset se_gpp`/`cash` both produce byte-for-byte the same "Generated" summary line as before this session (no `Dart exposure cap:` line printed, `player_exposure` param count unchanged).
+- [x] CLI-level validation checked directly: out-of-range value (`1.5`) hard-errors before solving; Showdown slate hard-errors with a clear message; `--dart-exposure-cap` with no `--n-lineups` prints the same-shaped NOTE-and-ignore as `--player-exposure` already does.
+- [x] Confirmed working on both sites (DK and FD real Week 1 main-slate pools) and confirmed a CLI-passed value overrides the preset's own default (`0.05` vs. preset's `0.10`), same precedence guarantee every other preset-backed flag already has.
+- [ ] Not yet done: frontend UI (checkbox/inputs in `dfs_optimizer_frontend/index.html`) and the GitHub Actions dispatch passthrough (`.github/workflows/run_optimizer_dispatch.yml`, `cloudflare_worker/optimizer_api/optimizer_api.js`) — this session only shipped the CLI/preset layer Greg was directly testing against in chat. Same shape as Session 16's two flags (`player_exposure`-style passthrough key, a numeric input plus a threshold input in the MME settings panel) if/when Greg wants it live in the deployed UI.
+
+---
