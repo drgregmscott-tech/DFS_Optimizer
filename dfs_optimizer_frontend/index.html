@@ -1781,6 +1781,21 @@ in this browser's localStorage.</p>
         <div class="player-list" id="playerList"></div>
       </div>
 
+      <!-- Ad Hoc Session A7 -- Exposure Summary. Same tab/table shape as
+           Player Pool above, but summarizing the last "Build Lineups" run
+           (state.data[site]) instead of the raw pool -- lets you confirm
+           each player/DST's actual exposure across the whole batch (e.g.
+           MME's 35% Max Exposure should put your top chalk right at 35%,
+           the Dart Exposure Cap % should cap your dart-tier plays) rather
+           than reading it off a plain per-player list buried in the
+           GitHub Actions log. -->
+      <div class="player-search" id="exposureSection">
+        <span class="field-label">Exposure Summary</span>
+        <div class="hint" style="margin-top:6px;">Player/DST exposure across every lineup in your last build. Confirm your chalk lands near Max Exposure %, your dart-tier plays land near Dart Exposure Cap % (if set), and nothing is over- or under-exposed relative to what you intended. Updates automatically after each "Build Lineups" run.</div>
+        <div class="pool-tabs" id="exposureTabs" style="margin-top:10px;"></div>
+        <div id="exposureTable"></div>
+      </div>
+
       <div class="action-row">
         <button class="action-btn primary" id="btnConfirm">Build Lineups</button>
       </div>
@@ -1873,6 +1888,8 @@ in this browser's localStorage.</p>
     ownership: { dk: null, fd: null },         // each: { filename, byId: { player_id: pct } }
     poolTabs: { ALL: true },                   // multi-select: tab -> true (ALL means no position filter)
     poolSort: { key: "final_projection", dir: "desc" },
+    // ---- Ad Hoc Session A7 addition -- Exposure Summary table ----
+    exposureTabs: { ALL: true },               // same multi-select shape as poolTabs above
     poolFilters: { salMin:"", salMax:"", projMin:"", projMax:"", valMin:"", valMax:"", ownMin:"", ownMax:"" },
     stackTeamSelection: { dk: {}, fd: {} },     // team -> true (chip picker, decision #32)
     stackGameSelection: { dk: {}, fd: {} },     // "TEAM-TEAM" -> true
@@ -2533,6 +2550,8 @@ in this browser's localStorage.</p>
     var site = state.activeSite;
     var d = state.data[site];
     var cfg = SITE_CONFIG[site];
+
+    renderExposureSummary();
 
     if (!d) { viewer.innerHTML = ""; return; }
 
@@ -3249,6 +3268,113 @@ in this browser's localStorage.</p>
   function isDefensePosition(pos) {
     return pos === "DST" || pos === "DEF" || pos === "D";
   }
+
+  // ── Ad Hoc Session A7 -- Exposure Summary ─────────────────────────────
+  // Same POOL_TABS list, reused for the exposure table's own position tabs
+  // (kept as a separate constant/state, not shared with poolTabs, so
+  // filtering the Player Pool and filtering the Exposure Summary are
+  // independent -- no reason a Player Pool filter should silently also
+  // hide rows from the exposure view or vice versa).
+  var EXPOSURE_TABS = POOL_TABS;
+
+  // Tallies each player/DST's appearances across every lineup in the
+  // currently-loaded multi-lineup batch (state.data[site], the same data
+  // structure the single-lineup nav viewer already reads). Returns null
+  // if no batch is loaded yet. A player's salary/projection are read from
+  // his first appearance only -- these are the real, unmodified values in
+  // every roster row regardless of --randomization-pct (Session 16
+  // confirmed the exported CSV always carries the true final_projection,
+  // never a randomized/thumbs-adjusted one), so they're identical across
+  // every appearance and don't need re-averaging.
+  function computeExposureRows(site) {
+    var d = state.data[site];
+    if (!d || !d.ids || d.ids.length === 0) return null;
+    var totalLineups = d.ids.length;
+    var byId = {};
+    d.ids.forEach(function (lid) {
+      var rows = d.lineups[lid] || [];
+      var seenInThisLineup = {}; // defensive: never double-count one lineup for one player
+      rows.forEach(function (r) {
+        var pid = r.player_id || (r.player_name + "|" + r.team);
+        if (seenInThisLineup[pid]) return;
+        seenInThisLineup[pid] = true;
+        if (!byId[pid]) {
+          byId[pid] = {
+            player_name: r.player_name, position: r.position, team: r.team,
+            salary: parseFloat(r.salary) || 0, projection: parseFloat(r.projection) || 0,
+            count: 0,
+          };
+        }
+        byId[pid].count += 1;
+      });
+    });
+    var list = Object.keys(byId).map(function (k) { return byId[k]; });
+    list.forEach(function (p) { p.exposurePct = (p.count / totalLineups) * 100; });
+    return { list: list, totalLineups: totalLineups };
+  }
+
+  function renderExposureTabs() {
+    var activeTabs = state.exposureTabs;
+    var allActive = activeTabs.ALL || Object.keys(activeTabs).length === 0;
+    document.getElementById("exposureTabs").innerHTML = EXPOSURE_TABS.map(function (t) {
+      var isActive = t === "ALL" ? allActive : (!allActive && activeTabs[t]);
+      return '<button class="tab-btn' + (isActive ? " active" : "") + '" data-exp-tab="' + t + '">' + t + '</button>';
+    }).join("");
+  }
+
+  function renderExposureSummary() {
+    var site = state.activeSite;
+    renderExposureTabs();
+    var tableEl = document.getElementById("exposureTable");
+    var data = computeExposureRows(site);
+    if (!data || data.list.length === 0) {
+      tableEl.innerHTML = '<div class="hint" style="padding:14px 2px;">No lineups built yet for this site -- run "Build Lineups" above to see exposure here.</div>';
+      return;
+    }
+    var allActive = state.exposureTabs.ALL || Object.keys(state.exposureTabs).length === 0;
+    var rows = data.list.filter(function (p) {
+      if (allActive) return true;
+      if (state.exposureTabs.DST && isDefensePosition(p.position)) return true;
+      return !!state.exposureTabs[p.position];
+    });
+    // Highest exposure first -- the whole point of this view is spotting
+    // your top chalk/dart plays and confirming they landed where you
+    // meant them to, so that's what should be on top by default.
+    rows.sort(function (a, b) { return b.exposurePct - a.exposurePct || b.projection - a.projection; });
+    var rowsHtml = rows.map(function (p) {
+      return '<div class="roster-row">' +
+        '<div class="slot-badge">' + escapeHtml(p.team) + '</div>' +
+        '<div class="player-cell"><div class="player-name">' + escapeHtml(p.player_name.trim()) + '</div></div>' +
+        '<div class="pos-cell">' + escapeHtml(p.position) + '</div>' +
+        '<div class="salary-cell mono">' + fmtMoney(p.salary) + '</div>' +
+        '<div class="proj-cell mono">' + fmtPts(p.projection) + '</div>' +
+        '<div class="value-cell mono">' + p.count + '/' + data.totalLineups + '</div>' +
+        '<div class="own-cell" style="color:var(--amber); font-weight:600;">' + p.exposurePct.toFixed(1) + '%</div>' +
+        '</div>';
+    }).join("");
+    tableEl.innerHTML = '<div class="roster">' +
+      '<div class="roster-row head"><div>TEAM</div><div>PLAYER</div><div class="pos-cell">POS</div>' +
+      '<div class="salary-cell">SALARY</div><div class="proj-cell">PROJ</div><div class="value-cell">USED</div><div class="own-cell">EXP%</div></div>' +
+      rowsHtml + '</div>';
+  }
+
+  document.getElementById("exposureTabs").addEventListener("click", function (e) {
+    var btn = e.target.closest("button[data-exp-tab]");
+    if (!btn) return;
+    var t = btn.getAttribute("data-exp-tab");
+    if (t === "ALL") {
+      state.exposureTabs = { ALL: true };
+    } else {
+      delete state.exposureTabs.ALL;
+      if (state.exposureTabs[t]) {
+        delete state.exposureTabs[t];
+        if (Object.keys(state.exposureTabs).length === 0) state.exposureTabs = { ALL: true };
+      } else {
+        state.exposureTabs[t] = true;
+      }
+    }
+    renderExposureSummary();
+  });
 
   function hasActiveFilters() {
     var f = state.poolFilters;
