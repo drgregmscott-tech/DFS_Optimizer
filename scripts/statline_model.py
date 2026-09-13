@@ -1155,6 +1155,224 @@ def apply_volume_prior(pool: pd.DataFrame, artifact: dict,
 
 
 # ---------------------------------------------------------------------------
+# Depth-chart usage-share prior (Session (this change))
+# ---------------------------------------------------------------------------
+
+def apply_depth_chart_usage_prior(pool: pd.DataFrame, team_vol: pd.DataFrame,
+                                  depth_chart: pd.DataFrame) -> pd.DataFrame:
+    """Real-world review of the Week 1 2026 slate: Bucky Irving (TB, the
+    confirmed #1 RB by depth chart) was outprojected on DK by Kenny Gainwell
+    (TB, confirmed #2) despite Irving getting nearly double Gainwell's real
+    projected touches (12.9 rush + 1.8 targets vs 5.1 rush + 4.5 targets).
+    Investigated live: the math behind each number was internally correct
+    (DK's per-reception scoring genuinely values Gainwell's target volume
+    highly) -- the actual problem is upstream, in build_usage()'s per-
+    component volume, which is purely each player's OWN recency-weighted
+    history. Gainwell's own history includes a bigger receiving role earned
+    in a different context; Irving (10 games played, presumably a smaller
+    complementary role before this season) has no history of his own yet
+    that reflects being the real lead back. Neither number is wrong given
+    ONLY the player's own box scores -- both are blind to what a same-rank
+    peer's REAL role actually looks like right now.
+
+    Unlike apply_confirmed_starter_override() below (which only fires at
+    raw participation ~0, and only ever RAISES participation), this checks
+    EVERY component a position has (not just the one PRIMARY_COMPONENT) and
+    corrects in BOTH directions -- an over-credited backup's share is pulled
+    down, not just an under-credited starter's pulled up. Per an explicit
+    user requirement: no hardcoded per-position drop-off percentage, no
+    manual "is this team a committee" flag. The peer baseline is instead
+    computed FRESH from this run's own real player pool: for every
+    (position, component, depth_rank) group, the median real share-of-team-
+    volume other players at that same rank are showing THIS week, from
+    real carries/targets data already in `pool` -- so a genuine committee
+    shows up as a naturally small gap between rank 1 and rank 2's medians,
+    and a real workhorse hierarchy shows up as a naturally large one,
+    without this function ever encoding which is which.
+
+    Each player's own share is blended toward that peer median with
+    volume_prior.cold_start_weight()'s existing fade-by-games-played shape
+    (reused rather than inventing new blend math) -- heavy weight on the
+    peer baseline when his own sample is thin or cross-context, fading as
+    his own current-role history accumulates. Only ever adjusts `{comp}_mu`
+    (never `{comp}_mu_raw`, which apply_confirmed_starter_override() below
+    still needs untouched as the pure own-history number for its own
+    hist_share_raw math) and never touches participation itself.
+
+    Deliberately runs BEFORE apply_volume_prior()'s price-based blend and
+    apply_confirmed_starter_override() in the pipeline -- see
+    build_projections_statline.py -- since real usage share is a more
+    direct role signal than price, and this should establish a role-aware
+    baseline for those later steps to make smaller corrections on top of,
+    not compete with them for the same `{comp}_mu` value.
+
+    No-op (returns `pool` unchanged) if depth_chart is missing/empty, same
+    "absence of a signal is not itself a signal" handling used throughout
+    this file. Adds audit columns `{comp}_rank_baseline_share` and
+    `{comp}_usage_prior_ratio` (NaN/1.0 respectively where not eligible) so
+    every adjustment this makes is traceable after the fact.
+    """
+    import volume_prior
+    from fit_statline_variance import COMPONENTS
+
+    df = pool.copy()
+    if depth_chart is None or depth_chart.empty or "team" not in df.columns:
+        return df
+    if team_vol is None or len(team_vol) == 0:
+        return df
+
+    df = df.merge(depth_chart[["player_id", "depth_rank"]], on="player_id", how="left")
+    tv = team_vol.set_index("team")
+
+    games_played = pd.to_numeric(df.get("games_played"), errors="coerce").fillna(0.0)
+    weight = pd.Series(
+        volume_prior.cold_start_weight(
+            games_played, weight_floor=volume_prior.DEPTH_RANK_WEIGHT_FLOOR,
+            k=volume_prior.DEPTH_RANK_COLD_START_K),
+        index=df.index)
+
+    lo, hi = volume_prior.USAGE_PRIOR_RATIO_BOUNDS
+
+    for pos, cs in COMPONENTS.items():
+        pos_mask = df["position"].astype(str) == pos
+        if not pos_mask.any():
+            continue
+        for comp, _v, _y, _t in cs:
+            col = _TEAM_PRED_COL.get(comp)
+            raw_col, mu_col = f"{comp}_mu_raw", f"{comp}_mu"
+            hcol = f"{col}_history" if col else None
+            if not hcol or hcol not in tv.columns or raw_col not in df.columns:
+                continue
+
+            # `comp` names (rush/recv) are shared across positions (RB and
+            # WR both have a "recv" entry in COMPONENTS, for instance), so
+            # these audit columns must be created ONCE and then only ever
+            # written for THIS position's rows below -- an earlier bug had
+            # this line unconditionally reset the whole column on every
+            # position's pass, silently wiping out a prior position's
+            # audit trail (though never the actual mu_col fix itself, since
+            # that assignment is already correctly scoped to `eligible`,
+            # which is position-specific).
+            baseline_col, ratio_col = f"{comp}_rank_baseline_share", f"{comp}_usage_prior_ratio"
+            if baseline_col not in df.columns:
+                df[baseline_col] = np.nan
+            if ratio_col not in df.columns:
+                df[ratio_col] = 1.0
+
+            m = pos_mask & df["depth_rank"].notna()
+            if not m.any():
+                continue
+
+            denom = pd.to_numeric(df.loc[m, "team"].map(tv[hcol]), errors="coerce")
+            raw = pd.to_numeric(df.loc[m, raw_col], errors="coerce")
+            own_share = pd.Series(np.nan, index=df.index)
+            own_share.loc[m] = np.where(
+                denom.to_numpy(float) > 1e-9,
+                raw.to_numpy(float) / denom.to_numpy(float), np.nan)
+
+            # Real, this-run-only peer baseline -- never a stored/fitted
+            # assumption. Restricted to rows with a real sample of their own
+            # (MIN_GAMES_FOR_BASELINE) and a nonzero share, so players who
+            # never touch the ball don't drag a rank's baseline toward zero.
+            reliable = (
+                m & (games_played >= volume_prior.MIN_GAMES_FOR_BASELINE)
+                & (own_share > volume_prior.ROLE_CHANGE_MIN_HIST_SHARE)
+            )
+            baseline_input = pd.DataFrame({
+                "depth_rank": df.loc[reliable, "depth_rank"],
+                "own_share": own_share.loc[reliable],
+            })
+            group_counts = baseline_input.groupby("depth_rank").size()
+            group_medians = baseline_input.groupby("depth_rank")["own_share"].median()
+            valid_ranks = group_counts[group_counts >= volume_prior.MIN_BASELINE_SAMPLE].index
+            rank_baseline = pd.Series(np.nan, index=df.index)
+            rank_baseline.loc[m] = df.loc[m, "depth_rank"].map(
+                group_medians.reindex(valid_ranks))
+
+            eligible = (
+                m & own_share.notna()
+                & (own_share > volume_prior.ROLE_CHANGE_MIN_HIST_SHARE)
+                & rank_baseline.notna()
+            )
+            df.loc[m, baseline_col] = rank_baseline.loc[m]
+            if not eligible.any():
+                continue
+
+            w = weight.loc[eligible]
+            target_share = (1 - w) * own_share.loc[eligible] + w * rank_baseline.loc[eligible]
+            ratio = (target_share / own_share.loc[eligible]).clip(lower=lo, upper=hi)
+
+            df.loc[eligible, ratio_col] = ratio
+            df.loc[eligible, mu_col] = (
+                pd.to_numeric(df.loc[eligible, mu_col], errors="coerce").fillna(0.0) * ratio
+            )
+
+    return df.drop(columns=["depth_rank"], errors="ignore")
+
+
+def load_manual_role_overrides(season: int, week: int) -> pd.DataFrame:
+    """Session (this change) -- the week-by-week escape hatch for real
+    breaking news (a coach announcing a role change mid-week) that no data
+    feed can reflect yet. Deliberately NOT automated: this is a manually
+    created/edited file, same additive-and-optional convention as
+    ownership_heuristic.py's load_name_recognition_flags() -- missing file
+    or missing player is a no-op, never an error, and nothing here infers
+    an override on its own.
+
+    Expected file: data/manual_role_overrides_{season}_{week}.csv with
+    columns [player_id, component, override_share, notes]. `component` is
+    one of "pass"/"rush"/"recv" (matches COMPONENTS' own naming) and
+    `override_share` is a share-of-team-volume number in the same units as
+    apply_depth_chart_usage_prior()'s own own_share/rank_baseline_share
+    (e.g. 0.55 = 55% of the team's real volume for that component).
+    """
+    path = DATA_DIR / f"manual_role_overrides_{season}_{week}.csv"
+    cols = ["player_id", "component", "override_share", "notes"]
+    if not path.exists():
+        return pd.DataFrame(columns=cols)
+    df = pd.read_csv(path, dtype={"player_id": str})
+    missing = {"player_id", "component", "override_share"} - set(df.columns)
+    if missing:
+        raise SystemExit(f"{path} is missing expected columns: {sorted(missing)}.")
+    return df
+
+
+def apply_manual_role_overrides(pool: pd.DataFrame, team_vol: pd.DataFrame,
+                                overrides: pd.DataFrame) -> pd.DataFrame:
+    """Applies `load_manual_role_overrides()`'s rows LAST, after
+    apply_depth_chart_usage_prior() -- a manual override should always win
+    over the automatic real-data correction, since it exists specifically
+    for a case the data can't reflect yet. No-op if `overrides` is empty.
+    """
+    df = pool.copy()
+    if overrides is None or overrides.empty or "team" not in df.columns:
+        return df
+
+    tv = team_vol.set_index("team") if len(team_vol) else pd.DataFrame()
+    participation = pd.to_numeric(df.get("participation"), errors="coerce").fillna(0.0)
+
+    for _, row in overrides.iterrows():
+        pid, comp, share = row["player_id"], str(row["component"]), float(row["override_share"])
+        col = _TEAM_PRED_COL.get(comp)
+        mu_col = f"{comp}_mu"
+        hcol = f"{col}_history" if col else None
+        if not hcol or hcol not in tv.columns or mu_col not in df.columns:
+            print(f"WARNING: manual role override for player_id={pid}, "
+                  f"component={comp} could not be applied (missing team "
+                  f"history column or {mu_col}) -- skipped.", file=sys.stderr)
+            continue
+        match = df["player_id"] == pid
+        if not match.any():
+            print(f"WARNING: manual role override for player_id={pid} does "
+                  f"not match any player in this pool -- skipped.", file=sys.stderr)
+            continue
+        team_hist = pd.to_numeric(df.loc[match, "team"].map(tv[hcol]), errors="coerce")
+        df.loc[match, mu_col] = (share * team_hist * participation.loc[match]).to_numpy()
+
+    return df
+
+
+# ---------------------------------------------------------------------------
 # Confirmed-starter override (Session 15.2)
 # ---------------------------------------------------------------------------
 
@@ -1209,16 +1427,33 @@ def apply_confirmed_starter_override(pool: pd.DataFrame, team_vol: pd.DataFrame,
     build_projections_statline.py's AUDIT_COLUMNS comment already
     documents for participation_effective elsewhere in this pipeline.
 
-    Deliberately scoped to raw participation ~0 ONLY, not partial cases
-    (Daniel Jones/Jayden Daniels, currently at partial credit via the
-    existing role-change override above). Probed both ways (Session 15.2):
-    widening this rule to partial-participation players does fix Jones/
+    Originally scoped to raw participation ~0 ONLY, not partial cases
+    (Daniel Jones/Jayden Daniels, at partial credit via the existing
+    role-change override above). Session 15.2 probed widening this to all
+    partial-participation players and rejected it: it does fix Jones/
     Daniels, but also moves 30+ ordinary healthy players (Josh Allen,
     Justin Herbert, Saquon Barkley, among others) who simply missed one
     game somewhere in their own last-5 window for a normal, non-injury
-    reason -- real, already-reasonable behavior that widening would
-    disturb for no proven benefit. Left for a separately-scoped,
-    separately-probed follow-up if wanted, not folded in here.
+    reason.
+
+    Session (this change) revisits that rejection: the blanket widening was
+    right to reject (it can't tell Jones/Daniels apart from Herbert), but
+    leaving ALL partial-participation players untouched was itself a real
+    bug, confirmed live on the Week 1 2026 slate -- Herbert and ~27 similar
+    confirmed #1 starters with a completely clean CURRENT injury report were
+    getting materially suppressed participation_effective (e.g. Herbert at
+    0.8) purely from a meaningless prior-season finale rest game, which then
+    dragged their ownership_heuristic.py chalk score/estimated ownership
+    down relative to players with a near-identical raw projection. The gap
+    between the two rejected/adopted designs is `injury_status`: a second,
+    narrower eligibility block below now promotes a confirmed #1 starter's
+    partial participation to 1.0 ONLY when today's real injury report has
+    NO flag on him at all (absent, or explicitly ACTIVE) -- Jones/Daniels
+    stay excluded because they (or an equivalent genuinely-hurt/benched
+    player) carry a real QUESTIONABLE/DOUBTFUL/OUT flag, or fail
+    `established_role`, so they are unaffected by this second block and
+    keep whatever partial credit the role-change override above already
+    gives them.
 
     Validated against real reconciliation (Session 15.2): running the real
     reconcile_team_shares() before and after this override on the real
@@ -1317,6 +1552,52 @@ def apply_confirmed_starter_override(pool: pd.DataFrame, team_vol: pd.DataFrame,
     df.loc[injury_eligible, "role_change_injury_flag"] = True
     df.loc[injury_eligible, "participation_effective"] = 1.0
     eligible = eligible | injury_eligible
+
+    # Session (this change), decision -- the partial-participation
+    # counterpart to the zero-participation case above, deliberately NOT
+    # folded into it. The docstring above explains why a blanket widening
+    # was rejected in Session 15.2: it would also promote real committee/
+    # lost-job players (Daniel Jones, Jayden Daniels) who happen to be at
+    # partial rather than zero participation. But real-world review of the
+    # Week 1 2026 slate showed the opposite failure mode going UNCAUGHT:
+    # confirmed #1 starters with a completely clean current injury report
+    # (Justin Herbert among ~28 others) were getting materially suppressed
+    # participation_effective (e.g. 0.8) purely because they sat one
+    # meaningless late-season game the PRIOR year (a playoff-seeding rest
+    # day) -- there is no reasonable read of "healthy, confirmed starter,
+    # nothing wrong per today's real injury report" that should feed a
+    # lower participation_effective into ownership's chalk/ownership model
+    # (see ownership_heuristic.py's participation_confidence multiplier).
+    #
+    # The fix distinguishes the two cases the same way the injury-eligible
+    # block above already does -- by checking `injury_status`, the one real
+    # signal available, rather than trying to infer "was that specific
+    # missed game meaningless" from schedule/standings data this pipeline
+    # doesn't have. A player who IS flagged QUESTIONABLE/DOUBTFUL/OUT on the
+    # current pull is excluded here and left to whatever partial credit the
+    # existing role-change override already gives him -- that is real signal
+    # this block must not override. `established_role` is the same bar used
+    # everywhere else in this function, so a genuine committee back who
+    # simply doesn't have a real starter's history share still won't qualify
+    # even with a clean injury report.
+    clean_injury_report = pd.Series(True, index=df.index)
+    if injury_status is not None and not injury_status.empty:
+        flagged_ids = set(
+            injury_status.loc[injury_status["status"] != "ACTIVE", "player_id"])
+        clean_injury_report = ~df["player_id"].isin(flagged_ids)
+
+    participation_num = pd.to_numeric(df["participation"], errors="coerce").fillna(0.0)
+    partial_participation = (participation_num > 1e-9) & (participation_num < 1.0 - 1e-9)
+
+    clean_starter_partial = (
+        confirmed_starter & established_role & clean_injury_report
+        & partial_participation & ~eligible
+    )
+
+    df["clean_starter_partial_flag"] = False
+    df.loc[clean_starter_partial, "clean_starter_partial_flag"] = True
+    df.loc[clean_starter_partial, "participation_effective"] = 1.0
+    eligible = eligible | clean_starter_partial
 
     for pos, cs in COMPONENTS.items():
         pos_mask = eligible & (df["position"].astype(str) == pos)

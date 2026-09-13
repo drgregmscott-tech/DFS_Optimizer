@@ -251,6 +251,60 @@ TEAM_VOLUME_COLUMN = {"pass": "team_attempts",
                       "rush": "team_carries",
                       "recv": "team_targets"}
 
+# ---------------------------------------------------------------------------
+# Session (this change) -- depth-chart usage-share prior. Real-world review
+# of the Week 1 2026 slate surfaced a gap the price/role-change machinery
+# above doesn't cover: a player's OWN recency-weighted history (build_usage())
+# can misrepresent his CURRENT role whenever that history was earned in a
+# different context (a different team, a different committee split, a
+# different season) than the one he's actually in now -- e.g. a real
+# Week 1 2026 case, Kenny Gainwell (TB) projecting a receiving-role share
+# on par with his own established-elsewhere history despite Bucky Irving
+# (TB) being the real, confirmed lead back this season. Depth chart rank is
+# a real, current signal for this that apply_confirmed_starter_override()
+# above only checks for the all-or-nothing zero-participation case -- a
+# player with plenty of games (so participation is already 1.0) never
+# reaches that check at all, no matter how badly his own history
+# misrepresents his current-team role.
+#
+# The user's explicit design requirement: no hardcoded per-position drop-off
+# percentages, no manual "is this team a committee" flag, and the
+# correction must be able to go BOTH ways (pull an over-credited backup's
+# share DOWN, not just an under-credited starter's UP) -- unlike
+# role_change_participation() above, which deliberately only ever raises.
+# The mechanism here: for every (position, component, depth_rank) group,
+# compute the REAL median share-of-team-volume other players at that same
+# rank are showing THIS RUN (statline_model.apply_depth_chart_usage_prior())
+# -- purely empirical, recomputed fresh every run from real box-score data,
+# never a stored assumption -- and blend each player's own share toward
+# that peer baseline, with weight fading toward zero as his OWN games_played
+# grows (same cold_start_weight() shape used for the price prior below,
+# reusing proven machinery rather than inventing new blend math).
+#
+# All four constants are ARBITRARY STARTING POINTS, flagged per this file's
+# own convention (same status as DEFAULT_COLD_START_K, ROLE_CHANGE_MIN_
+# DIVERGENCE) -- first retuning targets, not fitted.
+DEPTH_RANK_WEIGHT_FLOOR = 0.15   # unlike price's 0.0, this signal is a real
+                                 # current-role check (not a competing
+                                 # predictor known to lose to history), so it
+                                 # keeps a small standing influence even
+                                 # mid-season rather than fading to nothing.
+DEPTH_RANK_COLD_START_K = 4.0
+MIN_GAMES_FOR_BASELINE = 3       # a rank-group median is only built from
+                                 # players with at least this many games of
+                                 # their own -- excludes noisy single-game
+                                 # samples from contaminating the peer baseline.
+MIN_BASELINE_SAMPLE = 3          # a (position, component, depth_rank) group
+                                 # needs at least this many qualifying rows
+                                 # league-wide before its median is trusted at
+                                 # all -- too few real examples means no
+                                 # correction is applied for that group.
+USAGE_PRIOR_RATIO_BOUNDS = (0.5, 1.75)  # safety clamp on how far one run's
+                                        # correction can move a player's mu in
+                                        # either direction, so a thin/noisy
+                                        # rank-group median can't produce an
+                                        # extreme swing in one week.
+
 # The component whose share defines a player's ROLE. A QB's role is how much
 # of the team's passing he does; a running back's is carries. Receiving is the
 # role signal for both pass-catching positions.

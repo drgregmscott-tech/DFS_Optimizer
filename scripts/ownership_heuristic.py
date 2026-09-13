@@ -573,7 +573,23 @@ def compute_chalk_scores(df: pd.DataFrame, site: str, group_col: str = None) -> 
     # the data itself.
     if "participation_effective" in df.columns:
         participation = pd.to_numeric(df["participation_effective"], errors="coerce")
-        has_real_signal = (participation.fillna(0) > 0).any()
+        # Session (this change) -- decision #9 originally required literally
+        # EVERY player to be at 0.0 before skipping dampening, which only
+        # catches a fully-degenerate all-zero slate. That's narrower than
+        # the real failure mode: statline_model.py's participation window
+        # can produce a MINORITY of the pool sitting at a nonzero-but-not-1.0
+        # value from a boundary/lookback artifact (e.g. the Week 1 season-
+        # rollover case apply_confirmed_starter_override() now corrects at
+        # the source for clean, confirmed starters -- see that function's
+        # clean_starter_partial block) while most of the pool is still a
+        # genuine 0.0. Requiring a real MAJORITY of the pool to have signal
+        # before trusting it at all is a coarser backstop for whatever this
+        # threshold doesn't already catch upstream -- kept even after that
+        # fix as cheap insurance, since it's scoped narrowly (depth_rank==1
+        # only) and won't cover every possible degenerate-window artifact.
+        MIN_REAL_SIGNAL_SHARE = 0.5
+        share_real_signal = (participation.fillna(0) > 0).mean()
+        has_real_signal = share_real_signal >= MIN_REAL_SIGNAL_SHARE
         if has_real_signal:
             df["participation_confidence"] = (
                 PARTICIPATION_CONFIDENCE_FLOOR
@@ -581,12 +597,14 @@ def compute_chalk_scores(df: pd.DataFrame, site: str, group_col: str = None) -> 
             ).fillna(1.0)
         else:
             print(
-                "NOTE: every skill-position player in this slate has "
-                "participation_effective == 0.0 -- a true Week 1/no-history "
-                "slate, not a mix of established and unproven players. "
-                "Decision #8's dampening (decision #9) is skipped entirely "
-                "this run so real players aren't uniformly punished relative "
-                "to DST/K, which have no participation concept at all.",
+                f"NOTE: only {share_real_signal:.1%} of skill-position players "
+                "in this slate have participation_effective > 0.0 (below the "
+                f"{MIN_REAL_SIGNAL_SHARE:.0%} threshold) -- a true Week 1/"
+                "no-history slate, not a mix of established and unproven "
+                "players. Decision #8's dampening (decision #9) is skipped "
+                "entirely this run so real players aren't uniformly punished "
+                "relative to DST/K, which have no participation concept at "
+                "all.",
                 file=sys.stderr,
             )
             df["participation_confidence"] = 1.0

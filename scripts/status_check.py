@@ -183,6 +183,7 @@ Usage:
 """
 
 import argparse
+import re
 import sys
 from datetime import datetime, timezone
 from pathlib import Path
@@ -448,6 +449,52 @@ def run_pull(season: int, week: int, teams_arg: str | None, weekly_stats_overrid
 # `apply` subcommand -- decision #4's actual OUT-exclusion enforcement
 # ---------------------------------------------------------------------------
 
+# Session (this change) -- a real incident: the CI status pull silently
+# stopped working for multiple days (swallowed by refresh_data.yml's
+# continue-on-error) while `apply` kept re-applying the same stale file
+# every run and reporting "success," so a player who was ruled OUT never
+# got zeroed. Nothing previously checked *how old* the status file being
+# applied actually was. WARN_HOURS is roughly "should have refreshed again
+# by now but one missed cycle isn't alarming"; HARD_FAIL_HOURS is "old
+# enough that applying it risks using pre-injury-news data" -- refuse
+# rather than silently guess, matching this file's existing fail-loud
+# posture (decision #2's STATUS_MAP, decision #6's duplicate-id check).
+STALENESS_WARN_HOURS = 20
+STALENESS_HARD_FAIL_HOURS = 72
+
+
+def check_staleness(status_path: Path) -> None:
+    """Parse the {timestamp} suffix `run_pull()` embeds in the status
+    filename (player_status_{week}_{timestamp}.csv, %Y%m%d_%H%M%S) and
+    compare it to now(). Hard-fails past STALENESS_HARD_FAIL_HOURS, warns
+    past STALENESS_WARN_HOURS."""
+    m = re.search(r"_(\d{8}_\d{6})\.csv$", status_path.name)
+    if not m:
+        raise SystemExit(
+            f"{status_path.name} does not match the expected "
+            f"player_status_{{week}}_{{timestamp}}.csv naming -- cannot "
+            f"verify freshness before applying it."
+        )
+    pulled_at = datetime.strptime(m.group(1), "%Y%m%d_%H%M%S").replace(tzinfo=timezone.utc)
+    age_hours = (datetime.now(timezone.utc) - pulled_at).total_seconds() / 3600
+
+    if age_hours >= STALENESS_HARD_FAIL_HOURS:
+        raise SystemExit(
+            f"{status_path.name} is {age_hours:.1f}h old (hard-fail threshold: "
+            f"{STALENESS_HARD_FAIL_HOURS}h). Refusing to apply injury/active "
+            f"status this stale -- an OUT/ACTIVE designation this old may no "
+            f"longer reflect reality. Run `status_check.py pull` again before "
+            f"`apply`."
+        )
+    if age_hours >= STALENESS_WARN_HOURS:
+        print(
+            f"WARNING: {status_path.name} is {age_hours:.1f}h old (warn "
+            f"threshold: {STALENESS_WARN_HOURS}h) -- injury/active status may "
+            f"be stale.",
+            file=sys.stderr,
+        )
+
+
 def run_apply(site: str, week: int, status_file: str, projections_file: str | None, out_file: str | None):
     proj_path = Path(projections_file) if projections_file else (OUTPUT_DIR / f"final_projections_{site}_{week}.csv")
     if not proj_path.exists():
@@ -458,6 +505,7 @@ def run_apply(site: str, week: int, status_file: str, projections_file: str | No
     status_path = Path(status_file)
     if not status_path.exists():
         raise SystemExit(f"{status_path} not found -- run `status_check.py pull` first.")
+    check_staleness(status_path)
 
     projections = pd.read_csv(proj_path, dtype={"player_id": str})
     status = pd.read_csv(status_path, dtype={"player_id": str})

@@ -205,6 +205,15 @@ jobs:
     needs: prepare
     if: needs.prepare.outputs.has_slates == 'true'
     runs-on: ubuntu-latest
+    outputs:
+      # Session (this change) -- `continue-on-error: true` on the status
+      # pull step below overrides the step's *conclusion* to "success" so
+      # the job itself always reports success, but it does NOT touch
+      # `outcome`, which still reflects what actually happened. Surfacing
+      # `outcome` here is what lets `finalize` (JOB 4) tell a real pull
+      # failure apart from a clean run -- see that job's comment for why
+      # this was previously impossible.
+      status_pull_outcome: ${{ steps.status_pull.outcome }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -254,6 +263,17 @@ jobs:
       # e.g. one slate still on Week 1's carryover sentinel while another
       # is a genuine Week 2+ slate. Status is pulled once per distinct
       # pair present, not once per slate.
+      # Session (this change) -- previously this step's own shell loop
+      # swallowed every pull failure a second time via `|| echo
+      # "::warning::..."`, on top of the step-level `continue-on-error:
+      # true` below. That double swallow is what let the injury/status
+      # pull silently stop working for days (a real incident: a player
+      # ruled OUT never got zeroed because no fresh status had actually
+      # been pulled, while every run still reported "success"). The loop
+      # now tracks failures and exits nonzero so `steps.status_pull.outcome`
+      # correctly reports "failure" for `finalize` to see -- `continue-on-
+      # error: true` is kept at the step level so one bad ESPN fetch for
+      # one season/week pair still doesn't block the rest of this job.
       - name: Pull fresh injury/active status (once per distinct season/week)
         id: status_pull
         if: needs.prepare.outputs.mode == 'full'
@@ -267,10 +287,17 @@ jobs:
           for p in pairs:
               print(f\"{p['season']} {p['week']}\")
           " > /tmp/pairs.txt
+          FAILED=0
           while read season week; do
             echo \"Pulling status for season=$season week=$week\"
-            python3 scripts/status_check.py pull --season \"$season\" --week \"$week\" || echo \"::warning::status pull failed for season=$season week=$week, matrix jobs will use last-known-good\"
+            if ! python3 scripts/status_check.py pull --season \"$season\" --week \"$week\"; then
+              echo \"::error::status pull failed for season=$season week=$week, matrix jobs will use last-known-good\"
+              FAILED=1
+            fi
           done < /tmp/pairs.txt
+          if [ \"$FAILED\" -eq 1 ]; then
+            exit 1
+          fi
 
       # Commit whatever was successfully refreshed. A failed pull above
       # simply produced no new file, so there is nothing new to commit for
@@ -463,16 +490,71 @@ jobs:
   # JOB 4 -- fail the whole workflow run if the shared pull or any slate's
   # refresh actually failed, so a real problem still shows up red in the
   # Actions tab instead of being swallowed by continue-on-error everywhere.
+  #
+  # Session (this change) -- `needs.shared_pull.result` / `needs.
+  # refresh_slate.result` are USELESS for this: every meaningful step in
+  # both jobs runs under `continue-on-error: true`, which overrides the
+  # step's *conclusion* to "success" and therefore the whole job's result
+  # to "success" regardless of what actually happened inside. That's the
+  # exact reason the injury-pull outage went undetected for days. This job
+  # now checks the real per-step `outcome` values instead: shared_pull's
+  # `status_pull_outcome` output (see that job), and refresh_slate's
+  # per-leg outcomes as already recorded in logs/automation_run_log.csv
+  # (matrix jobs don't expose per-leg outputs, but every leg appends a row
+  # there regardless of outcome -- see "Append run-log row").
   # ---------------------------------------------------------------------
   finalize:
     needs: [prepare, shared_pull, refresh_slate]
     if: always()
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
       - name: Check for failures
         run: |
+          FAIL=0
+
+          if [ "${{ needs.shared_pull.outputs.status_pull_outcome }}" = "failure" ]; then
+            echo "::error::shared_pull's injury/active status pull failed for at least one season/week pair -- status data may be stale. See the 'Pull fresh injury/active status' step logs above."
+            FAIL=1
+          fi
+
           if [ "${{ needs.shared_pull.result }}" = "failure" ] || [ "${{ needs.refresh_slate.result }}" = "failure" ]; then
-            echo "shared_pull or refresh_slate reported a failure -- see the job logs above and logs/automation_run_log.csv."
+            echo "::error::shared_pull or refresh_slate reported a hard job failure -- see the job logs above."
+            FAIL=1
+          fi
+
+          # Cross-check the committed run log for any build/apply failure
+          # logged by this run. The log is append-only and shared across
+          # runs, so this only looks at rows from roughly this run's own
+          # window rather than trying to scope by a run id the log doesn't
+          # carry.
+          if [ -f logs/automation_run_log.csv ]; then
+            python3 -c "
+          import csv, sys
+          from datetime import datetime, timezone, timedelta
+
+          cutoff = datetime.now(timezone.utc) - timedelta(hours=2)
+          bad = []
+          with open('logs/automation_run_log.csv', newline='') as f:
+              for row in csv.DictReader(f):
+                  try:
+                      ts = datetime.fromisoformat(row['timestamp_utc'])
+                  except ValueError:
+                      continue
+                  if ts >= cutoff and row['step'] in ('build_projections', 'status_apply') and row['status'] == 'failure':
+                      bad.append(row)
+          if bad:
+              for r in bad:
+                  print(f\"::error::{r['step']} failed for {r['site']} {r['slate_id']} ({r['trigger_type']})\")
+              sys.exit(1)
+          " || FAIL=1
+          fi
+
+          if [ "$FAIL" -eq 1 ]; then
+            echo "One or more real failures detected -- see errors above and logs/automation_run_log.csv."
             exit 1
           fi
+          echo "No real failures detected."
           echo "All jobs completed (some individual steps may have used continue-on-error and fallen back to last-known-good -- check logs/automation_run_log.csv for per-slate detail)."
