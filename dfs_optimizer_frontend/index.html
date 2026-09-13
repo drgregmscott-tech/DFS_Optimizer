@@ -1781,21 +1781,6 @@ in this browser's localStorage.</p>
         <div class="player-list" id="playerList"></div>
       </div>
 
-      <!-- Ad Hoc Session A7 -- Exposure Summary. Same tab/table shape as
-           Player Pool above, but summarizing the last "Build Lineups" run
-           (state.data[site]) instead of the raw pool -- lets you confirm
-           each player/DST's actual exposure across the whole batch (e.g.
-           MME's 35% Max Exposure should put your top chalk right at 35%,
-           the Dart Exposure Cap % should cap your dart-tier plays) rather
-           than reading it off a plain per-player list buried in the
-           GitHub Actions log. -->
-      <div class="player-search" id="exposureSection">
-        <span class="field-label">Exposure Summary</span>
-        <div class="hint" style="margin-top:6px;">Player/DST exposure across every lineup in your last build. Confirm your chalk lands near Max Exposure %, your dart-tier plays land near Dart Exposure Cap % (if set), and nothing is over- or under-exposed relative to what you intended. Updates automatically after each "Build Lineups" run.</div>
-        <div class="pool-tabs" id="exposureTabs" style="margin-top:10px;"></div>
-        <div id="exposureTable"></div>
-      </div>
-
       <div class="action-row">
         <button class="action-btn primary" id="btnConfirm">Build Lineups</button>
       </div>
@@ -1807,6 +1792,30 @@ in this browser's localStorage.</p>
   <!-- ================= /Build Lineup panel ================= -->
 
   <div id="viewer"></div>
+
+  <!-- Ad Hoc Session A7 (moved below the lineup viewer + made collapsible
+       per follow-up request) -- Exposure Summary. Same tab/table shape as
+       Player Pool above, but summarizing the last "Build Lineups" run
+       (state.data[site]) instead of the raw pool -- lets you confirm each
+       player/DST's actual exposure across the whole batch (e.g. MME's 35%
+       Max Exposure should put your top chalk right at 35%, the Dart
+       Exposure Cap % should cap your dart-tier plays) rather than reading
+       it off a plain per-player list buried in the GitHub Actions log.
+       Same collapsible build-panel/build-header/build-body pattern as the
+       "Build a Lineup" panel above, closed by default -- unlike that
+       panel, this one is a look-at-results-after-the-fact view, not
+       something you configure before every build. -->
+  <div class="build-panel" id="exposurePanel">
+    <div class="build-header" id="exposureHeader">
+      <div class="title">Exposure Summary</div>
+      <div class="chevron">&#9656;</div>
+    </div>
+    <div class="build-body" id="exposureSection">
+      <div class="hint" style="margin-top:12px;">Player/DST exposure across every lineup in your last build. Confirm your chalk lands near Max Exposure %, your dart-tier plays land near Dart Exposure Cap % (if set), and nothing is over- or under-exposed relative to what you intended. Updates automatically after each "Build Lineups" run.</div>
+      <div class="pool-tabs" id="exposureTabs" style="margin-top:10px;"></div>
+      <div id="exposureTable"></div>
+    </div>
+  </div>
 
 </div>
 
@@ -3836,6 +3845,13 @@ in this browser's localStorage.</p>
 
   document.getElementById("buildHeader").addEventListener("click", function () {
     document.getElementById("buildPanel").classList.toggle("open");
+  });
+
+  // Ad Hoc Session A7 -- Exposure Summary panel, closed by default (a
+  // look-at-results-after-the-fact view, not something to configure
+  // before every build the way the panel above is).
+  document.getElementById("exposureHeader").addEventListener("click", function () {
+    document.getElementById("exposurePanel").classList.toggle("open");
   });
 
   // Session 7.3, item #3 fix: save on every keystroke (input), not just on
