@@ -1,0 +1,605 @@
+player_id,player_name,team,position,status,raw_status,last_updated,match_method
+00-0037263,Tyler Allgeier,ARI,RB,ACTIVE,,,auto_fallback_name_only
+00-0033307,Kendrick Bourne,ARI,WR,ACTIVE,,,auto_fallback_name_only
+00-0033119,Jacoby Brissett,ARI,QB,ACTIVE,,,auto_exact
+00-0038640,Jalen Brooks,ARI,WR,ACTIVE,,,auto_exact
+00-0036331,Devin Duvernay,ARI,WR,ACTIVE,,,auto_fallback_name_only
+00-0036646,Simi Fehoko,ARI,WR,ACTIVE,,,auto_exact
+00-0039849,Marvin Harrison Jr.,ARI,WR,ACTIVE,,,auto_exact
+00-0039041,Elijah Higgins,ARI,TE,ACTIVE,,,auto_exact
+00-0037157,Bam Knight,ARI,RB,ACTIVE,,,auto_exact
+00-0037004,Hunter Long,ARI,TE,ACTIVE,,,auto_fallback_name_only
+00-0037744,Trey McBride,ARI,TE,ACTIVE,,,auto_exact
+00-0035289,Gardner Minshew II,ARI,QB,ACTIVE,,,auto_fallback_name_only
+00-0038559,Michael Wilson,ARI,WR,ACTIVE,,,auto_exact
+00-0039921,Trey Benson,ARI,RB,OUT,Injured Reserve,2026-08-25T23:07Z,auto_exact
+00-0033553,James Conner,ARI,RB,OUT,Injured Reserve,2026-08-30T21:50Z,auto_exact
+00-0039737,Tip Reiman,ARI,TE,OUT,Out,2026-08-31T03:56Z,auto_exact
+00-0039521,Xavier Weaver,ARI,WR,QUESTIONABLE,Questionable,2026-09-01T23:23Z,auto_exact
+00-0039550,Shawn Bowman,ARI,TE,ACTIVE,,,auto_fallback_name_only
+00-0038397,Evan Hull,ARI,RB,ACTIVE,,,auto_fallback_name_only
+00-0037277,Teagan Quitoriano,ARI,TE,ACTIVE,,,auto_fallback_name_only
+00-0036635,Ihmir Smith-Marsette,ARI,WR,ACTIVE,,,auto_fallback_name_only
+00-0036463,Chris Blair,ATL,WR,ACTIVE,,,auto_exact
+00-0037741,Jahan Dotson,ATL,WR,ACTIVE,,,auto_fallback_name_only
+00-0032392,Austin Hooper,ATL,TE,ACTIVE,,,auto_fallback_name_only
+00-0037238,Drake London,ATL,WR,ACTIVE,,,auto_exact
+00-0037317,Nick Muse,ATL,TE,ACTIVE,,,auto_fallback_name_only
+00-0039917,Michael Penix Jr.,ATL,QB,OUT,Out,2026-09-13T13:37Z,auto_exact
+00-0036970,Kyle Pitts Sr.,ATL,TE,ACTIVE,,,auto_exact
+00-0038542,Bijan Robinson,ATL,RB,ACTIVE,,,auto_exact
+00-0037746,Brian Robinson Jr.,ATL,RB,ACTIVE,,,auto_fallback_name_only
+00-0033662,Cooper Rush,ATL,QB,ACTIVE,,,auto_fallback_name_only
+00-0036212,Tua Tagovailoa,ATL,QB,OUT,Out,2026-09-13T15:37Z,auto_fallback_name_only
+00-0036429,Charlie Woerner,ATL,TE,ACTIVE,,,auto_exact
+00-0035208,Olamide Zaccheaus,ATL,WR,ACTIVE,,,auto_fallback_name_only
+00-0040432,Beaux Collins,ATL,WR,OUT,Injured Reserve,2026-08-31T04:00Z,auto_fallback_name_only
+00-0036984,Trey Sermon,ATL,RB,OUT,Injured Reserve,2026-09-08T20:42Z,auto_fallback_name_only
+00-0038953,Dylan Drummond,ATL,WR,ACTIVE,,,auto_exact
+00-0037120,Tyler Goodson,ATL,RB,ACTIVE,,,auto_fallback_name_only
+00-0040438,Antwane Wells Jr.,ATL,WR,ACTIVE,,,auto_fallback_name_only
+00-0039796,Rasheen Ali,BAL,RB,ACTIVE,,,auto_exact
+00-0034753,Mark Andrews,BAL,TE,ACTIVE,,,auto_exact
+00-0036550,Rashod Bateman,BAL,WR,ACTIVE,,,auto_exact
+00-0039064,Zay Flowers,BAL,WR,QUESTIONABLE,Questionable,2026-09-13T19:56Z,auto_exact
+00-0032764,Derrick Henry,BAL,RB,ACTIVE,,,auto_exact
+00-0034975,Justice Hill,BAL,RB,ACTIVE,,,auto_exact
+00-0035993,Tyler Huntley,BAL,QB,ACTIVE,,,auto_exact
+00-0034796,Lamar Jackson,BAL,QB,ACTIVE,,,auto_exact
+00-0032398,Chris Moore,BAL,WR,ACTIVE,,,auto_fallback_name_only
+00-0034798,Durham Smythe,BAL,TE,ACTIVE,,,auto_fallback_name_only
+00-0039792,Devontez Walker,BAL,WR,OUT,Out,2026-09-13T16:07Z,auto_exact
+00-0040075,LaJohntay Wester,BAL,WR,ACTIVE,,,auto_exact
+00-0037327,Skylar Thompson,BAL,QB,OUT,Injured Reserve,2026-08-19T12:07Z,auto_fallback_name_only
+00-0040099,Xavier Guillory,BAL,WR,ACTIVE,,,auto_exact
+00-0032394,Nick Vannett,BAL,TE,ACTIVE,,,auto_fallback_name_only
+00-0035924,Jonathan Ward,BAL,RB,ACTIVE,,,auto_exact
+00-0034857,Josh Allen,BUF,QB,ACTIVE,,,auto_exact
+00-0034577,Kyle Allen,BUF,QB,ACTIVE,,,auto_fallback_name_only
+00-0039901,Keon Coleman,BUF,WR,ACTIVE,,,auto_exact
+00-0037248,James Cook III,BUF,RB,ACTIVE,,,auto_exact
+00-0039875,Ray Davis,BUF,RB,ACTIVE,,,auto_exact
+00-0035500,Greg Dortch,BUF,WR,ACTIVE,,,auto_fallback_name_only
+00-0039471,Frank Gore Jr.,BUF,RB,ACTIVE,,,auto_exact
+00-0040194,Jackson Hawes,BUF,TE,ACTIVE,,,auto_exact
+00-0035537,Ty Johnson,BUF,RB,OUT,Out,2026-09-13T15:33Z,auto_exact
+00-0038933,Dalton Kincaid,BUF,TE,ACTIVE,,,auto_exact
+00-0035689,Dawson Knox,BUF,TE,ACTIVE,,,auto_exact
+00-0040363,Keleki Latu,BUF,TE,ACTIVE,,,auto_exact
+00-0034827,DJ Moore,BUF,WR,ACTIVE,,,auto_fallback_name_only
+00-0037261,Khalil Shakir,BUF,WR,ACTIVE,,,auto_exact
+00-0038679,Tyrell Shavers,BUF,WR,OUT,Out,2026-09-08T20:42Z,auto_exact
+00-0036679,Shane Buechele,BUF,QB,ACTIVE,,,auto_fallback_name_only
+00-0040361,Stephen Gosnell,BUF,WR,ACTIVE,,,auto_exact
+00-0034487,Trent Sherfield,BUF,WR,ACTIVE,,,auto_fallback_name_only
+00-0039344,Jonathon Brooks,CAR,RB,ACTIVE,,,auto_exact
+00-0039491,Jalen Coker,CAR,WR,ACTIVE,,,auto_exact
+00-0036265,AJ Dillon,CAR,RB,ACTIVE,,,auto_fallback_name_only
+00-0040187,Mitchell Evans,CAR,TE,ACTIVE,,,auto_exact
+00-0036825,Feleipe Franks,CAR,TE,ACTIVE,,,auto_fallback_name_only
+00-0040218,Jimmy Horn Jr.,CAR,WR,ACTIVE,,,auto_exact
+00-0036555,Chuba Hubbard,CAR,RB,ACTIVE,,,auto_exact
+00-0039342,Xavier Legette,CAR,WR,ACTIVE,,,auto_exact
+00-0040124,Tetairoa McMillan,CAR,WR,ACTIVE,,,auto_exact
+00-0037614,John Metchie III,CAR,WR,OUT,Out,2026-09-13T16:05Z,auto_fallback_name_only
+00-0038102,Kenny Pickett,CAR,QB,ACTIVE,,,auto_fallback_name_only
+00-0039356,Ja'Tavion Sanders,CAR,TE,OUT,Out,2026-09-13T16:02Z,auto_exact
+00-0038840,Brycen Tremayne,CAR,WR,ACTIVE,,,auto_exact
+00-0037005,Tommy Tremble,CAR,TE,ACTIVE,,,auto_exact
+00-0031610,Darren Waller,CAR,TE,ACTIVE,,,auto_fallback_name_only
+00-0039150,Bryce Young,CAR,QB,ACTIVE,,,auto_exact
+00-0040644,Trevor Etienne,CAR,RB,OUT,Injured Reserve,2026-09-08T20:42Z,auto_exact
+00-0040260,Ahmani Marshall,CAR,RB,ACTIVE,,,auto_fallback_name_only
+00-0033589,David Moore,CAR,WR,ACTIVE,,,auto_exact
+00-0040265,Ja'seem Reed,CAR,WR,ACTIVE,,,auto_exact
+00-0040394,Anthony Tyus III,CAR,RB,ACTIVE,,,auto_exact
+00-0039394,Casey Washington,CAR,WR,ACTIVE,,,auto_fallback_name_only
+00-0038416,Tyson Bagent,CHI,QB,OUT,Out,2026-09-13T15:45Z,auto_exact
+00-0040735,Luther Burden III,CHI,WR,ACTIVE,,,auto_exact
+00-0037380,Kaden Davis,CHI,WR,ACTIVE,,,auto_fallback_name_only
+00-0039021,Roschon Johnson,CHI,RB,ACTIVE,,,auto_exact
+00-0028986,Case Keenum,CHI,QB,ACTIVE,,,auto_exact
+00-0036290,Cole Kmet,CHI,TE,ACTIVE,,,auto_exact
+00-0040126,Colston Loveland,CHI,TE,ACTIVE,,,auto_exact
+00-0040236,Kyle Monangai,CHI,RB,ACTIVE,,,auto_exact
+00-0039919,Rome Odunze,CHI,WR,ACTIVE,,,auto_exact
+00-0032464,Kalif Raymond,CHI,WR,ACTIVE,,,auto_fallback_name_only
+00-0036275,D'Andre Swift,CHI,RB,ACTIVE,,,auto_exact
+00-0040277,Jahdae Walker,CHI,WR,ACTIVE,,,auto_exact
+00-0039918,Caleb Williams,CHI,QB,ACTIVE,,,auto_exact
+00-0037329,Brittain Brown,CHI,RB,OUT,Injured Reserve,2026-08-31T16:21Z,auto_exact
+00-0037031,Nikola Kalinic,CHI,TE,OUT,Injured Reserve,2026-08-19T12:07Z,auto_exact
+00-0036020,Salvon Ahmed,CHI,RB,ACTIVE,,,auto_fallback_name_only
+00-0035039,Stephen Carlson,CHI,TE,ACTIVE,,,auto_exact
+00-0039843,Qadir Ismail,CHI,TE,ACTIVE,,,auto_exact
+00-0040275,JP Richardson,CHI,WR,ACTIVE,,,auto_exact
+00-0038440,Zavier Scott,CHI,RB,ACTIVE,,,auto_fallback_name_only
+00-0039814,Erick All Jr.,CIN,TE,ACTIVE,,,auto_exact
+00-0040208,Tahj Brooks,CIN,RB,ACTIVE,,,auto_exact
+00-0038597,Chase Brown,CIN,RB,ACTIVE,,,auto_exact
+00-0036442,Joe Burrow,CIN,QB,ACTIVE,,,auto_exact
+00-0036900,Ja'Marr Chase,CIN,WR,ACTIVE,,,auto_exact
+00-0026158,Joe Flacco,CIN,QB,ACTIVE,,,auto_exact
+00-0034829,Mike Gesicki,CIN,TE,ACTIVE,,,auto_exact
+00-0036410,Tee Higgins,CIN,WR,ACTIVE,,,auto_exact
+00-0034613,Tanner Hudson,CIN,TE,ACTIVE,,,auto_exact
+00-0038619,Andrei Iosivas,CIN,WR,ACTIVE,,,auto_exact
+00-0033526,Samaje Perine,CIN,RB,ACTIVE,,,auto_exact
+00-0035631,Drew Sample,CIN,TE,ACTIVE,,,auto_exact
+00-0040534,Ke'Shawn Williams,CIN,WR,OUT,Out,2026-09-13T15:43Z,auto_exact
+00-0038391,Sean Clifford,CIN,QB,ACTIVE,,,auto_exact
+00-0026300,Josh Johnson,CIN,QB,ACTIVE,,,auto_fallback_name_only
+00-0039266,Kendall Milton,CIN,RB,ACTIVE,,,auto_exact
+00-0040375,Jordan Moore,CIN,WR,ACTIVE,,,auto_exact
+00-0040782,Isaiah Bond,CLE,WR,ACTIVE,,,auto_exact
+00-0031595,Michael Burton,CLE,FB,ACTIVE,,,auto_fallback_name_only
+00-0039920,Malachi Corley,CLE,WR,ACTIVE,,,auto_exact
+00-0040663,Harold Fannin Jr.,CLE,TE,ACTIVE,,,auto_exact
+00-0036407,Jerry Jeudy,CLE,WR,ACTIVE,,,auto_exact
+00-0040784,Quinshon Judkins,CLE,RB,ACTIVE,,,auto_exact
+00-0040162,Dylan Sampson,CLE,RB,QUESTIONABLE,Questionable,2026-09-13T21:26Z,auto_exact
+00-0040466,Raheim Sanders,CLE,RB,ACTIVE,,,auto_exact
+00-0040668,Shedeur Sanders,CLE,QB,ACTIVE,,,auto_exact
+00-0036630,Tylan Wallace,CLE,WR,ACTIVE,,,auto_fallback_name_only
+00-0033537,Deshaun Watson,CLE,QB,ACTIVE,,,auto_exact
+00-0038710,Blake Whiteheart,CLE,TE,ACTIVE,,,auto_exact
+00-0040704,Dillon Gabriel,CLE,QB,OUT,Injured Reserve,2026-09-08T20:42Z,auto_exact
+00-0038794,Jaleel McLaughlin,CLE,RB,ACTIVE,,,auto_fallback_name_only
+00-0039386,Bub Means,CLE,WR,ACTIVE,,,auto_fallback_name_only
+00-0039275,Messiah Swinson,CLE,TE,ACTIVE,,,auto_fallback_name_only
+00-0038389,Israel Abanikanda,DAL,RB,OUT,Out,2026-09-13T23:09Z,auto_exact
+00-0038705,Emari Demercado,DAL,RB,ACTIVE,,,auto_fallback_name_only
+00-0038041,Jake Ferguson,DAL,TE,ACTIVE,,,auto_exact
+00-0039410,Ryan Flournoy,DAL,WR,ACTIVE,,,auto_exact
+00-0037077,Sam Howell,DAL,QB,ACTIVE,,,auto_fallback_name_only
+00-0036358,CeeDee Lamb,DAL,WR,ACTIVE,,,auto_exact
+00-0038738,Hunter Luepke,DAL,FB,ACTIVE,,,auto_fallback_name_only
+00-0039062,Jonathan Mingo,DAL,WR,ACTIVE,,,auto_exact
+00-0037247,George Pickens,DAL,WR,ACTIVE,,,auto_exact
+00-0033077,Dak Prescott,DAL,QB,ACTIVE,,,auto_exact
+00-0038547,Luke Schoonmaker,DAL,TE,ACTIVE,,,auto_exact
+00-0039530,Brevyn Spann-Ford,DAL,TE,ACTIVE,,,auto_exact
+00-0037801,KaVontae Turpin,DAL,WR,ACTIVE,,,auto_exact
+00-0036997,Javonte Williams,DAL,RB,ACTIVE,,,auto_exact
+00-0037563,Malik Davis,DAL,RB,OUT,Injured Reserve,2026-09-12T18:20Z,auto_exact
+00-0038735,Princeton Fant,DAL,TE,OUT,Injured Reserve,2026-08-19T12:07Z,auto_exact
+00-0039398,Joe Milton III,DAL,QB,ACTIVE,,,auto_exact
+00-0037282,James Mitchell,DAL,TE,ACTIVE,,,auto_fallback_name_only
+00-0038783,Nate Adkins,DEN,TE,ACTIVE,,,auto_exact
+00-0037085,Tyler Badie,DEN,RB,ACTIVE,,,auto_exact
+00-0040134,Pat Bryant,DEN,WR,ACTIVE,,,auto_exact
+00-0036158,J.K. Dobbins,DEN,RB,ACTIVE,,,auto_exact
+00-0036879,Sam Ehlinger,DEN,QB,ACTIVE,,,auto_exact
+00-0033881,Evan Engram,DEN,TE,ACTIVE,,,auto_exact
+00-0039868,Troy Franklin,DEN,WR,ACTIVE,,,auto_exact
+00-0040730,RJ Harvey,DEN,RB,ACTIVE,,,auto_exact
+00-0035406,Lil'Jordan Humphrey,DEN,WR,ACTIVE,,,auto_exact
+00-0038976,Marvin Mims Jr.,DEN,WR,ACTIVE,,,auto_exact
+00-0039732,Bo Nix,DEN,QB,ACTIVE,,,auto_exact
+00-0035264,Jarrett Stidham,DEN,QB,ACTIVE,,,auto_exact
+00-0034348,Courtland Sutton,DEN,WR,ACTIVE,,,auto_exact
+00-0036422,Adam Trautman,DEN,TE,ACTIVE,,,auto_exact
+00-0036613,Jaylen Waddle,DEN,WR,ACTIVE,,,auto_fallback_name_only
+00-0040240,Caleb Lohner,DEN,TE,OUT,Injured Reserve,2026-08-31T16:50Z,auto_exact
+00-0036959,Michael Bandy,DEN,WR,ACTIVE,,,auto_exact
+00-0037539,Lucas Krull,DEN,TE,ACTIVE,,,auto_exact
+00-0036727,Adam Prentice,DEN,FB,ACTIVE,,,auto_exact
+00-0039703,Cody Schrader,DEN,RB,ACTIVE,,,auto_exact
+00-0034270,Tyler Conklin,DET,TE,ACTIVE,,,auto_fallback_name_only
+00-0033949,Joshua Dobbs,DET,QB,ACTIVE,,,auto_fallback_name_only
+00-0039139,Jahmyr Gibbs,DET,RB,ACTIVE,,,auto_exact
+00-0033106,Jared Goff,DET,QB,ACTIVE,,,auto_exact
+00-0035544,Tom Kennedy,DET,WR,ACTIVE,,,auto_exact
+00-0039065,Sam LaPorta,DET,TE,ACTIVE,,,auto_exact
+00-0037524,Tay Martin,DET,WR,ACTIVE,,,auto_fallback_name_only
+00-0040390,Jackson Meeks,DET,WR,ACTIVE,,,auto_exact
+00-0038896,Jacob Saylors,DET,RB,ACTIVE,,,auto_exact
+00-0036963,Amon-Ra St. Brown,DET,WR,ACTIVE,,,auto_exact
+00-0040669,Isaac TeSlaa,DET,WR,ACTIVE,,,auto_exact
+00-0039364,Sione Vaki,DET,RB,ACTIVE,,,auto_exact
+00-0037240,Jameson Williams,DET,WR,ACTIVE,,,auto_exact
+00-0036754,Brock Wright,DET,TE,ACTIVE,,,auto_exact
+00-0037197,Isiah Pacheco,DET,RB,OUT,Injured Reserve,2026-09-02T15:10Z,auto_fallback_name_only
+00-0040697,Thomas Gordon,DET,TE,ACTIVE,,,auto_fallback_name_only
+00-0038181,Lucky Jackson,DET,WR,ACTIVE,,,auto_fallback_name_only
+00-0040241,Dominic Lovett,DET,WR,ACTIVE,,,auto_exact
+00-0039652,Jabari Small,DET,RB,ACTIVE,,,auto_exact
+00-0038685,Chris Brooks,GB,RB,ACTIVE,,,auto_exact
+00-0040667,Matthew Golden,GB,WR,ACTIVE,,,auto_exact
+00-0035700,Josh Jacobs,GB,RB,OUT,Out,2026-09-13T15:09Z,auto_exact
+00-0040142,Kaleb Johnson,GB,RB,ACTIVE,,,auto_fallback_name_only
+00-0038996,Tucker Kraft,GB,TE,ACTIVE,,,auto_exact
+00-0039811,MarShawn Lloyd,GB,RB,ACTIVE,,,auto_exact
+00-0036264,Jordan Love,GB,QB,ACTIVE,,,auto_exact
+00-0037091,Bo Melton,GB,WR,ACTIVE,,,auto_exact
+00-0038090,Skyy Moore,GB,WR,ACTIVE,,,auto_fallback_name_only
+00-0040598,Mark Redman,GB,TE,ACTIVE,,,auto_fallback_name_only
+00-0039146,Jayden Reed,GB,WR,ACTIVE,,,auto_exact
+00-0033858,Jonnu Smith,GB,TE,ACTIVE,,,auto_fallback_name_only
+00-0028118,Tyrod Taylor,GB,QB,ACTIVE,,,auto_fallback_name_only
+00-0038124,Christian Watson,GB,WR,ACTIVE,,,auto_exact
+00-0038589,Josh Whyle,GB,TE,QUESTIONABLE,Questionable,2026-09-13T22:32Z,auto_exact
+00-0039144,Luke Musgrave,GB,TE,OUT,Out,2026-09-01T15:24Z,auto_exact
+00-0040009,Savion Williams,GB,WR,OUT,Injured Reserve,2026-09-08T20:42Z,auto_exact
+00-0039936,Thomas Yassmin,GB,TE,OUT,Injured Reserve,2026-08-31T23:12Z,auto_fallback_name_only
+00-0040628,Drake Dabney,GB,TE,ACTIVE,,,auto_exact
+00-0040558,Isaiah Neyor,GB,WR,ACTIVE,,,auto_exact
+00-0039577,Kedon Slovis,GB,QB,ACTIVE,,,auto_fallback_name_only
+00-0038098,Pierre Strong Jr.,GB,RB,QUESTIONABLE,Questionable,2026-09-10T23:10Z,auto_exact
+00-0038608,Kayshon Boutte,HOU,WR,ACTIVE,,,auto_fallback_name_only
+00-0039603,British Brooks,HOU,RB,ACTIVE,,,auto_exact
+00-0036554,Nico Collins,HOU,WR,ACTIVE,,,auto_exact
+00-0038618,Xavier Hutchinson,HOU,WR,ACTIVE,,,auto_exact
+00-0036556,Brevin Jordan,HOU,TE,OUT,Out,2026-09-13T15:32Z,auto_exact
+00-0040583,Woody Marks,HOU,RB,ACTIVE,,,auto_exact
+00-0036898,Davis Mills,HOU,QB,ACTIVE,,,auto_exact
+00-0035685,David Montgomery,HOU,RB,ACTIVE,,,auto_fallback_name_only
+00-0034981,Foster Moreau,HOU,TE,ACTIVE,,,auto_fallback_name_only
+00-0040138,Jaylin Noel,HOU,WR,ACTIVE,,,auto_exact
+00-0034383,Dalton Schultz,HOU,TE,ACTIVE,,,auto_exact
+00-0039359,Cade Stover,HOU,TE,ACTIVE,,,auto_exact
+00-0039163,C.J. Stroud,HOU,QB,ACTIVE,,,auto_exact
+00-0038728,Jared Wayne,HOU,WR,ACTIVE,,,auto_exact
+00-0038977,Tank Dell,HOU,WR,OUT,Injured Reserve,2026-09-04T15:55Z,auto_exact
+00-0040130,Jayden Higgins,HOU,WR,OUT,Injured Reserve,2026-09-08T20:42Z,auto_exact
+00-0040211,Graham Mertz,HOU,QB,OUT,Injured Reserve,2026-08-19T12:07Z,auto_exact
+00-0039405,Jawhar Jordan,HOU,RB,ACTIVE,,,auto_exact
+00-0040049,Josh Kelly,HOU,WR,ACTIVE,,,auto_exact
+00-0037340,Zaire Mitchell-Paden,HOU,TE,ACTIVE,,,auto_fallback_name_only
+00-0038839,Mitchell Tinsley,HOU,WR,ACTIVE,,,auto_fallback_name_only
+00-0033217,Mo Alie-Cox,IND,TE,ACTIVE,,,auto_exact
+00-0030279,Keenan Allen,IND,WR,ACTIVE,,,auto_fallback_name_only
+00-0038997,Josh Downs,IND,WR,ACTIVE,,,auto_exact
+00-0035021,Ashton Dulin,IND,WR,ACTIVE,,,auto_exact
+00-0040179,DJ Giddens,IND,RB,OUT,Out,2026-09-13T15:50Z,auto_exact
+00-0035710,Daniel Jones,IND,QB,ACTIVE,,,auto_exact
+00-0040206,Riley Leonard,IND,QB,OUT,Out,2026-09-13T15:54Z,auto_exact
+00-0037664,Alec Pierce,IND,WR,QUESTIONABLE,Questionable,2026-09-13T23:41Z,auto_exact
+00-0039164,Anthony Richardson Sr.,IND,QB,ACTIVE,,,auto_exact
+00-0036223,Jonathan Taylor,IND,RB,ACTIVE,,,auto_exact
+00-0032951,Laquon Treadwell,IND,WR,ACTIVE,,,auto_exact
+00-0040128,Tyler Warren,IND,TE,ACTIVE,,,auto_exact
+00-0038394,Will Mallory,IND,TE,OUT,Injured Reserve,2026-08-31T17:12Z,auto_exact
+00-0036032,Sean McKeon,IND,TE,QUESTIONABLE,Questionable,2026-09-08T20:42Z,auto_exact
+00-0035045,D.J. Montgomery,IND,WR,OUT,Injured Reserve,2026-08-31T17:16Z,auto_exact
+00-0040476,Ulysses Bentley IV,IND,RB,ACTIVE,,,auto_exact
+00-0033439,Pharaoh Brown,IND,TE,ACTIVE,,,auto_fallback_name_only
+00-0039816,Anthony Gould,IND,WR,ACTIVE,,,auto_exact
+00-0036182,Nick Westbrook-Ikhine,IND,WR,ACTIVE,,,auto_fallback_name_only
+00-0032104,Ameer Abdullah,JAX,RB,ACTIVE,,,auto_fallback_name_only
+00-0040238,LeQuint Allen Jr.,JAX,RB,ACTIVE,,,auto_exact
+00-0040234,Quinn Ewers,JAX,QB,OUT,Out,2026-09-13T16:08Z,auto_fallback_name_only
+00-0040718,Travis Hunter,JAX,WR,ACTIVE,,,auto_fallback_name_only
+00-0036971,Trevor Lawrence,JAX,QB,ACTIVE,,,auto_exact
+00-0034960,Jakobi Meyers,JAX,WR,ACTIVE,,,auto_exact
+00-0036590,Quintin Morris,JAX,TE,ACTIVE,,,auto_exact
+00-0033319,Nick Mullens,JAX,QB,ACTIVE,,,auto_exact
+00-0038611,Chris Rodriguez Jr.,JAX,RB,ACTIVE,,,auto_fallback_name_only
+00-0038935,Brenton Strange,JAX,TE,ACTIVE,,,auto_exact
+00-0039893,Brian Thomas Jr.,JAX,WR,ACTIVE,,,auto_exact
+00-0040719,Bhayshul Tuten,JAX,RB,ACTIVE,,,auto_exact
+00-0038606,Parker Washington,JAX,WR,ACTIVE,,,auto_exact
+00-0036497,Tim Jones,JAX,WR,ACTIVE,,,auto_exact
+00-0039489,Hayden Rucci,JAX,TE,ACTIVE,,,auto_fallback_name_only
+00-0036841,Austin Trammell,JAX,WR,ACTIVE,,,auto_exact
+00-0040081,Jake Briningstool,KC,TE,ACTIVE,,,auto_exact
+00-0036945,Justin Fields,KC,QB,ACTIVE,,,auto_fallback_name_only
+00-0036637,Noah Gray,KC,TE,ACTIVE,,,auto_exact
+00-0030506,Travis Kelce,KC,TE,ACTIVE,,,auto_exact
+00-0033873,Patrick Mahomes,KC,QB,ACTIVE,,,auto_exact
+00-0038145,Thomas Odukoya,KC,TE,ACTIVE,,,auto_fallback_name_only
+00-0038519,Nikko Remigio,KC,WR,ACTIVE,,,auto_exact
+00-0039067,Rashee Rice,KC,WR,ACTIVE,,,auto_exact
+00-0040646,Jalen Royals,KC,WR,ACTIVE,,,auto_exact
+00-0040078,Brashard Smith,KC,RB,ACTIVE,,,auto_exact
+00-0038104,Tyquan Thornton,KC,WR,ACTIVE,,,auto_exact
+00-0038134,Kenneth Walker III,KC,RB,ACTIVE,,,auto_fallback_name_only
+00-0039824,Jared Wiley,KC,TE,ACTIVE,,,auto_exact
+00-0039894,Xavier Worthy,KC,WR,ACTIVE,,,auto_exact
+00-0040120,Jimmy Holiday,KC,WR,OUT,Injured Reserve,2026-08-31T17:40Z,auto_exact
+00-0040298,Andrew Armstrong,KC,WR,ACTIVE,,,auto_fallback_name_only
+00-0038489,Ben VanSumeren,KC,FB,ACTIVE,,,auto_fallback_name_only
+00-0040729,Jack Bech,LV,WR,ACTIVE,,,auto_exact
+00-0039338,Brock Bowers,LV,TE,OUT,Out,2026-09-13T19:00Z,auto_exact
+00-0029604,Kirk Cousins,LV,QB,ACTIVE,,,auto_fallback_name_only
+00-0037304,Connor Heyward,LV,FB,ACTIVE,,,auto_fallback_name_only
+00-0040122,Ashton Jeanty,LV,RB,ACTIVE,,,auto_exact
+00-0039407,Dylan Laube,LV,RB,ACTIVE,,,auto_exact
+00-0039066,Michael Mayer,LV,TE,ACTIVE,,,auto_exact
+00-0035345,Chris Myarick,LV,TE,ACTIVE,,,auto_fallback_name_only
+00-0037291,Jalen Nailor,LV,WR,ACTIVE,,,auto_fallback_name_only
+00-0038579,Aidan O'Connell,LV,QB,OUT,Out,2026-09-13T19:06Z,auto_exact
+00-0034365,Ian Thomas,LV,TE,ACTIVE,,,auto_exact
+00-0038563,Tre Tucker,LV,WR,ACTIVE,,,auto_exact
+00-0035891,Cody White,LV,WR,ACTIVE,,,auto_fallback_name_only
+00-0037093,Dareke Young,LV,WR,ACTIVE,,,auto_fallback_name_only
+00-0039244,Chris Collier,LV,RB,OUT,Injured Reserve,2026-08-02T23:52Z,auto_exact
+00-0040488,Carter Runyon,LV,TE,OUT,Injured Reserve,2026-08-31T17:52Z,auto_exact
+00-0038590,Justin Shorter,LV,WR,OUT,Injured Reserve,2026-05-04T23:28Z,auto_fallback_name_only
+00-0040581,Dont'e Thornton Jr.,LV,WR,OUT,Injured Reserve,2026-09-08T20:42Z,auto_exact
+00-0038647,Ronnie Bell,LV,WR,ACTIVE,,,auto_fallback_name_only
+00-0033854,Dare Ogunbowale,LV,RB,ACTIVE,,,auto_fallback_name_only
+00-0037487,Deven Thompkins,LV,WR,ACTIVE,,,auto_fallback_name_only
+00-0038573,Derius Davis,LAC,WR,ACTIVE,,,auto_exact
+00-0040189,Oronde Gadsden,LAC,TE,ACTIVE,,,auto_exact
+00-0040666,Omarion Hampton,LAC,RB,ACTIVE,,,auto_exact
+00-0040727,Tre' Harris,LAC,WR,ACTIVE,,,auto_exact
+00-0036355,Justin Herbert,LAC,QB,ACTIVE,,,auto_exact
+00-0035125,Alec Ingold,LAC,FB,ACTIVE,,,auto_fallback_name_only
+00-0038544,Quentin Johnston,LAC,WR,ACTIVE,,,auto_exact
+00-0038046,Charlie Kolar,LAC,TE,ACTIVE,,,auto_fallback_name_only
+00-0040184,KeAndre Lambert-Smith,LAC,WR,QUESTIONABLE,Questionable,2026-09-13T23:03Z,auto_exact
+00-0037012,Trey Lance,LAC,QB,ACTIVE,,,auto_exact
+00-0039915,Ladd McConkey,LAC,WR,QUESTIONABLE,Questionable,2026-09-13T22:57Z,auto_exact
+00-0038454,Keaton Mitchell,LAC,RB,ACTIVE,,,auto_fallback_name_only
+00-0033885,David Njoku,LAC,TE,ACTIVE,,,auto_fallback_name_only
+00-0039391,Kimani Vidal,LAC,RB,ACTIVE,,,auto_exact
+00-0038614,Scott Matlock,LAC,FB,OUT,Injured Reserve,2026-08-31T17:56Z,auto_fallback_name_only
+00-0040331,Patrick Herbert,LAC,TE,ACTIVE,,,auto_fallback_name_only
+00-0040039,Amar Johnson,LAC,RB,ACTIVE,,,auto_exact
+00-0040464,DJ Uiagalelei,LAC,QB,ACTIVE,,,auto_exact
+00-0040311,Theo Wease Jr.,LAC,WR,ACTIVE,,,auto_fallback_name_only
+00-0031381,Davante Adams,LA,WR,ACTIVE,,,auto_exact
+00-0039074,Davis Allen,LA,TE,QUESTIONABLE,Questionable,2026-09-11T02:45Z,auto_exact
+00-0036849,Tutu Atwell,LA,WR,OUT,Out,2026-09-10T23:53Z,auto_exact
+00-0039107,Stetson Bennett IV,LA,QB,ACTIVE,,,auto_exact
+00-0039738,Blake Corum,LA,RB,ACTIVE,,,auto_exact
+00-0040737,Terrance Ferguson,LA,TE,ACTIVE,,,auto_exact
+00-0033110,Tyler Higbee,LA,TE,ACTIVE,,,auto_exact
+00-0040590,Konata Mumpfield,LA,WR,ACTIVE,,,auto_exact
+00-0039075,Puka Nacua,LA,WR,ACTIVE,,,auto_exact
+00-0036244,Colby Parkinson,LA,TE,ACTIVE,,,auto_exact
+00-0037557,Ronnie Rivers,LA,RB,ACTIVE,,,auto_exact
+00-0038359,Xavier Smith,LA,WR,ACTIVE,,,auto_exact
+00-0026498,Matthew Stafford,LA,QB,ACTIVE,,,auto_exact
+00-0039751,Jordan Whittington,LA,WR,ACTIVE,,,auto_exact
+00-0037840,Kyren Williams,LA,RB,ACTIVE,,,auto_exact
+00-0035602,Alex Bachman,LA,WR,ACTIVE,,,auto_fallback_name_only
+00-0040597,Brennan Presley,LA,WR,ACTIVE,,,auto_exact
+00-0040601,Jordan Waters,LA,RB,ACTIVE,,,auto_exact
+00-0039040,De'Von Achane,MIA,RB,ACTIVE,,,auto_exact
+00-0040398,Brady Cook,MIA,QB,OUT,Out,2026-09-13T19:04Z,auto_fallback_name_only
+00-0037252,Greg Dulcich,MIA,TE,ACTIVE,,,auto_exact
+00-0040198,Ollie Gordon II,MIA,RB,ACTIVE,,,auto_exact
+00-0040014,Kyle McCord,MIA,QB,ACTIVE,,,auto_fallback_name_only
+00-0038824,Ryan Miller,MIA,WR,ACTIVE,,,auto_fallback_name_only
+00-0037666,Jalen Tolbert,MIA,WR,OUT,Out,2026-09-13T19:09Z,auto_fallback_name_only
+00-0039880,Malik Washington,MIA,WR,ACTIVE,,,auto_exact
+00-0038128,Malik Willis,MIA,QB,ACTIVE,,,auto_fallback_name_only
+00-0039874,Jaylen Wright,MIA,RB,ACTIVE,,,auto_exact
+00-0037078,Cole Turner,MIA,TE,OUT,Injured Reserve,2026-08-27T23:35Z,auto_fallback_name_only
+00-0040692,Jarquez Hunter,MIA,RB,ACTIVE,,,auto_fallback_name_only
+00-0036387,Jalen Reagor,MIA,WR,ACTIVE,,,auto_fallback_name_only
+00-0040753,Will Sheppard,MIA,WR,ACTIVE,,,auto_fallback_name_only
+00-0038930,Carlos Washington Jr.,MIA,RB,ACTIVE,,,auto_fallback_name_only
+00-0040094,Tre Watson,MIA,TE,ACTIVE,,,auto_fallback_name_only
+00-0038994,Jordan Addison,MIN,WR,ACTIVE,,,auto_exact
+00-0040215,Gavin Bartholomew,MIN,TE,ACTIVE,,,auto_exact
+00-0036425,DeeJay Dallas,MIN,RB,ACTIVE,,,auto_fallback_name_only
+00-0040154,Tai Felton,MIN,WR,ACTIVE,,,auto_exact
+00-0035229,T.J. Hockenson,MIN,TE,ACTIVE,,,auto_exact
+00-0036322,Justin Jefferson,MIN,WR,ACTIVE,,,auto_exact
+00-0036259,Jauan Jennings,MIN,WR,ACTIVE,,,auto_fallback_name_only
+00-0039710,Jeshaun Jones,MIN,WR,OUT,Suspension,2026-08-26T01:45Z,auto_exact
+00-0033293,Aaron Jones Sr.,MIN,RB,ACTIVE,,,auto_exact
+00-0037525,Jordan Mason,MIN,RB,ACTIVE,,,auto_exact
+00-0039923,J.J. McCarthy,MIN,QB,OUT,Out,2026-09-13T19:28Z,auto_exact
+00-0035228,Kyler Murray,MIN,QB,QUESTIONABLE,Questionable,2026-09-13T21:27Z,auto_fallback_name_only
+00-0035249,Josh Oliver,MIN,TE,ACTIVE,,,auto_exact
+00-0040506,Myles Price,MIN,WR,ACTIVE,,,auto_exact
+00-0032950,Carson Wentz,MIN,QB,ACTIVE,,,auto_exact
+00-0040509,Ben Yurosek,MIN,TE,OUT,Injured Reserve,2026-09-08T23:56Z,auto_exact
+00-0040494,Max Brosmer,MIN,QB,ACTIVE,,,auto_exact
+00-0039631,Cam Grandy,MIN,TE,ACTIVE,,,auto_fallback_name_only
+00-0040563,Efton Chism III,NE,WR,OUT,Out,2026-09-09T23:02Z,auto_exact
+00-0038476,Tommy DeVito,NE,QB,ACTIVE,,,auto_exact
+00-0037816,Romeo Doubs,NE,WR,ACTIVE,,,auto_fallback_name_only
+00-0038621,DeMario Douglas,NE,WR,ACTIVE,,,auto_exact
+00-0036187,Reggie Gilliam,NE,FB,ACTIVE,,,auto_fallback_name_only
+00-0040734,TreVeyon Henderson,NE,RB,OUT,Out,2026-09-09T22:54Z,auto_exact
+00-0033090,Hunter Henry,NE,TE,ACTIVE,,,auto_exact
+00-0033555,Mack Hollins,NE,WR,ACTIVE,,,auto_exact
+00-0040556,Corey Kiner,NE,RB,ACTIVE,,,auto_fallback_name_only
+00-0040568,Lan Larison,NE,RB,ACTIVE,,,auto_exact
+00-0038564,Cameron Latu,NE,TE,ACTIVE,,,auto_fallback_name_only
+00-0039851,Drake Maye,NE,QB,ACTIVE,,,auto_exact
+00-0036875,Rhamondre Stevenson,NE,RB,ACTIVE,,,auto_exact
+00-0040131,Kyle Williams,NE,WR,ACTIVE,,,auto_exact
+00-0035676,A.J. Brown,NE,WR,OUT,Injured Reserve,2026-09-13T13:52Z,auto_fallback_name_only
+00-0038720,Julian Hill,NE,TE,OUT,Injured Reserve,2026-06-01T21:13Z,auto_fallback_name_only
+00-0040570,Jeremiah Webb,NE,WR,OUT,Injured Reserve,2026-07-26T21:31Z,auto_exact
+00-0037617,Hassan Haskins,NE,RB,ACTIVE,,,auto_fallback_name_only
+00-0036534,Shane Zylstra,NE,TE,ACTIVE,,,auto_fallback_name_only
+00-0037231,Kevin Austin Jr.,NO,WR,ACTIVE,,,auto_exact
+00-0036973,Travis Etienne Jr.,NO,RB,ACTIVE,,,auto_fallback_name_only
+00-0035644,Noah Fant,NO,TE,ACTIVE,,,auto_fallback_name_only
+00-0036040,Juwan Johnson,NO,TE,ACTIVE,,,auto_exact
+00-0033906,Alvin Kamara,NO,RB,OUT,Out,2026-09-13T15:39Z,auto_exact
+00-0038551,Kendre Miller,NO,RB,ACTIVE,,,auto_exact
+00-0037239,Chris Olave,NO,WR,ACTIVE,,,auto_exact
+00-0039376,Spencer Rattler,NO,QB,ACTIVE,,,auto_exact
+00-0040743,Tyler Shough,NO,QB,ACTIVE,,,auto_exact
+00-0039424,Devaughn Vele,NO,WR,ACTIVE,,,auto_exact
+00-0039518,Treyton Welch,NO,TE,ACTIVE,,,auto_exact
+00-0037013,Zach Wilson,NO,QB,OUT,Out,2026-09-13T16:12Z,auto_fallback_name_only
+00-0037276,Ty Chandler,NO,RB,OUT,Injured Reserve,2026-08-25T22:39Z,auto_fallback_name_only
+00-0040244,Moliki Matavao,NO,TE,OUT,Injured Reserve,2026-08-25T22:41Z,auto_exact
+00-0039623,Mason Tipton,NO,WR,OUT,Out,2026-08-31T18:40Z,auto_exact
+00-0038740,Jalen Moreno-Cropper,NO,WR,ACTIVE,,,auto_fallback_name_only
+00-0039052,Trey Palmer,NO,WR,ACTIVE,,,auto_exact
+00-0040633,Kyrese Rowan,NO,WR,ACTIVE,,,auto_fallback_name_only
+00-0037475,Stone Smartt,NO,TE,ACTIVE,,,auto_fallback_name_only
+00-0038979,Cedric Tillman,NO,WR,ACTIVE,,,auto_fallback_name_only
+00-0038040,Zamir White,NO,RB,ACTIVE,,,auto_fallback_name_only
+00-0034419,Braxton Berrios,NYG,WR,ACTIVE,,,auto_fallback_name_only
+00-0040431,Dalen Cambre,NYG,WR,OUT,Out,2026-09-13T23:06Z,auto_exact
+00-0040691,Jaxson Dart,NYG,QB,ACTIVE,,,auto_exact
+00-0040225,Thomas Fidone II,NYG,TE,OUT,Out,2026-09-13T23:06Z,auto_exact
+00-0036893,Najee Harris,NYG,RB,OUT,Out,2026-09-13T23:21Z,auto_fallback_name_only
+00-0039847,Theo Johnson,NYG,TE,ACTIVE,,,auto_exact
+00-0037838,Isaiah Likely,NYG,TE,ACTIVE,,,auto_fallback_name_only
+00-0031484,Chris Manhertz,NYG,TE,ACTIVE,,,auto_exact
+00-0036309,Darnell Mooney,NYG,WR,ACTIVE,,,auto_fallback_name_only
+00-0039337,Malik Nabers,NYG,WR,ACTIVE,,,auto_exact
+00-0033376,Patrick Ricard,NYG,FB,ACTIVE,,,auto_fallback_name_only
+00-0035250,Devin Singletary,NYG,RB,ACTIVE,,,auto_exact
+00-0040715,Cam Skattebo,NYG,RB,ACTIVE,,,auto_exact
+00-0039384,Tyrone Tracy Jr.,NYG,RB,ACTIVE,,,auto_exact
+00-0031503,Jameis Winston,NYG,QB,ACTIVE,,,auto_exact
+00-0037837,Calvin Austin III,NYG,WR,OUT,Injured Reserve,2026-08-27T22:48Z,auto_fallback_name_only
+00-0035645,Gunner Olszewski,NYG,WR,OUT,Injured Reserve,2026-06-02T00:10Z,auto_exact
+00-0038998,Jake Haener,NYG,QB,ACTIVE,,,auto_fallback_name_only
+00-0038938,Jalin Hyatt,NYG,WR,ACTIVE,,,auto_exact
+00-0038576,Charlie Jones,NYG,WR,ACTIVE,,,auto_fallback_name_only
+00-0039794,Braelon Allen,NYJ,RB,ACTIVE,,,auto_exact
+00-0034959,Andrew Beck,NYJ,FB,ACTIVE,,,auto_exact
+00-0039798,Isaiah Davis,NYJ,RB,ACTIVE,,,auto_exact
+00-0038120,Breece Hall,NYJ,RB,ACTIVE,,,auto_exact
+00-0039890,Adonai Mitchell,NYJ,WR,ACTIVE,,,auto_exact
+00-0036842,Kene Nwangwu,NYJ,RB,OUT,Out,2026-09-13T15:41Z,auto_exact
+00-0037805,Jeremy Ruckert,NYJ,TE,ACTIVE,,,auto_exact
+00-0040582,Arian Smith,NYJ,WR,ACTIVE,,,auto_exact
+00-0030565,Geno Smith,NYJ,QB,ACTIVE,,,auto_fallback_name_only
+00-0040736,Mason Taylor,NYJ,TE,ACTIVE,,,auto_exact
+00-0039451,Isaiah Williams,NYJ,WR,ACTIVE,,,auto_exact
+00-0037740,Garrett Wilson,NYJ,WR,ACTIVE,,,auto_exact
+00-0037755,Jelani Woods,NYJ,TE,ACTIVE,,,auto_exact
+00-0033375,Tim Patrick,NYJ,WR,OUT,Injured Reserve,2026-09-12T18:56Z,auto_fallback_name_only
+00-0040405,Jamaal Pritchett,NYJ,WR,ACTIVE,,,auto_exact
+00-0038108,Bailey Zappe,NYJ,QB,ACTIVE,,,auto_fallback_name_only
+00-0034844,Saquon Barkley,PHI,RB,ACTIVE,,,auto_exact
+00-0038555,Tank Bigsby,PHI,RB,ACTIVE,,,auto_exact
+00-0040024,Darius Cooper,PHI,WR,ACTIVE,,,auto_exact
+00-0037132,Britain Covey,PHI,WR,ACTIVE,,,auto_exact
+00-0027973,Andy Dalton,PHI,QB,ACTIVE,,,auto_fallback_name_only
+00-0034351,Dallas Goedert,PHI,TE,ACTIVE,,,auto_exact
+00-0036389,Jalen Hurts,PHI,QB,ACTIVE,,,auto_exact
+00-0038498,E.J. Jenkins,PHI,TE,ACTIVE,,,auto_exact
+00-0038400,Tanner McKee,PHI,QB,OUT,Out,2026-09-13T19:26Z,auto_exact
+00-0036980,Elijah Moore,PHI,WR,OUT,Out,2026-09-13T19:34Z,auto_fallback_name_only
+00-0033246,Johnny Mundt,PHI,TE,ACTIVE,,,auto_fallback_name_only
+00-0039746,Will Shipley,PHI,RB,ACTIVE,,,auto_exact
+00-0036912,DeVonta Smith,PHI,WR,ACTIVE,,,auto_exact
+00-0038393,Dontayvion Wicks,PHI,WR,ACTIVE,,,auto_fallback_name_only
+00-0037086,Grant Calcaterra,PHI,TE,OUT,Injured Reserve,2026-08-31T18:50Z,auto_exact
+00-0039236,Johnny Wilson,PHI,WR,OUT,Injured Reserve,2026-08-22T21:59Z,auto_exact
+00-0040586,Jaydon Blue,PHI,RB,ACTIVE,,,auto_fallback_name_only
+00-0038496,Xavier Gipson,PHI,WR,ACTIVE,,,auto_exact
+00-0037828,Danny Gray,PHI,WR,QUESTIONABLE,Questionable,2026-09-12T00:27Z,auto_exact
+00-0037258,Dameon Pierce,PHI,RB,ACTIVE,,,auto_fallback_name_only
+00-0039325,Carson Steele,PHI,RB,ACTIVE,,,auto_fallback_name_only
+00-0036139,Rico Dowdle,PIT,RB,ACTIVE,,,auto_fallback_name_only
+00-0036894,Pat Freiermuth,PIT,TE,ACTIVE,,,auto_exact
+00-0040203,Will Howard,PIT,QB,OUT,Out,2026-09-13T15:51Z,auto_exact
+00-0035640,DK Metcalf,PIT,WR,ACTIVE,,,auto_exact
+00-0036252,Michael Pittman Jr.,PIT,WR,ACTIVE,,,auto_fallback_name_only
+00-0023459,Aaron Rodgers,PIT,QB,ACTIVE,,,auto_exact
+00-0034771,Mason Rudolph,PIT,QB,ACTIVE,,,auto_exact
+00-0036862,Ben Skowronek,PIT,WR,ACTIVE,,,auto_exact
+00-0033757,Robert Tonyan,PIT,TE,ACTIVE,,,auto_fallback_name_only
+00-0037228,Jaylen Warren,PIT,RB,ACTIVE,,,auto_exact
+00-0038558,Darnell Washington,PIT,TE,ACTIVE,,,auto_exact
+00-0039739,Roman Wilson,PIT,WR,ACTIVE,,,auto_exact
+00-0039626,Cole Burgess,PIT,WR,OUT,Injured Reserve,2026-08-19T12:07Z,auto_fallback_name_only
+00-0035594,Travis Homer,PIT,RB,ACTIVE,,,auto_fallback_name_only
+00-0040618,Max Hurleman,PIT,RB,ACTIVE,,,auto_exact
+00-0038409,Lew Nichols,PIT,RB,ACTIVE,,,auto_exact
+00-0036775,Brandon Smith,PIT,WR,ACTIVE,,,auto_fallback_name_only
+00-0036261,Brandon Aiyuk,SF,WR,OUT,Out,2026-07-25T18:38Z,auto_exact
+00-0039365,Jacob Cowing,SF,WR,ACTIVE,,,auto_exact
+00-0031408,Mike Evans,SF,WR,ACTIVE,,,auto_fallback_name_only
+00-0036887,Luke Farrell,SF,TE,ACTIVE,,,auto_exact
+00-0034854,KhaDarel Hodge,SF,WR,ACTIVE,,,auto_fallback_name_only
+00-0040177,Jordan James,SF,RB,OUT,Out,2026-09-10T23:34Z,auto_exact
+00-0036972,Mac Jones,SF,QB,ACTIVE,,,auto_exact
+00-0029892,Kyle Juszczyk,SF,FB,ACTIVE,,,auto_exact
+00-0033288,George Kittle,SF,TE,ACTIVE,,,auto_exact
+00-0033280,Christian McCaffrey,SF,RB,ACTIVE,,,auto_exact
+00-0037834,Brock Purdy,SF,QB,ACTIVE,,,auto_exact
+00-0032775,Demarcus Robinson,SF,WR,ACTIVE,,,auto_exact
+00-0040589,Kurtis Rourke,SF,QB,OUT,Out,2026-09-10T23:21Z,auto_exact
+00-0035719,Deebo Samuel Sr.,SF,WR,ACTIVE,,,auto_fallback_name_only
+00-0037112,Jake Tonges,SF,TE,QUESTIONABLE,Questionable,2026-09-11T04:11Z,auto_exact
+00-0040172,Jordan Watkins,SF,WR,OUT,Out,2026-09-10T23:38Z,auto_exact
+00-0039363,Isaac Guerendo,SF,RB,OUT,Out,2026-08-30T21:10Z,auto_exact
+00-0034775,Christian Kirk,SF,WR,OUT,Injured Reserve,2026-08-31T03:27Z,auto_fallback_name_only
+00-0039916,Ricky Pearsall,SF,WR,OUT,Injured Reserve,2026-08-13T15:11Z,auto_exact
+00-0037509,Sincere McCormick,SF,RB,ACTIVE,,,auto_fallback_name_only
+00-0038643,Brayden Willis,SF,TE,ACTIVE,,,auto_exact
+00-0040739,Elijah Arroyo,SEA,TE,ACTIVE,,,auto_exact
+00-0039793,AJ Barner,SEA,TE,ACTIVE,,,auto_exact
+00-0034869,Sam Darnold,SEA,QB,DOUBTFUL,Doubtful,2026-09-13T14:08Z,auto_exact
+00-0040621,Montorie Foster Jr.,SEA,WR,ACTIVE,,,auto_exact
+00-0039299,George Holani,SEA,RB,ACTIVE,,,auto_exact
+00-0040648,Tory Horton,SEA,WR,OUT,Out,2026-09-09T23:04Z,auto_exact
+00-0037745,Velus Jones Jr.,SEA,WR,ACTIVE,,,auto_exact
+00-0040058,Nick Kallerup,SEA,TE,OUT,Out,2026-09-09T22:55Z,auto_exact
+00-0033908,Cooper Kupp,SEA,WR,ACTIVE,,,auto_exact
+00-0035704,Drew Lock,SEA,QB,ACTIVE,,,auto_exact
+00-0040673,Jalen Milroe,SEA,QB,OUT,Out,2026-09-09T23:07Z,auto_exact
+00-0038488,Brady Russell,SEA,FB,ACTIVE,,,auto_fallback_name_only
+00-0033576,Eric Saubert,SEA,TE,ACTIVE,,,auto_exact
+00-0037545,Rashid Shaheed,SEA,WR,ACTIVE,,,auto_exact
+00-0038543,Jaxon Smith-Njigba,SEA,WR,ACTIVE,,,auto_exact
+00-0038797,Emanuel Wilson,SEA,RB,ACTIVE,,,auto_fallback_name_only
+00-0038752,Jake Bobo,SEA,WR,OUT,Injured Reserve,2026-08-22T17:45Z,auto_exact
+00-0039165,Zach Charbonnet,SEA,RB,OUT,Out,2026-09-07T20:53Z,auto_exact
+00-0040567,Brock Lampe,SEA,FB,ACTIVE,,,auto_fallback_name_only
+00-0040649,Robbie Ouzts,SEA,FB,OUT,Injured Reserve,2026-08-19T12:07Z,auto_fallback_name_only
+00-0039329,Julian Hicks,SEA,WR,ACTIVE,,,auto_fallback_name_only
+00-0040653,Ricky White III,SEA,WR,ACTIVE,,,auto_exact
+00-0040067,Jacardia Wright,SEA,RB,ACTIVE,,,auto_exact
+00-0039050,Payne Durham,TB,TE,ACTIVE,,,auto_exact
+00-0040129,Emeka Egbuka,TB,WR,ACTIVE,,,auto_exact
+00-0036919,Kenny Gainwell,TB,RB,ACTIVE,,,auto_fallback_name_only
+00-0033921,Chris Godwin Jr.,TB,WR,ACTIVE,,,auto_exact
+00-0039361,Bucky Irving,TB,RB,ACTIVE,,,auto_exact
+00-0039589,Kameron Johnson,TB,WR,ACTIVE,,,auto_exact
+00-0040237,Tez Johnson,TB,WR,ACTIVE,,,auto_exact
+00-0037311,Ko Kieft,TB,TE,ACTIVE,,,auto_exact
+00-0034855,Baker Mayfield,TB,QB,ACTIVE,,,auto_exact
+00-0039855,Jalen McMillan,TB,WR,OUT,Out,2026-09-13T15:37Z,auto_exact
+00-0038129,Cade Otton,TB,TE,ACTIVE,,,auto_exact
+00-0038951,Sean Tucker,TB,RB,OUT,Out,2026-09-13T15:38Z,auto_exact
+00-0040429,Josh Williams,TB,RB,ACTIVE,,,auto_exact
+00-0035359,David Sills V,TB,WR,OUT,Injured Reserve,2026-08-31T21:46Z,auto_fallback_name_only
+00-0040566,CJ Dippre,TB,TE,ACTIVE,,,auto_fallback_name_only
+00-0040419,Garrett Greene,TB,WR,ACTIVE,,,auto_exact
+00-0035282,Easton Stick,TB,QB,ACTIVE,,,auto_fallback_name_only
+00-0040170,Elic Ayomanor,TEN,WR,ACTIVE,,,auto_exact
+00-0038115,Daniel Bellinger,TEN,TE,ACTIVE,,,auto_fallback_name_only
+00-0037594,Julius Chestnut,TEN,RB,ACTIVE,,,auto_exact
+00-0040705,Chimere Dike,TEN,WR,ACTIVE,,,auto_exact
+00-0036876,Kylen Granson,TEN,TE,ACTIVE,,,auto_fallback_name_only
+00-0040584,Gunnar Helm,TEN,TE,ACTIVE,,,auto_exact
+00-0039648,David Martin-Robinson,TEN,TE,ACTIVE,,,auto_exact
+00-0035261,Tony Pollard,TEN,RB,ACTIVE,,,auto_exact
+00-0034837,Calvin Ridley,TEN,WR,ACTIVE,,,auto_exact
+00-0038117,Wan'Dale Robinson,TEN,WR,ACTIVE,,,auto_fallback_name_only
+00-0039032,Tyjae Spears,TEN,RB,ACTIVE,,,auto_exact
+00-0033869,Mitchell Trubisky,TEN,QB,ACTIVE,,,auto_fallback_name_only
+00-0040676,Cam Ward,TEN,QB,ACTIVE,,,auto_exact
+00-0038550,Hendon Hooker,TEN,QB,ACTIVE,,,auto_fallback_name_only
+00-0040205,Kalel Mullings,TEN,RB,ACTIVE,,,auto_exact
+00-0036345,K.J. Osborn,TEN,WR,ACTIVE,,,auto_fallback_name_only
+00-0040522,Xavier Restrepo,TEN,WR,ACTIVE,,,auto_exact
+00-0039023,Joel Wilson,TEN,TE,ACTIVE,,,auto_exact
+00-0036628,John Bates,WAS,TE,ACTIVE,,,auto_exact
+00-0036626,Dyami Brown,WAS,WR,ACTIVE,,,auto_fallback_name_only
+00-0037742,Treylon Burks,WAS,WR,OUT,Out,2026-09-13T19:16Z,auto_exact
+00-0040242,Jacory Croskey-Merritt,WAS,RB,ACTIVE,,,auto_exact
+00-0039910,Jayden Daniels,WAS,QB,ACTIVE,,,auto_exact
+00-0031588,Stefon Diggs,WAS,WR,ACTIVE,,,auto_fallback_name_only
+00-0040164,Jaylin Lane,WAS,WR,ACTIVE,,,auto_exact
+00-0032268,Marcus Mariota,WAS,QB,ACTIVE,,,auto_exact
+00-0039355,Luke McCaffrey,WAS,WR,OUT,Out,2026-09-13T19:13Z,auto_exact
+00-0035659,Terry McLaurin,WAS,WR,ACTIVE,,,auto_exact
+00-0037809,Chig Okonkwo,WAS,TE,QUESTIONABLE,Questionable,2026-09-13T23:08Z,auto_fallback_name_only
+00-0039912,Ben Sinnott,WAS,TE,ACTIVE,,,auto_exact
+00-0037256,Rachaad White,WAS,RB,ACTIVE,,,auto_fallback_name_only
+00-0039686,Colson Yankoff,WAS,TE,ACTIVE,,,auto_exact
+00-0033955,Jeremy McNichols,WAS,RB,OUT,Injured Reserve,2026-08-31T14:31Z,auto_exact
+00-0039677,Sam Hartman,WAS,QB,ACTIVE,,,auto_exact
+00-0036415,Van Jefferson,WAS,WR,ACTIVE,,,auto_fallback_name_only
+00-0035567,Craig Reynolds,WAS,RB,ACTIVE,,,auto_fallback_name_only
+00-0039305,Jack Westover,WAS,TE,ACTIVE,,,auto_fallback_name_only
