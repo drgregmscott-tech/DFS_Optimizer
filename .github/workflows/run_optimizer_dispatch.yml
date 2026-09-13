@@ -211,6 +211,13 @@ jobs:
           # other optional field above.
           args += flag("--lambda", "lambda", float)
 
+          # Ad Hoc Session A6 -- Dart Exposure Cap (optimizer.py's
+          # --dart-exposure-cap/--dart-floor-threshold). Same "omit means
+          # optimizer.py's own default (flag off / 1.0)" convention as
+          # every other optional field above.
+          args += flag("--dart-exposure-cap", "dart_exposure_cap", float)
+          args += flag("--dart-floor-threshold", "dart_floor_threshold", float)
+
           print(f"args={shlex.join(args)}")
           PYEOF
         env:

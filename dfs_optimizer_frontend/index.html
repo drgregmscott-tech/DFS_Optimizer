@@ -1590,6 +1590,24 @@ in this browser's localStorage.</p>
           <input type="number" id="ctrlLambda" step="0.001" value="0" placeholder="0 = pure point-maximization">
           <div class="hint" style="margin-top:4px">Session 10.5's mean-variance objective: sum(mean) - lambda*sum(sigma&sup2;). 0 (default) maximizes projected points only. Positive = floor-seeking (cash); negative = upside-seeking (GPP). Requires a projection build with --sigma-recalibration -- the solve fails loudly if the pool has no per-player sigma. Built-in presets' lambda values are Session 10.5b's swept defaults (DK, 2018-2021, 65 weeks, holdout; see ROADMAP.md Ad Hoc Session A5) -- cash/SE-3Max at 0.063 (best on their own metric, though the 3-Max case was not a clear winner over 0.0), MME at -0.005 (positive lambda measurably hurts large-field GPP).</div>
         </div>
+        <div id="wrapDartExposureField" style="grid-column:1/-1;">
+          <span class="field-label">Dart Exposure Cap</span>
+          <label class="checkbox-row" style="margin-top:0;cursor:pointer;">
+            <input type="checkbox" id="ctrlDartExposureEnabled">
+            Cap dead-money "dart" plays across this batch
+          </label>
+          <div id="dartExposureFields" style="display:none; margin-top:8px; grid-template-columns:1fr 1fr; gap:12px;">
+            <div>
+              <span class="field-label">Cap %</span>
+              <input type="number" id="ctrlDartExposureCap" min="1" max="100" step="1" value="10">
+            </div>
+            <div>
+              <span class="field-label">Floor Threshold</span>
+              <input type="number" id="ctrlDartFloorThreshold" min="0" step="0.1" value="1.0">
+            </div>
+          </div>
+          <div class="hint" style="margin-top:4px">Ad Hoc Session A6: any non-DST player whose simulated 10th-percentile outcome (statline_p10) falls below the Floor Threshold is a "dart" -- capped at Cap % of this batch's lineups, unless he's on this batch's own stack team (that correlation is the trade you're paying for, not accidental dead-money risk). DST is always exempt -- every DST's floor simulates as a flat 0 regardless of matchup, so this filter can't tell a good matchup from a bad one there; use the DST's own opponent implied total for that instead. Real example that motivated this: a $3,000 min-salary WR with statline_p10 = 0.07 (basically a coin flip on scoring anything) was showing up in 20% of a real 20-lineup MME batch purely for being the cheapest legal filler. Not a backtested/swept value like Lambda above -- a heuristic guard against that specific failure mode (see ROADMAP.md Ad Hoc Session A6). Classic slates only; needs the same --sigma-recalibration build as Lambda.</div>
+        </div>
       </div>
 
       <!-- Session 17, decision #56 -->
@@ -2958,7 +2976,9 @@ in this browser's localStorage.</p>
     // Session 17, decision #56.
     "ctrlAllowSkillVsOppDst",
     // Ad Hoc Session A3 -- mean-variance objective coefficient (--lambda).
-    "ctrlLambda"
+    "ctrlLambda",
+    // Ad Hoc Session A6 -- Dart Exposure Cap.
+    "ctrlDartExposureEnabled", "ctrlDartExposureCap", "ctrlDartFloorThreshold"
   ];
 
   function readPresetValues() {
@@ -3009,7 +3029,13 @@ in this browser's localStorage.</p>
     "MME GPP (20-150)": {
       ctrlNLineups: "100", ctrlMaxExposure: "35", ctrlUniqueness: "1",
       ctrlRandomization: "18", ctrlStackMode: "qb", ctrlStackSize: "1",
-      ctrlBringBack: true, ctrlAllowSkillVsOppDst: false, ctrlLambda: "-0.005"
+      ctrlBringBack: true, ctrlAllowSkillVsOppDst: false, ctrlLambda: "-0.005",
+      // Ad Hoc Session A6 -- matches data/optimizer_presets.json's own
+      // mme_gpp bundle (kept in sync by hand, same as this preset's other
+      // fields). Not added to Cash/SE-3Max above -- see that file's own
+      // comment: 1-3 lineups don't have meaningful "exposure" to spread a
+      // dart across in the first place.
+      ctrlDartExposureEnabled: true, ctrlDartExposureCap: "10", ctrlDartFloorThreshold: "1.0"
     }
   };
 
@@ -3638,7 +3664,10 @@ in this browser's localStorage.</p>
      // slates only (see that file's showdown_mode guard); same "hide
      // rather than let a build silently no-op with an unexplained NOTE"
      // reasoning as the fields above.
-     "wrapParticipationFloorsField"].forEach(function (id) {
+     "wrapParticipationFloorsField",
+     // Ad Hoc Session A6 -- optimizer.py rejects --dart-exposure-cap on
+     // Showdown slates the same way (classic only for now).
+     "wrapDartExposureField"].forEach(function (id) {
       var el = document.getElementById(id);
       if (el) el.style.display = isShowdown ? "none" : "";
     });
@@ -3659,10 +3688,17 @@ in this browser's localStorage.</p>
 
     var randomization = parseFloat(document.getElementById("ctrlRandomization").value) || 0;
     document.getElementById("randomizationHint").style.display = randomization > 0 ? "" : "none";
+
+    // Ad Hoc Session A6 -- Dart Exposure Cap sub-fields (Cap %/Floor
+    // Threshold) only matter, and are only shown, when the checkbox above
+    // them is on.
+    var dartOn = document.getElementById("ctrlDartExposureEnabled").checked;
+    document.getElementById("dartExposureFields").style.display = dartOn ? "grid" : "none";
   }
 
   document.getElementById("ctrlStackMode").addEventListener("change", updateControlsVisibility);
   document.getElementById("ctrlRandomization").addEventListener("input", updateControlsVisibility);
+  document.getElementById("ctrlDartExposureEnabled").addEventListener("change", updateControlsVisibility);
   ["ctrlStackSize", "ctrlStackPositions", "ctrlBringBack", "ctrlGameStackMin", "ctrlMiniType"].forEach(function (id) {
     document.getElementById(id).addEventListener("input", updateStackExplain);
     document.getElementById(id).addEventListener("change", updateStackExplain);
@@ -4235,6 +4271,18 @@ in this browser's localStorage.</p>
     var lam = parseFloat(document.getElementById("ctrlLambda").value);
     if (!isNaN(lam) && lam !== 0) {
       params.lambda = String(lam);
+    }
+
+    // Ad Hoc Session A6 -- Dart Exposure Cap. Unchecked (default) omits
+    // both params entirely, matching optimizer.py's own flag-off default.
+    // Requires the same --sigma-recalibration projection build as Lambda
+    // above (fails loud otherwise) -- classic slates only, already hidden
+    // on a Showdown-loaded pool by updateControlsVisibility().
+    if (document.getElementById("ctrlDartExposureEnabled").checked) {
+      var dartCapPct = parseFloat(document.getElementById("ctrlDartExposureCap").value);
+      var dartFloor = parseFloat(document.getElementById("ctrlDartFloorThreshold").value);
+      if (!isNaN(dartCapPct)) params.dart_exposure_cap = String(dartCapPct / 100);
+      if (!isNaN(dartFloor)) params.dart_floor_threshold = String(dartFloor);
     }
 
     return params;

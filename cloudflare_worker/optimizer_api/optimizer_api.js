@@ -253,6 +253,15 @@ async function handleDispatch(url, env) {
     // build -- optimizer.py fails loud if the pool has no sigma column, same
     // as running it from the CLI directly.
     "lambda",
+    // Ad Hoc Session A6 -- Dart Exposure Cap (optimizer.py's
+    // --dart-exposure-cap/--dart-floor-threshold). "dart_exposure_cap" is
+    // a plain 0.0-1.0 fraction (same convention as max_exposure);
+    // "dart_floor_threshold" is a plain float (statline_p10 cutoff,
+    // optimizer.py's own default 1.0 applies if omitted). Both absent =
+    // unchanged prior behavior (flag off). Classic slates only -- the
+    // frontend should not send these on a Showdown-loaded pool the same
+    // way it already omits stack_mode/etc. there.
+    "dart_exposure_cap", "dart_floor_threshold",
   ];
   const params = {};
   for (const key of passthroughKeys) {
