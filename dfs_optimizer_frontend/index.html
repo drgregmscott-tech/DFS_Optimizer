@@ -670,6 +670,23 @@
   }
   .pool-status.loaded { color: var(--good); }
 
+  .slate-freshness {
+    display: block;
+    font-size: 11px;
+    margin-top: 2px;
+  }
+  .slate-freshness.fresh { color: var(--good); }
+  .slate-freshness.aging { color: var(--amber); }
+  .slate-freshness.stale { color: var(--bad); }
+
+  .pull-latest-btn {
+    background: transparent;
+    border: 1px solid var(--fd);
+    color: var(--fd);
+  }
+  .pull-latest-btn:hover { background: var(--fd); color: var(--ink); }
+  .pull-latest-btn:disabled { opacity: 0.35; cursor: default; pointer-events: none; }
+
   .controls-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
@@ -1515,6 +1532,7 @@ in this browser's localStorage.</p>
             <input type="file" id="fileSlate" accept=".csv" style="display:none">
             <span class="pool-status" id="slateStatus">No slate loaded</span>
           </div>
+          <span class="slate-freshness" id="slateFreshness"></span>
           <div class="slate-label-row" id="slateLabelRow" style="display:none;">
             <span class="field-label" style="white-space:nowrap; margin:0;">Name:</span>
             <input type="text" id="slateLabel" placeholder="e.g. classic_wk3, preseason_wk1, thanksgiving" maxlength="64">
@@ -1524,6 +1542,7 @@ in this browser's localStorage.</p>
       </div>
       <div class="slate-select-row" id="slateSelectRow" style="display:none;">
         <select id="slateSelect"></select>
+        <button class="upload-btn pull-latest-btn" id="btnPullLatest" title="Fetch the newest final_projections CSV straight from the automated refresh in GitHub, bypassing any cached local/cloud copy">Pull Latest Projections</button>
         <button class="slate-delete-btn" id="btnSlateDelete" title="Delete this slate (removes from this browser and cloud)">Delete</button>
       </div>
       <div class="hint">Accepts either <code>final_projections_&#123;site&#125;_&#123;slate_id&#125;.csv</code> (to build lineups) or an already-built <code>lineup_*.csv</code> (to view). The name field is pre-filled with the real <code>--slate-id</code> from the filename — leave it as-is unless you have a reason to change it, since this exact value is what "Build Lineups" sends to the real solver. Persists across reloads and syncs to cloud.</div>
@@ -2021,9 +2040,9 @@ in this browser's localStorage.</p>
     return label.replace(/\s+/g, "_").replace(/[^a-zA-Z0-9_-]/g, "").slice(0, 64) || "slate";
   }
 
-  function persistSlate(site, slateId, label, kind, filename, payload, week) {
+  function persistSlate(site, slateId, label, kind, filename, payload, week, savedAt) {
     try {
-      localStorage.setItem(slateKey(site, slateId), JSON.stringify({ kind: kind, filename: filename, label: label, week: week || "1", payload: payload }));
+      localStorage.setItem(slateKey(site, slateId), JSON.stringify({ kind: kind, filename: filename, label: label, week: week || "1", payload: payload, savedAt: savedAt || new Date().toISOString() }));
       var idx = readSlateIndex();
       var exists = idx.some(function (e2) { return e2.site === site && e2.slateId === slateId; });
       if (!exists) { idx.push({ site: site, slateId: slateId, label: label }); writeSlateIndex(idx); }
@@ -2254,29 +2273,34 @@ in this browser's localStorage.</p>
   function loadStoredSlate(site, slateId) {
     try {
       var raw = localStorage.getItem(slateKey(site, slateId));
-      if (!raw) return false;
+      if (!raw) return null;
       var stored = JSON.parse(raw);
       applySlatePayload(site, stored.kind, stored.filename, stored.payload);
-      return true;
-    } catch (e) { return false; }
+      return stored;
+    } catch (e) { return null; }
   }
 
+  // callback(source, filename, savedAt) -- savedAt is an ISO timestamp of
+  // when this exact payload was captured (upload time for a manual slate,
+  // the Worker's save_slate timestamp for a cloud slate), or null if
+  // unknown. Feeds updateFreshnessBadge() so the UI can show how old the
+  // data on screen actually is.
   function loadSlateForActive(site, slateId, callback) {
     // Try local storage first -- it's always written at upload time and is
     // immediately consistent. Cloud is the fallback for cross-device access
     // (a slate uploaded on a different device won't be in this browser's
     // localStorage). Reversing the old cloud-first order fixes the lag and
     // consistency issues when switching between slates on the same device.
-    var hadLocal = loadStoredSlate(site, slateId);
-    if (hadLocal) { callback("local", null); return; }
+    var stored = loadStoredSlate(site, slateId);
+    if (stored) { callback("local", null, stored.savedAt || null); return; }
     cloudLoadSlate(site, slateId, function (record) {
       if (record) {
         applySlatePayload(site, record.kind, record.filename, record.payload);
-        persistSlate(site, slateId, record.label || slateId, record.kind, record.filename, record.payload, record.week || "1");
-        callback("cloud", record.filename);
+        persistSlate(site, slateId, record.label || slateId, record.kind, record.filename, record.payload, record.week || "1", record.savedAt);
+        callback("cloud", record.filename, record.savedAt || null);
         return;
       }
-      callback("none", null);
+      callback("none", null, null);
     });
   }
 
@@ -2296,6 +2320,34 @@ in this browser's localStorage.</p>
     if (hasAll(poolRequired)) return "pool";
     if (hasAll(lineupRequired)) return "lineup";
     return null;
+  }
+
+  // Shared by the manual-upload path (confirmSlateUpload) and the
+  // "Pull Latest Projections" path (pullLatestProjections) -- both turn a
+  // parsed final_projections CSV's rows into the same pool payload shape.
+  function poolRowsToPayload(rows) {
+    return rows.map(function (r) {
+      return {
+        player_id: r.player_id, player_name: r.player_name.trim(), position: r.position,
+        team: r.team, salary: parseFloat(r.salary) || 0, final_projection: parseFloat(r.final_projection) || 0,
+        opponent: r.opponent || "", implied_total: parseFloat(r.implied_total) || 0, over_under: parseFloat(r.over_under) || 0,
+        // Carried through so a pivot-applied swap (Session 4.3) can still
+        // populate site_player_id on the resulting lineup row -- without
+        // this, a swapped-in player would silently lose DK/FD bulk-import
+        // support (see downloadLineupsForImport()'s own site_player_id note).
+        site_player_id: r.site_player_id || "",
+        estimated_ownership_pct: Object.prototype.hasOwnProperty.call(r, "estimated_ownership_pct") && r.estimated_ownership_pct !== ""
+          ? parseFloat(r.estimated_ownership_pct) : null,
+        // Session 13.5 -- carried through so the Build panel can detect a
+        // Showdown pool (slate_format) and, for Showdown, distinguish a
+        // player's CPT/MVP pool row from their FLEX pool row (roster_role)
+        // -- a Showdown pool has 2 rows per player_id with different
+        // salary/projection, and dropping this here (as the pre-13.5
+        // whitelist did) made the two indistinguishable in the UI.
+        slate_format: r.slate_format || "classic",
+        roster_role: r.roster_role || ""
+      };
+    });
   }
 
   // Step 1 of upload: read and parse the file, show the label field.
@@ -2404,31 +2456,12 @@ in this browser's localStorage.</p>
       return;
     }
 
-    var payload = kind === "pool" ? rows.map(function (r) {
-      return {
-        player_id: r.player_id, player_name: r.player_name.trim(), position: r.position,
-        team: r.team, salary: parseFloat(r.salary) || 0, final_projection: parseFloat(r.final_projection) || 0,
-        opponent: r.opponent || "", implied_total: parseFloat(r.implied_total) || 0, over_under: parseFloat(r.over_under) || 0,
-        // Carried through so a pivot-applied swap (Session 4.3) can still
-        // populate site_player_id on the resulting lineup row -- without
-        // this, a swapped-in player would silently lose DK/FD bulk-import
-        // support (see downloadLineupsForImport()'s own site_player_id note).
-        site_player_id: r.site_player_id || "",
-        estimated_ownership_pct: Object.prototype.hasOwnProperty.call(r, "estimated_ownership_pct") && r.estimated_ownership_pct !== ""
-          ? parseFloat(r.estimated_ownership_pct) : null,
-        // Session 13.5 -- carried through so the Build panel can detect a
-        // Showdown pool (slate_format) and, for Showdown, distinguish a
-        // player's CPT/MVP pool row from their FLEX pool row (roster_role)
-        // -- a Showdown pool has 2 rows per player_id with different
-        // salary/projection, and dropping this here (as the pre-13.5
-        // whitelist did) made the two indistinguishable in the UI.
-        slate_format: r.slate_format || "classic",
-        roster_role: r.roster_role || ""
-      };
-    }) : rows;
+    var payload = kind === "pool" ? poolRowsToPayload(rows) : rows;
 
+    var uploadedAt = new Date().toISOString();
     applySlatePayload(site, kind, file.name, payload);
-    persistSlate(site, slateId, label, kind, file.name, payload, week);
+    persistSlate(site, slateId, label, kind, file.name, payload, week, uploadedAt);
+    updateFreshnessBadge(uploadedAt);
 
     var localMsg = label + " — " + rows.length + (kind === "pool" ? " players (player pool)" : " rows (built lineup)");
     setSlateStatus(localMsg, true);
@@ -2455,6 +2488,33 @@ in this browser's localStorage.</p>
     var el = document.getElementById("slateStatus");
     el.textContent = text;
     el.classList.toggle("loaded", !!loaded);
+  }
+
+  // Freshness thresholds are loose on purpose -- refresh_data.yml runs on
+  // several cadences (some tighter near lock), so this is meant to flag
+  // "this looks old, go re-pull" rather than track any one exact interval.
+  var FRESHNESS_AGING_MIN = 45;
+  var FRESHNESS_STALE_MIN = 120;
+
+  function updateFreshnessBadge(savedAtIso) {
+    var el = document.getElementById("slateFreshness");
+    if (!el) return;
+    var ts = savedAtIso ? new Date(savedAtIso).getTime() : NaN;
+    if (!savedAtIso || isNaN(ts)) {
+      el.textContent = "";
+      el.className = "slate-freshness";
+      el.title = "";
+      return;
+    }
+    var mins = Math.max(0, Math.round((Date.now() - ts) / 60000));
+    var ageText = mins < 1 ? "just now"
+      : mins < 60 ? (mins + " min ago")
+      : (Math.floor(mins / 60) + "h " + (mins % 60) + "m ago");
+    var level = mins <= FRESHNESS_AGING_MIN ? "fresh" : mins <= FRESHNESS_STALE_MIN ? "aging" : "stale";
+    var label = level === "stale" ? "Data may be stale — as of " : "Data as of ";
+    el.textContent = label + ageText;
+    el.className = "slate-freshness " + level;
+    el.title = "Captured " + new Date(savedAtIso).toLocaleString() + " — click \"Pull Latest Projections\" to refresh.";
   }
 
   // Renders the <select> from the merged local+cloud index.
@@ -2507,6 +2567,8 @@ in this browser's localStorage.</p>
     var btn = document.getElementById("btnSlateDelete");
     var sel = document.getElementById("slateSelect");
     btn.disabled = !sel || !sel.value;
+    var pullBtn = document.getElementById("btnPullLatest");
+    if (pullBtn) pullBtn.disabled = !sel || !sel.value || !cloudConfigured();
   }
 
   // Dropdown change: load the selected slate.
@@ -2521,10 +2583,11 @@ in this browser's localStorage.</p>
     });
     state.activeSite = site;
     setSlateStatus("Loading…");
-    loadSlateForActive(site, slateId, function (source, filename) {
+    loadSlateForActive(site, slateId, function (source, filename, savedAt) {
       if (source === "cloud") setSlateStatus((filename || slateId) + " — loaded from cloud", true);
       else if (source === "local") setSlateStatus((filename || slateId) + " — loaded from local storage", true);
       else setSlateStatus(noSlateMessage(), false);
+      updateFreshnessBadge(savedAt);
       updateDeleteBtnState();
       render();
       renderPlayerList();
@@ -2543,6 +2606,59 @@ in this browser's localStorage.</p>
     if (!confirm("Delete \"" + label + "\"?\n\nThis removes it from this browser and from the cloud. It cannot be undone.")) return;
     removeSlate(site, slateId);
   });
+
+  // "Pull Latest Projections" -- bypasses both localStorage and the frozen
+  // data/ui_slates/*.json cloud snapshot (handleSaveSlate/handleLoadSlate
+  // only ever hold whatever was last manually uploaded) and instead reads
+  // output/final_projections_{site}_{slateId}.csv straight off GitHub via
+  // the Worker's pull_latest_projections action -- the exact file
+  // refresh_data.yml's cron overwrites on every automated run. Mirrors
+  // handleLoadPivots' "always read the live file" pattern (see that
+  // handler's docstring) rather than load_slate's upload-then-freeze one.
+  function pullLatestProjections() {
+    var sel = document.getElementById("slateSelect");
+    if (!sel.value) return;
+    var parts = sel.value.split("|");
+    var site = parts[0], slateId = parts.slice(1).join("|");
+    if (!cloudConfigured()) { setSlateStatus("Set Worker URL/Token above to enable Pull Latest Projections.", false); return; }
+    var label = sel.options[sel.selectedIndex] ? sel.options[sel.selectedIndex].text.replace(/^(DK|FD) · /, "") : slateId;
+    var btn = document.getElementById("btnPullLatest");
+    btn.disabled = true;
+    setSlateStatus("Pulling latest projections from GitHub…");
+    fetch(workerUrl("pull_latest_projections", { site: site, slate_id: slateId }), { cache: "no-store" })
+      .then(function (r) { return r.json(); })
+      .then(function (data) {
+        if (data.error) { setSlateStatus("Pull failed: " + data.error, false); updateDeleteBtnState(); return; }
+        if (!data.found) { setSlateStatus("No automated final_projections file found yet for this slate on GitHub.", false); updateDeleteBtnState(); return; }
+        var rows;
+        try { rows = parseCSV(data.csv); }
+        catch (err) { setSlateStatus("Pulled file, but couldn't parse it as CSV.", false); updateDeleteBtnState(); return; }
+        if (!rows.length || detectSlateKind(rows) !== "pool") {
+          setSlateStatus("Pulled file doesn't look like a final_projections CSV.", false);
+          updateDeleteBtnState();
+          return;
+        }
+        var payload = poolRowsToPayload(rows);
+        var filename = data.filename || ("final_projections_" + site + "_" + slateId + ".csv");
+        var updatedAt = data.updatedAt || new Date().toISOString();
+        applySlatePayload(site, "pool", filename, payload);
+        persistSlate(site, slateId, label, "pool", filename, payload, "1", updatedAt);
+        updateFreshnessBadge(updatedAt);
+        setSlateStatus(filename + " — " + rows.length + " players (pulled live from GitHub)", true);
+        render();
+        renderPlayerList();
+        renderSlateOverview();
+        loadPivotsForActive(site, slateId);
+        updateDeleteBtnState();
+        // Also push this fresh snapshot to the cloud slate store so other
+        // devices/browsers picking this slate see it too, without each of
+        // them needing to click Pull Latest separately.
+        cloudSaveSlate(site, slateId, label, "pool", filename, payload, "1", function () { /* best-effort */ });
+      })
+      .catch(function (err) { setSlateStatus("Pull failed: " + err.message, false); updateDeleteBtnState(); });
+  }
+
+  document.getElementById("btnPullLatest").addEventListener("click", pullLatestProjections);
 
   // ---------------- Rendering ----------------
 
@@ -2915,7 +3031,7 @@ in this browser's localStorage.</p>
     if (selVal && selVal.startsWith(site + "|")) {
       var slateId = selVal.split("|").slice(1).join("|");
       setSlateStatus("Loading…");
-      loadSlateForActive(site, slateId, function (source, filename) {
+      loadSlateForActive(site, slateId, function (source, filename, savedAt) {
         if (source === "cloud") setSlateStatus((filename || slateId) + " — loaded from cloud", true);
         else if (source === "local") setSlateStatus((filename || slateId) + " — from local storage", true);
         else if (state.pool[site] || state.data[site]) {
@@ -2923,6 +3039,7 @@ in this browser's localStorage.</p>
         } else {
           setSlateStatus(noSlateMessage());
         }
+        updateFreshnessBadge(savedAt);
         render();
         renderPlayerList();
         renderSlateOverview();
@@ -4539,13 +4656,14 @@ in this browser's localStorage.</p>
       // Local has slates -- load the currently-selected one immediately.
       var parts = sel.value.split("|");
       var site = parts[0], slateId = parts.slice(1).join("|");
-      loadSlateForActive(site, slateId, function (source, filename) {
+      loadSlateForActive(site, slateId, function (source, filename, savedAt) {
         if (source !== "none") {
           setSlateStatus((filename || slateId) + (source === "cloud" ? " — from cloud" : " — from local storage"), true);
           document.getElementById("slatesPanel").classList.remove("open");
         } else {
           setSlateStatus(noSlateMessage());
         }
+        updateFreshnessBadge(savedAt);
         updateDeleteBtnState();
         renderPlayerList();
         renderSlateOverview();
@@ -4582,13 +4700,14 @@ in this browser's localStorage.</p>
         var p2 = sel.value.split("|");
         var s2 = p2[0], sid2 = p2.slice(1).join("|");
         setSlateStatus("Loading from cloud…");
-        loadSlateForActive(s2, sid2, function (source2, filename2) {
+        loadSlateForActive(s2, sid2, function (source2, filename2, savedAt2) {
           if (source2 !== "none") {
             setSlateStatus((filename2 || sid2) + " — from cloud", true);
             document.getElementById("slatesPanel").classList.remove("open");
           } else {
             setSlateStatus(noSlateMessage());
           }
+          updateFreshnessBadge(savedAt2);
           updateDeleteBtnState();
           renderPlayerList();
           renderSlateOverview();

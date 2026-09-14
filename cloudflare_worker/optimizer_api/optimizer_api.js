@@ -139,6 +139,20 @@
  *   the missing piece that previously made the X button re-appear after
  *   cloud list_slates re-rendered the chip list.
  *
+ * GET /?action=pull_latest_projections&token=<WORKER_AUTH_TOKEN>&site=dk&slate_id=classic_wk3
+ *   -> 200 { "found": true, "csv": "<raw csv text>", "filename": "...", "updatedAt": "<ISO date or null>" }
+ *   -> 200 { "found": false }
+ *   Ad Hoc addition -- mirrors handleLoadPivots' "always read the live
+ *   file" pattern (see that handler's docstring for why load_slate's
+ *   frozen-upload-snapshot approach is wrong for this) but for the main
+ *   pool file: reads output/final_projections_{site}_{slateId}.csv fresh
+ *   off GitHub every call, the exact file refresh_data.yml's cron
+ *   overwrites on every automated run, bypassing data/ui_slates/*.json
+ *   entirely. `updatedAt` is that file's latest commit timestamp (via the
+ *   commits API, best-effort -- null if that lookup fails) so the UI can
+ *   show how old the data actually is, not just when this browser last
+ *   fetched it.
+ *
  * GET /?action=ping&token=<WORKER_AUTH_TOKEN>
  *   -> 200 { "ok": true }
  *   Session 7.3 addition -- a deliberately trivial action that makes
@@ -318,6 +332,24 @@ async function fetchRepoFile(env, path) {
   return decoded;
 }
 
+// Best-effort: the Contents API response used by fetchRepoFile carries no
+// commit date, only `sha` -- the commits API is the only way to get when a
+// path was last changed. Returns null (never throws) on any failure so a
+// GitHub hiccup here degrades to "no timestamp shown" rather than breaking
+// the whole pull.
+async function fetchRepoFileLastCommitDate(env, path) {
+  try {
+    const apiUrl = `https://api.github.com/repos/${env.GITHUB_OWNER}/${env.GITHUB_REPO}/commits?path=${encodeURIComponent(path)}&per_page=1`;
+    const res = await fetch(apiUrl, { headers: ghHeaders(env) });
+    if (!res.ok) return null;
+    const commits = await res.json();
+    if (!Array.isArray(commits) || !commits.length) return null;
+    return commits[0].commit && commits[0].commit.committer && commits[0].commit.committer.date || null;
+  } catch (e) {
+    return null;
+  }
+}
+
 function ghHeaders(env) {
   return {
     "Accept": "application/vnd.github+json",
@@ -462,6 +494,25 @@ async function handleLoadPivots(url, env) {
     return json({ found: true, csv: csv });
   } catch (err) {
     return json({ error: `Load failed: ${err.message}` }, 502);
+  }
+}
+
+// Ad Hoc addition -- see this action's docstring above for why it exists
+// as a separate always-live read rather than a variant of handleLoadSlate.
+async function handlePullLatestProjections(url, env) {
+  const site = url.searchParams.get("site");
+  const slateId = url.searchParams.get("slate_id");
+  if (!validSite(site) || !validSlateId(slateId)) {
+    return json({ error: "site must be dk/fd and slate_id must be 1-64 alphanumeric/hyphen/underscore chars." }, 400);
+  }
+  const path = `output/final_projections_${site}_${slateId}.csv`;
+  try {
+    const csv = await fetchRepoFile(env, path);
+    if (csv === null) return json({ found: false });
+    const updatedAt = await fetchRepoFileLastCommitDate(env, path);
+    return json({ found: true, csv, filename: `final_projections_${site}_${slateId}.csv`, updatedAt });
+  } catch (err) {
+    return json({ error: `Pull failed: ${err.message}` }, 502);
   }
 }
 
@@ -623,11 +674,12 @@ export default {
     // for why this is a separate action rather than a special case of
     // load_slate above.
     if (action === "load_pivots") return handleLoadPivots(url, env);
+    if (action === "pull_latest_projections") return handlePullLatestProjections(url, env);
     if (action === "list_slates") return handleListSlates(env);
     if (action === "delete_slate") return handleDeleteSlate(url, env);
     if (action === "get_presets") return handleGetPresets(env);
     if (action === "save_presets") return handleSavePresets(request, env);
     if (action === "ping") return json({ ok: true }); // deliberately no GitHub call -- see docstring
-    return json({ error: "action must be 'dispatch', 'poll', 'save_slate', 'load_slate', 'load_pivots', 'list_slates', 'delete_slate', 'get_presets', 'save_presets', or 'ping'." }, 400);
+    return json({ error: "action must be 'dispatch', 'poll', 'save_slate', 'load_slate', 'load_pivots', 'pull_latest_projections', 'list_slates', 'delete_slate', 'get_presets', 'save_presets', or 'ping'." }, 400);
   },
 };
