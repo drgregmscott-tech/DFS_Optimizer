@@ -4746,3 +4746,32 @@ Greg explicitly asked me to push back on a third idea — a per-player *minimum*
 - [ ] Not done, and flagged as the reason this stops here: separating "real Vegas-total misses this week" from "the volume-prior blend structurally over-weights modest Vegas numbers" — needs several more real weeks of `projection_error_log.csv` data, splitting by bonus-hit vs. not, to tell apart from noise. Revisit this specific split (not a general re-open of the investigation) once more weeks are logged.
 
 ---
+
+### Session 14.2 — Post-14.0/14.1 Reassessment — 2026-09-14
+
+**Status:** ✅ Complete.
+
+**Trigger:** flagged during a stale-session sweep — Session 14.2 was an explicit checkpoint on ROADMAP.md, opened 2026-08-06 alongside Sessions 14.0/14.1, gated on "Session 9.1 having real data to assess against." That gate opened this same session (six real Week 1 2026 classic slates now logged, both sites, via `scripts/log_results.py`). Session 14.1 (Player Props) had been deliberately deferred rather than built, with an explicit, narrow reopening trigger written into its own card: check whether real projection error concentrates in cold-start/low-history players (would implicate a missing market signal, grounds to reopen) versus broad/established-player-weighted (would implicate usage-modeling/calibration instead, which props would not fix). This session runs exactly that check for the first time it's been possible to run.
+
+**What was done:** joined all 1,980 real player-slate rows in `data/projection_error_log.csv` (all six Week 1 classic slates, both sites) against each slate's own `output/final_projections_{site}_{slate_id}.csv` for `games_played`, and split at `games_played <= 3` (low-history) vs. `> 3` (established). Real numbers:
+
+| Group | n | mean abs error | mean signed error (actual − proj) |
+|---|---|---|---|
+| Low-history (≤3 games) | 794 | 1.55 | −0.57 |
+| Established (>3 games) | 1,090 | 4.17 | +1.91 |
+
+Checked the split held across position (QB/RB/TE/WR) and site (DK/FD) breakdowns before concluding anything, not just the aggregate — it did, consistently: established players showed the larger error and the clearer under-projection bias in every position/site cut, never the reverse.
+
+**Finding: the reopening trigger's condition is not met — the pattern runs the opposite direction.** Error concentrates in established, well-known players, not cold-start/low-history ones (which, if anything, were the better-calibrated group this week). Per Session 14.1's own card, that pattern implicates usage-modeling/market-calibration (λ, sigma, volume-prior tuning), not a missing market signal — the same conclusion this session's earlier QB/bonus-integration investigation (see above) reached independently, from a different angle (established, high-history veteran QBs' real passing volume running below their own recency-weighted rate once Vegas-anchored). Two independent real-data checks in the same session landing on the same underlying explanation is a stronger signal than either alone.
+
+**Decision: player props stay deferred, not reopened.** One real week is a thin sample for a permanent call, but it's a clean, decisive first read, and Session 14.1's own card preserved all the groundwork (vendor comparison, real cost numbers, market list, probe scripts) for whenever/if this gets revisited — nothing needs re-deriving if a future week's data flips the picture.
+
+**Files touched:** none — a one-off analysis against existing logged data, not productionized into a script, since the point was a single go/no-go checkpoint rather than a recurring check.
+
+**Validation:**
+- [x] Real data existed to run the actual check this card was waiting on (not a proxy or an early guess).
+- [x] Ran the SPECIFIC check Session 14.1's card names as its reopening trigger, not a looser substitute.
+- [x] Confirmed the pattern holds across position and site cuts before drawing a conclusion.
+- [x] Decision explicitly recorded with the real numbers behind it, matching this project's standing bar for closing a checkpoint.
+
+---

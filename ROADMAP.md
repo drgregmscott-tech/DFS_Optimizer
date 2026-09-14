@@ -1223,6 +1223,9 @@ Before any future multi-sport session gets built: re-evaluate odds vendors at th
 ---
 
 ## PHASE 11 — Ownership Model Upgrade
+
+> **⚠️ SUPERSEDED — flagged 2026-09-14, not deleted so the history stays visible (this project's usual convention).** This entire Phase 11 block (through the "---" right before the next "## PHASE 11 — Ownership Model Upgrade" heading below) is an earlier draft that was left in place when it was later revised, rather than replaced in place — a real documentation bug found during a stale-session sweep, not an intentional duplicate. **The authoritative version is the second "## PHASE 11" section below** (adds the `slate_type` schema field and preseason/Madden-Sim fit-exclusion guidance this draft is missing, among other differences). Do not read or cite this copy — jump to the later one.
+
 *Opened 2026-07-28. Structured response to the gap assessment comparing the
 current heuristic against Tier 1/2/3 ownership model targets defined during
 the 2026-07-28 ownership model research session. Phase 10 is complete;
@@ -3028,6 +3031,8 @@ complete reasoning behind the deferral decision.
 ---
 
 ### Session 14.2 — Post-14.0/14.1 Reassessment
+**Status:** ✅ Complete (2026-09-14). Gate opened once Session 9.1 had real logged data (all six real Week 1 2026 classic slates, both sites, 1,980 player-slate rows) — see below for the actual reassessment and the specific cold-start-vs-broad check Session 14.1's card names as the real trigger for reopening player props.
+
 **Prerequisites:** Session 14.0 complete. Session 14.1 closed as of
 2026-08-06, resolved as a deliberate deferral rather than a build (see
 that card's Resolution) — so this checkpoint isn't waiting on props
@@ -3054,8 +3059,24 @@ picture once it has data, and decide whether further projection work
 is warranted or whether the system is in good enough shape to shift
 focus elsewhere (FD validation, Phase 6 preseason dry runs, etc.).
 
-**Validation:** N/A — defer scoping until 14.0/14.1 are actually done
-and there's real output to look at.
+**The actual reassessment (2026-09-14), against real data:** ran the exact check Session 14.1's card names as its own reopening trigger — is real Week 1 projection error concentrated in cold-start/low-history players (implicates a missing market signal, grounds to reopen props) or broad/established-player-weighted (implicates usage-modeling/calibration instead, which props would not fix)? Joined all 1,980 real player-slate rows in `data/projection_error_log.csv` (all six Week 1 classic slates, both sites) against each slate's own `games_played` column and split at `games_played <= 3` (low-history) vs. `> 3` (established):
+
+| Group | n | mean abs error | mean signed error (actual − proj) |
+|---|---|---|---|
+| Low-history (≤3 games) | 794 | 1.55 | **−0.57** (roughly balanced, slightly over-projected) |
+| Established (>3 games) | 1,090 | 4.17 | **+1.91** (under-projected) |
+
+The pattern is the **opposite** of the reopening trigger's condition, and it isn't close — established players show 2.7x the absolute error and a clear positive (under-projection) bias in both signed direction and magnitude, consistently across QB/RB/TE/WR and both sites (DK established +2.68, FD established +1.40; DK low-history +0.33, FD low-history −0.71). Low-history players, if anything, are the **better-calibrated** group this week.
+
+**Conclusion: Session 14.1's reopening trigger is not met. Player props stay deferred, not reopened.** The real miss this week is concentrated in established, well-known players — consistent with, not contradicted by, the separate QB/Vegas-variance finding from the same day's session (several high-history veteran QBs' passing volume ran below their own real recency-weighted rates once Vegas-anchored, and several of those specific real games came in well above modest pregame lines). That's a usage-modeling/market-calibration question — the exact category Session 14.1's own card says props would not fix — not a "we're missing signal on players with thin history" gap. One real week is still a thin sample for a permanent conclusion, but it's a clean, decisive first read, and it points in a specific, useful direction for the next round of work (Session 9.2's weight retuning, once its own 4-week data gate opens) rather than toward reopening props.
+
+**Files touched:** none — analysis only, run directly against existing `data/projection_error_log.csv` and `output/final_projections_*.csv` files, no new script (a one-off join, not judged worth productionizing given the whole point was a single go/no-go checkpoint).
+
+**Validation:**
+- [x] Real Week 1 data existed to assess against (the actual gate this card was waiting on) — six real classic slates, both sites, 1,980 rows.
+- [x] Ran the specific cold-start-vs-broad check Session 14.1's card names as the reopening trigger, not a different/looser proxy for it.
+- [x] Checked the pattern held across position and site breakdowns, not just in aggregate, before concluding anything (see table/breakdown above).
+- [x] Explicit decision recorded: props deferral stands, not reopened, with the specific real numbers that decision rests on — same "log the actual numbers, not just the verdict" standard the rest of this project holds itself to.
 
 ---
 
