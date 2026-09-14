@@ -525,6 +525,8 @@
 ---
 
 ### Session 6.2 — Preseason Week 2 Dry Run (Aug 20-22)
+**⚠️ Note added 2026-09-14 (stale-session sweep):** never run, same as Session 6.1 — project attention moved into Phase 10-14 engine work through August, then straight into real regular-season Week 1 (2026-09-13) rather than back to the scheduled preseason dry-run cadence. Unlike 6.1, this card's own core intent (re-test Week 1's punch list against a second live week) has no later session that substantively covers it — there was no formal Week 1 punch list to re-test in the first place (6.1's own note). **Not going to run retroactively:** Preseason Week 2 (Aug 20-22) is long past and Regular Season Week 1 has already happened — there is no remaining real slate this card's original scope could still target. Superseded by events, not completed and not going to be.
+
 **Prerequisites:** Session 6.1 complete, punch list addressed.
 
 **Files touched:** Whatever files the Week 1 punch list points to.
@@ -544,6 +546,8 @@
 ---
 
 ### Session 6.3 — Preseason Week 3 Dry Run (Aug 27-29)
+**⚠️ Note added 2026-09-14 (stale-session sweep):** never run, same as 6.1/6.2 — same reason. This card's real job (a go/no-go decision per site before Regular Season Week 1) ended up happening anyway, just not in this format: Ad Hoc Sessions A1/A3 (2026-09-10/11) collectively exercised a full live pipeline run on both sites against the real Week 1 2026 slate days before real lock, and Regular Season Week 1 itself (Session 8.1, 2026-09-13) shipped on both sites without a formal go/no-go note ever being written — the go decision was made implicitly by proceeding, not logged as this card intended. **Not going to run retroactively:** Preseason Week 3 is long past. If a formal go/no-go write-up is ever wanted for the record, it would need to be reconstructed from Ad Hoc A1/A3/A6/A7 and Session 8.1's real outcomes rather than run as its own session.
+
 **Prerequisites:** Session 6.2 complete.
 
 **Inputs:** Live preseason Week 3 slate, both sites + `/logs/dry_run_week2_issues.md`
@@ -2629,12 +2633,11 @@ regular-season classic slate carried all the way through to lineups built
 via the live GitHub Actions/Cloudflare Worker dispatch path. Full details
 and numbers in SESSION_LOG.md.
 
-**Handoff notes to log:** `DFS_Weekly_Process.md` still needs a rewrite
+**Handoff notes to log:** ~~`DFS_Weekly_Process.md` still needs a rewrite
 pass reflecting everything this session changed (vegas via `--slate-id`,
 the Week-1-vs-Week-2+ `--season`/`--week` split, the corrected Madden
 game-totals-panel note, the new `--weekly-rosters` flag) -- explicitly
-deferred to its own follow-up, not done this session. See SESSION_LOG.md's
-Session 13.5b entry, "Handoff notes for next session," for the full list.
+deferred to its own follow-up, not done this session.~~ ✅ **RESOLVED — closed 2026-09-14 (stale-session sweep), no new work needed.** All four items are covered in the current `DFS_Weekly_Process.md`: Vegas via `--slate-id` (its own dedicated note), the Week-1-vs-Week-2+ season/week split (its own table + explicit "how to check" callout), the corrected Madden game-totals-panel behavior (called out explicitly, including the note that the old "expected" framing was itself the bug), and rookie/roster matching via `weekly_rosters_2026.parquet` (now automatic, no flag needed -- the mechanism simplified since this handoff note was written, but the underlying concern is fully covered). See SESSION_LOG.md's Session 13.5b entry, "Handoff notes for next session," for the original list.
 
 ---
 
