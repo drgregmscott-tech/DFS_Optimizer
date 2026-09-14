@@ -1199,12 +1199,32 @@ def apply_depth_chart_usage_prior(pool: pd.DataFrame, team_vol: pd.DataFrame,
     still needs untouched as the pure own-history number for its own
     hist_share_raw math) and never touches participation itself.
 
-    Deliberately runs BEFORE apply_volume_prior()'s price-based blend and
-    apply_confirmed_starter_override() in the pipeline -- see
-    build_projections_statline.py -- since real usage share is a more
-    direct role signal than price, and this should establish a role-aware
-    baseline for those later steps to make smaller corrections on top of,
-    not compete with them for the same `{comp}_mu` value.
+    Runs LAST in the pipeline -- AFTER apply_volume_prior() AND
+    apply_confirmed_starter_override(), immediately before reconciliation
+    -- see build_projections_statline.py. Originally placed before apply_
+    volume_prior(); moved after a real bug was found live: that function's
+    own decision #15 role-change block unconditionally recomputes every
+    {comp}_mu from {comp}_mu_raw for ALL rows, which silently discarded
+    this prior's correction before it ever reached final_projection. This
+    position is the only one nothing downstream can overwrite.
+
+    Session (this change) -- the blend weight is no longer a single flat
+    floor. Real backtesting against actual Week 1 2026 contest results
+    showed a flat floor moved Gainwell's inflated share in the right
+    direction but too weakly, while naively raising the floor for ANY big
+    divergence from the peer median also would have wrongly suppressed
+    Jahmyr Gibbs (a real, legitimately elite ~50%-owned workhorse whose
+    own share is high because he earned it, not because of stale history).
+    The fix distinguishes the two with a real, per-team signal instead of
+    raw distance-from-league-median: a genuine WITHIN-TEAM inversion,
+    where a worse-(depth-)ranked teammate's own share exceeds a better-
+    ranked one's for the same component (Gainwell's TB #2 outshares
+    Irving's TB #1 on receiving; nobody on Gibbs' real DET roster
+    outshares him on anything). Only a real inversion like that boosts the
+    blend weight (up to DEPTH_RANK_MAX_WEIGHT_FLOOR); an elite player with
+    no such teammate keeps the original, much gentler floor. See
+    volume_prior.DEPTH_RANK_INVERSION_SATURATION's comment for the full
+    reasoning and the real numbers this was validated against.
 
     No-op (returns `pool` unchanged) if depth_chart is missing/empty, same
     "absence of a signal is not itself a signal" handling used throughout
@@ -1225,13 +1245,56 @@ def apply_depth_chart_usage_prior(pool: pd.DataFrame, team_vol: pd.DataFrame,
     tv = team_vol.set_index("team")
 
     games_played = pd.to_numeric(df.get("games_played"), errors="coerce").fillna(0.0)
-    weight = pd.Series(
-        volume_prior.cold_start_weight(
-            games_played, weight_floor=volume_prior.DEPTH_RANK_WEIGHT_FLOOR,
-            k=volume_prior.DEPTH_RANK_COLD_START_K),
-        index=df.index)
+    # Session (this change) -- the games-played TAPER (how much a thin own-
+    # sample defers to any external signal) is still shared and computed
+    # once here; the FLOOR it decays toward is no longer one flat constant
+    # -- see the inversion-boosted `effective_floor` computed per (pos,
+    # comp) below, which replaces cold_start_weight()'s single-scalar
+    # floor with a per-row one for the same formula.
+    taper = np.clip(
+        (volume_prior.COLD_START_MAX_GAMES - games_played) / volume_prior.COLD_START_MAX_GAMES,
+        0.0, 1.0)
+    base_component = (
+        volume_prior.DEPTH_RANK_COLD_START_K
+        / (volume_prior.DEPTH_RANK_COLD_START_K + games_played)
+    ) * taper
 
     lo, hi = volume_prior.USAGE_PRIOR_RATIO_BOUNDS
+
+    def _rank_prefix_suffix_bounds(team_s, depth_rank_s, share_s):
+        """For each row (within one (pos, comp) pass), returns
+        (better_rank_min_share, worse_rank_max_share): the min own_share
+        among teammates with a STRICTLY better (numerically lower) depth
+        rank, and the max own_share among teammates with a STRICTLY worse
+        (higher) depth rank -- NaN where no such teammate has a usable
+        share. This is the real, per-team signal that distinguishes a
+        genuine inversion (Gainwell out-sharing Irving on receiving,
+        despite being TB's #2) from a legitimately elite outlier (Gibbs,
+        whom no real DET teammate out-shares on anything) -- see
+        volume_prior.DEPTH_RANK_INVERSION_SATURATION's comment for the
+        full real-data reasoning."""
+        better_min = pd.Series(np.nan, index=team_s.index)
+        worse_max = pd.Series(np.nan, index=team_s.index)
+        tmp = pd.DataFrame({"team": team_s, "depth_rank": depth_rank_s, "share": share_s})
+        for _, g in tmp.dropna(subset=["depth_rank"]).groupby("team"):
+            g = g.sort_values("depth_rank")
+            shares = g["share"].to_numpy(float)
+            n = len(shares)
+            bmin = np.full(n, np.nan)
+            running, seen = np.inf, False
+            for i in range(n):
+                bmin[i] = running if seen else np.nan
+                if np.isfinite(shares[i]):
+                    running, seen = min(running, shares[i]), True
+            wmax = np.full(n, np.nan)
+            running, seen = -np.inf, False
+            for i in range(n - 1, -1, -1):
+                wmax[i] = running if seen else np.nan
+                if np.isfinite(shares[i]):
+                    running, seen = max(running, shares[i]), True
+            better_min.loc[g.index] = bmin
+            worse_max.loc[g.index] = wmax
+        return better_min, worse_max
 
     for pos, cs in COMPONENTS.items():
         pos_mask = df["position"].astype(str) == pos
@@ -1298,7 +1361,33 @@ def apply_depth_chart_usage_prior(pool: pd.DataFrame, team_vol: pd.DataFrame,
             if not eligible.any():
                 continue
 
-            w = weight.loc[eligible]
+            # Real within-team inversion check (this (pos, comp) pass only)
+            # -- see _rank_prefix_suffix_bounds() and volume_prior.DEPTH_
+            # RANK_INVERSION_SATURATION's docstring for the full "why".
+            better_min, worse_max = _rank_prefix_suffix_bounds(
+                df.loc[m, "team"], df.loc[m, "depth_rank"], own_share.loc[m])
+            divergence_down = (own_share.loc[m] - better_min).clip(lower=0.0)
+            divergence_up = (worse_max - own_share.loc[m]).clip(lower=0.0)
+            min_gap = volume_prior.DEPTH_RANK_MIN_INVERSION_GAP
+            divergence_down = divergence_down.where(divergence_down > min_gap, 0.0)
+            divergence_up = divergence_up.where(divergence_up > min_gap, 0.0)
+            saturation = volume_prior.DEPTH_RANK_INVERSION_SATURATION
+            inversion_boost = pd.concat([
+                (divergence_down / saturation).clip(upper=1.0),
+                (divergence_up / saturation).clip(upper=1.0),
+            ], axis=1).max(axis=1).fillna(0.0)
+
+            effective_floor = (
+                volume_prior.DEPTH_RANK_WEIGHT_FLOOR
+                + (volume_prior.DEPTH_RANK_MAX_WEIGHT_FLOOR - volume_prior.DEPTH_RANK_WEIGHT_FLOOR)
+                * inversion_boost
+            )
+            w_full = pd.Series(np.nan, index=df.index)
+            w_full.loc[m] = (
+                effective_floor + (1.0 - effective_floor) * base_component.loc[m]
+            ).clip(lower=0.0, upper=1.0)
+
+            w = w_full.loc[eligible]
             target_share = (1 - w) * own_share.loc[eligible] + w * rank_baseline.loc[eligible]
             ratio = (target_share / own_share.loc[eligible]).clip(lower=lo, upper=hi)
 

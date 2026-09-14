@@ -375,6 +375,42 @@ FLEX_ELIGIBLE_POSITIONS = {"RB", "WR", "TE"}
 # change the right starting point here. Will be re-evaluated in 11.1.
 OWNERSHIP_SOFTMAX_TEMPERATURE = 15.0
 
+# Session (this change) -- first REAL fit against real ownership data, not
+# just an unfit guess. Grid-searched per position group (T in [4..25])
+# against real DK contest %Drafted from the Week 1 2026 main and early
+# slates combined (499 matched real players across both), minimizing MAE
+# between real ownership and this module's own softmax-implied estimate.
+# RB got the clearest, most material win (T=11 vs the global 15: MAE 2.73
+# vs 2.88, ~5% better); QB/WR/TE only moved the optimum a little (14/17/17)
+# for a much smaller MAE gain. DST is deliberately NOT included here --
+# there are only 32 possible DST values and far fewer real rows per slate
+# to fit against, too thin a sample to trust a DST-specific number yet; it
+# keeps using OWNERSHIP_SOFTMAX_TEMPERATURE above.
+#
+# IMPORTANT CAVEAT, flagged same as every other unfit constant in this file:
+# this is fit against exactly TWO slates. That is enough to correct the
+# original guess in the right direction and by a defensible amount, but
+# nowhere near enough to trust a sharper fit (e.g. per-position-AND-per-
+# salary-tier) without risking overfitting to these two specific slates'
+# noise. Re-fit this dict again once more weeks of real contest ownership
+# data are available -- do not hand-tune it further from vibes alone.
+#
+# This fit ALSO does not fully close the "top chalk plays are under-owned"
+# gap documented from the same real data (e.g. a genuine ~47-50%-owned
+# workhorse RB still lands around 25-35% here even at RB's own better-
+# fit T=11) -- a single softmax temperature per position cannot
+# simultaneously match the extreme top of the ownership distribution and
+# the broad middle; closing that gap further needs a different mechanism
+# (e.g. an explicit top-of-slate boost, or additional real features), not
+# just a sharper single temperature, and shouldn't be attempted on two
+# slates' worth of data.
+OWNERSHIP_SOFTMAX_TEMPERATURE_BY_POSITION = {
+    "QB": 14.0,
+    "RB": 11.0,
+    "WR": 17.0,
+    "TE": 17.0,
+}
+
 
 # ---------------------------------------------------------------------------
 # Step 0: Load inputs
@@ -747,10 +783,22 @@ def compute_estimated_ownership(df: pd.DataFrame, site: str, group_col: str = No
     # Bye/no-real-game players (final_projection == 0) get an explicit 0
     # weight so their share of the group's budget is fully redistributed
     # to real players -- see module docstring decision #5.
+    #
+    # Session (this change) -- per-position temperature (see
+    # OWNERSHIP_SOFTMAX_TEMPERATURE_BY_POSITION's own comment for the real
+    # fit this came from) when `group_col` is the classic position_group
+    # (QB/RB/WR/TE/DST); Showdown's role-group grouping (CPT_MVP/FLEX) has
+    # no per-position real ownership fit behind it yet, so it keeps the
+    # single global constant unchanged.
+    if group_col == "position_group":
+        temperature = df[group_col].map(OWNERSHIP_SOFTMAX_TEMPERATURE_BY_POSITION) \
+                                    .fillna(OWNERSHIP_SOFTMAX_TEMPERATURE)
+    else:
+        temperature = OWNERSHIP_SOFTMAX_TEMPERATURE
     has_signal = df["final_projection"] > 0
     df["_weight"] = 0.0
     df.loc[has_signal, "_weight"] = np.exp(
-        df.loc[has_signal, "chalk_score"] / OWNERSHIP_SOFTMAX_TEMPERATURE
+        df.loc[has_signal, "chalk_score"] / temperature
     )
 
     group_weight_sum = df.groupby(group_col)["_weight"].transform("sum")

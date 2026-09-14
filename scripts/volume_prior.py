@@ -305,6 +305,59 @@ USAGE_PRIOR_RATIO_BOUNDS = (0.5, 1.75)  # safety clamp on how far one run's
                                         # rank-group median can't produce an
                                         # extreme swing in one week.
 
+# Session (this change), decision -- real backtesting against actual Week 1
+# 2026 DK contest results (5527+ entries, real %Drafted/FPTS) showed the
+# flat DEPTH_RANK_WEIGHT_FLOOR above correctly moved Kenny Gainwell's
+# (TB RB2) inflated receiving share in the right direction but too weakly
+# to flip his final_projection below Bucky Irving's (TB RB1) -- his own
+# share (23.3%) was ~3.5x the real league RB2 median. The obvious fix
+# ("raise the floor for any big divergence from the peer median") was
+# tested against the SAME real data and REJECTED: it also would have
+# suppressed Jahmyr Gibbs (DET, a real, legitimate 46-50%-owned workhorse
+# whose own share is elite specifically BECAUSE he's a genuine bell-cow,
+# not because of stale/cross-context history) toward the peer median just
+# as hard, which is exactly backwards -- his real chalk score confirms he
+# deserves to stay elite, not get regressed toward average.
+#
+# The distinguishing signal that separates the two cases: Gainwell's
+# situation is a REAL, WITHIN-TEAM inversion -- Irving (his own team's
+# confirmed #1 by depth chart) has a LOWER receiving share than Gainwell
+# (the #2). Gibbs has no such teammate outshare him on any component --
+# nobody on DET's real roster has a bigger rush or recv share than the
+# team's real #1. So: only boost the correction's weight when a team-
+# relative inversion like this is actually present (see
+# apply_depth_chart_usage_prior()'s own inversion-detection logic), never
+# from raw distance-from-league-median alone. This is deliberately a
+# NARROWER, more specific trigger than "big divergence" -- it fires only
+# on the exact real-world pattern (a worse-ranked teammate out-producing a
+# better-ranked one) the user described, not on every statistical outlier.
+#
+# All three constants below are, like every other constant in this
+# section, ARBITRARY STARTING POINTS -- first retuning targets once more
+# real contest weeks exist to fit them against, not fitted here.
+DEPTH_RANK_MAX_WEIGHT_FLOOR = 0.6   # the ceiling this boosted floor can
+                                    # reach for a fully-saturated inversion
+                                    # -- still leaves 40% weight on the
+                                    # player's own real data even at max,
+                                    # so a real inversion never gets
+                                    # entirely overridden by the peer
+                                    # median alone.
+DEPTH_RANK_INVERSION_SATURATION = 0.15  # a 15-percentage-point share gap
+                                        # between a team's better- and
+                                        # worse-ranked player fully
+                                        # saturates the boost -- Gainwell/
+                                        # Irving's real recv-share gap
+                                        # (23.3% vs 9.4%, a 13.9-point gap)
+                                        # sits just under this, so it's
+                                        # calibrated to treat that exact
+                                        # real case as a near-maximal,
+                                        # genuine inversion.
+DEPTH_RANK_MIN_INVERSION_GAP = 0.02  # below this gap, treat it as ordinary
+                                     # week-to-week noise, not a real
+                                     # inversion -- same guard-against-
+                                     # jitter role ROLE_CHANGE_MIN_
+                                     # DIVERGENCE plays for the price prior.
+
 # The component whose share defines a player's ROLE. A QB's role is how much
 # of the team's passing he does; a running back's is carries. Receiving is the
 # role signal for both pass-catching positions.
