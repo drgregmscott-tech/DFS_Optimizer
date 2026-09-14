@@ -1473,7 +1473,7 @@ FD's `required_columns` has been all along.
 
 ## Session 10.0 — Projection System Redesign (design) + Historical Data Bootstrap (build)
 **Date completed:** 2026-07-25
-**Status:** ⚠️ Complete with caveats — the *design* is settled and the *historical-data bootstrap* sub-phase is built and validated; the projection rewrite, backtest harness, and salary-anchor curve it enables are scoped but NOT yet built (see Handoff).
+**Status:** ✅ Complete — the caveat below ("projection rewrite, backtest harness, and salary-anchor curve NOT yet built") is stale, corrected 2026-09-14. All three were built in the immediately following sessions, same day and the next: the backtest harness (Session 10.1, ✅ Complete, right below this entry), the salary-anchor curve (Session 10.2), and the full stat-line projection rewrite (Sessions 10.3+), all long since shipped and live in production (`build_projections_statline.py` has been the production engine since Session 14.0). ROADMAP.md's own Session 10.0 card already said "✅ Complete" in its header the whole time — only this entry's own Status line was out of sync with that. Original caveat text preserved below for historical record.
 
 **What was actually built:**
 

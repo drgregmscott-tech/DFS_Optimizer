@@ -156,6 +156,8 @@
 ---
 
 ### Session 2.3 — Vegas Integration
+**Status:** ✅ Complete (2026-07-21) — never had a Status line here despite SESSION_LOG.md showing it fully validated the same day: real Odds API call succeeded, sum-to-total check passed on live data, both DK and FD confirmed present in the real per-bookmaker response. **Closed retroactively 2026-09-14**, no new work — see below. The one open design question from that session (the API returns every currently-listed upcoming game, not one slate's games) was resolved by the later `--week` → `--slate-id` rework (`vegas_odds.py`'s own decision #1) plus downstream disambiguation via the `opponent`/`commence_time` columns Session 2.3 itself added — not by adding date filtering, the option originally floated. This has been the live, unattended production path for every real weekly slate since (`refresh_data.yml`'s `vegas_odds.py --slate-id ...` step), including every real Week 1 2026 slate.
+
 **Prerequisites:** None (independent data source), but needs a team-name key consistent with Session 1.2's `recent_team` values.
 
 **Sites:** Site-agnostic — implied team totals don't depend on which DFS site you're building for, so this session's output is shared by both.
@@ -191,6 +193,8 @@
 ---
 
 ### Session 2.4 — Full Blend Pipeline
+**Status:** ✅ Complete, on its own terms — **closed retroactively 2026-09-14**. Like Session 2.3, this card never had a Status line despite its own validation goals being fully met: the "Known Deferred Validations" section below already records "Session 2.4's full real end-to-end validation, both sites ✅ RESOLVED (Session 14.1c, 2026-08-11)" and "team-drift in backtests ✅ RESOLVED (same-day addendum)" — this line just makes that visible on the card itself. Team defenses (flagged unprojected in this session's own log) were closed the very next session (3.1's `build_dst_projections()`). **Important scope note, not a caveat on this session's own work:** `build_projections.py`, this session's deliverable, is no longer the live production engine — Phase 10 replaced it with `build_projections_statline.py`, wired into production as of Session 14.0. `build_projections.py` is deliberately kept frozen as Phase 10's measurement baseline (`scoring_rules.py` decision #2), not maintained further. So "closing" this session means its own real-data validation bar was met, not that its code is still what runs today.
+
 **Prerequisites:** Sessions 2.1, 2.2, 2.3 all complete.
 
 **Sites:** Runs once per site (DK and FD), since it joins in each site's salary file and site-specific projection inputs from 2.1/2.2.
@@ -274,7 +278,7 @@
 ---
 
 ### Session 3.3 — Stacking Rules
-**Status:** ✅ Complete (code + synthetic-data validation, 2026-07-22; real-DK-data validation + a real bug fix same day via addendum) — see SESSION_LOG.md for full detail. **FD real-data validation still pending**, same pre-existing gap as everything else FD — see the "Known Deferred Validations" section below.
+**Status:** ✅ Complete, both sites — **FD closed 2026-08-11, this card updated 2026-09-14** (the status line below was stale, still saying "pending" after FD had already closed). Code + synthetic-data validation 2026-07-22; real-DK-data validation + a real bug fix same day via addendum; FD stacking confirmed live against the real Week 1 2026 slate (12 games/24 teams) in Session 14.1c — both a normal and a stacked build succeeded, user's explicit call that a 12-game slate is a good enough test of full-slate feasibility. See the "Known Deferred Validations" section below (now struck through for this item) and SESSION_LOG.md for full detail.
 
 **Prerequisites:** Session 3.2 complete.
 
@@ -412,7 +416,7 @@
 *Target: Aug 10-13, parallel with Phase 4*
 
 ### Session 5.1 — Injury/Active Status Pull
-**Status:** 🟡 Mechanism complete and validated on real data; one validation item intentionally deferred (see below) — same "can't fully validate until real data exists" pattern as the Vegas-lines and FD-salary gaps elsewhere in this roadmap. Not blocking — Session 5.2 has no dependency on the deferred item.
+**Status:** ✅ Complete — **closed 2026-09-10 (Ad Hoc Session A1), this card updated 2026-09-14** (still said 🟡 with the deferred item unresolved after A1 had already closed it). The one deferred validation (real OUT/DOUBTFUL game-day designations existing to check against at all) closed once a real regular-season week existed: a real pull on 2026-09-10 returned 60 OUT / 2 DOUBTFUL / 23 QUESTIONABLE / 521 ACTIVE across 606 matched players, spot-checked against ESPN's live endpoint (Patrick Mahomes, "Questionable," confirmed real), and `apply` was run against all 7 real committed Week 1 slate files with every OUT player's `final_projection` confirmed 0.0 on reload. See "Known Deferred Validations" below and SESSION_LOG.md's Ad Hoc Session A1 entries for full detail. (Not done, and not blocking: a literal line-by-line NFL.com diff — the A1 pull confirms the mechanism works against real designations, which is the substance of what this card asked for.)
 
 **Prerequisites:** Session 1.2 complete (need player_id matching scheme).
 
