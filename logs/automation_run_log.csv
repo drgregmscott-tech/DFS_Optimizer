@@ -1559,3 +1559,6 @@ timestamp_utc,trigger_type,site,step,status
 2026-09-14T23:01:23.494958+00:00,full_refresh_dispatch,dk,dk_showdown_wk1_Den_KC_14Sep2026,build_projections,success
 2026-09-14T23:01:23.494958+00:00,full_refresh_dispatch,dk,dk_showdown_wk1_Den_KC_14Sep2026,status_apply,failure
 2026-09-14T23:01:23.494958+00:00,full_refresh_dispatch,dk,dk_showdown_wk1_Den_KC_14Sep2026,pivot_finder,success
+2026-09-14T23:16:22.683996+00:00,full_refresh_dispatch,dk,dk_showdown_wk1_Den_KC_14Sep2026,build_projections,success
+2026-09-14T23:16:22.683996+00:00,full_refresh_dispatch,dk,dk_showdown_wk1_Den_KC_14Sep2026,status_apply,failure
+2026-09-14T23:16:22.683996+00:00,full_refresh_dispatch,dk,dk_showdown_wk1_Den_KC_14Sep2026,pivot_finder,success
