@@ -443,26 +443,6 @@ def build_statline_projections(site: str, season: int, week: int, slate_id: str,
             team_vol, vg, prior_art, teams=pool_teams,
             opp_rush_allowed=opp_rush_allowed)
 
-        # Session (this change) -- depth-chart usage-share prior. Deliberately
-        # BEFORE apply_volume_prior()'s price blend below: real usage share
-        # (this player's actual carries/targets share vs. what same-rank
-        # peers league-wide really get) is a more direct role signal than
-        # price, so it establishes a role-aware {comp}_mu baseline for the
-        # price prior to make a smaller correction on top of, rather than
-        # the two competing for the same value. Gated on the same flag as
-        # the confirmed-starter override below -- both trust the same real
-        # depth-chart data, so disabling one for testing should disable both.
-        if confirmed_starter_override:
-            depth_chart = statline_model.load_depth_chart()
-            df = statline_model.apply_depth_chart_usage_prior(df, team_vol, depth_chart)
-            # Manual, week-by-week-only escape hatch for real breaking news
-            # (e.g. a coach announcing a role change mid-week) the data
-            # can't reflect yet -- see load_manual_role_overrides()'s
-            # docstring. No-op unless data/manual_role_overrides_{season}_
-            # {week}.csv has been created/edited by hand for this week.
-            manual_overrides = statline_model.load_manual_role_overrides(season, week)
-            df = statline_model.apply_manual_role_overrides(df, team_vol, manual_overrides)
-
         # Session 15 -- AUDIT_COLUMNS. Captured BEFORE the fill below --
         # statline_model.apply_volume_prior() unconditionally fillna(0)s
         # both games_played and participation internally (it has to, for
@@ -501,9 +481,7 @@ def build_statline_projections(site: str, season: int, week: int, slate_id: str,
         # slates), so this checks a real depth chart instead of trying to
         # infer role from price.
         if confirmed_starter_override:
-            # depth_chart already loaded just above for
-            # apply_depth_chart_usage_prior() -- reused here rather than
-            # re-read from disk a second time.
+            depth_chart = statline_model.load_depth_chart()
             # Ad Hoc Session A4, decision #1 -- real in-week OUT news
             # (status_check.py pull, applied here BEFORE final_projections
             # exist, not just post-hoc zeroing after the fact) can now also
@@ -518,6 +496,31 @@ def build_statline_projections(site: str, season: int, week: int, slate_id: str,
                   f"player(s) restored from 0.0 participation to a "
                   f"confirmed #1 depth-chart role, {n_injury_flag} "
                   f"backup(s) boosted for a real in-week OUT starter.")
+
+            # Session (this change) -- depth-chart usage-share prior. Moved
+            # here (real bug found live) rather than before apply_volume_
+            # prior(): that function's own decision #15 role-change block
+            # unconditionally recomputes every {comp}_mu from {comp}_mu_raw
+            # * participation_effective for ALL rows (statline_model.py,
+            # apply_volume_prior(), ~line 1133-1137) -- not gated to the
+            # rows role_change_participation() actually flagged. Confirmed
+            # live by tracing Kenny Gainwell (TB RB2) through each stage:
+            # this prior correctly cut his recv_mu from 6.95 to 6.23 (ratio
+            # 0.897), but apply_volume_prior() immediately reset it straight
+            # back to 6.95, silently discarding the correction entirely.
+            # apply_confirmed_starter_override() does the equivalent recompute
+            # too, but ONLY for the specific rows it flags eligible -- so
+            # running this prior after BOTH (last, right before
+            # reconciliation) is the only position where nothing downstream
+            # can overwrite it.
+            df = statline_model.apply_depth_chart_usage_prior(df, team_vol, depth_chart)
+            # Manual, week-by-week-only escape hatch for real breaking news
+            # (e.g. a coach announcing a role change mid-week) the data
+            # can't reflect yet -- see load_manual_role_overrides()'s
+            # docstring. No-op unless data/manual_role_overrides_{season}_
+            # {week}.csv has been created/edited by hand for this week.
+            manual_overrides = statline_model.load_manual_role_overrides(season, week)
+            df = statline_model.apply_manual_role_overrides(df, team_vol, manual_overrides)
     else:
         # Session 15 -- AUDIT_COLUMNS never get computed without
         # --volume-prior (games_played/participation only exist as a
