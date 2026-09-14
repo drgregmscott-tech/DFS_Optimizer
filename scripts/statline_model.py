@@ -1709,12 +1709,44 @@ def _pool_share(comp, sub, hist_sub, tv, team, team_hist_col, team_recent_col,
 
 
 def reconcile_team_shares(pool: pd.DataFrame, team_vol: pd.DataFrame,
-                          fail_threshold: float = RECONCILE_FAIL_THRESHOLD) -> tuple:
+                          fail_threshold: float = RECONCILE_FAIL_THRESHOLD,
+                          full_usage: pd.DataFrame | None = None) -> tuple:
     """Rescale each team's pool volume to match (predicted team volume) x
     (the share of team volume these same players took historically).
 
     Returns (pool, report). Raises SystemExit if any team/component needs a
     rescale beyond `fail_threshold` -- the ROADMAP's mandatory fail-loud.
+
+    Session (this change) -- `full_usage`, new and optional. Real bug found
+    live: `_pool_share()`'s "recent"/"full_season" numerator (how much of
+    team X's own historical volume survives in today's pool) was computed
+    from `pool` itself -- which for a SUBSET slate (an "afternoon"-only or
+    "early"-only contest covering a handful of that week's real games) is
+    missing every player whose CURRENT team isn't one of those few games,
+    even when that player's HISTORY still legitimately belongs to a team
+    that IS in the slate. Confirmed real on the Week 1 2026 DK afternoon
+    slate: Michael Carter (hist_team=ARI, 42 of ARI's own recent 86 rush
+    attempts, current team=TEN) is absent from the afternoon slate's salary
+    file simply because TEN's game isn't in that window -- not because he
+    left the league. That silently dropped ARI's own measured "recent
+    share" from 73/86 (85%, the real number, seen correctly on the full
+    "main" slate which does include a TEN game) to 19/86 (22%), producing
+    an absurd, fail-loud-tripping team-implied target.
+
+    `full_usage` -- the ENTIRE league's real recency-weighted usage table
+    (statline_model.build_usage()'s own unfiltered output, computed once
+    per season/week from real box scores, before any slate-specific salary
+    merge -- see build_projections_statline.py) -- fixes this at the root:
+    it has every player who has actually recorded real production this
+    recency window, regardless of which teams happen to be bundled into
+    the CURRENT build's own slate. Grouping by hist_team against this
+    complete table means a traded/moved player's own history is credited
+    to his old team consistently, whether or not his new team's game
+    happens to be in this particular slate. `pool` is still what actually
+    gets rescaled/projected below -- only the SHARE numerator's source
+    changes. Backward-compatible: omitting `full_usage` falls back to the
+    prior (slate-scoped) behavior, so a caller that hasn't been updated
+    yet still runs, just with the original bug.
     """
     pool = pool.copy()
     tv = team_vol.set_index("team")
@@ -1727,9 +1759,24 @@ def reconcile_team_shares(pool: pd.DataFrame, team_vol: pd.DataFrame,
     # nothing to misattribute either way, and an older pool built before
     # this session's build_projections_statline.py change simply won't
     # have the column -- same graceful degradation, not a hard dependency).
-    hist_team_series = (pool["hist_team"] if "hist_team" in pool.columns
-                        else pool["team"]).fillna(pool["team"])
-    hist_groups = pool.groupby(hist_team_series).groups
+    #
+    # Session (this change) -- the grouping SOURCE is now `full_usage` when
+    # given (see docstring above), not the slate-scoped `pool`, so a
+    # subset slate's incomplete player list can't silently corrupt this
+    # calculation. `sub`/`raw_sum`/the actual rescale below still operate
+    # on `pool` -- only the share numerator's source table changes.
+    hist_source = full_usage if full_usage is not None and not full_usage.empty else pool
+    # `full_usage` (statline_model.build_usage()'s own raw output) only ever
+    # has `hist_team`, never a `team` column -- unlike `pool`, which has
+    # both. Only fall back to `team` when it actually exists (`pool`'s own
+    # case, where a merge can leave hist_team NaN for an unmatched row).
+    if "hist_team" in hist_source.columns:
+        hist_team_series = hist_source["hist_team"]
+        if "team" in hist_source.columns:
+            hist_team_series = hist_team_series.fillna(hist_source["team"])
+    else:
+        hist_team_series = hist_source["team"]
+    hist_groups = hist_source.groupby(hist_team_series).groups
 
     for (comp, mu_col, team_pred_col, team_hist_col, team_recent_col,
          hist_vol_col, recent_vol_col) in _RECONCILE_SPECS:
@@ -1743,7 +1790,10 @@ def reconcile_team_shares(pool: pd.DataFrame, team_vol: pd.DataFrame,
             if raw_sum <= 1e-9:
                 continue
             hist_idx = hist_groups.get(team, pd.Index([]))
-            hist_sub = pool.loc[hist_idx] if len(hist_idx) else sub
+            # `hist_idx` indexes into `hist_source` (== `pool` unless
+            # `full_usage` was given), NOT necessarily `pool` -- see the
+            # Session (this change) note above.
+            hist_sub = hist_source.loc[hist_idx] if len(hist_idx) else sub
             pool_share, share_basis = _pool_share(
                 comp, sub, hist_sub, tv, team, team_hist_col, team_recent_col,
                 hist_vol_col, recent_vol_col)

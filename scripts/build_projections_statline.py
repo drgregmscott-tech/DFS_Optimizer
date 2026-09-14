@@ -532,8 +532,14 @@ def build_statline_projections(site: str, season: int, week: int, slate_id: str,
 
     recon_pool = df[~df["no_real_game_this_week"]].copy()
     if not recon_pool.empty and not team_vol.empty:
+        # `usage` (built above, before any slate-specific salary merge) is
+        # the full league-wide reference passed as `full_usage` -- fixes a
+        # real bug where a subset slate (afternoon/early-only) silently
+        # dropped a traded player's own historical share numerator just
+        # because his CURRENT team's game wasn't in this particular slate.
+        # See reconcile_team_shares()'s docstring for the full "why".
         recon_pool, recon_report = statline_model.reconcile_team_shares(
-            recon_pool, team_vol, reconcile_threshold)
+            recon_pool, team_vol, reconcile_threshold, full_usage=usage)
         for col in ("recv_mu", "rush_mu", "pass_mu"):
             if col in recon_pool.columns:
                 df.loc[recon_pool.index, col] = recon_pool[col]
