@@ -4775,3 +4775,27 @@ Checked the split held across position (QB/RB/TE/WR) and site (DK/FD) breakdowns
 - [x] Decision explicitly recorded with the real numbers behind it, matching this project's standing bar for closing a checkpoint.
 
 ---
+
+### Week 2 Readiness Assessment — 2026-09-14
+
+**Status:** ✅ Complete — no blockers found for starting Week 2. Full Week 1 close-out sweep, triggered by the user asking whether anything still needed closing before Week 2's build (DK had already posted Week 2 main-slate contests).
+
+**What was checked:** re-read Session 9.1/9.2, Ad Hoc A2/A4/A5's current state, and the full "Known Deferred Validations" list for any item whose blocking condition ("once a real Week 1 slate exists/locks") is now satisfied but never marked closed.
+
+**Two more real closures found and made, with real evidence, not assumed:**
+1. **Session 6.1's near-lock automation checkbox** (open since Session 5.2, explicitly deferred at Session 14.1c pending a real lock window) — closed using `logs/automation_run_log.csv`: real `full_refresh_dispatch` events (the actual `repository_dispatch`/`near_lock_refresh` path — cron-job.org → Cloudflare Worker → GitHub Actions, not the separate native-cron `full_refresh_scheduled` path) fired and succeeded close to both real Week 1 lock windows on 2026-09-13 (three dispatches ahead of the 17:00 UTC main/early lock, one ahead of the 20:00 UTC afternoon lock). This also closed the matching, separately-tracked "Session 5.2's real weekly cron-job.org schedule + current_slate.json" entry in Known Deferred Validations — same underlying real-world event.
+2. **Session 7.3's Game Stack QB / multi-game stack pinning "full-size slate" gap, DK side** (FD had already closed via Session 14.1c; DK was still open, waiting on "a full 32-team real slate"). Checked the real DK Week 1 main slate directly: 24 teams, well beyond the 6-team Madden Sim pool this item worried about. Combined with Ad Hoc Session A3's real `se_gpp`/`mme_gpp` (`--stack-mode qb --bring-back`) click-through builds against that same slate — closed to the same real-slate-size bar FD was already held to.
+
+**Minor staleness fixed in passing:** Ad Hoc A5's own validation checklist still described `ownership_actual_log.csv` as having "zero rows" and A2 step 1 as not yet run — both true when originally written, both since resolved (1/4-6 real weeks now logged). Updated to reflect current progress without changing the actual (still open) blocking conclusion.
+
+**Real items confirmed still genuinely open, correctly reflecting reality, left unchanged:**
+- Session 9.2 (weight retuning) — 2/4 site-weeks logged, needs Week 2/3/4+ to open its gate.
+- Session 11.1 (ownership retuning) — 1/4-6 weeks (DK-only, permanently — FD ownership is unobservable).
+- Ad Hoc A4 (in-week injury role-change) — mechanism built, still waiting on a real in-week OUT case, none occurred in Week 1.
+- `backtest_harness.py`'s `backtest_week()` filename-keying bug (flagged Session 14.1c) — still unexercised, nothing this sweep did touches it. Flagged again as a landmine for whenever a lambda-sweep or historical backtest is next actually run, not resolved.
+
+**Files touched:** ROADMAP.md only (Session 6.1's card and note, two Known Deferred Validations entries, A5's checklist line). No code changed.
+
+**Conclusion:** nothing found that blocks starting Week 2's build. All identifiable Week 1 close-out/deferred-validation items with a real, checkable resolution have been closed; everything still open is either correctly data-gated (needs more weeks, not more code) or a known, non-blocking technical-debt flag for a future backtest session.
+
+---
