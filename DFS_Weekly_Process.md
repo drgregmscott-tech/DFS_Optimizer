@@ -453,6 +453,40 @@ Run `python scripts/log_ownership.py summary` any time to see what's been logged
 
 ---
 
+## Stage 7 — Log actual results (actual vs. projected)
+
+**Also a real, required weekly step, same reasoning as Stage 6.** `scripts/log_results.py` (Session 9.1) builds the dataset Session 9.2 needs to eventually retune projection blend weights — it does nothing unless you run it every week.
+
+Do this once real box scores are final for the slate — DK's and FD's own contest-results export already includes each player's actual site-scored fantasy points (DK's "Export to CSV" from a completed contest's results page has a `FPTS` column), so no separate box-score lookup is needed.
+
+1. **Build the raw results CSV.** Two columns: `player_name, actual_fpts` — one row per player, deduped (unlike Stage 6's ownership export, a site's raw export may list a player more than once across position/FLEX rows with the *same* FPTS value each time; keep one).
+
+2. **Run the logger:**
+
+```
+python scripts/log_results.py log --site dk --season 2026 --week 5 --slate-id classic_wk5 --slate-type regular_season --input data/results_raw_dk_2026_wk5.csv --source "DK contest results export 2026-10-12"
+```
+
+Use the SAME `--slate-id` as Stage 6 and the rest of the week (Step 2c) — it reads `output/final_projections_{site}_{slate_id}.csv` for the projection side of the comparison. Repeat once per site/slate.
+
+3. **Check the output.** Reports match rate, mean error, and a `DATA GATE:` line toward Session 9.2's 4-week minimum. Unmatched players go to `data/results_unmatched_{site}_{slate_id}.csv`.
+
+4. **Commit the result:**
+
+```
+git add data/projection_error_log.csv data/results_raw_dk_2026_wk5.csv
+```
+```
+git commit -m "Log actual results - DK wk5"
+```
+```
+git push
+```
+
+Run `python scripts/log_results.py summary` any time to see logged error by site/position without adding anything.
+
+---
+
 ## Quick reference — full command sequence
 
 Replace the values in braces with your own. Use the season/week table above to pick `{season}`/`{week}` correctly (`2025`/`23` for Week 1 of anything; the real current season/week for real Week 2+).

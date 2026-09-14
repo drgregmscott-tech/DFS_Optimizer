@@ -4615,3 +4615,34 @@ Greg explicitly asked me to push back on a third idea — a per-player *minimum*
 - If a future session in THIS repo touches player-pool filtering, exposure, or randomization logic, check decisions #48-55 first (same reasoning as Session 15.3's own handoff note about its ten fixes) — several of this session's pieces (the `base_override` composition, `validate_exposure_cap_feasibility()`'s new Showdown call site) interact with existing mechanisms rather than sitting beside them.
 
 ---
+
+### Session 9.1 — Actual-vs-Projected Logging (script built + first real run) — 2026-09-14
+
+**Status:** 🟡 In progress (see ROADMAP.md's Session 9.1 card). Script built and validated against real Week 1 data; only one of six real Week 1 classic slates logged so far.
+
+**Trigger:** Real Week 1 finished (2026-09-13). Greg supplied a real DK contest-results export (`dk_classic_wk1_main_final_results_13Sep2026.csv`, 15,854-entry single-entry GPP) with real post-game `FPTS` and `%Drafted` columns and asked for the roadmap's pending Week-1-gated action items to be reviewed and updated against it. Two independent items were gated on exactly this kind of file: Session 9.1 (this one) and Ad Hoc Session A2's ownership-logging step 1 (see that entry's own update in ROADMAP.md — no separate SESSION_LOG entry, same underlying data, `log_ownership.py` itself unchanged).
+
+**What was built:** `scripts/log_results.py`, mirroring `log_ownership.py`'s established pattern deliberately rather than inventing a new shape: same slate-id-keyed `build_reference()` off `final_projections_{site}_{slate_id}.csv`, same append-only + duplicate-detection design, same unmatched-players-written-not-dropped fail-loud behavior. Reuses `log_ownership.py`'s `_match_dst()` helper directly (imported) for defense name matching rather than re-implementing it a second time. Output: `data/projection_error_log.csv` (site, season, week, slate_id, slate_type, player_id, player_name, position, final_projection, actual_fpts, error, abs_error, source, logged_at).
+
+**Real input-shape finding:** DK's own contest-results CSV export is not a clean player table — it's the entry-standings table with a *separate* per-player ownership/points table appended in later columns of the same rows, and that per-player table itself has one row per (player, roster slot) for FLEX-eligible players (e.g. Bijan Robinson appears once tagged `RB` at 10.92% and again tagged `FLEX` at 1.72% — DK tracks ownership per drafted slot, not per player). `FPTS` is identical across a player's duplicate rows (a real stat outcome, unlike ownership, isn't slot-split), so results were deduped to one row per player while ownership rows were summed across duplicates before either logger ran. This shape wasn't previously documented anywhere in this repo.
+
+**First real run:** DK Classic Week 1 main slate. 307/312 real players matched (98.4%) into `data/projection_error_log.csv`; the 5 unmatched (Marquise "Hollywood" Brown, Josh Palmer, Nick Singleton, Matt Hibner, Scotty Miller) were confirmed — by direct lookup, not assumed — to be entirely absent from `final_projections_dk_dk_classic_wk1_main_13Sep2026.csv`, i.e. never in this slate's player pool, not a name-normalization bug. Same run separately fed `log_ownership.py` (307/312 matched, same 5 gaps) for Ad Hoc Session A2's own data gate.
+
+**Real first numbers** (DK, regular_season, n=307): mean error (actual − projection) +1.99, mean abs error 4.67. By position: QB +6.08 (n=28, largest signed miss, under-projected), RB +2.51, WR +1.86, TE +1.16, DST −1.30. Cross-checked against the standing "systematic high bias" backlog item (Session 13.5/14.0) — this week's sign is the *opposite* direction (actual ran higher than projected, not lower), a reassuring first read, not a confirmation: one slate, one site, one week.
+
+**Files created:** `scripts/log_results.py`, `data/projection_error_log.csv`, `data/results_raw_dk_2026_wk1.csv`, `data/results_unmatched_dk_dk_classic_wk1_main_13Sep2026.csv`. Also (Ad Hoc A2's data, same session): `data/ownership_raw_dk_2026_wk1.csv`, `data/ownership_actual_log.csv` (307 real rows), `data/ownership_unmatched_dk_dk_classic_wk1_main_13Sep2026.csv`.
+
+**Files modified:** `ROADMAP.md` (Session 8.1's post-game checkbox, Session 9.1's card, the "systematic high bias" backlog note, Ad Hoc A2's and A5's status), `DFS_Weekly_Process.md` (new Stage 7 — Log actual results, mirroring Stage 6's structure).
+
+**Validation:**
+- [x] `python3 -m py_compile scripts/log_results.py` clean.
+- [x] Real run against real Week 1 DK data, not synthetic — 98.4% match rate, unmatched players independently confirmed absent from the pool rather than assumed to be a bug.
+- [x] Duplicate-run guard confirmed by design (same pattern as `log_ownership.py`, not independently re-tested this session since the underlying code is shared/mirrored).
+- [ ] DK/FD rows computing different actuals for the same player (the PPR-gap check Session 9.1's original card asked for) — still open, no FD results file logged yet.
+- [ ] Spot-check of individual logged actuals against an independent box score source — not done; DK's own contest-results FPTS column was treated as ground truth (same trust level `log_ownership.py` already places in DK's contest-results ownership numbers), not cross-verified against e.g. nflverse box scores.
+
+**Known gaps, explicitly deferred, not oversights:**
+- Only DK's Week 1 *main* slate is logged (both scripts). DK early/afternoon and all three FD slates still need results/ownership files run through the same two scripts once available — Greg only supplied one file this session.
+- Session 9.2 (weight retuning) and Session 11.1 (ownership retuning) both remain blocked on their 4/4-6 week data gates — this session produced week 1 of those gates, nothing more.
+
+---
