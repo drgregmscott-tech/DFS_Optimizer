@@ -10,60 +10,12 @@
   },
   "slates": [
     {
-      "slate_id": "dk_classic_wk1_main_13Sep2026",
-      "site": "dk",
-      "format": "classic",
-      "season": 2025,
-      "week": 23,
-      "lock_time_utc": "2026-09-13T17:00:00Z"
-    },
-    {
       "slate_id": "dk_showdown_wk1_Den_KC_14Sep2026",
       "site": "dk",
       "format": "showdown",
       "season": 2025,
       "week": 23,
       "lock_time_utc": "2026-09-15T00:15:00Z"
-    },
-    {
-      "slate_id": "dk_classic_wk1_early_13Sep2026",
-      "site": "dk",
-      "format": "classic",
-      "season": 2025,
-      "week": 23,
-      "lock_time_utc": "2026-09-13T17:00:00Z"
-    },
-    {
-      "slate_id": "dk_classic_wk1_afternoon_13Sep2026",
-      "site": "dk",
-      "format": "classic",
-      "season": 2025,
-      "week": 23,
-      "lock_time_utc": "2026-09-13T20:00:00Z"
-    },
-    {
-      "slate_id": "fd_classic_wk1_main_13Sep2026",
-      "site": "fd",
-      "format": "classic",
-      "season": 2025,
-      "week": 23,
-      "lock_time_utc": "2026-09-13T17:00:00Z"
-    },
-    {
-      "slate_id": "fd_classic_wk1_early_13Sep2026",
-      "site": "fd",
-      "format": "classic",
-      "season": 2025,
-      "week": 23,
-      "lock_time_utc": "2026-09-13T17:00:00Z"
-    },
-    {
-      "slate_id": "fd_classic_wk1_afternoon_13Sep2026",
-      "site": "fd",
-      "format": "classic",
-      "season": 2025,
-      "week": 23,
-      "lock_time_utc": "2026-09-13T20:35:00Z"
     }
   ]
 }

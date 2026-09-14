@@ -4687,3 +4687,62 @@ Greg explicitly asked me to push back on a third idea — a per-player *minimum*
 - `by_slate`/`by_pos` groupby summaries in both scripts' `summary` subcommands were not updated to surface `slate_id` explicitly in `log_ownership.py`'s printout (it's in the CSV, just not broken out in that one summary table) — cosmetic, not blocking anything.
 
 ---
+
+### Ad Hoc Session A1 (retroactive write-up) — Injury/Active-Status Pipeline Emergency Fix — 2026-09-14
+
+**Status:** ✅ Complete. The work itself happened and was fully described in ROADMAP.md's Ad Hoc Session A1 card on 2026-09-10; this is the missing SESSION_LOG.md entry that card's own validation checklist called for ("Root cause of the Sep-3 CI gap documented in SESSION_LOG.md") and that never got written at the time. No new investigation happened in this entry — it's a faithful transcription of what ROADMAP.md already recorded, added so the standing checkbox has something to point at and future sessions don't have to reconstruct this from the roadmap card alone.
+
+**What was actually found and fixed (2026-09-10):** two real, independently-confirmed problems surfaced during the pre-Week-1 readiness review:
+
+1. **The real root cause — a shell-quoting bug in `refresh_data.yml`, not ESPN, not rate-limiting.** The `team_stats` and `status_pull` steps each built a `python3 -c "..."` command as a double-quoted shell string, then spliced `${{ needs.prepare.outputs.season_week_pairs }}` — literal JSON containing `"` characters, e.g. `[{"season": 2025, "week": 23}]` — directly into it. The first `"` inside that JSON closed the outer shell quote early, so the rest spilled out as mangled/unquoted tokens; `json.loads` then failed with `Expecting property name enclosed in double quotes: line 1 column 3`. This failed before any HTTP request was ever made — every CI run, 100% of the time, since `season_week_pairs` was introduced in Session 16.x's multi-slate rework — which is why it worked locally (the script was always called directly there, never through this shell wrapper) and why a direct hit against the real ESPN endpoint during the review looked fine. `continue-on-error: true` plus an inner `|| echo "::warning::..."` swallowed the failure completely, so the job kept showing green while quietly producing nothing. No `gh` CLI/token was available in-session to pull the Actions log directly — Greg supplied it manually so the real failure could be read.
+2. **A separate, real `STATUS_MAP` gap**, found independently during the same review: ESPN returns a raw status string `"Suspension"` that wasn't in `scripts/status_check.py`'s `STATUS_MAP`, tripping its fail-loud exit whenever a suspended player appeared on a pulled roster. Present since at least 2026-08-19. Does not fully explain finding #1's exact Sep-3 cutoff on its own, but is a confirmed, independent bug regardless of #1.
+
+**Fix applied:** both `refresh_data.yml` steps now pass `season_week_pairs` through an `env:` var (`SEASON_WEEK_PAIRS`) and read it via `os.environ[...]` inside the Python one-liner, sidestepping the quoting collision entirely rather than trying to escape it. `STATUS_MAP` gained `"suspension": "OUT"`.
+
+**Files touched:** `scripts/status_check.py` (`STATUS_MAP` gap), `.github/workflows/refresh_data.yml` (the actual root cause).
+
+**Validation** (see ROADMAP.md's A1 card for the full checklist, unchanged by this write-up):
+- [x] Local `status_check.py pull --season 2025 --week 23` succeeds post-fix — 606/771 matched (78.6%), OUT 60 / DOUBTFUL 2 / QUESTIONABLE 23 / ACTIVE 521.
+- [x] `"Suspension"` no longer trips the fail-loud exit.
+- [x] A real OUT player confirmed zeroed in `final_projections_{site}_{slate_id}.csv` after `apply`, run against all 7 real committed Week 1 slate files; real QUESTIONABLE/DOUBTFUL players spot-checked as flagged-not-zeroed. This closed the long-standing Session 5.1 deferred validation (real OUT/DOUBTFUL cross-checked against a real game-day designation).
+- [x] **This entry** — closes the one remaining open item on A1's own checklist (root cause documented in SESSION_LOG.md).
+
+**Handoff note:** CI-side success of the workflow fix itself was validated by the next real scheduled/dispatched Actions runs succeeding (visible in `logs/automation_run_log.csv`'s entries from 2026-09-13 onward, all `success`) — not independently re-verified line-by-line in this write-up, since that evidence already exists and this entry's only job was closing the documentation gap.
+
+---
+
+### Week 1 housekeeping — current_slate.json cleanup — 2026-09-14
+
+**Status:** ✅ Complete.
+
+**What was done:** removed the six real Week 1 classic slate entries (DK/FD × main/early/afternoon, all locked 2026-09-13) from `data/current_slate.json`'s `slates` list, now that Week 1 is complete — per that file's own documented convention ("Remove an entry once you're done playing that slate for the week"). Left the real DK Showdown DEN@KC Monday-night entry (`dk_showdown_wk1_Den_KC_14Sep2026`, locking 2026-09-15) untouched — that's Greg's own separate in-progress work for the still-upcoming Monday slate, not something this session added or should touch. Validated the edited file parses as valid JSON before committing.
+
+**Why now, not left alone:** the file's own comment says a stale entry is "harmless, just wasted refresh time until you clean it up" — not urgent, but flagged as a punch-list item in the prior turn and Greg asked for it to be handled.
+
+---
+
+### QB Bonus-Integration Investigation — 2026-09-14
+
+**Status:** ✅ Complete — investigated to a real, evidenced conclusion. No code change resulted; the mechanism under suspicion was confirmed correct, and the actual driver traced to real market (Vegas) variance for this specific week, not a defect. Logged in full per this project's own convention of recording investigations that don't result in a fix (see Session 15.2b's "correctly rejected" Part 2 for the precedent) rather than only logging changes.
+
+**Trigger:** flagged in the prior turn's status report — DK's QB position showed the largest signed projection error of any position (+5.80 to +6.08 mean, depending on slate) across all three real DK Week 1 classic slates, while FD's QB error was much smaller (+0.83 to +1.02 same slates). The working hypothesis going in: DK's three yardage bonuses (+3 at 300 pass/100 rush/100 receiving yards) are step functions, and `scoring_rules.py`'s own decision #3 explicitly warns `E[f(X)] != f(E[X])` for a step function — i.e. scoring a MEAN stat line instead of averaging per-simulation-draw scores would systematically under-credit bonus-eligible players. Since FD has no such bonuses, a real bug here would show up exactly as observed: DK-specific, QB-concentrated (QBs have the highest per-game bonus-eligible-yardage share of any position) excess error.
+
+**Step 1 — checked whether the suspected mechanism is actually broken.** Read `statline_model.py`'s `simulate()` (the Monte Carlo engine) end to end: for every player, `draws` (a dict of `n_sims`-length arrays, one per real stat component) is built first, and `scoring_rules.score_statline(draws, site)` is called ONCE on the full array of draws — i.e. it scores every individual simulated game (bonus included, correctly, since `score_statline()` is vectorized per-row) and `statline_mean = pts.mean()` averages the resulting REAL per-draw dollar-for-dollar scores, never scoring a mean stat line directly. This is exactly the pattern decision #3 requires. **The suspected mechanism is not broken.** Confirmed `build_projections_statline.py` also calls `statline_model.simulate()` once per `--site` invocation (not derived from the other site's output), so DK and FD each get their own independently-simulated, independently-scored projection — ruling out any converted-from-the-other-site shortcut too.
+
+**Step 2 — confirmed the real pattern with real data, not just theory.** Joined `data/projection_error_log.csv`'s DK main-slate QB rows against real Week 1 `weekly_stats_2026.parquet` and flagged each real QB who actually crossed 300 real passing yards or 100 real rushing yards that game (5 of 28). Result: those 5 averaged **+18.38** error; the other 23 averaged **+3.41**. A large, real, concentrated gap — but the next check is what actually explains it.
+
+**Step 3 — the decisive check: does the SAME set of players show a large gap on FD too, despite FD paying no bonus at all?** Re-ran the identical join against FD's real main-slate QB rows. The FD bonus-eligible group ALSO averaged a large error, **+16.12** — nearly as large as DK's +18.38, on a site with zero bonus mechanism. This is the finding that overturns the original hypothesis: if DK's bonus-integration were broken, FD (no bonus at all) should show ~0 excess error for the same players. It doesn't. The ~+2.3 gap between DK's and FD's bonus-group error (18.38 − 16.12) is consistent with DK's real, correctly-modeled +3 bonus itself (not every bonus-hit player cleared both thresholds, so the average per-player bonus received is somewhat under +3) — i.e. the SHARED underlying miss (both sites, same players, same real games) is the dominant effect, and DK's bonus mechanism is doing exactly what it should on top of it, not malfunctioning.
+
+**Step 4 — traced the shared miss one level further, to real market data, and stopped there (a defensible boundary, not abandoned early).** Spot-checked Josh Allen (the single largest DK error, +24.74) directly against `statline_model.build_usage()`'s own real historical inputs: his real 2025-season recency-weighted pass-attempt rate (27.8/game) and yards-per-attempt (7.91) both looked like reasonable, correctly-computed reflections of his own real recent history — no defect found at that layer. The gap opens further downstream: his final `proj_pass_att` (25.4) and `proj_pass_yd` (161.0) together imply an effective ~6.3 realized yards/attempt in the final projection, well under his own measured 7.91 recency-weighted rate — meaning a later blending stage (Vegas-total anchoring / `apply_volume_prior`'s price-implied share) pulls the number down from his own recent-history baseline. Checked WHY: Buffalo's real, pre-game Vegas-implied team total for that game was 22.81 (Green Bay 22.22, Jacksonville 24.42, Baltimore 25.56 — the other bonus-hit QBs' teams show the same pattern) — genuinely modest real market numbers, not a computed/derived value this pipeline got wrong. Several of these specific real teams significantly outscored their own real pregame lines this particular week. **Stopped here deliberately:** distinguishing "the model over-weights a modest Vegas number more than it should, structurally" from "Vegas itself missed several real lines this specific week, which any model tied to those lines would also miss" needs more than one week / 5 players to separate from noise — going further on a sample this small would be chasing an artifact, not a finding.
+
+**Files touched:** none. Investigation only, no code changed — the mechanism was confirmed to already be built correctly (Step 1), and the residual pattern (Steps 2-4) traced to real market data rather than a fixable defect at the layer this session could reach with confidence.
+
+**Validation:**
+- [x] Read `statline_model.py`'s `simulate()` end-to-end and confirmed `score_statline()` is called per-draw, matching `scoring_rules.py` decision #3's requirement.
+- [x] Confirmed via `build_projections_statline.py` that DK and FD are simulated independently (each its own `statline_model.simulate()` call), ruling out any DK-derived-from-FD-or-vice-versa shortcut.
+- [x] Real join against real Week 1 nflverse stats, both sites, confirming the bonus-hit-vs-not error gap is real and large.
+- [x] The decisive cross-site check (same players, FD's own real error) run and reported, not assumed.
+- [x] Josh Allen's real recency-weighted volume/efficiency inputs spot-checked directly against `build_usage()`'s actual output, confirming that specific layer isn't the defect.
+- [ ] Not done, and flagged as the reason this stops here: separating "real Vegas-total misses this week" from "the volume-prior blend structurally over-weights modest Vegas numbers" — needs several more real weeks of `projection_error_log.csv` data, splitting by bonus-hit vs. not, to tell apart from noise. Revisit this specific split (not a general re-open of the investigation) once more weeks are logged.
+
+---
