@@ -678,6 +678,7 @@
   .slate-freshness.fresh { color: var(--good); }
   .slate-freshness.aging { color: var(--amber); }
   .slate-freshness.stale { color: var(--bad); }
+  .slate-freshness.definitive { font-weight: 600; }
 
   .pull-latest-btn {
     background: transparent;
@@ -2462,6 +2463,7 @@ in this browser's localStorage.</p>
     applySlatePayload(site, kind, file.name, payload);
     persistSlate(site, slateId, label, kind, file.name, payload, week, uploadedAt);
     updateFreshnessBadge(uploadedAt);
+    if (kind === "pool") checkDefinitiveFreshness(site, slateId, uploadedAt);
 
     var localMsg = label + " — " + rows.length + (kind === "pool" ? " players (player pool)" : " rows (built lineup)");
     setSlateStatus(localMsg, true);
@@ -2515,6 +2517,45 @@ in this browser's localStorage.</p>
     el.textContent = label + ageText;
     el.className = "slate-freshness " + level;
     el.title = "Captured " + new Date(savedAtIso).toLocaleString() + " — click \"Pull Latest Projections\" to refresh.";
+  }
+
+  // Asks the Worker's check_freshness action what GitHub's latest committed
+  // final_projections file for this site/slateId actually is, and compares
+  // that against savedAtIso (when the CURRENTLY LOADED payload was
+  // captured) to give a definitive verdict instead of updateFreshnessBadge's
+  // elapsed-time guess above. Only overwrites the badge once the live
+  // answer comes back -- if the check can't run at all (no cloud configured,
+  // no savedAt to compare, or the network call itself fails), the
+  // elapsed-time badge already shown stands as the fallback rather than
+  // claiming a certainty this couldn't actually confirm.
+  function checkDefinitiveFreshness(site, slateId, savedAtIso) {
+    var el = document.getElementById("slateFreshness");
+    if (!el || !cloudConfigured() || !savedAtIso) return;
+    var localTs = new Date(savedAtIso).getTime();
+    if (isNaN(localTs)) return;
+    fetch(workerUrl("check_freshness", { site: site, slate_id: slateId }), { cache: "no-store" })
+      .then(function (r) { return r.json(); })
+      .then(function (data) {
+        // No automated file committed for this slate at all -- nothing to
+        // compare against, so leave the elapsed-time badge as-is rather
+        // than asserting either verdict.
+        if (data.error || !data.found || !data.updatedAt) return;
+        var liveTs = new Date(data.updatedAt).getTime();
+        if (isNaN(liveTs)) return;
+        // 5s slack for clock skew / commit-timing rounding, not a real
+        // staleness allowance.
+        if (liveTs > localTs + 5000) {
+          el.textContent = "⚠ OUTDATED — newer projections are on GitHub. Click \"Pull Latest Projections\" to refresh.";
+          el.className = "slate-freshness stale definitive";
+          el.title = "Latest automated file was updated " + new Date(data.updatedAt).toLocaleString() +
+            ", after this slate was captured (" + new Date(savedAtIso).toLocaleString() + ").";
+        } else {
+          el.textContent = "✓ UP TO DATE — matches the latest automated projections.";
+          el.className = "slate-freshness fresh definitive";
+          el.title = "Confirmed against GitHub just now. Latest automated file: " + new Date(data.updatedAt).toLocaleString() + ".";
+        }
+      })
+      .catch(function () { /* leave the elapsed-time badge shown -- no network verdict available */ });
   }
 
   // Renders the <select> from the merged local+cloud index.
@@ -2588,6 +2629,7 @@ in this browser's localStorage.</p>
       else if (source === "local") setSlateStatus((filename || slateId) + " — loaded from local storage", true);
       else setSlateStatus(noSlateMessage(), false);
       updateFreshnessBadge(savedAt);
+      checkDefinitiveFreshness(site, slateId, savedAt);
       updateDeleteBtnState();
       render();
       renderPlayerList();
@@ -2644,6 +2686,14 @@ in this browser's localStorage.</p>
         applySlatePayload(site, "pool", filename, payload);
         persistSlate(site, slateId, label, "pool", filename, payload, "1", updatedAt);
         updateFreshnessBadge(updatedAt);
+        // Just fetched this exact file straight from GitHub -- no need for
+        // a second check_freshness round trip to know it's current.
+        var freshEl = document.getElementById("slateFreshness");
+        if (freshEl) {
+          freshEl.textContent = "✓ UP TO DATE — matches the latest automated projections.";
+          freshEl.className = "slate-freshness fresh definitive";
+          freshEl.title = "Pulled directly from GitHub just now. Latest automated file: " + new Date(updatedAt).toLocaleString() + ".";
+        }
         setSlateStatus(filename + " — " + rows.length + " players (pulled live from GitHub)", true);
         render();
         renderPlayerList();
@@ -3040,6 +3090,7 @@ in this browser's localStorage.</p>
           setSlateStatus(noSlateMessage());
         }
         updateFreshnessBadge(savedAt);
+        checkDefinitiveFreshness(site, slateId, savedAt);
         render();
         renderPlayerList();
         renderSlateOverview();
@@ -4664,6 +4715,7 @@ in this browser's localStorage.</p>
           setSlateStatus(noSlateMessage());
         }
         updateFreshnessBadge(savedAt);
+        checkDefinitiveFreshness(site, slateId, savedAt);
         updateDeleteBtnState();
         renderPlayerList();
         renderSlateOverview();
@@ -4708,6 +4760,7 @@ in this browser's localStorage.</p>
             setSlateStatus(noSlateMessage());
           }
           updateFreshnessBadge(savedAt2);
+          checkDefinitiveFreshness(s2, sid2, savedAt2);
           updateDeleteBtnState();
           renderPlayerList();
           renderSlateOverview();

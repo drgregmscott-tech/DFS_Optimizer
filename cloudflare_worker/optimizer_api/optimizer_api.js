@@ -139,6 +139,16 @@
  *   the missing piece that previously made the X button re-appear after
  *   cloud list_slates re-rendered the chip list.
  *
+ * GET /?action=check_freshness&token=<WORKER_AUTH_TOKEN>&site=dk&slate_id=classic_wk3
+ *   -> 200 { "found": true, "updatedAt": "<ISO date>" }
+ *   -> 200 { "found": false, "updatedAt": null }   (no automated file committed for this slate yet)
+ *   Ad Hoc addition -- a cheap metadata-only sibling of pull_latest_projections
+ *   below: same commits-API lookup for output/final_projections_{site}_
+ *   {slateId}.csv, but never fetches/decodes the CSV body itself. Lets the
+ *   frontend definitively answer "is what's on screen the latest data?" by
+ *   comparing this against the loaded slate's own savedAt, without paying
+ *   for a full pull just to check.
+ *
  * GET /?action=pull_latest_projections&token=<WORKER_AUTH_TOKEN>&site=dk&slate_id=classic_wk3
  *   -> 200 { "found": true, "csv": "<raw csv text>", "filename": "...", "updatedAt": "<ISO date or null>" }
  *   -> 200 { "found": false }
@@ -497,6 +507,26 @@ async function handleLoadPivots(url, env) {
   }
 }
 
+// Ad Hoc addition -- see this action's docstring above. Metadata-only
+// sibling of handlePullLatestProjections below, deliberately never calls
+// fetchRepoFile (which downloads + base64-decodes the whole CSV) -- just
+// the commits-API timestamp, so the frontend can check freshness on every
+// slate load without the cost of a full pull each time.
+async function handleCheckFreshness(url, env) {
+  const site = url.searchParams.get("site");
+  const slateId = url.searchParams.get("slate_id");
+  if (!validSite(site) || !validSlateId(slateId)) {
+    return json({ error: "site must be dk/fd and slate_id must be 1-64 alphanumeric/hyphen/underscore chars." }, 400);
+  }
+  const path = `output/final_projections_${site}_${slateId}.csv`;
+  try {
+    const updatedAt = await fetchRepoFileLastCommitDate(env, path);
+    return json({ found: updatedAt !== null, updatedAt });
+  } catch (err) {
+    return json({ error: `Freshness check failed: ${err.message}` }, 502);
+  }
+}
+
 // Ad Hoc addition -- see this action's docstring above for why it exists
 // as a separate always-live read rather than a variant of handleLoadSlate.
 async function handlePullLatestProjections(url, env) {
@@ -674,12 +704,13 @@ export default {
     // for why this is a separate action rather than a special case of
     // load_slate above.
     if (action === "load_pivots") return handleLoadPivots(url, env);
+    if (action === "check_freshness") return handleCheckFreshness(url, env);
     if (action === "pull_latest_projections") return handlePullLatestProjections(url, env);
     if (action === "list_slates") return handleListSlates(env);
     if (action === "delete_slate") return handleDeleteSlate(url, env);
     if (action === "get_presets") return handleGetPresets(env);
     if (action === "save_presets") return handleSavePresets(request, env);
     if (action === "ping") return json({ ok: true }); // deliberately no GitHub call -- see docstring
-    return json({ error: "action must be 'dispatch', 'poll', 'save_slate', 'load_slate', 'load_pivots', 'pull_latest_projections', 'list_slates', 'delete_slate', 'get_presets', 'save_presets', or 'ping'." }, 400);
+    return json({ error: "action must be 'dispatch', 'poll', 'save_slate', 'load_slate', 'load_pivots', 'check_freshness', 'pull_latest_projections', 'list_slates', 'delete_slate', 'get_presets', 'save_presets', or 'ping'." }, 400);
   },
 };
