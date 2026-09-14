@@ -693,7 +693,7 @@ By far the largest session in this project -- see SESSION_LOG.md's Session 7.3 e
 
 **Validation:**
 - [x] Full pipeline runs unattended through lock, per site being launched — both DK and FD ran live for real Week 1 (2026-09-13, all 6 classic slates in `current_slate.json`: DK/FD main/early/afternoon), separately confirmed via Ad Hoc Session A3's real click-through builds on both sites the same week.
-- [x] **Post-game: actual results vs projections logged — DK classic Week 1 main slate (2026-09-14).** Real DK contest results export (`dk_classic_wk1_main_final_results_13Sep2026.csv`, 15,854-entry single-entry GPP) run through the new `scripts/log_results.py` (built this session for Session 9.1 below) — 307/312 real players matched (98.4%) and appended to `data/projection_error_log.csv`. First real data point for Phase 9. **Still open:** DK's early/afternoon slates and all of FD (main/early/afternoon) — no results files provided for those yet; log them the same way once available.
+- [x] **Post-game: actual results vs projections logged, all six real Week 1 classic slates, both sites (2026-09-14).** DK's three slates (main/early/afternoon) logged directly from real DK contest-results exports via the new `scripts/log_results.py`. FD's three slates logged via a second new script, `scripts/derive_actual_results.py`, which computes FD's real points directly from real nflverse box-score stats (FD publishes no copyable results page at all) — see the "FD post-lock results/ownership" entry in Known Deferred Validations above for the full reasoning and cross-check. First real data points for Phase 9, both sites. **Ownership:** DK logged for all three slates too (see Ad Hoc A2 below); FD ownership remains genuinely unobservable and is not logged, by design, not by omission.
 
 ---
 
@@ -701,7 +701,7 @@ By far the largest session in this project -- see SESSION_LOG.md's Session 7.3 e
 *Ongoing, starts Regular Season Week 2+*
 
 ### Session 9.1 — Actual-vs-Projected Logging
-**Status:** 🟡 Script built and run once, real regular-season data now flowing — same "1 real week isn't a validated fit, it's the first data point" status as Session 9.3/Ad Hoc A2 had after their own first run. See below.
+**Status:** 🟡 Both scripts built, all six real Week 1 classic slates logged (both sites) — same "1 real week isn't a validated fit, it's the first data point" status Session 9.3/Ad Hoc A2 had after their own first run, now doubled to 2 site-weeks toward Session 9.2's 4-week gate (DK and FD each count separately — see that card).
 
 **Prerequisites:** Session 8.1 complete. ✅ (Ad Hoc Sessions A1/A3, 2026-09-10/11 — see Session 8.1's card above.)
 
@@ -709,18 +709,21 @@ By far the largest session in this project -- see SESSION_LOG.md's Session 7.3 e
 
 **Files touched (created):**
 - `/dfs_optimizer/scripts/log_results.py` ✅ built 2026-09-14, mirroring `log_ownership.py`'s established slate-id-keyed reference/append/duplicate-detection/unmatched-log pattern (Session 9.3).
+- `/dfs_optimizer/scripts/derive_actual_results.py` ✅ built 2026-09-14 — a companion script for FD, which unlike DK does not publish a copyable post-lock results page. Computes real actual fantasy points directly from real nflverse box-score stats using `scoring_rules.py`'s already-measured-exact site scoring tables (Session 10.3a/10.4) — an independent real computation, NOT a conversion or estimate from DK's numbers. See the "FD post-lock results/ownership" entry in Known Deferred Validations for the full reasoning and its cross-check against DK's real export.
 - `/dfs_optimizer/data/projection_error_log.csv` ✅ created 2026-09-14 (columns: `site`, `season`, `week`, `slate_id`, `slate_type`, `player_id`, `player_name`, `position`, `final_projection`, `actual_fpts`, `error`, `abs_error`, `source`, `logged_at`)
 
 **Build:** ✅ `log_results.py log`/`summary` subcommands, matching `log_ownership.py`'s CLI shape. Reuses `log_ownership.py`'s `_match_dst()` helper for defense matching rather than re-implementing it.
 
-**First real run (2026-09-14):** DK Classic Week 1 main slate (`dk_classic_wk1_main_13Sep2026`), built from the real DK contest-results export (`dk_classic_wk1_main_final_results_13Sep2026.csv`, 15,854-entry single-entry GPP). 307/312 real players matched (98.4%) — the 5 unmatched (Marquise "Hollywood" Brown, Josh Palmer, Nick Singleton, Matt Hibner, Scotty Miller) aren't a name-mismatch bug: none of the 5 appear anywhere in `final_projections_dk_dk_classic_wk1_main_13Sep2026.csv` at all (confirmed by direct lookup), i.e. they weren't in this slate's player pool to begin with, consistent with each owning under 0.25% real ownership. Logged to `data/ownership_unmatched_dk_dk_classic_wk1_main_13Sep2026.csv`-style file (`results_unmatched_...csv`) rather than silently dropped.
+**Real runs (2026-09-14), all six Week 1 classic slates:**
+- DK main/early/afternoon, built from real DK contest-results exports. Match rates 98.4%/99.0%/99.0% — every unmatched player (Marquise "Hollywood" Brown, Josh Palmer, Nick Singleton, Matt Hibner, Scotty Miller) confirmed by direct lookup to be absent from that slate's own `final_projections` pool entirely, not a name-mismatch bug.
+- FD main/early/afternoon, built via `derive_actual_results.py` from real nflverse Week 1 stats. 100% match (683/683, 467/467, 233/233) since player names are copied verbatim from each slate's own reference file rather than fuzzy-matched from a second raw source.
 
-**Real first-week numbers** (`log_results.py summary`, DK, regular_season, n=307): mean error (actual − projection) +1.99, mean abs error 4.67. By position: QB +6.08 (n=28), RB +2.51 (n=67), WR +1.86 (n=125), TE +1.16 (n=63), DST −1.30 (n=24). Notable: QB is the position with the largest signed error, and it's in the **under**-projection direction — the opposite sign from the backlog item below ("systematic high bias"), which is a mildly reassuring first read on that fix, not a confirmation (one week, one site, one slate).
+**Real first-week numbers** (`log_results.py summary`, regular_season): DK mean error (actual − projection) +1.43 to +2.05 across the 3 slates, mean abs error ~4.7-4.9. FD mean error +0.17 to +0.30, mean abs error ~2.4 (smaller in both directions than DK, consistent with half-PPR's naturally smaller point scale, not a red flag). By position (DK / FD): QB +5.80 / +0.83, RB +2.20 / +0.53, WR +1.85 / +0.29, TE +1.15 / −0.11, DST −1.29 / −1.42. QB remains the largest signed miss on DK, still in the **under**-projection direction — opposite sign from the backlog item below ("systematic high bias"), a mildly reassuring first read, not a confirmation (one real week).
 
 **Validation:**
-- [x] Confirm logged actuals match real box scores for a spot-check sample — DK's own contest-results export is itself the box-score-derived FPTS column (not a secondary source to cross-check against); treated as ground truth per DK's scoring rules, same trust level `log_ownership.py` places in DK's own contest-results ownership numbers.
-- [ ] **DK/FD rows compute different fantasy-point actuals for the same player where expected (PPR gap) — still open.** No FD Week 1 results file has been logged yet (only DK's main slate has run through this script so far). Close this once an FD results export for the same week is available and logged.
-- [ ] DK's own early/afternoon Week 1 slates not yet logged (only `main` has a results file so far).
+- [x] Confirm logged actuals match real box scores for a spot-check sample — DK's contest-results FPTS column and FD's nflverse-derived points are both grounded directly in real official stats, not a secondary estimate.
+- [x] **DK/FD rows compute different fantasy-point actuals for the same player where expected (PPR gap).** Directly confirmed: real Week 1 main-slate Jahmyr Gibbs logs `actual_fpts=37.6` on DK vs `31.1` on FD — same real game, correctly different site scoring, not accidentally logged as equal.
+- [x] All six Week 1 classic slates logged, both sites (previously only DK's main slate had run).
 
 ---
 
@@ -809,7 +812,7 @@ weighting, no price-implied volume prior, and stacks two market
 multipliers (`matchup_factor` x `vegas_factor`) directly on a naive
 season/recent-form average.
 
-**First real Session 9.1 data point (2026-09-14):** DK Classic Week 1 main slate shows mean error (actual − projection) of **+1.99** across 307 players — i.e. actual results ran slightly *higher* than projected on average, the opposite sign from the original "systematic high bias" complaint. Consistent with, not proof of, the fix holding: one slate, one site, one week. See Session 9.1's card above for the full position breakdown and caveats.
+**First real Session 9.1 data points (2026-09-14):** all six real Week 1 classic slates (DK and FD, main/early/afternoon) show mean error (actual − projection) between **+0.17 and +2.05** — i.e. actual results ran at or slightly *higher* than projected on average across every slate on both sites, the opposite sign from the original "systematic high bias" complaint. Consistent with, not proof of, the fix holding: one real week. See Session 9.1's card above for the full position breakdown and caveats.
 
 ---
 
@@ -1152,6 +1155,7 @@ These are all instances of the same underlying problem: several data sources (Th
 
 - **Session 15's participation floor has not been independently re-validated against one specific real violation post-fix, unlike Session 15's own pivot fixes (B1/B2), which were.** Resting on the user's own real-build confirmation ("not seeing any flags... i think we're good") rather than a traced example the way Daniel Jones/Riley Leonard was traced pre-fix. **First point this closes for real:** if a backup-shaped player ever reappears in a real build, or the next time a real Jones/Leonard-shaped case (a starter returning from a late-season injury) shows up on a real slate to check the floor against directly.
 - **Session 15's participation floor is scoped to classic slates only — Showdown deferred, not built.** Showdown's CPT/FLEX role model doesn't map onto a position-keyed floor the same way classic's roster slots do; silently no-ops there with a printed NOTE rather than erroring. **First point this would need addressing:** if a Showdown-specific version of the backup-QB problem is ever reported for real.
+- **FD post-lock results/ownership — FD does not publish either on a copyable page, unlike DK's contest-results export.** Real results: ✅ **RESOLVED for all three Week 1 classic slates (2026-09-14)** via a new `scripts/derive_actual_results.py`, which computes FD's real fantasy points directly from real nflverse box-score stats using `scoring_rules.py`'s already-measured-exact site scoring (Session 10.3a/10.4) — NOT estimated or converted from DK's numbers, an independent real computation. Cross-checked against DK's own real contest-results export by re-deriving DK's points the same way: 307/312 skill-position players reproduced exactly (mean diff −0.0134), DST reconstruction landed at the same ~90% exact rate Session 10.4 already measured (a documented limitation, not a bug in this script). Real ownership: **cannot be closed this way, and is not being treated as an oversight.** Who drafted which players in a real FD contest is not derivable from box-score stats, from DK's own ownership, or from anything else this pipeline has access to — fabricating it would violate this section's own standing rule ("do not fabricate or estimate entries for contest types that can't be observed"). FD stays absent from `ownership_actual_log.csv` until FD itself starts publishing a real post-lock ownership page; log it via `log_ownership.py` the same way DK is if that ever happens.
 
 Until Preseason Week 1: treat Session 2.4 (and by extension anything built on top of it in Phase 3+) as validated for correctness-of-logic only, not for real-world data quality. Re-run Session 2.4's validation checklist in full once real data exists for both sites.
 
@@ -3236,7 +3240,7 @@ Also separately confirmed via ROADMAP's own "Known Deferred Validations" section
 ---
 
 ### Ad Hoc Session A2 — Ownership Data Collection Kickoff + Name-Recognition Seeding
-**Status:** 🟡 In progress — steps 2 and 3 done (2026-09-10); step 1 now has its first real run (2026-09-14, DK Classic Week 1 main slate). **Not yet closed:** this is 1 of the 4-6 real weeks Session 11.1 needs, and only DK's main slate — DK early/afternoon and all of FD are still unlogged for Week 1.
+**Status:** 🟡 In progress — steps 2 and 3 done (2026-09-10); step 1 now run for all three real DK Week 1 classic slates (main/early/afternoon, 2026-09-14). **Not yet closed:** this is 1 of the 4-6 real weeks Session 11.1 needs. FD ownership is a separate, permanent gap, not a to-do — see below.
 
 **Prerequisites:** none blocking.
 
@@ -3250,12 +3254,14 @@ Also separately confirmed via ROADMAP's own "Known Deferred Validations" section
 **Files likely touched:** `data/ownership_actual_log.csv` (created), `data/name_recognition_flags.csv`, `DFS_Weekly_Process.md`.
 
 **Validation:**
-- [x] `data/ownership_actual_log.csv` exists with at least one real `regular_season` row after Week 1. **Closed 2026-09-14** — 307 real rows logged from the DK Classic Week 1 main slate (98.4% match rate against `final_projections_dk_dk_classic_wk1_main_13Sep2026.csv`; 5 unmatched players confirmed absent from that slate's own player pool, not a name-mismatch bug — see `data/ownership_unmatched_dk_dk_classic_wk1_main_13Sep2026.csv`).
-- [x] `log_ownership.py summary` prints a nonzero data-gate count. **Closed** — prints `DATA GATE: 1/4 regular-season weeks logged`.
+- [x] `data/ownership_actual_log.csv` exists with at least one real `regular_season` row after Week 1. **Closed 2026-09-14** — 597 real DK rows logged across all three Week 1 classic slates (main 307/312, early 192/194, afternoon 98/99 — every unmatched player confirmed absent from that slate's own player pool, not a name-mismatch bug).
+- [x] `log_ownership.py summary` prints a nonzero data-gate count. **Closed** — prints `DATA GATE: 1/6 regular-season weeks logged`.
 - [x] `DFS_Weekly_Process.md` has an explicit post-slate ownership-logging step. Added as Stage 6 (2026-09-10), plus a pre-lock reminder to review `name_recognition_flags.csv` under Stage 4.
 - [x] `name_recognition_flags.csv` has more than the one placeholder row, with real Week 1 names. Now has 12 rows (Mahomes plus 11 real Week 1 2026 chalk/hype judgment calls, keyed to real `player_id`s off the actual Wk1 main-slate projections file), 2026-09-10.
 
-**Still open:** only the DK Classic Week 1 *main* slate is logged so far — DK's early/afternoon slates and all three FD slates (main/early/afternoon) still need their own real post-lock ownership exports run through `log_ownership.py log` once available. Session 11.1 still needs 3-5 more real regular-season weeks beyond this one before its own data gate opens.
+**Real bug found and fixed while logging the 2nd/3rd real slates (2026-09-14):** `log_ownership.py`'s fallback duplicate-detection key (used whenever `--contest-id` is empty) had no `slate_id` field, so logging the real DK *early* slate right after the real *main* slate raised a false "duplicate detected" error — both slates share every other field in the key (site/season/week/slate_type/contest_type/slate_format). Fixed: `slate_id` is now a first-class column in `ownership_actual_log.csv` (existing 307 main-slate rows backfilled, not dropped) and part of the fallback key. See `log_ownership.py`'s decision #8 and SESSION_LOG.md's 2026-09-14 entry.
+
+**Still open, by design, not oversight:** FD ownership. FD does not publish a copyable post-lock ownership page the way DK does, and there is no legitimate way to derive real ownership from box-score stats or from DK's own ownership (see the "FD post-lock results/ownership" entry in ROADMAP.md's Known Deferred Validations section) — this project's own explicit rule is "do not fabricate or estimate entries for contest types that can't be observed." FD stays absent from this log until FD itself starts publishing real post-lock ownership. Session 11.1 still needs 3-5 more real regular-season weeks beyond this one (DK-only) before its own data gate opens.
 
 ---
 
@@ -3320,7 +3326,7 @@ Also separately confirmed via ROADMAP's own "Known Deferred Validations" section
 ---
 
 ### Ad Hoc Session A5 — Calibration Sweeps (Lambda Backtest + Ownership Retuning Trigger)
-**Status:** 🟡 Lambda half done (2026-09-10) — the backtest sweep itself already ran back in Session 10.5b (2026-07-28) but was never wired downstream; this session closed that gap by carrying its results into A3's presets, the CLI help text, and the frontend. Ownership half still blocked, but the data gate has begun: `data/ownership_actual_log.csv` now has 307 real rows / 1 of the 4-6 needed regular-season weeks (A2 step 1 ran 2026-09-14 — see A2's card above).
+**Status:** 🟡 Lambda half done (2026-09-10) — the backtest sweep itself already ran back in Session 10.5b (2026-07-28) but was never wired downstream; this session closed that gap by carrying its results into A3's presets, the CLI help text, and the frontend. Ownership half still blocked, but the data gate has begun: `data/ownership_actual_log.csv` now has 597 real DK rows (all 3 Week 1 classic slates) / 1 of the 4-6 needed regular-season weeks (A2 step 1 ran 2026-09-14 — see A2's card above). DK-only, permanently — FD ownership is not observable, see A2's card.
 
 **Prerequisites:** For the lambda half — none blocking, the historical backtest data already exists (2018-2021 DK, 65 weeks, per Session 10.5's probe A3). For the ownership half — A2 must be running and Session 11.1's existing 4-6 real regular-season week data gate must be met (see that card above in this file).
 

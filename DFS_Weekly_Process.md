@@ -420,7 +420,9 @@ Lock hits. Done.
 
 **This is a real, required weekly step — not optional.** `scripts/log_ownership.py` builds the dataset Sessions 11.1/11.2 need to fit ownership model parameters against reality (a 4-6 week data gate). It does nothing unless you actually run it every week.
 
-Do this once DK and/or FD post post-lock ownership percentages on the contest results page — usually within an hour or two of lock, for large-field GPPs (DK Millionaire Maker and similar). FanDuel posts the same on its My Contests page. There is no API for this; it's a manual copy-paste.
+Do this once DK posts post-lock ownership percentages on the contest results page — usually within an hour or two of lock, for large-field GPPs (DK Millionaire Maker and similar). There is no API for this; it's a manual copy-paste.
+
+**FanDuel does not publish a copyable post-lock ownership page, and there is no legitimate way to derive real ownership from anywhere else this pipeline has access to** (confirmed 2026-09-14 — real box-score stats and DK's own ownership can reconstruct FD's real *points*, see Stage 7 below, but who actually drafted which players in a real FD contest is fundamentally unobservable from here). Don't fabricate or estimate FD ownership rows to fill this gap — `data/ownership_actual_log.csv` staying DK-only is the correct, documented state, not a bug to work around. Log FD ownership only if FD itself ever starts publishing a real post-lock page.
 
 1. **Build the raw ownership CSV.** Copy player names and ownership percentages off the results page into a new CSV under `data/`, e.g. `data/ownership_raw_dk_2026_wk5.csv`.
    - Classic slates: two columns — `player_name, actual_ownership_pct`
@@ -457,11 +459,21 @@ Run `python scripts/log_ownership.py summary` any time to see what's been logged
 
 **Also a real, required weekly step, same reasoning as Stage 6.** `scripts/log_results.py` (Session 9.1) builds the dataset Session 9.2 needs to eventually retune projection blend weights — it does nothing unless you run it every week.
 
-Do this once real box scores are final for the slate — DK's and FD's own contest-results export already includes each player's actual site-scored fantasy points (DK's "Export to CSV" from a completed contest's results page has a `FPTS` column), so no separate box-score lookup is needed.
+Do this once real box scores are final for the slate.
 
-1. **Build the raw results CSV.** Two columns: `player_name, actual_fpts` — one row per player, deduped (unlike Stage 6's ownership export, a site's raw export may list a player more than once across position/FLEX rows with the *same* FPTS value each time; keep one).
+**DK:** its own contest-results export already includes each player's actual site-scored fantasy points (DK's "Export to CSV" from a completed contest's results page has a `FPTS` column), so no separate box-score lookup is needed.
 
-2. **Run the logger:**
+1. **Build the raw results CSV.** Two columns: `player_name, actual_fpts` — one row per player, deduped (unlike Stage 6's ownership export, DK's raw export may list a player more than once across position/FLEX rows with the *same* FPTS value each time; keep one).
+
+**FD:** FD does not publish a results export with fantasy points either. Use `scripts/derive_actual_results.py` instead (confirmed 2026-09-14) — it computes FD's real fantasy points directly from real nflverse box-score stats via `scoring_rules.py`'s already-verified site-exact scoring tables, independent of DK's own numbers, once `ingest_historical.py --season {season}` has been re-run for the week's completed games:
+
+```
+python scripts/derive_actual_results.py --site fd --season 2026 --week 5 --slate-id fd_classic_wk5 --output data/results_raw_fd_2026_wk5.csv
+```
+
+This writes the same `player_name, actual_fpts` shape Stage 7 expects — feed it into `log_results.py` exactly like a real DK export (step 2 below). Note this only covers *results*; it cannot and does not produce FD ownership (see Stage 6's FD note).
+
+2. **Run the logger** (same command for both sites, DK's raw CSV or FD's derived one):
 
 ```
 python scripts/log_results.py log --site dk --season 2026 --week 5 --slate-id classic_wk5 --slate-type regular_season --input data/results_raw_dk_2026_wk5.csv --source "DK contest results export 2026-10-12"

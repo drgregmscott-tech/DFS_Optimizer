@@ -104,6 +104,10 @@ OUTPUT SCHEMA (data/ownership_actual_log.csv)
 site                      -- dk | fd
 season                    -- e.g. 2026
 week                      -- NFL week number
+slate_id                  -- this slate's own slate_id (added 2026-09-14,
+                              decision #8 -- see below; distinguishes e.g.
+                              a week's main/early/afternoon classic slates,
+                              which previously collided as false duplicates)
 slate_type                -- regular_season | preseason | madden_sim
 contest_id                -- platform's own contest identifier (optional,
                               "" if unavailable)
@@ -206,6 +210,23 @@ DECISIONS
    pivot_finder.py (Session 13.5b) for the identical reason (two files
    that could independently go stale vs. one source of truth).
 
+8. SLATE_ID ADDED TO THE LOG SCHEMA AND TO THE FALLBACK DUPLICATE KEY --
+   REAL BUG, FOUND LOGGING A REAL MULTI-SLATE WEEK (2026-09-14). The
+   original fallback duplicate key (site, season, week, slate_type,
+   contest_type, slate_format) was built for "one classic slate per
+   site per week" -- it has no way to tell a week's main/early/afternoon
+   classic slates apart, since all three share every field in that key.
+   Logging the real Week 1 DK early slate right after the real main
+   slate raised a false "duplicate detected" error, even though the two
+   are genuinely different slates with genuinely different real
+   ownership. Fix: slate_id is now a first-class log column (backfilled
+   for pre-fix rows -- see the migration note in SESSION_LOG.md's
+   2026-09-14 entry) and is included in the fallback duplicate key
+   alongside the existing fields, so main/early/afternoon (or any two
+   same-week classic slates) log independently and correctly.
+   slate_format is kept in the key too, redundantly with slate_id, since
+   it costs nothing and keeps the key's intent readable on its own.
+
 7. SHOWDOWN RAW INPUT CSV NEEDS ITS OWN roster_role COLUMN, VALIDATED
    AGAINST SITE_CONFIGS. DK's and FD's real Showdown/Single-Game contest
    results report Captain/MVP ownership and FLEX ownership as separate
@@ -238,7 +259,7 @@ from ingest_salaries import normalize_name, SITE_CONFIGS  # noqa: E402
 LOG_PATH = DATA_DIR / "ownership_actual_log.csv"
 
 LOG_COLUMNS = [
-    "site", "season", "week", "slate_type", "contest_id", "contest_type",
+    "site", "season", "week", "slate_id", "slate_type", "contest_id", "contest_type",
     "field_size", "player_id", "player_name", "roster_role", "slate_format",
     "actual_ownership_pct", "estimated_ownership_pct_at_lock", "source",
     "logged_at",
@@ -268,15 +289,17 @@ def load_log() -> pd.DataFrame:
 
 
 def check_duplicate(existing: pd.DataFrame, site: str, season: int, week: int,
-                    slate_type: str, contest_type: str, contest_id: str,
-                    slate_format: str) -> None:
+                    slate_id: str, slate_type: str, contest_type: str,
+                    contest_id: str, slate_format: str) -> None:
     """Raise if this (site, season, week, contest) combination is already logged.
 
-    Decision #1 (extended by decision #7): duplicate detection. Uses
-    contest_id when present; falls back to (site, season, week, slate_type,
-    contest_type, slate_format) when contest_id is empty -- slate_format is
-    included so a classic slate and a Showdown slate in the same site/week/
-    slate_type/contest_type don't falsely collide.
+    Decision #1 (extended by decisions #7 and #8): duplicate detection. Uses
+    contest_id when present; falls back to (site, season, week, slate_id,
+    slate_type, contest_type, slate_format) when contest_id is empty --
+    slate_id (decision #8) is what actually distinguishes same-week classic
+    slates (main/early/afternoon); slate_format (decision #7) is kept too so
+    a classic slate and a Showdown slate in the same site/week/slate_type/
+    contest_type also can't collide.
     """
     if existing.empty:
         return
@@ -293,13 +316,14 @@ def check_duplicate(existing: pd.DataFrame, site: str, season: int, week: int,
             (existing["site"] == site) &
             (existing["season"] == season) &
             (existing["week"] == week) &
+            (existing["slate_id"] == slate_id) &
             (existing["slate_type"] == slate_type) &
             (existing["contest_type"] == contest_type) &
             (existing["slate_format"] == slate_format)
         )
         key_desc = (f"site={site}, season={season}, week={week}, "
-                    f"slate_type={slate_type}, contest_type={contest_type}, "
-                    f"slate_format={slate_format}")
+                    f"slate_id={slate_id}, slate_type={slate_type}, "
+                    f"contest_type={contest_type}, slate_format={slate_format}")
 
     if mask.any():
         n = int(mask.sum())
@@ -590,8 +614,8 @@ def log_ownership(
 
     # --- Load existing log and check for duplicates ---
     existing = load_log()
-    check_duplicate(existing, site, season, week, slate_type, contest_type,
-                    contest_id, slate_format)
+    check_duplicate(existing, site, season, week, slate_id, slate_type,
+                    contest_type, contest_id, slate_format)
 
     # --- Load raw ownership input (shape depends on slate_format) ---
     raw = load_raw_ownership(raw_path, slate_format, site)
@@ -634,6 +658,7 @@ def log_ownership(
             "site": site,
             "season": season,
             "week": week,
+            "slate_id": slate_id,
             "slate_type": slate_type,
             "contest_id": contest_id,
             "contest_type": contest_type,
