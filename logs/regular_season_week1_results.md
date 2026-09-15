@@ -4,15 +4,18 @@ Output file named by ROADMAP.md's Session 8.1 card ("Outputs: `/logs/regular_sea
 
 ## DK
 
-**Slates run live:** `dk_classic_wk1_main_13Sep2026`, `dk_classic_wk1_early_13Sep2026`, `dk_classic_wk1_afternoon_13Sep2026`.
+**Slates run live:** `dk_classic_wk1_main_13Sep2026`, `dk_classic_wk1_early_13Sep2026`, `dk_classic_wk1_afternoon_13Sep2026`, `dk_showdown_wk1_Den_KC_14Sep2026` (Monday Night Showdown, real Week 1's last slate to close).
 
-**Post-game logging status — complete, all three slates, both results and ownership** (real DK contest-results exports run through `scripts/log_results.py` and `scripts/log_ownership.py`):
+**Post-game logging status — complete, all four slates, both results and ownership** (real DK contest-results exports run through `scripts/log_results.py` and `scripts/log_ownership.py`):
 
 | Slate | Results match | Ownership match | Mean error (actual − proj) | Mean abs error |
 |---|---|---|---|---|
 | main | 307/312 (98.4%) | 307/312 (98.4%) | +1.99 | 4.67 |
 | early | 192/194 (99.0%) | 192/194 (99.0%) | +2.05 | 4.93 |
 | afternoon | 98/99 (99.0%) | 98/99 (99.0%) | +1.43 | 4.87 |
+| showdown (Den@KC) | 72/72 (100%) | 72/72 (100%) | +0.35 | 4.38 |
+
+**The Showdown slate required a real script fix first** — `log_results.py` (unlike `log_ownership.py`) didn't yet support Showdown's role-split scoring (Captain/MVP scores at 1.5x FLEX for the same real performance, e.g. Bo Nix: 7.44 FLEX vs 11.16 CPT). It was silently collapsing a Showdown reference's two rows per player down to one, which would have logged roughly half the field against the wrong role's projection. Fixed 2026-09-15 to match `log_ownership.py`'s existing roster_role/slate_format handling; `data/projection_error_log.csv`'s pre-existing classic rows were migrated in place (roster_role="", slate_format="classic" backfilled, no data changed). See SESSION_LOG.md's 2026-09-15 entry for the full trace.
 
 ## FD
 
@@ -30,7 +33,7 @@ Output file named by ROADMAP.md's Session 8.1 card ("Outputs: `/logs/regular_sea
 
 ## Data-gate progress this unlocked
 
-- Session 9.2 (projection weight retuning): 2 site-weeks / 4 needed (DK week 1 + FD week 1, tracked separately per site).
+- Session 9.2 (projection weight retuning): 2 site-weeks / 4 needed (DK week 1 + FD week 1, tracked separately per site — the Showdown slate adds rows to DK's existing week 1, not a new site-week).
 - Session 11.1 (ownership blend-weight/temperature retuning): 1/4-6 real regular-season weeks logged (DK-only, permanently — see above).
 
-Both remain blocked pending several more real weeks. Log each future week's DK results/ownership and FD results (via `derive_actual_results.py`) the same way as they become available — see `DFS_Weekly_Process.md` Stages 6-7.
+Both remain blocked pending several more real weeks. Log each future week's DK results/ownership and FD results (via `derive_actual_results.py`) the same way as they become available — see `DFS_Weekly_Process.md` Stages 6-7. Showdown slates now log through the exact same commands as classic (`log_results.py`/`log_ownership.py` both auto-detect the format from the reference file) — no separate process.

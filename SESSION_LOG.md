@@ -4799,3 +4799,37 @@ Checked the split held across position (QB/RB/TE/WR) and site (DK/FD) breakdowns
 **Conclusion:** nothing found that blocks starting Week 2's build. All identifiable Week 1 close-out/deferred-validation items with a real, checkable resolution have been closed; everything still open is either correctly data-gated (needs more weeks, not more code) or a known, non-blocking technical-debt flag for a future backtest session.
 
 ---
+
+### log_results.py: Showdown support (real bug found and fixed) — 2026-09-15
+
+**Status:** ✅ Complete.
+
+**Trigger:** Greg supplied the real DK contest-results export for the Monday Night Showdown slate (`dk_showdown_wk1_Den_KC_14Sep2026`, Den@KC) — the last real Week 1 slate to close — and asked what post-game logging/validation was needed. Building the raw ownership/results CSVs the usual way surfaced a real gap: `log_results.py` (unlike `log_ownership.py`, which already handles this) had no Showdown support.
+
+**The real bug:** `build_reference()` collapsed a Showdown reference's two rows per player (CPT/FLEX, each with a different, 1.5x-scaled `final_projection`) down to one via `drop_duplicates(subset=["normalized_name"])`. For classic slates this is a correct no-op (no real duplicate names); for Showdown it would have logged roughly half the field against the wrong role's projection — a raw FLEX-role actual_fpts compared against a CPT-role `final_projection`, or vice versa, depending on which row survived the drop. Never caught earlier because every real Session 9.1 run through this point had been classic. Confirmed the real magnitude of the role split first, directly from DK's own export: Bo Nix scored 7.44 as FLEX and 11.16 as CPT for the identical real performance (exactly 1.5x) — not two independent real quantities, but two rows that need matching against two different real projections.
+
+**Fix:** mirrored `log_ownership.py`'s already-solved pattern exactly (its decisions #6/#7) rather than inventing a new one: `roster_role`/`slate_format` added to both the reference lookup and the output schema; `load_raw_results()` now requires a `roster_role` column for Showdown input (validated against `SITE_CONFIGS`'s real role labels, same as `log_ownership.py`); `match_results_rows()` filters candidates by `roster_role` before matching name, so a raw CPT row can only match the CPT reference row; the raw-input duplicate check changed from "no duplicate player_name" (wrong for Showdown, where a real player legitimately has two rows) to "no duplicate (player_name, roster_role)".
+
+**Migration:** `data/projection_error_log.csv`'s 1,980 pre-existing rows (all classic, logged before this fix existed) were migrated in place — `roster_role=""`, `slate_format="classic"` backfilled as new columns, no rows changed or lost.
+
+**Real run, once fixed:** DK Showdown Den@KC, 72/72 real players matched (100%) into both `projection_error_log.csv` and `ownership_actual_log.csv`. Spot-checked Bo Nix's two rows landed correctly role-split (FLEX: proj 13.45 vs actual 7.44, error −6.01; CPT: proj 20.17 vs actual 11.16, error −9.01 — the CPT projection is also exactly 1.5x the FLEX one, confirming the reference scaling survived the fix intact). Mean error +0.35, mean abs error 4.38 — smaller than any of the three classic Week 1 slates, though n=72 (36 real players × 2 roles) is a small, one-slate sample.
+
+**Real mistake caught and fixed same session:** the ownership `--field-size` was initially entered as `15854` (copy-pasted from the earlier classic main-slate GPP) instead of this contest's own real entry count. Caught by actually checking `EntryId`/`EntryName` uniqueness in the real export (8,917 unique entries, confirming single-entry) before trusting the number — corrected in `data/ownership_actual_log.csv` directly (`field_size` for these 72 rows: 15854 → 8917) rather than left wrong. Logged here so the lesson (check the real file's own entry count, don't carry a number over from a different contest) isn't silently lost.
+
+**Files created/modified:**
+- `scripts/log_results.py` — Showdown support (decision #4 in its own docstring).
+- `data/projection_error_log.csv` — schema migration (2 new columns, 1,980 rows backfilled) + 72 new real Showdown rows.
+- `data/ownership_actual_log.csv` — 72 new real Showdown rows (field_size corrected post-log).
+- `data/results_raw_dk_showdown_2026_wk1.csv`, `data/ownership_raw_dk_showdown_2026_wk1.csv` (new raw inputs).
+- `logs/regular_season_week1_results.md` — updated to show all four real DK Week 1 slates now closed out.
+
+**Validation:**
+- [x] `python3 -m py_compile scripts/log_results.py` clean.
+- [x] Real run, 100% match, both scripts.
+- [x] Role-split correctness spot-checked directly (Bo Nix's FLEX/CPT rows both landed against the correctly-scaled projection, not swapped or collapsed).
+- [x] Migration verified: pre-existing 1,980 rows unchanged in every other column, only the two new columns added.
+- [x] The field_size error was caught by checking the real file, not assumed — and the fix applied to the data, not just noted and left wrong.
+
+**Handoff:** Week 1 is now fully closed out across every real DK slate that was played (main/early/afternoon/showdown) and every real FD slate (main/early/afternoon, results only — ownership remains permanently unobservable, see ROADMAP.md's Known Deferred Validations). `log_results.py` and `log_ownership.py` now both handle Showdown automatically (format auto-detected from the reference file) — no separate process needed for a future Showdown slate.
+
+---

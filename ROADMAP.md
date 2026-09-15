@@ -711,7 +711,7 @@ By far the largest session in this project -- see SESSION_LOG.md's Session 7.3 e
 *Ongoing, starts Regular Season Week 2+*
 
 ### Session 9.1 — Actual-vs-Projected Logging
-**Status:** 🟡 Both scripts built, all six real Week 1 classic slates logged (both sites) — same "1 real week isn't a validated fit, it's the first data point" status Session 9.3/Ad Hoc A2 had after their own first run, now doubled to 2 site-weeks toward Session 9.2's 4-week gate (DK and FD each count separately — see that card).
+**Status:** 🟡 Both scripts built, all seven real Week 1 slates logged (both sites, classic and Showdown) — same "1 real week isn't a validated fit, it's the first data point" status Session 9.3/Ad Hoc A2 had after their own first run, now doubled to 2 site-weeks toward Session 9.2's 4-week gate (DK and FD each count separately — see that card).
 
 **Prerequisites:** Session 8.1 complete. ✅ (Ad Hoc Sessions A1/A3, 2026-09-10/11 — see Session 8.1's card above.)
 
@@ -724,16 +724,17 @@ By far the largest session in this project -- see SESSION_LOG.md's Session 7.3 e
 
 **Build:** ✅ `log_results.py log`/`summary` subcommands, matching `log_ownership.py`'s CLI shape. Reuses `log_ownership.py`'s `_match_dst()` helper for defense matching rather than re-implementing it.
 
-**Real runs (2026-09-14), all six Week 1 classic slates:**
-- DK main/early/afternoon, built from real DK contest-results exports. Match rates 98.4%/99.0%/99.0% — every unmatched player (Marquise "Hollywood" Brown, Josh Palmer, Nick Singleton, Matt Hibner, Scotty Miller) confirmed by direct lookup to be absent from that slate's own `final_projections` pool entirely, not a name-mismatch bug.
-- FD main/early/afternoon, built via `derive_actual_results.py` from real nflverse Week 1 stats. 100% match (683/683, 467/467, 233/233) since player names are copied verbatim from each slate's own reference file rather than fuzzy-matched from a second raw source.
+**Real runs, all seven Week 1 slates:**
+- DK main/early/afternoon (2026-09-14), built from real DK contest-results exports. Match rates 98.4%/99.0%/99.0% — every unmatched player (Marquise "Hollywood" Brown, Josh Palmer, Nick Singleton, Matt Hibner, Scotty Miller) confirmed by direct lookup to be absent from that slate's own `final_projections` pool entirely, not a name-mismatch bug.
+- FD main/early/afternoon (2026-09-14), built via `derive_actual_results.py` from real nflverse Week 1 stats. 100% match (683/683, 467/467, 233/233) since player names are copied verbatim from each slate's own reference file rather than fuzzy-matched from a second raw source.
+- **DK Showdown, Den@KC (2026-09-15).** Required fixing a real gap first — `log_results.py` had no Showdown support (it silently collapsed a Showdown reference's two role rows per player into one, which would have matched roughly half the field against the wrong role's projection). Fixed to mirror `log_ownership.py`'s already-solved roster_role/slate_format pattern; existing classic rows migrated in place, nothing lost. 72/72 matched (100%) once fixed. See SESSION_LOG.md's 2026-09-15 entry for the full trace.
 
-**Real first-week numbers** (`log_results.py summary`, regular_season): DK mean error (actual − projection) +1.43 to +2.05 across the 3 slates, mean abs error ~4.7-4.9. FD mean error +0.17 to +0.30, mean abs error ~2.4 (smaller in both directions than DK, consistent with half-PPR's naturally smaller point scale, not a red flag). By position (DK / FD): QB +5.80 / +0.83, RB +2.20 / +0.53, WR +1.85 / +0.29, TE +1.15 / −0.11, DST −1.29 / −1.42. QB remains the largest signed miss on DK, still in the **under**-projection direction — opposite sign from the backlog item below ("systematic high bias"), a mildly reassuring first read, not a confirmation (one real week).
+**Real first-week numbers** (`log_results.py summary`, regular_season): DK mean error (actual − projection) +0.35 to +2.05 across the 4 slates (Showdown lowest), mean abs error ~4.4-4.9. FD mean error +0.17 to +0.30, mean abs error ~2.4 (smaller in both directions than DK, consistent with half-PPR's naturally smaller point scale, not a red flag). By position (DK / FD): QB +5.12 / +0.83, RB +2.30 / +0.53, WR +1.44 / +0.29, TE +1.29 / −0.11, DST −1.13 / −1.42, K −3.32 / n/a (DK only, Showdown-only position). QB remains the largest signed miss on DK, still in the **under**-projection direction — opposite sign from the backlog item below ("systematic high bias"), a mildly reassuring first read, not a confirmation (one real week).
 
 **Validation:**
 - [x] Confirm logged actuals match real box scores for a spot-check sample — DK's contest-results FPTS column and FD's nflverse-derived points are both grounded directly in real official stats, not a secondary estimate.
 - [x] **DK/FD rows compute different fantasy-point actuals for the same player where expected (PPR gap).** Directly confirmed: real Week 1 main-slate Jahmyr Gibbs logs `actual_fpts=37.6` on DK vs `31.1` on FD — same real game, correctly different site scoring, not accidentally logged as equal.
-- [x] All six Week 1 classic slates logged, both sites (previously only DK's main slate had run).
+- [x] All seven real Week 1 slates logged, both sites, classic and Showdown (Week 1 is now fully closed out — every real slate that was actually played this week has both results and DK ownership logged).
 
 ---
 
