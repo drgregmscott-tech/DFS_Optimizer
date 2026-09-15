@@ -10,12 +10,20 @@
   },
   "slates": [
     {
-      "slate_id": "dk_showdown_wk1_Den_KC_14Sep2026",
+      "slate_id": "dk_showdown_wk2_Det_Buf_17Sep2026",
       "site": "dk",
       "format": "showdown",
-      "season": 2025,
-      "week": 23,
-      "lock_time_utc": "2026-09-15T00:15:00Z"
+      "season": 2026,
+      "week": 2,
+      "lock_time_utc": "2026-09-18T00:15:00Z"
+    },
+    {
+      "slate_id": "dk_classic_wk2_main_20Sep2026",
+      "site": "dk",
+      "format": "classic",
+      "season": 2026,
+      "week": 2,
+      "lock_time_utc": "2026-09-20T17:00:00Z"
     }
   ]
 }
