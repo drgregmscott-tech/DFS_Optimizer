@@ -1,0 +1,9 @@
+Position,Name + ID,Name,ID,Roster Position,Salary,Game Info,TeamAbbrev,AvgPointsPerGame,Status,name,site,salary,normalized_name,normalized_team,position_upper,slate_format,player_id,match_method,match_confidence
+RB,Nick Singleton (44132762),Nick Singleton,44132762,RB/FLEX,4300,PHI@TEN 09/20/2026 01:00PM ET,TEN,0.0,OUT,Nick Singleton,dk,4300,nick singleton,TEN,RB,classic,,,
+RB,Audric Estime (44132872),Audric Estime,44132872,RB/FLEX,4000,NO@BAL 09/20/2026 01:00PM ET,NO,6.9,IR,Audric Estime,dk,4000,audric estime,NO,RB,classic,,,
+RB,Al-Jay Henderson (44132908),Al-Jay Henderson,44132908,RB/FLEX,4000,GB@NYJ 09/20/2026 01:00PM ET,NYJ,0.0,,Al-Jay Henderson,dk,4000,al jay henderson,NYJ,RB,classic,,,
+WR,Hollywood Brown (44133108),Hollywood Brown,44133108,WR/FLEX,3600,PHI@TEN 09/20/2026 01:00PM ET,PHI,8.6,,Hollywood Brown,dk,3600,hollywood brown,PHI,WR,classic,,,
+WR,Scotty Miller (44133214),Scotty Miller,44133214,WR/FLEX,3000,MIN@CHI 09/20/2026 01:00PM ET,CHI,1.1,,Scotty Miller,dk,3000,scotty miller,CHI,WR,classic,,,
+WR,Brandon Aiyuk (44133220),Brandon Aiyuk,44133220,WR/FLEX,3000,MIA@SF 09/20/2026 04:25PM ET,SF,0.0,OUT,Brandon Aiyuk,dk,3000,brandon aiyuk,SF,WR,classic,,,
+WR,Mitch Tinsley (44133436),Mitch Tinsley,44133436,WR/FLEX,3000,CIN@HOU 09/20/2026 01:00PM ET,HOU,1.9,,Mitch Tinsley,dk,3000,mitch tinsley,HOU,WR,classic,,,
+TE,Matt Hibner (44133630),Matt Hibner,44133630,TE/FLEX,2500,NO@BAL 09/20/2026 01:00PM ET,BAL,0.0,,Matt Hibner,dk,2500,matt hibner,BAL,TE,classic,,,

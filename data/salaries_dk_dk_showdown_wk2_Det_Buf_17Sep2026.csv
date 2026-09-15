@@ -1,0 +1,93 @@
+Position,Name + ID,Name,ID,Roster Position,Salary,Game Info,TeamAbbrev,AvgPointsPerGame,Status,roster_role,name,site,salary,normalized_name,normalized_team,position_upper,slate_format,player_id,match_method,match_confidence
+RB,Jahmyr Gibbs (44138478),Jahmyr Gibbs,44138478,CPT,18000,DET@BUF 09/17/2026 08:15PM ET,DET,37.6,,CPT,Jahmyr Gibbs,dk,18000,jahmyr gibbs,DET,RB,showdown,00-0039139,auto_exact,high
+QB,Josh Allen (44138479),Josh Allen,44138479,CPT,17100,DET@BUF 09/17/2026 08:15PM ET,BUF,38.7,,CPT,Josh Allen,dk,17100,josh allen,BUF,QB,showdown,00-0034857,auto_exact,high
+WR,Amon-Ra St. Brown (44138480),Amon-Ra St. Brown,44138480,CPT,15600,DET@BUF 09/17/2026 08:15PM ET,DET,28.7,,CPT,Amon-Ra St. Brown,dk,15600,amon ra st brown,DET,WR,showdown,00-0036963,auto_exact,high
+QB,Jared Goff (44138481),Jared Goff,44138481,CPT,14400,DET@BUF 09/17/2026 08:15PM ET,DET,16.4,,CPT,Jared Goff,dk,14400,jared goff,DET,QB,showdown,00-0033106,auto_exact,high
+RB,James Cook III (44138482),James Cook III,44138482,CPT,14100,DET@BUF 09/17/2026 08:15PM ET,BUF,9.9,,CPT,James Cook III,dk,14100,james cook,BUF,RB,showdown,00-0037248,auto_exact,high
+RB,Jahmyr Gibbs (44138432),Jahmyr Gibbs,44138432,FLEX,12000,DET@BUF 09/17/2026 08:15PM ET,DET,37.6,,FLEX,Jahmyr Gibbs,dk,12000,jahmyr gibbs,DET,RB,showdown,00-0039139,auto_exact,high
+WR,DJ Moore (44138483),DJ Moore,44138483,CPT,11700,DET@BUF 09/17/2026 08:15PM ET,BUF,24.0,,CPT,DJ Moore,dk,11700,dj moore,BUF,WR,showdown,00-0034827,auto_fallback_team_mismatch,medium
+QB,Josh Allen (44138433),Josh Allen,44138433,FLEX,11400,DET@BUF 09/17/2026 08:15PM ET,BUF,38.7,,FLEX,Josh Allen,dk,11400,josh allen,BUF,QB,showdown,00-0034857,auto_exact,high
+WR,Jameson Williams (44138484),Jameson Williams,44138484,CPT,11100,DET@BUF 09/17/2026 08:15PM ET,DET,8.5,,CPT,Jameson Williams,dk,11100,jameson williams,DET,WR,showdown,00-0037240,auto_exact,high
+WR,Amon-Ra St. Brown (44138434),Amon-Ra St. Brown,44138434,FLEX,10400,DET@BUF 09/17/2026 08:15PM ET,DET,28.7,,FLEX,Amon-Ra St. Brown,dk,10400,amon ra st brown,DET,WR,showdown,00-0036963,auto_exact,high
+TE,Dalton Kincaid (44138485),Dalton Kincaid,44138485,CPT,10200,DET@BUF 09/17/2026 08:15PM ET,BUF,21.0,,CPT,Dalton Kincaid,dk,10200,dalton kincaid,BUF,TE,showdown,00-0038933,auto_exact,high
+QB,Jared Goff (44138435),Jared Goff,44138435,FLEX,9600,DET@BUF 09/17/2026 08:15PM ET,DET,16.4,,FLEX,Jared Goff,dk,9600,jared goff,DET,QB,showdown,00-0033106,auto_exact,high
+WR,Khalil Shakir (44138486),Khalil Shakir,44138486,CPT,9600,DET@BUF 09/17/2026 08:15PM ET,BUF,9.0,,CPT,Khalil Shakir,dk,9600,khalil shakir,BUF,WR,showdown,00-0037261,auto_exact,high
+RB,James Cook III (44138436),James Cook III,44138436,FLEX,9400,DET@BUF 09/17/2026 08:15PM ET,BUF,9.9,,FLEX,James Cook III,dk,9400,james cook,BUF,RB,showdown,00-0037248,auto_exact,high
+QB,Shane Buechele (44138487),Shane Buechele,44138487,CPT,9000,DET@BUF 09/17/2026 08:15PM ET,BUF,0.0,,CPT,Shane Buechele,dk,9000,shane buechele,BUF,QB,showdown,00-0036679,auto_fallback_team_mismatch,medium
+QB,Kyle Allen (44138488),Kyle Allen,44138488,CPT,9000,DET@BUF 09/17/2026 08:15PM ET,BUF,0.0,,CPT,Kyle Allen,dk,9000,kyle allen,BUF,QB,showdown,00-0034577,auto_fallback_team_mismatch,medium
+QB,Luke Altmyer (44138489),Luke Altmyer,44138489,CPT,9000,DET@BUF 09/17/2026 08:15PM ET,DET,0.0,,CPT,Luke Altmyer,dk,9000,luke altmyer,DET,QB,showdown,00-0041453,auto_exact,high
+QB,Joshua Dobbs (44138490),Joshua Dobbs,44138490,CPT,9000,DET@BUF 09/17/2026 08:15PM ET,DET,0.0,,CPT,Joshua Dobbs,dk,9000,joshua dobbs,DET,QB,showdown,00-0033949,auto_fallback_team_mismatch,medium
+TE,Sam LaPorta (44138491),Sam LaPorta,44138491,CPT,8100,DET@BUF 09/17/2026 08:15PM ET,DET,9.8,,CPT,Sam LaPorta,dk,8100,sam laporta,DET,TE,showdown,00-0039065,auto_exact,high
+WR,DJ Moore (44138437),DJ Moore,44138437,FLEX,7800,DET@BUF 09/17/2026 08:15PM ET,BUF,24.0,,FLEX,DJ Moore,dk,7800,dj moore,BUF,WR,showdown,00-0034827,auto_fallback_team_mismatch,medium
+K,Tyler Bass (44138492),Tyler Bass,44138492,CPT,7500,DET@BUF 09/17/2026 08:15PM ET,BUF,13.0,,CPT,Tyler Bass,dk,7500,tyler bass,BUF,K,showdown,00-0036162,auto_exact,high
+WR,Jameson Williams (44138438),Jameson Williams,44138438,FLEX,7400,DET@BUF 09/17/2026 08:15PM ET,DET,8.5,,FLEX,Jameson Williams,dk,7400,jameson williams,DET,WR,showdown,00-0037240,auto_exact,high
+K,Jake Bates (44138493),Jake Bates,44138493,CPT,7200,DET@BUF 09/17/2026 08:15PM ET,DET,7.0,,CPT,Jake Bates,dk,7200,jake bates,DET,K,showdown,00-0039172,auto_exact,high
+TE,Dalton Kincaid (44138439),Dalton Kincaid,44138439,FLEX,6800,DET@BUF 09/17/2026 08:15PM ET,BUF,21.0,,FLEX,Dalton Kincaid,dk,6800,dalton kincaid,BUF,TE,showdown,00-0038933,auto_exact,high
+WR,Khalil Shakir (44138440),Khalil Shakir,44138440,FLEX,6400,DET@BUF 09/17/2026 08:15PM ET,BUF,9.0,,FLEX,Khalil Shakir,dk,6400,khalil shakir,BUF,WR,showdown,00-0037261,auto_exact,high
+QB,Shane Buechele (44138441),Shane Buechele,44138441,FLEX,6000,DET@BUF 09/17/2026 08:15PM ET,BUF,0.0,,FLEX,Shane Buechele,dk,6000,shane buechele,BUF,QB,showdown,00-0036679,auto_fallback_team_mismatch,medium
+QB,Kyle Allen (44138442),Kyle Allen,44138442,FLEX,6000,DET@BUF 09/17/2026 08:15PM ET,BUF,0.0,,FLEX,Kyle Allen,dk,6000,kyle allen,BUF,QB,showdown,00-0034577,auto_fallback_team_mismatch,medium
+QB,Luke Altmyer (44138443),Luke Altmyer,44138443,FLEX,6000,DET@BUF 09/17/2026 08:15PM ET,DET,0.0,,FLEX,Luke Altmyer,dk,6000,luke altmyer,DET,QB,showdown,00-0041453,auto_exact,high
+QB,Joshua Dobbs (44138444),Joshua Dobbs,44138444,FLEX,6000,DET@BUF 09/17/2026 08:15PM ET,DET,0.0,,FLEX,Joshua Dobbs,dk,6000,joshua dobbs,DET,QB,showdown,00-0033949,auto_fallback_team_mismatch,medium
+WR,Keon Coleman (44138494),Keon Coleman,44138494,CPT,6000,DET@BUF 09/17/2026 08:15PM ET,BUF,1.1,,CPT,Keon Coleman,dk,6000,keon coleman,BUF,WR,showdown,00-0039901,auto_exact,high
+WR,Isaac TeSlaa (44138495),Isaac TeSlaa,44138495,CPT,5700,DET@BUF 09/17/2026 08:15PM ET,DET,0.0,,CPT,Isaac TeSlaa,dk,5700,isaac teslaa,DET,WR,showdown,00-0040669,auto_exact,high
+TE,Sam LaPorta (44138445),Sam LaPorta,44138445,FLEX,5400,DET@BUF 09/17/2026 08:15PM ET,DET,9.8,,FLEX,Sam LaPorta,dk,5400,sam laporta,DET,TE,showdown,00-0039065,auto_exact,high
+DST,Bills (44138496),Bills,44138496,CPT,5400,DET@BUF 09/17/2026 08:15PM ET,BUF,6.0,,CPT,Bills,dk,5400,bills,BUF,DST,showdown,DST_BUF,team_defense,high
+DST,Lions (44138497),Lions,44138497,CPT,5100,DET@BUF 09/17/2026 08:15PM ET,DET,10.0,,CPT,Lions,dk,5100,lions,DET,DST,showdown,DST_DET,team_defense,high
+K,Tyler Bass (44138446),Tyler Bass,44138446,FLEX,5000,DET@BUF 09/17/2026 08:15PM ET,BUF,13.0,,FLEX,Tyler Bass,dk,5000,tyler bass,BUF,K,showdown,00-0036162,auto_exact,high
+K,Jake Bates (44138447),Jake Bates,44138447,FLEX,4800,DET@BUF 09/17/2026 08:15PM ET,DET,7.0,,FLEX,Jake Bates,dk,4800,jake bates,DET,K,showdown,00-0039172,auto_exact,high
+WR,Joshua Palmer (44138498),Joshua Palmer,44138498,CPT,4800,DET@BUF 09/17/2026 08:15PM ET,BUF,10.4,,CPT,Joshua Palmer,dk,4800,joshua palmer,BUF,WR,showdown,00-0036988,manual_override,high
+RB,Sione Vaki (44138499),Sione Vaki,44138499,CPT,4500,DET@BUF 09/17/2026 08:15PM ET,DET,2.8,,CPT,Sione Vaki,dk,4500,sione vaki,DET,RB,showdown,00-0039364,auto_exact,high
+TE,Dawson Knox (44138500),Dawson Knox,44138500,CPT,4200,DET@BUF 09/17/2026 08:15PM ET,BUF,1.7,,CPT,Dawson Knox,dk,4200,dawson knox,BUF,TE,showdown,00-0035689,auto_exact,high
+WR,Keon Coleman (44138448),Keon Coleman,44138448,FLEX,4000,DET@BUF 09/17/2026 08:15PM ET,BUF,1.1,,FLEX,Keon Coleman,dk,4000,keon coleman,BUF,WR,showdown,00-0039901,auto_exact,high
+WR,Isaac TeSlaa (44138449),Isaac TeSlaa,44138449,FLEX,3800,DET@BUF 09/17/2026 08:15PM ET,DET,0.0,,FLEX,Isaac TeSlaa,dk,3800,isaac teslaa,DET,WR,showdown,00-0040669,auto_exact,high
+DST,Bills (44138450),Bills,44138450,FLEX,3600,DET@BUF 09/17/2026 08:15PM ET,BUF,6.0,,FLEX,Bills,dk,3600,bills,BUF,DST,showdown,DST_BUF,team_defense,high
+RB,Ray Davis (44138501),Ray Davis,44138501,CPT,3600,DET@BUF 09/17/2026 08:15PM ET,BUF,0.3,,CPT,Ray Davis,dk,3600,ray davis,BUF,RB,showdown,00-0039875,auto_exact,high
+DST,Lions (44138451),Lions,44138451,FLEX,3400,DET@BUF 09/17/2026 08:15PM ET,DET,10.0,,FLEX,Lions,dk,3400,lions,DET,DST,showdown,DST_DET,team_defense,high
+WR,Joshua Palmer (44138452),Joshua Palmer,44138452,FLEX,3200,DET@BUF 09/17/2026 08:15PM ET,BUF,10.4,,FLEX,Joshua Palmer,dk,3200,joshua palmer,BUF,WR,showdown,00-0036988,manual_override,high
+RB,Sione Vaki (44138453),Sione Vaki,44138453,FLEX,3000,DET@BUF 09/17/2026 08:15PM ET,DET,2.8,,FLEX,Sione Vaki,dk,3000,sione vaki,DET,RB,showdown,00-0039364,auto_exact,high
+RB,Ty Johnson (44138502),Ty Johnson,44138502,CPT,3000,DET@BUF 09/17/2026 08:15PM ET,BUF,0.0,Q,CPT,Ty Johnson,dk,3000,ty johnson,BUF,RB,showdown,00-0035537,auto_exact,high
+TE,Dawson Knox (44138454),Dawson Knox,44138454,FLEX,2800,DET@BUF 09/17/2026 08:15PM ET,BUF,1.7,,FLEX,Dawson Knox,dk,2800,dawson knox,BUF,TE,showdown,00-0035689,auto_exact,high
+TE,Brock Wright (44138503),Brock Wright,44138503,CPT,2700,DET@BUF 09/17/2026 08:15PM ET,DET,1.5,,CPT,Brock Wright,dk,2700,brock wright,DET,TE,showdown,00-0036754,auto_exact,high
+RB,Ray Davis (44138455),Ray Davis,44138455,FLEX,2400,DET@BUF 09/17/2026 08:15PM ET,BUF,0.3,,FLEX,Ray Davis,dk,2400,ray davis,BUF,RB,showdown,00-0039875,auto_exact,high
+TE,Tyler Conklin (44138504),Tyler Conklin,44138504,CPT,2400,DET@BUF 09/17/2026 08:15PM ET,DET,0.0,,CPT,Tyler Conklin,dk,2400,tyler conklin,DET,TE,showdown,00-0034270,auto_fallback_team_mismatch,medium
+RB,Jacob Saylors (44138505),Jacob Saylors,44138505,CPT,2100,DET@BUF 09/17/2026 08:15PM ET,DET,0.0,,CPT,Jacob Saylors,dk,2100,jacob saylors,DET,RB,showdown,00-0038896,auto_exact,high
+RB,Ty Johnson (44138456),Ty Johnson,44138456,FLEX,2000,DET@BUF 09/17/2026 08:15PM ET,BUF,0.0,Q,FLEX,Ty Johnson,dk,2000,ty johnson,BUF,RB,showdown,00-0035537,auto_exact,high
+TE,Brock Wright (44138457),Brock Wright,44138457,FLEX,1800,DET@BUF 09/17/2026 08:15PM ET,DET,1.5,,FLEX,Brock Wright,dk,1800,brock wright,DET,TE,showdown,00-0036754,auto_exact,high
+WR,Tom Kennedy (44138506),Tom Kennedy,44138506,CPT,1800,DET@BUF 09/17/2026 08:15PM ET,DET,0.0,,CPT,Tom Kennedy,dk,1800,tom kennedy,DET,WR,showdown,00-0035544,auto_exact,high
+TE,Tyler Conklin (44138458),Tyler Conklin,44138458,FLEX,1600,DET@BUF 09/17/2026 08:15PM ET,DET,0.0,,FLEX,Tyler Conklin,dk,1600,tyler conklin,DET,TE,showdown,00-0034270,auto_fallback_team_mismatch,medium
+WR,Greg Dortch (44138507),Greg Dortch,44138507,CPT,1500,DET@BUF 09/17/2026 08:15PM ET,BUF,0.0,,CPT,Greg Dortch,dk,1500,greg dortch,BUF,WR,showdown,00-0035500,auto_fallback_team_mismatch,medium
+RB,Jacob Saylors (44138459),Jacob Saylors,44138459,FLEX,1400,DET@BUF 09/17/2026 08:15PM ET,DET,0.0,,FLEX,Jacob Saylors,dk,1400,jacob saylors,DET,RB,showdown,00-0038896,auto_exact,high
+WR,Tom Kennedy (44138460),Tom Kennedy,44138460,FLEX,1200,DET@BUF 09/17/2026 08:15PM ET,DET,0.0,,FLEX,Tom Kennedy,dk,1200,tom kennedy,DET,WR,showdown,00-0035544,auto_exact,high
+WR,Tay Martin (44138508),Tay Martin,44138508,CPT,1200,DET@BUF 09/17/2026 08:15PM ET,DET,0.0,,CPT,Tay Martin,dk,1200,tay martin,DET,WR,showdown,00-0037524,auto_fallback_team_mismatch,medium
+WR,Greg Dortch (44138461),Greg Dortch,44138461,FLEX,1000,DET@BUF 09/17/2026 08:15PM ET,BUF,0.0,,FLEX,Greg Dortch,dk,1000,greg dortch,BUF,WR,showdown,00-0035500,auto_fallback_team_mismatch,medium
+TE,Jackson Hawes (44138509),Jackson Hawes,44138509,CPT,900,DET@BUF 09/17/2026 08:15PM ET,BUF,0.0,,CPT,Jackson Hawes,dk,900,jackson hawes,BUF,TE,showdown,00-0040194,auto_exact,high
+WR,Tay Martin (44138462),Tay Martin,44138462,FLEX,800,DET@BUF 09/17/2026 08:15PM ET,DET,0.0,,FLEX,Tay Martin,dk,800,tay martin,DET,WR,showdown,00-0037524,auto_fallback_team_mismatch,medium
+TE,Jackson Hawes (44138463),Jackson Hawes,44138463,FLEX,600,DET@BUF 09/17/2026 08:15PM ET,BUF,0.0,,FLEX,Jackson Hawes,dk,600,jackson hawes,BUF,TE,showdown,00-0040194,auto_exact,high
+RB,Frank Gore Jr. (44138510),Frank Gore Jr.,44138510,CPT,600,DET@BUF 09/17/2026 08:15PM ET,BUF,0.3,,CPT,Frank Gore Jr.,dk,600,frank gore,BUF,RB,showdown,00-0039471,auto_exact,high
+RB,Frank Gore Jr. (44138464),Frank Gore Jr.,44138464,FLEX,400,DET@BUF 09/17/2026 08:15PM ET,BUF,0.3,,FLEX,Frank Gore Jr.,dk,400,frank gore,BUF,RB,showdown,00-0039471,auto_exact,high
+RB,Isiah Pacheco (44138511),Isiah Pacheco,44138511,CPT,300,DET@BUF 09/17/2026 08:15PM ET,DET,0.0,IR,CPT,Isiah Pacheco,dk,300,isiah pacheco,DET,RB,showdown,00-0037197,auto_fallback_team_mismatch,medium
+RB,Jabari Small (44138512),Jabari Small,44138512,CPT,300,DET@BUF 09/17/2026 08:15PM ET,DET,0.0,,CPT,Jabari Small,dk,300,jabari small,DET,RB,showdown,00-0039652,auto_exact,high
+WR,Skyler Bell (44138513),Skyler Bell,44138513,CPT,300,DET@BUF 09/17/2026 08:15PM ET,BUF,0.0,,CPT,Skyler Bell,dk,300,skyler bell,BUF,WR,showdown,00-0041443,auto_exact,high
+WR,Kendrick Law (44138514),Kendrick Law,44138514,CPT,300,DET@BUF 09/17/2026 08:15PM ET,DET,0.0,IR,CPT,Kendrick Law,dk,300,kendrick law,DET,WR,showdown,00-0041446,auto_exact,high
+WR,Ja'Mori Maclin (44138515),Ja'Mori Maclin,44138515,CPT,300,DET@BUF 09/17/2026 08:15PM ET,BUF,0.0,,CPT,Ja'Mori Maclin,dk,300,jamori maclin,BUF,WR,showdown,00-0041272,auto_exact,high
+WR,Trent Sherfield Sr. (44138516),Trent Sherfield Sr.,44138516,CPT,300,DET@BUF 09/17/2026 08:15PM ET,BUF,0.0,,CPT,Trent Sherfield Sr.,dk,300,trent sherfield,BUF,WR,showdown,00-0034487,auto_fallback_team_mismatch,medium
+WR,Stephen Gosnell (44138517),Stephen Gosnell,44138517,CPT,300,DET@BUF 09/17/2026 08:15PM ET,BUF,0.0,,CPT,Stephen Gosnell,dk,300,stephen gosnell,BUF,WR,showdown,00-0040361,auto_exact,high
+WR,Lucky Jackson (44138518),Lucky Jackson,44138518,CPT,300,DET@BUF 09/17/2026 08:15PM ET,DET,0.0,,CPT,Lucky Jackson,dk,300,lucky jackson,DET,WR,showdown,00-0038181,auto_exact,high
+WR,Dominic Lovett (44138519),Dominic Lovett,44138519,CPT,300,DET@BUF 09/17/2026 08:15PM ET,DET,0.0,,CPT,Dominic Lovett,dk,300,dominic lovett,DET,WR,showdown,00-0040241,auto_exact,high
+TE,Jackson Meeks (44138520),Jackson Meeks,44138520,CPT,300,DET@BUF 09/17/2026 08:15PM ET,DET,0.0,,CPT,Jackson Meeks,dk,300,jackson meeks,DET,TE,showdown,00-0040390,auto_exact,high
+TE,Keleki Latu (44138521),Keleki Latu,44138521,CPT,300,DET@BUF 09/17/2026 08:15PM ET,BUF,0.0,,CPT,Keleki Latu,dk,300,keleki latu,BUF,TE,showdown,00-0040363,auto_exact,high
+TE,Thomas Gordon (44138522),Thomas Gordon,44138522,CPT,300,DET@BUF 09/17/2026 08:15PM ET,DET,0.0,,CPT,Thomas Gordon,dk,300,thomas gordon,DET,TE,showdown,00-0040697,auto_exact,high
+WR,Tyrell Shavers (44138523),Tyrell Shavers,44138523,CPT,300,DET@BUF 09/17/2026 08:15PM ET,BUF,0.0,OUT,CPT,Tyrell Shavers,dk,300,tyrell shavers,BUF,WR,showdown,00-0038679,auto_exact,high
+RB,Isiah Pacheco (44138465),Isiah Pacheco,44138465,FLEX,200,DET@BUF 09/17/2026 08:15PM ET,DET,0.0,IR,FLEX,Isiah Pacheco,dk,200,isiah pacheco,DET,RB,showdown,00-0037197,auto_fallback_team_mismatch,medium
+RB,Jabari Small (44138466),Jabari Small,44138466,FLEX,200,DET@BUF 09/17/2026 08:15PM ET,DET,0.0,,FLEX,Jabari Small,dk,200,jabari small,DET,RB,showdown,00-0039652,auto_exact,high
+WR,Skyler Bell (44138467),Skyler Bell,44138467,FLEX,200,DET@BUF 09/17/2026 08:15PM ET,BUF,0.0,,FLEX,Skyler Bell,dk,200,skyler bell,BUF,WR,showdown,00-0041443,auto_exact,high
+WR,Kendrick Law (44138468),Kendrick Law,44138468,FLEX,200,DET@BUF 09/17/2026 08:15PM ET,DET,0.0,IR,FLEX,Kendrick Law,dk,200,kendrick law,DET,WR,showdown,00-0041446,auto_exact,high
+WR,Ja'Mori Maclin (44138469),Ja'Mori Maclin,44138469,FLEX,200,DET@BUF 09/17/2026 08:15PM ET,BUF,0.0,,FLEX,Ja'Mori Maclin,dk,200,jamori maclin,BUF,WR,showdown,00-0041272,auto_exact,high
+WR,Trent Sherfield Sr. (44138470),Trent Sherfield Sr.,44138470,FLEX,200,DET@BUF 09/17/2026 08:15PM ET,BUF,0.0,,FLEX,Trent Sherfield Sr.,dk,200,trent sherfield,BUF,WR,showdown,00-0034487,auto_fallback_team_mismatch,medium
+WR,Stephen Gosnell (44138471),Stephen Gosnell,44138471,FLEX,200,DET@BUF 09/17/2026 08:15PM ET,BUF,0.0,,FLEX,Stephen Gosnell,dk,200,stephen gosnell,BUF,WR,showdown,00-0040361,auto_exact,high
+WR,Lucky Jackson (44138472),Lucky Jackson,44138472,FLEX,200,DET@BUF 09/17/2026 08:15PM ET,DET,0.0,,FLEX,Lucky Jackson,dk,200,lucky jackson,DET,WR,showdown,00-0038181,auto_exact,high
+WR,Dominic Lovett (44138473),Dominic Lovett,44138473,FLEX,200,DET@BUF 09/17/2026 08:15PM ET,DET,0.0,,FLEX,Dominic Lovett,dk,200,dominic lovett,DET,WR,showdown,00-0040241,auto_exact,high
+TE,Jackson Meeks (44138474),Jackson Meeks,44138474,FLEX,200,DET@BUF 09/17/2026 08:15PM ET,DET,0.0,,FLEX,Jackson Meeks,dk,200,jackson meeks,DET,TE,showdown,00-0040390,auto_exact,high
+TE,Keleki Latu (44138475),Keleki Latu,44138475,FLEX,200,DET@BUF 09/17/2026 08:15PM ET,BUF,0.0,,FLEX,Keleki Latu,dk,200,keleki latu,BUF,TE,showdown,00-0040363,auto_exact,high
+TE,Thomas Gordon (44138476),Thomas Gordon,44138476,FLEX,200,DET@BUF 09/17/2026 08:15PM ET,DET,0.0,,FLEX,Thomas Gordon,dk,200,thomas gordon,DET,TE,showdown,00-0040697,auto_exact,high
+WR,Tyrell Shavers (44138477),Tyrell Shavers,44138477,FLEX,200,DET@BUF 09/17/2026 08:15PM ET,BUF,0.0,OUT,FLEX,Tyrell Shavers,dk,200,tyrell shavers,BUF,WR,showdown,00-0038679,auto_exact,high
