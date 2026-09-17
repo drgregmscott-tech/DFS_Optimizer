@@ -1583,3 +1583,6 @@ timestamp_utc,trigger_type,site,step,status
 2026-09-17T20:56:11.484005+00:00,full_refresh_scheduled,dk,dk_showdown_wk2_Det_Buf_17Sep2026,build_projections,success
 2026-09-17T20:56:11.484005+00:00,full_refresh_scheduled,dk,dk_showdown_wk2_Det_Buf_17Sep2026,status_apply,skipped
 2026-09-17T20:56:11.484005+00:00,full_refresh_scheduled,dk,dk_showdown_wk2_Det_Buf_17Sep2026,pivot_finder,success
+2026-09-17T23:01:26.012382+00:00,full_refresh_dispatch,dk,dk_showdown_wk2_Det_Buf_17Sep2026,build_projections,success
+2026-09-17T23:01:26.012382+00:00,full_refresh_dispatch,dk,dk_showdown_wk2_Det_Buf_17Sep2026,status_apply,skipped
+2026-09-17T23:01:26.012382+00:00,full_refresh_dispatch,dk,dk_showdown_wk2_Det_Buf_17Sep2026,pivot_finder,success
