@@ -16,6 +16,34 @@ as a ratio vs the league-average points allowed to that position.
   matchup_factor == 1.0 -> exactly league average (or a position/team combo
                             with no data yet, see fillna note below)
 
+Decision #2 (Session 16.y): EMPIRICAL-BAYES SHRINKAGE ON GAMES PLAYED.
+  Early in a season a team+position's raw ratio is built from very few
+  games (1 game for every team in the league at week 2) -- a single fluky
+  defensive performance (garbage time, one busted coverage, an unusually
+  pass-heavy opponent script) gets applied to every one of that team's
+  upcoming opponents at close to full strength, with nothing to weigh it
+  against. This is the same small-sample problem statline_model.py's
+  _shrink() already solves for a PLAYER's own rates -- this script had no
+  equivalent for the DEFENSE side until now, even though its output feeds
+  directly into the same final_projection.
+
+  Shrinkage pulls each team+position's raw ratio toward the neutral 1.0
+  prior (by construction, "1.0" IS the league average here), weighted by
+  how many of that team's own games are in the sample:
+
+      shrunk_factor = (games * raw_factor + k * 1.0) / (games + k)
+
+  At games=0 (a bye-only edge case) this returns exactly 1.0 (neutral,
+  matching this module's existing fillna(1.0) convention). k=4.0 is
+  ARBITRARY, NOT fit, NOT user-confirmed -- chosen to match
+  volume_prior.DEFAULT_COLD_START_K's shape deliberately (same project
+  convention as salary_anchor.py's decision #4 and volume_prior.py's
+  decision #1: one cold-start half-weight point reused across the
+  project's several small-sample corrections, rather than a new
+  unexamined number for every one). First retuning target once real
+  logged actuals exist to fit it against (see log_results.py's data
+  gate).
+
 Site-aware scoring (same rule as Session 2.1's projections_baseline.py):
   - DK is full PPR  -> use nflverse's precomputed `fantasy_points_ppr` as-is.
   - FD is half PPR  -> derived as `fantasy_points + 0.5 * receptions`.
@@ -48,6 +76,11 @@ SITE_SCORING = {
     "dk": "full_ppr",
     "fd": "half_ppr",
 }
+
+# Decision #2 -- ARBITRARY, NOT fit. See module docstring for why this
+# reuses volume_prior.DEFAULT_COLD_START_K's value rather than introducing
+# a new unexamined constant.
+SHRINKAGE_K_GAMES = 4.0
 
 
 # ---------------------------------------------------------------------------
@@ -125,7 +158,8 @@ def matchup_factors(weekly: pd.DataFrame) -> pd.DataFrame:
     For each opponent_team+position, average fantasy points scored AGAINST
     that team by players at that position (i.e. points that team "allows").
     Express as a ratio vs the league-average points allowed to that
-    position across all teams.
+    position across all teams, then shrink that ratio toward the neutral
+    1.0 prior by how many games it's built from (decision #2).
 
     Averaging is done per game, not per player: a team's points-allowed to
     a position in a given week is the SUM of that position's fantasy
@@ -139,14 +173,24 @@ def matchup_factors(weekly: pd.DataFrame) -> pd.DataFrame:
         .sum()
         .reset_index()
     )
+    grouped = per_team_week.groupby(["opponent_team", "position"])["fantasy_points"]
     allowed = (
-        per_team_week.groupby(["opponent_team", "position"])["fantasy_points"]
-        .mean()
+        grouped.mean()
         .reset_index()
         .rename(columns={"opponent_team": "team", "fantasy_points": "pts_allowed_avg"})
     )
+    allowed["games"] = grouped.size().to_numpy()
     league_avg = allowed.groupby("position")["pts_allowed_avg"].transform("mean")
-    allowed["matchup_factor"] = allowed["pts_allowed_avg"] / league_avg
+    raw_factor = allowed["pts_allowed_avg"] / league_avg
+
+    # Decision #2: shrunk_factor = (games * raw + k * 1.0) / (games + k).
+    # At games=0 this is exactly 1.0 (neutral) -- can't happen here since
+    # `allowed` is only ever built from teams with >= 1 game in the sample,
+    # but the formula is written to degrade to the right answer anyway.
+    k = SHRINKAGE_K_GAMES
+    allowed["matchup_factor"] = (
+        (allowed["games"] * raw_factor + k * 1.0) / (allowed["games"] + k)
+    )
     return allowed[["team", "position", "matchup_factor"]]
 
 
