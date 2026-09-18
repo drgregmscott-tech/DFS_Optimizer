@@ -53,8 +53,31 @@
 #      to a common 1:00pm ET early slate and is an approximation -- a week
 #      with different lock times won't perfectly line up. Known limitation
 #      of a static cron schedule, not a bug.
-#   2. full_refresh_scheduled (this file's own `schedule:` cron) -- every 3
-#      hours on Thu/Sun/Mon, full pipeline, every active slate.
+#   2. full_refresh_scheduled (this file's own `schedule:` cron) -- trimmed
+#      2026-09-18 (see SESSION_LOG.md): the original "every 3 hours on
+#      Thu/Sun/Mon" cadence was written in UTC without accounting for the
+#      ET offset, so in real ET wall-clock time it actually fired from
+#      Wed evening through Thu afternoon, Sat evening through Sun evening,
+#      and Sun evening through Mon afternoon -- including 2am/5am ET runs
+#      with no real news or line movement to catch, and each run fans out
+#      into ~9 billed jobs (prepare + shared_pull + one refresh_slate job
+#      per active slate + finalize) via the matrix in JOB 3 below. That
+#      was consuming Actions minutes fast enough to threaten the
+#      account-wide 2,000 min/month free-tier budget shared with every
+#      other repo on the account. Replaced with 6 runs/week, anchored to
+#      when data actually needs to be fresh:
+#        - Thu 23:15 UTC (~7:15pm ET) -- ~1hr before a typical ~8:15pm ET
+#          TNF kickoff; injury news drops ~90min before kickoff, so this
+#          catches it with margin.
+#        - Sat 12:00 UTC (~8am ET) -- one early morning check.
+#        - Sun 12:00, 16:00, 19:00 UTC (~8am, 12pm, 3pm ET) -- covers the
+#          early slate, the midday window, and the afternoon slate.
+#        - Mon 23:15 UTC (~7:15pm ET) -- same ~1hr-before-kickoff logic
+#          as Thursday, for MNF.
+#      CAVEAT (same class of limitation already noted for the Sunday
+#      vegas-only window below): these are fixed UTC times. Once DST ends
+#      (Nov 2, 2026), they'll fire 1hr earlier in real ET wall-clock time
+#      (e.g. 6:15pm instead of 7:15pm) unless revisited then.
 #   3. full_refresh_dispatch (repository_dispatch, type "near_lock_refresh")
 #      -- fired by cloudflare_worker/scheduled_refresh.js, itself pinged by
 #      an external cron-job.org job during the real near-lock window(s).
@@ -83,7 +106,13 @@ on:
     - cron: "0 15,21 * * 6"           # Sat, 2x/day, ~11am + 5pm ET
     - cron: "0 15,16,17 * * 0"        # Sun, hourly, ~11am-1pm ET
     # --- full_refresh_scheduled (full pipeline, every active slate) ---
-    - cron: "0 */3 * * 4,0,1"         # Thu, Sun, Mon, every 3 hours
+    # Trimmed 2026-09-18 from "every 3 hours on Thu/Sun/Mon" (24 runs/week,
+    # including 2am/5am ET dead-of-night runs -- see header comment above)
+    # down to 6 runs/week anchored to real lock/kickoff timing.
+    - cron: "15 23 * * 4"             # Thu ~7:15pm ET, ~1hr before TNF kickoff
+    - cron: "0 12 * * 6"              # Sat ~8am ET
+    - cron: "0 12,16,19 * * 0"        # Sun ~8am/12pm/3pm ET
+    - cron: "15 23 * * 1"             # Mon ~7:15pm ET, ~1hr before MNF kickoff
   repository_dispatch:
     types: [near_lock_refresh]
   workflow_dispatch:
@@ -137,7 +166,7 @@ jobs:
                 echo "mode=vegas_only" >> "$GITHUB_OUTPUT"
                 echo "trigger_type=light_vegas_refresh" >> "$GITHUB_OUTPUT"
                 ;;
-              "0 */3 * * 4,0,1")
+              "15 23 * * 4"|"0 12 * * 6"|"0 12,16,19 * * 0"|"15 23 * * 1")
                 echo "mode=full" >> "$GITHUB_OUTPUT"
                 echo "trigger_type=full_refresh_scheduled" >> "$GITHUB_OUTPUT"
                 ;;
