@@ -33,3 +33,6 @@ config/api_keys.env
 #      PII/credentials in data/ today (public NFL stats + a personal DK/FD
 #      salary export, not sensitive), but re-check before tracking a new
 #      data source blindly.
+
+# Wrangler local cache (contains Cloudflare account ID/email) -- never commit
+.wrangler/
