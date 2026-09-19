@@ -537,7 +537,14 @@ def run_apply(site: str, week: int, status_file: str, projections_file: str | No
     if missing:
         raise SystemExit(f"{status_path} is missing expected columns: {sorted(missing)}.")
 
-    merged = projections.merge(status[["player_id", "status"]], on="player_id", how="left")
+    # raw_status is carried through (when the status file has it) as
+    # `injury_raw_status` so the front end can show ESPN's own wording --
+    # STATUS_MAP collapses "Probable" into ACTIVE, which would otherwise
+    # make a probable player indistinguishable from a healthy one.
+    status_cols = ["player_id", "status"] + (["raw_status"] if "raw_status" in status.columns else [])
+    merged = projections.merge(status[status_cols], on="player_id", how="left")
+    if "raw_status" in merged.columns:
+        merged = merged.rename(columns={"raw_status": "injury_raw_status"})
     # A player in the current slate but absent from the ESPN pull (e.g. a
     # team that failed to fetch, decision #4's partial-pull case) is
     # treated as ACTIVE -- the same "no evidence of a problem" default

@@ -430,6 +430,14 @@
     margin-top: 1px;
   }
 
+  .inj-flag {
+    display: inline-block;
+    margin-left: 6px;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--bad);
+  }
+
   .zero-flag {
     display: inline-block;
     margin-left: 7px;
@@ -2346,9 +2354,24 @@ in this browser's localStorage.</p>
         // salary/projection, and dropping this here (as the pre-13.5
         // whitelist did) made the two indistinguishable in the UI.
         slate_format: r.slate_format || "classic",
-        roster_role: r.roster_role || ""
+        roster_role: r.roster_role || "",
+        // status_check.py apply's columns; blank/absent = no designation.
+        injury_status: r.injury_status || "",
+        injury_raw_status: r.injury_raw_status || ""
       };
     });
+  }
+
+  // O / D / Q / P in red next to a player's name; nothing for ACTIVE or
+  // no data. "Probable" is folded into ACTIVE by status_check.py's
+  // STATUS_MAP, so it's read from the raw ESPN wording instead.
+  function injuryFlagHtml(status, raw) {
+    var s = String(status || "").toUpperCase();
+    var letter = s === "OUT" ? "O" : s === "DOUBTFUL" ? "D" : s === "QUESTIONABLE" ? "Q" :
+      (String(raw || "").toLowerCase() === "probable" ? "P" : "");
+    if (!letter) return "";
+    var title = (raw || status || letter);
+    return '<span class="inj-flag" title="' + escapeHtml(title) + '">' + letter + '</span>';
   }
 
   // Step 1 of upload: read and parse the file, show the label field.
@@ -2757,6 +2780,10 @@ in this browser's localStorage.</p>
     if (pool) {
       pool.players.forEach(function (p) { if (p.ownership != null) ownershipById[p.player_id] = p.ownership; });
     }
+    var injuryById = {};
+    if (pool) {
+      pool.players.forEach(function (p) { injuryById[p.player_id] = injuryFlagHtml(p.injury_status, p.injury_raw_status); });
+    }
     var rowOwnerships = rows.map(function (r) { return ownershipById[r.player_id]; });
     var allHaveOwnership = rowOwnerships.every(function (o) { return o != null; });
     var totalOwnership = allHaveOwnership ? rowOwnerships.reduce(function (s, o) { return s + o; }, 0) : null;
@@ -2814,7 +2841,7 @@ in this browser's localStorage.</p>
       var swappedFlag = state.swappedSlots[site][id + "|" + r.roster_slot] ? '<span class="pivot-swapped-flag">SWAPPED</span>' : "";
       var rowHtml = '<div class="roster-row pivot-clickable' + (isExpanded ? " pivot-expanded" : "") + '" data-row-index="' + i + '">' +
         '<div class="slot-badge">' + r.roster_slot + '</div>' +
-        '<div class="player-cell"><div class="player-name">' + escapeHtml(r.player_name.trim()) +
+        '<div class="player-cell"><div class="player-name">' + escapeHtml(r.player_name.trim()) + (injuryById[r.player_id] || "") +
         (isZero ? '<span class="zero-flag">0 PTS</span>' : '') + swappedFlag + '</div>' +
         '<div class="player-meta">' + escapeHtml(r.team) + (r.opponent ? " vs " + escapeHtml(r.opponent) : "") + '</div></div>' +
         '<div class="pos-cell">' + escapeHtml(r.position) + '</div>' +
@@ -3477,7 +3504,7 @@ in this browser's localStorage.</p>
         seenInThisLineup[pid] = true;
         if (!byId[pid]) {
           byId[pid] = {
-            player_name: r.player_name, position: r.position, team: r.team,
+            player_id: r.player_id, player_name: r.player_name, position: r.position, team: r.team,
             salary: parseFloat(r.salary) || 0, projection: parseFloat(r.projection) || 0,
             count: 0,
           };
@@ -3518,10 +3545,15 @@ in this browser's localStorage.</p>
     // your top chalk/dart plays and confirming they landed where you
     // meant them to, so that's what should be on top by default.
     rows.sort(function (a, b) { return b.exposurePct - a.exposurePct || b.projection - a.projection; });
+    var expPool = state.pool[site];
+    var injuryByPid = {};
+    if (expPool) {
+      expPool.players.forEach(function (q) { injuryByPid[q.player_id] = injuryFlagHtml(q.injury_status, q.injury_raw_status); });
+    }
     var rowsHtml = rows.map(function (p) {
       return '<div class="roster-row">' +
         '<div class="slot-badge">' + escapeHtml(p.team) + '</div>' +
-        '<div class="player-cell"><div class="player-name">' + escapeHtml(p.player_name.trim()) + '</div></div>' +
+        '<div class="player-cell"><div class="player-name">' + escapeHtml(p.player_name.trim()) + (injuryByPid[p.player_id] || "") + '</div></div>' +
         '<div class="pos-cell">' + escapeHtml(p.position) + '</div>' +
         '<div class="salary-cell mono">' + fmtMoney(p.salary) + '</div>' +
         '<div class="proj-cell mono">' + fmtPts(p.projection) + '</div>' +
@@ -3700,7 +3732,7 @@ in this browser's localStorage.</p>
         '<button class="icon-btn thumb-btn thumb-up-btn' + (isThumbUp ? ' active' : '') + '" data-action="thumb-up" title="' + (isThumbUp ? 'Remove thumbs up' : 'Thumbs up (boosts this build\u2019s projection)') + '">&#128077;</button>' +
         '<button class="icon-btn thumb-btn thumb-down-btn' + (isThumbDown ? ' active' : '') + '" data-action="thumb-down" title="' + (isThumbDown ? 'Remove thumbs down' : 'Thumbs down (reduces this build\u2019s projection)') + '">&#128078;</button>' +
         '</div>' +
-        '<div><div class="pname">' + escapeHtml(p.player_name) +
+        '<div><div class="pname">' + escapeHtml(p.player_name) + injuryFlagHtml(p.injury_status, p.injury_raw_status) +
         (p.roster_role ? ' <span style="color:var(--amber);font-size:11px;">(' + escapeHtml(p.roster_role) + ')</span>' : '') + '</div>' +
         '<div class="pmeta">' + escapeHtml(p.position) + ' · ' + escapeHtml(p.team) +
         '<span class="exp-override">' +
