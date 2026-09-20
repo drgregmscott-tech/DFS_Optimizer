@@ -166,7 +166,8 @@ import pandas as pd
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 import scoring_rules  # noqa: E402
-import statline_model  # noqa: E402
+import statline_model
+import weather as weather_mod  # noqa: E402
 import sigma_recalibration
 import volume_prior  # noqa: E402
 from ingest_salaries import SITE_CONFIGS  # noqa: E402
@@ -256,6 +257,7 @@ def build_statline_projections(site: str, season: int, week: int, slate_id: str,
                                confirmed_starter_override: bool = True,
                                sigma_recal: bool = False,
                                vegas_slate_id: str = None,
+                               use_weather: bool = True,
                                ) -> pd.DataFrame:
     """`vegas_slate_id` (Session 14.0 -- this engine never had Session
     13.5-pause's fix at all): defaults to `slate_id`. See
@@ -413,6 +415,24 @@ def build_statline_projections(site: str, season: int, week: int, slate_id: str,
 
     # Decision #10 of statline_model: the market factor scales efficiency.
     df["market_factor"] = df["matchup_factor"] * df["vegas_factor"]
+
+    # Weather (scripts/weather.py): per-team multipliers on pass/receiving and
+    # rushing efficiency, read by statline_model.simulate(). Neutral 1.0 when
+    # disabled, when no weather file exists, or for indoor/failed games.
+    weather_factors = (weather_mod.load_weather_factors(season, week) if use_weather
+                       else pd.DataFrame(columns=["team", "pass_factor", "rush_factor", "kicker_factor"]))
+    weather_factors = weather_factors.drop_duplicates("team").rename(columns={
+        "pass_factor": "weather_pass_factor", "rush_factor": "weather_rush_factor",
+        "kicker_factor": "weather_kicker_factor"})
+    df = df.merge(weather_factors, on="team", how="left")
+    for c in ("weather_pass_factor", "weather_rush_factor", "weather_kicker_factor"):
+        df[c] = df[c].fillna(1.0)
+    df.loc[df["no_real_game_this_week"], ["weather_pass_factor", "weather_rush_factor",
+                                          "weather_kicker_factor"]] = 1.0
+    _adj = df[(df["weather_pass_factor"] < 1.0) & ~df["no_real_game_this_week"]]
+    if len(_adj):
+        print("Weather adjustment applied: " + ", ".join(
+            f"{t} pass x{f:.3f}" for t, f in _adj.groupby("team")["weather_pass_factor"].first().items()))
 
     # Share reconciliation (statline_model decision #7) -- mandatory per the
     # ROADMAP, because an incoherent QB/receiver pair corrupts stacking.
@@ -714,6 +734,8 @@ def build_statline_projections(site: str, season: int, week: int, slate_id: str,
         # shape.
         kicker_out = kicker_out.rename(
             columns={"dst_p10": "statline_p10", "dst_p90": "statline_p90"})
+        _kf = weather_factors.set_index("team")["weather_kicker_factor"]
+        kicker_out["final_projection"] = kicker_out["final_projection"] *             kicker_out["team"].map(_kf).fillna(1.0)
         kicker_out["sigma_source"] = np.where(
             kicker_out["final_projection"] > 0,
             "kicker_session_13_1", "no_game")
@@ -844,6 +866,9 @@ if __name__ == "__main__":
                              "undo, because the distortion is non-linear in "
                              "sigma. Fails loud if the artifact is missing or "
                              "was fit for a different site.")
+    parser.add_argument("--no-weather", action="store_true",
+                        help="Skip the game-day weather adjustment (scripts/weather.py); "
+                             "every player gets neutral 1.0 factors.")
     parser.add_argument("--reconcile-threshold", type=float,
                         default=statline_model.RECONCILE_FAIL_THRESHOLD,
                         help="Max proportional share-reconciliation rescale before "
@@ -861,7 +886,8 @@ if __name__ == "__main__":
         role_change=not args.no_role_change,
         confirmed_starter_override=not args.no_confirmed_starter_override,
         sigma_recal=args.sigma_recalibration,
-        vegas_slate_id=args.vegas_slate_id)
+        vegas_slate_id=args.vegas_slate_id,
+        use_weather=not args.no_weather)
 
     def _clean_site_id(value):
         if pd.isna(value):

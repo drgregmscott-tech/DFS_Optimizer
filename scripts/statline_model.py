@@ -2063,8 +2063,14 @@ def simulate(pool: pd.DataFrame, site: str, variance: dict,
                     mu_for_draw = mu + shock_scale * c * slope * hist_share * shock
 
             # Decision #10: the market factor scales efficiency, not volume.
-            yd_rate = _num(getattr(row, f"{name}_yd_rate", 0.0)) * factor
-            td_rate = _num(getattr(row, f"{name}_td_rate", 0.0)) * factor
+            # Weather (scripts/weather.py): pass/receiving vs rushing
+            # efficiency, neutral 1.0 when the column is absent.
+            wx = _num(getattr(row, "weather_rush_factor" if name == "rush"
+                              else "weather_pass_factor", 1.0), 1.0)
+            if wx <= 0:
+                wx = 1.0
+            yd_rate = _num(getattr(row, f"{name}_yd_rate", 0.0)) * factor * wx
+            td_rate = _num(getattr(row, f"{name}_td_rate", 0.0)) * factor * wx
             vol, yards, tds = _draw_component(
                 rng, n_sims, mu_for_draw, comp["r"], yd_rate, td_rate,
                 comp["yards_cv"], comp["latent_sd"])

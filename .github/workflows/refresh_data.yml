@@ -273,6 +273,25 @@ jobs:
         continue-on-error: true
         run: python3 scripts/vegas_odds.py --slate-id ${{ needs.prepare.outputs.first_slate_id }}
 
+      # Game-day weather forecast (scripts/weather.py, Open-Meteo, no key).
+      # One pull per distinct season/week pair. Fail-safe by design: if this
+      # fails, the previously committed data/weather_*.csv stays in place, and
+      # if none exists the build treats every game as neutral (factor 1.0).
+      - name: Pull game-day weather forecast
+        id: weather
+        continue-on-error: true
+        env:
+          SEASON_WEEK_PAIRS: ${{ needs.prepare.outputs.season_week_pairs }}
+        run: |
+          python3 -c "
+          import json, os
+          for p in json.loads(os.environ['SEASON_WEEK_PAIRS']):
+              print(f\"{p['season']} {p['week']}\")
+          " > /tmp/wx_pairs.txt
+          while read season week; do
+            python3 scripts/weather.py --season "$season" --week "$week"
+          done < /tmp/wx_pairs.txt
+
       - name: Pull current-season team stats (needed by distributional DST)
         id: team_stats
         if: needs.prepare.outputs.mode == 'full'
