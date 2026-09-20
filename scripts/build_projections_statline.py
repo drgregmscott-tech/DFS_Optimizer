@@ -419,20 +419,19 @@ def build_statline_projections(site: str, season: int, week: int, slate_id: str,
     # Weather (scripts/weather.py): per-team multipliers on pass/receiving and
     # rushing efficiency, read by statline_model.simulate(). Neutral 1.0 when
     # disabled, when no weather file exists, or for indoor/failed games.
+    _wx_cols = list(weather_mod.NEUTRAL)
     weather_factors = (weather_mod.load_weather_factors(season, week) if use_weather
-                       else pd.DataFrame(columns=["team", "pass_factor", "rush_factor", "kicker_factor"]))
-    weather_factors = weather_factors.drop_duplicates("team").rename(columns={
-        "pass_factor": "weather_pass_factor", "rush_factor": "weather_rush_factor",
-        "kicker_factor": "weather_kicker_factor"})
+                       else pd.DataFrame(columns=["team", *_wx_cols]))
+    weather_factors = weather_factors.drop_duplicates("team")
     df = df.merge(weather_factors, on="team", how="left")
-    for c in ("weather_pass_factor", "weather_rush_factor", "weather_kicker_factor"):
+    for c in _wx_cols:
         df[c] = df[c].fillna(1.0)
-    df.loc[df["no_real_game_this_week"], ["weather_pass_factor", "weather_rush_factor",
-                                          "weather_kicker_factor"]] = 1.0
-    _adj = df[(df["weather_pass_factor"] < 1.0) & ~df["no_real_game_this_week"]]
+        df.loc[df["no_real_game_this_week"], c] = 1.0
+    _adj = df[(df["pass_eff_factor"] < 1.0) & ~df["no_real_game_this_week"]]
     if len(_adj):
         print("Weather adjustment applied: " + ", ".join(
-            f"{t} pass x{f:.3f}" for t, f in _adj.groupby("team")["weather_pass_factor"].first().items()))
+            f"{t} pass eff x{r.pass_eff_factor:.3f}/vol x{r.pass_vol_factor:.3f}/rush vol x{r.rush_vol_factor:.3f}"
+            for t, r in _adj.groupby("team").first().iterrows()))
 
     # Share reconciliation (statline_model decision #7) -- mandatory per the
     # ROADMAP, because an incoherent QB/receiver pair corrupts stacking.
@@ -734,7 +733,7 @@ def build_statline_projections(site: str, season: int, week: int, slate_id: str,
         # shape.
         kicker_out = kicker_out.rename(
             columns={"dst_p10": "statline_p10", "dst_p90": "statline_p90"})
-        _kf = weather_factors.set_index("team")["weather_kicker_factor"]
+        _kf = weather_factors.set_index("team")["kicker_factor"]
         kicker_out["final_projection"] = kicker_out["final_projection"] *             kicker_out["team"].map(_kf).fillna(1.0)
         kicker_out["sigma_source"] = np.where(
             kicker_out["final_projection"] > 0,

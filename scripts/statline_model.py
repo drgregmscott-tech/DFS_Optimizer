@@ -2051,6 +2051,18 @@ def simulate(pool: pd.DataFrame, site: str, variance: dict,
             # shared shock, unless this (position, component) pair is
             # excluded (WR/rush -- see fit_statline_variance.py decision
             # #8) or no shock exists for this team/component/artifact.
+            # Weather (scripts/weather.py): the passing chain (pass/recv)
+            # gets an efficiency + volume factor; rushing gets a volume lift.
+            # All neutral 1.0 when the columns are absent.
+            if name == "rush":
+                wx_eff, wx_vol = 1.0, _num(getattr(row, "rush_vol_factor", 1.0), 1.0)
+            else:
+                wx_eff = _num(getattr(row, "pass_eff_factor", 1.0), 1.0)
+                wx_vol = _num(getattr(row, "pass_vol_factor", 1.0), 1.0)
+            wx_eff = wx_eff if wx_eff > 0 else 1.0
+            wx_vol = wx_vol if wx_vol > 0 else 1.0
+            mu = mu * wx_vol
+
             mu_for_draw = mu
             shock = team_shocks.get((team, name)) if team is not None else None
             if (shock is not None and (pos, name) not in excluded_pairs
@@ -2063,14 +2075,8 @@ def simulate(pool: pd.DataFrame, site: str, variance: dict,
                     mu_for_draw = mu + shock_scale * c * slope * hist_share * shock
 
             # Decision #10: the market factor scales efficiency, not volume.
-            # Weather (scripts/weather.py): pass/receiving vs rushing
-            # efficiency, neutral 1.0 when the column is absent.
-            wx = _num(getattr(row, "weather_rush_factor" if name == "rush"
-                              else "weather_pass_factor", 1.0), 1.0)
-            if wx <= 0:
-                wx = 1.0
-            yd_rate = _num(getattr(row, f"{name}_yd_rate", 0.0)) * factor * wx
-            td_rate = _num(getattr(row, f"{name}_td_rate", 0.0)) * factor * wx
+            yd_rate = _num(getattr(row, f"{name}_yd_rate", 0.0)) * factor * wx_eff
+            td_rate = _num(getattr(row, f"{name}_td_rate", 0.0)) * factor * wx_eff
             vol, yards, tds = _draw_component(
                 rng, n_sims, mu_for_draw, comp["r"], yd_rate, td_rate,
                 comp["yards_cv"], comp["latent_sd"])

@@ -36,3 +36,4 @@ config/api_keys.env
 
 # Wrangler local cache (contains Cloudflare account ID/email) -- never commit
 .wrangler/
+data/_precip_cache.json
