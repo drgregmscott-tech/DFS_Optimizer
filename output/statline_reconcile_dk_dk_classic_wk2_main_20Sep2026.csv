@@ -17,13 +17,13 @@ WAS,rush,1.0,recent,33.69,27.98,0.8305,5.71
 SF,recv,0.9706,recent,39.4,32.77,0.8316,6.64
 PIT,recv,1.0,recent,40.73,33.88,0.8318,6.85
 GB,recv,1.0,recent,42.6,35.48,0.833,7.11
-BAL,rush,1.0,recent,37.49,31.28,0.8345,6.2
+BAL,rush,1.0,recent,37.48,31.27,0.8344,6.21
 ARI,pass,1.0,exclusive,40.97,34.19,0.8345,6.78
 ATL,rush,1.0,recent,34.89,29.17,0.8361,5.72
 ARI,recv,1.0,recent,40.31,33.7,0.8362,6.6
 HOU,pass,1.0,exclusive,42.56,35.64,0.8375,6.91
-NO,rush,1.0,recent,28.54,24.05,0.8424,4.5
 GB,pass,1.0,exclusive,43.29,36.47,0.8424,6.82
+NO,rush,1.0,recent,28.55,24.06,0.8425,4.5
 LV,pass,1.0,exclusive,38.77,32.84,0.8472,5.92
 JAX,rush,0.9688,recent,33.12,28.11,0.8487,5.01
 CIN,pass,1.0,exclusive,40.73,34.79,0.8544,5.93
@@ -58,7 +58,7 @@ CAR,rush,1.0,full_season,27.52,25.4,0.9228,2.13
 SEA,recv,1.0,full_season,31.99,29.52,0.9229,2.47
 TB,pass,1.0,exclusive,34.28,31.68,0.924,2.61
 PHI,rush,1.0,recent,32.05,29.66,0.9255,2.39
-BAL,pass,1.0,exclusive,34.29,31.85,0.9287,2.45
+BAL,pass,1.0,exclusive,34.3,31.85,0.9287,2.45
 NYJ,pass,1.0,exclusive,33.52,31.25,0.9323,2.27
 DEN,recv,1.0,recent,33.83,31.58,0.9336,2.25
 DAL,recv,1.0,recent,36.15,33.85,0.9365,2.29
