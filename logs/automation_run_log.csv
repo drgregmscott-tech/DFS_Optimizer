@@ -1601,3 +1601,6 @@ timestamp_utc,trigger_type,site,step,status
 2026-09-20T11:15:23.829196+00:00,manual_workflow_dispatch,dk,dk_classic_wk2_main_20Sep2026,build_projections,success
 2026-09-20T11:15:23.829196+00:00,manual_workflow_dispatch,dk,dk_classic_wk2_main_20Sep2026,status_apply,success
 2026-09-20T11:15:23.829196+00:00,manual_workflow_dispatch,dk,dk_classic_wk2_main_20Sep2026,pivot_finder,success
+2026-09-20T11:15:52.180934+00:00,manual_workflow_dispatch,dk,dk_classic_wk2_early_20Sep2026,build_projections,success
+2026-09-20T11:15:52.180934+00:00,manual_workflow_dispatch,dk,dk_classic_wk2_early_20Sep2026,status_apply,success
+2026-09-20T11:15:52.180934+00:00,manual_workflow_dispatch,dk,dk_classic_wk2_early_20Sep2026,pivot_finder,success
