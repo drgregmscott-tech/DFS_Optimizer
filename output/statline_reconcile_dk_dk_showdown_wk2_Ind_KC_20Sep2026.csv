@@ -1,7 +1,7 @@
 team,component,pool_share,share_basis,raw_sum,target,scale,abs_delta
-KC,rush,1.0,recent,37.85,31.55,0.8334,6.31
-IND,rush,1.0,full_season,24.33,22.48,0.9237,1.86
+KC,rush,1.0,recent,37.85,31.54,0.8333,6.31
 IND,recv,1.0,recent,35.1,32.43,0.9238,2.68
+IND,rush,1.0,full_season,24.34,22.49,0.9238,1.86
 IND,pass,1.0,exclusive,35.3,33.85,0.9591,1.44
 KC,recv,1.0,recent,32.17,31.16,0.9685,1.01
 KC,pass,1.0,exclusive,32.14,32.64,1.0156,0.5
