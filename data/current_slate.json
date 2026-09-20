@@ -18,6 +18,14 @@
       "lock_time_utc": "2026-09-18T00:15:00Z"
     },
     {
+      "slate_id": "dk_showdown_wk2_Ind_KC_20Sep2026",
+      "site": "dk",
+      "format": "showdown",
+      "season": 2026,
+      "week": 2,
+      "lock_time_utc": "2026-09-21T00:20:00Z"
+    },
+    {
       "slate_id": "dk_classic_wk2_main_20Sep2026",
       "site": "dk",
       "format": "classic",

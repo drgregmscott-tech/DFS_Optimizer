@@ -1,0 +1,109 @@
+Position,Name + ID,Name,ID,Roster Position,Salary,Game Info,TeamAbbrev,AvgPointsPerGame,Status,roster_role,name,site,salary,normalized_name,normalized_team,position_upper,slate_format,player_id,match_method,match_confidence
+RB,Jonathan Taylor (44191068),Jonathan Taylor,44191068,CPT,16500,IND@KC 09/20/2026 08:20PM ET,IND,26.1,,CPT,Jonathan Taylor,dk,16500,jonathan taylor,IND,RB,showdown,00-0036223,auto_exact,high
+RB,Kenneth Walker III (44191069),Kenneth Walker III,44191069,CPT,15900,IND@KC 09/20/2026 08:20PM ET,KC,37.1,,CPT,Kenneth Walker III,dk,15900,kenneth walker,KC,RB,showdown,00-0038134,auto_fallback_team_mismatch,medium
+QB,Patrick Mahomes (44191070),Patrick Mahomes,44191070,CPT,15000,IND@KC 09/20/2026 08:20PM ET,KC,22.7,,CPT,Patrick Mahomes,dk,15000,patrick mahomes,KC,QB,showdown,00-0033873,auto_exact,high
+WR,Rashee Rice (44191071),Rashee Rice,44191071,CPT,14100,IND@KC 09/20/2026 08:20PM ET,KC,9.9,,CPT,Rashee Rice,dk,14100,rashee rice,KC,WR,showdown,00-0039067,auto_exact,high
+QB,Daniel Jones (44191072),Daniel Jones,44191072,CPT,13800,IND@KC 09/20/2026 08:20PM ET,IND,10.0,,CPT,Daniel Jones,dk,13800,daniel jones,IND,QB,showdown,00-0035710,auto_exact,high
+WR,Alec Pierce (44191073),Alec Pierce,44191073,CPT,11400,IND@KC 09/20/2026 08:20PM ET,IND,10.1,,CPT,Alec Pierce,dk,11400,alec pierce,IND,WR,showdown,00-0037664,auto_exact,high
+RB,Jonathan Taylor (44191014),Jonathan Taylor,44191014,FLEX,11000,IND@KC 09/20/2026 08:20PM ET,IND,26.1,,FLEX,Jonathan Taylor,dk,11000,jonathan taylor,IND,RB,showdown,00-0036223,auto_exact,high
+TE,Tyler Warren (44191074),Tyler Warren,44191074,CPT,10800,IND@KC 09/20/2026 08:20PM ET,IND,10.3,,CPT,Tyler Warren,dk,10800,tyler warren,IND,TE,showdown,00-0040128,auto_exact,high
+RB,Kenneth Walker III (44191015),Kenneth Walker III,44191015,FLEX,10600,IND@KC 09/20/2026 08:20PM ET,KC,37.1,,FLEX,Kenneth Walker III,dk,10600,kenneth walker,KC,RB,showdown,00-0038134,auto_fallback_team_mismatch,medium
+QB,Patrick Mahomes (44191016),Patrick Mahomes,44191016,FLEX,10000,IND@KC 09/20/2026 08:20PM ET,KC,22.7,,FLEX,Patrick Mahomes,dk,10000,patrick mahomes,KC,QB,showdown,00-0033873,auto_exact,high
+WR,Josh Downs (44191075),Josh Downs,44191075,CPT,9900,IND@KC 09/20/2026 08:20PM ET,IND,5.7,,CPT,Josh Downs,dk,9900,josh downs,IND,WR,showdown,00-0038997,auto_exact,high
+WR,Rashee Rice (44191017),Rashee Rice,44191017,FLEX,9400,IND@KC 09/20/2026 08:20PM ET,KC,9.9,,FLEX,Rashee Rice,dk,9400,rashee rice,KC,WR,showdown,00-0039067,auto_exact,high
+TE,Travis Kelce (44191076),Travis Kelce,44191076,CPT,9300,IND@KC 09/20/2026 08:20PM ET,KC,10.1,,CPT,Travis Kelce,dk,9300,travis kelce,KC,TE,showdown,00-0030506,auto_exact,high
+QB,Daniel Jones (44191018),Daniel Jones,44191018,FLEX,9200,IND@KC 09/20/2026 08:20PM ET,IND,10.0,,FLEX,Daniel Jones,dk,9200,daniel jones,IND,QB,showdown,00-0035710,auto_exact,high
+QB,Justin Fields (44191077),Justin Fields,44191077,CPT,9000,IND@KC 09/20/2026 08:20PM ET,KC,0.0,,CPT,Justin Fields,dk,9000,justin fields,KC,QB,showdown,00-0036945,auto_fallback_team_mismatch,medium
+QB,Garrett Nussmeier (44191078),Garrett Nussmeier,44191078,CPT,9000,IND@KC 09/20/2026 08:20PM ET,KC,0.0,,CPT,Garrett Nussmeier,dk,9000,garrett nussmeier,KC,QB,showdown,00-0040906,auto_exact,high
+QB,Anthony Richardson Sr. (44191079),Anthony Richardson Sr.,44191079,CPT,9000,IND@KC 09/20/2026 08:20PM ET,IND,0.0,,CPT,Anthony Richardson Sr.,dk,9000,anthony richardson,IND,QB,showdown,00-0039164,auto_exact,high
+QB,Riley Leonard (44191080),Riley Leonard,44191080,CPT,9000,IND@KC 09/20/2026 08:20PM ET,IND,0.0,,CPT,Riley Leonard,dk,9000,riley leonard,IND,QB,showdown,00-0040206,auto_exact,high
+WR,Keenan Allen (44191081),Keenan Allen,44191081,CPT,8400,IND@KC 09/20/2026 08:20PM ET,IND,9.2,,CPT,Keenan Allen,dk,8400,keenan allen,IND,WR,showdown,00-0030279,auto_fallback_team_mismatch,medium
+WR,Xavier Worthy (44191082),Xavier Worthy,44191082,CPT,8100,IND@KC 09/20/2026 08:20PM ET,KC,4.8,,CPT,Xavier Worthy,dk,8100,xavier worthy,KC,WR,showdown,00-0039894,auto_exact,high
+WR,Alec Pierce (44191019),Alec Pierce,44191019,FLEX,7600,IND@KC 09/20/2026 08:20PM ET,IND,10.1,,FLEX,Alec Pierce,dk,7600,alec pierce,IND,WR,showdown,00-0037664,auto_exact,high
+K,Harrison Butker (44191083),Harrison Butker,44191083,CPT,7500,IND@KC 09/20/2026 08:20PM ET,KC,7.0,,CPT,Harrison Butker,dk,7500,harrison butker,KC,K,showdown,00-0033303,auto_exact,high
+TE,Tyler Warren (44191020),Tyler Warren,44191020,FLEX,7200,IND@KC 09/20/2026 08:20PM ET,IND,10.3,,FLEX,Tyler Warren,dk,7200,tyler warren,IND,TE,showdown,00-0040128,auto_exact,high
+K,Spencer Shrader (44191084),Spencer Shrader,44191084,CPT,6900,IND@KC 09/20/2026 08:20PM ET,IND,7.0,,CPT,Spencer Shrader,dk,6900,spencer shrader,IND,K,showdown,00-0039576,auto_exact,high
+WR,Josh Downs (44191021),Josh Downs,44191021,FLEX,6600,IND@KC 09/20/2026 08:20PM ET,IND,5.7,,FLEX,Josh Downs,dk,6600,josh downs,IND,WR,showdown,00-0038997,auto_exact,high
+DST,Chiefs (44191085),Chiefs,44191085,CPT,6300,IND@KC 09/20/2026 08:20PM ET,KC,12.0,,CPT,Chiefs,dk,6300,chiefs,KC,DST,showdown,DST_KC,team_defense,high
+TE,Travis Kelce (44191022),Travis Kelce,44191022,FLEX,6200,IND@KC 09/20/2026 08:20PM ET,KC,10.1,,FLEX,Travis Kelce,dk,6200,travis kelce,KC,TE,showdown,00-0030506,auto_exact,high
+QB,Justin Fields (44191023),Justin Fields,44191023,FLEX,6000,IND@KC 09/20/2026 08:20PM ET,KC,0.0,,FLEX,Justin Fields,dk,6000,justin fields,KC,QB,showdown,00-0036945,auto_fallback_team_mismatch,medium
+QB,Garrett Nussmeier (44191024),Garrett Nussmeier,44191024,FLEX,6000,IND@KC 09/20/2026 08:20PM ET,KC,0.0,,FLEX,Garrett Nussmeier,dk,6000,garrett nussmeier,KC,QB,showdown,00-0040906,auto_exact,high
+QB,Anthony Richardson Sr. (44191025),Anthony Richardson Sr.,44191025,FLEX,6000,IND@KC 09/20/2026 08:20PM ET,IND,0.0,,FLEX,Anthony Richardson Sr.,dk,6000,anthony richardson,IND,QB,showdown,00-0039164,auto_exact,high
+QB,Riley Leonard (44191026),Riley Leonard,44191026,FLEX,6000,IND@KC 09/20/2026 08:20PM ET,IND,0.0,,FLEX,Riley Leonard,dk,6000,riley leonard,IND,QB,showdown,00-0040206,auto_exact,high
+WR,Tyquan Thornton (44191086),Tyquan Thornton,44191086,CPT,5700,IND@KC 09/20/2026 08:20PM ET,KC,0.0,,CPT,Tyquan Thornton,dk,5700,tyquan thornton,KC,WR,showdown,00-0038104,auto_exact,high
+WR,Keenan Allen (44191027),Keenan Allen,44191027,FLEX,5600,IND@KC 09/20/2026 08:20PM ET,IND,9.2,,FLEX,Keenan Allen,dk,5600,keenan allen,IND,WR,showdown,00-0030279,auto_fallback_team_mismatch,medium
+WR,Xavier Worthy (44191028),Xavier Worthy,44191028,FLEX,5400,IND@KC 09/20/2026 08:20PM ET,KC,4.8,,FLEX,Xavier Worthy,dk,5400,xavier worthy,KC,WR,showdown,00-0039894,auto_exact,high
+RB,Emmett Johnson (44191087),Emmett Johnson,44191087,CPT,5400,IND@KC 09/20/2026 08:20PM ET,KC,8.8,,CPT,Emmett Johnson,dk,5400,emmett johnson,KC,RB,showdown,00-0041013,auto_exact,high
+RB,Seth McGowan (44191088),Seth McGowan,44191088,CPT,5100,IND@KC 09/20/2026 08:20PM ET,IND,1.0,,CPT,Seth McGowan,dk,5100,seth mcgowan,IND,RB,showdown,00-0041125,auto_exact,high
+K,Harrison Butker (44191029),Harrison Butker,44191029,FLEX,5000,IND@KC 09/20/2026 08:20PM ET,KC,7.0,,FLEX,Harrison Butker,dk,5000,harrison butker,KC,K,showdown,00-0033303,auto_exact,high
+DST,Colts (44191089),Colts,44191089,CPT,4800,IND@KC 09/20/2026 08:20PM ET,IND,0.0,,CPT,Colts,dk,4800,colts,IND,DST,showdown,DST_IND,team_defense,high
+K,Spencer Shrader (44191030),Spencer Shrader,44191030,FLEX,4600,IND@KC 09/20/2026 08:20PM ET,IND,7.0,,FLEX,Spencer Shrader,dk,4600,spencer shrader,IND,K,showdown,00-0039576,auto_exact,high
+TE,Noah Gray (44191090),Noah Gray,44191090,CPT,4500,IND@KC 09/20/2026 08:20PM ET,KC,1.5,,CPT,Noah Gray,dk,4500,noah gray,KC,TE,showdown,00-0036637,auto_exact,high
+DST,Chiefs (44191031),Chiefs,44191031,FLEX,4200,IND@KC 09/20/2026 08:20PM ET,KC,12.0,,FLEX,Chiefs,dk,4200,chiefs,KC,DST,showdown,DST_KC,team_defense,high
+WR,Cyrus Allen (44191091),Cyrus Allen,44191091,CPT,4200,IND@KC 09/20/2026 08:20PM ET,KC,0.0,,CPT,Cyrus Allen,dk,4200,cyrus allen,KC,WR,showdown,00-0040890,auto_exact,high
+WR,Tyquan Thornton (44191032),Tyquan Thornton,44191032,FLEX,3800,IND@KC 09/20/2026 08:20PM ET,KC,0.0,,FLEX,Tyquan Thornton,dk,3800,tyquan thornton,KC,WR,showdown,00-0038104,auto_exact,high
+RB,Emmett Johnson (44191033),Emmett Johnson,44191033,FLEX,3600,IND@KC 09/20/2026 08:20PM ET,KC,8.8,,FLEX,Emmett Johnson,dk,3600,emmett johnson,KC,RB,showdown,00-0041013,auto_exact,high
+TE,Mo Alie-Cox (44191092),Mo Alie-Cox,44191092,CPT,3600,IND@KC 09/20/2026 08:20PM ET,IND,0.0,,CPT,Mo Alie-Cox,dk,3600,mo alie cox,IND,TE,showdown,00-0033217,auto_exact,high
+RB,Seth McGowan (44191034),Seth McGowan,44191034,FLEX,3400,IND@KC 09/20/2026 08:20PM ET,IND,1.0,,FLEX,Seth McGowan,dk,3400,seth mcgowan,IND,RB,showdown,00-0041125,auto_exact,high
+DST,Colts (44191035),Colts,44191035,FLEX,3200,IND@KC 09/20/2026 08:20PM ET,IND,0.0,,FLEX,Colts,dk,3200,colts,IND,DST,showdown,DST_IND,team_defense,high
+TE,Noah Gray (44191036),Noah Gray,44191036,FLEX,3000,IND@KC 09/20/2026 08:20PM ET,KC,1.5,,FLEX,Noah Gray,dk,3000,noah gray,KC,TE,showdown,00-0036637,auto_exact,high
+WR,Laquon Treadwell (44191093),Laquon Treadwell,44191093,CPT,3000,IND@KC 09/20/2026 08:20PM ET,IND,0.0,,CPT,Laquon Treadwell,dk,3000,laquon treadwell,IND,WR,showdown,00-0032951,auto_exact,high
+WR,Cyrus Allen (44191037),Cyrus Allen,44191037,FLEX,2800,IND@KC 09/20/2026 08:20PM ET,KC,0.0,,FLEX,Cyrus Allen,dk,2800,cyrus allen,KC,WR,showdown,00-0040890,auto_exact,high
+TE,Mo Alie-Cox (44191038),Mo Alie-Cox,44191038,FLEX,2400,IND@KC 09/20/2026 08:20PM ET,IND,0.0,,FLEX,Mo Alie-Cox,dk,2400,mo alie cox,IND,TE,showdown,00-0033217,auto_exact,high
+TE,Jake Briningstool (44191094),Jake Briningstool,44191094,CPT,2400,IND@KC 09/20/2026 08:20PM ET,KC,1.9,,CPT,Jake Briningstool,dk,2400,jake briningstool,KC,TE,showdown,00-0040081,auto_exact,high
+RB,DJ Giddens (44191095),DJ Giddens,44191095,CPT,2100,IND@KC 09/20/2026 08:20PM ET,IND,0.0,Q,CPT,DJ Giddens,dk,2100,dj giddens,IND,RB,showdown,00-0040179,auto_exact,high
+WR,Laquon Treadwell (44191039),Laquon Treadwell,44191039,FLEX,2000,IND@KC 09/20/2026 08:20PM ET,IND,0.0,,FLEX,Laquon Treadwell,dk,2000,laquon treadwell,IND,WR,showdown,00-0032951,auto_exact,high
+WR,Jalen Royals (44191096),Jalen Royals,44191096,CPT,1800,IND@KC 09/20/2026 08:20PM ET,KC,0.0,,CPT,Jalen Royals,dk,1800,jalen royals,KC,WR,showdown,00-0040646,auto_exact,high
+TE,Jake Briningstool (44191040),Jake Briningstool,44191040,FLEX,1600,IND@KC 09/20/2026 08:20PM ET,KC,1.9,,FLEX,Jake Briningstool,dk,1600,jake briningstool,KC,TE,showdown,00-0040081,auto_exact,high
+WR,Deion Burks (44191097),Deion Burks,44191097,CPT,1500,IND@KC 09/20/2026 08:20PM ET,IND,0.0,,CPT,Deion Burks,dk,1500,deion burks,IND,WR,showdown,00-0041132,auto_exact,high
+RB,DJ Giddens (44191041),DJ Giddens,44191041,FLEX,1400,IND@KC 09/20/2026 08:20PM ET,IND,0.0,Q,FLEX,DJ Giddens,dk,1400,dj giddens,IND,RB,showdown,00-0040179,auto_exact,high
+WR,Jalen Royals (44191042),Jalen Royals,44191042,FLEX,1200,IND@KC 09/20/2026 08:20PM ET,KC,0.0,,FLEX,Jalen Royals,dk,1200,jalen royals,KC,WR,showdown,00-0040646,auto_exact,high
+WR,Nikko Remigio (44191098),Nikko Remigio,44191098,CPT,1200,IND@KC 09/20/2026 08:20PM ET,KC,0.0,,CPT,Nikko Remigio,dk,1200,nikko remigio,KC,WR,showdown,00-0038519,auto_exact,high
+WR,Deion Burks (44191043),Deion Burks,44191043,FLEX,1000,IND@KC 09/20/2026 08:20PM ET,IND,0.0,,FLEX,Deion Burks,dk,1000,deion burks,IND,WR,showdown,00-0041132,auto_exact,high
+TE,Drew Ogletree (44191099),Drew Ogletree,44191099,CPT,900,IND@KC 09/20/2026 08:20PM ET,IND,0.0,,CPT,Drew Ogletree,dk,900,drew ogletree,IND,TE,showdown,00-0037292,manual_override,high
+WR,Nikko Remigio (44191044),Nikko Remigio,44191044,FLEX,800,IND@KC 09/20/2026 08:20PM ET,KC,0.0,,FLEX,Nikko Remigio,dk,800,nikko remigio,KC,WR,showdown,00-0038519,auto_exact,high
+TE,Drew Ogletree (44191045),Drew Ogletree,44191045,FLEX,600,IND@KC 09/20/2026 08:20PM ET,IND,0.0,,FLEX,Drew Ogletree,dk,600,drew ogletree,IND,TE,showdown,00-0037292,manual_override,high
+RB,Brashard Smith (44191100),Brashard Smith,44191100,CPT,600,IND@KC 09/20/2026 08:20PM ET,KC,0.0,,CPT,Brashard Smith,dk,600,brashard smith,KC,RB,showdown,00-0040078,auto_exact,high
+RB,Brashard Smith (44191046),Brashard Smith,44191046,FLEX,400,IND@KC 09/20/2026 08:20PM ET,KC,0.0,,FLEX,Brashard Smith,dk,400,brashard smith,KC,RB,showdown,00-0040078,auto_exact,high
+RB,Anderson Castle (44191101),Anderson Castle,44191101,CPT,300,IND@KC 09/20/2026 08:20PM ET,IND,0.0,,CPT,Anderson Castle,dk,300,anderson castle,IND,RB,showdown,00-0041486,auto_exact,high
+RB,Davon Booth (44191102),Davon Booth,44191102,CPT,300,IND@KC 09/20/2026 08:20PM ET,IND,0.0,,CPT,Davon Booth,dk,300,davon booth,IND,RB,showdown,00-0041277,auto_exact,high
+RB,Jaydn Ott (44191103),Jaydn Ott,44191103,CPT,300,IND@KC 09/20/2026 08:20PM ET,KC,0.0,,CPT,Jaydn Ott,dk,300,jaydn ott,KC,RB,showdown,00-0040959,auto_exact,high
+RB,Nate Carter (44191104),Nate Carter,44191104,CPT,300,IND@KC 09/20/2026 08:20PM ET,KC,0.0,,CPT,Nate Carter,dk,300,nate carter,KC,RB,showdown,00-0040547,auto_fallback_team_mismatch,medium
+RB,Ben VanSumeren (44191105),Ben VanSumeren,44191105,CPT,300,IND@KC 09/20/2026 08:20PM ET,KC,0.0,,CPT,Ben VanSumeren,dk,300,ben vansumeren,KC,RB,showdown,00-0038489,auto_exact,high
+WR,Nick Westbrook-Ikhine (44191106),Nick Westbrook-Ikhine,44191106,CPT,300,IND@KC 09/20/2026 08:20PM ET,IND,0.0,,CPT,Nick Westbrook-Ikhine,dk,300,nick westbrook ikhine,IND,WR,showdown,00-0036182,auto_fallback_team_mismatch,medium
+WR,Jimmy Holiday (44191107),Jimmy Holiday,44191107,CPT,300,IND@KC 09/20/2026 08:20PM ET,KC,0.0,IR,CPT,Jimmy Holiday,dk,300,jimmy holiday,KC,WR,showdown,00-0040120,auto_exact,high
+WR,D.J. Montgomery (44191108),D.J. Montgomery,44191108,CPT,300,IND@KC 09/20/2026 08:20PM ET,IND,0.0,IR,CPT,D.J. Montgomery,dk,300,dj montgomery,IND,WR,showdown,00-0035045,auto_exact,high
+WR,Ashton Dulin (44191109),Ashton Dulin,44191109,CPT,300,IND@KC 09/20/2026 08:20PM ET,IND,0.0,OUT,CPT,Ashton Dulin,dk,300,ashton dulin,IND,WR,showdown,00-0035021,auto_exact,high
+WR,Jeff Caldwell (44191110),Jeff Caldwell,44191110,CPT,300,IND@KC 09/20/2026 08:20PM ET,KC,0.0,IR,CPT,Jeff Caldwell,dk,300,jeff caldwell,KC,WR,showdown,00-0040953,auto_exact,high
+WR,Omari Evans (44191111),Omari Evans,44191111,CPT,300,IND@KC 09/20/2026 08:20PM ET,KC,0.0,,CPT,Omari Evans,dk,300,omari evans,KC,WR,showdown,00-0040954,auto_exact,high
+WR,Anthony Gould (44191112),Anthony Gould,44191112,CPT,300,IND@KC 09/20/2026 08:20PM ET,IND,0.0,,CPT,Anthony Gould,dk,300,anthony gould,IND,WR,showdown,00-0039816,auto_exact,high
+WR,Andrew Armstrong (44191113),Andrew Armstrong,44191113,CPT,300,IND@KC 09/20/2026 08:20PM ET,KC,0.0,,CPT,Andrew Armstrong,dk,300,andrew armstrong,KC,WR,showdown,00-0040298,auto_exact,high
+TE,Carson Towt (44191114),Carson Towt,44191114,CPT,300,IND@KC 09/20/2026 08:20PM ET,IND,0.0,IR,CPT,Carson Towt,dk,300,carson towt,IND,TE,showdown,00-0040853,auto_exact,high
+TE,Will Mallory (44191115),Will Mallory,44191115,CPT,300,IND@KC 09/20/2026 08:20PM ET,IND,0.0,IR,CPT,Will Mallory,dk,300,will mallory,IND,TE,showdown,00-0038394,auto_exact,high
+TE,John Michael Gyllenborg (44191116),John Michael Gyllenborg,44191116,CPT,300,IND@KC 09/20/2026 08:20PM ET,KC,0.0,IR,CPT,John Michael Gyllenborg,dk,300,john michael gyllenborg,KC,TE,showdown,00-0040955,auto_exact,high
+TE,Kenny Fletcher Jr. (44191117),Kenny Fletcher Jr.,44191117,CPT,300,IND@KC 09/20/2026 08:20PM ET,IND,0.0,,CPT,Kenny Fletcher Jr.,dk,300,kenny fletcher,IND,TE,showdown,00-0041252,auto_exact,high
+TE,James Winchester (44191118),James Winchester,44191118,CPT,300,IND@KC 09/20/2026 08:20PM ET,KC,0.0,,CPT,James Winchester,dk,300,james winchester,KC,TE,showdown,00-0030615,auto_fallback_name_only_position_mismatch,low
+TE,Thomas Odukoya (44191119),Thomas Odukoya,44191119,CPT,300,IND@KC 09/20/2026 08:20PM ET,KC,0.0,,CPT,Thomas Odukoya,dk,300,thomas odukoya,KC,TE,showdown,00-0038145,auto_exact,high
+TE,Pharaoh Brown (44191120),Pharaoh Brown,44191120,CPT,300,IND@KC 09/20/2026 08:20PM ET,IND,0.0,,CPT,Pharaoh Brown,dk,300,pharaoh brown,IND,TE,showdown,00-0033439,auto_fallback_team_mismatch,medium
+TE,Jared Wiley (44191121),Jared Wiley,44191121,CPT,300,IND@KC 09/20/2026 08:20PM ET,KC,0.0,,CPT,Jared Wiley,dk,300,jared wiley,KC,TE,showdown,00-0039824,auto_exact,high
+RB,Anderson Castle (44191047),Anderson Castle,44191047,FLEX,200,IND@KC 09/20/2026 08:20PM ET,IND,0.0,,FLEX,Anderson Castle,dk,200,anderson castle,IND,RB,showdown,00-0041486,auto_exact,high
+RB,Davon Booth (44191048),Davon Booth,44191048,FLEX,200,IND@KC 09/20/2026 08:20PM ET,IND,0.0,,FLEX,Davon Booth,dk,200,davon booth,IND,RB,showdown,00-0041277,auto_exact,high
+RB,Jaydn Ott (44191049),Jaydn Ott,44191049,FLEX,200,IND@KC 09/20/2026 08:20PM ET,KC,0.0,,FLEX,Jaydn Ott,dk,200,jaydn ott,KC,RB,showdown,00-0040959,auto_exact,high
+RB,Nate Carter (44191050),Nate Carter,44191050,FLEX,200,IND@KC 09/20/2026 08:20PM ET,KC,0.0,,FLEX,Nate Carter,dk,200,nate carter,KC,RB,showdown,00-0040547,auto_fallback_team_mismatch,medium
+RB,Ben VanSumeren (44191051),Ben VanSumeren,44191051,FLEX,200,IND@KC 09/20/2026 08:20PM ET,KC,0.0,,FLEX,Ben VanSumeren,dk,200,ben vansumeren,KC,RB,showdown,00-0038489,auto_exact,high
+WR,Nick Westbrook-Ikhine (44191052),Nick Westbrook-Ikhine,44191052,FLEX,200,IND@KC 09/20/2026 08:20PM ET,IND,0.0,,FLEX,Nick Westbrook-Ikhine,dk,200,nick westbrook ikhine,IND,WR,showdown,00-0036182,auto_fallback_team_mismatch,medium
+WR,Jimmy Holiday (44191053),Jimmy Holiday,44191053,FLEX,200,IND@KC 09/20/2026 08:20PM ET,KC,0.0,IR,FLEX,Jimmy Holiday,dk,200,jimmy holiday,KC,WR,showdown,00-0040120,auto_exact,high
+WR,D.J. Montgomery (44191054),D.J. Montgomery,44191054,FLEX,200,IND@KC 09/20/2026 08:20PM ET,IND,0.0,IR,FLEX,D.J. Montgomery,dk,200,dj montgomery,IND,WR,showdown,00-0035045,auto_exact,high
+WR,Ashton Dulin (44191055),Ashton Dulin,44191055,FLEX,200,IND@KC 09/20/2026 08:20PM ET,IND,0.0,OUT,FLEX,Ashton Dulin,dk,200,ashton dulin,IND,WR,showdown,00-0035021,auto_exact,high
+WR,Jeff Caldwell (44191056),Jeff Caldwell,44191056,FLEX,200,IND@KC 09/20/2026 08:20PM ET,KC,0.0,IR,FLEX,Jeff Caldwell,dk,200,jeff caldwell,KC,WR,showdown,00-0040953,auto_exact,high
+WR,Omari Evans (44191057),Omari Evans,44191057,FLEX,200,IND@KC 09/20/2026 08:20PM ET,KC,0.0,,FLEX,Omari Evans,dk,200,omari evans,KC,WR,showdown,00-0040954,auto_exact,high
+WR,Anthony Gould (44191058),Anthony Gould,44191058,FLEX,200,IND@KC 09/20/2026 08:20PM ET,IND,0.0,,FLEX,Anthony Gould,dk,200,anthony gould,IND,WR,showdown,00-0039816,auto_exact,high
+WR,Andrew Armstrong (44191059),Andrew Armstrong,44191059,FLEX,200,IND@KC 09/20/2026 08:20PM ET,KC,0.0,,FLEX,Andrew Armstrong,dk,200,andrew armstrong,KC,WR,showdown,00-0040298,auto_exact,high
+TE,Carson Towt (44191060),Carson Towt,44191060,FLEX,200,IND@KC 09/20/2026 08:20PM ET,IND,0.0,IR,FLEX,Carson Towt,dk,200,carson towt,IND,TE,showdown,00-0040853,auto_exact,high
+TE,Will Mallory (44191061),Will Mallory,44191061,FLEX,200,IND@KC 09/20/2026 08:20PM ET,IND,0.0,IR,FLEX,Will Mallory,dk,200,will mallory,IND,TE,showdown,00-0038394,auto_exact,high
+TE,John Michael Gyllenborg (44191062),John Michael Gyllenborg,44191062,FLEX,200,IND@KC 09/20/2026 08:20PM ET,KC,0.0,IR,FLEX,John Michael Gyllenborg,dk,200,john michael gyllenborg,KC,TE,showdown,00-0040955,auto_exact,high
+TE,Kenny Fletcher Jr. (44191063),Kenny Fletcher Jr.,44191063,FLEX,200,IND@KC 09/20/2026 08:20PM ET,IND,0.0,,FLEX,Kenny Fletcher Jr.,dk,200,kenny fletcher,IND,TE,showdown,00-0041252,auto_exact,high
+TE,James Winchester (44191064),James Winchester,44191064,FLEX,200,IND@KC 09/20/2026 08:20PM ET,KC,0.0,,FLEX,James Winchester,dk,200,james winchester,KC,TE,showdown,00-0030615,auto_fallback_name_only_position_mismatch,low
+TE,Thomas Odukoya (44191065),Thomas Odukoya,44191065,FLEX,200,IND@KC 09/20/2026 08:20PM ET,KC,0.0,,FLEX,Thomas Odukoya,dk,200,thomas odukoya,KC,TE,showdown,00-0038145,auto_exact,high
+TE,Pharaoh Brown (44191066),Pharaoh Brown,44191066,FLEX,200,IND@KC 09/20/2026 08:20PM ET,IND,0.0,,FLEX,Pharaoh Brown,dk,200,pharaoh brown,IND,TE,showdown,00-0033439,auto_fallback_team_mismatch,medium
+TE,Jared Wiley (44191067),Jared Wiley,44191067,FLEX,200,IND@KC 09/20/2026 08:20PM ET,KC,0.0,,FLEX,Jared Wiley,dk,200,jared wiley,KC,TE,showdown,00-0039824,auto_exact,high
