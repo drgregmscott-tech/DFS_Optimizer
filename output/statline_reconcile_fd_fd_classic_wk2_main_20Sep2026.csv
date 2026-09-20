@@ -1,5 +1,5 @@
 team,component,pool_share,share_basis,raw_sum,target,scale,abs_delta
-NO,pass,1.0,exclusive,53.18,39.08,0.735,14.09
+NO,pass,1.0,exclusive,53.18,39.09,0.735,14.09
 PIT,pass,1.0,exclusive,43.73,33.53,0.7667,10.2
 MIN,pass,1.0,exclusive,40.73,31.55,0.7746,9.18
 SEA,pass,1.0,exclusive,37.51,29.17,0.7776,8.34
@@ -24,7 +24,7 @@ PIT,recv,1.0,recent,37.78,31.8,0.8417,5.98
 SF,pass,1.0,exclusive,40.32,34.07,0.8449,6.25
 HOU,rush,1.0,recent,32.37,27.4,0.8464,4.97
 LV,pass,1.0,exclusive,36.96,31.43,0.8504,5.53
-BAL,rush,1.0,recent,36.91,31.39,0.8505,5.52
+BAL,rush,1.0,recent,36.9,31.38,0.8504,5.52
 WAS,rush,1.0,recent,33.15,28.22,0.8511,4.94
 CHI,pass,1.0,exclusive,39.03,33.29,0.8529,5.74
 GB,recv,1.0,recent,40.2,34.3,0.8533,5.9
@@ -34,14 +34,14 @@ TEN,recv,1.0,recent,32.82,28.22,0.8597,4.6
 DAL,pass,1.0,exclusive,42.01,36.21,0.862,5.8
 CLE,pass,1.0,exclusive,32.83,28.33,0.8627,4.51
 DEN,pass,1.0,exclusive,37.28,32.18,0.8631,5.1
-NO,rush,1.0,recent,28.13,24.31,0.8641,3.82
+NO,rush,1.0,recent,28.14,24.32,0.8642,3.82
 JAX,rush,0.9688,recent,33.01,28.65,0.868,4.36
 TB,pass,1.0,exclusive,35.3,30.7,0.8697,4.6
 MIA,pass,1.0,exclusive,35.52,30.98,0.872,4.55
 NE,recv,1.0,recent,35.24,30.76,0.8727,4.48
 CAR,pass,1.0,exclusive,38.73,33.96,0.8768,4.77
 ATL,rush,1.0,recent,34.09,29.9,0.8769,4.2
-BAL,pass,1.0,exclusive,36.09,31.72,0.8788,4.38
+BAL,pass,1.0,exclusive,36.09,31.71,0.8788,4.38
 SF,recv,0.9706,recent,37.05,32.57,0.8791,4.48
 LAC,pass,1.0,exclusive,35.34,31.25,0.8843,4.09
 CIN,rush,1.0,recent,28.93,25.74,0.8898,3.19
@@ -74,6 +74,6 @@ TEN,rush,1.0,full_season,24.71,25.21,1.0199,0.49
 ATL,recv,1.0,full_season,26.95,27.48,1.0198,0.53
 CLE,recv,1.0,full_season,27.61,27.14,0.983,0.47
 MIN,recv,1.0,full_season,30.27,29.99,0.9906,0.28
-BAL,recv,1.0,full_season,30.29,30.52,1.0076,0.23
+BAL,recv,1.0,full_season,30.29,30.52,1.0075,0.23
 DAL,rush,1.0,full_season,24.27,24.39,1.0051,0.12
 NYJ,recv,1.0,full_season,28.99,28.87,0.9956,0.13
