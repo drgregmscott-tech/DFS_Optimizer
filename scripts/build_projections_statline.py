@@ -352,7 +352,19 @@ def build_statline_projections(site: str, season: int, week: int, slate_id: str,
         corrected = players["player_id"].map(real_team_this_week)
         played = corrected.notna()
         players.loc[played, "team"] = corrected[played]
-        players["no_real_game_this_week"] = ~played
+        # A week is "played" as soon as ANY game has stats (e.g. Thursday
+        # night), so a player whose own team hasn't kicked off yet has no
+        # stats row by definition -- that is not "no real game". Only flag
+        # players whose team already played and who still have no row.
+        # Without this, a real Sunday slate after TNF flagged every
+        # non-TNF player as no-game and simulate() crashed on an empty
+        # frame (2026-09-19/20 CI failures).
+        teams_played = set(real_team_this_week.dropna().unique())
+        not_yet_played = ~played & ~players["team"].isin(teams_played)
+        players["no_real_game_this_week"] = ~played & ~not_yet_played
+        played = ~players["no_real_game_this_week"]
+        print(f"{int(not_yet_played.sum())} player(s) on teams whose week-{week} game "
+              f"hasn't been played yet (partial week) -- left as-is.")
         print(f"{int((~played).sum())} player(s) had no real game in week {week} "
               f"-- final_projection forced to 0.0 (build_projections decision #4b).")
 

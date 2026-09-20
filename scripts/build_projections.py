@@ -811,7 +811,12 @@ def build_final_projections(site, season, week, slate_id,
         played_mask = corrected.notna()
         n_corrected = (played_mask & (corrected != players["team"])).sum()
         players.loc[played_mask, "team"] = corrected[played_mask]
-        players["no_real_game_this_week"] = ~played_mask
+        # Partial week (e.g. only Thursday's game has stats): a player whose
+        # own team hasn't played yet is not "no real game". See the same
+        # guard in build_projections_statline.py.
+        teams_played = set(real_team_this_week.dropna().unique())
+        not_yet_played = ~played_mask & ~players["team"].isin(teams_played)
+        players["no_real_game_this_week"] = ~played_mask & ~not_yet_played
         n_no_game = players["no_real_game_this_week"].sum()
         print(f"{n_corrected} player(s) had their team corrected from the salary file's "
               f"snapshot to their real week-{week} team (decision #4a, in-season trade).")
