@@ -11,10 +11,10 @@ ATL,rush,1.0,recent,35.5,29.17,0.8215,6.34
 MIN,pass,1.0,exclusive,38.89,32.02,0.8234,6.87
 ATL,pass,1.0,exclusive,37.0,30.5,0.8241,6.51
 GB,recv,1.0,recent,42.88,35.48,0.8276,7.39
-NO,rush,1.0,recent,29.02,24.05,0.8286,4.97
+NO,rush,1.0,recent,29.03,24.06,0.8287,4.97
 NE,rush,1.0,recent,35.55,29.56,0.8316,5.99
 PIT,recv,1.0,recent,40.73,33.88,0.8318,6.85
-BAL,rush,1.0,recent,37.5,31.28,0.834,6.22
+BAL,rush,1.0,recent,37.5,31.27,0.8339,6.23
 HOU,pass,1.0,exclusive,42.56,35.64,0.8375,6.91
 GB,pass,1.0,exclusive,43.29,36.47,0.8424,6.82
 CIN,pass,1.0,exclusive,40.73,34.79,0.8544,5.93
@@ -36,7 +36,7 @@ PHI,pass,1.0,exclusive,33.12,30.31,0.9152,2.81
 CAR,rush,1.0,full_season,27.52,25.4,0.9228,2.13
 TB,pass,1.0,exclusive,34.28,31.68,0.924,2.61
 PHI,rush,1.0,recent,32.07,29.66,0.9248,2.41
-BAL,pass,1.0,exclusive,34.29,31.85,0.9287,2.45
+BAL,pass,1.0,exclusive,34.3,31.85,0.9287,2.45
 NYJ,pass,1.0,exclusive,33.52,31.25,0.9323,2.27
 PHI,recv,1.0,full_season,30.58,28.56,0.9339,2.02
 CHI,recv,1.0,recent,33.63,31.67,0.9417,1.96
