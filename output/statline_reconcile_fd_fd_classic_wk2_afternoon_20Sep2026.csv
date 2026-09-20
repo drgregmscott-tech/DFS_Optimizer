@@ -13,11 +13,11 @@ DAL,pass,1.0,exclusive,42.01,36.21,0.862,5.8
 DEN,pass,1.0,exclusive,37.28,32.18,0.8631,5.1
 JAX,rush,0.9688,recent,33.01,28.65,0.868,4.36
 MIA,pass,1.0,exclusive,35.52,30.98,0.872,4.55
-SF,recv,0.9706,recent,37.05,32.57,0.8791,4.48
+SF,recv,0.9706,recent,37.04,32.56,0.8791,4.48
 LAC,pass,1.0,exclusive,35.34,31.25,0.8843,4.09
-MIA,recv,1.0,recent,33.05,29.7,0.8985,3.35
+MIA,recv,1.0,recent,33.06,29.7,0.8985,3.35
 WAS,recv,1.0,recent,36.49,33.27,0.9118,3.22
-SF,rush,1.0,recent,33.78,31.28,0.9261,2.5
+SF,rush,1.0,recent,33.77,31.26,0.9259,2.5
 LAC,rush,1.0,full_season,27.17,25.61,0.9425,1.56
 SEA,recv,1.0,full_season,29.95,28.32,0.9457,1.62
 LAC,recv,1.0,recent,32.19,30.44,0.9457,1.75
@@ -26,6 +26,6 @@ JAX,pass,1.0,exclusive,32.17,30.62,0.9519,1.55
 DEN,recv,1.0,recent,32.41,30.95,0.9551,1.46
 JAX,recv,0.9524,full_season,28.58,27.47,0.9608,1.12
 DAL,recv,1.0,recent,35.23,34.1,0.9679,1.13
-MIA,rush,1.0,full_season,24.47,23.7,0.9685,0.77
+MIA,rush,1.0,full_season,24.48,23.72,0.9687,0.77
 SEA,rush,1.0,full_season,25.69,26.43,1.029,0.74
 DAL,rush,1.0,full_season,23.92,24.39,1.0196,0.47
