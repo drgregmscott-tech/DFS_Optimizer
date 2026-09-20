@@ -1652,3 +1652,6 @@ timestamp_utc,trigger_type,site,step,status
 2026-09-20T15:03:57.872323+00:00,full_refresh_dispatch,fd,fd_classic_wk2_early_20Sep2026,build_projections,success
 2026-09-20T15:03:57.872323+00:00,full_refresh_dispatch,fd,fd_classic_wk2_early_20Sep2026,status_apply,success
 2026-09-20T15:03:57.872323+00:00,full_refresh_dispatch,fd,fd_classic_wk2_early_20Sep2026,pivot_finder,success
+2026-09-20T15:04:30.715112+00:00,full_refresh_dispatch,fd,fd_classic_wk2_afternoon_20Sep2026,build_projections,success
+2026-09-20T15:04:30.715112+00:00,full_refresh_dispatch,fd,fd_classic_wk2_afternoon_20Sep2026,status_apply,success
+2026-09-20T15:04:30.715112+00:00,full_refresh_dispatch,fd,fd_classic_wk2_afternoon_20Sep2026,pivot_finder,success
