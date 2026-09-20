@@ -1706,3 +1706,6 @@ timestamp_utc,trigger_type,site,step,status
 2026-09-20T16:02:36.323815+00:00,full_refresh_dispatch,dk,dk_classic_wk2_early_20Sep2026,build_projections,success
 2026-09-20T16:02:36.323815+00:00,full_refresh_dispatch,dk,dk_classic_wk2_early_20Sep2026,status_apply,success
 2026-09-20T16:02:36.323815+00:00,full_refresh_dispatch,dk,dk_classic_wk2_early_20Sep2026,pivot_finder,success
+2026-09-20T16:03:05.660116+00:00,full_refresh_dispatch,dk,dk_classic_wk2_afternoon_20Sep2026,build_projections,success
+2026-09-20T16:03:05.660116+00:00,full_refresh_dispatch,dk,dk_classic_wk2_afternoon_20Sep2026,status_apply,success
+2026-09-20T16:03:05.660116+00:00,full_refresh_dispatch,dk,dk_classic_wk2_afternoon_20Sep2026,pivot_finder,success
