@@ -416,7 +416,10 @@ jobs:
         id: status_file
         if: needs.prepare.outputs.mode == 'full'
         run: |
-          f=$(ls -t output/player_status_${{ matrix.week }}_*.csv 2>/dev/null | head -n 1 || true)
+          # Newest by the timestamp in the FILENAME, not mtime: a fresh git
+          # checkout gives every file the same mtime, so `ls -t` picked an
+          # arbitrary (often stale) status file per slate (2026-09-20).
+          f=$(ls output/player_status_${{ matrix.week }}_*.csv 2>/dev/null | sort | tail -n 1 || true)
           echo "path=$f" >> "$GITHUB_OUTPUT"
 
       # Session 14.0 engine, --volume-prior and --sigma-recalibration are
