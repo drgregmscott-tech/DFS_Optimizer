@@ -1,0 +1,49 @@
+{
+  "coefs": {
+    "intercept": -2.245402919664151,
+    "l_est": 0.29186629817550436,
+    "l_exp": 0.31725670671029904,
+    "sal": 0.2584877853698521,
+    "top1sal": 0.37709338768196987,
+    "cv": -0.1456029928904247,
+    "dart": -0.3993566273775986,
+    "lo_proj": -0.21284051725250983
+  },
+  "cap": 75.0,
+  "version": 1,
+  "site": "dk",
+  "fit_at": "2026-09-21T14:57:13+00:00",
+  "weeks": [
+    1,
+    2
+  ],
+  "slates": [
+    "dk_classic_wk1_afternoon_13Sep2026",
+    "dk_classic_wk1_early_13Sep2026",
+    "dk_classic_wk1_main_13Sep2026",
+    "dk_classic_wk2_afternoon_20Sep2026",
+    "dk_classic_wk2_early_20Sep2026",
+    "dk_classic_wk2_main_20Sep2026"
+  ],
+  "n_rows": 2222,
+  "ridge": 1.0,
+  "features": [
+    "l_est",
+    "l_exp",
+    "sal",
+    "top1sal",
+    "cv",
+    "dart",
+    "lo_proj"
+  ],
+  "exposure_lineups": 60,
+  "exposure_randomization_pct": 25.0,
+  "in_sample": {
+    "label": "in-sample, all weeks",
+    "corr": 0.821,
+    "mae": 1.54,
+    "chalk_n": 53,
+    "chalk_mae": 13.3,
+    "chalk_bias": -1.5
+  }
+}

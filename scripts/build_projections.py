@@ -44,6 +44,7 @@ from ingest_salaries import SITE_CONFIGS, normalize_team
 from ownership_heuristic import (
     compute_chalk_scores, compute_estimated_ownership,
     build_showdown_role_group, compute_showdown_role_budgets,
+    compute_position_slot_budgets,
 )
 import salary_anchor
 
@@ -528,10 +529,22 @@ def build_dst_projections(salaries, vegas, site, *, model="legacy",
 # Ownership + salary anchor
 # ---------------------------------------------------------------------------
 
-def add_ownership_columns(df, site):
+def add_ownership_columns(df, site, layered=True):
     scored = compute_chalk_scores(df, site)
     scored = compute_estimated_ownership(scored, site)
-    ownership_cols = scored[["player_id", "chalk_score", "estimated_ownership_pct"]]
+    # Week 2 post-mortem: replace the heuristic estimate with the layered
+    # model (heuristic + optimizer-implied exposure + salary/reliability
+    # layer). DK only, and a no-op without data/ownership_model_dk.json or on
+    # any failure -- see ownership_model.py. layered=False returns the pure
+    # heuristic (used by fit_ownership_model.py to build its own features).
+    if layered:
+        import ownership_model
+        scored = ownership_model.refine_ownership(
+            scored, site, compute_position_slot_budgets(site))
+    keep = ["player_id", "chalk_score", "estimated_ownership_pct"]
+    if "estimated_ownership_pct_heuristic" in scored.columns:
+        keep.append("estimated_ownership_pct_heuristic")
+    ownership_cols = scored[keep]
     merged = df.merge(ownership_cols, on="player_id", how="left")
     n_missing = merged["chalk_score"].isna().sum()
     if n_missing:
