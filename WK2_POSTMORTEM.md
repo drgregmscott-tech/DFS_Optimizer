@@ -25,7 +25,22 @@ Analysis scripts were run from a session scratchpad, not committed (see
    (b) hype/news misses on small slates are not explained by any feature we have; (c) contest-type differences not modeled;
    (d) FD and Showdown still on the heuristic.
 
-## OPEN: revisit projections at the end (accuracy vs variance vs outcomes)
+## PROJECTIONS: what the historical check found (2026-09-21, scratchpad scripts not committed)
+Rebuilt 31 historical weeks (2020 wk2-17, 2021 wk2-17; 2019 fails on OAK/LV team-abbrev in the DST model) with the CURRENT production engine
+(statline + volume prior + sigma recal + distributional DST + participation fix) and scored against actual DK points (~11,700 player-weeks).
+- Engine beats salary historically: CV R2 0.465 vs 0.396 (salary+engine 0.477); raw corr 0.682 vs 0.629. Every position (QB +.03, RB +.044, WR +.016, TE +.053).
+  Beat salary in 29 of 31 weeks (mean corr diff +0.051, sd 0.025). Weeks 2-3 specifically: +0.026 to +0.056.
+- 2026 wk2 is a weak tail week: corr 0.618 vs salary 0.611 (+0.007). A 2-week average that low happens ~5% of the time historically.
+  Ruled out live-only components as the cause (depth-chart prior, confirmed-starter override, weather, role change: each moves corr by <=0.007).
+- Signals we CAN measure from nflverse history (recent form, season/prior avg, recent usage, spread/total/weather/home/rest) add only +0.016 R2 combined
+  beyond engine+salary (TE +0.02, WR +0.013, QB +0.014, RB +0.007). No big missing signal in that data.
+- Market TD odds DO add a lot: DK Anytime-TD implied prob (from Market_Betting data/sportsbook_props, pre-game snapshots) on 290 RB/WR/TE player-weeks
+  (wk1+wk2 main): R2 alone 0.359 vs engine 0.290 vs salary 0.298; engine+TD prob 0.363 (+0.07 over engine alone). corr with actual TDs 0.245 vs engine's 0.138.
+  In-sample, 2 weeks -- forward-test before trusting. Session 14.1 deferred props "pending real evidence"; this is that evidence.
+- Joint game structure (2014-21 rotoguru, 4,126 team-games): corr(QB, opposing DST) -0.42; own skill total vs opposing DST -0.44; own DST vs own offense ~-0.08;
+  own vs opposing skill +0.21; QB vs own WR+TE +0.77. The ILP forbids skill-vs-own-DST but projections/variance are not jointly modeled.
+
+## OPEN: revisit projections (accuracy vs variance vs outcomes)
 - Stud under-projection: players >= $5.8k projected ~11.4 vs actual ~17.5 over wk1-2 (30% above model p90). Week 1 ran hot,
   so part is environment. Model's price->points curve is flatter (1.3->1.9 pts/$k) than realized/historical (1.5->3.1, anchor 1.9->2.4).
   Salary-anchor blend did NOT help in replay -> likely a usage/volume-allocation issue, not a salary tilt. Re-check after item 1 effects.
