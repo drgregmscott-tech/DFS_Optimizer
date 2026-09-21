@@ -50,6 +50,15 @@ Findings that led to it (clean, pre-game rebuilds of 2020-21 wk2-17):
   Not applied to Showdown (salary scale differs) or FD (no fit). Off switch: --no-stack. Refit: python scripts/fit_projection_stack.py.
 - Lineup replay (6 slates, engine vs stack): SE preset +1.0, SE user-style +5.4, SE no-stack -5.6, MME +2.7 percentile points -- neutral-to-slightly-positive, all within noise.
   The gain is in calibration/forecast accuracy, not a lineup-level jump.
+- Other signal families tested as add-ons to the stack + Vegas (leave-one-week-out CV R2 increments, 2020-21 clean data): all ~0.
+  Defense-vs-position (rolling 8/3-game points allowed to the position, and the engine's own matchup_factor): +0.000 to +0.002 (QB +0.006 for matchup_factor).
+  Pace / expected plays / expected pass rate (team rolling plays and pass rate, own and opponent-faced): -0.002 to +0.001.
+  Vacated usage from teammates ruled Out/Doubtful (nflverse injuries; last-4 target share, air-yards share, carries, attempts): +0.000 to +0.002.
+  Game environment (spread, total, weather, home, rest) earlier: ~0. Conclusion: the measurable free signal is recent usage (done) and market prices (props); the rest is noise.
+- Odds API markets: no targets prop exists (422). Available and not yet pulled: player_rush_attempts, player_pass_attempts, player_pass_completions (1 credit/game each).
+  Receptions (pulled) is the closest to targets: the blend sets targets = receptions / catch rate.
+- props audit: builds now write data/props/audit_{slate_id}.csv (engine-only vs market stat means per player at build time) so per-stat blend weights can be FIT against actual stat lines once
+  a few weeks of props exist (the engine-only means cannot be rebuilt after games without look-ahead).
 - Still to do: fix the engine's own WR/TE volume layer (price prior weight decays slowly: k=4), test injury/teammate-absence and snap/route features through the same clean harness,
   expected-fantasy-points (opportunity) data (the nflverse URL I tried 404'd), and re-fit the stack with real props-blended weeks as they accumulate.
 

@@ -276,7 +276,18 @@ def _apply_props_anchor(df, variance, slate_id, props_weight, props_file):
                 totals[e.event_id] = float(ou.get(e.home_abbr, ou.get(e.away_abbr, np.nan)))
         market = props_model.market_means(props, {k: v for k, v in totals.items() if np.isfinite(v)})
         market = props_model.match_market_to_pool(market, events, df)
-        return props_model.apply_market_anchor(df, market, variance, props_weight)
+        anchored = props_model.apply_market_anchor(df, market, variance, props_weight)
+        # Keep the engine-only vs market stat means at build time (the final CSV
+        # drops these audit columns). Needed later to FIT per-stat blend weights
+        # against actual stat lines; cannot be rebuilt after the games are played
+        # without look-ahead. Latest build for the slate wins.
+        try:
+            audit_cols = ["player_id", "player_name", "position", "team"] + [c for c in anchored.columns if c.startswith("props_")]
+            (DATA_DIR / "props").mkdir(parents=True, exist_ok=True)
+            anchored[audit_cols].to_csv(DATA_DIR / "props" / f"audit_{slate_id}.csv", index=False)
+        except Exception as exc:  # noqa: BLE001
+            print(f"NOTE: could not write props audit file ({exc}).", file=sys.stderr)
+        return anchored
     except Exception as exc:  # noqa: BLE001 -- market data must never break a build
         print(f"WARNING: props anchor failed ({type(exc).__name__}: {exc}); engine only.", file=sys.stderr)
         return df
