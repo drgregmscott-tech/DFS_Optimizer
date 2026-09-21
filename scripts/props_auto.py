@@ -42,6 +42,7 @@ import props_ingest as pi  # noqa: E402
 
 DEFAULT_LEAD_MIN = 100
 DEFAULT_FRESH_MIN = 120
+DEFAULT_REUSE_HOURS = 8
 LOCK_BUFFER = timedelta(minutes=5)
 
 
@@ -59,6 +60,28 @@ def snapshot_age_minutes(slate_id: str, now: datetime):
         return (now - pulled).total_seconds() / 60.0
     except Exception:  # noqa: BLE001
         return None
+
+
+def reusable_snapshot(slate_id: str, event_ids: set, now: datetime, reuse_hours: float):
+    """If ANOTHER slate's snapshot (pulled within `reuse_hours`) already contains
+    every one of this slate's games, return (donor_slate_id, its props rows).
+    Used so a later slate on the same day (Sunday afternoon) reuses the earlier
+    pull that covered its games instead of buying the lines again."""
+    best = None
+    for path in pi.PROPS_DIR.glob("props_*.csv"):
+        other = path.stem[len("props_"):]
+        if other == slate_id:
+            continue
+        age = snapshot_age_minutes(other, now)
+        if age is None or age > reuse_hours * 60:
+            continue
+        try:
+            df = pd.read_csv(path)
+        except Exception:  # noqa: BLE001
+            continue
+        if event_ids <= set(df["event_id"].unique()) and (best is None or age < best[0]):
+            best = (age, other, df)
+    return None if best is None else (best[1], best[2], best[0])
 
 
 def due_slates(now: datetime, lead_min: int, fresh_min: int, slates: list):
@@ -88,6 +111,9 @@ def main():
     ap.add_argument("--lead-minutes", type=int, default=DEFAULT_LEAD_MIN)
     ap.add_argument("--fresh-minutes", type=int, default=DEFAULT_FRESH_MIN)
     ap.add_argument("--max-credits", type=int, default=120)
+    ap.add_argument("--reuse-hours", type=float, default=DEFAULT_REUSE_HOURS,
+                    help="reuse another slate's snapshot pulled within this many hours if it already covers "
+                         "all of this slate's games (default 8; 0 disables reuse)")
     ap.add_argument("--now", default=None, help="override the clock (ISO, for testing)")
     ap.add_argument("--dry-run", action="store_true")
     args = ap.parse_args()
@@ -105,6 +131,7 @@ def main():
         listed, remaining = pi.list_events(key)
         by_id = {}
         slate_events = {}
+        reused = set()
         for s in due:
             teams = pi.slate_teams("dk", s["slate_id"])
             evs = []
@@ -117,6 +144,26 @@ def main():
                     by_id[e["id"]] = ev
             slate_events[s["slate_id"]] = evs
             print(f"  {s['slate_id']}: {len(evs)} game(s)")
+        # Reuse: a due slate whose games are ALL already in a recent snapshot of
+        # another slate (e.g. Sunday afternoon vs the main slate pulled ~3h
+        # earlier) gets a copy instead of a new purchase.
+        if args.reuse_hours > 0:
+            for sid in list(slate_events):
+                ids = {e["event_id"] for e in slate_events[sid]}
+                hit = reusable_snapshot(sid, ids, now, args.reuse_hours) if ids else None
+                if hit:
+                    donor, df, age = hit
+                    print(f"  {sid}: reusing {donor}'s snapshot ({age:.0f} min old) instead of a new pull")
+                    if not args.dry_run:
+                        pi.PROPS_DIR.mkdir(parents=True, exist_ok=True)
+                        df[df["event_id"].isin(ids)].to_csv(pi.PROPS_DIR / f"props_{sid}.csv", index=False)
+                        pd.DataFrame(slate_events[sid]).to_csv(pi.PROPS_DIR / f"events_{sid}.csv", index=False)
+                    for e in slate_events[sid]:
+                        if not any(e["event_id"] in {x["event_id"] for x in evs}
+                                   for k2, evs in slate_events.items() if k2 != sid and k2 not in reused):
+                            by_id.pop(e["event_id"], None)
+                    reused.add(sid)
+            slate_events = {k: v for k, v in slate_events.items() if k not in reused}
         est = len(by_id) * len(pi.MARKETS)
         print(f"Union of {len(by_id)} game(s) -> est. {est} credits; account remaining: {remaining}")
         if args.dry_run:
