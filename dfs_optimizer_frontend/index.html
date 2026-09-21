@@ -1766,6 +1766,7 @@ in this browser's localStorage.</p>
             <button class="filter-toggle-btn" id="btnFilterToggle" type="button">Filter ▾</button>
           </div>
         </div>
+        <div class="pool-tabs" id="roleTabs" style="display:none; margin-top:6px;"></div>
         <div class="filter-bar" id="filterBar">
           <div class="filter-group">
             <div class="filter-label">Salary</div>
@@ -1923,6 +1924,7 @@ in this browser's localStorage.</p>
     pollTimer: null,
     // ---- Session 7.3 additions ----
     ownership: { dk: null, fd: null },         // each: { filename, byId: { player_id: pct } }
+    poolRole: "ALL",                           // Showdown only: "ALL" | "CPT" | "FLEX" row filter
     poolTabs: { ALL: true },                   // multi-select: tab -> true (ALL means no position filter)
     poolSort: { key: "final_projection", dir: "desc" },
     // ---- Ad Hoc Session A7 addition -- Exposure Summary table ----
@@ -3607,6 +3609,20 @@ in this browser's localStorage.</p>
     }).join("");
   }
 
+  function renderRoleTabs() {
+    var el = document.getElementById("roleTabs");
+    if (!el) return;
+    var pool = state.pool[state.activeSite];
+    var isShowdown = !!(pool && pool.players.some(function (p) { return p.roster_role; }));
+    el.style.display = isShowdown ? "flex" : "none";
+    if (!isShowdown) { state.poolRole = "ALL"; return; }
+    var tabs = [["ALL", "All rows"], ["CPT", "Captain"], ["FLEX", "FLEX"]];
+    el.innerHTML = tabs.map(function (t) {
+      return '<button class="tab-btn' + (state.poolRole === t[0] ? " active" : "") +
+             '" data-role-tab="' + t[0] + '">' + t[1] + '</button>';
+    }).join("");
+  }
+
   function renderPlayerListHead() {
     var headEl = document.getElementById("playerListHead");
     headEl.innerHTML = '<div></div><div>Player</div>' + SORT_COLUMNS.map(function (c) {
@@ -3616,8 +3632,21 @@ in this browser's localStorage.</p>
     }).join("");
   }
 
+  // Showdown pools list each player twice (Captain row + FLEX row, same
+  // player_id). Exclude is keyed per ROW there -- "pid:ROLE" -- so excluding
+  // a kicker at Captain leaves his FLEX row alone (same idea as lock, which
+  // already pins one role). Classic pools have no roster_role: plain pid, and
+  // the request string is exactly what it was before.
+  function exKey(p) {
+    return p.roster_role ? (p.player_id + ":" + p.roster_role) : p.player_id;
+  }
+  function isCaptainRole(r) { return r === "CPT" || r === "MVP"; }
+
   function passesFilters(p) {
     var f = state.poolFilters;
+    if (p.roster_role && state.poolRole !== "ALL") {
+      if (state.poolRole === "CPT" ? !isCaptainRole(p.roster_role) : p.roster_role !== "FLEX") return false;
+    }
     if (f.salMin !== "" && p.salary < parseFloat(f.salMin)) return false;
     if (f.salMax !== "" && p.salary > parseFloat(f.salMax)) return false;
     if (f.projMin !== "" && p.final_projection < parseFloat(f.projMin)) return false;
@@ -3635,6 +3664,7 @@ in this browser's localStorage.</p>
     var pool = state.pool[site];
     var listEl = document.getElementById("playerList");
     renderPoolTabs();
+    renderRoleTabs();
     updateFilterToggleBtn();
     if (!pool) {
       var bulkRowNP = document.getElementById("bulkActionRow");
@@ -3700,7 +3730,7 @@ in this browser's localStorage.</p>
       var isLocked = p.roster_role
         ? state.locked[site][p.player_id] === p.roster_role
         : !!state.locked[site][p.player_id];
-      var isExcluded = !!state.excluded[site][p.player_id];
+      var isExcluded = !!state.excluded[site][exKey(p)];
       var thumbState = state.thumbs[site][p.player_id]; // "up" | "down" | undefined
       var isThumbUp = thumbState === "up";
       var isThumbDown = thumbState === "down";
@@ -3728,7 +3758,7 @@ in this browser's localStorage.</p>
       return '<div class="' + rowCls + '" data-pid="' + escapeHtml(p.player_id) + '"' + roleAttr + '>' +
         '<div class="pactions">' +
         '<button class="icon-btn lock-btn' + (isLocked ? ' active' : '') + '" data-action="lock" title="' + lockTitle + '">' + lockIcon + '</button>' +
-        '<button class="icon-btn exclude-btn' + (isExcluded ? ' active' : '') + '" data-action="exclude" title="' + (isExcluded ? 'Un-exclude' : 'Exclude') + '">&#x2715;</button>' +
+        '<button class="icon-btn exclude-btn' + (isExcluded ? ' active' : '') + '" data-action="exclude" title="' + (isExcluded ? 'Un-exclude' : (p.roster_role ? 'Exclude as ' + p.roster_role + ' only' : 'Exclude')) + '">&#x2715;</button>' +
         '<button class="icon-btn thumb-btn thumb-up-btn' + (isThumbUp ? ' active' : '') + '" data-action="thumb-up" title="' + (isThumbUp ? 'Remove thumbs up' : 'Thumbs up (boosts this build\u2019s projection)') + '">&#128077;</button>' +
         '<button class="icon-btn thumb-btn thumb-down-btn' + (isThumbDown ? ' active' : '') + '" data-action="thumb-down" title="' + (isThumbDown ? 'Remove thumbs down' : 'Thumbs down (reduces this build\u2019s projection)') + '">&#128078;</button>' +
         '</div>' +
@@ -3753,6 +3783,13 @@ in this browser's localStorage.</p>
     }).join("");
     renderPlayerListHead();
   }
+
+  document.getElementById("roleTabs").addEventListener("click", function (e) {
+    var btn = e.target.closest("button[data-role-tab]");
+    if (!btn) return;
+    state.poolRole = btn.getAttribute("data-role-tab");
+    renderPlayerList();
+  });
 
   document.getElementById("poolTabs").addEventListener("click", function (e) {
     var btn = e.target.closest("button[data-tab]");
@@ -3833,8 +3870,10 @@ in this browser's localStorage.</p>
     var pool = state.pool[site];
     if (!pool) return;
     getVisibleRows(site, pool).forEach(function (p) {
-      state.excluded[site][p.player_id] = true;
-      delete state.locked[site][p.player_id];   // can't be locked + excluded
+      state.excluded[site][exKey(p)] = true;
+      // can't be locked + excluded: drop the lock only if it sits on THIS row
+      var lk = state.locked[site][p.player_id];
+      if (lk === true || (p.roster_role && lk === p.roster_role)) delete state.locked[site][p.player_id];
     });
     renderPlayerList();
   });
@@ -3845,7 +3884,7 @@ in this browser's localStorage.</p>
     var pool = state.pool[site];
     if (!pool) return;
     getVisibleRows(site, pool).forEach(function (p) {
-      delete state.excluded[site][p.player_id];
+      delete state.excluded[site][exKey(p)];
     });
     renderPlayerList();
   });
@@ -3883,7 +3922,7 @@ in this browser's localStorage.</p>
           delete state.locked[site][pid];
         } else {
           state.locked[site][pid] = rowRole;
-          delete state.excluded[site][pid];
+          delete state.excluded[site][pid + ":" + rowRole];
           delete state.playerExposure[site][pid];
         }
       } else if (state.locked[site][pid]) { delete state.locked[site][pid]; }
@@ -3897,8 +3936,15 @@ in this browser's localStorage.</p>
         delete state.playerExposure[site][pid];
       }
     } else if (action === "exclude") {
-      if (state.excluded[site][pid]) { delete state.excluded[site][pid]; }
-      else { state.excluded[site][pid] = true; delete state.locked[site][pid]; }
+      // Showdown: exclude/un-exclude exactly THIS row (Captain or FLEX), never
+      // both; a lock is only dropped if it is pinned to this same row.
+      var exk = rowRole ? (pid + ":" + rowRole) : pid;
+      if (state.excluded[site][exk]) { delete state.excluded[site][exk]; }
+      else {
+        state.excluded[site][exk] = true;
+        var lk2 = state.locked[site][pid];
+        if (lk2 === true || (rowRole && lk2 === rowRole)) delete state.locked[site][pid];
+      }
     } else if (action === "thumb-up") {
       // Session 16 (decisions #48-51) -- mutually exclusive with thumb-
       // down, same "not a silent precedence rule" pattern lock/exclude

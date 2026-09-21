@@ -780,6 +780,29 @@ def parse_id_list(raw: str) -> set:
     return {p.strip() for p in raw.split(",") if p.strip()} if raw else set()
 
 
+def parse_exclude_spec(raw: str) -> tuple:
+    """--exclude counterpart to parse_lock_spec(). A Showdown pool lists each
+    player twice (Captain/MVP row + FLEX row, same player_id), and a bare
+    'player_id' excludes BOTH rows. Append ':ROLE' ('00-0012345:CPT',
+    ':MVP' or ':FLEX') to drop only that one row -- e.g. keep a kicker at
+    FLEX but never at Captain. Returns (player_ids: set, row_roles: dict
+    {player_id: {ROLE, ...}}); ids holds only the bare (whole-player) tokens.
+    Classic slates have no roles: main() folds role-specific tokens back into
+    whole-player exclusions there."""
+    ids = set()
+    row_roles = {}
+    for token in (raw.split(",") if raw else []):
+        token = token.strip()
+        if not token:
+            continue
+        if ":" in token:
+            pid, role = token.split(":", 1)
+            row_roles.setdefault(pid.strip(), set()).add(role.strip().upper())
+        else:
+            ids.add(token)
+    return ids, row_roles
+
+
 def parse_lock_spec(raw: str) -> tuple:
     """Bug fix (found live, Sep 2026): --lock previously only accepted a
     bare player_id, which on a Showdown pool locks that player into EITHER
@@ -3101,6 +3124,23 @@ def validate_min_team_players_feasibility(site: str, min_team_players: dict):
         )
 
 
+def drop_excluded_rows(players: pd.DataFrame, excluded_row_roles: dict) -> pd.DataFrame:
+    """Drop individual (player_id, roster_role) rows named by --exclude
+    'pid:ROLE' tokens (see parse_exclude_spec). CPT and MVP are the same slot
+    on DK/FD, so either spelling matches the pool's captain role."""
+    if not excluded_row_roles:
+        return players
+    alias = {"CPT": {"CPT", "MVP"}, "MVP": {"CPT", "MVP"}, "FLEX": {"FLEX"}}
+    drop = pd.Series(False, index=players.index)
+    for pid, roles in excluded_row_roles.items():
+        wanted = set().union(*(alias.get(r, {r}) for r in roles))
+        drop |= (players["player_id"] == pid) & players["roster_role"].isin(wanted)
+    if not drop.any():
+        print(f"NOTE: --exclude role token(s) {sorted(excluded_row_roles)} matched no pool row -- ignored.",
+              file=sys.stderr)
+    return players[~drop].copy()
+
+
 def build_single_showdown_lineup(site: str, slate_id: str,
                                   randomization_pct: float = DEFAULT_RANDOMIZATION_PCT,
                                   rng: np.random.Generator = None,
@@ -3114,7 +3154,8 @@ def build_single_showdown_lineup(site: str, slate_id: str,
                                   min_team_players: dict = None,
                                   participation_floors: dict = None,
                                   thumbs_up_ids: set = None,
-                                  thumbs_down_ids: set = None) -> pd.DataFrame:
+                                  thumbs_down_ids: set = None,
+                                  excluded_row_roles: dict = None) -> pd.DataFrame:
     players = load_showdown_pool(site, slate_id)
     validate_min_team_players_feasibility(site, min_team_players)
     locked_player_ids = locked_player_ids or set()
@@ -3128,6 +3169,7 @@ def build_single_showdown_lineup(site: str, slate_id: str,
                 f"found in this pool -- ignored.", file=sys.stderr,
             )
         players = players[~players["player_id"].isin(excluded_player_ids)].copy()
+    players = drop_excluded_rows(players, excluded_row_roles)
 
     # Bug fix (found live, Sep 2026) -- see main()'s participation_floors
     # comment above. Same filter, same lock exemption, classic already
@@ -3196,7 +3238,8 @@ def build_multi_showdown_lineup(site: str, slate_id: str,
                                  participation_floors: dict = None,
                                  thumbs_up_ids: set = None,
                                  thumbs_down_ids: set = None,
-                                 player_exposure: dict = None) -> tuple:
+                                 player_exposure: dict = None,
+                                 excluded_row_roles: dict = None) -> tuple:
     """Showdown counterpart to build_multi_lineup() -- same exposure-cap /
     uniqueness-relaxation loop (decisions #5-7), no stacking rotation
     (decision #45 -- not supported for Showdown this session). Session 16
@@ -3217,6 +3260,7 @@ def build_multi_showdown_lineup(site: str, slate_id: str,
                 f"found in this pool -- ignored.", file=sys.stderr,
             )
         players_all = players_all[~players_all["player_id"].isin(excluded_player_ids)].copy()
+    players_all = drop_excluded_rows(players_all, excluded_row_roles)
 
     # Bug fix (found live, Sep 2026) -- see main()'s participation_floors
     # comment above. Same filter, same lock exemption, classic already
@@ -3530,7 +3574,9 @@ def main():
     parser.add_argument(
         "--exclude", default=None,
         help="Comma-separated player_id(s) to remove from the candidate pool "
-             "entirely (decision #22).",
+             "entirely (decision #22). Showdown only: a bare player_id "
+             "removes BOTH his Captain and FLEX rows; append ':CPT' / ':MVP' "
+             "/ ':FLEX' (e.g. '00-0012345:CPT') to remove only that one row.",
     )
     # Session 7.3 -- Salary Floor / FLEX Eligibility Restriction (decisions #28-29).
     parser.add_argument(
@@ -3874,13 +3920,31 @@ def main():
         parser.error("--stack-mode mini requires --mini-stack-type {rb-dst,opposing-pass-catchers}")
 
     locked_player_ids, locked_role_map = parse_lock_spec(args.lock)
-    excluded_player_ids = parse_id_list(args.exclude)
+    excluded_player_ids, excluded_row_roles = parse_exclude_spec(args.exclude)
+    if not showdown_mode:
+        # Classic has no roles: a 'pid:ROLE' token is just an exclusion of pid.
+        excluded_player_ids |= set(excluded_row_roles)
+        excluded_row_roles = {}
     overlap = locked_player_ids & excluded_player_ids
     if overlap:
         parser.error(
             f"player_id(s) {sorted(overlap)} cannot be both --lock and "
             f"--exclude (decision #25)."
         )
+    # Showdown row-level exclusions: a role-pinned lock cannot sit on an
+    # excluded row, and a bare (either-role) lock cannot have BOTH rows excluded.
+    _cap = {"CPT", "MVP"}
+    for pid, roles in excluded_row_roles.items():
+        if pid not in locked_player_ids:
+            continue
+        lr = locked_role_map.get(pid)
+        if lr is not None:
+            if (lr in _cap and roles & _cap) or (lr == "FLEX" and "FLEX" in roles):
+                parser.error(f"player_id {pid} is --lock'd as {lr} but that same row is in "
+                             f"--exclude (decision #25).")
+        elif (roles & _cap) and "FLEX" in roles:
+            parser.error(f"player_id {pid} is --lock'd but both his Captain and FLEX rows are in "
+                         f"--exclude (decision #25).")
     if locked_role_map and not showdown_mode:
         print(
             f"NOTE: --lock role suffix(es) for {sorted(locked_role_map)} "
@@ -4068,6 +4132,7 @@ def main():
                 participation_floors=participation_floors,
                 thumbs_up_ids=thumbs_up_ids, thumbs_down_ids=thumbs_down_ids,
                 player_exposure=player_exposure,
+                excluded_row_roles=excluded_row_roles,
             )
             if args.request_id:
                 out_path = OUTPUT_DIR / "ui_requests" / f"{args.request_id}.csv"
@@ -4112,6 +4177,7 @@ def main():
                 min_team_players=min_team_players,
                 participation_floors=participation_floors,
                 thumbs_up_ids=thumbs_up_ids, thumbs_down_ids=thumbs_down_ids,
+                excluded_row_roles=excluded_row_roles,
             )
             if args.request_id:
                 out_path = OUTPUT_DIR / "ui_requests" / f"{args.request_id}.csv"
