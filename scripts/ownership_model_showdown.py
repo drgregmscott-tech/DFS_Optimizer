@@ -12,10 +12,11 @@ CPT row and the FLEX row) tracks the real field far better, especially at CPT
 (wk2 CPT corr 0.81 -> 0.96, chalk MAE 16.3 -> 3.3, leave-one-slate-out).
 
 MODEL (deliberately tiny: two slates of data): per role (CPT, FLEX), ridge
-regression on the logit scale of real ownership with 3 standardized features:
+regression on the logit scale of real ownership with 4 standardized features:
   l_exp  logit of mean exposure over 3 noise levels (15/30/50%) of 60 lineups
   isK    kicker flag  (the optimizer over-rosters kickers vs the field)
   isD    DST flag
+  isMin  FLEX-equivalent price <= $1,000 (bench-filler punts: heuristic gave 5-12%, real 0-2%)
 then water-filled to the role budget (CPT 100%, FLEX 500%) with a cap
 (CPT 60%, FLEX 75%). Any failure or a missing artifact returns the heuristic
 unchanged. Refit: python scripts/ownership_model_showdown.py fit [--validate]
@@ -42,7 +43,8 @@ N_LINEUPS = 60
 SEED = 7
 CAP = {"CPT": 60.0, "FLEX": 75.0}
 BUDGET = {"CPT": 100.0, "FLEX": 500.0}
-FEATURES = ["l_exp", "isK", "isD"]
+FEATURES = ["l_exp", "isK", "isD", "isMin"]
+MIN_PRICE_FLEX = 1000  # players at/below this FLEX price are ~never rostered (real wk1/wk2: 0-2%)
 LAMBDA = 5.0
 FLOOR = 0.003
 
@@ -89,6 +91,8 @@ def build_features(df: pd.DataFrame) -> pd.DataFrame:
     f["l_exp"] = [float(_logit(e, CAP[r])) for e, r in zip(exp.values, role.values)]
     f["isK"] = (pool["position"].astype(str) == "K").astype(float).values
     f["isD"] = (pool["position"].astype(str).isin(["DST", "D", "DEF"])).astype(float).values
+    sal_flex = pool["salary"].to_numpy(float) / np.where(role.to_numpy() == "CPT", 1.5, 1.0)
+    f["isMin"] = (sal_flex <= MIN_PRICE_FLEX).astype(float)
     f["live"] = (pool["final_projection"] > 0).values
     return f
 
@@ -134,7 +138,9 @@ def refine_showdown_ownership(df: pd.DataFrame, site: str) -> pd.DataFrame:
         feats = build_features(df)
         new = predict(feats, art)
         out = df.copy()
-        out["estimated_ownership_pct_heuristic"] = df["estimated_ownership_pct"]
+        # Idempotent: keep the ORIGINAL heuristic if this frame was already refined.
+        if "estimated_ownership_pct_heuristic" not in out.columns:
+            out["estimated_ownership_pct_heuristic"] = df["estimated_ownership_pct"]
         out["estimated_ownership_pct"] = new.values
         return out
     except Exception as exc:  # noqa: BLE001 -- ownership must never break a build
