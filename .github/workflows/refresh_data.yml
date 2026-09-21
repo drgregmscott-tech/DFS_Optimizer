@@ -66,14 +66,15 @@
 #      account-wide 2,000 min/month free-tier budget shared with every
 #      other repo on the account. Replaced with 6 runs/week, anchored to
 #      when data actually needs to be fresh:
-#        - Thu 23:15 UTC (~7:15pm ET) -- ~1hr before a typical ~8:15pm ET
-#          TNF kickoff; injury news drops ~90min before kickoff, so this
-#          catches it with margin.
+#        - Thu 23:00 UTC (~7:00pm ET / 6:00pm CT) -- ~75min before a typical
+#          8:15pm ET TNF lock; injury news drops ~90min before kickoff, so this
+#          catches it with margin. (Moved from 23:15 on 2026-09-21 so the
+#          player-props pull and rebuild finish comfortably before lock.)
 #        - Sat 12:00 UTC (~8am ET) -- one early morning check.
 #        - Sun 12:00, 16:00, 19:00 UTC (~8am, 12pm, 3pm ET) -- covers the
 #          early slate, the midday window, and the afternoon slate.
-#        - Mon 23:15 UTC (~7:15pm ET) -- same ~1hr-before-kickoff logic
-#          as Thursday, for MNF.
+#        - Mon 23:00 UTC (~7:00pm ET / 6:00pm CT) -- same logic as Thursday,
+#          for MNF.
 #      CAVEAT (same class of limitation already noted for the Sunday
 #      vegas-only window below): these are fixed UTC times. Once DST ends
 #      (Nov 2, 2026), they'll fire 1hr earlier in real ET wall-clock time
@@ -109,10 +110,10 @@ on:
     # Trimmed 2026-09-18 from "every 3 hours on Thu/Sun/Mon" (24 runs/week,
     # including 2am/5am ET dead-of-night runs -- see header comment above)
     # down to 6 runs/week anchored to real lock/kickoff timing.
-    - cron: "15 23 * * 4"             # Thu ~7:15pm ET, ~1hr before TNF kickoff
+    - cron: "0 23 * * 4"              # Thu ~7:00pm ET / 6:00pm CT, ~75min before TNF lock (props pull runs here)
     - cron: "0 12 * * 6"              # Sat ~8am ET
     - cron: "0 12,16,19 * * 0"        # Sun ~8am/12pm/3pm ET
-    - cron: "15 23 * * 1"             # Mon ~7:15pm ET, ~1hr before MNF kickoff
+    - cron: "0 23 * * 1"              # Mon ~7:00pm ET / 6:00pm CT, ~75min before MNF lock (props pull runs here)
   repository_dispatch:
     types: [near_lock_refresh]
   workflow_dispatch:
@@ -166,7 +167,7 @@ jobs:
                 echo "mode=vegas_only" >> "$GITHUB_OUTPUT"
                 echo "trigger_type=light_vegas_refresh" >> "$GITHUB_OUTPUT"
                 ;;
-              "15 23 * * 4"|"0 12 * * 6"|"0 12,16,19 * * 0"|"15 23 * * 1")
+              "0 23 * * 4"|"0 12 * * 6"|"0 12,16,19 * * 0"|"0 23 * * 1")
                 echo "mode=full" >> "$GITHUB_OUTPUT"
                 echo "trigger_type=full_refresh_scheduled" >> "$GITHUB_OUTPUT"
                 ;;
@@ -261,6 +262,9 @@ jobs:
         run: |
           mkdir -p config
           echo "ODDS_API_KEY=${{ secrets.ODDS_API_KEY }}" > config/api_keys.env
+          # Separate Odds API account/quota for player props (scripts/props_ingest.py
+          # prefers this; an empty value falls back to ODDS_API_KEY).
+          echo "ODDS_API_KEY_PROPS=${{ secrets.ODDS_API_KEY_PROPS }}" >> config/api_keys.env
 
       # Pulled once under the first active slate's slate_id -- Vegas lines
       # are site- and slate-agnostic, so every slate's build below points
@@ -346,6 +350,22 @@ jobs:
           if [ \"$FAILED\" -eq 1 ]; then
             exit 1
           fi
+
+      # Player-prop lines (scripts/props_auto.py; WK2_POSTMORTEM.md). Runs only
+      # in full mode. For every slate that locks within ~100 minutes and has no
+      # snapshot from the last 2 hours it pulls that slate's games ONCE (games
+      # shared by several slates are bought once) and writes
+      # data/props/props_{slate_id}.csv, which the projection builds below pick
+      # up automatically. Each slate is due only near ITS OWN lock, so a
+      # Thursday-night showdown, Sunday's classic slates, and the Sunday/Monday
+      # night showdowns are pulled at different runs. Fail-safe by design:
+      # exits 0 on any problem (builds then use the last snapshot if <72h old,
+      # else engine only); committed by the step below along with data/.
+      - name: Pull player props for slates near lock
+        id: props
+        if: needs.prepare.outputs.mode == 'full'
+        continue-on-error: true
+        run: python3 scripts/props_auto.py
 
       # Commit whatever was successfully refreshed. A failed pull above
       # simply produced no new file, so there is nothing new to commit for
