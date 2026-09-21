@@ -3428,3 +3428,23 @@ Wired into `data/optimizer_presets.json`'s `mme_gpp` preset only (`dart-exposure
 - `dfs_optimizer_frontend/index.html` only — `state.exposureTabs`, `computeExposureRows()`, `renderExposureTabs()`, `renderExposureSummary()`, the click handler, the new HTML section, and one new line in `render()`. No other file touched — this feature needed nothing server-side.
 
 ---
+
+
+---
+
+## Post-Week-2 Improvement Track (added 2026-09-21)
+
+Origin: Weeks 1-2 2026 produced no cashing SE3max/MME lineups. Full findings, numbers and scripts are in `WK2_POSTMORTEM.md`; this section is the forward plan. Revisit after Week 3 (reminder scheduled for Mon 2026-09-28).
+
+**Done (2026-09-21):** Week 2+ absent-player volume discount; ownership recompute after OUT zeroing; layered DK ownership model (heuristic + optimizer exposure + salary/reliability layer); player-prop market anchor (ingest, odds->stat-mean model, blend into the engine) with automatic per-slate pulls near lock in `refresh_data.yml` (secret `ODDS_API_KEY_PROPS`); calibrated projection stack (salary + engine + last-4-game usage, DK classic); Week 2 ownership/results logged; look-ahead leak found in historical rebuilds and removed.
+
+**Next, in order:**
+1. **After Week 3:** log Week 3 DK results + ownership; refit ownership model (`fit_ownership_model.py`); add "last week's DK points" as an ownership feature once a third week can validate it.
+2. **Props evaluation:** score props-blended vs engine-only on Week 3 (`data/props/audit_*.csv`, raw snapshots, `data/props/compare/`); fit per-stat blend weights (receptions/yards/TDs; default 0.5, WR/TE receptions may deserve more); check the automatic pull behaved and credits stayed in budget (~390-520/month). Consider adding `player_rush_attempts` (and QB pass attempts/completions) if coverage near lock is good.
+3. **Construction settings (replay harness):** commit `scripts/replay_validation.py`; test the SE "exclude RB/WR/TE proj <= 7" filter, TE in FLEX, QB stack size / bring-back, MME exposure caps and dart handling, game/team targeting, and a ceiling-aware objective for cheap slots. Rule for changing a setting: wins on both weeks or a large effect. Yardstick = simulated field built from real ownership (validated against real fields).
+4. **Engine volume layer:** WR/TE target volume is no better than a last-4-game average; test a faster-fading price prior (k), recency weights, and reconciliation effects on the clean 2020-21 harness. Refit the projection stack as clean weeks accumulate.
+5. **Untested signal families:** snap/route data, opportunity-based expected fantasy points (nflverse URL tried 404'd), better pace data. Already tested with ~0 gain: defense-vs-position, pace/pass rate, game environment, vacated teammate usage.
+6. **Bigger builds:** game-level joint simulation (QB/WR/TE vs opposing DST correlation -0.4, own-team stacks +0.77) for coherent DST projections and correlation-aware lineup construction; FD props/stack; Showdown-specific stack.
+7. **Validation:** the old backtest harness has both a synthetic field and a look-ahead leak; rebuild historical numbers with pre-game-only stats. Investigate why a rebuild after games differs (players with no stat line are zeroed and their volume reallocated).
+
+**Manual notes:** Sunday-night showdown props are not auto-pulled (run `python scripts/props_ingest.py --site dk --slate-id <slate>` yourself); Sunday afternoon reuses the main-slate snapshot; Thu/Mon evening refresh runs at 23:00 UTC (6:00pm CT, shifts to 5:00pm CT after DST ends).
