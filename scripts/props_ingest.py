@@ -6,7 +6,7 @@ Pulls NFL player-prop lines from The Odds API for the games on ONE slate and
 writes them where the projection build looks for them.
 
     python scripts/props_ingest.py --site dk --slate-id dk_showdown_wk2_NYG_LAR_21Sep2026
-    python scripts/props_ingest.py --site dk --slate-id dk_classic_wk3_main_27Sep2026 --max-credits 120
+    python scripts/props_ingest.py --site dk --slate-id dk_classic_wk3_main_27Sep2026         --also-slate-id dk_classic_wk3_early_27Sep2026 --also-slate-id dk_classic_wk3_afternoon_27Sep2026
 
 Reads the slate's already-ingested salary file (data/salaries_{site}_{slate_id}.csv)
 to learn which teams/games are on it, so only those events are pulled.
@@ -122,6 +122,11 @@ def main():
     ap.add_argument("--site", default="dk")
     ap.add_argument("--slate-id", required=True)
     ap.add_argument("--max-credits", type=int, default=120)
+    ap.add_argument("--also-slate-id", action="append", default=[],
+                    help="Copy this pull's snapshot to another slate id (repeatable). Use for classic "
+                         "slates that share games, e.g. pull once for the main slate and pass "
+                         "--also-slate-id for the early/afternoon slates so the same games are not bought twice. "
+                         "Each slate still only matches the players in its own pool.")
     args = ap.parse_args()
 
     key = load_key()
@@ -156,6 +161,10 @@ def main():
     PROPS_DIR.mkdir(parents=True, exist_ok=True)
     props.to_csv(PROPS_DIR / f"props_{args.slate_id}.csv", index=False)
     pd.DataFrame(chosen).to_csv(PROPS_DIR / f"events_{args.slate_id}.csv", index=False)
+    for other in args.also_slate_id:
+        props.to_csv(PROPS_DIR / f"props_{other}.csv", index=False)
+        pd.DataFrame(chosen).to_csv(PROPS_DIR / f"events_{other}.csv", index=False)
+        print(f"  also wrote snapshot for slate {other}")
     print(f"Wrote {len(props)} rows for {props['player'].nunique()} players "
           f"across {props['book'].nunique()} books -> data/props/props_{args.slate_id}.csv")
 
