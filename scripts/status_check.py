@@ -495,6 +495,21 @@ def check_staleness(status_path: Path) -> None:
         )
 
 
+def refresh_ownership(df: pd.DataFrame, site: str) -> pd.DataFrame:
+    """Recompute chalk_score / estimated_ownership_pct on a final_projections
+    frame whose final_projection values changed after the build (OUT
+    zeroing). Uses the same classic/Showdown functions the build calls, so
+    the numbers are identical to what a fresh build would have produced had
+    the OUT players already been zero. Column order is preserved."""
+    from build_projections import add_ownership_columns, add_showdown_ownership_columns  # noqa: E402
+    cols = list(df.columns)
+    base = df.drop(columns=["chalk_score", "estimated_ownership_pct"], errors="ignore")
+    showdown = "slate_format" in base.columns and (base["slate_format"] == "showdown").any()
+    refreshed = add_showdown_ownership_columns(base, site) if showdown else add_ownership_columns(base, site)
+    return refreshed[[c for c in cols if c in refreshed.columns]
+                     + [c for c in refreshed.columns if c not in cols]]
+
+
 def run_apply(site: str, week: int, status_file: str, projections_file: str | None, out_file: str | None):
     proj_path = Path(projections_file) if projections_file else (OUTPUT_DIR / f"final_projections_{site}_{week}.csv")
     if not proj_path.exists():
@@ -558,6 +573,16 @@ def run_apply(site: str, week: int, status_file: str, projections_file: str | No
     n_out = out_mask.sum()
     n_already_zero = (out_mask & (merged["final_projection"] == 0.0)).sum()
     merged.loc[out_mask, "final_projection"] = 0.0
+
+    # Week 2 post-mortem finding: ownership is computed inside the projection
+    # build, BEFORE this step zeroes OUT players, so OUT players kept their
+    # estimated_ownership_pct (e.g. Flowers 9.7% and Collins 6.5% on the wk2
+    # main slate, both OUT, real ownership ~0%). That parked 50-80 points of
+    # each slate's 900-point ownership budget on players who cannot play and
+    # deflated every real player's estimate. Recompute ownership from the
+    # post-zeroing projections whenever this apply step changed anything.
+    if n_out and "estimated_ownership_pct" in merged.columns:
+        merged = refresh_ownership(merged, site)
 
     n_doubtful = (merged["injury_status"] == "DOUBTFUL").sum()
     n_questionable = (merged["injury_status"] == "QUESTIONABLE").sum()

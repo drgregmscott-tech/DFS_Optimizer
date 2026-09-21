@@ -493,7 +493,11 @@ def build_statline_projections(site: str, season: int, week: int, slate_id: str,
                 df[c] = 0.0
         df = statline_model.apply_volume_prior(
             df, prior_art, team_vol, weight_floor=prior_floor, k=prior_k,
-            role_change=role_change)
+            role_change=role_change,
+            # Real regular-season weeks only: week 23 is the preseason /
+            # real-Week-1 sentinel (2025 lookback), where zero history means
+            # rookie, not absent -- see apply_volume_prior()'s docstring.
+            absent_discount=(week <= 18))
         n_flag = int(df["role_change_flag"].sum())
         n_cold = int((df["games_played"] <= 1).sum())
         print(f"Volume prior applied: {n_flag} role-change flag(s), "

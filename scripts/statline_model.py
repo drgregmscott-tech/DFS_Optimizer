@@ -320,6 +320,28 @@ RECONCILE_MIN_VOLUME = 10.0
 # once real logged ownership/actuals exist to fit them against.
 SATURATED_SHARE_THRESHOLD = 0.90
 SATURATED_SALARY_POWER = 5
+
+# Week 2 post-mortem finding (2026): the cold-start price prior is the right
+# answer in real Week 1, where nobody has history. From Week 2 on, a
+# RB/WR/TE with ZERO appearances while his team HAS played is not "no
+# information" -- he was inactive or a healthy scratch, and that absence is
+# itself strong evidence. Measured on the real 2026 Week 2 main slate: 254 of
+# 465 skill players had no Week 1 stat line, the pool projected them 2.9x the
+# touches they actually got (actual/projected 0.35), and the freed-up volume
+# had been stolen from real starters (starters >= $4.7k saw ~1.36x their
+# projected opportunity). By price: <= $4.0k absent players got ~15-26% of
+# projected touches; $4.0-4.5k roughly matched; the 2 players >= $4.5k
+# (injury returnees / newly promoted starters) were UNDER-projected. The
+# 2026 sample is thin above $4.5k, so the fade-out follows an out-of-sample
+# check on 2018-21 weeks 2-4 (~1,000 absent RB/WR/TE): absent players priced
+# <= $4.0k were dead (<=1 touch) 73-83% of the time and got ~0.3x the
+# touches of same-priced players who had appeared; at $4.5-5.5k (n=18) about
+# half were still dead, ~0.33x touches. So the discount fades linearly from
+# full at $4.0k to none at $5.5k. Treat the constants as a starting point to
+# re-fit as weeks accumulate, not a final answer.
+ABSENT_PLAYER_FACTOR = 0.25          # price-volume multiplier at/below the floor salary
+ABSENT_DISCOUNT_FULL_SALARY = 4000   # full discount at or below this salary
+ABSENT_DISCOUNT_NONE_SALARY = 5500   # no discount at or above this salary; linear between
 # Systemic-breakage gates (decision #7). All ARBITRARY, flagged.
 RECONCILE_MAX_VIOLATION_SHARE = 0.25   # share of material pairs allowed to violate
 RECONCILE_EXTREME_SCALE = 3.0          # ratio part of the single-pair breakage test
@@ -939,11 +961,37 @@ def fill_cold_start_rates(pool: pd.DataFrame, variance: dict) -> pd.DataFrame:
     return df
 
 
+def absent_player_price_factor(df: pd.DataFrame, tv: pd.DataFrame) -> pd.Series:
+    """Per-row multiplier (1.0 = untouched) applied to the price-implied
+    volume of RB/WR/TE players who have no stat line this season while their
+    team already has played games. See ABSENT_PLAYER_FACTOR's comment for the
+    evidence. No-op in real Week 1 (no team has history, `tv` empty), for
+    players with any appearance, for QBs (handled by the confirmed-starter
+    override), and for anyone priced at/above ABSENT_DISCOUNT_NONE_SALARY."""
+    factor = pd.Series(1.0, index=df.index, dtype=float)
+    if tv is None or len(tv) == 0:
+        return factor
+    team_has_history = df["team"].isin(tv.index)
+    absent = (pd.to_numeric(df["games_played"], errors="coerce").fillna(0) == 0)         & team_has_history & df["position"].astype(str).isin(["RB", "WR", "TE"])
+    sal = pd.to_numeric(df["salary"], errors="coerce").astype(float).fillna(0.0)
+    span = float(ABSENT_DISCOUNT_NONE_SALARY - ABSENT_DISCOUNT_FULL_SALARY)
+    ramp = ((sal - ABSENT_DISCOUNT_FULL_SALARY) / span).clip(0.0, 1.0)
+    f = ABSENT_PLAYER_FACTOR + (1.0 - ABSENT_PLAYER_FACTOR) * ramp
+    return factor.where(~absent, f)
+
+
 def apply_volume_prior(pool: pd.DataFrame, artifact: dict,
                        team_vol: pd.DataFrame,
                        weight_floor: float = None, k: float = None,
-                       role_change: bool = True) -> pd.DataFrame:
-    """Decisions #11, #12, #15. Blend a price-implied volume into `{comp}_mu`
+                       role_change: bool = True,
+                       absent_discount: bool = False) -> pd.DataFrame:
+    """Decisions #11, #12, #15.
+
+    `absent_discount` (default False = every prior caller unchanged) turns on
+    absent_player_price_factor(). Pass True ONLY when `pool`'s history is the
+    CURRENT season's games before this week (real Week 2+). It must stay off
+    for real Week 1, where the 2025 lookback makes a zero-history player a
+    rookie / zero-snap player, for whom the price prior is exactly right. Blend a price-implied volume into `{comp}_mu`
     and apply the role-change participation override.
 
     `pool` needs: position, salary, participation, games_played, and the
@@ -1139,6 +1187,9 @@ def apply_volume_prior(pool: pd.DataFrame, artifact: dict,
     # --- decision #11: the cold-start blend -------------------------------
     w = volume_prior.cold_start_weight(df["games_played"], weight_floor, k)
     df["volume_prior_weight"] = w
+    absent_factor = (absent_player_price_factor(df, tv) if absent_discount
+                     else pd.Series(1.0, index=df.index)).to_numpy(float)
+    df["absent_player_factor"] = absent_factor
     for comp in comps:
         mu = f"{comp}_mu"
         if mu not in df.columns:
@@ -1149,8 +1200,23 @@ def apply_volume_prior(pool: pd.DataFrame, artifact: dict,
         # price-predicted share is already unconditional. Multiplying would
         # send every week-1 player to zero (participation is 0.0 when the
         # team has no played weeks) while looking like the prior had run.
-        df[mu] = volume_prior.blend_volume(
+        undiscounted = volume_prior.blend_volume(
             df[mu], df[f"{comp}_price_volume"], w)
+        discounted = volume_prior.blend_volume(
+            df[mu], df[f"{comp}_price_volume"] * absent_factor, w)
+        # The volume taken off absent players is REALLOCATED to their
+        # teammates who do have a role (factor == 1.0), pro rata, not
+        # dropped: team volume is fixed, so someone must absorb it. Doing it
+        # here (rather than leaving it to reconcile_team_shares) keeps every
+        # team's pool sum unchanged, so the fail-loud reconciliation test
+        # keeps measuring model breakage instead of this intended shift.
+        freed = pd.Series(np.asarray(undiscounted, float) - np.asarray(discounted, float),
+                          index=df.index).groupby(df["team"]).transform("sum")
+        receivers = pd.Series(absent_factor >= 1.0 - 1e-12, index=df.index)             & (pd.Series(np.asarray(discounted, float), index=df.index) > 0)
+        recv_total = pd.Series(np.asarray(discounted, float), index=df.index)             .where(receivers, 0.0).groupby(df["team"]).transform("sum")
+        boost = np.where(receivers & (recv_total > 1e-9),
+                         1.0 + freed / recv_total.where(recv_total > 1e-9, np.nan), 1.0)
+        df[mu] = np.asarray(discounted, float) * np.nan_to_num(boost, nan=1.0)
     return df
 
 
