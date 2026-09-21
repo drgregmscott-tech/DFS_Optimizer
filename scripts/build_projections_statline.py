@@ -282,6 +282,31 @@ def _apply_props_anchor(df, variance, slate_id, props_weight, props_file):
         return df
 
 
+def _apply_projection_stack(df, site, season, week):
+    """Calibrated stack (projection_stack.py). Failure = engine points unchanged."""
+    try:
+        import projection_stack
+        artifact = projection_stack.load_artifact(site)
+        if artifact is None:
+            return df
+        engine = df["engine_projection"]
+        stacked = projection_stack.apply_stack(df, "engine_projection", site, season, week, artifact)
+        matched = (df["props_matched"].fillna(False).astype(bool)
+                   if "props_matched" in df.columns else pd.Series(False, index=df.index))
+        final = projection_stack.combine(engine, df["statline_mean"], stacked, matched)
+        shift = (final - df["statline_mean"]).where(stacked.notna(), 0.0)
+        df["final_projection"] = final.where(stacked.notna(), df["final_projection"])
+        df["stack_delta"] = shift
+        for c in ("statline_p10", "statline_p90"):
+            df[c] = (df[c] + shift).clip(lower=0.0)
+        n = int(stacked.notna().sum())
+        print(f"Projection stack: adjusted {n} player(s); mean delta {shift[stacked.notna()].mean():+.2f} pts "
+              f"(range {shift.min():+.1f} to {shift.max():+.1f}).")
+    except Exception as exc:  # noqa: BLE001 -- must never break a build
+        print(f"WARNING: projection stack failed ({type(exc).__name__}: {exc}); engine points unchanged.", file=sys.stderr)
+    return df
+
+
 def build_statline_projections(site: str, season: int, week: int, slate_id: str,
                                n_sims: int = statline_model.DEFAULT_SIMS,
                                seed: int = statline_model.DEFAULT_SEED,
@@ -297,6 +322,7 @@ def build_statline_projections(site: str, season: int, week: int, slate_id: str,
                                use_weather: bool = True,
                                props_weight: float = 0.0,
                                props_file: str = None,
+                               use_stack: bool = False,
                                ) -> pd.DataFrame:
     """`vegas_slate_id` (Session 14.0 -- this engine never had Session
     13.5-pause's fix at all): defaults to `slate_id`. See
@@ -655,10 +681,23 @@ def build_statline_projections(site: str, season: int, week: int, slate_id: str,
     # Off unless props_weight > 0 AND a props snapshot exists for this slate
     # (data/props/props_{slate_id}.csv from props_ingest.py). No file, an
     # unreadable file, or a stale one all mean "engine only" -- never an error.
+    df_engine_only = df.copy()
     df = _apply_props_anchor(df, variance, slate_id, props_weight, props_file)
+    props_matched_any = ("props_matched" in df.columns
+                         and bool(df["props_matched"].fillna(False).astype(bool).any()))
 
     sim_input = df[~df["no_real_game_this_week"]].copy()
     sim = statline_model.simulate(sim_input, site, variance, n_sims=n_sims, seed=seed)
+    # Engine-only points E (no props), needed by the projection stack below
+    # whenever props changed some players' inputs; otherwise E == the sim above.
+    stack_active = bool(use_stack and site == "dk" and not showdown)
+    if stack_active and props_matched_any:
+        sim_e = statline_model.simulate(df_engine_only[~df_engine_only["no_real_game_this_week"]].copy(),
+                                        site, variance, n_sims=n_sims, seed=seed)
+    else:
+        sim_e = sim
+    sim = sim.merge(sim_e[["player_id", "statline_mean"]].rename(columns={"statline_mean": "engine_mean"}),
+                    on="player_id", how="left")
 
     df = df.merge(sim, on="player_id", how="left")
     # Decision #6: no history -> 0.0, never dropped.
@@ -668,6 +707,10 @@ def build_statline_projections(site: str, season: int, week: int, slate_id: str,
         df[c] = df[c].fillna(0.0)
 
     df["final_projection"] = df["statline_mean"].clip(lower=0.0)
+    df["engine_projection"] = df["engine_mean"].fillna(df["statline_mean"]).clip(lower=0.0)
+    df["stack_delta"] = 0.0
+    if stack_active:
+        df = _apply_projection_stack(df, site, season, week)
     df["sigma"] = df["statline_sigma"].clip(lower=0.0)
     df["sigma_source"] = "statline_mc"
 
@@ -699,7 +742,7 @@ def build_statline_projections(site: str, season: int, week: int, slate_id: str,
 
     skill_out = df[LEGACY_COLUMNS + AUDIT_COLUMNS +
                    ["sigma", "sigma_source", "statline_p10",
-                    "statline_p90"] + PROJ_STAT_COLUMNS]
+                    "statline_p90"] + PROJ_STAT_COLUMNS + ["engine_projection", "stack_delta"]]
 
     # --- DST (decisions #2, #3; Session 10.4) ------------------------------
     # Session 14.0 FIX: was build_dst_projections(salaries, ...). Now takes
@@ -765,6 +808,9 @@ def build_statline_projections(site: str, season: int, week: int, slate_id: str,
     # exclude every defense by accident.
     for c in AUDIT_COLUMNS:
         dst_out[c] = np.nan
+    # Projection-stack audit columns: DST/kickers are not stacked.
+    dst_out["engine_projection"] = dst_out["final_projection"]
+    dst_out["stack_delta"] = 0.0
     dst_out = dst_out[skill_out.columns]
 
     # --- Kicker (Session 13.1 -- this engine never had it wired in at all)
@@ -795,6 +841,8 @@ def build_statline_projections(site: str, season: int, week: int, slate_id: str,
         # kicker excluded by the participation floor).
         for c in AUDIT_COLUMNS:
             kicker_out[c] = np.nan
+        kicker_out["engine_projection"] = kicker_out["final_projection"]
+        kicker_out["stack_delta"] = 0.0
     kicker_out = kicker_out[skill_out.columns] if len(kicker_out) else \
         pd.DataFrame(columns=skill_out.columns)
 
@@ -920,6 +968,9 @@ if __name__ == "__main__":
                              "exists and is fresh; 0 disables. Default 0.5.")
     parser.add_argument("--props-file", default=None,
                         help="Override the props snapshot path (default data/props/props_{slate_id}.csv).")
+    parser.add_argument("--no-stack", action="store_true",
+                        help="Skip the calibrated projection stack (projection_stack.py). Default: on for "
+                             "DK classic when data/projection_stack_dk.csv's fit exists.")
     parser.add_argument("--no-weather", action="store_true",
                         help="Skip the game-day weather adjustment (scripts/weather.py); "
                              "every player gets neutral 1.0 factors.")
@@ -943,7 +994,8 @@ if __name__ == "__main__":
         vegas_slate_id=args.vegas_slate_id,
         use_weather=not args.no_weather,
         props_weight=args.props_weight,
-        props_file=args.props_file)
+        props_file=args.props_file,
+        use_stack=not args.no_stack)
 
     def _clean_site_id(value):
         if pd.isna(value):

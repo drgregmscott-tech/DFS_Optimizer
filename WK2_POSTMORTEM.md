@@ -37,6 +37,22 @@ to weeks < wk (hist_one.py in the session scratchpad). Clean results, ~12,050 pl
   (all-in: QB +0.020, RB +0.022, WR +0.023, TE +0.047). Environment/recent form/prior season add little. Market props (below) are the natural fix.
 - Validity warning: backtest_harness builds each historical week the same (leaky) way, so past backtest projection-quality numbers carry this look-ahead too.
 
+## DONE: calibrated projection stack (scripts/projection_stack.py, fit_projection_stack.py, data/projection_stack_dk.json) -- DK classic only
+Findings that led to it (clean, pre-game rebuilds of 2020-21 wk2-17):
+- Value check: grouping players by (engine - what salary alone predicts), actual minus salary-predicted points runs -1.8, -1.2, -0.1, +0.9, +2.2 across fifths
+  (top-bottom ~4 pts; QB 5.7, RB 4.9, WR 3.4, TE 3.0). The engine finds value vs salary; it just does not beat salary on total R2.
+- Volume check: for next-game WR/TE targets the engine's projected volume (R2 ~0.42-0.45) is no better than a last-4-game average, season average, or salary alone;
+  engine + last-4 + salary reaches 0.46-0.47. RB carries and QB attempts: the engine is clearly best (0.55, 0.61).
+- Stack = per-position ridge regression on salary, engine points and last-4-game usage (targets, carries, attempts, target share, air-yards share, WOPR, receiving air yards).
+  Leave-one-season-out R2 vs engine+salary: RB +0.03/+0.02, WR +0.02/+0.02, TE +0.05/+0.05, QB ~0 (QB stack is salary + engine only).
+  On 2026 data it never saw: wk2 corr 0.618 -> 0.653 (forecast R2 0.374 -> 0.420), wk1 forecast R2 0.331 -> 0.426; wk2 studs >= $5.8k engine 13.3, stack 15.2, actual 15.3.
+- Applied as final = E + delta (unmatched by props) or E_props + 0.5*delta (matched; assumption to re-test with real props data); stacked value clamped to 0.5-1.8x engine.
+  Not applied to Showdown (salary scale differs) or FD (no fit). Off switch: --no-stack. Refit: python scripts/fit_projection_stack.py.
+- Lineup replay (6 slates, engine vs stack): SE preset +1.0, SE user-style +5.4, SE no-stack -5.6, MME +2.7 percentile points -- neutral-to-slightly-positive, all within noise.
+  The gain is in calibration/forecast accuracy, not a lineup-level jump.
+- Still to do: fix the engine's own WR/TE volume layer (price prior weight decays slowly: k=4), test injury/teammate-absence and snap/route features through the same clean harness,
+  expected-fantasy-points (opportunity) data (the nflverse URL I tried 404'd), and re-fit the stack with real props-blended weeks as they accumulate.
+
 ## PROJECTIONS: what the FIRST (leaky) historical check found (2026-09-21, scratchpad scripts not committed)
 Rebuilt 31 historical weeks (2020 wk2-17, 2021 wk2-17; 2019 fails on OAK/LV team-abbrev in the DST model) with the CURRENT production engine
 (statline + volume prior + sigma recal + distributional DST + participation fix) and scored against actual DK points (~11,700 player-weeks).
