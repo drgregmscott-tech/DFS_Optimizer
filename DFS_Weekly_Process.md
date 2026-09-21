@@ -285,6 +285,22 @@ If you see an error about a missing `.parquet` file, run Step 2d and retry.
 
 ---
 
+### Step 2i-props — Pull player-prop lines and blend them into the projections (new, Week 2 post-mortem)
+
+Sportsbook player props (receiving yards, receptions, rushing yards, passing yards, passing TDs, anytime TD) are converted to expected stat means and blended (default 50/50) into the stat-line engine's per-player inputs. Over 2026 Weeks 1-2 the anytime-TD price alone explained more fantasy-point variance than the engine did, so this is on by default whenever a fresh snapshot exists.
+
+**Pull the snapshot ONCE per slate, as close to lock as is practical (props move with injury news), AFTER the salary file is ingested (Step 2f):**
+
+```
+python scripts/props_ingest.py --site dk --slate-id {slate_id}
+```
+
+It reads the slate's salary file to find its games, refuses to spend if the estimate exceeds `--max-credits` (default 120) or the account is nearly out, and writes `data/props/props_{slate_id}.csv` (+ `events_{slate_id}.csv`, and timestamped raw JSON under `data/props/raw/`). Cost is 6 credits per game (6 markets x 1 region): a 16-game week is ~96 credits, a single showdown game 6. Uses `ODDS_API_KEY_PROPS` if set (env or `config/api_keys.env`), else `ODDS_API_KEY`.
+
+**Then rebuild projections (Step 2i).** `build_projections_statline.py` picks up `data/props/props_{slate_id}.csv` automatically (`--props-weight 0.5` default; `--props-weight 0` turns it off). No snapshot, a snapshot older than 72 hours, or any error means "engine only" - it never blocks a build. The build prints how many players were matched and adjusted, and the output carries `props_*_engine` / `props_*_market` audit columns. Commit the props CSVs so the GitHub refresh builds use them.
+
+---
+
 ### Step 2j — Build a first lineup batch and generate pivot suggestions (optional, recommended)
 
 This step is optional, but doing it now — right after projections, before pushing — means Stage 3's automated refresh loop keeps your pivot suggestions current for the rest of the week without you touching anything again, right up to lock.

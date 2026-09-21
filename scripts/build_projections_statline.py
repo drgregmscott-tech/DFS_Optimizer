@@ -200,6 +200,7 @@ from build_projections import (  # noqa: E402
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 OUTPUT_DIR = REPO_ROOT / "output"
+DATA_DIR = REPO_ROOT / "data"
 
 # Decision #3 -- MEASURED, not assumed: 3,952 real team-weeks, 2014-2021.
 # sigma ~= intercept + slope * projection. The slope is well below
@@ -245,6 +246,42 @@ LEGACY_COLUMNS = [
 AUDIT_COLUMNS = ["games_played", "participation_effective"]
 
 
+PROPS_MAX_AGE_HOURS = 72
+
+
+def _apply_props_anchor(df, variance, slate_id, props_weight, props_file):
+    """Blend market prop lines into the per-player usage inputs (see
+    props_model.py). Returns df unchanged when disabled/unavailable."""
+    if not props_weight or props_weight <= 0:
+        return df
+    import props_model
+    base = Path(props_file) if props_file else DATA_DIR / "props" / f"props_{slate_id}.csv"
+    events_path = base.with_name(base.name.replace("props_", "events_", 1))
+    if not base.exists() or not events_path.exists():
+        print(f"Props anchor: no snapshot at {base.name} -- engine only.")
+        return df
+    try:
+        props = pd.read_csv(base)
+        events = pd.read_csv(events_path)
+        pulled = pd.to_datetime(props["pulled_at"].iloc[0], format="%Y%m%dT%H%M%SZ", utc=True)
+        age_h = (pd.Timestamp.now(tz="UTC") - pulled).total_seconds() / 3600.0
+        if age_h > PROPS_MAX_AGE_HOURS:
+            print(f"Props anchor: snapshot is {age_h:.0f}h old (> {PROPS_MAX_AGE_HOURS}h) -- engine only.")
+            return df
+        print(f"Props anchor: using {base.name} pulled {age_h:.1f}h ago ({props['book'].nunique()} books).")
+        totals = {}
+        if "over_under" in df.columns:
+            ou = df.groupby("team")["over_under"].max()
+            for e in events.itertuples(index=False):
+                totals[e.event_id] = float(ou.get(e.home_abbr, ou.get(e.away_abbr, np.nan)))
+        market = props_model.market_means(props, {k: v for k, v in totals.items() if np.isfinite(v)})
+        market = props_model.match_market_to_pool(market, events, df)
+        return props_model.apply_market_anchor(df, market, variance, props_weight)
+    except Exception as exc:  # noqa: BLE001 -- market data must never break a build
+        print(f"WARNING: props anchor failed ({type(exc).__name__}: {exc}); engine only.", file=sys.stderr)
+        return df
+
+
 def build_statline_projections(site: str, season: int, week: int, slate_id: str,
                                n_sims: int = statline_model.DEFAULT_SIMS,
                                seed: int = statline_model.DEFAULT_SEED,
@@ -258,6 +295,8 @@ def build_statline_projections(site: str, season: int, week: int, slate_id: str,
                                sigma_recal: bool = False,
                                vegas_slate_id: str = None,
                                use_weather: bool = True,
+                               props_weight: float = 0.0,
+                               props_file: str = None,
                                ) -> pd.DataFrame:
     """`vegas_slate_id` (Session 14.0 -- this engine never had Session
     13.5-pause's fix at all): defaults to `slate_id`. See
@@ -612,6 +651,12 @@ def build_statline_projections(site: str, season: int, week: int, slate_id: str,
     for c in usage_cols:
         df[c] = pd.to_numeric(df[c], errors="coerce").fillna(0.0)
 
+    # --- player-prop market anchor (props_model.py; WK2_POSTMORTEM.md) ------
+    # Off unless props_weight > 0 AND a props snapshot exists for this slate
+    # (data/props/props_{slate_id}.csv from props_ingest.py). No file, an
+    # unreadable file, or a stale one all mean "engine only" -- never an error.
+    df = _apply_props_anchor(df, variance, slate_id, props_weight, props_file)
+
     sim_input = df[~df["no_real_game_this_week"]].copy()
     sim = statline_model.simulate(sim_input, site, variance, n_sims=n_sims, seed=seed)
 
@@ -869,6 +914,12 @@ if __name__ == "__main__":
                              "undo, because the distortion is non-linear in "
                              "sigma. Fails loud if the artifact is missing or "
                              "was fit for a different site.")
+    parser.add_argument("--props-weight", type=float, default=0.5,
+                        help="Weight on the player-prop market in the stat-line means "
+                             "(props_model.py). Applies only when data/props/props_{slate_id}.csv "
+                             "exists and is fresh; 0 disables. Default 0.5.")
+    parser.add_argument("--props-file", default=None,
+                        help="Override the props snapshot path (default data/props/props_{slate_id}.csv).")
     parser.add_argument("--no-weather", action="store_true",
                         help="Skip the game-day weather adjustment (scripts/weather.py); "
                              "every player gets neutral 1.0 factors.")
@@ -890,7 +941,9 @@ if __name__ == "__main__":
         confirmed_starter_override=not args.no_confirmed_starter_override,
         sigma_recal=args.sigma_recalibration,
         vegas_slate_id=args.vegas_slate_id,
-        use_weather=not args.no_weather)
+        use_weather=not args.no_weather,
+        props_weight=args.props_weight,
+        props_file=args.props_file)
 
     def _clean_site_id(value):
         if pd.isna(value):
