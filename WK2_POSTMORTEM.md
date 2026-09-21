@@ -25,7 +25,19 @@ Analysis scripts were run from a session scratchpad, not committed (see
    (b) hype/news misses on small slates are not explained by any feature we have; (c) contest-type differences not modeled;
    (d) FD and Showdown still on the heuristic.
 
-## PROJECTIONS: what the historical check found (2026-09-21, scratchpad scripts not committed)
+## CORRECTION (2026-09-21, later): the historical engine-vs-salary result below was inflated by look-ahead
+When a week's own games are already in weekly_stats/team_stats, the build knows who actually played: it zeroes players with no stat line
+("no real game") and reallocates their volume to teammates who did play. My first historical rebuild used full-season stats files, so it had
+that knowledge; the live engine does not (only the injury report). Rebuilt all 32 weeks (2020-21 wk2-17) with each week's stats/team-stats truncated
+to weeks < wk (hist_one.py in the session scratchpad). Clean results, ~12,050 player-weeks:
+- Engine alone CV R2 0.439 vs salary 0.394 overall, but BY POSITION the engine alone is ~tied with salary: QB +0.022, RB +0.003, WR -0.007, TE +0.011.
+  Engine + salary 0.458. Per-week corr(engine)-corr(salary): mean +0.034, sd 0.027 (was +0.051); engine <= salary in 4 of 32 weeks.
+- So 2026 wk2 (+0.007 to +0.014) is NOT unusual (about -1 sd). The original worry ("we are no better than salary") was right for skill positions.
+- What the engine misses: recent usage (last-4-game targets/carries/attempts/target share/air yards) adds +0.047 R2 for TE, +0.024 RB, +0.018 WR beyond engine+salary
+  (all-in: QB +0.020, RB +0.022, WR +0.023, TE +0.047). Environment/recent form/prior season add little. Market props (below) are the natural fix.
+- Validity warning: backtest_harness builds each historical week the same (leaky) way, so past backtest projection-quality numbers carry this look-ahead too.
+
+## PROJECTIONS: what the FIRST (leaky) historical check found (2026-09-21, scratchpad scripts not committed)
 Rebuilt 31 historical weeks (2020 wk2-17, 2021 wk2-17; 2019 fails on OAK/LV team-abbrev in the DST model) with the CURRENT production engine
 (statline + volume prior + sigma recal + distributional DST + participation fix) and scored against actual DK points (~11,700 player-weeks).
 - Engine beats salary historically: CV R2 0.465 vs 0.396 (salary+engine 0.477); raw corr 0.682 vs 0.629. Every position (QB +.03, RB +.044, WR +.016, TE +.053).
