@@ -724,6 +724,13 @@ def add_showdown_ownership_columns(df, site):
             f"mismatch?"
         )
     merged["ownership_available"] = True
+    # Fitted showdown layer (DK only; fail-safe -> heuristic unchanged). See
+    # ownership_model_showdown.py.
+    try:
+        import ownership_model_showdown
+        merged = ownership_model_showdown.refine_showdown_ownership(merged, site)
+    except Exception as exc:  # noqa: BLE001
+        print(f"WARNING: showdown ownership layer unavailable ({exc}); keeping heuristic.", file=sys.stderr)
     return merged
 
 

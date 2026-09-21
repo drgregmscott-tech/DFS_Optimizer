@@ -119,3 +119,12 @@ Rebuilt 31 historical weeks (2020 wk2-17, 2021 wk2-17; 2019 fails on OAK/LV team
 - Ownership: chalk (>20% real) within ~10 pts on average, both weeks.
 - Replay: no degradation vs current settings on Weeks 1 and 2; track SE top-25% rate and mean percentile each week.
 - Real goal stated by user: approach 50% cash rate in SE3max.
+
+## Showdown ownership assessment (2026-09-21)
+Data: wk1 DEN@KC (player-level, partial) + wk2 IND@KC (logged this session, plus 4,733 real lineups). Scripts: `analysis/showdown_own/` (dataset, LOSO comparison, chalk-CPT analysis), model `scripts/ownership_model_showdown.py`, artifact `data/ownership_model_showdown_dk.json` (wired into `add_showdown_ownership_columns`, fail-safe to heuristic; ~30s per build).
+- Heuristic signature = classic: chalk under-estimated (FLEX chalk bias -12.5/-9.9; wk2 Walker CPT 12% est vs 42% real; kickers 6% vs 31%).
+- Feature that matters: optimizer exposure computed separately for CPT and FLEX rows (noisy showdown ILP, 15/30/50% noise x 60). Leave-one-slate-out, 3 features (exposure, K flag, DST flag), ridge on logit scale, water-filled to CPT 100 / FLEX 500.
+  - wk2 CPT: corr 0.81 -> 0.96, chalk MAE 16.3 -> 3.3. wk1 CPT: 0.62 -> 0.59, chalk MAE 8.4 -> 10.1 (only 4 chalk rows; Nix 20% CPT is a hype miss).
+  - FLEX: corr 0.69 -> 0.81 / 0.83 -> 0.87; chalk bias -12.5 -> -0.8 / -9.9 -> -3.3; chalk MAE 18.9 -> 14.5 / 12.9 -> 10.2.
+  - Not fixed: narrative/mid-price pass-catchers (Waddle 39% real vs ~0 exposure, Warren 41% vs 5%); worst FLEX miss still ~33-38 pts. Two slates only: treat coefficients as a first calibration; refit after NYG@LAR and each week (`python scripts/ownership_model_showdown.py fit --validate`).
+- Chalk-CPT question (wk2 only, one game): Walker (42% CPT) lineups averaged 121.7 pts vs 119.5 overall, median finish 58th percentile, and he was the 4th-best CPT score (40.2). But they were only 0.25% top-1% lineups vs 1% baseline (5 of 47 top-1% lineups vs 42% usage) and 11% top-10% (vs 10%). Chalk CPT was NOT bad on points; it capped ceiling (top lineups had Kelce/Mahomes/Butker CPT: Kelce CPT lineups 7% top-1%, 46% top-10%). Cheap/low-owned CPT tier (<3%) had the lowest mean (108) but the highest top-1% rate (3%). One game cannot confirm or refute "fade chalk captains"; need 3+ slates with lineup-level exports.
