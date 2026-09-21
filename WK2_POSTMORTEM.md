@@ -48,7 +48,13 @@ Analysis scripts were run from a session scratchpad, not committed (see
   so predicting the right game is the biggest lever; Vegas total alone found the best game on 2 of 6 slates.
 - Lambda (variance penalty): floor-seeking +0.15 hurt; 0 / 0.063 / -0.05 indistinguishable.
 - Decision #56 (no skill vs own DST) + a Bijan lock removed Panthers DST (26 pts, top-projected, cheapest) in Week 2.
-- Ownership-penalty leverage (estimated ownership): no gain in replay so far; re-test after the ownership rebuild.
+- Ownership-penalty leverage (points penalty = g x ownership%): RE-TESTED after the ownership rebuild, six slates, SE (3 lineups x 6 seeds) and MME.
+  No gain at any strength, with old ownership, new ownership (in-sample and leave-one-week-out), or REAL ownership (oracle).
+  SE mean percentile vs no penalty: real ownership g=0.05 +2.0 / 0.10 -0.6 / 0.20 -5.5; new ownership 0.05 -1.9 / 0.10 -14.9 / 0.20 -18.8;
+  leave-one-week-out ownership 0.05 -1.3 / 0.10 -12.7 / 0.20 -24.1. MME: within +/-4 for g<=0.10 (noise); strong penalties hurt.
+  Even perfect ownership knowledge does not help at these strengths, and accurate chalk estimates made the penalty look WORSE
+  (it removes the efficient chalk that scored in both weeks). Do not add a leverage term yet; revisit with more weeks and, if at all, MME only
+  with a smarter form (leverage on expected top-heavy payoff, not a flat points subtraction).
 
 ## OPEN: validation
 - Old backtest field (ownership-weighted random) was far too weak (75th pct median vs real 22nd-43rd).
