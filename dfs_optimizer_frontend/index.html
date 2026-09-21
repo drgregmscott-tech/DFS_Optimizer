@@ -2778,15 +2778,20 @@ in this browser's localStorage.</p>
     // stat entirely, if no pool is loaded or a given player isn't in it
     // (e.g. viewing a lineup from a different pool upload).
     var pool = state.pool[site];
+    // Showdown: a player has SEPARATE Captain and FLEX ownership, so the
+    // join key includes roster_role (same player_id on both rows). Joining on
+    // player_id alone made the Captain slot show the FLEX row's number.
+    // Classic rows carry no roster_role, key stays the bare player_id.
+    var ownKey = function (o) { return o.roster_role ? (o.player_id + ":" + o.roster_role) : o.player_id; };
     var ownershipById = {};
     if (pool) {
-      pool.players.forEach(function (p) { if (p.ownership != null) ownershipById[p.player_id] = p.ownership; });
+      pool.players.forEach(function (p) { if (p.ownership != null) ownershipById[ownKey(p)] = p.ownership; });
     }
     var injuryById = {};
     if (pool) {
       pool.players.forEach(function (p) { injuryById[p.player_id] = injuryFlagHtml(p.injury_status, p.injury_raw_status); });
     }
-    var rowOwnerships = rows.map(function (r) { return ownershipById[r.player_id]; });
+    var rowOwnerships = rows.map(function (r) { return ownershipById[ownKey(r)]; });
     var allHaveOwnership = rowOwnerships.every(function (o) { return o != null; });
     var totalOwnership = allHaveOwnership ? rowOwnerships.reduce(function (s, o) { return s + o; }, 0) : null;
 
@@ -3416,7 +3421,11 @@ in this browser's localStorage.</p>
     // undefined, silently wiping out the baked-in estimated_ownership_pct
     // (item #5) for anyone not in this particular file.
     pool.players.forEach(function (p) {
-      if (Object.prototype.hasOwnProperty.call(own.byId, p.player_id)) p.ownership = own.byId[p.player_id];
+      // A Showdown override file may carry a roster_role column (per-row
+      // values, stored as "pid:ROLE"); a role-less file applies to both rows.
+      var k = p.roster_role ? (p.player_id + ":" + p.roster_role) : p.player_id;
+      if (Object.prototype.hasOwnProperty.call(own.byId, k)) p.ownership = own.byId[k];
+      else if (Object.prototype.hasOwnProperty.call(own.byId, p.player_id)) p.ownership = own.byId[p.player_id];
     });
   }
 
@@ -3438,7 +3447,10 @@ in this browser's localStorage.</p>
         return;
       }
       var byId = {};
-      rows.forEach(function (r) { byId[r.player_id] = parseFloat(r[ownCol]) || 0; });
+      rows.forEach(function (r) {
+        var key = r.roster_role ? (r.player_id + ":" + r.roster_role) : r.player_id;
+        byId[key] = parseFloat(r[ownCol]) || 0;
+      });
       state.ownership[site] = { filename: file.name, byId: byId };
       applyOwnershipToPool(site);
       setOwnershipStatus(file.name + " — matched via \"" + ownCol + "\"", true);
