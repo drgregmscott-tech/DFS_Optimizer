@@ -1,0 +1,107 @@
+Position,Name + ID,Name,ID,Roster Position,Salary,Game Info,TeamAbbrev,AvgPointsPerGame,Status,roster_role,name,site,salary,normalized_name,normalized_team,position_upper,slate_format,player_id,match_method,match_confidence
+WR,Puka Nacua (44191175),Puka Nacua,44191175,CPT,17100,NYG@LAR 09/21/2026 08:15PM ET,LAR,12.4,Q,CPT,Puka Nacua,dk,17100,puka nacua,LA,WR,showdown,00-0039075,auto_exact,high
+QB,Matthew Stafford (44191176),Matthew Stafford,44191176,CPT,15000,NYG@LAR 09/21/2026 08:15PM ET,LAR,5.1,,CPT,Matthew Stafford,dk,15000,matthew stafford,LA,QB,showdown,00-0026498,auto_exact,high
+QB,Jaxson Dart (44191177),Jaxson Dart,44191177,CPT,14700,NYG@LAR 09/21/2026 08:15PM ET,NYG,26.6,,CPT,Jaxson Dart,dk,14700,jaxson dart,NYG,QB,showdown,00-0040691,auto_exact,high
+RB,Kyren Williams (44191178),Kyren Williams,44191178,CPT,14400,NYG@LAR 09/21/2026 08:15PM ET,LAR,15.5,,CPT,Kyren Williams,dk,14400,kyren williams,LA,RB,showdown,00-0037840,auto_exact,high
+RB,Cam Skattebo (44191179),Cam Skattebo,44191179,CPT,14100,NYG@LAR 09/21/2026 08:15PM ET,NYG,14.1,,CPT,Cam Skattebo,dk,14100,cam skattebo,NYG,RB,showdown,00-0040715,auto_exact,high
+WR,Malik Nabers (44191180),Malik Nabers,44191180,CPT,13500,NYG@LAR 09/21/2026 08:15PM ET,NYG,12.9,,CPT,Malik Nabers,dk,13500,malik nabers,NYG,WR,showdown,00-0039337,auto_exact,high
+WR,Davante Adams (44191181),Davante Adams,44191181,CPT,13200,NYG@LAR 09/21/2026 08:15PM ET,LAR,5.6,,CPT,Davante Adams,dk,13200,davante adams,LA,WR,showdown,00-0031381,auto_exact,high
+WR,Puka Nacua (44191122),Puka Nacua,44191122,FLEX,11400,NYG@LAR 09/21/2026 08:15PM ET,LAR,12.4,Q,FLEX,Puka Nacua,dk,11400,puka nacua,LA,WR,showdown,00-0039075,auto_exact,high
+TE,Isaiah Likely (44191182),Isaiah Likely,44191182,CPT,11100,NYG@LAR 09/21/2026 08:15PM ET,NYG,27.8,,CPT,Isaiah Likely,dk,11100,isaiah likely,NYG,TE,showdown,00-0037838,auto_fallback_team_mismatch,medium
+QB,Matthew Stafford (44191123),Matthew Stafford,44191123,FLEX,10000,NYG@LAR 09/21/2026 08:15PM ET,LAR,5.1,,FLEX,Matthew Stafford,dk,10000,matthew stafford,LA,QB,showdown,00-0026498,auto_exact,high
+QB,Jaxson Dart (44191124),Jaxson Dart,44191124,FLEX,9800,NYG@LAR 09/21/2026 08:15PM ET,NYG,26.6,,FLEX,Jaxson Dart,dk,9800,jaxson dart,NYG,QB,showdown,00-0040691,auto_exact,high
+RB,Kyren Williams (44191125),Kyren Williams,44191125,FLEX,9600,NYG@LAR 09/21/2026 08:15PM ET,LAR,15.5,,FLEX,Kyren Williams,dk,9600,kyren williams,LA,RB,showdown,00-0037840,auto_exact,high
+RB,Cam Skattebo (44191126),Cam Skattebo,44191126,FLEX,9400,NYG@LAR 09/21/2026 08:15PM ET,NYG,14.1,,FLEX,Cam Skattebo,dk,9400,cam skattebo,NYG,RB,showdown,00-0040715,auto_exact,high
+WR,Malik Nabers (44191127),Malik Nabers,44191127,FLEX,9000,NYG@LAR 09/21/2026 08:15PM ET,NYG,12.9,,FLEX,Malik Nabers,dk,9000,malik nabers,NYG,WR,showdown,00-0039337,auto_exact,high
+QB,Ty Simpson (44191183),Ty Simpson,44191183,CPT,9000,NYG@LAR 09/21/2026 08:15PM ET,LAR,0.0,,CPT,Ty Simpson,dk,9000,ty simpson,LA,QB,showdown,00-0041568,auto_exact,high
+QB,Jake Haener (44191184),Jake Haener,44191184,CPT,9000,NYG@LAR 09/21/2026 08:15PM ET,NYG,0.0,,CPT,Jake Haener,dk,9000,jake haener,NYG,QB,showdown,00-0038998,auto_exact,high
+QB,Matthew Caldwell (44191185),Matthew Caldwell,44191185,CPT,9000,NYG@LAR 09/21/2026 08:15PM ET,LAR,0.0,IR,CPT,Matthew Caldwell,dk,9000,matthew caldwell,LA,QB,showdown,00-0041414,auto_exact,high
+QB,Jameis Winston (44191186),Jameis Winston,44191186,CPT,9000,NYG@LAR 09/21/2026 08:15PM ET,NYG,0.0,,CPT,Jameis Winston,dk,9000,jameis winston,NYG,QB,showdown,00-0031503,auto_exact,high
+QB,Stetson Bennett IV (44191187),Stetson Bennett IV,44191187,CPT,9000,NYG@LAR 09/21/2026 08:15PM ET,LAR,1.42,,CPT,Stetson Bennett IV,dk,9000,stetson bennett,LA,QB,showdown,00-0039107,auto_exact,high
+WR,Davante Adams (44191128),Davante Adams,44191128,FLEX,8800,NYG@LAR 09/21/2026 08:15PM ET,LAR,5.6,,FLEX,Davante Adams,dk,8800,davante adams,LA,WR,showdown,00-0031381,auto_exact,high
+WR,Malachi Fields (44191188),Malachi Fields,44191188,CPT,8400,NYG@LAR 09/21/2026 08:15PM ET,NYG,4.5,,CPT,Malachi Fields,dk,8400,malachi fields,NYG,WR,showdown,00-0041042,auto_exact,high
+K,Harrison Mevis (44191189),Harrison Mevis,44191189,CPT,7500,NYG@LAR 09/21/2026 08:15PM ET,LAR,1.0,,CPT,Harrison Mevis,dk,7500,harrison mevis,LA,K,showdown,00-0039498,auto_exact,high
+TE,Isaiah Likely (44191129),Isaiah Likely,44191129,FLEX,7400,NYG@LAR 09/21/2026 08:15PM ET,NYG,27.8,,FLEX,Isaiah Likely,dk,7400,isaiah likely,NYG,TE,showdown,00-0037838,auto_fallback_team_mismatch,medium
+K,Dominic Zvada (44191190),Dominic Zvada,44191190,CPT,7200,NYG@LAR 09/21/2026 08:15PM ET,NYG,4.0,,CPT,Dominic Zvada,dk,7200,dominic zvada,NYG,K,showdown,00-0041145,auto_exact,high
+RB,Blake Corum (44191191),Blake Corum,44191191,CPT,6900,NYG@LAR 09/21/2026 08:15PM ET,LAR,5.4,,CPT,Blake Corum,dk,6900,blake corum,LA,RB,showdown,00-0039738,auto_exact,high
+DST,Rams (44191192),Rams,44191192,CPT,6300,NYG@LAR 09/21/2026 08:15PM ET,LAR,2.0,,CPT,Rams,dk,6300,rams,LA,DST,showdown,DST_LA,team_defense,high
+QB,Ty Simpson (44191130),Ty Simpson,44191130,FLEX,6000,NYG@LAR 09/21/2026 08:15PM ET,LAR,0.0,,FLEX,Ty Simpson,dk,6000,ty simpson,LA,QB,showdown,00-0041568,auto_exact,high
+QB,Jake Haener (44191131),Jake Haener,44191131,FLEX,6000,NYG@LAR 09/21/2026 08:15PM ET,NYG,0.0,,FLEX,Jake Haener,dk,6000,jake haener,NYG,QB,showdown,00-0038998,auto_exact,high
+QB,Matthew Caldwell (44191132),Matthew Caldwell,44191132,FLEX,6000,NYG@LAR 09/21/2026 08:15PM ET,LAR,0.0,IR,FLEX,Matthew Caldwell,dk,6000,matthew caldwell,LA,QB,showdown,00-0041414,auto_exact,high
+QB,Jameis Winston (44191133),Jameis Winston,44191133,FLEX,6000,NYG@LAR 09/21/2026 08:15PM ET,NYG,0.0,,FLEX,Jameis Winston,dk,6000,jameis winston,NYG,QB,showdown,00-0031503,auto_exact,high
+QB,Stetson Bennett IV (44191134),Stetson Bennett IV,44191134,FLEX,6000,NYG@LAR 09/21/2026 08:15PM ET,LAR,1.42,,FLEX,Stetson Bennett IV,dk,6000,stetson bennett,LA,QB,showdown,00-0039107,auto_exact,high
+WR,Darnell Mooney (44191193),Darnell Mooney,44191193,CPT,5700,NYG@LAR 09/21/2026 08:15PM ET,NYG,4.7,,CPT,Darnell Mooney,dk,5700,darnell mooney,NYG,WR,showdown,00-0036309,auto_fallback_team_mismatch,medium
+WR,Malachi Fields (44191135),Malachi Fields,44191135,FLEX,5600,NYG@LAR 09/21/2026 08:15PM ET,NYG,4.5,,FLEX,Malachi Fields,dk,5600,malachi fields,NYG,WR,showdown,00-0041042,auto_exact,high
+TE,Colby Parkinson (44191194),Colby Parkinson,44191194,CPT,5400,NYG@LAR 09/21/2026 08:15PM ET,LAR,1.6,,CPT,Colby Parkinson,dk,5400,colby parkinson,LA,TE,showdown,00-0036244,auto_exact,high
+RB,Tyrone Tracy Jr. (44191195),Tyrone Tracy Jr.,44191195,CPT,5100,NYG@LAR 09/21/2026 08:15PM ET,NYG,0.4,,CPT,Tyrone Tracy Jr.,dk,5100,tyrone tracy,NYG,RB,showdown,00-0039384,auto_exact,high
+K,Harrison Mevis (44191136),Harrison Mevis,44191136,FLEX,5000,NYG@LAR 09/21/2026 08:15PM ET,LAR,1.0,,FLEX,Harrison Mevis,dk,5000,harrison mevis,LA,K,showdown,00-0039498,auto_exact,high
+K,Dominic Zvada (44191137),Dominic Zvada,44191137,FLEX,4800,NYG@LAR 09/21/2026 08:15PM ET,NYG,4.0,,FLEX,Dominic Zvada,dk,4800,dominic zvada,NYG,K,showdown,00-0041145,auto_exact,high
+DST,Giants (44191196),Giants,44191196,CPT,4800,NYG@LAR 09/21/2026 08:15PM ET,NYG,3.0,,CPT,Giants,dk,4800,giants,NYG,DST,showdown,DST_NYG,team_defense,high
+RB,Blake Corum (44191138),Blake Corum,44191138,FLEX,4600,NYG@LAR 09/21/2026 08:15PM ET,LAR,5.4,,FLEX,Blake Corum,dk,4600,blake corum,LA,RB,showdown,00-0039738,auto_exact,high
+RB,Devin Singletary (44191197),Devin Singletary,44191197,CPT,4500,NYG@LAR 09/21/2026 08:15PM ET,NYG,13.8,,CPT,Devin Singletary,dk,4500,devin singletary,NYG,RB,showdown,00-0035250,auto_exact,high
+DST,Rams (44191139),Rams,44191139,FLEX,4200,NYG@LAR 09/21/2026 08:15PM ET,LAR,2.0,,FLEX,Rams,dk,4200,rams,LA,DST,showdown,DST_LA,team_defense,high
+TE,Tyler Higbee (44191198),Tyler Higbee,44191198,CPT,4200,NYG@LAR 09/21/2026 08:15PM ET,LAR,2.2,,CPT,Tyler Higbee,dk,4200,tyler higbee,LA,TE,showdown,00-0033110,auto_exact,high
+WR,Darnell Mooney (44191140),Darnell Mooney,44191140,FLEX,3800,NYG@LAR 09/21/2026 08:15PM ET,NYG,4.7,,FLEX,Darnell Mooney,dk,3800,darnell mooney,NYG,WR,showdown,00-0036309,auto_fallback_team_mismatch,medium
+TE,Colby Parkinson (44191141),Colby Parkinson,44191141,FLEX,3600,NYG@LAR 09/21/2026 08:15PM ET,LAR,1.6,,FLEX,Colby Parkinson,dk,3600,colby parkinson,LA,TE,showdown,00-0036244,auto_exact,high
+TE,Theo Johnson (44191199),Theo Johnson,44191199,CPT,3600,NYG@LAR 09/21/2026 08:15PM ET,NYG,1.9,,CPT,Theo Johnson,dk,3600,theo johnson,NYG,TE,showdown,00-0039847,auto_exact,high
+RB,Tyrone Tracy Jr. (44191142),Tyrone Tracy Jr.,44191142,FLEX,3400,NYG@LAR 09/21/2026 08:15PM ET,NYG,0.4,,FLEX,Tyrone Tracy Jr.,dk,3400,tyrone tracy,NYG,RB,showdown,00-0039384,auto_exact,high
+WR,Jordan Whittington (44191200),Jordan Whittington,44191200,CPT,3300,NYG@LAR 09/21/2026 08:15PM ET,LAR,1.8,D,CPT,Jordan Whittington,dk,3300,jordan whittington,LA,WR,showdown,00-0039751,auto_exact,high
+DST,Giants (44191143),Giants,44191143,FLEX,3200,NYG@LAR 09/21/2026 08:15PM ET,NYG,3.0,,FLEX,Giants,dk,3200,giants,NYG,DST,showdown,DST_NYG,team_defense,high
+RB,Devin Singletary (44191144),Devin Singletary,44191144,FLEX,3000,NYG@LAR 09/21/2026 08:15PM ET,NYG,13.8,,FLEX,Devin Singletary,dk,3000,devin singletary,NYG,RB,showdown,00-0035250,auto_exact,high
+RB,Najee Harris (44191201),Najee Harris,44191201,CPT,3000,NYG@LAR 09/21/2026 08:15PM ET,NYG,0.0,,CPT,Najee Harris,dk,3000,najee harris,NYG,RB,showdown,00-0036893,auto_fallback_team_mismatch,medium
+TE,Tyler Higbee (44191145),Tyler Higbee,44191145,FLEX,2800,NYG@LAR 09/21/2026 08:15PM ET,LAR,2.2,,FLEX,Tyler Higbee,dk,2800,tyler higbee,LA,TE,showdown,00-0033110,auto_exact,high
+TE,Terrance Ferguson (44191202),Terrance Ferguson,44191202,CPT,2700,NYG@LAR 09/21/2026 08:15PM ET,LAR,0.0,,CPT,Terrance Ferguson,dk,2700,terrance ferguson,LA,TE,showdown,00-0040737,auto_exact,high
+TE,Theo Johnson (44191146),Theo Johnson,44191146,FLEX,2400,NYG@LAR 09/21/2026 08:15PM ET,NYG,1.9,,FLEX,Theo Johnson,dk,2400,theo johnson,NYG,TE,showdown,00-0039847,auto_exact,high
+TE,Davis Allen (44191203),Davis Allen,44191203,CPT,2400,NYG@LAR 09/21/2026 08:15PM ET,LAR,2.3,,CPT,Davis Allen,dk,2400,davis allen,LA,TE,showdown,00-0039074,auto_exact,high
+WR,Jordan Whittington (44191147),Jordan Whittington,44191147,FLEX,2200,NYG@LAR 09/21/2026 08:15PM ET,LAR,1.8,D,FLEX,Jordan Whittington,dk,2200,jordan whittington,LA,WR,showdown,00-0039751,auto_exact,high
+RB,Ronnie Rivers (44191204),Ronnie Rivers,44191204,CPT,2100,NYG@LAR 09/21/2026 08:15PM ET,LAR,3.4,,CPT,Ronnie Rivers,dk,2100,ronnie rivers,LA,RB,showdown,00-0037557,auto_exact,high
+RB,Najee Harris (44191148),Najee Harris,44191148,FLEX,2000,NYG@LAR 09/21/2026 08:15PM ET,NYG,0.0,,FLEX,Najee Harris,dk,2000,najee harris,NYG,RB,showdown,00-0036893,auto_fallback_team_mismatch,medium
+TE,Terrance Ferguson (44191149),Terrance Ferguson,44191149,FLEX,1800,NYG@LAR 09/21/2026 08:15PM ET,LAR,0.0,,FLEX,Terrance Ferguson,dk,1800,terrance ferguson,LA,TE,showdown,00-0040737,auto_exact,high
+WR,Odell Beckham Jr. (44191205),Odell Beckham Jr.,44191205,CPT,1800,NYG@LAR 09/21/2026 08:15PM ET,NYG,0.0,,CPT,Odell Beckham Jr.,dk,1800,odell beckham,NYG,WR,showdown,00-0031235,auto_exact,high
+TE,Davis Allen (44191150),Davis Allen,44191150,FLEX,1600,NYG@LAR 09/21/2026 08:15PM ET,LAR,2.3,,FLEX,Davis Allen,dk,1600,davis allen,LA,TE,showdown,00-0039074,auto_exact,high
+WR,Konata Mumpfield (44191206),Konata Mumpfield,44191206,CPT,1500,NYG@LAR 09/21/2026 08:15PM ET,LAR,0.0,,CPT,Konata Mumpfield,dk,1500,konata mumpfield,LA,WR,showdown,00-0040590,auto_exact,high
+RB,Ronnie Rivers (44191151),Ronnie Rivers,44191151,FLEX,1400,NYG@LAR 09/21/2026 08:15PM ET,LAR,3.4,,FLEX,Ronnie Rivers,dk,1400,ronnie rivers,LA,RB,showdown,00-0037557,auto_exact,high
+WR,Odell Beckham Jr. (44191152),Odell Beckham Jr.,44191152,FLEX,1200,NYG@LAR 09/21/2026 08:15PM ET,NYG,0.0,,FLEX,Odell Beckham Jr.,dk,1200,odell beckham,NYG,WR,showdown,00-0031235,auto_exact,high
+WR,Tutu Atwell (44191207),Tutu Atwell,44191207,CPT,1200,NYG@LAR 09/21/2026 08:15PM ET,LAR,0.0,,CPT,Tutu Atwell,dk,1200,tutu atwell,LA,WR,showdown,00-0036849,auto_exact,high
+WR,Konata Mumpfield (44191153),Konata Mumpfield,44191153,FLEX,1000,NYG@LAR 09/21/2026 08:15PM ET,LAR,0.0,,FLEX,Konata Mumpfield,dk,1000,konata mumpfield,LA,WR,showdown,00-0040590,auto_exact,high
+TE,Chris Manhertz (44191208),Chris Manhertz,44191208,CPT,900,NYG@LAR 09/21/2026 08:15PM ET,NYG,0.0,,CPT,Chris Manhertz,dk,900,chris manhertz,NYG,TE,showdown,00-0031484,auto_exact,high
+WR,Tutu Atwell (44191154),Tutu Atwell,44191154,FLEX,800,NYG@LAR 09/21/2026 08:15PM ET,LAR,0.0,,FLEX,Tutu Atwell,dk,800,tutu atwell,LA,WR,showdown,00-0036849,auto_exact,high
+TE,Chris Manhertz (44191155),Chris Manhertz,44191155,FLEX,600,NYG@LAR 09/21/2026 08:15PM ET,NYG,0.0,,FLEX,Chris Manhertz,dk,600,chris manhertz,NYG,TE,showdown,00-0031484,auto_exact,high
+RB,Patrick Ricard (44191209),Patrick Ricard,44191209,CPT,600,NYG@LAR 09/21/2026 08:15PM ET,NYG,0.0,,CPT,Patrick Ricard,dk,600,patrick ricard,NYG,RB,showdown,00-0033376,auto_fallback_team_mismatch,medium
+RB,Patrick Ricard (44191156),Patrick Ricard,44191156,FLEX,400,NYG@LAR 09/21/2026 08:15PM ET,NYG,0.0,,FLEX,Patrick Ricard,dk,400,patrick ricard,NYG,RB,showdown,00-0033376,auto_fallback_team_mismatch,medium
+RB,Dean Connors (44191210),Dean Connors,44191210,CPT,300,NYG@LAR 09/21/2026 08:15PM ET,LAR,0.0,,CPT,Dean Connors,dk,300,dean connors,LA,RB,showdown,00-0041415,auto_exact,high
+RB,Grant Finley (44191211),Grant Finley,44191211,CPT,300,NYG@LAR 09/21/2026 08:15PM ET,NYG,0.0,,CPT,Grant Finley,dk,300,grant finley,NYG,RB,showdown,00-0041585,auto_exact,high
+RB,Jordan Waters (44191212),Jordan Waters,44191212,CPT,300,NYG@LAR 09/21/2026 08:15PM ET,LAR,0.0,,CPT,Jordan Waters,dk,300,jordan waters,LA,RB,showdown,00-0040601,auto_exact,high
+RB,Phil Mafah (44191213),Phil Mafah,44191213,CPT,300,NYG@LAR 09/21/2026 08:15PM ET,NYG,0.0,,CPT,Phil Mafah,dk,300,phil mafah,NYG,RB,showdown,00-0040021,auto_fallback_team_mismatch,medium
+WR,Calvin Austin III (44191214),Calvin Austin III,44191214,CPT,300,NYG@LAR 09/21/2026 08:15PM ET,NYG,0.0,IR,CPT,Calvin Austin III,dk,300,calvin austin,NYG,WR,showdown,00-0037837,auto_fallback_team_mismatch,medium
+WR,Gunner Olszewski (44191215),Gunner Olszewski,44191215,CPT,300,NYG@LAR 09/21/2026 08:15PM ET,NYG,0.0,IR,CPT,Gunner Olszewski,dk,300,gunner olszewski,NYG,WR,showdown,00-0035645,auto_exact,high
+WR,CJ Daniels (44191216),CJ Daniels,44191216,CPT,300,NYG@LAR 09/21/2026 08:15PM ET,LAR,0.0,,CPT,CJ Daniels,dk,300,cj daniels,LA,WR,showdown,00-0041399,auto_exact,high
+WR,Xavier Smith (44191217),Xavier Smith,44191217,CPT,300,NYG@LAR 09/21/2026 08:15PM ET,LAR,0.0,,CPT,Xavier Smith,dk,300,xavier smith,LA,WR,showdown,00-0038359,auto_exact,high
+WR,Dalen Cambre (44191218),Dalen Cambre,44191218,CPT,300,NYG@LAR 09/21/2026 08:15PM ET,NYG,0.0,,CPT,Dalen Cambre,dk,300,dalen cambre,NYG,WR,showdown,00-0040431,auto_exact,high
+WR,Brennan Presley (44191219),Brennan Presley,44191219,CPT,300,NYG@LAR 09/21/2026 08:15PM ET,LAR,0.0,,CPT,Brennan Presley,dk,300,brennan presley,LA,WR,showdown,00-0040597,auto_exact,high
+WR,Jalin Hyatt (44191220),Jalin Hyatt,44191220,CPT,300,NYG@LAR 09/21/2026 08:15PM ET,NYG,0.0,,CPT,Jalin Hyatt,dk,300,jalin hyatt,NYG,WR,showdown,00-0038938,auto_exact,high
+WR,Charlie Jones (44191221),Charlie Jones,44191221,CPT,300,NYG@LAR 09/21/2026 08:15PM ET,NYG,0.0,,CPT,Charlie Jones,dk,300,charlie jones,NYG,WR,showdown,00-0038576,auto_fallback_team_mismatch,medium
+WR,Braxton Berrios (44191222),Braxton Berrios,44191222,CPT,300,NYG@LAR 09/21/2026 08:15PM ET,NYG,0.0,,CPT,Braxton Berrios,dk,300,braxton berrios,NYG,WR,showdown,00-0034419,auto_fallback_team_mismatch,medium
+WR,Alex Bachman (44191223),Alex Bachman,44191223,CPT,300,NYG@LAR 09/21/2026 08:15PM ET,LAR,0.0,,CPT,Alex Bachman,dk,300,alex bachman,LA,WR,showdown,00-0035602,auto_fallback_team_mismatch,medium
+TE,Max Klare (44191224),Max Klare,44191224,CPT,300,NYG@LAR 09/21/2026 08:15PM ET,LAR,0.0,,CPT,Max Klare,dk,300,max klare,LA,TE,showdown,00-0041510,auto_exact,high
+TE,Dan Villari (44191225),Dan Villari,44191225,CPT,300,NYG@LAR 09/21/2026 08:15PM ET,LAR,0.0,,CPT,Dan Villari,dk,300,dan villari,LA,TE,showdown,00-0041422,auto_exact,high
+TE,Thomas Fidone II (44191226),Thomas Fidone II,44191226,CPT,300,NYG@LAR 09/21/2026 08:15PM ET,NYG,0.0,,CPT,Thomas Fidone II,dk,300,thomas fidone,NYG,TE,showdown,00-0040225,auto_exact,high
+TE,Ben Mann (44191227),Ben Mann,44191227,CPT,300,NYG@LAR 09/21/2026 08:15PM ET,NYG,0.0,,CPT,Ben Mann,dk,300,ben mann,NYG,TE,showdown,00-0041143,auto_fallback_name_only_position_mismatch,low
+RB,Dean Connors (44191157),Dean Connors,44191157,FLEX,200,NYG@LAR 09/21/2026 08:15PM ET,LAR,0.0,,FLEX,Dean Connors,dk,200,dean connors,LA,RB,showdown,00-0041415,auto_exact,high
+RB,Grant Finley (44191158),Grant Finley,44191158,FLEX,200,NYG@LAR 09/21/2026 08:15PM ET,NYG,0.0,,FLEX,Grant Finley,dk,200,grant finley,NYG,RB,showdown,00-0041585,auto_exact,high
+RB,Jordan Waters (44191159),Jordan Waters,44191159,FLEX,200,NYG@LAR 09/21/2026 08:15PM ET,LAR,0.0,,FLEX,Jordan Waters,dk,200,jordan waters,LA,RB,showdown,00-0040601,auto_exact,high
+RB,Phil Mafah (44191160),Phil Mafah,44191160,FLEX,200,NYG@LAR 09/21/2026 08:15PM ET,NYG,0.0,,FLEX,Phil Mafah,dk,200,phil mafah,NYG,RB,showdown,00-0040021,auto_fallback_team_mismatch,medium
+WR,Calvin Austin III (44191161),Calvin Austin III,44191161,FLEX,200,NYG@LAR 09/21/2026 08:15PM ET,NYG,0.0,IR,FLEX,Calvin Austin III,dk,200,calvin austin,NYG,WR,showdown,00-0037837,auto_fallback_team_mismatch,medium
+WR,Gunner Olszewski (44191162),Gunner Olszewski,44191162,FLEX,200,NYG@LAR 09/21/2026 08:15PM ET,NYG,0.0,IR,FLEX,Gunner Olszewski,dk,200,gunner olszewski,NYG,WR,showdown,00-0035645,auto_exact,high
+WR,CJ Daniels (44191163),CJ Daniels,44191163,FLEX,200,NYG@LAR 09/21/2026 08:15PM ET,LAR,0.0,,FLEX,CJ Daniels,dk,200,cj daniels,LA,WR,showdown,00-0041399,auto_exact,high
+WR,Xavier Smith (44191164),Xavier Smith,44191164,FLEX,200,NYG@LAR 09/21/2026 08:15PM ET,LAR,0.0,,FLEX,Xavier Smith,dk,200,xavier smith,LA,WR,showdown,00-0038359,auto_exact,high
+WR,Dalen Cambre (44191165),Dalen Cambre,44191165,FLEX,200,NYG@LAR 09/21/2026 08:15PM ET,NYG,0.0,,FLEX,Dalen Cambre,dk,200,dalen cambre,NYG,WR,showdown,00-0040431,auto_exact,high
+WR,Brennan Presley (44191166),Brennan Presley,44191166,FLEX,200,NYG@LAR 09/21/2026 08:15PM ET,LAR,0.0,,FLEX,Brennan Presley,dk,200,brennan presley,LA,WR,showdown,00-0040597,auto_exact,high
+WR,Jalin Hyatt (44191167),Jalin Hyatt,44191167,FLEX,200,NYG@LAR 09/21/2026 08:15PM ET,NYG,0.0,,FLEX,Jalin Hyatt,dk,200,jalin hyatt,NYG,WR,showdown,00-0038938,auto_exact,high
+WR,Charlie Jones (44191168),Charlie Jones,44191168,FLEX,200,NYG@LAR 09/21/2026 08:15PM ET,NYG,0.0,,FLEX,Charlie Jones,dk,200,charlie jones,NYG,WR,showdown,00-0038576,auto_fallback_team_mismatch,medium
+WR,Braxton Berrios (44191169),Braxton Berrios,44191169,FLEX,200,NYG@LAR 09/21/2026 08:15PM ET,NYG,0.0,,FLEX,Braxton Berrios,dk,200,braxton berrios,NYG,WR,showdown,00-0034419,auto_fallback_team_mismatch,medium
+WR,Alex Bachman (44191170),Alex Bachman,44191170,FLEX,200,NYG@LAR 09/21/2026 08:15PM ET,LAR,0.0,,FLEX,Alex Bachman,dk,200,alex bachman,LA,WR,showdown,00-0035602,auto_fallback_team_mismatch,medium
+TE,Max Klare (44191171),Max Klare,44191171,FLEX,200,NYG@LAR 09/21/2026 08:15PM ET,LAR,0.0,,FLEX,Max Klare,dk,200,max klare,LA,TE,showdown,00-0041510,auto_exact,high
+TE,Dan Villari (44191172),Dan Villari,44191172,FLEX,200,NYG@LAR 09/21/2026 08:15PM ET,LAR,0.0,,FLEX,Dan Villari,dk,200,dan villari,LA,TE,showdown,00-0041422,auto_exact,high
+TE,Thomas Fidone II (44191173),Thomas Fidone II,44191173,FLEX,200,NYG@LAR 09/21/2026 08:15PM ET,NYG,0.0,,FLEX,Thomas Fidone II,dk,200,thomas fidone,NYG,TE,showdown,00-0040225,auto_exact,high
+TE,Ben Mann (44191174),Ben Mann,44191174,FLEX,200,NYG@LAR 09/21/2026 08:15PM ET,NYG,0.0,,FLEX,Ben Mann,dk,200,ben mann,NYG,TE,showdown,00-0041143,auto_fallback_name_only_position_mismatch,low

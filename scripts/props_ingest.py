@@ -80,12 +80,12 @@ def slate_teams(site: str, slate_id: str) -> set:
         raise SystemExit(f"{path} not found -- ingest the slate's salary file first (ingest_salaries.py).")
     df = pd.read_csv(path)
     col = "normalized_team" if "normalized_team" in df.columns else "TeamAbbrev"
-    return {normalize_team(t) for t in df[col].dropna().unique()}
+    return {normalize_team(t, site) for t in df[col].dropna().unique()}
 
 
-def abbr(full_name: str):
+def abbr(full_name: str, site: str = "dk"):
     a = TEAM_NAME_MAP.get(full_name)
-    return normalize_team(a) if a else None
+    return normalize_team(a, site) if a else None
 
 
 def list_events(key: str):
@@ -129,7 +129,7 @@ def main():
     events, remaining = list_events(key)
     chosen = []
     for e in events:
-        h, a = abbr(e["home_team"]), abbr(e["away_team"])
+        h, a = abbr(e["home_team"], args.site), abbr(e["away_team"], args.site)
         if h in teams and a in teams:
             chosen.append({"event_id": e["id"], "home_abbr": h, "away_abbr": a,
                            "home": e["home_team"], "away": e["away_team"], "commence_time": e["commence_time"]})
