@@ -1,0 +1,12 @@
+cpt,flex,total,lineup_id,label,rank,pctile
+Matthew Stafford,"Kyren Williams, Davante Adams, Isaiah Likely, Rams, Blake Corum",135.17,4,D_StaffordCPT_LA5_Likely,71.0,0.992106450157871
+Matthew Stafford,"Jaxson Dart, Kyren Williams, Davante Adams, Blake Corum, Terrance Ferguson",134.07,6,F_StaffordCPT_LA5_Ferg,114.0,0.9872575552548489
+Matthew Stafford,"Jaxson Dart, Kyren Williams, Davante Adams, Dominic Zvada, Terrance Ferguson",131.87,11,U2_StaffordCPT_LA4,217.0,0.9756427604871448
+Davante Adams,"Matthew Stafford, Kyren Williams, Malik Nabers, Blake Corum, Colby Parkinson",126.23,5,E_AdamsCPT_LA5,436.0,0.9509472259810555
+Matthew Stafford,"Jaxson Dart, Kyren Williams, Davante Adams, Blake Corum, Konata Mumpfield",118.87,3,C_StaffordCPT_LA5_Corum,913.0,0.8971583220568335
+Blake Corum,"Matthew Stafford, Jaxson Dart, Kyren Williams, Davante Adams, Rams",117.28,2,B_CorumCPT_LA5,1237.0,0.8606224627875507
+Kyren Williams,"Matthew Stafford, Malik Nabers, Davante Adams, Rams, Colby Parkinson",114.13,1,A_WilliamsCPT_LA5,1432.0,0.8386332882273342
+Kyren Williams,"Matthew Stafford, Jaxson Dart, Davante Adams, Rams, Tyler Higbee",110.33,7,G_WilliamsCPT_LA5_Higbee,1787.0,0.7986017140279658
+Matthew Stafford,"Jaxson Dart, Malik Nabers, Davante Adams, Rams, Giants",105.87,8,U4_StaffordCPT_2DST,2015.0,0.7728912945421741
+Matthew Stafford,"Jaxson Dart, Kyren Williams, Malik Nabers, Colby Parkinson, Devin Singletary",69.47,10,U5_StaffordCPT,6163.0,0.30514208389715836
+Jaxson Dart,"Malik Nabers, Davante Adams, Isaiah Likely, Harrison Mevis, Dominic Zvada",65.1,9,U3_DartCPT_2K,6635.0,0.2519170049616599

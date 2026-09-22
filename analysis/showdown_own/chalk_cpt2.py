@@ -21,3 +21,4 @@ def run(f,label):
     return e
 run('C:/Users/gmsco/Downloads/dk_showdown_wk1_Den_KC_14Sep2026_results.csv','wk1 DEN@KC')
 run('C:/Users/gmsco/Downloads/results_se3max_dk_showdown_wk2_Ind_KC_20Sep2026.csv','wk2 IND@KC')
+run('C:/Users/gmsco/Downloads/results_se3max_dk_showdown_wk2_NYG_LAR_21Sep2026.csv','wk2 NYG@LAR')

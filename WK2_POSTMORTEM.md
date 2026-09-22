@@ -132,3 +132,170 @@ Data: wk1 DEN@KC (player-level, partial) + wk2 IND@KC (logged this session, plus
 - Both slates together: the top-owned CPT was mediocre-to-bad in both (wk1 clear miss; wk2 fine on average points but 0.25% top-1%), and in neither did the top-1% lineups use the top-owned CPT more than ~11% of the time vs its usage (wk2 Walker) or 0% (wk1 Nix). That is consistent with "chalk captains cap the ceiling" but n=2 games; the wk1 miss came from a QB whose FLEX ownership (58%) the field over-weighted, and wk2's chalk did not miss on points. Winning captains were the players who had monster games, whatever their ownership.
 - Showdown simulated field (`scripts/showdown_field.py`, validated by `analysis/showdown_own/validate_field.py`): CPT drawn from CPT ownership, 5 distinct FLEX from FLEX ownership, cap $50k and min $48.5k (real entries' median salary used is ~$49.7k), both teams required, weights tuned so accepted lineups reproduce the input ownership (MAE 0.06 CPT / 0.16 FLEX). Built from REAL ownership + actual points it matches real lineup score quantiles (50/75/90/95/99/99.9%) to within ~1-2 pts on wk1 (71.6/86.1/96.5/102.0/110.2/118.4 vs 70.4/87.3/98.3/104.0/111.4/118.5) and wk2 (118.9/130.7/138.6/145.0/149.6/156.7 vs 120.1/131.2/141.0/145.2/149.9/158.6). Weakness: team split is not stack-aware (real fields have more 3-3/4-2 on wk1); kicker-in-lineup 0.45 vs real 0.43.
 - Model v2 adds an `isMin` feature (FLEX price <= $1,000: real 0-2% vs heuristic 5-12%). LOSO: FLEX corr 0.83/0.90, chalk MAE 12.5/7.5, chalk bias -2.0/-5.0; CPT wk2 chalk MAE 6.5, wk1 9.8 (heuristic 8.4 there, only 4 chalk rows).
+
+## wk2 NYG@LAR logged + 3-slate refit (2026-09-22)
+Logged both ownership (`data/ownership_raw_dk_showdown_2026_wk2_NygLar.csv`, 79/79 matched) and results
+(`data/results_raw_dk_showdown_2026_wk2_NygLar.csv`, 79/79 matched, mean abs error 4.41) from the real
+8,918-row DK export. Now 3 regular-season showdown slates logged (2/4 toward the ownership data gate,
+3/4 toward the results gate).
+- **Bug found and fixed in `ownership_model_showdown.py fit --validate`**: for any slate whose
+  `final_projections` file was already built AFTER the model was wired into the pipeline (true here --
+  NYG@LAR was built post-session-2), `estimated_ownership_pct` in that pool file IS the model's own
+  prior-fit output, not the raw heuristic -- so the validate script's "heuristic" baseline for that slate
+  was silently comparing model-vs-model (identical numbers). Fixed `_training_frame()` to prefer the
+  preserved `estimated_ownership_pct_heuristic` column when present. After the fix, NYG@LAR's TRUE
+  heuristic-vs-model comparison: CPT corr 0.54->0.80 (chalk MAE 8.7->7.4), FLEX corr 0.78->0.95 (chalk
+  bias -18.0->-4.2, chalk MAE 20.0->7.7) -- the model clearly generalizes to a genuinely held-out 3rd
+  slate, the first real out-of-sample confirmation (wk1/wk2-IndKC were both already "in-sample" by the
+  time this fix was needed). Refit on all 3 slates and saved to `data/ownership_model_showdown_dk.json`.
+- **Chalk-CPT extended to 3 slates** (`analysis/showdown_own/chalk_cpt2.py`, now runs all 3): NYG@LAR's
+  chalk CPT was Jaxson Dart (23.5% usage, backup-QB-turned-starter narrative) -- 0 of 105 top-1% lineups,
+  3.3% top-10%, mean 67.9 pts vs 83.2 field average, CPT-score rank 21/47. The pattern now holds on all 3
+  independent slates: the single most-owned CPT had 0% (wk1 Nix, wk2-NYGLAR Dart) or a token (wk2-IndKC
+  Walker, 10.6%) share of top-1% lineups despite 20-42% field usage each time. This is no longer just
+  "n=2, one bad QB outcome" -- three different teams, three different chalk-CPT profiles (a rookie/backup
+  QB, a bell-cow RB, a surprise-starter QB), same direction every time. Treat "fade the single most-owned
+  captain for ceiling" as a real, if still small-sample (n=3), construction rule going forward -- it does
+  not mean chalk CPT loses money outright (wk2-IndKC Walker was fine on raw points), just that it caps
+  the top of the outcome distribution.
+- **Graded the actual played lineup + all 10 alternates against the real NYG@LAR field**
+  (`analysis/showdown_own/compare_lineups_graded_real.csv`). Actual played (Williams CPT / Stafford,
+  Nabers, Adams, Rams DST, Parkinson): 114.13 pts, rank 1,432 of 8,868 = 84th percentile -- missed the
+  top-10% cutoff (118.98 pts) by ~5 points, consistent with (a touch below) the model's pre-game ~29-31%
+  P(top-10%) / ~20% worst-case estimate. Of Greg's own 10 generated alternates, 4 would have cleared
+  top-10% in hindsight and one (Stafford CPT / Williams, Adams, Likely, Rams, Corum, 135.17 pts) would
+  have cleared top-1% (rank 71 of 8,868). 3 of the top 4 real-outcome lineups used **Stafford at CPT**
+  (not the model's chosen Williams) alongside a low-owned boom/bust pass-catcher (Isaiah Likely or
+  Terrance Ferguson) who had an unpredictable big game -- this reads as favorable variance on specific
+  low-owned players more than a systematic flaw in the model's captain choice, but it's a second
+  data point (after session 2's "Adams CPT scored close behind Williams CPT pre-game") that the model's
+  single top pick and the actual best-in-hindsight pick are not reliably the same lineup, which is the
+  whole argument for scoring a large candidate pool and keeping several live rather than committing to
+  one "best" lineup pre-lock. Found and fixed two bugs while doing this grading: (1) DK's raw player-level
+  export has trailing whitespace on team/DST names (`'Rams '` vs the pipeline's `'Rams'`) that silently
+  drops unmatched rows in any ad hoc join -- always `.str.strip()` both sides; (2) the CPT row's
+  `actual_fpts` in the logged results file is ALREADY 1.5x-scaled (DK reports it that way), so summing a
+  lineup's real score must NOT re-apply the 1.5x multiplier to the CPT row.
+
+## Classic cash-line diagnostic (2026-09-22): why SE3max is 0-for-the-season
+Origin: `gmscott81`'s DK Classic SE3max entries have missed the ~top-25% cash line in all 6 slates
+logged so far (wk1 main/early/afternoon 2026-09-13, wk2 main/early/afternoon 2026-09-20) --
+percentiles 21.7 / 14.4 / 47.5 / 58.7 / 42.2 / 36.0, never above the 75th-percentile cash line.
+Analysis script: `analysis/classic_diag/top_drivers_classic.py` (mirrors
+`analysis/showdown_own/top10_drivers.py`'s method) -- pools all 6 real DK exports (51,389 real
+lineups total; downloaded to `~/Downloads`, not yet committed, see script for exact filenames),
+parses every real lineup's roster, joins to that slate's `final_projections` for team/position/
+salary/vegas, and joins to the same export's own player-ownership table for real ownership. Cash
+label = real rank in the top 25% of that slate (SE3max's real min-cash line per earlier findings
+in this file).
+- **Bug found and fixed while building this**: DK's classic roster string has REPEATED slot labels
+  (`RB RB WR WR WR`, not `CPT`/`FLEX` like Showdown). A first draft parsed slots into a
+  `{slot: name}` dict, which silently kept only the LAST of each duplicate slot and dropped the
+  other RB/WR players entirely -- this corrupted salary (summed to ~$29-32k instead of ~$49-50k),
+  ownership sum, stack count, and team split for every single lineup in the pool. Fixed by keeping
+  a list of `(slot, name)` tuples instead of collapsing into a dict. Re-ran after the fix; the
+  numbers below are post-fix and sanity-checked against a hand-computed lineup salary sample
+  (median $49,900, matches DK's real cap usage).
+- **Real cash-line rate is a clean 25.0-25.1% at every one of the 6 slates** (confirms the ~25%
+  cash-line assumption from earlier in this file rather than treating it as a rough estimate).
+- **Pooled logistic regression for cash (51,389 rows, all 6 slates, standardized within slate;
+  |z|>2 ~ real)**:
+  ```
+                   coef      z
+  dst_own_z       -0.16 -11.12   (higher DST ownership -> LOWER cash prob, see DST tier below)
+  dst_opp_total_z -0.06  -4.05   (DST facing a HIGHER-implied-total opponent -> lower cash prob)
+  own_sum_z       +0.29 +26.01   (STRONGEST signal: higher total lineup ownership -> higher cash prob)
+  sal_z           +0.09  +6.06   (using more of the $50k cap -> higher cash prob, weak)
+  flex_te         +0.18  +6.67   (TE in the FLEX slot -> higher cash prob)
+  stack2p         +0.16  +4.87   (QB + 2 pass-catchers -> higher cash prob; stack1 alone ~0, not real)
+  bb1p            +0.20  +9.54   (>=1 bring-back player -> higher cash prob)
+  ```
+  Lift tables (P(cash|bucket) / 25%) tell the same story with real magnitudes:
+  - **Ownership (own_sum, lineup's total combined ownership%)**: Q1 (least-owned) lift 0.77x, Q2
+    0.88x, Q3 1.04x, Q4 (most-owned/chalkiest) lift **1.31x**. This is the single strongest effect
+    in the whole analysis and it points the OPPOSITE direction from a "differentiate for leverage"
+    instinct: in a top-25%-cash format (not a GPP-max format), being closer to the field's chalk is
+    associated with cashing MORE, not less. This independently reconfirms, from real lineup-level
+    data instead of a simulated replay, this file's earlier finding that a flat ownership-leverage
+    PENALTY in the optimizer showed "no gain at any strength, even with perfect ownership
+    knowledge" -- now with a mechanism: the field's chalk is disproportionately the RIGHT chalk in a
+    format where you just need to clear a median-ish bar, not win outright.
+  - **TE in FLEX**: lift **1.18x** (real, z=6.67) -- this is the concrete forward-test result for
+    the item this file already flagged as untested ("TE in FLEX share rises from 12% (bottom half)
+    to 29% (top 1%) in real fields; user currently unclicks it. Test."). Verdict: turn it on.
+  - **Stack + bring-back**: stack=0 lift 0.92x, stack=1 lift 0.94x (barely different from no
+    stack), stack=2 lift **1.11x**, stack=3 lift 1.10x. Bring-back=0 lift 0.91x, bring-back=1 lift
+    1.08x, bring-back=2 lift **1.24x**. This REFINES (does not simply repeat) the earlier
+    "bring-back neutral" finding from a narrower replay test -- across 51k real lineups the signal
+    for bring-back is real and positive, and a single stack partner alone barely helps; it takes a
+    real QB+2 double-stack to clear the no-stack baseline meaningfully.
+  - **Team split**: 3-3 lift **1.11x**, 4-2 lift 1.12x (small n=2,834), 2-4 lift 0.93x, 1-5 lift
+    0.91x, 5-1 lift 0.96x (small n=251).
+  - **DST tier by real ownership**: <5% lift 0.92x, 5-12% lift **1.08x**, 12-25% lift **1.08x**,
+    >25% lift **0.64x** (a real trap -- the single most popular DST tier performs WORST of all four,
+    consistent with the chalk-CPT-caps-ceiling pattern found on the Showdown side, but here it's
+    the FLOOR/cash-line format showing the opposite lesson: don't take the MOST chalky DST, but do
+    stay in the moderately-chalky 5-25% band rather than getting cute with a <5%-owned dart).
+  - **DST opponent implied total (continuous, z=-4.05)**: favor a DST whose opponent has a LOWER
+    Vegas-implied point total -- the conventional "target a good matchup" DST logic, now confirmed
+    against 51k real outcomes rather than assumed.
+- **Grading `gmscott81`'s own 6 SE3max builds against these signals** (all 6 missed cash; this is
+  why):
+  | slate | stack | bb | split | dst_own tier | dst_opp_total | own_sum (field quartile) | result |
+  |---|---|---|---|---|---|---|---|
+  | wk1 main | 2 | 0 | 3-3 (good) | 18.1% (good) | 15.7 (fine) | 103 (low) | 21.7 pctile |
+  | wk1 early | 2 | 0 | 3-3 (good) | 23.2% (good) | 15.7 (fine) | 126 (low-mid) | 14.4 pctile |
+  | wk1 afternoon | 2 | 2 (great) | 3-3 (good) | 17.5% (good) | 18.7 (fine) | 241 (chalkiest of the 6) | 47.5 pctile -- closest to cashing |
+  | wk2 main | 1 | 0 | 2-4 (below avg) | 9.2% (good) | 15.9 (fine) | 141 (low-mid) | 58.7 pctile |
+  | wk2 early | 1 | 0 | 2-4 (below avg) | **27.0% (worst tier)** | 16.5 (fine) | 221 (chalky) | 42.2 pctile |
+  | wk2 afternoon | 1 | 0 | 2-4 (below avg) | 21.7% (good) | **24.0 (worst matchup of the 6)** | 199 (chalky) | 35.9 pctile |
+
+  Pattern: `bb=0` (no bring-back) in 5 of 6 builds, `flex=TE` used but the setting that enables it
+  is normally off by default (`optimizer.py`'s `DEFAULT_STACK_MODE = "none"`, `DEFAULT_STACK_SIZE =
+  1`, bring-back defaults to off -- so unless explicitly overridden, a build does NOT stack at all,
+  which is exactly what shows up here: 4 of 6 builds effectively have no real stack beyond
+  incidental overlap). `own_sum` was in the bottom half of the field on 4 of 6 (103, 126, 141, and
+  even the two "chalky" ones at 221/241 aren't clearly Q4). One specific DST pick (wk2 early,
+  Buccaneers at 27% owned) sat in the single worst-performing tier; one specific DST matchup (wk2
+  afternoon, Jaguars vs. a 24-point-implied Rams-ish opponent) was the worst matchup of the six.
+  wk1 afternoon did the most things right (stack 2, bring-back 2, good split, chalkiest own_sum of
+  the six) and came closest to cashing (47.5 pctile) but still missed -- a reminder that these are
+  probability shifts on a ~25% base rate, not guarantees; a single slate can still miss on pure
+  player-performance variance even with a well-built lineup.
+- **Cross-check attempted and NOT confirmative**: compared `gmscott81`'s own 20 wk2-main MME
+  lineups (8 of 20 cashed, i.e. 40% -- MME is NOT part of the "0/12" cash problem, only SE3max is)
+  by the same features. Within-user own_sum was actually LOWER for the cashed lineups (84 vs 102)
+  -- the OPPOSITE of the cross-field direction above. Not a contradiction: this is 20 sibling
+  lineups from one optimizer batch differing mainly by which dart/diversification swap landed, a
+  much weaker and more confounded comparison than the 51k-row cross-field regression. Treat the
+  cross-field finding as the reliable one; this check mainly confirms the MME batch's structure
+  (stack, bring-back, DST tier) was already reasonable across all 20, consistent with the "MME
+  isn't the problem" framing.
+- **Existing optimizer levers that map directly onto these findings** (no new code needed, these
+  already exist): `--stack-mode qb --stack-size 2 --bring-back` (currently off by default),
+  `--flex-positions RB,WR,TE` (TE currently unclicked in the UI per this file's earlier note),
+  `--min-total-ownership` (currently 0/unused -- the lever that directly targets the own_sum
+  finding). DST tier/matchup targeting has no dedicated lever yet; would need either a manual
+  DST-tier exclude per week or a small ownership-band filter added to the pool.
+- **What this does NOT yet have**: a committed replay-validation harness (`scripts/
+  replay_validation.py`, still flagged as TODO elsewhere in this file) to confirm these specific
+  setting changes actually improve REPLAYED lineup outcomes on these same 6 slates before adopting
+  them as new defaults -- this diagnostic is real-lineup DESCRIPTIVE evidence (what wins in the
+  field), which is a different and complementary check from a replay test (what the optimizer would
+  have produced under a changed setting). Given the consistency and sample size here (6 independent
+  slates, same direction every time, |z|>4 on every factor), recommend adopting the settings above
+  for the next classic SE3max build now, and building the replay harness to confirm/refine rather
+  than gating action on it.
+- **Also checked and NOT yet fixed**: the existing ad hoc classic field simulator
+  (`analysis/wk2_session_scripts/fieldsim.py`, referenced as an open question in the Showdown
+  session-2 handoff) does NOT clear the validation bar the Showdown field simulator was held to.
+  Validated against wk2's 3 real classic slates (real ownership + real points fed in, compared to
+  real score quantiles): it UNDER-predicts every quantile, by -1 to -7pts at the median and -5 to
+  -9pts at the 90th/95th/99th percentiles (e.g. wk2 main: p90 sim 143.9 vs real 150.7, p99 sim
+  171.5 vs real 178.8). This is worse than Showdown's field (~1-2pt accuracy) and is NOT yet fit
+  for scoring candidate lineups the way `showdown_field.py` is used for Showdown -- most likely
+  cause is the classic sim draws each position independently with no team-stack correlation and no
+  iterative-proportional-fitting reweighting after the salary-cap filter (both of which
+  `showdown_field.py` has and this script doesn't). Needed before porting the Showdown
+  "scenario-score candidates against a validated field" construction method to classic (deferred
+  this session per direction to do the classic cash diagnostic first).

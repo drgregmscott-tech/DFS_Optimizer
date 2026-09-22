@@ -3438,7 +3438,42 @@ Origin: Weeks 1-2 2026 produced no cashing SE3max/MME lineups. Full findings, nu
 
 **Done (2026-09-21):** Week 2+ absent-player volume discount; ownership recompute after OUT zeroing; layered DK ownership model (heuristic + optimizer exposure + salary/reliability layer); player-prop market anchor (ingest, odds->stat-mean model, blend into the engine) with automatic per-slate pulls near lock in `refresh_data.yml` (secret `ODDS_API_KEY_PROPS`); calibrated projection stack (salary + engine + last-4-game usage, DK classic); Week 2 ownership/results logged; look-ahead leak found in historical rebuilds and removed.
 
+**Done (2026-09-22):** logged wk2 NYG@LAR showdown ownership+results (3rd showdown slate); fixed a
+showdown ownership model validation bug (LOSO "heuristic" baseline was stale-model output on any
+slate built after the model was wired in) and refit/reconfirmed the model on a genuinely
+held-out 3rd slate; extended the chalk-CPT lineup analysis to 3 slates (pattern holds: single
+most-owned CPT gets ~0% share of top-1% lineups on all 3, despite 20-42% field usage each time);
+graded the actual played showdown lineup + 10 alternates against the real field (missed top-10%
+by ~5pts; 4 of 10 alternates would have cleared it). **Classic cash-line diagnostic**
+(`analysis/classic_diag/top_drivers_classic.py`, full detail in WK2_POSTMORTEM.md's "Classic
+cash-line diagnostic" section): pooled 51,389 real DK Classic SE3max lineups across all 6 slates
+logged so far (wk1+wk2 main/early/afternoon) to find what actually predicts a top-25% cash-line
+finish. Strongest, most consistent real-data signals: (1) higher total lineup ownership -> HIGHER
+cash rate (own_sum top quartile 1.31x lift vs bottom quartile 0.77x -- reconfirms, independently
+of the earlier replay-based finding, that chasing ownership leverage hurts in a cash-line format);
+(2) TE in FLEX 1.18x lift (forward-tests and confirms the item this file already flagged as
+untested); (3) QB+2 stack 1.11x lift (QB+1 alone barely helps, 0.94x) and bring-back 1.08-1.24x
+lift (real, positive -- refines the earlier "bring-back neutral" replay finding); (4) DST: avoid
+the single most-owned tier (>25% owned, 0.64x lift -- a real trap) and favor a lower-implied-total
+opponent; (5) 3-3/4-2 splits beat 2-4/1-5. Graded `gmscott81`'s own 6 SE3max builds (all missed
+cash) against these: bring-back was missing in 5 of 6, own_sum was below the field's midpoint in
+4 of 6, one DST pick sat in the worst tier, one DST matchup was the worst of the six. All the
+needed optimizer levers already exist (`--stack-mode qb --stack-size 2 --bring-back`,
+`--flex-positions RB,WR,TE`, `--min-total-ownership`) -- this is a settings/build-process fix, not
+new code. Also checked and found lacking: the existing ad hoc classic field simulator
+(`analysis/wk2_session_scripts/fieldsim.py`) under-predicts real score quantiles by 5-9pts at the
+tail (no stack-correlation, no IPF reweighting) -- not yet fit for the Showdown-style "scenario-
+score candidates against a validated field" construction method; porting that method to classic
+(item 6 below) needs this rebuilt first, using `scripts/showdown_field.py`'s validated pattern
+generalized to a full position-slotted roster.
+
 **Next, in order:**
+0. **Apply the classic cash-line diagnostic's settings for the next SE3max build**: turn on
+   `--stack-mode qb --stack-size 2 --bring-back`, enable TE in FLEX-eligible positions, set a real
+   `--min-total-ownership` floor (not 0), and manually avoid/prefer DST picks per the tier findings
+   above, ahead of building the replay-validation harness (item 3) that would otherwise gate this --
+   the real-lineup evidence (6 independent slates, consistent direction, |z|>4 every factor) is
+   strong enough to act on now rather than wait.
 1. **After Week 3:** log Week 3 DK results + ownership; refit ownership model (`fit_ownership_model.py`); add "last week's DK points" as an ownership feature once a third week can validate it.
 2. **Props evaluation:** score props-blended vs engine-only on Week 3 (`data/props/audit_*.csv`, raw snapshots, `data/props/compare/`); fit per-stat blend weights (receptions/yards/TDs; default 0.5, WR/TE receptions may deserve more); check the automatic pull behaved and credits stayed in budget (~390-520/month). Consider adding `player_rush_attempts` (and QB pass attempts/completions) if coverage near lock is good.
 3. **Construction settings (replay harness):** commit `scripts/replay_validation.py`; test the SE "exclude RB/WR/TE proj <= 7" filter, TE in FLEX, QB stack size / bring-back, MME exposure caps and dart handling, game/team targeting, and a ceiling-aware objective for cheap slots. Rule for changing a setting: wins on both weeks or a large effect. Yardstick = simulated field built from real ownership (validated against real fields).

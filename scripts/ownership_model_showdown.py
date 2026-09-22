@@ -162,6 +162,11 @@ def _training_frame() -> pd.DataFrame:
             print(f"skip {sid}: no projections file", file=sys.stderr)
             continue
         pool = pd.read_csv(path, dtype={"player_id": str})
+        # If this pool was already built with the model wired in, estimated_ownership_pct
+        # IS the model's own prior-fit output, not the true heuristic -- use the preserved
+        # raw heuristic column instead so validate's "heuristic" baseline stays honest.
+        if "estimated_ownership_pct_heuristic" in pool.columns:
+            pool = pool.assign(estimated_ownership_pct=pool["estimated_ownership_pct_heuristic"])
         f = build_features(pool)
         a = log[log.slate_id == sid][["player_id", "roster_role", "actual_ownership_pct"]].copy()
         a["player_id"] = a["player_id"].astype(str)
