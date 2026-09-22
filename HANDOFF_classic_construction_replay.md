@@ -11,6 +11,19 @@ fixed several real bugs along the way (documented below so they aren't repeated)
 idea after testing it (a hard ownership floor), and surfaced one promising idea that was NOT
 built or tested (conviction-vs-chalk contrarian signal) -- flagged clearly as open, not done.
 
+## 0. TOP PRIORITY for next session (Greg's explicit request, not yet run)
+`python analysis/classic_diag/batch_cash_drivers.py [n_lineups_per_slate]` (default 150) --
+written and syntax-checked this session but deliberately NOT executed (Greg asked for it to be
+queued for next session rather than run now). Builds diversified batches with the confirmed
+settings (stack=2, bring-back) for all 6 logged slates, grades every lineup against real results,
+and compares cashed vs. missed lineups WITHIN each batch (not across the whole real field) on:
+total projection, salary, ownership sum, DST tier/matchup, team split, FLEX position, and whether
+the stack team was the game's favorite. This is a narrower, cleaner test than the original 51k-
+lineup diagnostic since it holds structure roughly fixed -- it should sharpen (or narrow) whether
+ownership/DST/split findings hold up even among already-well-built lineups, and whether stacking
+the favorite specifically matters. Full detail and rationale also in `ROADMAP.md`'s Post-Week-2
+Improvement Track, item 0.
+
 ## 1. Showdown work this session (quick summary, see WK2_POSTMORTEM.md for full detail)
 - Logged wk2 NYG@LAR ownership + results (3rd showdown slate, 100% match rate both).
 - Found and fixed a bug in `ownership_model_showdown.py fit --validate`: its "heuristic" baseline

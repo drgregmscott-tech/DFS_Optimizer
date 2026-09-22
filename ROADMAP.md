@@ -3476,15 +3476,40 @@ the frontend vs. keep as an ad hoc analysis script (the same decision the Showdo
 flagged, now symmetric across both slate types).
 
 **Next, in order:**
-0. **Apply the classic cash-line diagnostic's settings for the next SE3max build**: turn on
-   `--stack-mode qb --stack-size 2 --bring-back`, enable TE in FLEX-eligible positions, set a real
-   `--min-total-ownership` floor (not 0), and manually avoid/prefer DST picks per the tier findings
-   above, ahead of building the replay-validation harness (item 3) that would otherwise gate this --
-   the real-lineup evidence (6 independent slates, consistent direction, |z|>4 every factor) is
-   strong enough to act on now rather than wait.
+**[SUPERSEDED 2026-09-22]** Item 0 below originally recommended a `--min-total-ownership` floor
+before replay-testing existed. That floor was REPLAY-TESTED and REJECTED (high variance -- helped
+2 of 6 slates a lot, hurt 3 badly; see `HANDOFF_classic_construction_replay.md` and
+`WK2_POSTMORTEM.md`'s "Classic field simulator built and validated" section for the full story).
+Current recommendation: stack=2 + bring-back only, no ownership floor. Item 3's replay harness is
+also done (`scripts/replay_validation.py`, committed) -- not still a TODO.
+
+0. **[Priority, added 2026-09-22, not yet run -- Greg's request] Assess what distinguishes cashing
+   lineups WITHIN our own confirmed-settings candidate batches.** Script already written and
+   syntax-checked but NOT executed: `python analysis/classic_diag/batch_cash_drivers.py
+   [n_lineups_per_slate]` (default 150/slate). Builds diversified batches (stack=2, bring-back,
+   same settings as the confirmed recommendation) for all 6 logged slates, grades every lineup
+   against real results, and compares cashed vs. missed lineups WITHIN each batch (not across the
+   whole real field like the original diagnostic) on: total projection, salary used, ownership
+   sum, DST ownership tier and opponent implied total, team split, FLEX position, and whether the
+   stack team was the game's favorite or underdog. This is a narrower, cleaner question than the
+   original 51k-lineup diagnostic -- it holds structure roughly fixed (everything in the batch
+   already stacks) and asks which SPECIFIC player/team choices matter on top of good structure.
+   Ties into two open threads: (a) whether "own_sum matters" holds up even among
+   similarly-well-built lineups, or only shows up when comparing good structure against bad
+   structure (the earlier suspicion that own_sum is more a quality marker than an independent
+   lever); (b) whether stacking the game's favorite specifically (vs. just any team) matters, a
+   dimension the original diagnostic never isolated. Run this before further ownership or
+   selection-criterion work -- it may sharpen or narrow the DST/split findings using the exact
+   same construction the recommendation is built on.
 1. **After Week 3:** log Week 3 DK results + ownership; refit ownership model (`fit_ownership_model.py`); add "last week's DK points" as an ownership feature once a third week can validate it.
 2. **Props evaluation:** score props-blended vs engine-only on Week 3 (`data/props/audit_*.csv`, raw snapshots, `data/props/compare/`); fit per-stat blend weights (receptions/yards/TDs; default 0.5, WR/TE receptions may deserve more); check the automatic pull behaved and credits stayed in budget (~390-520/month). Consider adding `player_rush_attempts` (and QB pass attempts/completions) if coverage near lock is good.
-3. **Construction settings (replay harness):** commit `scripts/replay_validation.py`; test the SE "exclude RB/WR/TE proj <= 7" filter, TE in FLEX, QB stack size / bring-back, MME exposure caps and dart handling, game/team targeting, and a ceiling-aware objective for cheap slots. Rule for changing a setting: wins on both weeks or a large effect. Yardstick = simulated field built from real ownership (validated against real fields).
+3. **Construction settings replay harness: DONE (`scripts/replay_validation.py`, 2026-09-22).**
+   Confirmed: stack=2 + bring-back. Rejected: a hard ownership floor. Still open: whether the
+   candidate-pool + scenario-scoring selection method (`best_lineup_classic.py`) uses the right
+   selection criterion -- a controlled test found a BIGGER candidate pool does not reliably pick a
+   better lineup (see `HANDOFF_classic_construction_replay.md`), pointing at the ranking rule
+   (average P(top-10%)) as the bottleneck, not pool size. Next: test selecting by raw projection
+   or by `worst_top10` from the identical candidate pool before trusting this method further.
 4. **Engine volume layer:** WR/TE target volume is no better than a last-4-game average; test a faster-fading price prior (k), recency weights, and reconciliation effects on the clean 2020-21 harness. Refit the projection stack as clean weeks accumulate.
 5. **Untested signal families:** snap/route data, opportunity-based expected fantasy points (nflverse URL tried 404'd), better pace data. Already tested with ~0 gain: defense-vs-position, pace/pass rate, game environment, vacated teammate usage.
 6. **Bigger builds:** game-level joint simulation (QB/WR/TE vs opposing DST correlation -0.4, own-team stacks +0.77) for coherent DST projections and correlation-aware lineup construction; FD props/stack; Showdown-specific stack.
