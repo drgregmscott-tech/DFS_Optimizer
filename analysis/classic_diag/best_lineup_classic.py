@@ -130,7 +130,7 @@ def simulate_scenario_points(P: pd.DataFrame, n_sims: int, rng, params):
     return np.maximum(0.0, proj[None, :] + sigma[None, :] * z)
 
 
-def score(site, slate_id, n_candidates=200, field_n=10000, n_sims=2000, seed=1):
+def score(site, slate_id, n_candidates=200, field_n=10000, n_sims=2000, seed=1, return_detail=False):
     P, field = build_pool_and_field(site, slate_id, field_n=field_n, seed=seed)
     field_pts_template = P.final_projection.to_numpy(float)
     field_score_base = cf.score_lineups(field, field_pts_template)  # sanity only
@@ -169,8 +169,20 @@ def score(site, slate_id, n_candidates=200, field_n=10000, n_sims=2000, seed=1):
     for name in SCENARIOS:
         out[f"top10_{name}"] = results[name]
     out["names"] = [", ".join(sorted(P.player_name.iloc[m].tolist())) for m in cand_masks]
-    out = out.sort_values("avg_top10", ascending=False).reset_index(drop=True)
+    order = out["avg_top10"].to_numpy().argsort()[::-1]
+    out = out.iloc[order].reset_index(drop=True)
+    if return_detail:
+        ordered_masks = [cand_masks[i] for i in order]
+        return out, ordered_masks, P
     return out
+
+
+def pick_top(site, slate_id, **kwargs):
+    """Convenience wrapper for replay/production use: returns the #1-ranked
+    candidate's player_name list (for grading or export) alongside its score row."""
+    out, masks, P = score(site, slate_id, return_detail=True, **kwargs)
+    top_names = P.player_name.iloc[masks[0]].tolist()
+    return top_names, out.iloc[0]
 
 
 if __name__ == "__main__":

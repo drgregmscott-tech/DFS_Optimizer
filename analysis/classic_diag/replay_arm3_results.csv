@@ -1,0 +1,7 @@
+slate,pre_game_avg_top10,pre_game_worst_top10,pre_game_avg_top1,picked_names,arm3_pts,arm3_rank,arm3_pct,arm3_cash,arm1_cash,arm1_pct
+wk1_main,0.5609375000000001,0.545,0.1409375,"Justin Herbert, Jets, Jahmyr Gibbs, Omarion Hampton, Amon-Ra St. Brown, Zay Flowers, DK Metcalf, Dallas Goedert, Michael Mayer",168.76,2758,0.8258370183196462,True,False,0.21655085281111808
+wk1_early,0.48125,0.46,0.08656249999999999,"Jared Goff, Titans, Jahmyr Gibbs, Derrick Henry, Amon-Ra St. Brown, Zay Flowers, Kevin Austin Jr., Colston Loveland, Cade Otton",155.64,2411,0.563168388617002,False,False,0.14355628058727565
+wk1_afternoon,0.44875,0.42,0.1353125,"Justin Herbert, Chargers, Omarion Hampton, Saquon Barkley, DeVonta Smith, Tre Tucker, Tre' Harris, Dallas Goedert, Ashton Jeanty",110.96000000000001,3028,0.3607180570221753,False,False,0.4751847940865892
+wk2_main,0.5090625,0.49625,0.12187500000000001,"Brock Purdy, Patriots, Bijan Robinson, Derrick Henry, Jalen Coker, Kalif Raymond, Matthew Golden, Mike Gesicki, Christian McCaffrey",134.28,3716,0.7654375552468746,True,False,0.587069074378078
+wk2_early,0.454375,0.45,0.164375,"Bryce Young, Buccaneers, Bijan Robinson, Derrick Henry, Jalen Coker, Matthew Golden, Tetairoa McMillan, Mike Gesicki, Bucky Irving",110.38,1619,0.6584336077686299,False,False,0.42157483639434246
+wk2_afternoon,0.38656250000000003,0.35875,0.1003125,"Brock Purdy, 49ers, Christian McCaffrey, Javonte Williams, Mike Evans, Stefon Diggs, Deebo Samuel Sr., Michael Mayer, Kaelon Black",111.48,3364,0.28930684699915465,False,False,0.3594674556213018
