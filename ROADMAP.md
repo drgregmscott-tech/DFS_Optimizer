@@ -3462,10 +3462,18 @@ needed optimizer levers already exist (`--stack-mode qb --stack-size 2 --bring-b
 `--flex-positions RB,WR,TE`, `--min-total-ownership`) -- this is a settings/build-process fix, not
 new code. Also checked and found lacking: the existing ad hoc classic field simulator
 (`analysis/wk2_session_scripts/fieldsim.py`) under-predicts real score quantiles by 5-9pts at the
-tail (no stack-correlation, no IPF reweighting) -- not yet fit for the Showdown-style "scenario-
-score candidates against a validated field" construction method; porting that method to classic
-(item 6 below) needs this rebuilt first, using `scripts/showdown_field.py`'s validated pattern
-generalized to a full position-slotted roster.
+tail (no stack-correlation, no IPF reweighting). **Rebuilt properly the same session**
+(`scripts/classic_field.py`, validated by `analysis/classic_diag/validate_classic_field.py`):
+median-p95 within 0.1-3.0pts on all 6 logged classic slates, real QB-stack rate (81-95%)
+reproduced via an auto-scaled team-stack draw bias. Then **ported the full Showdown construction
+method to classic** (`analysis/classic_diag/best_lineup_classic.py`): candidate generation via
+the existing optimizer's noisy solves + forced QB-stacks, scored against the validated field
+across 4 correlated-outcome scenarios (using this file's own QB/WR-TE +0.77 and DST/opp -0.44
+correlation findings), reporting both average and worst-case P(top-10%)/P(top-1%). Smoke-tested
+end to end, not yet run at full scale on a real slate to pick an actual lineup -- still open:
+whether/how to formalize either construction tool (Showdown's or classic's) into `optimizer.py`/
+the frontend vs. keep as an ad hoc analysis script (the same decision the Showdown handoff already
+flagged, now symmetric across both slate types).
 
 **Next, in order:**
 0. **Apply the classic cash-line diagnostic's settings for the next SE3max build**: turn on

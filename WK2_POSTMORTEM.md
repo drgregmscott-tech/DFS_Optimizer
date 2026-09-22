@@ -286,16 +286,68 @@ in this file).
   slates, same direction every time, |z|>4 on every factor), recommend adopting the settings above
   for the next classic SE3max build now, and building the replay harness to confirm/refine rather
   than gating action on it.
-- **Also checked and NOT yet fixed**: the existing ad hoc classic field simulator
-  (`analysis/wk2_session_scripts/fieldsim.py`, referenced as an open question in the Showdown
-  session-2 handoff) does NOT clear the validation bar the Showdown field simulator was held to.
-  Validated against wk2's 3 real classic slates (real ownership + real points fed in, compared to
-  real score quantiles): it UNDER-predicts every quantile, by -1 to -7pts at the median and -5 to
-  -9pts at the 90th/95th/99th percentiles (e.g. wk2 main: p90 sim 143.9 vs real 150.7, p99 sim
-  171.5 vs real 178.8). This is worse than Showdown's field (~1-2pt accuracy) and is NOT yet fit
-  for scoring candidate lineups the way `showdown_field.py` is used for Showdown -- most likely
-  cause is the classic sim draws each position independently with no team-stack correlation and no
-  iterative-proportional-fitting reweighting after the salary-cap filter (both of which
-  `showdown_field.py` has and this script doesn't). Needed before porting the Showdown
-  "scenario-score candidates against a validated field" construction method to classic (deferred
-  this session per direction to do the classic cash diagnostic first).
+- **Also checked and NOT yet fixed [SUPERSEDED, see below]**: the existing ad hoc classic field
+  simulator (`analysis/wk2_session_scripts/fieldsim.py`, referenced as an open question in the
+  Showdown session-2 handoff) does NOT clear the validation bar the Showdown field simulator was
+  held to. Validated against wk2's 3 real classic slates: it UNDER-predicts every quantile, by -1
+  to -7pts at the median and -5 to -9pts at the 90th/95th/99th percentiles. Most likely cause: it
+  draws each position independently with no team-stack correlation and no iterative-proportional-
+  fitting reweighting after the salary-cap filter. Rebuilt properly the same session, see below.
+
+## Classic field simulator built and validated (2026-09-22)
+Generalized `scripts/showdown_field.py`'s method to a full 9-slot classic roster:
+`scripts/classic_field.py`, validated by `analysis/classic_diag/validate_classic_field.py`. Two
+things classic needed that Showdown's simpler 2-team/6-slot field didn't:
+- **5 weight groups instead of 2** (QB, RB, WR, TE, FLEX vs. Showdown's CPT/FLEX), with a real
+  ownership target that's a SINGLE number per player covering both a dedicated slot and the FLEX
+  slot (DK's real export doesn't split "rostered as WR" from "rostered as FLEX" the way it splits
+  CPT/FLEX for Showdown) -- the IPF correction tracks each player's TOTAL observed exposure across
+  every weight group they can appear in and applies one correction factor to all of them.
+- **Explicit stack-correlation bias.** An iid draw from marginal ownership reproduces almost no
+  real QB-stacking on its own. Added a `stack_boost` multiplier on a QB's own teammates' draw
+  weight when filling RB/WR/TE/FLEX slots for that same lineup, auto-scaled by the number of teams
+  in the pool (a fixed boost dilutes hard on a 26-32-team main slate vs. a 4-6-team early/afternoon
+  slate) -- calibrated against the real per-slate QB-stack rates from the cash-line diagnostic
+  above (boost=3 base, scaled by `n_teams/8`, capped at 12).
+- **Validated against all 6 real classic slates logged so far** (real ownership + real points fed
+  in, compared to the real contest's own score quantiles -- same method as Showdown's
+  `validate_field.py`): median through p95 within 0.1-3.0pts on every slate, p99/p99.9 within
+  0.2-4.5pts (comparable to or tighter than Showdown's ~1-3pt bar). Real QB-stack rate (0.81-0.95
+  across slates) reproduced within a few points (sim 0.90-0.96) after the auto-scaled boost;
+  ownership MAE 0.37-1.12 (absolute percentage points) across slates.
+- **This clears the bar to use it for candidate-lineup scoring** the way Showdown's
+  `best_single.py`/`refine_single.py` score candidates' P(top-10%)/P(top-1%) against
+  `showdown_field.py`.
+
+## Classic scenario-scoring tool built (2026-09-22): `analysis/classic_diag/best_lineup_classic.py`
+Classic counterpart to `analysis/showdown_own/best_single.py`, completing the port of the
+"generate many candidates, score against a validated field under several correlated-outcome
+scenarios, keep the worst-case not just the average" construction method to classic (the item
+Greg flagged as wanting standardized/automated across both slate types).
+- **Candidate generation**: many noisy solves (`optimizer.build_single_lineup` with
+  `randomization_pct`) plus forced QB-stack solves (`stack_mode="qb", stack_size=2,
+  bring_back=True`) on the top-projected-QB teams -- reuses the SAME optimizer functions the CLI
+  and frontend already call, no new solver code.
+- **Outcome model**: a per-game shared factor + per-team factor (own-vs-opposing-team skill
+  correlation +0.21, calibrated from this file's own 2014-21 rotoguru finding), QB-to-own-WR/TE
+  correlation +0.77 (also from that finding), DST-to-opposing-offense correlation -0.44 (same
+  source). RB's correlation to the team passing factor is NOT a measured constant from that data
+  -- set to a documented, honest approximation (0.3) rather than presented as fitted.
+- **4 scenarios** (base / shootout / quiet-DST / run-heavy, varying the game-environment and
+  pass-correlation strength) scored against `classic_field.py`'s validated field, reporting both
+  the average P(top-10%) across scenarios and the WORST scenario (the Showdown session's method
+  for catching a lineup that looks best on paper but is really a bet on one modeling assumption).
+- **Smoke-tested end to end** on wk2 afternoon (20 candidates, small field/sim counts, ~30s):
+  produced sensible output -- stacked candidates (McCaffrey/Purdy/49ers-type builds) scored
+  25-32% avg top-10% / 3-8% avg top-1%, and the worst-case column visibly diverges from the
+  average for several candidates (e.g. one build: 26.3% avg but only 20.0% worst-case) --
+  confirming the robustness check does distinguish candidates the simple average would treat as
+  equal. **Not yet run at full candidate/field/sim scale on a real slate to pick an actual
+  lineup** -- that's the natural next use (same status as Showdown's tool before it was used for
+  a real pick: `python analysis/classic_diag/best_lineup_classic.py dk <slate_id> [n_candidates]`).
+- **Still open, same as Showdown's construction method**: whether/how to formalize this into
+  `optimizer.py` or the frontend rather than keep it as an ad hoc analysis script -- this is the
+  SAME still-open decision the Showdown handoff flagged, now applying to both slate types
+  symmetrically. Also open: validating the RB-passing-factor approximation and the 4 scenario
+  weightings against real classic outcomes the way `top10_drivers.py`-style analysis validated
+  Showdown's construction findings, once this tool has been used on a few real slates.
