@@ -64,8 +64,6 @@ for lab, (f, sid) in SLATES.items():
         dst_opp = info.get(dst_k, {}).get("opponent")
         dst_opp_total = opp_implied.get(dst_opp, np.nan)
         all_ks = [k for s, k in L]
-        teams = [info.get(k, {}).get("team") for s, k in L if s != "DST"]
-        maxteam = pd.Series(teams).value_counts().max() if teams else np.nan
         own = [ownmap.get(k, np.nan) for k in all_ks]
         own = [o for o in own if not pd.isna(o)]
         sal = sum((info.get(k, {}) or {}).get("salary", 0) or 0 for k in all_ks)
@@ -74,7 +72,7 @@ for lab, (f, sid) in SLATES.items():
         rec = dict(
             slate=lab, rank=r.Rank, pts=r.Points, pct=1 - (r.Rank - 1) / N,
             cash=(1 - (r.Rank - 1) / N) >= (1 - CASH_PCT),
-            stack=stack, bb=bb, split=f"{maxteam}-{6 - maxteam}" if pd.notna(maxteam) else None,
+            stack=stack, bb=bb,
             dst_own=ownmap.get(dst_k, np.nan), dst_opp_total=dst_opp_total,
             dst_sal=(info.get(dst_k, {}) or {}).get("salary", np.nan),
             own_sum=sum(own), n_low=sum(1 for o in own if o < 5), n_chalk=sum(1 for o in own if o >= 20),
@@ -94,7 +92,7 @@ print(A.groupby("slate").cash.agg(n="size", cash_rate="mean").to_string())
 print("\n=== YOUR entries ===")
 for m in mine_rows:
     print(f"{m['slate']}: rank {m['rank']} pct {m['pct']:.3f} pts {m['pts']:.1f} cash={m['cash']} "
-          f"stack={m['stack']} bb={m['bb']} split={m['split']} dst_own={m['dst_own']} "
+          f"stack={m['stack']} bb={m['bb']} dst_own={m['dst_own']} "
           f"dst_opp_total={m['dst_opp_total']} own_sum={m['own_sum']:.0f} n_chalk={m['n_chalk']} n_low={m['n_low']} "
           f"sal={m['sal']} flex={m['flex_pos']}")
     print("   ", m["lineup"])
@@ -107,7 +105,7 @@ A["dst_opp_tier"] = A.groupby("slate").dst_opp_total.transform(
 A["own_q"] = A.groupby("slate").own_sum.transform(lambda x: pd.qcut(x, 4, labels=["Q1 low", "Q2", "Q3", "Q4 chalk"]))
 A["sal_bin"] = pd.cut(A.sal, [0, 49000, 49600, 49900, 50001], labels=["<49k", "49-49.6k", "49.6-49.9k", ">49.9k"])
 
-for col in ["stack_bin", "bb_bin", "split", "dst_tier", "dst_opp_tier", "flex_pos", "own_q", "sal_bin"]:
+for col in ["stack_bin", "bb_bin", "dst_tier", "dst_opp_tier", "flex_pos", "own_q", "sal_bin"]:
     g = A.groupby(col, observed=True).agg(n=("cash", "size"), cash_rate=("cash", "mean")).reset_index()
     g["lift"] = (g.cash_rate / CASH_PCT).round(2)
     print(f"\n--- {col} ---")

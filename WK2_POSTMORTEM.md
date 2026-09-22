@@ -229,8 +229,21 @@ in this file).
     "bring-back neutral" finding from a narrower replay test -- across 51k real lineups the signal
     for bring-back is real and positive, and a single stack partner alone barely helps; it takes a
     real QB+2 double-stack to clear the no-stack baseline meaningfully.
-  - **Team split**: 3-3 lift **1.11x**, 4-2 lift 1.12x (small n=2,834), 2-4 lift 0.93x, 1-5 lift
-    0.91x, 5-1 lift 0.96x (small n=251).
+  - **"Team split" finding RETRACTED and REMOVED, 2026-09-22.** The original "3-3/4-2 splits beat
+    2-4/1-5" bullet (below, struck through in spirit -- removed from the code and this shouldn't be
+    cited) was computed as "size of the single most-represented team among the 8 non-DST slots, vs.
+    the rest." Two problems: (1) the label text used a hardcoded denominator of 6 copy-pasted from
+    Showdown's genuinely-6-slot roster, so the displayed labels (3-3, 4-2, etc.) were simply wrong
+    for classic's 8-slot roster; (2) more fundamentally, once cross-tabbed against the `stack`
+    column already reported one bullet up, this "split" metric turned out to be near-deterministic
+    given stack size (e.g. stack=2 -> dominant-team-count=3 in 99.9% of lineups, stack=3 -> 4 in
+    100%) -- it isn't an independent structural lever, it's just a confusingly-relabeled restatement
+    of the QB-stack-size finding already covered by `stack2p`/the stack lift table above. Unlike
+    Showdown (where the whole roster really is 2 teams and a literal 3-3-vs-4-2 choice exists),
+    classic's other 4-5 roster spots come from unrelated games, so "which team has the most total
+    players" isn't a real build decision here. Removed from `top_drivers_classic.py` and
+    `analysis/classic_diag/batch_cash_drivers.py` entirely rather than relabeled -- do not
+    reintroduce without a metric that's actually independent of stack size.
   - **DST tier by real ownership**: <5% lift 0.92x, 5-12% lift **1.08x**, 12-25% lift **1.08x**,
     >25% lift **0.64x** (a real trap -- the single most popular DST tier performs WORST of all four,
     consistent with the chalk-CPT-caps-ceiling pattern found on the Showdown side, but here it's
@@ -241,14 +254,14 @@ in this file).
     against 51k real outcomes rather than assumed.
 - **Grading `gmscott81`'s own 6 SE3max builds against these signals** (all 6 missed cash; this is
   why):
-  | slate | stack | bb | split | dst_own tier | dst_opp_total | own_sum (field quartile) | result |
-  |---|---|---|---|---|---|---|---|
-  | wk1 main | 2 | 0 | 3-3 (good) | 18.1% (good) | 15.7 (fine) | 103 (low) | 21.7 pctile |
-  | wk1 early | 2 | 0 | 3-3 (good) | 23.2% (good) | 15.7 (fine) | 126 (low-mid) | 14.4 pctile |
-  | wk1 afternoon | 2 | 2 (great) | 3-3 (good) | 17.5% (good) | 18.7 (fine) | 241 (chalkiest of the 6) | 47.5 pctile -- closest to cashing |
-  | wk2 main | 1 | 0 | 2-4 (below avg) | 9.2% (good) | 15.9 (fine) | 141 (low-mid) | 58.7 pctile |
-  | wk2 early | 1 | 0 | 2-4 (below avg) | **27.0% (worst tier)** | 16.5 (fine) | 221 (chalky) | 42.2 pctile |
-  | wk2 afternoon | 1 | 0 | 2-4 (below avg) | 21.7% (good) | **24.0 (worst matchup of the 6)** | 199 (chalky) | 35.9 pctile |
+  | slate | stack | bb | dst_own tier | dst_opp_total | own_sum (field quartile) | result |
+  |---|---|---|---|---|---|---|
+  | wk1 main | 2 | 0 | 18.1% (good) | 15.7 (fine) | 103 (low) | 21.7 pctile |
+  | wk1 early | 2 | 0 | 23.2% (good) | 15.7 (fine) | 126 (low-mid) | 14.4 pctile |
+  | wk1 afternoon | 2 | 2 (great) | 17.5% (good) | 18.7 (fine) | 241 (chalkiest of the 6) | 47.5 pctile -- closest to cashing |
+  | wk2 main | 1 | 0 | 9.2% (good) | 15.9 (fine) | 141 (low-mid) | 58.7 pctile |
+  | wk2 early | 1 | 0 | **27.0% (worst tier)** | 16.5 (fine) | 221 (chalky) | 42.2 pctile |
+  | wk2 afternoon | 1 | 0 | 21.7% (good) | **24.0 (worst matchup of the 6)** | 199 (chalky) | 35.9 pctile |
 
   Pattern: `bb=0` (no bring-back) in 5 of 6 builds, `flex=TE` used but the setting that enables it
   is normally off by default (`optimizer.py`'s `DEFAULT_STACK_MODE = "none"`, `DEFAULT_STACK_SIZE =
@@ -258,7 +271,7 @@ in this file).
   even the two "chalky" ones at 221/241 aren't clearly Q4). One specific DST pick (wk2 early,
   Buccaneers at 27% owned) sat in the single worst-performing tier; one specific DST matchup (wk2
   afternoon, Jaguars vs. a 24-point-implied Rams-ish opponent) was the worst matchup of the six.
-  wk1 afternoon did the most things right (stack 2, bring-back 2, good split, chalkiest own_sum of
+  wk1 afternoon did the most things right (stack 2, bring-back 2, chalkiest own_sum of
   the six) and came closest to cashing (47.5 pctile) but still missed -- a reminder that these are
   probability shifts on a ~25% base rate, not guarantees; a single slate can still miss on pure
   player-performance variance even with a well-built lineup.
@@ -286,6 +299,40 @@ in this file).
   slates, same direction every time, |z|>4 on every factor), recommend adopting the settings above
   for the next classic SE3max build now, and building the replay harness to confirm/refine rather
   than gating action on it.
+
+### Within-batch cash-driver diagnostic (2026-09-22, `analysis/classic_diag/batch_cash_drivers.py`)
+Narrower follow-up to the 51k-lineup diagnostic above: instead of comparing across the whole real
+field (where structure varies wildly), build our OWN diversified batches with the confirmed
+settings already fixed (stack=2, bring-back, 150 lineups x 6 slates = 900), grade every lineup
+against real results, and compare cashed vs. missed WITHIN each batch. Two real bugs surfaced and
+were fixed on the way to a trustworthy result, both worth reading before extending this script:
+1. **`stack_is_favorite` column was silently all-NaN on the first run.** `stack_target` is stored
+   as `"team:DET"` (see `optimizer.py`'s `_stack_label()`), but the script looked it up directly
+   against team codes stored as bare `"DET"` -- a format mismatch that produced no error, just an
+   empty/NaN column and an empty categorical breakdown. Fixed by stripping the `"team:"` prefix.
+2. **A `split` column reused the exact same hardcoded-denominator-of-6 bug as `top_drivers_classic.py`
+   (see below)** -- and once relabeled correctly, cross-tabbing it against the already-reported
+   `stack` column showed it was near-deterministic given stack size (stack=2 -> dominant-team-count
+   3 in 99.9% of lineups), not an independent feature. Removed entirely rather than relabeled.
+   Neither bug ever reached an actual lineup build, replay arm, or setting -- both columns were
+   purely reported/diagnostic, confirmed by grepping `optimizer.py`, `best_lineup_classic.py`,
+   `classic_field.py`, and `replay_validation.py` for any use of `split` or `stack_is_favorite`
+   outside this one reporting script.
+
+**Result after both fixes**: 236/900 cashed (26.2%, barely above the field's flat 25% baseline).
+The pooled logistic on total_projection/salary/own_sum/dst_own/dst_opp_total/
+stack_team_implied_total found NO feature reaching significance (max |z|=1.36, salary) -- these
+population-level signals stop discriminating once structure (stack=2+bring-back) is already held
+fixed, consistent with the standing suspicion that own_sum/DST-tier are more "good vs. bad
+structure" markers than independent levers on top of already-good structure. **TE-in-FLEX is the
+one signal that DOES survive within-batch**: 29.9% cash rate (n=385) vs. 19.6% RB (n=250) vs. 27.2%
+WR (n=265) -- real evidence this is an independent lever, not just correlated with overall build
+quality, reinforcing the population-level 1.18x lift finding above from a cleaner angle.
+Stack-favorite showed a reversal (non-favorite 40.0% vs. favorite 25.8%) but on n=25 vs. 875 --
+too small to trust, treat as noise, not a finding. **Net: this test did not surface new actionable
+levers beyond TE-in-FLEX; the real bottleneck remains the selection-criterion question already
+flagged in `HANDOFF_classic_construction_replay.md` (picking the best lineup out of an already-good
+batch, not finding more features to build toward).**
 - **Also checked and NOT yet fixed [SUPERSEDED, see below]**: the existing ad hoc classic field
   simulator (`analysis/wk2_session_scripts/fieldsim.py`, referenced as an open question in the
   Showdown session-2 handoff) does NOT clear the validation bar the Showdown field simulator was

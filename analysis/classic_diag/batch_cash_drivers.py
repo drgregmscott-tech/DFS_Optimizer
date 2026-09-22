@@ -38,9 +38,8 @@ def main():
             graded = rv.grade(ks, fpts_map, real_points)
             dst_row = g[g.position == "DST"].iloc[0]
             flex_row = g[g.roster_slot == "FLEX"].iloc[0]
-            teams = g[g.position != "DST"].team
-            maxteam = teams.value_counts().max()
-            stack_team = g["stack_target"].iloc[0] if "stack_target" in g.columns else None
+            raw_stack_target = g["stack_target"].iloc[0] if "stack_target" in g.columns else ""
+            stack_team = raw_stack_target.split(":", 1)[1] if raw_stack_target.startswith("team:") else None
             own_sum = sum(own_map.get(k, 0.0) for k in ks)
             stack_total = implied.get(stack_team, np.nan)
             opp_of_stack = pool.loc[pool.team == stack_team, "opponent"].iloc[0] if (pool.team == stack_team).any() else None
@@ -51,7 +50,7 @@ def main():
                 total_projection=g.projection.sum(), salary=g.salary.sum(),
                 own_sum=own_sum, dst_own=own_map.get(rv.norm(dst_row.player_name), np.nan),
                 dst_opp_total=implied.get(dst_row.opponent, np.nan),
-                split=f"{maxteam}-{6 - maxteam}", flex_pos=flex_row.position,
+                flex_pos=flex_row.position,
                 stack_team=stack_team, stack_team_implied_total=stack_total,
                 stack_is_favorite=is_favorite,
             ))
@@ -69,7 +68,7 @@ def main():
     print(A.groupby("cash")[zcols].mean().T.to_string())
 
     print("\n--- categorical breakdowns (cash rate by bucket) ---")
-    for col in ["split", "flex_pos", "stack_is_favorite"]:
+    for col in ["flex_pos", "stack_is_favorite"]:
         g = A.groupby(col, observed=True).agg(n=("cash", "size"), cash_rate=("cash", "mean")).reset_index()
         print(f"\n{col}:")
         print(g.to_string(index=False))

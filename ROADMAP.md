@@ -3455,7 +3455,10 @@ of the earlier replay-based finding, that chasing ownership leverage hurts in a 
 untested); (3) QB+2 stack 1.11x lift (QB+1 alone barely helps, 0.94x) and bring-back 1.08-1.24x
 lift (real, positive -- refines the earlier "bring-back neutral" replay finding); (4) DST: avoid
 the single most-owned tier (>25% owned, 0.64x lift -- a real trap) and favor a lower-implied-total
-opponent; (5) 3-3/4-2 splits beat 2-4/1-5. Graded `gmscott81`'s own 6 SE3max builds (all missed
+opponent. **[Item 5 REMOVED 2026-09-22]** A "3-3/4-2 team split" finding was originally listed here
+as item 5; it's been retracted and deleted (mislabeled AND, once cross-tabbed against `stack`,
+found to be a near-deterministic restatement of QB-stack size, not an independent lever -- full
+story in `WK2_POSTMORTEM.md`'s "Classic cash-line diagnostic" section). Graded `gmscott81`'s own 6 SE3max builds (all missed
 cash) against these: bring-back was missing in 5 of 6, own_sum was below the field's midpoint in
 4 of 6, one DST pick sat in the worst tier, one DST matchup was the worst of the six. All the
 needed optimizer levers already exist (`--stack-mode qb --stack-size 2 --bring-back`,
@@ -3483,24 +3486,26 @@ before replay-testing existed. That floor was REPLAY-TESTED and REJECTED (high v
 Current recommendation: stack=2 + bring-back only, no ownership floor. Item 3's replay harness is
 also done (`scripts/replay_validation.py`, committed) -- not still a TODO.
 
-0. **[Priority, added 2026-09-22, not yet run -- Greg's request] Assess what distinguishes cashing
-   lineups WITHIN our own confirmed-settings candidate batches.** Script already written and
-   syntax-checked but NOT executed: `python analysis/classic_diag/batch_cash_drivers.py
-   [n_lineups_per_slate]` (default 150/slate). Builds diversified batches (stack=2, bring-back,
-   same settings as the confirmed recommendation) for all 6 logged slates, grades every lineup
-   against real results, and compares cashed vs. missed lineups WITHIN each batch (not across the
-   whole real field like the original diagnostic) on: total projection, salary used, ownership
-   sum, DST ownership tier and opponent implied total, team split, FLEX position, and whether the
-   stack team was the game's favorite or underdog. This is a narrower, cleaner question than the
-   original 51k-lineup diagnostic -- it holds structure roughly fixed (everything in the batch
-   already stacks) and asks which SPECIFIC player/team choices matter on top of good structure.
-   Ties into two open threads: (a) whether "own_sum matters" holds up even among
-   similarly-well-built lineups, or only shows up when comparing good structure against bad
-   structure (the earlier suspicion that own_sum is more a quality marker than an independent
-   lever); (b) whether stacking the game's favorite specifically (vs. just any team) matters, a
-   dimension the original diagnostic never isolated. Run this before further ownership or
-   selection-criterion work -- it may sharpen or narrow the DST/split findings using the exact
-   same construction the recommendation is built on.
+0. **[DONE 2026-09-22]** Assessed what distinguishes cashing lineups WITHIN our own
+   confirmed-settings candidate batches (`analysis/classic_diag/batch_cash_drivers.py`, 150
+   lineups/slate x 6 slates = 900). **Two real bugs found and fixed while running this for the
+   first time** (full detail in `WK2_POSTMORTEM.md`): (1) a `stack_target` format mismatch
+   (`"team:DET"` vs. bare `"DET"`) silently made the whole `stack_is_favorite` column NaN on the
+   first run; (2) a "team split" column shared the exact same hardcoded-denominator-of-6 bug found
+   in `top_drivers_classic.py` (see below) and was removed entirely rather than relabeled, since
+   cross-tabbing it against `stack` showed it was a near-deterministic restatement of stack size,
+   not an independent feature. **Result after both fixes**: within an already-well-built batch
+   (stack=2, bring-back), NONE of total_projection/salary/own_sum/dst_own/dst_opp_total/
+   stack_team_implied_total reach significance (max |z|=1.36) -- confirms the suspicion that
+   own_sum and DST tier are population-level "good vs. bad structure" markers that stop
+   discriminating once structure is already fixed, not independent levers on top of it.
+   **TE-in-FLEX is the one signal that DOES survive** within-batch: 29.9% cash rate vs. 19.6% (RB)
+   / 27.2% (WR), n=385/250/265 -- real evidence it's an independent lever, not just correlated with
+   overall build quality. Stack-favorite showed a reversal (non-favorite 40.0% vs. favorite 25.8%)
+   but on n=25 vs. 875 -- too small to trust, treat as noise. Net effect: this test does NOT surface
+   new actionable levers beyond TE-in-FLEX; it reinforces that the real bottleneck is the
+   selection-criterion question already flagged in `HANDOFF_classic_construction_replay.md` section
+   3, not missing features.
 1. **After Week 3:** log Week 3 DK results + ownership; refit ownership model (`fit_ownership_model.py`); add "last week's DK points" as an ownership feature once a third week can validate it.
 2. **Props evaluation:** score props-blended vs engine-only on Week 3 (`data/props/audit_*.csv`, raw snapshots, `data/props/compare/`); fit per-stat blend weights (receptions/yards/TDs; default 0.5, WR/TE receptions may deserve more); check the automatic pull behaved and credits stayed in budget (~390-520/month). Consider adding `player_rush_attempts` (and QB pass attempts/completions) if coverage near lock is good.
 3. **Construction settings replay harness: DONE (`scripts/replay_validation.py`, 2026-09-22).**

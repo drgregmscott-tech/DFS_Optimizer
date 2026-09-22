@@ -17,10 +17,12 @@ written and syntax-checked this session but deliberately NOT executed (Greg aske
 queued for next session rather than run now). Builds diversified batches with the confirmed
 settings (stack=2, bring-back) for all 6 logged slates, grades every lineup against real results,
 and compares cashed vs. missed lineups WITHIN each batch (not across the whole real field) on:
-total projection, salary, ownership sum, DST tier/matchup, team split, FLEX position, and whether
-the stack team was the game's favorite. This is a narrower, cleaner test than the original 51k-
+total projection, salary, ownership sum, DST tier/matchup, FLEX position, and whether
+the stack team was the game's favorite. (As originally written this also planned to compare "team
+split" -- that column was removed 2026-09-22, see section 2 below, before this script was actually
+run.) This is a narrower, cleaner test than the original 51k-
 lineup diagnostic since it holds structure roughly fixed -- it should sharpen (or narrow) whether
-ownership/DST/split findings hold up even among already-well-built lineups, and whether stacking
+ownership/DST findings hold up even among already-well-built lineups, and whether stacking
 the favorite specifically matters. Full detail and rationale also in `ROADMAP.md`'s Post-Week-2
 Improvement Track, item 0.
 
@@ -38,8 +40,18 @@ Improvement Track, item 0.
 ## 2. Classic cash-line diagnostic: what was found (WK2_POSTMORTEM.md has full numbers)
 Pooled 51,389 real DK Classic SE3max lineups across all 6 slates logged so far (wk1 + wk2
 main/early/afternoon) to find what predicts a top-25% cash finish. Strongest, most consistent
-signals: higher combined lineup ownership, TE-in-FLEX, QB+2 stacks, a bring-back player, DST in a
-moderate (5-25%) ownership tier facing a lower-implied-total opponent, and a 3-3/4-2 team split.
+signals: higher combined lineup ownership, TE-in-FLEX, QB+2 stacks, a bring-back player, and DST in
+a moderate (5-25%) ownership tier facing a lower-implied-total opponent. **A "3-3/4-2 team split"
+finding was also originally listed here; it's been retracted and deleted 2026-09-22** -- the label
+was wrong (hardcoded denominator of 6, copy-pasted from Showdown's genuinely-6-slot roster, applied
+to classic's 8-slot roster) AND, more fundamentally, once cross-tabbed against the `stack` variable
+already in the same diagnostic, this "split" metric turned out to be a near-deterministic
+restatement of QB-stack size (stack=2 -> dominant-team-count=3 in 99.9% of lineups), not an
+independent lever. Full story in `WK2_POSTMORTEM.md`. Confirmed this bug never reached any actual
+construction decision: `split` was never wired into `optimizer.py`'s stacking logic,
+`best_lineup_classic.py`'s scenario scoring, or any `replay_validation.py` arm -- it only ever
+existed as a reported/printed diagnostic column, so no lineup ever actually built, no replay
+cash-count, and the stack=2+bring-back recommendation itself are all unaffected.
 `gmscott81`'s own 6 SE3max builds all missed cash (percentiles 14-59%) and were graded against
 these signals in WK2_POSTMORTEM.md's "Classic cash-line diagnostic" section.
 
