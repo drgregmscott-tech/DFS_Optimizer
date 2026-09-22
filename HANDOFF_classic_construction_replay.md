@@ -105,6 +105,57 @@ code comments in the script itself**, but summarized here because they're easy t
   (`scripts/replay_validation.py` and `analysis/classic_diag/replay_arm3.py` are both committed
   and reusable -- add new slates to their `SLATES` dicts as they're logged).
 
+### Open question raised after this analysis, NOT yet resolved: is "select by P(top-10%)" the right criterion at all?
+Greg asked directly whether Arm 3's 2 losses-to-the-actual-submission (wk1 afternoon, wk2
+afternoon) might be caused by the SELECTION CRITERION itself (ranking candidates by average
+P(top-10%)) rather than bad luck. A same-data check supports this: on those exact 2 slates, Arm
+B (a plain "maximize projected points with structure" pick, no simulation-based ranking at all)
+would have done noticeably BETTER than Arm 3. But it's not a clean sweep either -- on 3 OTHER
+slates Arm 3 beat Arm B, including converting a miss to a cash on wk2 main. Net: a real, genuine
+3-3 split between "pick by top projection" and "pick by P(top-10%)," not a verdict either way.
+
+This comparison isn't fully clean, though: Arm B wasn't drawn from the SAME candidate pool Arm 3
+generated -- it was a separate, single direct solve. **The rigorous version of this test, not yet
+done: from the IDENTICAL candidate pool `best_lineup_classic.py` already generates, re-rank and
+select by different criteria and grade each** -- at minimum: (a) highest raw projected points in
+the pool (isolates "does simulation-based ranking beat just trusting the projections, holding the
+candidate-generation process fixed"), and (b) highest `worst_top10` instead of `avg_top10` (the
+robustness/worst-case metric the code already computes but never actually uses for selection --
+Showdown's session flagged worst-case as the metric that catches "trap" lineups the average
+misses). This is cheap to test (no new Monte Carlo needed, `best_lineup_classic.score()`'s
+`return_detail=True` already returns the full ranked candidate table with all these columns per
+candidate) and would cleanly isolate whether the selection RULE is the problem, independent of
+candidate generation or field simulation. **Recommend this as the first thing the next session
+does before trusting Arm 3's P(top-10%) selection rule as the final method.**
+
+### Two more tests run after the above (same session, in direct response to follow-up questions)
+- **Diversified-batch hit rate** (`analysis/classic_diag/replay_batch.py`): built 10- and
+  100-lineup batches per slate with the confirmed settings (stack=2, bring-back, randomization for
+  diversity, 50% max exposure) and graded EVERY lineup individually against real results. Hit
+  rate: ~28% average across slates at n=10, ~27% at n=100 -- consistent between batch sizes (as
+  expected, since both draw from the same underlying edge), and modestly above the field's flat
+  25% baseline, matching the earlier single-lineup evidence. **The important finding: the BEST
+  lineup within every 100-lineup batch landed at the 98th-99.9th percentile, in all 6 slates.**
+  There is a lot of realizable value sitting in a large candidate pool -- the bottleneck is
+  entirely about identifying which one in advance, which is exactly the open selection-criterion
+  question above, not about generating more candidates.
+- **Does a bigger candidate pool make the SCENARIO-SCORER's pick better?** Controlled test: same
+  field_n=6000/n_sims=800/seed, only n_candidates varies (20 vs 100),
+  `analysis/classic_diag/replay_poolsize.py`. **Answer: no.** Cash count was 1/6 either way; mean
+  real percentile across the 6 slates was actually slightly BETTER with 20 candidates (~61%) than
+  with 100 (~57%), and on one slate (wk2 afternoon) the 100-candidate pick was dramatically worse
+  (28.9% vs 70.2%). Two slates picked the IDENTICAL lineup at both pool sizes (the forced-stack
+  candidates already dominate a small pool). **This confirms the batch-hit-rate finding from a
+  different angle: every candidate pool already contains a near-perfect lineup (98th-99.9th
+  percentile per the batch test above); the bottleneck is that ranking candidates by average
+  P(top-10%) from a limited-sample Monte Carlo isn't reliable enough to consistently find it, and
+  a bigger pool just gives that unreliability more room to elevate the wrong candidate.** This is
+  the same root cause as the open selection-criterion question above, confirmed independently:
+  **the priority fix is a better/more reliable selection rule, not a bigger search space or a
+  different candidate-generation setting.** Recommend the next session start there (test
+  selection by raw projection and by `worst_top10` from the identical candidate pool, per the
+  section above) rather than tuning pool size, field size, or sim count further.
+
 ## 4. Concrete recommendation for next week's classic slate
 1. Turn on `--stack-mode qb --stack-size 2 --bring-back` (or the UI equivalents) for every
    classic build. This is the most confidently-evidenced change from this whole session.
