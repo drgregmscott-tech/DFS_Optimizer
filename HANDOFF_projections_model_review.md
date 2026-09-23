@@ -143,7 +143,338 @@ by-hand trace above — same rigor standard the rest of this project holds (see
 - `WK2_POSTMORTEM.md` — has the earlier "stud under-projection" finding Lead 1
   connects to.
 
-## 5. What NOT to do
+## 5. SESSION UPDATE (2026-09-23, continued) -- Lead 1 falsified, real cause found
+
+**Lead 1 is DEFINITIVELY RULED OUT, not just direction-uncertain.** Checked git
+history: `props_model.py` and `projection_stack.py` were both committed
+2026-09-21 (11:36 and 12:46 local respectively) -- commits `8167025` and
+`6457348`. Every build that produced a row in `data/projection_error_log.csv`
+predates both:
+- wk1 main/early/afternoon (dk+fd): committed 2026-09-13 19:41 (`74f94b9`).
+- wk2 main/early/afternoon (dk): committed 2026-09-20 16:31-19:31
+  (`full_refresh_dispatch` runs, before either feature existed).
+- The one exception, wk2 showdown NYG/LAR (committed 2026-09-21 23:46, after
+  both commits), doesn't run the stack anyway -- `stack_active` requires
+  `site=="dk" and not showdown`, and Showdown is explicitly excluded.
+
+So neither the props anchor nor the projection stack ran on ANY of the data
+behind the measured +3.4 bias. Confirmed directly: `output/final_projections_
+dk_dk_classic_wk1_main_13Sep2026.csv` (and every other wk1/wk2 classic file)
+has no `engine_projection`/`stack_delta` columns at all -- those only exist in
+a build that went through the post-09-21 code path. Don't spend further time
+tracing Lead 1's mechanism by hand; it cannot have contributed to this bias,
+full stop. (It may still be worth checking independently for CURRENT/future
+builds once real data accumulates past 2026-09-21, but that's a different
+question from what caused the measured bias.)
+
+**Real cause, found and quantified with real data: `apply_volume_prior()`'s
+generic team-sum price-share normalization (`statline_model.py` ~line
+1128-1133) lets every floor-salary backup/emergency-string QB on a team's
+slate roster siphon a real, non-trivial chunk of the team's price-implied
+pass-attempt volume away from the actual starter.**
+
+Mechanism: `volume_prior.share_from_salary()`'s fitted `QB|pass` curve
+(`data/volume_prior_dk.json`) does NOT decay to ~0 at the salary floor --
+its lowest knot is `(4042.3, 0.224)`, flat-extrapolated below that. A
+real DK classic slate lists every rostered QB (starter + backup + often a
+3rd/4th emergency arm), each priced near the $4000 floor. Each one gets
+assigned share ~0.22-0.46 independently. The starter, near his curve's
+ceiling (~0.977), is NOT flagged by the existing `SATURATED_SHARE_THRESHOLD`
+special case (decision #20 in the code) -- that only fires when 2+ players
+on the same team are BOTH >=0.90, which backups never are. So these shares
+just fall through to the generic "team_sum > 1.0 -> divide by team_sum"
+normalization (the Session 14.0b fix), which treats each backup's share as
+equally informative as the starter's and divides the real volume among all
+of them.
+
+Confirmed directly on real slate data, e.g. CIN wk1 main: Joe Burrow
+($6900) got `proj_pass_att` 22.13, while Joe Flacco ($4400, third arm)
+got 5.20, Josh Johnson ($4000) got 6.48, Sean Clifford ($4000) got 2.74 --
+four Bengals QBs splitting one team's ~37 pass attempts, when in reality
+only Burrow was ever going to throw. Hand-computing the raw (undiluted)
+share/team-volume math for that same slate reproduces this almost exactly
+(Burrow ~19.6 vs the pipeline's 22.1 -- same order of magnitude, confirms
+the mechanism, not just a plausible story).
+
+**Quantified across all 43 real QB player-weeks (wk1+wk2, DK, `final_
+projection > 8`) with real actual attempts from `weekly_stats_2026.parquet`:**
+- Current pipeline: `proj_pass_att` sums to 75% of real attempts (992 vs
+  1323); mean bias (actual - proj) = **+7.69 attempts**.
+- Recomputing the SAME formula but as if each starter were the only QB in
+  the price-share pool (no dilution): sums to 103% of real attempts (1361 vs
+  1323); mean bias = **-0.88 attempts** -- statistically flat, i.e. the
+  systematic component is essentially fully explained by this one mechanism.
+  Mean absolute error also drops (9.07 -> 7.99 attempts) -- the residual is
+  ordinary week-to-week variance, not a remaining systematic error.
+
+Same pattern confirmed present for RB (rush_att ratio 0.75 vs actual, targets
+ratio 0.70) -- e.g. DET wk1: Jahmyr Gibbs ($8000, real bellcow) diluted
+against Isiah Pacheco ($5000, `final_projection` = 0.0, i.e. a confirmed
+no-game player) and Jabari Small ($4000). Worth noting: RB dilution is NOT
+necessarily the identical mechanism -- the RB share curve tops out around
+0.775 (well under the 0.90 saturation threshold either way, and RB volume is
+legitimately shared among 2+ real contributors in a way QB volume structurally
+isn't), and a genuinely-zero-game player like Pacheco still consumed price
+share because `apply_volume_prior()` runs on the full pool BEFORE the
+`no_real_game_this_week` filter is applied to reconciliation. Confirm
+separately before assuming the QB fix (below) automatically fixes RB too.
+
+**This bug was live for every wk1/wk2 build** -- `--volume-prior` was passed
+explicitly in both the documented manual command and `refresh_data.yml`'s
+automated refresh (confirmed: `Automated refresh: dk_classic_wk2_main_...`
+commits used exactly this flag). So per section 0's loop-back requirement:
+this is a real, material, CONFIRMED bug (not speculation) in a mechanism that
+fed directly into every projection `recommend_lineup.py`'s backtest was
+validated against. Flag to the Week 3+ session before trusting the 3/6/0.703
+number further -- a fix here would raise real starting-QB (and likely
+lead-RB) projections and could shift which Monte Carlo candidates even exist,
+per section 0's own warning.
+
+## 7. RB checked, QB fix implemented and rebuild-validated (2026-09-23, continued again)
+
+**RB: same generic mechanism (bench players inflating the team-sum
+denominator), but NOT the same fix -- checked and deliberately NOT touched
+this session.** Confirmed present, e.g. DET wk1: Jahmyr Gibbs ($8000) diluted
+against Isiah Pacheco ($5000, `final_projection`==0.0 that build -- a
+confirmed no-game player) and Jabari Small ($4000). But RB is not
+winner-take-all the way QB is -- a real committee backfield can legitimately
+have 2 real contributors, so "keep only the #1" is the wrong model. Tested
+the obvious naive fix (zero any RB whose `final_projection`==0 in the same
+build, i.e. confirmed no-game, then leave the existing >1.0-only
+normalization as-is) against the same real 2026 wk1+wk2 data used for QB:
+it made things WORSE, not better (ratio 0.74 -> 0.68 of real carries, MAE
+5.07 -> 5.80 attempts). Root cause of the naive fix failing: the pipeline's
+own team-sum normalization (Session 14.0b fix, `statline_model.py` ~line
+1128) only ever rescales a share sum DOWN when it exceeds 1.0 -- it
+deliberately leaves an under-1.0 sum untouched, because that's the
+legitimate "pool doesn't fully cover team volume, real historical
+reconciliation fills the gap" case. Zeroing out dead-weight bench RBs pulls
+the sum below 1.0 more often than above it, and nothing then rescales the
+REMAINING real contributors' shares back UP to compensate -- so the fix
+needs to always renormalize among depth-chart-eligible players (not just
+clip when over 1.0), which is a materially different, more careful change
+than the QB one and deserves its own session. Not implemented. Flagging for
+a future session, not doing it opportunistically alongside the QB fix.
+
+## 8. QB fix: implemented, then rebuild-validated against real data -- important correction to the magnitude claim above
+
+Implemented the depth-chart-based `pass_price_share` suppression exactly as
+proposed in section 6 -- `apply_volume_prior()` now takes an optional
+`depth_chart` param and zeroes `pass_price_share` for any QB the real depth
+chart positively lists as not rank 1 (before the saturation/normalization
+steps see it); `build_projections_statline.py` now loads the depth chart
+once, earlier, and passes it through to both `apply_volume_prior()` and the
+existing `apply_confirmed_starter_override()` call. See the code comments at
+both sites for the full reasoning (which also explains why a real in-week
+promotion is NOT blocked by this -- `apply_confirmed_starter_override()`
+recomputes a promoted player's mu straight from his own mu_raw/participation
+and never reads price_share).
+
+**Then rebuilt the real wk1_main and wk2_main slates with the fix
+(`--season 2025 --week 23` and `--season 2026 --week 2` respectively, same
+flags the live pipeline uses) to check the ACTUAL effect against real data,
+rather than trusting the offline hand-calculation in section 6. That
+hand-calculation turned out to be an oversimplification -- it implicitly
+assumed every QB gets the pipeline's cold-start price weight (`w=1.0`), but
+`cold_start_weight()`'s taper hits exactly 0 at `games_played >= 
+COLD_START_MAX_GAMES = 4.0`. The two real weeks land on opposite sides of
+that cliff:**
+
+- **Week 2 (`games_played`=1 for essentially every QB, since only 1 real
+  2026-season game exists as history -> `w`≈0.6-0.8): the fix works as
+  designed and materially large.** Real rebuild, CIN: Joe Burrow's
+  `proj_pass_att` went 22.28 -> 35.02 (real week-2 attempts: 31). Across all
+  20 real wk2 meaningful QB player-weeks: mean bias flipped from **+8.0**
+  (under-projecting) to **-3.3** (now over-projecting, but smaller in
+  magnitude), and MAE improved **9.05 -> 7.27 attempts** -- a real, net
+  accuracy gain, but it overshoots into a new, smaller over-projection
+  tendency rather than landing at zero. Worth a closer look separately
+  (likely the `with_history` team-volume regression itself running a
+  little hot off one noisy real game, not a new problem this fix
+  introduced -- the same team_pred value was already being computed the
+  same way before this fix; the fix just routes more of it to the right
+  player instead of splitting it across players who were never going to
+  see the field).
+- **Week 1 (`games_played` 5-17 for nearly every real QB in the meaningful
+  population, using full 2025-season history as the lookback -> `w`=0
+  EXACTLY, since taper clips at `games_played`=4): the fix has ~no effect.**
+  Real rebuild, CIN: Joe Burrow's `proj_pass_att` moved 22.13 -> 21.24 (a
+  rounding-level change from reconciliation, not the fix doing real work).
+  Confirmed directly: at `w=0`, `blend_volume()` ignores `price_volume`
+  entirely (`mu = 1.0*history + 0.0*price`), so suppressing a backup's
+  price_share cannot touch an established starter's projection at all.
+
+**Correction to section 6's headline claim: the price-share dilution bug is
+real and the fix is a genuine, validated improvement, but it does NOT
+explain the WEEK 1 portion of the QB bias** (which was actually the larger
+half of the original sample -- wk1 n=317 meaningful players vs wk2 n=153).
+Week 1's QB under-projection must trace to something in the
+history-side of the pipeline instead (own 2025-season `mu_raw` /
+`build_usage()`'s recency-weighted average, `participation_effective`, or
+the role-change block) -- NOT YET INVESTIGATED. That's the natural next
+thread for this session or a follow-up: pull real week-1 QB `mu_raw`/
+`games_played`/`participation_effective` values and trace why an
+established starter's own-history-based volume estimate comes in low
+against his real 2026 attempts, the same rigor standard applied above.
+
+**Net assessment:** kept the fix (real, validated, non-regressive
+improvement for the low-games-played population it actually reaches: true
+rookies and every week-2-style single-game-history slate), but it should
+NOT be read as "the QB bias is fixed" -- roughly half the original sample
+(week 1) has an as-yet-unidentified separate cause. Per section 0's
+loop-back requirement: still flag to the Week 3+ session before trusting the
+3/6/0.703 backtest number, but with this correction -- the fix's real-world
+impact on that backtest is concentrated in low-games-played situations
+(rookies, injury-return weeks), not a blanket lift to every QB projection.
+
+## 9. Full pre-Week-3 gap assessment (2026-09-23, continued a third time) -- root cause found, MAJOR fix implemented and validated
+
+Greg asked for a full assessment of remaining gaps before generating real Week
+3 lineups: address anything major, flag anything minor. This closes out
+section 8's open thread (week 1's QB bias, unexplained by the price-share fix
+alone) and turns out to explain almost ALL of the remaining bias, at every
+position, not just QB.
+
+**Root cause (MAJOR, confirmed and fixed): `reconcile_team_shares()`'s
+`raw_sum` was never made `hist_team`-aware, even though this exact function
+already fixed the identical problem for its SHARE NUMERATOR two sessions ago
+(Session 15.2, the `full_usage`/`hist_team` mechanism cited in this
+function's own docstring).** Traced directly from the still-open week-1
+Burrow case: his own `pass_mu_raw` (from `build_usage()`) was **35.36** --
+already an accurate, undiluted estimate (his real week-1 2026 attempts: 35)
+-- yet his FINAL `proj_pass_att` came out at 22.13. `output/statline_
+reconcile_dk_dk_classic_wk1_main_13Sep2026.csv` showed why: CIN's "pass"
+`raw_sum` was 58.6 against a real target of 36.6, forcing `scale`=0.624
+across every CIN quarterback. `raw_sum` sums `pass_mu` for every player
+CURRENTLY rostered on CIN in the pool -- and Josh Johnson (CIN's real QB3,
+priced at the salary floor) has `hist_team`=WAS: he genuinely played for
+Washington last season, not Cincinnati. His own real ~11.4-attempt
+Washington-based mu got summed into CIN's pool anyway, inflating `raw_sum`
+and cutting every real Bengal QB's mu by 38% to compensate for a phantom
+teammate's volume that was never Cincinnati's to begin with.
+
+**Confirmed this is not QB-specific or rare -- it's league-wide and hits
+every position with a real bench.** Scanning the SAME slate's `rush`
+component (RB) found scale factors of **0.53-0.75x on nearly every team**
+(MIA, BUF, BAL, CLE, CIN, IND, PHI, LAC, LV, TB, MIN, PIT, ...) -- RB isn't
+winner-take-all like QB, so instead of one dramatic case it's a broad,
+small-per-team drag from every team's real bench backs (and a smaller,
+harder-to-fully-close remainder from TRUE zero-history bench players still
+drawing a nonzero PRICE-implied share at the salary floor -- see the
+"what's NOT fixed" note below). Matches the earlier finding that RB's bias
+was concentrated in the `games_played`>=5 (established-player) bucket
+(mean +6.27, median +5.18, n=82) rather than the cold-start bucket -- exactly
+where the price-share-only QB fix (section 8) couldn't reach, and exactly
+where this reconciliation bug operates regardless of `games_played`.
+
+**Fix implemented in two parts, both in `statline_model.py`:**
+1. `apply_volume_prior()`: extended the section-8 QB depth-chart fix to also
+   zero `pass_mu` (not just `pass_price_share`) for a depth-chart-confirmed
+   non-#1 QB, applied at the very end of the function (after the role-change
+   recompute and cold-start blend both run, so nothing inside the function
+   can silently undo it the way happened the first time this was tried).
+2. `reconcile_team_shares()`: `raw_sum` now excludes a player's own `mu` from
+   the sum when his `hist_team` doesn't match the team being reconciled (a
+   true no-history player, `hist_team` NaN, is kept -- his own mu is ~0
+   anyway, so excluding him would never matter and NOT excluding him is the
+   safer default). This is position/component-general -- not a QB special
+   case -- and reuses the exact `hist_team` column and reasoning
+   `_pool_share()`'s docstring already established for the share numerator,
+   just extended to the denominator that actually drives `scale`. The
+   `scale` factor this produces is still applied to EVERY player in the
+   team's pool afterward, unchanged from before -- a misattributed player's
+   own final projection still reflects his new team's context, exactly like
+   the existing numerator/denominator split already does for `pool_share`.
+
+**Rebuild-validated against real 2026 wk1+wk2 outcomes, all 6 real DK classic
+slates (`data/projection_error_log.csv`, `final_projection > 8`, deduped to
+one row per real player-week), points-level bias (`actual_fpts -
+final_projection`):**
+
+| Position | n | Bias BEFORE | Bias AFTER | MAE before -> after |
+|---|---|---|---|---|
+| QB | 45 | **+4.78** | **-0.09** | 8.25 -> 8.78 |
+| RB | 44 | **+3.87** | **+0.55** | 7.48 -> 7.88 |
+| WR | 52 | **+4.48** | **+1.15** | 8.09 -> 7.98 |
+| TE | 17 | -0.31 | -1.71 | 5.16 -> 4.52 |
+| **ALL (incl. DST/K)** | **183** | **+3.24** | **+0.11** | 7.36 -> 7.54 |
+
+The original section-1 headline finding -- the model under-projects
+meaningful players by +3.4 pts on average -- is **essentially eliminated**
+(+3.24 -> +0.11 on the DK subset checked here; the original full DK+FD
+measurement was +3.37). MAE is flat to slightly worse (expected: MAE also
+captures real week-to-week variance no volume fix can touch; BIAS -- the
+systematic, fixable part -- is what collapsed). TE flipped from slightly
+under to slightly over by about the same small magnitude (n=17, not a
+concern). Verified no build failures/crashes across DK classic (all 6
+wk1/wk2 slates), FD classic (wk1 main), and DK Showdown (wk1) -- the fix
+doesn't break anything downstream.
+
+**Rebuild artifacts were NOT committed** -- these test rebuilds mixed in the
+NOW-current `projection_stack.py`/`props_model.py` code (which didn't exist
+at original build time, see section 5) purely as a side effect of using the
+current `build_projections_statline.py`; keeping them would corrupt the
+historical record those files represent. All `output/*.csv` changes were
+reverted with `git checkout` after each validation pass -- only the two
+`scripts/*.py` fixes remain in the working tree.
+
+**What's NOT fully fixed, flagged for awareness, not blocking:**
+- **RB/WR residual (~+0.5 to +1.2 pts) not from this bug.** Traced to a
+  DIFFERENT, already-known mechanism from section 7: RB/WR's `share_from_
+  salary()` curves (unlike QB's) don't need to decay to near-zero at the
+  salary floor to behave reasonably for a genuine committee -- but a true
+  zero-history bench player (no `hist_team` at all, so untouched by this
+  session's fix) still draws a real, nonzero PRICE-implied share at the
+  floor (confirmed on BUF: `raw_sum` barely moved after this fix, 46.29 ->
+  44.96, because all 3 real Bills backs had `hist_team`=BUF already -- the
+  remaining pool inflation is from Frank Gore Jr./Ian Wheeler/Jackson
+  Acker/Ben VanSumeren, all true zero-history depth players each drawing a
+  small nonzero price share). Section 7 already concluded RB needs a
+  dedicated, more careful fix (not "keep only rank 1" -- committees are
+  real) and that conclusion stands; this session's fix closed the bigger,
+  cleaner, cross-team-history piece of the RB/WR gap, not the remaining
+  floor-share piece. NOT attempted this session: it would mean re-touching
+  the FITTED `share_from_salary()` curve artifacts
+  (`data/volume_prior_dk.json`/`_fd.json`, fit by `fit_volume_prior.py` on
+  2014-2021 data) rather than pipeline logic, which is a bigger, riskier
+  change deserving its own validation pass, not a same-session add-on.
+- **Known, low-probability edge case of this session's fix:** a genuine
+  starter-level trade/signing (not a bench player -- the actual QB1/RB1
+  moving teams) would have his own `hist_team`-based mu excluded from HIS
+  OWN new team's `raw_sum` too, which could under-drive that team's
+  `scale` if he's the sole real contributor. In practice this should
+  already be caught upstream by `apply_confirmed_starter_override()`/
+  `apply_depth_chart_usage_prior()` (both run before reconciliation and
+  already give a real, current-depth-chart-confirmed starter full credit
+  regardless of which team his own history came from), so it's an
+  acknowledged tradeoff, not a fix left half-done -- consistent with this
+  same function's own documented stance on other reconciliation edge cases
+  (see its SEA-2021-week-10 example already in the docstring).
+- **`props_model.py`/`projection_stack.py` (section 5): code-reviewed this
+  session, no logic bugs found, but still genuinely untested against real
+  live market data end-to-end** (props needs a fresh near-kickoff odds pull
+  this session had no way to fetch). `projection_stack.py`'s own docstring
+  cites a real backtest (forecast R2 wk1 0.331->0.426, wk2 0.374->0.420);
+  `props_model.py` has no equivalent backtest citation, only the WK2_
+  POSTMORTEM motivation for building it. Recommendation: for Week 3, watch
+  the "Props anchor: adjusted N player(s)" and "Projection stack: adjusted
+  N player(s)" build log lines and sanity-check a few adjustted players by
+  hand before trusting them blindly, same as any other first real-money use
+  of a new mechanism.
+- **DST (-0.52 mean bias) and TE (-1.71) are both small, roughly
+  pre-existing, and not obviously connected to any mechanism this session
+  touched** -- not investigated further, not blocking.
+
+**Loop-back requirement (section 0), updated once more:** this is now a much
+bigger correction to flag than section 8's QB-only, low-games-played-only
+fix. The projection model `recommend_lineup.py`'s 3/6/0.703 backtest was
+validated against carries a real, broad, now-fixed under-projection of every
+skill position's established players. Re-validating that backtest after this
+fix is more clearly warranted than it was after section 8's narrower fix --
+this could plausibly change which Monte Carlo candidates the selection rule
+even sees, not just their exact point values.
+
+## 10. What NOT to do
 
 - Don't touch `analysis/classic_diag/*.py` or `scripts/recommend_lineup.py` in
   this session — those are the Week 3+ lineup-system deliverables, out of scope

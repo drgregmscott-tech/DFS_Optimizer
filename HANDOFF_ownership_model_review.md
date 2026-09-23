@@ -29,6 +29,40 @@ and work out what it means for that session's results, specifically:
   be reassessed once ownership accuracy improves, since the stronger method
   might become usable.
 
+## 0.5 READ THIS SECOND — the projections session upstream of you changed your input data
+
+`HANDOFF_projections_model_review.md` (run before this session, same day)
+found and fixed a MAJOR bug in `statline_model.py`'s `reconcile_team_shares()`
+and `apply_volume_prior()`: a team's real reconciliation pool sum was being
+inflated by rostered backups whose own historical volume actually came from a
+DIFFERENT team (a real trade/signing), which cut every real starter's
+`final_projection` by as much as 35-45% in some cases. Rebuild-validated
+fix: mean bias on real 2026 wk1+wk2 "meaningful" players went from **+3.24 to
++0.11** (see that file's section 9 for the full trace and numbers). Real
+starters' `final_projection` values are now generally HIGHER than what
+produced the data below.
+
+**Concretely, this means:** `data/ownership_model_dk.json` (checked
+2026-09-23, `fit_at` 2026-09-21T14:57:13Z) was fit on real wk1+wk2 slate data
+using `chalk_score`/`estimated_ownership_pct` as FEATURES — both derived
+from the OLD (pre-fix, systematically under-projected) `final_projection`.
+Its fitted coefficients (`l_est`, `l_exp`, `sal`, `top1sal`, `cv`, `dart`,
+etc.) describe the relationship between what the OLD projections/chalk
+scores looked like and how real ownership actually landed — not the
+corrected ones. Likewise `data/ownership_actual_log.csv`'s own
+`estimated_ownership_pct_at_lock` column (section 1's ground truth below)
+was itself computed from the OLD projection pipeline.
+
+**Before drawing any conclusion in this session, or refitting anything:**
+rebuild the real wk1/wk2 slates with the projections fix in place (see the
+projections handoff's section 9 for the exact commands/flags) and regenerate
+`chalk_score`/`estimated_ownership_pct` from those corrected projections,
+THEN compare against real `actual_ownership_pct`. Section 1's numbers below
+(MAE 7.6/corr 0.60) and section 2's tail-squeeze finding were both measured
+against the OLD projection distribution -- they may look different, better or
+worse, once re-measured against the corrected one. Don't assume either
+direction; check.
+
 ## 1. The measured problem (this session's finding, real data)
 
 Checked `data/ownership_actual_log.csv` (1,391 real logged rows, comparing the
