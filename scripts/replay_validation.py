@@ -79,9 +79,12 @@ def load_real(f):
     tab = df[["Player", "Roster Position", "%Drafted", "FPTS"]].dropna(subset=["Player"]).copy()
     tab["k"] = tab.Player.map(norm)
     tab["own"] = tab["%Drafted"].astype(str).str.rstrip("%").astype(float)
+    # DK lists a player once per roster slot drafted (position row + FLEX row);
+    # ownership must be SUMMED across those rows (2026-09-23 fix -- keeping
+    # only the first dropped all FLEX ownership, slates summed ~797% not ~897%).
+    own_map = tab.groupby("k")["own"].sum().to_dict()
     tab = tab.drop_duplicates("k")
     fpts_map = tab.set_index("k")["FPTS"].to_dict()
-    own_map = tab.set_index("k")["own"].to_dict()
     e = df.iloc[:, :6].dropna(subset=["Lineup"]).copy()
     real_points = e.Points.dropna().to_numpy(float)
     mine = e[e.EntryName.astype(str).str.contains("gmscott81", na=False)]
