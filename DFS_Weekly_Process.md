@@ -303,6 +303,24 @@ It reads the slate's salary file to find its games, refuses to spend if the esti
 
 ---
 
+### Step 2i-recommend — Generate the recommended lineup (new, 2026-09-23)
+
+**This is a completely SEPARATE feature from Step 2j / "Build Lineups" below — it does not read, use, or pick from anything you build there.** `recommend_lineup.py` builds its OWN independent pool of ~80-130 candidate lineups straight from `final_projections` (a mix of unconstrained noisy solves and QB-stack-forced solves), Monte Carlo-scores every one of them across 4 correlated game-environment scenarios, and picks the single lineup with the best WORST-CASE probability of finishing top-25% of the field, restricted to real QB+teammate stack structure. "Build Lineups" and the SE/3-Max GPP preset are a different feature entirely (manual multi-lineup GPP portfolio construction) that happens to read the same `final_projections` file — that's the only thing they share.
+
+**Only prerequisite: Step 2i (final projections) must exist for this slate.** No lineup batch, no "Build Lineups" run, nothing else needed first — this is the one difference from Step 2j's pivot suggestions, which DO need a lineup batch to exist before they'll generate.
+
+```
+python scripts/recommend_lineup.py --site dk --slate-id classic_wk5
+```
+
+Writes `output/recommended_lineup_dk_classic_wk5.csv`. Takes 15-220 seconds depending on slate size.
+
+**You don't actually have to run this manually every week.** `refresh_data.yml`'s automated Stage 3 refresh runs it on every scheduled/near-lock cycle for every active slate in `current_slate.json` — the moment Step 2i has been pushed, the next automated run generates it with zero further action, same "keeps itself current all week" behavior pivot suggestions already have. Run it manually here only if you want to see it immediately rather than wait for the next scheduled refresh.
+
+**Only the ownership-independent method is live right now** (`worst_top25_realstack` — 3/6 cash, 0.703 mean percentile on 6 real logged slates; see `HANDOFF_week3_lineup_system.md`). A stronger chalk-anchor + ownership-driven-pivot method tested at 4/6, 0.819 in validation, but three separate live-substitution tests (feeding it the model's own pre-lock ownership estimate instead of real post-lock data) found the pivot layer added zero value on all 6 slates — it's intentionally left out until projection/ownership model accuracy improves and it's re-validated. Don't expect to see any leverage/pivot swaps in this output — a plain single lineup with no differentiation notes is the current expected shape, not missing functionality.
+
+---
+
 ### Step 2j — Build a first lineup batch and generate pivot suggestions (optional, recommended)
 
 This step is optional, but doing it now — right after projections, before pushing — means Stage 3's automated refresh loop keeps your pivot suggestions current for the rest of the week without you touching anything again, right up to lock.
@@ -409,6 +427,10 @@ Spend 15-20 minutes on `data/name_recognition_flags.csv` before you finalize lin
 ### Pivot suggestions (cash-to-GPP)
 
 Generated back in **Step 2j**, not here — see that step for how to create or refresh them. If you did that step, pivot suggestions are already showing: the UI reads `output/pivot_suggestions_{site}_{slate_id}.csv` live from GitHub every time you load a slate, no upload needed. Click any roster row on a built lineup to see the pivot panel. If nothing shows, either Step 2j hasn't been run for this slate yet, or the file hasn't been pushed (Step 2k).
+
+### Recommended Lineup panel (new, 2026-09-23)
+
+Shows up automatically as its own panel (open by default, above Exposure Summary) once you load a slate — reads `output/recommended_lineup_{site}_{slate_id}.csv` live from GitHub, same no-upload-needed pattern as pivot suggestions. **Completely independent of "Build Lineups" and the Build panel above** — see Step 2i-recommend for what actually generates it, why it's a separate method, and why it currently shows no pivot/leverage swaps. If the panel says nothing's been generated yet, either Step 2i (final projections) hasn't completed and been pushed for this slate, or the automated refresh hasn't run since it did — run Step 2i-recommend manually to see it immediately rather than waiting.
 
 ### Slate Overview — Game Totals panel
 
@@ -542,6 +564,10 @@ python scripts/projections_matchup.py --site dk --season {season} --week {week}
 ```
 python scripts/build_projections_statline.py --site dk --season {season} --week {week} --slate-id {slate_id} --volume-prior --sigma-recalibration --dst-model distributional
 ```
+*(optional -- generates immediately instead of waiting for the next automated refresh; see Step 2i-recommend)*
+```
+python scripts/recommend_lineup.py --site dk --slate-id {slate_id}
+```
 ```
 git add data/ output/
 ```
@@ -570,4 +596,5 @@ git push
 - **The near-lock cadence** is configured in cron-job.org, separately from `current_slate.json`. With multiple slates now possible in one week (Thursday, Sunday early/main/afternoon, Sunday night, Monday night), you may need more than one near-lock window configured there — one per distinct lock time you're actually playing that week, not just one flat weekly template. See Finding 2 / Session 16.x's cron-job.org notes for current status.
 - **Participation Floors (Session 15) default ON for classic slates** (`QB:0.6,RB:0.4,TE:0.4`) — a player barely showing up in his team's last 5 games gets excluded from the pool automatically. If a build comes back thinner than expected at QB/RB/TE, this is the first thing to check; lock a known exception back in rather than turning the floor off broadly.
 - **Pivot suggestions need a lineup batch to exist, generated at Step 2j, but the display itself is fully automatic (Session 15).** The UI reads `output/pivot_suggestions_{site}_{slate_id}.csv` live from GitHub every time you load a slate — no upload, no caching. As long as Step 2j has been run once for a slate and pushed, every automated refresh for the rest of the week keeps it current with zero further action.
+- **The Recommended Lineup panel (Step 2i-recommend, 2026-09-23) needs NO lineup batch and is unrelated to "Build Lineups"/the SE-3Max preset** — it's a separate method that builds and Monte Carlo-scores its own candidate pool straight from `final_projections`. Only needs Step 2i to exist; the automated refresh keeps it current from there with zero further action, same as pivot suggestions. Currently ships the ownership-independent `worst_top25_realstack` rule only — no leverage/pivot differentiation yet (see that step for why).
 - **If any step produces an unexpected error**, paste the full error message into a Claude conversation. The error message is the fastest path to a fix.
