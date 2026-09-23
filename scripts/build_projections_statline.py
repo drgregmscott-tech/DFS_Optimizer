@@ -567,13 +567,23 @@ def build_statline_projections(site: str, season: int, week: int, slate_id: str,
         for c in ("participation", "games_played"):
             if c not in df.columns:
                 df[c] = 0.0
+        # Loaded here (was previously loaded further down, only under
+        # `if confirmed_starter_override`) so apply_volume_prior() can also
+        # use it -- see that function's `depth_chart` param docstring
+        # (2026-09-23 fix: QB backup price-share suppression). Unconditional
+        # and cheap/non-fatal (load_depth_chart() degrades to an empty frame
+        # on a missing pull), so loading it even when confirmed_starter_
+        # override=False costs nothing and keeps the two consumers in sync
+        # on one read instead of two.
+        depth_chart = statline_model.load_depth_chart()
         df = statline_model.apply_volume_prior(
             df, prior_art, team_vol, weight_floor=prior_floor, k=prior_k,
             role_change=role_change,
             # Real regular-season weeks only: week 23 is the preseason /
             # real-Week-1 sentinel (2025 lookback), where zero history means
             # rookie, not absent -- see apply_volume_prior()'s docstring.
-            absent_discount=(week <= 18))
+            absent_discount=(week <= 18),
+            depth_chart=depth_chart)
         n_flag = int(df["role_change_flag"].sum())
         n_cold = int((df["games_played"] <= 1).sum())
         print(f"Volume prior applied: {n_flag} role-change flag(s), "
@@ -592,7 +602,6 @@ def build_statline_projections(site: str, season: int, week: int, slate_id: str,
         # slates), so this checks a real depth chart instead of trying to
         # infer role from price.
         if confirmed_starter_override:
-            depth_chart = statline_model.load_depth_chart()
             # Ad Hoc Session A4, decision #1 -- real in-week OUT news
             # (status_check.py pull, applied here BEFORE final_projections
             # exist, not just post-hoc zeroing after the fact) can now also

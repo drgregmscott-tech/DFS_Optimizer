@@ -984,8 +984,17 @@ def apply_volume_prior(pool: pd.DataFrame, artifact: dict,
                        team_vol: pd.DataFrame,
                        weight_floor: float = None, k: float = None,
                        role_change: bool = True,
-                       absent_discount: bool = False) -> pd.DataFrame:
+                       absent_discount: bool = False,
+                       depth_chart: pd.DataFrame = None) -> pd.DataFrame:
     """Decisions #11, #12, #15.
+
+    `depth_chart` (2026-09-23 projection review fix): optional, same frame
+    load_depth_chart() returns ([player_id, team, position, depth_rank]).
+    When given, suppresses QB `pass_price_share` for any QB the real depth
+    chart positively lists as NOT rank 1 -- see the inline comment at its
+    use site below for the confirmed real-data bug this closes. Backward
+    compatible: every existing caller that doesn't pass it (probe_reconcile_
+    gap.py) gets the prior, unpatched behavior exactly.
 
     `absent_discount` (default False = every prior caller unchanged) turns on
     absent_player_price_factor(). Pass True ONLY when `pool`'s history is the
@@ -1043,6 +1052,64 @@ def apply_volume_prior(pool: pd.DataFrame, artifact: dict,
             ps = volume_prior.share_from_salary(
                 artifact, pos, comp, df.loc[mask, "salary"])
             df.loc[mask, f"{comp}_price_share"] = ps
+
+    # 2026-09-23 projection review fix -- confirmed real bug, not a guess.
+    # share_from_salary()'s QB|pass curve does NOT decay to ~0 at the salary
+    # floor (lowest knot ~$4042 -> 0.224 share, flat-extrapolated below
+    # that). A real DK/FD classic slate lists every rostered QB -- starter,
+    # primary backup, often a 3rd/4th emergency arm -- each priced near the
+    # floor, and EACH ONE independently draws that ~0.22+ share. None of
+    # them individually clears SATURATED_SHARE_THRESHOLD (decision #20 below
+    # only fires when 2+ teammates are BOTH >=0.90; backups never are), so
+    # they fall straight through to the generic team-sum normalization,
+    # which treats every backup's share as equally informative as the
+    # starter's and divides the real team pass volume among all of them.
+    # Confirmed on real 2026 wk1/wk2 data (e.g. CIN wk1: Joe Burrow got
+    # 22.1 proj pass attempts while Flacco/Johnson/Clifford -- none of whom
+    # would ever throw a pass -- collectively drew another ~14): recomputing
+    # the same price-share math as if each real starter were the only QB in
+    # the pool reproduces real pass-attempt totals almost exactly (mean bias
+    # -0.9 attempts vs the diluted pipeline's +7.7 across 43 real QB
+    # player-weeks) -- see HANDOFF_projections_model_review.md section 6 for
+    # the full trace. QB is uniquely exposed: decision #20's own note below
+    # already established RB/WR/TE's curves top out at 0.78/0.31/0.28,
+    # nowhere near saturation even fully rostered, because those roles are
+    # genuinely shared even among real starters -- QB is the one position
+    # here that is genuinely winner-take-all.
+    #
+    # Fix: zero `pass_price_share` for any QB the real depth chart
+    # POSITIVELY lists as not rank 1 at QB for his team. A player with no
+    # depth-chart match at all (missing pull, or a team the snapshot didn't
+    # cover) is left untouched -- same "absence of a signal is not itself a
+    # signal" rule apply_confirmed_starter_override() already applies to
+    # this exact data source, a few lines later in the caller. This never
+    # blocks a legitimate in-week promotion: apply_confirmed_starter_
+    # override(), called right after this function returns, recomputes a
+    # promoted player's mu directly from his own mu_raw/participation and
+    # does not read price_share at all, so a real elevated backup with
+    # established history is restored regardless of what this does to his
+    # price side. Only the true depth-chart-#2-or-lower case (never
+    # promoted, never plays) is what this suppresses.
+    df["_qb_backup_suppress"] = False
+    if depth_chart is not None and not depth_chart.empty and "pass_price_share" in df.columns:
+        qb_chart = depth_chart[depth_chart["position"] == "QB"]
+        has_entry = df["player_id"].astype(str).isin(
+            set(qb_chart["player_id"].astype(str)))
+        qb1_ids = set(qb_chart.loc[qb_chart["depth_rank"] == 1, "player_id"].astype(str))
+        is_qb = df["position"].astype(str) == "QB"
+        suppress = is_qb & has_entry & ~df["player_id"].astype(str).isin(qb1_ids)
+        if suppress.any():
+            df.loc[suppress, "pass_price_share"] = 0.0
+            # Stashed, not applied to pass_mu yet -- decision #15's role-
+            # change block below unconditionally recomputes every {comp}_mu
+            # from {comp}_mu_raw for ALL rows (same "runs after, wins"
+            # pattern apply_depth_chart_usage_prior()'s own docstring
+            # already flags), so suppressing pass_mu here would just get
+            # silently overwritten. Applied instead at the very end of this
+            # function, after that recompute and the cold-start blend both
+            # run -- see the end of this function for why pass_mu ALSO
+            # needs this, not just pass_price_share.
+            df["_qb_backup_suppress"] = suppress
 
     # Decision #20 (Session 15.3): the Session 14.0b fix just below handles
     # a team's price_share SUM exceeding 1.0 -- but it assumes the
@@ -1217,6 +1284,48 @@ def apply_volume_prior(pool: pd.DataFrame, artifact: dict,
         boost = np.where(receivers & (recv_total > 1e-9),
                          1.0 + freed / recv_total.where(recv_total > 1e-9, np.nan), 1.0)
         df[mu] = np.asarray(discounted, float) * np.nan_to_num(boost, nan=1.0)
+
+    # 2026-09-23 projection review fix, part 2 -- confirmed real bug, not a
+    # guess. Zeroing `pass_price_share` above (this function's first fix)
+    # only touches the COLD-START blend, which is a no-op whenever a QB's
+    # own `games_played` >= COLD_START_MAX_GAMES (4.0) -- true for nearly
+    # every established starter once real season history exists (confirmed
+    # via a real rebuild: Joe Burrow's week-1 `games_played`=8 gives
+    # `cold_start_weight()`=0.0 exactly, so the earlier fix alone changed
+    # his projection by <1 attempt). The bias for THOSE players traces to a
+    # separate mechanism: `reconcile_team_shares()` computes each team's
+    # "pass" pool `raw_sum` (EXCLUSIVE_COMPONENTS -- pool_share is always
+    # 1.0) by summing `pass_mu` for every player CURRENTLY on that team,
+    # with no check that a backup QB's own `pass_mu_raw` (his OWN
+    # recency-weighted history, from build_usage()) actually came from
+    # THIS team. Confirmed on the real CIN wk1 2026 slate: Josh Johnson
+    # (CIN's real QB3, priced at the $4000 floor) has `hist_team`=WAS --
+    # he genuinely started/relieved for Washington, not Cincinnati, in the
+    # lookback window -- yet his own real WAS-derived mu (~11.4 attempts)
+    # still summed into CIN's reconciliation pool. That inflated CIN's
+    # `raw_sum` to 58.6 against a real target of 36.6, so reconciliation's
+    # `scale` (target/raw_sum = 0.624) cut EVERY Bengal QB's mu by 38% --
+    # including Joe Burrow's own mu_raw of 35.36, which was already an
+    # accurate, undiluted estimate of his real volume before this scaling
+    # ever touched it (his real week-1 2026 attempts: 35).
+    #
+    # Fix: zero `pass_mu` (not just `pass_price_share`) for the same
+    # depth-chart-confirmed non-QB1 backups this function already
+    # suppresses, applied here (the last point in this function that
+    # touches mu, after the role-change recompute above and the cold-start
+    # blend both run, so nothing downstream inside THIS function can
+    # silently undo it the way happened when the fix was first tried
+    # earlier in the function body). This does not need a separate
+    # reallocation step: reconcile_team_shares() runs right after this
+    # function returns and will naturally scale the real starter's now-
+    # uncontaminated mu UP to the team's real target, which is exactly
+    # what should happen. Backup's own final projection loses whatever
+    # phantom cross-team volume he was carrying -- an acceptable, and
+    # usually correct, cost for a $4000-floor QB3 who was never taking
+    # real snaps for his new team.
+    if df["_qb_backup_suppress"].any() and "pass_mu" in df.columns:
+        df.loc[df["_qb_backup_suppress"], "pass_mu"] = 0.0
+    df = df.drop(columns=["_qb_backup_suppress"])
     return df
 
 
@@ -1941,7 +2050,60 @@ def reconcile_team_shares(pool: pd.DataFrame, team_vol: pd.DataFrame,
             if team not in tv.index:
                 continue  # bye / unmapped team; handled upstream
             sub = pool.loc[idx]
-            raw_sum = float(sub[mu_col].fillna(0.0).sum())
+            # 2026-09-23 projection review fix -- confirmed real bug, not a
+            # guess (found while tracing the QB price-share dilution fix
+            # above to a real rebuild: Joe Burrow's own accurate, already-
+            # correct pass_mu of 35.36 was cut to 22.1 by THIS step alone,
+            # not the price-share one). `raw_sum` sums `mu_col` over every
+            # player CURRENTLY on `team` in the pool -- but `mu_col` at this
+            # point is each player's OWN recency-weighted volume, which for
+            # a player whose `hist_team` differs from his current team
+            # reflects a DIFFERENT team's real offense (a trade, a
+            # practice-squad promotion, or -- as here -- a new team simply
+            # rostering a real journeyman backup who started/relieved
+            # elsewhere last season). That inflates `raw_sum` with volume
+            # that has nothing to do with `team`'s real passing/rushing/
+            # receiving distribution, so `scale = target/raw_sum` then cuts
+            # every REAL contributor on `team` to compensate for a phantom
+            # teammate. Confirmed and quantified on the real 2026 wk1 DK
+            # slate: CIN's pass raw_sum was 58.6 against a real target of
+            # 36.6 (scale 0.624) purely because Josh Johnson (CIN's real
+            # QB3, hist_team=WAS -- he played for Washington, not
+            # Cincinnati, last season) contributed his own ~11.4-attempt
+            # WAS-based mu into CIN's pool sum. Not QB-specific: the same
+            # scan across every team's `rush` component on that slate found
+            # scale factors of 0.53-0.75x almost league-wide (MIA, CLE,
+            # BUF, LAC, PHI, HOU, BAL, CIN, LV, TB, MIN, PIT, IND, WAS, ...)
+            # -- RB is not winner-take-all like QB, so a handful of
+            # cross-team-history bench backs on EVERY team's roster adds up
+            # to a broad, not isolated, downward bias.
+            #
+            # This function already has the fix's own justification and
+            # data source built in -- `_pool_share()`'s own docstring
+            # (Session 15.2) established that a player's OWN mu/volume
+            # should be attributed to the team his `hist_team` says it
+            # actually came from, not whichever team currently rosters him,
+            # and already applies that rule to the SHARE numerator (`hist_
+            # sub` above). It was never extended to `raw_sum`, the
+            # denominator that actually drives `scale` -- this closes that
+            # gap using the exact same `hist_team` column (already carried
+            # through from build_usage(), per build_projections_statline.py
+            # Session 15.2's comment) rather than a new data source or a
+            # new, unvalidated heuristic. A player with no `hist_team` at
+            # all (a true rookie/no-history case) is KEPT in the sum -- his
+            # own mu is 0 either way, so this only ever excludes a REAL,
+            # non-zero, provably-misattributed contribution, never a
+            # legitimate teammate's. `sub` (unfiltered) is still what the
+            # `scale` factor gets APPLIED to below -- a traded/misattributed
+            # player's own final projection still reflects his new team's
+            # context, same as `_pool_share()`'s own numerator/denominator
+            # split already does for the share fraction.
+            hist_team_col = sub["hist_team"] if "hist_team" in sub.columns else None
+            if hist_team_col is not None:
+                attributable = hist_team_col.isna() | (hist_team_col.astype(str) == str(team))
+                raw_sum = float(sub.loc[attributable, mu_col].fillna(0.0).sum())
+            else:
+                raw_sum = float(sub[mu_col].fillna(0.0).sum())
             if raw_sum <= 1e-9:
                 continue
             hist_idx = hist_groups.get(team, pd.Index([]))
