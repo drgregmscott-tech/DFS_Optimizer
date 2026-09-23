@@ -76,15 +76,21 @@ OWNERSHIP_CAP_PCT = 75.0
 LOGIT_FLOOR = 0.003
 
 FEATURES = ["l_est", "l_exp", "sal", "top1sal", "cv", "dart", "lo_proj", "pub_val"]
+# Extra features for the variant artifact used when a public projected-ownership
+# table (Fantasy Football Calculator, scripts/ingest_public_ownership.py) exists
+# for the slate. ffc_own_pct is that table's projected % (top 50 only; players
+# it does not list are treated as ~1%, with ffc_listed = 0).
+FFC_FEATURES = ["l_ffc", "ffc_listed"]
+MIN_FFC_LISTED = 25
 DEFENSE_LABELS = {"DST", "D", "DEF"}
 
 
-def artifact_path(site: str) -> Path:
-    return DATA_DIR / f"ownership_model_{site}.json"
+def artifact_path(site: str, variant: str = "") -> Path:
+    return DATA_DIR / f"ownership_model_{site}{variant}.json"
 
 
-def load_artifact(site: str):
-    path = artifact_path(site)
+def load_artifact(site: str, variant: str = ""):
+    path = artifact_path(site, variant)
     if not path.exists():
         return None
     with open(path, encoding="utf-8") as f:
@@ -168,6 +174,9 @@ def build_features(df: pd.DataFrame, exposure: pd.Series) -> pd.DataFrame:
     avg = (pd.to_numeric(df["dk_avg_ppg"], errors="coerce") if "dk_avg_ppg" in df.columns
            else pd.Series(np.nan, index=df.index))
     out["pub_val"] = (avg / (sal / 1000.0).clip(lower=1.0)).fillna(0.0).clip(upper=15.0)
+    ffc = pd.to_numeric(df["ffc_own_pct"], errors="coerce") if "ffc_own_pct" in df.columns         else pd.Series(np.nan, index=df.index)
+    out["ffc_listed"] = ffc.notna().astype(float)
+    out["l_ffc"] = _logit(ffc.fillna(1.0))
     return out
 
 
@@ -222,6 +231,11 @@ def refine_ownership(scored: pd.DataFrame, site: str, budgets: dict) -> pd.DataF
     artifact = load_artifact(site)
     if artifact is None or site != "dk":
         return scored
+    if "ffc_own_pct" in scored.columns and             pd.to_numeric(scored["ffc_own_pct"], errors="coerce").notna().sum() >= MIN_FFC_LISTED:
+        ffc_artifact = load_artifact(site, "_ffc")
+        if ffc_artifact is not None:
+            artifact = ffc_artifact
+            print("Ownership: using public-ownership (FFC) variant of the layered model.")
     try:
         heuristic = scored["estimated_ownership_pct"].copy()
         exposure = optimizer_exposure(scored, site)

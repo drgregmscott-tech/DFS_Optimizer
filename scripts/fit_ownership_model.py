@@ -63,6 +63,13 @@ def load_training_frame(site: str = "dk") -> pd.DataFrame:
         if "dk_avg_ppg" not in df.columns and sal_path.exists():
             _s = pd.read_csv(sal_path, dtype={"player_id": str}).drop_duplicates("player_id").set_index("player_id")
             df["dk_avg_ppg"] = df["player_id"].map(_s["AvgPointsPerGame"])
+        try:
+            import ingest_public_ownership as ipo
+            pub = ipo.load_public(site, slate_id)
+        except Exception:  # noqa: BLE001
+            pub = None
+        if pub:
+            df["ffc_own_pct"] = [pub.get(ipo.norm_key(n, s_)) for n, s_ in zip(df["player_name"], df["salary"])]
         df = df[df["final_projection"] > 0].copy()
         own = g.drop_duplicates("player_id").set_index("player_id")["actual_ownership_pct"]
         df["own"] = df["player_id"].map(own).fillna(0.0)
@@ -79,8 +86,9 @@ def load_training_frame(site: str = "dk") -> pd.DataFrame:
     return pd.concat(frames, ignore_index=True)
 
 
-def fit(train: pd.DataFrame, ridge: float = RIDGE) -> dict:
-    X = train[om.FEATURES].to_numpy(float)
+def fit(train: pd.DataFrame, ridge: float = RIDGE, feats: list = None) -> dict:
+    feats = feats or om.FEATURES
+    X = train[feats].to_numpy(float)
     y = om._logit(train["own"].to_numpy(float))
     mu, sd = X.mean(0), X.std(0)
     sd[sd == 0] = 1.0
@@ -92,8 +100,8 @@ def fit(train: pd.DataFrame, ridge: float = RIDGE) -> dict:
     coefs = beta[1:] / sd
     intercept = beta[0] - float(np.sum(coefs * mu))
     out = {"intercept": float(intercept)}
-    out.update({n: float(c) for n, c in zip(om.FEATURES, coefs)})
-    return {"coefs": out, "cap": om.OWNERSHIP_CAP_PCT}
+    out.update({n: float(c) for n, c in zip(feats, coefs)})
+    return {"coefs": out, "cap": om.OWNERSHIP_CAP_PCT, "features": list(feats)}
 
 
 def score(df: pd.DataFrame, pred: pd.Series, label: str) -> dict:
@@ -111,7 +119,7 @@ def score(df: pd.DataFrame, pred: pd.Series, label: str) -> dict:
 def predict_slates(df: pd.DataFrame, artifact: dict, budgets: dict) -> pd.Series:
     out = pd.Series(0.0, index=df.index)
     for _, g in df.groupby("slate_id"):
-        feats = g[om.FEATURES]
+        feats = g[artifact.get("features", om.FEATURES)]
         out.loc[g.index] = om.predict(g, feats, artifact, budgets)
     return out
 
@@ -169,3 +177,12 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+# NOTE (2026-09-23): the layered model now has TWO artifacts --
+#   data/ownership_model_dk.json      features = om.FEATURES (incl. pub_val)
+#   data/ownership_model_dk_ffc.json  features = om.FEATURES + om.FFC_FEATURES
+# refine_ownership() uses the _ffc one only when the slate has a saved public
+# (FFC) table. fit(train, feats=...) supports either; main() above still fits
+# the base one. Refit the FFC variant with fit(df, feats=om.FEATURES +
+# om.FFC_FEATURES) on frames that have ffc_own_pct (load_training_frame adds
+# it from data/ownership_public/ffc_dk_{slate_id}.csv when present).

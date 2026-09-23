@@ -905,6 +905,17 @@ def build_statline_projections(site: str, season: int, week: int, slate_id: str,
         if _avg_col is not None and "player_id" in build_salaries.columns:
             _avg = build_salaries.drop_duplicates("player_id").set_index("player_id")[_avg_col]
             out["dk_avg_ppg"] = pd.to_numeric(out["player_id"].map(_avg), errors="coerce")
+        # Public projected ownership (FFC, scripts/ingest_public_ownership.py) --
+        # optional; when the slate has a saved table the ownership model uses its
+        # FFC variant. Absent file -> no column -> pub_val-only artifact.
+        try:
+            import ingest_public_ownership as _ipo
+            _pub = _ipo.load_public(site, slate_id)
+            if _pub:
+                out["ffc_own_pct"] = [_pub.get(_ipo.norm_key(n, s_)) for n, s_ in zip(out["player_name"], out["salary"])]
+                print(f"Public ownership: matched {out['ffc_own_pct'].notna().sum()} players from FFC table.")
+        except Exception as _exc:  # noqa: BLE001 -- optional input, never break a build
+            print(f"WARNING: public ownership table not used ({type(_exc).__name__}: {_exc}).")
         out = add_ownership_columns(out, site)
         out["roster_role"] = None
         out["slate_format"] = "classic"
