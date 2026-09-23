@@ -75,7 +75,7 @@ EXPOSURE_SEED = 7
 OWNERSHIP_CAP_PCT = 75.0
 LOGIT_FLOOR = 0.003
 
-FEATURES = ["l_est", "l_exp", "sal", "top1sal", "cv", "dart", "lo_proj"]
+FEATURES = ["l_est", "l_exp", "sal", "top1sal", "cv", "dart", "lo_proj", "pub_val"]
 DEFENSE_LABELS = {"DST", "D", "DEF"}
 
 
@@ -161,6 +161,13 @@ def build_features(df: pd.DataFrame, exposure: pd.Series) -> pd.DataFrame:
     out["cv"] = (sigma / proj.clip(lower=0.5)).clip(upper=5.0)
     out["dart"] = ((sal <= 4500) & pos.isin(["RB", "WR", "TE"])).astype(float)
     out["lo_proj"] = ((proj < 8) & pos.isin(["RB", "WR"])).astype(float)
+    # pub_val: DK's own displayed AvgPointsPerGame per $K -- the value the field
+    # sees in the lobby (2026-09-23 ownership review: only pre-lock signal that
+    # explained the residual in BOTH weeks; corr 0.16/0.28 with model error).
+    # Missing/zero (no DK average, e.g. rookies/FD/old files) -> 0.
+    avg = (pd.to_numeric(df["dk_avg_ppg"], errors="coerce") if "dk_avg_ppg" in df.columns
+           else pd.Series(np.nan, index=df.index))
+    out["pub_val"] = (avg / (sal / 1000.0).clip(lower=1.0)).fillna(0.0).clip(upper=15.0)
     return out
 
 
@@ -170,7 +177,7 @@ def predict(df: pd.DataFrame, features: pd.DataFrame, artifact: dict, budgets: d
     (same roster-slot budgets the heuristic uses). Zero-projection players get 0."""
     coefs = artifact["coefs"]
     z = np.full(len(df), float(coefs["intercept"]))
-    for name in FEATURES:
+    for name in artifact.get("features", FEATURES):
         z = z + float(coefs[name]) * features[name].to_numpy(float)
     raw = pd.Series(_inv_logit(z, artifact.get("cap", OWNERSHIP_CAP_PCT)), index=df.index)
     raw = raw.where(pd.to_numeric(df["final_projection"], errors="coerce").fillna(0.0) > 0, 0.0)

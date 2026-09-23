@@ -1,0 +1,2223 @@
+slate_id,player_name,position,salary,own,lowo,pv,dk_avg
+dk_classic_wk1_main_13Sep2026,Kirk Cousins,QB,5000,1.5,22.1,16.8,11.3
+dk_classic_wk1_main_13Sep2026,Kyler Murray,QB,5500,7.3,22.3,20.5,16.4
+dk_classic_wk1_main_13Sep2026,Geno Smith,QB,4600,2.1,6.9,6.7,13.0
+dk_classic_wk1_main_13Sep2026,Jahmyr Gibbs,RB,8000,46.8,40.9,42.9,22.3
+dk_classic_wk1_main_13Sep2026,Joe Burrow,QB,6900,12.0,2.3,2.8,18.2
+dk_classic_wk1_main_13Sep2026,Jalen Hurts,QB,6600,6.6,1.7,2.3,19.1
+dk_classic_wk1_main_13Sep2026,Lamar Jackson,QB,6800,6.0,2.0,2.4,17.3
+dk_classic_wk1_main_13Sep2026,Malik Willis,QB,5300,5.1,2.6,2.7,13.0
+dk_classic_wk1_main_13Sep2026,Amon-Ra St. Brown,WR,7500,18.6,30.1,28.8,19.9
+dk_classic_wk1_main_13Sep2026,Bijan Robinson,RB,7700,12.6,13.5,13.9,23.2
+dk_classic_wk1_main_13Sep2026,Justin Herbert,QB,6100,12.0,1.8,2.5,19.1
+dk_classic_wk1_main_13Sep2026,Josh Allen,QB,7000,2.0,2.0,3.3,23.3
+dk_classic_wk1_main_13Sep2026,Ja'Marr Chase,WR,7800,32.2,25.9,28.3,21.0
+dk_classic_wk1_main_13Sep2026,Jared Goff,QB,6000,7.7,1.8,2.6,19.3
+dk_classic_wk1_main_13Sep2026,Jonathan Taylor,RB,7300,11.0,15.9,17.3,22.3
+dk_classic_wk1_main_13Sep2026,Justin Jefferson,WR,7300,12.3,15.7,12.7,12.4
+dk_classic_wk1_main_13Sep2026,Daniel Jones,QB,5400,1.4,1.3,2.0,18.7
+dk_classic_wk1_main_13Sep2026,Chris Olave,WR,6700,27.8,15.9,15.6,17.4
+dk_classic_wk1_main_13Sep2026,Omarion Hampton,RB,6800,25.3,21.9,19.1,13.9
+dk_classic_wk1_main_13Sep2026,Zay Flowers,WR,6400,9.8,20.0,18.5,15.0
+dk_classic_wk1_main_13Sep2026,Saquon Barkley,RB,6900,22.6,16.2,14.6,15.4
+dk_classic_wk1_main_13Sep2026,Chase Brown,RB,7100,10.9,13.2,13.3,17.2
+dk_classic_wk1_main_13Sep2026,Baker Mayfield,QB,5900,7.3,1.5,2.0,17.2
+dk_classic_wk1_main_13Sep2026,Derrick Henry,RB,6700,6.9,18.1,18.3,18.0
+dk_classic_wk1_main_13Sep2026,Caleb Williams,QB,6300,4.6,1.5,2.1,19.8
+dk_classic_wk1_main_13Sep2026,Tyler Shough,QB,5600,11.2,1.2,1.6,15.6
+dk_classic_wk1_main_13Sep2026,Trey McBride,TE,6800,3.6,14.0,14.4,19.1
+dk_classic_wk1_main_13Sep2026,Trevor Lawrence,QB,5800,4.5,1.1,1.9,21.0
+dk_classic_wk1_main_13Sep2026,Ashton Jeanty,RB,6600,9.8,6.9,6.6,14.8
+dk_classic_wk1_main_13Sep2026,Bryce Young,QB,5200,2.8,1.1,1.5,15.4
+dk_classic_wk1_main_13Sep2026,Aaron Rodgers,QB,5300,0.5,1.1,1.3,14.1
+dk_classic_wk1_main_13Sep2026,Jayden Daniels,QB,6500,0.7,1.1,1.3,17.0
+dk_classic_wk1_main_13Sep2026,Travis Etienne Jr.,RB,5900,8.5,6.9,7.5,15.7
+dk_classic_wk1_main_13Sep2026,James Cook III,RB,7200,2.4,9.8,9.9,18.8
+dk_classic_wk1_main_13Sep2026,Bucky Irving,RB,5700,13.2,12.9,12.9,14.3
+dk_classic_wk1_main_13Sep2026,De'Von Achane,RB,7000,17.8,1.0,1.4,20.9
+dk_classic_wk1_main_13Sep2026,Nico Collins,WR,7000,3.8,7.0,6.7,15.1
+dk_classic_wk1_main_13Sep2026,DeVonta Smith,WR,6600,11.8,7.5,6.8,12.4
+dk_classic_wk1_main_13Sep2026,Colston Loveland,TE,5300,12.1,11.6,9.5,11.4
+dk_classic_wk1_main_13Sep2026,Wan'Dale Robinson,WR,4800,4.7,13.7,13.9,14.2
+dk_classic_wk1_main_13Sep2026,Tony Pollard,RB,5600,4.9,7.7,6.7,11.6
+dk_classic_wk1_main_13Sep2026,Drake London,WR,6500,4.0,4.6,5.3,18.2
+dk_classic_wk1_main_13Sep2026,DK Metcalf,WR,5400,3.7,11.8,11.2,12.5
+dk_classic_wk1_main_13Sep2026,Jordan Love,QB,5700,1.1,1.1,1.5,17.6
+dk_classic_wk1_main_13Sep2026,Jameson Williams,WR,6000,7.2,4.7,5.2,13.6
+dk_classic_wk1_main_13Sep2026,Garrett Wilson,WR,5800,16.8,5.9,6.1,14.2
+dk_classic_wk1_main_13Sep2026,D'Andre Swift,RB,6100,10.4,3.7,4.2,14.7
+dk_classic_wk1_main_13Sep2026,Tetairoa McMillan,WR,6100,13.6,5.3,5.3,12.9
+dk_classic_wk1_main_13Sep2026,Parker Washington,WR,5600,8.0,9.2,8.9,12.8
+dk_classic_wk1_main_13Sep2026,C.J. Stroud,QB,5200,0.6,0.9,1.2,15.0
+dk_classic_wk1_main_13Sep2026,Terry McLaurin,WR,5700,2.2,11.5,9.8,11.4
+dk_classic_wk1_main_13Sep2026,Breece Hall,RB,6200,5.9,2.3,2.4,13.9
+dk_classic_wk1_main_13Sep2026,Jaylen Warren,RB,5400,3.0,5.5,5.8,13.5
+dk_classic_wk1_main_13Sep2026,Tee Higgins,WR,6300,9.7,6.7,6.8,14.3
+dk_classic_wk1_main_13Sep2026,Kyle Pitts Sr.,TE,4700,3.6,8.3,7.7,12.6
+dk_classic_wk1_main_13Sep2026,Christian Watson,WR,5900,3.5,5.0,5.2,13.5
+dk_classic_wk1_main_13Sep2026,Aaron Jones Sr.,RB,5300,0.5,4.1,3.9,10.0
+dk_classic_wk1_main_13Sep2026,Michael Wilson,WR,5300,4.2,9.6,9.7,13.5
+dk_classic_wk1_main_13Sep2026,Rico Dowdle,RB,5200,2.3,7.7,7.6,12.7
+dk_classic_wk1_main_13Sep2026,Kenny Gainwell,RB,5200,3.7,6.4,6.8,12.8
+dk_classic_wk1_main_13Sep2026,Rome Odunze,WR,5400,1.5,10.1,9.6,11.8
+dk_classic_wk1_main_13Sep2026,Alec Pierce,WR,5700,3.1,5.1,5.3,12.6
+dk_classic_wk1_main_13Sep2026,Stefon Diggs,WR,5200,1.6,7.0,6.9,12.2
+dk_classic_wk1_main_13Sep2026,Jacoby Brissett,QB,5100,1.0,0.9,1.4,18.0
+dk_classic_wk1_main_13Sep2026,Dallas Goedert,TE,4100,10.6,9.3,10.3,13.0
+dk_classic_wk1_main_13Sep2026,Luther Burden III,WR,5500,10.7,4.3,3.8,8.6
+dk_classic_wk1_main_13Sep2026,David Montgomery,RB,6000,6.4,0.9,1.0,10.1
+dk_classic_wk1_main_13Sep2026,Tyler Warren,TE,4900,3.6,4.2,4.0,11.1
+dk_classic_wk1_main_13Sep2026,Cam Ward,QB,5100,0.9,0.7,0.8,11.8
+dk_classic_wk1_main_13Sep2026,Jakobi Meyers,WR,5000,0.6,4.2,4.2,10.5
+dk_classic_wk1_main_13Sep2026,Emeka Egbuka,WR,6200,6.8,1.5,1.7,12.0
+dk_classic_wk1_main_13Sep2026,Jaguars,DST,3400,18.1,22.0,20.9,8.2
+dk_classic_wk1_main_13Sep2026,Ladd McConkey,WR,5900,16.1,3.4,3.4,11.4
+dk_classic_wk1_main_13Sep2026,Harold Fannin Jr.,TE,4200,4.1,5.9,6.1,11.9
+dk_classic_wk1_main_13Sep2026,Josh Downs,WR,5200,2.8,5.8,5.1,8.6
+dk_classic_wk1_main_13Sep2026,DJ Moore,WR,5600,4.0,1.1,1.3,10.8
+dk_classic_wk1_main_13Sep2026,Keenan Allen,WR,4700,1.2,6.3,6.4,10.6
+dk_classic_wk1_main_13Sep2026,Jacob Clark,QB,4000,0.0,0.4,0.3,0.0
+dk_classic_wk1_main_13Sep2026,Quinshon Judkins,RB,5500,1.5,0.6,0.8,12.3
+dk_classic_wk1_main_13Sep2026,Brian Thomas Jr.,WR,5500,1.5,3.0,2.9,9.9
+dk_classic_wk1_main_13Sep2026,Bailey Zappe,QB,4000,0.0,0.4,0.3,0.0
+dk_classic_wk1_main_13Sep2026,Khalil Shakir,WR,4800,1.1,2.4,2.8,11.4
+dk_classic_wk1_main_13Sep2026,Jalen Coker,WR,4600,8.2,2.7,3.0,10.2
+dk_classic_wk1_main_13Sep2026,Sam LaPorta,TE,4400,5.9,5.3,5.8,11.9
+dk_classic_wk1_main_13Sep2026,Chris Godwin Jr.,WR,5200,11.1,4.8,4.6,9.6
+dk_classic_wk1_main_13Sep2026,Chuba Hubbard,RB,5500,1.3,0.9,1.0,9.1
+dk_classic_wk1_main_13Sep2026,Tyjae Spears,RB,5100,0.2,3.1,2.7,8.6
+dk_classic_wk1_main_13Sep2026,Tucker Kraft,TE,4500,3.6,2.0,2.9,15.4
+dk_classic_wk1_main_13Sep2026,Michael Pittman Jr.,WR,4900,3.4,2.8,3.3,12.1
+dk_classic_wk1_main_13Sep2026,Deshaun Watson,QB,4700,0.2,0.5,0.3,0.0
+dk_classic_wk1_main_13Sep2026,Titans,DST,3100,4.5,10.6,8.4,4.8
+dk_classic_wk1_main_13Sep2026,Woody Marks,RB,5000,0.5,0.6,0.7,9.8
+dk_classic_wk1_main_13Sep2026,Jordan Addison,WR,5800,1.7,1.2,1.3,10.1
+dk_classic_wk1_main_13Sep2026,Chig Okonkwo,TE,4000,0.6,1.6,1.6,7.3
+dk_classic_wk1_main_13Sep2026,Kyle Monangai,RB,5100,0.4,1.0,1.1,8.9
+dk_classic_wk1_main_13Sep2026,Cade Otton,TE,3700,3.3,3.0,3.0,7.6
+dk_classic_wk1_main_13Sep2026,Chris Rodriguez Jr.,RB,5100,0.5,0.5,0.5,7.1
+dk_classic_wk1_main_13Sep2026,Jacory Croskey-Merritt,RB,5300,0.3,0.7,0.7,8.7
+dk_classic_wk1_main_13Sep2026,Steelers,DST,3300,11.0,7.2,7.7,7.8
+dk_classic_wk1_main_13Sep2026,Tre Tucker,WR,4000,10.6,1.8,2.2,9.7
+dk_classic_wk1_main_13Sep2026,Quentin Johnston,WR,4700,12.9,2.2,2.7,12.0
+dk_classic_wk1_main_13Sep2026,Jayden Reed,WR,4900,2.5,0.8,0.9,8.0
+dk_classic_wk1_main_13Sep2026,Mark Andrews,TE,3900,4.9,3.2,3.1,7.7
+dk_classic_wk1_main_13Sep2026,Bhayshul Tuten,RB,5800,2.7,0.9,0.8,5.9
+dk_classic_wk1_main_13Sep2026,Dalton Kincaid,TE,4600,1.5,0.9,1.1,11.7
+dk_classic_wk1_main_13Sep2026,Raiders,DST,2900,5.8,6.1,5.2,4.4
+dk_classic_wk1_main_13Sep2026,Jauan Jennings,WR,4300,0.8,3.1,3.9,11.1
+dk_classic_wk1_main_13Sep2026,Chargers,DST,3500,4.9,5.5,6.3,6.7
+dk_classic_wk1_main_13Sep2026,Jets,DST,2500,15.2,7.4,5.5,2.8
+dk_classic_wk1_main_13Sep2026,Tyler Allgeier,RB,4900,1.0,0.7,0.7,7.2
+dk_classic_wk1_main_13Sep2026,Juwan Johnson,TE,3700,15.4,2.6,3.2,10.7
+dk_classic_wk1_main_13Sep2026,Tank Bigsby,RB,4900,0.1,0.8,0.7,3.3
+dk_classic_wk1_main_13Sep2026,Jordan Mason,RB,5400,1.2,0.7,0.7,8.3
+dk_classic_wk1_main_13Sep2026,Lions,DST,3200,2.6,1.5,1.8,5.7
+dk_classic_wk1_main_13Sep2026,Max Brosmer,QB,4000,0.0,0.5,0.4,1.3
+dk_classic_wk1_main_13Sep2026,Packers,DST,3000,1.3,6.5,5.5,4.6
+dk_classic_wk1_main_13Sep2026,Dolphins,DST,2700,2.2,6.1,5.7,5.6
+dk_classic_wk1_main_13Sep2026,Eagles,DST,3200,5.0,3.2,3.7,7.8
+dk_classic_wk1_main_13Sep2026,Jerry Jeudy,WR,4100,0.6,1.5,1.6,7.2
+dk_classic_wk1_main_13Sep2026,Brenton Strange,TE,3600,2.0,2.9,3.2,9.3
+dk_classic_wk1_main_13Sep2026,Adonai Mitchell,WR,4000,1.3,0.4,0.5,5.7
+dk_classic_wk1_main_13Sep2026,Michael Carter,RB,4000,0.0,0.3,0.4,7.6
+dk_classic_wk1_main_13Sep2026,Dalton Schultz,TE,3400,1.6,1.6,2.0,9.9
+dk_classic_wk1_main_13Sep2026,Darren Waller,TE,3200,0.6,1.4,1.9,9.9
+dk_classic_wk1_main_13Sep2026,Jawhar Jordan,RB,4500,0.1,0.3,0.4,8.2
+dk_classic_wk1_main_13Sep2026,Pat Freiermuth,TE,3400,0.5,1.6,1.6,6.6
+dk_classic_wk1_main_13Sep2026,Oronde Gadsden II,TE,3500,1.1,2.0,2.3,8.8
+dk_classic_wk1_main_13Sep2026,Adrian Martinez,QB,4000,0.0,0.4,0.3,-0.1
+dk_classic_wk1_main_13Sep2026,Tre' Harris,WR,3800,0.1,0.6,0.7,4.1
+dk_classic_wk1_main_13Sep2026,Kayshon Boutte,WR,4500,1.1,0.5,0.6,8.8
+dk_classic_wk1_main_13Sep2026,Samaje Perine,RB,4600,0.0,0.7,0.8,5.3
+dk_classic_wk1_main_13Sep2026,Keaton Mitchell,RB,4800,0.2,0.7,0.7,4.3
+dk_classic_wk1_main_13Sep2026,Greg Dulcich,TE,3500,0.8,1.3,1.3,6.4
+dk_classic_wk1_main_13Sep2026,Michael Mayer,TE,2900,33.0,2.3,2.2,5.7
+dk_classic_wk1_main_13Sep2026,Bears,DST,2800,2.7,4.1,4.5,6.4
+dk_classic_wk1_main_13Sep2026,Rachaad White,RB,5200,0.1,0.5,0.5,8.4
+dk_classic_wk1_main_13Sep2026,Jalen Nailor,WR,4300,1.4,0.5,0.6,6.1
+dk_classic_wk1_main_13Sep2026,Devin Neal,RB,4400,0.0,0.2,0.3,6.0
+dk_classic_wk1_main_13Sep2026,Kimani Vidal,RB,4800,0.1,0.5,0.7,9.6
+dk_classic_wk1_main_13Sep2026,Malik Washington,WR,4200,1.9,0.4,0.5,6.9
+dk_classic_wk1_main_13Sep2026,Ravens,DST,3000,1.7,1.0,1.2,5.7
+dk_classic_wk1_main_13Sep2026,Vikings,DST,2800,3.8,0.9,1.3,8.0
+dk_classic_wk1_main_13Sep2026,Bengals,DST,2700,1.0,4.8,4.5,4.6
+dk_classic_wk1_main_13Sep2026,Josh Johnson,QB,4000,0.0,0.6,0.6,5.5
+dk_classic_wk1_main_13Sep2026,Chimere Dike,WR,3400,0.1,1.1,1.4,7.5
+dk_classic_wk1_main_13Sep2026,Bills,DST,3100,0.7,0.7,0.9,6.1
+dk_classic_wk1_main_13Sep2026,T.J. Hockenson,TE,3300,2.0,0.6,0.7,7.5
+dk_classic_wk1_main_13Sep2026,Devaughn Vele,WR,3500,10.9,0.3,0.4,5.1
+dk_classic_wk1_main_13Sep2026,Isaiah Williams,WR,3000,0.0,1.0,1.0,4.0
+dk_classic_wk1_main_13Sep2026,Elic Ayomanor,WR,3600,0.1,0.4,0.5,7.3
+dk_classic_wk1_main_13Sep2026,MarShawn Lloyd,RB,4800,7.6,0.3,0.2,0.0
+dk_classic_wk1_main_13Sep2026,Ray Davis,RB,4600,0.0,0.5,0.5,3.8
+dk_classic_wk1_main_13Sep2026,Texans,DST,2900,4.5,1.8,2.8,10.6
+dk_classic_wk1_main_13Sep2026,Dontayvion Wicks,WR,4100,1.8,0.4,0.5,5.4
+dk_classic_wk1_main_13Sep2026,Matthew Golden,WR,4700,1.3,0.7,0.7,5.9
+dk_classic_wk1_main_13Sep2026,Jonathon Brooks,RB,5000,0.4,0.3,0.2,0.0
+dk_classic_wk1_main_13Sep2026,Kevin Austin Jr.,WR,3000,0.0,0.4,0.5,4.1
+dk_classic_wk1_main_13Sep2026,Xavier Hutchinson,WR,3200,0.2,0.4,0.5,5.8
+dk_classic_wk1_main_13Sep2026,Jaylen Wright,RB,4500,0.0,0.3,0.3,5.2
+dk_classic_wk1_main_13Sep2026,Dawson Knox,TE,3100,0.1,0.5,0.6,6.1
+dk_classic_wk1_main_13Sep2026,Jahan Dotson,WR,3700,0.1,0.3,0.3,2.8
+dk_classic_wk1_main_13Sep2026,Cam Miller,QB,4000,0.0,0.4,0.3,0.0
+dk_classic_wk1_main_13Sep2026,Mark Gronowski,QB,4000,0.0,0.4,0.3,0.0
+dk_classic_wk1_main_13Sep2026,Isaac TeSlaa,WR,3900,0.2,0.6,0.7,4.5
+dk_classic_wk1_main_13Sep2026,Browns,DST,2100,7.7,3.4,5.1,7.8
+dk_classic_wk1_main_13Sep2026,Xavier Legette,WR,3700,0.1,0.5,0.6,5.7
+dk_classic_wk1_main_13Sep2026,Jeremiyah Love,RB,6400,0.3,0.4,0.3,0.0
+dk_classic_wk1_main_13Sep2026,Falcons,DST,2600,1.4,0.5,0.8,7.1
+dk_classic_wk1_main_13Sep2026,Jack Bech,WR,3600,0.1,0.4,0.4,2.7
+dk_classic_wk1_main_13Sep2026,Cardinals,DST,2000,1.6,2.0,2.2,4.3
+dk_classic_wk1_main_13Sep2026,Gunnar Helm,TE,3200,0.6,0.4,0.5,5.7
+dk_classic_wk1_main_13Sep2026,Cole Kmet,TE,3300,0.2,0.6,0.6,5.1
+dk_classic_wk1_main_13Sep2026,Colts,DST,2400,1.4,2.3,2.7,5.8
+dk_classic_wk1_main_13Sep2026,Commanders,DST,2300,0.7,0.6,0.7,4.5
+dk_classic_wk1_main_13Sep2026,DJ Uiagalelei,QB,4000,0.0,0.4,0.3,0.0
+dk_classic_wk1_main_13Sep2026,Tommy Tremble,TE,2900,0.0,0.5,0.5,3.8
+dk_classic_wk1_main_13Sep2026,Mike Gesicki,TE,3100,0.8,0.6,0.7,5.4
+dk_classic_wk1_main_13Sep2026,Chris Brooks,RB,4500,0.1,0.4,0.3,2.0
+dk_classic_wk1_main_13Sep2026,Sean Clifford,QB,4000,0.0,0.4,0.3,0.0
+dk_classic_wk1_main_13Sep2026,Ben Sinnott,TE,2800,0.0,0.4,0.3,1.8
+dk_classic_wk1_main_13Sep2026,Hunter Dekkers,QB,4000,0.0,0.4,0.3,0.0
+dk_classic_wk1_main_13Sep2026,Buccaneers,DST,2600,0.7,0.6,0.8,5.8
+dk_classic_wk1_main_13Sep2026,Kendrick Bourne,WR,3600,0.0,0.4,0.5,5.5
+dk_classic_wk1_main_13Sep2026,Olamide Zaccheaus,WR,3500,0.0,0.3,0.3,5.3
+dk_classic_wk1_main_13Sep2026,Panthers,DST,2500,0.9,0.6,0.8,5.9
+dk_classic_wk1_main_13Sep2026,Saints,DST,2200,0.5,0.6,1.0,6.9
+dk_classic_wk1_main_13Sep2026,Hendon Hooker,QB,4000,0.0,0.4,0.3,0.0
+dk_classic_wk1_main_13Sep2026,Brian Robinson Jr.,RB,4700,0.1,0.3,0.3,3.4
+dk_classic_wk1_main_13Sep2026,Will Levis,QB,4000,0.0,0.4,0.3,0.0
+dk_classic_wk1_main_13Sep2026,Luke Altmyer,QB,4000,0.0,0.4,0.3,0.0
+dk_classic_wk1_main_13Sep2026,Jonnu Smith,TE,3000,0.0,0.5,0.5,4.8
+dk_classic_wk1_main_13Sep2026,Travis Hunter,WR,3400,0.3,0.2,0.4,9.5
+dk_classic_wk1_main_13Sep2026,Theo Wease Jr.,WR,3000,0.1,0.3,0.6,8.6
+dk_classic_wk1_main_13Sep2026,Easton Stick,QB,4000,0.0,0.4,0.3,0.0
+dk_classic_wk1_main_13Sep2026,Van Jefferson,WR,3000,0.0,0.3,0.4,4.4
+dk_classic_wk1_main_13Sep2026,Makai Lemon,WR,5100,1.1,0.4,0.3,0.0
+dk_classic_wk1_main_13Sep2026,Miller Moss,QB,4000,0.0,0.4,0.3,0.0
+dk_classic_wk1_main_13Sep2026,Carnell Tate,WR,5300,1.5,0.4,0.3,0.0
+dk_classic_wk1_main_13Sep2026,Keon Coleman,WR,4000,0.2,0.3,0.4,7.9
+dk_classic_wk1_main_13Sep2026,Andrei Iosivas,WR,3300,0.3,0.5,0.7,5.3
+dk_classic_wk1_main_13Sep2026,Marvin Harrison Jr.,WR,5000,3.8,0.4,0.6,10.7
+dk_classic_wk1_main_13Sep2026,Connor Bazelak,QB,4000,0.0,0.4,0.3,0.0
+dk_classic_wk1_main_13Sep2026,Elijah Higgins,TE,2500,0.0,0.4,0.4,3.5
+dk_classic_wk1_main_13Sep2026,Dylan Sampson,RB,4700,0.0,0.3,0.3,5.9
+dk_classic_wk1_main_13Sep2026,Josh Oliver,TE,2800,0.0,0.5,0.5,3.7
+dk_classic_wk1_main_13Sep2026,Darnell Washington,TE,3000,0.1,0.4,0.4,4.7
+dk_classic_wk1_main_13Sep2026,Isaiah Davis,RB,4200,0.0,0.2,0.2,4.5
+dk_classic_wk1_main_13Sep2026,Bam Knight,RB,4000,0.0,0.2,0.3,7.8
+dk_classic_wk1_main_13Sep2026,Jaylin Noel,WR,3600,0.1,0.4,0.4,3.6
+dk_classic_wk1_main_13Sep2026,Rashod Bateman,WR,3900,0.5,0.4,0.4,4.3
+dk_classic_wk1_main_13Sep2026,Darius Cooper,WR,3000,0.0,0.4,0.3,1.4
+dk_classic_wk1_main_13Sep2026,Kalif Raymond,WR,3300,0.1,0.4,0.5,4.5
+dk_classic_wk1_main_13Sep2026,Malachi Corley,WR,3000,0.0,0.3,0.3,2.4
+dk_classic_wk1_main_13Sep2026,Jordyn Tyson,WR,5100,0.0,0.4,0.3,0.0
+dk_classic_wk1_main_13Sep2026,Daniel Bellinger,TE,2700,0.0,0.3,0.3,3.7
+dk_classic_wk1_main_13Sep2026,Joey Aguilar,QB,4000,0.0,0.4,0.3,0.0
+dk_classic_wk1_main_13Sep2026,Sam Hartman,QB,4000,0.0,0.4,0.3,0.0
+dk_classic_wk1_main_13Sep2026,Ameer Abdullah,RB,4000,0.0,0.3,0.3,2.8
+dk_classic_wk1_main_13Sep2026,Austin Hooper,TE,2700,0.0,0.3,0.3,3.2
+dk_classic_wk1_main_13Sep2026,Jaret Patterson,RB,4000,0.0,0.2,0.2,3.7
+dk_classic_wk1_main_13Sep2026,LeQuint Allen Jr.,RB,4300,0.0,0.3,0.3,1.5
+dk_classic_wk1_main_13Sep2026,Jahdae Walker,WR,3100,0.0,0.3,0.3,3.0
+dk_classic_wk1_main_13Sep2026,Mitchell Evans,TE,2600,0.0,0.4,0.4,2.7
+dk_classic_wk1_main_13Sep2026,Mo Alie-Cox,TE,2500,0.0,0.4,0.3,1.8
+dk_classic_wk1_main_13Sep2026,KeAndre Lambert-Smith,WR,3000,0.0,0.4,0.4,1.6
+dk_classic_wk1_main_13Sep2026,Shane Buechele,QB,4000,0.0,0.4,0.4,3.9
+dk_classic_wk1_main_13Sep2026,Jaleel McLaughlin,RB,4000,0.0,0.2,0.2,3.6
+dk_classic_wk1_main_13Sep2026,Corey Kiner,RB,4000,0.0,0.2,0.2,2.3
+dk_classic_wk1_main_13Sep2026,Jeremy Ruckert,TE,2500,0.0,0.3,0.3,2.8
+dk_classic_wk1_main_13Sep2026,Bo Melton,WR,3000,0.0,0.4,0.3,0.2
+dk_classic_wk1_main_13Sep2026,Carson Steele,RB,4000,0.0,0.2,0.2,0.0
+dk_classic_wk1_main_13Sep2026,Stone Smartt,TE,2500,0.0,0.3,0.3,0.8
+dk_classic_wk1_main_13Sep2026,Tez Johnson,WR,3100,0.1,0.4,0.5,5.8
+dk_classic_wk1_main_13Sep2026,Will Shipley,RB,4100,0.0,0.3,0.3,1.3
+dk_classic_wk1_main_13Sep2026,Tanner Hudson,TE,2500,0.0,0.4,0.4,3.2
+dk_classic_wk1_main_13Sep2026,Pierre Strong Jr.,RB,4000,0.0,0.2,0.2,0.0
+dk_classic_wk1_main_13Sep2026,Rasheen Ali,RB,4200,0.0,0.4,0.3,1.6
+dk_classic_wk1_main_13Sep2026,British Brooks,RB,4000,0.0,0.2,0.2,0.5
+dk_classic_wk1_main_13Sep2026,Britain Covey,WR,3000,0.0,0.4,0.4,0.6
+dk_classic_wk1_main_13Sep2026,Zamir White,RB,4000,0.0,0.2,0.2,1.6
+dk_classic_wk1_main_13Sep2026,Brandon Johnson,WR,3000,0.0,0.2,0.2,0.0
+dk_classic_wk1_main_13Sep2026,Drew Sample,TE,2600,0.0,0.4,0.4,1.9
+dk_classic_wk1_main_13Sep2026,Dare Ogunbowale,RB,4000,0.0,0.2,0.2,1.3
+dk_classic_wk1_main_13Sep2026,Evan Hull,RB,4000,0.0,0.3,0.2,1.1
+dk_classic_wk1_main_13Sep2026,Connor Heyward,RB,4000,0.0,0.2,0.2,1.5
+dk_classic_wk1_main_13Sep2026,Isaiah Bond,WR,3300,0.0,0.3,0.3,3.4
+dk_classic_wk1_main_13Sep2026,Cedric Tillman,WR,3400,0.0,0.3,0.4,4.6
+dk_classic_wk1_main_13Sep2026,Zavier Scott,RB,4000,0.0,0.3,0.3,2.5
+dk_classic_wk1_main_13Sep2026,Erik Ezukanma,WR,3000,0.0,0.2,0.2,0.0
+dk_classic_wk1_main_13Sep2026,Jackson Hawes,TE,2500,0.0,0.3,0.3,2.8
+dk_classic_wk1_main_13Sep2026,K.J. Osborn,WR,3000,0.0,0.2,0.2,0.0
+dk_classic_wk1_main_13Sep2026,Raheim Sanders,RB,4000,0.0,0.2,0.2,4.1
+dk_classic_wk1_main_13Sep2026,Kylen Granson,TE,2500,0.0,0.3,0.2,0.6
+dk_classic_wk1_main_13Sep2026,KC Concepcion,WR,4600,1.3,0.3,0.3,0.0
+dk_classic_wk1_main_13Sep2026,Jimmy Horn Jr.,WR,3000,0.0,0.3,0.3,1.9
+dk_classic_wk1_main_13Sep2026,Amar Johnson,RB,4000,0.0,0.2,0.2,0.4
+dk_classic_wk1_main_13Sep2026,Shedrick Jackson,WR,3000,0.0,0.3,0.3,3.2
+dk_classic_wk1_main_13Sep2026,Brycen Tremayne,WR,3000,0.0,0.4,0.4,1.8
+dk_classic_wk1_main_13Sep2026,Jordan Mims,RB,4000,0.0,0.2,0.2,0.0
+dk_classic_wk1_main_13Sep2026,John Bates,TE,2500,0.0,0.3,0.3,1.8
+dk_classic_wk1_main_13Sep2026,Samori Toure,WR,3000,0.0,0.2,0.2,1.3
+dk_classic_wk1_main_13Sep2026,Alec Ingold,RB,4000,0.0,0.2,0.2,0.8
+dk_classic_wk1_main_13Sep2026,Jonathan Ward,RB,4000,0.0,0.2,0.2,0.0
+dk_classic_wk1_main_13Sep2026,Elijah Mitchell,RB,4000,0.0,0.2,0.2,0.0
+dk_classic_wk1_main_13Sep2026,Ollie Gordon II,RB,4500,0.0,0.2,0.2,3.2
+dk_classic_wk1_main_13Sep2026,Ben Sims,TE,2500,0.0,0.3,0.2,0.5
+dk_classic_wk1_main_13Sep2026,Tahj Brooks,RB,4100,0.0,0.3,0.3,0.4
+dk_classic_wk1_main_13Sep2026,Shane Zylstra,TE,2500,0.0,0.2,0.2,0.8
+dk_classic_wk1_main_13Sep2026,Kendric Pryor,WR,3000,0.0,0.2,0.2,0.0
+dk_classic_wk1_main_13Sep2026,Andrew Beck,RB,4000,0.0,0.2,0.2,1.4
+dk_classic_wk1_main_13Sep2026,Nick Vannett,TE,2500,0.0,0.2,0.2,0.0
+dk_classic_wk1_main_13Sep2026,David Martin-Robinson,TE,2500,0.0,0.3,0.2,0.8
+dk_classic_wk1_main_13Sep2026,Charlie Kolar,TE,2500,0.7,0.4,0.4,2.1
+dk_classic_wk1_main_13Sep2026,Arian Smith,WR,3000,0.0,0.3,0.2,0.8
+dk_classic_wk1_main_13Sep2026,Ben VanSumeren,RB,4000,0.0,0.2,0.2,0.0
+dk_classic_wk1_main_13Sep2026,Cedrick Wilson Jr.,WR,3000,0.0,0.3,0.3,0.9
+dk_classic_wk1_main_13Sep2026,Cade Stover,TE,2500,0.0,0.3,0.3,2.3
+dk_classic_wk1_main_13Sep2026,Noah Fant,TE,3200,0.0,0.3,0.4,5.2
+dk_classic_wk1_main_13Sep2026,Denzel Boston,WR,4400,0.1,0.3,0.2,0.0
+dk_classic_wk1_main_13Sep2026,Ja'Lynn Polk,WR,3000,0.0,0.2,0.2,0.0
+dk_classic_wk1_main_13Sep2026,Jalen Reagor,WR,3000,0.0,0.2,0.2,0.0
+dk_classic_wk1_main_13Sep2026,Germie Bernard,WR,3900,0.1,0.2,0.2,0.0
+dk_classic_wk1_main_13Sep2026,Bub Means,WR,3000,0.0,0.2,0.2,0.0
+dk_classic_wk1_main_13Sep2026,Trey Palmer,WR,3000,0.0,0.2,0.2,0.0
+dk_classic_wk1_main_13Sep2026,Chris Moore,WR,3000,0.0,0.3,0.3,2.8
+dk_classic_wk1_main_13Sep2026,Lew Nichols,RB,4000,0.0,0.2,0.2,0.0
+dk_classic_wk1_main_13Sep2026,Tahj Washington,WR,3000,0.0,0.2,0.2,1.0
+dk_classic_wk1_main_13Sep2026,Antonio Williams,WR,4200,0.1,0.2,0.2,0.0
+dk_classic_wk1_main_13Sep2026,Erick All Jr.,TE,2500,0.1,0.2,0.2,0.0
+dk_classic_wk1_main_13Sep2026,Kaleb Johnson,RB,4400,0.0,0.2,0.2,0.9
+dk_classic_wk1_main_13Sep2026,Charlie Woerner,TE,2500,0.0,0.2,0.2,0.8
+dk_classic_wk1_main_13Sep2026,Ronnie Bell,WR,3000,0.0,0.2,0.3,5.2
+dk_classic_wk1_main_13Sep2026,Jha'Quan Jackson,WR,3000,0.0,0.2,0.2,0.0
+dk_classic_wk1_main_13Sep2026,Maurice Alexander,WR,3000,0.0,0.2,0.2,0.0
+dk_classic_wk1_main_13Sep2026,Jaheim Bell,TE,2500,0.0,0.2,0.2,0.0
+dk_classic_wk1_main_13Sep2026,Ihmir Smith-Marsette,WR,3000,0.0,0.2,0.2,0.0
+dk_classic_wk1_main_13Sep2026,Tyler Huntley,QB,4300,0.0,0.5,0.6,8.0
+dk_classic_wk1_main_13Sep2026,Michael Burton,RB,4000,0.0,0.2,0.2,0.0
+dk_classic_wk1_main_13Sep2026,Ulysses Bentley IV,RB,4000,0.0,0.2,0.2,0.0
+dk_classic_wk1_main_13Sep2026,Quintin Morris,TE,2500,0.0,0.3,0.3,1.2
+dk_classic_wk1_main_13Sep2026,Omar Cooper Jr.,WR,4100,0.0,0.2,0.2,0.0
+dk_classic_wk1_main_13Sep2026,Kendall Milton,RB,4000,0.0,0.2,0.2,0.2
+dk_classic_wk1_main_13Sep2026,Keleki Latu,TE,2500,0.0,0.2,0.2,1.5
+dk_classic_wk1_main_13Sep2026,Nick Mullens,QB,4000,0.0,0.4,0.3,-0.0
+dk_classic_wk1_main_13Sep2026,Malik Cunningham,WR,3000,0.0,0.2,0.2,0.1
+dk_classic_wk1_main_13Sep2026,Evan Deckers,TE,2500,0.0,0.2,0.2,0.0
+dk_classic_wk1_main_13Sep2026,Xavier Weaver,WR,3100,0.0,0.2,0.2,1.4
+dk_classic_wk1_main_13Sep2026,Jalen Brooks,WR,3000,0.0,0.3,0.3,1.2
+dk_classic_wk1_main_13Sep2026,Johnny Mundt,TE,2500,0.0,0.3,0.2,1.2
+dk_classic_wk1_main_13Sep2026,Kenyon Sadiq,TE,3800,0.3,0.3,0.2,0.0
+dk_classic_wk1_main_13Sep2026,William Wagner,TE,2500,0.0,0.2,0.2,0.0
+dk_classic_wk1_main_13Sep2026,Jaydon Blue,RB,4000,0.0,0.2,0.2,4.1
+dk_classic_wk1_main_13Sep2026,Andrew DePaola,TE,2500,0.0,0.2,0.2,0.0
+dk_classic_wk1_main_13Sep2026,Zach Wood,TE,2500,0.0,0.2,0.2,0.0
+dk_classic_wk1_main_13Sep2026,Shedeur Sanders,QB,4700,0.0,0.5,0.7,12.4
+dk_classic_wk1_main_13Sep2026,Mason Taylor,TE,2800,0.4,0.3,0.4,6.8
+dk_classic_wk1_main_13Sep2026,Josh Williams,RB,4000,0.0,0.2,0.2,0.4
+dk_classic_wk1_main_13Sep2026,Quentin Skinner,WR,3000,0.0,0.2,0.3,4.0
+dk_classic_wk1_main_13Sep2026,Chris Blair,WR,3000,0.0,0.2,0.2,0.0
+dk_classic_wk1_main_13Sep2026,Zachariah Branch,WR,3800,0.1,0.2,0.2,0.0
+dk_classic_wk1_main_13Sep2026,Marcus Mariota,QB,4500,0.0,0.4,0.7,12.3
+dk_classic_wk1_main_13Sep2026,Elijah Sarratt,WR,3400,0.0,0.2,0.2,0.0
+dk_classic_wk1_main_13Sep2026,Dalevon Campbell,WR,3000,0.0,0.2,0.2,0.0
+dk_classic_wk1_main_13Sep2026,Demond Claiborne,RB,4400,0.0,0.2,0.2,0.0
+dk_classic_wk1_main_13Sep2026,Mike Washington Jr.,RB,4600,0.8,0.3,0.2,0.0
+dk_classic_wk1_main_13Sep2026,E.J. Jenkins,TE,2500,0.0,0.2,0.2,0.0
+dk_classic_wk1_main_13Sep2026,Tay Martin,WR,3000,0.0,0.2,0.2,1.4
+dk_classic_wk1_main_13Sep2026,Jabari Small,RB,4000,0.0,0.2,0.2,0.0
+dk_classic_wk1_main_13Sep2026,Tyler Ott,TE,2500,0.0,0.2,0.2,0.0
+dk_classic_wk1_main_13Sep2026,J'Mari Taylor,RB,4000,0.0,0.2,0.2,0.0
+dk_classic_wk1_main_13Sep2026,Kaytron Allen,RB,4600,0.0,0.3,0.2,0.0
+dk_classic_wk1_main_13Sep2026,Durham Smythe,TE,2500,0.0,0.3,0.3,0.5
+dk_classic_wk1_main_13Sep2026,Jared Wayne,WR,3000,0.0,0.2,0.3,4.0
+dk_classic_wk1_main_13Sep2026,Ashton Dulin,WR,3200,0.0,0.2,0.2,1.7
+dk_classic_wk1_main_13Sep2026,Eli Stowers,TE,3100,0.0,0.3,0.2,0.0
+dk_classic_wk1_main_13Sep2026,Jack Stoll,TE,2500,0.0,0.2,0.2,1.1
+dk_classic_wk1_main_13Sep2026,Brenden Bates,TE,2500,0.0,0.2,0.2,1.0
+dk_classic_wk1_main_13Sep2026,Dylan Drummond,WR,3000,0.0,0.2,0.2,1.2
+dk_classic_wk1_main_13Sep2026,Deion Burks,WR,3500,0.0,0.2,0.2,0.0
+dk_classic_wk1_main_13Sep2026,Jacoby Jones,WR,3000,0.0,0.2,0.2,3.5
+dk_classic_wk1_main_13Sep2026,Riley Nowakowski,RB,4000,0.0,0.2,0.2,0.0
+dk_classic_wk1_main_13Sep2026,Jelani Woods,TE,2500,0.0,0.2,0.2,0.3
+dk_classic_wk1_main_13Sep2026,Eli Heidenreich,RB,4000,0.0,0.2,0.2,0.0
+dk_classic_wk1_main_13Sep2026,Seth McGowan,RB,4300,0.0,0.2,0.2,0.0
+dk_classic_wk1_main_13Sep2026,Dyami Brown,WR,3200,0.0,0.2,0.3,3.6
+dk_classic_wk1_main_13Sep2026,Josh Whyle,TE,2500,0.0,0.3,0.2,1.8
+dk_classic_wk1_main_13Sep2026,Drake Dabney,TE,2500,0.0,0.2,0.2,0.7
+dk_classic_wk1_main_13Sep2026,Payne Durham,TE,2500,0.0,0.2,0.2,0.1
+dk_classic_wk1_main_13Sep2026,Brenen Thompson,WR,3300,0.0,0.2,0.2,0.0
+dk_classic_wk1_main_13Sep2026,Zavion Thomas,WR,3600,0.2,0.2,0.2,0.0
+dk_classic_wk1_main_13Sep2026,Kaden Davis,WR,3000,0.0,0.2,0.2,0.0
+dk_classic_wk1_main_13Sep2026,Salvon Ahmed,RB,4000,0.0,0.2,0.2,0.0
+dk_classic_wk1_main_13Sep2026,Gregory Desrosiers,RB,4000,0.0,0.2,0.2,0.0
+dk_classic_wk1_main_13Sep2026,Jaylin Lane,WR,3100,0.0,0.2,0.3,3.3
+dk_classic_wk1_main_13Sep2026,Roman Hemby,RB,4100,0.0,0.2,0.2,0.0
+dk_classic_wk1_main_13Sep2026,Albert Okwuegbunam Jr.,TE,2500,0.0,0.2,0.4,8.6
+dk_classic_wk1_main_13Sep2026,Miles Davis,RB,4000,0.0,0.2,0.2,0.0
+dk_classic_wk1_main_13Sep2026,David Njoku,TE,3000,0.7,0.2,0.4,7.2
+dk_classic_wk1_main_13Sep2026,Coleman Owen,WR,3000,0.0,0.2,0.2,0.0
+dk_classic_wk1_main_13Sep2026,Anthony Tyus III,RB,4000,0.0,0.2,0.2,0.0
+dk_classic_wk1_main_13Sep2026,DJ Turner,WR,3000,0.0,0.2,0.2,0.0
+dk_classic_wk1_main_13Sep2026,Ted Hurst III,WR,3300,0.4,0.2,0.2,0.0
+dk_classic_wk1_main_13Sep2026,Kedon Slovis,QB,4000,0.0,0.4,0.3,-0.0
+dk_classic_wk1_main_13Sep2026,CJ Donaldson,RB,4000,0.0,0.2,0.2,0.0
+dk_classic_wk1_main_13Sep2026,Gary Brightwell,RB,4000,0.0,0.2,0.2,0.0
+dk_classic_wk1_main_13Sep2026,Foster Moreau,TE,2600,0.0,0.2,0.2,1.2
+dk_classic_wk1_main_13Sep2026,Ian Thomas,TE,2500,0.0,0.2,0.2,1.6
+dk_classic_wk1_main_13Sep2026,Noah Whittington,RB,4000,0.0,0.2,0.2,0.0
+dk_classic_wk1_main_13Sep2026,Cash Jones,RB,4000,0.0,0.2,0.2,0.0
+dk_classic_wk1_main_13Sep2026,Drew Ogletree,TE,2500,0.0,0.2,0.2,0.8
+dk_classic_wk1_main_13Sep2026,Ja'Kobi Lane,WR,3100,1.4,0.2,0.2,0.0
+dk_classic_wk1_main_13Sep2026,Blake Whiteheart,TE,2500,0.0,0.2,0.2,0.1
+dk_classic_wk1_main_13Sep2026,Hayden Rucci,TE,2500,0.0,0.2,0.2,0.0
+dk_classic_wk1_main_13Sep2026,Max Bredeson,RB,4000,0.0,0.2,0.2,0.0
+dk_classic_wk1_main_13Sep2026,Kaden Wetjen,WR,3000,0.0,0.2,0.2,0.0
+dk_classic_wk1_main_13Sep2026,Levi Wentz,WR,3000,0.0,0.2,0.2,0.0
+dk_classic_wk1_main_13Sep2026,Ko Kieft,TE,2500,0.0,0.2,0.2,0.0
+dk_classic_wk1_main_13Sep2026,Brandon Smith,WR,3000,0.0,0.2,0.2,0.0
+dk_classic_wk1_main_13Sep2026,Jerome Ford,RB,4100,0.0,0.2,0.2,3.4
+dk_classic_wk1_main_13Sep2026,Jamal Haynes,RB,4000,0.0,0.2,0.2,0.0
+dk_classic_wk1_main_13Sep2026,Kentrel Bullock,RB,4000,0.0,0.2,0.2,0.0
+dk_classic_wk1_main_13Sep2026,Chris Bell,WR,3200,1.3,0.2,0.2,0.0
+dk_classic_wk1_main_13Sep2026,Adam Randall,RB,4000,0.0,0.2,0.2,0.0
+dk_classic_wk1_main_13Sep2026,Cam Grandy,TE,2500,0.0,0.2,0.2,0.5
+dk_classic_wk1_main_13Sep2026,Elijah Tau-Tolliver,RB,4000,0.0,0.2,0.2,0.0
+dk_classic_wk1_main_13Sep2026,Dontae McMillan,RB,4000,0.0,0.2,0.2,0.0
+dk_classic_wk1_main_13Sep2026,Max Hurleman,WR,3000,0.0,0.2,0.2,0.0
+dk_classic_wk1_main_13Sep2026,Frank Gore Jr.,RB,4000,0.0,0.2,0.2,0.8
+dk_classic_wk1_main_13Sep2026,Joshua Dobbs,QB,4000,0.0,0.4,0.3,0.5
+dk_classic_wk1_main_13Sep2026,Mecole Hardman Jr.,WR,3000,0.0,0.2,0.2,2.1
+dk_classic_wk1_main_13Sep2026,Ian Wheeler,RB,4000,0.0,0.2,0.2,0.0
+dk_classic_wk1_main_13Sep2026,Dayton Wade,WR,3000,0.0,0.2,0.2,0.0
+dk_classic_wk1_main_13Sep2026,Robert Henry Jr.,RB,4000,0.0,0.2,0.2,0.0
+dk_classic_wk1_main_13Sep2026,Lucas Scott,RB,4000,0.0,0.2,0.2,0.0
+dk_classic_wk1_main_13Sep2026,Xavier Guillory,WR,3000,0.0,0.2,0.2,0.0
+dk_classic_wk1_main_13Sep2026,Tyler Goodson,RB,4000,0.0,0.2,0.2,0.5
+dk_classic_wk1_main_13Sep2026,Anderson Castle,RB,4000,0.0,0.2,0.2,0.0
+dk_classic_wk1_main_13Sep2026,Dominic Lovett,WR,3000,0.0,0.2,0.2,0.0
+dk_classic_wk1_main_13Sep2026,Trey Lance,QB,4000,0.0,0.4,0.4,3.9
+dk_classic_wk1_main_13Sep2026,Davon Booth,RB,4000,0.0,0.2,0.2,0.0
+dk_classic_wk1_main_13Sep2026,Octavian Smith Jr.,WR,3000,0.0,0.2,0.2,0.0
+dk_classic_wk1_main_13Sep2026,Damien Martinez,RB,4000,0.0,0.2,0.2,0.0
+dk_classic_wk1_main_13Sep2026,Cortez Braham Jr.,WR,3000,0.0,0.2,0.2,0.0
+dk_classic_wk1_main_13Sep2026,Chip Trayanum,RB,4000,0.0,0.2,0.2,0.0
+dk_classic_wk1_main_13Sep2026,Sam Roush,TE,2800,0.0,0.2,0.2,0.0
+dk_classic_wk1_main_13Sep2026,Jaden Nixon,RB,4000,0.0,0.2,0.2,0.0
+dk_classic_wk1_main_13Sep2026,Danny Gray,WR,3000,0.0,0.2,0.2,0.0
+dk_classic_wk1_main_13Sep2026,Kenny Fletcher Jr.,TE,2500,0.0,0.2,0.2,0.0
+dk_classic_wk1_main_13Sep2026,Cornelius Johnson,WR,3000,0.0,0.2,0.2,0.0
+dk_classic_wk1_main_13Sep2026,Ja'seem Reed,WR,3000,0.0,0.2,0.2,0.0
+dk_classic_wk1_main_13Sep2026,Skyler Bell,WR,3100,0.0,0.2,0.2,0.0
+dk_classic_wk1_main_13Sep2026,Joe Flacco,QB,4400,0.0,0.5,0.8,12.7
+dk_classic_wk1_main_13Sep2026,Bauer Sharp,TE,2500,0.0,0.2,0.2,0.0
+dk_classic_wk1_main_13Sep2026,Kenny Pickett,QB,4000,0.0,0.4,0.4,1.8
+dk_classic_wk1_main_13Sep2026,CJ Dippre,TE,2500,0.0,0.2,0.2,0.0
+dk_classic_wk1_main_13Sep2026,Colbie Young,WR,3100,0.1,0.2,0.2,0.0
+dk_classic_wk1_main_13Sep2026,Chris Brazzell II,WR,3000,0.0,0.2,0.2,0.0
+dk_classic_wk1_main_13Sep2026,Xavier Restrepo,WR,3000,0.0,0.2,0.2,3.6
+dk_classic_wk1_main_13Sep2026,Devonte Ross,WR,3000,0.0,0.2,0.2,0.0
+dk_classic_wk1_main_13Sep2026,Nate Boerkircher,TE,2600,0.0,0.2,0.2,0.0
+dk_classic_wk1_main_13Sep2026,DeeJay Dallas,RB,4000,0.0,0.2,0.2,0.4
+dk_classic_wk1_main_13Sep2026,Tanner Koziol,TE,2600,0.0,0.2,0.2,0.0
+dk_classic_wk1_main_13Sep2026,Gage Larvadain,WR,3000,0.0,0.2,0.2,1.0
+dk_classic_wk1_main_13Sep2026,Lucky Jackson,WR,3000,0.0,0.2,0.2,0.0
+dk_classic_wk1_main_13Sep2026,Oscar Delp,TE,2700,0.0,0.2,0.2,0.0
+dk_classic_wk1_main_13Sep2026,Patrick Herbert,TE,2500,0.0,0.2,0.2,0.0
+dk_classic_wk1_main_13Sep2026,Johnny Pascuzzi,TE,2500,0.0,0.2,0.2,0.0
+dk_classic_wk1_main_13Sep2026,Keelan Marion,WR,3000,0.0,0.2,0.2,0.0
+dk_classic_wk1_main_13Sep2026,Gary Jennings Jr.,WR,3000,0.0,0.2,0.2,0.0
+dk_classic_wk1_main_13Sep2026,Donovan Edwards,RB,4000,0.0,0.2,0.2,0.0
+dk_classic_wk1_main_13Sep2026,Vinny Anthony II,WR,3000,0.0,0.2,0.2,0.0
+dk_classic_wk1_main_13Sep2026,Carlos Washington Jr.,RB,4000,0.0,0.2,0.2,0.0
+dk_classic_wk1_main_13Sep2026,JaQuae Jackson,WR,3000,0.0,0.2,0.2,0.0
+dk_classic_wk1_main_13Sep2026,Jackson Meeks,WR,3000,0.0,0.2,0.2,0.0
+dk_classic_wk1_main_13Sep2026,Jack Strand,QB,4000,0.0,0.4,0.3,0.0
+dk_classic_wk1_main_13Sep2026,Jarquez Hunter,RB,4000,0.0,0.2,0.2,0.0
+dk_classic_wk1_main_13Sep2026,Kendrick Law,WR,3000,0.0,0.2,0.2,0.0
+dk_classic_wk1_main_13Sep2026,Jerand Bradley,TE,2500,0.0,0.2,0.2,0.0
+dk_classic_wk1_main_13Sep2026,Eli Pancol,WR,3000,0.0,0.2,0.2,0.0
+dk_classic_wk1_main_13Sep2026,Bryce Lance,WR,3100,0.3,0.2,0.2,0.0
+dk_classic_wk1_main_13Sep2026,Sincere Brown,WR,3000,0.0,0.2,0.2,0.0
+dk_classic_wk1_main_13Sep2026,Drew Allar,QB,4000,0.0,0.4,0.3,0.0
+dk_classic_wk1_main_13Sep2026,Jalen Moreno-Cropper,WR,3000,0.0,0.2,0.2,0.0
+dk_classic_wk1_main_13Sep2026,DJ Herman,RB,4000,0.0,0.2,0.2,0.0
+dk_classic_wk1_main_13Sep2026,Ty Pezza,TE,2500,0.0,0.2,0.2,0.0
+dk_classic_wk1_main_13Sep2026,Haynes King,QB,4000,0.0,0.4,0.3,0.0
+dk_classic_wk1_main_13Sep2026,River Cracraft,WR,3000,0.0,0.2,0.2,0.0
+dk_classic_wk1_main_13Sep2026,Antwane Wells Jr.,WR,3000,0.0,0.2,0.2,0.0
+dk_classic_wk1_main_13Sep2026,Evan Svoboda,TE,2500,0.0,0.2,0.2,0.0
+dk_classic_wk1_main_13Sep2026,Rocco Underwood,TE,2500,0.0,0.2,0.2,0.0
+dk_classic_wk1_main_13Sep2026,Josh Cuevas,TE,2500,0.0,0.2,0.2,0.0
+dk_classic_wk1_main_13Sep2026,Spencer Rattler,QB,4000,0.0,0.4,0.7,11.8
+dk_classic_wk1_main_13Sep2026,Raylen Sharpe,WR,3000,0.0,0.2,0.2,0.0
+dk_classic_wk1_main_13Sep2026,Stephen Gosnell,WR,3000,0.0,0.2,0.2,0.0
+dk_classic_wk1_main_13Sep2026,Sahmir Hagans,WR,3000,0.0,0.2,0.2,0.0
+dk_classic_wk1_main_13Sep2026,Malik Benson,WR,3100,0.0,0.2,0.2,0.0
+dk_classic_wk1_main_13Sep2026,Courtney Jackson,WR,3000,0.0,0.2,0.2,0.0
+dk_classic_wk1_main_13Sep2026,Tai Felton,WR,3000,0.0,0.2,0.2,0.3
+dk_classic_wk1_main_13Sep2026,Robert Tonyan,TE,2500,0.0,0.2,0.2,0.1
+dk_classic_wk1_main_13Sep2026,Ja'Mori Maclin,WR,3000,0.0,0.2,0.2,0.0
+dk_classic_wk1_main_13Sep2026,Dohnte Meyers,WR,3000,0.0,0.2,0.2,0.0
+dk_classic_wk1_main_13Sep2026,Coleman Bennett,RB,4000,0.0,0.2,0.2,0.0
+dk_classic_wk1_main_13Sep2026,Max Tomczak,WR,3000,0.0,0.2,0.2,0.0
+dk_classic_wk1_main_13Sep2026,James Mitchell,TE,2500,0.0,0.2,0.2,1.0
+dk_classic_wk1_main_13Sep2026,Trent Sherfield Sr.,WR,3000,0.0,0.2,0.2,0.4
+dk_classic_wk1_main_13Sep2026,Hank Beatty,WR,3000,0.0,0.2,0.2,0.0
+dk_classic_wk1_main_13Sep2026,Noah Thomas,WR,3000,0.0,0.2,0.2,0.0
+dk_classic_wk1_main_13Sep2026,Tim Jones,WR,3000,0.0,0.2,0.2,0.5
+dk_classic_wk1_main_13Sep2026,Justin Watson,WR,3000,0.0,0.2,0.2,1.5
+dk_classic_wk1_main_13Sep2026,Dillon Bell,WR,3000,0.0,0.2,0.2,0.0
+dk_classic_wk1_main_13Sep2026,Lance McCutcheon,WR,3000,0.0,0.2,0.2,0.0
+dk_classic_wk1_main_13Sep2026,Jalon Daniels,QB,4000,0.0,0.4,0.3,0.0
+dk_classic_wk1_main_13Sep2026,AJ Dillon,RB,4000,0.0,0.2,0.2,1.4
+dk_classic_wk1_main_13Sep2026,Dontae Fleming,WR,3000,0.0,0.2,0.2,0.0
+dk_classic_wk1_main_13Sep2026,Fernando Mendoza,QB,5000,0.0,0.4,0.4,0.0
+dk_classic_wk1_main_13Sep2026,Eric Rivers Jr.,WR,3000,0.0,0.2,0.2,0.0
+dk_classic_wk1_main_13Sep2026,Terrill Davis,WR,3000,0.0,0.2,0.2,0.0
+dk_classic_wk1_main_13Sep2026,Michael Briscoe,WR,3000,0.0,0.2,0.2,0.0
+dk_classic_wk1_main_13Sep2026,Tyler Conklin,TE,2500,0.0,0.2,0.2,1.3
+dk_classic_wk1_main_13Sep2026,Marcus Sanders Jr.,WR,3000,0.0,0.2,0.2,0.0
+dk_classic_wk1_main_13Sep2026,Jordan Moore,WR,3000,0.0,0.2,0.2,0.0
+dk_classic_wk1_main_13Sep2026,Tarik Black,WR,3000,0.0,0.2,0.2,0.0
+dk_classic_wk1_main_13Sep2026,Tyren Montgomery,WR,3000,0.0,0.2,0.2,0.0
+dk_classic_wk1_main_13Sep2026,Trayvon Rudolph,WR,3000,0.0,0.2,0.2,0.0
+dk_classic_wk1_main_13Sep2026,Xavier Johnson,WR,3000,0.0,0.2,0.2,0.0
+dk_classic_wk1_main_13Sep2026,Garrett Greene,WR,3000,0.0,0.2,0.2,0.0
+dk_classic_wk1_main_13Sep2026,Dean Patterson IV,WR,3000,0.0,0.2,0.2,0.0
+dk_classic_wk1_main_13Sep2026,Colson Yankoff,TE,2500,0.0,0.2,0.2,0.3
+dk_classic_wk1_main_13Sep2026,Jack Velling,TE,2500,0.0,0.2,0.2,0.0
+dk_classic_wk1_main_13Sep2026,Nick Muse,TE,2500,0.0,0.2,0.2,0.0
+dk_classic_wk1_main_13Sep2026,Josh Kattus,TE,2500,0.0,0.2,0.2,0.0
+dk_classic_wk1_main_13Sep2026,Will Sheppard,WR,3000,0.0,0.2,0.2,0.0
+dk_classic_wk1_main_13Sep2026,Donaven McCulley,WR,3000,0.0,0.2,0.2,0.0
+dk_classic_wk1_main_13Sep2026,Thomas Gordon,TE,2500,0.0,0.2,0.2,0.0
+dk_classic_wk1_main_13Sep2026,AJ Henning,WR,3000,0.0,0.2,0.2,0.0
+dk_classic_wk1_main_13Sep2026,Lake McRee,TE,2500,0.0,0.2,0.2,0.0
+dk_classic_wk1_main_13Sep2026,Caullin Lacy,WR,3000,0.0,0.2,0.2,0.0
+dk_classic_wk1_main_13Sep2026,Jack Endries,TE,2500,0.0,0.2,0.2,0.0
+dk_classic_wk1_main_13Sep2026,Malik McClain,WR,3000,0.0,0.2,0.2,0.0
+dk_classic_wk1_main_13Sep2026,Jamaal Pritchett,WR,3000,0.0,0.2,0.2,0.0
+dk_classic_wk1_main_13Sep2026,Cole Payton,QB,4000,0.0,0.4,0.3,0.0
+dk_classic_wk1_main_13Sep2026,Nick Nash,WR,3000,0.0,0.2,0.2,0.0
+dk_classic_wk1_main_13Sep2026,Joel Wilson,TE,2500,0.0,0.2,0.2,0.0
+dk_classic_wk1_main_13Sep2026,Jaren Kanak,TE,2500,0.0,0.2,0.2,0.0
+dk_classic_wk1_main_13Sep2026,Dennis Houston,WR,3000,0.0,0.2,0.2,0.0
+dk_classic_wk1_main_13Sep2026,Marlin Klein,TE,2700,0.0,0.2,0.2,0.0
+dk_classic_wk1_main_13Sep2026,Caleb Douglas,WR,3000,2.1,0.2,0.2,0.0
+dk_classic_wk1_main_13Sep2026,Kevin Coleman Jr.,WR,3000,0.0,0.2,0.2,0.0
+dk_classic_wk1_main_13Sep2026,Devin Duvernay,WR,3000,0.0,0.2,0.2,0.2
+dk_classic_wk1_main_13Sep2026,Brock Rechsteiner,WR,3000,0.0,0.2,0.2,0.0
+dk_classic_wk1_main_13Sep2026,Barion Brown,WR,3000,0.0,0.2,0.2,0.0
+dk_classic_wk1_main_13Sep2026,Zach Horton,TE,2500,0.0,0.2,0.2,0.0
+dk_classic_wk1_main_13Sep2026,Pharaoh Brown,TE,2500,0.0,0.2,0.2,0.3
+dk_classic_wk1_main_13Sep2026,Carson Beck,QB,4100,0.0,0.4,0.3,0.0
+dk_classic_wk1_main_13Sep2026,Jaden Bradley,WR,3000,0.0,0.2,0.2,0.0
+dk_classic_wk1_main_13Sep2026,Ahmani Marshall,RB,4000,0.0,0.2,0.2,0.0
+dk_classic_wk1_main_13Sep2026,Caden Prieskorn,TE,2500,0.0,0.2,0.2,0.0
+dk_classic_wk1_main_13Sep2026,Skyy Moore,WR,3000,0.0,0.2,0.2,0.8
+dk_classic_wk1_main_13Sep2026,Omari Kelly,WR,3000,0.0,0.2,0.2,0.0
+dk_classic_wk1_main_13Sep2026,Reggie Virgil,WR,3000,0.0,0.2,0.2,0.0
+dk_classic_wk1_main_13Sep2026,CJ Williams,WR,3000,0.0,0.2,0.2,0.0
+dk_classic_wk1_main_13Sep2026,Mason Kinsey,WR,3000,0.0,0.2,0.2,0.7
+dk_classic_wk1_main_13Sep2026,Trebor Pena,WR,3000,0.0,0.2,0.2,0.0
+dk_classic_wk1_main_13Sep2026,Chandler Brayboy,WR,3000,0.0,0.2,0.2,0.0
+dk_classic_wk1_main_13Sep2026,E.J. Williams Jr.,WR,3000,0.0,0.2,0.2,0.0
+dk_classic_wk1_main_13Sep2026,Tejhaun Palmer,WR,3000,0.0,0.2,0.2,0.0
+dk_classic_wk1_main_13Sep2026,JP Richardson,WR,3000,0.0,0.2,0.2,0.0
+dk_classic_wk1_main_13Sep2026,Stephen Carlson,TE,2500,0.0,0.2,0.2,0.0
+dk_classic_wk1_main_13Sep2026,Chase Roberts,WR,3000,0.0,0.2,0.2,0.0
+dk_classic_wk1_main_13Sep2026,Teddy Bridgewater,QB,4000,0.0,0.4,0.3,0.7
+dk_classic_wk1_main_13Sep2026,Patrick Gurd,TE,2500,0.0,0.2,0.2,0.0
+dk_classic_wk1_main_13Sep2026,Corey Rucker,WR,3000,0.0,0.2,0.2,0.0
+dk_classic_wk1_main_13Sep2026,Brady Boyd,WR,3000,0.0,0.2,0.2,0.0
+dk_classic_wk1_main_13Sep2026,Harrison Wallace III,WR,3000,0.0,0.2,0.2,0.0
+dk_classic_wk1_main_13Sep2026,Derius Davis,WR,3000,0.0,0.2,0.2,0.2
+dk_classic_wk1_main_13Sep2026,Bryce Oliver,WR,3000,0.0,0.2,0.2,0.6
+dk_classic_wk1_main_13Sep2026,Chris Myarick,TE,2500,0.0,0.2,0.2,0.0
+dk_classic_wk1_main_13Sep2026,Cade Klubnik,QB,4000,0.0,0.4,0.3,0.0
+dk_classic_wk1_main_13Sep2026,Marshall Lang,TE,2500,0.0,0.2,0.2,0.0
+dk_classic_wk1_main_13Sep2026,Josh Cameron,WR,3000,0.0,0.2,0.2,0.0
+dk_classic_wk1_main_13Sep2026,Gardner Minshew II,QB,4100,0.0,0.4,0.3,0.2
+dk_classic_wk1_main_13Sep2026,Case Keenum,QB,4000,0.0,0.4,0.3,0.0
+dk_classic_wk1_main_13Sep2026,Austin Trammell,WR,3000,0.0,0.2,0.2,1.3
+dk_classic_wk1_main_13Sep2026,Michael Wortham,WR,3000,0.0,0.2,0.2,0.0
+dk_classic_wk1_main_13Sep2026,Lewis Bond,WR,3000,0.0,0.2,0.2,0.0
+dk_classic_wk1_main_13Sep2026,Qadir Ismail,TE,2500,0.0,0.2,0.2,0.0
+dk_classic_wk1_main_13Sep2026,Hayden Large,TE,2500,0.0,0.2,0.2,0.0
+dk_classic_wk1_main_13Sep2026,Josh Kelly,WR,3000,0.0,0.2,0.2,0.0
+dk_classic_wk1_main_13Sep2026,Daniel Sobkowicz,WR,3000,0.0,0.2,0.2,0.0
+dk_classic_wk1_main_13Sep2026,Teagan Quitoriano,TE,2500,0.0,0.2,0.2,0.0
+dk_classic_wk1_main_13Sep2026,Bryson Nesbit,TE,2500,0.0,0.2,0.2,0.0
+dk_classic_wk1_main_13Sep2026,Treyvhon Saunders,WR,3000,0.0,0.2,0.2,0.0
+dk_classic_wk1_main_13Sep2026,J. Michael Sturdivant,WR,3000,0.0,0.2,0.2,0.0
+dk_classic_wk1_main_13Sep2026,Chris Hilton Jr.,WR,3000,0.0,0.2,0.2,0.0
+dk_classic_wk1_main_13Sep2026,Isaiah Neyor,WR,3000,0.0,0.2,0.2,0.0
+dk_classic_wk1_main_13Sep2026,Gavin Bartholomew,TE,2500,0.0,0.2,0.2,0.0
+dk_classic_wk1_main_13Sep2026,Joe Fagnano,QB,4000,0.0,0.4,0.3,0.0
+dk_classic_wk1_main_13Sep2026,Cody White,WR,3000,0.0,0.2,0.2,1.8
+dk_classic_wk1_main_13Sep2026,Treyton Welch,TE,2500,0.0,0.2,0.2,0.0
+dk_classic_wk1_main_13Sep2026,Carson Towt,TE,2500,0.0,0.2,0.2,0.0
+dk_classic_wk1_main_13Sep2026,Cody Hardy,TE,2500,0.0,0.2,0.2,0.0
+dk_classic_wk1_main_13Sep2026,Kalel Mullings,RB,4000,0.0,0.2,0.2,0.1
+dk_classic_wk1_main_13Sep2026,Nick Westbrook-Ikhine,WR,3700,0.0,0.2,0.2,1.3
+dk_classic_wk1_main_13Sep2026,Chase Curtis,TE,2500,0.0,0.2,0.2,0.0
+dk_classic_wk1_main_13Sep2026,Ben Skowronek,WR,3000,0.0,0.2,0.2,0.9
+dk_classic_wk1_main_13Sep2026,Luke Floriea,WR,3000,0.0,0.2,0.2,0.0
+dk_classic_wk1_main_13Sep2026,Kole Wilson,WR,3000,0.0,0.2,0.2,0.0
+dk_classic_wk1_main_13Sep2026,Quentin Moore,TE,2500,0.0,0.2,0.2,0.0
+dk_classic_wk1_main_13Sep2026,Ben Patterson,WR,3000,0.0,0.2,0.2,0.0
+dk_classic_wk1_main_13Sep2026,Rivaldo Fairweather,TE,2500,0.0,0.2,0.2,0.0
+dk_classic_wk1_main_13Sep2026,Joshua Simon,TE,2500,0.0,0.2,0.2,0.0
+dk_classic_wk1_main_13Sep2026,Tre Watson,TE,2500,0.0,0.2,0.2,0.0
+dk_classic_wk1_main_13Sep2026,JJ Galbreath,TE,2500,0.0,0.2,0.2,0.0
+dk_classic_wk1_main_13Sep2026,Dameon Pierce,RB,4000,0.0,0.2,0.2,0.7
+dk_classic_wk1_main_13Sep2026,Justin Joly,TE,2500,0.0,0.2,0.2,0.0
+dk_classic_wk1_main_13Sep2026,Seydou Traore,TE,2500,0.0,0.2,0.2,0.0
+dk_classic_wk1_main_13Sep2026,Mark Redman,TE,2500,0.0,0.2,0.2,0.0
+dk_classic_wk1_main_13Sep2026,Dareke Young,WR,3000,0.0,0.2,0.2,0.6
+dk_classic_wk1_main_13Sep2026,Jameson Geers,TE,2500,0.0,0.2,0.2,0.0
+dk_classic_wk1_main_13Sep2026,Shawn Bowman,TE,2500,0.0,0.2,0.2,0.0
+dk_classic_wk1_main_13Sep2026,Ethan Conner,TE,2500,0.0,0.2,0.2,0.0
+dk_classic_wk1_main_13Sep2026,Tyrod Taylor,QB,4000,0.0,0.4,0.6,10.9
+dk_classic_wk1_main_13Sep2026,Will Kacmarek,TE,2500,0.0,0.2,0.2,0.0
+dk_classic_wk1_main_13Sep2026,David Moore,WR,3000,0.0,0.2,0.2,0.7
+dk_classic_wk1_main_13Sep2026,Mitchell Trubisky,QB,4000,0.0,0.4,0.5,7.8
+dk_classic_wk1_main_13Sep2026,Carsen Ryan,TE,2500,0.0,0.2,0.2,0.0
+dk_classic_wk1_main_13Sep2026,Messiah Swinson,TE,2500,0.0,0.2,0.2,0.0
+dk_classic_wk1_main_13Sep2026,Joe Royer,TE,2500,0.0,0.2,0.2,0.0
+dk_classic_wk1_main_13Sep2026,Athan Kaliakmanis,QB,4000,0.0,0.4,0.3,0.0
+dk_classic_wk1_main_13Sep2026,Layne Pryor,TE,2500,0.0,0.2,0.2,0.0
+dk_classic_wk1_main_13Sep2026,Jack Westover,TE,2500,0.0,0.2,0.2,0.1
+dk_classic_wk1_main_13Sep2026,Taylen Green,QB,4000,0.0,0.4,0.3,0.0
+dk_classic_wk1_main_13Sep2026,Devin Culp,TE,2500,0.0,0.2,0.2,0.6
+dk_classic_wk1_main_13Sep2026,Kyle McCord,QB,4000,0.0,0.4,0.3,0.0
+dk_classic_wk1_main_13Sep2026,Davis Mills,QB,4200,0.0,0.4,0.7,11.6
+dk_classic_wk1_main_13Sep2026,Anthony Gould,WR,3000,0.0,0.2,0.2,0.2
+dk_classic_wk1_main_13Sep2026,Anthony Richardson Sr.,QB,4900,0.0,0.4,0.4,1.1
+dk_classic_wk1_main_13Sep2026,Deven Thompkins,WR,3000,0.0,0.2,0.2,0.9
+dk_classic_wk1_main_13Sep2026,Zaire Mitchell-Paden,TE,2500,0.0,0.2,0.2,0.5
+dk_classic_wk1_main_13Sep2026,Dylan Laube,RB,4000,0.0,0.2,0.2,0.3
+dk_classic_wk1_main_13Sep2026,Kameron Johnson,WR,3000,0.0,0.2,0.3,1.0
+dk_classic_wk1_main_13Sep2026,Julius Chestnut,RB,4000,0.0,0.2,0.2,0.2
+dk_classic_wk1_main_13Sep2026,Kyle Allen,QB,4000,0.0,0.4,0.3,-0.1
+dk_classic_wk1_main_13Sep2026,Tylan Wallace,WR,3000,0.0,0.2,0.2,1.0
+dk_classic_wk1_main_13Sep2026,Charlie Jones,WR,3000,0.0,0.2,0.2,0.4
+dk_classic_wk1_main_13Sep2026,Travis Homer,RB,4000,0.0,0.2,0.2,-0.0
+dk_classic_wk1_main_13Sep2026,Ryan Miller,WR,3000,0.0,0.2,0.2,0.9
+dk_classic_wk1_early_13Sep2026,Geno Smith,QB,4600,3.1,54.7,47.9,13.0
+dk_classic_wk1_early_13Sep2026,Jahmyr Gibbs,RB,8000,49.7,52.2,53.9,22.3
+dk_classic_wk1_early_13Sep2026,Joe Burrow,QB,6900,18.8,13.1,12.8,18.2
+dk_classic_wk1_early_13Sep2026,Lamar Jackson,QB,6800,8.1,4.2,4.7,17.3
+dk_classic_wk1_early_13Sep2026,Amon-Ra St. Brown,WR,7500,21.8,34.7,33.9,19.9
+dk_classic_wk1_early_13Sep2026,Bijan Robinson,RB,7700,16.8,22.0,21.7,23.2
+dk_classic_wk1_early_13Sep2026,Josh Allen,QB,7000,3.3,1.6,2.7,23.3
+dk_classic_wk1_early_13Sep2026,Tyler Shough,QB,5600,14.8,1.0,1.4,15.6
+dk_classic_wk1_early_13Sep2026,Ja'Marr Chase,WR,7800,36.7,39.6,42.2,21.0
+dk_classic_wk1_early_13Sep2026,Jared Goff,QB,6000,10.5,3.8,5.0,19.3
+dk_classic_wk1_early_13Sep2026,Jonathan Taylor,RB,7300,17.0,18.5,19.9,22.3
+dk_classic_wk1_early_13Sep2026,Travis Etienne Jr.,RB,5900,11.2,28.6,26.5,15.7
+dk_classic_wk1_early_13Sep2026,Zay Flowers,WR,6400,15.3,32.2,29.6,15.0
+dk_classic_wk1_early_13Sep2026,Caleb Williams,QB,6300,6.6,1.2,1.7,19.8
+dk_classic_wk1_early_13Sep2026,Chris Olave,WR,6700,28.2,21.5,21.0,17.4
+dk_classic_wk1_early_13Sep2026,Baker Mayfield,QB,5900,10.6,1.2,1.7,17.2
+dk_classic_wk1_early_13Sep2026,Derrick Henry,RB,6700,14.1,20.3,20.6,18.0
+dk_classic_wk1_early_13Sep2026,Daniel Jones,QB,5400,3.4,3.7,5.0,18.7
+dk_classic_wk1_early_13Sep2026,Chase Brown,RB,7100,16.4,18.7,18.4,17.2
+dk_classic_wk1_early_13Sep2026,Bryce Young,QB,5200,4.3,2.3,2.8,15.4
+dk_classic_wk1_early_13Sep2026,James Cook III,RB,7200,5.1,7.7,8.2,18.8
+dk_classic_wk1_early_13Sep2026,Trevor Lawrence,QB,5800,9.0,0.9,1.5,21.0
+dk_classic_wk1_early_13Sep2026,Aaron Rodgers,QB,5300,1.5,2.2,2.6,14.1
+dk_classic_wk1_early_13Sep2026,Bucky Irving,RB,5700,21.6,16.3,16.1,14.3
+dk_classic_wk1_early_13Sep2026,Nico Collins,WR,7000,6.5,9.2,8.8,15.1
+dk_classic_wk1_early_13Sep2026,Colston Loveland,TE,5300,15.2,21.2,19.9,11.4
+dk_classic_wk1_early_13Sep2026,Wan'Dale Robinson,WR,4800,9.7,15.1,15.5,14.2
+dk_classic_wk1_early_13Sep2026,Tony Pollard,RB,5600,9.9,9.2,8.0,11.6
+dk_classic_wk1_early_13Sep2026,Drake London,WR,6500,6.3,8.8,9.7,18.2
+dk_classic_wk1_early_13Sep2026,DK Metcalf,WR,5400,8.9,14.3,13.6,12.5
+dk_classic_wk1_early_13Sep2026,Jameson Williams,WR,6000,9.3,20.3,19.3,13.6
+dk_classic_wk1_early_13Sep2026,Garrett Wilson,WR,5800,19.4,6.8,7.1,14.2
+dk_classic_wk1_early_13Sep2026,Tetairoa McMillan,WR,6100,16.8,4.2,4.4,12.9
+dk_classic_wk1_early_13Sep2026,Parker Washington,WR,5600,11.5,11.7,11.4,12.8
+dk_classic_wk1_early_13Sep2026,D'Andre Swift,RB,6100,19.3,9.8,9.9,14.7
+dk_classic_wk1_early_13Sep2026,Tee Higgins,WR,6300,14.8,6.3,6.7,14.3
+dk_classic_wk1_early_13Sep2026,Kyle Pitts Sr.,TE,4700,7.1,12.4,11.7,12.6
+dk_classic_wk1_early_13Sep2026,Breece Hall,RB,6200,11.0,4.6,4.5,13.9
+dk_classic_wk1_early_13Sep2026,Jaylen Warren,RB,5400,5.7,3.0,3.5,13.5
+dk_classic_wk1_early_13Sep2026,Kenny Gainwell,RB,5200,6.2,10.5,10.7,12.8
+dk_classic_wk1_early_13Sep2026,Rome Odunze,WR,5400,2.8,8.8,8.8,11.8
+dk_classic_wk1_early_13Sep2026,Rico Dowdle,RB,5200,4.6,5.8,6.0,12.7
+dk_classic_wk1_early_13Sep2026,Alec Pierce,WR,5700,6.4,7.0,7.2,12.6
+dk_classic_wk1_early_13Sep2026,Cam Ward,QB,5100,2.4,0.6,0.7,11.8
+dk_classic_wk1_early_13Sep2026,C.J. Stroud,QB,5200,1.6,0.7,0.9,15.0
+dk_classic_wk1_early_13Sep2026,Luther Burden III,WR,5500,14.9,4.9,4.4,8.6
+dk_classic_wk1_early_13Sep2026,David Montgomery,RB,6000,11.5,2.9,2.7,10.1
+dk_classic_wk1_early_13Sep2026,Tyler Warren,TE,4900,6.7,11.7,10.3,11.1
+dk_classic_wk1_early_13Sep2026,Josh Downs,WR,5200,5.2,8.3,7.2,8.6
+dk_classic_wk1_early_13Sep2026,Emeka Egbuka,WR,6200,10.9,8.2,7.8,12.0
+dk_classic_wk1_early_13Sep2026,DJ Moore,WR,5600,6.6,3.6,3.7,10.8
+dk_classic_wk1_early_13Sep2026,Jaguars,DST,3400,23.2,39.1,39.2,8.2
+dk_classic_wk1_early_13Sep2026,Jakobi Meyers,WR,5000,2.1,6.0,6.0,10.5
+dk_classic_wk1_early_13Sep2026,Harold Fannin Jr.,TE,4200,9.6,7.3,7.9,11.9
+dk_classic_wk1_early_13Sep2026,Keenan Allen,WR,4700,3.2,11.5,11.1,10.6
+dk_classic_wk1_early_13Sep2026,Brian Thomas Jr.,WR,5500,3.1,3.5,3.4,9.9
+dk_classic_wk1_early_13Sep2026,Quinshon Judkins,RB,5500,3.2,0.7,0.9,12.3
+dk_classic_wk1_early_13Sep2026,Khalil Shakir,WR,4800,3.1,2.8,3.2,11.4
+dk_classic_wk1_early_13Sep2026,Bailey Zappe,QB,4000,0.0,0.3,0.2,0.0
+dk_classic_wk1_early_13Sep2026,Chris Godwin Jr.,WR,5200,13.1,5.5,5.3,9.6
+dk_classic_wk1_early_13Sep2026,Tyjae Spears,RB,5100,0.4,1.9,1.8,8.6
+dk_classic_wk1_early_13Sep2026,Jalen Coker,WR,4600,12.2,6.3,6.4,10.2
+dk_classic_wk1_early_13Sep2026,Michael Pittman Jr.,WR,4900,8.9,1.1,1.5,12.1
+dk_classic_wk1_early_13Sep2026,Sam LaPorta,TE,4400,15.9,3.5,4.4,11.9
+dk_classic_wk1_early_13Sep2026,Chuba Hubbard,RB,5500,3.1,0.9,1.0,9.1
+dk_classic_wk1_early_13Sep2026,Titans,DST,3100,6.5,7.9,6.5,4.8
+dk_classic_wk1_early_13Sep2026,Deshaun Watson,QB,4700,0.3,0.3,0.2,0.0
+dk_classic_wk1_early_13Sep2026,Woody Marks,RB,5000,1.3,0.6,0.7,9.8
+dk_classic_wk1_early_13Sep2026,Cade Otton,TE,3700,7.1,7.6,7.2,7.6
+dk_classic_wk1_early_13Sep2026,Mark Andrews,TE,3900,11.3,4.4,4.4,7.7
+dk_classic_wk1_early_13Sep2026,Kyle Monangai,RB,5100,1.1,1.0,1.1,8.9
+dk_classic_wk1_early_13Sep2026,Chris Rodriguez Jr.,RB,5100,1.4,0.6,0.6,7.1
+dk_classic_wk1_early_13Sep2026,Steelers,DST,3300,17.8,6.4,7.0,7.8
+dk_classic_wk1_early_13Sep2026,Dalton Kincaid,TE,4600,2.6,3.3,3.7,11.7
+dk_classic_wk1_early_13Sep2026,Bhayshul Tuten,RB,5800,5.6,1.0,0.9,5.9
+dk_classic_wk1_early_13Sep2026,Jets,DST,2500,16.7,12.6,8.8,2.8
+dk_classic_wk1_early_13Sep2026,Juwan Johnson,TE,3700,25.3,5.0,6.0,10.7
+dk_classic_wk1_early_13Sep2026,Jerry Jeudy,WR,4100,2.0,1.7,1.8,7.2
+dk_classic_wk1_early_13Sep2026,Michael Carter,RB,4000,0.0,0.4,0.5,7.6
+dk_classic_wk1_early_13Sep2026,Brenton Strange,TE,3600,5.8,3.2,3.8,9.3
+dk_classic_wk1_early_13Sep2026,Lions,DST,3200,4.4,4.7,4.7,5.7
+dk_classic_wk1_early_13Sep2026,Adonai Mitchell,WR,4000,2.4,0.6,0.7,5.7
+dk_classic_wk1_early_13Sep2026,Dalton Schultz,TE,3400,4.2,5.5,6.4,9.9
+dk_classic_wk1_early_13Sep2026,Darren Waller,TE,3200,2.2,3.3,4.2,9.9
+dk_classic_wk1_early_13Sep2026,Pat Freiermuth,TE,3400,1.3,3.8,3.7,6.6
+dk_classic_wk1_early_13Sep2026,Samaje Perine,RB,4600,0.1,0.8,0.8,5.3
+dk_classic_wk1_early_13Sep2026,Jawhar Jordan,RB,4500,0.1,0.3,0.4,8.2
+dk_classic_wk1_early_13Sep2026,Kayshon Boutte,WR,4500,2.8,0.5,0.7,8.8
+dk_classic_wk1_early_13Sep2026,Bears,DST,2800,4.6,5.9,6.2,6.4
+dk_classic_wk1_early_13Sep2026,Ravens,DST,3000,2.6,7.0,6.5,5.7
+dk_classic_wk1_early_13Sep2026,Bengals,DST,2700,1.4,3.7,3.7,4.6
+dk_classic_wk1_early_13Sep2026,Josh Johnson,QB,4000,0.0,0.5,0.5,5.5
+dk_classic_wk1_early_13Sep2026,Chimere Dike,WR,3400,0.2,1.2,1.5,7.5
+dk_classic_wk1_early_13Sep2026,Devaughn Vele,WR,3500,14.8,0.3,0.4,5.1
+dk_classic_wk1_early_13Sep2026,Elic Ayomanor,WR,3600,0.2,1.2,1.5,7.3
+dk_classic_wk1_early_13Sep2026,Bills,DST,3100,1.2,0.9,1.0,6.1
+dk_classic_wk1_early_13Sep2026,Ray Davis,RB,4600,0.1,0.5,0.5,3.8
+dk_classic_wk1_early_13Sep2026,Isaiah Williams,WR,3000,0.0,1.2,1.3,4.0
+dk_classic_wk1_early_13Sep2026,Kevin Austin Jr.,WR,3000,0.0,1.2,1.3,4.1
+dk_classic_wk1_early_13Sep2026,Texans,DST,2900,6.1,0.7,1.4,10.6
+dk_classic_wk1_early_13Sep2026,Jonathon Brooks,RB,5000,0.8,0.3,0.2,0.0
+dk_classic_wk1_early_13Sep2026,Dawson Knox,TE,3100,0.4,1.9,2.1,6.1
+dk_classic_wk1_early_13Sep2026,Jahan Dotson,WR,3700,0.2,1.1,1.0,2.8
+dk_classic_wk1_early_13Sep2026,Xavier Hutchinson,WR,3200,0.5,0.4,0.6,5.8
+dk_classic_wk1_early_13Sep2026,Isaac TeSlaa,WR,3900,0.6,0.7,0.8,4.5
+dk_classic_wk1_early_13Sep2026,Xavier Legette,WR,3700,0.6,0.5,0.6,5.7
+dk_classic_wk1_early_13Sep2026,Browns,DST,2100,8.4,5.6,7.9,7.8
+dk_classic_wk1_early_13Sep2026,Falcons,DST,2600,2.1,2.5,3.0,7.1
+dk_classic_wk1_early_13Sep2026,Gunnar Helm,TE,3200,1.3,0.6,0.7,5.7
+dk_classic_wk1_early_13Sep2026,Cole Kmet,TE,3300,0.5,0.8,0.9,5.1
+dk_classic_wk1_early_13Sep2026,Colts,DST,2400,2.1,0.9,1.2,5.8
+dk_classic_wk1_early_13Sep2026,Olamide Zaccheaus,WR,3500,0.2,0.3,0.4,5.3
+dk_classic_wk1_early_13Sep2026,Tommy Tremble,TE,2900,0.2,0.6,0.7,3.8
+dk_classic_wk1_early_13Sep2026,Mike Gesicki,TE,3100,2.2,0.8,1.0,5.4
+dk_classic_wk1_early_13Sep2026,Buccaneers,DST,2600,0.7,0.7,0.9,5.8
+dk_classic_wk1_early_13Sep2026,Rashod Bateman,WR,3900,1.1,0.5,0.5,4.3
+dk_classic_wk1_early_13Sep2026,Hendon Hooker,QB,4000,0.0,0.3,0.2,0.0
+dk_classic_wk1_early_13Sep2026,Easton Stick,QB,4000,0.0,0.3,0.2,0.0
+dk_classic_wk1_early_13Sep2026,Travis Hunter,WR,3400,0.6,0.3,0.4,9.5
+dk_classic_wk1_early_13Sep2026,Sean Clifford,QB,4000,0.0,0.3,0.2,0.0
+dk_classic_wk1_early_13Sep2026,Keon Coleman,WR,4000,0.7,0.4,0.5,7.9
+dk_classic_wk1_early_13Sep2026,Carnell Tate,WR,5300,3.5,0.4,0.3,0.0
+dk_classic_wk1_early_13Sep2026,Luke Altmyer,QB,4000,0.0,0.3,0.2,0.0
+dk_classic_wk1_early_13Sep2026,Brian Robinson Jr.,RB,4700,0.2,0.4,0.4,3.4
+dk_classic_wk1_early_13Sep2026,Saints,DST,2200,0.9,0.7,1.1,6.9
+dk_classic_wk1_early_13Sep2026,Panthers,DST,2500,1.1,0.6,0.8,5.9
+dk_classic_wk1_early_13Sep2026,Andrei Iosivas,WR,3300,0.4,0.6,0.8,5.3
+dk_classic_wk1_early_13Sep2026,Jordyn Tyson,WR,5100,0.0,0.4,0.3,0.0
+dk_classic_wk1_early_13Sep2026,Darnell Washington,TE,3000,0.4,0.5,0.6,4.7
+dk_classic_wk1_early_13Sep2026,Isaiah Davis,RB,4200,0.1,0.2,0.3,4.5
+dk_classic_wk1_early_13Sep2026,Kalif Raymond,WR,3300,0.2,0.4,0.5,4.5
+dk_classic_wk1_early_13Sep2026,Jaylin Noel,WR,3600,0.2,0.4,0.5,3.6
+dk_classic_wk1_early_13Sep2026,Dylan Sampson,RB,4700,0.1,0.3,0.3,5.9
+dk_classic_wk1_early_13Sep2026,Mark Gronowski,QB,4000,0.0,0.3,0.2,0.0
+dk_classic_wk1_early_13Sep2026,Malachi Corley,WR,3000,0.0,0.4,0.4,2.4
+dk_classic_wk1_early_13Sep2026,Jaleel McLaughlin,RB,4000,0.0,0.3,0.3,3.6
+dk_classic_wk1_early_13Sep2026,Daniel Bellinger,TE,2700,0.0,0.4,0.4,3.7
+dk_classic_wk1_early_13Sep2026,Austin Hooper,TE,2700,0.1,0.4,0.4,3.2
+dk_classic_wk1_early_13Sep2026,Shane Buechele,QB,4000,0.0,0.3,0.3,3.9
+dk_classic_wk1_early_13Sep2026,Ameer Abdullah,RB,4000,0.0,0.4,0.4,2.8
+dk_classic_wk1_early_13Sep2026,LeQuint Allen Jr.,RB,4300,0.0,0.3,0.3,1.5
+dk_classic_wk1_early_13Sep2026,Mo Alie-Cox,TE,2500,0.0,0.5,0.5,1.8
+dk_classic_wk1_early_13Sep2026,Jahdae Walker,WR,3100,0.1,0.3,0.4,3.0
+dk_classic_wk1_early_13Sep2026,Mitchell Evans,TE,2600,0.0,0.5,0.5,2.7
+dk_classic_wk1_early_13Sep2026,Cedric Tillman,WR,3400,0.0,0.4,0.5,4.6
+dk_classic_wk1_early_13Sep2026,Zamir White,RB,4000,0.0,0.3,0.3,1.6
+dk_classic_wk1_early_13Sep2026,Jeremy Ruckert,TE,2500,0.0,0.4,0.4,2.8
+dk_classic_wk1_early_13Sep2026,Stone Smartt,TE,2500,0.0,0.5,0.4,0.8
+dk_classic_wk1_early_13Sep2026,Rasheen Ali,RB,4200,0.0,0.4,0.4,1.6
+dk_classic_wk1_early_13Sep2026,Tez Johnson,WR,3100,0.4,0.4,0.6,5.8
+dk_classic_wk1_early_13Sep2026,Tanner Hudson,TE,2500,0.0,0.6,0.6,3.2
+dk_classic_wk1_early_13Sep2026,Joey Aguilar,QB,4000,0.0,0.3,0.2,0.0
+dk_classic_wk1_early_13Sep2026,Isaiah Bond,WR,3300,0.0,0.3,0.4,3.4
+dk_classic_wk1_early_13Sep2026,Raheim Sanders,RB,4000,0.0,0.2,0.2,4.1
+dk_classic_wk1_early_13Sep2026,Carter Bradley,QB,4000,0.0,0.3,0.2,0.0
+dk_classic_wk1_early_13Sep2026,Brandon Johnson,WR,3000,0.0,0.2,0.2,0.0
+dk_classic_wk1_early_13Sep2026,Erick All Jr.,TE,2500,0.0,0.3,0.2,0.0
+dk_classic_wk1_early_13Sep2026,British Brooks,RB,4000,0.0,0.3,0.2,0.5
+dk_classic_wk1_early_13Sep2026,Jonathan Ward,RB,4000,0.0,0.2,0.2,0.0
+dk_classic_wk1_early_13Sep2026,Drew Sample,TE,2600,0.0,0.5,0.5,1.9
+dk_classic_wk1_early_13Sep2026,Tahj Brooks,RB,4100,0.0,0.4,0.4,0.4
+dk_classic_wk1_early_13Sep2026,Jimmy Horn Jr.,WR,3000,0.1,0.4,0.4,1.9
+dk_classic_wk1_early_13Sep2026,KC Concepcion,WR,4600,2.6,0.3,0.3,0.0
+dk_classic_wk1_early_13Sep2026,Zavier Scott,RB,4000,0.0,0.3,0.3,2.5
+dk_classic_wk1_early_13Sep2026,K.J. Osborn,WR,3000,0.0,0.2,0.2,0.0
+dk_classic_wk1_early_13Sep2026,Chris Moore,WR,3000,0.0,0.3,0.4,2.8
+dk_classic_wk1_early_13Sep2026,Jackson Hawes,TE,2500,0.0,0.4,0.5,2.8
+dk_classic_wk1_early_13Sep2026,Kylen Granson,TE,2500,0.0,0.4,0.3,0.6
+dk_classic_wk1_early_13Sep2026,Brycen Tremayne,WR,3000,0.0,0.4,0.4,1.8
+dk_classic_wk1_early_13Sep2026,Nick Vannett,TE,2500,0.0,0.3,0.2,0.0
+dk_classic_wk1_early_13Sep2026,Arian Smith,WR,3000,0.0,0.3,0.3,0.8
+dk_classic_wk1_early_13Sep2026,Elijah Sarratt,WR,3400,0.0,0.2,0.2,0.0
+dk_classic_wk1_early_13Sep2026,Kendall Milton,RB,4000,0.0,0.2,0.2,0.2
+dk_classic_wk1_early_13Sep2026,Trey Palmer,WR,3000,0.0,0.2,0.2,0.0
+dk_classic_wk1_early_13Sep2026,Germie Bernard,WR,3900,0.2,0.3,0.2,0.0
+dk_classic_wk1_early_13Sep2026,David Martin-Robinson,TE,2500,0.0,0.4,0.3,0.8
+dk_classic_wk1_early_13Sep2026,Andrew Beck,RB,4000,0.0,0.2,0.2,1.4
+dk_classic_wk1_early_13Sep2026,Denzel Boston,WR,4400,0.5,0.3,0.2,0.0
+dk_classic_wk1_early_13Sep2026,Tyler Huntley,QB,4300,0.0,0.4,0.5,8.0
+dk_classic_wk1_early_13Sep2026,Michael Burton,RB,4000,0.0,0.2,0.2,0.0
+dk_classic_wk1_early_13Sep2026,Cade Stover,TE,2500,0.0,0.4,0.3,2.3
+dk_classic_wk1_early_13Sep2026,Noah Fant,TE,3200,0.1,0.4,0.5,5.2
+dk_classic_wk1_early_13Sep2026,Charlie Woerner,TE,2500,0.0,0.3,0.3,0.8
+dk_classic_wk1_early_13Sep2026,Lew Nichols,RB,4000,0.0,0.2,0.2,0.0
+dk_classic_wk1_early_13Sep2026,Keleki Latu,TE,2500,0.0,0.3,0.3,1.5
+dk_classic_wk1_early_13Sep2026,Omar Cooper Jr.,WR,4100,0.3,0.2,0.2,0.0
+dk_classic_wk1_early_13Sep2026,Bub Means,WR,3000,0.0,0.2,0.2,0.0
+dk_classic_wk1_early_13Sep2026,Josh Williams,RB,4000,0.0,0.2,0.2,0.4
+dk_classic_wk1_early_13Sep2026,CJ Donaldson,RB,4000,0.0,0.2,0.2,0.0
+dk_classic_wk1_early_13Sep2026,Evan Deckers,TE,2500,0.0,0.3,0.2,0.0
+dk_classic_wk1_early_13Sep2026,Quintin Morris,TE,2500,0.0,0.5,0.4,1.2
+dk_classic_wk1_early_13Sep2026,Tay Martin,WR,3000,0.0,0.2,0.2,1.4
+dk_classic_wk1_early_13Sep2026,William Wagner,TE,2500,0.0,0.3,0.2,0.0
+dk_classic_wk1_early_13Sep2026,Durham Smythe,TE,2500,0.0,0.5,0.4,0.5
+dk_classic_wk1_early_13Sep2026,Zachariah Branch,WR,3800,0.1,0.2,0.2,0.0
+dk_classic_wk1_early_13Sep2026,Kenyon Sadiq,TE,3800,0.8,0.4,0.3,0.0
+dk_classic_wk1_early_13Sep2026,Nick Mullens,QB,4000,0.0,0.3,0.2,-0.0
+dk_classic_wk1_early_13Sep2026,Jabari Small,RB,4000,0.0,0.2,0.2,0.0
+dk_classic_wk1_early_13Sep2026,Zach Wood,TE,2500,0.0,0.3,0.2,0.0
+dk_classic_wk1_early_13Sep2026,Chris Blair,WR,3000,0.0,0.2,0.2,0.0
+dk_classic_wk1_early_13Sep2026,Mason Taylor,TE,2800,1.2,0.3,0.4,6.8
+dk_classic_wk1_early_13Sep2026,Ja'Kobi Lane,WR,3100,2.1,0.2,0.2,0.0
+dk_classic_wk1_early_13Sep2026,Deion Burks,WR,3500,0.0,0.2,0.2,0.0
+dk_classic_wk1_early_13Sep2026,Shedeur Sanders,QB,4700,0.0,0.3,0.5,12.4
+dk_classic_wk1_early_13Sep2026,J'Mari Taylor,RB,4000,0.0,0.2,0.2,0.0
+dk_classic_wk1_early_13Sep2026,Jared Wayne,WR,3000,0.0,0.2,0.3,4.0
+dk_classic_wk1_early_13Sep2026,Dylan Drummond,WR,3000,0.0,0.3,0.3,1.2
+dk_classic_wk1_early_13Sep2026,Seth McGowan,RB,4300,0.0,0.2,0.2,0.0
+dk_classic_wk1_early_13Sep2026,Riley Nowakowski,RB,4000,0.0,0.2,0.2,0.0
+dk_classic_wk1_early_13Sep2026,Adam Randall,RB,4000,0.0,0.2,0.2,0.0
+dk_classic_wk1_early_13Sep2026,Ashton Dulin,WR,3200,0.0,0.3,0.3,1.7
+dk_classic_wk1_early_13Sep2026,Eli Heidenreich,RB,4000,0.0,0.2,0.2,0.0
+dk_classic_wk1_early_13Sep2026,Kaden Davis,WR,3000,0.0,0.2,0.2,0.0
+dk_classic_wk1_early_13Sep2026,Zavion Thomas,WR,3600,0.3,0.2,0.2,0.0
+dk_classic_wk1_early_13Sep2026,Ted Hurst III,WR,3300,0.6,0.2,0.2,0.0
+dk_classic_wk1_early_13Sep2026,Payne Durham,TE,2500,0.0,0.3,0.3,0.1
+dk_classic_wk1_early_13Sep2026,Xavier Guillory,WR,3000,0.0,0.2,0.2,0.0
+dk_classic_wk1_early_13Sep2026,Coleman Owen,WR,3000,0.0,0.3,0.2,0.0
+dk_classic_wk1_early_13Sep2026,Salvon Ahmed,RB,4000,0.0,0.2,0.2,0.0
+dk_classic_wk1_early_13Sep2026,Frank Gore Jr.,RB,4000,0.0,0.2,0.2,0.8
+dk_classic_wk1_early_13Sep2026,Anthony Tyus III,RB,4000,0.0,0.2,0.2,0.0
+dk_classic_wk1_early_13Sep2026,Tyler Goodson,RB,4000,0.0,0.2,0.2,0.5
+dk_classic_wk1_early_13Sep2026,Kentrel Bullock,RB,4000,0.0,0.2,0.2,0.0
+dk_classic_wk1_early_13Sep2026,Jelani Woods,TE,2500,0.0,0.3,0.2,0.3
+dk_classic_wk1_early_13Sep2026,Ko Kieft,TE,2500,0.0,0.3,0.2,0.0
+dk_classic_wk1_early_13Sep2026,Spencer Rattler,QB,4000,0.0,0.3,0.5,11.8
+dk_classic_wk1_early_13Sep2026,Jackson Meeks,TE,3000,0.0,0.3,0.2,0.0
+dk_classic_wk1_early_13Sep2026,Ahmani Marshall,RB,4000,0.0,0.2,0.2,0.0
+dk_classic_wk1_early_13Sep2026,Noah Whittington,RB,4000,0.0,0.2,0.2,0.0
+dk_classic_wk1_early_13Sep2026,Skyler Bell,WR,3100,0.0,0.2,0.2,0.0
+dk_classic_wk1_early_13Sep2026,Hayden Rucci,TE,2500,0.0,0.3,0.2,0.0
+dk_classic_wk1_early_13Sep2026,Foster Moreau,TE,2600,0.0,0.3,0.3,1.2
+dk_classic_wk1_early_13Sep2026,Josh Cuevas,TE,2500,0.0,0.3,0.2,0.0
+dk_classic_wk1_early_13Sep2026,Bauer Sharp,TE,2500,0.0,0.3,0.2,0.0
+dk_classic_wk1_early_13Sep2026,Kaden Wetjen,WR,3000,0.0,0.2,0.2,0.0
+dk_classic_wk1_early_13Sep2026,Max Hurleman,WR,3000,0.0,0.2,0.2,0.0
+dk_classic_wk1_early_13Sep2026,Brandon Smith,WR,3000,0.0,0.2,0.2,0.0
+dk_classic_wk1_early_13Sep2026,Anderson Castle,RB,4000,0.0,0.2,0.2,0.0
+dk_classic_wk1_early_13Sep2026,Drew Ogletree,TE,2500,0.0,0.3,0.3,0.8
+dk_classic_wk1_early_13Sep2026,CJ Dippre,TE,2500,0.0,0.3,0.2,0.0
+dk_classic_wk1_early_13Sep2026,Davon Booth,RB,4000,0.0,0.2,0.2,0.0
+dk_classic_wk1_early_13Sep2026,Joshua Dobbs,QB,4000,0.0,0.3,0.3,0.5
+dk_classic_wk1_early_13Sep2026,Ty Pezza,TE,2500,0.0,0.3,0.2,0.0
+dk_classic_wk1_early_13Sep2026,Colbie Young,WR,3100,0.0,0.2,0.2,0.0
+dk_classic_wk1_early_13Sep2026,Blake Whiteheart,TE,2500,0.0,0.3,0.2,0.1
+dk_classic_wk1_early_13Sep2026,Cash Jones,RB,4000,0.0,0.2,0.2,0.0
+dk_classic_wk1_early_13Sep2026,Jalen Moreno-Cropper,WR,3000,0.0,0.2,0.2,0.0
+dk_classic_wk1_early_13Sep2026,Sam Roush,TE,2800,0.0,0.3,0.2,0.0
+dk_classic_wk1_early_13Sep2026,Bryce Lance,WR,3100,0.2,0.2,0.2,0.0
+dk_classic_wk1_early_13Sep2026,Dominic Lovett,WR,3000,0.0,0.2,0.2,0.0
+dk_classic_wk1_early_13Sep2026,Oscar Delp,TE,2700,0.0,0.3,0.2,0.0
+dk_classic_wk1_early_13Sep2026,Ja'Mori Maclin,WR,3000,0.0,0.2,0.2,0.0
+dk_classic_wk1_early_13Sep2026,Xavier Restrepo,WR,3000,0.0,0.2,0.3,3.6
+dk_classic_wk1_early_13Sep2026,Stephen Gosnell,WR,3000,0.0,0.2,0.2,0.0
+dk_classic_wk1_early_13Sep2026,Ja'seem Reed,WR,3000,0.0,0.2,0.2,0.0
+dk_classic_wk1_early_13Sep2026,Lucky Jackson,WR,3000,0.0,0.2,0.2,0.0
+dk_classic_wk1_early_13Sep2026,Chip Trayanum,RB,4000,0.0,0.2,0.2,0.0
+dk_classic_wk1_early_13Sep2026,Kenny Pickett,QB,4000,0.0,0.3,0.3,1.8
+dk_classic_wk1_early_13Sep2026,Chris Brazzell II,WR,3000,0.0,0.2,0.2,0.0
+dk_classic_wk1_early_13Sep2026,Noah Thomas,WR,3000,0.0,0.2,0.2,0.0
+dk_classic_wk1_early_13Sep2026,Robert Tonyan,TE,2500,0.0,0.3,0.2,0.1
+dk_classic_wk1_early_13Sep2026,Tanner Koziol,TE,2600,0.0,0.3,0.2,0.0
+dk_classic_wk1_early_13Sep2026,Dohnte Meyers,WR,3000,0.0,0.2,0.2,0.0
+dk_classic_wk1_early_13Sep2026,Nate Boerkircher,TE,2600,0.0,0.3,0.2,0.0
+dk_classic_wk1_early_13Sep2026,Kendrick Law,WR,3000,0.0,0.2,0.2,0.0
+dk_classic_wk1_early_13Sep2026,Joe Flacco,QB,4400,0.0,0.4,0.6,12.7
+dk_classic_wk1_early_13Sep2026,Barion Brown,WR,3000,0.2,0.2,0.2,0.0
+dk_classic_wk1_early_13Sep2026,Jordan Moore,WR,3000,0.0,0.2,0.2,0.0
+dk_classic_wk1_early_13Sep2026,Tyren Montgomery,WR,3000,0.0,0.2,0.2,0.0
+dk_classic_wk1_early_13Sep2026,Dean Patterson IV,WR,3000,0.0,0.2,0.2,0.0
+dk_classic_wk1_early_13Sep2026,Eric Rivers Jr.,WR,3000,0.0,0.2,0.2,0.0
+dk_classic_wk1_early_13Sep2026,Jaren Kanak,TE,2500,0.0,0.3,0.2,0.0
+dk_classic_wk1_early_13Sep2026,AJ Dillon,RB,4000,0.0,0.2,0.2,1.4
+dk_classic_wk1_early_13Sep2026,Tim Jones,WR,3000,0.0,0.2,0.2,0.5
+dk_classic_wk1_early_13Sep2026,Jack Strand,QB,4000,0.0,0.3,0.2,0.0
+dk_classic_wk1_early_13Sep2026,Garrett Greene,WR,3000,0.0,0.2,0.2,0.0
+dk_classic_wk1_early_13Sep2026,Jack Endries,TE,2500,0.0,0.3,0.2,0.0
+dk_classic_wk1_early_13Sep2026,Jalon Daniels,QB,4000,0.0,0.3,0.2,0.0
+dk_classic_wk1_early_13Sep2026,Haynes King,QB,4000,0.0,0.3,0.2,0.0
+dk_classic_wk1_early_13Sep2026,Vinny Anthony II,WR,3000,0.0,0.2,0.2,0.0
+dk_classic_wk1_early_13Sep2026,Joe Fagnano,QB,4000,0.0,0.3,0.2,0.0
+dk_classic_wk1_early_13Sep2026,Antwane Wells Jr.,WR,3000,0.0,0.2,0.2,0.0
+dk_classic_wk1_early_13Sep2026,Joel Wilson,TE,2500,0.0,0.3,0.2,0.0
+dk_classic_wk1_early_13Sep2026,Tyler Conklin,TE,2500,0.0,0.3,0.3,1.3
+dk_classic_wk1_early_13Sep2026,Thomas Gordon,TE,2500,0.0,0.3,0.2,0.0
+dk_classic_wk1_early_13Sep2026,Lake McRee,TE,2500,0.0,0.3,0.2,0.0
+dk_classic_wk1_early_13Sep2026,Drew Allar,QB,4000,0.0,0.3,0.2,0.0
+dk_classic_wk1_early_13Sep2026,Marlin Klein,TE,2700,0.0,0.3,0.2,0.0
+dk_classic_wk1_early_13Sep2026,Jack Velling,TE,2500,0.0,0.3,0.2,0.0
+dk_classic_wk1_early_13Sep2026,Bryce Oliver,WR,3000,0.0,0.2,0.2,0.6
+dk_classic_wk1_early_13Sep2026,Jamaal Pritchett,WR,3000,0.0,0.2,0.2,0.0
+dk_classic_wk1_early_13Sep2026,Nick Muse,TE,2500,0.0,0.3,0.2,0.0
+dk_classic_wk1_early_13Sep2026,Malik McClain,WR,3000,0.0,0.2,0.2,0.0
+dk_classic_wk1_early_13Sep2026,JP Richardson,WR,3000,0.0,0.2,0.2,0.0
+dk_classic_wk1_early_13Sep2026,Josh Cameron,WR,3000,0.0,0.2,0.2,0.0
+dk_classic_wk1_early_13Sep2026,CJ Williams,WR,3000,0.0,0.2,0.2,0.0
+dk_classic_wk1_early_13Sep2026,Pharaoh Brown,TE,2500,0.0,0.3,0.2,0.3
+dk_classic_wk1_early_13Sep2026,Trebor Pena,WR,3000,0.0,0.2,0.2,0.0
+dk_classic_wk1_early_13Sep2026,Hayden Large,TE,2500,0.0,0.3,0.2,0.0
+dk_classic_wk1_early_13Sep2026,Michael Wortham,WR,3000,0.0,0.2,0.2,0.0
+dk_classic_wk1_early_13Sep2026,Trent Sherfield Sr.,WR,3000,0.0,0.2,0.2,0.4
+dk_classic_wk1_early_13Sep2026,Qadir Ismail,TE,2500,0.0,0.3,0.2,0.0
+dk_classic_wk1_early_13Sep2026,Treyton Welch,TE,2500,0.0,0.3,0.2,0.0
+dk_classic_wk1_early_13Sep2026,Daniel Sobkowicz,WR,3000,0.0,0.2,0.2,0.0
+dk_classic_wk1_early_13Sep2026,Austin Trammell,WR,3000,0.0,0.2,0.2,1.3
+dk_classic_wk1_early_13Sep2026,Stephen Carlson,TE,2500,0.0,0.3,0.2,0.0
+dk_classic_wk1_early_13Sep2026,Lewis Bond,WR,3000,0.0,0.2,0.2,0.0
+dk_classic_wk1_early_13Sep2026,Kalel Mullings,RB,4000,0.0,0.2,0.2,0.1
+dk_classic_wk1_early_13Sep2026,Cade Klubnik,QB,4000,0.0,0.3,0.2,0.0
+dk_classic_wk1_early_13Sep2026,Case Keenum,QB,4000,0.0,0.3,0.2,0.0
+dk_classic_wk1_early_13Sep2026,Josh Kelly,WR,3000,0.0,0.2,0.2,0.0
+dk_classic_wk1_early_13Sep2026,Kole Wilson,WR,3000,0.0,0.2,0.2,0.0
+dk_classic_wk1_early_13Sep2026,Carson Towt,TE,2500,0.0,0.3,0.2,0.0
+dk_classic_wk1_early_13Sep2026,Kenny Fletcher Jr.,TE,2500,0.0,0.3,0.2,0.0
+dk_classic_wk1_early_13Sep2026,Messiah Swinson,TE,2500,0.0,0.3,0.2,0.0
+dk_classic_wk1_early_13Sep2026,Joe Royer,TE,2500,0.0,0.3,0.2,0.0
+dk_classic_wk1_early_13Sep2026,Carsen Ryan,TE,2500,0.0,0.3,0.2,0.0
+dk_classic_wk1_early_13Sep2026,Ben Skowronek,WR,3000,0.0,0.2,0.3,0.9
+dk_classic_wk1_early_13Sep2026,David Moore,WR,3000,0.0,0.2,0.2,0.7
+dk_classic_wk1_early_13Sep2026,Nick Westbrook-Ikhine,WR,3700,0.0,0.2,0.3,1.3
+dk_classic_wk1_early_13Sep2026,Mitchell Trubisky,QB,4000,0.0,0.3,0.4,7.8
+dk_classic_wk1_early_13Sep2026,Taylen Green,QB,4000,0.0,0.3,0.2,0.0
+dk_classic_wk1_early_13Sep2026,Anthony Richardson Sr.,QB,4900,0.0,0.3,0.3,1.1
+dk_classic_wk1_early_13Sep2026,Davis Mills,QB,4200,0.0,0.3,0.5,11.6
+dk_classic_wk1_early_13Sep2026,Zaire Mitchell-Paden,TE,2500,0.0,0.3,0.2,0.5
+dk_classic_wk1_early_13Sep2026,Kyle Allen,QB,4000,0.0,0.3,0.2,-0.1
+dk_classic_wk1_early_13Sep2026,Anthony Gould,WR,3000,0.0,0.2,0.2,0.2
+dk_classic_wk1_early_13Sep2026,Julius Chestnut,RB,4000,0.0,0.2,0.2,0.2
+dk_classic_wk1_early_13Sep2026,Tylan Wallace,WR,3000,0.0,0.2,0.2,1.0
+dk_classic_wk1_early_13Sep2026,Kameron Johnson,WR,3000,0.0,0.3,0.3,1.0
+dk_classic_wk1_early_13Sep2026,Travis Homer,RB,4000,0.0,0.2,0.2,-0.0
+dk_classic_wk1_afternoon_13Sep2026,Kyler Murray,QB,5500,19.8,72.5,67.3,16.4
+dk_classic_wk1_afternoon_13Sep2026,Jalen Hurts,QB,6600,22.2,15.4,17.7,19.1
+dk_classic_wk1_afternoon_13Sep2026,Justin Herbert,QB,6100,32.9,2.2,3.3,19.1
+dk_classic_wk1_afternoon_13Sep2026,Justin Jefferson,WR,7300,60.5,75.0,75.0,12.4
+dk_classic_wk1_afternoon_13Sep2026,Omarion Hampton,RB,6800,55.5,75.0,75.0,13.9
+dk_classic_wk1_afternoon_13Sep2026,Saquon Barkley,RB,6900,67.5,48.4,47.3,15.4
+dk_classic_wk1_afternoon_13Sep2026,Trey McBride,TE,6800,19.2,48.2,45.5,19.1
+dk_classic_wk1_afternoon_13Sep2026,Ashton Jeanty,RB,6600,37.1,47.1,44.0,14.8
+dk_classic_wk1_afternoon_13Sep2026,Jayden Daniels,QB,6500,3.2,1.3,1.6,17.0
+dk_classic_wk1_afternoon_13Sep2026,De'Von Achane,RB,7000,58.3,27.7,33.2,20.9
+dk_classic_wk1_afternoon_13Sep2026,DeVonta Smith,WR,6600,48.9,36.9,33.5,12.4
+dk_classic_wk1_afternoon_13Sep2026,Jordan Love,QB,5700,5.0,1.3,1.9,17.6
+dk_classic_wk1_afternoon_13Sep2026,Kirk Cousins,QB,5000,4.6,0.9,1.1,11.3
+dk_classic_wk1_afternoon_13Sep2026,Terry McLaurin,WR,5700,15.4,34.4,31.0,11.4
+dk_classic_wk1_afternoon_13Sep2026,Malik Willis,QB,5300,8.4,0.8,1.0,13.0
+dk_classic_wk1_afternoon_13Sep2026,Michael Wilson,WR,5300,16.0,29.9,30.8,13.5
+dk_classic_wk1_afternoon_13Sep2026,Christian Watson,WR,5900,19.4,26.3,26.4,13.5
+dk_classic_wk1_afternoon_13Sep2026,Aaron Jones Sr.,RB,5300,4.0,28.5,26.2,10.0
+dk_classic_wk1_afternoon_13Sep2026,Jacoby Brissett,QB,5100,3.4,1.0,1.7,18.0
+dk_classic_wk1_afternoon_13Sep2026,Stefon Diggs,WR,5200,9.7,25.8,25.5,12.2
+dk_classic_wk1_afternoon_13Sep2026,Dallas Goedert,TE,4100,26.0,23.2,24.4,13.0
+dk_classic_wk1_afternoon_13Sep2026,Ladd McConkey,WR,5900,50.9,15.8,15.4,11.4
+dk_classic_wk1_afternoon_13Sep2026,Tucker Kraft,TE,4500,15.4,6.9,9.3,15.4
+dk_classic_wk1_afternoon_13Sep2026,Jordan Addison,WR,5800,10.3,13.9,13.2,10.1
+dk_classic_wk1_afternoon_13Sep2026,Chig Okonkwo,TE,4000,1.8,9.2,7.9,7.3
+dk_classic_wk1_afternoon_13Sep2026,Tre Tucker,WR,4000,18.2,12.7,14.4,9.7
+dk_classic_wk1_afternoon_13Sep2026,Quentin Johnston,WR,4700,28.5,9.4,10.9,12.0
+dk_classic_wk1_afternoon_13Sep2026,Jayden Reed,WR,4900,9.0,12.8,11.4,8.0
+dk_classic_wk1_afternoon_13Sep2026,Jacory Croskey-Merritt,RB,5300,3.6,5.2,5.1,8.7
+dk_classic_wk1_afternoon_13Sep2026,Jauan Jennings,WR,4300,3.4,8.2,10.6,11.1
+dk_classic_wk1_afternoon_13Sep2026,Tyler Allgeier,RB,4900,3.4,1.3,1.5,7.2
+dk_classic_wk1_afternoon_13Sep2026,Raiders,DST,2900,17.5,33.4,27.3,4.4
+dk_classic_wk1_afternoon_13Sep2026,Chargers,DST,3500,28.9,23.5,25.3,6.7
+dk_classic_wk1_afternoon_13Sep2026,Tank Bigsby,RB,4900,0.5,1.5,1.4,3.3
+dk_classic_wk1_afternoon_13Sep2026,Packers,DST,3000,5.0,2.0,2.3,4.6
+dk_classic_wk1_afternoon_13Sep2026,Jordan Mason,RB,5400,6.5,1.3,1.5,8.3
+dk_classic_wk1_afternoon_13Sep2026,Max Brosmer,QB,4000,0.0,0.6,0.4,1.3
+dk_classic_wk1_afternoon_13Sep2026,Oronde Gadsden II,TE,3500,4.3,7.0,7.9,8.8
+dk_classic_wk1_afternoon_13Sep2026,Dolphins,DST,2700,8.3,13.0,12.6,5.6
+dk_classic_wk1_afternoon_13Sep2026,Eagles,DST,3200,22.2,10.2,11.4,7.8
+dk_classic_wk1_afternoon_13Sep2026,Tre' Harris,WR,3800,0.6,7.8,7.4,4.1
+dk_classic_wk1_afternoon_13Sep2026,Michael Mayer,TE,2900,36.2,4.8,4.6,5.7
+dk_classic_wk1_afternoon_13Sep2026,Greg Dulcich,TE,3500,1.9,2.0,2.0,6.4
+dk_classic_wk1_afternoon_13Sep2026,Keaton Mitchell,RB,4800,0.4,1.5,1.6,4.3
+dk_classic_wk1_afternoon_13Sep2026,Jalen Nailor,WR,4300,4.8,3.4,3.6,6.1
+dk_classic_wk1_afternoon_13Sep2026,Kimani Vidal,RB,4800,0.8,1.0,1.4,9.6
+dk_classic_wk1_afternoon_13Sep2026,Malik Washington,WR,4200,5.7,2.0,2.4,6.9
+dk_classic_wk1_afternoon_13Sep2026,Rachaad White,RB,5200,1.4,0.8,1.0,8.4
+dk_classic_wk1_afternoon_13Sep2026,Vikings,DST,2800,12.9,9.2,11.3,8.0
+dk_classic_wk1_afternoon_13Sep2026,T.J. Hockenson,TE,3300,5.0,3.8,4.1,7.5
+dk_classic_wk1_afternoon_13Sep2026,Matthew Golden,WR,4700,4.1,1.3,1.4,5.9
+dk_classic_wk1_afternoon_13Sep2026,MarShawn Lloyd,RB,4800,10.4,0.4,0.3,0.0
+dk_classic_wk1_afternoon_13Sep2026,Jeremiyah Love,RB,6400,2.4,0.5,0.4,0.0
+dk_classic_wk1_afternoon_13Sep2026,Jaylen Wright,RB,4500,0.1,0.4,0.5,5.2
+dk_classic_wk1_afternoon_13Sep2026,Dontayvion Wicks,WR,4100,3.2,0.7,0.8,5.4
+dk_classic_wk1_afternoon_13Sep2026,Jack Bech,WR,3600,0.4,0.6,0.7,2.7
+dk_classic_wk1_afternoon_13Sep2026,Cardinals,DST,2000,2.6,8.1,8.7,4.3
+dk_classic_wk1_afternoon_13Sep2026,DJ Uiagalelei,QB,4000,0.0,0.4,0.3,0.0
+dk_classic_wk1_afternoon_13Sep2026,Commanders,DST,2300,2.1,0.8,1.0,4.5
+dk_classic_wk1_afternoon_13Sep2026,Chris Brooks,RB,4500,0.2,0.6,0.6,2.0
+dk_classic_wk1_afternoon_13Sep2026,Ben Sinnott,TE,2800,0.0,0.6,0.6,1.8
+dk_classic_wk1_afternoon_13Sep2026,Kendrick Bourne,WR,3600,0.2,0.7,1.0,5.5
+dk_classic_wk1_afternoon_13Sep2026,Marvin Harrison Jr.,WR,5000,10.3,0.8,1.1,10.7
+dk_classic_wk1_afternoon_13Sep2026,Makai Lemon,WR,5100,5.0,0.6,0.5,0.0
+dk_classic_wk1_afternoon_13Sep2026,Theo Wease Jr.,WR,3000,0.0,0.6,1.3,8.6
+dk_classic_wk1_afternoon_13Sep2026,Bam Knight,RB,4000,0.1,0.3,0.5,7.8
+dk_classic_wk1_afternoon_13Sep2026,Jonnu Smith,TE,3000,0.1,0.8,0.9,4.8
+dk_classic_wk1_afternoon_13Sep2026,Van Jefferson,WR,3000,0.0,0.5,0.7,4.4
+dk_classic_wk1_afternoon_13Sep2026,Elijah Higgins,TE,2500,0.0,0.6,0.7,3.5
+dk_classic_wk1_afternoon_13Sep2026,Josh Oliver,TE,2800,0.0,0.7,0.8,3.7
+dk_classic_wk1_afternoon_13Sep2026,Darius Cooper,WR,3000,0.0,0.6,0.7,1.4
+dk_classic_wk1_afternoon_13Sep2026,Sam Hartman,QB,4000,0.0,0.3,0.2,0.0
+dk_classic_wk1_afternoon_13Sep2026,KeAndre Lambert-Smith,WR,3000,0.0,0.7,0.8,1.6
+dk_classic_wk1_afternoon_13Sep2026,Carson Steele,RB,4000,0.0,0.3,0.2,0.0
+dk_classic_wk1_afternoon_13Sep2026,Bo Melton,WR,3000,0.0,0.7,0.6,0.2
+dk_classic_wk1_afternoon_13Sep2026,Jermar Jefferson,RB,4000,0.0,0.3,0.2,0.0
+dk_classic_wk1_afternoon_13Sep2026,Jalen Reagor,WR,3000,0.0,0.3,0.3,0.0
+dk_classic_wk1_afternoon_13Sep2026,Pierre Strong Jr.,RB,4000,0.0,0.3,0.2,0.0
+dk_classic_wk1_afternoon_13Sep2026,Will Shipley,RB,4100,0.0,0.5,0.5,1.3
+dk_classic_wk1_afternoon_13Sep2026,Evan Hull,RB,4000,0.0,0.5,0.5,1.1
+dk_classic_wk1_afternoon_13Sep2026,Dare Ogunbowale,RB,4000,0.0,0.3,0.3,1.3
+dk_classic_wk1_afternoon_13Sep2026,Connor Heyward,RB,4000,0.0,0.3,0.3,1.5
+dk_classic_wk1_afternoon_13Sep2026,Britain Covey,WR,3000,0.0,0.7,0.7,0.6
+dk_classic_wk1_afternoon_13Sep2026,Amar Johnson,RB,4000,0.0,0.3,0.2,0.4
+dk_classic_wk1_afternoon_13Sep2026,Ollie Gordon II,RB,4500,0.0,0.3,0.3,3.2
+dk_classic_wk1_afternoon_13Sep2026,Alec Ingold,RB,4000,0.0,0.3,0.2,0.8
+dk_classic_wk1_afternoon_13Sep2026,Ben Sims,TE,2500,0.0,0.4,0.3,0.5
+dk_classic_wk1_afternoon_13Sep2026,John Bates,TE,2500,0.0,0.5,0.4,1.8
+dk_classic_wk1_afternoon_13Sep2026,Charlie Kolar,TE,2500,0.5,0.6,0.6,2.1
+dk_classic_wk1_afternoon_13Sep2026,Kaleb Johnson,RB,4400,0.2,0.4,0.4,0.9
+dk_classic_wk1_afternoon_13Sep2026,Ronnie Bell,WR,3000,0.0,0.4,0.6,5.2
+dk_classic_wk1_afternoon_13Sep2026,Antonio Williams,WR,4200,0.2,0.4,0.4,0.0
+dk_classic_wk1_afternoon_13Sep2026,Ihmir Smith-Marsette,WR,3000,0.0,0.3,0.3,0.0
+dk_classic_wk1_afternoon_13Sep2026,Dalevon Campbell,WR,3000,0.0,0.4,0.3,0.0
+dk_classic_wk1_afternoon_13Sep2026,Jalen Brooks,WR,3000,0.0,0.5,0.5,1.2
+dk_classic_wk1_afternoon_13Sep2026,Johnny Mundt,TE,2500,0.0,0.4,0.4,1.2
+dk_classic_wk1_afternoon_13Sep2026,E.J. Jenkins,TE,2500,0.0,0.3,0.2,0.0
+dk_classic_wk1_afternoon_13Sep2026,Brenen Thompson,WR,3300,0.0,0.3,0.3,0.0
+dk_classic_wk1_afternoon_13Sep2026,Eli Stowers,TE,3100,0.0,0.3,0.3,0.0
+dk_classic_wk1_afternoon_13Sep2026,Andrew DePaola,TE,2500,0.0,0.3,0.2,0.0
+dk_classic_wk1_afternoon_13Sep2026,Kaytron Allen,RB,4600,0.0,0.3,0.3,0.0
+dk_classic_wk1_afternoon_13Sep2026,Marcus Mariota,QB,4500,0.0,0.4,0.7,12.3
+dk_classic_wk1_afternoon_13Sep2026,Mike Washington Jr.,RB,4600,1.3,0.3,0.3,0.0
+dk_classic_wk1_afternoon_13Sep2026,Tyler Ott,TE,2500,0.0,0.3,0.2,0.0
+dk_classic_wk1_afternoon_13Sep2026,Demond Claiborne,RB,4400,0.0,0.3,0.3,0.0
+dk_classic_wk1_afternoon_13Sep2026,Jaydon Blue,RB,4000,0.0,0.3,0.3,4.1
+dk_classic_wk1_afternoon_13Sep2026,Gregory Desrosiers,RB,4000,0.0,0.2,0.2,0.0
+dk_classic_wk1_afternoon_13Sep2026,Jacoby Jones,WR,3000,0.0,0.3,0.4,3.5
+dk_classic_wk1_afternoon_13Sep2026,Dyami Brown,WR,3200,0.1,0.4,0.5,3.6
+dk_classic_wk1_afternoon_13Sep2026,Josh Whyle,TE,2500,0.0,0.4,0.4,1.8
+dk_classic_wk1_afternoon_13Sep2026,Jaylin Lane,WR,3100,0.0,0.4,0.5,3.3
+dk_classic_wk1_afternoon_13Sep2026,David Njoku,TE,3000,2.4,0.4,0.6,7.2
+dk_classic_wk1_afternoon_13Sep2026,Roman Hemby,RB,4100,0.0,0.2,0.2,0.0
+dk_classic_wk1_afternoon_13Sep2026,Drake Dabney,TE,2500,0.0,0.3,0.3,0.7
+dk_classic_wk1_afternoon_13Sep2026,Chris Bell,WR,3200,1.7,0.3,0.3,0.0
+dk_classic_wk1_afternoon_13Sep2026,Ian Thomas,TE,2500,0.0,0.3,0.3,1.6
+dk_classic_wk1_afternoon_13Sep2026,Kedon Slovis,QB,4000,0.0,0.3,0.3,-0.0
+dk_classic_wk1_afternoon_13Sep2026,Cam Grandy,TE,2500,0.0,0.3,0.3,0.5
+dk_classic_wk1_afternoon_13Sep2026,Max Bredeson,RB,4000,0.0,0.2,0.2,0.0
+dk_classic_wk1_afternoon_13Sep2026,Evan Svoboda,TE,2500,0.0,0.3,0.2,0.0
+dk_classic_wk1_afternoon_13Sep2026,Patrick Herbert,TE,2500,0.0,0.3,0.2,0.0
+dk_classic_wk1_afternoon_13Sep2026,Robert Henry Jr.,RB,4000,0.0,0.2,0.2,0.0
+dk_classic_wk1_afternoon_13Sep2026,Carlos Washington Jr.,RB,4000,0.0,0.2,0.2,0.0
+dk_classic_wk1_afternoon_13Sep2026,Jarquez Hunter,RB,4000,0.0,0.2,0.2,0.0
+dk_classic_wk1_afternoon_13Sep2026,DJ Herman,RB,4000,0.0,0.2,0.2,0.0
+dk_classic_wk1_afternoon_13Sep2026,Danny Gray,WR,3000,0.0,0.3,0.3,0.0
+dk_classic_wk1_afternoon_13Sep2026,Trey Lance,QB,4000,0.0,0.4,0.4,3.9
+dk_classic_wk1_afternoon_13Sep2026,Damon Bankston,RB,4000,0.0,0.2,0.2,0.0
+dk_classic_wk1_afternoon_13Sep2026,Caleb Douglas,WR,3000,2.2,0.3,0.3,0.0
+dk_classic_wk1_afternoon_13Sep2026,Will Sheppard,WR,3000,0.0,0.3,0.3,0.0
+dk_classic_wk1_afternoon_13Sep2026,DeeJay Dallas,RB,4000,0.0,0.2,0.3,0.4
+dk_classic_wk1_afternoon_13Sep2026,River Cracraft,WR,3000,0.0,0.3,0.3,0.0
+dk_classic_wk1_afternoon_13Sep2026,Kevin Coleman Jr.,WR,3000,0.0,0.3,0.3,0.0
+dk_classic_wk1_afternoon_13Sep2026,Rocco Underwood,TE,2500,0.0,0.3,0.2,0.0
+dk_classic_wk1_afternoon_13Sep2026,Dillon Bell,WR,3000,0.0,0.3,0.3,0.0
+dk_classic_wk1_afternoon_13Sep2026,Michael Briscoe,WR,3000,0.0,0.3,0.3,0.0
+dk_classic_wk1_afternoon_13Sep2026,Malik Benson,WR,3100,0.1,0.3,0.3,0.0
+dk_classic_wk1_afternoon_13Sep2026,Trayvon Rudolph,WR,3000,0.0,0.3,0.3,0.0
+dk_classic_wk1_afternoon_13Sep2026,Tai Felton,WR,3000,0.0,0.4,0.4,0.3
+dk_classic_wk1_afternoon_13Sep2026,Carson Beck,QB,4100,0.0,0.3,0.3,0.0
+dk_classic_wk1_afternoon_13Sep2026,Fernando Mendoza,QB,5000,0.0,0.4,0.3,0.0
+dk_classic_wk1_afternoon_13Sep2026,Reggie Virgil,WR,3000,0.0,0.3,0.3,0.0
+dk_classic_wk1_afternoon_13Sep2026,Devin Duvernay,WR,3000,0.0,0.4,0.5,0.2
+dk_classic_wk1_afternoon_13Sep2026,Harrison Wallace III,WR,3000,0.0,0.3,0.3,0.0
+dk_classic_wk1_afternoon_13Sep2026,Derius Davis,WR,3000,0.0,0.4,0.4,0.2
+dk_classic_wk1_afternoon_13Sep2026,Teagan Quitoriano,TE,2500,0.0,0.3,0.2,0.0
+dk_classic_wk1_afternoon_13Sep2026,Cole Payton,QB,4000,0.0,0.3,0.3,0.0
+dk_classic_wk1_afternoon_13Sep2026,Jaden Bradley,WR,3000,0.0,0.3,0.3,0.0
+dk_classic_wk1_afternoon_13Sep2026,Corey Rucker,WR,3000,0.0,0.3,0.3,0.0
+dk_classic_wk1_afternoon_13Sep2026,Patrick Gurd,TE,2500,0.0,0.2,0.2,0.0
+dk_classic_wk1_afternoon_13Sep2026,Chris Myarick,TE,2500,0.0,0.2,0.2,0.0
+dk_classic_wk1_afternoon_13Sep2026,Skyy Moore,WR,3000,0.0,0.4,0.5,0.8
+dk_classic_wk1_afternoon_13Sep2026,Gavin Bartholomew,TE,2500,0.0,0.3,0.2,0.0
+dk_classic_wk1_afternoon_13Sep2026,Colson Yankoff,TE,2500,0.0,0.3,0.3,0.3
+dk_classic_wk1_afternoon_13Sep2026,Will Kacmarek,TE,2500,0.0,0.2,0.2,0.0
+dk_classic_wk1_afternoon_13Sep2026,Justin Joly,TE,2500,0.0,0.2,0.2,0.0
+dk_classic_wk1_afternoon_13Sep2026,Tre Watson,TE,2500,0.0,0.2,0.2,0.0
+dk_classic_wk1_afternoon_13Sep2026,Gardner Minshew II,QB,4100,0.0,0.3,0.3,0.2
+dk_classic_wk1_afternoon_13Sep2026,Shawn Bowman,TE,2500,0.0,0.2,0.2,0.0
+dk_classic_wk1_afternoon_13Sep2026,Jameson Geers,TE,2500,0.0,0.2,0.2,0.0
+dk_classic_wk1_afternoon_13Sep2026,J. Michael Sturdivant,WR,3000,0.0,0.3,0.3,0.0
+dk_classic_wk1_afternoon_13Sep2026,Seydou Traore,TE,2500,0.0,0.2,0.2,0.0
+dk_classic_wk1_afternoon_13Sep2026,Chris Hilton Jr.,WR,3000,0.0,0.3,0.3,0.0
+dk_classic_wk1_afternoon_13Sep2026,Isaiah Neyor,WR,3000,0.0,0.3,0.3,0.0
+dk_classic_wk1_afternoon_13Sep2026,Quentin Moore,TE,2500,0.0,0.2,0.2,0.0
+dk_classic_wk1_afternoon_13Sep2026,Cody White,WR,3000,0.0,0.3,0.4,1.8
+dk_classic_wk1_afternoon_13Sep2026,Mark Redman,TE,2500,0.0,0.2,0.2,0.0
+dk_classic_wk1_afternoon_13Sep2026,Dareke Young,WR,3000,0.0,0.3,0.3,0.6
+dk_classic_wk1_afternoon_13Sep2026,Dameon Pierce,RB,4000,0.0,0.2,0.3,0.7
+dk_classic_wk1_afternoon_13Sep2026,Kyle McCord,QB,4000,0.0,0.3,0.3,0.0
+dk_classic_wk1_afternoon_13Sep2026,Tyrod Taylor,QB,4000,0.0,0.3,0.5,10.9
+dk_classic_wk1_afternoon_13Sep2026,Athan Kaliakmanis,QB,4000,0.0,0.3,0.3,0.0
+dk_classic_wk1_afternoon_13Sep2026,Jack Westover,TE,2500,0.0,0.2,0.2,0.1
+dk_classic_wk1_afternoon_13Sep2026,Dylan Laube,RB,4000,0.0,0.2,0.3,0.3
+dk_classic_wk1_afternoon_13Sep2026,Deven Thompkins,WR,3000,0.0,0.3,0.4,0.9
+dk_classic_wk1_afternoon_13Sep2026,Ryan Miller,WR,3000,0.0,0.3,0.3,0.9
+dk_classic_wk2_main_20Sep2026,Lamar Jackson,QB,7300,5.6,20.6,17.8,17.3
+dk_classic_wk2_main_20Sep2026,Bijan Robinson,RB,8200,48.1,27.2,29.3,23.2
+dk_classic_wk2_main_20Sep2026,Christian McCaffrey,RB,8000,20.5,24.4,25.5,24.8
+dk_classic_wk2_main_20Sep2026,Caleb Williams,QB,6800,9.6,10.6,10.1,19.8
+dk_classic_wk2_main_20Sep2026,Jaxon Smith-Njigba,WR,8100,9.2,23.5,25.7,22.0
+dk_classic_wk2_main_20Sep2026,Brock Purdy,QB,6200,11.6,8.5,8.9,20.1
+dk_classic_wk2_main_20Sep2026,Derrick Henry,RB,7200,38.2,27.1,25.5,18.0
+dk_classic_wk2_main_20Sep2026,Justin Jefferson,WR,7800,20.6,21.0,17.7,12.4
+dk_classic_wk2_main_20Sep2026,Jalen Hurts,QB,6700,2.1,2.7,2.9,19.1
+dk_classic_wk2_main_20Sep2026,Dak Prescott,QB,6400,14.0,5.6,5.8,20.2
+dk_classic_wk2_main_20Sep2026,Joe Burrow,QB,6600,1.8,3.8,3.9,18.2
+dk_classic_wk2_main_20Sep2026,Jayden Daniels,QB,6300,9.4,5.0,4.9,17.0
+dk_classic_wk2_main_20Sep2026,Chris Olave,WR,7200,3.5,13.4,13.7,17.4
+dk_classic_wk2_main_20Sep2026,Trey McBride,TE,6900,4.8,8.8,9.7,19.1
+dk_classic_wk2_main_20Sep2026,Ashton Jeanty,RB,6800,15.6,11.4,11.2,14.8
+dk_classic_wk2_main_20Sep2026,Bryce Young,QB,5400,5.1,2.9,3.1,15.4
+dk_classic_wk2_main_20Sep2026,Justin Herbert,QB,6000,2.5,2.8,3.2,19.1
+dk_classic_wk2_main_20Sep2026,CeeDee Lamb,WR,7300,20.1,12.5,11.7,15.6
+dk_classic_wk2_main_20Sep2026,Jordan Love,QB,5900,3.8,4.0,4.4,17.6
+dk_classic_wk2_main_20Sep2026,Saquon Barkley,RB,7000,9.4,8.7,8.7,15.4
+dk_classic_wk2_main_20Sep2026,Drake Maye,QB,6100,1.1,2.2,2.8,20.9
+dk_classic_wk2_main_20Sep2026,Ja'Marr Chase,WR,7600,11.7,7.0,7.9,21.0
+dk_classic_wk2_main_20Sep2026,Chase Brown,RB,6900,1.3,7.4,7.6,17.2
+dk_classic_wk2_main_20Sep2026,Baker Mayfield,QB,5600,10.0,2.2,2.5,17.2
+dk_classic_wk2_main_20Sep2026,Bo Nix,QB,5700,1.4,2.5,3.1,19.7
+dk_classic_wk2_main_20Sep2026,Trevor Lawrence,QB,5800,4.0,1.0,1.4,21.0
+dk_classic_wk2_main_20Sep2026,Bucky Irving,RB,6100,13.0,10.5,10.5,14.3
+dk_classic_wk2_main_20Sep2026,DeVonta Smith,WR,6800,3.2,8.7,8.2,12.4
+dk_classic_wk2_main_20Sep2026,C.J. Stroud,QB,5500,1.4,1.2,1.3,15.0
+dk_classic_wk2_main_20Sep2026,Garrett Wilson,WR,6000,12.4,8.0,8.5,14.2
+dk_classic_wk2_main_20Sep2026,Breece Hall,RB,6200,8.8,5.5,5.6,13.9
+dk_classic_wk2_main_20Sep2026,Mike Evans,WR,6600,10.1,10.9,9.4,11.0
+dk_classic_wk2_main_20Sep2026,Javonte Williams,RB,6400,17.9,15.1,14.4,15.7
+dk_classic_wk2_main_20Sep2026,De'Von Achane,RB,6700,3.5,6.0,7.6,20.9
+dk_classic_wk2_main_20Sep2026,Tyler Shough,QB,5300,2.4,1.7,2.0,15.6
+dk_classic_wk2_main_20Sep2026,Christian Watson,WR,6200,11.6,6.3,6.3,13.5
+dk_classic_wk2_main_20Sep2026,David Montgomery,RB,6500,11.3,9.8,8.2,10.1
+dk_classic_wk2_main_20Sep2026,Parker Washington,WR,5900,9.2,7.8,7.8,12.8
+dk_classic_wk2_main_20Sep2026,Omarion Hampton,RB,6600,3.3,7.4,7.1,13.9
+dk_classic_wk2_main_20Sep2026,George Pickens,WR,6300,18.9,8.2,9.2,18.1
+dk_classic_wk2_main_20Sep2026,D'Andre Swift,RB,6300,5.5,8.1,7.9,14.7
+dk_classic_wk2_main_20Sep2026,Ladd McConkey,WR,6200,0.9,7.2,6.7,11.4
+dk_classic_wk2_main_20Sep2026,Tetairoa McMillan,WR,6100,4.2,2.2,2.3,12.9
+dk_classic_wk2_main_20Sep2026,Travis Etienne Jr.,RB,6000,1.6,5.9,6.6,15.7
+dk_classic_wk2_main_20Sep2026,Brock Bowers,TE,6600,0.0,5.0,4.9,15.2
+dk_classic_wk2_main_20Sep2026,Luther Burden III,WR,5700,12.5,7.7,6.5,8.6
+dk_classic_wk2_main_20Sep2026,Emeka Egbuka,WR,6400,14.9,5.9,5.6,12.0
+dk_classic_wk2_main_20Sep2026,Rhamondre Stevenson,RB,5700,3.8,4.2,4.4,13.2
+dk_classic_wk2_main_20Sep2026,Stefon Diggs,WR,5300,9.6,10.7,10.7,12.2
+dk_classic_wk2_main_20Sep2026,Deebo Samuel Sr.,WR,5300,8.3,9.8,9.7,11.8
+dk_classic_wk2_main_20Sep2026,Kirk Cousins,QB,5000,0.3,0.6,0.6,11.3
+dk_classic_wk2_main_20Sep2026,Drake London,WR,6000,2.3,4.5,5.7,18.2
+dk_classic_wk2_main_20Sep2026,Jacoby Brissett,QB,5000,0.6,0.5,0.8,18.0
+dk_classic_wk2_main_20Sep2026,Jaylen Waddle,WR,6500,2.8,6.6,6.2,12.3
+dk_classic_wk2_main_20Sep2026,Tee Higgins,WR,6100,2.9,2.2,2.4,14.3
+dk_classic_wk2_main_20Sep2026,Wan'Dale Robinson,WR,4600,0.9,5.2,6.9,14.2
+dk_classic_wk2_main_20Sep2026,Aaron Rodgers,QB,5100,0.1,0.6,0.7,14.1
+dk_classic_wk2_main_20Sep2026,Jalen Coker,WR,5100,15.9,7.6,7.5,10.2
+dk_classic_wk2_main_20Sep2026,Chuba Hubbard,RB,5800,4.9,3.2,2.9,9.1
+dk_classic_wk2_main_20Sep2026,Jeremiyah Love,RB,5900,1.2,1.2,0.8,0.0
+dk_classic_wk2_main_20Sep2026,Rome Odunze,WR,5500,5.4,6.1,6.0,11.8
+dk_classic_wk2_main_20Sep2026,DK Metcalf,WR,5200,5.8,4.9,5.5,12.5
+dk_classic_wk2_main_20Sep2026,Dallas Goedert,TE,4800,8.6,4.1,4.5,13.0
+dk_classic_wk2_main_20Sep2026,Chris Godwin Jr.,WR,5600,3.9,4.6,4.4,9.6
+dk_classic_wk2_main_20Sep2026,Malik Willis,QB,5200,0.5,0.6,0.7,13.0
+dk_classic_wk2_main_20Sep2026,Courtland Sutton,WR,5800,0.8,2.2,2.4,12.9
+dk_classic_wk2_main_20Sep2026,Michael Wilson,WR,5400,0.9,3.3,3.9,13.5
+dk_classic_wk2_main_20Sep2026,Matthew Golden,WR,4700,17.5,6.3,5.2,5.9
+dk_classic_wk2_main_20Sep2026,Colston Loveland,TE,5000,10.7,6.5,6.0,11.4
+dk_classic_wk2_main_20Sep2026,Geno Smith,QB,4800,0.8,0.6,0.7,13.0
+dk_classic_wk2_main_20Sep2026,RJ Harvey,RB,5200,0.0,5.6,5.8,12.1
+dk_classic_wk2_main_20Sep2026,Terry McLaurin,WR,5200,15.0,4.0,4.1,11.4
+dk_classic_wk2_main_20Sep2026,George Kittle,TE,4600,3.3,7.0,7.7,13.8
+dk_classic_wk2_main_20Sep2026,Jaylen Warren,RB,5400,0.6,1.9,2.3,13.5
+dk_classic_wk2_main_20Sep2026,Jacory Croskey-Merritt,RB,5500,4.0,4.0,3.5,8.7
+dk_classic_wk2_main_20Sep2026,Carnell Tate,WR,5100,0.5,2.2,1.5,0.0
+dk_classic_wk2_main_20Sep2026,Quentin Johnston,WR,5000,6.6,6.7,7.2,12.0
+dk_classic_wk2_main_20Sep2026,Tucker Kraft,TE,4900,2.8,4.8,5.7,15.4
+dk_classic_wk2_main_20Sep2026,Mark Andrews,TE,4400,10.7,6.3,5.4,7.7
+dk_classic_wk2_main_20Sep2026,Aaron Jones Sr.,RB,5100,24.8,1.5,1.5,10.0
+dk_classic_wk2_main_20Sep2026,Buccaneers,DST,3600,15.8,9.9,8.3,5.8
+dk_classic_wk2_main_20Sep2026,49ers,DST,3800,9.2,15.8,12.0,4.1
+dk_classic_wk2_main_20Sep2026,Quinshon Judkins,RB,5400,1.1,0.9,1.1,12.3
+dk_classic_wk2_main_20Sep2026,Tony Pollard,RB,5300,0.2,0.8,0.9,11.6
+dk_classic_wk2_main_20Sep2026,Deshaun Watson,QB,4500,0.2,0.4,0.3,0.0
+dk_classic_wk2_main_20Sep2026,Panthers,DST,2700,5.5,10.5,10.3,5.9
+dk_classic_wk2_main_20Sep2026,Kaelon Black,RB,4500,0.7,3.0,1.9,0.0
+dk_classic_wk2_main_20Sep2026,MarShawn Lloyd,RB,5300,0.8,1.5,1.0,0.0
+dk_classic_wk2_main_20Sep2026,Drew Lock,QB,4900,0.9,0.6,0.4,0.0
+dk_classic_wk2_main_20Sep2026,Jadarian Price,RB,5500,3.7,1.1,0.8,0.0
+dk_classic_wk2_main_20Sep2026,Makai Lemon,WR,4600,0.2,2.4,1.6,0.0
+dk_classic_wk2_main_20Sep2026,Cam Ward,QB,4900,0.1,0.4,0.5,11.8
+dk_classic_wk2_main_20Sep2026,Rico Dowdle,RB,4900,0.1,1.5,1.9,12.7
+dk_classic_wk2_main_20Sep2026,Harold Fannin Jr.,TE,4100,1.8,2.7,3.4,11.9
+dk_classic_wk2_main_20Sep2026,KC Concepcion,WR,4100,1.1,2.9,2.0,0.0
+dk_classic_wk2_main_20Sep2026,Jakobi Meyers,WR,4900,1.0,3.5,3.7,10.5
+dk_classic_wk2_main_20Sep2026,Kyle Monangai,RB,5300,1.1,4.9,4.4,8.9
+dk_classic_wk2_main_20Sep2026,Bhayshul Tuten,RB,5600,3.5,1.3,1.2,5.9
+dk_classic_wk2_main_20Sep2026,Michael Mayer,TE,3600,11.6,2.9,2.7,5.7
+dk_classic_wk2_main_20Sep2026,Eagles,DST,3700,5.5,3.6,3.7,7.8
+dk_classic_wk2_main_20Sep2026,Devaughn Vele,WR,4200,9.8,3.1,2.8,5.1
+dk_classic_wk2_main_20Sep2026,Caleb Douglas,WR,3700,6.0,2.6,1.8,0.0
+dk_classic_wk2_main_20Sep2026,Ravens,DST,3300,5.4,7.0,6.0,5.7
+dk_classic_wk2_main_20Sep2026,Jayden Reed,WR,4500,1.4,2.7,2.8,8.0
+dk_classic_wk2_main_20Sep2026,Mack Hollins,WR,4300,1.2,1.8,2.0,8.3
+dk_classic_wk2_main_20Sep2026,Tyler Allgeier,RB,4900,0.3,0.7,0.7,7.2
+dk_classic_wk2_main_20Sep2026,Tre Tucker,WR,4500,0.5,1.6,1.9,9.7
+dk_classic_wk2_main_20Sep2026,J.K. Dobbins,RB,5000,2.0,2.7,3.1,12.2
+dk_classic_wk2_main_20Sep2026,Patriots,DST,3100,5.4,5.7,6.5,8.4
+dk_classic_wk2_main_20Sep2026,Brian Thomas Jr.,WR,4800,0.7,1.3,1.5,9.9
+dk_classic_wk2_main_20Sep2026,Kalif Raymond,WR,3600,3.6,2.7,2.4,4.5
+dk_classic_wk2_main_20Sep2026,Bears,DST,3000,1.6,12.1,11.1,6.4
+dk_classic_wk2_main_20Sep2026,Romeo Doubs,WR,5000,1.3,1.3,1.6,11.5
+dk_classic_wk2_main_20Sep2026,Kenny Gainwell,RB,5100,0.2,1.2,1.4,12.8
+dk_classic_wk2_main_20Sep2026,Chargers,DST,3200,2.2,5.6,5.6,6.7
+dk_classic_wk2_main_20Sep2026,Kyle Pitts Sr.,TE,4500,0.8,1.8,2.2,12.6
+dk_classic_wk2_main_20Sep2026,Antonio Williams,WR,4400,3.3,2.3,1.5,0.0
+dk_classic_wk2_main_20Sep2026,Juwan Johnson,TE,3900,4.5,0.9,1.1,10.7
+dk_classic_wk2_main_20Sep2026,Pat Bryant,WR,4200,1.4,2.1,1.8,4.8
+dk_classic_wk2_main_20Sep2026,Jordan Addison,WR,5100,3.7,1.6,1.6,10.1
+dk_classic_wk2_main_20Sep2026,Malik Washington,WR,4000,0.6,2.5,2.6,6.9
+dk_classic_wk2_main_20Sep2026,Chris Rodriguez Jr.,RB,5100,0.0,1.1,1.0,7.1
+dk_classic_wk2_main_20Sep2026,Packers,DST,3400,0.9,4.4,3.8,4.6
+dk_classic_wk2_main_20Sep2026,Tyjae Spears,RB,4800,0.0,0.6,0.6,8.6
+dk_classic_wk2_main_20Sep2026,TreVeyon Henderson,RB,5200,1.5,1.0,1.2,10.9
+dk_classic_wk2_main_20Sep2026,Tre' Harris,WR,4000,0.7,2.7,2.3,4.1
+dk_classic_wk2_main_20Sep2026,Jerry Jeudy,WR,3900,0.1,1.8,2.0,7.2
+dk_classic_wk2_main_20Sep2026,Cade Otton,TE,3400,1.1,3.2,3.3,7.6
+dk_classic_wk2_main_20Sep2026,Denzel Boston,WR,4200,0.5,1.3,0.9,0.0
+dk_classic_wk2_main_20Sep2026,Brenton Strange,TE,3900,1.4,1.8,2.0,9.3
+dk_classic_wk2_main_20Sep2026,Marvin Harrison Jr.,WR,4900,0.5,1.0,1.2,10.7
+dk_classic_wk2_main_20Sep2026,Broncos,DST,2800,3.2,4.3,5.5,8.6
+dk_classic_wk2_main_20Sep2026,Mike Gesicki,TE,3600,4.0,2.5,2.2,5.4
+dk_classic_wk2_main_20Sep2026,Dontayvion Wicks,WR,4300,2.9,1.2,1.2,5.4
+dk_classic_wk2_main_20Sep2026,Seahawks,DST,3500,3.7,1.1,1.7,11.3
+dk_classic_wk2_main_20Sep2026,Hunter Henry,TE,4000,2.1,0.9,1.0,9.9
+dk_classic_wk2_main_20Sep2026,Woody Marks,RB,4500,0.3,0.7,0.8,9.8
+dk_classic_wk2_main_20Sep2026,Ryan Flournoy,WR,3800,0.7,1.7,1.9,7.5
+dk_classic_wk2_main_20Sep2026,Rachaad White,RB,5000,0.2,1.1,1.1,8.4
+dk_classic_wk2_main_20Sep2026,T.J. Hockenson,TE,3500,4.3,1.7,1.8,7.5
+dk_classic_wk2_main_20Sep2026,Texans,DST,3000,2.1,2.7,4.1,10.6
+dk_classic_wk2_main_20Sep2026,Xavier Hutchinson,WR,3500,5.1,1.7,1.8,5.8
+dk_classic_wk2_main_20Sep2026,Evan Engram,TE,3300,1.6,3.1,2.9,6.0
+dk_classic_wk2_main_20Sep2026,Cowboys,DST,2900,0.7,1.7,1.4,3.6
+dk_classic_wk2_main_20Sep2026,Jonathon Brooks,RB,4800,0.2,0.7,0.5,0.0
+dk_classic_wk2_main_20Sep2026,Dalton Schultz,TE,3200,23.6,3.0,3.8,9.9
+dk_classic_wk2_main_20Sep2026,Kenyon Sadiq,TE,3800,2.0,0.8,0.5,0.0
+dk_classic_wk2_main_20Sep2026,Kendrick Bourne,WR,3900,0.8,0.5,0.5,5.5
+dk_classic_wk2_main_20Sep2026,Adonai Mitchell,WR,4000,0.8,0.6,0.6,5.7
+dk_classic_wk2_main_20Sep2026,DeMario Douglas,WR,3800,1.9,0.5,0.6,5.8
+dk_classic_wk2_main_20Sep2026,Cooper Kupp,WR,4100,0.5,0.5,0.7,8.2
+dk_classic_wk2_main_20Sep2026,Pat Freiermuth,TE,3700,1.3,1.2,1.3,6.6
+dk_classic_wk2_main_20Sep2026,Jaguars,DST,2400,11.4,3.2,4.5,8.2
+dk_classic_wk2_main_20Sep2026,Darren Waller,TE,3100,0.8,2.4,3.2,9.9
+dk_classic_wk2_main_20Sep2026,Rashid Shaheed,WR,4300,0.4,0.6,0.7,8.6
+dk_classic_wk2_main_20Sep2026,Browns,DST,2200,2.3,2.1,3.2,7.8
+dk_classic_wk2_main_20Sep2026,Brian Robinson Jr.,RB,4700,0.0,0.5,0.5,3.4
+dk_classic_wk2_main_20Sep2026,Jalen Nailor,WR,3900,0.3,0.5,0.6,6.1
+dk_classic_wk2_main_20Sep2026,Titans,DST,2100,2.2,3.0,3.5,4.8
+dk_classic_wk2_main_20Sep2026,Jets,DST,2400,5.4,1.1,1.0,2.8
+dk_classic_wk2_main_20Sep2026,Demarcus Robinson,WR,3900,1.0,0.7,0.8,5.3
+dk_classic_wk2_main_20Sep2026,Bengals,DST,2700,2.3,0.8,0.9,4.6
+dk_classic_wk2_main_20Sep2026,Kayshon Boutte,WR,4000,3.6,0.7,0.9,8.8
+dk_classic_wk2_main_20Sep2026,Jake Ferguson,TE,3800,4.5,1.1,1.4,11.2
+dk_classic_wk2_main_20Sep2026,Cardinals,DST,2500,5.1,0.7,0.8,4.3
+dk_classic_wk2_main_20Sep2026,Samaje Perine,RB,4400,0.0,0.5,0.5,5.3
+dk_classic_wk2_main_20Sep2026,Greg Dulcich,TE,3200,0.1,0.6,0.6,6.4
+dk_classic_wk2_main_20Sep2026,Elic Ayomanor,WR,3500,0.0,0.3,0.5,7.3
+dk_classic_wk2_main_20Sep2026,Falcons,DST,2900,1.0,0.6,0.9,7.1
+dk_classic_wk2_main_20Sep2026,Chris Brooks,RB,4800,0.0,0.8,0.6,2.0
+dk_classic_wk2_main_20Sep2026,AJ Barner,TE,3300,0.3,0.6,0.7,8.3
+dk_classic_wk2_main_20Sep2026,Steelers,DST,2800,4.8,0.5,0.8,7.8
+dk_classic_wk2_main_20Sep2026,Mason Taylor,TE,2800,0.0,1.6,1.9,6.8
+dk_classic_wk2_main_20Sep2026,Keaton Mitchell,RB,4600,0.0,0.7,0.7,4.3
+dk_classic_wk2_main_20Sep2026,Raiders,DST,2600,1.6,0.6,0.7,4.4
+dk_classic_wk2_main_20Sep2026,Jack Bech,WR,3600,0.2,0.4,0.4,2.7
+dk_classic_wk2_main_20Sep2026,Gunnar Helm,TE,3100,0.1,0.5,0.5,5.7
+dk_classic_wk2_main_20Sep2026,Saints,DST,2300,0.4,0.9,1.3,6.9
+dk_classic_wk2_main_20Sep2026,Tank Bigsby,RB,4700,0.0,0.5,0.5,3.3
+dk_classic_wk2_main_20Sep2026,Jahan Dotson,WR,3400,0.0,0.4,0.4,2.8
+dk_classic_wk2_main_20Sep2026,Oronde Gadsden II,TE,3500,0.3,0.8,0.9,8.8
+dk_classic_wk2_main_20Sep2026,Noah Fant,TE,3400,0.3,0.7,0.7,5.2
+dk_classic_wk2_main_20Sep2026,George Holani,RB,4500,0.0,0.4,0.3,1.9
+dk_classic_wk2_main_20Sep2026,Isaiah Williams,WR,3300,0.0,0.4,0.5,4.0
+dk_classic_wk2_main_20Sep2026,Max Brosmer,QB,4000,0.0,0.5,0.4,1.3
+dk_classic_wk2_main_20Sep2026,Joe Milton III,QB,4000,0.0,0.7,0.5,3.3
+dk_classic_wk2_main_20Sep2026,Braelon Allen,RB,4200,0.0,0.3,0.4,4.1
+dk_classic_wk2_main_20Sep2026,Jaylin Noel,WR,3700,1.4,0.6,0.6,3.6
+dk_classic_wk2_main_20Sep2026,David Njoku,TE,3000,2.0,1.3,1.5,7.2
+dk_classic_wk2_main_20Sep2026,Easton Stick,QB,4000,0.0,0.5,0.3,0.0
+dk_classic_wk2_main_20Sep2026,Emari Demercado,RB,4500,0.0,0.8,0.7,4.6
+dk_classic_wk2_main_20Sep2026,Cole Kmet,TE,3000,0.5,1.6,1.5,5.1
+dk_classic_wk2_main_20Sep2026,Sam Hartman,QB,4000,0.0,0.6,0.4,0.0
+dk_classic_wk2_main_20Sep2026,Vikings,DST,2600,1.1,0.7,1.0,8.0
+dk_classic_wk2_main_20Sep2026,Bailey Zappe,QB,4000,0.0,0.4,0.3,0.0
+dk_classic_wk2_main_20Sep2026,Commanders,DST,2500,0.2,0.8,0.9,4.5
+dk_classic_wk2_main_20Sep2026,Justice Hill,RB,4200,0.0,0.6,0.7,6.5
+dk_classic_wk2_main_20Sep2026,Troy Franklin,WR,3800,0.1,0.6,0.9,9.9
+dk_classic_wk2_main_20Sep2026,Miller Moss,QB,4000,0.0,0.6,0.4,0.0
+dk_classic_wk2_main_20Sep2026,Kaytron Allen,RB,4500,0.0,0.6,0.5,0.0
+dk_classic_wk2_main_20Sep2026,Mike Washington Jr.,RB,4300,0.1,0.3,0.3,0.0
+dk_classic_wk2_main_20Sep2026,Ted Hurst III,WR,3200,0.2,0.4,0.4,0.0
+dk_classic_wk2_main_20Sep2026,DJ Uiagalelei,QB,4000,0.0,0.5,0.3,0.0
+dk_classic_wk2_main_20Sep2026,Jahdae Walker,WR,3400,0.1,0.6,0.6,3.0
+dk_classic_wk2_main_20Sep2026,Mark Gronowski,QB,4000,0.0,0.5,0.3,0.0
+dk_classic_wk2_main_20Sep2026,Chris Bell,WR,3500,0.1,0.4,0.3,0.0
+dk_classic_wk2_main_20Sep2026,Chris Moore,WR,3300,0.3,0.6,0.5,2.8
+dk_classic_wk2_main_20Sep2026,Jonnu Smith,TE,2900,0.1,0.6,0.6,4.8
+dk_classic_wk2_main_20Sep2026,Dolphins,DST,2000,0.9,0.5,0.7,5.6
+dk_classic_wk2_main_20Sep2026,Xavier Legette,WR,3400,0.0,0.4,0.5,5.7
+dk_classic_wk2_main_20Sep2026,Sean Clifford,QB,4000,0.0,0.4,0.3,0.0
+dk_classic_wk2_main_20Sep2026,Roman Wilson,WR,3200,1.4,0.3,0.3,3.0
+dk_classic_wk2_main_20Sep2026,Josh Oliver,TE,2500,0.2,1.6,1.5,3.7
+dk_classic_wk2_main_20Sep2026,Kedon Slovis,QB,4000,0.0,0.5,0.3,-0.0
+dk_classic_wk2_main_20Sep2026,Jaylen Wright,RB,4200,0.0,0.3,0.3,5.2
+dk_classic_wk2_main_20Sep2026,Joey Aguilar,QB,4000,0.0,0.4,0.3,0.0
+dk_classic_wk2_main_20Sep2026,Olamide Zaccheaus,WR,3200,0.0,0.4,0.4,5.3
+dk_classic_wk2_main_20Sep2026,Tommy Tremble,TE,2600,0.4,0.5,0.5,3.8
+dk_classic_wk2_main_20Sep2026,Hendon Hooker,QB,4000,0.0,0.3,0.2,0.0
+dk_classic_wk2_main_20Sep2026,Corey Kiner,RB,4200,0.0,0.3,0.3,2.3
+dk_classic_wk2_main_20Sep2026,Raheim Sanders,RB,4000,0.0,0.2,0.3,4.1
+dk_classic_wk2_main_20Sep2026,Andrei Iosivas,WR,3100,0.1,0.4,0.5,5.3
+dk_classic_wk2_main_20Sep2026,Kyle Williams,WR,3600,0.1,0.4,0.4,2.5
+dk_classic_wk2_main_20Sep2026,John Bates,TE,2700,0.6,1.3,1.0,1.8
+dk_classic_wk2_main_20Sep2026,Bryce Lance,WR,3200,0.1,0.4,0.3,0.0
+dk_classic_wk2_main_20Sep2026,Brevyn Spann-Ford,TE,2800,0.0,1.5,1.1,1.4
+dk_classic_wk2_main_20Sep2026,Darnell Washington,TE,2900,0.1,0.4,0.4,4.7
+dk_classic_wk2_main_20Sep2026,Josh Cameron,WR,3000,0.0,0.4,0.3,0.0
+dk_classic_wk2_main_20Sep2026,Adam Trautman,TE,2800,0.0,0.6,0.5,2.4
+dk_classic_wk2_main_20Sep2026,Jalen McMillan,WR,4400,0.2,0.6,0.8,8.2
+dk_classic_wk2_main_20Sep2026,Will Shipley,RB,4200,0.0,0.3,0.3,1.3
+dk_classic_wk2_main_20Sep2026,Ameer Abdullah,RB,4100,0.0,0.3,0.3,2.8
+dk_classic_wk2_main_20Sep2026,Nick Mullens,QB,4000,0.0,0.4,0.3,-0.0
+dk_classic_wk2_main_20Sep2026,Emanuel Wilson,RB,4000,0.0,0.3,0.3,5.4
+dk_classic_wk2_main_20Sep2026,Sean Tucker,RB,4400,0.0,0.4,0.4,5.6
+dk_classic_wk2_main_20Sep2026,CJ Donaldson,RB,4000,0.0,0.3,0.3,0.0
+dk_classic_wk2_main_20Sep2026,KaVontae Turpin,WR,3100,0.1,0.5,0.7,5.7
+dk_classic_wk2_main_20Sep2026,Kevin Coleman Jr.,WR,3000,0.0,0.3,0.3,0.0
+dk_classic_wk2_main_20Sep2026,LaJohntay Wester,WR,3100,0.4,0.5,0.4,-0.1
+dk_classic_wk2_main_20Sep2026,Zachariah Branch,WR,3500,0.0,0.4,0.3,0.0
+dk_classic_wk2_main_20Sep2026,Mitchell Evans,TE,2500,0.0,0.4,0.4,2.7
+dk_classic_wk2_main_20Sep2026,Drew Sample,TE,2600,0.1,0.5,0.4,1.9
+dk_classic_wk2_main_20Sep2026,Malik Benson,WR,3000,0.0,0.3,0.3,0.0
+dk_classic_wk2_main_20Sep2026,Daniel Bellinger,TE,2600,0.0,0.3,0.3,3.7
+dk_classic_wk2_main_20Sep2026,AJ Dillon,RB,4000,0.0,0.3,0.3,1.4
+dk_classic_wk2_main_20Sep2026,Hunter Luepke,RB,4000,0.0,0.6,0.5,2.2
+dk_classic_wk2_main_20Sep2026,Kaleb Johnson,RB,4300,0.0,0.4,0.3,0.9
+dk_classic_wk2_main_20Sep2026,Chimere Dike,WR,3000,0.0,0.3,0.4,7.5
+dk_classic_wk2_main_20Sep2026,Bo Melton,WR,3000,0.0,0.4,0.4,0.2
+dk_classic_wk2_main_20Sep2026,Tez Johnson,WR,3000,0.0,0.4,0.5,5.8
+dk_classic_wk2_main_20Sep2026,Lan Larison,RB,4000,0.0,0.3,0.3,0.0
+dk_classic_wk2_main_20Sep2026,Rashod Bateman,WR,4400,8.0,0.7,0.7,4.3
+dk_classic_wk2_main_20Sep2026,Foster Moreau,TE,2700,0.0,0.6,0.4,1.2
+dk_classic_wk2_main_20Sep2026,Eli Raridon,TE,3000,0.1,0.5,0.4,0.0
+dk_classic_wk2_main_20Sep2026,Jimmy Horn Jr.,WR,3000,0.0,0.4,0.4,1.9
+dk_classic_wk2_main_20Sep2026,Dohnte Meyers,WR,3000,0.0,0.4,0.3,0.0
+dk_classic_wk2_main_20Sep2026,Jeremy Ruckert,TE,2500,0.0,0.4,0.4,2.8
+dk_classic_wk2_main_20Sep2026,Arian Smith,WR,3000,0.0,0.4,0.3,0.8
+dk_classic_wk2_main_20Sep2026,Dyami Brown,WR,3000,0.0,0.5,0.5,3.6
+dk_classic_wk2_main_20Sep2026,Tanner Hudson,TE,2500,0.0,0.4,0.4,3.2
+dk_classic_wk2_main_20Sep2026,Cade Stover,TE,2500,0.0,0.5,0.4,2.3
+dk_classic_wk2_main_20Sep2026,Jonah Coleman,RB,4200,0.2,0.4,0.3,0.0
+dk_classic_wk2_main_20Sep2026,Alvin Kamara,RB,4600,0.3,0.5,0.6,9.3
+dk_classic_wk2_main_20Sep2026,Jonathan Mingo,WR,3000,0.0,0.5,0.4,0.6
+dk_classic_wk2_main_20Sep2026,Jared Wayne,WR,3000,0.0,0.4,0.5,4.0
+dk_classic_wk2_main_20Sep2026,Brady Russell,RB,4000,0.0,0.3,0.2,0.0
+dk_classic_wk2_main_20Sep2026,DeeJay Dallas,RB,4000,0.0,0.4,0.3,0.4
+dk_classic_wk2_main_20Sep2026,Jaylin Lane,WR,3000,0.0,0.5,0.5,3.3
+dk_classic_wk2_main_20Sep2026,Rasheen Ali,RB,4000,0.0,0.5,0.4,1.6
+dk_classic_wk2_main_20Sep2026,Carson Wentz,QB,4600,10.3,0.5,0.8,16.3
+dk_classic_wk2_main_20Sep2026,Luke Schoonmaker,TE,2500,0.0,0.6,0.5,1.6
+dk_classic_wk2_main_20Sep2026,Josh Williams,RB,4000,0.0,0.3,0.3,0.4
+dk_classic_wk2_main_20Sep2026,Tahj Brooks,RB,4000,0.0,0.3,0.3,0.4
+dk_classic_wk2_main_20Sep2026,Luke Farrell,TE,2500,1.1,0.5,0.4,1.7
+dk_classic_wk2_main_20Sep2026,Nate Boerkircher,TE,2500,0.0,0.4,0.3,0.0
+dk_classic_wk2_main_20Sep2026,Cody White,WR,3000,0.0,0.3,0.3,1.8
+dk_classic_wk2_main_20Sep2026,Blake Whiteheart,TE,2500,0.0,0.3,0.2,0.1
+dk_classic_wk2_main_20Sep2026,Derius Davis,WR,3000,0.0,0.4,0.3,0.2
+dk_classic_wk2_main_20Sep2026,Charlie Kolar,TE,2700,0.0,0.5,0.4,2.1
+dk_classic_wk2_main_20Sep2026,Skyy Moore,WR,3000,0.0,0.4,0.4,0.8
+dk_classic_wk2_main_20Sep2026,Marlin Klein,TE,2500,0.0,0.5,0.3,0.0
+dk_classic_wk2_main_20Sep2026,Will Kacmarek,TE,2500,0.0,0.3,0.2,0.0
+dk_classic_wk2_main_20Sep2026,Roschon Johnson,RB,4000,0.0,0.5,0.4,0.2
+dk_classic_wk2_main_20Sep2026,Quintin Morris,TE,2500,0.0,0.4,0.3,1.2
+dk_classic_wk2_main_20Sep2026,KhaDarel Hodge,WR,3000,0.0,0.5,0.4,0.5
+dk_classic_wk2_main_20Sep2026,Barion Brown,WR,3000,0.0,0.4,0.3,0.0
+dk_classic_wk2_main_20Sep2026,Durham Smythe,TE,2500,0.0,0.5,0.4,0.5
+dk_classic_wk2_main_20Sep2026,Kaden Davis,WR,3000,0.0,0.5,0.4,0.0
+dk_classic_wk2_main_20Sep2026,Eli Heidenreich,RB,4000,0.0,0.2,0.2,0.0
+dk_classic_wk2_main_20Sep2026,Myles Price,WR,3000,0.0,0.4,0.3,-0.2
+dk_classic_wk2_main_20Sep2026,Kameron Johnson,WR,3000,0.0,0.4,0.3,1.0
+dk_classic_wk2_main_20Sep2026,Jacob Cowing,WR,3000,0.0,0.5,0.4,0.0
+dk_classic_wk2_main_20Sep2026,Chris Blair,WR,3000,0.0,0.3,0.3,0.0
+dk_classic_wk2_main_20Sep2026,Montorie Foster Jr.,WR,3000,0.0,0.3,0.3,0.0
+dk_classic_wk2_main_20Sep2026,Brycen Tremayne,WR,3000,0.0,0.3,0.3,1.8
+dk_classic_wk2_main_20Sep2026,Dylan Laube,RB,4000,0.0,0.2,0.2,0.3
+dk_classic_wk2_main_20Sep2026,Darius Cooper,WR,3000,0.0,0.3,0.3,1.4
+dk_classic_wk2_main_20Sep2026,Britain Covey,WR,3000,0.0,0.3,0.3,0.6
+dk_classic_wk2_main_20Sep2026,Colson Yankoff,TE,2500,0.0,0.5,0.3,0.3
+dk_classic_wk2_main_20Sep2026,Kaden Wetjen,WR,3000,0.0,0.3,0.2,0.0
+dk_classic_wk2_main_20Sep2026,Malachi Corley,WR,3000,0.0,0.3,0.3,2.4
+dk_classic_wk2_main_20Sep2026,Kimani Vidal,RB,4300,0.0,0.3,0.5,9.6
+dk_classic_wk2_main_20Sep2026,Feleipe Franks,TE,2500,0.0,0.4,0.3,0.0
+dk_classic_wk2_main_20Sep2026,Eric Saubert,TE,2500,0.0,0.3,0.3,0.7
+dk_classic_wk2_main_20Sep2026,Devin Duvernay,WR,3000,0.0,0.3,0.2,0.2
+dk_classic_wk2_main_20Sep2026,Simi Fehoko,WR,3000,0.0,0.3,0.2,0.0
+dk_classic_wk2_main_20Sep2026,Carsen Ryan,TE,2500,0.0,0.3,0.2,0.0
+dk_classic_wk2_main_20Sep2026,Nick Muse,TE,2500,0.0,0.3,0.3,0.0
+dk_classic_wk2_main_20Sep2026,Bauer Sharp,TE,2500,0.0,0.4,0.3,0.0
+dk_classic_wk2_main_20Sep2026,Calvin Ridley,WR,4100,0.0,0.3,0.5,7.2
+dk_classic_wk2_main_20Sep2026,Dareke Young,WR,3000,0.0,0.3,0.3,0.6
+dk_classic_wk2_main_20Sep2026,Treyton Welch,TE,2500,0.0,0.4,0.3,0.0
+dk_classic_wk2_main_20Sep2026,Nate Adkins,TE,2500,0.0,0.4,0.4,1.6
+dk_classic_wk2_main_20Sep2026,Devontez Walker,WR,3400,0.6,0.5,0.5,3.1
+dk_classic_wk2_main_20Sep2026,Hunter Long,TE,2500,0.0,0.3,0.3,3.6
+dk_classic_wk2_main_20Sep2026,Kyle Juszczyk,RB,4000,0.0,0.4,0.4,3.6
+dk_classic_wk2_main_20Sep2026,Sam Howell,QB,4000,0.0,0.6,0.4,0.0
+dk_classic_wk2_main_20Sep2026,Tyler Goodson,RB,4000,0.0,0.2,0.2,0.5
+dk_classic_wk2_main_20Sep2026,Mac Jones,QB,4000,0.0,0.5,0.8,12.3
+dk_classic_wk2_main_20Sep2026,Kurtis Rourke,QB,4000,0.0,0.5,0.4,0.0
+dk_classic_wk2_main_20Sep2026,Ben Sinnott,TE,2900,0.3,0.5,0.5,1.8
+dk_classic_wk2_main_20Sep2026,Jalon Daniels,QB,4000,0.0,0.4,0.3,0.0
+dk_classic_wk2_main_20Sep2026,LeQuint Allen Jr.,RB,4000,0.0,0.3,0.3,1.5
+dk_classic_wk2_main_20Sep2026,Tyler Huntley,QB,4000,0.0,0.5,0.6,8.0
+dk_classic_wk2_main_20Sep2026,Craig Reynolds,RB,4000,0.0,0.4,0.3,0.1
+dk_classic_wk2_main_20Sep2026,Dameon Pierce,RB,4000,0.0,0.2,0.2,0.7
+dk_classic_wk2_main_20Sep2026,Jarrett Stidham,QB,4200,0.0,0.4,0.4,4.8
+dk_classic_wk2_main_20Sep2026,Andrew Beck,RB,4000,0.0,0.2,0.2,1.4
+dk_classic_wk2_main_20Sep2026,Reggie Gilliam,RB,4000,0.0,0.2,0.2,0.3
+dk_classic_wk2_main_20Sep2026,J.J. McCarthy,QB,4300,0.0,0.4,0.7,13.9
+dk_classic_wk2_main_20Sep2026,Jawhar Jordan,RB,4000,0.0,0.3,0.5,8.2
+dk_classic_wk2_main_20Sep2026,Zavier Scott,RB,4000,0.0,0.4,0.4,2.5
+dk_classic_wk2_main_20Sep2026,British Brooks,RB,4000,0.0,0.3,0.3,0.5
+dk_classic_wk2_main_20Sep2026,Jaydon Blue,RB,4000,0.0,0.2,0.3,4.1
+dk_classic_wk2_main_20Sep2026,Hassan Haskins,RB,4000,0.0,0.2,0.2,0.8
+dk_classic_wk2_main_20Sep2026,Adam Prentice,RB,4000,0.0,0.3,0.3,0.8
+dk_classic_wk2_main_20Sep2026,Jack Strand,QB,4000,0.0,0.3,0.2,0.0
+dk_classic_wk2_main_20Sep2026,Isaiah Davis,RB,4000,0.0,0.2,0.3,4.5
+dk_classic_wk2_main_20Sep2026,Joe Flacco,QB,4100,0.0,0.3,0.6,12.7
+dk_classic_wk2_main_20Sep2026,Jaleel McLaughlin,RB,4000,0.0,0.2,0.3,3.6
+dk_classic_wk2_main_20Sep2026,Jalen Milroe,QB,4400,0.0,0.3,0.3,-0.2
+dk_classic_wk2_main_20Sep2026,Kendall Milton,RB,4000,0.0,0.3,0.2,0.2
+dk_classic_wk2_main_20Sep2026,Tyler Badie,RB,4000,0.0,0.3,0.3,2.1
+dk_classic_wk2_main_20Sep2026,Kenny Pickett,QB,4000,0.0,0.3,0.3,1.8
+dk_classic_wk2_main_20Sep2026,Lil'Jordan Humphrey,WR,3300,0.0,0.4,0.5,4.0
+dk_classic_wk2_main_20Sep2026,Tory Horton,WR,3200,0.0,0.3,0.5,8.1
+dk_classic_wk2_main_20Sep2026,Elijah Sarratt,WR,3700,0.1,0.5,0.5,0.0
+dk_classic_wk2_main_20Sep2026,Amar Johnson,RB,4000,0.0,0.3,0.3,0.4
+dk_classic_wk2_main_20Sep2026,Marcus Mariota,QB,4000,0.0,0.4,0.7,12.3
+dk_classic_wk2_main_20Sep2026,Travis Hunter,WR,3300,0.0,0.3,0.6,9.5
+dk_classic_wk2_main_20Sep2026,Trey Lance,QB,4000,0.0,0.4,0.4,3.9
+dk_classic_wk2_main_20Sep2026,Velus Jones Jr.,RB,4000,0.0,0.2,0.2,0.5
+dk_classic_wk2_main_20Sep2026,Kalel Mullings,RB,4000,0.0,0.2,0.2,0.1
+dk_classic_wk2_main_20Sep2026,Tyson Bagent,QB,4000,0.0,0.4,0.4,0.9
+dk_classic_wk2_main_20Sep2026,Julius Chestnut,RB,4000,0.0,0.2,0.2,0.2
+dk_classic_wk2_main_20Sep2026,Michael Carter,RB,4000,0.0,0.2,0.3,7.6
+dk_classic_wk2_main_20Sep2026,Jacardia Wright,RB,4000,0.0,0.2,0.2,2.0
+dk_classic_wk2_main_20Sep2026,Alec Ingold,RB,4000,0.0,0.3,0.3,0.8
+dk_classic_wk2_main_20Sep2026,Athan Kaliakmanis,QB,4000,0.0,0.4,0.3,0.0
+dk_classic_wk2_main_20Sep2026,Travis Homer,RB,4000,0.0,0.2,0.2,-0.0
+dk_classic_wk2_main_20Sep2026,Shedeur Sanders,QB,4500,0.0,0.3,0.5,12.4
+dk_classic_wk2_main_20Sep2026,Cade Klubnik,QB,4000,0.0,0.3,0.2,0.0
+dk_classic_wk2_main_20Sep2026,Fernando Mendoza,QB,4500,0.0,0.3,0.3,0.0
+dk_classic_wk2_main_20Sep2026,Quinn Ewers,QB,4000,0.0,0.3,0.4,9.0
+dk_classic_wk2_main_20Sep2026,Sam Ehlinger,QB,4000,0.0,0.4,0.3,0.0
+dk_classic_wk2_main_20Sep2026,Lew Nichols,RB,4000,0.0,0.2,0.2,0.0
+dk_classic_wk2_main_20Sep2026,Evan Hull,RB,4000,0.0,0.2,0.2,1.1
+dk_classic_wk2_main_20Sep2026,Bam Knight,RB,4000,0.0,0.2,0.4,7.8
+dk_classic_wk2_main_20Sep2026,James Mitchell,TE,2500,0.0,0.5,0.4,1.0
+dk_classic_wk2_main_20Sep2026,Riley Nowakowski,RB,4000,0.0,0.2,0.2,0.0
+dk_classic_wk2_main_20Sep2026,Mitchell Trubisky,QB,4000,0.0,0.3,0.4,7.8
+dk_classic_wk2_main_20Sep2026,Zamir White,RB,4000,0.0,0.2,0.2,1.6
+dk_classic_wk2_main_20Sep2026,Dare Ogunbowale,RB,4000,0.0,0.2,0.2,1.3
+dk_classic_wk2_main_20Sep2026,Davis Mills,QB,4000,0.0,0.3,0.5,11.6
+dk_classic_wk2_main_20Sep2026,Ollie Gordon II,RB,4000,0.0,0.2,0.3,3.2
+dk_classic_wk2_main_20Sep2026,Andy Dalton,QB,4000,0.0,0.3,0.3,3.1
+dk_classic_wk2_main_20Sep2026,Connor Heyward,RB,4000,0.0,0.2,0.2,1.5
+dk_classic_wk2_main_20Sep2026,Tai Felton,WR,3000,0.0,0.4,0.3,0.3
+dk_classic_wk2_main_20Sep2026,Jack Westover,TE,2500,0.0,0.4,0.3,0.1
+dk_classic_wk2_main_20Sep2026,Casey Washington,WR,3000,0.0,0.3,0.4,2.2
+dk_classic_wk2_main_20Sep2026,Treylon Burks,WR,3000,0.0,0.4,0.5,3.6
+dk_classic_wk2_main_20Sep2026,Luke McCaffrey,WR,3000,0.0,0.4,0.6,5.7
+dk_classic_wk2_main_20Sep2026,Tommy DeVito,QB,4000,0.0,0.3,0.2,0.0
+dk_classic_wk2_main_20Sep2026,David Moore,WR,3000,0.0,0.3,0.3,0.7
+dk_classic_wk2_main_20Sep2026,Tyler Ott,TE,2500,0.0,0.4,0.3,0.0
+dk_classic_wk2_main_20Sep2026,Cooper Rush,QB,4200,0.5,0.3,0.3,1.7
+dk_classic_wk2_main_20Sep2026,Jelani Woods,TE,2500,0.0,0.3,0.3,0.3
+dk_classic_wk2_main_20Sep2026,Van Jefferson,WR,3000,0.0,0.4,0.5,4.4
+dk_classic_wk2_main_20Sep2026,Efton Chism III,WR,3100,0.0,0.3,0.3,2.0
+dk_classic_wk2_main_20Sep2026,Dylan Drummond,WR,3000,0.0,0.3,0.3,1.2
+dk_classic_wk2_main_20Sep2026,Jordan Watkins,WR,3000,0.0,0.4,0.4,0.9
+dk_classic_wk2_main_20Sep2026,River Cracraft,WR,3000,0.0,0.4,0.4,0.0
+dk_classic_wk2_main_20Sep2026,Ben Skowronek,WR,3000,0.0,0.2,0.3,0.9
+dk_classic_wk2_main_20Sep2026,Theo Wease Jr.,WR,3000,0.0,0.3,0.6,8.6
+dk_classic_wk2_main_20Sep2026,John Metchie III,WR,3000,0.0,0.3,0.4,4.5
+dk_classic_wk2_main_20Sep2026,William Wagner,TE,2500,0.0,0.4,0.3,0.0
+dk_classic_wk2_main_20Sep2026,Isaiah Bond,WR,3000,0.0,0.2,0.3,3.4
+dk_classic_wk2_main_20Sep2026,Xavier Gipson,WR,3000,0.0,0.3,0.3,0.1
+dk_classic_wk2_main_20Sep2026,Ryan Miller,WR,3000,0.0,0.2,0.3,0.9
+dk_classic_wk2_main_20Sep2026,Tylan Wallace,WR,3000,0.0,0.2,0.2,1.0
+dk_classic_wk2_main_20Sep2026,Austin Trammell,WR,3000,0.0,0.3,0.3,1.3
+dk_classic_wk2_main_20Sep2026,Carson Beck,QB,4000,0.0,0.3,0.2,0.0
+dk_classic_wk2_main_20Sep2026,Michael Bandy,WR,3000,0.0,0.3,0.4,3.5
+dk_classic_wk2_main_20Sep2026,Austin Hooper,TE,2500,0.0,0.3,0.3,3.2
+dk_classic_wk2_main_20Sep2026,Gardner Minshew II,QB,4000,0.0,0.3,0.2,0.2
+dk_classic_wk2_main_20Sep2026,Cam Grandy,TE,2500,0.0,0.4,0.3,0.5
+dk_classic_wk2_main_20Sep2026,Jalen Tolbert,WR,3000,0.0,0.2,0.3,3.6
+dk_classic_wk2_main_20Sep2026,Kevin Austin Jr.,WR,3000,0.0,0.3,0.4,4.1
+dk_classic_wk2_main_20Sep2026,Tim Jones,WR,3000,0.0,0.3,0.3,0.5
+dk_classic_wk2_main_20Sep2026,Payne Durham,TE,2500,0.0,0.3,0.3,0.1
+dk_classic_wk2_main_20Sep2026,E.J. Jenkins,TE,2500,0.0,0.3,0.3,0.0
+dk_classic_wk2_main_20Sep2026,Evan Deckers,TE,2500,0.0,0.3,0.3,0.0
+dk_classic_wk2_main_20Sep2026,Elijah Arroyo,TE,2500,0.0,0.3,0.3,2.7
+dk_classic_wk2_main_20Sep2026,Cedric Tillman,WR,3000,0.0,0.3,0.4,4.6
+dk_classic_wk2_main_20Sep2026,Jalen Moreno-Cropper,WR,3000,0.0,0.3,0.3,0.0
+dk_classic_wk2_main_20Sep2026,Mason Rudolph,QB,4000,0.0,0.3,0.3,3.0
+dk_classic_wk2_main_20Sep2026,Xavier Restrepo,WR,3000,0.0,0.2,0.3,3.6
+dk_classic_wk2_main_20Sep2026,Nick Kallerup,TE,2500,0.0,0.3,0.2,0.0
+dk_classic_wk2_main_20Sep2026,Brenen Thompson,WR,3500,0.0,0.3,0.3,0.0
+dk_classic_wk2_main_20Sep2026,Andrew DePaola,TE,2500,0.0,0.3,0.3,0.0
+dk_classic_wk2_main_20Sep2026,Jalen Brooks,WR,3000,0.0,0.2,0.3,1.2
+dk_classic_wk2_main_20Sep2026,Johnny Mundt,TE,2500,0.0,0.3,0.3,1.2
+dk_classic_wk2_main_20Sep2026,Brayden Willis,TE,2500,0.0,0.4,0.3,0.0
+dk_classic_wk2_main_20Sep2026,Charlie Woerner,TE,2500,0.0,0.3,0.3,0.8
+dk_classic_wk2_main_20Sep2026,Hayden Rucci,TE,2500,0.0,0.3,0.3,0.0
+dk_classic_wk2_main_20Sep2026,Ko Kieft,TE,2500,0.0,0.3,0.3,0.0
+dk_classic_wk2_main_20Sep2026,Drake Dabney,TE,2500,0.0,0.3,0.3,0.7
+dk_classic_wk2_main_20Sep2026,Zaire Mitchell-Paden,TE,2500,0.0,0.4,0.3,0.5
+dk_classic_wk2_main_20Sep2026,Deven Thompkins,WR,3000,0.0,0.2,0.3,0.9
+dk_classic_wk2_main_20Sep2026,Josh Whyle,TE,2500,0.0,0.3,0.3,1.8
+dk_classic_wk2_main_20Sep2026,Ronnie Bell,WR,3000,0.0,0.2,0.4,5.2
+dk_classic_wk2_main_20Sep2026,Lucas Krull,TE,2500,0.0,0.4,0.3,1.2
+dk_classic_wk2_main_20Sep2026,Robert Tonyan,TE,2500,0.0,0.3,0.2,0.1
+dk_classic_wk2_main_20Sep2026,Stone Smartt,TE,2500,0.0,0.3,0.3,0.8
+dk_classic_wk2_main_20Sep2026,Spencer Rattler,QB,4000,0.0,0.3,0.5,11.8
+dk_classic_wk2_main_20Sep2026,Cameron Latu,TE,2500,0.0,0.3,0.2,0.0
+dk_classic_wk2_main_20Sep2026,Tyrod Taylor,QB,4000,0.0,0.3,0.4,10.9
+dk_classic_wk2_main_20Sep2026,Shane Zylstra,TE,2500,0.0,0.3,0.3,0.8
+dk_classic_wk2_main_20Sep2026,Mitchell Fraboni,TE,2500,0.0,0.3,0.3,0.0
+dk_classic_wk2_main_20Sep2026,Elijah Higgins,TE,2500,0.0,0.3,0.3,3.5
+dk_classic_wk2_main_20Sep2026,Brady Cook,QB,4000,0.0,0.3,0.4,7.3
+dk_classic_wk2_main_20Sep2026,Teagan Quitoriano,TE,2500,0.0,0.3,0.2,0.0
+dk_classic_wk2_main_20Sep2026,Zach Wood,TE,2500,0.0,0.3,0.2,0.0
+dk_classic_wk2_main_20Sep2026,Kyle McCord,QB,4000,0.0,0.3,0.2,0.0
+dk_classic_wk2_main_20Sep2026,David Martin-Robinson,TE,2500,0.0,0.3,0.3,0.8
+dk_classic_wk2_main_20Sep2026,Jonathan Ward,RB,4000,0.0,0.3,0.3,0.0
+dk_classic_wk2_main_20Sep2026,Ian Thomas,TE,2500,0.0,0.3,0.3,1.6
+dk_classic_wk2_main_20Sep2026,Germie Bernard,WR,3400,0.1,0.2,0.2,0.0
+dk_classic_wk2_main_20Sep2026,Jordan James,RB,4000,0.0,0.3,0.3,0.8
+dk_classic_wk2_main_20Sep2026,Sincere McCormick,RB,4000,0.0,0.3,0.3,0.0
+dk_classic_wk2_main_20Sep2026,Israel Abanikanda,RB,4000,0.0,0.3,0.3,0.0
+dk_classic_wk2_main_20Sep2026,Cash Jones,RB,4000,0.0,0.2,0.2,0.0
+dk_classic_wk2_main_20Sep2026,J'Mari Taylor,RB,4000,0.0,0.2,0.2,0.0
+dk_classic_wk2_main_20Sep2026,Noah Whittington,RB,4000,0.0,0.2,0.2,0.0
+dk_classic_wk2_main_20Sep2026,Max Bredeson,RB,4000,0.0,0.2,0.2,0.0
+dk_classic_wk2_main_20Sep2026,Demond Claiborne,RB,4000,0.2,0.2,0.2,0.0
+dk_classic_wk2_main_20Sep2026,Robert Henry Jr.,RB,4000,0.0,0.2,0.2,0.0
+dk_classic_wk2_main_20Sep2026,Carson Steele,RB,4000,0.0,0.2,0.2,0.0
+dk_classic_wk2_main_20Sep2026,Ahmani Marshall,RB,4000,0.0,0.2,0.2,0.0
+dk_classic_wk2_main_20Sep2026,Anthony Tyus III,RB,4000,0.0,0.2,0.2,0.0
+dk_classic_wk2_main_20Sep2026,Salvon Ahmed,RB,4000,0.0,0.3,0.3,0.0
+dk_classic_wk2_main_20Sep2026,Cody Schrader,RB,4000,0.0,0.2,0.2,0.0
+dk_classic_wk2_main_20Sep2026,Kentrel Bullock,RB,4000,0.0,0.2,0.2,0.0
+dk_classic_wk2_main_20Sep2026,Zavion Thomas,WR,3100,0.0,0.3,0.3,0.0
+dk_classic_wk2_main_20Sep2026,Gregory Desrosiers,RB,4000,0.0,0.2,0.2,0.0
+dk_classic_wk2_main_20Sep2026,Michael Burton,RB,4000,0.0,0.2,0.2,0.0
+dk_classic_wk2_main_20Sep2026,Anthony Smith,WR,3000,0.0,0.4,0.4,0.0
+dk_classic_wk2_main_20Sep2026,Damon Bankston,RB,4000,0.0,0.2,0.2,0.0
+dk_classic_wk2_main_20Sep2026,Camden Brown,WR,3000,0.0,0.4,0.4,0.0
+dk_classic_wk2_main_20Sep2026,Carlos Washington Jr.,RB,4000,0.0,0.2,0.2,0.0
+dk_classic_wk2_main_20Sep2026,JP Richardson,WR,3000,0.0,0.4,0.3,0.0
+dk_classic_wk2_main_20Sep2026,Pierre Strong Jr.,RB,4000,0.0,0.2,0.2,0.0
+dk_classic_wk2_main_20Sep2026,Xavier Guillory,WR,3000,0.0,0.4,0.3,0.0
+dk_classic_wk2_main_20Sep2026,DJ Herman,RB,4000,0.0,0.2,0.2,0.0
+dk_classic_wk2_main_20Sep2026,Jarquez Hunter,RB,4000,0.0,0.2,0.2,0.0
+dk_classic_wk2_main_20Sep2026,Michael Trigg,TE,2500,0.0,0.4,0.3,0.0
+dk_classic_wk2_main_20Sep2026,Jordan Hudson,WR,3000,0.0,0.4,0.4,0.0
+dk_classic_wk2_main_20Sep2026,Roman Hemby,RB,4000,0.0,0.2,0.2,0.0
+dk_classic_wk2_main_20Sep2026,Colbie Young,WR,3000,0.0,0.3,0.3,0.0
+dk_classic_wk2_main_20Sep2026,Dillon Bell,WR,3000,0.0,0.3,0.3,0.0
+dk_classic_wk2_main_20Sep2026,Jamaal Pritchett,WR,3000,0.0,0.2,0.3,0.0
+dk_classic_wk2_main_20Sep2026,Malik McClain,WR,3000,0.0,0.2,0.3,0.0
+dk_classic_wk2_main_20Sep2026,Jordan Moore,WR,3000,0.0,0.3,0.3,0.0
+dk_classic_wk2_main_20Sep2026,Michael Briscoe,WR,3000,0.0,0.3,0.3,0.0
+dk_classic_wk2_main_20Sep2026,Trayvon Rudolph,WR,3000,0.0,0.3,0.3,0.0
+dk_classic_wk2_main_20Sep2026,Ja'seem Reed,WR,3000,0.0,0.3,0.3,0.0
+dk_classic_wk2_main_20Sep2026,Noah Thomas,WR,3000,0.0,0.3,0.3,0.0
+dk_classic_wk2_main_20Sep2026,Vinny Anthony II,WR,3000,0.0,0.2,0.2,0.0
+dk_classic_wk2_main_20Sep2026,Josh Kelly,WR,3000,0.0,0.3,0.3,0.0
+dk_classic_wk2_main_20Sep2026,Dean Patterson IV,WR,3000,0.0,0.3,0.3,0.0
+dk_classic_wk2_main_20Sep2026,Eric Rivers Jr.,WR,3000,0.0,0.3,0.3,0.0
+dk_classic_wk2_main_20Sep2026,Kolbe Katsis,WR,3000,0.0,0.3,0.3,0.0
+dk_classic_wk2_main_20Sep2026,Jaden Bradley,WR,3000,0.0,0.3,0.3,0.0
+dk_classic_wk2_main_20Sep2026,Ty Pezza,TE,2500,0.0,0.4,0.3,0.0
+dk_classic_wk2_main_20Sep2026,Lewis Bond,WR,3000,0.0,0.3,0.3,0.0
+dk_classic_wk2_main_20Sep2026,Stephen Carlson,TE,2500,0.0,0.4,0.3,0.0
+dk_classic_wk2_main_20Sep2026,Antwane Wells Jr.,WR,3000,0.0,0.2,0.2,0.0
+dk_classic_wk2_main_20Sep2026,Qadir Ismail,TE,2500,0.0,0.4,0.3,0.0
+dk_classic_wk2_main_20Sep2026,Chris Hilton Jr.,WR,3000,0.0,0.3,0.3,0.0
+dk_classic_wk2_main_20Sep2026,Garrett Greene,WR,3000,0.0,0.3,0.3,0.0
+dk_classic_wk2_main_20Sep2026,Kole Wilson,WR,3000,0.0,0.2,0.2,0.0
+dk_classic_wk2_main_20Sep2026,Will Pauling,WR,3000,0.0,0.3,0.3,0.0
+dk_classic_wk2_main_20Sep2026,Nick Vannett,TE,2500,0.0,0.4,0.3,0.0
+dk_classic_wk2_main_20Sep2026,Josh Cuevas,TE,2500,0.0,0.4,0.3,0.0
+dk_classic_wk2_main_20Sep2026,Jalen Reagor,WR,3000,0.0,0.2,0.2,0.0
+dk_classic_wk2_main_20Sep2026,Daniel Sobkowicz,WR,3000,0.0,0.3,0.3,0.0
+dk_classic_wk2_main_20Sep2026,Gary Jennings Jr.,WR,3000,0.0,0.3,0.3,0.0
+dk_classic_wk2_main_20Sep2026,CJ Williams,WR,3000,0.0,0.2,0.2,0.0
+dk_classic_wk2_main_20Sep2026,Bub Means,WR,3000,0.0,0.2,0.2,0.0
+dk_classic_wk2_main_20Sep2026,Dane Key,WR,3000,0.0,0.3,0.3,0.0
+dk_classic_wk2_main_20Sep2026,Erick All Jr.,TE,2500,0.0,0.3,0.2,0.0
+dk_classic_wk2_main_20Sep2026,Emmanuel Henderson Jr.,WR,3000,0.0,0.2,0.2,0.0
+dk_classic_wk2_main_20Sep2026,Brandon Johnson,WR,3000,0.0,0.2,0.2,0.0
+dk_classic_wk2_main_20Sep2026,Brandon Smith,WR,3000,0.0,0.2,0.2,0.0
+dk_classic_wk2_main_20Sep2026,Irvin Charles,WR,3000,0.0,0.2,0.2,0.0
+dk_classic_wk2_main_20Sep2026,J. Michael Sturdivant,WR,3000,0.0,0.3,0.3,0.0
+dk_classic_wk2_main_20Sep2026,Isaiah Neyor,WR,3000,0.0,0.2,0.3,0.0
+dk_classic_wk2_main_20Sep2026,Julian Hicks,WR,3000,0.0,0.2,0.2,0.0
+dk_classic_wk2_main_20Sep2026,Sam Roush,TE,2500,0.0,0.3,0.3,0.0
+dk_classic_wk2_main_20Sep2026,Kyle Dixon,WR,3000,0.0,0.2,0.2,0.0
+dk_classic_wk2_main_20Sep2026,Ricky White III,WR,3000,0.0,0.2,0.2,0.0
+dk_classic_wk2_main_20Sep2026,Messiah Swinson,TE,2500,0.0,0.3,0.2,0.0
+dk_classic_wk2_main_20Sep2026,Jack Endries,TE,2500,0.0,0.3,0.2,0.0
+dk_classic_wk2_main_20Sep2026,Wesley Grimes,WR,3000,0.0,0.3,0.3,0.0
+dk_classic_wk2_main_20Sep2026,Tyren Montgomery,WR,3000,0.0,0.2,0.2,0.0
+dk_classic_wk2_main_20Sep2026,Michael Wortham,WR,3000,0.0,0.2,0.2,0.0
+dk_classic_wk2_main_20Sep2026,Reggie Virgil,WR,3000,0.0,0.2,0.2,0.0
+dk_classic_wk2_main_20Sep2026,Will Sheppard,WR,3000,0.0,0.2,0.2,0.0
+dk_classic_wk2_main_20Sep2026,Khalil Dinkins,TE,2500,0.0,0.3,0.3,0.0
+dk_classic_wk2_main_20Sep2026,Cameron Dorner,WR,3000,0.0,0.2,0.2,0.0
+dk_classic_wk2_main_20Sep2026,Tanner Koziol,TE,2500,0.0,0.3,0.2,0.0
+dk_classic_wk2_main_20Sep2026,Gavin Bartholomew,TE,2500,0.0,0.3,0.2,0.0
+dk_classic_wk2_main_20Sep2026,CJ Dippre,TE,2500,0.0,0.3,0.2,0.0
+dk_classic_wk2_main_20Sep2026,K.J. Osborn,WR,3000,0.0,0.2,0.2,0.0
+dk_classic_wk2_main_20Sep2026,Rocco Underwood,TE,2500,0.0,0.3,0.2,0.0
+dk_classic_wk2_main_20Sep2026,Kyrese Rowan,WR,3000,0.0,0.2,0.2,0.0
+dk_classic_wk2_main_20Sep2026,Mark Redman,TE,2500,0.0,0.3,0.2,0.0
+dk_classic_wk2_main_20Sep2026,Ihmir Smith-Marsette,WR,3000,0.0,0.2,0.2,0.0
+dk_classic_wk2_main_20Sep2026,Trebor Pena,WR,3000,0.0,0.2,0.2,0.0
+dk_classic_wk2_main_20Sep2026,Trey Palmer,WR,3000,0.0,0.2,0.2,0.0
+dk_classic_wk2_main_20Sep2026,Jack Velling,TE,2500,0.0,0.3,0.2,0.0
+dk_classic_wk2_main_20Sep2026,Harrison Wallace III,WR,3000,0.0,0.2,0.2,0.0
+dk_classic_wk2_main_20Sep2026,Justin Joly,TE,2500,0.0,0.3,0.2,0.0
+dk_classic_wk2_main_20Sep2026,Tre Watson,TE,2500,0.0,0.3,0.2,0.0
+dk_classic_wk2_main_20Sep2026,Patrick Herbert,TE,2500,0.0,0.3,0.2,0.0
+dk_classic_wk2_main_20Sep2026,Evan Svoboda,TE,2500,0.0,0.3,0.2,0.0
+dk_classic_wk2_main_20Sep2026,Seydou Traore,TE,2500,0.0,0.3,0.2,0.0
+dk_classic_wk2_main_20Sep2026,Dallen Bentley,TE,2500,0.0,0.3,0.2,0.0
+dk_classic_wk2_main_20Sep2026,Oscar Delp,TE,2500,0.0,0.3,0.2,0.0
+dk_classic_wk2_main_20Sep2026,Lake McRee,TE,2500,0.0,0.3,0.2,0.0
+dk_classic_wk2_main_20Sep2026,Patrick Gurd,TE,2500,0.0,0.3,0.2,0.0
+dk_classic_wk2_main_20Sep2026,Chris Myarick,TE,2500,0.0,0.3,0.2,0.0
+dk_classic_wk2_main_20Sep2026,Shawn Bowman,TE,2500,0.0,0.3,0.2,0.0
+dk_classic_wk2_main_20Sep2026,Joel Wilson,TE,2500,0.0,0.3,0.2,0.0
+dk_classic_wk2_early_20Sep2026,Lamar Jackson,QB,7300,11.4,32.9,29.0,29.0
+dk_classic_wk2_early_20Sep2026,Bijan Robinson,RB,8200,58.8,45.5,45.1,31.3
+dk_classic_wk2_early_20Sep2026,Caleb Williams,QB,6800,18.4,14.8,18.3,37.3
+dk_classic_wk2_early_20Sep2026,Derrick Henry,RB,7200,56.6,42.5,46.1,38.3
+dk_classic_wk2_early_20Sep2026,Justin Jefferson,WR,7800,32.0,42.4,46.0,31.2
+dk_classic_wk2_early_20Sep2026,Jalen Hurts,QB,6700,6.5,4.8,5.1,24.7
+dk_classic_wk2_early_20Sep2026,Joe Burrow,QB,6600,2.1,5.8,4.5,15.2
+dk_classic_wk2_early_20Sep2026,Chris Olave,WR,7200,5.4,24.7,30.4,31.2
+dk_classic_wk2_early_20Sep2026,Bryce Young,QB,5400,8.9,5.0,9.6,35.4
+dk_classic_wk2_early_20Sep2026,Saquon Barkley,RB,7000,17.4,13.0,9.0,9.0
+dk_classic_wk2_early_20Sep2026,Jordan Love,QB,5900,8.2,5.8,6.7,24.5
+dk_classic_wk2_early_20Sep2026,Ja'Marr Chase,WR,7600,19.8,17.5,10.2,3.2
+dk_classic_wk2_early_20Sep2026,Drake Maye,QB,6100,2.3,3.1,2.4,12.8
+dk_classic_wk2_early_20Sep2026,Chase Brown,RB,6900,2.9,18.1,16.1,18.8
+dk_classic_wk2_early_20Sep2026,Baker Mayfield,QB,5600,18.7,4.2,3.5,14.6
+dk_classic_wk2_early_20Sep2026,Bucky Irving,RB,6100,18.8,15.5,16.2,21.3
+dk_classic_wk2_early_20Sep2026,DeVonta Smith,WR,6800,7.5,13.0,9.3,8.3
+dk_classic_wk2_early_20Sep2026,C.J. Stroud,QB,5500,2.4,4.2,4.2,18.5
+dk_classic_wk2_early_20Sep2026,Garrett Wilson,WR,6000,17.2,14.6,13.2,13.9
+dk_classic_wk2_early_20Sep2026,Tyler Shough,QB,5300,3.9,2.4,4.2,29.2
+dk_classic_wk2_early_20Sep2026,Breece Hall,RB,6200,13.5,8.2,9.6,22.8
+dk_classic_wk2_early_20Sep2026,David Montgomery,RB,6500,21.6,11.9,15.0,28.9
+dk_classic_wk2_early_20Sep2026,Christian Watson,WR,6200,23.0,17.5,28.8,35.7
+dk_classic_wk2_early_20Sep2026,D'Andre Swift,RB,6300,11.6,14.2,21.1,35.4
+dk_classic_wk2_early_20Sep2026,Travis Etienne Jr.,RB,6000,3.3,10.0,9.0,14.8
+dk_classic_wk2_early_20Sep2026,Tetairoa McMillan,WR,6100,8.6,11.1,9.2,11.5
+dk_classic_wk2_early_20Sep2026,Luther Burden III,WR,5700,16.6,14.5,11.3,10.5
+dk_classic_wk2_early_20Sep2026,Emeka Egbuka,WR,6400,26.0,6.9,5.6,11.3
+dk_classic_wk2_early_20Sep2026,Rhamondre Stevenson,RB,5700,7.2,11.2,10.3,14.5
+dk_classic_wk2_early_20Sep2026,Drake London,WR,6000,4.5,6.6,4.5,5.5
+dk_classic_wk2_early_20Sep2026,Tee Higgins,WR,6100,4.8,8.7,6.6,8.9
+dk_classic_wk2_early_20Sep2026,Wan'Dale Robinson,WR,4600,2.0,9.6,8.4,8.8
+dk_classic_wk2_early_20Sep2026,Jalen Coker,WR,5100,26.9,10.0,24.5,36.8
+dk_classic_wk2_early_20Sep2026,Aaron Rodgers,QB,5100,0.4,0.8,0.8,12.5
+dk_classic_wk2_early_20Sep2026,Chuba Hubbard,RB,5800,8.5,6.4,8.5,23.7
+dk_classic_wk2_early_20Sep2026,Rome Odunze,WR,5500,9.3,14.4,10.1,7.2
+dk_classic_wk2_early_20Sep2026,DK Metcalf,WR,5200,11.0,6.5,5.3,8.0
+dk_classic_wk2_early_20Sep2026,Chris Godwin Jr.,WR,5600,9.1,8.6,6.6,8.3
+dk_classic_wk2_early_20Sep2026,Dallas Goedert,TE,4800,18.3,8.7,14.7,23.7
+dk_classic_wk2_early_20Sep2026,Colston Loveland,TE,5000,12.5,18.4,10.4,0.0
+dk_classic_wk2_early_20Sep2026,Matthew Golden,WR,4700,22.4,9.8,11.0,15.5
+dk_classic_wk2_early_20Sep2026,Geno Smith,QB,4800,0.9,0.9,0.7,9.3
+dk_classic_wk2_early_20Sep2026,Jaylen Warren,RB,5400,1.6,3.4,3.1,11.3
+dk_classic_wk2_early_20Sep2026,Carnell Tate,WR,5100,1.0,3.1,2.6,7.8
+dk_classic_wk2_early_20Sep2026,Tucker Kraft,TE,4900,4.2,8.8,7.6,9.5
+dk_classic_wk2_early_20Sep2026,Mark Andrews,TE,4400,14.5,10.7,9.4,8.9
+dk_classic_wk2_early_20Sep2026,Aaron Jones Sr.,RB,5100,24.3,5.1,4.3,10.0
+dk_classic_wk2_early_20Sep2026,Buccaneers,DST,3600,27.0,16.3,17.2,9.0
+dk_classic_wk2_early_20Sep2026,Tony Pollard,RB,5300,0.4,1.1,0.8,4.4
+dk_classic_wk2_early_20Sep2026,Quinshon Judkins,RB,5400,1.8,3.1,2.4,7.0
+dk_classic_wk2_early_20Sep2026,Panthers,DST,2700,6.9,11.1,6.9,0.0
+dk_classic_wk2_early_20Sep2026,MarShawn Lloyd,RB,5300,1.0,5.3,3.3,3.7
+dk_classic_wk2_early_20Sep2026,Deshaun Watson,QB,4500,0.3,0.6,0.7,15.0
+dk_classic_wk2_early_20Sep2026,Makai Lemon,WR,4600,0.5,4.4,2.8,2.5
+dk_classic_wk2_early_20Sep2026,Rico Dowdle,RB,4900,0.4,2.7,1.9,4.1
+dk_classic_wk2_early_20Sep2026,Cam Ward,QB,4900,0.2,0.6,0.6,11.7
+dk_classic_wk2_early_20Sep2026,Harold Fannin Jr.,TE,4100,2.8,4.1,3.2,4.1
+dk_classic_wk2_early_20Sep2026,Kyle Monangai,RB,5300,3.3,3.0,4.3,23.4
+dk_classic_wk2_early_20Sep2026,KC Concepcion Jr.,WR,4100,1.5,4.4,4.3,8.8
+dk_classic_wk2_early_20Sep2026,Eagles,DST,3700,12.2,11.1,9.0,3.0
+dk_classic_wk2_early_20Sep2026,Devaughn Vele,WR,4200,14.5,5.3,9.1,19.9
+dk_classic_wk2_early_20Sep2026,Mack Hollins,WR,4300,2.6,4.0,3.8,9.1
+dk_classic_wk2_early_20Sep2026,Jayden Reed,WR,4500,2.3,5.1,3.8,5.0
+dk_classic_wk2_early_20Sep2026,Ravens,DST,3300,8.5,10.9,10.0,6.0
+dk_classic_wk2_early_20Sep2026,Kalif Raymond,WR,3600,7.4,7.4,11.4,16.4
+dk_classic_wk2_early_20Sep2026,Patriots,DST,3100,8.3,9.9,9.7,6.0
+dk_classic_wk2_early_20Sep2026,Romeo Doubs,WR,5000,2.6,2.0,1.2,0.0
+dk_classic_wk2_early_20Sep2026,Bears,DST,3000,2.5,12.8,12.0,6.0
+dk_classic_wk2_early_20Sep2026,Kenny Gainwell,RB,5100,0.4,1.7,1.1,2.8
+dk_classic_wk2_early_20Sep2026,Juwan Johnson,TE,3900,6.8,4.0,5.7,14.4
+dk_classic_wk2_early_20Sep2026,Jordan Addison,WR,5100,4.4,4.5,2.5,0.0
+dk_classic_wk2_early_20Sep2026,Kyle Pitts Sr.,TE,4500,1.3,1.3,0.8,0.0
+dk_classic_wk2_early_20Sep2026,TreVeyon Henderson,RB,5200,3.0,1.5,0.9,0.0
+dk_classic_wk2_early_20Sep2026,Packers,DST,3400,2.1,4.2,3.0,1.0
+dk_classic_wk2_early_20Sep2026,Tyjae Spears,RB,4800,0.0,0.8,0.6,4.4
+dk_classic_wk2_early_20Sep2026,Jerry Jeudy,WR,3900,0.3,3.1,2.6,4.6
+dk_classic_wk2_early_20Sep2026,Cade Otton,TE,3400,2.0,4.3,3.8,5.6
+dk_classic_wk2_early_20Sep2026,Denzel Boston,WR,4200,0.7,1.9,2.6,13.9
+dk_classic_wk2_early_20Sep2026,Mike Gesicki,TE,3600,9.0,4.4,8.9,18.8
+dk_classic_wk2_early_20Sep2026,Woody Marks,RB,4500,0.4,1.0,0.8,5.0
+dk_classic_wk2_early_20Sep2026,Dontayvion Wicks,WR,4300,7.4,0.9,1.4,15.3
+dk_classic_wk2_early_20Sep2026,Hunter Henry,TE,4000,3.1,2.4,2.1,5.6
+dk_classic_wk2_early_20Sep2026,Texans,DST,3000,3.3,4.5,2.6,-2.0
+dk_classic_wk2_early_20Sep2026,T.J. Hockenson,TE,3500,5.8,1.2,1.9,13.6
+dk_classic_wk2_early_20Sep2026,Xavier Hutchinson,WR,3500,5.7,2.5,2.4,6.2
+dk_classic_wk2_early_20Sep2026,Jonathon Brooks,RB,4800,0.2,1.0,0.9,7.2
+dk_classic_wk2_early_20Sep2026,Adonai Mitchell,WR,4000,1.0,0.8,1.0,9.0
+dk_classic_wk2_early_20Sep2026,Dalton Schultz,TE,3200,20.5,5.2,5.3,7.5
+dk_classic_wk2_early_20Sep2026,Kenyon Sadiq,TE,3800,3.8,3.4,4.3,11.4
+dk_classic_wk2_early_20Sep2026,DeMario Douglas,WR,3800,2.3,2.4,2.4,7.0
+dk_classic_wk2_early_20Sep2026,Pat Freiermuth,TE,3700,3.0,1.7,3.0,15.6
+dk_classic_wk2_early_20Sep2026,Darren Waller,TE,3100,1.2,3.5,3.1,4.8
+dk_classic_wk2_early_20Sep2026,Titans,DST,2100,2.4,5.3,3.7,0.0
+dk_classic_wk2_early_20Sep2026,Brian Robinson Jr.,RB,4700,0.1,0.8,0.6,3.1
+dk_classic_wk2_early_20Sep2026,Browns,DST,2200,2.2,3.5,2.4,0.0
+dk_classic_wk2_early_20Sep2026,Jets,DST,2400,7.6,4.0,6.6,9.0
+dk_classic_wk2_early_20Sep2026,Kayshon Boutte,WR,4000,4.8,1.0,0.8,3.1
+dk_classic_wk2_early_20Sep2026,Samaje Perine,RB,4400,0.2,0.7,0.7,8.0
+dk_classic_wk2_early_20Sep2026,Bengals,DST,2700,4.1,2.1,7.3,18.0
+dk_classic_wk2_early_20Sep2026,Chris Brooks,RB,4800,0.2,1.1,0.8,2.9
+dk_classic_wk2_early_20Sep2026,Elic Ayomanor,WR,3500,0.1,0.5,0.7,8.1
+dk_classic_wk2_early_20Sep2026,Steelers,DST,2800,9.1,1.7,6.1,18.0
+dk_classic_wk2_early_20Sep2026,Mason Taylor,TE,2800,0.1,2.6,1.9,1.8
+dk_classic_wk2_early_20Sep2026,Falcons,DST,2900,1.3,0.8,0.9,5.0
+dk_classic_wk2_early_20Sep2026,Tank Bigsby,RB,4700,0.0,0.7,0.5,0.3
+dk_classic_wk2_early_20Sep2026,Gunnar Helm,TE,3100,0.2,0.6,0.7,6.8
+dk_classic_wk2_early_20Sep2026,Jahan Dotson,WR,3400,0.0,0.6,0.5,2.9
+dk_classic_wk2_early_20Sep2026,Noah Fant,TE,3400,0.8,0.9,1.5,13.3
+dk_classic_wk2_early_20Sep2026,Isaiah Williams,WR,3300,0.0,0.6,0.5,1.7
+dk_classic_wk2_early_20Sep2026,Max Brosmer,QB,4000,0.0,0.8,0.4,0.0
+dk_classic_wk2_early_20Sep2026,Saints,DST,2300,0.4,1.0,1.0,2.0
+dk_classic_wk2_early_20Sep2026,Jaylin Noel,WR,3700,2.5,0.9,1.0,7.3
+dk_classic_wk2_early_20Sep2026,Braelon Allen,RB,4200,0.1,0.5,0.4,4.0
+dk_classic_wk2_early_20Sep2026,Cole Kmet,TE,3000,1.1,2.3,3.5,11.5
+dk_classic_wk2_early_20Sep2026,Vikings,DST,2600,1.8,0.9,1.5,8.0
+dk_classic_wk2_early_20Sep2026,Miller Moss,QB,4000,0.0,1.0,0.5,0.0
+dk_classic_wk2_early_20Sep2026,Easton Stick,QB,4000,0.0,0.7,0.4,0.0
+dk_classic_wk2_early_20Sep2026,Bailey Zappe,QB,4000,0.0,0.6,0.3,0.0
+dk_classic_wk2_early_20Sep2026,Justice Hill,RB,4200,0.1,0.8,0.7,3.8
+dk_classic_wk2_early_20Sep2026,Ted Hurst III,WR,3200,0.4,0.7,0.8,6.6
+dk_classic_wk2_early_20Sep2026,Mark Gronowski,QB,4000,0.0,0.8,0.4,0.0
+dk_classic_wk2_early_20Sep2026,Jahdae Walker,WR,3400,0.3,0.9,1.0,7.1
+dk_classic_wk2_early_20Sep2026,Jonnu Smith,TE,2900,0.1,0.9,1.0,7.0
+dk_classic_wk2_early_20Sep2026,Xavier Legette,WR,3400,0.0,0.6,0.5,0.0
+dk_classic_wk2_early_20Sep2026,Sean Clifford,QB,4000,0.0,0.6,0.3,0.0
+dk_classic_wk2_early_20Sep2026,Josh Oliver,TE,2500,0.1,0.7,0.7,4.2
+dk_classic_wk2_early_20Sep2026,Roman Wilson,WR,3200,1.4,0.5,0.5,5.6
+dk_classic_wk2_early_20Sep2026,Kedon Slovis,QB,4000,0.0,0.7,0.4,0.0
+dk_classic_wk2_early_20Sep2026,Chris Moore,WR,3300,0.3,0.9,0.9,6.3
+dk_classic_wk2_early_20Sep2026,Olamide Zaccheaus,WR,3200,0.0,0.6,0.4,1.5
+dk_classic_wk2_early_20Sep2026,Tommy Tremble,TE,2600,0.5,0.7,0.8,5.5
+dk_classic_wk2_early_20Sep2026,Hendon Hooker,QB,4000,0.0,0.4,0.2,0.0
+dk_classic_wk2_early_20Sep2026,Corey Kiner,RB,4200,0.0,0.5,0.4,1.1
+dk_classic_wk2_early_20Sep2026,Raheim Sanders,RB,4000,0.0,0.3,0.4,5.6
+dk_classic_wk2_early_20Sep2026,Andrei Iosivas,WR,3100,0.1,0.6,0.5,3.2
+dk_classic_wk2_early_20Sep2026,Kyle Williams,WR,3600,0.2,0.7,0.5,0.0
+dk_classic_wk2_early_20Sep2026,Bryce Lance,WR,3200,0.2,0.6,0.7,7.2
+dk_classic_wk2_early_20Sep2026,Darnell Washington,TE,2900,0.1,0.6,0.6,3.8
+dk_classic_wk2_early_20Sep2026,Will Shipley,RB,4200,0.0,0.4,0.3,2.2
+dk_classic_wk2_early_20Sep2026,Jalen McMillan,WR,4400,0.2,0.9,0.6,0.0
+dk_classic_wk2_early_20Sep2026,CJ Donaldson,RB,4000,0.0,0.5,0.4,1.2
+dk_classic_wk2_early_20Sep2026,Drew Sample,TE,2600,0.0,0.7,0.7,4.9
+dk_classic_wk2_early_20Sep2026,Mitchell Evans,TE,2500,0.0,0.6,0.5,1.9
+dk_classic_wk2_early_20Sep2026,Zachariah Branch,WR,3500,0.0,0.6,0.4,0.0
+dk_classic_wk2_early_20Sep2026,AJ Dillon,RB,4000,0.0,0.5,0.4,2.8
+dk_classic_wk2_early_20Sep2026,LaJohntay Wester,WR,3100,0.4,0.7,0.7,3.5
+dk_classic_wk2_early_20Sep2026,Daniel Bellinger,TE,2600,0.0,0.5,0.4,1.7
+dk_classic_wk2_early_20Sep2026,Bo Melton,WR,3000,0.0,0.6,0.5,2.0
+dk_classic_wk2_early_20Sep2026,Sean Tucker,RB,4400,0.0,0.6,0.4,0.0
+dk_classic_wk2_early_20Sep2026,Kaleb Johnson,RB,4300,0.0,0.6,0.4,0.0
+dk_classic_wk2_early_20Sep2026,Lan Larison,RB,4000,0.0,0.5,0.4,2.9
+dk_classic_wk2_early_20Sep2026,Chimere Dike,WR,3000,0.0,0.4,0.3,0.7
+dk_classic_wk2_early_20Sep2026,Rashod Bateman,WR,4400,12.7,1.1,0.7,0.0
+dk_classic_wk2_early_20Sep2026,Tez Johnson,WR,3000,0.0,0.6,0.4,-0.4
+dk_classic_wk2_early_20Sep2026,Foster Moreau,TE,2700,0.1,0.8,0.7,3.5
+dk_classic_wk2_early_20Sep2026,Dohnte Meyers,WR,3000,0.0,0.6,0.6,3.8
+dk_classic_wk2_early_20Sep2026,Eli Raridon,TE,3000,0.1,0.7,0.9,7.2
+dk_classic_wk2_early_20Sep2026,Jimmy Horn Jr.,WR,3000,0.0,0.5,0.4,-1.0
+dk_classic_wk2_early_20Sep2026,Jeremy Ruckert,TE,2500,0.0,0.5,0.4,1.4
+dk_classic_wk2_early_20Sep2026,Arian Smith,WR,3000,0.0,0.5,0.4,0.0
+dk_classic_wk2_early_20Sep2026,Alvin Kamara,RB,4600,0.9,0.6,0.4,0.0
+dk_classic_wk2_early_20Sep2026,Tanner Hudson,TE,2500,0.0,0.6,0.5,1.4
+dk_classic_wk2_early_20Sep2026,Jared Wayne,WR,3000,0.0,0.7,0.6,2.2
+dk_classic_wk2_early_20Sep2026,DeeJay Dallas,RB,4000,0.0,0.5,0.4,1.1
+dk_classic_wk2_early_20Sep2026,Cade Stover,TE,2500,0.0,0.7,0.5,0.8
+dk_classic_wk2_early_20Sep2026,Carson Wentz,QB,4600,14.3,0.8,1.1,19.2
+dk_classic_wk2_early_20Sep2026,Rasheen Ali,RB,4000,0.0,0.7,0.5,0.0
+dk_classic_wk2_early_20Sep2026,Josh Williams,RB,4000,0.0,0.5,0.3,0.0
+dk_classic_wk2_early_20Sep2026,Tahj Brooks,RB,4000,0.0,0.5,0.3,0.0
+dk_classic_wk2_early_20Sep2026,Matt Hibner,TE,2500,0.0,0.8,0.6,2.3
+dk_classic_wk2_early_20Sep2026,Blake Whiteheart,TE,2500,0.0,0.4,0.4,2.4
+dk_classic_wk2_early_20Sep2026,Skyy Moore,WR,3000,0.0,0.6,0.4,0.0
+dk_classic_wk2_early_20Sep2026,Marlin Klein,TE,2500,0.0,0.6,0.6,2.6
+dk_classic_wk2_early_20Sep2026,Roschon Johnson,RB,4000,0.0,0.7,0.5,0.0
+dk_classic_wk2_early_20Sep2026,Barion Brown,WR,3000,0.0,0.5,0.4,0.3
+dk_classic_wk2_early_20Sep2026,Kaden Davis,WR,3000,0.0,0.7,0.5,0.0
+dk_classic_wk2_early_20Sep2026,Durham Smythe,TE,2500,0.0,0.7,0.6,1.4
+dk_classic_wk2_early_20Sep2026,Eli Heidenreich,RB,4000,0.0,0.3,0.2,0.0
+dk_classic_wk2_early_20Sep2026,Kameron Johnson,WR,3000,0.0,0.6,0.4,0.0
+dk_classic_wk2_early_20Sep2026,Myles Price,WR,3000,0.0,0.6,0.4,0.0
+dk_classic_wk2_early_20Sep2026,Chris Blair,WR,3000,0.0,0.5,0.4,0.0
+dk_classic_wk2_early_20Sep2026,Brycen Tremayne,WR,3000,0.0,0.5,0.4,0.0
+dk_classic_wk2_early_20Sep2026,Kaden Wetjen,WR,3000,0.0,0.4,0.3,0.0
+dk_classic_wk2_early_20Sep2026,Darius Cooper,WR,3000,0.0,0.4,0.3,0.0
+dk_classic_wk2_early_20Sep2026,Britain Covey,WR,3000,0.0,0.4,0.3,0.0
+dk_classic_wk2_early_20Sep2026,Malachi Corley,WR,3000,0.0,0.4,0.3,0.0
+dk_classic_wk2_early_20Sep2026,Feleipe Franks,TE,2500,0.0,0.5,0.4,0.0
+dk_classic_wk2_early_20Sep2026,Nick Muse,TE,2500,0.0,0.5,0.4,0.0
+dk_classic_wk2_early_20Sep2026,Carsen Ryan,TE,2500,0.0,0.4,0.3,0.0
+dk_classic_wk2_early_20Sep2026,Bauer Sharp,TE,2500,0.0,0.5,0.4,0.0
+dk_classic_wk2_early_20Sep2026,Calvin Ridley,WR,4100,0.1,0.5,0.4,0.0
+dk_classic_wk2_early_20Sep2026,Devontez Walker,WR,3400,0.9,0.7,0.5,0.0
+dk_classic_wk2_early_20Sep2026,Treyton Welch,TE,2500,0.0,0.5,0.4,0.0
+dk_classic_wk2_early_20Sep2026,Jalon Daniels,QB,4000,0.0,0.6,0.4,0.0
+dk_classic_wk2_early_20Sep2026,Hollywood Brown,WR,3600,0.0,0.5,0.4,0.0
+dk_classic_wk2_early_20Sep2026,Khalil Herbert,RB,4000,0.0,0.3,0.3,0.0
+dk_classic_wk2_early_20Sep2026,Tyler Goodson,RB,4000,0.0,0.3,0.3,0.0
+dk_classic_wk2_early_20Sep2026,Jawhar Jordan,RB,4000,0.0,0.5,0.4,0.0
+dk_classic_wk2_early_20Sep2026,Tyler Huntley,QB,4000,0.0,0.8,0.5,0.0
+dk_classic_wk2_early_20Sep2026,Reggie Gilliam,RB,4000,0.0,0.4,0.3,0.0
+dk_classic_wk2_early_20Sep2026,Joe Flacco,QB,4100,0.0,0.5,0.3,0.0
+dk_classic_wk2_early_20Sep2026,Kendall Milton,RB,4000,0.0,0.4,0.3,0.0
+dk_classic_wk2_early_20Sep2026,British Brooks,RB,4000,0.0,0.5,0.4,0.0
+dk_classic_wk2_early_20Sep2026,Jaydon Blue,RB,4000,0.0,0.3,0.2,0.0
+dk_classic_wk2_early_20Sep2026,Dameon Pierce,RB,4000,0.0,0.3,0.2,0.0
+dk_classic_wk2_early_20Sep2026,Isaiah Davis,RB,4000,0.0,0.3,0.2,0.0
+dk_classic_wk2_early_20Sep2026,Jerome Ford,RB,4000,0.0,0.4,0.3,0.0
+dk_classic_wk2_early_20Sep2026,Andrew Beck,RB,4000,0.0,0.3,0.2,0.0
+dk_classic_wk2_early_20Sep2026,Kenny Pickett,QB,4000,0.0,0.5,0.4,2.4
+dk_classic_wk2_early_20Sep2026,J.J. McCarthy,QB,4300,0.0,0.6,0.4,0.0
+dk_classic_wk2_early_20Sep2026,Zavier Scott,RB,4000,0.0,0.5,0.4,0.0
+dk_classic_wk2_early_20Sep2026,Elijah Sarratt,WR,3700,0.3,0.8,0.6,0.0
+dk_classic_wk2_early_20Sep2026,Jack Strand,QB,4000,0.0,0.4,0.3,0.0
+dk_classic_wk2_early_20Sep2026,Jaleel McLaughlin,RB,4000,0.0,0.3,0.2,0.0
+dk_classic_wk2_early_20Sep2026,Tyson Bagent,QB,4000,0.0,0.7,0.4,0.0
+dk_classic_wk2_early_20Sep2026,Eric Gray,RB,4000,0.0,0.3,0.2,0.0
+dk_classic_wk2_early_20Sep2026,Davis Mills,QB,4000,0.0,0.6,0.4,0.0
+dk_classic_wk2_early_20Sep2026,Lew Nichols,RB,4000,0.0,0.3,0.2,0.0
+dk_classic_wk2_early_20Sep2026,Gage Larvadain,WR,3000,0.0,0.6,0.5,0.0
+dk_classic_wk2_early_20Sep2026,Cade Klubnik,QB,4000,0.0,0.4,0.3,0.0
+dk_classic_wk2_early_20Sep2026,Zamir White,RB,4000,0.0,0.3,0.2,0.0
+dk_classic_wk2_early_20Sep2026,Scotty Miller,WR,3000,0.0,0.6,0.5,0.0
+dk_classic_wk2_early_20Sep2026,Riley Nowakowski,RB,4000,0.0,0.3,0.2,0.0
+dk_classic_wk2_early_20Sep2026,Julius Chestnut,RB,4000,0.0,0.3,0.2,0.0
+dk_classic_wk2_early_20Sep2026,Travis Homer,RB,4000,0.0,0.3,0.2,0.0
+dk_classic_wk2_early_20Sep2026,Kalel Mullings,RB,4000,0.0,0.3,0.2,0.0
+dk_classic_wk2_early_20Sep2026,Michael Carter,RB,4000,0.0,0.3,0.2,0.0
+dk_classic_wk2_early_20Sep2026,Audric Estime,RB,4000,0.0,0.3,0.2,0.0
+dk_classic_wk2_early_20Sep2026,Shedeur Sanders,QB,4500,0.0,0.4,0.3,0.0
+dk_classic_wk2_early_20Sep2026,Casey Washington,WR,3000,0.0,0.5,0.4,0.0
+dk_classic_wk2_early_20Sep2026,Andy Dalton,QB,4000,0.0,0.4,0.3,0.0
+dk_classic_wk2_early_20Sep2026,John Metchie III,WR,3000,0.0,0.4,0.4,0.0
+dk_classic_wk2_early_20Sep2026,David Moore,WR,3000,0.0,0.4,0.4,0.0
+dk_classic_wk2_early_20Sep2026,Tommy DeVito,QB,4000,0.0,0.4,0.3,0.0
+dk_classic_wk2_early_20Sep2026,Tai Felton,WR,3000,0.0,0.5,0.4,0.0
+dk_classic_wk2_early_20Sep2026,Dylan Drummond,WR,3000,0.0,0.4,0.3,0.0
+dk_classic_wk2_early_20Sep2026,Efton Chism III,WR,3100,0.0,0.4,0.3,0.0
+dk_classic_wk2_early_20Sep2026,Tyler Johnson,WR,3000,0.0,0.4,0.3,0.0
+dk_classic_wk2_early_20Sep2026,William Wagner,TE,2500,0.0,0.5,0.4,0.0
+dk_classic_wk2_early_20Sep2026,Ben Skowronek,WR,3000,0.0,0.3,0.3,0.0
+dk_classic_wk2_early_20Sep2026,Mitch Tinsley,WR,3000,0.0,0.5,0.4,0.0
+dk_classic_wk2_early_20Sep2026,Sterling Shepard,WR,3000,0.0,0.4,0.3,0.0
+dk_classic_wk2_early_20Sep2026,Mitchell Trubisky,QB,4000,0.0,0.3,0.2,0.0
+dk_classic_wk2_early_20Sep2026,Xavier Gipson,WR,3000,0.0,0.4,0.3,0.0
+dk_classic_wk2_early_20Sep2026,Isaiah Bond,WR,3000,0.0,0.3,0.3,0.0
+dk_classic_wk2_early_20Sep2026,Jelani Woods,TE,2500,0.0,0.4,0.4,0.0
+dk_classic_wk2_early_20Sep2026,Cedric Tillman,WR,3000,0.0,0.4,0.3,0.0
+dk_classic_wk2_early_20Sep2026,Kevin Austin Jr.,WR,3000,0.0,0.4,0.3,0.0
+dk_classic_wk2_early_20Sep2026,Cooper Rush,QB,4200,0.7,0.3,0.4,7.7
+dk_classic_wk2_early_20Sep2026,Tylan Wallace,WR,3000,0.0,0.3,0.3,0.0
+dk_classic_wk2_early_20Sep2026,Cam Grandy,TE,2500,0.0,0.5,0.4,0.0
+dk_classic_wk2_early_20Sep2026,Austin Hooper,TE,2500,0.0,0.4,0.4,0.0
+dk_classic_wk2_early_20Sep2026,Mason Rudolph,QB,4000,0.0,0.3,0.2,0.0
+dk_classic_wk2_early_20Sep2026,Xavier Restrepo,WR,3000,0.0,0.3,0.3,0.0
+dk_classic_wk2_early_20Sep2026,Ko Kieft,TE,2500,0.0,0.5,0.4,0.0
+dk_classic_wk2_early_20Sep2026,Charlie Woerner,TE,2500,0.0,0.4,0.4,0.0
+dk_classic_wk2_early_20Sep2026,Jalen Moreno-Cropper,WR,3000,0.0,0.4,0.3,0.0
+dk_classic_wk2_early_20Sep2026,Tyrod Taylor,QB,4000,0.0,0.4,0.3,0.0
+dk_classic_wk2_early_20Sep2026,Evan Deckers,TE,2500,0.0,0.5,0.4,0.0
+dk_classic_wk2_early_20Sep2026,Drake Dabney,TE,2500,0.0,0.5,0.4,0.0
+dk_classic_wk2_early_20Sep2026,Andrew DePaola,TE,2500,0.0,0.5,0.4,0.0
+dk_classic_wk2_early_20Sep2026,Zaire Mitchell-Paden,TE,2500,0.0,0.5,0.4,0.0
+dk_classic_wk2_early_20Sep2026,Payne Durham,TE,2500,0.0,0.5,0.4,0.0
+dk_classic_wk2_early_20Sep2026,Zach Wood,TE,2500,0.0,0.4,0.4,0.0
+dk_classic_wk2_early_20Sep2026,Nick Singleton,RB,4300,0.0,0.3,0.2,0.0
+dk_classic_wk2_early_20Sep2026,E.J. Jenkins,TE,2500,0.0,0.4,0.3,0.0
+dk_classic_wk2_early_20Sep2026,Johnny Mundt,TE,2500,0.0,0.4,0.3,0.0
+dk_classic_wk2_early_20Sep2026,Shane Zylstra,TE,2500,0.0,0.4,0.3,0.0
+dk_classic_wk2_early_20Sep2026,Josh Whyle,TE,2500,0.0,0.4,0.4,0.0
+dk_classic_wk2_early_20Sep2026,Josiah Deguara,TE,2500,0.0,0.4,0.3,0.0
+dk_classic_wk2_early_20Sep2026,Robert Tonyan,TE,2500,0.0,0.3,0.3,0.0
+dk_classic_wk2_early_20Sep2026,Stone Smartt,TE,2500,0.0,0.4,0.3,0.0
+dk_classic_wk2_early_20Sep2026,Cameron Latu,TE,2500,0.0,0.4,0.3,0.0
+dk_classic_wk2_early_20Sep2026,Spencer Rattler,QB,4000,0.0,0.4,0.2,0.0
+dk_classic_wk2_early_20Sep2026,David Martin-Robinson,TE,2500,0.0,0.3,0.3,0.0
+dk_classic_wk2_early_20Sep2026,Jonathan Ward,RB,4000,0.0,0.4,0.3,0.0
+dk_classic_wk2_early_20Sep2026,Germie Bernard,WR,3400,0.2,0.3,0.3,0.0
+dk_classic_wk2_early_20Sep2026,Cash Jones,RB,4000,0.0,0.3,0.2,0.0
+dk_classic_wk2_early_20Sep2026,Demond Claiborne,RB,4000,0.2,0.3,0.3,0.0
+dk_classic_wk2_early_20Sep2026,Noah Whittington,RB,4000,0.0,0.3,0.3,0.0
+dk_classic_wk2_early_20Sep2026,Max Bredeson,RB,4000,0.0,0.3,0.2,0.0
+dk_classic_wk2_early_20Sep2026,Anthony Tyus III,RB,4000,0.0,0.3,0.2,0.0
+dk_classic_wk2_early_20Sep2026,Ahmani Marshall,RB,4000,0.0,0.3,0.2,0.0
+dk_classic_wk2_early_20Sep2026,Carson Steele,RB,4000,0.0,0.3,0.2,0.0
+dk_classic_wk2_early_20Sep2026,Kentrel Bullock,RB,4000,0.0,0.3,0.2,0.0
+dk_classic_wk2_early_20Sep2026,Salvon Ahmed,RB,4000,0.0,0.4,0.3,0.0
+dk_classic_wk2_early_20Sep2026,Michael Burton,RB,4000,0.0,0.3,0.2,0.0
+dk_classic_wk2_early_20Sep2026,Zavion Thomas,WR,3100,0.0,0.5,0.4,0.0
+dk_classic_wk2_early_20Sep2026,Xavier Guillory,WR,3000,0.0,0.5,0.4,0.0
+dk_classic_wk2_early_20Sep2026,Pierre Strong Jr.,RB,4000,0.0,0.3,0.2,0.0
+dk_classic_wk2_early_20Sep2026,Damon Bankston,RB,4000,0.0,0.3,0.2,0.0
+dk_classic_wk2_early_20Sep2026,Jordan Moore,WR,3000,0.0,0.4,0.4,0.0
+dk_classic_wk2_early_20Sep2026,Colbie Young,WR,3000,0.0,0.4,0.4,0.0
+dk_classic_wk2_early_20Sep2026,JP Richardson,WR,3000,0.0,0.5,0.4,0.0
+dk_classic_wk2_early_20Sep2026,Garrett Greene,WR,3000,0.0,0.4,0.4,0.0
+dk_classic_wk2_early_20Sep2026,Dean Patterson IV,WR,3000,0.0,0.4,0.4,0.0
+dk_classic_wk2_early_20Sep2026,Trayvon Rudolph,WR,3000,0.0,0.4,0.4,0.0
+dk_classic_wk2_early_20Sep2026,Ja'seem Reed,WR,3000,0.0,0.4,0.3,0.0
+dk_classic_wk2_early_20Sep2026,Noah Thomas,WR,3000,0.0,0.4,0.3,0.0
+dk_classic_wk2_early_20Sep2026,Michael Briscoe,WR,3000,0.0,0.4,0.4,0.0
+dk_classic_wk2_early_20Sep2026,Eric Rivers Jr.,WR,3000,0.0,0.4,0.3,0.0
+dk_classic_wk2_early_20Sep2026,Ty Pezza,TE,2500,0.0,0.5,0.4,0.0
+dk_classic_wk2_early_20Sep2026,Jamaal Pritchett,WR,3000,0.0,0.3,0.3,0.0
+dk_classic_wk2_early_20Sep2026,Daniel Sobkowicz,WR,3000,0.0,0.4,0.4,0.0
+dk_classic_wk2_early_20Sep2026,Erick All Jr.,TE,2500,0.0,0.4,0.3,0.0
+dk_classic_wk2_early_20Sep2026,Josh Kelly,WR,3000,0.0,0.4,0.4,0.0
+dk_classic_wk2_early_20Sep2026,Jack Endries,TE,2500,0.0,0.4,0.3,0.0
+dk_classic_wk2_early_20Sep2026,Antwane Wells Jr.,WR,3000,0.0,0.3,0.3,0.0
+dk_classic_wk2_early_20Sep2026,Vinny Anthony II,WR,3000,0.0,0.3,0.3,0.0
+dk_classic_wk2_early_20Sep2026,Dillon Bell,WR,3000,0.0,0.4,0.3,0.0
+dk_classic_wk2_early_20Sep2026,Lewis Bond,WR,3000,0.0,0.4,0.4,0.0
+dk_classic_wk2_early_20Sep2026,Quincy Skinner Jr.,WR,3000,0.0,0.4,0.3,0.0
+dk_classic_wk2_early_20Sep2026,Josh Cuevas,TE,2500,0.0,0.5,0.4,0.0
+dk_classic_wk2_early_20Sep2026,Malik McClain,WR,3000,0.0,0.3,0.3,0.0
+dk_classic_wk2_early_20Sep2026,J. Michael Sturdivant,WR,3000,0.0,0.4,0.3,0.0
+dk_classic_wk2_early_20Sep2026,Bub Means,WR,3000,0.0,0.3,0.2,0.0
+dk_classic_wk2_early_20Sep2026,Sam Roush,TE,2500,0.0,0.5,0.4,0.0
+dk_classic_wk2_early_20Sep2026,Cameron Dorner,WR,3000,0.0,0.3,0.3,0.0
+dk_classic_wk2_early_20Sep2026,Qadir Ismail,TE,2500,0.0,0.5,0.4,0.0
+dk_classic_wk2_early_20Sep2026,Brandon Smith,WR,3000,0.0,0.3,0.2,0.0
+dk_classic_wk2_early_20Sep2026,Nick Vannett,TE,2500,0.0,0.5,0.4,0.0
+dk_classic_wk2_early_20Sep2026,Chris Hilton Jr.,WR,3000,0.0,0.4,0.3,0.0
+dk_classic_wk2_early_20Sep2026,Stephen Carlson,TE,2500,0.0,0.5,0.4,0.0
+dk_classic_wk2_early_20Sep2026,Kole Wilson,WR,3000,0.0,0.3,0.2,0.0
+dk_classic_wk2_early_20Sep2026,CJ Dippre,TE,2500,0.0,0.4,0.3,0.0
+dk_classic_wk2_early_20Sep2026,Brandon Johnson,WR,3000,0.0,0.3,0.2,0.0
+dk_classic_wk2_early_20Sep2026,Chandler Brayboy,WR,3000,0.0,0.3,0.3,0.0
+dk_classic_wk2_early_20Sep2026,Isaiah Neyor,WR,3000,0.0,0.4,0.3,0.0
+dk_classic_wk2_early_20Sep2026,K.J. Osborn,WR,3000,0.0,0.2,0.2,0.0
+dk_classic_wk2_early_20Sep2026,Trey Palmer,WR,3000,0.0,0.3,0.3,0.0
+dk_classic_wk2_early_20Sep2026,Jack Velling,TE,2500,0.0,0.3,0.3,0.0
+dk_classic_wk2_early_20Sep2026,Gavin Bartholomew,TE,2500,0.0,0.4,0.3,0.0
+dk_classic_wk2_early_20Sep2026,Kyrese Rowan,WR,3000,0.0,0.3,0.3,0.0
+dk_classic_wk2_early_20Sep2026,Kyle Dixon,WR,3000,0.0,0.3,0.3,0.0
+dk_classic_wk2_early_20Sep2026,Messiah Swinson,TE,2500,0.0,0.3,0.3,0.0
+dk_classic_wk2_early_20Sep2026,Mark Redman,TE,2500,0.0,0.4,0.3,0.0
+dk_classic_wk2_early_20Sep2026,Oscar Delp,TE,2500,0.0,0.3,0.3,0.0
+dk_classic_wk2_early_20Sep2026,Tyren Montgomery,WR,3000,0.0,0.2,0.2,0.0
+dk_classic_wk2_early_20Sep2026,Joel Wilson,TE,2500,0.0,0.3,0.3,0.0
+dk_classic_wk2_early_20Sep2026,Lake McRee,TE,2500,0.0,0.3,0.3,0.0
+dk_classic_wk2_early_20Sep2026,Rocco Underwood,TE,2500,0.0,0.3,0.3,0.0
+dk_classic_wk2_afternoon_20Sep2026,Christian McCaffrey,RB,8000,52.8,68.1,62.5,13.8
+dk_classic_wk2_afternoon_20Sep2026,Jaxon Smith-Njigba,WR,8100,35.2,51.8,59.4,29.2
+dk_classic_wk2_afternoon_20Sep2026,Brock Purdy,QB,6200,29.9,22.7,24.6,22.1
+dk_classic_wk2_afternoon_20Sep2026,Dak Prescott,QB,6400,20.6,27.7,25.2,15.4
+dk_classic_wk2_afternoon_20Sep2026,Jayden Daniels,QB,6300,14.3,11.0,11.1,17.7
+dk_classic_wk2_afternoon_20Sep2026,Trey McBride,TE,6900,23.6,36.0,41.8,24.5
+dk_classic_wk2_afternoon_20Sep2026,Ashton Jeanty,RB,6800,50.7,26.1,41.1,35.7
+dk_classic_wk2_afternoon_20Sep2026,CeeDee Lamb,WR,7300,36.6,34.2,30.9,15.4
+dk_classic_wk2_afternoon_20Sep2026,Justin Herbert,QB,6000,6.4,8.2,7.9,14.3
+dk_classic_wk2_afternoon_20Sep2026,Trevor Lawrence,QB,5800,14.4,6.7,10.5,26.1
+dk_classic_wk2_afternoon_20Sep2026,Bo Nix,QB,5700,3.8,7.7,5.8,7.4
+dk_classic_wk2_afternoon_20Sep2026,Mike Evans,WR,6600,23.7,22.0,21.9,16.9
+dk_classic_wk2_afternoon_20Sep2026,Javonte Williams,RB,6400,44.0,35.5,40.2,24.2
+dk_classic_wk2_afternoon_20Sep2026,De'Von Achane,RB,6700,10.6,14.8,12.8,10.6
+dk_classic_wk2_afternoon_20Sep2026,Parker Washington,WR,5900,26.4,16.9,20.2,19.3
+dk_classic_wk2_afternoon_20Sep2026,Omarion Hampton,RB,6600,11.6,18.4,14.8,9.3
+dk_classic_wk2_afternoon_20Sep2026,George Pickens,WR,6300,30.2,20.5,14.7,5.8
+dk_classic_wk2_afternoon_20Sep2026,Ladd McConkey,WR,6200,7.6,13.7,16.0,19.2
+dk_classic_wk2_afternoon_20Sep2026,Deebo Samuel Sr.,WR,5300,25.7,20.9,24.7,18.0
+dk_classic_wk2_afternoon_20Sep2026,Stefon Diggs,WR,5300,21.9,19.3,21.1,15.5
+dk_classic_wk2_afternoon_20Sep2026,Kirk Cousins,QB,5000,1.8,2.1,2.8,15.8
+dk_classic_wk2_afternoon_20Sep2026,Jacoby Brissett,QB,5000,2.8,1.0,1.4,16.5
+dk_classic_wk2_afternoon_20Sep2026,Jaylen Waddle,WR,6500,7.4,11.6,7.2,1.2
+dk_classic_wk2_afternoon_20Sep2026,Jeremiyah Love,RB,5900,8.8,7.6,7.9,13.0
+dk_classic_wk2_afternoon_20Sep2026,Malik Willis,QB,5200,2.1,1.1,1.6,17.7
+dk_classic_wk2_afternoon_20Sep2026,Courtland Sutton,WR,5800,3.8,12.4,8.4,3.1
+dk_classic_wk2_afternoon_20Sep2026,Michael Wilson,WR,5400,5.5,10.5,10.3,10.6
+dk_classic_wk2_afternoon_20Sep2026,George Kittle,TE,4600,12.9,17.3,11.1,3.2
+dk_classic_wk2_afternoon_20Sep2026,Terry McLaurin,WR,5200,24.8,9.9,6.9,3.4
+dk_classic_wk2_afternoon_20Sep2026,Quentin Johnston,WR,5000,15.0,11.4,8.2,3.7
+dk_classic_wk2_afternoon_20Sep2026,Jacory Croskey-Merritt,RB,5500,16.4,13.8,13.4,12.6
+dk_classic_wk2_afternoon_20Sep2026,49ers,DST,3800,30.1,39.1,33.9,8.0
+dk_classic_wk2_afternoon_20Sep2026,Kaelon Black,RB,4500,2.6,14.2,12.8,8.0
+dk_classic_wk2_afternoon_20Sep2026,Drew Lock,QB,4900,3.4,0.9,1.2,12.8
+dk_classic_wk2_afternoon_20Sep2026,Jadarian Price,RB,5500,12.3,4.3,3.8,7.8
+dk_classic_wk2_afternoon_20Sep2026,Jakobi Meyers,WR,4900,5.6,6.6,7.2,12.2
+dk_classic_wk2_afternoon_20Sep2026,Bhayshul Tuten,RB,5600,13.2,5.6,5.2,9.8
+dk_classic_wk2_afternoon_20Sep2026,Michael Mayer,TE,3600,35.4,8.5,9.2,9.2
+dk_classic_wk2_afternoon_20Sep2026,Caleb Douglas,WR,3700,17.2,5.8,9.4,14.4
+dk_classic_wk2_afternoon_20Sep2026,Tre Tucker,WR,4500,2.4,4.5,3.8,4.7
+dk_classic_wk2_afternoon_20Sep2026,Tyler Allgeier,RB,4900,2.3,4.3,4.4,9.0
+dk_classic_wk2_afternoon_20Sep2026,J.K. Dobbins,RB,5000,9.2,5.6,4.0,3.6
+dk_classic_wk2_afternoon_20Sep2026,Brian Thomas Jr.,WR,4800,2.8,5.3,4.7,7.0
+dk_classic_wk2_afternoon_20Sep2026,Chargers,DST,3200,6.8,13.2,7.8,1.0
+dk_classic_wk2_afternoon_20Sep2026,Antonio Williams,WR,4400,11.4,3.5,5.4,16.4
+dk_classic_wk2_afternoon_20Sep2026,Pat Bryant,WR,4200,7.6,7.2,7.2,8.2
+dk_classic_wk2_afternoon_20Sep2026,Chris Rodriguez Jr.,RB,5100,0.5,5.5,3.9,2.3
+dk_classic_wk2_afternoon_20Sep2026,Malik Washington,WR,4000,3.7,2.9,3.1,7.3
+dk_classic_wk2_afternoon_20Sep2026,Tre' Harris,WR,4000,2.2,3.6,3.2,5.0
+dk_classic_wk2_afternoon_20Sep2026,Marvin Harrison Jr.,WR,4900,2.1,1.6,1.4,4.3
+dk_classic_wk2_afternoon_20Sep2026,Brenton Strange,TE,3900,9.5,6.1,6.8,10.3
+dk_classic_wk2_afternoon_20Sep2026,Broncos,DST,2800,9.0,13.1,9.3,3.0
+dk_classic_wk2_afternoon_20Sep2026,Seahawks,DST,3500,11.5,4.3,6.4,13.0
+dk_classic_wk2_afternoon_20Sep2026,Ryan Flournoy,WR,3800,1.4,3.7,3.3,4.2
+dk_classic_wk2_afternoon_20Sep2026,Rachaad White,RB,5000,0.8,4.1,3.4,4.7
+dk_classic_wk2_afternoon_20Sep2026,Evan Engram,TE,3300,9.6,8.1,12.7,14.3
+dk_classic_wk2_afternoon_20Sep2026,Cowboys,DST,2900,2.8,11.1,7.9,3.0
+dk_classic_wk2_afternoon_20Sep2026,Kendrick Bourne,WR,3900,6.1,1.9,3.6,15.5
+dk_classic_wk2_afternoon_20Sep2026,Cooper Kupp,WR,4100,2.5,2.1,2.2,5.5
+dk_classic_wk2_afternoon_20Sep2026,Rashid Shaheed,WR,4300,1.5,1.7,1.4,1.4
+dk_classic_wk2_afternoon_20Sep2026,Jaguars,DST,2400,21.7,10.5,19.6,13.0
+dk_classic_wk2_afternoon_20Sep2026,Jalen Nailor,WR,3900,1.1,1.4,1.6,5.7
+dk_classic_wk2_afternoon_20Sep2026,Demarcus Robinson,WR,3900,4.7,1.1,1.8,13.0
+dk_classic_wk2_afternoon_20Sep2026,Jake Ferguson,TE,3800,12.4,4.2,3.0,2.6
+dk_classic_wk2_afternoon_20Sep2026,Greg Dulcich,TE,3200,0.5,3.1,2.6,3.8
+dk_classic_wk2_afternoon_20Sep2026,Cardinals,DST,2500,8.4,3.7,6.1,10.0
+dk_classic_wk2_afternoon_20Sep2026,AJ Barner,TE,3300,2.1,1.2,1.0,3.3
+dk_classic_wk2_afternoon_20Sep2026,Raiders,DST,2600,6.4,3.3,7.1,13.0
+dk_classic_wk2_afternoon_20Sep2026,Keaton Mitchell,RB,4600,0.2,1.5,1.1,0.9
+dk_classic_wk2_afternoon_20Sep2026,Jack Bech,WR,3600,2.2,0.6,1.1,11.3
+dk_classic_wk2_afternoon_20Sep2026,Oronde Gadsden II,TE,3500,1.2,1.4,1.3,5.2
+dk_classic_wk2_afternoon_20Sep2026,George Holani,RB,4500,0.3,0.8,0.7,2.9
+dk_classic_wk2_afternoon_20Sep2026,Joe Milton III,QB,4000,0.0,1.3,0.8,0.0
+dk_classic_wk2_afternoon_20Sep2026,David Njoku,TE,3000,7.0,3.1,4.6,10.8
+dk_classic_wk2_afternoon_20Sep2026,Emari Demercado,RB,4500,0.0,1.5,1.1,0.7
+dk_classic_wk2_afternoon_20Sep2026,Troy Franklin,WR,3800,0.2,0.9,0.7,0.5
+dk_classic_wk2_afternoon_20Sep2026,Sam Hartman,QB,4000,0.0,1.0,0.7,0.0
+dk_classic_wk2_afternoon_20Sep2026,Commanders,DST,2500,0.9,1.1,1.0,3.0
+dk_classic_wk2_afternoon_20Sep2026,Kaytron Allen,RB,4500,0.1,1.1,0.9,1.6
+dk_classic_wk2_afternoon_20Sep2026,DJ Uiagalelei,QB,4000,0.0,0.9,0.6,0.0
+dk_classic_wk2_afternoon_20Sep2026,Mike Washington Jr.,RB,4300,0.3,0.6,0.6,4.1
+dk_classic_wk2_afternoon_20Sep2026,Chris Bell,WR,3500,0.3,0.6,0.6,3.5
+dk_classic_wk2_afternoon_20Sep2026,Dolphins,DST,2000,2.0,0.8,0.9,4.0
+dk_classic_wk2_afternoon_20Sep2026,Jaylen Wright,RB,4200,0.0,0.6,0.5,-0.1
+dk_classic_wk2_afternoon_20Sep2026,Joey Aguilar,QB,4000,0.0,0.8,0.5,0.0
+dk_classic_wk2_afternoon_20Sep2026,John Bates,TE,2700,2.0,3.0,2.6,3.3
+dk_classic_wk2_afternoon_20Sep2026,Brevyn Spann-Ford,TE,2800,0.2,1.4,1.2,3.4
+dk_classic_wk2_afternoon_20Sep2026,Josh Cameron,WR,3000,0.2,0.7,1.2,10.0
+dk_classic_wk2_afternoon_20Sep2026,Adam Trautman,TE,2800,0.1,1.2,1.0,3.0
+dk_classic_wk2_afternoon_20Sep2026,Ameer Abdullah,RB,4100,0.1,0.7,0.7,4.2
+dk_classic_wk2_afternoon_20Sep2026,Nick Mullens,QB,4000,0.0,0.7,0.5,-0.3
+dk_classic_wk2_afternoon_20Sep2026,Emanuel Wilson,RB,4000,0.0,0.5,0.5,0.3
+dk_classic_wk2_afternoon_20Sep2026,Kevin Coleman Jr.,WR,3000,0.0,0.5,0.4,0.0
+dk_classic_wk2_afternoon_20Sep2026,KaVontae Turpin,WR,3100,0.2,0.8,0.7,1.8
+dk_classic_wk2_afternoon_20Sep2026,Malik Benson,WR,3000,0.0,0.5,0.4,0.8
+dk_classic_wk2_afternoon_20Sep2026,Hunter Luepke,RB,4000,0.0,1.1,0.8,0.7
+dk_classic_wk2_afternoon_20Sep2026,Dyami Brown,WR,3000,0.0,0.7,0.6,0.0
+dk_classic_wk2_afternoon_20Sep2026,Jonah Coleman,RB,4200,0.7,0.8,0.6,0.0
+dk_classic_wk2_afternoon_20Sep2026,Jonathan Mingo,WR,3000,0.0,0.8,0.7,2.0
+dk_classic_wk2_afternoon_20Sep2026,Brady Russell,RB,4000,0.0,0.5,0.5,4.0
+dk_classic_wk2_afternoon_20Sep2026,Jaylin Lane,WR,3000,0.0,0.7,0.6,1.4
+dk_classic_wk2_afternoon_20Sep2026,Luke Schoonmaker,TE,2500,0.0,1.1,0.9,2.2
+dk_classic_wk2_afternoon_20Sep2026,Luke Farrell,TE,2500,1.3,1.0,1.0,3.9
+dk_classic_wk2_afternoon_20Sep2026,Nate Boerkircher,TE,2500,0.0,0.8,0.7,1.9
+dk_classic_wk2_afternoon_20Sep2026,Cody White,WR,3000,0.0,0.5,0.4,0.0
+dk_classic_wk2_afternoon_20Sep2026,Derius Davis,WR,3000,0.0,0.6,0.5,0.0
+dk_classic_wk2_afternoon_20Sep2026,Charlie Kolar,TE,2700,0.1,0.9,0.6,0.0
+dk_classic_wk2_afternoon_20Sep2026,Will Kacmarek,TE,2500,0.0,0.6,0.5,0.0
+dk_classic_wk2_afternoon_20Sep2026,Quintin Morris,TE,2500,0.0,0.8,0.5,0.0
+dk_classic_wk2_afternoon_20Sep2026,Jacob Cowing,WR,3000,0.0,0.7,0.6,0.0
+dk_classic_wk2_afternoon_20Sep2026,Dylan Laube,RB,4000,0.0,0.4,0.4,0.0
+dk_classic_wk2_afternoon_20Sep2026,KhaDarel Hodge,WR,3000,0.0,0.7,0.6,0.0
+dk_classic_wk2_afternoon_20Sep2026,Colson Yankoff,TE,2500,0.0,0.9,0.6,0.0
+dk_classic_wk2_afternoon_20Sep2026,Kimani Vidal,RB,4300,0.1,0.7,0.6,0.0
+dk_classic_wk2_afternoon_20Sep2026,Eric Saubert,TE,2500,0.0,0.6,0.5,0.0
+dk_classic_wk2_afternoon_20Sep2026,Devin Duvernay,WR,3000,0.0,0.4,0.4,0.0
+dk_classic_wk2_afternoon_20Sep2026,Simi Fehoko,WR,3000,0.0,0.4,0.4,0.0
+dk_classic_wk2_afternoon_20Sep2026,Dareke Young,WR,3000,0.0,0.4,0.4,0.0
+dk_classic_wk2_afternoon_20Sep2026,Nate Adkins,TE,2500,0.0,0.8,0.6,0.0
+dk_classic_wk2_afternoon_20Sep2026,Hunter Long,TE,2500,0.0,0.6,0.4,0.0
+dk_classic_wk2_afternoon_20Sep2026,Kyle Juszczyk,RB,4000,0.1,0.8,0.6,0.0
+dk_classic_wk2_afternoon_20Sep2026,Ben Sinnott,TE,2900,0.7,1.0,0.7,0.0
+dk_classic_wk2_afternoon_20Sep2026,Mac Jones,QB,4000,0.0,0.9,0.7,0.0
+dk_classic_wk2_afternoon_20Sep2026,LeQuint Allen Jr.,RB,4000,0.0,0.6,0.5,0.0
+dk_classic_wk2_afternoon_20Sep2026,Sam Howell,QB,4000,0.0,0.9,0.7,0.0
+dk_classic_wk2_afternoon_20Sep2026,Craig Reynolds,RB,4000,0.0,0.7,0.6,0.0
+dk_classic_wk2_afternoon_20Sep2026,Lil'Jordan Humphrey,WR,3300,0.1,0.6,0.6,0.0
+dk_classic_wk2_afternoon_20Sep2026,Travis Hunter,WR,3300,0.1,0.6,0.6,2.1
+dk_classic_wk2_afternoon_20Sep2026,Jarrett Stidham,QB,4200,0.0,0.7,0.6,0.0
+dk_classic_wk2_afternoon_20Sep2026,Jalen Milroe,QB,4400,0.0,0.5,0.4,0.0
+dk_classic_wk2_afternoon_20Sep2026,Adam Prentice,RB,4000,0.0,0.6,0.6,0.0
+dk_classic_wk2_afternoon_20Sep2026,Tyler Badie,RB,4000,0.0,0.6,0.6,0.0
+dk_classic_wk2_afternoon_20Sep2026,Tory Horton,WR,3200,0.1,0.4,0.4,0.0
+dk_classic_wk2_afternoon_20Sep2026,Amar Johnson,RB,4000,0.0,0.5,0.5,0.0
+dk_classic_wk2_afternoon_20Sep2026,Fernando Mendoza,QB,4500,0.0,0.4,0.4,0.0
+dk_classic_wk2_afternoon_20Sep2026,Bam Knight,RB,4000,0.0,0.3,0.3,0.0
+dk_classic_wk2_afternoon_20Sep2026,Marcus Mariota,QB,4000,0.0,0.7,0.5,0.0
+dk_classic_wk2_afternoon_20Sep2026,Sam Ehlinger,QB,4000,0.0,0.6,0.5,0.0
+dk_classic_wk2_afternoon_20Sep2026,Trey Lance,QB,4000,0.0,0.6,0.5,0.0
+dk_classic_wk2_afternoon_20Sep2026,Alec Ingold,RB,4000,0.0,0.5,0.5,0.0
+dk_classic_wk2_afternoon_20Sep2026,Velus Jones Jr.,RB,4000,0.0,0.4,0.3,0.0
+dk_classic_wk2_afternoon_20Sep2026,Ollie Gordon II,RB,4000,0.0,0.3,0.3,0.0
+dk_classic_wk2_afternoon_20Sep2026,Evan Hull,RB,4000,0.0,0.3,0.3,0.0
+dk_classic_wk2_afternoon_20Sep2026,Jacardia Wright,RB,4000,0.0,0.3,0.3,0.0
+dk_classic_wk2_afternoon_20Sep2026,Connor Heyward,RB,4000,0.0,0.3,0.3,0.1
+dk_classic_wk2_afternoon_20Sep2026,James Mitchell,TE,2500,0.0,0.9,0.7,0.0
+dk_classic_wk2_afternoon_20Sep2026,Dare Ogunbowale,RB,4000,0.0,0.3,0.3,0.0
+dk_classic_wk2_afternoon_20Sep2026,Theo Wease Jr.,WR,3000,0.0,0.5,0.5,0.0
+dk_classic_wk2_afternoon_20Sep2026,River Cracraft,WR,3000,0.0,0.6,0.5,0.0
+dk_classic_wk2_afternoon_20Sep2026,Treylon Burks,WR,3000,0.0,0.6,0.5,0.0
+dk_classic_wk2_afternoon_20Sep2026,Van Jefferson,WR,3000,0.0,0.6,0.5,0.0
+dk_classic_wk2_afternoon_20Sep2026,Tyler Ott,TE,2500,0.0,0.8,0.6,0.0
+dk_classic_wk2_afternoon_20Sep2026,Jack Westover,TE,2500,0.0,0.7,0.6,0.0
+dk_classic_wk2_afternoon_20Sep2026,Gardner Minshew II,QB,4000,0.0,0.4,0.3,0.0
+dk_classic_wk2_afternoon_20Sep2026,Tim Jones,WR,3000,0.0,0.5,0.5,0.0
+dk_classic_wk2_afternoon_20Sep2026,Austin Trammell,WR,3000,0.0,0.5,0.5,0.0
+dk_classic_wk2_afternoon_20Sep2026,Marquez Valdes-Scantling,WR,3000,0.0,0.5,0.5,0.0
+dk_classic_wk2_afternoon_20Sep2026,Michael Bandy,WR,3000,0.0,0.5,0.5,0.0
+dk_classic_wk2_afternoon_20Sep2026,Ryan Miller,WR,3000,0.0,0.4,0.4,0.0
+dk_classic_wk2_afternoon_20Sep2026,Jalen Brooks,WR,3000,0.0,0.4,0.4,0.0
+dk_classic_wk2_afternoon_20Sep2026,Nick Kallerup,TE,2500,0.0,0.5,0.5,0.0
+dk_classic_wk2_afternoon_20Sep2026,Brenen Thompson,WR,3500,0.0,0.5,0.5,0.0
+dk_classic_wk2_afternoon_20Sep2026,Elijah Arroyo,TE,2500,0.1,0.5,0.4,0.0
+dk_classic_wk2_afternoon_20Sep2026,Jack Stoll,TE,2500,0.0,0.7,0.6,0.0
+dk_classic_wk2_afternoon_20Sep2026,Brayden Willis,TE,2500,0.0,0.7,0.6,0.0
+dk_classic_wk2_afternoon_20Sep2026,Ronnie Bell,WR,3000,0.0,0.4,0.4,0.0
+dk_classic_wk2_afternoon_20Sep2026,Mitchell Fraboni,TE,2500,0.0,0.7,0.5,0.0
+dk_classic_wk2_afternoon_20Sep2026,Elijah Higgins,TE,2500,0.0,0.4,0.4,0.0
+dk_classic_wk2_afternoon_20Sep2026,Deven Thompkins,WR,3000,0.0,0.4,0.4,0.0
+dk_classic_wk2_afternoon_20Sep2026,Hayden Rucci,TE,2500,0.0,0.6,0.5,0.0
+dk_classic_wk2_afternoon_20Sep2026,Kyle McCord,QB,4000,0.0,0.4,0.3,0.0
+dk_classic_wk2_afternoon_20Sep2026,Teagan Quitoriano,TE,2500,0.0,0.4,0.4,0.0
+dk_classic_wk2_afternoon_20Sep2026,Ian Thomas,TE,2500,0.0,0.4,0.4,0.0
+dk_classic_wk2_afternoon_20Sep2026,Lucas Krull,TE,2500,0.0,0.6,0.5,0.0
+dk_classic_wk2_afternoon_20Sep2026,Cal Adomitis,TE,2500,0.0,0.4,0.4,0.0
+dk_classic_wk2_afternoon_20Sep2026,Jordan James,RB,4000,0.1,0.5,0.5,0.0
+dk_classic_wk2_afternoon_20Sep2026,Sincere McCormick,RB,4000,0.0,0.5,0.5,0.0
+dk_classic_wk2_afternoon_20Sep2026,Robert Henry Jr.,RB,4000,0.0,0.5,0.5,0.0
+dk_classic_wk2_afternoon_20Sep2026,J'Mari Taylor,RB,4000,0.0,0.4,0.4,0.0
+dk_classic_wk2_afternoon_20Sep2026,Cody Schrader,RB,4000,0.0,0.4,0.4,0.0
+dk_classic_wk2_afternoon_20Sep2026,Carlos Washington Jr.,RB,4000,0.0,0.3,0.3,0.0
+dk_classic_wk2_afternoon_20Sep2026,Gregory Desrosiers,RB,4000,0.0,0.3,0.4,0.0
+dk_classic_wk2_afternoon_20Sep2026,Jordan Hudson,WR,3000,0.0,0.6,0.5,0.0
+dk_classic_wk2_afternoon_20Sep2026,DJ Herman,RB,4000,0.0,0.3,0.3,0.0
+dk_classic_wk2_afternoon_20Sep2026,Jarquez Hunter,RB,4000,0.0,0.3,0.3,0.0
+dk_classic_wk2_afternoon_20Sep2026,Roman Hemby,RB,4000,0.0,0.3,0.3,0.0
+dk_classic_wk2_afternoon_20Sep2026,Michael Trigg,TE,2500,0.0,0.7,0.6,0.0
+dk_classic_wk2_afternoon_20Sep2026,Anthony Smith,WR,3000,0.0,0.6,0.5,0.0
+dk_classic_wk2_afternoon_20Sep2026,Ricky White III,WR,3000,0.0,0.4,0.4,0.0
+dk_classic_wk2_afternoon_20Sep2026,Kolbe Katsis,WR,3000,0.0,0.5,0.5,0.0
+dk_classic_wk2_afternoon_20Sep2026,Jaden Bradley,WR,3000,0.0,0.5,0.5,0.0
+dk_classic_wk2_afternoon_20Sep2026,Brandon Aiyuk,WR,3000,0.0,0.5,0.5,0.0
+dk_classic_wk2_afternoon_20Sep2026,Wesley Grimes,WR,3000,0.0,0.5,0.5,0.0
+dk_classic_wk2_afternoon_20Sep2026,Julian Hicks,WR,3000,0.0,0.3,0.3,0.0
+dk_classic_wk2_afternoon_20Sep2026,Emmanuel Henderson Jr.,WR,3000,0.0,0.3,0.3,0.0
+dk_classic_wk2_afternoon_20Sep2026,Will Sheppard,WR,3000,0.0,0.3,0.3,0.0
+dk_classic_wk2_afternoon_20Sep2026,Will Pauling,WR,3000,0.0,0.5,0.5,0.0
+dk_classic_wk2_afternoon_20Sep2026,Michael Wortham,WR,3000,0.0,0.4,0.4,0.0
+dk_classic_wk2_afternoon_20Sep2026,Jalen Reagor,WR,3000,0.0,0.3,0.3,0.0
+dk_classic_wk2_afternoon_20Sep2026,Trebor Pena,WR,3000,0.0,0.4,0.4,0.0
+dk_classic_wk2_afternoon_20Sep2026,Dane Key,WR,3000,0.0,0.4,0.4,0.0
+dk_classic_wk2_afternoon_20Sep2026,Irvin Charles,WR,3000,0.0,0.3,0.3,0.0
+dk_classic_wk2_afternoon_20Sep2026,Gary Jennings,WR,3000,0.0,0.4,0.4,0.0
+dk_classic_wk2_afternoon_20Sep2026,Dallen Bentley,TE,2500,0.0,0.6,0.5,0.0
+dk_classic_wk2_afternoon_20Sep2026,Harrison Wallace III,WR,3000,0.0,0.3,0.3,0.0
+dk_classic_wk2_afternoon_20Sep2026,Patrick Herbert,TE,2500,0.0,0.5,0.4,0.0
+dk_classic_wk2_afternoon_20Sep2026,Shawn Bowman,TE,2500,0.0,0.4,0.3,0.0
+dk_classic_wk2_afternoon_20Sep2026,Patrick Gurd,TE,2500,0.0,0.4,0.3,0.0
+dk_classic_wk2_afternoon_20Sep2026,Evan Svoboda,TE,2500,0.0,0.5,0.4,0.0
+dk_classic_wk2_afternoon_20Sep2026,Tre Watson,TE,2500,0.0,0.4,0.3,0.0
+dk_classic_wk2_afternoon_20Sep2026,Khalil Dinkins,TE,2500,0.0,0.5,0.5,0.0
+dk_classic_wk2_afternoon_20Sep2026,Seydou Traore,TE,2500,0.0,0.4,0.3,0.0
+dk_classic_wk2_afternoon_20Sep2026,Chris Myarick,TE,2500,0.0,0.3,0.3,0.0

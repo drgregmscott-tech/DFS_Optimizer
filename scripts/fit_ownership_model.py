@@ -58,6 +58,11 @@ def load_training_frame(site: str = "dk") -> pd.DataFrame:
         df = df.drop(columns=["chalk_score", "estimated_ownership_pct",
                               "estimated_ownership_pct_heuristic"], errors="ignore")
         df = bp.add_ownership_columns(df, site, layered=False)
+        # pub_val input: DK's displayed AvgPointsPerGame from the slate's salary file
+        sal_path = DATA_DIR / f"salaries_{site}_{slate_id}.csv"
+        if "dk_avg_ppg" not in df.columns and sal_path.exists():
+            _s = pd.read_csv(sal_path, dtype={"player_id": str}).drop_duplicates("player_id").set_index("player_id")
+            df["dk_avg_ppg"] = df["player_id"].map(_s["AvgPointsPerGame"])
         df = df[df["final_projection"] > 0].copy()
         own = g.drop_duplicates("player_id").set_index("player_id")["actual_ownership_pct"]
         df["own"] = df["player_id"].map(own).fillna(0.0)

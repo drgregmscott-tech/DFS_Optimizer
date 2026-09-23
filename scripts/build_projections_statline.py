@@ -897,6 +897,14 @@ def build_statline_projections(site: str, season: int, week: int, slate_id: str,
         out["slate_format"] = "showdown"
         out = add_showdown_ownership_columns(out, site)
     else:
+        # Ownership review 2026-09-23: DK's own displayed AvgPointsPerGame is
+        # what the field sees in the lobby; ownership_model.py uses it (as
+        # pub_val = points per $K) -- the one pre-lock signal found that
+        # explains the layered model's residual. DK only (FD's column is FPPG).
+        _avg_col = next((c for c in ("AvgPointsPerGame", "FPPG") if c in build_salaries.columns), None)
+        if _avg_col is not None and "player_id" in build_salaries.columns:
+            _avg = build_salaries.drop_duplicates("player_id").set_index("player_id")[_avg_col]
+            out["dk_avg_ppg"] = pd.to_numeric(out["player_id"].map(_avg), errors="coerce")
         out = add_ownership_columns(out, site)
         out["roster_role"] = None
         out["slate_format"] = "classic"
