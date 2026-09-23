@@ -28,8 +28,14 @@ score_lineups() with either real actual points (for validation, see
 analysis/classic_diag/validate_classic_field.py) or simulated scenario
 points (for scoring candidate lineups, not yet wired up).
 """
+import sys
+from pathlib import Path
+
 import numpy as np
 import pandas as pd
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from optimizer import DEFENSE_POSITION_LABELS  # noqa: E402
 
 CAP_SALARY = 50000
 MIN_SALARY = 49300  # real entries: 5th pct ~49.3-49.5k, 10th pct ~49.6k across 6 logged classic slates
@@ -67,7 +73,16 @@ def simulate_field(pool: pd.DataFrame, n=20000, seed=0, iters=15, batch=200000,
     sal = pool.salary.to_numpy(float)
     own = np.maximum(pool.own.to_numpy(float), 1e-4) / 100.0
     m = len(pool)
-    idx = {p: np.where(pos == p)[0] for p in ("QB", "RB", "WR", "TE", "DST")}
+    # 2026-09-23 fix: "DST" is DK's own label -- FD's real defense position
+    # value is "D" (optimizer.py's SITE_CONFIGS["fd"]["defense_position_values"],
+    # confirmed against a real FD export). A literal `pos == "DST"` match left
+    # idx["DST"] empty for every FD pool, so wDST.sum() was 0 and
+    # rng.choice(0, ...) crashed with "a must be a positive integer" -- FD
+    # never got past this line. DEFENSE_POSITION_LABELS (optimizer.py, Session
+    # 1.3) is this codebase's existing single source of truth for every real
+    # defense label across both sites; used here instead of hardcoding one.
+    idx = {p: np.where(pos == p)[0] for p in ("QB", "RB", "WR", "TE")}
+    idx["DST"] = np.where(np.isin(pos, list(DEFENSE_POSITION_LABELS)))[0]
     skill_idx = np.where(np.isin(pos, ("RB", "WR", "TE")))[0]
     if stack_boost is None:
         n_teams = len(set(team.tolist()))

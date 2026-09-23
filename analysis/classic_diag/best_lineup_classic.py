@@ -97,7 +97,13 @@ def candidates(site, slate_id, n_noise=200, n_stack_per_team=15, top_teams=10, s
 
 def build_pool_and_field(site, slate_id, field_n=10000, seed=1):
     P = optimizer.load_final_projections(site, slate_id)
-    P = P[P.position.isin(["QB", "RB", "WR", "TE", "DST"])].copy()
+    # 2026-09-23 fix: "DST" is DK's own label; FD's real defense position
+    # value is "D" (optimizer.py's DEFENSE_POSITION_LABELS, confirmed
+    # against a real FD export). A literal "DST" filter here dropped every
+    # FD defense from the pool before it ever reached classic_field.py,
+    # which then crashed with an empty DST index -- FD never worked through
+    # this whole scoring pipeline until now.
+    P = P[P.position.isin(["QB", "RB", "WR", "TE", *optimizer.DEFENSE_POSITION_LABELS])].copy()
     P["own"] = pd.to_numeric(P.get("estimated_ownership_pct", 0.0), errors="coerce").fillna(0.0)
     P["sigma"] = pd.to_numeric(P.get("sigma", np.nan), errors="coerce")
     P["sigma"] = P["sigma"].fillna(P.final_projection * 0.55)
@@ -139,7 +145,8 @@ def simulate_scenario_points(P: pd.DataFrame, n_sims: int, rng, params):
     pos = P.position.to_numpy(dtype=object)
     noise = rng.normal(size=(n_sims, m))
     z = np.zeros((n_sims, m))
-    isQB, isRB, isWT, isD = pos == "QB", pos == "RB", np.isin(pos, ["WR", "TE"]), pos == "DST"
+    isQB, isRB, isWT, isD = (pos == "QB", pos == "RB", np.isin(pos, ["WR", "TE"]),
+                             np.isin(pos, list(optimizer.DEFENSE_POSITION_LABELS)))
     z[:, isQB] = rho_qb * Tp[:, isQB] + np.sqrt(max(1e-6, 1 - rho_qb ** 2)) * noise[:, isQB]
     z[:, isWT] = rho_pass * Tp[:, isWT] + np.sqrt(max(1e-6, 1 - rho_pass ** 2)) * noise[:, isWT]
     z[:, isRB] = rho_rb * Tp[:, isRB] + np.sqrt(max(1e-6, 1 - rho_rb ** 2)) * noise[:, isRB]
@@ -213,10 +220,10 @@ def score(site, slate_id, n_candidates=200, field_n=10000, n_sims=2000, seed=1, 
     #     29-point favorite -- a bad matchup the raw-cheapest version doesn't see).
     excluded_player_ids = None
     if cheapest_dst_only:
-        dst = P[P.position == "DST"].sort_values("salary")
+        dst = P[P.position.isin(optimizer.DEFENSE_POSITION_LABELS)].sort_values("salary")
         excluded_player_ids = set(dst.player_id.iloc[1:])
     elif cheapest_viable_dst_only:
-        dst = P[P.position == "DST"].copy()
+        dst = P[P.position.isin(optimizer.DEFENSE_POSITION_LABELS)].copy()
         dst["value"] = dst.final_projection / dst.salary
         best = dst.sort_values("value", ascending=False).iloc[0]
         excluded_player_ids = set(dst.player_id) - {best.player_id}
