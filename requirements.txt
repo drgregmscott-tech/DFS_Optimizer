@@ -14,3 +14,4 @@ fastparquet==2026.5.0  # fallback parquet engine
 appdirs==1.4.4          # fastparquet dependency
 PuLP==3.3.2             # optimizer solver (Phase 3)
 requests==2.33.1        # Odds API HTTP client (Session 2.3)
+beautifulsoup4==4.15.0  # public projected-ownership page parsing (ingest_public_ownership.py)

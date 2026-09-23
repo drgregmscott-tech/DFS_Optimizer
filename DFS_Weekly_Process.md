@@ -345,6 +345,19 @@ Repeat both for FD if you're building there too. `pivot_finder.py`'s output will
 
 ---
 
+### Step 2j.5 — Pull public projected ownership (FFC), then rebuild projections
+
+The layered ownership model uses Fantasy Football Calculator's free projected ownership as a feature (leave-one-week-out on wk1/wk2: corr 0.676 → 0.764, chalk bias −6.8 → −4.1). **Stage 3's automated refresh already does this for every active classic DK slate on every full run** (`refresh_data.yml` → "Pull public projected ownership (FFC)", before "Rebuild projections"), so you only need to run it by hand to see it immediately:
+
+```
+python scripts/ingest_public_ownership.py --site dk --slate-id classic_wk5
+python scripts/build_projections_statline.py ...   (same command as Step 2i)
+```
+
+It saves `data/ownership_public/ffc_dk_{slate_id}.csv` (committed with `data/`). Check the printed "players match" lines: the chosen FFC slate (Main / Early Only / Afternoon Only) should be the one matching your slate. **Never required** — if the site is down, the format changes, or no slate matches, nothing is written and the build silently falls back to the model without it (look for "Ownership: using public-ownership (FFC) variant" in the build log to confirm it was used). FanDuel and Showdown are not covered.
+
+---
+
 ### Step 2k — Commit and push
 
 ```

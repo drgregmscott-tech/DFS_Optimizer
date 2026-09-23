@@ -447,6 +447,21 @@ jobs:
       # 14.0). --vegas-slate-id always points at shared_pull's single
       # Vegas pull (first_slate_id), not this slate's own id -- Vegas
       # lines are slate-agnostic, matching the pre-rework behavior.
+      # Public projected ownership (Fantasy Football Calculator, free) for THIS
+      # slate -- the one outside signal that measurably improves the layered
+      # ownership model (scripts/ingest_public_ownership.py; ownership review
+      # 2026-09-23). Classic DK only (the ownership model is DK classic).
+      # Fail-safe by design: on any failure (site down, format change, no
+      # matching slate) nothing new is written, the previously committed
+      # table (if any) stays in place, and the build below falls back to the
+      # pub_val-only ownership model when no table exists. Re-pulled every
+      # full run so projections that move near lock are picked up.
+      - name: Pull public projected ownership (FFC)
+        id: public_own
+        if: needs.prepare.outputs.mode == 'full' && matrix.site == 'dk' && !contains(matrix.slate_id, 'showdown')
+        continue-on-error: true
+        run: python3 scripts/ingest_public_ownership.py --site dk --slate-id ${{ matrix.slate_id }}
+
       - name: Rebuild projections
         id: build_proj
         continue-on-error: true
@@ -575,7 +590,7 @@ jobs:
           # live: this exact failure hit all six matrix legs in Session
           # 16.x's real six-slate test run before this fix was added.
           git config core.autocrlf false
-          git add output/ logs/automation_run_log.csv
+          git add output/ logs/automation_run_log.csv data/ownership_public/
           if git diff --cached --quiet; then
             echo "No changes to commit for ${{ matrix.slate_id }}."
             exit 0
