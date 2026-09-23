@@ -1,0 +1,7 @@
+slate,default_cash,default_pct,default_n_pool,default_dst,cheap_dst_cash,cheap_dst_pct,cheap_dst_n_pool,cheap_dst_dst,cheap_viable_dst_cash,cheap_viable_dst_pct,cheap_viable_dst_n_pool,cheap_viable_dst_dst,runtime_s,arm1_cash,arm1_pct
+wk1_main,True,0.9015792798483891,130,Jets,True,0.8852179406190777,125,Cardinals,False,0.7123183828174353,130,Jets,346,False,0.21655085281111808
+wk1_early,False,0.563168388617002,130,Titans,True,0.7553017944535073,127,Browns,False,0.30813848105854635,128,Jets,286,False,0.14355628058727565
+wk1_afternoon,True,0.9239704329461458,114,Raiders,True,0.953959873284055,80,Cardinals,True,0.9239704329461458,96,Raiders,95,False,0.4751847940865892
+wk2_main,False,0.6564591488824347,130,49ers,False,0.5597297638590731,125,Dolphins,True,0.9510039146356863,123,Panthers,222,False,0.587069074378078
+wk2_early,False,0.2594469073253114,129,Buccaneers,False,0.43234114418408276,122,Titans,False,0.5174160861304623,125,Panthers,123,False,0.42157483639434246
+wk2_afternoon,True,0.915257819103973,129,49ers,True,0.8459425190194421,115,Dolphins,False,0.7307692307692308,119,Chargers,113,False,0.3594674556213018

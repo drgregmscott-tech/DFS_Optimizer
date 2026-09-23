@@ -37,42 +37,62 @@ SCENARIOS = {
 }
 
 
-def candidates(site, slate_id, n_noise=200, n_stack_per_team=15, top_teams=10, seed=5):
+def candidates(site, slate_id, n_noise=200, n_stack_per_team=15, top_teams=10, seed=5,
+                team_rank_key="proj", excluded_player_ids=None):
+    """Returns (out, is_stack_forced): is_stack_forced[i] is True iff candidate i
+    came from the QB-stack-forced generation loop (not the unconstrained noise
+    loop). Added 2026-09-22 so selection rules can optionally restrict to
+    stack-forced candidates only -- see replay_selection_criteria.py's
+    "*_stackonly" rules, added after raw_proj and avg_top25 both independently
+    picked the SAME unstacked, single-bust-vulnerable candidate on wk2_early."""
     rng = np.random.default_rng(seed)
-    seen, out = set(), []
+    seen, out, is_stack_forced = set(), [], []
 
-    def add(sel):
+    def add(sel, forced):
         key = frozenset(sel.player_id)
         if key in seen:
             return False
         seen.add(key)
         out.append(sel[["player_id", "position", "roster_slot"]].copy() if "roster_slot" in sel.columns
                    else sel[["player_id", "position"]].copy())
+        is_stack_forced.append(forced)
         return True
 
     made = 0
     for _ in range(n_noise):
         try:
-            sel = optimizer.build_single_lineup(site, slate_id, randomization_pct=20, rng=rng)
+            sel = optimizer.build_single_lineup(site, slate_id, randomization_pct=20, rng=rng,
+                                                 excluded_player_ids=excluded_player_ids)
         except RuntimeError:
             continue
-        made += add(sel)
+        made += add(sel, False)
 
     P = optimizer.load_final_projections(site, slate_id)
-    teams = (P[P.position == "QB"].groupby("team").final_projection.max()
-             .sort_values(ascending=False).head(top_teams).index.tolist())
+    # team_rank_key: which teams get forced-stack candidates generated for them.
+    # Added 2026-09-22 to test HANDOFF_dfs_army_variables.md's V1 (Greg's DFS Army
+    # rule: stack the best GAME ENVIRONMENT -- implied team total -- not just the
+    # best-projected QB). Default "proj" reproduces prior behavior exactly (QB
+    # final_projection, which already partially proxies implied_total: rank
+    # correlation ~0.83-0.93 across the 6 logged slates, so this is a real but
+    # not drastic reordering, not an independent signal from scratch).
+    if team_rank_key == "implied_total":
+        qb = P[P.position == "QB"].groupby("team").implied_total.max()
+    else:
+        qb = P[P.position == "QB"].groupby("team").final_projection.max()
+    teams = qb.sort_values(ascending=False).head(top_teams).index.tolist()
     for tm in teams:
         for _ in range(n_stack_per_team):
             try:
                 sel = optimizer.build_single_lineup(
                     site, slate_id, randomization_pct=25, rng=rng,
                     stack_mode="qb", stack_size=2, stack_positions={"WR", "TE"},
-                    bring_back=True, stack_teams=[tm])
+                    bring_back=True, stack_teams=[tm],
+                    excluded_player_ids=excluded_player_ids)
             except RuntimeError:
                 continue
-            made += add(sel)
-    print(f"generated {made} solves -> {len(out)} distinct candidates")
-    return out
+            made += add(sel, True)
+    print(f"generated {made} solves -> {len(out)} distinct candidates ({sum(is_stack_forced)} stack-forced)")
+    return out, is_stack_forced
 
 
 def build_pool_and_field(site, slate_id, field_n=10000, seed=1):
@@ -130,23 +150,99 @@ def simulate_scenario_points(P: pd.DataFrame, n_sims: int, rng, params):
     return np.maximum(0.0, proj[None, :] + sigma[None, :] * z)
 
 
-def score(site, slate_id, n_candidates=200, field_n=10000, n_sims=2000, seed=1, return_detail=False):
+def has_real_stack(P: pd.DataFrame, mask: np.ndarray, min_teammates: int = 1, min_bringback: int = 0) -> bool:
+    """True iff the lineup at `mask` actually contains a QB with >= min_teammates
+    same-team WR/TE AND >= min_bringback opponent-team WR/TE -- checked on the
+    ROSTER ITSELF, not on how the candidate was generated.
+
+    Added 2026-09-22 to replace the origin-based `is_stack_forced` tag: that tag
+    excluded a legitimately good wk2_main candidate purely because it came from
+    the unconstrained noise-generation loop. The first fix (min_teammates=1,
+    default here) was TOO WEAK and tested worse than origin-tagging (2-3/6 cash
+    vs. 4/6) -- most noise-loop candidates incidentally include >=1 same-team
+    pair just because good players cluster on good offenses, so it barely
+    filtered anything. The origin tag apparently worked well not because of
+    generation source but because that loop enforces the exact VALIDATED
+    structure (stack_size=2 AND bring_back=True). Callers wanting to replicate
+    that should pass min_teammates=2, min_bringback=1 (see
+    replay_selection_criteria.py's `*_validated` rules)."""
+    pos = P.position.to_numpy(dtype=object)[mask]
+    team = P.team.to_numpy(dtype=object)[mask]
+    opp = P.opponent.to_numpy(dtype=object)[mask]
+    qb_idx = np.where(pos == "QB")[0]
+    if len(qb_idx) == 0:
+        return False
+    qb_team = team[qb_idx[0]]
+    qb_opp = opp[qb_idx[0]]
+    n_teammates = int(np.sum((team == qb_team) & np.isin(pos, ["WR", "TE"])))
+    n_bringback = int(np.sum((team == qb_opp) & np.isin(pos, ["WR", "TE"])))
+    return n_teammates >= min_teammates and n_bringback >= min_bringback
+
+
+def score(site, slate_id, n_candidates=200, field_n=10000, n_sims=2000, seed=1, return_detail=False,
+          team_rank_key="proj", cheapest_dst_only=False, cheapest_viable_dst_only=False):
     P, field = build_pool_and_field(site, slate_id, field_n=field_n, seed=seed)
     field_pts_template = P.final_projection.to_numpy(float)
     field_score_base = cf.score_lineups(field, field_pts_template)  # sanity only
 
-    cands = candidates(site, slate_id, n_noise=n_candidates, n_stack_per_team=max(5, n_candidates // 20))
+    # cheapest_dst_only / cheapest_viable_dst_only: HANDOFF_dfs_army_variables.md's
+    # V3a (Greg's DFS Army rule: DST is the cheapest VIABLE play -- clarified
+    # 2026-09-22: not literally the cheapest regardless of matchup, but the
+    # cheapest one you'd actually believe could limit points/get sacks/get picks --
+    # pay up elsewhere, defense upside is capped anyway). Two variants, both
+    # restrict OUR OWN candidate generation only (via excluded_player_ids) -- NOT
+    # applied to `P`/`field` above, since those represent the real opposing field,
+    # which played DST however it actually did:
+    #   cheapest_dst_only: literal cheapest-salary DST, no matchup filter at all.
+    #     Kept as a deliberate negative control/contrast, not the real V3a test --
+    #     it can pick a bad matchup just because it's cheap (e.g. wk2_main:
+    #     Dolphins $2000/4.9 proj vs. Panthers $2700/10.0 proj -- cheapest-only
+    #     would take the Dolphins purely on price).
+    #   cheapest_viable_dst_only: the real V3a test. Went through 3 revisions with
+    #     Greg before landing here, 2026-09-22: not literally the cheapest
+    #     regardless of matchup; not a separate opponent-implied-total filter
+    #     either, once Greg pointed out the existing DST model "does a really good
+    #     job" already (real example: cheap, top-projected Carolina DST this past
+    #     week) -- so "cheap AND viable" collapses to POINTS-PER-DOLLAR VALUE
+    #     (final_projection / salary), trusting the existing projection to have
+    #     already priced in matchup quality. Picks the single best-value DST in
+    #     the pool. Confirmed on wk2_main: Panthers ($2700, 9.98 proj) is the
+    #     clear #1 by value (3.69 pts/$1000 vs. #2's 3.02) -- cheap-ish AND
+    #     genuinely well-projected, the Carolina pattern, not just "the cheapest
+    #     name on the slate" (that would've been the $2000 Dolphins facing a
+    #     29-point favorite -- a bad matchup the raw-cheapest version doesn't see).
+    excluded_player_ids = None
+    if cheapest_dst_only:
+        dst = P[P.position == "DST"].sort_values("salary")
+        excluded_player_ids = set(dst.player_id.iloc[1:])
+    elif cheapest_viable_dst_only:
+        dst = P[P.position == "DST"].copy()
+        dst["value"] = dst.final_projection / dst.salary
+        best = dst.sort_values("value", ascending=False).iloc[0]
+        excluded_player_ids = set(dst.player_id) - {best.player_id}
+
+    cands, cand_forced_flags = candidates(site, slate_id, n_noise=n_candidates, n_stack_per_team=max(5, n_candidates // 20),
+                                           team_rank_key=team_rank_key, excluded_player_ids=excluded_player_ids)
     pid_to_idx = {pid: i for i, pid in enumerate(P.player_id)}
     cand_masks = []
-    for c in cands:
+    is_stack_forced = []
+    for c, forced in zip(cands, cand_forced_flags):
         idxs = [pid_to_idx[p] for p in c.player_id if p in pid_to_idx]
         if len(idxs) != len(c):
             continue
         cand_masks.append(np.array(idxs))
+        is_stack_forced.append(forced)
+    is_real_stack = [has_real_stack(P, m) for m in cand_masks]
+    is_validated_stack = [has_real_stack(P, m, min_teammates=2, min_bringback=1) for m in cand_masks]
 
     rng = np.random.default_rng(seed + 100)
     results = {name: np.zeros(len(cand_masks)) for name in SCENARIOS}
     top1_results = {name: np.zeros(len(cand_masks)) for name in SCENARIOS}
+    # top25 = P(pct >= 0.75) -- the ACTUAL SE3max min-cash line (CASH_PCT=0.25 elsewhere
+    # in this codebase), added 2026-09-22. avg_top10/worst_top10 above target a GPP-style
+    # ceiling (top-10%) that was never actually the right threshold for a min-cash format;
+    # see HANDOFF_classic_construction_replay.md for the reasoning.
+    top25_results = {name: np.zeros(len(cand_masks)) for name in SCENARIOS}
     field_qb = field["qb"]; field_rb = field["rb"]; field_wr = field["wr"]; field_te = field["te"]
     field_flex = field["flex"]; field_dst = field["dst"]
     for name, params in SCENARIOS.items():
@@ -160,15 +256,23 @@ def score(site, slate_id, n_candidates=200, field_n=10000, n_sims=2000, seed=1, 
             pct = rank / field_totals.shape[1]
             results[name][j] = (pct >= 0.90).mean()
             top1_results[name][j] = (pct >= 0.99).mean()
+            top25_results[name][j] = (pct >= 0.75).mean()
         print(f"scenario {name} done")
 
     avg10 = np.mean([results[n] for n in SCENARIOS], axis=0)
     worst10 = np.min([results[n] for n in SCENARIOS], axis=0)
     avg1 = np.mean([top1_results[n] for n in SCENARIOS], axis=0)
-    out = pd.DataFrame({"avg_top10": avg10, "worst_top10": worst10, "avg_top1": avg1})
+    avg25 = np.mean([top25_results[n] for n in SCENARIOS], axis=0)
+    worst25 = np.min([top25_results[n] for n in SCENARIOS], axis=0)
+    out = pd.DataFrame({"avg_top10": avg10, "worst_top10": worst10, "avg_top1": avg1,
+                         "avg_top25": avg25, "worst_top25": worst25})
     for name in SCENARIOS:
         out[f"top10_{name}"] = results[name]
+        out[f"top25_{name}"] = top25_results[name]
     out["names"] = [", ".join(sorted(P.player_name.iloc[m].tolist())) for m in cand_masks]
+    out["is_stack_forced"] = is_stack_forced
+    out["is_real_stack"] = is_real_stack
+    out["is_validated_stack"] = is_validated_stack
     order = out["avg_top10"].to_numpy().argsort()[::-1]
     out = out.iloc[order].reset_index(drop=True)
     if return_detail:
