@@ -115,7 +115,41 @@ def recommend_lineup(site: str, slate_id: str, n_candidates: int = 80,
     """Returns a DataFrame of up to `top_n` ranked lineups stacked together
     (see module docstring's Output section) -- rank 1 is THE recommendation
     (identical selection to every prior version of this function); 2/3 are
-    margin/confidence context, not alternate options to pick from."""
+    margin/confidence context, not alternate options to pick from.
+
+    2026-09-23 fix: Showdown slates are refused here, not silently crashed
+    into. `best_lineup_classic.candidates()` (via `optimizer.build_single_
+    lineup()`) assumes one row per player_id -- a Showdown pool has TWO
+    (CPT and FLEX price/points variants of the same player_id), which made
+    `proj[pid]` return a pandas Series instead of a scalar and PuLP raise an
+    opaque `TypeError: must be real number, not Series` deep inside the
+    solver. That was never a "small bug": this script's only shipped method,
+    `worst_top25_realstack`, was validated exclusively against CLASSIC
+    slates (see HANDOFF_week3_lineup_system.md) -- "is_real_stack" (a QB +
+    same-team WR/TE) and the "top25" SE3max cash-line threshold are both
+    classic-roster concepts that don't have a validated Showdown analogue.
+    `analysis/showdown_own/best_single.py` already has SEPARATE Showdown
+    candidate-generation/scoring machinery (a different selection metric,
+    never validated against real logged Showdown results the way this
+    script's classic rule was, and its own candidate generator is hardcoded
+    to one old 2-team slate's team abbreviations) -- wiring it in here needs
+    its own real-data validation pass, not a same-session patch, per this
+    module's own stated discipline for adding new selection logic (see the
+    docstring's "Do not add a pivot step... without a new real-data
+    validation" note). Failing loud with an explanation is more useful than
+    either crashing or silently shipping an unvalidated rule."""
+    proj_path = OUTPUT_DIR / f"final_projections_{site}_{slate_id}.csv"
+    if proj_path.exists():
+        probe = pd.read_csv(proj_path, usecols=lambda c: c == "slate_format", nrows=1000)
+        if optimizer.is_showdown_pool(probe):
+            raise SystemExit(
+                f"recommend_lineup: {site}/{slate_id} is a Showdown/Single-Game "
+                f"slate. This script's only shipped method (worst_top25_realstack) "
+                f"was validated for classic slates only -- see this function's own "
+                f"docstring for why Showdown isn't a same-session patch. No "
+                f"recommended_lineup file will be written for this slate; classic "
+                f"slates are unaffected."
+            )
     out, masks, P = blc.score(
         site, slate_id, n_candidates=n_candidates, field_n=field_n,
         n_sims=n_sims, seed=seed, return_detail=True,
