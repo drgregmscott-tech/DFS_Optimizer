@@ -1,0 +1,7 @@
+slate,n_se3max_lineups,best_overlap_of_9,exact_match_any,rec_cash,rec_pct,best_se3max_pct,any_se3max_cash,runtime_s
+wk1_main,3,5,False,True,0.9015792798483891,0.7137081490840177,False,125
+wk1_early,3,8,False,False,0.563168388617002,0.734094616639478,False,104
+wk1_afternoon,3,7,False,True,0.9239704329461458,0.8652587117212249,True,35
+wk2_main,3,6,False,False,0.6564591488824347,0.7269857305215305,False,84
+wk2_early,3,7,False,False,0.2594469073253114,0.5847582858349166,False,47
+wk2_afternoon,3,6,False,True,0.915257819103973,0.9070160608622148,True,42
