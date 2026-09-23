@@ -1,0 +1,107 @@
+Position,Name + ID,Name,ID,Roster Position,Salary,Game Info,TeamAbbrev,AvgPointsPerGame,Status,roster_role,name,site,salary,normalized_name,normalized_team,position_upper,slate_format,player_id,match_method,match_confidence
+RB,Bijan Robinson (44225918),Bijan Robinson,44225918,CPT,17700,ATL@GB 09/24/2026 08:15PM ET,ATL,21.2,,CPT,Bijan Robinson,dk,17700,bijan robinson,ATL,RB,showdown,00-0038542,auto_exact,high
+QB,Jordan Love (44225919),Jordan Love,44225919,CPT,15000,ATL@GB 09/24/2026 08:15PM ET,GB,19.1,,CPT,Jordan Love,dk,15000,jordan love,GB,QB,showdown,00-0036264,auto_exact,high
+WR,Christian Watson (44225920),Christian Watson,44225920,CPT,14700,ATL@GB 09/24/2026 08:15PM ET,GB,24.9,,CPT,Christian Watson,dk,14700,christian watson,GB,WR,showdown,00-0038124,auto_exact,high
+QB,Michael Penix Jr. (44225921),Michael Penix Jr.,44225921,CPT,13500,ATL@GB 09/24/2026 08:15PM ET,ATL,0.0,,CPT,Michael Penix Jr.,dk,13500,michael penix,ATL,QB,showdown,00-0039917,auto_exact,high
+WR,Drake London (44225922),Drake London,44225922,CPT,13200,ATL@GB 09/24/2026 08:15PM ET,ATL,7.2,,CPT,Drake London,dk,13200,drake london,ATL,WR,showdown,00-0037238,auto_exact,high
+QB,Tua Tagovailoa (44225923),Tua Tagovailoa,44225923,CPT,12900,ATL@GB 09/24/2026 08:15PM ET,ATL,0.0,,CPT,Tua Tagovailoa,dk,12900,tua tagovailoa,ATL,QB,showdown,00-0036212,auto_fallback_team_mismatch,medium
+RB,Josh Jacobs (44225924),Josh Jacobs,44225924,CPT,12600,ATL@GB 09/24/2026 08:15PM ET,GB,0.0,OUT,CPT,Josh Jacobs,dk,12600,josh jacobs,GB,RB,showdown,00-0035700,auto_exact,high
+QB,Jack Strand (44225925),Jack Strand,44225925,CPT,12300,ATL@GB 09/24/2026 08:15PM ET,ATL,2.0,,CPT,Jack Strand,dk,12300,jack strand,ATL,QB,showdown,00-0041194,auto_exact,high
+QB,Cooper Rush (44225926),Cooper Rush,44225926,CPT,12000,ATL@GB 09/24/2026 08:15PM ET,ATL,5.1,,CPT,Cooper Rush,dk,12000,cooper rush,ATL,QB,showdown,00-0033662,auto_fallback_team_mismatch,medium
+RB,Bijan Robinson (44225865),Bijan Robinson,44225865,FLEX,11800,ATL@GB 09/24/2026 08:15PM ET,ATL,21.2,,FLEX,Bijan Robinson,dk,11800,bijan robinson,ATL,RB,showdown,00-0038542,auto_exact,high
+WR,Matthew Golden (44225927),Matthew Golden,44225927,CPT,11700,ATL@GB 09/24/2026 08:15PM ET,GB,12.7,,CPT,Matthew Golden,dk,11700,matthew golden,GB,WR,showdown,00-0040667,auto_exact,high
+RB,MarShawn Lloyd (44225928),MarShawn Lloyd,44225928,CPT,11100,ATL@GB 09/24/2026 08:15PM ET,GB,6.7,,CPT,MarShawn Lloyd,dk,11100,marshawn lloyd,GB,RB,showdown,00-0039811,auto_exact,high
+TE,Tucker Kraft (44225929),Tucker Kraft,44225929,CPT,10500,ATL@GB 09/24/2026 08:15PM ET,GB,6.5,,CPT,Tucker Kraft,dk,10500,tucker kraft,GB,TE,showdown,00-0038996,auto_exact,high
+QB,Jordan Love (44225866),Jordan Love,44225866,FLEX,10000,ATL@GB 09/24/2026 08:15PM ET,GB,19.1,,FLEX,Jordan Love,dk,10000,jordan love,GB,QB,showdown,00-0036264,auto_exact,high
+TE,Kyle Pitts Sr. (44225930),Kyle Pitts Sr.,44225930,CPT,9900,ATL@GB 09/24/2026 08:15PM ET,ATL,1.3,,CPT,Kyle Pitts Sr.,dk,9900,kyle pitts,ATL,TE,showdown,00-0036970,auto_exact,high
+WR,Christian Watson (44225867),Christian Watson,44225867,FLEX,9800,ATL@GB 09/24/2026 08:15PM ET,GB,24.9,,FLEX,Christian Watson,dk,9800,christian watson,GB,WR,showdown,00-0038124,auto_exact,high
+WR,Jayden Reed (44225931),Jayden Reed,44225931,CPT,9300,ATL@GB 09/24/2026 08:15PM ET,GB,3.2,D,CPT,Jayden Reed,dk,9300,jayden reed,GB,WR,showdown,00-0039146,auto_exact,high
+QB,Michael Penix Jr. (44225868),Michael Penix Jr.,44225868,FLEX,9000,ATL@GB 09/24/2026 08:15PM ET,ATL,0.0,,FLEX,Michael Penix Jr.,dk,9000,michael penix,ATL,QB,showdown,00-0039917,auto_exact,high
+QB,Tyrod Taylor (44225932),Tyrod Taylor,44225932,CPT,9000,ATL@GB 09/24/2026 08:15PM ET,GB,0.0,,CPT,Tyrod Taylor,dk,9000,tyrod taylor,GB,QB,showdown,00-0028118,auto_fallback_team_mismatch,medium
+QB,Kedon Slovis (44225933),Kedon Slovis,44225933,CPT,9000,ATL@GB 09/24/2026 08:15PM ET,GB,0.0,,CPT,Kedon Slovis,dk,9000,kedon slovis,GB,QB,showdown,00-0039577,auto_fallback_team_mismatch,medium
+WR,Drake London (44225869),Drake London,44225869,FLEX,8800,ATL@GB 09/24/2026 08:15PM ET,ATL,7.2,,FLEX,Drake London,dk,8800,drake london,ATL,WR,showdown,00-0037238,auto_exact,high
+QB,Tua Tagovailoa (44225870),Tua Tagovailoa,44225870,FLEX,8600,ATL@GB 09/24/2026 08:15PM ET,ATL,0.0,,FLEX,Tua Tagovailoa,dk,8600,tua tagovailoa,ATL,QB,showdown,00-0036212,auto_fallback_team_mismatch,medium
+RB,Josh Jacobs (44225871),Josh Jacobs,44225871,FLEX,8400,ATL@GB 09/24/2026 08:15PM ET,GB,0.0,OUT,FLEX,Josh Jacobs,dk,8400,josh jacobs,GB,RB,showdown,00-0035700,auto_exact,high
+QB,Jack Strand (44225872),Jack Strand,44225872,FLEX,8200,ATL@GB 09/24/2026 08:15PM ET,ATL,2.0,,FLEX,Jack Strand,dk,8200,jack strand,ATL,QB,showdown,00-0041194,auto_exact,high
+RB,Chris Brooks (44225934),Chris Brooks,44225934,CPT,8100,ATL@GB 09/24/2026 08:15PM ET,GB,3.3,,CPT,Chris Brooks,dk,8100,chris brooks,GB,RB,showdown,00-0038685,auto_exact,high
+QB,Cooper Rush (44225873),Cooper Rush,44225873,FLEX,8000,ATL@GB 09/24/2026 08:15PM ET,ATL,5.1,,FLEX,Cooper Rush,dk,8000,cooper rush,ATL,QB,showdown,00-0033662,auto_fallback_team_mismatch,medium
+WR,Matthew Golden (44225874),Matthew Golden,44225874,FLEX,7800,ATL@GB 09/24/2026 08:15PM ET,GB,12.7,,FLEX,Matthew Golden,dk,7800,matthew golden,GB,WR,showdown,00-0040667,auto_exact,high
+K,Trey Smack (44225935),Trey Smack,44225935,CPT,7800,ATL@GB 09/24/2026 08:15PM ET,GB,10.5,,CPT,Trey Smack,dk,7800,trey smack,GB,K,showdown,00-0040899,auto_exact,high
+K,Lenny Krieg (44225936),Lenny Krieg,44225936,CPT,7800,ATL@GB 09/24/2026 08:15PM ET,GB,0.0,,CPT,Lenny Krieg,dk,7800,lenny krieg,GB,K,showdown,00-0040003,auto_exact,high
+DST,Packers (44225937),Packers,44225937,CPT,7500,ATL@GB 09/24/2026 08:15PM ET,GB,3.0,,CPT,Packers,dk,7500,packers,GB,DST,showdown,DST_GB,team_defense,high
+RB,MarShawn Lloyd (44225875),MarShawn Lloyd,44225875,FLEX,7400,ATL@GB 09/24/2026 08:15PM ET,GB,6.7,,FLEX,MarShawn Lloyd,dk,7400,marshawn lloyd,GB,RB,showdown,00-0039811,auto_exact,high
+K,Nick Folk (44225938),Nick Folk,44225938,CPT,7200,ATL@GB 09/24/2026 08:15PM ET,ATL,7.0,,CPT,Nick Folk,dk,7200,nick folk,ATL,K,showdown,00-0025565,auto_fallback_team_mismatch,medium
+TE,Tucker Kraft (44225876),Tucker Kraft,44225876,FLEX,7000,ATL@GB 09/24/2026 08:15PM ET,GB,6.5,,FLEX,Tucker Kraft,dk,7000,tucker kraft,GB,TE,showdown,00-0038996,auto_exact,high
+TE,Kyle Pitts Sr. (44225877),Kyle Pitts Sr.,44225877,FLEX,6600,ATL@GB 09/24/2026 08:15PM ET,ATL,1.3,,FLEX,Kyle Pitts Sr.,dk,6600,kyle pitts,ATL,TE,showdown,00-0036970,auto_exact,high
+RB,Brian Robinson Jr. (44225939),Brian Robinson Jr.,44225939,CPT,6600,ATL@GB 09/24/2026 08:15PM ET,ATL,5.9,,CPT,Brian Robinson Jr.,dk,6600,brian robinson,ATL,RB,showdown,00-0037746,auto_fallback_team_mismatch,medium
+WR,Jayden Reed (44225878),Jayden Reed,44225878,FLEX,6200,ATL@GB 09/24/2026 08:15PM ET,GB,3.2,D,FLEX,Jayden Reed,dk,6200,jayden reed,GB,WR,showdown,00-0039146,auto_exact,high
+QB,Tyrod Taylor (44225879),Tyrod Taylor,44225879,FLEX,6000,ATL@GB 09/24/2026 08:15PM ET,GB,0.0,,FLEX,Tyrod Taylor,dk,6000,tyrod taylor,GB,QB,showdown,00-0028118,auto_fallback_team_mismatch,medium
+QB,Kedon Slovis (44225880),Kedon Slovis,44225880,FLEX,6000,ATL@GB 09/24/2026 08:15PM ET,GB,0.0,,FLEX,Kedon Slovis,dk,6000,kedon slovis,GB,QB,showdown,00-0039577,auto_fallback_team_mismatch,medium
+RB,Kaleb Johnson (44225940),Kaleb Johnson,44225940,CPT,6000,ATL@GB 09/24/2026 08:15PM ET,GB,1.6,,CPT,Kaleb Johnson,dk,6000,kaleb johnson,GB,RB,showdown,00-0040142,auto_fallback_team_mismatch,medium
+WR,Zachariah Branch (44225941),Zachariah Branch,44225941,CPT,5700,ATL@GB 09/24/2026 08:15PM ET,ATL,1.7,,CPT,Zachariah Branch,dk,5700,zachariah branch,ATL,WR,showdown,00-0041044,auto_exact,high
+RB,Chris Brooks (44225881),Chris Brooks,44225881,FLEX,5400,ATL@GB 09/24/2026 08:15PM ET,GB,3.3,,FLEX,Chris Brooks,dk,5400,chris brooks,GB,RB,showdown,00-0038685,auto_exact,high
+K,Trey Smack (44225882),Trey Smack,44225882,FLEX,5200,ATL@GB 09/24/2026 08:15PM ET,GB,10.5,,FLEX,Trey Smack,dk,5200,trey smack,GB,K,showdown,00-0040899,auto_exact,high
+K,Lenny Krieg (44225883),Lenny Krieg,44225883,FLEX,5200,ATL@GB 09/24/2026 08:15PM ET,GB,0.0,,FLEX,Lenny Krieg,dk,5200,lenny krieg,GB,K,showdown,00-0040003,auto_exact,high
+DST,Falcons (44225942),Falcons,44225942,CPT,5100,ATL@GB 09/24/2026 08:15PM ET,ATL,3.0,,CPT,Falcons,dk,5100,falcons,ATL,DST,showdown,DST_ATL,team_defense,high
+DST,Packers (44225884),Packers,44225884,FLEX,5000,ATL@GB 09/24/2026 08:15PM ET,GB,3.0,,FLEX,Packers,dk,5000,packers,GB,DST,showdown,DST_GB,team_defense,high
+K,Nick Folk (44225885),Nick Folk,44225885,FLEX,4800,ATL@GB 09/24/2026 08:15PM ET,ATL,7.0,,FLEX,Nick Folk,dk,4800,nick folk,ATL,K,showdown,00-0025565,auto_fallback_team_mismatch,medium
+WR,Jahan Dotson (44225943),Jahan Dotson,44225943,CPT,4500,ATL@GB 09/24/2026 08:15PM ET,ATL,3.0,,CPT,Jahan Dotson,dk,4500,jahan dotson,ATL,WR,showdown,00-0037741,auto_fallback_team_mismatch,medium
+RB,Brian Robinson Jr. (44225886),Brian Robinson Jr.,44225886,FLEX,4400,ATL@GB 09/24/2026 08:15PM ET,ATL,5.9,,FLEX,Brian Robinson Jr.,dk,4400,brian robinson,ATL,RB,showdown,00-0037746,auto_fallback_team_mismatch,medium
+TE,Jonnu Smith (44225944),Jonnu Smith,44225944,CPT,4200,ATL@GB 09/24/2026 08:15PM ET,GB,3.5,,CPT,Jonnu Smith,dk,4200,jonnu smith,GB,TE,showdown,00-0033858,auto_fallback_team_mismatch,medium
+RB,Kaleb Johnson (44225887),Kaleb Johnson,44225887,FLEX,4000,ATL@GB 09/24/2026 08:15PM ET,GB,1.6,,FLEX,Kaleb Johnson,dk,4000,kaleb johnson,GB,RB,showdown,00-0040142,auto_fallback_team_mismatch,medium
+WR,Zachariah Branch (44225888),Zachariah Branch,44225888,FLEX,3800,ATL@GB 09/24/2026 08:15PM ET,ATL,1.7,,FLEX,Zachariah Branch,dk,3800,zachariah branch,ATL,WR,showdown,00-0041044,auto_exact,high
+WR,Skyy Moore (44225945),Skyy Moore,44225945,CPT,3600,ATL@GB 09/24/2026 08:15PM ET,GB,1.3,,CPT,Skyy Moore,dk,3600,skyy moore,GB,WR,showdown,00-0038090,auto_fallback_team_mismatch,medium
+DST,Falcons (44225889),Falcons,44225889,FLEX,3400,ATL@GB 09/24/2026 08:15PM ET,ATL,3.0,,FLEX,Falcons,dk,3400,falcons,ATL,DST,showdown,DST_ATL,team_defense,high
+WR,Jahan Dotson (44225890),Jahan Dotson,44225890,FLEX,3000,ATL@GB 09/24/2026 08:15PM ET,ATL,3.0,,FLEX,Jahan Dotson,dk,3000,jahan dotson,ATL,WR,showdown,00-0037741,auto_fallback_team_mismatch,medium
+WR,Olamide Zaccheaus (44225946),Olamide Zaccheaus,44225946,CPT,3000,ATL@GB 09/24/2026 08:15PM ET,ATL,1.4,,CPT,Olamide Zaccheaus,dk,3000,olamide zaccheaus,ATL,WR,showdown,00-0035208,auto_fallback_team_mismatch,medium
+TE,Jonnu Smith (44225891),Jonnu Smith,44225891,FLEX,2800,ATL@GB 09/24/2026 08:15PM ET,GB,3.5,,FLEX,Jonnu Smith,dk,2800,jonnu smith,GB,TE,showdown,00-0033858,auto_fallback_team_mismatch,medium
+WR,Skyy Moore (44225892),Skyy Moore,44225892,FLEX,2400,ATL@GB 09/24/2026 08:15PM ET,GB,1.3,,FLEX,Skyy Moore,dk,2400,skyy moore,GB,WR,showdown,00-0038090,auto_fallback_team_mismatch,medium
+TE,Austin Hooper (44225947),Austin Hooper,44225947,CPT,2400,ATL@GB 09/24/2026 08:15PM ET,ATL,2.0,,CPT,Austin Hooper,dk,2400,austin hooper,ATL,TE,showdown,00-0032392,auto_fallback_team_mismatch,medium
+WR,Olamide Zaccheaus (44225893),Olamide Zaccheaus,44225893,FLEX,2000,ATL@GB 09/24/2026 08:15PM ET,ATL,1.4,,FLEX,Olamide Zaccheaus,dk,2000,olamide zaccheaus,ATL,WR,showdown,00-0035208,auto_fallback_team_mismatch,medium
+WR,Bo Melton (44225948),Bo Melton,44225948,CPT,1800,ATL@GB 09/24/2026 08:15PM ET,GB,1.0,,CPT,Bo Melton,dk,1800,bo melton,GB,WR,showdown,00-0037091,auto_exact,high
+TE,Austin Hooper (44225894),Austin Hooper,44225894,FLEX,1600,ATL@GB 09/24/2026 08:15PM ET,ATL,2.0,,FLEX,Austin Hooper,dk,1600,austin hooper,ATL,TE,showdown,00-0032392,auto_fallback_team_mismatch,medium
+WR,Chris Blair (44225949),Chris Blair,44225949,CPT,1500,ATL@GB 09/24/2026 08:15PM ET,ATL,0.8,,CPT,Chris Blair,dk,1500,chris blair,ATL,WR,showdown,00-0036463,auto_exact,high
+WR,Bo Melton (44225895),Bo Melton,44225895,FLEX,1200,ATL@GB 09/24/2026 08:15PM ET,GB,1.0,,FLEX,Bo Melton,dk,1200,bo melton,GB,WR,showdown,00-0037091,auto_exact,high
+WR,J. Michael Sturdivant (44225950),J. Michael Sturdivant,44225950,CPT,1200,ATL@GB 09/24/2026 08:15PM ET,GB,0.0,,CPT,J. Michael Sturdivant,dk,1200,j michael sturdivant,GB,WR,showdown,00-0040948,auto_exact,high
+WR,Chris Blair (44225896),Chris Blair,44225896,FLEX,1000,ATL@GB 09/24/2026 08:15PM ET,ATL,0.8,,FLEX,Chris Blair,dk,1000,chris blair,ATL,WR,showdown,00-0036463,auto_exact,high
+TE,Charlie Woerner (44225951),Charlie Woerner,44225951,CPT,900,ATL@GB 09/24/2026 08:15PM ET,ATL,0.0,,CPT,Charlie Woerner,dk,900,charlie woerner,ATL,TE,showdown,00-0036429,auto_exact,high
+WR,J. Michael Sturdivant (44225897),J. Michael Sturdivant,44225897,FLEX,800,ATL@GB 09/24/2026 08:15PM ET,GB,0.0,,FLEX,J. Michael Sturdivant,dk,800,j michael sturdivant,GB,WR,showdown,00-0040948,auto_exact,high
+TE,Charlie Woerner (44225898),Charlie Woerner,44225898,FLEX,600,ATL@GB 09/24/2026 08:15PM ET,ATL,0.0,,FLEX,Charlie Woerner,dk,600,charlie woerner,ATL,TE,showdown,00-0036429,auto_exact,high
+RB,Pierre Strong Jr. (44225952),Pierre Strong Jr.,44225952,CPT,600,ATL@GB 09/24/2026 08:15PM ET,GB,0.0,Q,CPT,Pierre Strong Jr.,dk,600,pierre strong,GB,RB,showdown,00-0038098,auto_exact,high
+RB,Pierre Strong Jr. (44225899),Pierre Strong Jr.,44225899,FLEX,400,ATL@GB 09/24/2026 08:15PM ET,GB,0.0,Q,FLEX,Pierre Strong Jr.,dk,400,pierre strong,GB,RB,showdown,00-0038098,auto_exact,high
+RB,Damon Bankston (44225953),Damon Bankston,44225953,CPT,300,ATL@GB 09/24/2026 08:15PM ET,GB,0.0,,CPT,Damon Bankston,dk,300,damon bankston,GB,RB,showdown,00-0041139,auto_exact,high
+RB,Trey Sermon (44225954),Trey Sermon,44225954,CPT,300,ATL@GB 09/24/2026 08:15PM ET,ATL,0.0,IR,CPT,Trey Sermon,dk,300,trey sermon,ATL,RB,showdown,00-0036984,auto_fallback_team_mismatch,medium
+RB,Cash Jones (44225955),Cash Jones,44225955,CPT,300,ATL@GB 09/24/2026 08:15PM ET,ATL,0.0,,CPT,Cash Jones,dk,300,cash jones,ATL,RB,showdown,00-0041191,auto_exact,high
+RB,Khalil Herbert (44225956),Khalil Herbert,44225956,CPT,300,ATL@GB 09/24/2026 08:15PM ET,ATL,0.0,,CPT,Khalil Herbert,dk,300,khalil herbert,ATL,RB,showdown,00-0036906,auto_fallback_team_mismatch,medium
+WR,Savion Williams (44225957),Savion Williams,44225957,CPT,300,ATL@GB 09/24/2026 08:15PM ET,GB,0.0,IR,CPT,Savion Williams,dk,300,savion williams,GB,WR,showdown,00-0040009,auto_exact,high
+WR,Beaux Collins (44225958),Beaux Collins,44225958,CPT,300,ATL@GB 09/24/2026 08:15PM ET,ATL,0.0,IR,CPT,Beaux Collins,dk,300,beaux collins,ATL,WR,showdown,00-0040432,auto_fallback_team_mismatch,medium
+WR,Quincy Skinner Jr. (44225959),Quincy Skinner Jr.,44225959,CPT,300,ATL@GB 09/24/2026 08:15PM ET,GB,0.0,,CPT,Quincy Skinner Jr.,dk,300,quincy skinner,GB,WR,showdown,00-0040553,auto_exact,high
+WR,Antwane Wells Jr. (44225960),Antwane Wells Jr.,44225960,CPT,300,ATL@GB 09/24/2026 08:15PM ET,ATL,0.0,,CPT,Antwane Wells Jr.,dk,300,antwane wells,ATL,WR,showdown,00-0040438,auto_exact,high
+WR,Dylan Drummond (44225961),Dylan Drummond,44225961,CPT,300,ATL@GB 09/24/2026 08:15PM ET,ATL,0.0,,CPT,Dylan Drummond,dk,300,dylan drummond,ATL,WR,showdown,00-0038953,auto_exact,high
+WR,Vinny Anthony II (44225962),Vinny Anthony II,44225962,CPT,300,ATL@GB 09/24/2026 08:15PM ET,ATL,0.0,,CPT,Vinny Anthony II,dk,300,vinny anthony,ATL,WR,showdown,00-0041185,auto_exact,high
+WR,Isaiah Neyor (44225963),Isaiah Neyor,44225963,CPT,300,ATL@GB 09/24/2026 08:15PM ET,GB,0.0,,CPT,Isaiah Neyor,dk,300,isaiah neyor,GB,WR,showdown,00-0040558,auto_exact,high
+TE,Josh Whyle (44225964),Josh Whyle,44225964,CPT,300,ATL@GB 09/24/2026 08:15PM ET,GB,0.0,,CPT,Josh Whyle,dk,300,josh whyle,GB,TE,showdown,00-0038589,auto_exact,high
+TE,Mark Redman (44225965),Mark Redman,44225965,CPT,300,ATL@GB 09/24/2026 08:15PM ET,GB,0.0,,CPT,Mark Redman,dk,300,mark redman,GB,TE,showdown,00-0040598,auto_exact,high
+TE,Jack Velling (44225966),Jack Velling,44225966,CPT,300,ATL@GB 09/24/2026 08:15PM ET,ATL,0.0,,CPT,Jack Velling,dk,300,jack velling,ATL,TE,showdown,00-0041195,auto_exact,high
+TE,Thomas Yassmin (44225967),Thomas Yassmin,44225967,CPT,300,ATL@GB 09/24/2026 08:15PM ET,GB,0.0,IR,CPT,Thomas Yassmin,dk,300,thomas yassmin,GB,TE,showdown,00-0039936,auto_exact,high
+TE,Drake Dabney (44225968),Drake Dabney,44225968,CPT,300,ATL@GB 09/24/2026 08:15PM ET,GB,0.0,,CPT,Drake Dabney,dk,300,drake dabney,GB,TE,showdown,00-0040628,auto_exact,high
+TE,Nick Muse (44225969),Nick Muse,44225969,CPT,300,ATL@GB 09/24/2026 08:15PM ET,ATL,0.0,,CPT,Nick Muse,dk,300,nick muse,ATL,TE,showdown,00-0037317,auto_exact,high
+TE,Luke Musgrave (44225970),Luke Musgrave,44225970,CPT,300,ATL@GB 09/24/2026 08:15PM ET,GB,0.0,OUT,CPT,Luke Musgrave,dk,300,luke musgrave,GB,TE,showdown,00-0039144,auto_exact,high
+RB,Damon Bankston (44225900),Damon Bankston,44225900,FLEX,200,ATL@GB 09/24/2026 08:15PM ET,GB,0.0,,FLEX,Damon Bankston,dk,200,damon bankston,GB,RB,showdown,00-0041139,auto_exact,high
+RB,Trey Sermon (44225901),Trey Sermon,44225901,FLEX,200,ATL@GB 09/24/2026 08:15PM ET,ATL,0.0,IR,FLEX,Trey Sermon,dk,200,trey sermon,ATL,RB,showdown,00-0036984,auto_fallback_team_mismatch,medium
+RB,Cash Jones (44225902),Cash Jones,44225902,FLEX,200,ATL@GB 09/24/2026 08:15PM ET,ATL,0.0,,FLEX,Cash Jones,dk,200,cash jones,ATL,RB,showdown,00-0041191,auto_exact,high
+RB,Khalil Herbert (44225903),Khalil Herbert,44225903,FLEX,200,ATL@GB 09/24/2026 08:15PM ET,ATL,0.0,,FLEX,Khalil Herbert,dk,200,khalil herbert,ATL,RB,showdown,00-0036906,auto_fallback_team_mismatch,medium
+WR,Savion Williams (44225904),Savion Williams,44225904,FLEX,200,ATL@GB 09/24/2026 08:15PM ET,GB,0.0,IR,FLEX,Savion Williams,dk,200,savion williams,GB,WR,showdown,00-0040009,auto_exact,high
+WR,Beaux Collins (44225905),Beaux Collins,44225905,FLEX,200,ATL@GB 09/24/2026 08:15PM ET,ATL,0.0,IR,FLEX,Beaux Collins,dk,200,beaux collins,ATL,WR,showdown,00-0040432,auto_fallback_team_mismatch,medium
+WR,Quincy Skinner Jr. (44225906),Quincy Skinner Jr.,44225906,FLEX,200,ATL@GB 09/24/2026 08:15PM ET,GB,0.0,,FLEX,Quincy Skinner Jr.,dk,200,quincy skinner,GB,WR,showdown,00-0040553,auto_exact,high
+WR,Antwane Wells Jr. (44225907),Antwane Wells Jr.,44225907,FLEX,200,ATL@GB 09/24/2026 08:15PM ET,ATL,0.0,,FLEX,Antwane Wells Jr.,dk,200,antwane wells,ATL,WR,showdown,00-0040438,auto_exact,high
+WR,Dylan Drummond (44225908),Dylan Drummond,44225908,FLEX,200,ATL@GB 09/24/2026 08:15PM ET,ATL,0.0,,FLEX,Dylan Drummond,dk,200,dylan drummond,ATL,WR,showdown,00-0038953,auto_exact,high
+WR,Vinny Anthony II (44225909),Vinny Anthony II,44225909,FLEX,200,ATL@GB 09/24/2026 08:15PM ET,ATL,0.0,,FLEX,Vinny Anthony II,dk,200,vinny anthony,ATL,WR,showdown,00-0041185,auto_exact,high
+WR,Isaiah Neyor (44225910),Isaiah Neyor,44225910,FLEX,200,ATL@GB 09/24/2026 08:15PM ET,GB,0.0,,FLEX,Isaiah Neyor,dk,200,isaiah neyor,GB,WR,showdown,00-0040558,auto_exact,high
+TE,Josh Whyle (44225911),Josh Whyle,44225911,FLEX,200,ATL@GB 09/24/2026 08:15PM ET,GB,0.0,,FLEX,Josh Whyle,dk,200,josh whyle,GB,TE,showdown,00-0038589,auto_exact,high
+TE,Mark Redman (44225912),Mark Redman,44225912,FLEX,200,ATL@GB 09/24/2026 08:15PM ET,GB,0.0,,FLEX,Mark Redman,dk,200,mark redman,GB,TE,showdown,00-0040598,auto_exact,high
+TE,Jack Velling (44225913),Jack Velling,44225913,FLEX,200,ATL@GB 09/24/2026 08:15PM ET,ATL,0.0,,FLEX,Jack Velling,dk,200,jack velling,ATL,TE,showdown,00-0041195,auto_exact,high
+TE,Thomas Yassmin (44225914),Thomas Yassmin,44225914,FLEX,200,ATL@GB 09/24/2026 08:15PM ET,GB,0.0,IR,FLEX,Thomas Yassmin,dk,200,thomas yassmin,GB,TE,showdown,00-0039936,auto_exact,high
+TE,Drake Dabney (44225915),Drake Dabney,44225915,FLEX,200,ATL@GB 09/24/2026 08:15PM ET,GB,0.0,,FLEX,Drake Dabney,dk,200,drake dabney,GB,TE,showdown,00-0040628,auto_exact,high
+TE,Nick Muse (44225916),Nick Muse,44225916,FLEX,200,ATL@GB 09/24/2026 08:15PM ET,ATL,0.0,,FLEX,Nick Muse,dk,200,nick muse,ATL,TE,showdown,00-0037317,auto_exact,high
+TE,Luke Musgrave (44225917),Luke Musgrave,44225917,FLEX,200,ATL@GB 09/24/2026 08:15PM ET,GB,0.0,OUT,FLEX,Luke Musgrave,dk,200,luke musgrave,GB,TE,showdown,00-0039144,auto_exact,high
