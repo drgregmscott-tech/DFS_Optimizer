@@ -468,6 +468,27 @@ jobs:
             --status-file "${{ steps.status_file.outputs.path }}" \
             --projections-file "output/final_projections_${{ matrix.site }}_${{ matrix.slate_id }}.csv"
 
+      # 2026-09-23 addition -- Week 3+ live lineup recommender
+      # (scripts/recommend_lineup.py, see HANDOFF_week3_lineup_system.md).
+      # Unlike pivot_finder.py below, this has NO dependency on a lineup
+      # already being built -- it only needs final_projections, so it runs
+      # right after status is applied, independent of whether "Build
+      # Lineups" has ever been clicked for this slate. Ships ONLY the
+      # validated ownership-INDEPENDENT worst_top25_realstack rule (3/6
+      # cash, 0.703 mean percentile on 6 real logged slates) -- the
+      # stronger chalk-anchor+pivot method (4/6, 0.819) is NOT wired in
+      # here, on Greg's explicit call (2026-09-23): three separate live
+      # (estimated-ownership) substitution tests each showed zero value
+      # from the ownership-driven pivot layer, so it stays out until
+      # projection/ownership model accuracy is independently improved and
+      # re-validated. See recommend_lineup.py's own docstring before
+      # changing this.
+      - name: Rebuild recommended lineup
+        id: recommend
+        if: needs.prepare.outputs.mode == 'full'
+        continue-on-error: true
+        run: python3 scripts/recommend_lineup.py --site ${{ matrix.site }} --slate-id ${{ matrix.slate_id }}
+
       # Session 15 decision #B1 (unchanged): checks lineups_multi first,
       # falls back to lineup_single. Missing lineup file is a normal
       # not_run outcome, not a failure -- nothing to pivot on yet.
@@ -513,6 +534,7 @@ jobs:
           if mode == 'full':
               rows.append({'timestamp_utc': now, 'trigger_type': trigger_type, 'site': site, 'slate_id': slate_id, 'step': 'build_projections', 'status': outcome('BUILD_OUTCOME')})
               rows.append({'timestamp_utc': now, 'trigger_type': trigger_type, 'site': site, 'slate_id': slate_id, 'step': 'status_apply', 'status': outcome('APPLY_OUTCOME')})
+              rows.append({'timestamp_utc': now, 'trigger_type': trigger_type, 'site': site, 'slate_id': slate_id, 'step': 'recommend_lineup', 'status': outcome('RECOMMEND_OUTCOME')})
               rows.append({'timestamp_utc': now, 'trigger_type': trigger_type, 'site': site, 'slate_id': slate_id, 'step': 'pivot_finder', 'status': outcome('PIVOT_OUTCOME')})
 
           with log_path.open('a', newline='') as f:
@@ -526,6 +548,7 @@ jobs:
         env:
           BUILD_OUTCOME: ${{ steps.build_proj.outcome }}
           APPLY_OUTCOME: ${{ steps.apply_status.outcome }}
+          RECOMMEND_OUTCOME: ${{ steps.recommend.outcome }}
           PIVOT_OUTCOME: ${{ steps.pivot.outcome }}
 
       # max-parallel: 1 above means these matrix legs never run AT THE SAME

@@ -127,6 +127,13 @@
  *   -> 200 { "found": true, "kind": ..., "filename": ..., "label": ..., "payload": ..., "savedAt": ... }
  *   -> 200 { "found": false }   (nothing saved yet for this site/slateId)
  *
+ * GET /?action=load_recommended_lineup&token=<WORKER_AUTH_TOKEN>&site=dk&slate_id=classic_wk3
+ *   -> 200 { "found": true, "csv": "<raw csv text>" }
+ *   -> 200 { "found": false }   (recommend_lineup.py hasn't run for this slate yet)
+ *   2026-09-23 addition -- reads output/recommended_lineup_{site}_{slate_id}.csv
+ *   fresh from GitHub on every call, same shape/reasoning as load_pivots
+ *   (see handleLoadRecommendedLineup()'s own docstring below).
+ *
  * GET /?action=list_slates&token=<WORKER_AUTH_TOKEN>
  *   -> 200 { "slates": [ { "site": "dk", "slateId": "classic_wk3", "label": "DK Classic Wk 3", "savedAt": "..." }, ... ] }
  *   Lists data/ui_slates/ directly -- returns [] if the folder doesn't
@@ -507,6 +514,32 @@ async function handleLoadPivots(url, env) {
   }
 }
 
+// 2026-09-23 addition -- same "always read fresh from GitHub, no upload/
+// cache" reasoning as handleLoadPivots above, for the exact same reason:
+// refresh_data.yml now also regenerates
+// output/recommended_lineup_{site}_{slate_id}.csv automatically on the same
+// cadence as final_projections/pivot_suggestions (see recommend_lineup.py),
+// independent of anything the browser has uploaded, so this reads it fresh
+// on every call rather than serving a stale frozen snapshot.
+async function handleLoadRecommendedLineup(url, env) {
+  const site = url.searchParams.get("site");
+  const slateId = url.searchParams.get("slate_id");
+  if (!validSite(site) || !validSlateId(slateId)) {
+    return json({ error: "site must be dk/fd and slate_id must be 1-64 alphanumeric/hyphen/underscore chars." }, 400);
+  }
+  try {
+    // A slate with no recommended_lineup file yet (final_projections not
+    // built, or the automated refresh hasn't run since it was) is a normal,
+    // expected state -- fetchRepoFile() returns null on a 404, not an
+    // error, same as handleLoadPivots above.
+    const csv = await fetchRepoFile(env, `output/recommended_lineup_${site}_${slateId}.csv`);
+    if (csv === null) return json({ found: false });
+    return json({ found: true, csv: csv });
+  } catch (err) {
+    return json({ error: `Load failed: ${err.message}` }, 502);
+  }
+}
+
 // Ad Hoc addition -- see this action's docstring above. Metadata-only
 // sibling of handlePullLatestProjections below, deliberately never calls
 // fetchRepoFile (which downloads + base64-decodes the whole CSV) -- just
@@ -704,6 +737,9 @@ export default {
     // for why this is a separate action rather than a special case of
     // load_slate above.
     if (action === "load_pivots") return handleLoadPivots(url, env);
+    // 2026-09-23 addition -- see handleLoadRecommendedLineup()'s own
+    // docstring. Same shape/reasoning as load_pivots immediately above.
+    if (action === "load_recommended_lineup") return handleLoadRecommendedLineup(url, env);
     if (action === "check_freshness") return handleCheckFreshness(url, env);
     if (action === "pull_latest_projections") return handlePullLatestProjections(url, env);
     if (action === "list_slates") return handleListSlates(env);
@@ -711,6 +747,6 @@ export default {
     if (action === "get_presets") return handleGetPresets(env);
     if (action === "save_presets") return handleSavePresets(request, env);
     if (action === "ping") return json({ ok: true }); // deliberately no GitHub call -- see docstring
-    return json({ error: "action must be 'dispatch', 'poll', 'save_slate', 'load_slate', 'load_pivots', 'check_freshness', 'pull_latest_projections', 'list_slates', 'delete_slate', 'get_presets', 'save_presets', or 'ping'." }, 400);
+    return json({ error: "action must be 'dispatch', 'poll', 'save_slate', 'load_slate', 'load_pivots', 'load_recommended_lineup', 'check_freshness', 'pull_latest_projections', 'list_slates', 'delete_slate', 'get_presets', 'save_presets', or 'ping'." }, 400);
   },
 };
