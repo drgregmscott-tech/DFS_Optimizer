@@ -402,6 +402,22 @@ def load_raw_ownership(path: Path, slate_format: str, site: str) -> pd.DataFrame
             f"{int(out_of_range.sum())} ownership value(s) are outside [0, 100]. "
             f"Check the source data."
         )
+    # 2026-09-23: DK's results export lists a player once per roster slot
+    # they were drafted into (position row + FLEX row). Week 2 was logged
+    # with only the first row, silently dropping all FLEX ownership (slate
+    # totals ~797% instead of ~897%). Real ownership sums to 100 * roster
+    # slots minus unmatched/DST-only noise, so a classic slate far below
+    # that means rows were dropped -- fail loudly rather than log it.
+    if slate_format == "classic":
+        n_slots = len(SITE_CONFIGS[site]["roster_slots"])
+        total = float(df["actual_ownership_pct"].sum())
+        if total < 0.93 * n_slots * 100:
+            raise SystemExit(
+                f"Raw ownership CSV at {path} sums to {total:.0f}% but a "
+                f"classic {site} slate should total ~{n_slots * 100}%. Sum "
+                f"each player's %Drafted across ALL of his rows in the DK "
+                f"export (position row + FLEX row), don't keep only the first."
+            )
     return df[["player_name", "roster_role", "actual_ownership_pct"]].copy()
 
 

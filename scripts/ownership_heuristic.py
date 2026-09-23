@@ -367,6 +367,21 @@ MIN_GROUP_SIZE_FOR_RELIABLE_PERCENTILE = 5  # below this, warn -- see ROADMAP.md
 # Standard NFL DFS FLEX eligibility, same on both sites.
 FLEX_ELIGIBLE_POSITIONS = {"RB", "WR", "TE"}
 
+# How the classic FLEX slot's 100% budget splits across RB/WR/TE, per site.
+# 2026-09-23 ownership review: measured on all 6 real 2026 DK classic slates
+# (wk1+wk2 main/early/afternoon, full DK %Drafted incl. the FLEX rows), the
+# field's FLEX usage is RB ~49% / WR ~34% / TE ~17%, and it is stable slate
+# to slate (real TE totals 112-122 on every slate vs the old even split's
+# 133.3; RB 238-259 vs 233.3). The even split parked ~17 points of budget on
+# TEs every slate. Leave-one-week-out (split learned from the other week),
+# the layered model's corr on real>=5% players rose on 6/6 slates (pooled
+# 0.687 -> 0.707) and chalk bias improved (-7.4 -> -6.8); MAE change was
+# within noise. FanDuel has no real ownership data, so it keeps the even
+# split. Total budget is unchanged (still sums to len(roster_slots) * 100).
+FLEX_SPLIT_BY_SITE = {
+    "dk": {"RB": 0.49, "WR": 0.34, "TE": 0.17},
+}
+
 # Softmax temperature controlling how concentrated estimated_ownership_pct
 # is within a position group -- lower = more winner-take-most, higher = flatter.
 # UNFIT starting guess. Clearest first target for Session 11.1 retuning.
@@ -703,9 +718,8 @@ def compute_position_slot_budgets(site: str) -> dict:
     """Each position_group's total 'ownership budget,' in percentage
     points summed across every eligible player in that group -- anchored
     to real roster-slot math (see module docstring decision #5), not a
-    guess. FLEX's budget is split evenly across RB/WR/TE (no real
-    per-position FLEX usage-rate data exists yet -- retuning target for
-    Session 11.2)."""
+    guess. FLEX's budget is split across RB/WR/TE by FLEX_SPLIT_BY_SITE
+    (measured from real DK ownership) where available, evenly otherwise."""
     slots = SITE_CONFIGS[site]["roster_slots"]
     defense_values = SITE_CONFIGS[site]["defense_position_values"]
     budgets: dict = {}
@@ -717,9 +731,11 @@ def compute_position_slot_budgets(site: str) -> dict:
 
     n_flex = slots.count("FLEX")
     if n_flex:
-        flex_share = (n_flex * 100.0) / len(FLEX_ELIGIBLE_POSITIONS)
+        split = FLEX_SPLIT_BY_SITE.get(
+            site, {g: 1.0 / len(FLEX_ELIGIBLE_POSITIONS) for g in FLEX_ELIGIBLE_POSITIONS})
+        total_w = sum(split[g] for g in FLEX_ELIGIBLE_POSITIONS)
         for group in FLEX_ELIGIBLE_POSITIONS:
-            budgets[group] = budgets.get(group, 0.0) + flex_share
+            budgets[group] = budgets.get(group, 0.0) + n_flex * 100.0 * split[group] / total_w
 
     # Internal consistency check -- total budget across all groups should
     # equal exactly len(roster_slots) * 100.
