@@ -1773,3 +1773,7 @@ timestamp_utc,trigger_type,site,step,status
 2026-09-23T23:04:27.767454+00:00,full_refresh_dispatch,dk,dk_showdown_wk3_Atl_GB_24Sep2026,status_apply,success
 2026-09-23T23:04:27.767454+00:00,full_refresh_dispatch,dk,dk_showdown_wk3_Atl_GB_24Sep2026,recommend_lineup,success
 2026-09-23T23:04:27.767454+00:00,full_refresh_dispatch,dk,dk_showdown_wk3_Atl_GB_24Sep2026,pivot_finder,success
+2026-09-23T23:07:11.255748+00:00,full_refresh_dispatch,dk,dk_classic_wk3_main_27Sep2026,build_projections,success
+2026-09-23T23:07:11.255748+00:00,full_refresh_dispatch,dk,dk_classic_wk3_main_27Sep2026,status_apply,success
+2026-09-23T23:07:11.255748+00:00,full_refresh_dispatch,dk,dk_classic_wk3_main_27Sep2026,recommend_lineup,success
+2026-09-23T23:07:11.255748+00:00,full_refresh_dispatch,dk,dk_classic_wk3_main_27Sep2026,pivot_finder,success
