@@ -1,18 +1,18 @@
 {
   "coefs": {
-    "intercept": -2.245402919664151,
-    "l_est": 0.29186629817550436,
-    "l_exp": 0.31725670671029904,
-    "sal": 0.2584877853698521,
-    "top1sal": 0.37709338768196987,
-    "cv": -0.1456029928904247,
-    "dart": -0.3993566273775986,
-    "lo_proj": -0.21284051725250983
+    "intercept": -1.8748037599118232,
+    "l_est": 0.2984502549596725,
+    "l_exp": 0.4286417003255113,
+    "sal": 0.22088802124975793,
+    "top1sal": 0.4388108847515707,
+    "cv": -0.04109750462493439,
+    "dart": -0.22826754701241406,
+    "lo_proj": -0.2611284835368194
   },
   "cap": 75.0,
-  "version": 1,
+  "version": 2,
   "site": "dk",
-  "fit_at": "2026-09-21T14:57:13+00:00",
+  "fit_at": "2026-09-23T22:56:41+00:00",
   "weeks": [
     1,
     2
@@ -39,11 +39,12 @@
   "exposure_lineups": 60,
   "exposure_randomization_pct": 25.0,
   "in_sample": {
-    "label": "in-sample, all weeks",
-    "corr": 0.821,
-    "mae": 1.54,
-    "chalk_n": 53,
-    "chalk_mae": 13.3,
-    "chalk_bias": -1.5
-  }
+    "label": "in-sample, all weeks (corrected truth, fixed projections, FLEX-split budgets)",
+    "corr": 0.82,
+    "mae": 1.55,
+    "chalk_n": 62,
+    "chalk_mae": 12.5,
+    "chalk_bias": -7.5
+  },
+  "note": "2026-09-23 refit on rebuilt fixed-projection slates (wk2 rebuilt leak-free), corrected FLEX-inclusive real ownership, DK FLEX split 49/34/17."
 }
