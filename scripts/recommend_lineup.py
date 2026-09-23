@@ -101,11 +101,14 @@ OUTPUT_DIR = REPO_ROOT / "output"
 
 sys.path.insert(0, str(REPO_ROOT / "scripts"))
 sys.path.insert(0, str(REPO_ROOT / "analysis" / "classic_diag"))
+sys.path.insert(0, str(REPO_ROOT / "analysis" / "showdown_own"))
 import optimizer  # noqa: E402
 import best_lineup_classic as blc  # noqa: E402
+import best_single as bs  # noqa: E402
 from ingest_salaries import SITE_CONFIGS  # noqa: E402
 
 METHOD_TAG = "worst_top25_realstack_v1"
+METHOD_TAG_SHOWDOWN = "worst_top10_showdown_v1"
 TOP_N = 3
 
 
@@ -113,43 +116,24 @@ def recommend_lineup(site: str, slate_id: str, n_candidates: int = 80,
                       field_n: int = 6000, n_sims: int = 800, seed: int = 3,
                       top_n: int = TOP_N):
     """Returns a DataFrame of up to `top_n` ranked lineups stacked together
-    (see module docstring's Output section) -- rank 1 is THE recommendation
-    (identical selection to every prior version of this function); 2/3 are
-    margin/confidence context, not alternate options to pick from.
-
-    2026-09-23 fix: Showdown slates are refused here, not silently crashed
-    into. `best_lineup_classic.candidates()` (via `optimizer.build_single_
-    lineup()`) assumes one row per player_id -- a Showdown pool has TWO
-    (CPT and FLEX price/points variants of the same player_id), which made
-    `proj[pid]` return a pandas Series instead of a scalar and PuLP raise an
-    opaque `TypeError: must be real number, not Series` deep inside the
-    solver. That was never a "small bug": this script's only shipped method,
-    `worst_top25_realstack`, was validated exclusively against CLASSIC
-    slates (see HANDOFF_week3_lineup_system.md) -- "is_real_stack" (a QB +
-    same-team WR/TE) and the "top25" SE3max cash-line threshold are both
-    classic-roster concepts that don't have a validated Showdown analogue.
-    `analysis/showdown_own/best_single.py` already has SEPARATE Showdown
-    candidate-generation/scoring machinery (a different selection metric,
-    never validated against real logged Showdown results the way this
-    script's classic rule was, and its own candidate generator is hardcoded
-    to one old 2-team slate's team abbreviations) -- wiring it in here needs
-    its own real-data validation pass, not a same-session patch, per this
-    module's own stated discipline for adding new selection logic (see the
-    docstring's "Do not add a pivot step... without a new real-data
-    validation" note). Failing loud with an explanation is more useful than
-    either crashing or silently shipping an unvalidated rule."""
+    (see module docstring's Output section) -- rank 1 is THE recommendation;
+    2/3 are margin/confidence context, not alternate options to pick from.
+    Dispatches to the classic or Showdown implementation below based on the
+    slate's own `slate_format`."""
     proj_path = OUTPUT_DIR / f"final_projections_{site}_{slate_id}.csv"
+    is_showdown = False
     if proj_path.exists():
         probe = pd.read_csv(proj_path, usecols=lambda c: c == "slate_format", nrows=1000)
-        if optimizer.is_showdown_pool(probe):
-            raise SystemExit(
-                f"recommend_lineup: {site}/{slate_id} is a Showdown/Single-Game "
-                f"slate. This script's only shipped method (worst_top25_realstack) "
-                f"was validated for classic slates only -- see this function's own "
-                f"docstring for why Showdown isn't a same-session patch. No "
-                f"recommended_lineup file will be written for this slate; classic "
-                f"slates are unaffected."
-            )
+        is_showdown = optimizer.is_showdown_pool(probe)
+    if is_showdown:
+        return _recommend_showdown(site, slate_id, n_candidates=n_candidates,
+                                   field_n=field_n, n_sims=n_sims, seed=seed, top_n=top_n)
+    return _recommend_classic(site, slate_id, n_candidates=n_candidates,
+                              field_n=field_n, n_sims=n_sims, seed=seed, top_n=top_n)
+
+
+def _recommend_classic(site: str, slate_id: str, n_candidates: int, field_n: int,
+                       n_sims: int, seed: int, top_n: int):
     out, masks, P = blc.score(
         site, slate_id, n_candidates=n_candidates, field_n=field_n,
         n_sims=n_sims, seed=seed, return_detail=True,
@@ -199,6 +183,67 @@ def recommend_lineup(site: str, slate_id: str, n_candidates: int = 80,
         lineup["score_gap_from_best"] = float(worst25[idx]) - best_score  # 0.0 for rank 1
         lineup["n_candidates_in_pool"] = len(masks)
         lineup["n_real_stack_in_pool"] = n_real_stack
+        lineup["generated_at_utc"] = now
+        lineups.append(lineup)
+
+    return pd.concat(lineups, ignore_index=True)
+
+
+def _recommend_showdown(site: str, slate_id: str, n_candidates: int, field_n: int,
+                        n_sims: int, seed: int, top_n: int):
+    """2026-09-23 addition. Uses analysis/showdown_own/best_single.score()
+    (generalized the same session -- see that file's `candidates()`
+    docstring) instead of best_lineup_classic.score(): a Showdown pool has
+    two rows per player_id (CPT/FLEX), which the classic solver can't
+    handle at all (see git history for the crash this replaced).
+
+    Ranks by `worst_top10` (worst-case P(top-10%) across 4 correlated
+    scenarios), NOT `worst_top25`/`is_real_stack` -- those are classic/
+    SE3max-cash-line concepts with no Showdown analogue. Every real logged
+    Showdown slate (data/ownership_actual_log.csv) is a real
+    `single_entry_gpp` contest, so a GPP ceiling metric is the right target,
+    and `worst_top10` specifically is what analysis/showdown_own/
+    replay_showdown.py's real-data test (the 2 real Showdown slates with
+    both real ownership and real logged results) found tied-or-best against
+    every other rule tested, on both the realistic and idealized arms --
+    see that file and best_single.score()'s own docstring for the numbers.
+
+    No `is_real_stack`-equivalent restriction is applied: unlike classic,
+    every Showdown candidate already structurally includes >=1 player from
+    each team by construction (optimizer.solve_showdown_lineup()'s
+    decision #41, min_per_team=1) -- there's no unstacked-candidate failure
+    mode analogous to classic's to guard against here, and the replay found
+    no evidence a further structural restriction was needed."""
+    out, masks, P = bs.score(
+        site, slate_id, n_candidates=n_candidates, n_forced=max(15, n_candidates // 4),
+        field_n=field_n, n_sims=n_sims, seed=seed, return_detail=True,
+    )
+
+    worst10 = out["worst_top10"].to_numpy()
+    ranked_idx = np.argsort(worst10)[::-1][:min(top_n, len(masks))]
+    best_score = float(worst10[ranked_idx[0]])
+
+    now = datetime.now(timezone.utc).isoformat()
+    lineups = []
+    for rank, idx in enumerate(ranked_idx, start=1):
+        idx = int(idx)
+        selected = P.iloc[masks[idx]].reset_index(drop=True)
+        lineup = optimizer.assign_showdown_roster_slots(selected, site)
+        optimizer.validate_showdown_lineup(lineup, site)
+
+        lineup["method"] = METHOD_TAG_SHOWDOWN
+        lineup["recommendation_rank"] = rank
+        # Same column names as the classic branch (worst_top25_score/
+        # avg_top25_score) so the output schema/frontend don't need to know
+        # which contest format a given slate is -- populated with the
+        # Showdown-appropriate P(top-10%) metric instead of P(top-25%),
+        # per this function's own docstring. METHOD_TAG_SHOWDOWN in the
+        # `method` column is what actually distinguishes the two.
+        lineup["worst_top25_score"] = float(worst10[idx])
+        lineup["avg_top25_score"] = float(out["avg_top10"].iloc[idx])
+        lineup["score_gap_from_best"] = float(worst10[idx]) - best_score
+        lineup["n_candidates_in_pool"] = len(masks)
+        lineup["n_real_stack_in_pool"] = len(masks)  # no stack restriction for showdown; see docstring
         lineup["generated_at_utc"] = now
         lineups.append(lineup)
 

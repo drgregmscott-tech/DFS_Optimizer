@@ -27,8 +27,17 @@ def load_pool(csv):
     return P
 
 
-def candidates(P, n_noise=250, n_forced=30, seed=5, min_part=0.5, top_captains=12):
+def candidates(P, site="dk", n_noise=250, n_forced=30, seed=5, min_part=0.5, top_captains=12):
+    """2026-09-23 generalization: this used to hardcode the forced-team-
+    split loop to one old slate's real team abbreviations ("LA"/"NYG"),
+    which silently generated ZERO forced-split candidates for any other
+    slate's teams (no error -- `min_team_players={"LA": 4}` on a slate with
+    no LA just never matches anything in solve_showdown_lineup(), so the
+    loop quietly no-ops). Also hardcoded site="dk" in the solve call.
+    Both are now read from the pool itself, so this works for any real
+    2-team Showdown slate on either site."""
     pool = P[(P.final_projection > 0.5) & (P.participation_effective.fillna(1) >= min_part)].copy()
+    teams = sorted(pool.team.dropna().unique().tolist())
     rng = np.random.default_rng(seed)
     seen, out = set(), []
 
@@ -46,7 +55,7 @@ def candidates(P, n_noise=250, n_forced=30, seed=5, min_part=0.5, top_captains=1
             tries += 1
             opt = optimizer.randomize_showdown_projections(pool, noise, rng)
             try:
-                sel = optimizer.solve_showdown_lineup(pool, "dk", previous_player_sets=prev, uniqueness=1,
+                sel = optimizer.solve_showdown_lineup(pool, site, previous_player_sets=prev, uniqueness=1,
                                                       optimization_projection=opt, **kw)
             except RuntimeError:
                 break
@@ -55,8 +64,13 @@ def candidates(P, n_noise=250, n_forced=30, seed=5, min_part=0.5, top_captains=1
 
     t = time.time()
     run(n_noise, 20)
-    for tm, k in [("LA", 4), ("LA", 5), ("NYG", 4), ("NYG", 3), ("LA", 3)]:
-        run(n_forced, 25, min_team_players={tm: k})
+    # Forced team splits: both real teams, at k=3/4/5 of the 6 roster
+    # slots (a lopsided-toward-one-team build) -- symmetric coverage of
+    # both sides, unlike the old hardcoded list which only covered one
+    # team at 3/4/5 and the other at 3/4.
+    for tm in teams:
+        for k in (3, 4, 5):
+            run(n_forced, 25, min_team_players={tm: k})
     caps = P[P.roster_role == "CPT"].sort_values("final_projection", ascending=False).head(top_captains)
     for _, r in caps.iterrows():
         run(n_forced, 25, locked_player_ids={r.player_id}, locked_role_map={r.player_id: "CPT"})
@@ -107,6 +121,90 @@ def evaluate(P, cands, fields, n_sims=2500, seed=17):
                 p10 += pc >= 0.90; p1 += pc >= 0.99; mp += pc
             res[(sname, fname)] = (p10 / n_sims, p1 / n_sims, mp / n_sims)
     return res
+
+
+def score(site, slate_id, n_candidates=250, n_forced=30, field_n=10000, n_sims=800,
+          seed=5, return_detail=False):
+    """2026-09-23 addition -- Showdown counterpart to best_lineup_classic.
+    score(), same `return_detail` contract ((out, masks, P) for a caller
+    like recommend_lineup.py to rank and pick from) so that script's
+    existing candidate/mask/roster-assignment flow needs only a branch,
+    not a rewrite.
+
+    Candidate pool: candidates() (generalized above -- noisy solves +
+    forced-captain + forced-team-split solves, real slate teams, not
+    hardcoded).
+
+    Field: simulated from the pool's own live `estimated_ownership_pct`
+    (showdown_field.py) -- the model's own pre-lock estimate, since real
+    post-lock ownership doesn't exist yet for a live slate (identical
+    reasoning to best_lineup_classic.build_pool_and_field()'s own field).
+
+    Scoring: avg/worst-case P(top-10%) and P(top-1%) across the 4
+    correlated scenarios in scenarios() -- a GPP ceiling metric, not a
+    cash-line threshold. This is deliberate, not a leftover from the old
+    analysis script: every real logged Showdown slate
+    (data/ownership_actual_log.csv) is a real `single_entry_gpp` contest
+    (field size ~4700-8900), not an SE3max cash game like classic, so
+    classic's "top25%" cash-line concept has no Showdown analogue --
+    confirmed via replay_showdown.py's real-data test against the 2 real
+    Showdown slates with both real ownership AND real logged results
+    (see that file for which specific ranking metric it validated best).
+    `masks[i]` indexes into `P` (one row per CPT/FLEX pool entry, not per
+    real player) -- exactly 1 captain-role row + 5 flex-role rows,
+    directly usable with optimizer.assign_showdown_roster_slots()."""
+    P = optimizer.load_showdown_pool(site, slate_id).reset_index(drop=True)
+    P["sigma"] = pd.to_numeric(P.get("sigma", np.nan), errors="coerce")
+    P["sigma"] = P["sigma"].fillna(P.final_projection * 0.6)
+    P["participation_effective"] = pd.to_numeric(
+        P.get("participation_effective", 1.0), errors="coerce")
+
+    cands = candidates(P, site=site, n_noise=n_candidates, n_forced=n_forced, seed=seed)
+    if not cands:
+        raise SystemExit(
+            f"showdown best_single.score: no candidates generated for "
+            f"{site}/{slate_id} -- check final_projections and the salary "
+            f"pool (min-1-per-team / salary-cap feasibility)."
+        )
+
+    fl = P[P.roster_role == "FLEX"].reset_index(drop=True)
+    cpt_by_pid = P[P.roster_role == "CPT"].set_index("player_id")["estimated_ownership_pct"]
+    cpt_own = fl.player_id.map(cpt_by_pid).fillna(0.0).values
+    flex_own = pd.to_numeric(fl["estimated_ownership_pct"], errors="coerce").fillna(0.0).values
+    fc, ff = sf.simulate_field(fl.salary.values, fl.team.values, cpt_own, flex_own,
+                               n=field_n, seed=seed)
+    fields = {"model_own": (fc, ff)}
+
+    res = evaluate(P, cands, fields, n_sims=n_sims, seed=seed + 100)
+    names = list(scenarios())
+    avg10 = np.mean([res[(s, "model_own")][0] for s in names], axis=0)
+    worst10 = np.min([res[(s, "model_own")][0] for s in names], axis=0)
+    avg1 = np.mean([res[(s, "model_own")][1] for s in names], axis=0)
+    avgpct = np.mean([res[(s, "model_own")][2] for s in names], axis=0)
+
+    nm = P.drop_duplicates("player_id").set_index("player_id")["player_name"]
+    out = pd.DataFrame({
+        "avg_top10": avg10, "worst_top10": worst10, "avg_top1": avg1, "avg_pct": avgpct,
+        "names": [", ".join(sorted(nm.reindex(c.player_id).tolist())) for c in cands],
+    })
+
+    rowkey_to_pos = {rk: i for i, rk in enumerate(P[ROWKEY])}
+    masks = [np.array([rowkey_to_pos[rk] for rk in c[ROWKEY]]) for c in cands]
+
+    # 2026-09-23: sorted by worst_top10 (worst-case P(top-10%) across the 4
+    # correlated scenarios), not avg_top10 -- replay_showdown.py's real-data
+    # test against the 2 real logged Showdown slates (both real ownership
+    # AND real results) found worst_top10 tied-or-beat every other rule
+    # (avg_top10/avg_top1/avg_pct/raw_proj) on both the realistic
+    # (estimated-ownership) and idealized (real-ownership) arms -- see that
+    # file's results. Same "worst-case across scenarios beats the average"
+    # finding classic's own replay already established for worst_top25.
+    order = out["worst_top10"].to_numpy().argsort()[::-1]
+    out = out.iloc[order].reset_index(drop=True)
+    if return_detail:
+        ordered_masks = [masks[i] for i in order]
+        return out, ordered_masks, P
+    return out
 
 
 def describe(P, c):
