@@ -1823,3 +1823,6 @@ timestamp_utc,trigger_type,site,step,status
 2026-09-24T23:05:09.474396+00:00,full_refresh_dispatch,dk,dk_classic_wk3_main_27Sep2026,build_projections,success
 2026-09-24T23:05:09.474396+00:00,full_refresh_dispatch,dk,dk_classic_wk3_main_27Sep2026,status_apply,success
 2026-09-24T23:05:09.474396+00:00,full_refresh_dispatch,dk,dk_classic_wk3_main_27Sep2026,pivot_finder,success
+2026-09-24T23:05:57.955435+00:00,full_refresh_dispatch,dk,dk_classic_wk3_early_27Sep2026,build_projections,success
+2026-09-24T23:05:57.955435+00:00,full_refresh_dispatch,dk,dk_classic_wk3_early_27Sep2026,status_apply,success
+2026-09-24T23:05:57.955435+00:00,full_refresh_dispatch,dk,dk_classic_wk3_early_27Sep2026,pivot_finder,success
