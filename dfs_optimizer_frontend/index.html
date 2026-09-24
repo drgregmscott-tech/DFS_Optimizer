@@ -1846,29 +1846,6 @@ in this browser's localStorage.</p>
     </div>
   </div>
 
-  <!-- 2026-09-23 addition -- Recommended Lineup. Reads
-       output/recommended_lineup_{site}_{slate_id}.csv (scripts/
-       recommend_lineup.py, run automatically by the same refresh_data.yml
-       cadence as final_projections/pivot_suggestions -- see
-       HANDOFF_week3_lineup_system.md). Deliberately separate from "Build
-       Lineups" above: it needs no lineup to already be built and uses a
-       different, validated selection method (worst_top25_realstack --
-       ownership-independent by design; see recommend_lineup.py's own
-       docstring for why the stronger ownership-driven pivot method is NOT
-       used here yet). Same collapsible build-panel pattern as Exposure
-       Summary, open by default since this is the one panel meant to answer
-       "what do I actually play this week" directly. -->
-  <div class="build-panel open" id="recommendedLineupPanel">
-    <div class="build-header" id="recommendedLineupHeader">
-      <div class="title">Recommended Lineup</div>
-      <div class="chevron">&#9656;</div>
-    </div>
-    <div class="build-body" id="recommendedLineupSection">
-      <div class="hint" style="margin-top:12px;">The single strongest lineup found for this slate by the validated worst_top25_realstack method (best worst-case probability of finishing top-25% of the field, restricted to real QB+teammate stack structure) -- generated automatically from final_projections, no "Build Lineups" run required first. Does NOT include ownership-driven pivots/leverage swaps yet -- see the hint below the table.</div>
-      <div id="recommendedLineupMeta" style="margin-top:8px;"></div>
-      <div id="recommendedLineupTable" style="margin-top:8px;"></div>
-    </div>
-  </div>
 
 </div>
 
@@ -1964,10 +1941,6 @@ in this browser's localStorage.</p>
     minTeamFloors: { dk: {}, fd: {} },          // team -> floor int
     // ---- Session 4.3 additions (Finding 2 -- pivot panel) ----
     pivots: { dk: null, fd: null },             // each: { filename, byKey: { "name|team": [candidate rows, sorted by pivot_rank] } }
-    // 2026-09-23 addition -- Recommended Lineup panel. Each: { filename, rows }
-    // where rows is the parsed CSV (roster_slot/player_name/... plus the
-    // repeated-per-row provenance columns -- see recommend_lineup.py).
-    recommendedLineup: { dk: null, fd: null },
     // index into the CURRENTLY DISPLAYED lineup's rows array of the
     // expanded roster row, or null if none expanded. Reset on lineup nav
     // or site switch so a stale expansion doesn't point at the wrong row.
@@ -2177,34 +2150,6 @@ in this browser's localStorage.</p>
       .then(function (r) { return r.json(); })
       .then(function (data) { onDone(data.found ? data.csv : null); })
       .catch(function () { onDone(null); });
-  }
-
-  // 2026-09-23 addition -- same "always read fresh off GitHub" shape as
-  // cloudLoadPivotsLive above, for output/recommended_lineup_{site}_
-  // {slate_id}.csv (see optimizer_api.js's handleLoadRecommendedLineup).
-  function cloudLoadRecommendedLineupLive(site, slateId, onDone) {
-    if (!cloudConfigured()) { onDone(null); return; }
-    fetch(workerUrl("load_recommended_lineup", { site: site, slate_id: slateId }), { cache: "no-store" })
-      .then(function (r) { return r.json(); })
-      .then(function (data) { onDone(data.found ? data.csv : null); })
-      .catch(function () { onDone(null); });
-  }
-
-  // No localStorage/manual-upload fallback here, unlike loadPivotsForActive
-  // -- this file is ALWAYS automation-generated (recommend_lineup.py), never
-  // something a user would manually upload, so there's nothing meaningful
-  // to fall back to. Not found simply means "not generated for this slate
-  // yet" -- state.recommendedLineup[site] = null, panel says so.
-  function loadRecommendedLineupForActive(site, slateId) {
-    cloudLoadRecommendedLineupLive(site, slateId, function (csvText) {
-      if (csvText) {
-        var rows = parseCSV(csvText);
-        state.recommendedLineup[site] = { filename: "recommended_lineup_" + site + "_" + slateId + ".csv", rows: rows };
-      } else {
-        state.recommendedLineup[site] = null;
-      }
-      renderRecommendedLineupPanel();
-    });
   }
 
   // ---------------- Slate payload application ----------------
@@ -2716,7 +2661,6 @@ in this browser's localStorage.</p>
       renderPlayerList();
       renderSlateOverview();
       loadPivotsForActive(site, slateId);
-      loadRecommendedLineupForActive(site, slateId);
     });
   });
 
@@ -2781,7 +2725,6 @@ in this browser's localStorage.</p>
         renderPlayerList();
         renderSlateOverview();
         loadPivotsForActive(site, slateId);
-        loadRecommendedLineupForActive(site, slateId);
         updateDeleteBtnState();
         // Also push this fresh snapshot to the cloud slate store so other
         // devices/browsers picking this slate see it too, without each of
@@ -2810,7 +2753,6 @@ in this browser's localStorage.</p>
     var cfg = SITE_CONFIG[site];
 
     renderExposureSummary();
-    renderRecommendedLineupPanel();
 
     if (!d) { viewer.innerHTML = ""; return; }
 
@@ -3188,7 +3130,6 @@ in this browser's localStorage.</p>
         renderPlayerList();
         renderSlateOverview();
         loadPivotsForActive(site, slateId);
-        loadRecommendedLineupForActive(site, slateId);
       });
     } else {
       // Dropdown has no entry for this site yet.
@@ -3639,90 +3580,6 @@ in this browser's localStorage.</p>
       '<div class="roster-row head"><div>TEAM</div><div>PLAYER</div><div class="pos-cell">POS</div>' +
       '<div class="salary-cell">SALARY</div><div class="proj-cell">PROJ</div><div class="value-cell">USED</div><div class="own-cell">EXP%</div></div>' +
       rowsHtml + '</div>';
-  }
-
-  // 2026-09-23 addition -- Recommended Lineup panel. Same roster/roster-row
-  // table markup as Exposure Summary above, just a plain 9-row lineup
-  // instead of a per-player exposure count, plus the provenance line
-  // (method/score/pool size) read straight off the repeated-per-row
-  // columns recommend_lineup.py writes.
-  //
-  // 2026-09-23 (same day) -- recommend_lineup.py now writes up to 3 ranked
-  // lineups (recommendation_rank column), not just one. Greg's own framing
-  // for why, and why this is NOT rendered as 3 equal-weight choices: rank 1
-  // is THE recommendation, rendered as the full roster exactly like
-  // before. Ranks 2/3 render in a visually distinct, smaller "Confidence /
-  // margin" block below it -- their whole purpose is showing how far ahead
-  // (or not) rank 1 is from the next-best real-stack candidates the model
-  // considered, not offering alternatives to pick from instead.
-  function renderRecommendedLineupPanel() {
-    var site = state.activeSite;
-    var metaEl = document.getElementById("recommendedLineupMeta");
-    var tableEl = document.getElementById("recommendedLineupTable");
-    if (!metaEl || !tableEl) return; // panel not in DOM yet on first call
-    var rec = state.recommendedLineup[site];
-    if (!rec || !rec.rows || !rec.rows.length) {
-      metaEl.innerHTML = "";
-      tableEl.innerHTML = '<div class="hint" style="padding:14px 2px;">No recommended lineup generated yet for this slate -- it\'s written automatically once final_projections is fresh (no "Build Lineups" run required). Check back after the next automated refresh, or run scripts/recommend_lineup.py manually.</div>';
-      return;
-    }
-    var byRank = {};
-    rec.rows.forEach(function (r) {
-      var rk = parseInt(r.recommendation_rank, 10) || 1; // pre-2026-09-23 files have no rank column -- treat as rank 1
-      if (!byRank[rk]) byRank[rk] = [];
-      byRank[rk].push(r);
-    });
-    var ranks = Object.keys(byRank).map(Number).sort(function (a, b) { return a - b; });
-
-    function rosterTable(rows) {
-      var rowsHtml = rows.map(function (r) {
-        return '<div class="roster-row">' +
-          '<div class="slot-badge">' + escapeHtml(r.roster_slot) + '</div>' +
-          '<div class="player-cell"><div class="player-name">' + escapeHtml((r.player_name || "").trim()) + '</div></div>' +
-          '<div class="pos-cell">' + escapeHtml(r.position) + '</div>' +
-          '<div class="salary-cell mono">' + fmtMoney(r.salary) + '</div>' +
-          '<div class="proj-cell mono">' + fmtPts(parseFloat(r.projection) || 0) + '</div>' +
-          '</div>';
-      }).join("");
-      return '<div class="roster">' +
-        '<div class="roster-row head"><div>SLOT</div><div>PLAYER</div><div class="pos-cell">POS</div>' +
-        '<div class="salary-cell">SALARY</div><div class="proj-cell">PROJ</div></div>' +
-        rowsHtml + '</div>';
-    }
-
-    var rank1Rows = byRank[1] || [];
-    var first = rank1Rows[0] || rec.rows[0];
-    var totalSalary = rank1Rows.reduce(function (s, r) { return s + (parseFloat(r.salary) || 0); }, 0);
-    var totalProj = rank1Rows.reduce(function (s, r) { return s + (parseFloat(r.projection) || 0); }, 0);
-    metaEl.innerHTML = '<div class="hint">method=' + escapeHtml(first.method || "?") +
-      ' &middot; worst-case P(top-25%)=' + (parseFloat(first.worst_top25_score) * 100).toFixed(1) + '%' +
-      ' &middot; avg P(top-25%)=' + (parseFloat(first.avg_top25_score) * 100).toFixed(1) + '%' +
-      ' &middot; pool=' + escapeHtml(first.n_candidates_in_pool || "?") + ' candidates (' + escapeHtml(first.n_real_stack_in_pool || "?") + ' real-stack)' +
-      ' &middot; salary=' + fmtMoney(totalSalary) + ' &middot; proj=' + fmtPts(totalProj) +
-      ' &middot; generated ' + (first.generated_at_utc ? new Date(first.generated_at_utc).toLocaleString() : "?") + '</div>';
-
-    var html = rosterTable(rank1Rows);
-
-    var otherRanks = ranks.filter(function (rk) { return rk !== 1; });
-    if (otherRanks.length) {
-      html += '<div class="hint" style="margin-top:16px; padding-top:12px; border-top:1px solid var(--border, #333);">' +
-        '<b>Confidence / margin</b> — how far ahead the pick above is from the next-best real-stack candidates the model considered. ' +
-        'These are NOT alternatives to choose from instead (see the hint above the table for why) — a small gap means a close call; a large gap means a well-separated, confident pick.' +
-        '</div>';
-      otherRanks.forEach(function (rk) {
-        var rows = byRank[rk];
-        var f = rows[0];
-        var gap = parseFloat(f.score_gap_from_best);
-        var gapStr = (isNaN(gap) ? "?" : (gap * 100).toFixed(1) + "pp");
-        html += '<div style="margin-top:10px; opacity:0.75;">' +
-          '<div class="hint" style="margin-bottom:4px;">#' + rk + ' runner-up &middot; worst-case P(top-25%)=' +
-          (parseFloat(f.worst_top25_score) * 100).toFixed(1) + '% &middot; gap from #1: ' + gapStr + '</div>' +
-          rosterTable(rows) +
-          '</div>';
-      });
-    }
-
-    tableEl.innerHTML = html;
   }
 
   document.getElementById("exposureTabs").addEventListener("click", function (e) {
@@ -4254,12 +4111,6 @@ in this browser's localStorage.</p>
   // before every build the way the panel above is).
   document.getElementById("exposureHeader").addEventListener("click", function () {
     document.getElementById("exposurePanel").classList.toggle("open");
-  });
-
-  // 2026-09-23 addition -- Recommended Lineup panel, open by default (see
-  // its HTML block's own comment for why).
-  document.getElementById("recommendedLineupHeader").addEventListener("click", function () {
-    document.getElementById("recommendedLineupPanel").classList.toggle("open");
   });
 
   // Session 7.3, item #3 fix: save on every keystroke (input), not just on
@@ -4961,7 +4812,6 @@ in this browser's localStorage.</p>
         renderSlateOverview();
         render();
         loadPivotsForActive(site, slateId);
-        loadRecommendedLineupForActive(site, slateId);
       });
     } else {
       setSlateStatus("Checking cloud for saved slates…");
@@ -5007,7 +4857,6 @@ in this browser's localStorage.</p>
           renderSlateOverview();
           render();
           loadPivotsForActive(s2, sid2);
-          loadRecommendedLineupForActive(s2, sid2);
         });
       }
     });
