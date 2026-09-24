@@ -1,0 +1,54 @@
+  by    grp   n  OLD_bias  OLD_mae  OLD_rmse  FIX_NS_bias  FIX_NS_mae  FIX_NS_rmse  FIX_bias  FIX_mae  FIX_rmse
+ ALL    all 252     -3.36     6.42      9.00        -0.67        6.37         8.45      0.01     6.33      8.11
+ pos    DST  19      1.00     5.83      7.03         1.09        5.88         7.03      1.09     5.88      7.03
+ pos     QB  48     -5.83     7.94     10.07        -0.25        7.37         8.94     -1.83     6.91      8.40
+ pos     RB  66     -3.06     6.21      8.52        -0.67        6.22         8.38      0.44     6.30      8.16
+ pos     TE  28     -1.15     5.25      6.84         0.84        5.48         6.83      1.71     5.55      7.08
+ pos     WR  91     -3.85     6.26      9.66        -1.72        6.33         8.94     -0.06     6.38      8.41
+tier  <4.5k  57     -0.33     4.81      6.51         1.07        5.18         6.57      1.15     5.06      6.40
+tier 4.5-6k 127     -2.86     5.65      7.90        -0.04        5.63         7.45      0.65     5.85      7.41
+tier 6-7.5k  60     -6.55     8.54     11.39        -3.13        8.20        10.60     -2.00     7.69      9.70
+tier  7.5k+   8     -8.79    14.32     16.85        -4.61       12.82        14.78     -3.11    12.84     14.19
+week      1 119     -4.10     7.53     10.16        -1.58        7.27         9.50     -1.26     6.99      9.02
+week      2 133     -2.68     5.44      7.81         0.15        5.57         7.39      1.15     5.73      7.19
+MAE FIX_NS-OLD: -0.05  95% -0.46..+0.35
+MAE FIX-OLD: -0.09  95% -0.55..+0.37
+MAE FIX-FIX_NS: -0.04  95% -0.32..+0.24
+          OLD_sp  FIX_NS_sp  FIX_sp  OLD_valsp  FIX_NS_valsp  FIX_valsp  OLD_top  FIX_NS_top  FIX_top  OLD_topact  FIX_NS_topact  FIX_topact
+position                                                                                                                                    
+QB         0.138      0.121   0.244     -0.006        -0.007     -0.021    0.333       0.278    0.222      18.758         19.490      19.667
+RB         0.368      0.329   0.458      0.105         0.077      0.141    0.500       0.500    0.533      18.057         17.357      17.613
+TE        -0.029      0.055  -0.365      0.086         0.064     -0.156    0.417       0.333    0.167       8.333          6.617       5.042
+WR         0.375      0.386   0.451      0.201         0.171      0.261    0.479       0.458    0.625      16.508         16.065      19.071
+ALL {'OLD_sp': 0.235, 'FIX_NS_sp': 0.238, 'FIX_sp': 0.248, 'OLD_valsp': 0.097, 'FIX_NS_valsp': 0.077, 'FIX_valsp': 0.075, 'OLD_top': 0.434, 'FIX_NS_top': 0.398, 'FIX_top': 0.407, 'OLD_topact': 16.058, 'FIX_NS_topact': 15.633, 'FIX_topact': 16.285}
+sp     FIX_NS-OLD: +0.003 95% -0.026..+0.032  wins 11/22
+valsp  FIX_NS-OLD: -0.020 95% -0.073..+0.035  wins 9/22
+topact FIX_NS-OLD: -0.424 95% -1.829..+0.986  wins 6/22
+sp     FIX-OLD: +0.013 95% -0.091..+0.097  wins 15/22
+valsp  FIX-OLD: -0.022 95% -0.091..+0.042  wins 9/22
+topact FIX-OLD: +0.227 95% -1.460..+1.833  wins 12/22
+sp     FIX-FIX_NS: +0.010 95% -0.112..+0.111  wins 15/22
+valsp  FIX-FIX_NS: -0.002 95% -0.076..+0.066  wins 11/22
+topact FIX-FIX_NS: +0.652 95% -0.494..+1.754  wins 11/22
+
+Large FIX_NS inflations (proj_pass_att>50 or FIX_NS>1.6xOLD & >12):
+                          slate_id        player_name position team  salary  proj_pass_att  OLD  FIX_NS  stack_delta  FIX  act
+     dk_classic_wk1_main_13Sep2026         Joe Burrow       QB  CIN    6900           36.5 18.0    29.6         -5.1 24.5 15.2
+     dk_classic_wk1_main_13Sep2026      Lamar Jackson       QB  BAL    6800           30.9 13.5    23.7         -2.1 21.6 29.0
+     dk_classic_wk1_main_13Sep2026       Daniel Jones       QB  IND    5400           35.0 11.9    21.6         -4.7 17.0 10.0
+     dk_classic_wk1_main_13Sep2026 Travis Etienne Jr.       RB   NO    5900            0.0  8.2    17.0         -2.4 14.7 14.8
+     dk_classic_wk1_main_13Sep2026     Jayden Daniels       QB  WAS    6500           30.7  7.8    12.8          3.2 16.0 17.7
+     dk_classic_wk1_main_13Sep2026       Malik Willis       QB  MIA    5300           30.7  7.4    17.0         -2.4 14.7 17.7
+    dk_classic_wk1_early_13Sep2026         Joe Burrow       QB  CIN    6900           36.5 17.8    29.2         -4.9 24.3 15.2
+    dk_classic_wk1_early_13Sep2026      Lamar Jackson       QB  BAL    6800           30.8 13.3    23.8         -2.2 21.7 29.0
+    dk_classic_wk1_early_13Sep2026       Daniel Jones       QB  IND    5400           35.0 12.8    21.5         -4.6 16.9 10.0
+    dk_classic_wk1_early_13Sep2026    Trevor Lawrence       QB  JAX    5800           32.8 11.3    18.4         -1.8 16.6 26.1
+    dk_classic_wk1_early_13Sep2026 Travis Etienne Jr.       RB   NO    5900            0.0  9.1    27.1         -9.1 17.9 14.8
+dk_classic_wk1_afternoon_13Sep2026       Kirk Cousins       QB   LV    5000           31.1  9.6    15.3         -2.2 13.1 15.8
+dk_classic_wk1_afternoon_13Sep2026       Kyler Murray       QB  MIN    5500           31.7  9.3    15.2         -0.8 14.4  0.6
+dk_classic_wk1_afternoon_13Sep2026     Jayden Daniels       QB  WAS    6500           30.8  7.9    12.9          3.1 16.0 17.7
+dk_classic_wk1_afternoon_13Sep2026       Malik Willis       QB  MIA    5300           30.8  7.9    17.9         -2.8 15.0 17.7
+     dk_classic_wk2_main_20Sep2026         Geno Smith       QB  NYJ    4800           31.5  9.0    15.3         -2.7 12.6 15.6
+     dk_classic_wk2_main_20Sep2026       Kirk Cousins       QB   LV    5000           32.9  7.5    13.3         -1.1 12.2 21.2
+    dk_classic_wk2_early_20Sep2026      Lamar Jackson       QB  BAL    7300           32.0 16.1    25.8         -1.9 23.9 15.8
+    dk_classic_wk2_early_20Sep2026         Geno Smith       QB  NYJ    4800           31.2  9.0    15.1         -2.6 12.5 15.6

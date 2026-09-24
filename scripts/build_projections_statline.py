@@ -331,6 +331,7 @@ def build_statline_projections(site: str, season: int, week: int, slate_id: str,
                                sigma_recal: bool = False,
                                vegas_slate_id: str = None,
                                use_weather: bool = True,
+                               ignore_played_week: bool = False,
                                props_weight: float = 0.0,
                                props_file: str = None,
                                use_stack: bool = False,
@@ -425,6 +426,13 @@ def build_statline_projections(site: str, season: int, week: int, slate_id: str,
 
     # Decision #7: identical team-drift handling to the legacy engine.
     week_was_played, real_team_this_week = load_real_team_for_week(season, week)
+    if ignore_played_week and week_was_played:
+        # Backtest rebuilds of an already-played week (--backtest-no-leak): skip
+        # BOTH the team-drift correction and the confirmed-no-game zero-out, which
+        # read that week's real results and would leak them into the projection.
+        print(f"BACKTEST: ignoring week-{week} real results (no team-drift correction, "
+              f"no no-game zero-out).")
+        week_was_played = False
     players["no_real_game_this_week"] = False
     if week_was_played:
         corrected = players["player_id"].map(real_team_this_week)
@@ -1013,6 +1021,11 @@ if __name__ == "__main__":
     parser.add_argument("--no-weather", action="store_true",
                         help="Skip the game-day weather adjustment (scripts/weather.py); "
                              "every player gets neutral 1.0 factors.")
+    parser.add_argument("--backtest-no-leak", action="store_true",
+                        help="Backtest rebuilds of an already-played week only: ignore that "
+                             "week's real results (played-week team correction and the "
+                             "confirmed-no-game zero-out, decisions #4a/#4b) so the projection "
+                             "is what could have been known before kickoff. Never use for a live slate.")
     parser.add_argument("--reconcile-threshold", type=float,
                         default=statline_model.RECONCILE_FAIL_THRESHOLD,
                         help="Max proportional share-reconciliation rescale before "
@@ -1032,6 +1045,7 @@ if __name__ == "__main__":
         sigma_recal=args.sigma_recalibration,
         vegas_slate_id=args.vegas_slate_id,
         use_weather=not args.no_weather,
+        ignore_played_week=args.backtest_no_leak,
         props_weight=args.props_weight,
         props_file=args.props_file,
         use_stack=not args.no_stack)
