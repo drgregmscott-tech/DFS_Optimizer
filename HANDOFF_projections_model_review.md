@@ -483,3 +483,19 @@ even sees, not just their exact point values.
 - Don't wait for more weeks of real data before starting — Greg's explicit call
   this session was to review code for bugs/gaps NOW, in parallel with more data
   accumulating, not sequentially after.
+
+## 10. HAND-IN FROM THE OWNERSHIP SESSION (2026-09-24) -- re-check of the section-9 fix, and the guard that is still OPEN
+
+Full write-up: `analysis/proj_recheck/notes.md` (numbers below are from it; 254 player-weeks, projection>8, 6 DK classic slates, leak-free rebuilds). Companion: `HANDOFF_ownership_model_review.md` section 7 (ownership outcomes).
+
+**Verdict: keep the reconcile fix, but it has a bug of its own that must be guarded before more slates are built.**
+- Bias fixed (-3.37 -> -0.40 pts) but ranking did NOT improve: within-position rank corr .226 -> .201; actual points of the projected top-N fell 16.06 -> 14.79 (paired CI -2.59..-0.10). MAE 6.41 -> 6.83.
+- **The bug:** `reconcile_team_shares()` excludes a player whose `hist_team` != current team from `raw_sum`, but still applies the team `scale` to him. When the STARTING QB is the one who moved, `raw_sum` is only his tiny backups' volume, so `scale` blows up and the starter is inflated. Wk1 rebuild: Cousins (LV) pass att 134 / 62 pts (actual 15.8), Murray (MIN) 135 / 57 (actual 0.6), Geno Smith (NYJ) 119 / 52.5 (actual 9.3), Willis (MIA) 60 / 33 (actual 17.7). Without those four, the fix clearly helps QB (wk1 QB R2 .27 -> .37, .50 with stack).
+- **Recommended guard (NOT implemented -- Greg moved it to this chat):** scale only players counted in `raw_sum` (or cap a moved starter's volume / cap `scale`, e.g. <=~1.5), plus a fail-loud check on any player projecting pass attempts > ~50. Validate on the wk1 cases above AND on the live wk3 MIN case below.
+- **LIVE WK3 CASE -- MIN passing:** wk3 main reconcile log: `MIN/pass raw_sum 10.92, target 30.13, scale 2.76x`; result: Kyler Murray ($5,100, hist_team ARI, 1 game) 13.7 pass att / 9.5 pts, Max Brosmer ($4,000, 0 games) 16.3 att / 7.0 pts, Wentz 0, McCarthy 0. **Murray has been cleared and announced as MIN's starter this weekend (Greg, 2026-09-24)** -- so 9.5 pts / 13.7 att is a real mis-projection, same mechanism. SEA/pass 1.72x looks fine (Darnold 15.6).
+- **Shipped-lineup drop explained:** old 3/6, 0.703 -> fixed 1/6, 0.583; ~2/3 of that drop is this bug (shipped rule picked Cousins/Geno/Murray); with those four QBs reset 2/6, 0.660; rest is noise (5% projection noise alone moves a slate ~0.2 percentile). (The recommend_lineup feature was since removed from the repo.)
+- **Projection stack:** roughly neutral-to-helpful; the "-28 pt" moves were the stack's 0.5x floor limiting the blown-up QBs. Keep.
+- **Leaks in the old-vs-fixed comparison** slightly favor the fixed projections: depth_charts_current.parquet is a 9/23 snapshot; status files were pulled after kickoff; played-week zeroing must be disabled for wk2+ rebuilds (a switch does not exist yet -- add one for backtests).
+- **Watch each week:** any QB with proj_pass_att > 50 or a team `scale` > ~1.5 in `output/statline_reconcile_*.csv`; offseason/in-season movers are the exposure.
+
+**Merging the two workstreams:** ownership features that depend on projections (`final_projection`, `sigma`, `l_exp` from the optimizer) inherit any projection blow-up, so fix the guard first, then rebuild slates and refit both ownership artifacts (`data/ownership_model_dk.json`, `_ffc.json`) -- and refit again after wk3 real ownership is logged (Stage 6; `log_ownership.py` now refuses FLEX-less totals).
