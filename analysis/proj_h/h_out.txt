@@ -1,0 +1,172 @@
+==================================================================================================== 
+1. DILUTION IN THE SHIPPED (base) BUILDS
+
+--- week 1: 24 teams ---
+n_RB     43
+n_WR    109
+n_TE     65
+mean per team: {'rush_ps_all': 1.0, 'rush_ps_floor': 0.167, 'recv_ps_all': 1.0, 'recv_ps_floor': 0.277, 'rush_mu_floor_post': 3.823, 'recv_mu_floor_post': 8.455, 'rush_scale': 0.961, 'recv_scale': 0.968}
+reconcile share_basis rush: {'recent': 24}  recv: {'recent': 24}
+teams sorted by floor rush mass (attempts post-reconcile held by excluded floor players):
+team  n_RB  n_WR  n_TE  rush_ps_all  rush_ps_floor  recv_ps_all  recv_ps_floor  rush_mu_floor_post  recv_mu_floor_post  rush_scale rush_basis  recv_scale recv_basis
+ BAL     5     7     3          1.0          0.408          1.0          0.470               8.119              15.144       0.680     recent       1.087     recent
+  GB     3     3     2          1.0          0.246          1.0          0.222               6.419               6.163       0.944     recent       0.936     recent
+ PIT     2     7     2          1.0          0.214          1.0          0.403               5.926              14.322       1.012     recent       1.042     recent
+ MIA     5     5     6          1.0          0.382          1.0          0.449               5.843              13.595       0.562     recent       1.025     recent
+  LV     3     4     2          1.0          0.288          1.0          0.248               5.616               7.251       0.721     recent       0.977     recent
+ CAR     2     2     1          1.0          0.195          1.0          0.146               5.565               4.785       1.117     recent       1.039     recent
+ BUF     3     4     0          1.0          0.285          1.0          0.207               5.351               7.353       0.646     recent       1.135     recent
+ LAC     3     5     4          1.0          0.235          1.0          0.334               5.127              10.800       0.762     recent       0.966     recent
+
+--- week 2: 26 teams ---
+n_RB     74
+n_WR    111
+n_TE     85
+mean per team: {'rush_ps_all': 1.0, 'rush_ps_floor': 0.292, 'recv_ps_all': 1.0, 'recv_ps_floor': 0.341, 'rush_mu_floor_post': 1.699, 'recv_mu_floor_post': 2.453, 'rush_scale': 0.871, 'recv_scale': 0.904}
+reconcile share_basis rush: {'recent': 15, 'full_season': 11}  recv: {'recent': 18, 'full_season': 8}
+teams sorted by floor rush mass (attempts post-reconcile held by excluded floor players):
+team  n_RB  n_WR  n_TE  rush_ps_all  rush_ps_floor  recv_ps_all  recv_ps_floor  rush_mu_floor_post  recv_mu_floor_post  rush_scale  rush_basis  recv_scale  recv_basis
+  SF     4     5     3          1.0          0.395          1.0          0.349               2.603               2.453       0.855      recent       0.832      recent
+ NYJ     4     3     1          1.0          0.433          1.0          0.285               2.453               2.094       0.749      recent       0.980 full_season
+ ARI     4     4     5          1.0          0.416          1.0          0.392               2.393               2.764       0.794      recent       0.836      recent
+ MIA     4     4     4          1.0          0.426          1.0          0.448               2.198               3.137       0.902 full_season       0.891      recent
+ TEN     3     3     4          1.0          0.368          1.0          0.341               2.175               2.277       0.990 full_season       0.876      recent
+  LV     4     5     4          1.0          0.380          1.0          0.372               2.138               2.456       0.767      recent       0.832      recent
+ SEA     4     6     2          1.0          0.352          1.0          0.396               2.077               2.698       0.909 full_season       0.923 full_season
+ LAC     4     4     2          1.0          0.354          1.0          0.360               1.962               2.530       0.873 full_season       0.904      recent
+
+==================================================================================================== 
+2. PROJECTED vs REAL USAGE (dedup player-week, main>early>afternoon)
+
+wk1 team RB carries: n_team=24 real_mean=22.1 base_proj=27.1 fix_proj=27.0 | MAE base 7.79 fix 8.30
+wk1 team WR targets: n_team=24 real_mean=17.3 base_proj=20.7 fix_proj=21.7 | MAE base 5.09 fix 5.58
+wk1 team TE targets: n_team=24 real_mean=7.3 base_proj=10.0 fix_proj=10.3 | MAE base 3.92 fix 4.43
+wk1 excluded floor players: n=220; real carries total=8 targets=20; n with >=5 carries+targets: 0
+              player_name team position  salary  depth_rank_h  car  tgt
+player_id                                                              
+00-0041326   CJ Donaldson   NO       RB    4000           4.0  2.0  2.0
+00-0041048  Ted Hurst III   TB       WR    3300           4.0  0.0  3.0
+00-0040894   Malik Benson   LV       WR    3100           4.0  1.0  2.0
+00-0040870   Ja'Kobi Lane  BAL       WR    3100           7.0  0.0  3.0
+
+wk2 team RB carries: n_team=26 real_mean=22.0 base_proj=21.2 fix_proj=20.8 | MAE base 3.90 fix 3.94
+wk2 team WR targets: n_team=26 real_mean=18.1 base_proj=18.3 fix_proj=18.4 | MAE base 4.09 fix 4.16
+wk2 team TE targets: n_team=26 real_mean=5.7 base_proj=7.5 fix_proj=7.3 | MAE base 2.75 fix 2.65
+wk2 excluded floor players: n=287; real carries total=16 targets=51; n with >=5 carries+targets: 1
+                player_name team position  salary  depth_rank_h  car  tgt
+player_id                                                                
+00-0040198  Ollie Gordon II  MIA       RB    4000           3.0  3.0  0.0
+00-0040177     Jordan James   SF       RB    4000           3.0  4.0  0.0
+00-0041436        DJ Herman  MIA       RB    4000           NaN  0.0  3.0
+00-0037085      Tyler Badie  DEN       RB    4000           4.0  1.0  3.0
+00-0041550  Brenen Thompson  LAC       WR    3500           4.0  0.0  3.0
+00-0041489   Germie Bernard  PIT       WR    3400           4.0  0.0  8.0
+00-0032392    Austin Hooper  ATL       TE    2500           3.0  0.0  4.0
+00-0041558        Sam Roush  CHI       TE    2500           3.0  0.0  3.0
+00-0033246     Johnny Mundt  PHI       TE    2500           3.0  0.0  3.0
+00-0039814    Erick All Jr.  CIN       TE    2500           3.0  0.0  3.0
+
+per-starter usage (slot = rank by BASE projected volume within team). dMAE = fix-base, <0 better; 95% CI bootstrap
+ week pos slot stat  n   real   base    fix  ratio_base  ratio_fix  mae_base  mae_fix   dMAE     lo     hi
+    1  RB  RB1  car 24 14.958 13.055 14.973       0.873      1.001     5.689    4.989 -0.700 -1.540  0.180
+    1  RB  RB2  car 24  4.583  5.907  6.800       1.289      1.484     3.423    3.822  0.399 -0.051  0.864
+    1  WR  WR1  tgt 24  7.083  6.322  8.440       0.893      1.192     2.067    2.485  0.418 -0.358  1.238
+    1  WR  WR2  tgt 24  4.500  4.020  5.338       0.893      1.186     2.311    2.334  0.022 -0.531  0.640
+    1  WR  WR3  tgt 24  2.375  2.829  3.644       1.191      1.534     2.573    2.842  0.269 -0.258  0.759
+    1  TE  TE1  tgt 24  4.875  4.880  6.506       1.001      1.334     2.421    2.908  0.487 -0.149  1.111
+    2  RB  RB1  car 26 12.269 10.984 11.344       0.895      0.925     4.434    4.265 -0.170 -0.346  0.034
+    2  RB  RB2  car 26  5.500  6.145  6.622       1.117      1.204     3.173    3.382  0.208  0.022  0.395
+    2  WR  WR1  tgt 26  6.192  6.456  6.703       1.043      1.083     2.449    2.435 -0.015 -0.126  0.104
+    2  WR  WR2  tgt 26  5.692  4.818  5.160       0.846      0.907     2.941    2.782 -0.159 -0.283 -0.030
+    2  WR  WR3  tgt 26  2.885  3.426  3.764       1.188      1.305     2.067    2.212  0.145  0.007  0.281
+    2  TE  TE1  tgt 26  3.731  4.261  4.522       1.142      1.212     1.974    2.084  0.110 -0.013  0.222
+
+==================================================================================================== 
+3. DK POINTS, base vs fix
+
+ week   cut grp  npw  nchg  bias_b  bias_f  d_bias         ci_bias  mae_b  mae_f  d_mae          ci_mae  rmse_b  rmse_f  d_rmse         ci_rmse
+    1  base  RB   32    32  -2.204  -1.340   0.864 [+0.665,+1.075]  8.386  8.482  0.096 [-0.260,+0.450]  10.334  10.122  -0.212 [-0.559,+0.161]
+    1  base  WR   39    39  -0.517   0.441   0.958 [+0.782,+1.167]  6.559  6.756  0.197 [-0.163,+0.535]   8.833   8.761  -0.072 [-0.409,+0.312]
+    1  base  TE   17    17   0.471   1.302   0.832 [+0.631,+1.076]  6.172  6.447  0.275 [-0.150,+0.701]   7.795   8.025   0.229 [-0.296,+0.739]
+    1  base ALL   88    88  -0.940  -0.040   0.899 [+0.784,+1.026]  7.148  7.324  0.176 [-0.042,+0.394]   9.227   9.149  -0.078 [-0.296,+0.166]
+    1 union  RB   34    34  -2.205  -1.371   0.834 [+0.637,+1.045]  8.023  8.094  0.070 [-0.253,+0.429]  10.050   9.841  -0.209 [-0.537,+0.175]
+    1 union  WR   45    45  -0.309   0.673   0.982 [+0.807,+1.189]  6.225  6.490  0.265 [-0.086,+0.598]   8.418   8.384  -0.034 [-0.365,+0.315]
+    1 union  TE   19    19   0.724   1.570   0.846 [+0.654,+1.063]  5.825  6.174  0.349 [-0.049,+0.761]   7.437   7.699   0.262 [-0.212,+0.758]
+    1 union ALL   98    98  -0.767   0.138   0.904 [+0.793,+1.036]  6.771  6.985  0.214 [+0.007,+0.419]   8.849   8.796  -0.053 [-0.264,+0.164]
+    2  base  RB   35    30   3.497   3.660   0.163 [+0.126,+0.197]  4.582  4.661  0.078 [+0.022,+0.129]   5.632   5.725   0.093 [+0.035,+0.141]
+    2  base  WR   53    46   1.006   1.145   0.139 [+0.112,+0.169]  6.792  6.841  0.049 [+0.004,+0.097]   8.635   8.658   0.024 [-0.019,+0.073]
+    2  base  TE   13    12   3.115   3.391   0.276 [+0.109,+0.510]  5.055  5.260  0.205 [+0.006,+0.465]   6.274   6.628   0.354 [+0.073,+0.679]
+    2  base ALL  101    88   2.141   2.306   0.165 [+0.133,+0.204]  5.802  5.882  0.079 [+0.039,+0.127]   7.429   7.507   0.078 [+0.030,+0.150]
+    2 union  RB   36    31   3.234   3.435   0.201 [+0.138,+0.293]  4.621  4.654  0.034 [-0.083,+0.116]   5.642   5.693   0.051 [-0.060,+0.130]
+    2 union  WR   53    46   1.006   1.145   0.139 [+0.113,+0.168]  6.792  6.841  0.049 [+0.002,+0.096]   8.635   8.658   0.024 [-0.022,+0.074]
+    2 union  TE   15    14   3.290   3.544   0.254 [+0.110,+0.475]  4.971  5.164  0.193 [+0.028,+0.431]   6.199   6.518   0.319 [+0.072,+0.627]
+    2 union ALL  104    91   2.107   2.284   0.177 [+0.139,+0.225]  5.778  5.842  0.064 [+0.013,+0.118]   7.386   7.453   0.067 [+0.013,+0.135]
+
+ week   cut grp   sp_b   sp_f   d_sp           ci_sp  top_b  top_f  d_top          ci_top
+    1  base  RB  0.362  0.341 -0.021 [-0.111,+0.039] 24.987 24.353 -0.633 [-2.387,+2.440]
+    1  base  WR  0.394  0.402  0.008 [-0.036,+0.091] 17.567 17.729  0.163 [-1.311,+0.908]
+    1  base  TE -0.423 -0.387  0.036 [-0.149,+0.295]  5.800  5.800  0.000 [-1.717,+0.000]
+    1  base ALL  0.178  0.182  0.004 [-0.064,+0.081] 17.408 17.231 -0.177 [-1.101,+0.921]
+    1 union  RB  0.355  0.360  0.005 [-0.086,+0.117] 24.987 24.353 -0.633 [-2.200,+2.440]
+    1 union  WR  0.382  0.373 -0.009 [-0.067,+0.043] 17.567 17.729  0.163 [-1.292,+0.908]
+    1 union  TE -0.117 -0.106  0.010 [-0.153,+0.216]  9.222  9.222  0.000 [-1.717,+0.000]
+    1 union ALL  0.207  0.209  0.002 [-0.067,+0.074] 17.259 17.102 -0.157 [-1.133,+0.874]
+    2  base  RB  0.526  0.531  0.005 [-0.032,+0.057] 13.373 12.827 -0.547 [-1.093,+0.000]
+    2  base  WR  0.457  0.446 -0.011 [-0.041,+0.016] 18.537 18.537  0.000 [-0.521,+1.738]
+    2  base  TE -0.284 -0.337 -0.053 [-0.236,+0.000]  4.283  4.283  0.000 [-0.900,+0.000]
+    2  base ALL  0.297  0.282 -0.015 [-0.061,+0.014] 13.037 12.832 -0.205 [-0.489,+0.580]
+    2 union  RB  0.460  0.481  0.021 [-0.024,+0.090] 13.373 12.827 -0.547 [-1.093,+0.000]
+    2 union  WR  0.457  0.446 -0.011 [-0.043,+0.016] 18.537 18.537  0.000 [-0.417,+1.738]
+    2 union  TE -0.205 -0.258 -0.053 [-0.198,+0.000]  4.283  4.283  0.000 [-0.022,+0.000]
+    2 union ALL  0.292  0.283 -0.009 [-0.055,+0.025] 13.037 12.832 -0.205 [-0.547,+0.623]
+
+biggest |fix-base| changes, backtest (dedup, all rows with actual):
+wk1: mean delta among base>8: +0.899; by pos: {'RB': 0.864, 'TE': 0.832, 'WR': 0.958}
+        player_name team position  salary  final_projection   fix     d  act
+      Travis Hunter  JAX       WR    3400              5.48  0.00 -5.48  2.1
+          Tank Dell  HOU       WR    3700              5.47  0.00 -5.47  0.0
+      Carson Steele  PHI       RB    4000              3.61  0.00 -3.61  NaN
+  Pierre Strong Jr.   GB       RB    4000              3.58  0.00 -3.58  NaN
+   Jermar Jefferson  MIN       RB    4000              3.58  0.00 -3.58  NaN
+Marvin Harrison Jr.  ARI       WR    5000              5.00  8.54  3.54  4.3
+      Johnny Wilson  PHI       WR    3000              3.48  0.00 -3.48  NaN
+        Zay Flowers  BAL       WR    6400             16.46 19.84  3.38 29.0
+    Brandon Johnson  PIT       WR    3000              3.34  0.00 -3.34  NaN
+     Connor Heyward   LV       RB    4000              3.26  0.00 -3.26  NaN
+wk2: mean delta among base>8: +0.168; by pos: {'RB': 0.171, 'TE': 0.276, 'WR': 0.139}
+       player_name team position  salary  final_projection   fix     d  act
+      Kimani Vidal  LAC       RB    4300              2.61  4.72  2.12  NaN
+      Alvin Kamara   NO       RB    4600              3.38  5.32  1.94  7.2
+    Jalen McMillan   TB       WR    4400              3.96  5.65  1.70  0.0
+       Malik Davis  DAL       RB    4000              1.64  0.00 -1.64  NaN
+     Calvin Ridley  TEN       WR    4100              1.82  3.38  1.55  5.5
+      Brock Bowers   LV       TE    6600             11.63 13.17  1.53  0.0
+TreVeyon Henderson   NE       RB    5200              7.63  9.16  1.53 13.6
+     Kyle Juszczyk   SF       RB    4000              1.51  0.00 -1.51 10.7
+    Isaac Guerendo   SF       RB    4000              1.47  0.00 -1.47  NaN
+     Jawhar Jordan  HOU       RB    4000              1.40  0.00 -1.40  0.0
+
+==================================================================================================== 
+4. WEEK 3 MAIN (live-style build, no --backtest-no-leak)
+
+floor players excluded: 245 guarded: 1
+ player_id    player_name team position  salary  depth_rank_h  excluded  guarded
+00-0039855 Jalen McMillan   TB       WR    4100           3.0     False     True
+mean delta base>8 by pos: {'DST': 0.0, 'QB': 0.011, 'RB': 0.064, 'TE': 0.175, 'WR': 0.126}
+players with |delta|>=0.5: 149
+   player_name team position  salary  final_projection   fix     d  d_rush  d_tgt
+  Brock Bowers   LV       TE    6600             10.99 13.26  2.27    0.00   1.47
+  Chig Okonkwo  WAS       TE    3600              5.48  7.37  1.89    0.00   0.72
+    Ty Johnson  BUF       RB    4000              1.54  0.00 -1.54   -0.62  -0.22
+ Isiah Pacheco  DET       RB    4000              1.43  0.00 -1.43   -0.58  -0.22
+   Nate Carter   KC       RB    4000              1.41  0.00 -1.41   -0.58  -0.20
+Isaac Guerendo   SF       RB    4000              1.33  0.00 -1.33   -0.56  -0.17
+Kendall Milton  CIN       RB    4000              1.33  0.00 -1.33   -0.65  -0.20
+ Kyle Juszczyk   SF       RB    4000              1.27  0.00 -1.27   -0.54  -0.17
+ Jawhar Jordan  HOU       RB    4000              1.26  0.00 -1.26   -0.66  -0.18
+   Sean Tucker   TB       RB    4000              1.26  0.00 -1.26   -0.72  -0.20
+   Malik Davis  DAL       RB    4000              1.24  0.00 -1.24   -0.50  -0.23
+Trevor Etienne  CAR       RB    4000              1.23  0.00 -1.23   -0.58  -0.21
+ Tyler Goodson  DAL       RB    4000              1.22  0.00 -1.22   -0.53  -0.21
+     Eric Gray  CLE       RB    4000              1.20  0.00 -1.20   -0.60  -0.25
+Jalen McMillan   TB       WR    4100              2.14  3.31  1.16    0.01   0.45

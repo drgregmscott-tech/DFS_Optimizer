@@ -1,0 +1,56 @@
+player_id,player_name,team,position,salary,depth_rank_h,excluded,guarded
+00-0041040,Antonio Williams,WAS,WR,4200,3.0,False,True
+00-0040998,Roman Hemby,LV,RB,4100,,True,False
+00-0041436,DJ Herman,MIA,RB,4000,,True,False
+00-0038930,Carlos Washington Jr.,MIA,RB,4000,,True,False
+00-0040692,Jarquez Hunter,MIA,RB,4000,,True,False
+00-0039244,Chris Collier,LV,RB,4000,4.0,True,False
+00-0037304,Connor Heyward,LV,RB,4000,,True,False
+00-0038614,Scott Matlock,LAC,RB,4000,,True,False
+00-0035125,Alec Ingold,LAC,RB,4000,,True,False
+00-0041376,Gregory Desrosiers,LAC,RB,4000,,True,False
+00-0041178,Robert Henry Jr.,WAS,RB,4000,,True,False
+00-0039325,Carson Steele,PHI,RB,4000,,True,False
+00-0036670,Jermar Jefferson,MIN,RB,4000,,True,False
+00-0041081,Max Bredeson,MIN,RB,4000,,True,False
+00-0038098,Pierre Strong Jr.,GB,RB,4000,,True,False
+00-0041139,Damon Bankston,GB,RB,4000,,True,False
+00-0041550,Brenen Thompson,LAC,WR,3300,4.0,True,False
+00-0041525,Chris Bell,MIA,WR,3200,3.0,False,True
+00-0040894,Malik Benson,LV,WR,3100,4.0,True,False
+00-0041483,Eli Stowers,PHI,TE,3100,6.0,True,False
+00-0041523,Caleb Douglas,MIA,WR,3000,2.0,False,True
+00-0041529,Kevin Coleman Jr.,MIA,WR,3000,4.0,True,False
+00-0040753,Will Sheppard,MIA,WR,3000,,True,False
+00-0036387,Jalen Reagor,MIA,WR,3000,,True,False
+00-0041005,Corey Rucker,LV,WR,3000,8.0,True,False
+00-0041070,Reggie Virgil,ARI,WR,3000,7.0,True,False
+00-0041368,Harrison Wallace III,ARI,WR,3000,,True,False
+00-0036635,Ihmir Smith-Marsette,ARI,WR,3000,,True,False
+00-0041176,Jaden Bradley,WAS,WR,3000,,True,False
+00-0039236,Johnny Wilson,PHI,WR,3000,8.0,True,False
+00-0037828,Danny Gray,PHI,WR,3000,,True,False
+00-0041342,Dillon Bell,MIN,WR,3000,,True,False
+00-0041475,Trayvon Rudolph,MIN,WR,3000,,True,False
+00-0040970,Michael Briscoe,MIN,WR,3000,,True,False
+00-0040948,J. Michael Sturdivant,GB,WR,3000,6.0,True,False
+00-0041179,Chris Hilton Jr.,GB,WR,3000,,True,False
+00-0040558,Isaiah Neyor,GB,WR,3000,,True,False
+00-0041524,Will Kacmarek,MIA,TE,2500,2.0,True,False
+00-0041579,Seydou Traore,MIA,TE,2500,3.0,True,False
+00-0041077,Justin Joly,MIA,TE,2500,4.0,True,False
+00-0037078,Cole Turner,MIA,TE,2500,5.0,True,False
+00-0040094,Tre Watson,MIA,TE,2500,,True,False
+00-0035345,Chris Myarick,LV,TE,2500,,True,False
+00-0041016,Patrick Gurd,LV,TE,2500,,True,False
+00-0041384,Evan Svoboda,LAC,TE,2500,,True,False
+00-0040331,Patrick Herbert,LAC,TE,2500,,True,False
+00-0041366,Jameson Geers,ARI,TE,2500,5.0,True,False
+00-0039550,Shawn Bowman,ARI,TE,2500,,True,False
+00-0041180,Quentin Moore,WAS,TE,2500,,True,False
+00-0031156,Tyler Ott,WAS,TE,2500,,True,False
+00-0040925,Rocco Underwood,PHI,TE,2500,,True,False
+00-0040215,Gavin Bartholomew,MIN,TE,2500,3.0,True,False
+00-0029714,Andrew DePaola,MIN,TE,2500,,True,False
+00-0040598,Mark Redman,GB,TE,2500,4.0,True,False
+00-0039936,Thomas Yassmin,GB,TE,2500,6.0,True,False

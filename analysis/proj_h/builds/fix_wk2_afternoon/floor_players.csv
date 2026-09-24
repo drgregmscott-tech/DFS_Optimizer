@@ -1,0 +1,117 @@
+player_id,player_name,team,position,salary,depth_rank_h,excluded,guarded
+00-0040177,Jordan James,SF,RB,4000,3.0,True,False
+00-0039363,Isaac Guerendo,SF,RB,4000,4.0,True,False
+00-0037509,Sincere McCormick,SF,RB,4000,,True,False
+00-0029892,Kyle Juszczyk,SF,RB,4000,,True,False
+00-0040198,Ollie Gordon II,MIA,RB,4000,3.0,True,False
+00-0040692,Jarquez Hunter,MIA,RB,4000,,True,False
+00-0038930,Carlos Washington Jr.,MIA,RB,4000,,True,False
+00-0041436,DJ Herman,MIA,RB,4000,,True,False
+00-0039165,Zach Charbonnet,SEA,RB,4000,4.0,True,False
+00-0037745,Velus Jones Jr.,SEA,RB,4000,,True,False
+00-0040649,Robbie Ouzts,SEA,RB,4000,,True,False
+00-0040067,Jacardia Wright,SEA,RB,4000,,True,False
+00-0037157,Bam Knight,ARI,RB,4000,3.0,True,False
+00-0033553,James Conner,ARI,RB,4000,4.0,True,False
+00-0039921,Trey Benson,ARI,RB,4000,5.0,True,False
+00-0038397,Evan Hull,ARI,RB,4000,,True,False
+00-0035125,Alec Ingold,LAC,RB,4000,,True,False
+00-0041376,Gregory Desrosiers,LAC,RB,4000,,True,False
+00-0038614,Scott Matlock,LAC,RB,4000,,True,False
+00-0040039,Amar Johnson,LAC,RB,4000,,True,False
+00-0039244,Chris Collier,LV,RB,4000,4.0,True,False
+00-0033854,Dare Ogunbowale,LV,RB,4000,,True,False
+00-0037304,Connor Heyward,LV,RB,4000,,True,False
+00-0040998,Roman Hemby,LV,RB,4000,,True,False
+00-0040238,LeQuint Allen Jr.,JAX,RB,4000,3.0,True,False
+00-0041217,J'Mari Taylor,JAX,RB,4000,,True,False
+00-0037085,Tyler Badie,DEN,RB,4000,4.0,True,False
+00-0039703,Cody Schrader,DEN,RB,4000,,True,False
+00-0036727,Adam Prentice,DEN,RB,4000,,True,False
+00-0033955,Jeremy McNichols,WAS,RB,4000,4.0,True,False
+00-0035567,Craig Reynolds,WAS,RB,4000,,True,False
+00-0041178,Robert Henry Jr.,WAS,RB,4000,,True,False
+00-0037120,Tyler Goodson,DAL,RB,4000,3.0,True,False
+00-0037563,Malik Davis,DAL,RB,4000,4.0,True,False
+00-0041550,Brenen Thompson,LAC,WR,3500,4.0,True,False
+00-0040184,KeAndre Lambert-Smith,LAC,WR,3300,6.0,True,False
+00-0040718,Travis Hunter,JAX,WR,3300,5.0,True,False
+00-0035406,Lil'Jordan Humphrey,DEN,WR,3300,6.0,True,False
+00-0040648,Tory Horton,SEA,WR,3200,4.0,True,False
+00-0040172,Jordan Watkins,SF,WR,3000,5.0,True,False
+00-0034775,Christian Kirk,SF,WR,3000,7.0,True,False
+00-0036261,Brandon Aiyuk,SF,WR,3000,10.0,True,False
+00-0039916,Ricky Pearsall,SF,WR,3000,9.0,True,False
+00-0041359,Wesley Grimes,SF,WR,3000,,True,False
+00-0041361,Will Pauling,SF,WR,3000,,True,False
+00-0037666,Jalen Tolbert,MIA,WR,3000,5.0,True,False
+00-0038824,Ryan Miller,MIA,WR,3000,6.0,True,False
+00-0040753,Will Sheppard,MIA,WR,3000,,True,False
+00-0036387,Jalen Reagor,MIA,WR,3000,,True,False
+00-0037156,Irvin Charles,SEA,WR,3000,6.0,True,False
+00-0038752,Jake Bobo,SEA,WR,3000,7.0,True,False
+00-0040895,Emmanuel Henderson Jr.,SEA,WR,3000,,True,False
+00-0040653,Ricky White III,SEA,WR,3000,,True,False
+00-0039329,Julian Hicks,SEA,WR,3000,,True,False
+00-0038640,Jalen Brooks,ARI,WR,3000,4.0,True,False
+00-0041070,Reggie Virgil,ARI,WR,3000,7.0,True,False
+00-0041368,Harrison Wallace III,ARI,WR,3000,,True,False
+00-0035589,Gary Jennings,LAC,WR,3000,,True,False
+00-0040311,Theo Wease Jr.,LAC,WR,3000,,True,False
+00-0040581,Dont'e Thornton Jr.,LV,WR,3000,6.0,True,False
+00-0038590,Justin Shorter,LV,WR,3000,7.0,True,False
+00-0041005,Corey Rucker,LV,WR,3000,8.0,True,False
+00-0038647,Ronnie Bell,LV,WR,3000,,True,False
+00-0037487,Deven Thompkins,LV,WR,3000,,True,False
+00-0041106,CJ Williams,JAX,WR,3000,6.0,True,False
+00-0041220,Michael Wortham,JAX,WR,3000,,True,False
+00-0041216,Trebor Pena,JAX,WR,3000,,True,False
+00-0036841,Austin Trammell,JAX,WR,3000,,True,False
+00-0036497,Tim Jones,JAX,WR,3000,,True,False
+00-0041292,Kolbe Katsis,DEN,WR,3000,,True,False
+00-0041293,Dane Key,DEN,WR,3000,,True,False
+00-0036959,Michael Bandy,DEN,WR,3000,,True,False
+00-0037742,Treylon Burks,WAS,WR,3000,5.0,True,False
+00-0039355,Luke McCaffrey,WAS,WR,3000,7.0,True,False
+00-0041176,Jaden Bradley,WAS,WR,3000,,True,False
+00-0036415,Van Jefferson,WAS,WR,3000,,True,False
+00-0034054,River Cracraft,WAS,WR,3000,,True,False
+00-0040930,Camden Brown,DAL,WR,3000,6.0,True,False
+00-0040934,Jordan Hudson,DAL,WR,3000,,True,False
+00-0040900,Anthony Smith,DAL,WR,3000,,True,False
+00-0034272,Marquez Valdes-Scantling,LAC,WR,3000,,True,False
+00-0039912,Ben Sinnott,WAS,TE,2900,2.0,True,False
+00-0037112,Jake Tonges,SF,TE,2600,4.0,True,False
+00-0038643,Brayden Willis,SF,TE,2500,3.0,True,False
+00-0041357,Khalil Dinkins,SF,TE,2500,,True,False
+00-0041579,Seydou Traore,MIA,TE,2500,3.0,True,False
+00-0041077,Justin Joly,MIA,TE,2500,4.0,True,False
+00-0037078,Cole Turner,MIA,TE,2500,5.0,True,False
+00-0040094,Tre Watson,MIA,TE,2500,,True,False
+00-0040739,Elijah Arroyo,SEA,TE,2500,3.0,True,False
+00-0040058,Nick Kallerup,SEA,TE,2500,4.0,True,False
+00-0039041,Elijah Higgins,ARI,TE,2500,2.0,True,False
+00-0039737,Tip Reiman,ARI,TE,2500,4.0,True,False
+00-0041366,Jameson Geers,ARI,TE,2500,5.0,True,False
+00-0037277,Teagan Quitoriano,ARI,TE,2500,,True,False
+00-0039550,Shawn Bowman,ARI,TE,2500,,True,False
+00-0040331,Patrick Herbert,LAC,TE,2500,,True,False
+00-0041384,Evan Svoboda,LAC,TE,2500,,True,False
+00-0034365,Ian Thomas,LV,TE,2500,3.0,True,False
+00-0040488,Carter Runyon,LV,TE,2500,4.0,True,False
+00-0035345,Chris Myarick,LV,TE,2500,,True,False
+00-0041016,Patrick Gurd,LV,TE,2500,,True,False
+00-0041084,Tanner Koziol,JAX,TE,2500,4.0,True,False
+00-0039489,Hayden Rucci,JAX,TE,2500,2.0,True,False
+00-0041133,Dallen Bentley,DEN,TE,2500,4.0,True,False
+00-0040240,Caleb Lohner,DEN,TE,2500,5.0,True,False
+00-0037539,Lucas Krull,DEN,TE,2500,,True,False
+00-0036943,Mitchell Fraboni,DEN,TE,2500,,True,False
+00-0031156,Tyler Ott,WAS,TE,2500,,True,False
+00-0039305,Jack Westover,WAS,TE,2500,,True,False
+00-0038735,Princeton Fant,DAL,TE,2500,4.0,True,False
+00-0040938,DJ Rogers,DAL,TE,2500,5.0,True,False
+00-0040939,Michael Trigg,DAL,TE,2500,,True,False
+00-0037282,James Mitchell,DAL,TE,2500,,True,False
+00-0037412,Cal Adomitis,MIA,TE,2500,,True,False
+00-0036741,Jack Stoll,SF,TE,2500,,True,False

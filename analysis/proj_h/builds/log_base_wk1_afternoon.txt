@@ -1,0 +1,33 @@
+NOTE: schedule has no week-23 games for slate teams -- falling back to vegas over_under pairing (decision #9, Madden Sim path).
+  Inferred 4 game(s) from salary file: [('ARI', 'LAC'), ('GB', 'MIN'), ('LV', 'MIA'), ('PHI', 'WAS')]
+NOTE: weather_2025_wk23.csv not found -- weather adjustment skipped (all 1.0).
+[H] copied outputs to C:\Users\gmsco\Desktop\DFS_Optimizer\analysis\proj_h\builds\base_wk1_afternoon
+Volume prior ON -- volume prior fit [2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021] (7 share curves, role slope 0.4529); mid-season floor 0.0, k 4.0, role-change on.
+Cold-start efficiency: filled 304 NaN rate cell(s) with position means (decision #17).
+Volume prior applied: 6 role-change flag(s), 75 player(s) at 0-1 games of history (mean price weight 0.372).
+Confirmed-starter override applied: 2 player(s) restored from 0.0 participation to a confirmed #1 depth-chart role, 1 backup(s) boosted for a real in-week OUT starter.
+NOTE share reconciliation: 2/24 material team/component pair(s) needed a rescale beyond 40%:
+    ARI rush: needed 2.21x rescale (pool sum 10.3 vs team-implied target 22.9)
+    WAS recv: needed 1.41x rescale (pool sum 20.4 vs team-implied target 28.8)
+Share reconciliation: 24 team/component pair(s) rescaled; largest ARI/rush 2.21x, MIA/pass 1.56x, WAS/recv 1.41x.
+Props anchor: no snapshot at props_dk_classic_wk1_afternoon_13Sep2026.csv -- engine only.
+Projection stack: adjusted 192 player(s); mean delta +0.22 pts (range -5.6 to +5.5).
+0 defense(s) had no game this week (bye) -- final_projection forced to 0.0.
+DST model: distributional (Session 10.4). mean projection 7.46, sigma 6.16 (range 5.83-6.50).
+  Sigma recalibration applied to 200 player(s). 0 clipped to the fitted sigma range (decision #3).
+Public ownership: matched 42 players from FFC table.
+1 player(s) received a name-recognition bonus from name_recognition_flags.csv.
+estimated_ownership_pct summed per 'position_group' group (should equal that group's roster-slot budget):
+  DST: 100.0% (budget: 100.0%)
+  QB: 100.0% (budget: 100.0%)
+  RB: 249.0% (budget: 249.0%)
+  TE: 117.0% (budget: 117.0%)
+  WR: 334.0% (budget: 334.0%)
+Ownership: using public-ownership (FFC) variant of the layered model.
+68 player(s) had no usage history before week 23 (0.0 projection, decision #6).
+Wrote 209 players to C:\Users\gmsco\Desktop\DFS_Optimizer\output\final_projections_dk_dk_classic_wk1_afternoon_13Sep2026.csv
+  Sigma recalibration (10.4b): ON
+  Nulls in any legacy column: 0 (should be 0)
+  Negative final_projection: 0 (should be 0)
+  Players with a positive projection: 200
+  Positive projection but zero sigma: 0 (should be 0 -- a real projection with no variance would break Session 10.5's objective)
