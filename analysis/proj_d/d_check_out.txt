@@ -1,0 +1,10 @@
+cut>8 alo: mean pb10 change -0.013 95%CI [-0.104,+0.066] (neg=better); per-week [-0.0, -0.025]
+cut>8 nk: mean pb10 change -0.132 95%CI [-0.226,-0.047] (neg=better); per-week [-0.113, -0.148]
+cut>3 alo: mean pb10 change -0.108 95%CI [-0.163,-0.055] (neg=better); per-week [-0.127, -0.09]
+cut>3 nk: mean pb10 change -0.216 95%CI [-0.264,-0.171] (neg=better); per-week [-0.267, -0.17]
+dk_classic_wk2_main_20Sep2026 k_lo=1.0: players with p10<1.0 = 416/624; among final>8: 4/129; salary>=4k: 161
+dk_classic_wk2_main_20Sep2026 k_lo=1.25: players with p10<1.0 = 513/624; among final>8: 38/129; salary>=4k: 210
+dk_classic_wk2_main_20Sep2026 k_lo=1.44: players with p10<1.0 = 575/624; among final>8: 85/129; salary>=4k: 261
+dk_classic_wk1_main_13Sep2026 k_lo=1.0: players with p10<1.0 = 412/642; among final>8: 6/113; salary>=4k: 136
+dk_classic_wk1_main_13Sep2026 k_lo=1.25: players with p10<1.0 = 533/642; among final>8: 44/113; salary>=4k: 201
+dk_classic_wk1_main_13Sep2026 k_lo=1.44: players with p10<1.0 = 599/642; among final>8: 84/113; salary>=4k: 253
