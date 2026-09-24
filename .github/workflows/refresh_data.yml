@@ -462,6 +462,18 @@ jobs:
         continue-on-error: true
         run: python3 scripts/ingest_public_ownership.py --site dk --slate-id ${{ matrix.slate_id }}
 
+      # LOG outside projections (Daily Fantasy Fuel; WinWithOdds for DK) for this
+      # slate. DATA ONLY -- nothing in the build reads them; they exist so a
+      # blend/ensemble test can be back-tested once results are logged. Both
+      # sites serve only the CURRENT week, so every un-logged week is lost.
+      # Overwritten each full run, so the last pull before lock is what's kept.
+      # Fail-safe: never blocks the build (scripts/ingest_public_projections.py).
+      - name: Log public projections
+        id: public_proj
+        if: needs.prepare.outputs.mode == 'full'
+        continue-on-error: true
+        run: python3 scripts/ingest_public_projections.py --site ${{ matrix.site }} --slate-id ${{ matrix.slate_id }}
+
       - name: Rebuild projections
         id: build_proj
         continue-on-error: true
@@ -567,7 +579,7 @@ jobs:
           # live: this exact failure hit all six matrix legs in Session
           # 16.x's real six-slate test run before this fix was added.
           git config core.autocrlf false
-          git add output/ logs/automation_run_log.csv data/ownership_public/
+          git add output/ logs/automation_run_log.csv data/ownership_public/ data/projections_public/
           if git diff --cached --quiet; then
             echo "No changes to commit for ${{ matrix.slate_id }}."
             exit 0
