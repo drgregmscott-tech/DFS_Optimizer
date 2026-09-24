@@ -332,6 +332,7 @@ def build_statline_projections(site: str, season: int, week: int, slate_id: str,
                                vegas_slate_id: str = None,
                                use_weather: bool = True,
                                ignore_played_week: bool = False,
+                               neutral_skill_matchup: bool = True,
                                props_weight: float = 0.0,
                                props_file: str = None,
                                use_stack: bool = False,
@@ -487,6 +488,15 @@ def build_statline_projections(site: str, season: int, week: int, slate_id: str,
     df["matchup_factor"] = df.apply(
         lambda r: matchup_lookup.get((r["opponent"], r["position"])), axis=1)
     df["matchup_factor"] = df["matchup_factor"].fillna(1.0)
+    if neutral_skill_matchup:
+        # 2026-09-24 (Step B1, analysis/proj_b1/b1_report.md): on the guarded,
+        # leak-free wk1/wk2 rebuilds the matchup factor HURT skill positions
+        # (Pearson .438 -> .484, MAE 6.56 -> 6.30 with it off; residual slope
+        # -0.8, i.e. it points the wrong way). Neutralised for QB/RB/WR/TE
+        # until a version that doesn't overlap the vegas factor is validated
+        # (revisit ~Week 6). DST's factor is display-only and left as-is.
+        # Revert with --restore-matchup.
+        df.loc[df["position"].isin(["QB", "RB", "WR", "TE"]), "matchup_factor"] = 1.0
 
     merge_cols = ["team", "vegas_factor", "implied_total"]
     if "over_under" in vegas_factors.columns:
@@ -1021,6 +1031,9 @@ if __name__ == "__main__":
     parser.add_argument("--no-weather", action="store_true",
                         help="Skip the game-day weather adjustment (scripts/weather.py); "
                              "every player gets neutral 1.0 factors.")
+    parser.add_argument("--restore-matchup", action="store_true",
+                        help="Apply the opponent matchup factor to QB/RB/WR/TE again (default: "
+                             "neutralised to 1.0 since 2026-09-24, see analysis/proj_b1).")
     parser.add_argument("--backtest-no-leak", action="store_true",
                         help="Backtest rebuilds of an already-played week only: ignore that "
                              "week's real results (played-week team correction and the "
@@ -1046,6 +1059,7 @@ if __name__ == "__main__":
         vegas_slate_id=args.vegas_slate_id,
         use_weather=not args.no_weather,
         ignore_played_week=args.backtest_no_leak,
+        neutral_skill_matchup=not args.restore_matchup,
         props_weight=args.props_weight,
         props_file=args.props_file,
         use_stack=not args.no_stack)
