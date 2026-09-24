@@ -1,0 +1,16 @@
+
+==== qbrush145 minus baseline (pop=played, rows in both with proj>0 in ref) ====
+skill                      n= 40720 wks=129 bias -0.480->-0.432 dMAE=+0.0055 [+0.0036,+0.0076] dRMSE=+0.0023 dPearson=-0.0001 dSpW=+0.0006 dXposSp=-0.0005 [-0.0007,-0.0003] dTopN=+0.010
+QB                         n=  4526 wks=129 bias -0.214->+0.219 dMAE=+0.0489 [+0.0309,+0.0671] dRMSE=+0.0182 dPearson=-0.0013 dSpW=+0.0025 dXposSp=+0.0025 [+0.0004,+0.0045] dTopN=+0.053
+RB                         n= 11599 wks=129 bias -0.954->-0.954 dMAE=+0.0005 [-0.0008,+0.0018] dRMSE=+0.0003 dPearson=-0.0001 dSpW=-0.0001 dXposSp=-0.0001 [-0.0005,+0.0002] dTopN=+0.007
+WR                         n= 16407 wks=129 bias -0.307->-0.307 dMAE=-0.0001 [-0.0011,+0.0009] dRMSE=-0.0003 dPearson=+0.0001 dSpW=+0.0000 dXposSp=+0.0000 [-0.0002,+0.0003] dTopN=-0.005
+TE                         n=  8188 wks=129 bias -0.306->-0.306 dMAE=-0.0001 [-0.0011,+0.0008] dRMSE=-0.0004 dPearson=+0.0001 dSpW=+0.0000 dXposSp=+0.0000 [-0.0006,+0.0006] dTopN=-0.012
+DST                        n=  3860 wks=129 bias +0.301->+0.301 dMAE=+0.0000 [+0.0000,+0.0000] dRMSE=+0.0000 dPearson=+0.0000 dSpW=+0.0000 dXposSp=+nan [+nan,+nan] dTopN=+0.000
+  skill 2014               n=  5051 wks= 16 bias -0.378->-0.334 dMAE=+0.0135 [+0.0096,+0.0174] dRMSE=+0.0186 dPearson=-0.0013 dSpW=+0.0000 dXposSp=-0.0007 [-0.0011,-0.0002] dTopN=+0.004
+  skill 2015               n=  5071 wks= 16 bias -1.014->-0.967 dMAE=+0.0015 [-0.0041,+0.0069] dRMSE=-0.0024 dPearson=-0.0001 dSpW=+0.0009 dXposSp=-0.0009 [-0.0014,-0.0004] dTopN=+0.002
+  skill 2016               n=  5037 wks= 16 bias -0.669->-0.622 dMAE=+0.0031 [-0.0019,+0.0080] dRMSE=+0.0010 dPearson=+0.0001 dSpW=+0.0012 dXposSp=-0.0002 [-0.0008,+0.0003] dTopN=-0.022
+  skill 2017               n=  5048 wks= 16 bias -0.188->-0.145 dMAE=+0.0068 [+0.0013,+0.0133] dRMSE=+0.0037 dPearson=+0.0002 dSpW=+0.0018 dXposSp=-0.0000 [-0.0005,+0.0005] dTopN=+0.004
+  skill 2018               n=  4970 wks= 16 bias -0.799->-0.749 dMAE=+0.0028 [-0.0029,+0.0089] dRMSE=-0.0067 dPearson=+0.0003 dSpW=+0.0015 dXposSp=-0.0006 [-0.0011,-0.0001] dTopN=-0.003
+  skill 2019               n=  4999 wks= 16 bias -0.394->-0.348 dMAE=-0.0012 [-0.0061,+0.0037] dRMSE=-0.0070 dPearson=+0.0008 dSpW=+0.0019 dXposSp=+0.0001 [-0.0002,+0.0005] dTopN=+0.111
+  skill 2020               n=  5067 wks= 16 bias -0.445->-0.389 dMAE=+0.0065 [+0.0006,+0.0129] dRMSE=-0.0000 dPearson=-0.0003 dSpW=-0.0014 dXposSp=-0.0011 [-0.0017,-0.0004] dTopN=+0.009
+  skill 2021               n=  5477 wks= 17 bias +0.001->+0.051 dMAE=+0.0106 [+0.0061,+0.0158] dRMSE=+0.0110 dPearson=-0.0006 dSpW=-0.0009 dXposSp=-0.0005 [-0.0011,-0.0001] dTopN=-0.020

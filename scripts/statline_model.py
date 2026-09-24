@@ -319,6 +319,9 @@ RECONCILE_MIN_VOLUME = 10.0
 # own values would otherwise produce -- retuning targets for Session 11.1
 # once real logged ownership/actuals exist to fit them against.
 SATURATED_SHARE_THRESHOLD = 0.90
+# apply_volume_prior(floor_share_fix=True): depth rank at/above which a
+# floor-priced zero-history player is never excluded.
+FLOOR_SHARE_GUARD = {"RB": 1, "WR": 3, "TE": 1}
 SATURATED_SALARY_POWER = 5
 
 # Week 2 post-mortem finding (2026): the cold-start price prior is the right
@@ -989,8 +992,13 @@ def apply_volume_prior(pool: pd.DataFrame, artifact: dict,
                        weight_floor: float = None, k: float = None,
                        role_change: bool = True,
                        absent_discount: bool = False,
-                       depth_chart: pd.DataFrame = None) -> pd.DataFrame:
+                       depth_chart: pd.DataFrame = None,
+                       floor_share_fix: bool = False,
+                       floor_share_max_salary: float = 4200) -> pd.DataFrame:
     """Decisions #11, #12, #15.
+
+    `floor_share_fix` (default False = unchanged): see the inline block of
+    the same name below.
 
     `depth_chart` (2026-09-23 projection review fix): optional, same frame
     load_depth_chart() returns ([player_id, team, position, depth_rank]).
@@ -1127,6 +1135,28 @@ def apply_volume_prior(pool: pd.DataFrame, artifact: dict,
             # run -- see the end of this function for why pass_mu ALSO
             # needs this, not just pass_price_share.
             df["_qb_backup_suppress"] = suppress
+
+    # 2026-09-24 floor-share fix (analysis/proj_h, re-tested on the
+    # multi-season backtest in analysis/backtest_multi/REPORT_followups.md).
+    # OFF by default. Zero-history (0 games in the lookback) RB/WR/TE priced
+    # at or below `floor_share_max_salary` get price_share = 0 BEFORE the
+    # Session 14.0b normalisation, so they add no mu to reconciliation's
+    # raw_sum and the real contributors are rescaled up. A player the depth
+    # chart ranks at or above FLOOR_SHARE_GUARD[pos] is never excluded.
+    if floor_share_fix:
+        gp = pd.to_numeric(df.get("games_played"), errors="coerce").fillna(0)
+        sal = pd.to_numeric(df["salary"], errors="coerce")
+        pos_s = df["position"].astype(str)
+        floor = pos_s.isin(list(FLOOR_SHARE_GUARD)) & gp.eq(0) & (sal <= floor_share_max_salary)
+        if depth_chart is not None and not depth_chart.empty:
+            rank = df["player_id"].astype(str).map(
+                depth_chart.assign(player_id=depth_chart["player_id"].astype(str))
+                .groupby("player_id")["depth_rank"].min())
+            floor &= ~(rank.notna() & (rank <= pos_s.map(FLOOR_SHARE_GUARD)))
+        for comp in comps:
+            df.loc[floor, f"{comp}_price_share"] = 0.0
+        print(f"Floor-share fix: zeroed price share for {int(floor.sum())} zero-history "
+              f"floor-priced RB/WR/TE.")
 
     # Decision #20 (Session 15.3): the Session 14.0b fix just below handles
     # a team's price_share SUM exceeding 1.0 -- but it assumes the

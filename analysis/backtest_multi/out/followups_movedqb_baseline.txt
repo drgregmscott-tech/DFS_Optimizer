@@ -1,0 +1,17 @@
+
+==== arm=baseline: QBs, starter = actual pass attempts >= 20 (outcome-conditioned proxy) ====
+  moved starters                   n=  31 pts bias -3.95 [-6.27,-1.67] MAE 6.28 | pass att proj 23.0 act 30.7 bias -7.70; share proj<20 att 0.452
+  non-moved starters               n=3665 pts bias -1.33 [-1.66,-0.98] MAE 6.42 | pass att proj 33.2 act 34.7 bias -1.55; share proj<20 att 0.026
+  moved, early (wk<=4) starters    n=   6 pts bias -4.46 [+nan,+nan] MAE 6.43 | pass att proj 18.7 act 29.7 bias -11.00; share proj<20 att 0.667
+  lowest projected-volume moved starters:
+ season  week    player_name team prev_team  proj_pass_att  attempts  final_projection  actual_points
+   2021    16   Josh Johnson  BAL       NYJ            5.8        40               4.9           23.2
+   2021     5   Mike Glennon  NYG       JAX            5.9        25               4.9           10.0
+   2021     8 Trevor Siemian   NO       NYJ            6.2        29               5.1           10.6
+   2020     2   Jeff Driskel  DEN       DET            6.7        34               5.3           19.7
+   2019     9    Brian Hoyer  IND        NE            7.4        26               6.1           17.3
+   2015    14  Jimmy Clausen  BAL       CHI            7.6        40               3.7            9.8
+   2018     7   Cody Kessler  JAX       CLE            8.2        30               7.1           10.0
+   2020    15 Marcus Mariota   LV       TEN            8.3        28               6.7           26.8
+   2020     4    Brian Hoyer   NE       IND           10.3        24               6.2            4.0
+   2018    13   Mark Sanchez  WAS       DAL           10.5        21               5.6            3.8

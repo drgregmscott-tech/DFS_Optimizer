@@ -1,0 +1,30 @@
+Fitting on 38,456 REG player-weeks, seasons 2014-2021.
+   QB pass  r=  15.76  yd/opp= 7.178  td/opp=0.0450  cv=0.263  corr target=0.458 -> latent_sd=0.308
+   QB rush  r=   7.88  yd/opp= 4.225  td/opp=0.0427  cv=0.922  corr target=0.199 -> latent_sd=0.561
+   RB rush  r=   6.46  yd/opp= 4.229  td/opp=0.0306  cv=0.542  corr target=0.380 -> latent_sd=0.820
+   RB recv  r=   5.98  yd/opp= 5.957  td/opp=0.0296  cv=0.757  corr target=0.276 -> latent_sd=1.001
+   WR recv  r=  12.88  yd/opp= 7.905  td/opp=0.0481  cv=0.694  corr target=0.377 -> latent_sd=0.891
+   WR rush  r=   3.57  yd/opp= 5.983  td/opp=0.0345  cv=0.930  corr target=0.417 -> latent_sd=2.125
+   TE recv  r=  13.34  yd/opp= 7.328  td/opp=0.0561  cv=0.718  corr target=0.291 -> latent_sd=0.661
+
+Team-shock calibration (Session 15.2b/15.2c):
+  team_shock pass  residual_sd=  8.04  pass_through_slope=0.7787 (t=26.77, n=5792)
+    conditional r   QB pass  ->   47.98 (n_player_seasons=248)
+  team_shock rush  residual_sd=  7.37  pass_through_slope=0.7407 (t=47.51, n=19348)
+    conditional r   QB rush  ->   13.27 (n_player_seasons=252)
+    conditional r   RB rush  ->   10.16 (n_player_seasons=640)
+  team_shock recv  residual_sd=  7.88  pass_through_slope=0.7555 (t=56.45, n=38769)
+    conditional r   RB recv  ->    8.76 (n_player_seasons=576)
+    conditional r   WR recv  ->   21.11 (n_player_seasons=1020)
+    conditional r   TE recv  ->   24.37 (n_player_seasons=529)
+
+Applying Session 15.2c conditional-r decomposition:
+   QB pass  r_independent=  15.76 -> r=  47.98
+   QB rush  r_independent=   7.88 -> r=  13.27
+   RB rush  r_independent=   6.46 -> r=  10.16
+   RB recv  r_independent=   5.98 -> r=   8.76
+   WR recv  r_independent=  12.88 -> r=  21.11
+   TE recv  r_independent=  13.34 -> r=  24.37
+
+Wrote variance_ex2015.json (schema_version 1).
+Site-agnostic -- both DK and FD read this same file (decision #1).

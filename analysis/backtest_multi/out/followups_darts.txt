@@ -1,0 +1,22 @@
+
+-- rosterable final>=5.0: n=24486  current flags (p10<1.0) 8174 (33.382%); matched-count p10_cal threshold T=1.96 -> 8174 flags
+   flagA: n=8174 bust(actual<0.5*proj) 0.255 [0.244,0.266] mean actual/proj 1.160 mean proj 8.26; unflagged bust 0.238
+   flagB: n=8174 bust(actual<0.5*proj) 0.313 [0.302,0.325] mean actual/proj 1.113 mean proj 6.81; unflagged bust 0.209
+   AUC(statline_p10/proj -> bust) = 0.4994
+   AUC(p10c/proj -> bust) = 0.5686
+
+-- rosterable final>=8.0: n=17042  current flags (p10<1.0) 3388 (19.880%); matched-count p10_cal threshold T=2.92 -> 3388 flags
+   flagA: n=3388 bust(actual<0.5*proj) 0.225 [0.209,0.240] mean actual/proj 1.103 mean proj 11.01; unflagged bust 0.210
+   flagB: n=3388 bust(actual<0.5*proj) 0.251 [0.236,0.266] mean actual/proj 1.094 mean proj 9.47; unflagged bust 0.203
+   AUC(statline_p10/proj -> bust) = 0.5121
+   AUC(p10c/proj -> bust) = 0.5173
+
+-- 2026 DK classic pools (output/, read-only) --
+  wk1_afternoon_13Sep2026.csv | final>=0: n=168 cur=135 newAt1.0=147 T_match=0.00 | final>=5: n=39 cur=7 newAt1.0=18 T_match=0.00 | final>=8: n=21 cur=0 newAt1.0=4 T_match=nan
+  wk1_early_13Sep2026.csv | final>=0: n=315 cur=236 newAt1.0=246 T_match=0.11 | final>=5: n=89 cur=11 newAt1.0=20 T_match=0.10 | final>=8: n=58 cur=1 newAt1.0=3 T_match=0.00
+  wk1_main_13Sep2026.csv | final>=0: n=583 cur=480 newAt1.0=498 T_match=0.19 | final>=5: n=125 cur=24 newAt1.0=40 T_match=0.18 | final>=8: n=74 cur=0 newAt1.0=7 T_match=nan
+  wk2_afternoon_20Sep2026.csv | final>=0: n=203 cur=168 newAt1.0=177 T_match=0.68 | final>=5: n=51 cur=17 newAt1.0=25 T_match=0.79 | final>=8: n=24 cur=1 newAt1.0=3 T_match=0.00
+  wk2_early_20Sep2026.csv | final>=0: n=325 cur=269 newAt1.0=283 T_match=0.42 | final>=5: n=76 cur=20 newAt1.0=34 T_match=0.42 | final>=8: n=35 cur=0 newAt1.0=3 T_match=nan
+  wk2_main_20Sep2026.csv | final>=0: n=528 cur=439 newAt1.0=464 T_match=0.45 | final>=5: n=127 cur=38 newAt1.0=63 T_match=0.45 | final>=8: n=56 cur=1 newAt1.0=6 T_match=0.00
+  wk3_early_27Sep2026.csv | final>=0: n=387 cur=232 newAt1.0=283 T_match=0.00 | final>=5: n=121 cur=15 newAt1.0=17 T_match=0.92 | final>=8: n=84 cur=7 newAt1.0=1 T_match=2.24
+  wk3_main_27Sep2026.csv | final>=0: n=560 cur=338 newAt1.0=411 T_match=0.00 | final>=5: n=172 cur=20 newAt1.0=23 T_match=0.92 | final>=8: n=124 cur=8 newAt1.0=1 T_match=2.26

@@ -1,0 +1,166 @@
+
+######## pop=played arm=baseline skill n=40720 ########
+baseline: n=40720 weeks=129 bias=-0.4804 MAE=4.7901 RMSE=6.6823 pearson=0.6418 spearman_wxp=0.6066 xpos_spearman=0.6705 topN=15.6796
+bias by position x proj bin:
+               n                          bias                   
+position      QB      RB      TE      WR    QB    RB     TE    WR
+bin                                                              
+(0, 3]      87.0  3724.0  2138.0  2560.0  0.07 -1.23  -0.45 -0.40
+(3, 6]     222.0  2400.0  3229.0  4754.0  1.77 -1.22  -0.24 -0.30
+(6, 10]    524.0  2306.0  1781.0  3859.0  2.46 -1.48  -0.59 -0.75
+(10, 15]  1300.0  1878.0   827.0  3303.0 -1.87 -0.55   0.23 -0.31
+(15, 20]  1387.0   848.0   211.0  1555.0 -1.68  0.57   0.56  0.61
+(20, 60]  1006.0   443.0     2.0   376.0  2.09  0.93 -12.26  1.08
+
+-- method=add --
+fit14-19/test20-21 params QB:(+0.20,1.000), RB:(+1.21,1.000), TE:(+0.34,1.000), WR:(+0.33,1.000)
+  fit14-19/test20-21 skill n= 10544 wks= 33 bias -0.214->+0.347 dMAE=+0.1414 [+0.1289,+0.1546] dRMSE=+0.0194 dPearson=-0.0019 dSpW=+0.0000 dXposSp=-0.0029 [-0.0040,-0.0017] dTopN=+0.000
+  fit14-19/test20-21 QB    n=  1196 wks= 33 bias -0.253->-0.054 dMAE=+0.0184 [+0.0068,+0.0305] dRMSE=-0.0039 dPearson=+0.0000 dSpW=+0.0000 dXposSp=+0.0000 [+0.0000,+0.0000] dTopN=+0.000
+  fit14-19/test20-21 RB    n=  2894 wks= 33 bias -0.173->+1.041 dMAE=+0.3548 [+0.3179,+0.3913] dRMSE=+0.0781 dPearson=+0.0000 dSpW=+0.0000 dXposSp=+0.0000 [+0.0000,+0.0000] dTopN=+0.000
+  fit14-19/test20-21 WR    n=  4366 wks= 33 bias -0.231->+0.104 dMAE=+0.0699 [+0.0592,+0.0810] dRMSE=-0.0031 dPearson=+0.0000 dSpW=+0.0000 dXposSp=+0.0000 [+0.0000,+0.0000] dTopN=+0.000
+  fit14-19/test20-21 TE    n=  2088 wks= 33 bias -0.212->+0.126 dMAE=+0.0658 [+0.0526,+0.0783] dRMSE=-0.0028 dPearson=+0.0000 dSpW=+0.0000 dXposSp=+0.0000 [+0.0000,+0.0000] dTopN=+0.000
+  LOSO pooled skill        n= 40720 wks=129 bias -0.480->+0.000 dMAE=+0.0845 [+0.0761,+0.0928] dRMSE=-0.0187 dPearson=-0.0001 dSpW=+0.0000 dXposSp=+0.0019 [+0.0012,+0.0025] dTopN=+0.000
+  LOSO pooled QB           n=  4526 wks=129 bias -0.214->+0.000 dMAE=+0.0261 [+0.0170,+0.0355] dRMSE=+0.0135 dPearson=-0.0021 dSpW=+0.0000 dXposSp=+0.0000 [+0.0000,+0.0000] dTopN=+0.000
+  LOSO pooled RB           n= 11599 wks=129 bias -0.954->-0.000 dMAE=+0.1473 [+0.1234,+0.1720] dRMSE=-0.0622 dPearson=-0.0007 dSpW=+0.0000 dXposSp=+0.0000 [+0.0000,+0.0000] dTopN=+0.000
+  LOSO pooled WR           n= 16407 wks=129 bias -0.307->+0.001 dMAE=+0.0651 [+0.0590,+0.0714] dRMSE=-0.0042 dPearson=-0.0004 dSpW=+0.0000 dXposSp=+0.0000 [+0.0000,+0.0000] dTopN=+0.000
+  LOSO pooled TE           n=  8188 wks=129 bias -0.306->+0.001 dMAE=+0.0668 [+0.0595,+0.0738] dRMSE=-0.0068 dPearson=-0.0004 dSpW=+0.0000 dXposSp=+0.0000 [+0.0000,+0.0000] dTopN=+0.000
+  all-seasons params QB:(+0.214,1.0000), RB:(+0.954,1.0000), TE:(+0.306,1.0000), WR:(+0.307,1.0000)
+
+-- method=mult --
+fit14-19/test20-21 params QB:(+0.00,1.013), RB:(+0.00,1.180), TE:(+0.00,1.062), WR:(+0.00,1.042)
+  fit14-19/test20-21 skill n= 10544 wks= 33 bias -0.214->+0.411 dMAE=+0.1438 [+0.1240,+0.1645] dRMSE=+0.0666 dPearson=-0.0044 dSpW=+0.0000 dXposSp=-0.0019 [-0.0029,-0.0008] dTopN=+0.000
+  fit14-19/test20-21 QB    n=  1196 wks= 33 bias -0.253->-0.055 dMAE=+0.0122 [-0.0005,+0.0254] dRMSE=-0.0009 dPearson=-0.0000 dSpW=+0.0000 dXposSp=+0.0000 [+0.0000,+0.0000] dTopN=+0.000
+  fit14-19/test20-21 RB    n=  2894 wks= 33 bias -0.173->+1.265 dMAE=+0.3851 [+0.3204,+0.4477] dRMSE=+0.2163 dPearson=-0.0000 dSpW=+0.0000 dXposSp=+0.0000 [+0.0000,+0.0000] dTopN=+0.000
+  fit14-19/test20-21 WR    n=  4366 wks= 33 bias -0.231->+0.103 dMAE=+0.0574 [+0.0454,+0.0700] dRMSE=+0.0094 dPearson=+0.0000 dSpW=+0.0000 dXposSp=+0.0000 [+0.0000,+0.0000] dTopN=+0.000
+  fit14-19/test20-21 TE    n=  2088 wks= 33 bias -0.212->+0.140 dMAE=+0.0653 [+0.0475,+0.0827] dRMSE=+0.0141 dPearson=+0.0000 dSpW=+0.0000 dXposSp=+0.0000 [+0.0000,+0.0000] dTopN=+0.000
+  LOSO pooled skill        n= 40720 wks=129 bias -0.480->+0.004 dMAE=+0.0852 [+0.0758,+0.0950] dRMSE=+0.0237 dPearson=-0.0020 dSpW=+0.0000 dXposSp=+0.0008 [+0.0003,+0.0012] dTopN=+0.000
+  LOSO pooled QB           n=  4526 wks=129 bias -0.214->+0.006 dMAE=+0.0271 [+0.0164,+0.0390] dRMSE=+0.0235 dPearson=-0.0028 dSpW=+0.0000 dXposSp=+0.0000 [+0.0000,+0.0000] dTopN=+0.000
+  LOSO pooled RB           n= 11599 wks=129 bias -0.954->+0.009 dMAE=+0.1666 [+0.1392,+0.1953] dRMSE=+0.0577 dPearson=-0.0006 dSpW=+0.0000 dXposSp=+0.0000 [+0.0000,+0.0000] dTopN=+0.000
+  LOSO pooled WR           n= 16407 wks=129 bias -0.307->+0.001 dMAE=+0.0554 [+0.0489,+0.0621] dRMSE=+0.0080 dPearson=-0.0005 dSpW=+0.0000 dXposSp=+0.0000 [+0.0000,+0.0000] dTopN=+0.000
+  LOSO pooled TE           n=  8188 wks=129 bias -0.306->+0.001 dMAE=+0.0618 [+0.0530,+0.0703] dRMSE=+0.0049 dPearson=-0.0005 dSpW=+0.0000 dXposSp=+0.0000 [+0.0000,+0.0000] dTopN=+0.000
+  all-seasons params QB:(+0.000,1.0138), RB:(+0.000,1.1354), TE:(+0.000,1.0554), WR:(+0.000,1.0384)
+
+-- method=affine --
+fit14-19/test20-21 params QB:(+1.39,0.923), RB:(+1.94,0.892), TE:(+0.57,0.956), WR:(+0.81,0.941)
+  fit14-19/test20-21 skill n= 10544 wks= 33 bias -0.214->+0.310 dMAE=+0.1659 [+0.1519,+0.1798] dRMSE=+0.0131 dPearson=-0.0015 dSpW=+0.0000 dXposSp=-0.0054 [-0.0068,-0.0040] dTopN=+0.000
+  fit14-19/test20-21 QB    n=  1196 wks= 33 bias -0.253->-0.048 dMAE=+0.0635 [+0.0392,+0.0850] dRMSE=-0.0013 dPearson=+0.0000 dSpW=+0.0000 dXposSp=+0.0000 [+0.0000,+0.0000] dTopN=+0.000
+  fit14-19/test20-21 RB    n=  2894 wks= 33 bias -0.173->+0.906 dMAE=+0.3840 [+0.3457,+0.4230] dRMSE=+0.0659 dPearson=+0.0000 dSpW=+0.0000 dXposSp=+0.0000 [+0.0000,+0.0000] dTopN=+0.000
+  fit14-19/test20-21 WR    n=  4366 wks= 33 bias -0.231->+0.105 dMAE=+0.0951 [+0.0831,+0.1070] dRMSE=-0.0089 dPearson=+0.0000 dSpW=+0.0000 dXposSp=+0.0000 [+0.0000,+0.0000] dTopN=+0.000
+  fit14-19/test20-21 TE    n=  2088 wks= 33 bias -0.212->+0.115 dMAE=+0.0702 [+0.0556,+0.0849] dRMSE=-0.0083 dPearson=+0.0000 dSpW=+0.0000 dXposSp=+0.0000 [+0.0000,+0.0000] dTopN=+0.000
+  LOSO pooled skill        n= 40720 wks=129 bias -0.480->+0.001 dMAE=+0.1097 [+0.1007,+0.1187] dRMSE=-0.0283 dPearson=+0.0000 dSpW=+0.0000 dXposSp=+0.0013 [+0.0004,+0.0022] dTopN=+0.000
+  LOSO pooled QB           n=  4526 wks=129 bias -0.214->+0.012 dMAE=+0.0572 [+0.0453,+0.0692] dRMSE=+0.0174 dPearson=-0.0042 dSpW=+0.0000 dXposSp=+0.0000 [+0.0000,+0.0000] dTopN=+0.000
+  LOSO pooled RB           n= 11599 wks=129 bias -0.954->-0.004 dMAE=+0.1863 [+0.1598,+0.2127] dRMSE=-0.0884 dPearson=-0.0009 dSpW=+0.0000 dXposSp=+0.0000 [+0.0000,+0.0000] dTopN=+0.000
+  LOSO pooled WR           n= 16407 wks=129 bias -0.307->+0.001 dMAE=+0.0867 [+0.0793,+0.0940] dRMSE=-0.0099 dPearson=-0.0006 dSpW=+0.0000 dXposSp=+0.0000 [+0.0000,+0.0000] dTopN=+0.000
+  LOSO pooled TE           n=  8188 wks=129 bias -0.306->+0.001 dMAE=+0.0763 [+0.0682,+0.0847] dRMSE=-0.0094 dPearson=-0.0006 dSpW=+0.0000 dXposSp=+0.0000 [+0.0000,+0.0000] dTopN=+0.000
+  all-seasons params QB:(+1.177,0.9378), RB:(+1.652,0.9009), TE:(+0.581,0.9501), WR:(+0.768,0.9423)
+
+-- method=add_skill --
+fit14-19/test20-21 params QB:(+0.57,1.000), RB:(+0.57,1.000), TE:(+0.57,1.000), WR:(+0.57,1.000)
+  fit14-19/test20-21 skill n= 10544 wks= 33 bias -0.214->+0.360 dMAE=+0.1242 [+0.1111,+0.1376] dRMSE=+0.0063 dPearson=+0.0000 dSpW=+0.0000 dXposSp=+0.0000 [+0.0000,+0.0000] dTopN=+0.000
+  fit14-19/test20-21 QB    n=  1196 wks= 33 bias -0.253->+0.320 dMAE=+0.0617 [+0.0284,+0.0963] dRMSE=+0.0024 dPearson=+0.0000 dSpW=+0.0000 dXposSp=+0.0000 [+0.0000,+0.0000] dTopN=+0.000
+  fit14-19/test20-21 RB    n=  2894 wks= 33 bias -0.173->+0.401 dMAE=+0.1461 [+0.1283,+0.1638] dRMSE=+0.0098 dPearson=-0.0000 dSpW=+0.0000 dXposSp=+0.0000 [+0.0000,+0.0000] dTopN=+0.000
+  fit14-19/test20-21 WR    n=  4366 wks= 33 bias -0.231->+0.343 dMAE=+0.1273 [+0.1090,+0.1460] dRMSE=+0.0047 dPearson=+0.0000 dSpW=+0.0000 dXposSp=+0.0000 [+0.0000,+0.0000] dTopN=+0.000
+  fit14-19/test20-21 TE    n=  2088 wks= 33 bias -0.212->+0.362 dMAE=+0.1231 [+0.1014,+0.1439] dRMSE=+0.0082 dPearson=+0.0000 dSpW=+0.0000 dXposSp=+0.0000 [+0.0000,+0.0000] dTopN=+0.000
+  LOSO pooled skill        n= 40720 wks=129 bias -0.480->+0.001 dMAE=+0.0855 [+0.0783,+0.0929] dRMSE=-0.0150 dPearson=-0.0003 dSpW=+0.0000 dXposSp=+0.0000 [+0.0000,+0.0000] dTopN=+0.000
+  LOSO pooled QB           n=  4526 wks=129 bias -0.214->+0.268 dMAE=+0.0439 [+0.0292,+0.0584] dRMSE=+0.0040 dPearson=-0.0003 dSpW=+0.0000 dXposSp=+0.0000 [+0.0000,+0.0000] dTopN=+0.000
+  LOSO pooled RB           n= 11599 wks=129 bias -0.954->-0.473 dMAE=+0.0568 [+0.0447,+0.0689] dRMSE=-0.0488 dPearson=-0.0003 dSpW=+0.0000 dXposSp=+0.0000 [+0.0000,+0.0000] dTopN=+0.000
+  LOSO pooled WR           n= 16407 wks=129 bias -0.307->+0.175 dMAE=+0.1048 [+0.0960,+0.1134] dRMSE=-0.0026 dPearson=-0.0003 dSpW=+0.0000 dXposSp=+0.0000 [+0.0000,+0.0000] dTopN=+0.000
+  LOSO pooled TE           n=  8188 wks=129 bias -0.306->+0.176 dMAE=+0.1106 [+0.0998,+0.1215] dRMSE=-0.0041 dPearson=-0.0004 dSpW=+0.0000 dXposSp=+0.0000 [+0.0000,+0.0000] dTopN=+0.000
+  all-seasons params QB:(+0.480,1.0000), RB:(+0.480,1.0000), TE:(+0.480,1.0000), WR:(+0.480,1.0000)
+
+-- method=mult_skill --
+fit14-19/test20-21 params QB:(+0.00,1.072), RB:(+0.00,1.072), TE:(+0.00,1.072), WR:(+0.00,1.072)
+  fit14-19/test20-21 skill n= 10544 wks= 33 bias -0.214->+0.391 dMAE=+0.1074 [+0.0898,+0.1268] dRMSE=+0.0351 dPearson=-0.0000 dSpW=+0.0000 dXposSp=+0.0000 [+0.0000,+0.0000] dTopN=+0.000
+  fit14-19/test20-21 QB    n=  1196 wks= 33 bias -0.253->+0.860 dMAE=+0.1249 [+0.0572,+0.1971] dRMSE=+0.0711 dPearson=+0.0000 dSpW=+0.0000 dXposSp=+0.0000 [+0.0000,+0.0000] dTopN=+0.000
+  fit14-19/test20-21 RB    n=  2894 wks= 33 bias -0.173->+0.404 dMAE=+0.1218 [+0.0954,+0.1491] dRMSE=+0.0337 dPearson=-0.0000 dSpW=+0.0000 dXposSp=+0.0000 [+0.0000,+0.0000] dTopN=+0.000
+  fit14-19/test20-21 WR    n=  4366 wks= 33 bias -0.231->+0.345 dMAE=+0.1070 [+0.0865,+0.1285] dRMSE=+0.0308 dPearson=+0.0000 dSpW=+0.0000 dXposSp=+0.0000 [+0.0000,+0.0000] dTopN=+0.000
+  fit14-19/test20-21 TE    n=  2088 wks= 33 bias -0.212->+0.199 dMAE=+0.0785 [+0.0572,+0.0986] dRMSE=+0.0197 dPearson=+0.0000 dSpW=+0.0000 dXposSp=+0.0000 [+0.0000,+0.0000] dTopN=+0.000
+  LOSO pooled skill        n= 40720 wks=129 bias -0.480->+0.002 dMAE=+0.0758 [+0.0674,+0.0847] dRMSE=+0.0153 dPearson=-0.0003 dSpW=+0.0000 dXposSp=+0.0000 [+0.0000,+0.0000] dTopN=+0.000
+  LOSO pooled QB           n=  4526 wks=129 bias -0.214->+0.712 dMAE=+0.0973 [+0.0670,+0.1290] dRMSE=+0.0600 dPearson=-0.0008 dSpW=+0.0000 dXposSp=+0.0000 [+0.0000,+0.0000] dTopN=+0.000
+  LOSO pooled RB           n= 11599 wks=129 bias -0.954->-0.530 dMAE=+0.0566 [+0.0449,+0.0684] dRMSE=-0.0039 dPearson=-0.0003 dSpW=+0.0000 dXposSp=+0.0000 [+0.0000,+0.0000] dTopN=+0.000
+  LOSO pooled WR           n= 16407 wks=129 bias -0.307->+0.171 dMAE=+0.0882 [+0.0785,+0.0980] dRMSE=+0.0181 dPearson=-0.0003 dSpW=+0.0000 dXposSp=+0.0000 [+0.0000,+0.0000] dTopN=+0.000
+  LOSO pooled TE           n=  8188 wks=129 bias -0.306->+0.024 dMAE=+0.0663 [+0.0571,+0.0752] dRMSE=+0.0053 dPearson=-0.0004 dSpW=+0.0000 dXposSp=+0.0000 [+0.0000,+0.0000] dTopN=+0.000
+  all-seasons params QB:(+0.000,1.0596), RB:(+0.000,1.0596), TE:(+0.000,1.0596), WR:(+0.000,1.0596)
+
+######## pop=all arm=baseline skill n=46722 ########
+baseline: n=46722 weeks=129 bias=-0.0909 MAE=4.5038 RMSE=6.3452 pearson=0.6742 spearman_wxp=0.6527 xpos_spearman=0.7059 topN=15.6525
+bias by position x proj bin:
+               n                          bias                   
+position      QB      RB      TE      WR    QB    RB     TE    WR
+bin                                                              
+(0, 3]     114.0  5188.0  3839.0  3285.0  0.44 -0.58   0.53  0.06
+(3, 6]     271.0  2683.0  3934.0  5526.0  2.32 -0.67   0.49  0.29
+(6, 10]    604.0  2344.0  1824.0  3935.0  3.24 -1.33  -0.40 -0.59
+(10, 15]  1308.0  1881.0   830.0  3319.0 -1.79 -0.53   0.27 -0.25
+(15, 20]  1388.0   849.0   213.0  1558.0 -1.67  0.59   0.72  0.64
+(20, 60]  1006.0   443.0     2.0   378.0  2.09  0.93 -12.26  1.19
+
+-- method=add --
+fit14-19/test20-21 params QB:(-0.07,1.000), RB:(+0.90,1.000), TE:(-0.30,1.000), WR:(+0.03,1.000)
+  fit14-19/test20-21 skill n= 12241 wks= 33 bias +0.212->+0.399 dMAE=+0.0737 [+0.0670,+0.0808] dRMSE=+0.0268 dPearson=-0.0023 dSpW=+0.0000 dXposSp=-0.0053 [-0.0068,-0.0038] dTopN=+0.000
+  fit14-19/test20-21 QB    n=  1223 wks= 33 bias -0.125->-0.193 dMAE=-0.0067 [-0.0107,-0.0028] dRMSE=+0.0014 dPearson=+0.0000 dSpW=+0.0000 dXposSp=+0.0000 [+0.0000,+0.0000] dTopN=+0.000
+  fit14-19/test20-21 RB    n=  3393 wks= 33 bias +0.294->+1.195 dMAE=+0.3428 [+0.3189,+0.3681] dRMSE=+0.1050 dPearson=+0.0000 dSpW=+0.0000 dXposSp=+0.0000 [+0.0000,+0.0000] dTopN=+0.000
+  fit14-19/test20-21 WR    n=  4844 wks= 33 bias +0.113->+0.147 dMAE=+0.0093 [+0.0083,+0.0105] dRMSE=+0.0007 dPearson=+0.0000 dSpW=+0.0000 dXposSp=+0.0000 [+0.0000,+0.0000] dTopN=+0.000
+  fit14-19/test20-21 TE    n=  2781 wks= 33 bias +0.431->+0.128 dMAE=-0.1072 [-0.1170,-0.0965] dRMSE=-0.0180 dPearson=+0.0000 dSpW=+0.0000 dXposSp=+0.0000 [-0.0000,+0.0001] dTopN=+0.000
+  LOSO pooled skill        n= 46722 wks=129 bias -0.091->+0.001 dMAE=+0.0178 [+0.0127,+0.0230] dRMSE=-0.0041 dPearson=+0.0005 dSpW=-0.0000 dXposSp=+0.0028 [+0.0018,+0.0038] dTopN=+0.000
+  LOSO pooled QB           n=  4691 wks=129 bias +0.017->+0.002 dMAE=+0.0104 [+0.0043,+0.0170] dRMSE=+0.0192 dPearson=-0.0025 dSpW=+0.0000 dXposSp=+0.0000 [+0.0000,+0.0000] dTopN=+0.000
+  LOSO pooled RB           n= 13388 wks=129 bias -0.598->+0.001 dMAE=+0.1497 [+0.1338,+0.1659] dRMSE=-0.0203 dPearson=-0.0010 dSpW=+0.0000 dXposSp=+0.0000 [+0.0000,+0.0000] dTopN=+0.000
+  LOSO pooled WR           n= 18001 wks=129 bias +0.005->+0.001 dMAE=+0.0012 [-0.0010,+0.0033] dRMSE=+0.0025 dPearson=-0.0004 dSpW=+0.0000 dXposSp=+0.0000 [+0.0000,+0.0000] dTopN=+0.000
+  LOSO pooled TE           n= 10642 wks=129 bias +0.337->+0.001 dMAE=-0.1170 [-0.1230,-0.1111] dRMSE=-0.0102 dPearson=-0.0003 dSpW=-0.0000 dXposSp=-0.0000 [-0.0001,+0.0000] dTopN=+0.000
+  all-seasons params QB:(-0.017,1.0000), RB:(+0.598,1.0000), TE:(-0.337,1.0000), WR:(-0.005,1.0000)
+
+-- method=mult --
+fit14-19/test20-21 params QB:(+0.00,0.996), RB:(+0.00,1.150), TE:(+0.00,0.937), WR:(+0.00,1.005)
+  fit14-19/test20-21 skill n= 12241 wks= 33 bias +0.212->+0.449 dMAE=+0.0759 [+0.0635,+0.0883] dRMSE=+0.0497 dPearson=-0.0044 dSpW=+0.0000 dXposSp=-0.0037 [-0.0048,-0.0025] dTopN=+0.000
+  fit14-19/test20-21 QB    n=  1223 wks= 33 bias -0.125->-0.193 dMAE=-0.0035 [-0.0079,+0.0006] dRMSE=+0.0012 dPearson=+0.0000 dSpW=+0.0000 dXposSp=+0.0000 [+0.0000,+0.0000] dTopN=+0.000
+  fit14-19/test20-21 RB    n=  3393 wks= 33 bias +0.294->+1.378 dMAE=+0.3225 [+0.2776,+0.3673] dRMSE=+0.1791 dPearson=+0.0000 dSpW=+0.0000 dXposSp=+0.0000 [+0.0000,+0.0000] dTopN=+0.000
+  fit14-19/test20-21 WR    n=  4844 wks= 33 bias +0.113->+0.147 dMAE=+0.0066 [+0.0054,+0.0079] dRMSE=+0.0008 dPearson=+0.0000 dSpW=+0.0000 dXposSp=+0.0000 [+0.0000,+0.0000] dTopN=+0.000
+  fit14-19/test20-21 TE    n=  2781 wks= 33 bias +0.431->+0.123 dMAE=-0.0695 [-0.0838,-0.0540] dRMSE=-0.0074 dPearson=+0.0000 dSpW=+0.0000 dXposSp=+0.0000 [+0.0000,+0.0000] dTopN=+0.000
+  LOSO pooled skill        n= 46722 wks=129 bias -0.091->+0.005 dMAE=+0.0171 [+0.0114,+0.0234] dRMSE=+0.0136 dPearson=-0.0013 dSpW=+0.0000 dXposSp=+0.0012 [+0.0005,+0.0018] dTopN=+0.000
+  LOSO pooled QB           n=  4691 wks=129 bias +0.017->+0.008 dMAE=+0.0147 [+0.0080,+0.0220] dRMSE=+0.0242 dPearson=-0.0031 dSpW=+0.0000 dXposSp=+0.0000 [+0.0000,+0.0000] dTopN=+0.000
+  LOSO pooled RB           n= 13388 wks=129 bias -0.598->+0.011 dMAE=+0.1150 [+0.0961,+0.1351] dRMSE=+0.0307 dPearson=-0.0009 dSpW=+0.0000 dXposSp=+0.0000 [+0.0000,+0.0000] dTopN=+0.000
+  LOSO pooled WR           n= 18001 wks=129 bias +0.005->+0.001 dMAE=+0.0014 [-0.0003,+0.0032] dRMSE=+0.0030 dPearson=-0.0005 dSpW=+0.0000 dXposSp=+0.0000 [+0.0000,+0.0000] dTopN=+0.000
+  LOSO pooled TE           n= 10642 wks=129 bias +0.337->+0.001 dMAE=-0.0784 [-0.0863,-0.0703] dRMSE=+0.0034 dPearson=-0.0005 dSpW=+0.0000 dXposSp=+0.0000 [+0.0000,+0.0000] dTopN=+0.000
+  all-seasons params QB:(+0.000,0.9989), RB:(+0.000,1.0944), TE:(+0.000,0.9300), WR:(+0.000,0.9993)
+
+-- method=affine --
+fit14-19/test20-21 params QB:(+0.11,0.988), RB:(+1.27,0.939), TE:(-0.50,1.041), WR:(+0.20,0.978)
+  fit14-19/test20-21 skill n= 12241 wks= 33 bias +0.212->+0.381 dMAE=+0.0828 [+0.0757,+0.0900] dRMSE=+0.0266 dPearson=-0.0021 dSpW=-0.0000 dXposSp=-0.0065 [-0.0082,-0.0048] dTopN=+0.000
+  fit14-19/test20-21 QB    n=  1223 wks= 33 bias -0.125->-0.193 dMAE=+0.0019 [-0.0035,+0.0073] dRMSE=+0.0011 dPearson=+0.0000 dSpW=+0.0000 dXposSp=+0.0000 [+0.0000,+0.0000] dTopN=+0.000
+  fit14-19/test20-21 RB    n=  3393 wks= 33 bias +0.294->+1.120 dMAE=+0.3692 [+0.3461,+0.3925] dRMSE=+0.1048 dPearson=+0.0000 dSpW=+0.0000 dXposSp=+0.0000 [+0.0000,+0.0000] dTopN=+0.000
+  fit14-19/test20-21 WR    n=  4844 wks= 33 bias +0.113->+0.149 dMAE=+0.0231 [+0.0205,+0.0256] dRMSE=+0.0010 dPearson=+0.0000 dSpW=+0.0000 dXposSp=+0.0000 [+0.0000,+0.0000] dTopN=+0.000
+  fit14-19/test20-21 TE    n=  2781 wks= 33 bias +0.431->+0.136 dMAE=-0.1269 [-0.1368,-0.1173] dRMSE=-0.0198 dPearson=+0.0003 dSpW=-0.0002 dXposSp=-0.0002 [-0.0004,-0.0000] dTopN=+0.000
+  LOSO pooled skill        n= 46722 wks=129 bias -0.091->+0.002 dMAE=+0.0284 [+0.0232,+0.0335] dRMSE=-0.0048 dPearson=+0.0004 dSpW=-0.0000 dXposSp=+0.0030 [+0.0017,+0.0043] dTopN=+0.000
+  LOSO pooled QB           n=  4691 wks=129 bias +0.017->+0.010 dMAE=+0.0239 [+0.0167,+0.0315] dRMSE=+0.0298 dPearson=-0.0039 dSpW=+0.0000 dXposSp=+0.0000 [+0.0000,+0.0000] dTopN=+0.000
+  LOSO pooled RB           n= 13388 wks=129 bias -0.598->-0.003 dMAE=+0.1816 [+0.1644,+0.1980] dRMSE=-0.0270 dPearson=-0.0012 dSpW=+0.0000 dXposSp=+0.0000 [+0.0000,+0.0000] dTopN=+0.000
+  LOSO pooled WR           n= 18001 wks=129 bias +0.005->+0.001 dMAE=+0.0111 [+0.0087,+0.0135] dRMSE=+0.0028 dPearson=-0.0005 dSpW=+0.0000 dXposSp=+0.0000 [+0.0000,+0.0000] dTopN=+0.000
+  LOSO pooled TE           n= 10642 wks=129 bias +0.337->+0.005 dMAE=-0.1331 [-0.1391,-0.1274] dRMSE=-0.0118 dPearson=-0.0004 dSpW=-0.0001 dXposSp=-0.0001 [-0.0002,-0.0000] dTopN=+0.000
+  all-seasons params QB:(+0.154,0.9887), RB:(+0.922,0.9488), TE:(-0.516,1.0372), WR:(+0.128,0.9824)
+
+-- method=add_skill --
+fit14-19/test20-21 params QB:(+0.20,1.000), RB:(+0.20,1.000), TE:(+0.20,1.000), WR:(+0.20,1.000)
+  fit14-19/test20-21 skill n= 12241 wks= 33 bias +0.212->+0.410 dMAE=+0.0606 [+0.0563,+0.0651] dRMSE=+0.0098 dPearson=+0.0000 dSpW=+0.0000 dXposSp=+0.0000 [+0.0000,+0.0000] dTopN=+0.000
+  fit14-19/test20-21 QB    n=  1223 wks= 33 bias -0.125->+0.073 dMAE=+0.0222 [+0.0106,+0.0343] dRMSE=-0.0007 dPearson=+0.0000 dSpW=+0.0000 dXposSp=+0.0000 [+0.0000,+0.0000] dTopN=+0.000
+  fit14-19/test20-21 RB    n=  3393 wks= 33 bias +0.294->+0.492 dMAE=+0.0684 [+0.0632,+0.0738] dRMSE=+0.0123 dPearson=+0.0000 dSpW=+0.0000 dXposSp=+0.0000 [+0.0000,+0.0000] dTopN=+0.000
+  fit14-19/test20-21 WR    n=  4844 wks= 33 bias +0.113->+0.311 dMAE=+0.0557 [+0.0493,+0.0621] dRMSE=+0.0064 dPearson=+0.0000 dSpW=+0.0000 dXposSp=+0.0000 [+0.0000,+0.0000] dTopN=+0.000
+  fit14-19/test20-21 TE    n=  2781 wks= 33 bias +0.431->+0.629 dMAE=+0.0763 [+0.0695,+0.0827] dRMSE=+0.0222 dPearson=+0.0000 dSpW=+0.0000 dXposSp=+0.0000 [+0.0000,+0.0000] dTopN=+0.000
+  LOSO pooled skill        n= 46722 wks=129 bias -0.091->+0.001 dMAE=+0.0256 [+0.0227,+0.0286] dRMSE=+0.0016 dPearson=-0.0003 dSpW=+0.0000 dXposSp=+0.0000 [+0.0000,+0.0000] dTopN=+0.000
+  LOSO pooled QB           n=  4691 wks=129 bias +0.017->+0.109 dMAE=+0.0113 [+0.0080,+0.0145] dRMSE=+0.0027 dPearson=-0.0003 dSpW=+0.0000 dXposSp=+0.0000 [+0.0000,+0.0000] dTopN=+0.000
+  LOSO pooled RB           n= 13388 wks=129 bias -0.598->-0.506 dMAE=+0.0218 [+0.0185,+0.0253] dRMSE=-0.0046 dPearson=-0.0004 dSpW=+0.0000 dXposSp=+0.0000 [+0.0000,+0.0000] dTopN=+0.000
+  LOSO pooled WR           n= 18001 wks=129 bias +0.005->+0.098 dMAE=+0.0261 [+0.0231,+0.0292] dRMSE=+0.0026 dPearson=-0.0003 dSpW=+0.0000 dXposSp=+0.0000 [+0.0000,+0.0000] dTopN=+0.000
+  LOSO pooled TE           n= 10642 wks=129 bias +0.337->+0.429 dMAE=+0.0360 [+0.0322,+0.0396] dRMSE=+0.0088 dPearson=-0.0004 dSpW=+0.0000 dXposSp=+0.0000 [+0.0000,+0.0000] dTopN=+0.000
+  all-seasons params QB:(+0.091,1.0000), RB:(+0.091,1.0000), TE:(+0.091,1.0000), WR:(+0.091,1.0000)
+
+-- method=mult_skill --
+fit14-19/test20-21 params QB:(+0.00,1.027), RB:(+0.00,1.027), TE:(+0.00,1.027), WR:(+0.00,1.027)
+  fit14-19/test20-21 skill n= 12241 wks= 33 bias +0.212->+0.419 dMAE=+0.0409 [+0.0350,+0.0473] dRMSE=+0.0102 dPearson=-0.0000 dSpW=+0.0000 dXposSp=+0.0000 [+0.0000,+0.0000] dTopN=+0.000
+  fit14-19/test20-21 QB    n=  1223 wks= 33 bias -0.125->+0.290 dMAE=+0.0343 [+0.0086,+0.0607] dRMSE=+0.0082 dPearson=-0.0000 dSpW=+0.0000 dXposSp=+0.0000 [+0.0000,+0.0000] dTopN=+0.000
+  fit14-19/test20-21 RB    n=  3393 wks= 33 bias +0.294->+0.492 dMAE=+0.0470 [+0.0388,+0.0558] dRMSE=+0.0117 dPearson=+0.0000 dSpW=+0.0000 dXposSp=+0.0000 [+0.0000,+0.0000] dTopN=+0.000
+  fit14-19/test20-21 WR    n=  4844 wks= 33 bias +0.113->+0.318 dMAE=+0.0416 [+0.0344,+0.0490] dRMSE=+0.0090 dPearson=+0.0000 dSpW=+0.0000 dXposSp=+0.0000 [+0.0000,+0.0000] dTopN=+0.000
+  fit14-19/test20-21 TE    n=  2781 wks= 33 bias +0.431->+0.564 dMAE=+0.0354 [+0.0288,+0.0416] dRMSE=+0.0129 dPearson=-0.0000 dSpW=+0.0000 dXposSp=+0.0000 [+0.0000,+0.0000] dTopN=+0.000
+  LOSO pooled skill        n= 46722 wks=129 bias -0.091->+0.002 dMAE=+0.0175 [+0.0150,+0.0201] dRMSE=+0.0037 dPearson=-0.0003 dSpW=+0.0000 dXposSp=+0.0000 [+0.0000,+0.0000] dTopN=+0.000
+  LOSO pooled QB           n=  4691 wks=129 bias +0.017->+0.207 dMAE=+0.0192 [+0.0120,+0.0267] dRMSE=+0.0101 dPearson=-0.0008 dSpW=+0.0000 dXposSp=+0.0000 [+0.0000,+0.0000] dTopN=+0.000
+  LOSO pooled RB           n= 13388 wks=129 bias -0.598->-0.516 dMAE=+0.0134 [+0.0105,+0.0166] dRMSE=-0.0005 dPearson=-0.0003 dSpW=+0.0000 dXposSp=+0.0000 [+0.0000,+0.0000] dTopN=+0.000
+  LOSO pooled WR           n= 18001 wks=129 bias +0.005->+0.100 dMAE=+0.0201 [+0.0174,+0.0231] dRMSE=+0.0041 dPearson=-0.0003 dSpW=+0.0000 dXposSp=+0.0000 [+0.0000,+0.0000] dTopN=+0.000
+  LOSO pooled TE           n= 10642 wks=129 bias +0.337->+0.398 dMAE=+0.0173 [+0.0149,+0.0197] dRMSE=+0.0052 dPearson=-0.0004 dSpW=+0.0000 dXposSp=+0.0000 [+0.0000,+0.0000] dTopN=+0.000
+  all-seasons params QB:(+0.000,1.0124), RB:(+0.000,1.0124), TE:(+0.000,1.0124), WR:(+0.000,1.0124)

@@ -84,6 +84,7 @@ def proj_path(arm: str, season: int, week: int) -> Path:
 def _install_patches():
     """Import scripts/ modules and apply the in-process leak/alias patches."""
     sys.path.insert(0, str(REPO / "scripts"))
+    sys.path.insert(0, str(HERE))
     import pandas as pd
     import build_projections as bp
     import build_projections_statline as bps
@@ -122,8 +123,26 @@ def run_season(job):
     logdir = OUT / "logs" / arm
     logdir.mkdir(parents=True, exist_ok=True)
     done = []
+    import statline_model as sm
+    import volume_prior as vpm
+    _lp = getattr(vpm, "_orig_load_prior", vpm.load_prior)
+    _lv = getattr(sm, "_orig_load_variance", sm.load_variance)
+    vpm._orig_load_prior, sm._orig_load_variance = _lp, _lv
+    vpm.load_prior, sm.load_variance = _lp, _lv
+    if opts.get("prior_path"):
+        _pp = Path(opts["prior_path"].format(season=season))
+        vpm.load_prior = lambda site, path=None: _lp(site, _pp)
+    if opts.get("variance_path"):
+        _vp = Path(opts["variance_path"].format(season=season))
+        sm.load_variance = lambda path=None: _lv(_vp)
     for week in weeks:
         dest = proj_path(arm, season, week)
+        if opts.get("depth_charts"):
+            import hist_depth
+            _dc = hist_depth.load_depth_chart_asof(season, week)
+            if opts.get("dc_positions"):
+                _dc = _dc[_dc["position"].isin(opts["dc_positions"].split(","))].reset_index(drop=True)
+            sm.load_depth_chart = lambda _dc=_dc: _dc.copy()
         if dest.exists() and not force:
             done.append((season, week, "cached", 0.0))
             continue
@@ -149,7 +168,9 @@ def run_season(job):
                     props_weight=0.0,
                     use_stack=opts["stack"],
                     role_change=opts["role_change"],
-                    canonical_teams=not LEGACY_CANON_PATCH)
+                    canonical_teams=not LEGACY_CANON_PATCH,
+                    **({"floor_share_fix": True} if opts.get("floor_share_fix") else {}),
+                    **({"qb_rush_scale": opts["qb_rush_scale"]} if opts.get("qb_rush_scale", 1.0) != 1.0 else {}))
             df.insert(0, "season", season)
             df.insert(1, "week", week)
             dest.parent.mkdir(parents=True, exist_ok=True)
@@ -182,11 +203,24 @@ def main():
     ap.add_argument("--no-volume-prior", action="store_true", help="Volume prior off.")
     ap.add_argument("--no-role-change", action="store_true")
     ap.add_argument("--dst-model", default="distributional", choices=["distributional", "legacy"])
+    ap.add_argument("--depth-charts", action="store_true",
+                    help="Use leak-free nflverse historical depth charts (hist_depth.py, week < target).")
+    ap.add_argument("--dc-positions", default=None,
+                    help="Restrict --depth-charts to these positions, e.g. RB,WR,TE (historical QB charts are stale).")
+    ap.add_argument("--floor-share-fix", action="store_true", help="H: floor-share exclusion (opt-in engine flag).")
+    ap.add_argument("--qb-rush-scale", type=float, default=1.0, help="QB rush_mu multiplier (opt-in engine flag).")
+    ap.add_argument("--prior-path", default=None,
+                    help="Volume-prior artifact path; '{season}' is replaced by the built season (LOSO).")
+    ap.add_argument("--variance-path", default=None,
+                    help="statline_variance artifact path; '{season}' replaced by the built season (LOSO).")
     a = ap.parse_args()
 
     opts = {"restore_matchup": a.restore_matchup, "stack": not a.no_stack,
             "sigma_recal": not a.no_sigma_recal, "volume_prior": not a.no_volume_prior,
-            "role_change": not a.no_role_change, "dst_model": a.dst_model}
+            "role_change": not a.no_role_change, "dst_model": a.dst_model,
+            "depth_charts": a.depth_charts, "dc_positions": a.dc_positions, "floor_share_fix": a.floor_share_fix,
+            "qb_rush_scale": a.qb_rush_scale, "prior_path": a.prior_path,
+            "variance_path": a.variance_path}
     wk = parse_range(a.weeks)
     jobs = [(a.arm, s, weeks_for(s, wk), opts, a.force) for s in parse_range(a.seasons)]
     (OUT / "logs" / a.arm).mkdir(parents=True, exist_ok=True)

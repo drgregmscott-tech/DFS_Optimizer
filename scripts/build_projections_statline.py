@@ -249,6 +249,14 @@ AUDIT_COLUMNS = ["games_played", "participation_effective"]
 PROPS_MAX_AGE_HOURS = 72
 
 
+# p10 calibration (see its use in build_statline_projections): per-position
+# (a, b) of the 10% quantile regression actual ~ a + b*final_projection, fit
+# on DK 2014-2021 by analysis/backtest_multi/p10_qr.py ("production
+# coefficients", QR_final).
+P10_QR_DK = {"QB": (-5.4278, 0.7385), "RB": (-0.6876, 0.3312),
+             "WR": (-1.2916, 0.3574), "TE": (-0.8211, 0.2701)}
+
+
 def _apply_props_anchor(df, variance, slate_id, props_weight, props_file):
     """Blend market prop lines into the per-player usage inputs (see
     props_model.py). Returns df unchanged when disabled/unavailable."""
@@ -337,6 +345,9 @@ def build_statline_projections(site: str, season: int, week: int, slate_id: str,
                                props_file: str = None,
                                use_stack: bool = False,
                                canonical_teams: bool = False,
+                               floor_share_fix: bool = False,
+                               qb_rush_scale: float = 1.0,
+                               p10_calibration: bool = True,
                                ) -> pd.DataFrame:
     """`vegas_slate_id` (Session 14.0 -- this engine never had Session
     13.5-pause's fix at all): defaults to `slate_id`. See
@@ -617,7 +628,8 @@ def build_statline_projections(site: str, season: int, week: int, slate_id: str,
             # real-Week-1 sentinel (2025 lookback), where zero history means
             # rookie, not absent -- see apply_volume_prior()'s docstring.
             absent_discount=(week <= 18),
-            depth_chart=depth_chart)
+            depth_chart=depth_chart,
+            floor_share_fix=floor_share_fix)
         n_flag = int(df["role_change_flag"].sum())
         n_cold = int((df["games_played"] <= 1).sum())
         print(f"Volume prior applied: {n_flag} role-change flag(s), "
@@ -730,6 +742,11 @@ def build_statline_projections(site: str, season: int, week: int, slate_id: str,
                            "participation_effective", "market_factor")]
     for c in usage_cols:
         df[c] = pd.to_numeric(df[c], errors="coerce").fillna(0.0)
+
+    # Opt-in QB rush-volume multiplier (default 1.0 = unchanged). Tested on the
+    # 2014-2021 backtest (analysis/backtest_multi/REPORT_followups.md item 3).
+    if qb_rush_scale != 1.0 and "rush_mu" in df.columns:
+        df.loc[df["position"].astype(str) == "QB", "rush_mu"] *= qb_rush_scale
 
     # --- player-prop market anchor (props_model.py; WK2_POSTMORTEM.md) ------
     # Off unless props_weight > 0 AND a props snapshot exists for this slate
@@ -919,6 +936,26 @@ def build_statline_projections(site: str, season: int, week: int, slate_id: str,
     # lambda can undo it. See sigma_recalibration.py's module docstring.
     if sigma_recal:
         out = sigma_recalibration.apply_recalibration(out, site)
+        # 2026-09-24 p10 calibration (analysis/backtest_multi/REPORT_followups.md
+        # item 2). The raw MC statline_p10 is mis-shaped: far too HIGH for
+        # low projections (proj < 6: 15-66% of actuals below it) and too LOW
+        # for rosterable players (4-9% below). Replaced for DK classic skill
+        # players by a per-position linear 10% quantile regression of real DK
+        # points on final_projection, p10 = max(0, a + b*final), fit on DK
+        # 2014-2021 (backtest baseline, played players). Leave-one-season-out:
+        # pinball-10 loss -0.112 [-0.117, -0.108] vs the MC value, better in
+        # 8/8 seasons at every position; 10.4% below overall. A sigma term was
+        # tested and rejected (QB coefficients unstable across folds). DST/K,
+        # Showdown and FD keep the MC value (not fit there). Only consumer:
+        # optimizer.py's MME dart filter (see the report for its threshold).
+        if p10_calibration and site == "dk" and not showdown:
+            _ab = out["position"].map(P10_QR_DK)
+            _m = _ab.notna() & (out["sigma"] > 0)
+            _a = _ab[_m].map(lambda t: t[0])
+            _b = _ab[_m].map(lambda t: t[1])
+            out.loc[_m, "statline_p10"] = (_a + _b * out.loc[_m, "final_projection"]).clip(lower=0.0)
+            print(f"p10 calibration: statline_p10 = max(0, a + b*final) for {int(_m.sum())} "
+                  f"skill player(s) ({P10_QR_DK}).")
 
     # Session 14.0: derive CPT/MVP rows from the FLEX-priced projections
     # just built (same pattern as build_projections.py's Session 13.3),
@@ -1044,6 +1081,10 @@ if __name__ == "__main__":
     parser.add_argument("--no-stack", action="store_true",
                         help="Skip the calibrated projection stack (projection_stack.py). Default: on for "
                              "DK classic when data/projection_stack_dk.csv's fit exists.")
+    parser.add_argument("--no-p10-calibration", action="store_true",
+                        help="Keep the raw Monte Carlo statline_p10 (pre-2026-09-24 behaviour). Default: DK "
+                             "classic skill p10 = max(0, a + b*final), a per-position 10%% quantile "
+                             "regression (analysis/backtest_multi/REPORT_followups.md item 2).")
     parser.add_argument("--no-weather", action="store_true",
                         help="Skip the game-day weather adjustment (scripts/weather.py); "
                              "every player gets neutral 1.0 factors.")
@@ -1078,7 +1119,8 @@ if __name__ == "__main__":
         neutral_skill_matchup=not args.restore_matchup,
         props_weight=args.props_weight,
         props_file=args.props_file,
-        use_stack=not args.no_stack)
+        use_stack=not args.no_stack,
+        p10_calibration=not args.no_p10_calibration)
 
     def _clean_site_id(value):
         if pd.isna(value):

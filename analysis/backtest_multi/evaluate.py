@@ -73,7 +73,8 @@ def load_arm(arm: str) -> pd.DataFrame:
                         usecols=lambda c: c in {
                             "season", "week", "player_id", "player_name", "position", "team",
                             "salary", "site_player_id", "final_projection", "engine_projection",
-                            "statline_p10", "statline_p90", "sigma"})
+                            "statline_p10", "statline_p90", "sigma", "stack_delta"}
+                        or c.startswith("proj_"))
         # Data defect: RotoGuru salary matching can give two pool rows the same
         # gsis id (2014 wk2: Alex Smith QB KC + TE CIN), and the build then
         # emits cross-multiplied duplicate rows. Drop every row of such an id.

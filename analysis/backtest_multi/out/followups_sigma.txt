@@ -1,0 +1,143 @@
+arm=baseline pop=played skill n=40720; current statline_p10 below-rate by season:
+position     QB     RB     TE     WR
+season                              
+2014      0.196  0.048  0.240  0.178
+2015      0.154  0.062  0.201  0.178
+2016      0.138  0.065  0.181  0.184
+2017      0.136  0.085  0.221  0.215
+2018      0.128  0.068  0.197  0.173
+2019      0.130  0.096  0.187  0.217
+2020      0.178  0.198  0.200  0.188
+2021      0.167  0.224  0.194  0.230
+
+==== sigma/per-position ====
+fit14-17/test18-21: c = QB:1.07, RB:0.55, TE:0.64, WR:0.66
+   QB    n= 2305 below_p10 0.151 -> 0.090 [0.079,0.102] pinball10 1.446 -> 1.196
+   RB    n= 5699 below_p10 0.148 -> 0.145 [0.134,0.157] pinball10 0.821 -> 0.826
+   WR    n= 8376 below_p10 0.203 -> 0.115 [0.108,0.122] pinball10 0.867 -> 0.808
+   TE    n= 4133 below_p10 0.195 -> 0.097 [0.086,0.108] pinball10 0.631 -> 0.595
+   skill n=20513 below_p10 0.180 -> 0.117 [0.111,0.123] pinball10 0.872 -> 0.814
+   test below-rate by season:
+position     QB     RB     TE     WR
+season                              
+2018      0.078  0.105  0.082  0.111
+2019      0.090  0.137  0.093  0.118
+2020      0.083  0.155  0.098  0.114
+2021      0.107  0.180  0.112  0.116
+LOSO c by held-out season: 2014:QB1.00,RB0.62,TE0.62,WR0.69; 2015:QB1.04,RB0.62,TE0.64,WR0.69; 2016:QB1.05,RB0.62,TE0.64,WR0.68; 2017:QB1.05,RB0.61,TE0.64,WR0.68; 2018:QB1.05,RB0.62,TE0.64,WR0.68; 2019:QB1.04,RB0.61,TE0.64,WR0.68; 2020:QB1.04,RB0.60,TE0.64,WR0.68; 2021:QB1.02,RB0.59,TE0.63,WR0.68
+LOSO held-out below-rate by season:
+position     QB     RB     TE     WR
+season                              
+2014      0.169  0.066  0.159  0.082
+2015      0.092  0.079  0.092  0.077
+2016      0.088  0.081  0.068  0.101
+2017      0.081  0.107  0.098  0.106
+2018      0.082  0.083  0.082  0.106
+2019      0.090  0.109  0.093  0.109
+2020      0.092  0.123  0.098  0.105
+2021      0.115  0.158  0.119  0.106
+   LOSO QB    n= 4526 below 0.101 [0.092,0.111] season range 0.081-0.169
+   LOSO RB    n=11599 below 0.101 [0.094,0.108] season range 0.066-0.158
+   LOSO WR    n=16407 below 0.099 [0.094,0.104] season range 0.077-0.109
+   LOSO TE    n= 8188 below 0.101 [0.093,0.110] season range 0.068-0.159
+   LOSO skill n=40720 below 0.100 [0.096,0.104] season range nan-nan
+all-seasons c (production): QB:1.03, RB:0.61, TE:0.64, WR:0.68
+
+==== sigma/skill-pooled ====
+fit14-17/test18-21: c = QB:0.67, RB:0.67, TE:0.67, WR:0.67
+   QB    n= 2305 below_p10 0.151 -> 0.200 [0.183,0.217] pinball10 1.446 -> 1.274
+   RB    n= 5699 below_p10 0.148 -> 0.094 [0.086,0.102] pinball10 0.821 -> 0.764
+   WR    n= 8376 below_p10 0.203 -> 0.111 [0.104,0.118] pinball10 0.867 -> 0.803
+   TE    n= 4133 below_p10 0.195 -> 0.083 [0.074,0.094] pinball10 0.631 -> 0.584
+   skill n=20513 below_p10 0.180 -> 0.111 [0.105,0.116] pinball10 0.872 -> 0.801
+   test below-rate by season:
+position     QB     RB     TE     WR
+season                              
+2018      0.181  0.075  0.067  0.109
+2019      0.203  0.087  0.081  0.115
+2020      0.196  0.091  0.085  0.110
+2021      0.218  0.121  0.099  0.110
+LOSO c by held-out season: 2014:QB0.69,RB0.69,TE0.69,WR0.69; 2015:QB0.69,RB0.69,TE0.69,WR0.69; 2016:QB0.69,RB0.69,TE0.69,WR0.69; 2017:QB0.69,RB0.69,TE0.69,WR0.69; 2018:QB0.69,RB0.69,TE0.69,WR0.69; 2019:QB0.69,RB0.69,TE0.69,WR0.69; 2020:QB0.69,RB0.69,TE0.69,WR0.69; 2021:QB0.68,RB0.68,TE0.68,WR0.68
+LOSO held-out below-rate by season:
+position     QB     RB     TE     WR
+season                              
+2014      0.295  0.056  0.102  0.082
+2015      0.215  0.062  0.072  0.077
+2016      0.206  0.070  0.056  0.098
+2017      0.175  0.071  0.077  0.101
+2018      0.176  0.070  0.061  0.103
+2019      0.190  0.081  0.076  0.105
+2020      0.190  0.085  0.080  0.102
+2021      0.215  0.117  0.095  0.106
+   LOSO QB    n= 4526 below 0.208 [0.195,0.221] season range 0.175-0.295
+   LOSO RB    n=11599 below 0.076 [0.071,0.082] season range 0.056-0.117
+   LOSO WR    n=16407 below 0.097 [0.092,0.102] season range 0.077-0.106
+   LOSO TE    n= 8188 below 0.078 [0.071,0.085] season range 0.056-0.102
+   LOSO skill n=40720 below 0.100 [0.096,0.103] season range nan-nan
+all-seasons c (production): QB:0.69, RB:0.69, TE:0.69, WR:0.69
+
+==== mcscale/per-position ====
+fit14-17/test18-21: c = QB:1.53, RB:1.00, TE:1.59, WR:1.46
+   QB    n= 2305 below_p10 0.151 -> 0.096 [0.087,0.106] pinball10 1.446 -> 1.655
+   RB    n= 5699 below_p10 0.148 -> 0.148 [0.128,0.167] pinball10 0.821 -> 0.821
+   WR    n= 8376 below_p10 0.203 -> 0.107 [0.101,0.114] pinball10 0.867 -> 0.854
+   TE    n= 4133 below_p10 0.195 -> 0.094 [0.086,0.103] pinball10 0.631 -> 0.593
+   skill n=20513 below_p10 0.180 -> 0.115 [0.108,0.123] pinball10 0.872 -> 0.882
+   test below-rate by season:
+position     QB     RB     TE     WR
+season                              
+2018      0.082  0.068  0.096  0.089
+2019      0.084  0.096  0.099  0.108
+2020      0.109  0.198  0.094  0.104
+2021      0.108  0.224  0.089  0.126
+LOSO c by held-out season: 2014:QB1.50,RB1.06,TE1.54,WR1.50; 2015:QB1.50,RB1.06,TE1.58,WR1.51; 2016:QB1.50,RB1.05,TE1.56,WR1.52; 2017:QB1.55,RB1.04,TE1.55,WR1.49; 2018:QB1.55,RB1.05,TE1.56,WR1.52; 2019:QB1.54,RB1.03,TE1.56,WR1.49; 2020:QB1.48,RB1.00,TE1.56,WR1.50; 2021:QB1.50,RB1.00,TE1.57,WR1.46
+LOSO held-out below-rate by season:
+position     QB     RB     TE     WR
+season                              
+2014      0.108  0.041  0.120  0.098
+2015      0.108  0.050  0.082  0.092
+2016      0.109  0.060  0.103  0.087
+2017      0.077  0.077  0.110  0.106
+2018      0.080  0.057  0.098  0.085
+2019      0.084  0.089  0.100  0.106
+2020      0.118  0.198  0.095  0.099
+2021      0.108  0.224  0.091  0.126
+   LOSO QB    n= 4526 below 0.099 [0.092,0.106] season range 0.077-0.118
+   LOSO RB    n=11599 below 0.099 [0.087,0.113] season range 0.041-0.224
+   LOSO WR    n=16407 below 0.100 [0.095,0.105] season range 0.085-0.126
+   LOSO TE    n= 8188 below 0.100 [0.093,0.106] season range 0.082-0.120
+   LOSO skill n=40720 below 0.100 [0.095,0.105] season range nan-nan
+all-seasons c (production): QB:1.51, RB:1.02, TE:1.56, WR:1.50
+
+==== mcscale/skill-pooled ====
+fit14-17/test18-21: c = QB:1.28, RB:1.28, TE:1.28, WR:1.28
+   QB    n= 2305 below_p10 0.151 -> 0.118 [0.106,0.129] pinball10 1.446 -> 1.573
+   RB    n= 5699 below_p10 0.148 -> 0.088 [0.073,0.102] pinball10 0.821 -> 0.837
+   WR    n= 8376 below_p10 0.203 -> 0.133 [0.126,0.142] pinball10 0.867 -> 0.862
+   TE    n= 4133 below_p10 0.195 -> 0.128 [0.119,0.138] pinball10 0.631 -> 0.611
+   skill n=20513 below_p10 0.180 -> 0.118 [0.111,0.125] pinball10 0.872 -> 0.884
+   test below-rate by season:
+position     QB     RB     TE     WR
+season                              
+2018      0.096  0.030  0.130  0.112
+2019      0.101  0.048  0.127  0.142
+2020      0.138  0.135  0.127  0.124
+2021      0.133  0.135  0.130  0.153
+LOSO c by held-out season: 2014:QB1.36,RB1.36,TE1.36,WR1.36; 2015:QB1.37,RB1.37,TE1.37,WR1.37; 2016:QB1.36,RB1.36,TE1.36,WR1.36; 2017:QB1.35,RB1.35,TE1.35,WR1.35; 2018:QB1.37,RB1.37,TE1.37,WR1.37; 2019:QB1.35,RB1.35,TE1.35,WR1.35; 2020:QB1.33,RB1.33,TE1.33,WR1.33; 2021:QB1.31,RB1.31,TE1.31,WR1.31
+LOSO held-out below-rate by season:
+position     QB     RB     TE     WR
+season                              
+2014      0.119  0.015  0.151  0.111
+2015      0.113  0.025  0.106  0.107
+2016      0.111  0.033  0.129  0.102
+2017      0.099  0.038  0.135  0.123
+2018      0.093  0.027  0.119  0.099
+2019      0.101  0.043  0.124  0.129
+2020      0.126  0.128  0.115  0.121
+2021      0.131  0.127  0.125  0.147
+   LOSO QB    n= 4526 below 0.112 [0.104,0.119] season range 0.093-0.131
+   LOSO RB    n=11599 below 0.054 [0.046,0.063] season range 0.015-0.128
+   LOSO WR    n=16407 below 0.118 [0.113,0.123] season range 0.099-0.147
+   LOSO TE    n= 8188 below 0.125 [0.119,0.132] season range 0.106-0.151
+   LOSO skill n=40720 below 0.101 [0.096,0.105] season range nan-nan
+all-seasons c (production): QB:1.35, RB:1.35, TE:1.35, WR:1.35

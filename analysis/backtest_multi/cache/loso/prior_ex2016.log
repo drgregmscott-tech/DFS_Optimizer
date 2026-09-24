@@ -1,0 +1,65 @@
+
+  !! FIT INCLUDES MEASUREMENT-WINDOW SEASONS [2018, 2019, 2020, 2021].
+     This is correct for a PRODUCTION refit and wrong for a
+     measurement. Any 2018-21 number produced against this
+     artifact is IN-SAMPLE and must be logged as the shipped
+     configuration's numbers, not as evidence. (Session 10.3a
+     measured a threefold inflation from exactly this.)
+
+==============================================================================
+SESSION 10.3b VOLUME PRIOR -- site=dk  fit=[2014, 2015, 2017, 2018, 2019, 2020, 2021]
+==============================================================================
+
+Building player panel...
+  2014: 17 week(s) panelled.
+  2015: 17 week(s) panelled.
+  2016: 17 week(s) panelled.
+  2017: 17 week(s) panelled.
+  2018: 17 week(s) panelled.
+  2019: 17 week(s) panelled.
+  2020: 17 week(s) panelled.
+  2021: 18 week(s) panelled.
+  Panel: 79,216 rows (69,400 fit / 9,816 diagnostic).
+
+--- Share curves: 7/7 fitted ---
+  QB|pass   n=  4295  knots=20  $  4042->0.224 .. $ 10100->0.986
+  QB|rush   n=  4295  knots=20  $  4042->0.057 .. $ 10100->0.153
+  RB|recv   n= 10990  knots=15  $  3004->0.031 .. $ 10500->0.192
+  RB|rush   n= 10990  knots=15  $  3004->0.077 .. $ 10500->0.768
+  TE|recv   n=  7718  knots=13  $  2500->0.052 .. $  8500->0.283
+  WR|recv   n= 15556  knots=15  $  3007->0.060 .. $  9900->0.311
+  WR|rush   n= 15556  knots=15  $  3007->0.004 .. $  9900->0.009
+
+Building team panel...
+  Team panel: 3,616 fit / 512 diagnostic team-weeks.
+
+--- Team volume (out-of-sample R2; both Vegas terms always) ---
+  pass  league mean  34.82
+        with history  R2 0.02463  t: hist=+11.19  implied_total=+7.75  spread=+6.48
+        no history    R2 -0.0001  t: implied_total=+10.46  spread=+8.60   <- week 1 path
+  rush  league mean  26.51
+        with history  R2 0.05786  t: hist=+9.08  implied_total=-4.33  spread=-7.63  opp_rush_allowed=+4.17
+        no history    R2 0.02771  t: implied_total=-5.04  spread=-10.27   <- week 1 path
+  recv  league mean  33.89
+        with history  R2 0.01906  t: hist=+12.67  implied_total=+7.37  spread=+5.99
+        no history    R2 -0.01351  t: implied_total=+10.15  spread=+8.14   <- week 1 path
+
+  Role slope cross-fit: curves on [2014, 2015, 2017] -> slope fit on [2018, 2019, 2020, 2021] (36,025 rows).
+  !! The slope's eval half OVERLAPS the measurement window on [2018, 2019, 2020, 2021].
+     Correct for a PRODUCTION refit, and DISQUALIFYING for a measurement: any
+     backtest over those seasons against this artifact is partly in-sample.
+
+--- Role-change slope (volume_prior.py decision #4) ---
+  slope +0.4519  (SE 0.0048, t +93.46)  R2 +0.1952  n=36,025
+
+Wrote prior_ex2016.json
+
+--- Session 10.3a's catalogued role-change cases ---
+    (participation BEFORE -> AFTER the decision #3 override)
+    None matched. Expected ONLY if 2021 is outside --test-seasons; otherwise
+    the name/team join has broken and this validation is not actually running.
+
+Next: measure it, holdout first.
+  python3 scripts/backtest_harness.py --site dk --season 2018 2019 2020 2021 --all-weeks --num-lineups 20 \
+      --engine statline --volume-prior --dst-model distributional
+Then refit on all eight seasons for production before going live.

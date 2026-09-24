@@ -339,7 +339,7 @@ def calibrate_latent_sd(cv: float, corr_target: float, td_rate: float,
     return round(0.5 * (lo + hi), 4)
 
 
-def fit_team_shock(seasons: list) -> tuple:
+def fit_team_shock(seasons: list, team_volume_path=None) -> tuple:
     """Returns (team_shock_dict, conditional_r_dict) -- the second element
     is Session 15.2c's {(position, comp): r} decomposition, consumed by
     fit() to overwrite each non-excluded pair's live r in `positions`. See
@@ -391,7 +391,7 @@ def fit_team_shock(seasons: list) -> tuple:
     import fit_volume_prior as fvp
     import volume_prior as vp
 
-    tv_path = DATA_DIR / "volume_prior_dk.json"
+    tv_path = Path(team_volume_path) if team_volume_path else DATA_DIR / "volume_prior_dk.json"
     if not tv_path.exists():
         raise SystemExit(
             f"{tv_path} not found. fit_team_shock() needs a fitted team-volume "
@@ -553,7 +553,7 @@ def fit_team_shock(seasons: list) -> tuple:
                                       for (pos, comp), r in conditional_r.items()}
     return out, conditional_r
 
-def fit(seasons: list) -> dict:
+def fit(seasons: list, team_volume_path=None) -> dict:
     df = load_history(seasons)
     print(f"Fitting on {len(df):,} REG player-weeks, seasons {min(seasons)}-{max(seasons)}.")
 
@@ -583,7 +583,7 @@ def fit(seasons: list) -> dict:
         positions[pos] = entry
 
     print("\nTeam-shock calibration (Session 15.2b/15.2c):")
-    team_shock, conditional_r = fit_team_shock(seasons)
+    team_shock, conditional_r = fit_team_shock(seasons, team_volume_path)
 
     # Session 15.2c decision #8: replace each non-excluded pair's live r
     # with the team-shock-decomposed value (net of team-level variance).
@@ -629,9 +629,12 @@ if __name__ == "__main__":
                         help="Seasons to pool. Default 2014-2021 (the window "
                              "where Session 10.0's salary+stats data both exist).")
     parser.add_argument("--out", default=None)
+    parser.add_argument("--team-volume-prior", default=None,
+                        help="Volume-prior artifact whose team_volume the team-shock fit uses "
+                             "(default data/volume_prior_dk.json). For leave-one-season-out refits.")
     args = parser.parse_args()
 
-    artifact = fit(args.seasons)
+    artifact = fit(args.seasons, args.team_volume_prior)
     out_path = Path(args.out) if args.out else ARTIFACT_PATH
     out_path.parent.mkdir(parents=True, exist_ok=True)
     out_path.write_text(json.dumps(artifact, indent=1))

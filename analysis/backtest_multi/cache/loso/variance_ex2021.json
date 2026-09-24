@@ -1,0 +1,178 @@
+{
+ "schema_version": 1,
+ "fit_date": "2026-09-24",
+ "seasons": [
+  2014,
+  2015,
+  2016,
+  2017,
+  2018,
+  2019,
+  2020
+ ],
+ "n_rows": 38013,
+ "min_games_per_player_season": 6,
+ "notes": "Site-agnostic by design (decision #1) -- a stat line is real football; only scoring_rules.py is site-specific. Component whitelist per position is decision #3; anything outside it is never simulated. team_shock (Session 15.2b/15.2c) needs a fitted team-volume artifact to exist first -- see fit_team_shock()'s own docstring. Each non-excluded position/component's live `r` is the Session 15.2c conditional value (net of team-level variance, decision #8); the pre-decomposition value is under r_independent. team_shock.redistribution_shock_scale and .excluded_pairs (decision #9) are read directly by statline_model.simulate() -- see its own docstring.",
+ "positions": {
+  "QB": {
+   "components": {
+    "pass": {
+     "volume_stat": "attempts",
+     "r": 51.5892,
+     "n_player_seasons": 275,
+     "mean_volume": 31.635,
+     "yards_per_opportunity": 7.20195,
+     "td_per_opportunity": 0.04511,
+     "yards_cv": 0.2571,
+     "yards_td_corr_target": 0.4618,
+     "n_efficiency_rows": 3444,
+     "n_corr_rows": 3562,
+     "latent_sd": 0.3008,
+     "r_independent": 16.2464
+    },
+    "rush": {
+     "volume_stat": "carries",
+     "r": 14.7155,
+     "n_player_seasons": 275,
+     "mean_volume": 2.985,
+     "yards_per_opportunity": 4.18354,
+     "td_per_opportunity": 0.04164,
+     "yards_cv": 0.9297,
+     "yards_td_corr_target": 0.2088,
+     "n_efficiency_rows": 2382,
+     "n_corr_rows": 3562,
+     "latent_sd": 0.633,
+     "r_independent": 9.0641
+    }
+   },
+   "fumbles_lost_per_touch": 0.064839,
+   "catch_rate": 0.71795,
+   "int_per_attempt": 0.02347
+  },
+  "RB": {
+   "components": {
+    "rush": {
+     "volume_stat": "carries",
+     "r": 10.1497,
+     "n_player_seasons": 714,
+     "mean_volume": 8.187,
+     "yards_per_opportunity": 4.20648,
+     "td_per_opportunity": 0.0296,
+     "yards_cv": 0.5493,
+     "yards_td_corr_target": 0.377,
+     "n_efficiency_rows": 7441,
+     "n_corr_rows": 9422,
+     "latent_sd": 0.8349,
+     "r_independent": 6.4869
+    },
+    "recv": {
+     "volume_stat": "targets",
+     "r": 8.869,
+     "n_player_seasons": 668,
+     "mean_volume": 2.571,
+     "yards_per_opportunity": 5.99979,
+     "td_per_opportunity": 0.02917,
+     "yards_cv": 0.7757,
+     "yards_td_corr_target": 0.2798,
+     "n_efficiency_rows": 5592,
+     "n_corr_rows": 9422,
+     "latent_sd": 1.0567,
+     "r_independent": 6.0117
+    }
+   },
+   "fumbles_lost_per_touch": 0.005342,
+   "catch_rate": 0.75074
+  },
+  "WR": {
+   "components": {
+    "recv": {
+     "volume_stat": "targets",
+     "r": 21.7455,
+     "n_player_seasons": 1107,
+     "mean_volume": 4.7,
+     "yards_per_opportunity": 7.89542,
+     "td_per_opportunity": 0.04814,
+     "yards_cv": 0.6873,
+     "yards_td_corr_target": 0.3728,
+     "n_efficiency_rows": 11516,
+     "n_corr_rows": 14824,
+     "latent_sd": 0.8769,
+     "r_independent": 12.8041
+    },
+    "rush": {
+     "volume_stat": "carries",
+     "r": 3.8495,
+     "n_player_seasons": 76,
+     "mean_volume": 1.273,
+     "yards_per_opportunity": 5.93344,
+     "td_per_opportunity": 0.0317,
+     "yards_cv": 0.9171,
+     "yards_td_corr_target": 0.3786,
+     "n_efficiency_rows": 553,
+     "n_corr_rows": 14824,
+     "latent_sd": 1.8749
+    }
+   },
+   "fumbles_lost_per_touch": 0.005601,
+   "catch_rate": 0.6115
+  },
+  "TE": {
+   "components": {
+    "recv": {
+     "volume_stat": "targets",
+     "r": 23.0148,
+     "n_player_seasons": 595,
+     "mean_volume": 3.28,
+     "yards_per_opportunity": 7.30729,
+     "td_per_opportunity": 0.05626,
+     "yards_cv": 0.7181,
+     "yards_td_corr_target": 0.297,
+     "n_efficiency_rows": 5609,
+     "n_corr_rows": 7224,
+     "latent_sd": 0.6678,
+     "r_independent": 12.6041
+    }
+   },
+   "fumbles_lost_per_touch": 0.007518,
+   "catch_rate": 0.66292
+  }
+ },
+ "team_shock": {
+  "pass": {
+   "residual_sd": 8.1735,
+   "pass_through_slope": 0.7641,
+   "pass_through_t": 25.919,
+   "n_team_weeks": 3360,
+   "n_player_weeks": 5650
+  },
+  "rush": {
+   "residual_sd": 7.2862,
+   "pass_through_slope": 0.7619,
+   "pass_through_t": 48.319,
+   "n_team_weeks": 3358,
+   "n_player_weeks": 18851
+  },
+  "recv": {
+   "residual_sd": 8.0318,
+   "pass_through_slope": 0.7499,
+   "pass_through_t": 56.465,
+   "n_team_weeks": 3360,
+   "n_player_weeks": 37955
+  },
+  "excluded_pairs": [
+   [
+    "WR",
+    "rush"
+   ]
+  ],
+  "redistribution_shock_scale": 0.7,
+  "conditional_r_reference": {
+   "QB/pass": 51.5892,
+   "QB/rush": 14.7155,
+   "RB/rush": 10.1497,
+   "RB/recv": 8.869,
+   "WR/recv": 21.7455,
+   "TE/recv": 23.0148
+  }
+ }
+}

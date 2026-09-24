@@ -44,8 +44,11 @@ for m in (bps_head, bps_new):
 kw = dict(dst_model_mode="distributional", use_volume_prior=True, sigma_recal=True,
           vegas_slate_id=SLATE, props_weight=0.5, use_stack=True)
 a = bps_head.build_statline_projections("dk", SEASON, WEEK, SLATE, **kw)
-b = bps_new.build_statline_projections("dk", SEASON, WEEK, SLATE, **kw)
-c = bps_new.build_statline_projections("dk", SEASON, WEEK, SLATE, canonical_teams=True, **kw)
+# p10_calibration=False: the one INTENDED default change (2026-09-24, statline_p10
+# only) is diffed separately by diff_2026_slate.py; everything else must match.
+b = bps_new.build_statline_projections("dk", SEASON, WEEK, SLATE, p10_calibration=False, **kw)
+c = bps_new.build_statline_projections("dk", SEASON, WEEK, SLATE, canonical_teams=True,
+                                       p10_calibration=False, **kw)
 pd.testing.assert_frame_equal(a.reset_index(drop=True), b.reset_index(drop=True))
 pd.testing.assert_frame_equal(a.reset_index(drop=True), c.reset_index(drop=True))
 print(f"PASS: {SLATE} ({len(a)} rows, {a.shape[1]} cols) identical HEAD vs working tree "
