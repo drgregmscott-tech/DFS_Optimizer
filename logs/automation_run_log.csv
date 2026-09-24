@@ -1793,3 +1793,7 @@ timestamp_utc,trigger_type,site,step,status
 2026-09-23T23:14:15.772790+00:00,full_refresh_dispatch,fd,fd_classic_wk3_afternoon_27Sep2026,status_apply,success
 2026-09-23T23:14:15.772790+00:00,full_refresh_dispatch,fd,fd_classic_wk3_afternoon_27Sep2026,recommend_lineup,success
 2026-09-23T23:14:15.772790+00:00,full_refresh_dispatch,fd,fd_classic_wk3_afternoon_27Sep2026,pivot_finder,success
+2026-09-24T00:03:51.139581+00:00,manual_workflow_dispatch,dk,dk_showdown_wk3_Atl_GB_24Sep2026,build_projections,success
+2026-09-24T00:03:51.139581+00:00,manual_workflow_dispatch,dk,dk_showdown_wk3_Atl_GB_24Sep2026,status_apply,success
+2026-09-24T00:03:51.139581+00:00,manual_workflow_dispatch,dk,dk_showdown_wk3_Atl_GB_24Sep2026,recommend_lineup,success
+2026-09-24T00:03:51.139581+00:00,manual_workflow_dispatch,dk,dk_showdown_wk3_Atl_GB_24Sep2026,pivot_finder,success
