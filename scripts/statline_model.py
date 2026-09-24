@@ -357,6 +357,10 @@ RECONCILE_MIN_PAIRS_FOR_SHARE_TEST = 20
 # decision #7's "exclusive resource" note. Pass attempts belong to quarterbacks;
 # the pool contains the team's quarterbacks; so the pool's share is ~1.0 and no
 # historical share should be consulted at all.
+# 2026-09-24 backstop: no real QB projects past this many pass attempts in a game;
+# reconcile_team_shares() clamps and warns rather than let a scale blow-up through
+# (wk1 rebuild had Cousins/Murray/Geno Smith at 119-135).
+QB_PASS_ATT_CAP = 55.0
 EXCLUSIVE_COMPONENTS = {"pass"}
 
 DEFAULT_SIMS = 4000
@@ -1098,6 +1102,19 @@ def apply_volume_prior(pool: pd.DataFrame, artifact: dict,
         qb1_ids = set(qb_chart.loc[qb_chart["depth_rank"] == 1, "player_id"].astype(str))
         is_qb = df["position"].astype(str) == "QB"
         suppress = is_qb & has_entry & ~df["player_id"].astype(str).isin(qb1_ids)
+        # 2026-09-24 guard (projection re-check, HANDOFF_projections_model_
+        # review.md section 10): a QB with NO depth-chart entry on a team
+        # whose chart DOES name a QB1 is not that team's starter either --
+        # left untouched he soaked up volume (wk3 MIN: unlisted Max Brosmer,
+        # 0 games, got 16.3 attempts vs. depth-chart QB1 Kyler Murray's
+        # 13.7). Teams the snapshot does not cover at QB are still left
+        # alone ("absence of a signal is not itself a signal" for a whole
+        # missing team).
+        qb1_teams = set(qb_chart.loc[qb_chart["depth_rank"] == 1, "team"].astype(str))
+        suppress = suppress | (is_qb & ~has_entry & df["team"].astype(str).isin(qb1_teams))
+        # Depth-chart QB1 flag, consumed by reconcile_team_shares(): a moved
+        # starter's volume IS his current team's volume.
+        df["depth_qb1"] = is_qb & df["player_id"].astype(str).isin(qb1_ids)
         if suppress.any():
             df.loc[suppress, "pass_price_share"] = 0.0
             # Stashed, not applied to pass_mu yet -- decision #15's role-
@@ -2101,6 +2118,14 @@ def reconcile_team_shares(pool: pd.DataFrame, team_vol: pd.DataFrame,
             hist_team_col = sub["hist_team"] if "hist_team" in sub.columns else None
             if hist_team_col is not None:
                 attributable = hist_team_col.isna() | (hist_team_col.astype(str) == str(team))
+                # 2026-09-24 guard: a depth-chart QB1 who changed teams (wk1
+                # Cousins/Murray/Geno Smith/Willis, wk3 Murray) IS this
+                # team's passing volume now -- excluding him left only his
+                # backups' tiny mu in raw_sum, so `scale` (target/raw_sum)
+                # blew up and was then applied to the starter himself
+                # (Cousins 134 pass att / 62 pts, actual 15.8).
+                if "depth_qb1" in sub.columns:
+                    attributable = attributable | sub["depth_qb1"].fillna(False).astype(bool)
                 raw_sum = float(sub.loc[attributable, mu_col].fillna(0.0).sum())
             else:
                 raw_sum = float(sub[mu_col].fillna(0.0).sum())
@@ -2148,6 +2173,15 @@ def reconcile_team_shares(pool: pd.DataFrame, team_vol: pd.DataFrame,
             elif material and abs(scale - 1.0) > fail_threshold:
                 violations.append((team, comp, scale, raw_sum, target))
             pool.loc[idx, mu_col] = sub[mu_col].fillna(0.0) * scale
+            if mu_col == "pass_mu":
+                over = pool.loc[idx, mu_col] > QB_PASS_ATT_CAP
+                if over.any():
+                    print(f"WARNING share reconciliation: {team} pass_mu above the "
+                          f"{QB_PASS_ATT_CAP:.0f}-attempt cap after a {scale:.2f}x rescale "
+                          f"-- clamped: "
+                          + ", ".join(f"{pool.loc[i, 'player_id']}={pool.loc[i, mu_col]:.0f}"
+                                      for i in over[over].index))
+                    pool.loc[over[over].index, mu_col] = QB_PASS_ATT_CAP
 
     # Decision #7, systemic vs local: a SINGLE team needing a big rescale is
     # usually real football -- an injured QB room, a mid-season backfield
