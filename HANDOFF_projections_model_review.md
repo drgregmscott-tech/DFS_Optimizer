@@ -1,5 +1,12 @@
 # Handoff: projection-model accuracy review (2026-09-23)
 
+> ## OPEN ACTION ITEMS (added 2026-09-24 -- keep this list current; details in section 10)
+> - [ ] **DOWNSTREAM OWNERSHIP REBUILD + REFIT (do NOT forget -- ownership inherits every projection change):** when the projections work is finished (reconcile guard already in, plus anything else changed here), rebuild the 6 real wk1/wk2 DK classic slates with the final code (leak-free: disable played-week zeroing for wk2; wk1 uses `--season 2025 --week 23`; restore `output/` with `git checkout` afterwards), then refit BOTH ownership artifacts (`data/ownership_model_dk.json`, `data/ownership_model_dk_ffc.json`) via `scripts/fit_ownership_model.py` (`fit(..., feats=...)`; FFC variant = `om.FEATURES + om.FFC_FEATURES`). Then refit AGAIN after Week 3 real ownership is logged (sum ALL rows per player in the DK export incl. FLEX; `log_ownership.py` refuses a low total). See `HANDOFF_ownership_model_review.md` section 7 and memory note `project_ownership_model_state`.
+> - [ ] Watch each build for `WARNING share reconciliation ... clamped` (QB hit the 55-attempt cap) or any team pass `scale` > ~1.5 (`output/statline_reconcile_*.csv`); wk3 MIN was 6.0x (Murray's own mu is thin).
+> - [ ] Add a switch to disable played-week zeroing for backtest rebuilds (wk2+ rebuilds otherwise leak results).
+> - [ ] Free public projection sources (DFF, WinWithOdds, Fantasy Life -- see `HANDOFF_projections_external_sources_and_accuracy.md`) are candidates for a "public projection minus ours" feature, but only testable if a past-week archive exists.
+
+
 Split out from the Week 3+ lineup-system session (`HANDOFF_week3_lineup_system.md`)
 at Greg's request, to run as its own session rather than compete for attention with
 that build. Greg's framing: keep reviewing the projection and ownership models for
