@@ -112,7 +112,7 @@ on:
     # down to 6 runs/week anchored to real lock/kickoff timing.
     - cron: "0 23 * * 4"              # Thu ~7:00pm ET / 6:00pm CT, ~75min before TNF lock (props pull runs here)
     - cron: "0 12 * * 6"              # Sat ~8am ET
-    - cron: "0 12,16,19 * * 0"        # Sun ~8am/12pm/3pm ET
+    - cron: "0 8,12,16,19 * * 0"      # Sun ~4am/8am/12pm/3pm ET (08:00 = early props pull for the 4am CT session)
     - cron: "0 23 * * 1"              # Mon ~7:00pm ET / 6:00pm CT, ~75min before MNF lock (props pull runs here)
   repository_dispatch:
     types: [near_lock_refresh]
@@ -167,7 +167,7 @@ jobs:
                 echo "mode=vegas_only" >> "$GITHUB_OUTPUT"
                 echo "trigger_type=light_vegas_refresh" >> "$GITHUB_OUTPUT"
                 ;;
-              "0 23 * * 4"|"0 12 * * 6"|"0 12,16,19 * * 0"|"0 23 * * 1")
+              "0 23 * * 4"|"0 12 * * 6"|"0 8,12,16,19 * * 0"|"0 23 * * 1")
                 echo "mode=full" >> "$GITHUB_OUTPUT"
                 echo "trigger_type=full_refresh_scheduled" >> "$GITHUB_OUTPUT"
                 ;;
@@ -365,7 +365,10 @@ jobs:
         id: props
         if: needs.prepare.outputs.mode == 'full'
         continue-on-error: true
-        run: python3 scripts/props_auto.py
+        # lead 600 min so the Sunday 08:00Z run pulls (24-game main est. 144 credits
+        # > old 120 cap, so raise the cap). Later runs re-try but the credit
+        # check skips them (fail-safe) so Monday's showdown pull is protected.
+        run: python3 scripts/props_auto.py --lead-minutes 600 --max-credits 150
 
       # Commit whatever was successfully refreshed. A failed pull above
       # simply produced no new file, so there is nothing new to commit for

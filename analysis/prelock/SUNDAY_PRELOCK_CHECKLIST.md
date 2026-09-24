@@ -1,5 +1,8 @@
 # Sunday Week 3 pre-lock checklist (2026-09-27)
 
+> **UPDATE (2026-09-24): props now pull EARLY.** A Sunday 08:00Z (3am CDT) full run was added, and the props step now runs `props_auto.py --lead-minutes 600 --max-credits 150`. The old 120-credit cap would have SKIPPED the 24-game main pull (est. 144 credits), so the 16:00Z pull would never have happened. The 08:00Z run pulls once (~144 of ~227 credits); later runs re-try but the credit check skips them. Sections 1-4 below can assume a props snapshot exists at 4am CDT; verify with the check script (props PASS + movers table). If the 08:00Z run failed, run by hand: `python scripts/props_auto.py --lead-minutes 3000 --max-credits 150`, commit the new `data/props/*` files, push, then dispatch a full refresh. Also: the injury-status-on-light-runs bug is FIXED (workflow now applies status on every run), so Fix A/B below are only needed if the check still fails.
+
+
 Slates (from `data/current_slate.json`): `dk_classic_wk3_main_27Sep2026`, `dk_classic_wk3_early_27Sep2026`,
 `fd_classic_wk3_main_27Sep2026`, `fd_classic_wk3_early_27Sep2026` all lock **17:00 UTC (12:00 CDT)**.
 `fd_classic_wk3_afternoon_27Sep2026` locks **20:05 UTC (15:05 CDT)**. DK main late games: ARI@SF, MIN@TB 20:05 UTC;
