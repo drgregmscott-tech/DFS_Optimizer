@@ -434,7 +434,6 @@ jobs:
 
       - name: Locate this slate's latest status pull file
         id: status_file
-        if: needs.prepare.outputs.mode == 'full'
         run: |
           # Newest by the timestamp in the FILENAME, not mtime: a fresh git
           # checkout gives every file the same mtime, so `ls -t` picked an
@@ -487,7 +486,7 @@ jobs:
 
       - name: Apply status (zero OUT players)
         id: apply_status
-        if: needs.prepare.outputs.mode == 'full' && steps.status_file.outputs.path != ''
+        if: steps.status_file.outputs.path != ''
         continue-on-error: true
         run: |
           python3 scripts/status_check.py apply --site ${{ matrix.site }} \
