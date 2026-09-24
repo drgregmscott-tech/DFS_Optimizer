@@ -1,0 +1,261 @@
+arm=no_stack opts={'restore_matchup': False, 'stack': False, 'sigma_recal': True, 'volume_prior': True, 'role_change': True, 'dst_model': 'distributional'} jobs=[(2014, 16), (2015, 16), (2016, 16), (2017, 16), (2018, 16), (2019, 16), (2020, 16), (2021, 17)]
+NOTE: weather_2015_wk2.csv not found -- weather adjustment skipped (all 1.0).
+NOTE: weather_2014_wk2.csv not found -- weather adjustment skipped (all 1.0).
+NOTE: weather_2017_wk2.csv not found -- weather adjustment skipped (all 1.0).
+NOTE: weather_2019_wk2.csv not found -- weather adjustment skipped (all 1.0).
+NOTE: weather_2016_wk2.csv not found -- weather adjustment skipped (all 1.0).
+NOTE: weather_2020_wk2.csv not found -- weather adjustment skipped (all 1.0).
+NOTE: weather_2018_wk2.csv not found -- weather adjustment skipped (all 1.0).
+NOTE: weather_2021_wk2.csv not found -- weather adjustment skipped (all 1.0).
+WARNING: layered ownership model failed (TypeError: must be real number, not Series); keeping the heuristic estimate.
+[no_stack] 2014 wk2: ok (14s)
+NOTE: weather_2014_wk3.csv not found -- weather adjustment skipped (all 1.0).
+[no_stack] 2017 wk2: ok (46s)
+[no_stack] 2015 wk2: ok (47s)
+[no_stack] 2019 wk2: ok (48s)
+[no_stack] 2016 wk2: ok (49s)
+[no_stack] 2020 wk2: ok (49s)
+[no_stack] 2018 wk2: ok (49s)
+[no_stack] 2021 wk2: ok (50s)
+NOTE: weather_2015_wk3.csv not found -- weather adjustment skipped (all 1.0).
+NOTE: weather_2017_wk3.csv not found -- weather adjustment skipped (all 1.0).
+NOTE: weather_2019_wk3.csv not found -- weather adjustment skipped (all 1.0).
+NOTE: weather_2016_wk3.csv not found -- weather adjustment skipped (all 1.0).
+NOTE: weather_2020_wk3.csv not found -- weather adjustment skipped (all 1.0).
+NOTE: weather_2018_wk3.csv not found -- weather adjustment skipped (all 1.0).
+NOTE: weather_2021_wk3.csv not found -- weather adjustment skipped (all 1.0).
+[no_stack] 2014 wk3: ok (52s)
+NOTE: weather_2014_wk4.csv not found -- weather adjustment skipped (all 1.0).
+[no_stack] 2015 wk3: ok (48s)
+[no_stack] 2017 wk3: ok (51s)
+[no_stack] 2019 wk3: ok (50s)
+[no_stack] 2016 wk3: ok (50s)
+[no_stack] 2020 wk3: ok (50s)
+[no_stack] 2018 wk3: ok (52s)
+[no_stack] 2021 wk3: ok (53s)
+NOTE: weather_2015_wk4.csv not found -- weather adjustment skipped (all 1.0).
+NOTE: weather_2017_wk4.csv not found -- weather adjustment skipped (all 1.0).
+NOTE: weather_2019_wk4.csv not found -- weather adjustment skipped (all 1.0).
+NOTE: weather_2016_wk4.csv not found -- weather adjustment skipped (all 1.0).
+NOTE: weather_2020_wk4.csv not found -- weather adjustment skipped (all 1.0).
+NOTE: weather_2018_wk4.csv not found -- weather adjustment skipped (all 1.0).
+[no_stack] 2014 wk4: ok (46s)
+NOTE: weather_2021_wk4.csv not found -- weather adjustment skipped (all 1.0).
+NOTE: weather_2014_wk5.csv not found -- weather adjustment skipped (all 1.0).
+[no_stack] 2015 wk4: ok (48s)
+[no_stack] 2016 wk4: ok (48s)
+[no_stack] 2019 wk4: ok (49s)
+[no_stack] 2017 wk4: ok (54s)
+[no_stack] 2020 wk4: ok (53s)
+[no_stack] 2018 wk4: ok (51s)
+NOTE: weather_2015_wk5.csv not found -- weather adjustment skipped (all 1.0).
+NOTE: weather_2016_wk5.csv not found -- weather adjustment skipped (all 1.0).
+NOTE: weather_2019_wk5.csv not found -- weather adjustment skipped (all 1.0).
+[no_stack] 2021 wk4: ok (55s)
+NOTE: weather_2017_wk5.csv not found -- weather adjustment skipped (all 1.0).
+NOTE: weather_2018_wk5.csv not found -- weather adjustment skipped (all 1.0).
+NOTE: weather_2020_wk5.csv not found -- weather adjustment skipped (all 1.0).
+[no_stack] 2014 wk5: ok (50s)
+NOTE: weather_2021_wk5.csv not found -- weather adjustment skipped (all 1.0).
+NOTE: weather_2014_wk6.csv not found -- weather adjustment skipped (all 1.0).
+[no_stack] 2015 wk5: ok (47s)
+[no_stack] 2016 wk5: ok (47s)
+[no_stack] 2017 wk5: ok (42s)
+[no_stack] 2019 wk5: ok (51s)
+NOTE: weather_2015_wk6.csv not found -- weather adjustment skipped (all 1.0).
+[no_stack] 2020 wk5: ok (49s)
+NOTE: weather_2016_wk6.csv not found -- weather adjustment skipped (all 1.0).
+NOTE: weather_2017_wk6.csv not found -- weather adjustment skipped (all 1.0).
+[no_stack] 2018 wk5: ok (51s)
+NOTE: weather_2019_wk6.csv not found -- weather adjustment skipped (all 1.0).
+NOTE: weather_2020_wk6.csv not found -- weather adjustment skipped (all 1.0).
+[no_stack] 2021 wk5: ok (52s)
+NOTE: weather_2018_wk6.csv not found -- weather adjustment skipped (all 1.0).
+[no_stack] 2014 wk6: ok (53s)
+NOTE: weather_2021_wk6.csv not found -- weather adjustment skipped (all 1.0).
+NOTE: weather_2014_wk7.csv not found -- weather adjustment skipped (all 1.0).
+[no_stack] 2015 wk6: ok (50s)
+[no_stack] 2017 wk6: ok (49s)
+[no_stack] 2016 wk6: ok (52s)
+[no_stack] 2019 wk6: ok (50s)
+[no_stack] 2020 wk6: ok (51s)
+NOTE: weather_2015_wk7.csv not found -- weather adjustment skipped (all 1.0).
+NOTE: weather_2017_wk7.csv not found -- weather adjustment skipped (all 1.0).
+[no_stack] 2018 wk6: ok (52s)
+NOTE: weather_2016_wk7.csv not found -- weather adjustment skipped (all 1.0).
+NOTE: weather_2019_wk7.csv not found -- weather adjustment skipped (all 1.0).
+[no_stack] 2021 wk6: ok (53s)
+NOTE: weather_2020_wk7.csv not found -- weather adjustment skipped (all 1.0).
+NOTE: weather_2018_wk7.csv not found -- weather adjustment skipped (all 1.0).
+[no_stack] 2014 wk7: ok (55s)
+NOTE: weather_2021_wk7.csv not found -- weather adjustment skipped (all 1.0).
+NOTE: weather_2014_wk8.csv not found -- weather adjustment skipped (all 1.0).
+[no_stack] 2015 wk7: ok (51s)
+[no_stack] 2016 wk7: ok (51s)
+[no_stack] 2017 wk7: ok (54s)
+[no_stack] 2019 wk7: ok (52s)
+[no_stack] 2020 wk7: ok (51s)
+NOTE: weather_2015_wk8.csv not found -- weather adjustment skipped (all 1.0).
+NOTE: weather_2016_wk8.csv not found -- weather adjustment skipped (all 1.0).
+NOTE: weather_2017_wk8.csv not found -- weather adjustment skipped (all 1.0).
+[no_stack] 2018 wk7: ok (55s)
+NOTE: weather_2019_wk8.csv not found -- weather adjustment skipped (all 1.0).
+NOTE: weather_2020_wk8.csv not found -- weather adjustment skipped (all 1.0).
+[no_stack] 2021 wk7: ok (56s)
+NOTE: weather_2018_wk8.csv not found -- weather adjustment skipped (all 1.0).
+[no_stack] 2014 wk8: ok (60s)
+NOTE: weather_2021_wk8.csv not found -- weather adjustment skipped (all 1.0).
+NOTE: weather_2014_wk9.csv not found -- weather adjustment skipped (all 1.0).
+[no_stack] 2015 wk8: ok (55s)
+[no_stack] 2016 wk8: ok (51s)
+[no_stack] 2017 wk8: ok (54s)
+[no_stack] 2019 wk8: ok (57s)
+[no_stack] 2020 wk8: ok (56s)
+NOTE: weather_2015_wk9.csv not found -- weather adjustment skipped (all 1.0).
+NOTE: weather_2016_wk9.csv not found -- weather adjustment skipped (all 1.0).
+NOTE: weather_2017_wk9.csv not found -- weather adjustment skipped (all 1.0).
+[no_stack] 2018 wk8: ok (56s)
+NOTE: weather_2019_wk9.csv not found -- weather adjustment skipped (all 1.0).
+NOTE: weather_2020_wk9.csv not found -- weather adjustment skipped (all 1.0).
+[no_stack] 2021 wk8: ok (59s)
+NOTE: weather_2018_wk9.csv not found -- weather adjustment skipped (all 1.0).
+[no_stack] 2014 wk9: ok (54s)
+NOTE: weather_2021_wk9.csv not found -- weather adjustment skipped (all 1.0).
+NOTE: weather_2014_wk10.csv not found -- weather adjustment skipped (all 1.0).
+[no_stack] 2015 wk9: ok (53s)
+[no_stack] 2016 wk9: ok (53s)
+[no_stack] 2017 wk9: ok (54s)
+[no_stack] 2019 wk9: ok (54s)
+[no_stack] 2020 wk9: ok (54s)
+NOTE: weather_2015_wk10.csv not found -- weather adjustment skipped (all 1.0).
+NOTE: weather_2016_wk10.csv not found -- weather adjustment skipped (all 1.0).
+NOTE: weather_2017_wk10.csv not found -- weather adjustment skipped (all 1.0).
+[no_stack] 2018 wk9: ok (54s)
+NOTE: weather_2019_wk10.csv not found -- weather adjustment skipped (all 1.0).
+NOTE: weather_2020_wk10.csv not found -- weather adjustment skipped (all 1.0).
+[no_stack] 2021 wk9: ok (55s)
+[no_stack] 2014 wk10: ok (51s)
+NOTE: weather_2018_wk10.csv not found -- weather adjustment skipped (all 1.0).
+NOTE: weather_2021_wk10.csv not found -- weather adjustment skipped (all 1.0).
+NOTE: weather_2014_wk11.csv not found -- weather adjustment skipped (all 1.0).
+[no_stack] 2015 wk10: ok (52s)
+[no_stack] 2016 wk10: ok (52s)
+[no_stack] 2017 wk10: ok (52s)
+[no_stack] 2019 wk10: ok (52s)
+NOTE: weather_2015_wk11.csv not found -- weather adjustment skipped (all 1.0).
+[no_stack] 2020 wk10: ok (52s)
+NOTE: weather_2016_wk11.csv not found -- weather adjustment skipped (all 1.0).
+NOTE: weather_2017_wk11.csv not found -- weather adjustment skipped (all 1.0).
+[no_stack] 2018 wk10: ok (54s)
+NOTE: weather_2019_wk11.csv not found -- weather adjustment skipped (all 1.0).
+NOTE: weather_2020_wk11.csv not found -- weather adjustment skipped (all 1.0).
+[no_stack] 2014 wk11: ok (53s)
+[no_stack] 2021 wk10: ok (54s)
+NOTE: weather_2018_wk11.csv not found -- weather adjustment skipped (all 1.0).
+[no_stack] 2015 wk11: ok (51s)
+NOTE: weather_2014_wk12.csv not found -- weather adjustment skipped (all 1.0).
+[no_stack] 2016 wk11: ok (53s)
+NOTE: weather_2021_wk11.csv not found -- weather adjustment skipped (all 1.0).
+[no_stack] 2017 wk11: ok (53s)
+[no_stack] 2019 wk11: ok (52s)
+NOTE: weather_2015_wk12.csv not found -- weather adjustment skipped (all 1.0).
+[no_stack] 2020 wk11: ok (54s)
+NOTE: weather_2016_wk12.csv not found -- weather adjustment skipped (all 1.0).
+[no_stack] 2018 wk11: ok (52s)
+NOTE: weather_2017_wk12.csv not found -- weather adjustment skipped (all 1.0).
+NOTE: weather_2019_wk12.csv not found -- weather adjustment skipped (all 1.0).
+NOTE: weather_2020_wk12.csv not found -- weather adjustment skipped (all 1.0).
+[no_stack] 2014 wk12: ok (55s)
+NOTE: weather_2018_wk12.csv not found -- weather adjustment skipped (all 1.0).
+[no_stack] 2021 wk11: ok (55s)
+[no_stack] 2015 wk12: ok (55s)
+NOTE: weather_2014_wk13.csv not found -- weather adjustment skipped (all 1.0).
+NOTE: weather_2021_wk12.csv not found -- weather adjustment skipped (all 1.0).
+[no_stack] 2016 wk12: ok (57s)
+[no_stack] 2017 wk12: ok (56s)
+[no_stack] 2019 wk12: ok (54s)
+NOTE: weather_2015_wk13.csv not found -- weather adjustment skipped (all 1.0).
+[no_stack] 2020 wk12: ok (59s)
+NOTE: weather_2016_wk13.csv not found -- weather adjustment skipped (all 1.0).
+[no_stack] 2018 wk12: ok (56s)
+NOTE: weather_2017_wk13.csv not found -- weather adjustment skipped (all 1.0).
+NOTE: weather_2019_wk13.csv not found -- weather adjustment skipped (all 1.0).
+NOTE: weather_2020_wk13.csv not found -- weather adjustment skipped (all 1.0).
+NOTE: weather_2018_wk13.csv not found -- weather adjustment skipped (all 1.0).
+[no_stack] 2021 wk12: ok (58s)
+[no_stack] 2014 wk13: ok (59s)
+[no_stack] 2015 wk13: ok (55s)
+NOTE: weather_2021_wk13.csv not found -- weather adjustment skipped (all 1.0).
+NOTE: weather_2014_wk14.csv not found -- weather adjustment skipped (all 1.0).
+[no_stack] 2016 wk13: ok (57s)
+[no_stack] 2017 wk13: ok (57s)
+NOTE: weather_2015_wk14.csv not found -- weather adjustment skipped (all 1.0).
+[no_stack] 2019 wk13: ok (60s)
+[no_stack] 2020 wk13: ok (56s)
+NOTE: weather_2016_wk14.csv not found -- weather adjustment skipped (all 1.0).
+NOTE: weather_2017_wk14.csv not found -- weather adjustment skipped (all 1.0).
+[no_stack] 2018 wk13: ok (59s)
+NOTE: weather_2019_wk14.csv not found -- weather adjustment skipped (all 1.0).
+NOTE: weather_2020_wk14.csv not found -- weather adjustment skipped (all 1.0).
+[no_stack] 2021 wk13: ok (55s)
+NOTE: weather_2018_wk14.csv not found -- weather adjustment skipped (all 1.0).
+[no_stack] 2014 wk14: ok (58s)
+[no_stack] 2015 wk14: ok (55s)
+NOTE: weather_2021_wk14.csv not found -- weather adjustment skipped (all 1.0).
+[no_stack] 2016 wk14: ok (55s)
+NOTE: weather_2014_wk15.csv not found -- weather adjustment skipped (all 1.0).
+NOTE: weather_2015_wk15.csv not found -- weather adjustment skipped (all 1.0).
+[no_stack] 2017 wk14: ok (58s)
+[no_stack] 2019 wk14: ok (59s)
+NOTE: weather_2016_wk15.csv not found -- weather adjustment skipped (all 1.0).
+[no_stack] 2020 wk14: ok (59s)
+NOTE: weather_2017_wk15.csv not found -- weather adjustment skipped (all 1.0).
+[no_stack] 2018 wk14: ok (59s)
+NOTE: weather_2019_wk15.csv not found -- weather adjustment skipped (all 1.0).
+NOTE: weather_2020_wk15.csv not found -- weather adjustment skipped (all 1.0).
+[no_stack] 2021 wk14: ok (56s)
+NOTE: weather_2018_wk15.csv not found -- weather adjustment skipped (all 1.0).
+[no_stack] 2014 wk15: ok (59s)
+[no_stack] 2015 wk15: ok (55s)
+NOTE: weather_2021_wk15.csv not found -- weather adjustment skipped (all 1.0).
+[no_stack] 2016 wk15: ok (56s)
+NOTE: weather_2014_wk16.csv not found -- weather adjustment skipped (all 1.0).
+NOTE: weather_2015_wk16.csv not found -- weather adjustment skipped (all 1.0).
+[no_stack] 2017 wk15: ok (57s)
+[no_stack] 2019 wk15: ok (57s)
+NOTE: weather_2016_wk16.csv not found -- weather adjustment skipped (all 1.0).
+[no_stack] 2020 wk15: ok (60s)
+NOTE: weather_2017_wk16.csv not found -- weather adjustment skipped (all 1.0).
+[no_stack] 2018 wk15: ok (59s)
+NOTE: weather_2019_wk16.csv not found -- weather adjustment skipped (all 1.0).
+NOTE: weather_2020_wk16.csv not found -- weather adjustment skipped (all 1.0).
+[no_stack] 2021 wk15: ok (61s)
+[no_stack] 2015 wk16: ok (55s)
+NOTE: weather_2018_wk16.csv not found -- weather adjustment skipped (all 1.0).
+[no_stack] 2014 wk16: ok (58s)
+[no_stack] 2016 wk16: ok (57s)
+NOTE: weather_2021_wk16.csv not found -- weather adjustment skipped (all 1.0).
+NOTE: weather_2015_wk17.csv not found -- weather adjustment skipped (all 1.0).
+NOTE: weather_2014_wk17.csv not found -- weather adjustment skipped (all 1.0).
+[no_stack] 2017 wk16: ok (57s)
+NOTE: weather_2016_wk17.csv not found -- weather adjustment skipped (all 1.0).
+[no_stack] 2019 wk16: ok (59s)
+NOTE: weather_2017_wk17.csv not found -- weather adjustment skipped (all 1.0).
+[no_stack] 2020 wk16: ok (61s)
+[no_stack] 2018 wk16: ok (58s)
+NOTE: weather_2019_wk17.csv not found -- weather adjustment skipped (all 1.0).
+NOTE: weather_2020_wk17.csv not found -- weather adjustment skipped (all 1.0).
+[no_stack] 2015 wk17: ok (57s)
+[no_stack] 2021 wk16: ok (61s)
+NOTE: weather_2018_wk17.csv not found -- weather adjustment skipped (all 1.0).
+[no_stack] 2014 wk17: ok (58s)
+[no_stack] 2016 wk17: ok (54s)
+[no_stack] 2017 wk17: ok (53s)
+NOTE: weather_2021_wk17.csv not found -- weather adjustment skipped (all 1.0).
+[no_stack] 2019 wk17: ok (50s)
+[no_stack] 2020 wk17: ok (49s)
+[no_stack] 2018 wk17: ok (47s)
+[no_stack] 2021 wk17: ok (44s)
+NOTE: weather_2021_wk18.csv not found -- weather adjustment skipped (all 1.0).
+[no_stack] 2021 wk18: ok (37s)
+done arm=no_stack: 129 weeks, 0 failed, 918s

@@ -170,7 +170,7 @@ import statline_model
 import weather as weather_mod  # noqa: E402
 import sigma_recalibration
 import volume_prior  # noqa: E402
-from ingest_salaries import SITE_CONFIGS  # noqa: E402
+from ingest_salaries import SITE_CONFIGS, BASE_TEAM_ABBREV_MAP  # noqa: E402
 # Decisions #2 and #7: reuse, never re-implement.
 # Session 14.0 additions: CAPTAIN_ROLES, is_showdown_slate,
 # apply_captain_multiplier, add_showdown_ownership_columns, and
@@ -336,6 +336,7 @@ def build_statline_projections(site: str, season: int, week: int, slate_id: str,
                                props_weight: float = 0.0,
                                props_file: str = None,
                                use_stack: bool = False,
+                               canonical_teams: bool = False,
                                ) -> pd.DataFrame:
     """`vegas_slate_id` (Session 14.0 -- this engine never had Session
     13.5-pause's fix at all): defaults to `slate_id`. See
@@ -358,6 +359,21 @@ def build_statline_projections(site: str, season: int, week: int, slate_id: str,
     vegas = load_vegas_implied_totals(vegas_slate_id if vegas_slate_id else slate_id)
     salaries = load_salaries(site, slate_id)
     schedule = load_schedule(season)
+    if canonical_teams:
+        # Opt-in (default False = production behavior unchanged). Historical
+        # backtests only: pre-2020 schedules carry era codes (OAK/SD/STL)
+        # while vegas files and team_stats use current codes (LV/LAC/LA), so
+        # the schedule opponent map never matched -> DST abort "no team stats
+        # could be found for their opponent" and missing opponents for those
+        # teams' skill players. RotoGuru 2014-16 salaries also carry 'SDG'.
+        # Identity on every 2020+ schedule (verified), but kept opt-in anyway.
+        _canon = {**BASE_TEAM_ABBREV_MAP, "SDG": "LAC"}
+        schedule = schedule.copy()
+        for _c in ("home_team", "away_team"):
+            schedule[_c] = schedule[_c].map(lambda t: _canon.get(t, t))
+        salaries = salaries.copy()
+        salaries["normalized_team"] = salaries["normalized_team"].map(
+            lambda t: _canon.get(t, t))
 
     opponent_map = build_opponent_map(schedule, week)
 

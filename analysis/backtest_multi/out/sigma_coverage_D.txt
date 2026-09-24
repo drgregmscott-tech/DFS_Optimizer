@@ -1,0 +1,27 @@
+           arm             window   pos     n  below_p10  above_p90  med_width  below_p10_fix  below_sym
+      baseline  2014-17 (sigmaIS)    QB  2221      0.156      0.075     23.066          0.100      0.115
+      baseline  2014-17 (sigmaIS)    RB  5900      0.065      0.159     11.757          0.025      0.028
+      baseline  2014-17 (sigmaIS)    TE  4055      0.211      0.138      9.413          0.011      0.017
+      baseline  2014-17 (sigmaIS)    WR  8031      0.189      0.117     14.977          0.020      0.027
+      baseline 2018-21 (sigmaOOS)    QB  2305      0.151      0.096     23.667          0.090      0.103
+      baseline 2018-21 (sigmaOOS)    RB  5699      0.148      0.127     13.464          0.023      0.030
+      baseline 2018-21 (sigmaOOS)    TE  4133      0.195      0.136      9.374          0.011      0.016
+      baseline 2018-21 (sigmaOOS)    WR  8376      0.203      0.119     14.457          0.021      0.027
+      baseline  2014-17 (sigmaIS) skill 20207      0.154      0.129     13.647          0.028      0.035
+      baseline 2018-21 (sigmaOOS) skill 20513      0.180      0.122     13.742          0.027      0.034
+no_sigma_recal  2014-17 (sigmaIS)    QB  2221      0.156      0.075     23.066            NaN        NaN
+no_sigma_recal  2014-17 (sigmaIS)    RB  5900      0.065      0.159     11.757            NaN        NaN
+no_sigma_recal  2014-17 (sigmaIS)    TE  4055      0.211      0.138      9.413            NaN        NaN
+no_sigma_recal  2014-17 (sigmaIS)    WR  8031      0.189      0.117     14.977            NaN        NaN
+no_sigma_recal 2018-21 (sigmaOOS)    QB  2305      0.151      0.096     23.667            NaN        NaN
+no_sigma_recal 2018-21 (sigmaOOS)    RB  5699      0.148      0.127     13.464            NaN        NaN
+no_sigma_recal 2018-21 (sigmaOOS)    TE  4133      0.195      0.136      9.374            NaN        NaN
+no_sigma_recal 2018-21 (sigmaOOS)    WR  8376      0.203      0.119     14.457            NaN        NaN
+no_sigma_recal  2014-17 (sigmaIS) skill 20207      0.154      0.129     13.647            NaN        NaN
+no_sigma_recal 2018-21 (sigmaOOS) skill 20513      0.180      0.122     13.742            NaN        NaN
+
+QB    fit2014-17 c=1.37 (vs 1.37 proposed) -> 2018-21 below=0.090 n=2305; current statline_p10 below=0.151
+RB    fit2014-17 c=0.71 (vs 1.37 proposed) -> 2018-21 below=0.143 n=5699; current statline_p10 below=0.148
+WR    fit2014-17 c=0.85 (vs 1.37 proposed) -> 2018-21 below=0.114 n=8376; current statline_p10 below=0.203
+TE    fit2014-17 c=0.82 (vs 1.37 proposed) -> 2018-21 below=0.097 n=4133; current statline_p10 below=0.195
+skill fit2014-17 c=0.87 (vs 1.37 proposed) -> 2018-21 below=0.108 n=20513; current statline_p10 below=0.180

@@ -1,0 +1,3 @@
+prod_leaky: n=335 bias=-0.42 MAE=4.67 pearson=0.604 spearman=0.648
+clean: n=335 bias=+0.19 MAE=4.36 pearson=0.683 spearman=0.717
+players whose projection differs prod vs clean (>0.05): 136 of 367; max abs diff 20.10
