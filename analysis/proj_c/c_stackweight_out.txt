@@ -1,0 +1,82 @@
+== (1) act ~ a + b*eng + c*delta (dedup) ==
+wk1 pooled n=112 a= -4.98 b_eng=1.490 c_delta=+1.295
+wk1 QB     n= 24 a= -3.87 b_eng=1.505 c_delta=+2.378
+wk1 RB     n= 32 a= -8.58 b_eng=1.867 c_delta=+1.580
+wk1 WR     n= 39 a= -7.25 b_eng=1.676 c_delta=+1.357
+wk1 TE     n= 17 a= +5.53 b_eng=0.435 c_delta=-0.785
+wk2 pooled n=126 a= -2.61 b_eng=1.082 c_delta=+0.938
+wk2 QB     n= 25 a=+14.49 b_eng=-0.081 c_delta=-1.889
+wk2 RB     n= 35 a= -1.33 b_eng=0.841 c_delta=+0.697
+wk2 WR     n= 53 a= -9.29 b_eng=1.621 c_delta=+2.274
+wk2 TE     n= 13 a= -2.68 b_eng=1.262 c_delta=-0.173
+wkALL pooled n=238 a= -3.70 b_eng=1.282 c_delta=+1.014
+wkALL QB     n= 49 a= +5.29 b_eng=0.681 c_delta=+0.072
+wkALL RB     n= 67 a= -4.80 b_eng=1.377 c_delta=+0.825
+wkALL WR     n= 92 a= -9.23 b_eng=1.715 c_delta=+1.918
+wkALL TE     n= 30 a= +1.97 b_eng=0.782 c_delta=-0.522
+
+== (2a) fixed grid p = eng + lam*delta, per test week (no fitting) ==
+ lam  wk   bias   mae  rmse  cell_sp  cell_top  pool_sp  top20  val_sp  vtop20
+0.00   1 -1.780 7.004 9.308    0.300    17.589    0.507 21.500   0.387  19.561
+0.00   2  0.700 5.551 7.424    0.331    14.263    0.506 16.229   0.353  14.764
+0.25   1 -1.657 7.016 9.220    0.302    18.485    0.511 21.637   0.396  19.709
+0.25   2  0.960 5.624 7.356    0.341    14.644    0.511 16.119   0.360  14.981
+0.50   1 -1.535 7.051 9.173    0.282    18.660    0.507 21.828   0.401  20.633
+0.50   2  1.221 5.708 7.332    0.316    14.591    0.525 15.745   0.376  14.974
+0.75   1 -1.412 7.102 9.167    0.265    17.963    0.503 21.911   0.399  20.795
+0.75   2  1.481 5.807 7.352    0.296    14.813    0.524 15.676   0.378  15.240
+1.00   1 -1.289 7.155 9.202    0.248    18.635    0.491 22.097   0.392  20.778
+1.00   2  1.742 5.931 7.417    0.233    14.593    0.511 16.091   0.371  15.019
+1.25   1 -1.166 7.250 9.277    0.235    18.588    0.460 21.893   0.373  19.807
+1.25   2  2.002 6.078 7.525    0.190    14.163    0.484 16.335   0.356  15.529
+1.50   1 -1.043 7.383 9.391    0.258    18.135    0.422 21.368   0.323  19.493
+1.50   2  2.262 6.245 7.675    0.158    14.173    0.445 16.019   0.289  14.770
+
+== (2b) fixed grid p = final + g*(eng - mean eng within slate x pos) : expand only the engine spread ==
+  g  wk   bias   mae  rmse  cell_sp  cell_top  pool_sp  top20  val_sp  vtop20
+0.0   1 -1.289 7.155 9.202    0.248    18.635    0.491 22.097   0.392  20.778
+0.0   2  1.742 5.931 7.417    0.233    14.593    0.511 16.091   0.371  15.019
+0.1   1 -1.289 7.112 9.130    0.260    18.716    0.493 22.283   0.397  20.786
+0.1   2  1.742 5.912 7.426    0.279    14.884    0.510 16.091   0.356  16.398
+0.2   1 -1.289 7.072 9.076    0.260    17.979    0.492 22.415   0.389  20.574
+0.2   2  1.742 5.908 7.452    0.287    14.630    0.499 16.579   0.347  16.129
+0.3   1 -1.289 7.041 9.039    0.267    17.963    0.490 22.183   0.398  20.315
+0.3   2  1.742 5.923 7.495    0.296    14.813    0.483 16.438   0.335  15.907
+0.5   1 -1.289 6.988 9.020    0.274    17.942    0.488 22.094   0.388  20.275
+0.5   2  1.742 5.986 7.633    0.303    14.702    0.459 16.069   0.319  15.914
+
+== (3) level-neutral eng/stack reweight, LOWO ==
+test wk1 fit b_eng=1.082 c_delta=0.938 (ratio c/b 0.87) | bias +0.117 mae -0.081 rmse -0.106 cell_sp +0.013 cell_top +0.084 pool_sp +0.008 top20 -0.027 val_sp +0.005 vtop20 +0.000
+test wk2 fit b_eng=1.490 c_delta=1.295 (ratio c/b 0.87) | bias -0.335 mae -0.139 rmse +0.068 cell_sp +0.044 cell_top +0.291 pool_sp +0.006 top20 -0.205 val_sp +0.010 vtop20 +1.534
+
+== (4) paired bootstrap of rank gains (fixed lam=0.5 and LOWO neutral reweight vs shipped) ==
+lam0.5        dsp: mean +0.059 cells>0 12/22 (ties 0) cellCI [-0.002,+0.135] slateCI [+0.003,+0.111]
+lam0.5        dtop: mean +0.012 cells>0 7/22 (ties 7) cellCI [-1.290,+1.270] slateCI [-0.498,+0.591]
+{'QB': {'dsp': -0.006, 'dtop': -1.247}, 'RB': {'dsp': -0.005, 'dtop': 0.123}, 'TE': {'dsp': 0.364, 'dtop': 3.683}, 'WR': {'dsp': -0.014, 'dtop': -1.29}}
+lowo_neutral  dsp: mean +0.029 cells>0 11/22 (ties 3) cellCI [-0.000,+0.066] slateCI [+0.008,+0.051]
+lowo_neutral  dtop: mean +0.187 cells>0 4/22 (ties 17) cellCI [+0.001,+0.504] slateCI [+0.015,+0.458]
+{'QB': {'dsp': -0.009, 'dtop': 0.0}, 'RB': {'dsp': -0.002, 'dtop': -0.0}, 'TE': {'dsp': 0.169, 'dtop': 0.8}, 'WR': {'dsp': 0.003, 'dtop': 0.154}}
+
+== (5) per-position cell deltas vs shipped for fixed lam (engine-only=0, 0.5) ==
+lam=0:       dsp          dtop       
+wk      1      2      1      2
+p                             
+QB -0.071  0.066 -4.102  0.118
+RB -0.025 -0.037 -1.493 -0.413
+TE  0.406  0.662  3.867  3.417
+WR  0.019 -0.111 -0.817 -3.192
+lam=0.5:       dsp          dtop       
+wk      1      2      1      2
+p                             
+QB -0.029  0.016 -1.953 -0.540
+RB -0.010 -0.001 -0.267  0.513
+TE  0.239  0.490  3.950  3.417
+WR  0.007 -0.035 -0.321 -2.258
+
+== (6) TE check: cell count, and selection-neutral cut (eng>8 OR final>8, all TE with actual) ==
+dk_classic_wk1_afternoon_13Sep2026   n= 6 spear final +0.371 eng +0.829 | top3 act final  16.1 eng  17.3
+dk_classic_wk1_early_13Sep2026       n=12 spear final -0.614 eng -0.211 | top3 act final   3.4 eng   3.3
+dk_classic_wk1_main_13Sep2026        n=17 spear final -0.231 eng +0.177 | top3 act final   8.2 eng  16.1
+dk_classic_wk2_afternoon_20Sep2026   n= 5 spear final +0.400 eng +0.900 | top3 act final  12.0 eng  13.8
+dk_classic_wk2_early_20Sep2026       n=11 spear final -0.309 eng +0.082 | top3 act final   2.1 eng   4.1
+dk_classic_wk2_main_20Sep2026        n=16 spear final -0.141 eng +0.318 | top3 act final   6.5 eng  10.1
