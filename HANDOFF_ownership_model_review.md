@@ -148,3 +148,12 @@ session), before assuming the fix direction.
   impact per section 0 instead of silently patching across sessions.
 - Don't wait for more weeks of real data before starting -- same reasoning as
   the projections handoff, Greg's explicit call this session.
+
+## 7. OUTCOME (2026-09-23, session results -- supersedes the leads above)
+
+- **Real bug found:** week-2 real ownership in `data/ownership_actual_log.csv` (and `data/ownership_raw_dk_2026_wk2*.csv`) had dropped every FLEX row (~797% per slate vs ~897%). Corrected + committed; `log_ownership.py` now refuses a classic slate summing under ~93% of the roster-slot budget; `replay_validation.load_real()` had the same first-row-only bug (fixed).
+- **Section 2's softmax-squeeze lead was mostly wrong for what ships:** the heuristic alone is too flat, but the layered model (`ownership_model.py`) already reshapes it; sharpening it made MAE/corr worse. `wk1_afternoon` was genuinely concentrated in real ownership too.
+- **Shipped changes:** DK FLEX budget split RB49/WR34/TE17 (was even); `pub_val` (DK AvgPointsPerGame per $K) feature; FFC public projected ownership (`scripts/ingest_public_ownership.py`, `data/ownership_public/`, variant artifact `data/ownership_model_dk_ffc.json`, wired into `refresh_data.yml`). Leave-one-week-out, meaningful cut: corr .639 -> .676 (pub_val) -> .764 (+FFC); chalk bias -7.9 -> -6.8 -> -4.1.
+- **Tested, no gain (do not retry without new data):** sharper softmax; last-week ownership; salary change; last-week points; injured-teammate vacuum; stacked-optimizer exposure / team-QB-share / teammate exposure (`analysis/ownership_diag/stacked_exposure_notes.md`); heavier FFC blending.
+- **Remaining gap:** cheap-crowd plays (Mayer, Jones, Schultz-type) still under-estimated; FFC helps but the model keeps most of its own prior. Refit both artifacts after Week 3 real ownership is logged.
+- **Loop-back (section 0):** triggered by the data bug, not by model accuracy. Chalk-anchor + pivot with corrected real ownership is 2-3/6 (~0.72-0.75), not 4/6 (0.819); live pivots still add zero. Shipped method re-scored on fixed projections: 1/6, 0.583. Projection-fix re-check: `analysis/proj_recheck/`.

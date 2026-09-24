@@ -1,5 +1,7 @@
 # Handoff: building the real Week 3+ lineup system (2026-09-22, follow-up session)
 
+> **CORRECTION (2026-09-23, ownership/projection review) -- read before trusting any number below.** (1) The `3/6, 0.703` for `worst_top25_realstack` was measured on PRE-projection-fix projections; on the fixed projections (leak-free rebuild, same harness, reproduced old numbers exactly first) it is **1/6, 0.583**, stable across 3 seeds. (2) The oracle `4/6, 0.819` (chalk anchor + real-ownership pivot) used real ownership that dropped every FLEX row (`replay_validation.load_real` kept only the first row per player, ~797% per slate instead of ~897%; now fixed); corrected it is **2-3/6, ~0.72-0.75**. (3) Live-substitution pivot tests still add zero value with corrected data. (4) With n=6 slates none of these methods is statistically distinguishable; treat all as unproven. Details: `analysis/classic_diag/pivot_rerun_corrected_ownership.py`, `HANDOFF_ownership_model_review.md`; whether the projection fix caused the drop is being re-checked (`analysis/proj_recheck/`).
+
 Written to close out a long follow-up session to `HANDOFF_dfs_army_variables.md` (read
 that file for the full V1-V5 test detail and numbers -- this file is about what to DO
 with the results, not re-deriving them). Greg's own framing at the end of this session:

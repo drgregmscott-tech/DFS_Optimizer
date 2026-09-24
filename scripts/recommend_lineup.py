@@ -8,6 +8,20 @@ lineup-system investigation that's actually validated end-to-end for live
 selection rule tested against 6 real logged SE3max slates (3/6 cash, mean
 percentile 0.703 -- see HANDOFF_week3_lineup_system.md).
 
+TRACK-RECORD CORRECTION (2026-09-23 ownership/projection review): the
+3/6, 0.703 figure was measured on the ORIGINAL (pre-projection-fix)
+projections. Re-scored on projections rebuilt with the reconcile_team_shares
+fix (leak-free, same 6 slates, same scoring harness -- reproduced the old
+numbers exactly before trusting the new ones; see
+analysis/classic_diag/pivot_rerun_corrected_ownership.py) this rule cashes
+1/6 with mean percentile 0.583 (95% interval 0.47-0.73), identical across
+3 seeds. With n=6 that is not proof it is worse than any alternative --
+the alternatives tested are statistically indistinguishable -- but it means
+"3/6, 0.703" should NOT be read as a demonstrated edge. Treat this script's
+output as a reasonable, ownership-free, stack-aware pick, not a validated
+cashing method. Whether the projection fix or noise caused the drop is under
+review (analysis/proj_recheck/).
+
 WHY THIS RULE AND NOT THE STRONGER ONE: the chalk-anchor + ownership-driven
 pivot method tested stronger on paper (4/6 cash, 0.819) but ONLY using real
 post-lock ownership data, which doesn't exist before a slate locks. Three
