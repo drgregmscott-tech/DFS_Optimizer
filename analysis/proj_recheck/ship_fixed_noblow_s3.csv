@@ -1,0 +1,7 @@
+method,own_src,slate,cash,pct,pts,n_cands,is_anchor,worst25,real_own_sum,lineup,proj_pts,variant,seed
+shipped,model_field,wk1_main,False,0.6080227416298167,149.42,130,True,0.575,71.32000000000001,Amon-Ra St. Brown|Bijan Robinson|Dallas Goedert|Jalen Hurts|Keenan Allen|Kenny Gainwell|Kyle Pitts Sr.|Titans|Zay Flowers,135.82171153341102,fixed_noblow,3
+shipped,model_field,wk1_early,False,0.6668479245967012,163.9,130,True,0.55875,156.66,Chris Olave|Jahmyr Gibbs|Mark Andrews|Titans|Tony Pollard|Travis Etienne Jr.|Tyler Shough|Wan'Dale Robinson|Zay Flowers,142.06704404188358,fixed_noblow,3
+shipped,model_field,wk1_afternoon,True,0.8899683210137276,147.12,118,True,0.5575,233.31,Aaron Jones Sr.|Cardinals|Dallas Goedert|Jalen Hurts|Justin Jefferson|Michael Wilson|Saquon Barkley|Terry McLaurin|Trey McBride,128.87039386350784,fixed_noblow,3
+shipped,model_field,wk2_main,False,0.5026518499810582,113.18,130,True,0.57125,152.37,Bijan Robinson|Brock Purdy|Caleb Douglas|Christian McCaffrey|Deebo Samuel Sr.|Derrick Henry|Kalif Raymond|Mark Andrews|Ravens,134.66606002601006,fixed_noblow,3
+shipped,model_field,wk2_early,False,0.39244247413975086,95.4,130,True,0.4825,109.84,Bijan Robinson|Chase Brown|Chris Olave|DK Metcalf|KC Concepcion Jr.|Lamar Jackson|Mark Andrews|Titans|Wan'Dale Robinson,129.9036596851048,fixed_noblow,3
+shipped,model_field,wk2_afternoon,True,0.9019442096365173,148.58,130,True,0.53,271.2,Ashton Jeanty|Brock Purdy|Caleb Douglas|Christian McCaffrey|Deebo Samuel Sr.|George Kittle|Jaxon Smith-Njigba|Michael Mayer|Seahawks,127.44801145014543,fixed_noblow,3

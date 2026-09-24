@@ -1,0 +1,7 @@
+method,own_src,slate,cash,pct,pts,n_cands,is_anchor,worst25,real_own_sum,lineup,proj_pts,variant,seed
+shipped,model_field,wk1_main,False,0.5623499684144031,145.94,130,True,0.68375,120.92,Amon-Ra St. Brown|Cade Otton|DK Metcalf|Dallas Goedert|Jaguars|Jahmyr Gibbs|Jameson Williams|Jared Goff|Tony Pollard,130.39148671437283,orig_nz1,3
+shipped,model_field,wk1_early,True,0.861700199383723,182.44,130,True,0.67875,135.99,Amon-Ra St. Brown|Cade Otton|DK Metcalf|Derrick Henry|Jahmyr Gibbs|Jared Goff|Mike Gesicki|Titans|Zay Flowers,133.73866111861253,orig_nz1,3
+shipped,model_field,wk1_afternoon,True,0.9239704329461458,151.76,114,True,0.75,313.53,Ashton Jeanty|Dallas Goedert|Justin Herbert|Justin Jefferson|Michael Wilson|Omarion Hampton|Raiders|Saquon Barkley|Tre' Harris,119.05637186908672,orig_nz1,3
+shipped,model_field,wk2_main,True,0.8159489834575073,139.46,130,True,0.73875,158.19,Bijan Robinson|Bucky Irving|CeeDee Lamb|Dak Prescott|Derrick Henry|Kalif Raymond|Mark Andrews|Ravens|Xavier Hutchinson,112.79517500099047,orig_nz1,3
+shipped,model_field,wk2_early,False,0.4209415241714165,96.82,127,True,0.73875,250.68,Bijan Robinson|Buccaneers|Bucky Irving|Caleb Williams|Derrick Henry|Jalen Coker|Kalif Raymond|Mark Andrews|Matthew Golden,109.72207898520908,orig_nz1,3
+shipped,model_field,wk2_afternoon,False,0.4013102282333052,118.16,130,True,0.57875,198.72,CeeDee Lamb|Chargers|Christian McCaffrey|Dak Prescott|Deebo Samuel Sr.|Javonte Williams|John Bates|Kaelon Black|Ladd McConkey,106.20068659671398,orig_nz1,3

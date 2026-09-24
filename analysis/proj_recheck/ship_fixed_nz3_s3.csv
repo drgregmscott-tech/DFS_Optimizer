@@ -1,0 +1,7 @@
+method,own_src,slate,cash,pct,pts,n_cands,is_anchor,worst25,real_own_sum,lineup,proj_pts,variant,seed
+shipped,model_field,wk1_main,False,0.6576753000631712,153.20000000000002,130,True,0.685,122.82,Amon-Ra St. Brown|Bijan Robinson|Jaguars|Jahmyr Gibbs|Kirk Cousins|Mark Andrews|Tony Pollard|Tre Tucker|Wan'Dale Robinson,157.96563892906283,fixed_nz3,3
+shipped,model_field,wk1_early,False,0.49229653797353634,150.7,130,True,0.5325,121.93,Amon-Ra St. Brown|Bears|Chris Olave|Derrick Henry|Garrett Wilson|Geno Smith|Harold Fannin Jr.|Tony Pollard|Travis Etienne Jr.,148.89512316930134,fixed_nz3,3
+shipped,model_field,wk1_afternoon,False,0.5609292502639915,122.02,118,True,0.47125,325.46,Ashton Jeanty|Justin Jefferson|Kyler Murray|Michael Mayer|Michael Wilson|Omarion Hampton|Raiders|Saquon Barkley|Terry McLaurin,143.25718166884377,fixed_nz3,3
+shipped,model_field,wk2_main,False,0.4217072862735194,107.75999999999999,130,True,0.56,125.1,Bijan Robinson|Bucky Irving|Caleb Douglas|DeVonta Smith|Derrick Henry|Jalen Hurts|Michael Mayer|Texans|Wan'Dale Robinson,134.68480821762074,fixed_nz3,3
+shipped,model_field,wk2_early,True,0.8131728942368588,122.0,130,True,0.52125,191.57,Bijan Robinson|Cade Otton|Chris Godwin Jr.|Derrick Henry|Lamar Jackson|Mark Andrews|Matthew Golden|Patriots|Tetairoa McMillan,132.5863128172943,fixed_nz3,3
+shipped,model_field,wk2_afternoon,True,0.9019442096365173,148.58,130,True,0.5075,271.2,Ashton Jeanty|Brock Purdy|Caleb Douglas|Christian McCaffrey|Deebo Samuel Sr.|George Kittle|Jaxon Smith-Njigba|Michael Mayer|Seahawks,126.5013239313235,fixed_nz3,3

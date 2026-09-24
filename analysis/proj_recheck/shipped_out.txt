@@ -1,0 +1,6 @@
+fixed-orig -0.120 [-0.261,+0.015]
+noblow-orig -0.043 [-0.160,+0.071]
+ns-fixed +0.040 [-0.131,+0.203]
+noise means orig [0.664 0.544 0.643] fixed [0.563 0.59  0.641]
+noise fixed-orig -0.019 [-0.220,+0.224]
+mean |pct change| under 5% noise: orig 0.198 fixed 0.187

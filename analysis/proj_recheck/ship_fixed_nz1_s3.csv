@@ -1,0 +1,7 @@
+method,own_src,slate,cash,pct,pts,n_cands,is_anchor,worst25,real_own_sum,lineup,proj_pts,variant,seed
+shipped,model_field,wk1_main,True,0.8541377132027795,172.1,130,True,0.6725,144.44,Bijan Robinson|Colston Loveland|Jahmyr Gibbs|Jets|Justin Jefferson|Khalil Shakir|Kirk Cousins|Michael Mayer|Zay Flowers,154.35077146651238,fixed_nz1,3
+shipped,model_field,wk1_early,False,0.3875294544136306,143.5,130,True,0.59125,142.60999999999999,Amon-Ra St. Brown|Bijan Robinson|Geno Smith|Isaiah Williams|Jaguars|Jahmyr Gibbs|Kyle Pitts Sr.|Travis Etienne Jr.|Wan'Dale Robinson,152.08507348612537,fixed_nz1,3
+shipped,model_field,wk1_afternoon,False,0.515311510031679,119.42,119,True,0.505,299.44,Dallas Goedert|Justin Jefferson|Kyler Murray|Omarion Hampton|Raiders|Saquon Barkley|Terry McLaurin|Tre Tucker|Trey McBride,147.41662115678756,fixed_nz1,3
+shipped,model_field,wk2_main,False,0.5026518499810582,113.18,130,True,0.56,152.37,Bijan Robinson|Brock Purdy|Caleb Douglas|Christian McCaffrey|Deebo Samuel Sr.|Derrick Henry|Kalif Raymond|Mark Andrews|Ravens,135.33676855437636,fixed_nz1,3
+shipped,model_field,wk2_early,True,0.9007810850749419,131.72,130,True,0.48875,152.38,Breece Hall|Caleb Williams|Chris Olave|DK Metcalf|Darren Waller|Derrick Henry|Justin Jefferson|Kalif Raymond|Panthers,130.12756137518113,fixed_nz1,3
+shipped,model_field,wk2_afternoon,False,0.21491969568892644,106.58,130,True,0.50125,280.6,Ashton Jeanty|Brock Purdy|Caleb Douglas|Christian McCaffrey|Deebo Samuel Sr.|Jaguars|Michael Mayer|Mike Evans|Trey McBride,128.46527929002806,fixed_nz1,3

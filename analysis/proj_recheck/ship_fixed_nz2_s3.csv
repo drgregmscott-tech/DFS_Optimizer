@@ -1,0 +1,7 @@
+method,own_src,slate,cash,pct,pts,n_cands,is_anchor,worst25,real_own_sum,lineup,proj_pts,variant,seed
+shipped,model_field,wk1_main,False,0.44162981680353763,137.5,130,True,0.6575,143.32,Bucky Irving|Chase Brown|Dallas Goedert|Ja'Marr Chase|Jahmyr Gibbs|Jets|Kirk Cousins|Terry McLaurin|Tre Tucker,154.91633514044037,fixed_nz2,3
+shipped,model_field,wk1_early,False,0.6472720681529818,162.2,130,True,0.55875,117.32000000000001,Adonai Mitchell|Amon-Ra St. Brown|Bijan Robinson|DK Metcalf|Derrick Henry|Geno Smith|Jaguars|Sam LaPorta|Travis Etienne Jr.,154.1537478276224,fixed_nz2,3
+shipped,model_field,wk1_afternoon,False,0.5609292502639915,122.02,118,True,0.47625,325.46,Ashton Jeanty|Justin Jefferson|Kyler Murray|Michael Mayer|Michael Wilson|Omarion Hampton|Raiders|Saquon Barkley|Terry McLaurin,143.56036324261035,fixed_nz2,3
+shipped,model_field,wk2_main,False,0.1111882813486551,83.62,130,True,0.5425,151.51,Bijan Robinson|Browns|Caleb Williams|Derrick Henry|Jalen Coker|Luther Burden III|Mark Andrews|Mike Evans|Mike Gesicki,130.9633840292235,fixed_nz2,3
+shipped,model_field,wk2_early,True,0.8779818450496094,128.9,130,True,0.51625,137.60999999999999,Chris Olave|Derrick Henry|Garrett Wilson|Lamar Jackson|Luther Burden III|Mark Andrews|Panthers|T.J. Hockenson|Travis Etienne Jr.,131.81763565701124,fixed_nz2,3
+shipped,model_field,wk2_afternoon,True,0.9019442096365173,148.58,130,True,0.5125,271.2,Ashton Jeanty|Brock Purdy|Caleb Douglas|Christian McCaffrey|Deebo Samuel Sr.|George Kittle|Jaxon Smith-Njigba|Michael Mayer|Seahawks,127.55229766283014,fixed_nz2,3

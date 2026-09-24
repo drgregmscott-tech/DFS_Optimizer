@@ -1,0 +1,7 @@
+method,own_src,slate,cash,pct,pts,n_cands,is_anchor,worst25,real_own_sum,lineup,proj_pts,variant,seed
+shipped,model_field,wk1_main,True,0.9068856601389766,180.3,130,True,0.92,157.51,Amon-Ra St. Brown|Chris Olave|DK Metcalf|Dallas Goedert|Jahmyr Gibbs|Jonathan Taylor|Kirk Cousins|Michael Mayer|Titans,194.64982745315976,fixed_ns,3
+shipped,model_field,wk1_early,False,0.357984411818017,141.1,125,True,0.7125,148.06,Amon-Ra St. Brown|DK Metcalf|Garrett Wilson|Geno Smith|Jaguars|Jahmyr Gibbs|Kenyon Sadiq|Tony Pollard|Travis Etienne Jr.,184.71240237902668,fixed_ns,3
+shipped,model_field,wk1_afternoon,True,0.7980992608236537,137.82,116,True,0.72,317.95,Ashton Jeanty|Dallas Goedert|Justin Jefferson|Kyler Murray|Michael Wilson|Omarion Hampton|Raiders|Saquon Barkley|Tre Tucker,169.22247219556132,fixed_ns,3
+shipped,model_field,wk2_main,False,0.6557014774592751,124.60000000000001,130,True,0.865,154.66,Bijan Robinson|Christian McCaffrey|Derrick Henry|Kalif Raymond|Lamar Jackson|Mark Andrews|Matthew Golden|Patriots|Xavier Hutchinson,147.5081785027951,fixed_ns,3
+shipped,model_field,wk2_early,False,0.3943424108085286,95.5,129,True,0.84875,232.1,Bijan Robinson|Buccaneers|Derrick Henry|Jalen Coker|Kalif Raymond|Lamar Jackson|Mark Andrews|Matthew Golden|Rhamondre Stevenson,144.18919939445408,fixed_ns,3
+shipped,model_field,wk2_afternoon,False,0.6263736263736264,129.98,130,True,0.71125,261.86,49ers|Brock Purdy|Christian McCaffrey|Deebo Samuel Sr.|Javonte Williams|Jaxon Smith-Njigba|Kaelon Black|Kendrick Bourne|Michael Mayer,128.63209420037387,fixed_ns,3
