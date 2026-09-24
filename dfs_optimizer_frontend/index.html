@@ -384,7 +384,7 @@
 
   .roster-row {
     display: grid;
-    grid-template-columns: 56px 1fr 64px 84px 76px 60px 60px;
+    grid-template-columns: 56px 1fr 64px 84px 76px 60px 74px;
     align-items: center;
     padding: 11px 14px;
     border-bottom: 1px solid var(--line-soft);
@@ -1201,11 +1201,11 @@
   /* ---------------- Player pool updated grid (icons left) ---------------- */
 
   .player-list-head {
-    grid-template-columns: 58px 1fr 64px 58px 50px 52px !important;
+    grid-template-columns: 58px 1fr 64px 58px 50px 68px !important;
   }
 
   .player-row {
-    grid-template-columns: 58px 1fr 64px 58px 50px 52px !important;
+    grid-template-columns: 58px 1fr 64px 58px 50px 68px !important;
   }
 
   .player-row .pactions {
@@ -1396,6 +1396,10 @@
   .player-list-head .sortcol.active::after { content: attr(data-arrow); margin-left: 3px; }
 
   .player-row .pown, .player-row .pval { font-family: 'Roboto Mono', monospace; font-size: 11px; color: var(--dim); text-align: right; }
+  /* Ownership range (model-FFC). Amber + warning mark = the two sources disagree by OWN_DISAGREE_PTS or more. */
+  .own-range { white-space: nowrap; cursor: help; }
+  .own-range.disagree { color: var(--amber); }
+  .own-range .own-flag { margin-left: 2px; font-weight: 700; }
 
   /* ---------------- Session 7.3 -- min-salary slider ---------------- */
 
@@ -2155,12 +2159,12 @@ in this browser's localStorage.</p>
   // ---------------- Slate payload application ----------------
   function applySlatePayload(site, kind, filename, payload) {
     if (kind === "pool") {
-      payload.forEach(function (p) { p.ownership = p.estimated_ownership_pct; });
+      payload.forEach(function (p) { p.ownership = p.estimated_ownership_pct; p.ffc = p.ffc_own_pct != null ? p.ffc_own_pct : null; });
       state.pool[site] = { filename: filename, players: payload };
       applyOwnershipToPool(site);
       if (site === state.activeSite && !state.ownership[site]) {
         var hasBaked = payload.some(function (p) { return p.estimated_ownership_pct != null; });
-        setOwnershipStatus(hasBaked ? "Loaded from this slate's estimated_ownership_pct column" : "This slate has no estimated_ownership_pct column — rebuild it with the updated build_projections.py, or upload an override CSV", hasBaked);
+        setOwnershipStatus(hasBaked ? "Loaded from this slate's estimated_ownership_pct column" + (payload.some(function (p) { return p.ffc != null; }) ? " \u2014 shown as model\u2013FFC range where FFC lists the player (\u26A0 = 10+ pt gap, real ownership uncertain); Own% sort/filter use the higher of the two" : "") : "This slate has no estimated_ownership_pct column — rebuild it with the updated build_projections.py, or upload an override CSV", hasBaked);
       }
     } else if (kind === "pivots") {
       applyPivotsPayload(site, filename, payload);
@@ -2350,6 +2354,10 @@ in this browser's localStorage.</p>
         site_player_id: r.site_player_id || "",
         estimated_ownership_pct: Object.prototype.hasOwnProperty.call(r, "estimated_ownership_pct") && r.estimated_ownership_pct !== ""
           ? parseFloat(r.estimated_ownership_pct) : null,
+        // Public projected ownership (FFC): blank = not listed / no FFC table
+        // for this slate -> the UI then shows the model's single number.
+        ffc_own_pct: Object.prototype.hasOwnProperty.call(r, "ffc_own_pct") && r.ffc_own_pct !== ""
+          ? parseFloat(r.ffc_own_pct) : null,
         // Session 13.5 -- carried through so the Build panel can detect a
         // Showdown pool (slate_format) and, for Showdown, distinguish a
         // player's CPT/MVP pool row from their FLEX pool row (roster_role)
@@ -2792,9 +2800,20 @@ in this browser's localStorage.</p>
     if (pool) {
       pool.players.forEach(function (p) { injuryById[p.player_id] = injuryFlagHtml(p.injury_status, p.injury_raw_status); });
     }
+    var ffcById = {};
+    if (pool) {
+      pool.players.forEach(function (p) { if (p.ffc != null) ffcById[ownKey(p)] = p.ffc; });
+    }
+    var rowFfc = rows.map(function (r) { return ffcById[ownKey(r)]; });
     var rowOwnerships = rows.map(function (r) { return ownershipById[ownKey(r)]; });
     var allHaveOwnership = rowOwnerships.every(function (o) { return o != null; });
     var totalOwnership = allHaveOwnership ? rowOwnerships.reduce(function (s, o) { return s + o; }, 0) : null;
+    // FFC total: FFC's number where it lists the player, the model's otherwise
+    // (FFC only lists ~50 players per slate). Shown next to the model total so
+    // lineups can be compared for uniqueness under either view.
+    var totalFfcOwn = (totalOwnership != null && rowFfc.some(function (f) { return f != null; }))
+      ? rows.reduce(function (sum, r, ri) { return sum + (rowFfc[ri] != null ? rowFfc[ri] : rowOwnerships[ri]); }, 0)
+      : null;
 
     var segsHtml = "";
     for (var s2 = 0; s2 < segCount; s2++) {
@@ -2819,8 +2838,11 @@ in this browser's localStorage.</p>
       '<div class="scoreboard">' +
       '<div class="scoreboard-top">' + navHtml +
       (totalOwnership != null ?
-        '<div class="pts-block"><div class="pts-label">Total Own</div>' +
+        '<div class="pts-block"><div class="pts-label">' + (totalFfcOwn != null ? 'Own \u00b7 Model' : 'Total Own') + '</div>' +
         '<div class="pts-value mono">' + totalOwnership.toFixed(1) + '%</div></div>' : '') +
+      (totalFfcOwn != null ?
+        '<div class="pts-block" title="FFC\u2019s projected ownership where it lists the player; the model\u2019s number otherwise"><div class="pts-label">Own \u00b7 FFC</div>' +
+        '<div class="pts-value mono">' + totalFfcOwn.toFixed(1) + '%</div></div>' : '') +
       '<div class="pts-block"><div class="pts-label">Value</div>' +
       '<div class="pts-value mono">' + lineupValue.toFixed(2) + '</div></div>' +
       '<div class="pts-block"><div class="pts-label">Projected</div>' +
@@ -2856,7 +2878,7 @@ in this browser's localStorage.</p>
         '<div class="salary-cell mono">' + fmtMoney(salaryNum) + '</div>' +
         '<div class="proj-cell mono ' + (isZero ? "zero" : "") + '">' + fmtPts(projNum) + '</div>' +
         '<div class="value-cell mono">' + value.toFixed(2) + '</div>' +
-        '<div class="own-cell">' + (own != null ? own.toFixed(1) + '%' : '\u2014') + '</div>' +
+        '<div class="own-cell">' + ownRangeHtml(own, rowFfc[i]) + '</div>' +
         '</div>';
       if (isExpanded) {
         rowHtml += renderPivotPanel(site, r, i, pivotStore);
@@ -3413,6 +3435,28 @@ in this browser's localStorage.</p>
   // estimated_ownership_pct). Purely informational -- never sent to the
   // solver, just displayed and averaged per built lineup.
 
+  // ---- Ownership display: model vs public (FFC) projected ownership ----
+  // One number = the model alone (no FFC table for this slate, or FFC does not
+  // list the player). Two numbers = a low-high range with a warning mark when
+  // they differ by OWN_DISAGREE_PTS or more (a signal that true ownership is
+  // uncertain). Sorting/filtering by ownership uses the higher of the two.
+  var OWN_DISAGREE_PTS = 10;
+  function fmtOwnPct(v) { return v < 1 ? "<1" : String(Math.round(v)); }
+  function ownRangeHtml(model, ffc) {
+    if (model == null) return "\u2014";
+    if (ffc == null) return model.toFixed(1) + "%";
+    var lo = Math.min(model, ffc), hi = Math.max(model, ffc), gap = hi - lo;
+    var dis = gap >= OWN_DISAGREE_PTS;
+    var tip = "Model " + model.toFixed(1) + "% \u00b7 FFC " + ffc.toFixed(1) + "% \u00b7 gap " + gap.toFixed(1) + " pts" +
+      (dis ? " \u2014 sources disagree, real ownership is uncertain" : "");
+    return '<span class="own-range' + (dis ? " disagree" : "") + '" title="' + tip + '">' +
+      fmtOwnPct(lo) + "\u2013" + fmtOwnPct(hi) + "%" + (dis ? '<span class="own-flag">\u26A0</span>' : "") + "</span>";
+  }
+  function ownHi(p) {
+    var m = p.ownership != null ? p.ownership : 0;
+    return p.ffc != null ? Math.max(m, p.ffc) : m;
+  }
+
   function applyOwnershipToPool(site) {
     var own = state.ownership[site];
     var pool = state.pool[site];
@@ -3666,7 +3710,7 @@ in this browser's localStorage.</p>
     if (f.projMax !== "" && p.final_projection > parseFloat(f.projMax)) return false;
     if (f.valMin !== "" && p.value < parseFloat(f.valMin)) return false;
     if (f.valMax !== "" && p.value > parseFloat(f.valMax)) return false;
-    var own = p.ownership != null ? p.ownership : 0;
+    var own = ownHi(p);
     if (f.ownMin !== "" && own < parseFloat(f.ownMin)) return false;
     if (f.ownMax !== "" && own > parseFloat(f.ownMax)) return false;
     return true;
@@ -3716,8 +3760,8 @@ in this browser's localStorage.</p>
 
     var sortKey = state.poolSort.key, sortDir = state.poolSort.dir;
     rows.sort(function (a, b) {
-      var av = sortKey === "ownership" ? (a.ownership || 0) : a[sortKey];
-      var bv = sortKey === "ownership" ? (b.ownership || 0) : b[sortKey];
+      var av = sortKey === "ownership" ? ownHi(a) : a[sortKey];
+      var bv = sortKey === "ownership" ? ownHi(b) : b[sortKey];
       return sortDir === "asc" ? av - bv : bv - av;
     });
 
@@ -3791,7 +3835,7 @@ in this browser's localStorage.</p>
         '<div class="psal">' + fmtMoney(p.salary) + '</div>' +
         '<div class="pproj">' + fmtPts(p.final_projection) + '</div>' +
         '<div class="pval">' + p.value.toFixed(1) + '</div>' +
-        '<div class="pown">' + (p.ownership != null ? p.ownership.toFixed(1) + '%' : '—') + '</div>' +
+        '<div class="pown">' + ownRangeHtml(p.ownership, p.ffc) + '</div>' +
         '</div>';
     }).join("");
     renderPlayerListHead();
