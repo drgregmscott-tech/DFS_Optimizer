@@ -1,5 +1,7 @@
 # Sunday Week 3 pre-lock checklist (2026-09-27)
 
+> **UPDATE (2026-09-25):** DK afternoon slate added, Doubtful now zeroed, out-QB promotion and Murray override shipped. See `HANDOFF_week3_weekend_and_refit_plan_2026-09-25.md`.
+
 > **UPDATE (2026-09-24): props now pull EARLY.** A Sunday 08:00Z (3am CDT) full run was added, and the props step now runs `props_auto.py --lead-minutes 600 --max-credits 150`. The old 120-credit cap would have SKIPPED the 24-game main pull (est. 144 credits), so the 16:00Z pull would never have happened. The 08:00Z run pulls once (~144 of ~227 credits); later runs re-try but the credit check skips them. Sections 1-4 below can assume a props snapshot exists at 4am CDT; verify with the check script (props PASS + movers table). If the 08:00Z run failed, run by hand: `python scripts/props_auto.py --lead-minutes 3000 --max-credits 150`, commit the new `data/props/*` files, push, then dispatch a full refresh. Also: the injury-status-on-light-runs bug is FIXED (workflow now applies status on every run), so Fix A/B below are only needed if the check still fails.
 
 
