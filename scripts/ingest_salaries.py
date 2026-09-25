@@ -214,6 +214,8 @@ SUFFIXES = {"jr", "sr", "ii", "iii", "iv", "v"}
 # nflverse position "FB").
 POSITION_EQUIVALENTS = {
     "RB": {"RB", "FB"},
+    "PK": {"K", "PK"},   # ESPN labels kickers "PK"; sites/nflverse use "K"
+    "K": {"K", "PK"},
 }
 
 

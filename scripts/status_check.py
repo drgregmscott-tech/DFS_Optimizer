@@ -226,7 +226,11 @@ ESPN_ROSTER_URL_TEMPLATE = (
     "https://site.api.espn.com/apis/site/v2/sports/football/nfl/teams/{team_id}/roster"
 )
 
-ESPN_RELEVANT_POSITIONS = {"QB", "RB", "WR", "TE", "FB"}
+# Kickers ("PK" on ESPN) added Sep 2026: Showdown slates list a starter plus a
+# backup/practice-squad kicker per team, and the build promotes the backup when
+# the starter is OUT (see promote_backup_kickers). Classic slates have no K rows,
+# so these simply land in the unmatched log there.
+ESPN_RELEVANT_POSITIONS = {"QB", "RB", "WR", "TE", "FB", "PK", "K"}
 
 # Decision #2 -- raw ESPN injuries[].status string -> this project's
 # OUT/DOUBTFUL/QUESTIONABLE/ACTIVE scheme. Extend this map (don't guess)
@@ -569,6 +573,8 @@ def run_apply(site: str, week: int, status_file: str, projections_file: str | No
     merged["injury_status"] = merged["status"].fillna("ACTIVE")
     merged = merged.drop(columns=["status"])
 
+    merged = promote_backup_kickers(merged)
+
     out_mask = merged["injury_status"] == "OUT"
     n_out = out_mask.sum()
     n_already_zero = (out_mask & (merged["final_projection"] == 0.0)).sum()
@@ -606,6 +612,36 @@ def run_apply(site: str, week: int, status_file: str, projections_file: str | No
           f"final_projection left unchanged.")
     print(f"  Wrote {out_path}" + (" (overwrote the file optimizer.py reads)" if out_path == proj_path else ""))
     print("  Validation: PASS -- every OUT player's final_projection confirmed 0.0 on reload.")
+
+
+def promote_backup_kickers(merged: pd.DataFrame) -> pd.DataFrame:
+    """If a team's projected kicker is OUT and it lists another, healthy kicker
+    that the build zeroed (the build projects only the highest-avg kicker per
+    team -- build_projections._build_kicker_projections), give the backup the
+    starter's pre-zero projection. The kicker model is not player-conditioned,
+    so the starter's number IS the right number for whoever actually kicks.
+    Matches CPT->CPT / FLEX->FLEX rows on Showdown. Must run BEFORE OUT players
+    are zeroed. No-op on slates without kickers."""
+    if "position" not in merged.columns or not (merged["position"] == "K").any():
+        return merged
+    merged = merged.copy()
+    copy_cols = [c for c in ("final_projection", "engine_projection", "sigma", "statline_p10", "statline_p90",
+                             "season_avg", "recent_form") if c in merged.columns]
+    role = merged["roster_role"] if "roster_role" in merged.columns else pd.Series("ALL", index=merged.index)
+    for team, g in merged[merged["position"] == "K"].groupby("team"):
+        outs = g[(g["injury_status"] == "OUT") & (g["final_projection"] > 0)]
+        backups = g[(g["injury_status"] != "OUT") & (g["final_projection"] == 0)]
+        if outs.empty or backups.empty:
+            continue
+        for r in role.loc[backups.index].unique():
+            src = outs[role.loc[outs.index] == r]
+            dst = backups[role.loc[backups.index] == r].index
+            if src.empty or len(dst) == 0:
+                continue
+            merged.loc[dst, copy_cols] = src.iloc[0][copy_cols].values
+        print(f"KICKER PROMOTION: {team} kicker(s) OUT ({', '.join(outs['player_name'].unique())}) -> "
+              f"projecting backup {', '.join(backups['player_name'].unique())} at the standard kicker value.")
+    return merged
 
 
 # ---------------------------------------------------------------------------
