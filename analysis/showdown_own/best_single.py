@@ -237,7 +237,7 @@ def main(csv, min_part=0.5):
     df = pd.DataFrame({"avg_top10": p10.mean(0) * 100, "min_top10": p10.min(0) * 100, "avg_top1": p1.mean(0) * 100,
                        "avg_pct": mp.mean(0) * 100})
     df["desc"] = [describe(P, c) for c in cands]
-    df["proj"] = [sum((P.set_index(ROWKEY).loc[c[ROWKEY], "final_projection"]) * np.where(c.roster_role == "CPT", 1.5, 1.0)) for c in cands]
+    df["proj"] = [float(P.set_index(ROWKEY).loc[c[ROWKEY], "final_projection"].sum()) for c in cands]  # CPT rows already carry the 1.5x
     df = df.sort_values("avg_top10", ascending=False)
     pd.set_option("display.width", 250, "display.max_colwidth", 110)
     print("\nTOP 15 by average P(top10%) across scenarios/fields:")

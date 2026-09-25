@@ -54,7 +54,7 @@ df = pd.DataFrame({"lineup": [l for l, _ in cands], "avg_top10": allp.mean(0) * 
                    "top1": np.vstack([v[3] for v in res.values()]).mean(0) * 100})
 nm = P.set_index(bs.ROWKEY)
 df["desc"] = [bs.describe(P, c) for _, c in cands]
-df["proj"] = [float((nm.loc[c[bs.ROWKEY], "final_projection"].values * np.where(c.roster_role == "CPT", 1.5, 1.0)).sum()) for _, c in cands]
+df["proj"] = [float(nm.loc[c[bs.ROWKEY], "final_projection"].values.sum()) for _, c in cands]  # CPT rows already carry the 1.5x
 df["salary"] = [int(nm.loc[c[bs.ROWKEY], "salary"].sum()) for _, c in cands]
 own = P.set_index(bs.ROWKEY).estimated_ownership_pct
 df["own_sum"] = [float(own.loc[c[bs.ROWKEY]].sum()) for _, c in cands]

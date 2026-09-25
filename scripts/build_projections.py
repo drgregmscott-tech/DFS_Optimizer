@@ -406,6 +406,32 @@ def _build_kicker_projections(salaries, site, opponent_map):
     site_id_col = SITE_CONFIGS[site]["site_id_col"]
     k = salaries[salaries["position_upper"] == "K"].copy()
     k = k[k["player_id"].notna()]
+
+    # Sep 2026 fix (DK lists a team's practice-squad/backup kicker alongside the
+    # starter -- e.g. GB Showdown listed Smack and Krieg): the kicker model is
+    # not player-conditioned, so both would get the identical projection and
+    # a lineup could carry a kicker who never plays. Only one kicker per team
+    # kicks, so keep the one with the highest site AvgPointsPerGame (salary as
+    # tiebreak) and zero the rest after projection below.
+    avg_col = SITE_CONFIGS[site].get("avg_ppg_col")
+    k["_avg"] = pd.to_numeric(k[avg_col], errors="coerce").fillna(0.0) if avg_col in k.columns else 0.0
+    starter_ids = set(
+        k.drop_duplicates("player_id")
+         .sort_values(["_avg", "salary"], ascending=False)
+         .drop_duplicates("normalized_team")["player_id"]
+    )
+
+    # Loud on purpose: kickers are NOT in the injury-status feed (status_check only
+    # carries WR/TE/RB/QB/FB), so this pick cannot see an injured starter. A human
+    # must confirm the chosen kicker whenever a team lists more than one.
+    _multi = k.drop_duplicates("player_id").groupby("normalized_team").filter(lambda g: len(g) > 1)
+    for _team, _g in _multi.groupby("normalized_team"):
+        _g = _g.sort_values(["_avg", "salary"], ascending=False)
+        print(f"KICKER NOTE: {_team} lists {len(_g)} kickers -- projecting "
+              f"{_g.iloc[0]['name']} (avg {_g.iloc[0]['_avg']:.1f}), zeroing "
+              f"{', '.join(f'{n} (avg {a:.1f})' for n, a in zip(_g['name'].iloc[1:], _g['_avg'].iloc[1:]))}. "
+              f"Kickers have no injury feed -- verify manually.")
+
     k = k.rename(columns={
         "normalized_team": "team", "position_upper": "position",
         "name": "player_name", site_id_col: "site_player_id",
@@ -426,7 +452,7 @@ def _build_kicker_projections(salaries, site, opponent_map):
                 on="player_id", how="left")
 
     k["opponent"] = k["team"].map(opponent_map)
-    played = k["opponent"].notna()
+    played = k["opponent"].notna() & k["player_id"].isin(starter_ids)
     n_bye = int((~played).sum())
     k.loc[~played, ["final_projection", "sigma", "p10", "p90"]] = 0.0
     k["opponent"] = k["opponent"].fillna(NO_GAME_SENTINEL)

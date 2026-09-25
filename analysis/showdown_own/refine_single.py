@@ -61,7 +61,7 @@ allp = np.vstack([v[0] for v in res.values()]); lawin = np.vstack([v[1] for v in
 df = pd.DataFrame({"avg": allp.mean(0) * 100, "worst": allp.min(0) * 100, "if_LA_wins": lawin.mean(0) * 100, "if_NYG_wins": nywin.mean(0) * 100})
 df["desc"] = [bs.describe(P, c) for c in cands]
 nm = P.set_index(bs.ROWKEY)
-df["proj"] = [float((nm.loc[c[bs.ROWKEY], "final_projection"].values * np.where(c.roster_role == "CPT", 1.5, 1.0)).sum()) for c in cands]
+df["proj"] = [float(nm.loc[c[bs.ROWKEY], "final_projection"].values.sum()) for c in cands]  # CPT rows already carry the 1.5x
 df["salary"] = [int((nm.loc[c[bs.ROWKEY], "salary"]).sum()) for c in cands]
 df["min_side"] = df[["if_LA_wins", "if_NYG_wins"]].min(axis=1)
 pd.set_option("display.width", 250, "display.max_colwidth", 100)
