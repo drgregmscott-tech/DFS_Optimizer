@@ -1,0 +1,71 @@
+## snapshot -> week mapping (week = first week with a game on a later calendar day)
+scrape_date  season  week weekday week_first_game  dup_dropped
+ 2020-10-16    2020     6     Fri      2020-10-18         True
+ 2020-10-17    2020     6     Sat      2020-10-18        False
+ 2020-10-22    2020     7     Thu      2020-10-22        False
+ 2020-10-29    2020     8     Thu      2020-10-29        False
+ 2020-11-05    2020     9     Thu      2020-11-05        False
+ 2020-11-12    2020    10     Thu      2020-11-12        False
+ 2020-11-19    2020    11     Thu      2020-11-19        False
+ 2020-11-26    2020    12     Thu      2020-11-26        False
+ 2020-12-03    2020    13     Thu      2020-12-06        False
+ 2020-12-10    2020    14     Thu      2020-12-10        False
+ 2020-12-17    2020    15     Thu      2020-12-17        False
+ 2020-12-24    2020    16     Thu      2020-12-25        False
+ 2021-09-10    2021     1     Fri      2021-09-09        False
+ 2021-09-17    2021     2     Fri      2021-09-16        False
+ 2021-09-24    2021     3     Fri      2021-09-23        False
+ 2021-10-01    2021     4     Fri      2021-09-30        False
+ 2021-10-05    2021     5     Tue      2021-10-07         True
+ 2021-10-08    2021     5     Fri      2021-10-07        False
+ 2021-10-15    2021     6     Fri      2021-10-14        False
+ 2021-10-22    2021     7     Fri      2021-10-21        False
+ 2021-10-29    2021     8     Fri      2021-10-28        False
+ 2021-11-05    2021     9     Fri      2021-11-04        False
+ 2021-11-12    2021    10     Fri      2021-11-11        False
+ 2021-11-19    2021    11     Fri      2021-11-18        False
+ 2021-11-26    2021    12     Fri      2021-11-25        False
+ 2021-12-03    2021    13     Fri      2021-12-02        False
+ 2021-12-10    2021    14     Fri      2021-12-09         True
+ 2021-12-11    2021    14     Sat      2021-12-09        False
+ 2021-12-17    2021    15     Fri      2021-12-16        False
+ 2021-12-24    2021    16     Fri      2021-12-23        False
+ 2021-12-31    2021    17     Fri      2022-01-02        False
+ 2026-09-11    2026     1     Fri      2026-09-09        False
+ 2026-09-18    2026     2     Fri      2026-09-17        False
+ 2026-09-25    2026     3     Fri      2026-09-24        False
+
+## coverage (baseline, 2020+2021 rows with a snapshot week)
+weeks with ECR: 27; rows proj>0: 9981; ECR matched: 0.934
+rows proj>8 (n=3802): ECR matched 0.994; via gsis 0.994, name+team 0.000
+proj>8 match rate by pos: {'QB': 0.973, 'RB': 0.999, 'TE': 0.997, 'WR': 1.0}
+our top-2N per pos (n=4536): ECR matched 0.998
+TNF/same-day-game rows dropped by pre-kickoff guard (among ECR-matched): 616
+ECR rows with ecr<=1.5N not joined to our pool: 285/3436 (e.g. ['Curtis Samuel', 'Aaron Jones', 'Joe Mixon', "Le'Veon Bell", 'Austin Hooper', 'Tyler Higbee', 'Michael Thomas', 'Jamison Crowder'])
+shuffle baseline/played train2020->test2021: chosen w rank=0.4 (per-pos {'QB': 0, 'RB': 0.7, 'WR': 0.5, 'TE': 0.7}), pts=0.7 (per-pos {'QB': 0.2, 'RB': 1.0, 'WR': 0.7, 'TE': 1.0}), z=0.3 (per-pos {'QB': 0, 'RB': 0.7, 'WR': 0.5, 'TE': 0.7}) | shuffled dSpearman mean: rank -0.099 (sd 0.009), pts -0.352 (sd 0.015), z -0.060 (sd 0.007)
+shuffle baseline/played train2021->test2020: chosen w rank=0.5 (per-pos {'QB': 0, 'RB': 0.7, 'WR': 0.5, 'TE': 0.7}), pts=1.0 (per-pos {'QB': 1.0, 'RB': 0.7, 'WR': 1.0, 'TE': 1.0}), z=0.5 (per-pos {'QB': 0, 'RB': 0.5, 'WR': 0.4, 'TE': 0.7}) | shuffled dSpearman mean: rank -0.185 (sd 0.011), pts -0.603 (sd 0.017), z -0.204 (sd 0.011)
+shuffle baseline/all train2020->test2021: chosen w rank=0.5 (per-pos {'QB': 0, 'RB': 0.7, 'WR': 0.7, 'TE': 0.7}), pts=0.7 (per-pos {'QB': 0.2, 'RB': 0.7, 'WR': 1.0, 'TE': 1.0}), z=0.4 (per-pos {'QB': 0, 'RB': 0.7, 'WR': 0.7, 'TE': 0.7}) | shuffled dSpearman mean: rank -0.191 (sd 0.009), pts -0.384 (sd 0.012), z -0.128 (sd 0.007)
+shuffle baseline/all train2021->test2020: chosen w rank=0.7 (per-pos {'QB': 0, 'RB': 0.7, 'WR': 0.7, 'TE': 1.0}), pts=1.0 (per-pos {'QB': 1.0, 'RB': 0.7, 'WR': 1.0, 'TE': 1.0}), z=0.7 (per-pos {'QB': 0, 'RB': 0.7, 'WR': 0.7, 'TE': 0.7}) | shuffled dSpearman mean: rank -0.411 (sd 0.016), pts -0.644 (sd 0.017), z -0.421 (sd 0.017)
+shuffle no_stack/played train2020->test2021: chosen w rank=0.5 (per-pos {'QB': 0, 'RB': 0.7, 'WR': 0.7, 'TE': 0.7}), pts=0.7 (per-pos {'QB': 0.4, 'RB': 0.7, 'WR': 0.7, 'TE': 1.0}), z=0.5 (per-pos {'QB': 0, 'RB': 1.0, 'WR': 0.7, 'TE': 1.0}) | shuffled dSpearman mean: rank -0.175 (sd 0.009), pts -0.313 (sd 0.011), z -0.190 (sd 0.009)
+shuffle no_stack/played train2021->test2020: chosen w rank=0.7 (per-pos {'QB': 0.3, 'RB': 0.7, 'WR': 0.7, 'TE': 0.7}), pts=1.0 (per-pos {'QB': 1.0, 'RB': 0.7, 'WR': 0.7, 'TE': 1.0}), z=0.5 (per-pos {'QB': 0.4, 'RB': 0.7, 'WR': 0.7, 'TE': 0.7}) | shuffled dSpearman mean: rank -0.375 (sd 0.017), pts -0.589 (sd 0.019), z -0.199 (sd 0.013)
+shuffle no_stack/all train2020->test2021: chosen w rank=0.7 (per-pos {'QB': 0, 'RB': 0.7, 'WR': 0.7, 'TE': 1.0}), pts=0.7 (per-pos {'QB': 0.4, 'RB': 0.7, 'WR': 0.7, 'TE': 1.0}), z=0.5 (per-pos {'QB': 0, 'RB': 1.0, 'WR': 0.7, 'TE': 0.7}) | shuffled dSpearman mean: rank -0.397 (sd 0.014), pts -0.350 (sd 0.012), z -0.212 (sd 0.011)
+shuffle no_stack/all train2021->test2020: chosen w rank=0.7 (per-pos {'QB': 0.3, 'RB': 0.7, 'WR': 0.7, 'TE': 1.0}), pts=1.0 (per-pos {'QB': 1.0, 'RB': 0.7, 'WR': 0.7, 'TE': 1.0}), z=0.5 (per-pos {'QB': 0.3, 'RB': 0.7, 'WR': 0.5, 'TE': 0.7}) | shuffled dSpearman mean: rank -0.403 (sd 0.018), pts -0.631 (sd 0.019), z -0.218 (sd 0.012)
+
+## reproduction: full played set via evaluate.metrics vs metrics_baseline_played.csv
+ season position  n_me  n_ref  spearman_wxp_me  spearman_wxp_ref   MAE_me  MAE_ref
+   2020       QB   578    578         0.653844          0.653844 6.500401 6.500401
+   2020       RB  1396   1396         0.673343          0.673343 4.752000 4.752000
+   2020       TE  1008   1008         0.558094          0.558094 3.773018 3.773018
+   2020       WR  2085   2085         0.614396          0.614396 5.172046 5.172046
+   2021       QB   618    618         0.617855          0.617855 6.144038 6.144038
+   2021       RB  1498   1498         0.660030          0.660030 4.912952 4.912952
+   2021       TE  1080   1080         0.569292          0.569292 3.671440 3.671440
+   2021       WR  2281   2281         0.643765          0.643765 4.829017 4.829017
+
+## live 2026: 240 unique player-weeks (proj>8); ECR matched 0.988 (gsis 0.988, name 0.000); by week {1: 0.982, 2: 0.992}; unmatched: [[1, 'Brock Bowers', 'TE', 'LV'], [1, 'Isiah Pacheco', 'RB', 'DET'], [2, 'Jordan Mason', 'RB', 'MIN']]
+pooled-fit rank: train spearman by w 0:0.593, 0.1:0.595, 0.2:0.597, 0.3:0.600, 0.4:0.601, 0.5:0.602, 0.7:0.600, 1.0:0.595
+pooled-fit pts: train spearman by w 0:0.593, 0.1:0.597, 0.2:0.601, 0.3:0.605, 0.4:0.606, 0.5:0.608, 0.7:0.609, 1.0:0.606
+pooled-fit z: train spearman by w 0:0.593, 0.1:0.597, 0.2:0.600, 0.3:0.601, 0.4:0.603, 0.5:0.602, 0.7:0.600, 1.0:0.595
+pooled-fit chosen: {'rank': (0.5, {'QB': 0, 'RB': 0.7, 'WR': 0.5, 'TE': 0.7}), 'pts': (0.7, {'QB': 0, 'RB': 0.7, 'WR': 0.7, 'TE': 1.0}), 'z': (0.4, {'QB': 0, 'RB': 0.7, 'WR': 0.5, 'TE': 0.7})}
+pooled isotonic map (ecr -> pts) at ecr 1/6/12/24/36: {'QB': [27.1, 22.8, 18.7, 15.2, 4.7], 'RB': [23.6, 16.1, 16.1, 12.0, 9.2], 'WR': [27.1, 17.3, 16.0, 13.4, 11.0], 'TE': [20.7, 10.6, 10.2, 6.2, 5.3]}
+live shuffle (z blend, w=0.4): dSpearman mean -0.039 sd 0.044

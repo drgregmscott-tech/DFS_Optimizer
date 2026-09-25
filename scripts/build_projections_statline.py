@@ -326,6 +326,17 @@ def _apply_projection_stack(df, site, season, week):
     return df
 
 
+def _apply_ecr_blend(df, slate_id, w_rb, w_te):
+    """Opt-in FantasyPros ECR blend for RB/TE (scripts/ecr_blend.py). Failure = projections unchanged."""
+    try:
+        import ecr_blend
+        df, summary = ecr_blend.apply_blend(df, {"RB": w_rb, "TE": w_te}, slate_id)
+        print(ecr_blend.describe(summary))
+    except Exception as exc:  # noqa: BLE001 -- must never break a build
+        print(f"WARNING: ECR blend failed ({type(exc).__name__}: {exc}); projections unchanged.", file=sys.stderr)
+    return df
+
+
 def build_statline_projections(site: str, season: int, week: int, slate_id: str,
                                n_sims: int = statline_model.DEFAULT_SIMS,
                                seed: int = statline_model.DEFAULT_SEED,
@@ -348,6 +359,8 @@ def build_statline_projections(site: str, season: int, week: int, slate_id: str,
                                floor_share_fix: bool = False,
                                qb_rush_scale: float = 1.0,
                                p10_calibration: bool = True,
+                               ecr_blend_rb: float = 0.0,
+                               ecr_blend_te: float = 0.0,
                                ) -> pd.DataFrame:
     """`vegas_slate_id` (Session 14.0 -- this engine never had Session
     13.5-pause's fix at all): defaults to `slate_id`. See
@@ -784,6 +797,14 @@ def build_statline_projections(site: str, season: int, week: int, slate_id: str,
     df["stack_delta"] = 0.0
     if stack_active:
         df = _apply_projection_stack(df, site, season, week)
+    # Opt-in FantasyPros ECR blend (RB/TE), AFTER the stack and BEFORE the no-game
+    # zeroing below so confirmed-no-game rows still end at 0. OFF by default; live DK
+    # classic builds only (needs the current week's ECR file). See scripts/ecr_blend.py.
+    if ecr_blend_rb > 0 or ecr_blend_te > 0:
+        if site != "dk" or showdown or ignore_played_week:
+            print("NOTE: ECR blend requested but it only applies to a live DK classic build; skipped.")
+        else:
+            df = _apply_ecr_blend(df, slate_id, ecr_blend_rb, ecr_blend_te)
     df["sigma"] = df["statline_sigma"].clip(lower=0.0)
     df["sigma_source"] = "statline_mc"
 
@@ -1098,6 +1119,12 @@ if __name__ == "__main__":
                              "week's real results (played-week team correction and the "
                              "confirmed-no-game zero-out, decisions #4a/#4b) so the projection "
                              "is what could have been known before kickoff. Never use for a live slate.")
+    parser.add_argument("--ecr-blend-rb", type=float, default=0.0,
+                        help="Weight (0-1) on FantasyPros weekly ECR for DK classic RB projections "
+                             "(final = (1-w)*final + w*map(ecr)). Default 0.0 = OFF. Tested 2026-09-25 "
+                             "(analysis/proj_ecr/ecr_report.md): w=0.5 is the tested RB setting.")
+    parser.add_argument("--ecr-blend-te", type=float, default=0.0,
+                        help="Same for TE. Default 0.0 = OFF; evidence is weak (w<=0.3 if ever used).")
     parser.add_argument("--reconcile-threshold", type=float,
                         default=statline_model.RECONCILE_FAIL_THRESHOLD,
                         help="Max proportional share-reconciliation rescale before "
@@ -1122,7 +1149,9 @@ if __name__ == "__main__":
         props_weight=args.props_weight,
         props_file=args.props_file,
         use_stack=not args.no_stack,
-        p10_calibration=not args.no_p10_calibration)
+        p10_calibration=not args.no_p10_calibration,
+        ecr_blend_rb=args.ecr_blend_rb,
+        ecr_blend_te=args.ecr_blend_te)
 
     def _clean_site_id(value):
         if pd.isna(value):
