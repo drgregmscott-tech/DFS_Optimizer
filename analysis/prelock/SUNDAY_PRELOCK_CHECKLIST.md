@@ -134,6 +134,17 @@ Steps once the commits land (target 16:20-16:35Z):
 6. **Cash lineups must not contain a Questionable player in a 17:00Z game unless confirmed active**, or a late-window
    Questionable you cannot watch for late swap.
 
+## 5b. The 100-lineup pool experiment (GPP/MME; run after the props rebuild, before upload)
+
+**Why:** the replay (`HANDOFF_classic_construction_replay.md`, "Diversified-batch hit rate" and "pool size" tests; 6 slates) found the BEST lineup in every 100-lineup batch landed at the 98th-99.9th percentile, but average hit rate was only ~27% (field baseline 25%), and a bigger pool did NOT improve the scenario-scorer's pick (20 candidates ~61% mean percentile vs 100 candidates ~57%). The open problem is SELECTION, not generation. Treat this as an experiment, not a proven edge. Having 100 lineups does not mean 'one will hit': entries are correlated, each costs a fee, and n=6 slates.
+
+**Steps:**
+1. Build the pool with the confirmed replay settings: `--n-lineups 100 --stack-mode qb --stack-size 2 --bring-back` with randomization and a 50% max exposure (see `analysis/classic_diag/replay_batch.py` for the exact flags). Save the lineups file path.
+2. In the Claude session, ask for: (a) exposure table by player/team/game, (b) pairwise overlap (flag pairs sharing 7+ of 9), (c) ownership-leverage and projected-ceiling ranking using the calibrated p10/p90, (d) flags on lineups containing a new dart, a Doubtful/Questionable player, a moved QB, or a prop-driven big mover, (e) a proposed 20-30 subset (or the size of your max-entry contest) spread across game environments so lineups do not all fail together.
+3. Decide the entry count from the contest max and entry fee. State the fee/payout assumption; the replay measured percentiles, not profit.
+4. Save the final entered set to a file and note the contest, fee and max entries, so after the games every entered lineup (and the un-entered pool) is graded against real results. That grading adds Week 3 as slate #7+ to the replay evidence and is what improves the selection rule. Do this even if you enter fewer lineups.
+5. Cash lineups (Section 6) are built separately; do not draw cash entries from this pool.
+
 ## 6. What maximises cash odds (evidence from this repo only)
 
 Keep in mind that "cash" evidence in this repo comes from **DK SE3max top-25% lines** (6 slates) and a **synthetic
