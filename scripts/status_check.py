@@ -573,6 +573,7 @@ def run_apply(site: str, week: int, status_file: str, projections_file: str | No
     merged["injury_status"] = merged["status"].fillna("ACTIVE")
     merged = merged.drop(columns=["status"])
 
+    merged = apply_manual_status_overrides(merged, week)
     merged = promote_backup_kickers(merged)
 
     out_mask = merged["injury_status"] == "OUT"
@@ -612,6 +613,40 @@ def run_apply(site: str, week: int, status_file: str, projections_file: str | No
           f"final_projection left unchanged.")
     print(f"  Wrote {out_path}" + (" (overwrote the file optimizer.py reads)" if out_path == proj_path else ""))
     print("  Validation: PASS -- every OUT player's final_projection confirmed 0.0 on reload.")
+
+
+MANUAL_OVERRIDE_FILE = Path(__file__).resolve().parent.parent / "config" / "manual_status_overrides.csv"
+
+
+def apply_manual_status_overrides(merged: pd.DataFrame, week: int) -> pd.DataFrame:
+    """Hand-entered status for anything the ESPN feed misses (e.g. a kicker or a
+    game-day inactive). Optional file config/manual_status_overrides.csv with
+    columns week,player_name,team,status[,note]; only rows whose `week` equals
+    this run's week apply, so a stale row can never leak into a later week.
+    status must be OUT/DOUBTFUL/QUESTIONABLE/ACTIVE. Matches by normalized name
+    (+team when given). Runs BEFORE OUT-zeroing and backup-kicker promotion."""
+    if not MANUAL_OVERRIDE_FILE.exists():
+        return merged
+    ov = pd.read_csv(MANUAL_OVERRIDE_FILE, dtype=str).fillna("")
+    ov = ov[ov["week"].str.strip() == str(week)]
+    if ov.empty:
+        return merged
+    merged = merged.copy()
+    norm = merged["player_name"].astype(str).str.strip().str.lower()
+    for r in ov.itertuples():
+        st = r.status.strip().upper()
+        if st not in {"OUT", "DOUBTFUL", "QUESTIONABLE", "ACTIVE"}:
+            raise SystemExit(f"manual_status_overrides.csv: bad status {r.status!r} for {r.player_name!r}")
+        m = norm == r.player_name.strip().lower()
+        if getattr(r, "team", "").strip():
+            m &= merged["team"].astype(str).str.upper() == r.team.strip().upper()
+        if not m.any():
+            print(f"MANUAL OVERRIDE WARNING: no projection row matched {r.player_name!r} "
+                  f"({getattr(r, 'team', '')}) -- ignored.", file=sys.stderr)
+            continue
+        merged.loc[m, "injury_status"] = st
+        print(f"MANUAL OVERRIDE: {r.player_name} -> {st}" + (f" ({r.note})" if getattr(r, "note", "") else ""))
+    return merged
 
 
 def promote_backup_kickers(merged: pd.DataFrame) -> pd.DataFrame:
