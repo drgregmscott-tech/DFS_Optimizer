@@ -1,8 +1,8 @@
 team,component,pool_share,share_basis,raw_sum,target,scale,abs_delta
 MIN,pass,1.0,exclusive,5.0,30.13,6.0261,25.13
+MIN,rush,1.0,recent,41.81,27.88,0.6669,13.92
 LV,rush,0.9697,recent,38.49,26.94,0.6998,11.55
 NO,recv,1.0,recent,47.04,35.45,0.7535,11.59
-MIN,rush,1.0,recent,36.94,27.88,0.7547,9.06
 LV,pass,1.0,exclusive,26.52,32.67,1.232,6.15
 ARI,pass,1.0,exclusive,28.45,34.46,1.2112,6.01
 ARI,rush,1.0,recent,31.14,24.71,0.7936,6.43

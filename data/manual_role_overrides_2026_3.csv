@@ -1,0 +1,2 @@
+player_id,component,override_share,notes
+00-0035228,rush,0.45,"Kyler Murray MIN (share is vs team_carries_history ~15, calibrated so final ~5.5 carries): 2025 ARI 5 games avg 5.8 carries/g (7,7,6,5,4); model gave 1.5 att from a 1-game MIN sample. Passing volume left as modelled. Set 2026-09-25."

@@ -3,6 +3,7 @@ SEA,pass,1.0,exclusive,2.0,29.4,14.6992,27.4
 MIN,pass,1.0,exclusive,5.0,29.16,5.8313,24.16
 WAS,pass,1.0,exclusive,16.0,31.18,1.9488,15.18
 MIA,pass,1.0,exclusive,24.1,30.87,1.281,6.77
+MIN,rush,1.0,recent,38.99,28.18,0.7229,10.8
 HOU,recv,1.0,recent,47.94,34.89,0.7278,13.05
 LV,rush,0.9697,recent,35.44,27.24,0.7686,8.2
 NYJ,rush,0.9848,recent,34.88,27.18,0.7791,7.7
@@ -15,7 +16,6 @@ LV,recv,1.0,recent,37.73,30.4,0.8056,7.34
 BUF,rush,1.0,recent,35.08,28.47,0.8117,6.6
 NYG,recv,1.0,recent,35.45,29.2,0.8236,6.26
 WAS,recv,1.0,recent,35.93,29.65,0.8252,6.28
-MIN,rush,1.0,recent,34.13,28.18,0.8259,5.94
 LAC,pass,1.0,exclusive,28.6,33.52,1.1719,4.92
 KC,rush,0.9851,recent,36.16,29.96,0.8284,6.21
 IND,rush,0.9808,recent,31.33,26.12,0.8337,5.21
