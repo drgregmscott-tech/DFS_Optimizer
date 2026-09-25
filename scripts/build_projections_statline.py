@@ -621,6 +621,8 @@ def build_statline_projections(site: str, season: int, week: int, slate_id: str,
         # override=False costs nothing and keeps the two consumers in sync
         # on one read instead of two.
         depth_chart = statline_model.load_depth_chart()
+        depth_chart = statline_model.promote_depth_for_out_qbs(
+            depth_chart, statline_model.load_injury_status(week))
         df = statline_model.apply_volume_prior(
             df, prior_art, team_vol, weight_floor=prior_floor, k=prior_k,
             role_change=role_change,

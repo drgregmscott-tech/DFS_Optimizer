@@ -1,12 +1,12 @@
 team,component,pool_share,share_basis,raw_sum,target,scale,abs_delta
 SEA,pass,1.0,exclusive,2.0,29.4,14.6992,27.4
+WAS,pass,1.0,exclusive,16.0,31.18,1.9488,15.18
 MIA,pass,1.0,exclusive,24.1,30.87,1.281,6.77
 HOU,recv,1.0,recent,47.94,34.89,0.7278,13.05
-WAS,pass,1.0,exclusive,42.04,31.18,0.7417,10.86
 NYJ,rush,0.9848,recent,34.88,27.18,0.7791,7.7
 CIN,recv,1.0,recent,39.82,31.35,0.7874,8.47
 LAC,rush,1.0,recent,31.73,24.99,0.7877,6.74
-WAS,rush,1.0,recent,34.79,27.4,0.7878,7.38
+WAS,rush,1.0,recent,34.77,27.4,0.7882,7.37
 PIT,recv,1.0,recent,40.57,32.28,0.7955,8.3
 BUF,rush,1.0,recent,35.08,28.47,0.8117,6.6
 NYG,recv,1.0,recent,35.45,29.2,0.8237,6.25

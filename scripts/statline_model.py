@@ -730,6 +730,35 @@ def load_depth_chart() -> pd.DataFrame:
     return latest[["player_id", "team", "position", "depth_rank"]].dropna(subset=["player_id"])
 
 
+def promote_depth_for_out_qbs(depth_chart: pd.DataFrame,
+                              injury_status: pd.DataFrame | None) -> pd.DataFrame:
+    """2026-09-25 fix (WAS wk3: Daniels OUT, Mariota projected on 12.5 pass att).
+    The depth chart still lists an OUT starting QB as QB1, so the QB guard in
+    apply_volume_prior() kept giving him the team's pass volume and suppressed
+    the real starter's price share; status_check.py then zeroed him, leaving
+    the backup with the leftovers. Drop OUT QBs from the chart and re-rank the
+    rest so the next QB up is QB1 for volume/reconcile purposes. QB only
+    (RB/WR/TE OUT cases stay on the A4 backup-boost path). No-op without a
+    status pull or chart."""
+    if (depth_chart is None or depth_chart.empty or injury_status is None
+            or injury_status.empty):
+        return depth_chart
+    out_ids = set(injury_status.loc[injury_status["status"] == "OUT", "player_id"].astype(str))
+    is_qb = depth_chart["position"] == "QB"
+    dropped = is_qb & depth_chart["player_id"].astype(str).isin(out_ids)
+    if not dropped.any():
+        return depth_chart
+    d = depth_chart[~dropped].copy()
+    qb = d["position"] == "QB"
+    d["depth_rank"] = pd.to_numeric(d["depth_rank"], errors="coerce")
+    d["depth_rank"] = d["depth_rank"].astype(float)
+    d.loc[qb, "depth_rank"] = (d[qb].groupby("team")["depth_rank"]
+                               .rank(method="first"))
+    for team, nm in depth_chart.loc[dropped].groupby("team")["player_id"].apply(list).items():
+        print(f"OUT QB promotion: {team} QB(s) {nm} OUT -> next QB on the chart is QB1.")
+    return d
+
+
 def load_injury_status(week: int) -> pd.DataFrame:
     """Ad Hoc Session A4. The latest real `status_check.py pull` output for
     this week (output/player_status_{week}_{timestamp}.csv -- see
