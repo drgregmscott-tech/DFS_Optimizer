@@ -580,6 +580,16 @@ def run_apply(site: str, week: int, status_file: str, projections_file: str | No
     n_out = out_mask.sum()
     n_already_zero = (out_mask & (merged["final_projection"] == 0.0)).sum()
     merged.loc[out_mask, "final_projection"] = 0.0
+    # 2026-09-25: DOUBTFUL players are treated as OUT (they almost never play, and
+    # a projection on one is a trap in cash builds; PROPOSALS.md #2). The
+    # injury_status label stays DOUBTFUL so the UI still shows why. QUESTIONABLE
+    # is deliberately NOT discounted -- no repo evidence for a haircut size.
+    doubtful_mask = merged["injury_status"] == "DOUBTFUL"
+    n_doubtful_zeroed = int((doubtful_mask & (merged["final_projection"] > 0.0)).sum())
+    merged.loc[doubtful_mask, "final_projection"] = 0.0
+    for c in ("engine_projection", "statline_p10", "statline_p90"):
+        if c in merged.columns:
+            merged.loc[doubtful_mask, c] = 0.0
 
     # Week 2 post-mortem finding: ownership is computed inside the projection
     # build, BEFORE this step zeroes OUT players, so OUT players kept their
@@ -588,7 +598,7 @@ def run_apply(site: str, week: int, status_file: str, projections_file: str | No
     # each slate's 900-point ownership budget on players who cannot play and
     # deflated every real player's estimate. Recompute ownership from the
     # post-zeroing projections whenever this apply step changed anything.
-    if n_out and "estimated_ownership_pct" in merged.columns:
+    if (n_out or n_doubtful_zeroed) and "estimated_ownership_pct" in merged.columns:
         merged = refresh_ownership(merged, site)
 
     n_doubtful = (merged["injury_status"] == "DOUBTFUL").sum()
@@ -600,7 +610,7 @@ def run_apply(site: str, week: int, status_file: str, projections_file: str | No
     # Structural re-check (this project's "guarantee, not eyeballing"
     # pattern -- see optimizer.py's validate_lineup()/validate_stack()).
     reloaded = pd.read_csv(out_path, dtype={"player_id": str})
-    still_nonzero_out = reloaded[(reloaded["injury_status"] == "OUT") & (reloaded["final_projection"] != 0.0)]
+    still_nonzero_out = reloaded[reloaded["injury_status"].isin(["OUT", "DOUBTFUL"]) & (reloaded["final_projection"] != 0.0)]
     assert still_nonzero_out.empty, (
         f"APPLY VALIDATION FAILED: {len(still_nonzero_out)} OUT player(s) still have a nonzero "
         f"final_projection after writing {out_path} -- {still_nonzero_out['player_name'].tolist()}"
@@ -609,8 +619,8 @@ def run_apply(site: str, week: int, status_file: str, projections_file: str | No
     print(f"Applied {status_path.name} to {proj_path.name}.")
     print(f"  OUT: {n_out} player(s) -- final_projection forced to 0.0 "
           f"({n_already_zero} were already 0.0 from a bye/no-real-game, unaffected).")
-    print(f"  DOUBTFUL: {n_doubtful}, QUESTIONABLE: {n_questionable} -- flagged via `injury_status`, "
-          f"final_projection left unchanged.")
+    print(f"  DOUBTFUL: {n_doubtful} ({n_doubtful_zeroed} newly zeroed), QUESTIONABLE: {n_questionable} -- "
+          f"QUESTIONABLE flagged via `injury_status`, final_projection left unchanged.")
     print(f"  Wrote {out_path}" + (" (overwrote the file optimizer.py reads)" if out_path == proj_path else ""))
     print("  Validation: PASS -- every OUT player's final_projection confirmed 0.0 on reload.")
 

@@ -743,7 +743,7 @@ def promote_depth_for_out_qbs(depth_chart: pd.DataFrame,
     if (depth_chart is None or depth_chart.empty or injury_status is None
             or injury_status.empty):
         return depth_chart
-    out_ids = set(injury_status.loc[injury_status["status"] == "OUT", "player_id"].astype(str))
+    out_ids = set(injury_status.loc[injury_status["status"].isin(["OUT", "DOUBTFUL"]), "player_id"].astype(str))
     is_qb = depth_chart["position"] == "QB"
     dropped = is_qb & depth_chart["player_id"].astype(str).isin(out_ids)
     if not dropped.any():
