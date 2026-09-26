@@ -9,7 +9,7 @@ Slates (from `data/current_slate.json`): `dk_classic_wk3_main_27Sep2026`, `dk_cl
 `fd_classic_wk3_main_27Sep2026`, `fd_classic_wk3_early_27Sep2026` all lock **17:00 UTC (12:00 CDT)**.
 `fd_classic_wk3_afternoon_27Sep2026` locks **20:05 UTC (15:05 CDT)**. DK main late games: ARI@SF, MIN@TB 20:05 UTC;
 BAL@DAL, LV@NO 20:25 UTC. These stay late-swappable until they kick off.
-There is **no DK afternoon classic entry** in `current_slate.json`. If you want to play it, see "Manual actions".
+**UPDATE 2026-09-26:** a DK afternoon classic slate (`dk_classic_wk3_afternoon_27Sep2026`, lock **20:05 UTC**) WAS added on 09-25 (see the update note at the top); the old line saying there is no DK afternoon entry is stale.
 
 All times are UTC, with CDT (UTC-5) in brackets.
 
@@ -60,7 +60,7 @@ python scripts/status_check.py apply --site dk --week 3 --status-file output/pla
 
 **Lineup builds (local CLI, reads the local files):**
 ```
-# Cash / H2H / double-up (3 lineups, lambda 0.063, no stack): the preset as shipped
+# Cash / H2H / double-up (3 lineups, lambda 0 as of 2026-09-26, no stack): the preset as shipped
 python scripts/optimizer.py --site dk --slate-id dk_classic_wk3_main_27Sep2026 --preset cash --exclude <ids>
 # Evidence-backed cash variant (QB+2 stack, bring-back; see section 6): test side-by-side with the one above
 python scripts/optimizer.py --site dk --slate-id dk_classic_wk3_main_27Sep2026 --preset cash --stack-mode qb --stack-size 2 --bring-back --exclude <ids>
@@ -156,7 +156,7 @@ beat@p44** backtest. Double-ups and H2H pay around the 44th-50th percentile. Tha
 |---|---|---|---|
 | Structure: QB + 2 pass-catchers + 1 bring-back | Use the stack variant of the cash command | Replay on 6 real slates: 0/6 to 1/6 cash, better percentile on most (`HANDOFF_classic_construction_replay.md` §3). Within-lineup logistic: `stack2p` +0.16 (z 4.9), `bb1p` +0.20 (z 9.5) (`WK2_POSTMORTEM.md` "Classic cash-line diagnostic") | Moderate. The shipped `cash` preset uses `stack-mode none`, so this contradicts the preset. Build both and prefer the stacked one when projections are within ~2 pts. |
 | TE eligible in FLEX | Do **not** pass `--flex-positions RB,WR` | Within our own stacked batches: TE-flex cash 29.9% (n=385), WR 27.2%, RB 19.6% (`WK2_POSTMORTEM.md` "Within-batch cash-driver diagnostic") | Moderate, and the only lever that survives with structure held fixed. It goes against your WK2 SE habit of "TE not flex". |
-| Floor weighting (lambda) | Keep `lambda 0.063` (the cash preset) | beat@p44 0.8723 vs 0.8662 at lambda=0, less than 1 SE (`ROADMAP.md` Session 10.5b / A5; `data/optimizer_presets.json` comment) | Weak. Suggestive only. |
+| Floor weighting (lambda) | **Use `lambda 0` (the cash/SE presets were changed from 0.063 on 2026-09-26)** | 88-slate 2021-25 replay: 0.063 loses ~5-6 lineup pts vs 0, negative in 5-6 of 6 seasons, cash rate .10 vs .23 (bare optimizer, no stacks; not yet verified with the full optimizer). Old sweep was +0.006, <1 SE. See `HANDOFF_fc_history_ownership_findings_2026-09-26.md`. If a saved cloud preset in the UI still says 0.063, set it to 0. |
 | Lean toward chalk, don't fade it | No ownership floor (rejected). Just don't fade the obvious chalk in cash. | Own-sum Q4 lift 1.31x for top-25% (`WK2_POSTMORTEM.md`). A hard ownership floor was REJECTED in replay (helped 2/6, hurt 3/6, `HANDOFF_classic_construction_replay.md`). Within-batch own_sum not significant. | Moderate for the direction; do not force it. |
 | DST: cheap and believable | Pick from the report's section 5 "cheap-and-believable" list. Never use a DST facing implied >= 26 in cash. | DST ownership coef -0.16 (z -11.1) and opponent total -0.06 (z -4.1) (`WK2_POSTMORTEM.md`). Replay `analysis/classic_diag/replay_v3a_cheap_dst_results.csv`: cheapest DST 4/6 cash (mean pct .739), default 3/6 (.703), cheapest-viable 2/6 (.691). Memory rule: prefer cheap-viable over literally cheapest (blow-up tail). | Weak (n=6). Follow your standing rule. |
 | Use more of the cap | `--min-salary-pct 99` (a percentage: 99 = $49,500 DK / $59,400 FD) | `sal_z` +0.09 (z 6.1) (`WK2_POSTMORTEM.md`) | Weak. |
