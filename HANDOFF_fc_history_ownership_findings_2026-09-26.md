@@ -105,8 +105,19 @@ NOT changed, deliberately: matchup (stays neutral), no FC blend, no ownership re
 A. Log data (existing process): Stage 7 results (`log_results.py`; FD via derive_actual_results.py), Stage 6 real ownership (`log_ownership.py`, sum ALL rows per player incl. FLEX).
    Export FC Week 3 Rewind (all slates: main + early/afternoon + showdown if possible) before the trial ends Fri 2026-10-02; FC file naming fc_dk_2026_wk03_{slate}_{type}.csv into data/fc_history/2026/,
    then `python scripts/fc_history_etl.py` and `python scripts/fc_history_map.py` (send one showdown + one early/afternoon sample first; ETL never run on those layouts).
-B. Ownership (3rd fold): rerun analysis/ownership_fc_refit/evaluate*.py-style LOWO with wk3; test the pair "$5.5-7k multiplier (x1.3-1.45) + top cap 60-65"; look at value rank / public-value features;
-   check whether DFF/WWO (wk3 captured in data/projections_public/) and ECR (data/ecr_archive/) add anything as they accumulate. Refit BOTH artifacts per HANDOFF_week3_weekend_and_refit_plan_2026-09-25.md sec 4 only if it wins.
+B. OWNERSHIP (all of this is unconditional except where marked):
+   B0. SUNDAY RULE IN FORCE (from HANDOFF_week3_weekend_and_refit_plan_2026-09-25.md sec 4; nothing in this session changes it): cash ignore ownership; GPP/MME treat
+       model-far-below-FFC players as chalk, use the higher of model/FFC, no leverage play on a model-only low-ownership call unless FFC agrees. Wk3 main example: Kelce 19 vs FFC 46, Mahomes 18 vs 46, Gibbs 47 vs 63.
+   B1. Rebuild the 6 wk1/wk2 DK classic slates leak-free with FINAL code (--backtest-no-leak; wk1 --season 2025 --week 23, wk2 --season 2026 --week 2; every build must print `Wrote N players`;
+       restore output/ with git checkout; never commit test rebuilds; use PRE-LOCK commits cefc761/7e57cfe if reading old outputs) + add the 3 wk3 slates. The current artifacts were fit on 2 weeks of PRE-guard projections.
+   B2. Refit BOTH data/ownership_model_dk.json and data/ownership_model_dk_ffc.json (scripts/fit_ownership_model.py; FFC variant = om.FEATURES + om.FFC_FEATURES), leave-one-week-out on 3 weeks,
+       meaningful cut (proj>8). Baseline to beat: corr .764, chalk bias -4.1 (FFC variant). Ship only if it wins held-out weeks.  (This refit was planned regardless; only shipping is conditional.)
+   B3. FFC-floor test: for players FFC lists above ~30%, est = max(model, a*ffc), `a` chosen only by LOWO (start 0.7). Report corr, chalk-tier bias, top-10 overlap; ship only if better in >=2 of 3 folds and no harm to sub-10%.
+   B4. Check whether status apply's ownership refresh (OUT + Doubtful) changes chalk vs the build-time number.
+   B5. FC-history findings to test as additions (they did NOT beat the model alone): pair '$5.5-7k multiplier (x1.3-1.45) + top-player cap 60-65' (fixes tier totals, costs 20%+ precision if used alone; retest on 3 folds),
+       value-rank / public-value features, DFF/WWO (data/projections_public) and ECR (data/ecr_archive) as they accumulate. 10-20% tier undercount is a discrimination problem, not a shape problem.
+   B6. Showdown ownership is separate (ownership_model_showdown.py, fit on 4 slates); FC showdown history (parked, user pulling) is the main lever there.
+   B7. Real wk3 ownership must be logged first (log_ownership.py, sum ALL rows per player incl. FLEX; the log guard refuses low totals).
 C. Lambda: re-verify cash/SE lambda 0 vs 0.063 with wk1-3 real slates on the FULL optimizer (stacks, exposures) via scripts/optimizer.py --lambda; consider a fresh sweep on 2021-25 history after the sigma fix (item E).
 D. QB: refit projection_stack on guarded history (was fit 2020-21 on broken QB volume), then test QB = a + b*proj (b .64-.89 by week bucket) at lineup level incl. wk3; look at backup-QB starters (Mariota/Winston) that look low.
 E. Sigma: fix the yards double-count (fit yards_cv net of latent in statline_variance.json), refit sigma_recalibration on 2021-25 (interim x0.90 RB/WR/TE), QR p90. Nothing reads p90 today.
