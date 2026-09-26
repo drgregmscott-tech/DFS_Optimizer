@@ -1,46 +1,50 @@
 player,salary,proj_own,lo,hi
-Devaughn Vele,4400,71.6,57.9,89.5
-Christian McCaffrey,8300,59.6,31.6,78.9
-T.J. Hockenson,3200,55.8,36.8,73.7
-Zay Flowers,6900,49.1,31.6,78.9
-Chris Olave,7200,48.4,31.6,63.2
-George Kittle,4800,47.7,31.6,63.2
-Jeremiyah Love,5500,46.7,26.3,73.7
-Brock Purdy,6500,45.6,21.1,68.4
-Minnesota Defense,3100,45.6,31.6,57.9
-Derrick Henry,7700,41.1,21.1,57.9
-Juwan Johnson,3700,36.5,15.8,57.9
-Trey McBride,6700,35.1,21.1,47.4
-CeeDee Lamb,7800,27.0,10.5,42.1
-Ashton Jeanty,7100,26.7,10.5,47.4
-Tyler Shough,5400,25.6,15.8,36.8
-Las Vegas Defense,2600,23.9,5.3,42.1
-Michael Wilson,5200,20.7,0.0,36.8
-George Pickens,6600,20.0,0.0,47.4
-Deebo Samuel Sr.,5300,18.9,0.0,36.8
-Ryan Flournoy,3800,18.6,5.3,26.3
-Bucky Irving,6300,16.5,5.3,36.8
-Tampa Bay Defense,2600,16.5,5.3,31.6
-Lamar Jackson,7500,13.7,0.0,36.8
-Justin Jefferson,7500,9.8,0.0,26.3
-Rashod Bateman,4700,9.8,0.0,26.3
-New Orleans Defense,3300,8.8,5.3,21.1
-Cade Otton,3100,8.4,0.0,31.6
-Aaron Jones Sr.,5900,7.7,0.0,15.8
-Jacoby Brissett,4800,7.4,0.0,21.1
-Mark Andrews,4400,7.4,0.0,15.8
-Javonte Williams,6700,6.3,0.0,15.8
-Dallas Defense,2400,4.9,0.0,10.5
-Dak Prescott,6700,4.2,0.0,10.5
-Kyler Murray,5100,2.1,0.0,10.5
-Mike Evans,6800,1.8,0.0,5.3
+Devaughn Vele,4400,75.1,63.2,84.2
+Christian McCaffrey,8300,62.1,42.1,78.9
+T.J. Hockenson,3200,53.7,31.6,78.9
+Zay Flowers,6900,50.9,36.8,68.4
+George Kittle,4800,49.5,36.8,73.7
+Chris Olave,7200,48.4,26.3,63.2
+Brock Purdy,6500,48.4,31.6,63.2
+Jeremiyah Love,5500,46.0,21.1,68.4
+Minnesota Defense,3100,42.5,21.1,63.2
+Derrick Henry,7700,41.8,26.3,57.9
+Juwan Johnson,3700,41.8,26.3,63.2
+CeeDee Lamb,7800,29.8,10.5,52.6
+Trey McBride,6700,28.4,10.5,47.4
+Ashton Jeanty,7100,23.5,5.3,42.1
+Tyler Shough,5400,22.1,10.5,36.8
+Michael Wilson,5200,21.8,0.0,31.6
+Las Vegas Defense,2600,20.7,10.5,36.8
+Tampa Bay Defense,2600,20.4,5.3,31.6
+George Pickens,6600,20.0,5.3,31.6
+Deebo Samuel Sr.,5300,18.9,0.0,31.6
+Bucky Irving,6300,16.8,5.3,31.6
+Ryan Flournoy,3800,16.5,0.0,42.1
+Lamar Jackson,7500,15.4,0.0,36.8
+Mark Andrews,4400,9.5,0.0,21.1
+New Orleans Defense,3300,9.1,0.0,21.1
+Javonte Williams,6700,8.8,0.0,26.3
+Aaron Jones Sr.,5900,8.4,0.0,21.1
+Rashod Bateman,4700,7.4,0.0,21.1
+Justin Jefferson,7500,6.7,0.0,10.5
+Jacoby Brissett,4800,6.3,0.0,15.8
+Cade Otton,3100,5.6,0.0,15.8
+Dallas Defense,2400,5.6,0.0,15.8
+Kyler Murray,5100,3.5,0.0,10.5
+Dak Prescott,6700,3.2,0.0,21.1
+Ted Hurst III,3000,2.1,0.0,10.5
 Jake Ferguson,4100,1.8,0.0,10.5
-Travis Etienne Jr.,5800,1.8,0.0,10.5
-Jordan Addison,4900,1.8,0.0,15.8
-Baker Mayfield,5300,1.4,0.0,5.3
-Ted Hurst III,3000,1.1,0.0,5.3
-Jauan Jennings,3600,0.7,0.0,5.3
+Baker Mayfield,5300,1.1,0.0,5.3
+Travis Etienne Jr.,5800,1.1,0.0,5.3
+Baltimore Defense,2800,1.1,0.0,5.3
 Tre Tucker,5000,0.7,0.0,5.3
-Emeka Egbuka,6200,0.7,0.0,5.3
-Chris Godwin Jr.,5300,0.4,0.0,5.3
-Baltimore Defense,2800,0.4,0.0,5.3
+Arizona Defense,2300,0.7,0.0,5.3
+Jordan Addison,4900,0.7,0.0,5.3
+Jauan Jennings,3600,0.4,0.0,5.3
+Brock Bowers,6600,0.4,0.0,5.3
+Mike Evans,6800,0.4,0.0,5.3
+Kendrick Bourne,3700,0.4,0.0,5.3
+Justice Hill,4200,0.4,0.0,5.3
+Jalen Nailor,3700,0.4,0.0,5.3
+Marvin Harrison Jr.,4700,0.4,0.0,5.3
