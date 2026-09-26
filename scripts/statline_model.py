@@ -779,7 +779,39 @@ def load_injury_status(week: int) -> pd.DataFrame:
               f"(see status_check.py pull).")
         return pd.DataFrame(columns=["player_id", "team", "position", "status"])
     latest = pd.read_csv(matches[-1])
+    latest = _apply_manual_status_to_pull(latest, week)
     return latest[["player_id", "team", "position", "status"]]
+
+
+def _apply_manual_status_to_pull(pull: pd.DataFrame, week: int) -> pd.DataFrame:
+    """Hand-entered game-day/news status (config/manual_status_overrides.csv, same file and"
+    matching rules as status_check.apply_manual_status_overrides) applied to the pulled status
+    BEFORE the build reads it. Without this a manual OUT on a QB1 only zeroed him after the
+    build (status_check apply) and never triggered promote_depth_for_out_qbs / the backup
+    boost, so the backup stayed near 0. No file, no rows for this week, or an unmatched row
+    -> pull returned unchanged (rows that match nothing print a warning, never fail)."""
+    path = REPO_ROOT / "config" / "manual_status_overrides.csv"
+    if not path.exists() or pull.empty or "player_name" not in pull.columns:
+        return pull
+    ov = pd.read_csv(path, dtype=str).fillna("")
+    ov = ov[ov["week"].str.strip() == str(week)]
+    if ov.empty:
+        return pull
+    pull = pull.copy()
+    norm = pull["player_name"].astype(str).str.strip().str.lower()
+    for r in ov.itertuples():
+        st = r.status.strip().upper()
+        if st not in {"OUT", "DOUBTFUL", "QUESTIONABLE", "ACTIVE"}:
+            continue  # status_check apply raises on a bad value; the build must not fail on it
+        m = norm == r.player_name.strip().lower()
+        if getattr(r, "team", "").strip():
+            m &= pull["team"].astype(str).str.upper() == r.team.strip().upper()
+        if not m.any():
+            print(f"MANUAL STATUS (build) WARNING: no status-pull row matched {r.player_name!r} -- ignored.")
+            continue
+        pull.loc[m, "status"] = st
+        print(f"MANUAL STATUS (build): {r.player_name} -> {st} (feeds QB promotion / backup boost)")
+    return pull
 
 
 def team_defense_history(season: int, week: int) -> pd.DataFrame:
