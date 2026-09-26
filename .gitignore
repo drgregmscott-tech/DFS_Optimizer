@@ -40,3 +40,6 @@ data/_precip_cache.json
 
 # ECR blend fetch cache (re-fetched every build; audit logs live in data/ecr_blend/)
 data/ecr/
+
+# Fantasy Cruncher subscription exports and anything derived from them (repo is PUBLIC -- never commit)
+data/fc_history/
