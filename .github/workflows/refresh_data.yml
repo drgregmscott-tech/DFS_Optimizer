@@ -351,6 +351,22 @@ jobs:
             exit 1
           fi
 
+      # Game-day inactives overlay (scripts/inactives_pull.py) -- DISABLED.
+      # Opt-in: ESPN's per-game roster (didNotPlay) is verified only on
+      # POST-game data; whether it is populated at the ~90-min inactive
+      # release is unverified. Fail-safe (always exit 0, only marks OUT,
+      # writes a new player_status file only when something changed). To
+      # enable, uncomment this step (it must stay right after status_pull,
+      # before the commit step). See analysis/proj_inactives/.
+      # - name: Game-day inactives overlay (opt-in)
+      #   id: inactives
+      #   if: needs.prepare.outputs.mode == 'full'
+      #   continue-on-error: true
+      #   run: |
+      #     while read season week; do
+      #       python3 scripts/inactives_pull.py --season "$season" --week "$week"
+      #     done < /tmp/pairs.txt
+
       # Player-prop lines (scripts/props_auto.py; WK2_POSTMORTEM.md). Runs only
       # in full mode. For every slate that locks within ~100 minutes and has no
       # snapshot from the last 2 hours it pulls that slate's games ONCE (games

@@ -1,0 +1,36 @@
+
+== 2026 wk1: 16 games, 32 team-games, not ok: []
+  ESPN fantasy-pos inactives flagged: 92 (mapped 91; unmapped 1)
+  flagged but not on nflverse ACT/INA universe: 1
+  [all] n=520 DNP=159 INA=68 | vs DNP: TP=90 FP=0 FN=69 prec=1.000 rec=0.566 | vs INA: TP=67 FP=23 FN=1
+  [relevant] n=457 DNP=114 INA=42 | vs DNP: TP=60 FP=0 FN=54 prec=1.000 rec=0.526 | vs INA: TP=42 FP=18 FN=0
+  [relevant] designation OUT/DOUBT (player_status_23_20260910_185633.csv): TP=7 FP=1 FN=107 prec=0.875 rec=0.061
+  [relevant] desig OR gameday (player_status_23_20260910_185633.csv): TP=60 FP=1 FN=54 prec=0.984 rec=0.526
+  gameday adds over designation (true DNP, not OUT/DOUBT pre-lock): 53 -> [['Andy Dalton', 'PHI', 'QB'], ['Tyrod Taylor', 'GB', 'QB'], ['Jameis Winston', 'NYG', 'QB'], ['Marcus Mariota', 'WAS', 'QB'], ['Mitchell Trubisky', 'TEN', 'QB'], ['Alvin Kamara', 'NO', 'RB'], ['Kyle Allen', 'BUF', 'QB'], ['Mason Rudolph', 'PIT', 'QB'], ['Jarrett Stidham', 'DEN', 'QB'], ['Gardner Minshew', 'ARI', 'QB'], ['Ty Johnson', 'BUF', 'RB'], ['Marquise Brown', 'PHI', 'WR'], ['Tyler Huntley', 'BAL', 'QB'], ['Tua Tagovailoa', 'ATL', 'QB'], ['Kene Nwangwu', 'NYJ', 'RB']]
+
+== 2026 wk2: 16 games, 32 team-games, not ok: []
+  ESPN fantasy-pos inactives flagged: 84 (mapped 82; unmapped 2)
+  flagged but not on nflverse ACT/INA universe: 1
+  [all] n=513 DNP=148 INA=61 | vs DNP: TP=81 FP=0 FN=67 prec=1.000 rec=0.547 | vs INA: TP=60 FP=21 FN=1
+  [relevant] n=454 DNP=103 INA=37 | vs DNP: TP=53 FP=0 FN=50 prec=1.000 rec=0.515 | vs INA: TP=37 FP=16 FN=0
+  [relevant] designation OUT/DOUBT (player_status_2_20260920_160103.csv): TP=24 FP=0 FN=79 prec=1.000 rec=0.233
+  [relevant] desig OR gameday (player_status_2_20260920_160103.csv): TP=53 FP=0 FN=50 prec=1.000 rec=0.515
+  gameday adds over designation (true DNP, not OUT/DOUBT pre-lock): 29 -> [['Andy Dalton', 'PHI', 'QB'], ['Tyrod Taylor', 'GB', 'QB'], ['Mitchell Trubisky', 'TEN', 'QB'], ['Joshua Dobbs', 'DET', 'QB'], ['Kyle Allen', 'BUF', 'QB'], ['Jarrett Stidham', 'DEN', 'QB'], ['Gardner Minshew', 'ARI', 'QB'], ['Tyler Huntley', 'BAL', 'QB'], ['Davis Mills', 'HOU', 'QB'], ['Justin Fields', 'KC', 'QB'], ['Trey Lance', 'LAC', 'QB'], ['Tyler Goodson', 'DAL', 'RB'], ['Jalen Tolbert', 'MIA', 'WR'], ['Puka Nacua', 'LA', 'WR'], ['Anthony Richardson', 'IND', 'QB']]
+
+== 2025 wk1: 16 games, 32 team-games, not ok: [('401772723', 'HOU', 'insane(entries=64,dnp=0)', 0), ('401772918', 'BAL', 'insane(entries=60,dnp=0)', 0)]
+  ESPN fantasy-pos inactives flagged: 26 (mapped 26; unmapped 0)
+  flagged but not on nflverse ACT/INA universe: 0
+  [all] n=509 DNP=150 INA=58 | vs DNP: TP=26 FP=0 FN=124 prec=1.000 rec=0.173 | vs INA: TP=13 FP=13 FN=45
+  [relevant] n=500 DNP=142 INA=52 | vs DNP: TP=25 FP=0 FN=117 prec=1.000 rec=0.176 | vs INA: TP=12 FP=13 FN=40
+  relevant INA-but-not-flagged: [['Darren Waller', 'MIA', 'TE'], ['Raheem Mostert', 'LV', 'RB'], ['Patrick Ricard', 'BAL', 'RB'], ['Chris Godwin Jr.', 'TB', 'WR'], ['Braxton Berrios', 'HOU', 'WR'], ['Allen Lazard', 'NYJ', 'WR'], ['Christian Kirk', 'HOU', 'WR'], ['Elijah Mitchell', 'KC', 'RB'], ['Dareke Young', 'SEA', 'WR'], ['Tyler Goodson', 'IND', 'RB']]
+
+== 2025 wk2: 16 games, 32 team-games, not ok: [('401772725', 'CIN', 'insane(entries=58,dnp=0)', 0), ('401772726', 'BAL', 'insane(entries=60,dnp=0)', 0), ('401772715', 'TB', 'insane(entries=57,dnp=0)', 0)]
+  ESPN fantasy-pos inactives flagged: 14 (mapped 14; unmapped 0)
+  flagged but not on nflverse ACT/INA universe: 1
+  [all] n=511 DNP=157 INA=68 | vs DNP: TP=13 FP=0 FN=144 prec=1.000 rec=0.083 | vs INA: TP=11 FP=2 FN=57
+  [relevant] n=505 DNP=151 INA=64 | vs DNP: TP=12 FP=0 FN=139 prec=1.000 rec=0.079 | vs INA: TP=10 FP=2 FN=54
+  relevant INA-but-not-flagged: [['Josh Johnson', 'WAS', 'QB'], ['Jameis Winston', 'NYG', 'QB'], ['Darren Waller', 'MIA', 'TE'], ['Raheem Mostert', 'LV', 'RB'], ['Patrick Ricard', 'BAL', 'RB'], ['Jamal Agnew', 'ATL', 'WR'], ['Chris Godwin Jr.', 'TB', 'WR'], ['Braxton Berrios', 'HOU', 'WR'], ['Christian Kirk', 'HOU', 'WR'], ['Colby Parkinson', 'LA', 'TE']]
+
+TOTAL [all] TP=210 FP=0 FN=404 prec=1.000 rec=0.342
+
+TOTAL [relevant] TP=150 FP=0 FN=360 prec=1.000 rec=0.294

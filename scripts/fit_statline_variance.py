@@ -339,6 +339,103 @@ def calibrate_latent_sd(cv: float, corr_target: float, td_rate: float,
     return round(0.5 * (lo + hi), 4)
 
 
+def _net_gamma_cv(cv_total: float, latent_sd: float) -> float:
+    """2026-09-26 double-count fix. The simulator draws yards ~ Gamma(mean =
+    vol*rate*L, cv_g) with L ~ Gamma(mean 1, sd latent_sd), so the TOTAL CV of
+    yards/(vol*rate) is sqrt((1+cv_g^2)(1+latent_sd^2) - 1). The measured
+    ratio CV is that total, so the gamma's own cv must be net of the latent."""
+    v = (1.0 + cv_total ** 2) / (1.0 + latent_sd ** 2) - 1.0
+    return float(np.sqrt(max(v, 1e-6)))
+
+
+def fit_yards_net(df: pd.DataFrame, pos: str, vol_stat: str, yd_stat: str,
+                  td_stat: str, cv_weight: str = "volume") -> dict:
+    """Measured TOTAL yards-ratio CV (optionally volume-weighted: the ratio's CV
+    falls ~1/sqrt(volume), and the constant-cv simulator should match the
+    players who carry real volume) + the within-player yards<->TD corr."""
+    eff = fit_efficiency(df, pos, vol_stat, yd_stat, td_stat)
+    if cv_weight == "volume":
+        d = df[(df["position"] == pos) & (df[vol_stat] > 0)]
+        own = d.groupby(["player_id", "season"]).agg(
+            y=(yd_stat, "sum"), v=(vol_stat, "sum"), n=(yd_stat, "size"))
+        own = own[own["n"] >= MIN_GAMES]
+        own["own_rate"] = own["y"] / own["v"].replace(0, np.nan)
+        m = d.merge(own[["own_rate"]], left_on=["player_id", "season"],
+                    right_index=True, how="inner")
+        ratio = m[yd_stat] / (m[vol_stat] * m["own_rate"]).replace(0, np.nan)
+        ok = ratio.notna() & (ratio > RATIO_CLIP[0]) & (ratio < RATIO_CLIP[1])
+        eff["yards_cv_total"] = round(float(np.sqrt(np.average(
+            (ratio[ok] - 1.0) ** 2, weights=m.loc[ok, vol_stat]))), 4)
+    else:
+        eff["yards_cv_total"] = eff["yards_cv"]
+    eff["yards_cv_total_unweighted"] = eff.pop("yards_cv")
+    return eff
+
+
+def calibrate_latent_sd_net(cv_total: float, corr_target: float, td_rate: float,
+                            mean_volume: float, seed: int = 12345) -> tuple:
+    """Decision #6 re-done net of the latent: bisect latent_sd so the simulated
+    yards<->TD corr hits the target WHILE the total yards CV given volume stays
+    at cv_total (cv_g = _net_gamma_cv(cv_total, latent_sd)). latent_sd is capped
+    just below cv_total (cv_g -> 0); if the target is unreachable the cap is used
+    and flagged."""
+    import statline_model
+
+    def corr(ls):
+        return statline_model._simulated_yards_td_corr(
+            latent_sd=ls, yards_cv=_net_gamma_cv(cv_total, ls), td_rate=td_rate,
+            mean_volume=mean_volume, seed=seed)
+    hi_cap = 0.98 * cv_total
+    if corr(hi_cap) < corr_target:
+        return round(hi_cap, 4), round(_net_gamma_cv(cv_total, hi_cap), 4), True
+    lo, hi = 0.0, hi_cap
+    for _ in range(30):
+        mid = 0.5 * (lo + hi)
+        if corr(mid) < corr_target:
+            lo = mid
+        else:
+            hi = mid
+    ls = round(0.5 * (lo + hi), 4)
+    return ls, round(_net_gamma_cv(cv_total, ls), 4), False
+
+
+def refit_yards_net(base: dict, seasons: list, cv_weight: str = "volume") -> dict:
+    """2026-09-26: copy `base` and replace ONLY yards_cv / latent_sd (and the
+    corr target) with the net-of-latent parameterisation fit on `seasons`.
+    Volume r, rates (the MEAN-relevant shrinkage targets), team_shock etc. are
+    untouched, so the change is variance-only."""
+    import copy
+    out = copy.deepcopy(base)
+    df = load_history(seasons)
+    print(f"Net-of-latent yards refit on {len(df):,} REG player-weeks, seasons "
+          f"{min(seasons)}-{max(seasons)}, cv_weight={cv_weight}.")
+    for pos in POSITIONS:
+        for name, vol_stat, yd_stat, td_stat in COMPONENTS[pos]:
+            c = out["positions"][pos]["components"][name]
+            e = fit_yards_net(df, pos, vol_stat, yd_stat, td_stat, cv_weight)
+            ls, cvg, capped = calibrate_latent_sd_net(
+                e["yards_cv_total"], e["yards_td_corr_target"],
+                c["td_per_opportunity"], c["mean_volume"])
+            c["legacy_yards_cv"], c["legacy_latent_sd"] = c["yards_cv"], c["latent_sd"]
+            c["legacy_yards_td_corr_target"] = c["yards_td_corr_target"]
+            c.update(yards_cv=cvg, latent_sd=ls, yards_cv_total=e["yards_cv_total"],
+                     yards_cv_total_unweighted=e["yards_cv_total_unweighted"],
+                     yards_td_corr_target=e["yards_td_corr_target"],
+                     latent_capped=bool(capped))
+            print(f"  {pos:>3} {name:<5} cv_total={e['yards_cv_total']:.3f} "
+                  f"corr={e['yards_td_corr_target']:.3f} -> latent_sd={ls:.3f} "
+                  f"gamma cv={cvg:.3f}{' (CAPPED)' if capped else ''}  "
+                  f"[legacy cv {c['legacy_yards_cv']:.3f} latent {c['legacy_latent_sd']:.3f}]")
+    out["yards_parameterisation"] = {
+        "mode": "net_of_latent", "fit_date": date.today().isoformat(),
+        "seasons": sorted(int(s) for s in seasons), "cv_weight": cv_weight,
+        "note": ("2026-09-26 double-count fix: yards_cv is now the gamma's OWN cv, net "
+                 "of the shared latent, so total CV of yards/(vol*rate) = yards_cv_total. "
+                 "legacy_* keep the old values. Only yards_cv/latent_sd/corr target changed; "
+                 "r, rates and team_shock are the base artifact's (means unaffected).")}
+    return out
+
+
 def fit_team_shock(seasons: list, team_volume_path=None) -> tuple:
     """Returns (team_shock_dict, conditional_r_dict) -- the second element
     is Session 15.2c's {(position, comp): r} decomposition, consumed by
@@ -632,9 +729,17 @@ if __name__ == "__main__":
     parser.add_argument("--team-volume-prior", default=None,
                         help="Volume-prior artifact whose team_volume the team-shock fit uses "
                              "(default data/volume_prior_dk.json). For leave-one-season-out refits.")
+    parser.add_argument("--net-latent-from", default=None,
+                        help="2026-09-26 double-count fix: copy this base artifact and refit ONLY "
+                             "yards_cv/latent_sd net of the latent on --seasons (variance-only).")
+    parser.add_argument("--cv-weight", default="volume", choices=["volume", "none"])
     args = parser.parse_args()
 
-    artifact = fit(args.seasons, args.team_volume_prior)
+    if args.net_latent_from:
+        artifact = refit_yards_net(json.loads(Path(args.net_latent_from).read_text()),
+                                   args.seasons, args.cv_weight)
+    else:
+        artifact = fit(args.seasons, args.team_volume_prior)
     out_path = Path(args.out) if args.out else ARTIFACT_PATH
     out_path.parent.mkdir(parents=True, exist_ok=True)
     out_path.write_text(json.dumps(artifact, indent=1))

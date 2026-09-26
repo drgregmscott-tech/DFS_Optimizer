@@ -126,3 +126,29 @@ G. Injury/inactive: build a verified game-day inactives source + scheduled pull/
    Questionable-haircut sizing needs nflverse injuries_{season} (public, ~1 MB/season, not downloaded).
 H. Any FC-vs-ours re-run: now includes wk3 live pre-lock FC projection vs our production wk3 output (use PRE-LOCK commits, never HEAD output/ for a played week).
 Standing principles: recent seasons matter more; judge at lineup level; report effect size + direction + what n would settle it; small shifts can flip lineups; FC = calibration benchmark only.
+
+## Addendum 4 (Sat 2026-09-26 evening): three "next effort" builds -- all BUILT, NONE ENABLED for Week 3
+Verdicts + how to pick each up. Production artifacts/behaviour are unchanged from a489bc6/2f68df7 (verified: git diff of data/statline_variance.json, sigma_recalibration_{dk,fd}.json = none).
+1. GAME-DAY INACTIVES (scripts/inactives_pull.py, tests analysis/proj_inactives/, workflow step COMMENTED OUT in refresh_data.yml). Source = ESPN per-game roster `didNotPlay`
+   (sports.core.api.espn.com .../events/{eid}/competitions/{eid}/competitors/{tid}/roster). Verified only on FINISHED games; returns 404 before kickoff for wk3, so pre-kickoff availability
+   (~90 min before) is UNVERIFIED and it may be a post-game field (also flags ~22 dressed-but-DNP backups/week). Replay wk1-2: precision 1.000, adds 53/29 true DNPs beyond ESPN designations.
+   To try Sun: at 15:30-16:45Z run `python scripts/inactives_pull.py --season 2026 --week 3 --dry-run`, compare to official inactives; enable only if it matches (uncomment 8 lines).
+   Pick-up: watch whether the dry run ever returns data pre-kickoff; if not, a no-op -- fall back to designations + manual overrides + a fresh DFF/WWO Sunday refetch.
+2. YARDS DOUBLE-COUNT + SIGMA REFIT (new fitter code in scripts/fit_statline_variance.py, additive/inert unless --net-latent-from is used; analysis/proj_variance/).
+   Refit artifacts SAVED, NOT LIVE: data/statline_variance.refit-2026-09-26.json, data/sigma_recalibration_{dk,fd}.refit-2026-09-26.json (untracked; the DK recal bins hold aggregates from
+   FC-derived data -> do not commit them unless bins are stripped; repo is public). To try: copy over the live file (keep a backup), rebuild.
+   Validated result: sim yards sd / actual residual sd 1.8-2.1x -> ~1.0-1.1 all positions, all seasons; TD dispersion still not too low; sigma z_sd 2023+ (LOSO) QB 1.01, RB .94, TE 1.00, WR .97
+   (old 1.03/.86/.90/.91); ranking of sigma unchanged (level change only). Means move slightly (mean -0.015 pt, 99th pct |chg| .23, from DK +3 yardage bonuses) -- real, not a bug, accuracy unchanged.
+   Lineup level: no improvement (lambda 0 identical; MME -0.005 flips top lineup on 6% of slates, no measurable effect). LAMBDA RE-SWEEP with new sigma: nothing positive beats 0; 0.063 clearly harmful
+   (-6.1, CI -11.6..-0.7, cash .102 vs .227, negative 5 of 6 seasons) -> CONFIRMS lambda 0 for cash/SE; MME -0.005 neutral. ~300+ slates needed to resolve +-1 pt.
+   Also available, not shipped: QR p90 = a + b*final (QB 13.92+.827f, RB 3.77+1.520f, WR 4.75+1.476f, TE 4.32+1.496f; needs edit in build_projections_statline.py; nothing reads p90);
+   volume-dependent gamma shape in statline_model (yards-TD coupling is mildly under-modelled, slightly worse for RB/TE after the fix). FD: recal 'a'/fit range were rescaled only, no FD refit.
+   Parked because: no lineup benefit shown, changes means (~0.2 pt) and DK showdown/FD/ownership-cv side effects the day before lock. Revisit after wk3 together with the QB work.
+3. QB / PROJECTION STACK REFIT (analysis/proj_stack/; artifact data/projection_stack_dk_refit_2026-09-26.json, untracked, NOT wired; derived from FC-derived training data -> keep local).
+   Refit on guarded 2021-25 history (49,169 rows). RB/WR/TE improve EVERY season 2021-26 (MAE RB 4.30->3.98, WR 4.42->4.17, TE 3.14->2.93; bias +0.3..0.8 -> ~-0.3) but QB1 slope stays ~.65 and
+   QB1 bias worsens (-0.15 -> -1.21): the stack is fit on all QBs incl. backups. Lineup level +3.9 (CI -1.1..+9.1), negative in 2025 (-3.5), changes full lineup on 97% of slates (MDE ~7 pts).
+   QB linear recal (a + b*old proj) is the only 2023+ CI above 0 (+4.3, 0.5..8.2). Week 3 ownership would shift 1-3 pts (chalk slightly chalkier: Allen 23.7->24.7, Kelce 18->21, Lamar 4.6->3.5) and
+   ownership artifacts were fit on old-stack projections. Switch (proposal, not applied): scripts/projection_stack.py line 62 artifact_path -> f"projection_stack_{site}_refit_2026-09-26.json" for dk.
+   Next: fit a QB1-specific term (stack on QB1 rows, or recal after refit); option to ship RB/WR/TE-only. Decide after wk3 (adds ~3 slates; useful mainly as a live QB1-bias check).
+PICK-UP ORDER after wk3 (updates plan D/E above): (a) QB1-specific stack/recal + wk3 QB1 bias check; (b) then decide on RB/WR/TE stack refit AND sigma/variance refit TOGETHER (both move projections/sigma; rebuild, refit ownership once);
+(c) QR p90 + volume-dependent yards shape; (d) inactives dry-run findings from Sunday.
