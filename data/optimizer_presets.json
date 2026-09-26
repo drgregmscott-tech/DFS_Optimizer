@@ -1,12 +1,12 @@
 {
-  "_comment": "Ad Hoc Session A3 -- built-in starter flag bundles for optimizer.py's --preset flag. Not a config format for user-saved presets (those live in the frontend's cloud-synced preset store, a separate mechanism) -- this file is the CLI's one-shot starting point for the three lineup types Greg builds: Cash, SE/3-Max GPP, and MME GPP (20-150 lineups). Any flag explicitly passed on the command line overrides the matching value here (see main()'s _load_preset_overrides()). lambda values are the validated defaults from Session 10.5b's backtest sweep (DK, 2018-2021, 65 weeks, holdout) -- see optimizer.py's --lambda help text and ROADMAP.md Ad Hoc Session A5. Cash and se_gpp use lambda=0.063, the grid's best value for their own metric (cash beat@p44 +0.006 over 0.0, <1 SE, suggestive not conclusive; se_gpp/3-max beat@p50 also best at 0.063 but no clear winner over 0.0). mme_gpp uses lambda=-0.005, the grid's best value for large-field top@p90, where any positive lambda measurably hurts. mme_gpp's dart-exposure-cap/dart-floor-threshold (Ad Hoc Session A6, 2026-09-13) are a heuristic guard, NOT a swept/backtested value like lambda -- see optimizer.py's --dart-exposure-cap help text for the real Week 1 example (Kevin Austin Jr., a $3,000 near-zero-floor filler) that motivated it. Not added to se_gpp/cash: with only 1-3 lineups there's no meaningful 'exposure' to spread a dart across in the first place.",
+  "_comment": "Ad Hoc Session A3 -- built-in starter flag bundles for optimizer.py's --preset flag. Not a config format for user-saved presets (those live in the frontend's cloud-synced preset store, a separate mechanism) -- this file is the CLI's one-shot starting point for the three lineup types Greg builds: Cash, SE/3-Max GPP, and MME GPP (20-150 lineups). Any flag explicitly passed on the command line overrides the matching value here (see main()'s _load_preset_overrides()). lambda values are the validated defaults from Session 10.5b's backtest sweep (DK, 2018-2021, 65 weeks, holdout) -- see optimizer.py's --lambda help text and ROADMAP.md Ad Hoc Session A5. [UPDATED 2026-09-26: cash and se_gpp now use lambda=0 -- an 88-slate 2021-25 replay found 0.063 loses ~5 lineup pts vs 0 in all 6 seasons; see HANDOFF_fc_history_ownership_findings_2026-09-26.md. Original text follows.] Cash and se_gpp use lambda=0.063, the grid's best value for their own metric (cash beat@p44 +0.006 over 0.0, <1 SE, suggestive not conclusive; se_gpp/3-max beat@p50 also best at 0.063 but no clear winner over 0.0). mme_gpp uses lambda=-0.005, the grid's best value for large-field top@p90, where any positive lambda measurably hurts. mme_gpp's dart-exposure-cap/dart-floor-threshold (Ad Hoc Session A6, 2026-09-13) are a heuristic guard, NOT a swept/backtested value like lambda -- see optimizer.py's --dart-exposure-cap help text for the real Week 1 example (Kevin Austin Jr., a $3,000 near-zero-floor filler) that motivated it. Not added to se_gpp/cash: with only 1-3 lineups there's no meaningful 'exposure' to spread a dart across in the first place.",
   "cash": {
     "n-lineups": 3,
     "max-exposure": 1.0,
     "uniqueness": 0,
     "stack-mode": "none",
     "randomization-pct": 0,
-    "lambda": 0.063
+    "lambda": 0
   },
   "se_gpp": {
     "n-lineups": 3,
@@ -16,7 +16,7 @@
     "stack-size": 1,
     "bring-back": true,
     "randomization-pct": 3,
-    "lambda": 0.063
+    "lambda": 0
   },
   "mme_gpp": {
     "n-lineups": 100,

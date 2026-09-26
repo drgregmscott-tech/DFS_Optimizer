@@ -3267,17 +3267,21 @@ in this browser's localStorage.</p>
   // bundles (kept in sync by hand -- there are only three) and are the
   // validated defaults from Session 10.5b's backtest sweep -- see this
   // control's own hint text and ROADMAP.md Ad Hoc Session A5.
+  // 2026-09-26: Cash and SE/3-Max lambda changed 0.063 -> 0 (pure mean). A 88-slate 2021-25 replay found 0.063
+  // loses ~5 lineup pts vs 0 in all 6 seasons (sigma is ~97% collinear with the mean, so it mostly penalises
+  // studs); the original 2018-21 sweep was 'suggestive, not conclusive'. See HANDOFF_fc_history_ownership_findings_2026-09-26.md.
+  // MME stays at -0.005. Saved cloud presets are separate and must be edited by hand.
   var BUILTIN_PRESET_NAMES = ["Cash", "SE / 3-Max GPP", "MME GPP (20-150)"];
   var BUILTIN_PRESETS = {
     "Cash": {
       ctrlNLineups: "3", ctrlMaxExposure: "100", ctrlUniqueness: "0",
       ctrlRandomization: "0", ctrlStackMode: "none",
-      ctrlAllowSkillVsOppDst: false, ctrlLambda: "0.063"
+      ctrlAllowSkillVsOppDst: false, ctrlLambda: "0"
     },
     "SE / 3-Max GPP": {
       ctrlNLineups: "3", ctrlMaxExposure: "100", ctrlUniqueness: "3",
       ctrlRandomization: "3", ctrlStackMode: "qb", ctrlStackSize: "1",
-      ctrlBringBack: true, ctrlAllowSkillVsOppDst: false, ctrlLambda: "0.063"
+      ctrlBringBack: true, ctrlAllowSkillVsOppDst: false, ctrlLambda: "0"
     },
     "MME GPP (20-150)": {
       ctrlNLineups: "100", ctrlMaxExposure: "35", ctrlUniqueness: "1",
