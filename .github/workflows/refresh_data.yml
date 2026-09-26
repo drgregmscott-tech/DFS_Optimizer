@@ -476,6 +476,14 @@ jobs:
         continue-on-error: true
         run: python3 scripts/ingest_public_projections.py --site ${{ matrix.site }} --slate-id ${{ matrix.slate_id }}
 
+      # Archive the FantasyPros ECR scrape per slate (DATA ONLY, nothing reads it) so ECR can be
+      # back-tested later; ecr_blend.py's cache is overwritten and gitignored. Fail-safe.
+      - name: Archive ECR
+        id: archive_ecr
+        if: needs.prepare.outputs.mode == 'full'
+        continue-on-error: true
+        run: python3 scripts/archive_ecr.py --slate-id ${{ matrix.slate_id }}
+
       - name: Rebuild projections
         id: build_proj
         continue-on-error: true
@@ -581,7 +589,8 @@ jobs:
           # live: this exact failure hit all six matrix legs in Session
           # 16.x's real six-slate test run before this fix was added.
           git config core.autocrlf false
-          git add output/ logs/automation_run_log.csv data/ownership_public/ data/projections_public/
+          mkdir -p data/ecr_archive  # pathspec must exist even if the archive step failed
+          git add output/ logs/automation_run_log.csv data/ownership_public/ data/projections_public/ data/ecr_archive/
           if git diff --cached --quiet; then
             echo "No changes to commit for ${{ matrix.slate_id }}."
             exit 0
