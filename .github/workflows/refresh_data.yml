@@ -607,6 +607,17 @@ jobs:
           git config core.autocrlf false
           mkdir -p data/ecr_archive  # pathspec must exist even if the archive step failed
           git add output/ logs/automation_run_log.csv data/ownership_public/ data/projections_public/ data/ecr_archive/
+          # data/props/audit_{slate_id}.csv is written by build_projections_statline.py's
+          # props anchor step but lives only on this job's runner -- shared_pull's commit
+          # (before this build ran) can't have it, and this was the only commit step for
+          # this slate, so it was never persisted. That's not just a lost audit trail: the
+          # UI/prelock_check.py's "props anchor ... build USED it" check reads this file's
+          # existence as its proof, so it produced a false "did NOT use it" WARN every run
+          # even when the anchor applied correctly (confirmed 2026-09-27 pre-lock: log showed
+          # "Props anchor ... adjusted N player(s)" but the committed repo had no audit file).
+          # `|| true` since the file legitimately won't exist when props-weight is 0 or no
+          # snapshot was available (engine-only build).
+          git add "data/props/audit_${{ matrix.slate_id }}.csv" 2>/dev/null || true
           if git diff --cached --quiet; then
             echo "No changes to commit for ${{ matrix.slate_id }}."
             exit 0
