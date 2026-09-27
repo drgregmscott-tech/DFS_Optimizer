@@ -1913,3 +1913,6 @@ timestamp_utc,trigger_type,site,step,status
 2026-09-27T15:46:54.106192+00:00,manual_workflow_dispatch,fd,fd_classic_wk3_main_27Sep2026,build_projections,success
 2026-09-27T15:46:54.106192+00:00,manual_workflow_dispatch,fd,fd_classic_wk3_main_27Sep2026,status_apply,success
 2026-09-27T15:46:54.106192+00:00,manual_workflow_dispatch,fd,fd_classic_wk3_main_27Sep2026,pivot_finder,success
+2026-09-27T15:47:27.418491+00:00,manual_workflow_dispatch,fd,fd_classic_wk3_early_27Sep2026,build_projections,success
+2026-09-27T15:47:27.418491+00:00,manual_workflow_dispatch,fd,fd_classic_wk3_early_27Sep2026,status_apply,success
+2026-09-27T15:47:27.418491+00:00,manual_workflow_dispatch,fd,fd_classic_wk3_early_27Sep2026,pivot_finder,success
