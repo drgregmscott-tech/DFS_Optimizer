@@ -1994,3 +1994,6 @@ timestamp_utc,trigger_type,site,step,status
 2026-09-27T19:31:27.546440+00:00,full_refresh_dispatch,fd,fd_classic_wk3_afternoon_27Sep2026,build_projections,success
 2026-09-27T19:31:27.546440+00:00,full_refresh_dispatch,fd,fd_classic_wk3_afternoon_27Sep2026,status_apply,success
 2026-09-27T19:31:27.546440+00:00,full_refresh_dispatch,fd,fd_classic_wk3_afternoon_27Sep2026,pivot_finder,success
+2026-09-27T19:32:23.469866+00:00,full_refresh_dispatch,dk,dk_classic_wk3_afternoon_27Sep2026,build_projections,success
+2026-09-27T19:32:23.469866+00:00,full_refresh_dispatch,dk,dk_classic_wk3_afternoon_27Sep2026,status_apply,success
+2026-09-27T19:32:23.469866+00:00,full_refresh_dispatch,dk,dk_classic_wk3_afternoon_27Sep2026,pivot_finder,success
