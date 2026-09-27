@@ -102,18 +102,31 @@ name: Refresh Data
 
 on:
   schedule:
+    # 2026-09-27: every cron below moved off minute :00 (to :05) after Week 3's
+    # 08:00Z and 12:00Z Sunday slots both silently no-showed (confirmed via
+    # `gh run list` -- nothing fired at all, not even late; GitHub Status was
+    # "Normal", workflow was active, cron syntax was valid). GitHub's own docs:
+    # "The schedule event can be delayed during periods of high loads of GitHub
+    # Actions workflow runs. High load times include the start of every hour...
+    # To decrease the chance of delay, schedule your workflow to run at a
+    # different time of the hour." Every repo's minute-:00 crons fire at once,
+    # so :00 is the most congested/most likely-to-drop minute to pick. Trigger
+    # TIMES are unchanged (still ~08:00/12:00/etc ET-relative), just offset by
+    # 5 minutes. The case statement below in "Determine which cadence fired
+    # this run" matches these exact strings for mode detection -- it was
+    # updated to match, so don't edit one list without the other.
     # --- light_vegas_refresh (vegas_odds.py only) ---
-    - cron: "0 16 * * 2,3,4,5"        # Tue-Fri, 1x/day, ~noon ET
-    - cron: "0 15,21 * * 6"           # Sat, 2x/day, ~11am + 5pm ET
-    - cron: "0 15,16,17 * * 0"        # Sun, hourly, ~11am-1pm ET
+    - cron: "5 16 * * 2,3,4,5"        # Tue-Fri, 1x/day, ~noon ET
+    - cron: "5 15,21 * * 6"           # Sat, 2x/day, ~11am + 5pm ET
+    - cron: "5 15,16,17 * * 0"        # Sun, hourly, ~11am-1pm ET
     # --- full_refresh_scheduled (full pipeline, every active slate) ---
     # Trimmed 2026-09-18 from "every 3 hours on Thu/Sun/Mon" (24 runs/week,
     # including 2am/5am ET dead-of-night runs -- see header comment above)
     # down to 6 runs/week anchored to real lock/kickoff timing.
-    - cron: "0 23 * * 4"              # Thu ~7:00pm ET / 6:00pm CT, ~75min before TNF lock (props pull runs here)
-    - cron: "0 12 * * 6"              # Sat ~8am ET
-    - cron: "0 8,12,16,19 * * 0"      # Sun ~4am/8am/12pm/3pm ET (08:00 = early props pull for the 4am CT session)
-    - cron: "0 23 * * 1"              # Mon ~7:00pm ET / 6:00pm CT, ~75min before MNF lock (props pull runs here)
+    - cron: "5 23 * * 4"              # Thu ~7:00pm ET / 6:00pm CT, ~75min before TNF lock (props pull runs here)
+    - cron: "5 12 * * 6"              # Sat ~8am ET
+    - cron: "5 8,12,16,19 * * 0"      # Sun ~4am/8am/12pm/3pm ET (08:00 = early props pull for the 4am CT session)
+    - cron: "5 23 * * 1"              # Mon ~7:00pm ET / 6:00pm CT, ~75min before MNF lock (props pull runs here)
   repository_dispatch:
     types: [near_lock_refresh]
   workflow_dispatch:
@@ -163,11 +176,11 @@ jobs:
         run: |
           if [ "${{ github.event_name }}" = "schedule" ]; then
             case "${{ github.event.schedule }}" in
-              "0 16 * * 2,3,4,5"|"0 15,21 * * 6"|"0 15,16,17 * * 0")
+              "5 16 * * 2,3,4,5"|"5 15,21 * * 6"|"5 15,16,17 * * 0")
                 echo "mode=vegas_only" >> "$GITHUB_OUTPUT"
                 echo "trigger_type=light_vegas_refresh" >> "$GITHUB_OUTPUT"
                 ;;
-              "0 23 * * 4"|"0 12 * * 6"|"0 8,12,16,19 * * 0"|"0 23 * * 1")
+              "5 23 * * 4"|"5 12 * * 6"|"5 8,12,16,19 * * 0"|"5 23 * * 1")
                 echo "mode=full" >> "$GITHUB_OUTPUT"
                 echo "trigger_type=full_refresh_scheduled" >> "$GITHUB_OUTPUT"
                 ;;
