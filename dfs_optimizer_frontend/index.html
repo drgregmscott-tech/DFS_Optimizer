@@ -3271,7 +3271,7 @@ in this browser's localStorage.</p>
   // loses ~5 lineup pts vs 0 in all 6 seasons (sigma is ~97% collinear with the mean, so it mostly penalises
   // studs); the original 2018-21 sweep was 'suggestive, not conclusive'. See HANDOFF_fc_history_ownership_findings_2026-09-26.md.
   // MME stays at -0.005. Saved cloud presets are separate and must be edited by hand.
-  var BUILTIN_PRESET_NAMES = ["Cash", "SE / 3-Max GPP", "MME GPP (20-150)"];
+  var BUILTIN_PRESET_NAMES = ["Cash", "SE / 3-Max GPP", "SE3Max Pool (100)", "MME GPP (20-150)"];
   var BUILTIN_PRESETS = {
     "Cash": {
       ctrlNLineups: "3", ctrlMaxExposure: "100", ctrlUniqueness: "0",
@@ -3281,6 +3281,18 @@ in this browser's localStorage.</p>
     "SE / 3-Max GPP": {
       ctrlNLineups: "3", ctrlMaxExposure: "100", ctrlUniqueness: "3",
       ctrlRandomization: "3", ctrlStackMode: "qb", ctrlStackSize: "1",
+      ctrlBringBack: true, ctrlAllowSkillVsOppDst: false, ctrlLambda: "0"
+    },
+    // 2026-09-27: the 100-lineup SE3max candidate-pool build (pick the best
+    // lineup out of a big diversified pool), separate from the 3-lineup
+    // quick pick above. Matches data/optimizer_presets.json's se3max_pool
+    // bundle and analysis/classic_diag/replay_batch.py exactly -- the test
+    // that found the best lineup in a 100-lineup pool lands at the
+    // 98th-99.9th percentile, graded against the real SE3max top-25% cash
+    // line. Confirmed against today's Week 3 pre-lock test builds.
+    "SE3Max Pool (100)": {
+      ctrlNLineups: "100", ctrlMaxExposure: "50", ctrlUniqueness: "1",
+      ctrlRandomization: "20", ctrlStackMode: "qb", ctrlStackSize: "2",
       ctrlBringBack: true, ctrlAllowSkillVsOppDst: false, ctrlLambda: "0"
     },
     "MME GPP (20-150)": {

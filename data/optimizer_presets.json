@@ -29,5 +29,16 @@
     "lambda": -0.005,
     "dart-exposure-cap": 0.10,
     "dart-floor-threshold": 1.0
+  },
+  "se3max_pool": {
+    "_comment": "2026-09-27: the 100-lineup SE3max candidate-pool build (pick-the-best-from-a-big-pool), separate from se_gpp's 3-lineup quick pick above. Settings match analysis/classic_diag/replay_batch.py exactly -- the test that found the best lineup in a 100-lineup pool lands at the 98th-99.9th percentile, graded against the real SE3max top-25% cash line (replay_validation.py's CASH_PCT=0.25). Confirmed against today's Week 3 pre-lock test builds (DK/FD main/early/afternoon).",
+    "n-lineups": 100,
+    "max-exposure": 0.5,
+    "uniqueness": 1,
+    "stack-mode": "qb",
+    "stack-size": 2,
+    "bring-back": true,
+    "randomization-pct": 20,
+    "lambda": 0
   }
 }
