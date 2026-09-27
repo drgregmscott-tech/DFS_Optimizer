@@ -1982,3 +1982,6 @@ timestamp_utc,trigger_type,site,step,status
 2026-09-27T16:33:34.216753+00:00,full_refresh_dispatch,fd,fd_classic_wk3_main_27Sep2026,build_projections,success
 2026-09-27T16:33:34.216753+00:00,full_refresh_dispatch,fd,fd_classic_wk3_main_27Sep2026,status_apply,success
 2026-09-27T16:33:34.216753+00:00,full_refresh_dispatch,fd,fd_classic_wk3_main_27Sep2026,pivot_finder,success
+2026-09-27T16:34:08.255863+00:00,full_refresh_dispatch,fd,fd_classic_wk3_early_27Sep2026,build_projections,success
+2026-09-27T16:34:08.255863+00:00,full_refresh_dispatch,fd,fd_classic_wk3_early_27Sep2026,status_apply,success
+2026-09-27T16:34:08.255863+00:00,full_refresh_dispatch,fd,fd_classic_wk3_early_27Sep2026,pivot_finder,success
