@@ -78,6 +78,7 @@ Outputs:
 import argparse
 import json
 import math
+import re
 import sys
 from pathlib import Path
 
@@ -90,6 +91,17 @@ from ingest_salaries import SITE_CONFIGS  # noqa: E402 -- Session 1.3's single s
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 OUTPUT_DIR = REPO_ROOT / "output"
+
+
+def _multi_lineups_path(site: str, slate_id: str, client_id: str | None) -> Path:
+    # WK3 postmortem §1 -- filesystem-safe suffix so a malformed/unsanitized
+    # client_id (shouldn't happen -- optimizer_api.js already validates it,
+    # but this is also reachable from a bare CLI run) can't escape the
+    # output dir or produce a broken filename. "shared" reproduces the
+    # pre-fix single shared filename exactly, for any caller that omits
+    # --client-id.
+    safe = re.sub(r"[^A-Za-z0-9_-]", "_", client_id)[:64] if client_id else "shared"
+    return OUTPUT_DIR / f"lineups_multi_{site}_{slate_id}_{safe}.csv"
 
 # See decision #2 above -- not present in SITE_CONFIGS, hardcoded here as
 # the one place to change if a future site/format needs a different rule
@@ -1919,7 +1931,8 @@ def validate_lineup(lineup: pd.DataFrame, salary_cap: int, roster_slots: list):
 def resolve_stack_candidates(players_all: pd.DataFrame, stack_mode: str,
                               stack_positions: set, stack_teams: list, stack_games: list,
                               mini_stack_type: str, candidate_pool_size: int,
-                              diversify_requested: str, bring_back: bool = False) -> tuple:
+                              diversify_requested: str, bring_back: bool = False,
+                              locked_player_ids: set = None) -> tuple:
     """Decision #16/#17, extended by decision #32. Returns (candidates,
     diversify_active, pin_note):
     - candidates: list of {"target_team":..., "target_game":...} dicts --
@@ -1935,15 +1948,59 @@ def resolve_stack_candidates(players_all: pd.DataFrame, stack_mode: str,
       rotate across them, regardless of --stack-diversify.
     - pin_note: a string to print if --stack-diversify on was combined
       with a SINGLE explicit pin (has no effect there -- nothing to
-      rotate across), else None."""
+      rotate across), else None.
+
+    `locked_player_ids` (bug fix, found live Sep 2026 via WK3 postmortem --
+    recurred wk2 and wk3): with --stack-mode qb and no explicit
+    --stack-team, auto-ranking via rank_candidate_teams() ignores --lock
+    entirely and can pick a team the locked QB isn't on. add_stack_
+    constraints() then requires exactly one QB from that auto-picked team
+    -- two different QBs for one slot, guaranteed Infeasible regardless of
+    salary floor, projection floor or uniqueness, and the resulting error
+    ("pool too thin") doesn't point at the real cause. When a locked
+    player is a QB and no --stack-team was given, pin the stack to that
+    QB's own team instead of auto-ranking, so the lock and the stack
+    constraint can never fight each other."""
     pinned = bool(stack_teams or stack_games)
     pin_note = None
+    locked_player_ids = locked_player_ids or set()
 
     if stack_mode == "qb" or (stack_mode == "mini" and mini_stack_type == "rb-dst"):
         partner_positions = stack_positions if stack_mode == "qb" else {"RB"}
         require_opp = bool(stack_mode == "qb" and bring_back)
+        locked_qb_teams = []
+        if stack_mode == "qb" and locked_player_ids:
+            locked_qb_teams = sorted(set(
+                players_all.loc[
+                    players_all["player_id"].isin(locked_player_ids)
+                    & (players_all["position"].astype(str).str.upper() == "QB"),
+                    "team",
+                ]
+            ))
         if stack_teams:
             candidates = [{"target_team": t, "target_game": None} for t in stack_teams]
+            conflicting = set(locked_qb_teams) - set(stack_teams)
+            if conflicting:
+                print(
+                    f"WARNING: --lock includes a QB on {sorted(conflicting)} "
+                    f"but --stack-team was explicitly set to {stack_teams} -- "
+                    f"--stack-mode qb requires exactly one QB from the stack "
+                    f"team, so this locked QB conflicts with the stack pin "
+                    f"and the build will be Infeasible unless the locked "
+                    f"QB's team is also pinned.",
+                    file=sys.stderr,
+                )
+        elif locked_qb_teams:
+            if len(locked_qb_teams) > 1:
+                raise SystemExit(
+                    f"--lock includes QBs from more than one team "
+                    f"({locked_qb_teams}) together with --stack-mode qb and "
+                    f"no --stack-team -- the stack constraint needs exactly "
+                    f"one team's QB, so this can never be feasible. Pass "
+                    f"--stack-team to pick one, drop one of the locked QBs, "
+                    f"or use --stack-mode none."
+                )
+            candidates = [{"target_team": locked_qb_teams[0], "target_game": None}]
         else:
             ranked = rank_candidate_teams(players_all, partner_positions,
                                            require_opponent_viable=require_opp)
@@ -2184,7 +2241,7 @@ def build_single_lineup(site: str, slate_id: str, randomization_pct: float = DEF
         candidates, _, pin_note = resolve_stack_candidates(
             players, stack_mode, stack_positions, stack_teams, stack_games,
             mini_stack_type, candidate_pool_size, diversify_requested="off",
-            bring_back=bring_back,
+            bring_back=bring_back, locked_player_ids=locked_player_ids,
         )
         if pin_note:
             print(pin_note, file=sys.stderr)
@@ -2398,7 +2455,7 @@ def build_multi_lineup(site: str, slate_id: str, n_lineups: int = DEFAULT_N_LINE
         candidates, diversify_active, pin_note = resolve_stack_candidates(
             players_all, stack_mode, stack_positions, stack_teams, stack_games,
             mini_stack_type, candidate_pool_size, stack_diversify,
-            bring_back=bring_back,
+            bring_back=bring_back, locked_player_ids=locked_player_ids,
         )
         if pin_note:
             print(pin_note, file=sys.stderr)
@@ -3609,6 +3666,24 @@ def main():
              "automation and other consumers read from. Omit for a normal, "
              "canonical run -- default behavior is unchanged.",
     )
+    # WK3 postmortem §1 -- lineup-file overwrite race. The request-id file
+    # above already isolates the per-run download; this flag isolates the
+    # slate-keyed multi-lineup file (pivot_finder.py / refresh_data.yml's
+    # pivot gate both read lineups_multi_{site}_{slate_id}.csv, so it can't
+    # be request-id-keyed) when multiple people build on the same slate at
+    # the same time. Folded into that filename as
+    # lineups_multi_{site}_{slate_id}_{client-id}.csv. Sanitized to
+    # filesystem-safe characters and defaults to "shared" (old behavior,
+    # single shared file) so an omitted flag -- any manual CLI run -- is
+    # unchanged.
+    parser.add_argument(
+        "--client-id", default=None,
+        help="Anonymous per-browser id (from the UI's localStorage) or "
+             "any caller-chosen tag, folded into the slate-keyed multi-"
+             "lineup output filename so concurrent builds from different "
+             "callers on the same slate don't overwrite each other. Omit "
+             "for the old single shared filename.",
+    )
     parser.add_argument(
         "--min-total-ownership", type=float, default=0.0,
         help="Requires the lineup's summed estimated_ownership_pct across "
@@ -4138,7 +4213,7 @@ def main():
                 out_path = OUTPUT_DIR / "ui_requests" / f"{args.request_id}.csv"
                 out_path.parent.mkdir(parents=True, exist_ok=True)
             else:
-                out_path = OUTPUT_DIR / f"lineups_multi_{args.site}_{args.slate_id}.csv"
+                out_path = _multi_lineups_path(args.site, args.slate_id, args.client_id)
             lineups.to_csv(out_path, index=False)
 
             exposure_cap = max(1, math.floor(args.max_exposure * args.n_lineups))
@@ -4245,11 +4320,11 @@ def main():
             # not some earlier historical batch), and this is a pure
             # addition: the request_id file and the UI's poll/download
             # behavior are completely unchanged.
-            slate_path = OUTPUT_DIR / f"lineups_multi_{args.site}_{args.slate_id}.csv"
+            slate_path = _multi_lineups_path(args.site, args.slate_id, args.client_id)
             lineups.to_csv(slate_path, index=False)
             out_path = slate_path  # for the "Wrote {out_path}" log line below
         else:
-            out_path = OUTPUT_DIR / f"lineups_multi_{args.site}_{args.slate_id}.csv"
+            out_path = _multi_lineups_path(args.site, args.slate_id, args.client_id)
             lineups.to_csv(out_path, index=False)
 
         exposure_cap = max(1, math.floor(args.max_exposure * args.n_lineups))

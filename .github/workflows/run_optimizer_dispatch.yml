@@ -109,6 +109,13 @@ jobs:
           args += ["--site", str(p["site"])]
           args += ["--slate-id", str(p["slate_id"])]
           args += ["--request-id", str(p["request_id"])]
+          # WK3 postmortem §1 -- optional, defaults to "shared" in
+          # optimizer.py if absent (old cached dispatches, manual curl).
+          # Folded into the slate-keyed output filename below so concurrent
+          # builds from different browsers don't overwrite each other's
+          # lineups_multi_{site}_{slate_id}.csv.
+          if p.get("client_id"):
+              args += ["--client-id", str(p["client_id"])]
 
           # Session 13.5 -- Showdown/Single-Game wiring. Omitted means
           # optimizer.py's own "auto" default (detect from the loaded
@@ -273,25 +280,49 @@ jobs:
       # comment at that write site for why -- refresh_data.yml's pivot
       # gate and pivot_finder.py both need a deterministic, slate-keyed
       # filename to find, which the request_id-keyed file can never be).
-      # Added by exact path, not a wildcard, so this stays a narrow,
-      # auditable exception rather than a reopened door -- `|| true`
+      # Added by a per-slate glob, not one exact path, so this stays a
+      # narrow, auditable exception rather than a reopened door -- `|| true`
       # because a Showdown or single-lineup build never produces this
       # file, and `git add` on a path that doesn't exist is a normal,
-      # expected outcome here, not an error.
+      # expected outcome here, not an error. WK3 postmortem §1 -- the glob
+      # (not one fixed filename) is required because optimizer.py now
+      # writes output/lineups_multi_{site}_{slate_id}_{client_id}.csv, a
+      # different file per browser, so every dispatch must pick up its own
+      # client's file regardless of client_id.
       - name: Commit request result
         if: always()
         run: |
           git config user.name "dfs-optimizer-bot"
           git config user.email "actions@users.noreply.github.com"
           git add output/ui_requests/
-          git add "output/lineups_multi_${{ github.event.client_payload.site }}_${{ github.event.client_payload.slate_id }}.csv" 2>/dev/null || true
+          git add output/lineups_multi_"${{ github.event.client_payload.site }}"_"${{ github.event.client_payload.slate_id }}"_*.csv 2>/dev/null || true
           if git diff --cached --quiet; then
             echo "No output produced (unexpected if optimizer.py succeeded) -- nothing to commit."
             exit 0
           fi
           git commit -m "On-demand optimizer run: ${{ github.event.client_payload.request_id }} [skip ci]"
           git pull --rebase origin "${{ github.ref_name }}" || true
-          git push origin HEAD:"${{ github.ref_name }}"
+          # WK3 postmortem parking-lot fix (2026-09-28): concurrent
+          # on-demand runs (same underlying cause as the lineup-file
+          # overwrite race already fixed in §1) can both reach this step
+          # at the same time -- the pull above picks up whichever commit
+          # landed first, but a third run can still push in the gap
+          # between that pull and this push, so a single unretried push
+          # can fail ("cannot lock ref" / non-fast-forward) even though
+          # optimizer.py already succeeded and the lineup file is sitting
+          # right here uncommitted. Retry pull+push a few times with a
+          # short randomized backoff before actually failing the run.
+          attempt=1
+          max_attempts=5
+          until git push origin HEAD:"${{ github.ref_name }}"; do
+            if [ "$attempt" -ge "$max_attempts" ]; then
+              echo "git push failed after $attempt attempts -- giving up." >&2
+              exit 1
+            fi
+            attempt=$((attempt + 1))
+            sleep "$(( (RANDOM % 5) + 2 ))"
+            git pull --rebase origin "${{ github.ref_name }}" || true
+          done
 
       - name: Fail the run if optimizer.py failed
         if: steps.run.outcome == 'failure'
