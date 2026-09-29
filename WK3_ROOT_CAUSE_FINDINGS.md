@@ -760,6 +760,13 @@ next steps above and is out of scope for this session.
   (`wk3_signal_coverage_deepdive.py`). Killer bust share is normal variance, not elevated; no-signal
   drivers share only "cheap / cheap QB"; real-lineup misses split by price (busts expensive, missed
   drivers cheap). Routed to track 2 and existing §4 items. See section below.
+- 2026-09-29: Phase 2 checked at scale on the FC Lineup Study classic slice (410 real DK contests, 21.9M entries,
+  2022-26; `analysis/classic_history/`). Two findings confirmed:
+  - The chalk baseline: realized ownership predicts cash and return after an FC-projection control among quality
+    lineups, 4/4 seasons.
+  - QB+2: confirmed on return (1.10-1.14x), but its cash lift is about 1/3 of Phase 2's +3.7.
+  "Cheap QB" (null after the projection control; the #1-owned QB is the real signal) and the stud/punt gradients were
+  contradicted. See `HANDOFF_classic_lineupstudy_findings_2026-09-29.md` §7 for the claim-by-claim table.
 
 ## Parking Lot Item: Signal Coverage & Selection Deep-Dive (2026-09-28)
 
