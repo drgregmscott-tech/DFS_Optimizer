@@ -342,6 +342,15 @@ def _early_blend_week_params(cfg, week):
     return None
 
 
+def _loud(msg):
+    """Loud fallback warning (stderr + GitHub ::warning:: annotation); off: DFS_LOUD_FALLBACKS=0."""
+    try:
+        from ownership_v2 import loud_warn
+        loud_warn(msg)
+    except Exception:  # noqa: BLE001
+        print(f"WARNING: {msg}", file=sys.stderr)
+
+
 def _apply_early_season_blend(df, week, cfg_path=EARLY_BLEND_CONFIG):
     """Salary-line blend (analysis/projection_v2/RESULTS.md Task 1 + task1b_week_refit.py).
 
@@ -352,7 +361,7 @@ def _apply_early_season_blend(df, week, cfg_path=EARLY_BLEND_CONFIG):
     df["early_blend_delta"] = 0.0
     try:
         if not Path(cfg_path).exists():
-            print(f"NOTE: early-season blend config not found ({cfg_path}); blend skipped.")
+            _loud(f"early-season blend config not found ({cfg_path}); blend skipped (projections unchanged).")
             return df
         cfg = json.loads(Path(cfg_path).read_text())
         params = _early_blend_week_params(cfg, week)
@@ -384,8 +393,7 @@ def _apply_early_season_blend(df, week, cfg_path=EARLY_BLEND_CONFIG):
               f"(range {delta.min():+.1f} to {delta.max():+.1f}).")
     except Exception as exc:  # noqa: BLE001 -- must never break a build
         df["early_blend_delta"] = 0.0
-        print(f"WARNING: early-season blend failed ({type(exc).__name__}: {exc}); projections unchanged.",
-              file=sys.stderr)
+        _loud(f"early-season blend failed ({type(exc).__name__}: {exc}); projections unchanged.")
     return df
 
 
@@ -405,7 +413,7 @@ def _apply_qb_recal(df, week, cfg_path=QB_RECAL_CONFIG):
     df["qb_recal_delta"] = 0.0
     try:
         if not Path(cfg_path).exists():
-            print(f"NOTE: QB recal config not found ({cfg_path}); QB recal skipped.")
+            _loud(f"QB recal config not found ({cfg_path}); QB recal skipped (projections unchanged).")
             return df
         cfg = json.loads(Path(cfg_path).read_text())
         if week < int(cfg.get("min_week", 3)):
@@ -441,8 +449,7 @@ def _apply_qb_recal(df, week, cfg_path=QB_RECAL_CONFIG):
             print(f"QB recal (week {week}): no QB passed the gate; unchanged.")
     except Exception as exc:  # noqa: BLE001 -- must never break a build
         df["qb_recal_delta"] = 0.0
-        print(f"WARNING: QB recal failed ({type(exc).__name__}: {exc}); projections unchanged.",
-              file=sys.stderr)
+        _loud(f"QB recal failed ({type(exc).__name__}: {exc}); projections unchanged.")
     return df
 
 

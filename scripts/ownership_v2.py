@@ -447,6 +447,33 @@ def predict_v2(frame, ctx, lin, dst, live_pred=None, alpha=FFC_BLEND_ALPHA):
     return final, v2_only
 
 
+def loud_warn(msg):
+    """Fallback/missing-input warning (CI-parity 2026-09-29). Always to stderr; on GitHub Actions also a
+    ::warning:: annotation so it shows on the run summary. Off: env DFS_LOUD_FALLBACKS=0 (plain stderr line)."""
+    import sys
+    print(f"WARNING: {msg}", file=sys.stderr)
+    if (os.environ.get("GITHUB_ACTIONS") == "true"
+            and os.environ.get("DFS_LOUD_FALLBACKS", "1").strip().lower() not in ("0", "false", "off", "no")):
+        print(f"::warning title=DFS fallback::{msg}", flush=True)
+
+
+def _check_v2_inputs(stats, prior_sal, lag_own, season, week):
+    """Warn (never change behavior) when v2's week-(N-1) inputs are missing/partial: v2 then runs on stale features."""
+    if week < 2:
+        return
+    prev = week - 1
+    n_prev = int(((stats.season == season) & (stats.week == prev)).sum()) if stats is not None else 0
+    if n_prev < 500:  # a full NFL week is ~1,100 rows; a Thursday-only pull is ~70
+        loud_warn(f"ownership v2: weekly_stats_{season} has only {n_prev} rows for week {prev} (full week ~1,100) -- "
+                  f"last week's stats not fully ingested; v2 uses stale form/usage features. "
+                  f"Run scripts/ingest_historical.py --season {season}.")
+    if prior_sal is None or not ((prior_sal.season == season) & (prior_sal.week == prev)).any():
+        loud_warn(f"ownership v2: no output/final_projections_*_classic_wk{prev}_* file -- prior-week salary features missing.")
+    if lag_own is None or not ((lag_own.season == season) & (lag_own.week == prev)).any():
+        loud_warn(f"ownership v2: data/ownership_actual_log.csv has no {season} wk{prev} main-slate rows -- "
+                  f"lagged-ownership feature missing (run scripts/log_ownership.py).")
+
+
 def refine_v2(scored, feats, live_new, ffc_used, site, season, week):
     """Called by ownership_model.refine_ownership. Returns (final, v2_only) Series on scored.index."""
     lin, dst = load_artifacts(site)
@@ -459,7 +486,11 @@ def refine_v2(scored, feats, live_new, ffc_used, site, season, week):
     sc = scored.reset_index(drop=True)
     fe = feats.reset_index(drop=True)
     frame = to_frame(sc, fe, season, week)
-    ctx = Ctx(load_stats(season, week), load_prior_salary(site, season, week), load_lag_own(site, season))
-    live = np.asarray(live_new, float) if ffc_used else None
+    stats = load_stats(season, week)
+    prior_sal = load_prior_salary(site, season, week)
+    lag_own = load_lag_own(site, season)
+    _check_v2_inputs(stats, prior_sal, lag_own, season, week)
+    ctx = Ctx(stats, prior_sal, lag_own)
+    live =np.asarray(live_new, float) if ffc_used else None
     final, v2_only = predict_v2(frame, ctx, lin, dst, live)
     return (pd.Series(final, index=scored.index), pd.Series(v2_only, index=scored.index))

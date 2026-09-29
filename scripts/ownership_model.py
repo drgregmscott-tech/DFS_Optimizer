@@ -234,6 +234,15 @@ def ownership_v2_enabled() -> bool:
     return OWNERSHIP_V2_ENABLED
 
 
+def _loud(msg):
+    """Loud fallback warning (stderr + GitHub ::warning:: annotation); off: DFS_LOUD_FALLBACKS=0."""
+    try:
+        import ownership_v2
+        ownership_v2.loud_warn(msg)
+    except Exception:  # noqa: BLE001
+        print(f"WARNING: {msg}", file=sys.stderr)
+
+
 def refine_ownership(scored: pd.DataFrame, site: str, budgets: dict,
                      season: int = None, week: int = None) -> pd.DataFrame:
     """Called from build_projections.add_ownership_columns() after the
@@ -268,8 +277,7 @@ def refine_ownership(scored: pd.DataFrame, site: str, budgets: dict,
     if not ownership_v2_enabled():
         return out
     if week is None:
-        print("WARNING: ownership v2 needs the slate week (not passed); keeping the previous "
-              "layered model.", file=sys.stderr)
+        _loud("ownership v2 needs the slate week (not passed); keeping the previous layered model.")
         return out
     try:
         import ownership_v2
@@ -282,6 +290,5 @@ def refine_ownership(scored: pd.DataFrame, site: str, budgets: dict,
               f"Switch off with DFS_OWNERSHIP_V2=0.")
         return out
     except Exception as exc:  # noqa: BLE001 -- ownership must never break a build
-        print(f"WARNING: ownership v2 failed ({type(exc).__name__}: {exc}); "
-              f"keeping the previous layered model.", file=sys.stderr)
+        _loud(f"ownership v2 failed ({type(exc).__name__}: {exc}); keeping the previous layered model.")
         return out
