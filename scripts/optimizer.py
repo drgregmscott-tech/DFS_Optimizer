@@ -2872,11 +2872,56 @@ def solve_showdown_lineup(players: pd.DataFrame, site: str,
                            min_salary: int = 0,
                            lam: float = 0.0,
                            max_team_players: dict = None,
-                           min_team_players: dict = None) -> pd.DataFrame:
+                           min_team_players: dict = None,
+                           require_cpt_qb: bool = False,
+                           cheap_tier_penalty: float = 0.0,
+                           cheap_tier_range: tuple = (600, 1000),
+                           stack_cap: int = None,
+                           stack_cap_penalty: float = 0.0,
+                           qb_partner_bonus: float = 0.0,
+                           exclude_cpt_positions: set = None,
+                           k_cpt_penalty: float = 0.0) -> pd.DataFrame:
     """Session 13.4 core ILP -- see decisions #39-46 above. `players` must
     already carry `_row_key` (load_showdown_pool()). Returns the selected
     rows (one per filled roster spot -- exactly 1 captain-role row + N
-    flex-role rows)."""
+    flex-role rows).
+
+    Postmortem §2/§3 Showdown-construction additions (2026-09-28), from
+    142 real DK Showdown contests / 14.9M entries (HANDOFF_showdown_
+    lineupstudy_findings_2026-09-28.md, HANDOFF_showdown_construction_
+    detail_2026-09-28.md):
+    - `require_cpt_qb`: hard constraint. A WR/TE captain with no same-team
+      QB in the FLEX is the single worst skill build found (-7.6 to -7.7
+      cash pts, 0.60-0.69x return, both contest types, CIs exclude 0).
+      Only gates WR/TE captains -- RB/QB captains are untouched.
+    - `cheap_tier_penalty` over `cheap_tier_range`: soft. The $600-1k FLEX
+      tier underperforms (-1.7 to -2.6 cash pts, ~0.82x return) -- worse
+      than a genuine <=$500 punt, which is neutral. Applied per FLEX row
+      priced in that band.
+    - `stack_cap`/`stack_cap_penalty`: soft. A captain's same-team FLEX
+      count beyond `stack_cap` is graded via an excess penalty (QB
+      captains specifically do best at 1-2 teammates, not 3-4; deep
+      stacks are flat-to-negative for every skill captain in the data).
+    - `qb_partner_bonus`: soft reward. A QB captain's RB/TE teammates
+      outperform his WR1 as the "primary partner" even controlling for
+      projection and salary (Supported in big GPP, Weak-to-Supported in
+      SE) -- rewards each same-team RB/TE FLEX only when the captain is a
+      QB, never forces it over a genuinely better WR play.
+    - `exclude_cpt_positions`: hard. Added 2026-09-28 after a sanity-check
+      MME build on a real slate showed 21% of captains landing on K/DST
+      with none of the other four levers touching that at all -- Rule 3
+      (DST captain: -4.5/-4.0 cash pts, Supported both contest types) was
+      documented but never actually enforced. Excludes the named
+      positions from the captain role entirely (row-level, not a penalty
+      -- matches the same-strength evidence bar as require_cpt_qb).
+    - `k_cpt_penalty`: soft. Rule 3's K-captain finding is only Weak
+      (-1.8 cash pts, CI touches 0), so it gets a points penalty rather
+      than exclude_cpt_positions' hard ban -- an unusually good kicker
+      matchup can still win the captain slot.
+    These are first-pass point-scale conversions of the study's cash-lift
+    findings, not a backtested-swept calibration like `lam` -- see the
+    showdown_se/showdown_gpp preset comments in optimizer_presets.json.
+    """
     cfg = SITE_CONFIGS[site]["showdown"]
     salary_cap = cfg["salary_cap"]
     captain_role = cfg["captain_role_value"]
@@ -2897,6 +2942,7 @@ def solve_showdown_lineup(players: pd.DataFrame, site: str,
     salary = indexed["salary"]
     team = indexed["team"]
     role = indexed["roster_role"]
+    position = indexed["position"]
 
     # Bug fix (found via Greg's real-data run, Session 13.4): build_projections.py
     # (the legacy path) leaves a `sigma` column PRESENT but only PARTIALLY
@@ -2928,10 +2974,23 @@ def solve_showdown_lineup(players: pd.DataFrame, site: str,
                 f"sigma values."
             )
 
-    prob += (
-        pulp.lpSum(x[rk] * proj[rk] for rk in x)
+    # Postmortem cheap-tier penalty (2026-09-28): a per-row objective
+    # adjustment, not a constraint -- applies only to FLEX-role rows
+    # priced inside cheap_tier_range (FLEX price; a CPT row's salary is
+    # already the 1.5x-scaled figure, so this correctly only ever
+    # touches the FLEX side of the pool).
+    flex_role_rows_all = [rk for rk in row_keys if role[rk] == flex_role]
+    cheap_lo, cheap_hi = cheap_tier_range
+    adj_proj = proj.copy()
+    if cheap_tier_penalty:
+        for rk in flex_role_rows_all:
+            if cheap_lo <= salary[rk] < cheap_hi:
+                adj_proj[rk] = adj_proj[rk] - cheap_tier_penalty
+
+    objective_terms = [
+        pulp.lpSum(x[rk] * adj_proj[rk] for rk in x)
         - lam * pulp.lpSum(x[rk] * var[rk] for rk in x)
-    ), "mean_variance_objective"
+    ]
 
     prob += pulp.lpSum(x[rk] * salary[rk] for rk in x) <= salary_cap, "salary_cap"
     if min_salary > 0:
@@ -3042,6 +3101,103 @@ def solve_showdown_lineup(players: pd.DataFrame, site: str,
             rks = [rk for rk in row_keys if team[rk] == t]
             if rks:
                 prob += pulp.lpSum(x[rk] for rk in rks) >= floor, f"min_team_{t}"
+
+    # Postmortem construction rules (2026-09-28), see the docstring above.
+    # `require_cpt_qb` is a hard constraint; `stack_cap`/`qb_partner_bonus`
+    # are gated on which of the pool's exactly-2 teams the selected
+    # captain is on (cfg["n_teams"] is always 2 for Showdown -- asserted,
+    # not assumed, since the gating math below only holds for 2 teams).
+    if require_cpt_qb:
+        # Decision: only gates a WR/TE captain (the Supported finding).
+        # RB/QB captains are untouched -- there was no comparable penalty
+        # for them in the data.
+        teams_with_qb = set(team[rk] for rk in flex_rows if position[rk] == "QB")
+        for c_rk in captain_rows:
+            if position[c_rk] not in ("WR", "TE"):
+                continue
+            c_team = team[c_rk]
+            qb_flex_rks = [
+                rk for rk in flex_rows
+                if team[rk] == c_team and position[rk] == "QB"
+            ]
+            if c_team not in teams_with_qb:
+                # No QB anywhere in this pool for this team (bye/DST-only
+                # edge case) -- this captain can never satisfy the rule,
+                # so exclude him outright rather than leaving a silently
+                # unsatisfiable per-row constraint.
+                prob += x[c_rk] == 0, f"require_cpt_qb_noqb_{c_rk}"
+            else:
+                prob += x[c_rk] <= pulp.lpSum(x[rk] for rk in qb_flex_rks), f"require_cpt_qb_{c_rk}"
+
+    if exclude_cpt_positions:
+        for c_rk in captain_rows:
+            if position[c_rk] in exclude_cpt_positions:
+                prob += x[c_rk] == 0, f"exclude_cpt_position_{c_rk}"
+
+    if k_cpt_penalty:
+        for c_rk in captain_rows:
+            if position[c_rk] == "K":
+                objective_terms.append(-k_cpt_penalty * x[c_rk])
+
+    if stack_cap is not None or qb_partner_bonus:
+        teams_present = sorted(t for t in players["team"].dropna().unique())
+        if len(teams_present) != 2:
+            print(
+                f"WARNING: Showdown stack_cap/qb_partner_bonus skipped -- "
+                f"expected exactly 2 teams in the pool, found "
+                f"{teams_present}.", file=sys.stderr,
+            )
+        else:
+            team_a, team_b = teams_present
+            flex_a = [rk for rk in flex_rows if team[rk] == team_a]
+            flex_b = [rk for rk in flex_rows if team[rk] == team_b]
+            cpt_a_rows = [rk for rk in captain_rows if team[rk] == team_a]
+            cpt_b_rows = [rk for rk in captain_rows if team[rk] == team_b]
+            cpt_a_var = pulp.lpSum(x[rk] for rk in cpt_a_rows)
+            cpt_b_var = pulp.lpSum(x[rk] for rk in cpt_b_rows)
+            big_m = flex_count
+
+            if stack_cap is not None and stack_cap_penalty:
+                flex_a_count = pulp.lpSum(x[rk] for rk in flex_a)
+                flex_b_count = pulp.lpSum(x[rk] for rk in flex_b)
+                same_team_flex = pulp.LpVariable(
+                    "same_team_flex_count", lowBound=0, upBound=flex_count
+                )
+                # Pinned both directions (not just a one-sided reward
+                # bound) so this variable is exact regardless of what
+                # else is in the objective.
+                prob += same_team_flex <= flex_a_count + big_m * (1 - cpt_a_var), "stc_upperA"
+                prob += same_team_flex <= flex_b_count + big_m * (1 - cpt_b_var), "stc_upperB"
+                prob += same_team_flex >= flex_a_count - big_m * (1 - cpt_a_var), "stc_lowerA"
+                prob += same_team_flex >= flex_b_count - big_m * (1 - cpt_b_var), "stc_lowerB"
+                stack_excess = pulp.LpVariable("stack_excess", lowBound=0)
+                prob += stack_excess >= same_team_flex - stack_cap, "stack_excess_def"
+                objective_terms.append(-stack_cap_penalty * stack_excess)
+
+            if qb_partner_bonus:
+                rbte_a = [rk for rk in flex_a if position[rk] in ("RB", "TE")]
+                rbte_b = [rk for rk in flex_b if position[rk] in ("RB", "TE")]
+                rbte_a_count = pulp.lpSum(x[rk] for rk in rbte_a)
+                rbte_b_count = pulp.lpSum(x[rk] for rk in rbte_b)
+                cpt_a_qb_var = pulp.lpSum(
+                    x[rk] for rk in cpt_a_rows if position[rk] == "QB"
+                )
+                cpt_b_qb_var = pulp.lpSum(
+                    x[rk] for rk in cpt_b_rows if position[rk] == "QB"
+                )
+                # Pure reward term -- only needs upper bounds, since the
+                # solver maximizes it and will naturally saturate to the
+                # tightest applicable bound (0 when neither captain is a
+                # QB, else that QB's own-team RB/TE FLEX count).
+                qb_partner_pool = pulp.LpVariable(
+                    "qb_partner_pool", lowBound=0, upBound=flex_count
+                )
+                prob += qb_partner_pool <= rbte_a_count + big_m * (1 - cpt_a_qb_var), "qbp_upperA"
+                prob += qb_partner_pool <= rbte_b_count + big_m * (1 - cpt_b_qb_var), "qbp_upperB"
+                prob += qb_partner_pool <= big_m * (cpt_a_qb_var + cpt_b_qb_var), "qbp_gate"
+                objective_terms.append(qb_partner_bonus * qb_partner_pool)
+
+    prob += pulp.lpSum(objective_terms), "mean_variance_objective"
 
     status = prob.solve(pulp.PULP_CBC_CMD(msg=False))
     if pulp.LpStatus[status] != "Optimal":
@@ -3212,7 +3368,15 @@ def build_single_showdown_lineup(site: str, slate_id: str,
                                   participation_floors: dict = None,
                                   thumbs_up_ids: set = None,
                                   thumbs_down_ids: set = None,
-                                  excluded_row_roles: dict = None) -> pd.DataFrame:
+                                  excluded_row_roles: dict = None,
+                                  require_cpt_qb: bool = False,
+                                  cheap_tier_penalty: float = 0.0,
+                                  cheap_tier_range: tuple = (600, 1000),
+                                  stack_cap: int = None,
+                                  stack_cap_penalty: float = 0.0,
+                                  qb_partner_bonus: float = 0.0,
+                                  exclude_cpt_positions: set = None,
+                                  k_cpt_penalty: float = 0.0) -> pd.DataFrame:
     players = load_showdown_pool(site, slate_id)
     validate_min_team_players_feasibility(site, min_team_players)
     locked_player_ids = locked_player_ids or set()
@@ -3254,6 +3418,14 @@ def build_single_showdown_lineup(site: str, slate_id: str,
         min_salary=min_salary, lam=lam,
         max_team_players=max_team_players,
         min_team_players=min_team_players,
+        require_cpt_qb=require_cpt_qb,
+        cheap_tier_penalty=cheap_tier_penalty,
+        cheap_tier_range=cheap_tier_range,
+        stack_cap=stack_cap,
+        stack_cap_penalty=stack_cap_penalty,
+        qb_partner_bonus=qb_partner_bonus,
+        exclude_cpt_positions=exclude_cpt_positions,
+        k_cpt_penalty=k_cpt_penalty,
     )
     if locked_player_ids:
         missing = locked_player_ids - set(selected["player_id"])
@@ -3296,7 +3468,15 @@ def build_multi_showdown_lineup(site: str, slate_id: str,
                                  thumbs_up_ids: set = None,
                                  thumbs_down_ids: set = None,
                                  player_exposure: dict = None,
-                                 excluded_row_roles: dict = None) -> tuple:
+                                 excluded_row_roles: dict = None,
+                                 require_cpt_qb: bool = False,
+                                 cheap_tier_penalty: float = 0.0,
+                                 cheap_tier_range: tuple = (600, 1000),
+                                 stack_cap: int = None,
+                                 stack_cap_penalty: float = 0.0,
+                                 qb_partner_bonus: float = 0.0,
+                                 exclude_cpt_positions: set = None,
+                                 k_cpt_penalty: float = 0.0) -> tuple:
     """Showdown counterpart to build_multi_lineup() -- same exposure-cap /
     uniqueness-relaxation loop (decisions #5-7), no stacking rotation
     (decision #45 -- not supported for Showdown this session). Session 16
@@ -3385,6 +3565,14 @@ def build_multi_showdown_lineup(site: str, slate_id: str,
                 min_salary=min_salary, lam=lam,
                 max_team_players=max_team_players,
                 min_team_players=min_team_players,
+                require_cpt_qb=require_cpt_qb,
+                cheap_tier_penalty=cheap_tier_penalty,
+                cheap_tier_range=cheap_tier_range,
+                stack_cap=stack_cap,
+                stack_cap_penalty=stack_cap_penalty,
+                qb_partner_bonus=qb_partner_bonus,
+                exclude_cpt_positions=exclude_cpt_positions,
+                k_cpt_penalty=k_cpt_penalty,
             )
         except RuntimeError as e:
             if current_uniqueness > 0:
@@ -3792,6 +3980,76 @@ def main():
              "infeasibility) if the requested floor(s) are structurally "
              "impossible.",
     )
+    # WK3 postmortem §2/§3 (2026-09-28) -- Showdown construction rules from
+    # 142 real DK Showdown contests / 14.9M entries. See solve_showdown_
+    # lineup()'s docstring for the evidence behind each. Showdown-only;
+    # main() below is a no-op for classic slates regardless of value.
+    parser.add_argument(
+        "--sd-require-cpt-qb", dest="sd_require_cpt_qb",
+        action=argparse.BooleanOptionalAction, default=pdef("sd-require-cpt-qb", False),
+        help="Showdown ONLY, hard constraint: a WR/TE captain must have "
+             "his own team's QB somewhere in the FLEX (a WR/TE captain "
+             "paired with another same-team WR/TE and no QB is the worst "
+             "skill build found in 142 real contests: -7.6 to -7.7 cash "
+             "pts, 0.60-0.69x return). Does not touch RB or QB captains. "
+             "Use --no-sd-require-cpt-qb to force it off inside a preset "
+             "that defaults it on.",
+    )
+    parser.add_argument(
+        "--sd-cheap-tier-penalty", type=float, default=pdef("sd-cheap-tier-penalty", 0.0),
+        help="Showdown ONLY, soft: points subtracted from a FLEX row's "
+             "objective coefficient when its salary falls in "
+             "--sd-cheap-tier-range (default $600-1000). That band "
+             "underperforms a genuine <=$500 punt (-1.7 to -2.6 cash pts, "
+             "~0.82x return vs a neutral punt) -- default 0.0 (off).",
+    )
+    parser.add_argument(
+        "--sd-cheap-tier-range", default=None,
+        help="Showdown ONLY: 'LOW:HIGH' FLEX-salary band --sd-cheap-tier-"
+             "penalty applies to (default 600:1000, the band the real-"
+             "field data flagged).",
+    )
+    parser.add_argument(
+        "--sd-stack-cap", type=int, default=pdef("sd-stack-cap", None),
+        help="Showdown ONLY, soft: same-team FLEX count (relative to "
+             "whichever team the solved captain is on) beyond this many "
+             "is penalized by --sd-stack-cap-penalty per excess player. "
+             "QB captains specifically do best at 1-2 same-team FLEX, not "
+             "3-4; deep stacks are flat-to-negative for every skill "
+             "captain in 142 real contests. Default None (off).",
+    )
+    parser.add_argument(
+        "--sd-stack-cap-penalty", type=float, default=pdef("sd-stack-cap-penalty", 0.0),
+        help="Showdown ONLY: points subtracted per same-team FLEX player "
+             "beyond --sd-stack-cap. No effect if --sd-stack-cap is unset.",
+    )
+    parser.add_argument(
+        "--sd-qb-partner-bonus", type=float, default=pdef("sd-qb-partner-bonus", 0.0),
+        help="Showdown ONLY, soft: points added per same-team RB/TE FLEX "
+             "player, ONLY when the solved captain is a QB. A QB captain's "
+             "RB/TE teammates beat his WR1 as primary partner even "
+             "controlling for projection and salary (+4.9 to +11.3 cash "
+             "pts; Supported in big-field GPP, Weak-to-Supported in "
+             "single-entry). Never forces an RB/TE over a genuinely "
+             "better WR -- just tips a close call. Default 0.0 (off).",
+    )
+    parser.add_argument(
+        "--sd-exclude-cpt-positions", default=pdef("sd-exclude-cpt-positions", None),
+        help="Showdown ONLY, hard: comma-separated positions barred from "
+             "the captain role entirely (e.g. 'DST' or 'K,DST'). Added "
+             "2026-09-28 after a real-slate MME sanity check showed 21%% "
+             "of captains landing on K/DST with none of the other sd-* "
+             "levers touching that -- DST captain is -4.5/-4.0 cash pts, "
+             "Supported in both contest types. Default None (off).",
+    )
+    parser.add_argument(
+        "--sd-k-cpt-penalty", type=float, default=pdef("sd-k-cpt-penalty", 0.0),
+        help="Showdown ONLY, soft: points subtracted from a K captain "
+             "row's objective coefficient. Weak evidence (-1.8 cash pts, "
+             "CI touches 0) so this is a penalty, not an exclude -- an "
+             "unusually good kicker matchup can still win the slot. "
+             "Default 0.0 (off).",
+    )
     # Session 16 -- Per-Player Exposure Override + Thumbs Up/Down (decisions
     # #48-55).
     parser.add_argument(
@@ -4191,6 +4449,18 @@ def main():
                 f"treated as a harmless no-op."
             )
 
+    # WK3 postmortem §2/§3 Showdown construction rules -- parsed once,
+    # used by both the multi- and single-lineup Showdown call sites below.
+    if args.sd_cheap_tier_range:
+        _lo, _hi = args.sd_cheap_tier_range.split(":")
+        sd_cheap_tier_range = (float(_lo), float(_hi))
+    else:
+        sd_cheap_tier_range = (600, 1000)
+    sd_exclude_cpt_positions = (
+        {p.strip().upper() for p in args.sd_exclude_cpt_positions.split(",") if p.strip()}
+        if args.sd_exclude_cpt_positions else None
+    )
+
     if showdown_mode:
         if args.n_lineups:
             lineups, exposure_count, n_generated = build_multi_showdown_lineup(
@@ -4208,6 +4478,14 @@ def main():
                 thumbs_up_ids=thumbs_up_ids, thumbs_down_ids=thumbs_down_ids,
                 player_exposure=player_exposure,
                 excluded_row_roles=excluded_row_roles,
+                require_cpt_qb=args.sd_require_cpt_qb,
+                cheap_tier_penalty=args.sd_cheap_tier_penalty,
+                cheap_tier_range=sd_cheap_tier_range,
+                stack_cap=args.sd_stack_cap,
+                stack_cap_penalty=args.sd_stack_cap_penalty,
+                qb_partner_bonus=args.sd_qb_partner_bonus,
+                exclude_cpt_positions=sd_exclude_cpt_positions,
+                k_cpt_penalty=args.sd_k_cpt_penalty,
             )
             if args.request_id:
                 out_path = OUTPUT_DIR / "ui_requests" / f"{args.request_id}.csv"
@@ -4253,6 +4531,14 @@ def main():
                 participation_floors=participation_floors,
                 thumbs_up_ids=thumbs_up_ids, thumbs_down_ids=thumbs_down_ids,
                 excluded_row_roles=excluded_row_roles,
+                require_cpt_qb=args.sd_require_cpt_qb,
+                cheap_tier_penalty=args.sd_cheap_tier_penalty,
+                cheap_tier_range=sd_cheap_tier_range,
+                stack_cap=args.sd_stack_cap,
+                stack_cap_penalty=args.sd_stack_cap_penalty,
+                qb_partner_bonus=args.sd_qb_partner_bonus,
+                exclude_cpt_positions=sd_exclude_cpt_positions,
+                k_cpt_penalty=args.sd_k_cpt_penalty,
             )
             if args.request_id:
                 out_path = OUTPUT_DIR / "ui_requests" / f"{args.request_id}.csv"

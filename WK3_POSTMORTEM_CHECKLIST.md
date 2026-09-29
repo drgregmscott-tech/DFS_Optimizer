@@ -173,30 +173,51 @@ slates, not just the 3 examples above, before drawing conclusions about what's c
 
 ---
 
-## 2. FC data dives not yet touched — classic + showdown
+## 2. FC data dives — classic + showdown [CLOSED for Showdown 2026-09-28; classic still open, see §3]
 
-Two FC-derived analyses landed this week (2026-09-26) and haven't been discussed/acted on yet:
+Two FC-derived analyses landed 2026-09-26 and were discussed/acted on this session (2026-09-28):
 
-- [ ] **`HANDOFF_showdown_history_findings_2026-09-26.md`** — 49 DK Showdown slates (2023-2025), hindsight-optimal lineups,
-      simulated-field percentiles, chalk/leverage strategy tests. Ownership data quality caveats noted (missing mass on
-      7 slates, FC Proj=0 on 34% of rows, QB projections carry ~no ranking signal in history). Not yet discussed with user.
-- [ ] **`HANDOFF_showdown_ownership_refit_2026-09-26.md`** — tested refit of `ownership_model_showdown.py` on replayed
-      projections. TL;DR: replay is not faithful for K/DST (don't take those coefficients from history), but flags a real,
-      modest miscalibration on skill players (QB over-predicted, FLEX WR +2.0, too few low-tail CPT). Best candidate found:
-      add `log FLEX salary` feature, fit skill rows on history+real, K/DST flags on real only — wins on both real-4 LOSO and
-      history LOSO. Explicitly **not shipped yet**: recommendation was wait for 2+ more real Showdowns validating it first.
-      Decide: are we at 2+ real Showdowns yet, and if so, does the candidate still win?
-- [ ] Both of these should get folded into `SHOWDOWN_RULES.md` once discussed, per the standing update-after-each-slate rule
-      (see memory `project_showdown_rules_doc.md`).
+- [x] **`HANDOFF_showdown_history_findings_2026-09-26.md`** — 49 DK Showdown slates (2023-2025), simulated-field percentiles,
+      chalk/leverage strategy tests. **Superseded, not just discussed**: its lineup-level construction conclusions (§6-§8) were
+      simulated-field-caveated, and this session pulled real Showdown lineup data (see §3 below) that replaces them with real-field
+      answers. Folded into `SHOWDOWN_RULES.md`.
+- [x] **`HANDOFF_showdown_ownership_refit_2026-09-26.md`** (the `lsal` candidate) — its own reactivation condition ("2+ more real
+      Showdowns") was checked and not yet met (still the same 4 real slates as when it was frozen) — but rather than leaving it
+      parked on that technicality, we ran the actual confound check the doc itself flagged as missing (does the QB-CPT-partner
+      finding survive a projection/salary control?) via `analysis/showdown_history/lineup_study_qb_partner_ctrl.py`. Separately,
+      the *chalk-tilt* idea this doc's methodology also touches on was independently re-tested with OUR modeled ownership (see
+      §3) and found Not supported pre-lock. The `lsal` ownership-model candidate itself (display/pivot-reading only, doesn't
+      touch lineup construction since lambda 0 stands regardless) remains genuinely parked — still no new real Showdown slate
+      to test it against — but is now explicitly tracked as blocked-on-data, not closed.
+
+**Real work this session (superseded the FC-derived analysis above): 142 REAL DK Showdown contests, 14.9M entries, 2022-2026**
+(not simulated — see §3's Showdown item). Real field cash-lift/return by construction shape, rule-by-rule verdicts against
+`SHOWDOWN_RULES.md`, and a projection/salary-controlled re-check of the QB-partner finding. **Five findings are now live in the
+optimizer** (not just documented): `--sd-require-cpt-qb` (hard), `--sd-cheap-tier-penalty`, `--sd-stack-cap`/`-penalty`,
+`--sd-qb-partner-bonus` (soft), bundled into two new presets (`showdown_se`, `showdown_gpp`) in `data/optimizer_presets.json`.
+See `HANDOFF_showdown_lineupstudy_findings_2026-09-28.md`, `HANDOFF_showdown_construction_detail_2026-09-28.md`, and
+`SHOWDOWN_RULES.md`'s new "Optimizer enforcement" section. **Remaining gap, not solved this session**: most of the OTHER
+Supported rules in `SHOWDOWN_RULES.md` (DST-captain exclusion, kicker preference, chalk-CPT-tier guidance, etc.) are still
+informational-only — nothing in the build pipeline warns on or enforces them. This is the same "signal found, never captured
+at build time" failure the classic postmortem already named (§4/Step 4d's "signal legibility" gap) and needs its own session.
 
 ---
 
-## 3. FC Lineup Study extraction — pulled, never analyzed
+## 3. FC Lineup Study extraction — pulled 2026-09-26; SHOWDOWN analyzed 2026-09-28, CLASSIC still not analyzed
 
-37.1M lineups across 2022-2026 (648 files, ~800MB) sitting in `data/fc_history/lineup_study/`, extracted 2026-09-26,
-**not analyzed at all yet**. This is the single biggest untouched data asset going into this brainstorm — actual contest
-lineups with real ranks/scores/payouts, not simulated fields. See memory `reference_fc_lineup_study_extraction.md` for
-extraction mechanics and known gaps (a few big 20-max contests only partially captured; SE_big missing a couple weeks).
+37.1M lineups across 2022-2026 (648 files, ~800MB) sitting in `data/fc_history/lineup_study/`, extracted 2026-09-26.
+
+- [x] **Showdown slice (142 of 648 files, 14.9M entries): analyzed 2026-09-28.** See §2 above for the full writeup and what
+      shipped to the optimizer. Do NOT read this as "the Lineup Study is done" — it's one contest format out of several.
+- [ ] **Classic slice (the remaining ~506 files, ~22M+ entries — SE/3-max/20-max/double-up, all the formats gmscott81
+      actually plays most weeks): still completely unanalyzed.** This is still the single biggest untouched data asset in
+      this whole postmortem. Same real-lineup advantage applies here as it did for Showdown: real ranks/scores/payouts,
+      not the simulated fields the classic Phase 1/2 analysis (§0/§1) had to rely on for its construction-level questions.
+      This deserves its own dedicated session, not a tack-on to whatever else is running.
+
+See memory `reference_fc_lineup_study_extraction.md` for extraction mechanics and known gaps (a few big 20-max contests
+only partially captured; SE_big missing a couple weeks — confirmed in the Showdown analysis that the ~25k-row cap issue
+is classic-only and does NOT affect the Showdown files, which are complete).
 
 - [ ] Trial ends **2026-10-02** — if there's anything left to pull (2026 wk3+, trimmed contest types), do that first before
       it's gone.
