@@ -16,3 +16,14 @@ compatibility_date = "2026-07-01"
 [vars]
 GITHUB_OWNER = "drgregmscott-tech"
 GITHUB_REPO = "DFS_Optimizer"
+
+# WK3 postmortem §1 (2026-09-28) -- a first attempt at fixing the unreliable
+# GitHub-native `schedule:` trigger tried adding Cloudflare Cron Triggers
+# here ([triggers] crons = [...]). Abandoned before shipping: Workers Free
+# caps a whole ACCOUNT (not just this Worker) at 5 cron triggers total,
+# already spoken for elsewhere on this account, and one of the 7 needed
+# cron strings was independently rejected as invalid syntax by Cloudflare's
+# own parser. All cadences instead go through cron-job.org -> this Worker's
+# `fetch` handler (see scheduled_refresh.js's header for the `kind` param
+# each cron-job.org job sets) -- no Cloudflare-side trigger config needed
+# here at all.

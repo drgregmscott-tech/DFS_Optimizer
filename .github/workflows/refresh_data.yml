@@ -45,15 +45,31 @@
 #     way Vegas lines and injury status do, so re-running them on a 3-hour
 #     or 15-minute cadence would just burn CI minutes for no new data.
 #
-# Three trigger cadences, unchanged from Session 5.2:
-#   1. light_vegas_refresh (this file's own `schedule:` cron) -- Tue-Fri
-#      1x/day, Sat 2x/day, Sun hourly from ~4hrs to ~1hr before a typical
-#      1:00pm ET early-slate lock. Vegas-only, to stay inside The Odds
-#      API's free-tier budget. NOTE: the Sunday hourly window is anchored
-#      to a common 1:00pm ET early slate and is an approximation -- a week
-#      with different lock times won't perfectly line up. Known limitation
-#      of a static cron schedule, not a bug.
-#   2. full_refresh_scheduled (this file's own `schedule:` cron) -- trimmed
+# Three trigger cadences. WK3 postmortem §1 (2026-09-28): all three now
+# arrive via `repository_dispatch`, not a native `schedule:` block -- that
+# was confirmed unreliable beyond "a few minutes late" (2026-09-27's Sunday
+# 15:05/16:05/17:05Z slots didn't fire at all; that day's only `schedule`
+# runs landed hours outside any defined cron hour). All three cadences now
+# go through cron-job.org (free external cron service, no per-job cap on
+# its free tier) hitting cloudflare_worker/scheduled_refresh.js's `fetch`
+# handler, which relays to repository_dispatch -- one reliable mechanism
+# for all three, instead of splitting coarse cadences onto GitHub-native
+# `schedule:` and only the near-lock cadence onto cron-job.org. (A first
+# attempt moved cadences 1-2 onto Cloudflare's own Cron Triggers instead --
+# abandoned when that hit the Workers Free plan's 5-cron-trigger-per-
+# ACCOUNT cap, already spoken for elsewhere on this account, plus an
+# invalid-syntax rejection on one of the needed cron strings. See
+# scheduled_refresh.js's header for the full account.)
+#   1. light_vegas_refresh (repository_dispatch, type
+#      "scheduled_vegas_refresh") -- Tue-Fri 1x/day, Sat 2x/day, Sun hourly
+#      from ~4hrs to ~1hr before a typical 1:00pm ET early-slate lock.
+#      Vegas-only, to stay inside The Odds API's free-tier budget. NOTE: the
+#      Sunday hourly window is anchored to a common 1:00pm ET early slate
+#      and is an approximation -- a week with different lock times won't
+#      perfectly line up. Known limitation of a static cron schedule, not a
+#      bug.
+#   2. full_refresh_scheduled (repository_dispatch, type
+#      "scheduled_full_refresh") -- trimmed
 #      2026-09-18 (see SESSION_LOG.md): the original "every 3 hours on
 #      Thu/Sun/Mon" cadence was written in UTC without accounting for the
 #      ET offset, so in real ET wall-clock time it actually fired from
@@ -80,13 +96,17 @@
 #      (Nov 2, 2026), they'll fire 1hr earlier in real ET wall-clock time
 #      (e.g. 6:15pm instead of 7:15pm) unless revisited then.
 #   3. full_refresh_dispatch (repository_dispatch, type "near_lock_refresh")
-#      -- fired by cloudflare_worker/scheduled_refresh.js, itself pinged by
-#      an external cron-job.org job during the real near-lock window(s).
-#      With multiple slates now possible in one week, cron-job.org may need
-#      more than one near-lock window configured (e.g. Thursday night AND
-#      Sunday midday AND Sunday afternoon AND Sunday night AND Monday
-#      night) -- that's a cron-job.org console setting, not a change to
-#      this file. See Finding 2 / Session 16.x's cron-job.org notes.
+#      -- fired by cloudflare_worker/scheduled_refresh.js's `fetch` handler,
+#      pinged by a cron-job.org job with no `kind` query param (the
+#      default) during the real near-lock window(s). With multiple slates
+#      now possible in one week, cron-job.org may need more than one
+#      near-lock window configured (e.g. Thursday night AND Sunday midday
+#      AND Sunday afternoon AND Sunday night AND Monday night) -- that's a
+#      cron-job.org console setting, not a change to this file. See
+#      Finding 2 / Session 16.x's cron-job.org notes. Cadences 1 and 2
+#      above are the same mechanism, distinguished by `kind=vegas` /
+#      `kind=full` on their own cron-job.org jobs -- see
+#      scheduled_refresh.js's header for exact job specs.
 #
 # workflow_dispatch is also enabled for manual ad-hoc runs/testing.
 #
@@ -101,34 +121,24 @@
 name: Refresh Data
 
 on:
-  schedule:
-    # 2026-09-27: every cron below moved off minute :00 (to :05) after Week 3's
-    # 08:00Z and 12:00Z Sunday slots both silently no-showed (confirmed via
-    # `gh run list` -- nothing fired at all, not even late; GitHub Status was
-    # "Normal", workflow was active, cron syntax was valid). GitHub's own docs:
-    # "The schedule event can be delayed during periods of high loads of GitHub
-    # Actions workflow runs. High load times include the start of every hour...
-    # To decrease the chance of delay, schedule your workflow to run at a
-    # different time of the hour." Every repo's minute-:00 crons fire at once,
-    # so :00 is the most congested/most likely-to-drop minute to pick. Trigger
-    # TIMES are unchanged (still ~08:00/12:00/etc ET-relative), just offset by
-    # 5 minutes. The case statement below in "Determine which cadence fired
-    # this run" matches these exact strings for mode detection -- it was
-    # updated to match, so don't edit one list without the other.
-    # --- light_vegas_refresh (vegas_odds.py only) ---
-    - cron: "5 16 * * 2,3,4,5"        # Tue-Fri, 1x/day, ~noon ET
-    - cron: "5 15,21 * * 6"           # Sat, 2x/day, ~11am + 5pm ET
-    - cron: "5 15,16,17 * * 0"        # Sun, hourly, ~11am-1pm ET
-    # --- full_refresh_scheduled (full pipeline, every active slate) ---
-    # Trimmed 2026-09-18 from "every 3 hours on Thu/Sun/Mon" (24 runs/week,
-    # including 2am/5am ET dead-of-night runs -- see header comment above)
-    # down to 6 runs/week anchored to real lock/kickoff timing.
-    - cron: "5 23 * * 4"              # Thu ~7:00pm ET / 6:00pm CT, ~75min before TNF lock (props pull runs here)
-    - cron: "5 12 * * 6"              # Sat ~8am ET
-    - cron: "5 8,12,16,19 * * 0"      # Sun ~4am/8am/12pm/3pm ET (08:00 = early props pull for the 4am CT session)
-    - cron: "5 23 * * 1"              # Mon ~7:00pm ET / 6:00pm CT, ~75min before MNF lock (props pull runs here)
+  # WK3 postmortem §1 (2026-09-28) -- this workflow no longer has a native
+  # `schedule:` trigger. It was confirmed unreliable beyond "a few minutes
+  # late": on 2026-09-27 its Sunday 15:05/16:05/17:05Z slots didn't fire at
+  # all, and that day's only `schedule` runs landed at 18:57Z/19:43Z, hours
+  # outside every defined cron hour. (An earlier attempt at this same
+  # problem moved every cron from :00 to :05 after Week 3's 08:00Z/12:00Z
+  # Sunday slots no-showed -- that didn't fix it either.) Every cadence
+  # previously driven by `schedule:` now comes through `repository_dispatch`
+  # instead, relayed by cloudflare_worker/scheduled_refresh.js's `fetch`
+  # handler -- the same relay already used, and already proven reliable,
+  # for the near-lock cadence, now also pinged by cron-job.org for the two
+  # coarser cadences (with `kind=vegas` / `kind=full` query params) instead
+  # of relying on GitHub-native `schedule:` for those. See "Determine which
+  # cadence fired this run" below for how each event_type maps to a mode;
+  # keep that mapping in sync with scheduled_refresh.js's
+  # KIND_TO_EVENT_TYPE if either changes.
   repository_dispatch:
-    types: [near_lock_refresh]
+    types: [near_lock_refresh, scheduled_vegas_refresh, scheduled_full_refresh]
   workflow_dispatch:
     inputs:
       reason:
@@ -174,24 +184,34 @@ jobs:
       - name: Determine which cadence fired this run
         id: trigger
         run: |
-          if [ "${{ github.event_name }}" = "schedule" ]; then
-            case "${{ github.event.schedule }}" in
-              "5 16 * * 2,3,4,5"|"5 15,21 * * 6"|"5 15,16,17 * * 0")
+          # WK3 postmortem §1 -- the old `schedule` branch here is gone
+          # along with the `schedule:` trigger itself. `github.event.action`
+          # is repository_dispatch's event_type -- all three now come from
+          # cloudflare_worker/scheduled_refresh.js's `fetch` handler, pinged
+          # by cron-job.org: scheduled_vegas_refresh/scheduled_full_refresh
+          # replace the old coarse GitHub-native schedule cadences
+          # (cron-job.org jobs with `kind=vegas`/`kind=full`);
+          # near_lock_refresh is unchanged (cron-job.org, no `kind` param,
+          # near-lock window, already reliable).
+          if [ "${{ github.event_name }}" = "repository_dispatch" ]; then
+            case "${{ github.event.action }}" in
+              scheduled_vegas_refresh)
                 echo "mode=vegas_only" >> "$GITHUB_OUTPUT"
                 echo "trigger_type=light_vegas_refresh" >> "$GITHUB_OUTPUT"
                 ;;
-              "5 23 * * 4"|"5 12 * * 6"|"5 8,12,16,19 * * 0"|"5 23 * * 1")
+              scheduled_full_refresh)
                 echo "mode=full" >> "$GITHUB_OUTPUT"
                 echo "trigger_type=full_refresh_scheduled" >> "$GITHUB_OUTPUT"
                 ;;
+              near_lock_refresh)
+                echo "mode=full" >> "$GITHUB_OUTPUT"
+                echo "trigger_type=full_refresh_dispatch" >> "$GITHUB_OUTPUT"
+                ;;
               *)
                 echo "mode=full" >> "$GITHUB_OUTPUT"
-                echo "trigger_type=unknown_schedule_${{ github.event.schedule }}" >> "$GITHUB_OUTPUT"
+                echo "trigger_type=unknown_dispatch_${{ github.event.action }}" >> "$GITHUB_OUTPUT"
                 ;;
             esac
-          elif [ "${{ github.event_name }}" = "repository_dispatch" ]; then
-            echo "mode=full" >> "$GITHUB_OUTPUT"
-            echo "trigger_type=full_refresh_dispatch" >> "$GITHUB_OUTPUT"
           else
             echo "mode=full" >> "$GITHUB_OUTPUT"
             echo "trigger_type=manual_workflow_dispatch" >> "$GITHUB_OUTPUT"
@@ -537,11 +557,20 @@ jobs:
       # Session 15 decision #B1 (unchanged): checks lineups_multi first,
       # falls back to lineup_single. Missing lineup file is a normal
       # not_run outcome, not a failure -- nothing to pivot on yet.
+      # WK3 postmortem §1 -- lineups_multi is now per-client
+      # (lineups_multi_{site}_{slate_id}_{client_id}.csv), so this is a
+      # glob + newest-mtime pick, not one fixed filename; falls back to
+      # the pre-fix exact name for an older run. This step only checks
+      # existence to gate whether pivot_finder.py runs at all --
+      # pivot_finder.py does its own newest-file selection independently.
       - name: Locate built lineup
         id: lineup
         if: needs.prepare.outputs.mode == 'full'
         run: |
-          f=$(ls output/lineups_multi_${{ matrix.site }}_${{ matrix.slate_id }}.csv 2>/dev/null || true)
+          f=$(ls -t output/lineups_multi_${{ matrix.site }}_${{ matrix.slate_id }}_*.csv 2>/dev/null | head -n1 || true)
+          if [ -z "$f" ]; then
+            f=$(ls output/lineups_multi_${{ matrix.site }}_${{ matrix.slate_id }}.csv 2>/dev/null || true)
+          fi
           if [ -z "$f" ]; then
             f=$(ls output/lineup_single_${{ matrix.site }}_${{ matrix.slate_id }}.csv 2>/dev/null || true)
           fi

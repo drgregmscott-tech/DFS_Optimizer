@@ -16,12 +16,36 @@
  * refresh_data.yml's `full_refresh_dispatch` path immediately.
  *
  * This Worker does NOT run any Python, touch the repo's data, or have a
- * Cron Trigger of its own. It only relays. The actual "every ~10 minutes,
- * only during the near-lock window" cadence is configured on cron-job.org
- * (a free external cron service) hitting this Worker's URL -- see setup
- * steps below. Splitting it this way means the tight-window schedule lives
- * in one place (cron-job.org's UI, easy to adjust week to week as lock
- * times shift) rather than being redeployed into this file every time.
+ * Cron Trigger of its own. It only relays. ALL cadences (not just the
+ * near-lock window) are configured on cron-job.org (a free external cron
+ * service) hitting this Worker's URL -- see setup steps below. Keeping the
+ * schedule entirely on cron-job.org's UI means it's one place to adjust as
+ * lock times shift week to week, no redeploy needed for a schedule change.
+ *
+ * WK3 postmortem §1 (2026-09-28) -- GitHub's native `schedule:` trigger in
+ * refresh_data.yml, previously used for the COARSE cadences (light Vegas
+ * refresh Tue-Sun, full-pipeline scheduled refresh 6x/week), was confirmed
+ * unreliable beyond the "a few minutes late" caveat above: on 2026-09-27
+ * its Sunday 15:05/16:05/17:05Z slots didn't fire at all -- the workflow's
+ * only `schedule` runs that day landed at 18:57Z and 19:43Z, hours outside
+ * every defined cron hour. The near-lock cadence below (cron-job.org ->
+ * this Worker) was NOT affected -- it's an independent, already-reliable
+ * path. Rather than trust GitHub's native trigger for anything, ALL three
+ * cadences now go through this same cron-job.org -> Worker ->
+ * repository_dispatch relay, distinguished by the `kind` query param (see
+ * `fetch` below). refresh_data.yml no longer has a `schedule:` block at
+ * all.
+ *
+ * A first attempt at this fix (2026-09-28) tried moving the coarse
+ * cadences onto Cloudflare's own Cron Triggers instead of cron-job.org.
+ * Abandoned before shipping: Cloudflare's Workers Free plan caps a whole
+ * ACCOUNT (not just this Worker) at 5 cron triggers total, already spoken
+ * for by other things on this account, and one of the 7 needed cron
+ * strings ("5 15,16,17 * * 0", a 3-value comma list) was independently
+ * rejected by Cloudflare's own cron parser as invalid syntax. Not worth
+ * fighting either limit when cron-job.org already works and has no
+ * per-job cap on its free tier -- simpler to extend the mechanism already
+ * proven reliable than adopt a second one with its own new constraints.
  *
  * ---------------------------------------------------------------------
  * ONE-TIME SETUP (all done outside this file -- nothing here needs edits
@@ -53,20 +77,60 @@
  *      GITHUB_OWNER = drgregmscott-tech
  *      GITHUB_REPO  = DFS_Optimizer
  *
- * 4. At https://cron-job.org (free account), create a job per near-lock
- *    window you want covered (e.g. one for DK's Sunday early-slate lock,
- *    one for FD's if it differs) that sends a GET request every ~10
- *    minutes, ONLY during that window, to:
- *      https://<your-worker-name>.<your-subdomain>.workers.dev/?token=<the same random string as WORKER_AUTH_TOKEN>
+ * 4. At https://cron-job.org (free account), create one job per cadence
+ *    below, each a GET request to:
+ *      https://<your-worker-name>.<your-subdomain>.workers.dev/?token=<the same random string as WORKER_AUTH_TOKEN>&kind=<kind>
+ *    where <kind> is one of "vegas", "full", or omitted entirely (near-lock
+ *    -- kept as the default so any already-configured near-lock job with
+ *    no `kind` param keeps working unchanged):
+ *      - kind=vegas -- light Vegas-only refresh. Mirrors the old
+ *        light_vegas_refresh schedule: Tue-Fri 1x/day (~noon ET), Sat 2x/day
+ *        (~11am + 5pm ET), Sun hourly (~11am-1pm ET).
+ *      - kind=full  -- full-pipeline refresh. Mirrors the old
+ *        full_refresh_scheduled schedule: Thu ~7pm ET, Sat ~8am ET,
+ *        Sun ~4am/8am/12pm/3pm ET, Mon ~7pm ET.
+ *      - (no kind)  -- near-lock refresh, ~10 minutes, ONLY during the
+ *        real near-lock window(s) that week (unchanged from the original
+ *        setup).
  *    cron-job.org supports both a time-of-day range AND day-of-week, so
- *    this can be set to fire only Sun 4:00pm-5:00pm ET (adjust per actual
- *    lock time each week) rather than running all week.
+ *    each job's schedule can be set to fire only in its real window.
  *
- * That's the whole setup -- after this, the tight cadence is entirely
+ * That's the whole setup -- after this, every cadence is entirely
  * controlled from cron-job.org's UI, no redeploy needed to shift a lock
- * time.
+ * time or a refresh window.
  * ---------------------------------------------------------------------
  */
+
+async function dispatchGithubEvent(env, event_type) {
+  const dispatchUrl = `https://api.github.com/repos/${env.GITHUB_OWNER}/${env.GITHUB_REPO}/dispatches`;
+  return fetch(dispatchUrl, {
+    method: "POST",
+    headers: {
+      "Accept": "application/vnd.github+json",
+      "Authorization": `Bearer ${env.GH_DISPATCH_TOKEN}`,
+      "User-Agent": "dfs-optimizer-scheduled-refresh-worker",
+      "X-GitHub-Api-Version": "2022-11-28",
+    },
+    body: JSON.stringify({
+      event_type,
+      client_payload: {
+        fired_at_utc: new Date().toISOString(),
+        source: "cloudflare_worker/scheduled_refresh.js",
+      },
+    }),
+  });
+}
+
+// WK3 postmortem §1 -- maps the `kind` query param (cron-job.org's own
+// per-job setting, not anything this file's code decides) to the
+// repository_dispatch event_type refresh_data.yml's "Determine which
+// cadence fired this run" step reads. Keep these three strings in sync
+// with that step's case statement if either changes.
+const KIND_TO_EVENT_TYPE = {
+  vegas: "scheduled_vegas_refresh",
+  full: "scheduled_full_refresh",
+};
+const DEFAULT_EVENT_TYPE = "near_lock_refresh"; // no `kind` param = old behavior, unchanged
 
 export default {
   async fetch(request, env, ctx) {
@@ -92,30 +156,22 @@ export default {
       );
     }
 
-    const dispatchUrl = `https://api.github.com/repos/${env.GITHUB_OWNER}/${env.GITHUB_REPO}/dispatches`;
+    const kindParam = url.searchParams.get("kind");
+    if (kindParam && !(kindParam in KIND_TO_EVENT_TYPE)) {
+      return new Response(
+        `Unrecognized kind "${kindParam}" -- expected "vegas", "full", or omit for near-lock.`,
+        { status: 400 }
+      );
+    }
+    const event_type = kindParam ? KIND_TO_EVENT_TYPE[kindParam] : DEFAULT_EVENT_TYPE;
 
-    const ghResponse = await fetch(dispatchUrl, {
-      method: "POST",
-      headers: {
-        "Accept": "application/vnd.github+json",
-        "Authorization": `Bearer ${env.GH_DISPATCH_TOKEN}`,
-        "User-Agent": "dfs-optimizer-scheduled-refresh-worker",
-        "X-GitHub-Api-Version": "2022-11-28",
-      },
-      body: JSON.stringify({
-        event_type: "near_lock_refresh",
-        client_payload: {
-          fired_at_utc: new Date().toISOString(),
-          source: "cloudflare_worker/scheduled_refresh.js",
-        },
-      }),
-    });
+    const ghResponse = await dispatchGithubEvent(env, event_type);
 
     // GitHub's dispatches endpoint returns 204 No Content on success, with
     // no body -- don't try to parse JSON out of that.
     if (ghResponse.status === 204) {
       return new Response(
-        `OK -- dispatched near_lock_refresh at ${new Date().toISOString()}`,
+        `OK -- dispatched ${event_type} at ${new Date().toISOString()}`,
         { status: 200 }
       );
     }

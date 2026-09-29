@@ -379,7 +379,20 @@ def load_lineup_players(site: str, slate_id: str) -> pd.DataFrame:
     attach_cash_lineup_context() below; build_pivot_suggestions() uses it
     per-player instead of one shared (and wrong) scalar.
     """
-    multi_path = OUTPUT_DIR / f"lineups_multi_{site}_{slate_id}.csv"
+    # WK3 postmortem §1 -- optimizer.py now writes
+    # lineups_multi_{site}_{slate_id}_{client_id}.csv (one file per
+    # browser/caller, "shared" for anything that omits --client-id) so
+    # concurrent builds on the same slate don't overwrite each other. This
+    # script still wants "the most recent build for this slate, whoever
+    # ran it," so pick the newest-by-mtime match instead of one fixed
+    # path. Falls back to the pre-fix exact filename so an older
+    # optimizer.py run (or a file copied in by hand) still loads.
+    multi_candidates = sorted(
+        OUTPUT_DIR.glob(f"lineups_multi_{site}_{slate_id}_*.csv"),
+        key=lambda p: p.stat().st_mtime, reverse=True,
+    )
+    legacy_multi_path = OUTPUT_DIR / f"lineups_multi_{site}_{slate_id}.csv"
+    multi_path = multi_candidates[0] if multi_candidates else legacy_multi_path
     single_path = OUTPUT_DIR / f"lineup_single_{site}_{slate_id}.csv"
     required = {"roster_slot", "player_name", "position", "team", "salary", "projection"}
 
