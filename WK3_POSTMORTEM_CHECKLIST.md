@@ -55,6 +55,16 @@ one topic pulls in four adjacent ones and the original thread gets diluted or dr
   Weak or context-dependent = soft or manual" as a rough heuristic, not a formalized rule); (c) probably a pre-lock lint/
   warning report for the informational-only tier, similar to what's already proposed for classic's
   `auto_fallback_team_mismatch` rows, since not every rule can or should be a hard/soft optimizer term.
+  **[RESOLVED / ANALYZED 2026-09-29]** See `WK3_CONSTRUCTION_RULE_AUDIT.md`. (a) Inventory: 15 enforced,
+  1 partial, 0 soft-warned, 16 informational across both formats. The soft-warned tier was empty in BOTH
+  formats. (b) A four-question tier rule (checkable? evidence? unseen exception? weak input like pre-lock
+  ownership?). It reproduces every existing Showdown decision. It flags SD rule 7 as soft-term eligible and
+  classic's hard skill-vs-own-DST as soft by the rule. (c) Answer: Showdown and classic construction rules share
+  one failure mode, which is doc-to-build with no default path. The 4d 1/18 gap is a different problem
+  (continuous-signal selection, not a checkable rule) with the same upstream cause. (d) Built a read-only
+  `scripts/construction_lint.py` (no optimizer change). Designed but not wired: auto-run after build, a C-SEL
+  pool-vs-entry report for 4d, and the ingest-trade section. Side note: `SHOWDOWN_RULES.md`'s "What's live"
+  paragraph is stale (K-CPT and rule 12 are now enforced).
 
 - **[2026-09-28] Time lost to on-demand-optimizer-run debugging eating real review time —
   own dedicated session.** From §1: during the last ~20 minutes before DK main lock on
