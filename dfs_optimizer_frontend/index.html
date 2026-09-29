@@ -1683,6 +1683,37 @@ in this browser's localStorage.</p>
           </div>
           <div class="hint" style="margin-top:4px">Showdown only. Defaults are the "Showdown SE" bundle; load the "Showdown GPP" preset for the GPP version (bigger cheap-tier/K-CPT penalties, bigger QB-partner bonus). Calibrated on 142 real DK Showdown contests -- see data/optimizer_presets.json and SHOWDOWN_RULES.md. Penalties/bonuses are projected points; 0 turns a rule off. Cheap-tier = FLEX salaries in the range (the $600-1k band underperforms a real punt). Stack cap = same-team FLEX beyond this many (relative to the captain's team) get the cap penalty.</div>
         </div>
+        <!-- 2026-09-29 -- classic construction soft terms (optimizer.py --cl-*). Default 0 = off; only nonzero values are sent. -->
+        <div id="wrapClRulesField" style="grid-column:1/-1;">
+          <span class="field-label">Classic Construction Rules (soft)</span>
+          <div style="display:grid; margin-top:8px; grid-template-columns:1fr 1fr; gap:12px;">
+            <div>
+              <span class="field-label">DST $2.8-3.1k bonus</span>
+              <input type="number" id="ctrlClDstBandBonus" min="0" step="0.25" value="0">
+            </div>
+            <div>
+              <span class="field-label">DST $3.6k+ penalty</span>
+              <input type="number" id="ctrlClDstExpensivePenalty" min="0" step="0.25" value="0">
+            </div>
+            <div>
+              <span class="field-label">Zero-punt penalty</span>
+              <input type="number" id="ctrlClZeroPuntPenalty" min="0" step="0.25" value="0">
+            </div>
+            <div>
+              <span class="field-label">3+ punt penalty</span>
+              <input type="number" id="ctrlClThreePlusPuntPenalty" min="0" step="0.25" value="0">
+            </div>
+            <div>
+              <span class="field-label">FLEX=RB bonus</span>
+              <input type="number" id="ctrlClFlexRbBonus" min="0" step="0.25" value="0">
+            </div>
+            <div>
+              <span class="field-label">FLEX=WR penalty</span>
+              <input type="number" id="ctrlClFlexWrPenalty" min="0" step="0.25" value="0">
+            </div>
+          </div>
+          <div class="hint" style="margin-top:4px">Classic only. Projected-point nudges from 410 real DK classic contests (HANDOFF_classic_lineupstudy_findings_2026-09-29.md): DST priced $2.8-3.1k is the best band (+0.8 to +1.2 cash pts), $3.6k+ the worst (-2.3 to -2.9); 0 punts (non-DST &le; $4k) is -1.9 to -2.3, 3+ punts -2.7 to -4.7; FLEX=RB +0.7 to +1.0, FLEX=WR -1.2 to -1.5. 0 turns a rule off. Not yet backtest-calibrated.</div>
+        </div>
       </div>
 
       <!-- Session 17, decision #56 -->
@@ -3305,7 +3336,10 @@ in this browser's localStorage.</p>
     // WK3 postmortem §2 parking-lot #2 (2026-09-29) -- Showdown construction rules.
     "ctrlSdRequireCptQb", "ctrlSdCheapTierPenalty", "ctrlSdCheapTierRange",
     "ctrlSdStackCap", "ctrlSdStackCapPenalty", "ctrlSdQbPartnerBonus",
-    "ctrlSdExcludeCptPositions", "ctrlSdKCptPenalty", "ctrlSdHeavySideCptPenalty"
+    "ctrlSdExcludeCptPositions", "ctrlSdKCptPenalty", "ctrlSdHeavySideCptPenalty",
+    // 2026-09-29 -- classic construction soft terms (--cl-*).
+    "ctrlClDstBandBonus", "ctrlClDstExpensivePenalty", "ctrlClZeroPuntPenalty",
+    "ctrlClThreePlusPuntPenalty", "ctrlClFlexRbBonus", "ctrlClFlexWrPenalty"
   ];
 
   function readPresetValues() {
@@ -4221,6 +4255,8 @@ in this browser's localStorage.</p>
     // WK3 postmortem §2 parking-lot #2 (2026-09-29) -- Showdown-only rules.
     var sdRulesEl = document.getElementById("wrapSdRulesField");
     if (sdRulesEl) sdRulesEl.style.display = isShowdown ? "" : "none";
+    var clRulesEl = document.getElementById("wrapClRulesField");
+    if (clRulesEl) clRulesEl.style.display = isShowdown ? "none" : "";
 
     var stackMode = document.getElementById("ctrlStackMode").value;
     var showStack = !isShowdown && stackMode !== "none";
@@ -4846,6 +4882,21 @@ in this browser's localStorage.</p>
     // on a Showdown pool -- the controls default to the showdown_se bundle,
     // so nothing is silently dropped even if no preset is ever loaded. An
     // explicit 0 is sent (not omitted) so "off" is visible in the request.
+    // 2026-09-29 -- classic construction soft terms (--cl-*). Classic pools
+    // only; 0/blank omits the param, matching optimizer.py's 0.0 (off)
+    // default, so a build that never touches these is unchanged.
+    if (!isShowdown) {
+      [["ctrlClDstBandBonus", "cl_dst_band_bonus"],
+       ["ctrlClDstExpensivePenalty", "cl_dst_expensive_penalty"],
+       ["ctrlClZeroPuntPenalty", "cl_zero_punt_penalty"],
+       ["ctrlClThreePlusPuntPenalty", "cl_three_plus_punt_penalty"],
+       ["ctrlClFlexRbBonus", "cl_flex_rb_bonus"],
+       ["ctrlClFlexWrPenalty", "cl_flex_wr_penalty"]].forEach(function (pair) {
+        var v = parseFloat(document.getElementById(pair[0]).value);
+        if (!isNaN(v) && v > 0) params[pair[1]] = String(v);
+      });
+    }
+
     if (isShowdown) {
       if (document.getElementById("ctrlSdRequireCptQb").checked) params.sd_require_cpt_qb = "true";
       [["ctrlSdCheapTierPenalty", "sd_cheap_tier_penalty"],

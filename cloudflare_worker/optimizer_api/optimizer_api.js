@@ -308,6 +308,11 @@ async function handleDispatch(url, env) {
     "sd_stack_cap", "sd_stack_cap_penalty", "sd_qb_partner_bonus",
     "sd_exclude_cpt_positions", "sd_k_cpt_penalty",
     "sd_heavy_side_cpt_penalty",
+    // 2026-09-29 -- classic construction soft terms (optimizer.py --cl-*).
+    // Plain float strings; absent = optimizer.py's 0.0 (off) default.
+    "cl_dst_band_bonus", "cl_dst_expensive_penalty",
+    "cl_zero_punt_penalty", "cl_three_plus_punt_penalty",
+    "cl_flex_rb_bonus", "cl_flex_wr_penalty",
   ];
   const params = {};
   for (const key of passthroughKeys) {

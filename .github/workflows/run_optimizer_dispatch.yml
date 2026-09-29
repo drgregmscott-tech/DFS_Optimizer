@@ -150,6 +150,16 @@ jobs:
           args += flag("--min-salary-pct", "min_salary_pct", float)
           args += flag("--flex-positions", "flex_positions")
 
+          # 2026-09-29 -- classic construction soft terms (--cl-*, classic
+          # FC Lineup Study). Omit means optimizer.py's 0.0 default (off);
+          # optimizer.py ignores them on Showdown pools.
+          args += flag("--cl-dst-band-bonus", "cl_dst_band_bonus", float)
+          args += flag("--cl-dst-expensive-penalty", "cl_dst_expensive_penalty", float)
+          args += flag("--cl-zero-punt-penalty", "cl_zero_punt_penalty", float)
+          args += flag("--cl-three-plus-punt-penalty", "cl_three_plus_punt_penalty", float)
+          args += flag("--cl-flex-rb-bonus", "cl_flex_rb_bonus", float)
+          args += flag("--cl-flex-wr-penalty", "cl_flex_wr_penalty", float)
+
           # Session 12 -- decisions #36-38. Same "omit means optimizer.py's
           # own default (no cap)" convention as every other optional field
           # above. Values arrive as comma-separated strings already built

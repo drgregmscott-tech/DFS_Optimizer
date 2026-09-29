@@ -1567,6 +1567,128 @@ def randomize_projections(players: pd.DataFrame, randomization_pct: float,
 # Step 2: Build and solve the ILP
 # ---------------------------------------------------------------------------
 
+# ---------------------------------------------------------------------------
+# 2026-09-29 -- Classic construction soft terms (`--cl-*`), from the classic
+# FC Lineup Study (410 real DK classic contests, 21.9M entries, 2022-2026;
+# HANDOFF_classic_lineupstudy_findings_2026-09-29.md §3/§5). All three are
+# SOFT per WK3_CONSTRUCTION_RULE_AUDIT.md §2 (Supported, pre-lock checkable,
+# but each has a plausible exception the optimizer can't see), mirroring the
+# Showdown --sd-cheap-tier-penalty / --sd-heavy-side-cpt-penalty precedent.
+#   - DST salary band: $2.8-3.1k best (+0.8/+1.2/+1.2 cash pts SE/3MAX/20MAX),
+#     $3.6k+ worst (-2.3/-2.8/-2.9). <$2.8k is only neutral (+0.3/+0.4), so
+#     this is a BAND bonus, not "cheapest DST".
+#   - Punt count (non-DST, salary <= $4,000 -- Phase 2's definition): 0 punts
+#     -1.9 to -2.3 raw (+1.4 to +1.9 for >=1 punt after §5's projection/
+#     ownership control), 1-2 neutral/best, 3+ -2.7 to -4.7. Different
+#     magnitudes, so two separate weights.
+#   - FLEX position: RB +0.7 to +1.0, WR -1.2 to -1.5 (4/4 both), TE -0.3 to
+#     -0.6 (not touched here).
+# ---------------------------------------------------------------------------
+CL_DST_BAND_RANGE = (2800, 3100)       # inclusive, the Supported "best" band
+CL_DST_EXPENSIVE_MIN = 3600            # inclusive, the Supported "worst" band
+CL_PUNT_MAX_SALARY = 4000              # punt = non-DST player priced <= this
+CL_DST_POSITIONS = {"DST", "DEF"}
+
+
+def add_classic_shape_terms(prob, x, players, fixed_counts,
+                            dst_band_bonus: float = 0.0,
+                            dst_expensive_penalty: float = 0.0,
+                            zero_punt_penalty: float = 0.0,
+                            three_plus_punt_penalty: float = 0.0,
+                            flex_rb_bonus: float = 0.0,
+                            flex_wr_penalty: float = 0.0):
+    """Returns a pulp expression to ADD to the classic objective, or None
+    when every weight is 0.0 (nothing added -- no aux variables, no
+    constraints, so the problem is byte-identical to before).
+
+    - DST band: per-row coefficient -- +dst_band_bonus on a DST priced in
+      CL_DST_BAND_RANGE, -dst_expensive_penalty on one priced >=
+      CL_DST_EXPENSIVE_MIN. Exactly one DST is rostered, so it's applied once.
+    - FLEX position: classic has no explicit FLEX variable -- FLEX is
+      whichever of RB/WR/TE exceeds its fixed count. So the term is linear:
+      flex_rb_bonus * (n_RB - fixed_RB) - flex_wr_penalty * (n_WR - fixed_WR).
+      With flex_count=1 each bracket is exactly 0 or 1.
+    - Punt count is a whole-roster property, so it needs aux variables.
+      punt_count = sum(x over non-DST rows with salary <= CL_PUNT_MAX_SALARY).
+        z_zero (binary) >= 1 - punt_count      -> forced 1 only at 0 punts
+        M * z_three (binary) >= punt_count - 2  -> forced 1 only at 3+ punts
+      Both are penalized in the objective, so the solver sets each to 0
+      whenever it's allowed. Hand trace (z_zero, z_three): pc=0 -> (1,0);
+      1 -> (0,0); 2 -> (0,0); 3 -> (0,1); 4 -> (0,1). z_three is a flat
+      bucket penalty (the evidence is a "3+" bucket, not per-extra-punt)."""
+    if not any((dst_band_bonus, dst_expensive_penalty, zero_punt_penalty,
+                three_plus_punt_penalty, flex_rb_bonus, flex_wr_penalty)):
+        return None
+    pl = players.set_index("player_id")
+    salary = pl["salary"]
+    position = pl["position"]
+    terms = []
+
+    if dst_band_bonus or dst_expensive_penalty:
+        lo, hi = CL_DST_BAND_RANGE
+        for pid in x:
+            if position[pid] not in CL_DST_POSITIONS:
+                continue
+            s = salary[pid]
+            if dst_band_bonus and lo <= s <= hi:
+                terms.append(dst_band_bonus * x[pid])
+            elif dst_expensive_penalty and s >= CL_DST_EXPENSIVE_MIN:
+                terms.append(-dst_expensive_penalty * x[pid])
+
+    if flex_rb_bonus:
+        rbs = [pid for pid in x if position[pid] == "RB"]
+        terms.append(flex_rb_bonus * (pulp.lpSum(x[p] for p in rbs) - fixed_counts.get("RB", 0)))
+    if flex_wr_penalty:
+        wrs = [pid for pid in x if position[pid] == "WR"]
+        terms.append(-flex_wr_penalty * (pulp.lpSum(x[p] for p in wrs) - fixed_counts.get("WR", 0)))
+
+    if zero_punt_penalty or three_plus_punt_penalty:
+        punt_ids = [pid for pid in x
+                    if position[pid] not in CL_DST_POSITIONS and salary[pid] <= CL_PUNT_MAX_SALARY]
+        punt_count = pulp.lpSum(x[p] for p in punt_ids)
+        if zero_punt_penalty:
+            z_zero = pulp.LpVariable("cl_zero_punt", cat="Binary")
+            prob += z_zero >= 1 - punt_count, "cl_zero_punt_def"
+            terms.append(-zero_punt_penalty * z_zero)
+        if three_plus_punt_penalty:
+            big_m = sum(fixed_counts.values()) + 1  # >= any possible punt_count
+            z_three = pulp.LpVariable("cl_three_plus_punt", cat="Binary")
+            prob += big_m * z_three >= punt_count - 2, "cl_three_plus_punt_def"
+            terms.append(-three_plus_punt_penalty * z_three)
+
+    return pulp.lpSum(terms) if terms else None
+
+
+def classic_shape_adjustment(lineup: pd.DataFrame, fixed_counts: dict,
+                             dst_band_bonus: float = 0.0,
+                             dst_expensive_penalty: float = 0.0,
+                             zero_punt_penalty: float = 0.0,
+                             three_plus_punt_penalty: float = 0.0,
+                             flex_rb_bonus: float = 0.0,
+                             flex_wr_penalty: float = 0.0) -> float:
+    """Same terms as add_classic_shape_terms(), evaluated on a solved lineup.
+    Used by build_multi_lineup()'s cross-stack-candidate comparison so the
+    soft terms aren't silently dropped when picking the best candidate.
+    Returns 0.0 when every weight is 0.0."""
+    total = 0.0
+    pos = lineup["position"]
+    sal = lineup["salary"]
+    dst = lineup[pos.isin(CL_DST_POSITIONS)]
+    for s in dst["salary"]:
+        if CL_DST_BAND_RANGE[0] <= s <= CL_DST_BAND_RANGE[1]:
+            total += dst_band_bonus
+        elif s >= CL_DST_EXPENSIVE_MIN:
+            total -= dst_expensive_penalty
+    total += flex_rb_bonus * (int((pos == "RB").sum()) - fixed_counts.get("RB", 0))
+    total -= flex_wr_penalty * (int((pos == "WR").sum()) - fixed_counts.get("WR", 0))
+    n_punts = int(((~pos.isin(CL_DST_POSITIONS)) & (sal <= CL_PUNT_MAX_SALARY)).sum())
+    if n_punts == 0:
+        total -= zero_punt_penalty
+    if n_punts >= 3:
+        total -= three_plus_punt_penalty
+    return total
+
+
 def solve_lineup(players: pd.DataFrame, salary_cap: int, fixed_counts: dict,
                   flex_count: int, previous_lineups: list = None,
                   uniqueness: int = 0,
@@ -1583,8 +1705,21 @@ def solve_lineup(players: pd.DataFrame, salary_cap: int, fixed_counts: dict,
                   lam: float = 0.0,
                   max_team_players: dict = None,
                   max_game_players: dict = None,
-                  exclude_skill_vs_opp_dst: bool = DEFAULT_EXCLUDE_SKILL_VS_OPP_DST) -> pd.DataFrame:
-    """`exclude_skill_vs_opp_dst` is a Session 17 addition (decision #56):
+                  exclude_skill_vs_opp_dst: bool = DEFAULT_EXCLUDE_SKILL_VS_OPP_DST,
+                  dst_band_bonus: float = 0.0,
+                  dst_expensive_penalty: float = 0.0,
+                  zero_punt_penalty: float = 0.0,
+                  three_plus_punt_penalty: float = 0.0,
+                  flex_rb_bonus: float = 0.0,
+                  flex_wr_penalty: float = 0.0) -> pd.DataFrame:
+    """`dst_band_bonus` .. `flex_wr_penalty` are the 2026-09-29 classic
+    construction soft terms (`--cl-*` flags; evidence in
+    HANDOFF_classic_lineupstudy_findings_2026-09-29.md §3/§5, tier = soft
+    per WK3_CONSTRUCTION_RULE_AUDIT.md §2). All default 0.0, which adds no
+    objective term, variable or constraint -- byte-identical to every
+    prior session's behavior. See add_classic_shape_terms() for mechanics.
+
+    `exclude_skill_vs_opp_dst` is a Session 17 addition (decision #56):
     True (default) adds a hard constraint forbidding the lineup's own
     DST/DEF from sharing a roster with a skill player on that DST's
     opponent this week -- see add_skill_vs_opp_dst_constraints() above
@@ -1691,10 +1826,19 @@ def solve_lineup(players: pd.DataFrame, salary_cap: int, fixed_counts: dict,
                 f"the pool carries real per-player sigma values."
             )
 
-    prob += (
+    shape_term = add_classic_shape_terms(
+        prob, x, players, fixed_counts,
+        dst_band_bonus=dst_band_bonus, dst_expensive_penalty=dst_expensive_penalty,
+        zero_punt_penalty=zero_punt_penalty, three_plus_punt_penalty=three_plus_punt_penalty,
+        flex_rb_bonus=flex_rb_bonus, flex_wr_penalty=flex_wr_penalty,
+    )
+    objective = (
         pulp.lpSum(x[pid] * proj[pid] for pid in x)
         - lam * pulp.lpSum(x[pid] * var[pid] for pid in x)
-    ), "mean_variance_objective"
+    )
+    if shape_term is not None:
+        objective = objective + shape_term
+    prob += objective, "mean_variance_objective"
 
     # Salary cap.
     prob += pulp.lpSum(x[pid] * salary[pid] for pid in x) <= salary_cap, "salary_cap"
@@ -2199,7 +2343,8 @@ def build_single_lineup(site: str, slate_id: str, randomization_pct: float = DEF
                          participation_floors: dict = None,
                          thumbs_up_ids: set = None,
                          thumbs_down_ids: set = None,
-                         exclude_skill_vs_opp_dst: bool = DEFAULT_EXCLUDE_SKILL_VS_OPP_DST) -> pd.DataFrame:
+                         exclude_skill_vs_opp_dst: bool = DEFAULT_EXCLUDE_SKILL_VS_OPP_DST,
+                         classic_shape: dict = None) -> pd.DataFrame:
     config = SITE_CONFIGS[site]
     players = load_final_projections(site, slate_id)
     fixed_counts, flex_count = parse_roster_requirements(config["roster_slots"])
@@ -2303,6 +2448,7 @@ def build_single_lineup(site: str, slate_id: str, randomization_pct: float = DEF
         flex_positions=flex_positions, lam=lam,
         max_team_players=max_team_players, max_game_players=max_game_players,
         exclude_skill_vs_opp_dst=exclude_skill_vs_opp_dst,
+        **(classic_shape or {}),
     )
     if locked_player_ids:
         missing = locked_player_ids - set(selected["player_id"])
@@ -2366,7 +2512,8 @@ def build_multi_lineup(site: str, slate_id: str, n_lineups: int = DEFAULT_N_LINE
                         thumbs_up_ids: set = None,
                         thumbs_down_ids: set = None,
                         player_exposure: dict = None,
-                        exclude_skill_vs_opp_dst: bool = DEFAULT_EXCLUDE_SKILL_VS_OPP_DST) -> tuple:
+                        exclude_skill_vs_opp_dst: bool = DEFAULT_EXCLUDE_SKILL_VS_OPP_DST,
+                        classic_shape: dict = None) -> tuple:
     """Generates up to `n_lineups` distinct, salary-cap-legal lineups, none
     of which use any single player in more than `max_exposure_pct` of the
     total requested lineups (decisions #5/#6 above). Returns
@@ -2578,6 +2725,7 @@ def build_multi_lineup(site: str, slate_id: str, n_lineups: int = DEFAULT_N_LINE
                     flex_positions=flex_positions, lam=lam,
                     max_team_players=max_team_players, max_game_players=max_game_players,
                     exclude_skill_vs_opp_dst=exclude_skill_vs_opp_dst,
+                    **(classic_shape or {}),
                 )
             except RuntimeError as e:
                 stack_infeasible_reason = e
@@ -2594,6 +2742,13 @@ def build_multi_lineup(site: str, slate_id: str, n_lineups: int = DEFAULT_N_LINE
                 ).sum()
             else:
                 candidate_score = candidate_selected["final_projection"].sum()
+            # 2026-09-29 --cl-* soft terms: include them in the cross-
+            # candidate comparison too, else the solver's shape preference
+            # would be discarded here. Skipped entirely when unset (0.0).
+            if classic_shape and any(classic_shape.values()):
+                candidate_score += classic_shape_adjustment(
+                    candidate_selected, fixed_counts, **classic_shape,
+                )
             if best_score is None or candidate_score > best_score:
                 best_score = candidate_score
                 selected = candidate_selected
@@ -4143,6 +4298,51 @@ def main():
              "FLEX beyond the cap -- size the two together. Default 0.0 "
              "(off).",
     )
+    # 2026-09-29 -- classic construction soft terms from the classic FC
+    # Lineup Study (410 real DK classic contests, 21.9M entries; HANDOFF_
+    # classic_lineupstudy_findings_2026-09-29.md §3/§5). Classic-only; all
+    # soft per WK3_CONSTRUCTION_RULE_AUDIT.md §2. Weights are a first-pass
+    # point-scale conversion of the cash-rate lifts, NOT a backtested sweep.
+    parser.add_argument(
+        "--cl-dst-band-bonus", type=float, default=pdef("cl-dst-band-bonus", 0.0),
+        help="Classic ONLY, soft: points added when the DST is priced "
+             "$2,800-3,100 -- the best DST band in 410 real contests "
+             "(+0.8/+1.2/+1.2 cash pts SE/3MAX/20MAX, 1.06-1.09x return). "
+             "<$2.8k is only neutral (+0.3), so this is a band, not "
+             "'cheapest DST'. Default 0.0 (off).",
+    )
+    parser.add_argument(
+        "--cl-dst-expensive-penalty", type=float,
+        default=pdef("cl-dst-expensive-penalty", 0.0),
+        help="Classic ONLY, soft: points subtracted when the DST is priced "
+             "$3,600+ (-2.3/-2.8/-2.9 cash pts, 0.86-0.90x return, 0/4 "
+             "seasons in 20MAX). Default 0.0 (off).",
+    )
+    parser.add_argument(
+        "--cl-zero-punt-penalty", type=float, default=pdef("cl-zero-punt-penalty", 0.0),
+        help="Classic ONLY, soft: points subtracted when the lineup has NO "
+             "punt (non-DST player priced <=$4,000). 0 punts is -1.9 to "
+             "-2.3 cash pts raw; >=1 punt still +1.4 to +1.9 after a "
+             "projection/ownership control. Default 0.0 (off).",
+    )
+    parser.add_argument(
+        "--cl-three-plus-punt-penalty", type=float,
+        default=pdef("cl-three-plus-punt-penalty", 0.0),
+        help="Classic ONLY, soft: points subtracted ONCE when the lineup has "
+             "3+ punts (-2.7 to -4.7 cash pts, uncontrolled). Flat bucket "
+             "penalty, not per extra punt. Default 0.0 (off).",
+    )
+    parser.add_argument(
+        "--cl-flex-rb-bonus", type=float, default=pdef("cl-flex-rb-bonus", 0.0),
+        help="Classic ONLY, soft: points added when FLEX is an RB (3 RBs). "
+             "FLEX=RB is +0.7 to +1.0 cash pts, 4/4 seasons. Default 0.0 (off).",
+    )
+    parser.add_argument(
+        "--cl-flex-wr-penalty", type=float, default=pdef("cl-flex-wr-penalty", 0.0),
+        help="Classic ONLY, soft: points subtracted when FLEX is a WR (4 "
+             "WRs). FLEX=WR is -1.2 to -1.5 cash pts, 0/4 seasons. TE FLEX "
+             "(-0.3 to -0.6) is untouched. Default 0.0 (off).",
+    )
     # Session 16 -- Per-Player Exposure Override + Thumbs Up/Down (decisions
     # #48-55).
     parser.add_argument(
@@ -4419,6 +4619,19 @@ def main():
         mini_stack_type=args.mini_stack_type,
         candidate_pool_size=args.stack_candidate_pool,
     )
+    # 2026-09-29 -- classic --cl-* soft terms (classic path only; the
+    # Showdown branch above returns before this is used).
+    classic_shape = dict(
+        dst_band_bonus=args.cl_dst_band_bonus,
+        dst_expensive_penalty=args.cl_dst_expensive_penalty,
+        zero_punt_penalty=args.cl_zero_punt_penalty,
+        three_plus_punt_penalty=args.cl_three_plus_punt_penalty,
+        flex_rb_bonus=args.cl_flex_rb_bonus,
+        flex_wr_penalty=args.cl_flex_wr_penalty,
+    )
+    if any(v < 0 for v in classic_shape.values()):
+        parser.error("--cl-* weights must be >= 0 (each flag's sign is already "
+                     "built in: bonuses add, penalties subtract).")
 
     # Ad Hoc Session A6 -- --dart-exposure-cap. See that flag's own help
     # text and compute_dart_exposure_overrides()'s docstring for the full
@@ -4677,6 +4890,7 @@ def main():
             thumbs_up_ids=thumbs_up_ids, thumbs_down_ids=thumbs_down_ids,
             player_exposure=player_exposure,
             exclude_skill_vs_opp_dst=not args.allow_skill_vs_opp_dst,
+            classic_shape=classic_shape,
             **stack_kwargs,
         )
         if args.request_id:
@@ -4755,6 +4969,7 @@ def main():
             participation_floors=participation_floors,
             thumbs_up_ids=thumbs_up_ids, thumbs_down_ids=thumbs_down_ids,
             exclude_skill_vs_opp_dst=not args.allow_skill_vs_opp_dst,
+            classic_shape=classic_shape,
             **stack_kwargs,
         )
         if args.request_id:

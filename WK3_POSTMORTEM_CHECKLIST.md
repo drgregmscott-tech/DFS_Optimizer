@@ -165,6 +165,15 @@ one topic pulls in four adjacent ones and the original thread gets diluted or dr
   new `--cl-*` (or similarly namespaced) flags following the existing `--sd-*` pattern, (3) thread
   through UI/worker/workflow the same way the Showdown UI-dispatch gap got fixed, (4) verify against a
   real classic slate before shipping.
+  **[RESOLVED 2026-09-29, uncommitted for review]** Soft terms only (no hard constraints): `--cl-dst-band-bonus`
+  ($2.8-3.1k DST), `--cl-dst-expensive-penalty` ($3.6k+), `--cl-zero-punt-penalty`, `--cl-three-plus-punt-penalty`
+  (flat, once at 3+; binary aux vars), `--cl-flex-rb-bonus`, `--cl-flex-wr-penalty`; all default 0.0 (off),
+  threaded through `solve_lineup()`, both builders (incl. the cross-stack-candidate score), worker, workflow and
+  a classic-only UI panel. Verified on Wk3 main/afternoon (20-lineup se3max_pool-style): 0.0 is byte-identical to
+  HEAD; DST band moved 2.8-3.1k from 3->12 and 1->10 of 20; zero-punt 2.0 cut 0-punt lineups 9->3 and 2->1;
+  FLEX WR 3->2/4->1; mean projection within +/-0.6. 3+-punt never occurs at baseline on either slate, so that term
+  is untested in practice. **Presets left at 0.0** -- cash-pt lift doesn't convert to projected points cleanly and
+  only the punt effect survived a projection control; set weights after Wk4 replay.
 
 - **[2026-09-29] Pre-lock ownership re-test for the classic chalk finding — own session, gates any
   chalk-tilt construction lever.** The single strongest result in the classic Lineup Study
