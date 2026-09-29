@@ -40,6 +40,22 @@ one topic pulls in four adjacent ones and the original thread gets diluted or dr
 
 ## Parking Lot (add here, don't chase inline)
 
+- **[2026-09-29] Partial construction-rule-capture gap — own dedicated session, user will open separately.** From §2 open
+  thread 2. This session enforced 5 of the Supported/Weak Showdown construction rules as actual optimizer levers
+  (`showdown_se`/`showdown_gpp` presets), but only because we happened to sanity-check that specific mechanism and catch a
+  gap (21% of GPP captains landing on K/DST with nothing stopping it). Other Supported/Weak rules in `SHOWDOWN_RULES.md` —
+  DST price tier (cheap vs. expensive), which side gets the heavy half of a split, chalk-CPT ownership tier — are still
+  purely informational, with nothing in the build pipeline checking or warning on them. This mirrors the classic
+  postmortem's "signal found, never captured at build time" gap (§4/Step 4d: strong-projection cash drivers rostered 1/18
+  times vs 39/86 for otherwise-similar players) — worth asking, in the dedicated session, whether this is the SAME
+  underlying failure mode showing up in both classic and Showdown (a general "rules get documented but not enforced by
+  default" problem across the whole optimizer) or two unrelated instances. Needs: (a) an inventory of every Supported/Weak
+  rule across both `SHOWDOWN_RULES.md` and classic's equivalent guidance, tagged enforced/soft-warned/informational-only;
+  (b) a decision process for which tier each belongs in (this session used "Supported + no legitimate exception = hard,
+  Weak or context-dependent = soft or manual" as a rough heuristic, not a formalized rule); (c) probably a pre-lock lint/
+  warning report for the informational-only tier, similar to what's already proposed for classic's
+  `auto_fallback_team_mismatch` rows, since not every rule can or should be a hard/soft optimizer term.
+
 - **[2026-09-28] Time lost to on-demand-optimizer-run debugging eating real review time —
   own dedicated session.** From §1: during the last ~20 minutes before DK main lock on
   2026-09-27, time that should have gone to actual lineup review instead went to debugging
@@ -173,33 +189,37 @@ slates, not just the 3 examples above, before drawing conclusions about what's c
 
 ---
 
-## 2. FC data dives — classic + showdown [CLOSED for Showdown 2026-09-28; classic still open, see §3]
+## 2. FC data dives — classic + showdown [NOT fully closed — see 2 open threads below; classic still open, see §3]
 
-Two FC-derived analyses landed 2026-09-26 and were discussed/acted on this session (2026-09-28):
+Two FC-derived analyses landed 2026-09-26 and were discussed/acted on 2026-09-28. Both are folded into `SHOWDOWN_RULES.md` and
+superseded where real data replaced simulated-field conclusions — but §2 as a whole is **not** fully closed; two threads remain,
+tracked explicitly rather than left implicit:
 
 - [x] **`HANDOFF_showdown_history_findings_2026-09-26.md`** — 49 DK Showdown slates (2023-2025), simulated-field percentiles,
-      chalk/leverage strategy tests. **Superseded, not just discussed**: its lineup-level construction conclusions (§6-§8) were
-      simulated-field-caveated, and this session pulled real Showdown lineup data (see §3 below) that replaces them with real-field
-      answers. Folded into `SHOWDOWN_RULES.md`.
-- [x] **`HANDOFF_showdown_ownership_refit_2026-09-26.md`** (the `lsal` candidate) — its own reactivation condition ("2+ more real
-      Showdowns") was checked and not yet met (still the same 4 real slates as when it was frozen) — but rather than leaving it
-      parked on that technicality, we ran the actual confound check the doc itself flagged as missing (does the QB-CPT-partner
-      finding survive a projection/salary control?) via `analysis/showdown_history/lineup_study_qb_partner_ctrl.py`. Separately,
-      the *chalk-tilt* idea this doc's methodology also touches on was independently re-tested with OUR modeled ownership (see
-      §3) and found Not supported pre-lock. The `lsal` ownership-model candidate itself (display/pivot-reading only, doesn't
-      touch lineup construction since lambda 0 stands regardless) remains genuinely parked — still no new real Showdown slate
-      to test it against — but is now explicitly tracked as blocked-on-data, not closed.
+      chalk/leverage strategy tests. Superseded: its lineup-level construction conclusions (§6-§8) were simulated-field-caveated,
+      and this session pulled real Showdown lineup data (see §3 below) that replaces them with real-field answers.
+- [ ] **Open thread 1 — `HANDOFF_showdown_ownership_refit_2026-09-26.md` (the `lsal` candidate).** Its reactivation condition
+      ("2+ more real Showdowns since frozen") was still not met as of 2026-09-28 (same 4 real slates as when frozen). **We
+      expect at least 2 more real Showdown slates this week (Wk4)** — re-check the condition once those are logged in
+      `ownership_actual_log.csv`, and if met, re-test the candidate against them before deciding to ship. The confound this
+      doc originally flagged as missing (does the QB-CPT-partner finding survive a projection/salary control?) was already
+      resolved this session via `analysis/showdown_history/lineup_study_qb_partner_ctrl.py` — that part does not need redoing.
+      The *chalk-tilt* idea was also independently re-tested with OUR modeled ownership and found Not supported pre-lock — that
+      part is closed, only the `lsal` ownership-calibration candidate itself is still pending real Wk4 data.
+- [ ] **Open thread 2 — partial rule-capture gap, routed to the Parking Lot below for its own dedicated session.** This
+      session built and enforced 5 real-field-Supported construction rules as actual optimizer levers (`--sd-require-cpt-qb`,
+      `--sd-cheap-tier-penalty`, `--sd-stack-cap`/`-penalty`, `--sd-qb-partner-bonus`, `--sd-exclude-cpt-positions`/
+      `--sd-k-cpt-penalty` — the last pair added after a real-slate sanity check caught 21% of captains landing on K/DST with
+      none of the first four levers touching that). But several OTHER Supported/Weak rules in `SHOWDOWN_RULES.md` — DST price
+      tier (cheap vs. expensive), which side gets the heavy half of a 4-2/3-3 split, chalk-CPT ownership tier — remain purely
+      informational. Nothing in the build pipeline checks or warns on those; a build can silently violate them. Same failure
+      shape as the classic postmortem's "signal found, never captured at build time" gap (§4/Step 4d).
 
 **Real work this session (superseded the FC-derived analysis above): 142 REAL DK Showdown contests, 14.9M entries, 2022-2026**
 (not simulated — see §3's Showdown item). Real field cash-lift/return by construction shape, rule-by-rule verdicts against
-`SHOWDOWN_RULES.md`, and a projection/salary-controlled re-check of the QB-partner finding. **Five findings are now live in the
-optimizer** (not just documented): `--sd-require-cpt-qb` (hard), `--sd-cheap-tier-penalty`, `--sd-stack-cap`/`-penalty`,
-`--sd-qb-partner-bonus` (soft), bundled into two new presets (`showdown_se`, `showdown_gpp`) in `data/optimizer_presets.json`.
-See `HANDOFF_showdown_lineupstudy_findings_2026-09-28.md`, `HANDOFF_showdown_construction_detail_2026-09-28.md`, and
-`SHOWDOWN_RULES.md`'s new "Optimizer enforcement" section. **Remaining gap, not solved this session**: most of the OTHER
-Supported rules in `SHOWDOWN_RULES.md` (DST-captain exclusion, kicker preference, chalk-CPT-tier guidance, etc.) are still
-informational-only — nothing in the build pipeline warns on or enforces them. This is the same "signal found, never captured
-at build time" failure the classic postmortem already named (§4/Step 4d's "signal legibility" gap) and needs its own session.
+`SHOWDOWN_RULES.md`, and a projection/salary-controlled re-check of the QB-partner finding. Committed and pushed 2026-09-29
+(`9b85abf`), sanity-checked against two real slates. See `HANDOFF_showdown_lineupstudy_findings_2026-09-28.md`,
+`HANDOFF_showdown_construction_detail_2026-09-28.md`, and `SHOWDOWN_RULES.md`'s "Optimizer enforcement" section.
 
 ---
 
