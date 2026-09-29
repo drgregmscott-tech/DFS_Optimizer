@@ -1024,3 +1024,243 @@ Track 2 (worth tracking, not urgent):
    It's cheap and general, but fix 1 already covers the only case seen in 3 weeks.
 4. A local/instant feasibility check to skip the Actions round trip. Not proposed for now: with 1 and
    2 in place, no observed failure would have needed it.
+
+## Parking Lot Item: gmscott81 Regime Change (2022-24 vs 2025-26)
+
+Scripts: `analysis/classic_history/regime/regime_build.py` (re-parses only the 102 classic lineup-study
+contests gmscott81 entered, reusing `lineup_study_build.parse()` unchanged; raw-derived caches go to
+`data/fc_history/derived/classic_regime/`, gitignored), `regime_analysis.py`, `regime_cluster.py`.
+Outputs (aggregates only): `analysis/classic_history/regime/out/regime_*.csv`, `regime_analysis_out.txt`,
+`regime_cluster_out.txt`. Same exclusions as the lineup study (3 truncated contests dropped), leaving
+**99 contests / 140 entries** (84 in 2022-24, 56 in 2025-26). Cash = payout > 0. CIs are 90%, bootstrap.
+The original lineup-study caches (`derived/classic/`) are no longer on disk, so this is an independent
+re-parse, not a re-read.
+
+### (1) Is the claim real? Yes for 2022-24, but the effective n is about half what it looks like
+
+| slice | entries / contests | cash (contest-wtd) | base | excess (pts) | own pctile | pts pctile |
+|---|---|---|---|---|---|---|
+| 2022-24 | 84 / 81 | **59.9%** [52.9, 66.7] | 27.1% | **+32.7** [+25.8, +39.6] | 0.85 | 0.70 |
+| 2025 | 11 / 11 | 27.3% [12.5, 42.9] | 26.0% | +1.2 [-13.5, +17.1] | **0.84** | 0.62 |
+| 2026 (all) | 45 / 7 | 8.6% [0, 15] | 25.3% | -16.7 | 0.62 | 0.42 |
+| 2026 MME only | 40 / 2 | 30.0% | 25.0% | +5.0 | **0.44** | 0.49 |
+| 2026 SE only | 5 / 5 | 0/5 | 25.4% | -25.4 | 0.69 | 0.39 |
+
+(Raw entry-weighted: 60.7% vs 26.8%. That reproduces the handoff's ~63% / 27% within rounding.)
+
+Confound checks:
+- **Not a format artifact.** The base rate is structurally ~26-27% in every SE / 3MAX / 20MAX contest here
+  (DK flagship payout shape), so contest mix barely moves the benchmark. 2022-24 excess by format: SE +38
+  (31 entries), 3MAX +39 (24), 20MAX +27 (27). The two double-ups (43% base) went 0/2, so DU is not
+  inflating it. Excluding DU raises the excess to +34.7.
+- **Not small-field.** Every analysed contest has 11.9k-237k entries.
+- **Not one season.** 2022 +34, 2023 +23, 2024 +48. All three CIs sit above zero.
+- **The real caveat is clustering.** The 84 entries are 37 slates and only **42 distinct lineups**. The
+  same 9 players were usually entered in the SE, 3MAX and 20MAX of the same week, and those formats have
+  near-identical cash lines. Re-bootstrapping over slates gives excess **+33.3 [+19.9, +46.4]**. 62% of
+  slates had a cash, and distinct lineups cashed 59.5%. So it survives, but the honest n is ~40 lineups,
+  not 84.
+- Sanity check on "63% is suspiciously high": 42 lineups at a 27% base cashing ~25 times is still far
+  outside chance after clustering, and the lineups' average score sat at the 70th percentile of the
+  field. That's a genuinely strong history, not an accounting artifact. One thing I can't rule out
+  from this data: the FC pull selecting contests in a way correlated with results. Nothing suggests it
+  (it's the same flagship contests every week), but it's unverified.
+
+**Era difference (2022-24 minus 2025-26), contest bootstrap:** excess cash +38.5 pts [+25.1, +53.2].
+Excluding the 2026 MME pools it's +39.8 [+25.8, +54.3]. 2022-24 vs 2025 alone is +31.5 [+12.7, +49.2].
+The cash drop is real at this n.
+
+### (2) The ownership drop doesn't match the cash drop
+
+This is the key finding, and it changes the parking-lot framing:
+
+- **2025 lineups were just as chalky as 2022-24 and still cashed at base rate.** Ownership percentile was
+  0.84 vs 0.85 (difference +0.002 [-0.06, +0.06]). The cash drop starts in 2025, but the ownership drop
+  starts in 2026. The "85th → 54th percentile" figure is mostly the two 2026 MME pools (0.44) pooled with
+  2025/2026 SE.
+- Excluding the MME pools, the era ownership gap shrinks to +0.05 [-0.01, +0.11] (not significant). The
+  cash gap is unchanged at +40 pts. **Ownership can't be carrying the cash gap.**
+- What did change from 2022-24 to 2025 is score. Points percentile went 0.70 → 0.62 (2025) → 0.42
+  (2026). 2025 lineups still looked like 2022-24 lineups (82% "quality-shaped", 3.3 top-5-owned
+  players per lineup vs 2.5, similar punts and studs) but landed worse outcomes at the same chalk level.
+
+Player-level exposure by position (share of slots on a player ≥ 20% owned; entries in parentheses are
+the share of QB slots on the #1-owned QB):
+
+| pos | 2022-24 | 2025 | 2026 |
+|---|---|---|---|
+| QB | 30% (42%) | 9% (9%) | 0% (27%) |
+| RB | 55% | **86%** | 31% |
+| WR | 37% | 45% | **6%** |
+| TE | 20% | 18% | 2% |
+| DST | 31% | 27% | 0% |
+
+- QB chalk faded steadily. The #1-owned QB was in 66% of entries in 2022, 30% in 2023, 6% in 2024 and 9%
+  in 2025. But 2024 had the *best* cash rate (75%, n=16) with almost no #1-owned QBs, so QB chalk isn't
+  the switch either.
+- 2025 shifted chalk from QB/WR into RB (86% of RB slots ≥ 20% owned).
+- 2026 is a different animal. WR/TE/DST chalk nearly vanished: median WR ownership rank at the position
+  was 15, and 57% of TE slots were under 5% owned. That fits this repo's optimizer (lambda 0, no
+  ownership input, MME randomization/uniqueness), but that's inference, not a record.
+
+**Tooling history is unknowable from the repo.** Git starts 2026-07-21. `SESSION_LOG.md`, `ROADMAP.md`,
+`README.md` and the memory files say nothing about how 2022-25 lineups were built (tool, ownership
+source, manual vs optimizer). The only documented boundary is that 2026 = this optimizer. The 2025 cash
+drop happened *before* this repo existed, under an unknown process, at unchanged chalk levels. If the
+user remembers what changed going into 2025 (tool, time spent, projection source, late-swap habits),
+that's the missing piece. The data can't supply it.
+
+### (3) Within-era: does chalk predict my cashing?
+
+My cash rate by ownership band vs the field's cash rate in the same band of the same contests:
+
+| era | own band | my entries | my cash | field, same band |
+|---|---|---|---|---|
+| 2022-24 | 50-80th | 23 | 56.5% | 29.9% |
+| 2022-24 | ≥80th | 60 | 63.3% | 37.1% |
+| 2025 | 50-80th / ≥80th | 4 / 7 | 0% / 42.9% | 29.2% / 37.6% |
+| 2026 | <50th / 50-80th / ≥80th | 27 / 11 / 7 | 37.0% / 18.2% / 0% | 20.3% / 26.3% / 38.3% |
+
+- The field-wide chalk gradient is real in my contests: roughly 20% → 30% → 37-41% from the low to the
+  high band in every era, matching the lineup study.
+- **In 2022-24 I beat the field by ~26-27 pts inside both bands.** Ownership accounts for maybe 7 of the
+  ~33-pt excess (the ≥80th band's field rate vs base). The rest is lineup selection at a given ownership
+  level. Correlation of own percentile with cash was +0.22 in 2022-24 and -0.13 in 2025-26. Both n's are
+  too small to lean on.
+- Counterfactual, quality-shaped entries only (field cash rate at my ownership quintile vs at the top
+  quintile): 2022-24 37.6% vs 39.5% (already near the top), 2025 46.2% vs 54.7%, 2026 35.6% vs 51.5%
+  (12 entries, 4 contests). So matching the 2022-24 ownership profile would have been worth roughly
+  +8 pts in 2025 and +16 pts in 2026 **for a field-average lineup at that ownership**. That's a
+  benchmark, not a promise that our lineups would have gotten it. It's the same direction and roughly
+  the size the lineup study found.
+
+### (4) Relation to §0 and the pre-lock retest
+
+- **The big drop is distinct from §0.** §0 is about 2026 Weeks 1-3, built with this optimizer. The large
+  drop (+33 → ~0 excess) happened in 2025 at unchanged ownership, under an undocumented process. That
+  part can't be §0's root cause, and with no process record and 11 entries it's unresolvable here.
+- **The 2026 slice does overlap §0.** 2026 entries are the least chalky in the history (WR/TE/DST chalk
+  near zero) and scored at the 42nd percentile. The pre-lock retest already weighed this: modeled
+  ownership recovers only about half of the realized chalk edge, and the part it recovers is mostly our
+  projection re-encoded. Nothing here overturns "lambda 0 stays, no chalk lever ships". It adds one
+  more real-lineup data point saying our 2026 builds sit under-chalked relative to what the field
+  rewards.
+
+### Verdict
+
+- **Claim verified, mechanism re-attributed.** 2022-24 cashing was real: +33 pts over base, slate-clustered
+  CI [+20, +46], effective n ~40 lineups, consistent across formats and seasons. The drop is also real.
+  But **the drop isn't explained by chalk exposure**, because 2025 kept 2022-24 ownership and still fell
+  to base rate. "Lower chalk → fewer cashes" is **not supported as the cause of the regime change**.
+  That's not "wrong direction" for chalk in general (the field-level gradient is solid). It's "not what
+  happened to gmscott81".
+- **Why it dropped in 2025: unresolvable at this n and with no process record.** Candidates (tool change,
+  projection source, a sharper field, 2022-24 partly luck) can't be separated with 11 entries.
+- **2026 under-chalking: inconclusive, same thread as the retest.** It's directionally consistent but too
+  small (7 contests, 2 of them MME pools) to add evidence beyond the pre-lock retest. No optimizer change.
+- **Confidence basis:** high on the 2022-24 excess and on "2025 ownership ≈ 2022-24". Both have tight CIs
+  that don't depend on the clustering choice. Low on anything about 2026, and on the counterfactual size.
+
+### Track 2 items
+
+1. **Chalk-gap watch on our own 2026 lineups.** This feeds the retest's tiebreak item; it isn't a new
+   lever. Each post-slate review, record our lineups' realized ownership percentile vs the field, and
+   the field's cash rate in the top vs our ownership quintile (reuse `regime_analysis.py`'s
+   counterfactual on the new contest pulls). Escalate to a track-1 test when, across ≥ 8 more classic
+   slates, our SE entries sit at or below the 60th ownership percentile *and* the field's
+   top-quintile minus our-quintile cash gap averages ≥ +8 pts with a slate-bootstrap CI excluding 0.
+   Then test the modeled-ownership tiebreak already parked in the pre-lock retest, not a raw chalk tilt.
+2. **Score-percentile tracker (the thing that actually moved).** Our points percentile went 0.70 → 0.62 →
+   0.42. Track SE/3MAX points percentile per slate for 2026 (distinct lineups, slate-clustered). If it
+   stays ≤ 0.50 over ≥ 8 more slates (CI upper bound < 0.55), that's a §0-level signal about
+   projection/selection quality, independent of ownership, and it belongs with the §4 projection work.
+3. **Ask the user (no data needed):** what changed in the build process going into 2025 (tool,
+   projection/ownership source, time spent, late swap)? If there's an answer, log it here. Otherwise this
+   stays flagged unknowable.
+4. **Before the 2026-10-02 FC trial lapse:** the Wk3 (and Wk4 if settled) classic contests with our
+   entries would add 1-2 slates to items 1-2. This is already on the lineup-study action list, so no
+   separate pull is needed.
+
+Nothing ships from this item.
+
+### Follow-up (2026-09-29): stated build habits vs the real 2022-25 entries
+
+New context: the 2022-25 entries are real, built with the Fantasy Cruncher optimizer plus manual judgment. 2026 came from this repo.
+The user says 2025 wasn't drastically different. Script: `analysis/classic_history/regime/regime_habits.py`. Outputs:
+`out/regime_habits_out.txt`, `regime_habits_profile.csv`, `regime_habits_features.csv`, `regime_habits_2025_vs_E1.csv`.
+Unit = **distinct lineup**: 42 in 2022-24 (37 weeks), **8 in 2025 (8 weeks)**, 3 non-MME in 2026. CIs are 90% and resample weeks.
+"Field matched" = the cash rate of field lineups within ±3 FC-projection percentile points of my lineup, in the same contest.
+Best-attainable = the max-FC-projection legal lineup from the contest pool (MILP).
+
+**1. Stated habits vs data (2022-24 / 2025)**
+
+| habit | data | verdict |
+|---|---|---|
+| Target the top-projected QB | #1 FC-proj QB in 7% / 13% of lineups. Median proj rank 6 / 4.5. Top-3 priced QB 21% / 38% | **Disagrees.** Mid-tier QBs. Game total isn't in the cache, so "top game total" can't be checked directly |
+| QB ownership | #1-owned QB 38% / 13%. Median own rank 2 / 5. #1 by FC proj_own 50% (2022-23) | 2022-24 QBs were the field's favorite, not FC's top projection |
+| Stack QB+WR (+ bring-back) | 2022-24: **41% naked** (no WR/TE teammate), QB+1 33%, QB+1+BB 12%, QB+2(+BB) 14%, any BB 33%. 2025: 0% naked, QB+1 75%, QB+1+BB 25% | **2022-24 disagrees.** 2025 matches the stated habit |
+| Never TE at FLEX; FLEX usually a pass catcher | FLEX RB 57% / 50%, WR 33% / 50%, TE 10% (all 2024) / 0% | TE-at-FLEX mostly holds. **"Usually a pass catcher" is wrong**: RB was the most common FLEX |
+| DST cheapest viable ~$2-3k | Median $2,600 / $2,650. <$2.8k 62% / 63%, $2.8-3.1k 19% / 38%, ≥$3.2k 19% / 0%. Literal min price 7% / 25%. DST proj rank med 10 / 7 | Holds |
+
+**2. Distance from the FC-projection optimal**
+- The user did not play the pure optimizer. Mean projection percentile was 0.81 (2022-24) and 0.82 (2025). Only ~20% of lineups
+  were ≥ 95th. The median gap to the best-attainable projection was 15% / 17%. Both eras deviated about equally.
+- **The 2022-24 edge is not projection.** Field lineups at the same projection percentile cashed 36%. The user cashed 58.7%, an
+  excess vs matched field of **+23 pts [+10, +37]**. Corr(proj pct, cash) is only +0.11. Within 2022-24, above-median projection
+  did *not* cash better (diff -12 pts [-35, +13]).
+- No single feature predicts the user's cashing at this n. All week-bootstrap CIs span 0: RB FLEX +15 [-12, +43], #1-owned QB
+  +8 [-18, +33], QB+WR stack +7, QB+2 -23 [-59, +15], DST $2.8-3.1k -4. The directions for RB FLEX and chalk QB match the field
+  study. Inconclusive, not wrong.
+
+**3. 2025: same approach, bad year?**
+- **Structurally 2025 looks like 2022-24.** Projection pct (0.82 vs 0.81), gap to optimal, matched-field rate (37% vs 36%),
+  DST price and RB FLEX share are all the same within noise.
+- **Two measured shifts, both small-n:** fewer #1-owned QBs (13% vs 38%, diff +26 [+3, +46]), and more QB+WR mini-stacks
+  instead of naked QBs (0% vs 41% naked). QB chalk had already faded in 2024 (8% #1-owned) while that year cashed 72%, so the
+  QB-chalk shift alone doesn't explain it.
+- **How unlikely is 2025's 2/8 if the 2022-24 rate held?** Binomial p = 0.058. Week-resampled p = 0.043. Allowing for
+  uncertainty in the 2022-24 true rate (effective n = weeks) gives p ≈ 0.08. Measured as excess over the projection-matched
+  field, p ≈ 0.025. That's roughly a 1-in-15 to 1-in-40 bad year. It's unlikely, but not decisive enough to call it a process
+  change. The 2022-24 +33 is also probably inflated by selection/luck (regression to the mean), which pushes toward "bad year
+  plus some regression". What can't be concluded: whether the stack-shape shift or the QB-chalk fade *caused* anything. 8
+  lineups can't separate that.
+
+**4. Cross-check vs the Supported field findings**
+- **DST $2.8-3.1k best:** the user sat mostly *below* it (62% <$2.8k). That was mildly off-optimal, and user-level data shows no
+  effect. It's not where the edge came from.
+- **RB FLEX > WR FLEX:** the user's real behavior already agreed (57% RB), despite the stated "pass catcher" habit. Plausibly
+  part of the edge.
+- **QB+2 return:** the user rarely built QB+2 (14%). The stated QB+WR+BB habit only became dominant in 2025. The edge didn't
+  come from stacking. Note QB+2 is a return (ceiling) feature, not a cash feature.
+- **#1-owned QB +5 cash:** 2022-24 used it 38% of the time (2022: 56%). That agrees with the field finding, but 2024 cashed
+  best without it.
+- **Implication:** the 2022-24 edge sits in *which* players the user picked at a given projection level (+23 pts over the
+  matched field). That points to chalk/ownership-aware manual selection plus RB FLEX, not raw projection, stacking or DST
+  pricing. That's consistent with section (3) above: 26-27 pts over the field inside each ownership band. FC proj_own existed
+  only in 2022-23, so 2024+ judgment ran without an FC ownership projection. 2024 still cashed 72%, so losing proj_own didn't
+  cause the 2025 drop by itself.
+
+**Track 2 (low bar, keep testing):**
+1. *RB FLEX preference.* The user data agrees with the field finding. Accrue: log FLEX position and cash for our SE/3MAX
+   lineups. Revisit after ≥ 10 more classic slates with the field-matched excess.
+2. *Manual pick vs optimizer on the same projection.* This is the actual 2022-24 edge. Accrue: each slate, record our
+   submitted lineup's projection pct and matched-field excess (reuse `regime_habits.py`). If the excess stays ≤ 0 over ≥ 8
+   slates while projection pct is ≥ 0.8, the gap is selection, not projection. Then compare against the user's hand-picked
+   alternative.
+3. *Stated vs actual habits.* The user's recall of naked vs stacked QBs and "pass-catcher FLEX" is off for 2022-24. Don't encode
+   stated habits as optimizer rules without checking them against data.
+
+**Confidence basis:** High on the habit frequencies (direct counts). Moderate on "+23 pts over the projection-matched field in
+2022-24" (the CI excludes 0 with week clustering, n = 42). Low on any single feature's effect on the user's cashing, and low on
+cause for 2025 (n = 8, p ≈ 0.03-0.08). Nothing ships.
+
+### User clarifications (2026-09-29, from the user; not tested)
+
+- The 2022-25 gmscott81 entries are real entries built with the Fantasy Cruncher optimizer, not a simulation. Tooling for 2022-25 is undocumented in the repo.
+- **How lineups were actually built:** the user limited the player pool and let the optimizer build lineups from that pool. It was not hand-picking every player. So the "manual selection" edge is more precisely **pool restriction (which players were allowed in) plus optimizer construction**. The stated habits (top-projected QB, QB+WR stack, pass-catcher FLEX) are the intent; the entries show they were only partly followed (see follow-up above).
+- **Contest mix (untested, no data):** the user believes 2022-24 was a blend of cash, 3x/5x multiplier and single-entry, and 2025 was mostly single-entry and 3-max, and that the different contest types drove different approaches. The pull holds only SE / 3MAX / 20MAX / DU, so cash and multiplier formats can't be checked. Logged as the user's account, not a finding. Within the SE/3MAX contests we can see, the 2022-24 edge was +38/+39 pts, so a format-mix shift does not obviously explain the 2025 drop; 2025 was not broken out by format.
+- **FC data is gone:** the user can no longer log in (account disabled or locked, possibly linked to a site outage). Wk3 data exists directly from DK, without FC projections, so it can't be used for the projection-matched comparisons.
+
+### Track 2 addition: systematize pool restriction (2026-09-29)
+
+The edge sits in "which players the pool allowed," not in projection or construction shape. Action, when data allows: (a) for each slate, record the pool the user restricts (players excluded/locked, and why) alongside our optimizer's pool; (b) measure the projection-matched excess of user-restricted-pool lineups vs our default-pool lineups over 8+ classic slates; (c) look for the rules behind the exclusions (ownership tier, game environment, price) and test each as an optimizer pool filter or exclude-list feature. Wk3+ user exports from DK are usable for lineup results but not FC-projection matching. Not shippable; needs accrual.

@@ -201,6 +201,13 @@ one topic pulls in four adjacent ones and the original thread gets diluted or dr
   in its own session whether the build process or ownership source changed at the 2025 boundary, and
   whether this is a distinct thread from or the same thread as §0's "three straight weeks missing"
   investigation — don't assume either way without looking.
+  **[RESOLVED / ANALYZED 2026-09-29]** See `WK3_ROOT_CAUSE_FINDINGS.md` "Parking Lot Item: gmscott81 Regime Change". 2022-24 edge
+  is real (59.9% vs 27.1% base, +23 pts over a projection-matched field; ~42 distinct lineups). The drop is not chalk-driven: 2025
+  ownership matched 2022-24 (0.84 vs 0.85) and cashed at base; the 54th-percentile figure is the 2026 MME pools. Construction was
+  similar in 2025; 2025 was 2/8 lineups, a 1-in-15 to 1-in-40 bad year. Distinct thread from §0 (pre-repo, undocumented process).
+  Edge = user-restricted player pool + FC optimizer, not raw projection/stacks/DST. User's contest-mix explanation is untestable
+  (no cash/multiplier data). FC account is dead, so the wk3 pull can't happen. No optimizer change; lambda 0 stays. Track-2: (1) chalk-gap
+  watch on 2026 SE, (2) projection-percentile excess vs matched field, (3) systematize pool restriction (record user pool per slate).
 
 - **[2026-09-29] Ownership accuracy metrics + FC `proj_own` as a public-feed proxy — after the Wk3 refit.** From
   `HANDOFF_classic_prelock_ownership_retest_2026-09-29.md`. (a) Baselines to track after the refit: our modeled #1 QB

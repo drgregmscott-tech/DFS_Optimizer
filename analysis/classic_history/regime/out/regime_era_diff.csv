@@ -1,0 +1,13 @@
+cmp,metric,diff,lo90,hi90,boot_share_le0
+E1 - E2,excess_cash,0.385,0.251,0.532,0.0
+E1 - E2,own_pct,0.09,0.022,0.155,0.015
+E1 - E2,pts_pct,0.158,0.074,0.247,0.001
+E1 - E2(no MME),excess_cash,0.398,0.258,0.543,0.0
+E1 - E2(no MME),own_pct,0.051,-0.013,0.111,0.095
+E1 - E2(no MME),pts_pct,0.151,0.056,0.245,0.005
+E1 - 2025,excess_cash,0.315,0.127,0.492,0.002
+E1 - 2025,own_pct,0.002,-0.059,0.056,0.475
+E1 - 2025,pts_pct,0.077,-0.042,0.193,0.141
+E1(excl DU) - E2(no MME),excess_cash,0.417,0.28,0.565,0.0
+E1(excl DU) - E2(no MME),own_pct,0.064,-0.001,0.124,0.052
+E1(excl DU) - E2(no MME),pts_pct,0.159,0.068,0.257,0.002
