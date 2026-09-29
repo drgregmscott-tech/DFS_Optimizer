@@ -1,0 +1,55 @@
+{
+ "_note": "Early-season salary blend (analysis/projection_v2 task1b_week_refit.py). final = E + a + w*(S - E), S = m*salary_k + b per pos; QB/RB/WR/TE, DK classic only, after the projection stack. Weeks absent = no blend (wk3-6 absent; QB 7+ zeroed, QB recal handles QBs wk3+). Coefficients only, fit LOSO 2021-25; owner approved committing coefficients 2026-09-29 (no FC rows).",
+ "fit": "LOSO 2021-25, ridge lam=30 on w, per week x {QB, SKILL}",
+ "max_week": 18,
+ "sal_line": {
+  "QB": [
+   4.811174371987855,
+   -12.468574674590384
+  ],
+  "RB": [
+   4.319643574941265,
+   -14.146129247836551
+  ],
+  "WR": [
+   3.247992548548433,
+   -6.411385599091315
+  ],
+  "TE": [
+   3.331616596880075,
+   -5.0253526744657515
+  ]
+ },
+ "weeks": {
+  "1": {
+   "QB": {
+    "a": 0.5911709967321777,
+    "w": 1.00299522766802
+   },
+   "SKILL": {
+    "a": -0.0898777063280654,
+    "w": 0.8269074870159684
+   }
+  },
+  "2": {
+   "QB": {
+    "a": 2.742957149945775,
+    "w": 0.3648656358833227
+   },
+   "SKILL": {
+    "a": 0.2025068473960897,
+    "w": 0.2120181092100344
+   }
+  },
+  "7+": {
+   "QB": {
+    "a": 0.0,
+    "w": 0.0
+   },
+   "SKILL": {
+    "a": -0.002551267023203197,
+    "w": 0.31041665228268805
+   }
+  }
+ }
+}

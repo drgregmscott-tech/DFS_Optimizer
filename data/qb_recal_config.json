@@ -1,0 +1,12 @@
+{
+ "_note": "QB wk3+ recal (analysis/qb_depth). new = a + b*proj + c*implied_total + d*spread + e*proj_rush_pts for top QB per team with proj>=8, DK classic, weeks>=3. Coefficients only; owner approved committing coefficients 2026-09-29 (no FC rows).",
+ "gate_min_proj": 8.0,
+ "min_week": 3,
+ "coef": {
+  "a": -1.34912,
+  "b_proj": 0.26665,
+  "c_implied": 0.59095,
+  "d_spread": 0.27336,
+  "e_rush_pts": 0.41798
+ }
+}

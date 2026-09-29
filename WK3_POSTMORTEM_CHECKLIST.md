@@ -40,6 +40,11 @@ one topic pulls in four adjacent ones and the original thread gets diluted or dr
 
 ## Parking Lot (add here, don't chase inline)
 
+- **[2026-09-29] Stale reference roster (135/659 wk3 main rows fallback-matched) — check downstream impact, then refresh.**
+  From `scripts/match_fallback_report.py`. IDs are right, but reference team is stale for ~20% of the slate (Walker/KC,
+  Evans/SF, Montgomery/HOU, Kyler/MIN...). Check whether anything uses reference team instead of DK team (stack
+  candidates, DST-vs-own-player constraint, game env); then refresh the roster source.
+
 - **[2026-09-29] UI Showdown builds get zero construction-rule enforcement — own dedicated session.** Found while wiring up
   `construction_lint.py` (see the follow-up note on the construction-rule-capture item below). The `--preset showdown_se` /
   `--preset showdown_gpp` levers (require-CPT-QB, DST/K-captain exclusion, cheap-tier penalty, stack cap, QB-partner bonus,
@@ -227,6 +232,19 @@ one topic pulls in four adjacent ones and the original thread gets diluted or dr
 
 ## 0. The core question (do this first, unstructured)
 
+**VERDICT (2026-09-29, closes §0-§3; detail in `WK3_ROOT_CAUSE_FINDINGS.md` Phase 1/2 and the classic handoffs).**
+The three straight misses are not three bugs and not bad luck; they share one root: **the player-level inputs the
+optimizer trusts are miscalibrated in the same places every week, and the signal we do have isn't acted on.**
+Ranked fixable accuracy gaps: (1) **Ownership calibration** — FFC-unlisted cliff (wk3), chalk_score ranking (wk1-2), cheap
+WR/TE and cheap DST worst (corr -0.36 vs ~-0.1 elsewhere); modeled #1 QB matches the field's ~10% of the time. (2) **QB
+projection** — top-projected QBs bust repeatedly (Burrow, Herbert, C. Williams, Allen, Lamar) and our QBs price $500-900 above
+the cashing field; FC beats us at QB (MAE), while we beat FC everywhere else on active players (`analysis/model_vs_fc`, not
+committed), so **skill projection is NOT the main gap vs FC**. (3) **Selection** — strong-projection cash drivers rostered 1/18
+on SE vs 39/86 for similar non-drivers. (4) Construction is secondary: MME never built QB+2 (fixed via two-dispatch habit),
+everything else (salary left, stud count) matched the cashing field. Gaps 1 and 2 are being worked in a separate session
+(ownership refit / QB projections); this checklist does not duplicate that work. Not cause: infra bugs (§1, fixed, cost
+minutes not lineups).
+
 Third straight week missing across all 6 slates (Wk1, Wk2, Wk3), with a different surface-level culprit named each time.
 User's read: that pattern itself is suspicious — there's likely a shared root cause, not three unrelated bugs and not bad
 luck. See memory `project_wk3_common_root_cause_investigation.md`.
@@ -236,10 +254,10 @@ catching the real thread.** Start by listing every miss across all 3 weeks side 
 tries to explain any of them. Only after that list exists, look for the common thread.
 
 Needs before this can run:
-- [ ] Final box scores, all Week 3 games
-- [ ] Actual DK/FD contest ownership for all 6 slates (FC Rewind — trial ends 2026-10-02, pull this first, it's time-boxed)
-- [ ] The actual played lineups: cash x2 variants x6 slates, SE3max pick x6 slates, both MMEs
-- [ ] Hindsight-optimal lineup per slate (feed real scores into `replay_validation.py` / `analysis/classic_diag/replay_batch.py`)
+- [x] Final box scores, all Week 3 games (done; results_raw_dk_2026_wk3_*)
+- [x] Actual DK/FD contest ownership for all 6 slates (pulled before FC account closed; FC Rewind — trial ends 2026-10-02, pull this first, it's time-boxed)
+- [x] The actual played lineups: cash x2 variants x6 slates, SE3max pick x6 slates, both MMEs
+- [x] Hindsight-optimal lineup per slate (Phase 2 Step 1 chalk/hindsight baseline) (feed real scores into `replay_validation.py` / `analysis/classic_diag/replay_batch.py`)
 
 Illustrative misses flagged live today (examples, not the root cause — don't fixate on any single one):
 - Garrett Wilson under-owned/under-projected on the chalk side despite a low-variance signal (Adonai Mitchell OUT, same-team WR, clean target-share bump)
@@ -268,7 +286,10 @@ slates, not just the 3 examples above, before drawing conclusions about what's c
       player ID is correct, but this will recur for every traded player until the reference roster is refreshed, and
       nothing currently surfaces these fallback matches for pre-lock review. Fix: (1) refresh reference roster from a
       current source, (2) add a pre-lock report of all `auto_fallback_team_mismatch` rows so trades are visible.
-      Neither fix applied yet — low urgency, correctly-matched player IDs in the meantime.
+      **[DONE 2026-09-29]** (2) shipped: `scripts/match_fallback_report.py` lists every fallback/unmatched row on a salary file
+      (run before lock). First run on wk3 main: 135 of 659 rows are fallback-matched (medium/low), far more than just Pittman,
+      so the reference roster is broadly stale. (1) roster refresh still not done; whether stale team hurts anything downstream
+      (team-keyed stacks/game env) is unchecked -> Parking Lot.
 - [x] **Optimizer lineup-file overwrite race — FIXED and deployed, 2026-09-28.** Root cause: every build (UI and CLI)
       wrote `output/lineups_multi_{site}_{slate_id}.csv` on top of the per-request file, last write wins — deliberate
       "most recent batch wins" behavior for pivot sourcing that never accounted for concurrent use, confirmed to be the
@@ -397,16 +418,16 @@ is classic-only and does NOT affect the Showdown files, which are complete).
 
 - [x] Trial ends **2026-10-02** — **moot: FC account disabled 2026-09-29, no further pulls possible.** Working from the
       410-contest classic pull and 142-contest Showdown pull as final.
-- [ ] First real analysis pass: what does the actual realized field's construction look like (stack rates, salary usage,
+- [x] (answered by `HANDOFF_classic_lineupstudy_findings_2026-09-29.md` Phase 2 at scale) First real analysis pass: what does the actual realized field's construction look like (stack rates, salary usage,
       chalk concentration) versus what our simulated fields / replay assumptions have been using? This directly bears on
       the Showdown ownership refit above (simulated field is known to under-represent real correlation/stacking) and
       potentially on the classic-side construction rules too.
-- [ ] **Framing note (important, don't lose this):** the point of this analysis is NOT to study the top winning lineups
+- [x] (followed: cross-contest cash-rate traits, not top-lineup reverse engineering) **Framing note (important, don't lose this):** the point of this analysis is NOT to study the top winning lineups
       in isolation. Focus on the general/larger trend: across many contests, what do players who *consistently cash*
       have in common that players who don't cash, don't? Look for a repeatable, general pattern in player-level behavior
       (role, usage, price tier, correlation, whatever it turns out to be) rather than reverse-engineering one-off winning
       lineups that may just be variance.
-- [ ] Cross-reference against this week's actual misses once results land — does the real field's behavior explain why our
+- [x] (see §0 verdict + Phase 2 'what changes': real field explains MME template and QB price, not salary/stud count) Cross-reference against this week's actual misses once results land — does the real field's behavior explain why our
       lineups underperformed in a way the simulated-field analysis couldn't have caught?
 
 ---

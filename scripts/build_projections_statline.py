@@ -327,8 +327,8 @@ def _apply_projection_stack(df, site, season, week):
     return df
 
 
-EARLY_BLEND_CONFIG = (Path(__file__).resolve().parents[1] / "data/fc_history/derived/projection_v2"
-                      / "early_season_blend_config.json")
+# Tracked (coefficients only) so CI/Actions builds use it; was git-ignored under data/fc_history/ until 2026-09-29.
+EARLY_BLEND_CONFIG = Path(__file__).resolve().parents[1] / "data" / "early_season_blend_config.json"
 
 
 def _early_blend_week_params(cfg, week):
@@ -365,6 +365,10 @@ def _apply_early_season_blend(df, week, cfg_path=EARLY_BLEND_CONFIG):
         m &= sal.notna() & (sal > 0)
         line = pd.DataFrame({p: cfg["sal_line"][p] for p in ["QB", "RB", "WR", "TE"]}, index=["m", "b"]).T
         S = sal * pos.map(line["m"]) + pos.map(line["b"])
+        # Weeks >= 3: QBs are handled by the QB recal (_apply_qb_recal), never this blend
+        # (analysis/qb_depth/RESULTS.md B5: the "7+" QB weights lift backups ~1 -> ~6).
+        if week >= 3:
+            m &= pos != "QB"
         grp = np.where(pos == "QB", "QB", "SKILL")
         a = pd.Series([params[g]["a"] for g in grp], index=df.index)
         w = pd.Series([params[g]["w"] for g in grp], index=df.index)
@@ -381,6 +385,63 @@ def _apply_early_season_blend(df, week, cfg_path=EARLY_BLEND_CONFIG):
     except Exception as exc:  # noqa: BLE001 -- must never break a build
         df["early_blend_delta"] = 0.0
         print(f"WARNING: early-season blend failed ({type(exc).__name__}: {exc}); projections unchanged.",
+              file=sys.stderr)
+    return df
+
+
+# Tracked (coefficients only) so CI/Actions builds use it; was git-ignored under data/fc_history/ until 2026-09-29.
+QB_RECAL_CONFIG = Path(__file__).resolve().parents[1] / "data" / "qb_recal_config.json"
+
+
+def _apply_qb_recal(df, week, cfg_path=QB_RECAL_CONFIG):
+    """QB wk3+ linear recal (analysis/qb_depth/RESULTS.md, "Candidate").
+
+    Rows: QB, week >= min_week, final_projection >= gate, the team's top-projected QB,
+    implied_total > 0, over_under > 0, has a real game. new = a + b*proj + c*implied +
+    d*spread + e*rush_pts with spread = over_under/2 - implied (+ = underdog) and
+    rush_pts = 0.1*proj_rush_yd + 6*proj_rush_td. final and statline_p10/p90 shift by
+    the same delta (clip 0); engine_projection untouched; `qb_recal_delta` = applied shift.
+    Missing config / any failure = projections unchanged."""
+    df["qb_recal_delta"] = 0.0
+    try:
+        if not Path(cfg_path).exists():
+            print(f"NOTE: QB recal config not found ({cfg_path}); QB recal skipped.")
+            return df
+        cfg = json.loads(Path(cfg_path).read_text())
+        if week < int(cfg.get("min_week", 3)):
+            print(f"QB recal: week {week} < min_week {cfg.get('min_week', 3)}; unchanged.")
+            return df
+        k = cfg["coef"]
+        gate = float(cfg.get("gate_min_proj", 8.0))
+        final = pd.to_numeric(df["final_projection"], errors="coerce")
+        it = pd.to_numeric(df["implied_total"], errors="coerce")
+        ou = (pd.to_numeric(df["over_under"], errors="coerce") if "over_under" in df.columns
+              else pd.Series(np.nan, index=df.index))
+        ryd = pd.to_numeric(df["proj_rush_yd"], errors="coerce")
+        rtd = pd.to_numeric(df["proj_rush_td"], errors="coerce")
+        is_qb = (df["position"].astype(str) == "QB") & ~df["no_real_game_this_week"].fillna(False).astype(bool)
+        top = pd.Series(False, index=df.index)
+        if is_qb.any():
+            top.loc[final[is_qb].groupby(df.loc[is_qb, "team"]).idxmax().values] = True
+        m = (is_qb & top & (final >= gate) & (it > 0) & (ou > 0)
+             & ryd.notna() & rtd.notna() & final.notna())
+        spread = ou / 2.0 - it
+        rush = 0.1 * ryd + 6.0 * rtd
+        new = (k["a"] + k["b_proj"] * final + k["c_implied"] * it + k["d_spread"] * spread
+               + k["e_rush_pts"] * rush).clip(lower=0.0)
+        delta = (new - final).where(m, 0.0).fillna(0.0)
+        df["final_projection"] = df["final_projection"] + delta
+        for c in ("statline_p10", "statline_p90"):
+            df[c] = (df[c] + delta).clip(lower=0.0)
+        df["qb_recal_delta"] = delta
+        if m.any():
+            print(f"QB recal (week {week}): adjusted {int(m.sum())} top QB(s); mean delta "
+                  f"{delta[m].mean():+.2f} (range {delta[m].min():+.1f} to {delta[m].max():+.1f}).")
+        else:
+            print(f"QB recal (week {week}): no QB passed the gate; unchanged.")
+    except Exception as exc:  # noqa: BLE001 -- must never break a build
+        df["qb_recal_delta"] = 0.0
+        print(f"WARNING: QB recal failed ({type(exc).__name__}: {exc}); projections unchanged.",
               file=sys.stderr)
     return df
 
@@ -422,6 +483,8 @@ def build_statline_projections(site: str, season: int, week: int, slate_id: str,
                                ecr_blend_te: float = 0.0,
                                early_blend: bool = False,
                                early_blend_config: str = None,
+                               qb_recal: bool = False,
+                               qb_recal_config: str = None,
                                ) -> pd.DataFrame:
     """`vegas_slate_id` (Session 14.0 -- this engine never had Session
     13.5-pause's fix at all): defaults to `slate_id`. See
@@ -871,6 +934,10 @@ def build_statline_projections(site: str, season: int, week: int, slate_id: str,
     df["early_blend_delta"] = 0.0
     if early_blend and site == "dk" and not showdown:
         df = _apply_early_season_blend(df, week, early_blend_config or EARLY_BLEND_CONFIG)
+    # QB wk3+ recal (analysis/qb_depth/RESULTS.md), DK classic only, right after the blend.
+    df["qb_recal_delta"] = 0.0
+    if qb_recal and site == "dk" and not showdown:
+        df = _apply_qb_recal(df, week, qb_recal_config or QB_RECAL_CONFIG)
     df["sigma"] = df["statline_sigma"].clip(lower=0.0)
     df["sigma_source"] = "statline_mc"
 
@@ -903,7 +970,7 @@ def build_statline_projections(site: str, season: int, week: int, slate_id: str,
     skill_out = df[LEGACY_COLUMNS + AUDIT_COLUMNS +
                    ["sigma", "sigma_source", "statline_p10",
                     "statline_p90"] + PROJ_STAT_COLUMNS + ["engine_projection", "stack_delta",
-                                                               "early_blend_delta"]]
+                                                               "early_blend_delta", "qb_recal_delta"]]
 
     # --- DST (decisions #2, #3; Session 10.4) ------------------------------
     # Session 14.0 FIX: was build_dst_projections(salaries, ...). Now takes
@@ -973,6 +1040,7 @@ def build_statline_projections(site: str, season: int, week: int, slate_id: str,
     dst_out["engine_projection"] = dst_out["final_projection"]
     dst_out["stack_delta"] = 0.0
     dst_out["early_blend_delta"] = 0.0
+    dst_out["qb_recal_delta"] = 0.0
     dst_out = dst_out[skill_out.columns]
 
     # --- Kicker (Session 13.1 -- this engine never had it wired in at all)
@@ -1006,6 +1074,7 @@ def build_statline_projections(site: str, season: int, week: int, slate_id: str,
         kicker_out["engine_projection"] = kicker_out["final_projection"]
         kicker_out["stack_delta"] = 0.0
         kicker_out["early_blend_delta"] = 0.0
+        kicker_out["qb_recal_delta"] = 0.0
     kicker_out = kicker_out[skill_out.columns] if len(kicker_out) else \
         pd.DataFrame(columns=skill_out.columns)
 
@@ -1196,12 +1265,21 @@ if __name__ == "__main__":
                         help="Same for TE. Default 0.0 = OFF; evidence is weak (w<=0.3 if ever used).")
     parser.add_argument("--early-blend", dest="early_blend", action="store_true", default=True,
                         help="Salary-line blend for DK classic QB/RB/WR/TE (default ON). Weights by week from "
-                             "data/fc_history/derived/projection_v2/early_season_blend_config.json (git-ignored); "
+                             "data/early_season_blend_config.json (tracked; missing = no-op); "
                              "weeks absent from the config are unchanged. See analysis/projection_v2/RESULTS.md.")
     parser.add_argument("--no-early-blend", dest="early_blend", action="store_false",
                         help="Turn the salary-line blend off.")
     parser.add_argument("--early-blend-config", default=None,
                         help="Override the blend config path.")
+    parser.add_argument("--qb-recal", dest="qb_recal", action="store_true", default=True,
+                        help="DK classic wk3+ QB recal (default ON): top-projected QB per team with proj>=8 -> "
+                             "a + b*proj + c*implied + d*spread + e*rush_pts. Coefficients from "
+                             "data/qb_recal_config.json (tracked; "
+                             "missing = no-op). See analysis/qb_depth/RESULTS.md.")
+    parser.add_argument("--no-qb-recal", dest="qb_recal", action="store_false",
+                        help="Turn the QB recal off.")
+    parser.add_argument("--qb-recal-config", default=None,
+                        help="Override the QB recal config path.")
     parser.add_argument("--reconcile-threshold", type=float,
                         default=statline_model.RECONCILE_FAIL_THRESHOLD,
                         help="Max proportional share-reconciliation rescale before "
@@ -1230,7 +1308,9 @@ if __name__ == "__main__":
         ecr_blend_rb=args.ecr_blend_rb,
         ecr_blend_te=args.ecr_blend_te,
         early_blend=args.early_blend,
-        early_blend_config=args.early_blend_config)
+        early_blend_config=args.early_blend_config,
+        qb_recal=args.qb_recal,
+        qb_recal_config=args.qb_recal_config)
 
     def _clean_site_id(value):
         if pd.isna(value):
