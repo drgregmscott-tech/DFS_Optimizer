@@ -202,6 +202,20 @@ one topic pulls in four adjacent ones and the original thread gets diluted or dr
   whether this is a distinct thread from or the same thread as §0's "three straight weeks missing"
   investigation — don't assume either way without looking.
 
+- **[2026-09-29] Ownership accuracy metrics + FC `proj_own` as a public-feed proxy — after the Wk3 refit.** From
+  `HANDOFF_classic_prelock_ownership_retest_2026-09-29.md`. (a) Baselines to track after the refit: our modeled #1 QB
+  matches the field's #1 QB in ~10% of contests; quality-lineup corr with realized is 0.33 (all-lineup 0.42). The edge
+  mostly returns at ~0.6-0.7 quality-lineup corr. (b) FC's own `proj_own` (2022-23 only, 195 contests, absent 2024+) has
+  lineup corr 0.79-0.86 and an edge >= realized. Timing check done 2026-09-29: in a 45-file sample, 1,051 players with a
+  final `FC_proj` of 0 (out or scratched) still carry `proj_own` averaging 2.3% vs 0.3% realized, so it was frozen before
+  late news and is NOT a copy of realized ownership. The earlier "late/leaky" read was too strong; treat it as a plausible
+  genuine pre-news projection, exact stamp time unknown. Follow-up: measure FFC's (and other public feeds') lineup corr on
+  2026 slates as they accrue. If a public feed reaches ~0.6+ quality-lineup corr, the chalk-tilt gate reopens.
+
+- **[2026-09-29] Our projection vs FC's at lineup level — belongs to the projections push.** The classic pre-lock re-test
+  found our projection beats FC's at lineup level (+0.06 to +0.10 capped return per SD, 4/4 seasons in quality lineups).
+  Unverified beyond that script; verify and fold into the projections accuracy push, not ownership.
+
 ---
 
 ## 0. The core question (do this first, unstructured)
