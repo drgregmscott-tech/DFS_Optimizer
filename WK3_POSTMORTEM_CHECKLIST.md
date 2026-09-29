@@ -275,17 +275,37 @@ tracked explicitly rather than left implicit:
 
 ---
 
-## 3. FC Lineup Study extraction — pulled 2026-09-26; SHOWDOWN analyzed 2026-09-28, CLASSIC still not analyzed
+## 3. FC Lineup Study extraction — pulled 2026-09-26; SHOWDOWN analyzed 2026-09-28, CLASSIC analyzed 2026-09-29
 
 37.1M lineups across 2022-2026 (648 files, ~800MB) sitting in `data/fc_history/lineup_study/`, extracted 2026-09-26.
 
 - [x] **Showdown slice (142 of 648 files, 14.9M entries): analyzed 2026-09-28.** See §2 above for the full writeup and what
       shipped to the optimizer. Do NOT read this as "the Lineup Study is done" — it's one contest format out of several.
-- [ ] **Classic slice (the remaining ~506 files, ~22M+ entries — SE/3-max/20-max/double-up, all the formats gmscott81
+- [x] **Classic slice (the remaining ~506 files, ~22M+ entries — SE/3-max/20-max/double-up, all the formats gmscott81
       actually plays most weeks): still completely unanalyzed.** This is still the single biggest untouched data asset in
       this whole postmortem. Same real-lineup advantage applies here as it did for Showdown: real ranks/scores/payouts,
       not the simulated fields the classic Phase 1/2 analysis (§0/§1) had to rely on for its construction-level questions.
       This deserves its own dedicated session, not a tack-on to whatever else is running.
+      **[RESOLVED / ANALYZED 2026-09-29]** See `HANDOFF_classic_lineupstudy_findings_2026-09-29.md`. The pull has 431 classic
+      files. 410 were analysed (21.9M entries): SE 140, 3MAX 66, 20MAX 139, DU 65. 5 were dropped as truncated by the row cap
+      and 16 for having under 1k entries. FC per-player scores are exact on classic, so no re-solve was needed except on 6 files.
+      Headline: higher realized ownership predicts cash rate and capped return after an FC-projection control, among
+      ≤$500-left / top-40%-projection lineups, in every GPP format and 4/4 seasons. Among SE quality lineups, the most-owned fifth
+      returned 1.20x [1.11,1.28] and the least-owned 0.80x. Uncapped, the top fifth was flat (1.04x).
+      At player level, ownership predicts points beyond FC projection and salary at every position (+1.1 to +2.8 pts per SD, 4/4).
+      Phase 2 at scale:
+      - Hindsight chalk benchmark: confirmed.
+      - QB+2: confirmed, mainly on return (1.10-1.14x), but at about 1/3 of the claimed cash lift. QB+3 is not a further gain.
+      - "0 punts bad": confirmed.
+      - Salary use: confirmed.
+      - "Cheap QB cashes": contradicted. It is null after a projection control. The #1-owned QB is the real signal (+5 cash).
+      - "More punts / more studs": contradicted.
+      - TE FLEX as a cashing trait: contradicted. RB FLEX is best.
+      New Supported checks: DST not facing own players; DST $2.8-3.1k over $3.6k+.
+      gmscott81's own entries show a regime change. 2022-24 cashed ~63% at the 85th ownership percentile; 2025-26 cashed at base
+      at the 54th (small n, directional).
+      Nothing shipped. The chalk result uses post-lock ownership and needs a pre-lock re-test before any tilt.
+      **Data gap: 2026 has only wk1-2 classic, so wk3 is missing. Pull it before the 10/02 trial end.**
 
 See memory `reference_fc_lineup_study_extraction.md` for extraction mechanics and known gaps (a few big 20-max contests
 only partially captured; SE_big missing a couple weeks — confirmed in the Showdown analysis that the ~25k-row cap issue
