@@ -209,6 +209,15 @@ async function handleDispatch(url, env) {
   if (!validSite(site) || !validSlateId(slateId)) {
     return json({ error: "site must be dk/fd and slate_id must be 1-64 alphanumeric/hyphen/underscore chars." }, 400);
   }
+  // WK3 postmortem §1 -- anonymous per-browser identity, folded into the
+  // slate-keyed output filename downstream (optimizer.py) so concurrent
+  // builds from different browsers don't overwrite each other's
+  // lineups_multi_{site}_{slate_id}.csv. Same validation shape as slate_id
+  // (this becomes part of a filename, not just a payload field) --
+  // clients not sending one (old cached page, curl, etc.) fall back to
+  // "shared" so dispatch never fails outright over a missing id.
+  const clientIdRaw = url.searchParams.get("client_id");
+  const client_id = clientIdRaw && /^[A-Za-z0-9_-]{1,64}$/.test(clientIdRaw) ? clientIdRaw : "shared";
   if (!env.GH_DISPATCH_TOKEN || !env.GITHUB_OWNER || !env.GITHUB_REPO) {
     return json(
       { error: "Worker is missing required secrets/env vars (GH_DISPATCH_TOKEN, GITHUB_OWNER, GITHUB_REPO) -- see this file's setup header." },
@@ -286,13 +295,26 @@ async function handleDispatch(url, env) {
     // frontend should not send these on a Showdown-loaded pool the same
     // way it already omits stack_mode/etc. there.
     "dart_exposure_cap", "dart_floor_threshold",
+    // WK3 postmortem §2 parking-lot #2 (2026-09-29) -- Showdown construction
+    // rules (optimizer.py's --sd-* flags). Before this the UI never sent
+    // them, so UI Showdown builds ran with zero rules. "sd_require_cpt_qb"
+    // is a boolean (present/"true" = on); "sd_cheap_tier_range" is a
+    // "LOW:HIGH" FLEX-salary band; "sd_exclude_cpt_positions" is a comma-
+    // separated position list (e.g. "DST"); "sd_stack_cap" is an int; the
+    // rest are plain float penalties/bonuses. Values come from the
+    // showdown_se / showdown_gpp bundles in data/optimizer_presets.json.
+    // Showdown only -- the frontend omits all of these on classic pools.
+    "sd_require_cpt_qb", "sd_cheap_tier_penalty", "sd_cheap_tier_range",
+    "sd_stack_cap", "sd_stack_cap_penalty", "sd_qb_partner_bonus",
+    "sd_exclude_cpt_positions", "sd_k_cpt_penalty",
+    "sd_heavy_side_cpt_penalty",
   ];
   const params = {};
   for (const key of passthroughKeys) {
     const v = url.searchParams.get(key);
     if (v !== null && v !== "") params[key] = v;
   }
-  const client_payload = { request_id, site, slate_id: slateId, params };
+  const client_payload = { request_id, site, slate_id: slateId, client_id, params };
 
   const dispatchUrl = `https://api.github.com/repos/${env.GITHUB_OWNER}/${env.GITHUB_REPO}/dispatches`;
   const ghResponse = await fetch(dispatchUrl, {

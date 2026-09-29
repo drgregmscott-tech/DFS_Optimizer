@@ -1640,6 +1640,49 @@ in this browser's localStorage.</p>
           </div>
           <div class="hint" style="margin-top:4px">Ad Hoc Session A6: any non-DST player whose simulated 10th-percentile outcome (statline_p10) falls below the Floor Threshold is a "dart" -- capped at Cap % of this batch's lineups, unless he's on this batch's own stack team (that correlation is the trade you're paying for, not accidental dead-money risk). DST is always exempt -- every DST's floor simulates as a flat 0 regardless of matchup, so this filter can't tell a good matchup from a bad one there; use the DST's own opponent implied total for that instead. Real example that motivated this: a $3,000 min-salary WR with statline_p10 = 0.07 (basically a coin flip on scoring anything) was showing up in 20% of a real 20-lineup MME batch purely for being the cheapest legal filler. Not a backtested/swept value like Lambda above -- a heuristic guard against that specific failure mode (see ROADMAP.md Ad Hoc Session A6). Classic slates only; needs the same --sigma-recalibration build as Lambda.</div>
         </div>
+        <!-- WK3 postmortem §2 parking-lot #2 (2026-09-29) -- Showdown construction rules. Defaults below = data/optimizer_presets.json's showdown_se bundle; always sent on a Showdown pool. -->
+        <div id="wrapSdRulesField" style="grid-column:1/-1; display:none;">
+          <span class="field-label">Showdown Construction Rules</span>
+          <label class="checkbox-row" style="margin-top:0;cursor:pointer;">
+            <input type="checkbox" id="ctrlSdRequireCptQb" checked>
+            Require CPT QB (a WR/TE captain must have his own QB in FLEX)
+          </label>
+          <div style="display:grid; margin-top:8px; grid-template-columns:1fr 1fr; gap:12px;">
+            <div>
+              <span class="field-label">Cheap-tier penalty</span>
+              <input type="number" id="ctrlSdCheapTierPenalty" min="0" step="0.25" value="1.0">
+            </div>
+            <div>
+              <span class="field-label">Cheap-tier range</span>
+              <input type="text" id="ctrlSdCheapTierRange" value="600:1000" placeholder="LOW:HIGH">
+            </div>
+            <div>
+              <span class="field-label">Stack cap</span>
+              <input type="number" id="ctrlSdStackCap" min="0" max="5" step="1" value="2" placeholder="blank = no cap">
+            </div>
+            <div>
+              <span class="field-label">Stack cap penalty</span>
+              <input type="number" id="ctrlSdStackCapPenalty" min="0" step="0.25" value="0.75">
+            </div>
+            <div>
+              <span class="field-label">QB-partner bonus</span>
+              <input type="number" id="ctrlSdQbPartnerBonus" min="0" step="0.25" value="0.75">
+            </div>
+            <div>
+              <span class="field-label">Exclude CPT positions</span>
+              <input type="text" id="ctrlSdExcludeCptPositions" value="DST" placeholder="e.g. DST">
+            </div>
+            <div>
+              <span class="field-label">K-CPT penalty</span>
+              <input type="number" id="ctrlSdKCptPenalty" min="0" step="0.25" value="1.0">
+            </div>
+            <div>
+              <span class="field-label">Heavy-side-CPT penalty</span>
+              <input type="number" id="ctrlSdHeavySideCptPenalty" min="0" step="0.25" value="0.5">
+            </div>
+          </div>
+          <div class="hint" style="margin-top:4px">Showdown only. Defaults are the "Showdown SE" bundle; load the "Showdown GPP" preset for the GPP version (bigger cheap-tier/K-CPT penalties, bigger QB-partner bonus). Calibrated on 142 real DK Showdown contests -- see data/optimizer_presets.json and SHOWDOWN_RULES.md. Penalties/bonuses are projected points; 0 turns a rule off. Cheap-tier = FLEX salaries in the range (the $600-1k band underperforms a real punt). Stack cap = same-team FLEX beyond this many (relative to the captain's team) get the cap penalty.</div>
+        </div>
       </div>
 
       <!-- Session 17, decision #56 -->
@@ -2028,6 +2071,33 @@ in this browser's localStorage.</p>
   // localStorage AND the cloud (fixing the "X button re-appears" bug).
 
   function cap(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
+
+  // Anonymous per-browser identity (WK3 postmortem §1, lineup-file
+  // overwrite race). Multiple people share this one deployed UI/token with
+  // no login concept; concurrent "Build Lineups" runs on the same slate
+  // used to clobber each other's output/lineups_multi_{site}_{slate_id}.csv
+  // (last write wins). Rather than adding a name field, generate a random
+  // id once per browser and remember it in localStorage -- no typing,
+  // nothing to coordinate, stable per device. Sent as client_id on every
+  // dispatch; optimizer.py folds it into the slate-keyed output filename
+  // so simultaneous builds from different browsers land in different files.
+  var CLIENT_ID_KEY = "dfs_client_id_v1";
+  function getClientId() {
+    try {
+      var id = localStorage.getItem(CLIENT_ID_KEY);
+      if (!id) {
+        id = (window.crypto && crypto.randomUUID) ? crypto.randomUUID()
+          : "c" + Date.now().toString(36) + Math.random().toString(36).slice(2);
+        localStorage.setItem(CLIENT_ID_KEY, id);
+      }
+      return id;
+    } catch (e) {
+      // localStorage unavailable (private window, blocked storage) -- fall
+      // back to a per-page-load id. Loses cross-click stability but still
+      // prevents this build from colliding with anyone else's concurrent one.
+      return "c" + Date.now().toString(36) + Math.random().toString(36).slice(2);
+    }
+  }
 
   // Storage key: site + slateId (arbitrary string, validated server-side).
   function slateKey(site, slateId) { return "dfs_slate_v2_" + site + "_" + slateId; }
@@ -3231,7 +3301,11 @@ in this browser's localStorage.</p>
     // Ad Hoc Session A3 -- mean-variance objective coefficient (--lambda).
     "ctrlLambda",
     // Ad Hoc Session A6 -- Dart Exposure Cap.
-    "ctrlDartExposureEnabled", "ctrlDartExposureCap", "ctrlDartFloorThreshold"
+    "ctrlDartExposureEnabled", "ctrlDartExposureCap", "ctrlDartFloorThreshold",
+    // WK3 postmortem §2 parking-lot #2 (2026-09-29) -- Showdown construction rules.
+    "ctrlSdRequireCptQb", "ctrlSdCheapTierPenalty", "ctrlSdCheapTierRange",
+    "ctrlSdStackCap", "ctrlSdStackCapPenalty", "ctrlSdQbPartnerBonus",
+    "ctrlSdExcludeCptPositions", "ctrlSdKCptPenalty", "ctrlSdHeavySideCptPenalty"
   ];
 
   function readPresetValues() {
@@ -3271,7 +3345,8 @@ in this browser's localStorage.</p>
   // loses ~5 lineup pts vs 0 in all 6 seasons (sigma is ~97% collinear with the mean, so it mostly penalises
   // studs); the original 2018-21 sweep was 'suggestive, not conclusive'. See HANDOFF_fc_history_ownership_findings_2026-09-26.md.
   // MME stays at -0.005. Saved cloud presets are separate and must be edited by hand.
-  var BUILTIN_PRESET_NAMES = ["Cash", "SE / 3-Max GPP", "SE3Max Pool (100)", "MME GPP (20-150)"];
+  var BUILTIN_PRESET_NAMES = ["Cash", "SE / 3-Max GPP", "SE3Max Pool (100)", "MME GPP (20-150)",
+    "Showdown SE", "Showdown GPP"];
   var BUILTIN_PRESETS = {
     "Cash": {
       ctrlNLineups: "3", ctrlMaxExposure: "100", ctrlUniqueness: "0",
@@ -3305,6 +3380,22 @@ in this browser's localStorage.</p>
       // comment: 1-3 lineups don't have meaningful "exposure" to spread a
       // dart across in the first place.
       ctrlDartExposureEnabled: true, ctrlDartExposureCap: "10", ctrlDartFloorThreshold: "1.0"
+    },
+    // WK3 postmortem §2 parking-lot #2 (2026-09-29) -- Showdown construction
+    // rules only (every other control is left as-is). Values match
+    // data/optimizer_presets.json's showdown_se/showdown_gpp bundles exactly
+    // (kept in sync by hand, same as the presets above). "Showdown SE" is
+    // also the controls' own HTML default, so a Showdown build that never
+    // touches this dropdown still gets the SE rules.
+    "Showdown SE": {
+      ctrlSdRequireCptQb: true, ctrlSdCheapTierPenalty: "1.0", ctrlSdCheapTierRange: "600:1000",
+      ctrlSdStackCap: "2", ctrlSdStackCapPenalty: "0.75", ctrlSdQbPartnerBonus: "0.75",
+      ctrlSdExcludeCptPositions: "DST", ctrlSdKCptPenalty: "1.0", ctrlSdHeavySideCptPenalty: "0.5"
+    },
+    "Showdown GPP": {
+      ctrlSdRequireCptQb: true, ctrlSdCheapTierPenalty: "2.0", ctrlSdCheapTierRange: "600:1000",
+      ctrlSdStackCap: "2", ctrlSdStackCapPenalty: "0.75", ctrlSdQbPartnerBonus: "1.5",
+      ctrlSdExcludeCptPositions: "DST", ctrlSdKCptPenalty: "1.5", ctrlSdHeavySideCptPenalty: "0.5"
     }
   };
 
@@ -4127,6 +4218,9 @@ in this browser's localStorage.</p>
     });
     var minTeamEl = document.getElementById("wrapMinTeamPlayersField");
     if (minTeamEl) minTeamEl.style.display = isShowdown ? "" : "none";
+    // WK3 postmortem §2 parking-lot #2 (2026-09-29) -- Showdown-only rules.
+    var sdRulesEl = document.getElementById("wrapSdRulesField");
+    if (sdRulesEl) sdRulesEl.style.display = isShowdown ? "" : "none";
 
     var stackMode = document.getElementById("ctrlStackMode").value;
     var showStack = !isShowdown && stackMode !== "none";
@@ -4560,7 +4654,7 @@ in this browser's localStorage.</p>
     // no lookup or fallback needed.
     var selVal = document.getElementById("slateSelect").value || "";
     var slateId = selVal.split("|").slice(1).join("|") || "";
-    var params = { site: site, slate_id: slateId, mode: "multi" };
+    var params = { site: site, slate_id: slateId, mode: "multi", client_id: getClientId() };
 
     // Session 13.5 -- explicit rather than left to optimizer.py's own
     // "auto" default: this UI already knows (from the loaded pool's
@@ -4744,6 +4838,30 @@ in this browser's localStorage.</p>
       var dartFloor = parseFloat(document.getElementById("ctrlDartFloorThreshold").value);
       if (!isNaN(dartCapPct)) params.dart_exposure_cap = String(dartCapPct / 100);
       if (!isNaN(dartFloor)) params.dart_floor_threshold = String(dartFloor);
+    }
+
+    // WK3 postmortem §2 parking-lot #2 (2026-09-29) -- Showdown construction
+    // rules. Before this, UI Showdown builds sent none of these, so every
+    // one ran with zero rules (not even DST-can't-be-CPT). Now always sent
+    // on a Showdown pool -- the controls default to the showdown_se bundle,
+    // so nothing is silently dropped even if no preset is ever loaded. An
+    // explicit 0 is sent (not omitted) so "off" is visible in the request.
+    if (isShowdown) {
+      if (document.getElementById("ctrlSdRequireCptQb").checked) params.sd_require_cpt_qb = "true";
+      [["ctrlSdCheapTierPenalty", "sd_cheap_tier_penalty"],
+       ["ctrlSdStackCapPenalty", "sd_stack_cap_penalty"],
+       ["ctrlSdQbPartnerBonus", "sd_qb_partner_bonus"],
+       ["ctrlSdKCptPenalty", "sd_k_cpt_penalty"],
+       ["ctrlSdHeavySideCptPenalty", "sd_heavy_side_cpt_penalty"]].forEach(function (pair) {
+        var v = parseFloat(document.getElementById(pair[0]).value);
+        if (!isNaN(v)) params[pair[1]] = String(v);
+      });
+      var sdStackCap = parseInt(document.getElementById("ctrlSdStackCap").value, 10);
+      if (!isNaN(sdStackCap)) params.sd_stack_cap = String(sdStackCap);
+      var sdCheapRange = document.getElementById("ctrlSdCheapTierRange").value.trim();
+      if (sdCheapRange) params.sd_cheap_tier_range = sdCheapRange;
+      var sdExcludeCpt = document.getElementById("ctrlSdExcludeCptPositions").value.trim().toUpperCase();
+      if (sdExcludeCpt) params.sd_exclude_cpt_positions = sdExcludeCpt;
     }
 
     return params;

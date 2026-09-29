@@ -168,6 +168,22 @@ jobs:
           # sending this errors loudly there, not silently here).
           args += flag("--min-team-players", "min_team_players")
 
+          # WK3 postmortem §2 parking-lot #2 (2026-09-29) -- Showdown
+          # construction rules. Before this, UI builds never sent these, so
+          # every UI Showdown lineup ran with zero rules (not even DST-can't-
+          # be-CPT). The frontend always sends the showdown_se bundle (or
+          # showdown_gpp if that preset is loaded) for Showdown pools and
+          # never for classic. Values mirror data/optimizer_presets.json.
+          args += bool_flag("--sd-require-cpt-qb", "sd_require_cpt_qb")
+          args += flag("--sd-cheap-tier-penalty", "sd_cheap_tier_penalty", float)
+          args += flag("--sd-cheap-tier-range", "sd_cheap_tier_range")
+          args += flag("--sd-stack-cap", "sd_stack_cap", int)
+          args += flag("--sd-stack-cap-penalty", "sd_stack_cap_penalty", float)
+          args += flag("--sd-qb-partner-bonus", "sd_qb_partner_bonus", float)
+          args += flag("--sd-exclude-cpt-positions", "sd_exclude_cpt_positions")
+          args += flag("--sd-k-cpt-penalty", "sd_k_cpt_penalty", float)
+          args += flag("--sd-heavy-side-cpt-penalty", "sd_heavy_side_cpt_penalty", float)
+
           # Session 16 -- decisions #48-55. Same "omit means optimizer.py's
           # own default (no override)" convention as every other optional
           # field above. --player-exposure arrives as a comma-separated
