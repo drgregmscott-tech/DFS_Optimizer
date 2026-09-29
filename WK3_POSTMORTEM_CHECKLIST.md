@@ -185,6 +185,12 @@ one topic pulls in four adjacent ones and the original thread gets diluted or dr
   the FC account disable does not block it. Needs: rebuild §4's headline test substituting our pre-lock
   modeled ownership for realized ownership, same methodology, before any chalk/ownership-based
   construction lever for classic can be considered for shipping.
+  **[RESOLVED / ANALYZED 2026-09-29]** See `HANDOFF_classic_prelock_ownership_retest_2026-09-29.md`. 404 of 410 contests
+  matched a main-slate replay. Unlike Showdown, about half the chalk edge survives with our modeled ownership (SE quality
+  Q5-Q1 capped-return gap +0.21 vs +0.40 realized), but our lineup-level corr with realized is only 0.42 and the
+  ownership is mostly our own projection re-encoded. Beyond our projection it adds +0.08 capped return per SD: Weak. Chalk QB
+  (modeled #1 matches field #1 only ~10%): Not supported. **Verdict: no classic chalk lever shippable; keep lambda 0.**
+  Track-2: a modeled-ownership tiebreak among near-equal-projection lineups; the edge returns at lineup corr ~0.6-0.7.
 
 - **[2026-09-29] gmscott81 2022-24 vs 2025-26 chalk-exposure regime change — own session, possibly
   connects to §0.** `HANDOFF_classic_lineupstudy_findings_2026-09-29.md` TL;DR and §7 found gmscott81's
