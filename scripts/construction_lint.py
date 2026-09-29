@@ -9,7 +9,11 @@ time. Design and rule-by-rule rationale: WK3_CONSTRUCTION_RULE_AUDIT.md §4.
 
 Each flag carries a severity:
   backstop - rule is already enforced by a preset/flag; firing means the
-             build did not use that preset (or a lock/override beat it)
+             build did not use that preset (or a lock/override beat it; for
+             a SOFT term, the projection edge can also legitimately win)
+
+Since 2026-09-29 optimizer.py runs this automatically after every build
+(_run_construction_lint) and writes a <lineup file>.lint.txt sidecar.
   warn     - Supported-or-close evidence, not enforced; look before lock
   info     - Weak / context-dependent / preference; a prompt, not a verdict
 
@@ -100,11 +104,14 @@ def lint_showdown(lu, pool, contest):
         nk = int((g["position"] == "K").sum())
         if nk > 1:
             _flag(out, lid, "SD5_two_kickers", "info", "Weak (CI spans 0)", f"{nk} kickers")
-        # Rule 7: 4-2 with captain's team heavy
+        # Rule 7: captain's team heavy (4-2 or 5-1). Soft-enforced since 2026-09-29 by
+        # --sd-heavy-side-cpt-penalty (showdown_se/_gpp), so this is a backstop; being
+        # soft, it can still fire on preset builds when the projection edge wins.
         counts = g["team"].value_counts()
-        if len(counts) == 2 and sorted(counts.tolist()) == [2, 4] and counts.idxmax() == cteam:
-            _flag(out, lid, "SD7_split_cpt_heavy", "warn", "Supported (mild, -1.2 to -1.6 cash)",
-                  f"4-2 split with captain's team ({cteam}) on the heavy side")
+        n_cpt_team = int(counts.get(cteam, 0))
+        if n_cpt_team >= 4:
+            _flag(out, lid, "SD7_split_cpt_heavy", "backstop", "Supported (mild, -1.2 to -1.6 cash)",
+                  f"{n_cpt_team}-{len(g) - n_cpt_team} split with captain's team ({cteam}) on the heavy side")
         # Rule 6: expensive DST
         d = g[g["position"] == "DST"]
         if not d.empty and dsts is not None and len(dsts) >= 2:
@@ -174,6 +181,8 @@ def main(argv=None):
     a = ap.parse_args(argv)
 
     lu = pd.read_csv(a.lineups)
+    if "lineup_id" not in lu.columns:  # lineup_single_*.csv has one lineup, no id column
+        lu["lineup_id"] = 1
     pool_path = a.pool or _guess_pool(a.lineups)
     pool = pd.read_csv(pool_path) if pool_path and os.path.exists(pool_path) else None
     is_sd = (lu["roster_slot"].astype(str).str.upper() == "CPT").any()

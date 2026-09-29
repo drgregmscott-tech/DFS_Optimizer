@@ -185,3 +185,59 @@ Don't merge the two workstreams. Build one reporting surface that covers both.
   fails Q1. That keeps "informational-only" from coming back as a resting state.
 - Rules not covered by the lint: TE-in-FLEX, "proj <= 7" filter, afternoon-FLEX (rationale not written yet), DST
   ownership tier, and game targeting. These are either UI settings or not checkable yet.
+
+---
+
+## 5. Follow-up session (2026-09-29): what was actually done
+
+Uncommitted, left for review. Appended; nothing above was edited.
+
+**5a. `SHOWDOWN_RULES.md` "What's live" rewritten.** I re-derived it from `data/optimizer_presets.json` and the numbered rules. The old
+text had two wrong rule numbers, not one. It called require-CPT-QB "rule 1" (it is 13) and the cheap-tier penalty "rule 6" (it is 12).
+It also listed rule 12 and the K part of rule 3 as informational. The "Optimizer enforcement" section was also missing the
+`sd-exclude-cpt-positions`/`sd-k-cpt-penalty` pair (now item 7). The "Not yet in the optimizer" paragraph still listed
+`--no-cpt-positions K,DST` as unbuilt. Both are fixed.
+
+**5b. Rule 7 is now a soft term: `--sd-heavy-side-cpt-penalty`** (`solve_showdown_lineup()`, 0.5 in both Showdown presets). It fires once
+when the captain's team holds 4+ of the 6 spots (4-2 or 5-1). One thing this audit missed: `sd-stack-cap 2`/`0.75` is not gated on QB
+captains. It already charges a CPT-heavy 4-2 0.75 for every captain position, so rule 7 was partly enforced before this change. That is
+why the new weight is only 0.5: the combined charge is 1.25, the bottom of the -1.2 to -1.6 range. Check on 3 real DK Showdown pools
+(40 lineups, showdown_gpp settings, seed 7), CPT-heavy 4-2 + 5-1 count at weight 0 → 0.5 → 100: NYG@LAR 22 → 10 → 0, ATL@GB 11 → 8 →
+0, IND@KC 15 → 12 → 0. Mean lineup projection moved by less than 1 pt in either direction. The mechanism works, and at 0.5 it nudges
+rather than forbids.
+
+**5c. Classic skill-vs-own-DST: NOT changed. It stays hard.** I investigated the wk2 Panthers case directly:
+- What happened (`WK2_POSTMORTEM.md:102`, wk2 main SE3max entry): the user locked Bijan Robinson (ATL, opponent CAR). Decision #56
+  then removed the Panthers DST (CAR vs ATL, $2,700, 9.98 proj, cheapest-top DST; it scored 26). The entry used the 49ers DST.
+  It was not an `auto_fallback_team_mismatch` data bug; the constraint really fired. Our MME entries without Bijan did roster Panthers.
+- Counterfactual on the real wk2 main pool (Bijan locked, lambda 0, no stack): with the exclusion the best lineup projects 114.55
+  (Buccaneers DST); without it, 115.34 (Panthers). **The hard constraint cost 0.79 projected points** at decision time. Any soft
+  penalty at or above ~0.8 pts would have made the same call. So "soft instead of hard" would not have saved this lineup unless the
+  penalty were near zero.
+- The evidence is not "design decision only," as §1b said. `WK2_POSTMORTEM.md:77` measured corr(own skill total, opposing DST) =
+  -0.44 over 4,126 team-games (2014-21). Our projections are not jointly modeled, so the ILP's projection sum overstates the pair.
+  The outcome fits that correlation: Bijan scored 11.1 (bust) in the same game where CAR DST scored 26. The 26 is hindsight on one
+  outcome.
+- The "exception the optimizer can't see" was a user lock. The optimizer can see locks, and `--allow-skill-vs-opp-dst` (UI checkbox)
+  already covers a deliberate override.
+- Verdict under §2: Q2 = Supported (large-n correlation), Q3 = a cheap false positive (<1 pt here) with a visible override. That
+  scores **hard**, so §2's "soft" call on this row was based on a misread of the case. The real lesson from wk2 is about the Bijan
+  lock, not the constraint.
+
+**5d. The lint is wired into every build, informational only.** `optimizer.py` has a new `_run_construction_lint()`, called right
+after each of the 4 lineup-CSV writes in `main()` (classic/Showdown × multi/single). That covers CLI and UI (dispatch runs
+`optimizer.py`). It prints the summary to the build log and writes a `<lineup csv stem>.lint.txt` sidecar. All exceptions, including
+argparse's `SystemExit`, are swallowed into a one-line stderr NOTE. It never changes lineups or the exit code. The UI poller only
+fetches `<request_id>.csv` / `.error.txt`, so the sidecar can't be mistaken for a result. The workflow YAML is untouched. For UI
+Showdown builds the sidecar lands in `output/ui_requests/` and gets committed with the result; for UI classic builds it isn't
+committed, but it shows in the Actions log. Contest type for the SD8 check comes from `--preset`, or else n<=3 → se. The lint
+itself got a `lineup_id` fallback for single-lineup CSVs, and SD7 now flags 5-1 as well and is a backstop. Tested with real CLI
+builds (showdown_gpp on NYG@LAR, se3max_pool and cash on wk3 main), a single-lineup Showdown solve, and a forced lint failure. Exit 0
+every time. Test output files were deleted.
+
+**5e. New finding, not fixed (parking lot):** `run_optimizer_dispatch.yml` passes no `--preset` and no `--sd-*` flag, and the frontend
+has no Showdown-rule controls. **Every UI Showdown build runs with all the sd-* rules off**: no require-CPT-QB, no DST-captain ban,
+none of the soft terms. They only apply to CLI builds. Now that the lint runs, UI Showdown builds will show this as backstop flags.
+Fixing it means a frontend + worker + workflow change, and that is its own session.
+
+**5f. Not touched:** the classic signal-legibility / 4d gap (out of scope by design).

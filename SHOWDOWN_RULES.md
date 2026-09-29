@@ -13,12 +13,12 @@ maximum-entropy field, which under-represents correlated stacks, so treat constr
 This is the strongest evidence in this file; it directly replaces the simulated-field construction conclusions above where they conflict.
 Details: `HANDOFF_showdown_lineupstudy_findings_2026-09-28.md` (real-field cash lift/return, rule-by-rule verdicts) and
 `HANDOFF_showdown_construction_detail_2026-09-28.md` (captain/partner position pairing, stack depth, punt-price granularity, split-side detail,
-plus the projection-controlled re-check of the QB-partner finding and the pre-lock-ownership re-test of the chalk-tilt finding). **Five of these
-findings are now live in the optimizer**, not just documented — see "Optimizer enforcement" below.
+plus the projection-controlled re-check of the QB-partner finding and the pre-lock-ownership re-test of the chalk-tilt finding). **Several of these
+findings are now live in the optimizer** (via the `showdown_se`/`showdown_gpp` presets), not just documented — see "Optimizer enforcement" below.
 
 ## Optimizer enforcement (2026-09-28)
 
-Five real-field-Supported construction rules are wired into `solve_showdown_lineup()` as actual ILP constraints/objective terms (`--sd-*` flags,
+Five real-field-Supported construction rules (items 1-5; items 6-7 were added 2026-09-29) are wired into `solve_showdown_lineup()` as actual ILP constraints/objective terms (`--sd-*` flags,
 see their `--help` text and the docstring on `solve_showdown_lineup()` for the exact mechanism), bundled into two new presets so building a
 lineup doesn't require remembering five separate flags: **`--preset showdown_se`** (Huddle/single-entry) and **`--preset showdown_gpp`**
 (150-max big-field GPP / MME). The split exists because several of these differ in strength between the two contest types — averaging them
@@ -41,6 +41,18 @@ values and their evidence basis.
    for that hindsight ownership collapsed it to noise (+0.08, CI crosses 0) — our Showdown ownership model only correlates 0.56 with what the
    real field does, so it mostly just re-encodes projection rather than capturing what the crowd knows. This is a genuinely dead end until the
    ownership model itself improves, not an unvalidated-but-promising idea sitting on a shelf.
+6. **`--sd-heavy-side-cpt-penalty` (soft, added 2026-09-29, 0.5 in both presets) — rule 7.** A flat penalty, applied once, when the captain's
+   own team holds 4+ of the 6 roster spots (4-2 or 5-1 with the CPT on the heavy side). 5-1 is included so the term can't push the solver
+   from 4-2 into a more lopsided 5-1. The weight is deliberately small because `--sd-stack-cap 2`/`0.75` already charges a CPT-heavy 4-2
+   one unit (3 same-team FLEX = 1 over the cap) for every captain position, not just QB: combined charge 0.75 + 0.5 = 1.25, the bottom of
+   rule 7's -1.2 to -1.6 range. Added because `WK3_CONSTRUCTION_RULE_AUDIT.md` §2's tiering rule marked rule 7 soft-term eligible.
+7. **`--sd-exclude-cpt-positions DST` (hard) and `--sd-k-cpt-penalty` (soft; 1.0 SE, 1.5 GPP), added 2026-09-29 — rule 3.** A 100-lineup
+   sanity build on a real slate put 21% of captains on K/DST under the first version of the presets. DST captain is Supported-bad, so it is
+   excluded outright. K captain is only Weak, so it gets a points penalty.
+
+**UI caveat (found 2026-09-29):** the web UI's dispatch path (`run_optimizer_dispatch.yml`) passes neither `--preset` nor any `--sd-*`
+flag, so none of items 1-4, 6, 7 apply to a Showdown build started from the UI; they apply only to CLI builds with `--preset
+showdown_se`/`showdown_gpp`. The post-build construction lint (below) now surfaces the result either way.
 
 These `--sd-*` weights are first-pass point-scale conversions of the study's cash-lift/return findings, not a backtested-swept calibration like
 `--lambda`'s own grid (Session 10.5b). Treat them as a starting point to validate against real Wk4+ Showdown results, same as any other track-2
@@ -67,7 +79,8 @@ item — see `data/optimizer_presets.json`'s per-preset comments for exactly whi
 7. **Team split — WEAKENED at n=142 real contests (was Supported as "avoid forcing 5-1").** Real 5-1 is no worse than 4-2 (both mildly negative,
    CI spans 0 for 5-1). The specific thing that IS mildly bad (Supported, -1.2 to -1.6 cash pts) is a **4-2 split with the CPT's own team on the
    heavy side** — 3-3 is the best split on average. The simulated-field -4.5 pctl penalty on 5-1 specifically was a field artifact, not real.
-   **Dropped:** the `--max-team-players 4` candidate that existed to enforce this — it has no evidence base left.
+   **Dropped:** the `--max-team-players 4` candidate that existed to enforce this — it has no evidence base left. The CPT-heavy part is
+   now a soft term instead (2026-09-29): "Optimizer enforcement" item 6, `--sd-heavy-side-cpt-penalty`.
 8. **Chalk CPT — refined by contest type at n=142.** Big GPP: Supported, avoid <5%-owned captains (-3.0 cash, 4/4 seasons); >=15%-owned is
    fine (+2.6). **SE: different shape** — the #1 chalk captain specifically under-returns (0.89x return, top-1% lift -0.37 CI excludes 0), and
    5-15%-owned is the sweet spot (return 1.14x). Don't fade chalk broadly in either format; in SE specifically don't force the single most-owned
@@ -101,15 +114,31 @@ item — see `data/optimizer_presets.json`'s per-preset comments for exactly whi
 - Both teams must be represented (enforced). Per-row lock/exclude: `pid:CPT` / `pid:FLEX`.
 
 ## Not yet in the optimizer (candidate opt-in settings, no evidence base yet or not worth the complexity)
-`--max-kickers 1` (harmless, no real edge at n=142 — see rule 5), `--no-cpt-positions K,DST` (rule 3's DST-captain exclusion is now handled by
-`--sd-require-cpt-qb`'s effect on WR/TE captains plus manual `--exclude pid:CPT` for K/DST; a dedicated flag hasn't been built since the
-existing exclude mechanism already covers it).
+`--max-kickers 1` (harmless, no real edge at n=142 — see rule 5). [2026-09-29 correction: this paragraph used to list a candidate
+`--no-cpt-positions K,DST` as unbuilt. It was built as `--sd-exclude-cpt-positions` plus `--sd-k-cpt-penalty`; see "Optimizer enforcement"
+item 7.]
 **Dropped, no evidence base left:** `--max-team-players 4` (was meant to enforce "avoid 5-1" — see rule 7, real contests show no 5-1-specific
 penalty) and `--cpt-positions RB,WR` (not supported at either n=49 or n=142). Existing `--exclude pid:CPT` does manual captain restriction today.
 
 ## What's live vs. what's still just a documented preference
-As of 2026-09-28, rules 1 (require CPT's own QB — hard), 6 (cheap-tier penalty), the QB-stack-depth cap, and 11 (QB+RB/TE partner bonus) are
-enforced in the optimizer via `--preset showdown_se` / `--preset showdown_gpp` (see "Optimizer enforcement" above) — building a lineup with
-one of those presets applies them automatically, no per-rule flag to remember. Every other numbered rule above (2, 3's TE/K parts, 4, 5, 7-10,
-12) is informational only — nothing in the build pipeline currently checks or warns on them. That gap (a rule can be "Supported" here and still
-silently ignored at build time) is a known, separate problem — see the WK3 postmortem's construction-rule-capture discussion.
+Rewritten 2026-09-29, re-derived from `data/optimizer_presets.json` and the numbered rules. The previous version was stale: it called the
+require-CPT-QB rule "rule 1" (it is rule 13) and the cheap-tier penalty "rule 6" (it is rule 12), and it listed rule 12 and rule 3's K
+part as informational when both were already enforced.
+
+**Enforced by `--preset showdown_se` / `--preset showdown_gpp` (CLI builds only; see the UI caveat above):**
+- Rule 1: the ILP objective itself (every build, preset or not).
+- Rule 3: DST captain hard-excluded (`sd-exclude-cpt-positions DST`); K captain soft-penalized (`sd-k-cpt-penalty` 1.0 SE / 1.5 GPP).
+- Rule 7: CPT-heavy 4-2/5-1 soft-penalized (`sd-heavy-side-cpt-penalty` 0.5, new 2026-09-29), on top of the stack cap below.
+- Rule 10: lambda 0 in both presets.
+- Rule 11: QB-captain RB/TE partner bonus (`sd-qb-partner-bonus` 0.75 SE / 1.5 GPP).
+- Rule 12: $600-1k FLEX tier penalty (`sd-cheap-tier-penalty` 1.0 SE / 2.0 GPP).
+- Rule 13: WR/TE captain requires own QB in FLEX, hard (`sd-require-cpt-qb`).
+- Not a numbered rule: same-team FLEX cap 2 (`sd-stack-cap` 2 / penalty 0.75), from the construction-detail QB stack-depth finding.
+
+**Not enforced, and why:** rule 2 (dropped, no restriction by design); rule 3's TE part (TE CPT is fine, no restriction needed); rule 4
+(the $600-1k band is covered by rule 12, but "is this a real role player" is not checked); rules 5, 6 (Weak); rule 8 (evidence is on
+realized ownership, our pre-lock model only correlates 0.56); rule 9 (a projection-calibration issue, not a construction rule).
+
+**Warned, not enforced (new 2026-09-29):** every `optimizer.py` build now runs `scripts/construction_lint.py` on its output and prints the
+result, also saved as a `<lineup file>.lint.txt` sidecar. Rules 5, 6, 7, 8 show up there as warn/info, and the enforced rules show up as
+"backstop" if a build skipped the preset. Informational only; it never blocks a build or changes lineups.

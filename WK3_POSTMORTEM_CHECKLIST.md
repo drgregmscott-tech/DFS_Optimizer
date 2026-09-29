@@ -40,6 +40,19 @@ one topic pulls in four adjacent ones and the original thread gets diluted or dr
 
 ## Parking Lot (add here, don't chase inline)
 
+- **[2026-09-29] UI Showdown builds get zero construction-rule enforcement — own dedicated session.** Found while wiring up
+  `construction_lint.py` (see the follow-up note on the construction-rule-capture item below). The `--preset showdown_se` /
+  `--preset showdown_gpp` levers (require-CPT-QB, DST/K-captain exclusion, cheap-tier penalty, stack cap, QB-partner bonus,
+  the new heavy-side-captain penalty) only apply when `optimizer.py` is invoked with an explicit `--preset` or matching
+  `--sd-*` flags. The UI's dispatch path (`cloudflare_worker/optimizer_api/optimizer_api.js` → `run_optimizer_dispatch.yml`
+  → `optimizer.py`) passes neither, so **every Showdown lineup built through the UI today runs with all Showdown-specific
+  rules off** — including the hard DST/K-captain ban. Only CLI builds (with an explicit preset) get them. The pre-lock lint
+  will now surface this as violations on UI-built Showdown lineups, but that's a symptom check, not a fix. Needs: (a) decide
+  the right default (should the UI always pass `showdown_se`/`showdown_gpp` for Showdown slates, or expose a preset picker?),
+  (b) thread the choice through the frontend UI, the worker dispatch payload, and the workflow's `optimizer.py` invocation,
+  (c) verify it doesn't collide with the per-request `client_id` / on-demand-run fixes shipped 2026-09-28 (§1). Frontend +
+  worker + workflow change — deserves its own session, not a tack-on.
+
 - **[2026-09-29] Partial construction-rule-capture gap — own dedicated session, user will open separately.** From §2 open
   thread 2. This session enforced 5 of the Supported/Weak Showdown construction rules as actual optimizer levers
   (`showdown_se`/`showdown_gpp` presets), but only because we happened to sanity-check that specific mechanism and catch a
@@ -65,6 +78,14 @@ one topic pulls in four adjacent ones and the original thread gets diluted or dr
   `scripts/construction_lint.py` (no optimizer change). Designed but not wired: auto-run after build, a C-SEL
   pool-vs-entry report for 4d, and the ingest-trade section. Side note: `SHOWDOWN_RULES.md`'s "What's live"
   paragraph is stale (K-CPT and rule 12 are now enforced).
+  **[FOLLOW-UP DONE 2026-09-29, uncommitted]** See `WK3_CONSTRUCTION_RULE_AUDIT.md` §5. (1) Rewrote `SHOWDOWN_RULES.md`
+  "What's live" from the presets file. It had two wrong rule numbers, not one. (2) SD rule 7 → new soft term
+  `--sd-heavy-side-cpt-penalty` 0.5 in both Showdown presets. It is small on purpose because `sd-stack-cap` already charges a
+  CPT-heavy 4-2 0.75. (3) Classic skill-vs-own-DST **stays hard**: the wk2 Panthers loss came from a Bijan lock, and the constraint
+  cost only 0.79 projected pts at decision time (counterfactual re-solve). The pairing has a -0.44 real correlation, so the audit's
+  "soft" call was a misread. (4) `construction_lint.py` now runs after every `optimizer.py` build (log + `.lint.txt` sidecar),
+  never blocking. **New gap found:** the UI dispatch passes no `--preset`/`--sd-*` flags, so UI Showdown builds get none of the
+  Showdown rules. Needs its own session (frontend + worker + workflow).
 
 - **[2026-09-28] Time lost to on-demand-optimizer-run debugging eating real review time —
   own dedicated session.** From §1: during the last ~20 minutes before DK main lock on

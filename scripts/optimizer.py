@@ -103,6 +103,50 @@ def _multi_lineups_path(site: str, slate_id: str, client_id: str | None) -> Path
     safe = re.sub(r"[^A-Za-z0-9_-]", "_", client_id)[:64] if client_id else "shared"
     return OUTPUT_DIR / f"lineups_multi_{site}_{slate_id}_{safe}.csv"
 
+
+_SE_PRESETS = {"cash", "se_gpp", "se3max_pool", "showdown_se"}
+_GPP_PRESETS = {"mme_gpp", "showdown_gpp"}
+
+
+def _run_construction_lint(out_path: Path, site: str, slate_id: str,
+                           preset: str | None, n_lineups: int | None) -> None:
+    """WK3 construction-rule audit follow-up (2026-09-29): run the read-only
+    scripts/construction_lint.py against the lineup CSV this build just
+    wrote, print its summary, and save it as a `<stem>.lint.txt` sidecar.
+
+    STRICTLY INFORMATIONAL. Called only after the lineup CSV is already on
+    disk; never changes the lineups, the exit code, or anything the UI
+    poller reads (optimizer_api.js fetches only `<request_id>.csv` and
+    `<request_id>.error.txt`). Every failure, including argparse's
+    SystemExit, is swallowed into a one-line stderr note so a lint bug can
+    never fail a real build."""
+    try:
+        import contextlib
+        import io
+        import construction_lint  # same scripts/ dir, already on sys.path
+
+        pool = OUTPUT_DIR / f"final_projections_{site}_{slate_id}.csv"
+        if preset in _SE_PRESETS:
+            contest = "se"
+        elif preset in _GPP_PRESETS:
+            contest = "gpp"
+        else:
+            contest = "se" if not n_lineups or n_lineups <= 3 else "gpp"
+        argv = [str(out_path), "--contest", contest]
+        if pool.exists():
+            argv += ["--pool", str(pool)]
+        buf = io.StringIO()
+        with contextlib.redirect_stdout(buf):
+            construction_lint.main(argv)
+        text = buf.getvalue()
+        header = ("Construction lint (informational only -- never blocks a "
+                  "build; see WK3_CONSTRUCTION_RULE_AUDIT.md):\n")
+        print(header + text, end="" if text.endswith("\n") else "\n")
+        sidecar = out_path.with_suffix(".lint.txt")
+        sidecar.write_text(header + text, encoding="utf-8")
+    except (Exception, SystemExit) as e:  # noqa: BLE001 -- must never fail a build
+        print(f"NOTE: construction lint skipped ({type(e).__name__}: {e})", file=sys.stderr)
+
 # See decision #2 above -- not present in SITE_CONFIGS, hardcoded here as
 # the one place to change if a future site/format needs a different rule
 # (e.g. superflex allowing QB in FLEX).
@@ -2880,7 +2924,8 @@ def solve_showdown_lineup(players: pd.DataFrame, site: str,
                            stack_cap_penalty: float = 0.0,
                            qb_partner_bonus: float = 0.0,
                            exclude_cpt_positions: set = None,
-                           k_cpt_penalty: float = 0.0) -> pd.DataFrame:
+                           k_cpt_penalty: float = 0.0,
+                           heavy_side_cpt_penalty: float = 0.0) -> pd.DataFrame:
     """Session 13.4 core ILP -- see decisions #39-46 above. `players` must
     already carry `_row_key` (load_showdown_pool()). Returns the selected
     rows (one per filled roster spot -- exactly 1 captain-role row + N
@@ -2918,6 +2963,16 @@ def solve_showdown_lineup(players: pd.DataFrame, site: str,
       (-1.8 cash pts, CI touches 0), so it gets a points penalty rather
       than exclude_cpt_positions' hard ban -- an unusually good kicker
       matchup can still win the captain slot.
+    - `heavy_side_cpt_penalty`: soft. Added 2026-09-29 (SHOWDOWN_RULES.md
+      rule 7, WK3_CONSTRUCTION_RULE_AUDIT.md §2): a flat penalty, applied
+      once, when the captain's own team holds 4+ of the lineup's roster
+      spots (captain + 3 or more same-team FLEX -- a 4-2 or 5-1 split with
+      the captain on the heavy side). 4-2 CPT-heavy is -1.2 to -1.6 cash
+      pts (Supported, mild); 5-1 is included so the term can never push
+      the solver from 4-2 into a more lopsided 5-1. Shares the exact
+      same_team_flex variable with `stack_cap`, so the two stack: at
+      stack_cap=2 a CPT-heavy 4-2 already pays one unit of
+      stack_cap_penalty before this term is added.
     These are first-pass point-scale conversions of the study's cash-lift
     findings, not a backtested-swept calibration like `lam` -- see the
     showdown_se/showdown_gpp preset comments in optimizer_presets.json.
@@ -3139,11 +3194,12 @@ def solve_showdown_lineup(players: pd.DataFrame, site: str,
             if position[c_rk] == "K":
                 objective_terms.append(-k_cpt_penalty * x[c_rk])
 
-    if stack_cap is not None or qb_partner_bonus:
+    if stack_cap is not None or qb_partner_bonus or heavy_side_cpt_penalty:
         teams_present = sorted(t for t in players["team"].dropna().unique())
         if len(teams_present) != 2:
             print(
-                f"WARNING: Showdown stack_cap/qb_partner_bonus skipped -- "
+                f"WARNING: Showdown stack_cap/qb_partner_bonus/"
+                f"heavy_side_cpt_penalty skipped -- "
                 f"expected exactly 2 teams in the pool, found "
                 f"{teams_present}.", file=sys.stderr,
             )
@@ -3157,7 +3213,8 @@ def solve_showdown_lineup(players: pd.DataFrame, site: str,
             cpt_b_var = pulp.lpSum(x[rk] for rk in cpt_b_rows)
             big_m = flex_count
 
-            if stack_cap is not None and stack_cap_penalty:
+            use_stack_cap = stack_cap is not None and stack_cap_penalty
+            if use_stack_cap or heavy_side_cpt_penalty:
                 flex_a_count = pulp.lpSum(x[rk] for rk in flex_a)
                 flex_b_count = pulp.lpSum(x[rk] for rk in flex_b)
                 same_team_flex = pulp.LpVariable(
@@ -3170,9 +3227,27 @@ def solve_showdown_lineup(players: pd.DataFrame, site: str,
                 prob += same_team_flex <= flex_b_count + big_m * (1 - cpt_b_var), "stc_upperB"
                 prob += same_team_flex >= flex_a_count - big_m * (1 - cpt_a_var), "stc_lowerA"
                 prob += same_team_flex >= flex_b_count - big_m * (1 - cpt_b_var), "stc_lowerB"
+
+            if use_stack_cap:
                 stack_excess = pulp.LpVariable("stack_excess", lowBound=0)
                 prob += stack_excess >= same_team_flex - stack_cap, "stack_excess_def"
                 objective_terms.append(-stack_cap_penalty * stack_excess)
+
+            if heavy_side_cpt_penalty:
+                # Rule 7 (2026-09-29): captain's team holds 4+ roster
+                # spots <=> same_team_flex >= 3. heavy_side is a binary
+                # forced to 1 whenever same_team_flex >= 3 (the solver,
+                # maximizing, keeps it at 0 otherwise since it only ever
+                # costs points). Threshold is DK-derived (6-slot roster,
+                # 4-2/5-1); on a 5-slot FD pool it fires on 4-1 only.
+                heavy_flex_min = 3
+                heavy_side = pulp.LpVariable("cpt_heavy_side", cat="Binary")
+                prob += (
+                    same_team_flex - (heavy_flex_min - 1)
+                    <= (flex_count - (heavy_flex_min - 1)) * heavy_side,
+                    "cpt_heavy_side_def",
+                )
+                objective_terms.append(-heavy_side_cpt_penalty * heavy_side)
 
             if qb_partner_bonus:
                 rbte_a = [rk for rk in flex_a if position[rk] in ("RB", "TE")]
@@ -3376,7 +3451,8 @@ def build_single_showdown_lineup(site: str, slate_id: str,
                                   stack_cap_penalty: float = 0.0,
                                   qb_partner_bonus: float = 0.0,
                                   exclude_cpt_positions: set = None,
-                                  k_cpt_penalty: float = 0.0) -> pd.DataFrame:
+                                  k_cpt_penalty: float = 0.0,
+                                  heavy_side_cpt_penalty: float = 0.0) -> pd.DataFrame:
     players = load_showdown_pool(site, slate_id)
     validate_min_team_players_feasibility(site, min_team_players)
     locked_player_ids = locked_player_ids or set()
@@ -3426,6 +3502,7 @@ def build_single_showdown_lineup(site: str, slate_id: str,
         qb_partner_bonus=qb_partner_bonus,
         exclude_cpt_positions=exclude_cpt_positions,
         k_cpt_penalty=k_cpt_penalty,
+        heavy_side_cpt_penalty=heavy_side_cpt_penalty,
     )
     if locked_player_ids:
         missing = locked_player_ids - set(selected["player_id"])
@@ -3476,7 +3553,8 @@ def build_multi_showdown_lineup(site: str, slate_id: str,
                                  stack_cap_penalty: float = 0.0,
                                  qb_partner_bonus: float = 0.0,
                                  exclude_cpt_positions: set = None,
-                                 k_cpt_penalty: float = 0.0) -> tuple:
+                                 k_cpt_penalty: float = 0.0,
+                                 heavy_side_cpt_penalty: float = 0.0) -> tuple:
     """Showdown counterpart to build_multi_lineup() -- same exposure-cap /
     uniqueness-relaxation loop (decisions #5-7), no stacking rotation
     (decision #45 -- not supported for Showdown this session). Session 16
@@ -3573,6 +3651,7 @@ def build_multi_showdown_lineup(site: str, slate_id: str,
                 qb_partner_bonus=qb_partner_bonus,
                 exclude_cpt_positions=exclude_cpt_positions,
                 k_cpt_penalty=k_cpt_penalty,
+                heavy_side_cpt_penalty=heavy_side_cpt_penalty,
             )
         except RuntimeError as e:
             if current_uniqueness > 0:
@@ -4050,6 +4129,20 @@ def main():
              "unusually good kicker matchup can still win the slot. "
              "Default 0.0 (off).",
     )
+    parser.add_argument(
+        "--sd-heavy-side-cpt-penalty", type=float,
+        default=pdef("sd-heavy-side-cpt-penalty", 0.0),
+        help="Showdown ONLY, soft (SHOWDOWN_RULES.md rule 7): points "
+             "subtracted once when the captain's own team holds 4+ of the "
+             "lineup's roster spots (a 4-2 or 5-1 split with the captain "
+             "on the heavy side). 4-2 CPT-heavy is -1.2 to -1.6 cash pts, "
+             "Supported (mild), n=142 real contests; 3-3 is best on "
+             "average. 5-1 is included so the penalty can't push the "
+             "solver from 4-2 into an even more lopsided 5-1. Stacks with "
+             "--sd-stack-cap-penalty, which already charges per same-team "
+             "FLEX beyond the cap -- size the two together. Default 0.0 "
+             "(off).",
+    )
     # Session 16 -- Per-Player Exposure Override + Thumbs Up/Down (decisions
     # #48-55).
     parser.add_argument(
@@ -4486,6 +4579,7 @@ def main():
                 qb_partner_bonus=args.sd_qb_partner_bonus,
                 exclude_cpt_positions=sd_exclude_cpt_positions,
                 k_cpt_penalty=args.sd_k_cpt_penalty,
+                heavy_side_cpt_penalty=args.sd_heavy_side_cpt_penalty,
             )
             if args.request_id:
                 out_path = OUTPUT_DIR / "ui_requests" / f"{args.request_id}.csv"
@@ -4516,6 +4610,7 @@ def main():
             print("Per-lineup summary (lineup_id: salary used, total projection, value):")
             print(summary.to_string())
             print(f"Wrote {out_path}")
+            _run_construction_lint(out_path, args.site, args.slate_id, args.preset, args.n_lineups)
         else:
             lineup = build_single_showdown_lineup(
                 args.site, args.slate_id,
@@ -4539,6 +4634,7 @@ def main():
                 qb_partner_bonus=args.sd_qb_partner_bonus,
                 exclude_cpt_positions=sd_exclude_cpt_positions,
                 k_cpt_penalty=args.sd_k_cpt_penalty,
+                heavy_side_cpt_penalty=args.sd_heavy_side_cpt_penalty,
             )
             if args.request_id:
                 out_path = OUTPUT_DIR / "ui_requests" / f"{args.request_id}.csv"
@@ -4558,6 +4654,7 @@ def main():
             print(f"Total projected points: {total_points:.2f}")
             print(f"Lineup value: {lineup_value} pts/$1000")
             print(f"Wrote {out_path}")
+            _run_construction_lint(out_path, args.site, args.slate_id, args.preset, args.n_lineups)
         return
 
     if args.n_lineups:
@@ -4641,6 +4738,7 @@ def main():
         print("Per-lineup summary (lineup_id: salary used, total projection, value):")
         print(summary.to_string())
         print(f"Wrote {out_path}")
+        _run_construction_lint(out_path, args.site, args.slate_id, args.preset, args.n_lineups)
     else:
         lineup = build_single_lineup(
             args.site, args.slate_id,
@@ -4678,6 +4776,7 @@ def main():
         print(f"Total projected points: {total_points:.2f}")
         print(f"Lineup value: {lineup_value} pts/$1000")
         print(f"Wrote {out_path}")
+        _run_construction_lint(out_path, args.site, args.slate_id, args.preset, args.n_lineups)
 
 
 if __name__ == "__main__":
