@@ -55,6 +55,7 @@ warning -- ownership must never take down a projection build.
 """
 
 import json
+import os
 import sys
 from pathlib import Path
 
@@ -220,7 +221,21 @@ def predict(df: pd.DataFrame, features: pd.DataFrame, artifact: dict, budgets: d
     return scaled.clip(lower=0.0, upper=cap)
 
 
-def refine_ownership(scored: pd.DataFrame, site: str, budgets: dict) -> pd.DataFrame:
+# Ownership v2 switch (2026-09-29, scripts/ownership_v2.py). Default ON.
+# Off: set env DFS_OWNERSHIP_V2=0 (or this constant to False) -- the previous
+# layered path then runs exactly as before, with no extra columns.
+OWNERSHIP_V2_ENABLED = True
+
+
+def ownership_v2_enabled() -> bool:
+    env = os.environ.get("DFS_OWNERSHIP_V2")
+    if env is not None:
+        return env.strip().lower() not in ("0", "false", "off", "no")
+    return OWNERSHIP_V2_ENABLED
+
+
+def refine_ownership(scored: pd.DataFrame, site: str, budgets: dict,
+                     season: int = None, week: int = None) -> pd.DataFrame:
     """Called from build_projections.add_ownership_columns() after the
     heuristic has produced chalk_score / estimated_ownership_pct on `scored`
     (columns: player_id, position, position_group, salary, final_projection,
@@ -231,10 +246,12 @@ def refine_ownership(scored: pd.DataFrame, site: str, budgets: dict) -> pd.DataF
     artifact = load_artifact(site)
     if artifact is None or site != "dk":
         return scored
+    ffc_used = False
     if "ffc_own_pct" in scored.columns and             pd.to_numeric(scored["ffc_own_pct"], errors="coerce").notna().sum() >= MIN_FFC_LISTED:
         ffc_artifact = load_artifact(site, "_ffc")
         if ffc_artifact is not None:
             artifact = ffc_artifact
+            ffc_used = True
             print("Ownership: using public-ownership (FFC) variant of the layered model.")
     try:
         heuristic = scored["estimated_ownership_pct"].copy()
@@ -244,8 +261,27 @@ def refine_ownership(scored: pd.DataFrame, site: str, budgets: dict) -> pd.DataF
         out = scored.copy()
         out["estimated_ownership_pct_heuristic"] = heuristic
         out["estimated_ownership_pct"] = new
-        return out
     except Exception as exc:  # noqa: BLE001 -- ownership must never break a build
         print(f"WARNING: layered ownership model failed ({type(exc).__name__}: {exc}); "
               f"keeping the heuristic estimate.", file=sys.stderr)
         return scored
+    if not ownership_v2_enabled():
+        return out
+    if week is None:
+        print("WARNING: ownership v2 needs the slate week (not passed); keeping the previous "
+              "layered model.", file=sys.stderr)
+        return out
+    try:
+        import ownership_v2
+        final, v2_only = ownership_v2.refine_v2(scored, feats, new, ffc_used, site, season, week)
+        out["est_own_live_old"] = new
+        out["est_own_v2_only"] = v2_only.fillna(new).round(4)
+        out["estimated_ownership_pct"] = final.fillna(new)
+        print(f"Ownership v2: ON ({'log-blend with live FFC model, a=' + str(ownership_v2.FFC_BLEND_ALPHA) if ffc_used else 'no FFC table -> v2 alone'}; "
+              f"DST = v2 DST model). Previous model kept as est_own_live_old. "
+              f"Switch off with DFS_OWNERSHIP_V2=0.")
+        return out
+    except Exception as exc:  # noqa: BLE001 -- ownership must never break a build
+        print(f"WARNING: ownership v2 failed ({type(exc).__name__}: {exc}); "
+              f"keeping the previous layered model.", file=sys.stderr)
+        return out

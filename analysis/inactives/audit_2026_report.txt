@@ -1,0 +1,67 @@
+== wk1: pre-lock status file player_status_23_20260910_185633.csv (stamped 20260910_185633Z, lock 20260913_170000Z); log rows 321
+  inactive (actual 0 + evidence): 93; zeroed by pipeline: 22; left live: 71
+  left live & proj>8: 0; proj>5: 2; sum proj of live inactives: 145.3
+          player_name position  final_projection our_status report_status roster
+       Michael Carter       RB          7.457405        NaN           NaN    DEV
+      Shedeur Sanders       QB          5.465424     ACTIVE           NaN    ACT
+         Kimani Vidal       RB          4.772937     ACTIVE           NaN    ACT
+     Fernando Mendoza       QB          4.709298        NaN           NaN    ACT
+       Germie Bernard       WR          4.615985        NaN           NaN    ACT
+        Jawhar Jordan       RB          4.493522     ACTIVE           NaN    DEV
+       Theo Wease Jr.       WR          4.125062     ACTIVE           NaN    DEV
+       Elijah Sarratt       WR          4.027765        NaN           NaN    INA
+      Brenen Thompson       WR          3.996706        NaN           NaN    ACT
+         Jordyn Tyson       WR          3.858534        NaN           NaN    RES
+           Joe Flacco       QB          3.506247     ACTIVE           NaN    ACT
+          Deion Burks       WR          3.312208        NaN           NaN    ACT
+KeAndre Lambert-Smith       WR          3.309592     ACTIVE           NaN    ACT
+        Zavion Thomas       WR          3.147938        NaN           NaN    ACT
+  false zero (pipeline zeroed but scored): 7 [['Sione Vaki', 2.8, 'ACTIVE'], ['Cooper Rush', 7.72, 'ACTIVE'], ['Braelon Allen', 4.0, 'ACTIVE'], ['Roman Wilson', 5.6, 'ACTIVE'], ['Kendre Miller', 9.0, 'ACTIVE'], ['Brock Wright', 1.5, 'ACTIVE'], ['Justice Hill', 3.8, 'ACTIVE']]
+  our QUESTIONABLE at lock: 12; ended inactive 5
+== wk2: pre-lock status file player_status_2_20260920_163047.csv (stamped 20260920_163047Z, lock 20260920_170000Z); log rows 293
+  inactive (actual 0 + evidence): 53; zeroed by pipeline: 12; left live: 41
+  left live & proj>8: 0; proj>5: 5; sum proj of live inactives: 114.3
+      player_name position  final_projection   our_status report_status roster
+     Mike Gesicki       TE          7.927510       ACTIVE           NaN    ACT
+        RJ Harvey       RB          6.025635 QUESTIONABLE  Questionable    INA
+       John Bates       TE          6.017691       ACTIVE           NaN    ACT
+   Jalen McMillan       WR          5.455651       ACTIVE  Questionable    ACT
+      Sean Tucker       RB          5.132848       ACTIVE           NaN    ACT
+   Elijah Sarratt       WR          4.803239       ACTIVE           NaN    ACT
+Sincere McCormick       RB          3.762378       ACTIVE           NaN    DEV
+      Drew Sample       TE          3.729174       ACTIVE           NaN    ACT
+    J'Mari Taylor       RB          3.473285       ACTIVE           NaN    DEV
+     Mason Taylor       TE          3.424580       ACTIVE           NaN    ACT
+    Adam Trautman       TE          3.417904       ACTIVE           NaN    ACT
+  Shedeur Sanders       QB          3.291570       ACTIVE           NaN    ACT
+    Jahdae Walker       WR          3.265712       ACTIVE           NaN    ACT
+      Jonnu Smith       TE          3.163698       ACTIVE           NaN    ACT
+  false zero (pipeline zeroed but scored): 0 []
+  our QUESTIONABLE at lock: 3; ended inactive 1
+== wk3: pre-lock status file player_status_3_20260927_163048.csv (stamped 20260927_163048Z, lock 20260927_170000Z); log rows 310
+  inactive (actual 0 + evidence): 98; zeroed by pipeline: 15; left live: 83
+  left live & proj>8: 0; proj>5: 5; sum proj of live inactives: 166.4
+      player_name position  final_projection our_status report_status roster
+Oronde Gadsden II       TE          7.271113     ACTIVE           NaN    ACT
+      Jerry Jeudy       WR          6.498773     ACTIVE           NaN    ACT
+    Joshua Palmer       WR          5.920561        NaN           NaN    ACT
+    Calvin Ridley       WR          5.135574     ACTIVE           NaN    ACT
+        Jack Bech       WR          5.041388     ACTIVE           NaN    ACT
+  Devontez Walker       WR          4.935274     ACTIVE           NaN    ACT
+ LaJohntay Wester       WR          4.443941     ACTIVE           NaN    ACT
+      Bryce Lance       WR          4.248241     ACTIVE           NaN    ACT
+     Theo Johnson       TE          4.073529     ACTIVE           NaN    ACT
+      Josh Oliver       TE          4.018156     ACTIVE           NaN    ACT
+     Jordan James       RB          3.788262     ACTIVE           NaN    ACT
+      Cyrus Allen       WR          3.745681     ACTIVE           NaN    ACT
+Jaleel McLaughlin       RB          3.740903     ACTIVE           NaN    ACT
+      Dyami Brown       WR          3.626589     ACTIVE           NaN    ACT
+   Nick Singleton       RB          3.571859     ACTIVE           NaN    ACT
+        Ray Davis       RB          3.278098     ACTIVE           NaN    ACT
+  Emari Demercado       RB          3.274467     ACTIVE           NaN    ACT
+      Lan Larison       RB          3.242207     ACTIVE           NaN    DEV
+    Kaytron Allen       RB          3.047174     ACTIVE           NaN    ACT
+   Jimmy Horn Jr.       WR          3.031987     ACTIVE           NaN    DEV
+    Josh Williams       RB          3.019403     ACTIVE           NaN    DEV
+  false zero (pipeline zeroed but scored): 1 [['Zay Flowers', 15.4, 'QUESTIONABLE']]
+  our QUESTIONABLE at lock: 3; ended inactive 0

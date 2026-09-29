@@ -555,7 +555,7 @@ def build_dst_projections(salaries, vegas, site, *, model="legacy",
 # Ownership + salary anchor
 # ---------------------------------------------------------------------------
 
-def add_ownership_columns(df, site, layered=True):
+def add_ownership_columns(df, site, layered=True, season=None, week=None):
     scored = compute_chalk_scores(df, site)
     scored = compute_estimated_ownership(scored, site)
     # Week 2 post-mortem: replace the heuristic estimate with the layered
@@ -563,13 +563,18 @@ def add_ownership_columns(df, site, layered=True):
     # layer). DK only, and a no-op without data/ownership_model_dk.json or on
     # any failure -- see ownership_model.py. layered=False returns the pure
     # heuristic (used by fit_ownership_model.py to build its own features).
+    # season/week feed ownership v2 (ownership_v2.py; needs the slate week).
     if layered:
         import ownership_model
         scored = ownership_model.refine_ownership(
-            scored, site, compute_position_slot_budgets(site))
+            scored, site, compute_position_slot_budgets(site), season=season, week=week)
     keep = ["player_id", "chalk_score", "estimated_ownership_pct"]
-    if "estimated_ownership_pct_heuristic" in scored.columns:
-        keep.append("estimated_ownership_pct_heuristic")
+    for extra in ("estimated_ownership_pct_heuristic", "est_own_live_old", "est_own_v2_only"):
+        if extra in scored.columns:
+            keep.append(extra)
+    # A re-run on an already-scored frame (status_check apply refresh) must
+    # replace these columns, not merge them into _x/_y duplicates.
+    df = df.drop(columns=[c for c in keep[1:] if c in df.columns])
     ownership_cols = scored[keep]
     merged = df.merge(ownership_cols, on="player_id", how="left")
     n_missing = merged["chalk_score"].isna().sum()
@@ -996,7 +1001,7 @@ def build_final_projections(site, season, week, slate_id,
         out["slate_format"] = "showdown"
         out = add_showdown_ownership_columns(out, site)
     else:
-        out = add_ownership_columns(out, site)
+        out = add_ownership_columns(out, site, season=season, week=week)
         out["roster_role"] = None
         out["slate_format"] = "classic"
         out["ownership_available"] = True

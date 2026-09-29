@@ -157,6 +157,7 @@ Usage:
 """
 
 import argparse
+import json
 import sys
 from pathlib import Path
 
@@ -326,6 +327,64 @@ def _apply_projection_stack(df, site, season, week):
     return df
 
 
+EARLY_BLEND_CONFIG = (Path(__file__).resolve().parents[1] / "data/fc_history/derived/projection_v2"
+                      / "early_season_blend_config.json")
+
+
+def _early_blend_week_params(cfg, week):
+    """Weights for `week` from the config ("1", "2", ..., "7+" = weeks 7..max_week). None = no blend."""
+    weeks = cfg.get("weeks", {})
+    if str(week) in weeks:
+        return weeks[str(week)]
+    for key, params in weeks.items():
+        if key.endswith("+") and int(key[:-1]) <= week <= int(cfg.get("max_week", 18)):
+            return params
+    return None
+
+
+def _apply_early_season_blend(df, week, cfg_path=EARLY_BLEND_CONFIG):
+    """Salary-line blend (analysis/projection_v2/RESULTS.md Task 1 + task1b_week_refit.py).
+
+    QB/RB/WR/TE: S = m_pos*salary_k + b_pos; delta = a + w*(S - final); final = max(0, final + delta);
+    statline_p10/p90 shift by the same delta; engine_projection untouched; `early_blend_delta` = applied
+    shift. Weights per week x {QB, SKILL} from a config; weeks absent from it get no blend.
+    Missing config / any failure = projections unchanged."""
+    df["early_blend_delta"] = 0.0
+    try:
+        if not Path(cfg_path).exists():
+            print(f"NOTE: early-season blend config not found ({cfg_path}); blend skipped.")
+            return df
+        cfg = json.loads(Path(cfg_path).read_text())
+        params = _early_blend_week_params(cfg, week)
+        if params is None:
+            print(f"Early-season blend: no weights for week {week} (config zeroes it); unchanged.")
+            return df
+        pos = df["position"].astype(str)
+        m = pos.isin(["QB", "RB", "WR", "TE"]) & ~df["no_real_game_this_week"].fillna(False).astype(bool)
+        sal = pd.to_numeric(df["salary"], errors="coerce") / 1000.0
+        m &= sal.notna() & (sal > 0)
+        line = pd.DataFrame({p: cfg["sal_line"][p] for p in ["QB", "RB", "WR", "TE"]}, index=["m", "b"]).T
+        S = sal * pos.map(line["m"]) + pos.map(line["b"])
+        grp = np.where(pos == "QB", "QB", "SKILL")
+        a = pd.Series([params[g]["a"] for g in grp], index=df.index)
+        w = pd.Series([params[g]["w"] for g in grp], index=df.index)
+        final = df["final_projection"]
+        new = (final + a + w * (S - final)).clip(lower=0.0)
+        delta = (new - final).where(m, 0.0)
+        df["final_projection"] = final + delta
+        for c in ("statline_p10", "statline_p90"):
+            df[c] = (df[c] + delta).clip(lower=0.0)
+        df["early_blend_delta"] = delta
+        print(f"Early-season blend (week {week}): adjusted {int(m.sum())} player(s); mean delta "
+              f"{delta[m].mean():+.2f}, mean |delta| {delta[m].abs().mean():.2f} "
+              f"(range {delta.min():+.1f} to {delta.max():+.1f}).")
+    except Exception as exc:  # noqa: BLE001 -- must never break a build
+        df["early_blend_delta"] = 0.0
+        print(f"WARNING: early-season blend failed ({type(exc).__name__}: {exc}); projections unchanged.",
+              file=sys.stderr)
+    return df
+
+
 def _apply_ecr_blend(df, slate_id, w_rb, w_te):
     """Opt-in FantasyPros ECR blend for RB/TE (scripts/ecr_blend.py). Failure = projections unchanged."""
     try:
@@ -361,6 +420,8 @@ def build_statline_projections(site: str, season: int, week: int, slate_id: str,
                                p10_calibration: bool = True,
                                ecr_blend_rb: float = 0.0,
                                ecr_blend_te: float = 0.0,
+                               early_blend: bool = False,
+                               early_blend_config: str = None,
                                ) -> pd.DataFrame:
     """`vegas_slate_id` (Session 14.0 -- this engine never had Session
     13.5-pause's fix at all): defaults to `slate_id`. See
@@ -805,6 +866,11 @@ def build_statline_projections(site: str, season: int, week: int, slate_id: str,
             print("NOTE: ECR blend requested but it only applies to a live DK classic build; skipped.")
         else:
             df = _apply_ecr_blend(df, slate_id, ecr_blend_rb, ecr_blend_te)
+    # Salary-line blend, config-driven by week (fit on post-stack harness projections;
+    # DK classic only -- salary lines are DK classic prices).
+    df["early_blend_delta"] = 0.0
+    if early_blend and site == "dk" and not showdown:
+        df = _apply_early_season_blend(df, week, early_blend_config or EARLY_BLEND_CONFIG)
     df["sigma"] = df["statline_sigma"].clip(lower=0.0)
     df["sigma_source"] = "statline_mc"
 
@@ -836,7 +902,8 @@ def build_statline_projections(site: str, season: int, week: int, slate_id: str,
 
     skill_out = df[LEGACY_COLUMNS + AUDIT_COLUMNS +
                    ["sigma", "sigma_source", "statline_p10",
-                    "statline_p90"] + PROJ_STAT_COLUMNS + ["engine_projection", "stack_delta"]]
+                    "statline_p90"] + PROJ_STAT_COLUMNS + ["engine_projection", "stack_delta",
+                                                               "early_blend_delta"]]
 
     # --- DST (decisions #2, #3; Session 10.4) ------------------------------
     # Session 14.0 FIX: was build_dst_projections(salaries, ...). Now takes
@@ -905,6 +972,7 @@ def build_statline_projections(site: str, season: int, week: int, slate_id: str,
     # Projection-stack audit columns: DST/kickers are not stacked.
     dst_out["engine_projection"] = dst_out["final_projection"]
     dst_out["stack_delta"] = 0.0
+    dst_out["early_blend_delta"] = 0.0
     dst_out = dst_out[skill_out.columns]
 
     # --- Kicker (Session 13.1 -- this engine never had it wired in at all)
@@ -937,6 +1005,7 @@ def build_statline_projections(site: str, season: int, week: int, slate_id: str,
             kicker_out[c] = np.nan
         kicker_out["engine_projection"] = kicker_out["final_projection"]
         kicker_out["stack_delta"] = 0.0
+        kicker_out["early_blend_delta"] = 0.0
     kicker_out = kicker_out[skill_out.columns] if len(kicker_out) else \
         pd.DataFrame(columns=skill_out.columns)
 
@@ -1010,7 +1079,7 @@ def build_statline_projections(site: str, season: int, week: int, slate_id: str,
                 print(f"Public ownership: matched {out['ffc_own_pct'].notna().sum()} players from FFC table.")
         except Exception as _exc:  # noqa: BLE001 -- optional input, never break a build
             print(f"WARNING: public ownership table not used ({type(_exc).__name__}: {_exc}).")
-        out = add_ownership_columns(out, site)
+        out = add_ownership_columns(out, site, season=season, week=week)
         out["roster_role"] = None
         out["slate_format"] = "classic"
         out["ownership_available"] = True
@@ -1125,6 +1194,14 @@ if __name__ == "__main__":
                              "(analysis/proj_ecr/ecr_report.md): w=0.5 is the tested RB setting.")
     parser.add_argument("--ecr-blend-te", type=float, default=0.0,
                         help="Same for TE. Default 0.0 = OFF; evidence is weak (w<=0.3 if ever used).")
+    parser.add_argument("--early-blend", dest="early_blend", action="store_true", default=True,
+                        help="Salary-line blend for DK classic QB/RB/WR/TE (default ON). Weights by week from "
+                             "data/fc_history/derived/projection_v2/early_season_blend_config.json (git-ignored); "
+                             "weeks absent from the config are unchanged. See analysis/projection_v2/RESULTS.md.")
+    parser.add_argument("--no-early-blend", dest="early_blend", action="store_false",
+                        help="Turn the salary-line blend off.")
+    parser.add_argument("--early-blend-config", default=None,
+                        help="Override the blend config path.")
     parser.add_argument("--reconcile-threshold", type=float,
                         default=statline_model.RECONCILE_FAIL_THRESHOLD,
                         help="Max proportional share-reconciliation rescale before "
@@ -1151,7 +1228,9 @@ if __name__ == "__main__":
         use_stack=not args.no_stack,
         p10_calibration=not args.no_p10_calibration,
         ecr_blend_rb=args.ecr_blend_rb,
-        ecr_blend_te=args.ecr_blend_te)
+        ecr_blend_te=args.ecr_blend_te,
+        early_blend=args.early_blend,
+        early_blend_config=args.early_blend_config)
 
     def _clean_site_id(value):
         if pd.isna(value):

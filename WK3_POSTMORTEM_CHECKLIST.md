@@ -504,3 +504,30 @@ Output should be an explicit list per item: which bucket, and if (b), what speci
 5. §5 frontend/rule changes also run independent of results — pick those up whenever, as their own session(s).
 6. §6 (revisiting parked decisions) is independent of results too, but should wait until the philosophy framing is
    settled — no rush, but don't let it get lost either.
+
+---
+
+## §4 Step B outcome + model-vs-FC head-to-head (2026-09-29)
+
+Goal reminder: every item here exists to make the system measurably more accurate vs a commercial model, using the 5 yrs of FC history.
+FC-derived RESULTS.md files live locally in `analysis/*/RESULTS.md` (not committed).
+
+- **Head-to-head (analysis/model_vs_fc):** projections are at parity or better vs FC (history MAE 6.34 vs 6.69; cheap WR/TE also better).
+  FC beats us at QB and on 2026 Wk1-2 star under-projection (our live files were pre-guard). **Ownership is the big gap**: FC's pre-lock
+  ownership corr .83 vs ours .47 (2021-23). Cheapest-*viable* DST (not min-price) is under-owned by us (7.5% vs field 11.3%).
+- **Wk3 real ownership + results logged** (Step A, 3 classic slates, 3-max contests, summed across FLEX).
+- **Ownership v2 SHIPPED, on by default** (`scripts/ownership_v2.py`, `DFS_OWNERSHIP_V2=0` turns off): linear per-position softmax
+  log-blended with live FFC at 0.45, plus a DST softmax model. Wk3 replay: corr .889 / MAE 1.19 vs live .863 / 1.40; DST real-top-in-top3 3/3
+  vs 0/3. History: beats the live recipe 5/5 seasons. Old numbers kept as `est_own_live_old`; v2-only as `est_own_v2_only` for weekly scoring.
+  Total classic ownership now ~886 not 900.
+- **Reverse-engineering FC Own:** not reproducible from our public pre-lock inputs (ceiling corr .66 vs FC Own); price alone .60; only role/vacated
+  usage and Vegas totals add signal. Train on realized ownership, not FC-as-teacher.
+- **Ruled out (wrong direction, don't retry):** flatter logistic scale, mid-tier x1.3-1.45, history-tuned joint layer, rank features, min-price DST flag,
+  FFC floor a=0.7 (also argues against the Sunday rule's blanket "use higher of model/FFC"). Inconclusive/track 2: FFC cliff removal, DST power 1.25 (superseded by v2 DST), mid x1.15.
+- **Early-season salary blend SHIPPED** (weeks 1, 2, 7+; wk6 zeroed; `--no-early-blend` turns off). Wk1 MAE 6.17->5.54 held-out 4/4 seasons.
+  **TODO before Wk7:** re-check the 7+ weights against real Wk4-6 results with props (weights were fit without props).
+- **WR/TE target-share/snap/route model:** real (-9% target MAE) but ~0.03 DK-pt MAE; low value, not shipped. Props already applied at 0.5 (optimum ~0.6, keep).
+- **Inactives:** most of FC's apparent edge was our comparison having the injury step off. Remaining big piece is backup-QB/depth DNPs (3.6/slate), a projection problem.
+  Questionable weighting available but user judges it too variable; human inactives check Sunday morning is the real solver. No paid X.
+  Timing logger `scripts/inactives_timing_log.py` to log when ESPN/Sleeper first show inactives (run Sunday Wk4).
+- **Open:** QB residual gap vs FC from Wk3+ (~0.5 MAE, not bias) needs its own session; cheap WR/TE ownership info gap remains track 2.

@@ -1,0 +1,86 @@
+== Q1 designation calibration, 2016-2025 REG, skill players on 53/IR, relevant = trailing-3 PPR >= 8
+                          n  p_inactive  p_nearzero  mean_pts
+desig                                                        
+Doubtful                184       0.984       0.984     0.112
+IR/Reserve(no desig)   1367       1.000       0.998     0.015
+None                  21676       0.043       0.112    12.325
+Out                     965       0.999       0.999     0.013
+Questionable           1725       0.267       0.330     8.321
+
+-- Questionable/Doubtful by final practice status (relevant)
+                         n  p_inactive  p_nearzero  mean_pts
+desig        prac                                           
+Doubtful     -           1       1.000       1.000     0.000
+             DNP       133       0.985       0.985     0.128
+             Full        8       1.000       1.000     0.000
+             Limited    42       0.976       0.976     0.086
+Questionable \n         13       0.231       0.308     9.423
+             -           5       0.200       0.600     6.760
+             DNP       277       0.527       0.563     4.987
+             Full      279       0.097       0.179    10.437
+             Limited  1151       0.246       0.309     8.606
+
+-- Questionable by position (relevant)
+            n  p_inactive  p_nearzero  mean_pts
+position                                       
+QB        215       0.428       0.474     8.412
+RB        477       0.283       0.327     8.540
+TE        193       0.228       0.306     6.991
+WR        840       0.225       0.300     8.480
+
+-- Questionable by game weekday (relevant)
+              n  p_inactive  p_nearzero  mean_pts
+weekday                                          
+Monday      106       0.236       0.349     7.451
+Saturday     50       0.160       0.240     9.043
+Sunday     1418       0.269       0.328     8.296
+Thursday    113       0.327       0.381     8.737
+Tuesday       2       0.500       0.500    10.600
+Wednesday     2       0.500       0.500     2.550
+
+-- Questionable by era (relevant)
+           n  p_inactive  p_nearzero  mean_pts
+era                                           
+2016-20  872       0.261       0.329     8.395
+2021-25  853       0.272       0.331     8.247
+
+-- Questionable & ACTIVE: points vs trailing (does Q lower output when they play?)
+Q active: n=1265 pts/trail=0.787 | None active: n=20741 pts/trail=0.884
+
+== Where relevant inactives come from (information timing), 2021-2025 relevant
+                        n  per_week  share
+desig                                     
+IR/Reserve(no desig)  701      8.25  0.358
+Out                   500      5.88  0.255
+None                  425      5.00  0.217
+Questionable          232      2.73  0.118
+Doubtful              100      1.18  0.051
+Timing key: Out/Doubtful/IR = known by Fri (Sat for MNF) final report; Questionable = resolved at ~T-90 inactives (or earlier by reporters); None = no designation -> game-day surprise (illness, healthy scratch, late add) or stale roster
+
+== Q2 ourproj (2021-25 regenerated, injuries stubbed) proj>8 on DK main slates
+rows 12363 over 86 slates; inactive 995 (0.080), per slate 11.6
+                          n inactive   p_inact  mean_proj  mean_act
+desig                                                              
+Doubtful                 49       49       1.0     11.777     0.000
+IR/Reserve(no desig)    178      178       1.0     11.530     0.000
+None                  11126      410  0.036851     13.504    12.791
+NotOnRoster               5        5       1.0      9.451     0.000
+Out                     212      212       1.0     11.810     0.000
+Questionable            793      141  0.177806     13.105     9.598
+inactive proj>8: projected pts wasted 10948 total, 127.3/slate, mean proj 11.0
+share of inactive proj>8 knowable from Friday report (Out/Doubtful/IR): 0.441; Questionable: 0.142; no designation: 0.412; not on roster: 0.005
+-- inactive proj>8 by kind (per slate)
+kind
+friday_known                   5.10
+active_backupQB_no_snaps       3.59
+questionable                   1.64
+active_nonQB_no_stats          0.84
+surprise_INA_no_desig          0.34
+not_on_roster(cut/PS/trade)    0.06
+
+== Availability-weighting backtest on ourproj proj>8 2021-25 (player-level, actual PPR proxy)
+fit 2016-20: P(inact|Doubtful)=0.976 P(inact|None)=0.047 P(inact|Q,prac)={'\n    ': 0.0, 'DNP': 0.571, 'Full': 0.098, 'Limited': 0.244}
+none           RMSE 8.118 MAE 6.576 bias 1.282
+hard_outdoubt  RMSE 7.791 MAE 6.160 bias 0.866
+prob           RMSE 7.725 MAE 6.093 bias 0.636
+(pipeline-equivalent is hard_outdoubt; 'prob' multiplies Q/D projections by fitted availability. Note: for lineup EV the right use is availability-weighted mean for ranking, not shading Q players who are later confirmed active.)

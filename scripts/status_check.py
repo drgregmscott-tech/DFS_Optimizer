@@ -499,7 +499,7 @@ def check_staleness(status_path: Path) -> None:
         )
 
 
-def refresh_ownership(df: pd.DataFrame, site: str) -> pd.DataFrame:
+def refresh_ownership(df: pd.DataFrame, site: str, week: int | None = None) -> pd.DataFrame:
     """Recompute chalk_score / estimated_ownership_pct on a final_projections
     frame whose final_projection values changed after the build (OUT
     zeroing). Uses the same classic/Showdown functions the build calls, so
@@ -509,7 +509,9 @@ def refresh_ownership(df: pd.DataFrame, site: str) -> pd.DataFrame:
     cols = list(df.columns)
     base = df.drop(columns=["chalk_score", "estimated_ownership_pct"], errors="ignore")
     showdown = "slate_format" in base.columns and (base["slate_format"] == "showdown").any()
-    refreshed = add_showdown_ownership_columns(base, site) if showdown else add_ownership_columns(base, site)
+    # week feeds ownership v2 (season is inferred from data/weekly_stats_*.parquet
+    # or env DFS_SEASON); v2 recomputes vacated usage from the post-OUT pool.
+    refreshed = add_showdown_ownership_columns(base, site) if showdown else add_ownership_columns(base, site, week=week)
     return refreshed[[c for c in cols if c in refreshed.columns]
                      + [c for c in refreshed.columns if c not in cols]]
 
@@ -599,7 +601,7 @@ def run_apply(site: str, week: int, status_file: str, projections_file: str | No
     # deflated every real player's estimate. Recompute ownership from the
     # post-zeroing projections whenever this apply step changed anything.
     if (n_out or n_doubtful_zeroed) and "estimated_ownership_pct" in merged.columns:
-        merged = refresh_ownership(merged, site)
+        merged = refresh_ownership(merged, site, week=week)
 
     n_doubtful = (merged["injury_status"] == "DOUBTFUL").sum()
     n_questionable = (merged["injury_status"] == "QUESTIONABLE").sum()
