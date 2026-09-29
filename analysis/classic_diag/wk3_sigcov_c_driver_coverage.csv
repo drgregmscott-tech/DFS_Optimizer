@@ -1,0 +1,81 @@
+slate,k,our_pos,band,salary,field_pct,my_entries,root_cause,proj_z_pos,rostered
+wk1_early,dandre swift,RB,2_mid-low,6100.0,0.1932209534167119,0,no signal (neutral projection),0.3501122301666246,False
+wk1_early,chris olave,WR,3_mid-high,6700.0,0.2829436287837593,0,good signal ignored/overridden,1.4684330131829633,False
+wk1_early,tyler shough,QB,2_mid-low,5600.0,0.1482689867681711,0,no signal (neutral projection),0.6484907966141903,False
+wk1_early,jalen coker,WR,2_mid-low,4600.0,0.1223491027732463,0,no signal (neutral projection),0.1287768783865425,False
+wk1_early,devaughn vele,WR,1_low,3500.0,0.14863150262824,0,bad signal (projection below pos mean),-1.2919973362460613,False
+wk1_afternoon,ashton jeanty,RB,3_mid-high,6600.0,0.3725448785638859,0,good signal ignored/overridden,1.03714375737229,False
+wk1_afternoon,christian watson,WR,2_mid-low,5900.0,0.1951425554382259,0,no signal (neutral projection),0.8047817568852239,False
+wk1_afternoon,raiders,DST,2_mid-low,2900.0,0.1757127771911298,1,no signal (neutral projection),0.9839104855651551,True
+wk1_afternoon,dallas goedert,TE,2_mid-low,4100.0,0.2610348468848997,0,good signal ignored/overridden,1.6743899336919554,False
+wk1_afternoon,jordan love,QB,2_mid-low,5700.0,0.0502639915522703,0,bad signal (projection below pos mean),-0.3863556232374555,False
+wk1_main,chris olave,WR,3_mid-high,6700.0,0.2779532533164877,0,good signal ignored/overridden,1.7761890117904524,False
+wk1_main,jalen coker,WR,2_mid-low,4600.0,0.0817435249526216,0,no signal (neutral projection),0.341064336244687,False
+wk1_main,derrick henry,RB,3_mid-high,6700.0,0.0687302590018951,0,no signal (neutral projection),0.8877982641871781,False
+wk1_main,dandre swift,RB,2_mid-low,6100.0,0.1040429564118761,0,no signal (neutral projection),0.3675079197288011,False
+wk1_main,dallas goedert,TE,2_mid-low,4100.0,0.1061907770056854,0,good signal ignored/overridden,1.7291587974844544,False
+wk1_main,tyler shough,QB,2_mid-low,5600.0,0.1120656980416929,0,no signal (neutral projection),0.13995742618545,False
+wk1_main,devaughn vele,WR,1_low,3500.0,0.1093493367024636,0,bad signal (projection below pos mean),-1.172329143186409,False
+wk1_main,ashton jeanty,RB,3_mid-high,6600.0,0.0977258370183196,0,no signal (neutral projection),0.4055047036623946,False
+wk1_main,zay flowers,WR,3_mid-high,6400.0,0.0979153506001263,0,good signal ignored/overridden,1.9897404439517452,False
+wk1_main,lamar jackson,QB,3_mid-high,6800.0,0.0597599494630448,0,no signal (neutral projection),0.0438898536079053,False
+wk2_early,devonta smith,WR,3_mid-high,6800.0,0.075575258602491,0,no signal (neutral projection),0.2837640964050475,False
+wk2_early,jamarr chase,WR,4_high,7600.0,0.1982267257758074,0,no signal (neutral projection),0.0470117575398853,False
+wk2_early,dalton schultz,TE,1_low,3200.0,0.2056153683766096,0,no signal (neutral projection),0.5655498757943568,False
+wk2_early,panthers,DST,1_low,2700.0,0.0690310322989233,0,good signal ignored/overridden,1.4854854288816126,False
+wk2_early,chris olave,WR,3_mid-high,7200.0,0.0546759552459362,0,good signal ignored/overridden,1.544982487128112,False
+wk2_afternoon,ceedee lamb,WR,3_mid-high,7300.0,0.3674978867286559,0,good signal ignored/overridden,2.424371029928019,False
+wk2_afternoon,raiders,DST,1_low,2600.0,0.0646661031276416,0,bad signal (projection below pos mean),-0.6675828707257164,False
+wk2_afternoon,jaxon smithnjigba,WR,4_high,8100.0,0.3539729501267963,0,good signal ignored/overridden,2.608395140658507,False
+wk2_afternoon,dak prescott,QB,2_mid-low,6400.0,0.2066779374471682,0,good signal ignored/overridden,1.4225338223196622,False
+wk2_afternoon,jake ferguson,TE,2_mid-low,3800.0,0.1248943364327979,0,bad signal (projection below pos mean),-0.0912757937817022,False
+wk2_main_se3max,ceedee lamb,WR,3_mid-high,7300.0,0.2011617628488445,0,good signal ignored/overridden,1.7819411065680018,False
+wk2_main_se3max,panthers,DST,1_low,2700.0,0.054931178179063,0,good signal ignored/overridden,1.5693488032546266,False
+wk2_main_se3max,dalton schultz,TE,1_low,3200.0,0.2358883697436545,0,no signal (neutral projection),0.1824882076987818,False
+wk2_main_se3max,jaxon smithnjigba,WR,4_high,8100.0,0.0918676600580881,0,good signal ignored/overridden,2.042405290689897,False
+wk2_main_se3max,aaron jones,RB,2_mid-low,5100.0,0.2487056446521025,0,bad signal (projection below pos mean),-0.891872820919374,False
+wk2_main_se3max,dak prescott,QB,2_mid-low,6400.0,0.1399166561434524,0,good signal ignored/overridden,1.41440585003603,False
+wk2_main_se3max,patriots,DST,2_mid-low,3100.0,0.0536052531885339,0,no signal (neutral projection),0.5283507200365024,False
+wk2_main_se3max,jamarr chase,WR,4_high,7600.0,0.1169339563076145,0,bad signal (projection below pos mean),-0.1382949770400625,False
+wk2_main_se3max,stefon diggs,WR,2_mid-low,5300.0,0.095971713600202,0,no signal (neutral projection),0.5966265940762988,False
+wk2_main_se3max,bryce young,QB,1_low,5400.0,0.0507639853516858,0,no signal (neutral projection),0.7486300889783057,False
+wk2_main_mme,dak prescott,QB,2_mid-low,6400.0,0.1183931770033005,5,good signal followed,1.4202765645693731,True
+wk2_main_mme,ceedee lamb,WR,3_mid-high,7300.0,0.1760667751702566,4,good signal followed,1.9177453229192485,True
+wk2_main_mme,dalton schultz,TE,1_low,3200.0,0.2057537210972804,0,no signal (neutral projection),0.0890138902331303,False
+wk2_main_mme,jaxon smithnjigba,WR,4_high,8100.0,0.1203298751602549,5,good signal followed,2.186095202142003,True
+wk2_main_mme,garrett wilson,WR,3_mid-high,6000.0,0.1264672988970822,0,no signal (neutral projection),0.6212351933227191,False
+wk2_main_mme,aaron jones,RB,2_mid-low,5100.0,0.20492630545276,0,bad signal (projection below pos mean),-0.875487940708983,False
+wk2_main_mme,brock purdy,QB,2_mid-low,6200.0,0.1114010601831225,5,good signal followed,1.6111424025772634,True
+wk2_main_mme,stefon diggs,WR,2_mid-low,5300.0,0.0937525572598903,5,no signal (neutral projection),0.6965447676856429,True
+wk2_main_mme,jamarr chase,WR,4_high,7600.0,0.1143924859748502,0,bad signal (projection below pos mean),-0.0606269544540002,False
+wk2_main_mme,bryce young,QB,1_low,5400.0,0.0554277557032578,0,no signal (neutral projection),0.7987937649566224,False
+wk3_early,jahmyr gibbs,RB,4_high,8800.0,0.2879139422062856,0,good signal ignored/overridden,2.5163006593167703,False
+wk3_early,kenyon sadiq,TE,2_mid-low,3500.0,0.0674963087956127,0,bad signal (projection below pos mean),-0.664377579989031,False
+wk3_early,isaiah williams,WR,1_low,3300.0,0.0734022358152288,0,bad signal (projection below pos mean),-0.9440066641057852,False
+wk3_early,geno smith,QB,1_low,4900.0,0.0900653870491457,0,bad signal (projection below pos mean),-0.5948949242102404,False
+wk3_early,jaylen warren,RB,2_mid-low,5700.0,0.0970259438936933,1,no signal (neutral projection),0.01042501286238,True
+wk3_afternoon,juwan johnson,TE,2_mid-low,3700.0,0.2258813595102385,0,bad signal (projection below pos mean),-0.5202197873707495,False
+wk3_afternoon,george kittle,TE,3_mid-high,4800.0,0.2404475406375343,0,no signal (neutral projection),0.4519007786077641,False
+wk3_afternoon,vikings,DST,2_mid-low,3100.0,0.3607768629934558,1,no signal (neutral projection),0.8929168250141859,True
+wk3_afternoon,michael wilson,WR,2_mid-low,5200.0,0.0903525438040954,0,no signal (neutral projection),0.3892094052639852,False
+wk3_afternoon,brock bowers,TE,4_high,6600.0,0.0527760185771585,0,no signal (neutral projection),0.2856819769565211,False
+wk3_main_se3max,jahmyr gibbs,RB,4_high,8800.0,0.2462121212121212,1,good signal followed,2.4447785171973715,True
+wk3_main_se3max,juwan johnson,TE,2_mid-low,3700.0,0.0622474747474747,0,bad signal (projection below pos mean),-0.5295671338950706,False
+wk3_main_se3max,kenyon sadiq,TE,2_mid-low,3500.0,0.0686868686868686,0,bad signal (projection below pos mean),-1.1310468210056317,False
+wk3_main_se3max,garrett wilson,WR,3_mid-high,6300.0,0.2954545454545454,0,good signal ignored/overridden,1.125198678025501,False
+wk3_main_se3max,geno smith,QB,1_low,4900.0,0.0733585858585858,0,bad signal (projection below pos mean),-0.7636968770183157,False
+wk3_main_se3max,jaylen warren,RB,2_mid-low,5700.0,0.1174873737373737,0,bad signal (projection below pos mean),-0.009166665084203,False
+wk3_main_se3max,george kittle,TE,3_mid-high,4800.0,0.0773358585858585,0,no signal (neutral projection),0.5291965139158731,False
+wk3_main_se3max,tyler shough,QB,1_low,5400.0,0.1678030303030303,0,no signal (neutral projection),0.204771241445425,False
+wk3_main_se3max,brock purdy,QB,3_mid-high,6500.0,0.0644570707070707,0,no signal (neutral projection),0.9633836232853008,False
+wk3_main_se3max,isaiah williams,WR,1_low,3300.0,0.0753787878787878,0,bad signal (projection below pos mean),-1.2865414397198456,False
+wk3_main_mme,garrett wilson,WR,3_mid-high,6300.0,0.2363142898971812,2,good signal followed,1.1641334526572842,True
+wk3_main_mme,jaylen warren,RB,2_mid-low,5700.0,0.1243172629705958,2,no signal (neutral projection),0.0221670569384517,True
+wk3_main_mme,geno smith,QB,1_low,4900.0,0.0518035519217991,0,bad signal (projection below pos mean),-0.7636968770183155,False
+wk3_main_mme,george kittle,TE,3_mid-high,4800.0,0.073234456119013,2,no signal (neutral projection),0.6829503875851327,True
+wk3_main_mme,jahmyr gibbs,RB,4_high,8800.0,0.2561122560446862,4,good signal followed,2.491196599705681,True
+wk3_main_mme,juwan johnson,TE,2_mid-low,3700.0,0.0686397062963838,1,bad signal (projection below pos mean),-0.3499745909334041,True
+wk3_main_mme,titans,DST,1_low,2400.0,0.2337128506593691,7,no signal (neutral projection),0.4037177934058937,True
+wk3_main_mme,tyler shough,QB,1_low,5400.0,0.1323805984436411,0,no signal (neutral projection),0.204771241445425,False
+wk3_main_mme,brock purdy,QB,3_mid-high,6500.0,0.0697095622599862,2,no signal (neutral projection),0.9633836232853006,True
+wk3_main_mme,isaiah williams,WR,1_low,3300.0,0.0540333569827809,2,bad signal (projection below pos mean),-1.220279609956722,True

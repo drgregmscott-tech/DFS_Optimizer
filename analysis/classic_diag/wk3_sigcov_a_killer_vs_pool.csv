@@ -1,0 +1,7 @@
+cut,n_a,rate_a,n_b,rate_b,odds,p
+z>=1 share: killers vs rest of eligible pool,80,0.35,482,0.27385892116182575,1.4277389277389276,0.18109672019382322
+z>=1 share: killers vs non-killer busts (bottom-quartile),38,0.21052631578947367,65,0.18461538461538463,1.1777777777777778,0.7991200516538058
+killer-flag rate: strong busts vs other busts,20,0.4,83,0.3614457831325301,,
+killer fpts pct-rank within pos (median),80,0.2631578947368421,482,0.6590909090909091,,
+killer field% (median),80,0.09783380059277795,482,0.115527892993482,,
+field% median: strong vs other,160,0.17191954804617932,402,0.1005050505050505,,
