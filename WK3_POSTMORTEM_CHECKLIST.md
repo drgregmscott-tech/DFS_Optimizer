@@ -52,6 +52,8 @@ one topic pulls in four adjacent ones and the original thread gets diluted or dr
   (b) thread the choice through the frontend UI, the worker dispatch payload, and the workflow's `optimizer.py` invocation,
   (c) verify it doesn't collide with the per-request `client_id` / on-demand-run fixes shipped 2026-09-28 (§1). Frontend +
   worker + workflow change — deserves its own session, not a tack-on.
+  **[RESOLVED / SHIPPED 2026-09-29]** Duplicate of the "Partial construction-rule-capture gap" item's own follow-up
+  below — see that entry's resolution note for the full writeup (same gap, same fix, same session).
 
 - **[2026-09-29] Partial construction-rule-capture gap — own dedicated session, user will open separately.** From §2 open
   thread 2. This session enforced 5 of the Supported/Weak Showdown construction rules as actual optimizer levers
@@ -86,6 +88,20 @@ one topic pulls in four adjacent ones and the original thread gets diluted or dr
   "soft" call was a misread. (4) `construction_lint.py` now runs after every `optimizer.py` build (log + `.lint.txt` sidecar),
   never blocking. **New gap found:** the UI dispatch passes no `--preset`/`--sd-*` flags, so UI Showdown builds get none of the
   Showdown rules. Needs its own session (frontend + worker + workflow).
+  **[RESOLVED / SHIPPED 2026-09-29]** This session (dedicated, per the note above). Decision on (a): the UI always sends
+  all 9 `--sd-*` flags for a Showdown pool now — never silently off — defaulting to the `showdown_se` bundle's values;
+  two new built-in presets ("Showdown SE"/"Showdown GPP") let the user switch to the `showdown_gpp` weights, mirroring
+  the existing Cash/SE-3Max/MME preset UX. (b) Threaded through all three layers: `index.html`'s `buildDispatchParams()`
+  (new "Showdown Construction Rules" panel, shown only for Showdown pools), `optimizer_api.js`'s `passthroughKeys`
+  allowlist, and `run_optimizer_dispatch.yml`'s `flag()`/`bool_flag()` calls into `optimizer.py`. (c) No collision with
+  the §1 `client_id` fix — verified by leaving every existing line of those files untouched, added-only diffs. Verified
+  live end-to-end, twice: a UI browser test (real Wk3 Atl/GB Showdown pool, intercepted dispatch call, confirmed all 9
+  params sent with correct values for both presets, confirmed zero `sd_*` params on a classic pool) and a real GitHub
+  Actions dispatch against the pushed commit (`1895a56`) — run
+  [36554083874](https://github.com/drgregmscott-tech/DFS_Optimizer/actions/runs/36554083874) shows `optimizer.py`
+  invoked with all 9 `--sd-*` flags, and its own `construction_lint.py` output confirms zero DST captains (the hard
+  rule held) versus a same-day baseline run *before* the push showing `SD_stack_depth backstop` violations at 30% with
+  no flags at all. Committed as `1895a56`. §2's two open threads are now both closed — see below.
 
 - **[2026-09-28] Time lost to on-demand-optimizer-run debugging eating real review time —
   own dedicated session.** From §1: during the last ~20 minutes before DK main lock on
@@ -220,7 +236,7 @@ slates, not just the 3 examples above, before drawing conclusions about what's c
 
 ---
 
-## 2. FC data dives — classic + showdown [NOT fully closed — see 2 open threads below; classic still open, see §3]
+## 2. FC data dives — classic + showdown [NOT fully closed — open thread 1 pending Wk4 data; open thread 2 resolved 2026-09-29; classic still open, see §3]
 
 Two FC-derived analyses landed 2026-09-26 and were discussed/acted on 2026-09-28. Both are folded into `SHOWDOWN_RULES.md` and
 superseded where real data replaced simulated-field conclusions — but §2 as a whole is **not** fully closed; two threads remain,
@@ -237,7 +253,7 @@ tracked explicitly rather than left implicit:
       resolved this session via `analysis/showdown_history/lineup_study_qb_partner_ctrl.py` — that part does not need redoing.
       The *chalk-tilt* idea was also independently re-tested with OUR modeled ownership and found Not supported pre-lock — that
       part is closed, only the `lsal` ownership-calibration candidate itself is still pending real Wk4 data.
-- [ ] **Open thread 2 — partial rule-capture gap, routed to the Parking Lot below for its own dedicated session.** This
+- [x] **Open thread 2 — partial rule-capture gap, routed to the Parking Lot below for its own dedicated session.** This
       session built and enforced 5 real-field-Supported construction rules as actual optimizer levers (`--sd-require-cpt-qb`,
       `--sd-cheap-tier-penalty`, `--sd-stack-cap`/`-penalty`, `--sd-qb-partner-bonus`, `--sd-exclude-cpt-positions`/
       `--sd-k-cpt-penalty` — the last pair added after a real-slate sanity check caught 21% of captains landing on K/DST with
@@ -245,6 +261,11 @@ tracked explicitly rather than left implicit:
       tier (cheap vs. expensive), which side gets the heavy half of a 4-2/3-3 split, chalk-CPT ownership tier — remain purely
       informational. Nothing in the build pipeline checks or warns on those; a build can silently violate them. Same failure
       shape as the classic postmortem's "signal found, never captured at build time" gap (§4/Step 4d).
+      **[RESOLVED 2026-09-29]** The construction-rule levers themselves (5, then the DST/K pair, then this session's UI
+      wiring) are now fully captured end-to-end for the enforced tier. The remaining informational-only rules (DST price
+      tier, heavy-side-split, chalk-CPT ownership tier) are a separate, smaller scope — tracked in
+      `WK3_CONSTRUCTION_RULE_AUDIT.md`'s inventory, not blocking this thread's close. See the Parking Lot entry below for
+      the full resolution writeup (UI dispatch fix, verified live twice).
 
 **Real work this session (superseded the FC-derived analysis above): 142 REAL DK Showdown contests, 14.9M entries, 2022-2026**
 (not simulated — see §3's Showdown item). Real field cash-lift/return by construction shape, rule-by-rule verdicts against
