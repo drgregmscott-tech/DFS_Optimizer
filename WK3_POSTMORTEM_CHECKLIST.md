@@ -152,6 +152,41 @@ one topic pulls in four adjacent ones and the original thread gets diluted or dr
   prioritize the cheap band specifically rather than treating all salary tiers as equally in need
   of the fix.
 
+- **[2026-09-29] New classic construction-rule levers from the Lineup Study — own session, mirrors the
+  Showdown `--sd-*` wiring work.** `HANDOFF_classic_lineupstudy_findings_2026-09-29.md` §3/§5 found three
+  Supported-at-scale shape effects that don't exist as optimizer levers yet (checked directly, not
+  assumed — grepped `scripts/optimizer.py` for existing flags, found none): (a) DST salary band
+  $2.8-3.1k outperforms $3.6k+ (4/4 seasons, e.g. SE +0.8 cash / 1.07x vs -2.3 cash / 0.90x); (b) punt
+  count — 0 is bad (-1.9 to -2.3), 1 is the sweet spot, 3+ is bad (-2.7 to -4.7); (c) FLEX=RB beats
+  FLEX=WR (+0.7 to +1.0 vs -1.2 to -1.5, 4/4, both directions). All three are real but smaller-magnitude
+  than the construction-rule-sized effects the Showdown session wired up, so worth their own build +
+  test session rather than a rushed add. Needs: (1) decide hard vs. soft term per the
+  `WK3_CONSTRUCTION_RULE_AUDIT.md` four-question tier rule from the Showdown session, (2) implement as
+  new `--cl-*` (or similarly namespaced) flags following the existing `--sd-*` pattern, (3) thread
+  through UI/worker/workflow the same way the Showdown UI-dispatch gap got fixed, (4) verify against a
+  real classic slate before shipping.
+
+- **[2026-09-29] Pre-lock ownership re-test for the classic chalk finding — own session, gates any
+  chalk-tilt construction lever.** The single strongest result in the classic Lineup Study
+  (`HANDOFF_classic_lineupstudy_findings_2026-09-29.md` §4/§6: realized ownership predicts cash rate and
+  return beyond FC's own projection, at every position, 4/4 seasons) uses **post-lock, realized**
+  ownership. The Showdown sibling session already found the analogous chalk-tilt idea failed when
+  re-tested against our own **pre-lock modeled** ownership (checklist §2 Open thread 1). This does NOT
+  need FC data — it uses `ownership_actual_log.csv` against the 410 already-pulled classic contests — so
+  the FC account disable does not block it. Needs: rebuild §4's headline test substituting our pre-lock
+  modeled ownership for realized ownership, same methodology, before any chalk/ownership-based
+  construction lever for classic can be considered for shipping.
+
+- **[2026-09-29] gmscott81 2022-24 vs 2025-26 chalk-exposure regime change — own session, possibly
+  connects to §0.** `HANDOFF_classic_lineupstudy_findings_2026-09-29.md` TL;DR and §7 found gmscott81's
+  own 143 entries in this dataset cashed ~63% (vs ~28% base) in 2022-24 while sitting at the 85th
+  percentile of contest ownership, then dropped to base-rate cashing in 2025-26 while sitting at only
+  the 54th percentile. QB+2 usage was low in both eras (8% vs 2%), so that doesn't explain it. Small n
+  (87 vs 56 entries, 40 of the 56 recent ones from two 2026 MME pools) — directional only. Worth asking
+  in its own session whether the build process or ownership source changed at the 2025 boundary, and
+  whether this is a distinct thread from or the same thread as §0's "three straight weeks missing"
+  investigation — don't assume either way without looking.
+
 ---
 
 ## 0. The core question (do this first, unstructured)
@@ -304,15 +339,28 @@ tracked explicitly rather than left implicit:
       New Supported checks: DST not facing own players; DST $2.8-3.1k over $3.6k+.
       gmscott81's own entries show a regime change. 2022-24 cashed ~63% at the 85th ownership percentile; 2025-26 cashed at base
       at the 54th (small n, directional).
-      Nothing shipped. The chalk result uses post-lock ownership and needs a pre-lock re-test before any tilt.
-      **Data gap: 2026 has only wk1-2 classic, so wk3 is missing. Pull it before the 10/02 trial end.**
+      **[FOLLOW-UP 2026-09-29]** FC account is now disabled — the 2026 wk3+ pull gap above can no longer be filled.
+      Working from the 410-contest pull as final. Session close-out (this session, WK3 §3):
+      - **Shipped (no code change needed, already covered / already wired):**
+        1. DST-facing-own-player is already a hard, default-on classic constraint (Session 17 decision #56,
+           `add_skill_vs_opp_dst_constraints`) — the new data (-1.9 to -3.0 cash pts, 0/4 seasons in its favor) just
+           confirms it at scale. Nothing to build.
+        2. MME QB+2 exposure: `--stack-size` already exists and is fully wired UI → worker → workflow → `optimizer.py`
+           (`DEFAULT_STACK_SIZE=1`, `add_stack_constraints`). The Phase 2 "0/40 QB+2 in MME" finding was never a missing
+           feature — every MME dispatch just always requested the default `stack_size=1`. No code needed: build MME
+           pools going forward as **two dispatches merged into one pool** (majority `--stack-size 1`, roughly a
+           25-30% share at `--stack-size 2`, matching the real field's ~30% QB+2 rate) instead of one uniform batch.
+           This is a workflow habit change, not an optimizer change.
+      - **Parked below (real code, own session):** new soft-constraint levers (DST price band, punt-count guardrail,
+        RB>WR FLEX preference), the pre-lock ownership re-test that gates any chalk-tilt lever, and the gmscott81
+        2022-24→2025-26 regime-change question.
 
 See memory `reference_fc_lineup_study_extraction.md` for extraction mechanics and known gaps (a few big 20-max contests
 only partially captured; SE_big missing a couple weeks — confirmed in the Showdown analysis that the ~25k-row cap issue
 is classic-only and does NOT affect the Showdown files, which are complete).
 
-- [ ] Trial ends **2026-10-02** — if there's anything left to pull (2026 wk3+, trimmed contest types), do that first before
-      it's gone.
+- [x] Trial ends **2026-10-02** — **moot: FC account disabled 2026-09-29, no further pulls possible.** Working from the
+      410-contest classic pull and 142-contest Showdown pull as final.
 - [ ] First real analysis pass: what does the actual realized field's construction look like (stack rates, salary usage,
       chalk concentration) versus what our simulated fields / replay assumptions have been using? This directly bears on
       the Showdown ownership refit above (simulated field is known to under-represent real correlation/stacking) and
