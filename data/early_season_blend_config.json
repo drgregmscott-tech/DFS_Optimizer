@@ -1,5 +1,5 @@
 {
- "_note": "Early-season salary blend (analysis/projection_v2 task1b_week_refit.py). final = E + a + w*(S - E), S = m*salary_k + b per pos; QB/RB/WR/TE, DK classic only, after the projection stack. Weeks absent = no blend (wk3-6 absent; QB 7+ zeroed, QB recal handles QBs wk3+). Coefficients only, fit LOSO 2021-25; owner approved committing coefficients 2026-09-29 (no FC rows).",
+ "_note": "Early-season salary blend (analysis/projection_v2 task1b_week_refit.py). final = E + a + w*(S - E), S = m*salary_k + b per pos; QB/RB/WR/TE, DK classic only, after the projection stack. Weeks absent = no blend (wk3-6 absent; QB 7+ zeroed, QB recal handles QBs wk3+). Coefficients only, fit LOSO 2021-25; owner approved committing coefficients 2026-09-29 (no FC rows). DISABLED 2026-09-29: lineup replay (analysis/lineup_replay) found wk1-2 blend worse with props on; weights were fit without props. Refit with props before re-enabling (restore from weeks_disabled_2026-09-29).",
  "fit": "LOSO 2021-25, ridge lam=30 on w, per week x {QB, SKILL}",
  "max_week": 18,
  "sal_line": {
@@ -20,7 +20,7 @@
    -5.0253526744657515
   ]
  },
- "weeks": {
+ "weeks_disabled_2026-09-29": {
   "1": {
    "QB": {
     "a": 0.5911709967321777,
@@ -51,5 +51,6 @@
     "w": 0.31041665228268805
    }
   }
- }
+ },
+ "weeks": {}
 }

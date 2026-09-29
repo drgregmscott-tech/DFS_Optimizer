@@ -2812,6 +2812,7 @@ def build_multi_lineup(site: str, slate_id: str, n_lineups: int = DEFAULT_N_LINE
         )
 
     all_lineups = pd.concat(all_lineup_frames, ignore_index=True)
+    all_lineups = _rank_lineups_by_projection(all_lineups)
     return all_lineups, exposure_count, n_generated
 
 
@@ -3852,10 +3853,36 @@ def build_multi_showdown_lineup(site: str, slate_id: str,
         )
 
     all_lineups = pd.concat(all_lineup_frames, ignore_index=True)
+    all_lineups = _rank_lineups_by_projection(all_lineups)
     return all_lineups, exposure_count, n_generated
 
 
 PRESETS_PATH = REPO_ROOT / "data" / "optimizer_presets.json"
+
+
+def _rank_lineups_by_projection(lineups):
+    """Renumber lineup_id 1..N by total projection, best first (ties keep build order).
+
+    WK3 postmortem S4: the lineup replay found the pool's top-projected lineup beats the pool average by 2-10 pts,
+    so a batch is written best-first and the UI shows lineup 1 as the top pick. Pure renumbering/reordering: rows,
+    exposure and every other column are untouched. Off: env DFS_RANK_LINEUPS=0.
+    """
+    import os
+    if os.environ.get("DFS_RANK_LINEUPS", "1").strip().lower() in ("0", "false", "off", "no"):
+        return lineups
+    try:
+        if lineups.empty or "lineup_id" not in lineups.columns or "projection" not in lineups.columns:
+            return lineups
+        tot = lineups.groupby("lineup_id", sort=False)["projection"].sum().reset_index()
+        tot["_b"] = range(len(tot))
+        tot = tot.sort_values(["projection", "_b"], ascending=[False, True])
+        new_id = {old: i + 1 for i, old in enumerate(tot["lineup_id"])}
+        out = lineups.copy()
+        out["lineup_id"] = out["lineup_id"].map(new_id)
+        return out.sort_values("lineup_id", kind="stable").reset_index(drop=True)
+    except Exception as exc:  # noqa: BLE001 -- ranking must never break a build
+        print(f"WARNING: lineup ranking skipped ({type(exc).__name__}: {exc}).", file=sys.stderr)
+        return lineups
 
 
 def _load_preset_overrides():
