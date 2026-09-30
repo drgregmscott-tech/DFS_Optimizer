@@ -149,6 +149,17 @@ one topic pulls in four adjacent ones and the original thread gets diluted or dr
   common thread beyond cheap band / cheap QB; (c) track 2 watch: real-lineup busts cluster at
   expensive QB/studs, missed drivers at the cheap band.
 
+- **[2026-09-30] OPEN, own session (picks up §4 Step B): cheap-band WR/TE ownership root cause — UPDATES the 2026-09-28
+  pointer below, which predates today's findings.** Facts so far: (1) our ownership underweights cheap WR/TE vs the field in every
+  season 2021-25 (pred-minus-real vs points corr -.13 to -.18; -.22 on 2026); (2) our *projection* is NOT worse than FC's on cheap WR/TE
+  (hist MAE 5.31 vs FC 5.97, rank corr .274 vs .157), so this is an ownership problem, not a projection problem; (3) ownership v2
+  narrowed but did not close it: cheap WR/TE corr .65 vs FC's Own .81 (2021-23, 54 slates); (4) the "field has news we lack" story was
+  a guess and is NOT established; the user pointed out news breaks early in the week and props should capture it; (5) in the FC-Own
+  reverse-engineering only two feature groups added unique signal: role / vacated-teammate usage and Vegas totals; (6) target-share/
+  snap/route modelling improves targets ~9% but barely moves DK points, so it isn't the lever. NEXT STEP: test, don't assume, what the
+  field prices in for cheap WR/TE — starting from role/vacated usage (who's OUT, depth/role change) and Vegas game environment; compare
+  hits/misses of v2 vs FC Own player-by-player on 2021-23. Files: `analysis/ownership_v2/RESULTS.md`, `analysis/model_vs_fc/RESULTS.md`
+  (local-only, FC-derived). Also in `HANDOFF_wk3_postmortem_s4_next_session_2026-09-29.md` open item 4.
 - **[2026-09-28] Cheap-tier WR/TE ownership calibration — priority pointer for the standing
   ownership refit (§4 below), not a new separate workstream.** Phase 1 Step 5
   (`WK3_ROOT_CAUSE_FINDINGS.md` Step 5) found the ownership-vs-points miscalibration is not spread
@@ -552,3 +563,16 @@ FC-derived RESULTS.md files live locally in `analysis/*/RESULTS.md` (not committ
   Questionable weighting available but user judges it too variable; human inactives check Sunday morning is the real solver. No paid X.
   Timing logger `scripts/inactives_timing_log.py` to log when ESPN/Sleeper first show inactives (run Sunday Wk4).
 - **Open:** QB residual gap vs FC from Wk3+ (~0.5 MAE, not bias) needs its own session; cheap WR/TE ownership info gap remains track 2.
+
+### §4 plan A-H status (2026-09-30, user decisions)
+- **A. CLOSED.** Wk3 results + real ownership logged from the DK contest-results exports (`data/contest_results/`, `data/ownership_actual_log.csv`).
+  The FC Wk3 Rewind export is intentionally NOT being pulled (FC is not a live input; DK contest data is the source of truth going forward).
+- **B. CLOSED.** Ownership v2 + DST shipped (see outcome section above).
+- **C. OPEN (this season).** Lambda re-verify on MME/GPP presets with the new inputs. Ownership v2 has no effect at lambda 0, so it only
+  matters where lambda > 0; untested.
+- **D. CLOSED.** QB recalibration shipped.
+- **E. OPEN, low priority.** Sigma/yards double-count. Only matters where sigma is consumed (lambda > 0 presets, p10/p90 has no consumer); size it
+  as part of C before spending time.
+- **F. DROPPED.** Week-1 sentinel path was a next-season item; not pursued. Only work that improves this season's results.
+- **G. IN PROGRESS.** Inactives: sources ranked, timing logger + diff script built, human check on Sunday. Live ESPN/Sleeper timing test = Wk4 Sunday.
+- **H. CLOSED.** FC-vs-ours re-run done (model_vs_fc + lineup replay).
