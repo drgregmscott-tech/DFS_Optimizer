@@ -38,7 +38,7 @@
     "stack-mode": "qb",
     "stack-size": 2,
     "bring-back": true,
-    "randomization-pct": 20,
+    "randomization-pct": 5,
     "lambda": 0
   },
   "showdown_se": {
