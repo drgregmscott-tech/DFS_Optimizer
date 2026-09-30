@@ -47,6 +47,7 @@ from ownership_heuristic import (
     compute_position_slot_budgets,
 )
 import salary_anchor
+import dst_model
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 DATA_DIR = REPO_ROOT / "data"
@@ -109,6 +110,41 @@ def load_vegas_implied_totals(slate_id):
             f"{path} not found. Run vegas_odds.py --slate-id {slate_id} first (Session 2.3)."
         )
     return pd.read_csv(path)
+
+
+def load_team_plays_per_game(season, week):
+    """WK3 postmortem §5 item 4: offensive plays/game per team, a pace-of-play
+    proxy the user asked for (plays run, not seconds/play -- no play-by-play
+    timing data is ingested anywhere in this pipeline, only nflverse's
+    per-game team_stats aggregates).
+
+    plays = attempts (pass) + carries (rush) + sacks_suffered, averaged over
+    the current season's games strictly before `week` (reuses dst_model's
+    canonical_team + pre-kickoff-safe load_team_stats, same file DST already
+    depends on -- no new ingestion). A team with no games yet this season
+    (early week, bye) falls back to its full prior-season average; a team in
+    neither falls back to the league average.
+    """
+    def _plays_by_team(df):
+        if df.empty:
+            return pd.Series(dtype=float)
+        plays = (df["attempts"].fillna(0) + df["carries"].fillna(0)
+                 + df["sacks_suffered"].fillna(0))
+        return plays.groupby(df["team"]).mean()
+
+    cur = dst_model.load_team_stats(season, allow_missing=True)
+    cur = cur[cur["week"] < week] if not cur.empty else cur
+    prev = dst_model.load_team_stats(season - 1, allow_missing=True)
+
+    cur_avg = _plays_by_team(cur)
+    prev_avg = _plays_by_team(prev)
+    league_avg = float(prev_avg.mean()) if len(prev_avg) else (
+        float(cur_avg.mean()) if len(cur_avg) else 63.0
+    )
+    teams = set(cur_avg.index) | set(prev_avg.index)
+    ppg = {t: (cur_avg[t] if t in cur_avg.index and cur_avg[t] > 0
+               else prev_avg.get(t, league_avg)) for t in teams}
+    return pd.Series(ppg, name="plays_per_game"), league_avg
 
 
 def load_salaries(site, slate_id):
@@ -1005,6 +1041,9 @@ def build_final_projections(site, season, week, slate_id,
         out["roster_role"] = None
         out["slate_format"] = "classic"
         out["ownership_available"] = True
+
+    ppg, league_avg_ppg = load_team_plays_per_game(season, week)
+    out["plays_per_game"] = out["team"].map(ppg).fillna(league_avg_ppg).round(1)
 
     out = out.sort_values("final_projection", ascending=False).reset_index(drop=True)
     return out

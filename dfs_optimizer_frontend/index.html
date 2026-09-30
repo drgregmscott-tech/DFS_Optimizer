@@ -836,6 +836,21 @@
     margin-top: 6px;
   }
 
+  .field-label-hint {
+    display: inline-block;
+    margin-left: 4px;
+    color: var(--dimmer);
+    border: 1px solid var(--line-soft);
+    border-radius: 50%;
+    width: 13px;
+    height: 13px;
+    line-height: 12px;
+    font-size: 10px;
+    text-align: center;
+    cursor: help;
+    user-select: none;
+  }
+
   .stack-explain {
     font-size: 12px;
     line-height: 1.5;
@@ -1331,7 +1346,7 @@
   }
   .overview-row {
     display: grid;
-    grid-template-columns: 1fr 90px;
+    grid-template-columns: 1fr 60px 100px 50px;
     padding: 8px 12px;
     border-bottom: 1px solid var(--line-soft);
     font-size: 12px;
@@ -1602,26 +1617,23 @@ in this browser's localStorage.</p>
           <input type="range" id="ctrlMinSalarySlider" min="0" max="50000" step="100" value="49700" style="width:100%; margin-top:6px;">
         </div>
         <div id="wrapMinProjectionField">
-          <span class="field-label">Minimum Projection</span>
+          <span class="field-label">Minimum Projection<span class="field-label-hint" title="Excludes any player projected below this many points from the pool entirely, before the solver runs (0 = no floor). Locked players are always exempt.">?</span></span>
           <input type="number" id="ctrlMinProjection" min="0" step="0.5" value="0" placeholder="0 = no floor">
-          <div class="hint" style="margin-top:4px">Excludes any player projected below this many points from the pool entirely, before the solver runs (0 = no floor). Locked players are always exempt.</div>
         </div>
         <div id="wrapMinTotalOwnershipField">
-          <span class="field-label">Minimum Total Ownership</span>
+          <span class="field-label">Minimum Total Ownership<span class="field-label-hint" title="Requires the lineup's summed ownership to be at least this much (0 = no floor; same units as &quot;Total Own&quot; on a built lineup, e.g. 130). Set very high to see a &quot;super chalk&quot; build for comparison against the true optimal.">?</span></span>
           <input type="number" id="ctrlMinTotalOwnership" min="0" step="1" value="0" placeholder="0 = no floor">
-          <div class="hint" style="margin-top:4px">Requires the lineup's summed ownership to be at least this much (0 = no floor; same units as "Total Own" on a built lineup, e.g. 130). Set very high to see a "super chalk" build for comparison against the true optimal.</div>
         </div>
         <div id="wrapParticipationFloorsField">
-          <span class="field-label">Participation Floors</span>
+          <span class="field-label">Participation Floors<span class="field-label-hint" title="Excludes a player from the pool if his participation (share of his team's last 5 played games he actually appeared in) falls below his position's floor here -- catches a backup or a still-injured player a point projection alone can miss. ON by default. Locked players are always exempt. Format: POSITION:FLOOR comma-separated, 0.0-1.0. Clear the field to disable entirely.">?</span></span>
           <input type="text" id="ctrlParticipationFloors" value="QB:0.6,RB:0.4,TE:0.4" placeholder="e.g. QB:0.6,RB:0.4,TE:0.4 -- blank disables">
-          <div class="hint" style="margin-top:4px">Excludes a player from the pool if his participation (share of his team's last 5 played games he actually appeared in) falls below his position's floor here -- catches a backup or a still-injured player a point projection alone can miss. ON by default. Locked players are always exempt -- lock in a player you know is a real exception (e.g. a starter confirmed back from injury). Format: POSITION:FLOOR comma-separated, 0.0-1.0. Clear the field to disable entirely.</div>
         </div>
         <div>
           <span class="field-label">Lambda (variance penalty)</span>
           <input type="number" id="ctrlLambda" step="0.001" value="0" placeholder="0 = pure point-maximization">
         </div>
         <div id="wrapDartExposureField" style="grid-column:1/-1;">
-          <span class="field-label">Dart Exposure Cap</span>
+          <span class="field-label">Dart Exposure Cap<span class="field-label-hint" title="Any non-DST player whose simulated 10th-percentile outcome (statline_p10) falls below the Floor Threshold is a &quot;dart&quot; -- capped at Cap % of this batch's lineups, unless he's on this batch's own stack team. DST is always exempt (every DST's floor simulates as a flat 0 regardless of matchup -- use the DST's own opponent implied total instead). Classic slates only; needs the same --sigma-recalibration build as Lambda.">?</span></span>
           <label class="checkbox-row" style="margin-top:0;cursor:pointer;">
             <input type="checkbox" id="ctrlDartExposureEnabled">
             Cap dead-money "dart" plays across this batch
@@ -1636,7 +1648,6 @@ in this browser's localStorage.</p>
               <input type="number" id="ctrlDartFloorThreshold" min="0" step="0.1" value="1.0">
             </div>
           </div>
-          <div class="hint" style="margin-top:4px">Ad Hoc Session A6: any non-DST player whose simulated 10th-percentile outcome (statline_p10) falls below the Floor Threshold is a "dart" -- capped at Cap % of this batch's lineups, unless he's on this batch's own stack team (that correlation is the trade you're paying for, not accidental dead-money risk). DST is always exempt -- every DST's floor simulates as a flat 0 regardless of matchup, so this filter can't tell a good matchup from a bad one there; use the DST's own opponent implied total for that instead. Real example that motivated this: a $3,000 min-salary WR with statline_p10 = 0.07 (basically a coin flip on scoring anything) was showing up in 20% of a real 20-lineup MME batch purely for being the cheapest legal filler. Not a backtested/swept value like Lambda above -- a heuristic guard against that specific failure mode (see ROADMAP.md Ad Hoc Session A6). Classic slates only; needs the same --sigma-recalibration build as Lambda.</div>
         </div>
         <!-- WK3 postmortem §2 parking-lot #2 (2026-09-29) -- Showdown construction rules. Defaults below = data/optimizer_presets.json's showdown_se bundle; always sent on a Showdown pool. -->
         <div id="wrapSdRulesField" style="grid-column:1/-1; display:none;">
@@ -2446,6 +2457,7 @@ in this browser's localStorage.</p>
         player_id: r.player_id, player_name: r.player_name.trim(), position: r.position,
         team: r.team, salary: parseFloat(r.salary) || 0, final_projection: parseFloat(r.final_projection) || 0,
         opponent: r.opponent || "", implied_total: parseFloat(r.implied_total) || 0, over_under: parseFloat(r.over_under) || 0,
+        plays_per_game: parseFloat(r.plays_per_game) || 0,
         // Carried through so a pivot-applied swap (Session 4.3) can still
         // populate site_player_id on the resulting lineup row -- without
         // this, a swapped-in player would silently lose DK/FD bulk-import
@@ -4398,7 +4410,9 @@ in this browser's localStorage.</p>
     pool.players.forEach(function (p) {
       if (!p.team || !p.opponent || !p.over_under) return;
       var key = [p.team, p.opponent].sort().join("-");
-      if (!games[key]) games[key] = { teams: [p.team, p.opponent].sort(), over_under: p.over_under };
+      if (!games[key]) games[key] = { teams: [p.team, p.opponent].sort(), over_under: p.over_under, teamTotals: {}, plays: {} };
+      if (p.implied_total) games[key].teamTotals[p.team] = p.implied_total;
+      if (p.plays_per_game) games[key].plays[p.team] = p.plays_per_game;
     });
     var list = Object.keys(games).map(function (k) { return games[k]; });
     if (!list.length) { el.innerHTML = ""; }
@@ -4408,14 +4422,20 @@ in this browser's localStorage.</p>
 
       var rowsHtml = list.map(function (g) {
         var pct = maxOU > 0 ? Math.round((g.over_under / maxOU) * 100) : 0;
+        var t0 = g.teamTotals[g.teams[0]], t1 = g.teamTotals[g.teams[1]];
+        var teamTotalsStr = (t0 && t1) ? (t0.toFixed(1) + ' - ' + t1.toFixed(1)) : '';
+        var p0 = g.plays[g.teams[0]], p1 = g.plays[g.teams[1]];
+        var paceStr = (p0 && p1) ? ((p0 + p1) / 2).toFixed(0) : '';
         return '<div class="overview-row"><div>' + escapeHtml(g.teams[0]) + ' vs ' + escapeHtml(g.teams[1]) + '</div>' +
           '<div class="ou">' + g.over_under.toFixed(1) + '</div>' +
+          '<div class="ou" style="opacity:.75">' + teamTotalsStr + '</div>' +
+          '<div class="ou" style="opacity:.75" title="Avg offensive plays/game, both teams -- a pace proxy (not seconds/play)">' + paceStr + '</div>' +
           '<div class="overview-bar-wrap"><div class="overview-bar" style="width:' + pct + '%"></div></div></div>';
       }).join("");
 
-      el.innerHTML = '<span class="field-label">Slate Overview -- Game Totals</span>' +
+      el.innerHTML = '<span class="field-label">Slate Overview -- Game &amp; Team Totals</span>' +
         '<div class="overview-panel">' +
-        '<div class="overview-row head"><div>Game</div><div style="text-align:right">O/U</div></div>' +
+        '<div class="overview-row head"><div>Game</div><div style="text-align:right">O/U</div><div style="text-align:right">Team Totals</div><div style="text-align:right">Pace</div></div>' +
         rowsHtml + '</div>';
     }
     renderStackTeamOptions();
