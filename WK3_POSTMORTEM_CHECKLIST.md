@@ -1,5 +1,9 @@
 # Post-Week 3 Checklist / Roadmap (created 2026-09-27, night before)
 
+**[2026-09-30] ARCHIVED — do not use as an active task list.** Nearly everything below is CLOSED/SHIPPED/
+RESOLVED. The live, trimmed open-items list is `WK3_POSTMORTEM_OPEN.md` — start there, not here. This
+file is kept only as the historical record of how each item got resolved.
+
 Start here next session. This is a working roadmap, not a conclusion — nothing on this list has been root-caused yet.
 Order roughly reflects dependency (can't brainstorm the "why do we keep missing" question without results in hand first),
 not priority within a section.
