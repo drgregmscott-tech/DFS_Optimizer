@@ -1,0 +1,7 @@
+Construction lint (informational only -- never blocks a build; see WK3_CONSTRUCTION_RULE_AUDIT.md):
+[construction_lint] showdown: 10 lineups, pool=final_projections_dk_dk_showdown_wk4_PIT_CLE_01Oct2026.csv
+               rule severity                            evidence  lineups share
+    SD5_two_kickers     info                   Weak (CI spans 0)        1   10%
+  SD6_expensive_dst     info    Weak (direction confirmed n=142)        4   40%
+SD7_split_cpt_heavy backstop Supported (mild, -1.2 to -1.6 cash)        1   10%
+     SD_stack_depth backstop                   Weak-to-Supported        1   10%
