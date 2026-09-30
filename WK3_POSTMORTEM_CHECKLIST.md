@@ -543,6 +543,13 @@ already identified as worth a look:
 Output should be an explicit list per item: which bucket, and if (b), what specifically would move it to "ready to ship"
 (more weeks, a narrower scope, a different cut of the data) — not just "keep an eye on it."
 
+**[RESOLVED 2026-09-30]** See `WK3_POSTMORTEM_OPEN.md` item 4 for the full per-candidate sort. Showdown `lsal`: still
+date-gated, unchanged. QB/projection-stack refit: (b) track-2, actionable now — the RB/WR/TE-only split was never
+tested; added as priority item 7. Sigma/yards refit: already closed, not a sample-size problem (sigma only reaches
+the solver through lambda=0). FFC-floor/ownership refits: mostly (a) correctly killed; DST power 1.25 reclassified
+closed/superseded by v2 DST; FFC cliff removal is the one real (b) item, added to the track-2 watch list pending a
+Wk4+ ship-bar test.
+
 ---
 
 ## How to use this tomorrow
@@ -575,7 +582,9 @@ FC-derived RESULTS.md files live locally in `analysis/*/RESULTS.md` (not committ
 - **Reverse-engineering FC Own:** not reproducible from our public pre-lock inputs (ceiling corr .66 vs FC Own); price alone .60; only role/vacated
   usage and Vegas totals add signal. Train on realized ownership, not FC-as-teacher.
 - **Ruled out (wrong direction, don't retry):** flatter logistic scale, mid-tier x1.3-1.45, history-tuned joint layer, rank features, min-price DST flag,
-  FFC floor a=0.7 (also argues against the Sunday rule's blanket "use higher of model/FFC"). Inconclusive/track 2: FFC cliff removal, DST power 1.25 (superseded by v2 DST), mid x1.15.
+  FFC floor a=0.7 (also argues against the Sunday rule's blanket "use higher of model/FFC"). **Closed/superseded (2026-09-30, §6 sort):** DST power 1.25 —
+  v2's DST softmax already beats it (top-DST .38-.42 vs .29); stacking a power on top of v2 was never tested, nothing to track. Inconclusive/track 2:
+  FFC cliff removal (see `WK3_POSTMORTEM_OPEN.md` track-2 watch list for the ship bar), mid x1.15.
 - **Early-season salary blend SHIPPED** (weeks 1, 2, 7+; wk6 zeroed; `--no-early-blend` turns off). Wk1 MAE 6.17->5.54 held-out 4/4 seasons.
   **TODO before Wk7:** re-check the 7+ weights against real Wk4-6 results with props (weights were fit without props).
 - **WR/TE target-share/snap/route model:** real (-9% target MAE) but ~0.03 DK-pt MAE; low value, not shipped. Props already applied at 0.5 (optimum ~0.6, keep).
@@ -618,3 +627,14 @@ FC-derived RESULTS.md files live locally in `analysis/*/RESULTS.md` (not committ
 - **`--own-penalty`: DROP fading, flag stays default 0 (edde6ed).** se_gpp, 73 slates (64 history + 9 from 2026): fading chalk loses even with perfect (oracle) ownership (0/4 seasons; +0.15: -6.6 v2, -9.9 oracle). Chalk tilt -0.05: flat with v2 (history), but oracle +4.7pt pool cash (3-4/4 seasons) — v2 at r=.66 on history captures none. 2026 replay agrees on fading. No preset value shipped. se3max_pool / mme_gpp sweep cut (same contest logic; mme oracle arm is the one untested corner). Ownership accuracy matters only for chalk-tilt; re-test -0.05 after ownership improves (history v2 corr .66 vs .83-.88 in 2026 with FFC).
 - **Pointer from these runs:** FC projections beat ours by ~6 pts per lineup across a 100-lineup pool (paired CI +2.3..+10.7); the gap is projections/selection, not ownership -> FC-lineup construction comparison stays the top open item.
 - **Still open for Wk4 (Sun 10/4):** inactives timing log, human inactives check, status_check pull + apply, availability_diff; confirm in Actions log "Ownership v2: ON", QB recal line, "QB auto-promote" line, and the new RB replacement (wrw) audit columns. Mon 10/5: score vac bump / truepool / RB replacement with Wk4.
+
+## Classic `--cl-*` preset weights (OPEN item 5) — CLOSED 2026-09-30
+- **Shipped (uncommitted for review) in all four classic presets** (`cash`, `se_gpp`, `mme_gpp`, `se3max_pool`), same values:
+  `cl-dst-band-bonus` 0.8, `cl-dst-expensive-penalty` 2.0, `cl-zero-punt-penalty` 1.5, `cl-three-plus-punt-penalty` 2.5,
+  `cl-flex-rb-bonus` 0.6, `cl-flex-wr-penalty` 1.0. Zero-punt uses the §5 projection-controlled coefficient; the other terms
+  have no controlled term, so their raw lifts are shaded x0.75. Correction to the old note "only the punt effect survived a
+  projection control": DST band and FLEX were never *in* the §5 model. They weren't tested, not failed.
+- **Real-slate check** (`analysis/classic_shape_weights/`, 9 real 2026 Wk1-3 slates x 20 paired seeds): feasible everywhere;
+  shape moved as intended (DST band 16->63%, $3.6k+ DST 25->2%, 0-punt 19->4%, FLEX WR 15->0%) at -0.9 proj/lineup; real
+  percentile +0.030 (SE 0.052), cash rate 29.4->23.9%. Mixed and inside noise, not harmful. Ship on the 410-contest evidence;
+  first-pass weights, re-check with Wk4+ classic slates. Full write-up: `CLASSIC_RULES.md`.

@@ -1,14 +1,22 @@
 {
   "_comment": "Ad Hoc Session A3 -- built-in starter flag bundles for optimizer.py's --preset flag. Not a config format for user-saved presets (those live in the frontend's cloud-synced preset store, a separate mechanism) -- this file is the CLI's one-shot starting point for the three lineup types Greg builds: Cash, SE/3-Max GPP, and MME GPP (20-150 lineups). Any flag explicitly passed on the command line overrides the matching value here (see main()'s _load_preset_overrides()). lambda values are the validated defaults from Session 10.5b's backtest sweep (DK, 2018-2021, 65 weeks, holdout) -- see optimizer.py's --lambda help text and ROADMAP.md Ad Hoc Session A5. [UPDATED 2026-09-26: cash and se_gpp now use lambda=0 -- an 88-slate 2021-25 replay found 0.063 loses ~5 lineup pts vs 0 in all 6 seasons; see HANDOFF_fc_history_ownership_findings_2026-09-26.md. Original text follows.] Cash and se_gpp use lambda=0.063, the grid's best value for their own metric (cash beat@p44 +0.006 over 0.0, <1 SE, suggestive not conclusive; se_gpp/3-max beat@p50 also best at 0.063 but no clear winner over 0.0). mme_gpp uses lambda=-0.005, the grid's best value for large-field top@p90, where any positive lambda measurably hurts. mme_gpp's dart-exposure-cap/dart-floor-threshold (Ad Hoc Session A6, 2026-09-13) are a heuristic guard, NOT a swept/backtested value like lambda -- see optimizer.py's --dart-exposure-cap help text for the real Week 1 example (Kevin Austin Jr., a $3,000 near-zero-floor filler) that motivated it. Not added to se_gpp/cash: with only 1-3 lineups there's no meaningful 'exposure' to spread a dart across in the first place.",
   "cash": {
+    "_comment": "2026-09-30 (WK3_POSTMORTEM_OPEN item 5): --cl-* classic construction soft terms, same weights in all four classic presets. Evidence: HANDOFF_classic_lineupstudy_findings_2026-09-29.md, 410 real DK classic contests / 21.9M entries 2022-2026; full write-up in CLASSIC_RULES.md. The shape findings were Supported similarly across SE/3MAX/20MAX, and unlike the SE3max-only 'lean chalkier' ownership finding they are not contest-type specific, so no per-preset split. Point scale = 1 cash-lift pt ~ 1 projected pt, the showdown_se/showdown_gpp convention. zero-punt 1.5 uses the §5 projection-controlled '>=1 punt' coefficient (+1.4 to +1.9) instead of the raw -1.9 to -2.3. The other terms have no controlled coefficient, so their raw lifts are shaded x0.75 (the zero-punt controlled/raw ratio) to allow for overlap with projection: DST $2.8-3.1k band +0.8 (raw +0.8/+1.2/+1.2), DST $3.6k+ -2.0 (raw -2.3/-2.8/-2.9), 3+ punts -2.5 (raw -2.7 to -4.7, flat once), FLEX RB +0.6 (raw +0.7 to +1.0, 4/4), FLEX WR -1.0 (raw -1.2 to -1.5, 0/4). Sanity check (analysis/classic_shape_weights/, 9 real 2026 wk1-3 DK classic slates, se3max_pool structure, 20 paired 5%-randomized seeds each = 180 pairs vs the same build with the terms off): always feasible; shape moved as intended (DST in band 16%->63%, $3.6k+ DST 25%->2%, 0-punt 19%->4%, 3+ punts 13%->0%, FLEX WR 15%->0%); projection cost -0.9 pts/lineup; real percentile +0.030 (slate-level SE 0.052, 4 of 9 slates better), top-25% cash rate 29.4%->23.9%. Mixed and inside noise: not harmful on percentile, not a proven win. The unshaded set (1.0/2.5/1.5/3.0/0.8/1.3) gave the same result at a -1.1 projection cost. These are first-pass point-scale conversions, not a swept optimum: re-check against real Wk4+ classic results.",
     "n-lineups": 3,
     "max-exposure": 1.0,
     "uniqueness": 0,
     "stack-mode": "none",
     "randomization-pct": 0,
-    "lambda": 0
+    "lambda": 0,
+    "cl-dst-band-bonus": 0.8,
+    "cl-dst-expensive-penalty": 2.0,
+    "cl-zero-punt-penalty": 1.5,
+    "cl-three-plus-punt-penalty": 2.5,
+    "cl-flex-rb-bonus": 0.6,
+    "cl-flex-wr-penalty": 1.0
   },
   "se_gpp": {
+    "_comment": "2026-09-30 (WK3_POSTMORTEM_OPEN item 5): --cl-* classic construction soft terms, same weights in all four classic presets. Evidence: HANDOFF_classic_lineupstudy_findings_2026-09-29.md, 410 real DK classic contests / 21.9M entries 2022-2026; full write-up in CLASSIC_RULES.md. The shape findings were Supported similarly across SE/3MAX/20MAX, and unlike the SE3max-only 'lean chalkier' ownership finding they are not contest-type specific, so no per-preset split. Point scale = 1 cash-lift pt ~ 1 projected pt, the showdown_se/showdown_gpp convention. zero-punt 1.5 uses the §5 projection-controlled '>=1 punt' coefficient (+1.4 to +1.9) instead of the raw -1.9 to -2.3. The other terms have no controlled coefficient, so their raw lifts are shaded x0.75 (the zero-punt controlled/raw ratio) to allow for overlap with projection: DST $2.8-3.1k band +0.8 (raw +0.8/+1.2/+1.2), DST $3.6k+ -2.0 (raw -2.3/-2.8/-2.9), 3+ punts -2.5 (raw -2.7 to -4.7, flat once), FLEX RB +0.6 (raw +0.7 to +1.0, 4/4), FLEX WR -1.0 (raw -1.2 to -1.5, 0/4). Sanity check (analysis/classic_shape_weights/, 9 real 2026 wk1-3 DK classic slates, se3max_pool structure, 20 paired 5%-randomized seeds each = 180 pairs vs the same build with the terms off): always feasible; shape moved as intended (DST in band 16%->63%, $3.6k+ DST 25%->2%, 0-punt 19%->4%, 3+ punts 13%->0%, FLEX WR 15%->0%); projection cost -0.9 pts/lineup; real percentile +0.030 (slate-level SE 0.052, 4 of 9 slates better), top-25% cash rate 29.4%->23.9%. Mixed and inside noise: not harmful on percentile, not a proven win. The unshaded set (1.0/2.5/1.5/3.0/0.8/1.3) gave the same result at a -1.1 projection cost. These are first-pass point-scale conversions, not a swept optimum: re-check against real Wk4+ classic results.",
     "n-lineups": 3,
     "max-exposure": 1.0,
     "uniqueness": 3,
@@ -16,9 +24,16 @@
     "stack-size": 1,
     "bring-back": true,
     "randomization-pct": 3,
-    "lambda": 0
+    "lambda": 0,
+    "cl-dst-band-bonus": 0.8,
+    "cl-dst-expensive-penalty": 2.0,
+    "cl-zero-punt-penalty": 1.5,
+    "cl-three-plus-punt-penalty": 2.5,
+    "cl-flex-rb-bonus": 0.6,
+    "cl-flex-wr-penalty": 1.0
   },
   "mme_gpp": {
+    "_comment": "2026-09-30 (WK3_POSTMORTEM_OPEN item 5): --cl-* classic construction soft terms, same weights in all four classic presets. Evidence: HANDOFF_classic_lineupstudy_findings_2026-09-29.md, 410 real DK classic contests / 21.9M entries 2022-2026; full write-up in CLASSIC_RULES.md. The shape findings were Supported similarly across SE/3MAX/20MAX, and unlike the SE3max-only 'lean chalkier' ownership finding they are not contest-type specific, so no per-preset split. Point scale = 1 cash-lift pt ~ 1 projected pt, the showdown_se/showdown_gpp convention. zero-punt 1.5 uses the §5 projection-controlled '>=1 punt' coefficient (+1.4 to +1.9) instead of the raw -1.9 to -2.3. The other terms have no controlled coefficient, so their raw lifts are shaded x0.75 (the zero-punt controlled/raw ratio) to allow for overlap with projection: DST $2.8-3.1k band +0.8 (raw +0.8/+1.2/+1.2), DST $3.6k+ -2.0 (raw -2.3/-2.8/-2.9), 3+ punts -2.5 (raw -2.7 to -4.7, flat once), FLEX RB +0.6 (raw +0.7 to +1.0, 4/4), FLEX WR -1.0 (raw -1.2 to -1.5, 0/4). Sanity check (analysis/classic_shape_weights/, 9 real 2026 wk1-3 DK classic slates, se3max_pool structure, 20 paired 5%-randomized seeds each = 180 pairs vs the same build with the terms off): always feasible; shape moved as intended (DST in band 16%->63%, $3.6k+ DST 25%->2%, 0-punt 19%->4%, 3+ punts 13%->0%, FLEX WR 15%->0%); projection cost -0.9 pts/lineup; real percentile +0.030 (slate-level SE 0.052, 4 of 9 slates better), top-25% cash rate 29.4%->23.9%. Mixed and inside noise: not harmful on percentile, not a proven win. The unshaded set (1.0/2.5/1.5/3.0/0.8/1.3) gave the same result at a -1.1 projection cost. These are first-pass point-scale conversions, not a swept optimum: re-check against real Wk4+ classic results.",
     "n-lineups": 100,
     "max-exposure": 0.35,
     "uniqueness": 1,
@@ -27,11 +42,17 @@
     "bring-back": true,
     "randomization-pct": 18,
     "lambda": -0.005,
-    "dart-exposure-cap": 0.10,
-    "dart-floor-threshold": 1.0
+    "dart-exposure-cap": 0.1,
+    "dart-floor-threshold": 1.0,
+    "cl-dst-band-bonus": 0.8,
+    "cl-dst-expensive-penalty": 2.0,
+    "cl-zero-punt-penalty": 1.5,
+    "cl-three-plus-punt-penalty": 2.5,
+    "cl-flex-rb-bonus": 0.6,
+    "cl-flex-wr-penalty": 1.0
   },
   "se3max_pool": {
-    "_comment": "2026-09-27: the 100-lineup SE3max candidate-pool build (pick-the-best-from-a-big-pool), separate from se_gpp's 3-lineup quick pick above. Settings match analysis/classic_diag/replay_batch.py exactly -- the test that found the best lineup in a 100-lineup pool lands at the 98th-99.9th percentile, graded against the real SE3max top-25% cash line (replay_validation.py's CASH_PCT=0.25). Confirmed against today's Week 3 pre-lock test builds (DK/FD main/early/afternoon).",
+    "_comment": "2026-09-27: the 100-lineup SE3max candidate-pool build (pick-the-best-from-a-big-pool), separate from se_gpp's 3-lineup quick pick above. Settings match analysis/classic_diag/replay_batch.py exactly -- the test that found the best lineup in a 100-lineup pool lands at the 98th-99.9th percentile, graded against the real SE3max top-25% cash line (replay_validation.py's CASH_PCT=0.25). Confirmed against today's Week 3 pre-lock test builds (DK/FD main/early/afternoon). 2026-09-30 (WK3_POSTMORTEM_OPEN item 5): --cl-* classic construction soft terms, same weights in all four classic presets. Evidence: HANDOFF_classic_lineupstudy_findings_2026-09-29.md, 410 real DK classic contests / 21.9M entries 2022-2026; full write-up in CLASSIC_RULES.md. The shape findings were Supported similarly across SE/3MAX/20MAX, and unlike the SE3max-only 'lean chalkier' ownership finding they are not contest-type specific, so no per-preset split. Point scale = 1 cash-lift pt ~ 1 projected pt, the showdown_se/showdown_gpp convention. zero-punt 1.5 uses the §5 projection-controlled '>=1 punt' coefficient (+1.4 to +1.9) instead of the raw -1.9 to -2.3. The other terms have no controlled coefficient, so their raw lifts are shaded x0.75 (the zero-punt controlled/raw ratio) to allow for overlap with projection: DST $2.8-3.1k band +0.8 (raw +0.8/+1.2/+1.2), DST $3.6k+ -2.0 (raw -2.3/-2.8/-2.9), 3+ punts -2.5 (raw -2.7 to -4.7, flat once), FLEX RB +0.6 (raw +0.7 to +1.0, 4/4), FLEX WR -1.0 (raw -1.2 to -1.5, 0/4). Sanity check (analysis/classic_shape_weights/, 9 real 2026 wk1-3 DK classic slates, se3max_pool structure, 20 paired 5%-randomized seeds each = 180 pairs vs the same build with the terms off): always feasible; shape moved as intended (DST in band 16%->63%, $3.6k+ DST 25%->2%, 0-punt 19%->4%, 3+ punts 13%->0%, FLEX WR 15%->0%); projection cost -0.9 pts/lineup; real percentile +0.030 (slate-level SE 0.052, 4 of 9 slates better), top-25% cash rate 29.4%->23.9%. Mixed and inside noise: not harmful on percentile, not a proven win. The unshaded set (1.0/2.5/1.5/3.0/0.8/1.3) gave the same result at a -1.1 projection cost. These are first-pass point-scale conversions, not a swept optimum: re-check against real Wk4+ classic results.",
     "n-lineups": 100,
     "max-exposure": 0.5,
     "uniqueness": 1,
@@ -39,7 +60,13 @@
     "stack-size": 2,
     "bring-back": true,
     "randomization-pct": 5,
-    "lambda": 0
+    "lambda": 0,
+    "cl-dst-band-bonus": 0.8,
+    "cl-dst-expensive-penalty": 2.0,
+    "cl-zero-punt-penalty": 1.5,
+    "cl-three-plus-punt-penalty": 2.5,
+    "cl-flex-rb-bonus": 0.6,
+    "cl-flex-wr-penalty": 1.0
   },
   "showdown_se": {
     "_comment": "WK3 postmortem §2/§3 (2026-09-28, updated 2026-09-29 after a real-slate sanity check): the Showdown single-entry/Huddle counterpart to se_gpp. --stack-mode is intentionally omitted -- optimizer.py rejects it for Showdown pools (classic-only mechanism); Showdown stacking is handled entirely by the sd-* flags below. Evidence source: HANDOFF_showdown_lineupstudy_findings_2026-09-28.md + HANDOFF_showdown_construction_detail_2026-09-28.md, 142 real DK Showdown contests / 14.9M entries. sd-require-cpt-qb is Supported and hard in BOTH contest types (a WR/TE captain with no own-team QB in FLEX: -7.6 cash pts SE, -7.7 big, 0.60-0.69x return). The other three sd-* weights are lighter here than in showdown_gpp because the underlying evidence is weaker in single-entry: sd-qb-partner-bonus reflects RB partner being only Weak-to-Supported in SE (TE partner is Supported at +8.5, RB is Weak at +4.9-9.1 with a CI spanning 0 in the projection-controlled re-check) vs both Supported in big; sd-cheap-tier-penalty reflects the $600-1k tier being Weak-to-Supported in SE (CI touches 0 on cash lift, only the top-1% cut clears 0) vs Supported in big; sd-stack-cap/-penalty reflects the QB stack-depth-at-2 finding being Weak-to-Supported in both, kept equal. lambda 0 is Confirmed (chalk tilt is Not supported once tested against OUR modeled pre-lock ownership, not just realized/hindsight ownership -- see the lineupstudy doc's Task 1 replay). sd-exclude-cpt-positions/sd-k-cpt-penalty were ADDED 2026-09-29: the first version of this preset had no lever touching DST/K captaincy at all, and a 100-lineup sanity build on a real slate landed 21% of captains on K/DST despite Rule 3 (DST captain Supported-bad in both contest types). DST is now hard-excluded from CPT; K gets a soft penalty since its evidence is only Weak. These sd-* weights are first-pass point-scale conversions of cash-lift/return findings, NOT a backtested-swept calibration like lambda's own grid (Session 10.5b) -- treat as a starting point to validate against real Wk4+ Showdown results, same as any other track-2 item. sd-heavy-side-cpt-penalty was ADDED 2026-09-29 (SHOWDOWN_RULES.md rule 7; WK3_CONSTRUCTION_RULE_AUDIT.md §2 flagged it as the one Showdown rule whose evidence qualified for a soft term but had none): a 4-2 split with the captain's own team on the heavy side is -1.2 to -1.6 cash pts, Supported but mild, n=142 real contests; 3-3 is best on average. Weight 0.5 is deliberately conservative because the existing sd-stack-cap=2/0.75 already charges a CPT-heavy 4-2 one unit (0.75, 3 same-team FLEX = 1 over the cap) for ANY captain, so the combined charge is 0.75+0.5=1.25, the bottom of the evidence range; 5-1 CPT-heavy pays 1.5+0.5=2.0. Same weight in both presets since the split finding was similar in both contest types. Same first-pass-calibration caveat.",

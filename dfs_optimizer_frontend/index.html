@@ -3399,12 +3399,21 @@ in this browser's localStorage.</p>
     "Cash": {
       ctrlNLineups: "3", ctrlMaxExposure: "100", ctrlUniqueness: "0",
       ctrlRandomization: "0", ctrlStackMode: "none",
-      ctrlAllowSkillVsOppDst: false, ctrlLambda: "0"
+      ctrlAllowSkillVsOppDst: false, ctrlLambda: "0",
+      // WK3 postmortem item 5 (2026-09-30) -- matches data/optimizer_presets.json's
+      // own cl-* values exactly (kept in sync by hand, same convention as every
+      // other field here). See CLASSIC_RULES.md for the evidence.
+      ctrlClDstBandBonus: "0.8", ctrlClDstExpensivePenalty: "2.0",
+      ctrlClZeroPuntPenalty: "1.5", ctrlClThreePlusPuntPenalty: "2.5",
+      ctrlClFlexRbBonus: "0.6", ctrlClFlexWrPenalty: "1.0"
     },
     "SE / 3-Max GPP": {
       ctrlNLineups: "3", ctrlMaxExposure: "100", ctrlUniqueness: "3",
       ctrlRandomization: "3", ctrlStackMode: "qb", ctrlStackSize: "1",
-      ctrlBringBack: true, ctrlAllowSkillVsOppDst: false, ctrlLambda: "0"
+      ctrlBringBack: true, ctrlAllowSkillVsOppDst: false, ctrlLambda: "0",
+      ctrlClDstBandBonus: "0.8", ctrlClDstExpensivePenalty: "2.0",
+      ctrlClZeroPuntPenalty: "1.5", ctrlClThreePlusPuntPenalty: "2.5",
+      ctrlClFlexRbBonus: "0.6", ctrlClFlexWrPenalty: "1.0"
     },
     // 2026-09-27: the 100-lineup SE3max candidate-pool build (pick the best
     // lineup out of a big diversified pool), separate from the 3-lineup
@@ -3416,7 +3425,10 @@ in this browser's localStorage.</p>
     "SE3Max Pool (100)": {
       ctrlNLineups: "100", ctrlMaxExposure: "50", ctrlUniqueness: "1",
       ctrlRandomization: "20", ctrlStackMode: "qb", ctrlStackSize: "2",
-      ctrlBringBack: true, ctrlAllowSkillVsOppDst: false, ctrlLambda: "0"
+      ctrlBringBack: true, ctrlAllowSkillVsOppDst: false, ctrlLambda: "0",
+      ctrlClDstBandBonus: "0.8", ctrlClDstExpensivePenalty: "2.0",
+      ctrlClZeroPuntPenalty: "1.5", ctrlClThreePlusPuntPenalty: "2.5",
+      ctrlClFlexRbBonus: "0.6", ctrlClFlexWrPenalty: "1.0"
     },
     "MME GPP (20-150)": {
       ctrlNLineups: "100", ctrlMaxExposure: "35", ctrlUniqueness: "1",
@@ -3427,7 +3439,10 @@ in this browser's localStorage.</p>
       // fields). Not added to Cash/SE-3Max above -- see that file's own
       // comment: 1-3 lineups don't have meaningful "exposure" to spread a
       // dart across in the first place.
-      ctrlDartExposureEnabled: true, ctrlDartExposureCap: "10", ctrlDartFloorThreshold: "1.0"
+      ctrlDartExposureEnabled: true, ctrlDartExposureCap: "10", ctrlDartFloorThreshold: "1.0",
+      ctrlClDstBandBonus: "0.8", ctrlClDstExpensivePenalty: "2.0",
+      ctrlClZeroPuntPenalty: "1.5", ctrlClThreePlusPuntPenalty: "2.5",
+      ctrlClFlexRbBonus: "0.6", ctrlClFlexWrPenalty: "1.0"
     },
     // WK3 postmortem §2 parking-lot #2 (2026-09-29) -- Showdown construction
     // rules only (every other control is left as-is). Values match

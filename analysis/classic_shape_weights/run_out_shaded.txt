@@ -1,0 +1,31 @@
+        slate  B_sal  B_dst  B_punts B_flex  B_proj  B_pts  B_rank  B_pct  B_cash  CL_sal  CL_dst  CL_punts CL_flex  CL_proj  CL_pts  CL_rank  CL_pct  CL_cash  same
+     wk1_main  49600   3400        1     TE   130.8 167.54    2913  0.816    True   49800    3100         1      TE    130.7  124.24    11627   0.266    False False
+    wk1_early  49800   2500        1     TE   135.8 168.84    1459  0.736   False   49800    2500         1      TE    135.8  168.84     1459   0.736    False  True
+wk1_afternoon  49900   2900        1     TE   114.3 126.26    1755  0.630   False   49900    2900         1      TE    114.3  126.26     1755   0.630    False  True
+     wk2_main  49800   3300        3     RB   108.5  90.92   12817  0.191   False   49800    3100         2      RB    106.9  109.52     8734   0.449    False False
+    wk2_early  50000   3600        3     WR   106.9  69.92    4555  0.039   False   49300    3100         2      RB    105.2  107.22     1856   0.608    False False
+wk2_afternoon  49800   3800        2     TE   105.1 143.66     699  0.852    True   49700    2800         1      RB    102.4  129.86     1781   0.624    False False
+     wk3_main  50000   2400        0     TE   143.2 133.54    6441  0.593   False   49900    3000         1      TE    141.5  129.26     7417   0.532    False False
+    wk3_early  50000   2400        0     TE   143.9 133.54    1402  0.704   False   50000    2400         0      TE    143.9  133.54     1402   0.704    False  True
+wk3_afternoon  49700   2600        1     TE   132.3 132.80    2290  0.517   False   50000    3100         1      TE    131.8  121.30     3324   0.299    False False
+
+cash B=2/9  CL=0/9  mean pct B=0.564 CL=0.539  mean real pts B=129.7 CL=127.8  identical lineups=3/9
+                 pct         cash            pts          punts           dst         flexRB      
+arm                B     CL     B    CL        B       CL     B    CL       B      CL      B    CL
+slate                                                                                             
+wk1_afternoon  0.621  0.623  0.25  0.25  127.813  128.213  1.00  1.00  2945.0  2920.0   0.05  0.05
+wk1_early      0.755  0.724  0.40  0.10  170.840  168.060  1.25  1.10  2665.0  2635.0   0.00  0.00
+wk1_main       0.739  0.651  0.80  0.60  162.245  155.060  0.85  1.00  2990.0  3125.0   0.00  0.10
+wk2_afternoon  0.850  0.719  0.95  0.50  144.337  136.202  2.00  1.55  3705.0  3040.0   0.20  0.70
+wk2_early      0.121  0.436  0.00  0.00   77.175   97.319  2.55  2.00  3600.0  3095.0   0.50  1.00
+wk2_main       0.306  0.559  0.10  0.20   98.451  119.027  2.60  2.00  3305.0  2955.0   0.75  1.00
+wk3_afternoon  0.396  0.418  0.00  0.15  125.752  127.294  1.10  1.20  2685.0  2810.0   0.00  0.00
+wk3_early      0.648  0.549  0.10  0.10  130.035  124.040  0.20  0.85  2440.0  2760.0   0.05  0.05
+wk3_main       0.509  0.538  0.05  0.25  128.010  131.029  0.35  0.90  2445.0  2715.0   0.10  0.15
+
+seeded n=180 pairs: cash rate B=0.294 CL=0.239; mean pct B=0.549 CL=0.580; paired pct diff +0.030 (slate-level SE 0.052)
+per-slate pct diff: {'wk1_afternoon': 0.002, 'wk1_early': -0.031, 'wk1_main': -0.089, 'wk2_afternoon': -0.131, 'wk2_early': 0.315, 'wk2_main': 0.253, 'wk3_afternoon': 0.022, 'wk3_early': -0.098, 'wk3_main': 0.03}
+     dst_band  dst_exp  zero_punt  three_punt  flex_rb  flex_wr     proj
+arm                                                                     
+B       0.161    0.250      0.189       0.133    0.183     0.15  123.489
+CL      0.628    0.017      0.039       0.000    0.339     0.00  122.554
