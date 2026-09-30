@@ -40,20 +40,24 @@ it from here, don't let this file regrow into another sprawl.
 ## Open (added 2026-09-30, from the system-grade review — see `analysis/model_vs_fc/RESULTS.md`)
 
 5. **Expensive-player ($7k+) ownership gap — highest-impact open item, not started.** Our ownership corr on
-   $7k+ players is .291 vs FC's .797 (`analysis/model_vs_fc/RESULTS.md` section C) — a much bigger gap than
-   the cheap-WR/TE one that just got fixed, and untouched by that fix (which only targeted cheap WR/TE).
-   This is the same failure class as the original Tyler Shough miss that helped kick off this whole
-   postmortem (chalk QB/stud mis-owned). Needs its own root-cause pass, same treatment as the cheap-WR/TE
-   session (training-data check first, then a signal search) — don't assume the same two causes apply.
+   $7k+ players is .291 vs FC's historical .797 (`analysis/model_vs_fc/RESULTS.md` section C, a now-frozen
+   comparison) — a much bigger gap than the cheap-WR/TE one that just got fixed, and untouched by that fix
+   (which only targeted cheap WR/TE). This is the same failure class as the original Tyler Shough miss that
+   helped kick off this whole postmortem (chalk QB/stud mis-owned). **Grade against real DK ownership
+   (`ownership_actual_log.csv`), not any commercial product** — the goal is matching the actual field, not
+   matching FC. Same playbook as the cheap-WR/TE fix: analyze residuals against real ownership directly,
+   test candidate features (role/vacated usage, Vegas totals, price tier), no competitor benchmark needed.
 
-6. **Replace the dead FC ownership benchmark — blocks verifying anything ownership-related going forward.**
-   FC account is disabled; there's no way to check the 2026 replay corr (~.88 on the cheap-WR/TE fix) or
-   item #5 above against a real commercial comparator anymore. Find an alternate ownership feed (FFC or
-   similar, see `reference_free_dfs_data_sites.md`) to keep score against, even if imperfect.
-
-7. **QB projection gap vs FC (FC beats us by 0.22 MAE, history) — real but smaller than #5.** QB recal +
+6. **QB projection gap vs FC (FC beats us by 0.22 MAE, history) — real but smaller than #5.** QB recal +
    auto-promote (shipped this postmortem) closed the surprise-starter piece; this is the remaining base
-   projection-accuracy gap on known starters. Lower priority than #5/#6 but worth a session once those land.
+   projection-accuracy gap on known starters. Same note applies: grade against real results, not FC's
+   number specifically. Lower priority than #5, worth a session once that lands.
+
+~~Replace the dead FC ownership benchmark~~ — **dropped 2026-09-30.** The target is the real field
+(`ownership_actual_log.csv`, already collected post-slate every week), not parity with any commercial
+product. FC's projections were only ever a diagnostic that signal existed to be captured; they were never
+the goal, and the $7k+ work above doesn't need a competitor's number to proceed the same way the cheap-
+WR/TE fix didn't really need one either.
 
 ## Track-2 watch items (re-test with Wk4 data, not active work until then)
 
