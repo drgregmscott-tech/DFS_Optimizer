@@ -197,6 +197,7 @@ from build_projections import (  # noqa: E402
     load_salaries,
     load_schedule,
     load_vegas_implied_totals,
+    load_team_plays_per_game,
     _build_kicker_projections,
 )
 
@@ -1265,6 +1266,9 @@ def build_statline_projections(site: str, season: int, week: int, slate_id: str,
         out["roster_role"] = None
         out["slate_format"] = "classic"
         out["ownership_available"] = True
+
+    ppg, league_avg_ppg = load_team_plays_per_game(season, week)
+    out["plays_per_game"] = out["team"].map(ppg).fillna(league_avg_ppg).round(1)
 
     out = out.sort_values("final_projection", ascending=False).reset_index(drop=True)
 
