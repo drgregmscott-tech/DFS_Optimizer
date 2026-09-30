@@ -26,7 +26,8 @@ path, week = sys.argv[1], int(sys.argv[2])
 season = int(sys.argv[3]) if len(sys.argv) > 3 else None
 raw = pd.read_csv(path, dtype={"player_id": str, "site_player_id": str})
 base = raw.drop(columns=[c for c in raw.columns if c in ("chalk_score", "estimated_ownership_pct")
-                         or c.startswith("estimated_ownership_pct_heuristic") or c.startswith("est_own_")])
+                         or c.startswith("estimated_ownership_pct_heuristic") or c.startswith("est_own_")
+                         or c in ("own_vacated", "own_vac_bump")])
 
 
 def run(flag):
@@ -35,7 +36,7 @@ def run(flag):
 
 
 off, on = run("0"), run("1")
-assert not {"est_own_live_old", "est_own_v2_only"} & set(off.columns), "OFF added v2 columns"
+assert not {"est_own_live_old", "est_own_v2_only", "own_vac_bump"} & set(off.columns), "OFF added v2 columns"
 assert np.array_equal(on["est_own_live_old"].to_numpy(), off["estimated_ownership_pct"].to_numpy()), \
     "ON est_own_live_old != OFF estimated_ownership_pct"
 assert on["chalk_score"].equals(off["chalk_score"]), "chalk_score changed"

@@ -39,6 +39,15 @@ def hist():
         "l_exp": M.l_exp, "l_est": M.l_est,
         "own": M.own, "fc_own": M.fc_own_proj, "fc_proj": M.fc, "pdepth": M.pdepth, "act": M.act,
         "ours_own_model": M.ours_own_model})
+    # 2026-09-30 fix (analysis/wrte_chalk_root_cause): the frame covers every game of the week (~15), but the labels
+    # come from the main-slate contest (~11 games). ~25% of the old pool were off-slate teams (own exactly 0, FC Own 0),
+    # which taught v2 to spread mass (chalk under-sized). Pool = teams on the contest slate. The contest game list is
+    # public pre-lock (DK salary file); history has no saved game list, so a team is on the slate iff its skill players
+    # drew any realized ownership (agrees with the nflverse Sunday-main schedule on 1904/1943 team-weeks; the exceptions
+    # are Saturday/holiday slates the schedule rule gets wrong).
+    sk = d[d.pos != "DST"].groupby(["slate_id", "team"]).own.sum()
+    on = set(sk[sk > 0].index)
+    d["in_pool"] = d.in_pool & pd.Series([(s, t) in on for s, t in zip(d.slate_id, d.team)], index=d.index)
     m = pd.read_csv(DER / "fc_master_mapped.csv", low_memory=False, dtype={"player_id": str})
     m = m[(m.contest == "single_entry") & (m.slate_kind == "classic") & m.player_id.notna()]
     prior_salary = m[["season", "week", "player_id", "salary"]].drop_duplicates(["season", "week", "player_id"])

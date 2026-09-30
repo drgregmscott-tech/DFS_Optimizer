@@ -239,6 +239,18 @@ one topic pulls in four adjacent ones and the original thread gets diluted or dr
   found our projection beats FC's at lineup level (+0.06 to +0.10 capped return per SD, 4/4 seasons in quality lineups).
   Unverified beyond that script; verify and fold into the projections accuracy push, not ownership.
 
+- **[RESOLVED / SHIPPED 2026-09-30] Cheap-band WR/TE ownership root cause -- CLOSES the two 2026-09-28/09-30 pointers above.** Two causes, neither
+  "the field has info we lack" (we have the same inputs; the question was our treatment). (1) **History training-data bug:** the 2021-25 frame
+  pooled every game (~15) but ownership labels are main-slate (~11); ~25% of players were off-slate with real ownership exactly 0, so the model
+  learned flat slopes. Fixed in `analysis/ownership_v2/build.py hist()`. Held-out: corr .694->.718 (5/5 seasons), catch20 .18->.42, WR/TE 20%+ pred 9.1->13.4
+  (real 27.1). Earlier "v2 .61 vs FC .83" was inflated by this bug. Refit coefficients wired as `DFS_OWN_V2_COEF=truepool` but **default OFF** (live 2026 replay
+  slightly worse: corr .876->.874). (2) **Live: teammate-OUT usage bump never reached ownership** (2026 chalk WR/TE with a teammate OUT: real 26.6 vs shipped
+  17.6; everyone else 23.7 vs 23.0). Shipped `apply_vac_bump()` in `scripts/ownership_v2.py`, k=1.0, **default ON**, off `DFS_OWN_VAC_BUMP=0`, audit cols
+  `own_vac_bump`/`own_vacated`; 2026 replay corr .876->.880, MAE 1.194->1.179. Projection-side reallocation: no held-out form helped, unchanged. Model shape ruled out
+  as a cause. **Track 2:** truepool default (re-score on Wk4-5), vac-bump k, "who replaces whom" projection reallocation. Lineup impact not measured.
+- **[2026-09-30] QB residual gap -- CLOSED.** With recal + QB1 guard on, we beat FC on known starters (5.99 vs 6.32 MAE, 5/5 seasons); the whole residual is
+  surprise starters. Shipped `_apply_qb_autopromote` (commit 8391432): price-implied projection for a team with no QB>=8, quiet audit cols, `DFS_QB_AUTOPROMOTE=0` off.
+
 ---
 
 ## 0. The core question (do this first, unstructured)

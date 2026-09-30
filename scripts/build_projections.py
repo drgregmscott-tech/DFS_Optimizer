@@ -569,7 +569,7 @@ def add_ownership_columns(df, site, layered=True, season=None, week=None):
         scored = ownership_model.refine_ownership(
             scored, site, compute_position_slot_budgets(site), season=season, week=week)
     keep = ["player_id", "chalk_score", "estimated_ownership_pct"]
-    for extra in ("estimated_ownership_pct_heuristic", "est_own_live_old", "est_own_v2_only"):
+    for extra in ("estimated_ownership_pct_heuristic", "est_own_live_old", "est_own_v2_only", "own_vacated", "own_vac_bump"):
         if extra in scored.columns:
             keep.append(extra)
     # A re-run on an already-scored frame (status_check apply refresh) must

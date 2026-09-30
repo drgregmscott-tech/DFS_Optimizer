@@ -285,6 +285,9 @@ def refine_ownership(scored: pd.DataFrame, site: str, budgets: dict,
         out["est_own_live_old"] = new
         out["est_own_v2_only"] = v2_only.fillna(new).round(4)
         out["estimated_ownership_pct"] = final.fillna(new)
+        for col, arr in getattr(ownership_v2, "LAST_AUDIT", {}).items():
+            if len(arr) == len(out):
+                out[col] = np.round(np.asarray(arr, float), 4)
         print(f"Ownership v2: ON ({'log-blend with live FFC model, a=' + str(ownership_v2.FFC_BLEND_ALPHA) if ffc_used else 'no FFC table -> v2 alone'}; "
               f"DST = v2 DST model). Previous model kept as est_own_live_old. "
               f"Switch off with DFS_OWNERSHIP_V2=0.")

@@ -69,8 +69,23 @@ def dst_path(site="dk"):
     return DATA_DIR / f"ownership_v2_{site}_dst.json"
 
 
+# 2026-09-30 (analysis/wrte_chalk_root_cause): coefficients refit on the TRUE slate pool (the 2021-25 training
+# frame used to include ~25% off-slate players, which flattened v2 and under-sized chalk). Select with
+# DFS_OWN_V2_COEF=truepool | current. Missing candidate files fall back to the current artifacts.
+V2_COEF_DEFAULT = "current"
+
+
+def v2_coef_choice():
+    v = os.environ.get("DFS_OWN_V2_COEF", V2_COEF_DEFAULT).strip().lower()
+    return "truepool" if v == "truepool" else "current"
+
+
 def load_artifacts(site="dk"):
     lp, dp = linear_path(site), dst_path(site)
+    if v2_coef_choice() == "truepool":
+        tl, td = DATA_DIR / f"ownership_v2_{site}_linear_truepool.json", DATA_DIR / f"ownership_v2_{site}_dst_truepool.json"
+        if tl.exists() and td.exists():
+            lp, dp = tl, td
     if not lp.exists() or not dp.exists():
         return None, None
     with open(lp, encoding="utf-8") as f:
@@ -418,7 +433,46 @@ def to_frame(scored, feats, season, week, slate_id="live"):
     }, index=scored.index)
 
 
-def predict_v2(frame, ctx, lin, dst, live_pred=None, alpha=FFC_BLEND_ALPHA):
+# 2026-09-30 teammate-OUT bump (analysis/wrte_chalk_root_cause/RESULTS.md): the field gives WR/TE whose teammates
+# are OUT a usage bump that our score under-weights (2026 teammate-OUT 15%+ chalk: real 26.6, shipped 17.6).
+# final WR/TE log-score += VAC_BUMP_K * vacated, re-allocated to the same group budgets. `vacated` is the share of
+# the team's recent receiving usage (nflverse, prior weeks) held by teammates NOT in the pool; the pool is
+# final_projection > 0, i.e. after the build zeroes OUT/DOUBTFUL -- the same status set the projection uses.
+# Switch: DFS_OWN_VAC_BUMP=0. Any failure = no-op.
+VAC_BUMP_K = 1.0
+LAST_AUDIT = {}
+
+
+def vac_bump_enabled():
+    return os.environ.get("DFS_OWN_VAC_BUMP", "1").strip().lower() not in ("0", "false", "off", "no")
+
+
+def apply_vac_bump(F, final, k=None, cap=CAP):
+    """Returns (bumped final, audit array of bumped-minus-before; 0 where untouched). Fail-safe: on any problem
+    returns the input unchanged."""
+    k = VAC_BUMP_K if k is None else k
+    try:
+        vac = pd.to_numeric(F["vacated"], errors="coerce").fillna(0.0).clip(0, 1).to_numpy()
+        wr = F.pos.isin(["WR", "TE"]).to_numpy()
+        base = np.asarray(final, float)
+        ok = np.isfinite(base)
+        if not (wr & ok & (vac > 0)).any() or k == 0:
+            return base, np.zeros(len(base))
+        Fsc = np.log(np.maximum(np.where(ok, base, 0.0), .05)) + k * vac * wr
+        sub = F[wr & ok]
+        bud = pd.Series(base[wr & ok], index=sub.index).groupby([sub.slate_id, sub.grp]).sum()
+        out = base.copy()
+        for (sid, g), ix in sub.groupby([sub.slate_id, sub.grp]).indices.items():
+            rows = np.where(wr & ok)[0][ix]
+            out[rows] = allocate(F.iloc[rows], Fsc[rows], {g: float(bud[(sid, g)])}, cap=cap)
+        if not np.all(np.isfinite(out[wr & ok])):
+            return base, np.zeros(len(base))
+        return out, np.where(wr & ok, out - base, 0.0)
+    except Exception:  # noqa: BLE001 -- the bump must never break a build
+        return np.asarray(final, float), np.zeros(len(final))
+
+
+def predict_v2(frame, ctx, lin, dst, live_pred=None, alpha=FFC_BLEND_ALPHA, vac_k=None):
     """frame: to_frame() output (one or more slates). live_pred: live FFC-model %, aligned to frame,
     or None for no blend. Returns (final, v2_only) numpy arrays aligned to frame; rows outside
     QB/RB/WR/TE/DST are NaN (caller keeps the old number)."""
@@ -441,6 +495,11 @@ def predict_v2(frame, ctx, lin, dst, live_pred=None, alpha=FFC_BLEND_ALPHA):
         pos_ix = F.index.get_indexer(D.index)
         final[pos_ix] = pd_
         v2_only[pos_ix] = pd_
+    LAST_AUDIT.clear()
+    if vac_bump_enabled() and (vac_k is None or vac_k != 0):
+        final, bump = apply_vac_bump(F, final, vac_k, cap=lin.get("cap", CAP))
+        LAST_AUDIT["own_vac_bump"] = bump
+        LAST_AUDIT["own_vacated"] = pd.to_numeric(F["vacated"], errors="coerce").fillna(0.0).to_numpy()
     other = ~F.pos.isin(GROUPS).to_numpy()
     final[other] = np.nan
     v2_only[other] = np.nan
