@@ -3093,7 +3093,8 @@ def solve_showdown_lineup(players: pd.DataFrame, site: str,
                            qb_partner_bonus: float = 0.0,
                            exclude_cpt_positions: set = None,
                            k_cpt_penalty: float = 0.0,
-                           heavy_side_cpt_penalty: float = 0.0) -> pd.DataFrame:
+                           heavy_side_cpt_penalty: float = 0.0,
+                           exclude_skill_vs_opp_dst: bool = DEFAULT_EXCLUDE_SKILL_VS_OPP_DST) -> pd.DataFrame:
     """Session 13.4 core ILP -- see decisions #39-46 above. `players` must
     already carry `_row_key` (load_showdown_pool()). Returns the selected
     rows (one per filled roster spot -- exactly 1 captain-role row + N
@@ -3237,6 +3238,33 @@ def solve_showdown_lineup(players: pd.DataFrame, site: str,
         rks = [rk for rk in row_keys if team[rk] == t]
         if rks:
             prob += pulp.lpSum(x[rk] for rk in rks) >= min_per_team, f"min_per_team_{t}"
+
+    # Skill player vs. opposing DST (Session 17 decision #56's
+    # add_skill_vs_opp_dst_constraints(), extended to Showdown 2026-09-30
+    # -- see SHOWDOWN_RULES.md/WK3 postmortem: the UI's own checkbox for
+    # this was silently a no-op on Showdown builds until now, since this
+    # code path never called it despite being wired up front for exactly
+    # this purpose (see the DEFAULT_EXCLUDE_SKILL_VS_OPP_DST comment
+    # block above add_skill_vs_opp_dst_constraints()). Row-key aware,
+    # unlike that function, since a Showdown pool carries two rows
+    # (CPT/FLEX) per player -- forbids ANY row of a DST plus ANY row of a
+    # skill player on that DST's opponent from being selected together.
+    if exclude_skill_vs_opp_dst:
+        opponent = indexed["opponent"]
+        dst_rks = [rk for rk in row_keys if position[rk] in DEFENSE_POSITION_LABELS]
+        for dst_rk in dst_rks:
+            opp_team = opponent[dst_rk]
+            if not opp_team or opp_team == "BYE_OR_UNKNOWN":
+                continue
+            skill_rks = [
+                rk for rk in row_keys
+                if team[rk] == opp_team and position[rk] not in DEFENSE_POSITION_LABELS
+            ]
+            for skill_rk in skill_rks:
+                prob += (
+                    x[dst_rk] + x[skill_rk] <= 1,
+                    f"no_skill_vs_opp_dst_{dst_rk}_{skill_rk}",
+                )
 
     # Decision #43 -- locks (either role).
     locked_player_ids = locked_player_ids or set()
@@ -3620,7 +3648,8 @@ def build_single_showdown_lineup(site: str, slate_id: str,
                                   qb_partner_bonus: float = 0.0,
                                   exclude_cpt_positions: set = None,
                                   k_cpt_penalty: float = 0.0,
-                                  heavy_side_cpt_penalty: float = 0.0) -> pd.DataFrame:
+                                  heavy_side_cpt_penalty: float = 0.0,
+                                  exclude_skill_vs_opp_dst: bool = DEFAULT_EXCLUDE_SKILL_VS_OPP_DST) -> pd.DataFrame:
     players = load_showdown_pool(site, slate_id)
     validate_min_team_players_feasibility(site, min_team_players)
     locked_player_ids = locked_player_ids or set()
@@ -3671,6 +3700,7 @@ def build_single_showdown_lineup(site: str, slate_id: str,
         exclude_cpt_positions=exclude_cpt_positions,
         k_cpt_penalty=k_cpt_penalty,
         heavy_side_cpt_penalty=heavy_side_cpt_penalty,
+        exclude_skill_vs_opp_dst=exclude_skill_vs_opp_dst,
     )
     if locked_player_ids:
         missing = locked_player_ids - set(selected["player_id"])
@@ -3722,7 +3752,8 @@ def build_multi_showdown_lineup(site: str, slate_id: str,
                                  qb_partner_bonus: float = 0.0,
                                  exclude_cpt_positions: set = None,
                                  k_cpt_penalty: float = 0.0,
-                                 heavy_side_cpt_penalty: float = 0.0) -> tuple:
+                                 heavy_side_cpt_penalty: float = 0.0,
+                                 exclude_skill_vs_opp_dst: bool = DEFAULT_EXCLUDE_SKILL_VS_OPP_DST) -> tuple:
     """Showdown counterpart to build_multi_lineup() -- same exposure-cap /
     uniqueness-relaxation loop (decisions #5-7), no stacking rotation
     (decision #45 -- not supported for Showdown this session). Session 16
@@ -3820,6 +3851,7 @@ def build_multi_showdown_lineup(site: str, slate_id: str,
                 exclude_cpt_positions=exclude_cpt_positions,
                 k_cpt_penalty=k_cpt_penalty,
                 heavy_side_cpt_penalty=heavy_side_cpt_penalty,
+                exclude_skill_vs_opp_dst=exclude_skill_vs_opp_dst,
             )
         except RuntimeError as e:
             if current_uniqueness > 0:
@@ -4838,6 +4870,7 @@ def main():
                 exclude_cpt_positions=sd_exclude_cpt_positions,
                 k_cpt_penalty=args.sd_k_cpt_penalty,
                 heavy_side_cpt_penalty=args.sd_heavy_side_cpt_penalty,
+                exclude_skill_vs_opp_dst=not args.allow_skill_vs_opp_dst,
             )
             if args.request_id:
                 out_path = OUTPUT_DIR / "ui_requests" / f"{args.request_id}.csv"
@@ -4893,6 +4926,7 @@ def main():
                 exclude_cpt_positions=sd_exclude_cpt_positions,
                 k_cpt_penalty=args.sd_k_cpt_penalty,
                 heavy_side_cpt_penalty=args.sd_heavy_side_cpt_penalty,
+                exclude_skill_vs_opp_dst=not args.allow_skill_vs_opp_dst,
             )
             if args.request_id:
                 out_path = OUTPUT_DIR / "ui_requests" / f"{args.request_id}.csv"
