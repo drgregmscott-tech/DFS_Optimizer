@@ -472,7 +472,106 @@ def apply_vac_bump(F, final, k=None, cap=CAP):
         return np.asarray(final, float), np.zeros(len(final))
 
 
-def predict_v2(frame, ctx, lin, dst, live_pred=None, alpha=FFC_BLEND_ALPHA, vac_k=None):
+# 2026-09-30 chalk-size candidate (analysis/chalk_size_fix/RESULTS.md): every model predicts real 20%+ chalk at
+# about half; raw FFC sizes chalk about right but ranks worse. For skill players raw FFC ranks in the slate's top
+# CHALK_N, final log-score = (1-b)*log(final) + b*log(raw FFC); every group is re-allocated to its own current
+# budget (same convention as the vac bump). Switch: DFS_OWN_CHALK_FFC=1 (default 0 = off). Params from
+# data/ownership_v2_chalk.candidate-2026-09-30.json when present. Any failure = no-op.
+CHALK_FFC_DEFAULT = "0"
+CHALK_PARAMS_PATH = DATA_DIR / "ownership_v2_chalk.candidate-2026-09-30.json"
+CHALK_N, CHALK_B = 15, 0.5
+
+
+def chalk_ffc_enabled():
+    return os.environ.get("DFS_OWN_CHALK_FFC", CHALK_FFC_DEFAULT).strip().lower() not in ("0", "false", "off", "no", "")
+
+
+def chalk_params():
+    try:
+        with open(CHALK_PARAMS_PATH, encoding="utf-8-sig") as f:
+            p = json.load(f)
+        return int(p["n"]), float(p["b"])
+    except Exception:  # noqa: BLE001
+        return CHALK_N, CHALK_B
+
+
+def apply_chalk_ffc(F, final, raw_ffc, n=None, b=None, cap=CAP):
+    """Returns (pulled final, audit array of pulled-minus-before). Fail-safe: input unchanged on any problem."""
+    if n is None or b is None:
+        n0, b0 = chalk_params()
+        n = n0 if n is None else n
+        b = b0 if b is None else b
+    try:
+        base = np.asarray(final, float)
+        ffc = pd.to_numeric(pd.Series(np.asarray(raw_ffc, float)), errors="coerce").to_numpy()
+        skill = F.pos.isin(["QB", "RB", "WR", "TE"]).to_numpy()
+        ok = np.isfinite(base) & skill
+        if b == 0 or n <= 0 or not (ok & np.isfinite(ffc) & (ffc > 0)).any():
+            return base, np.zeros(len(base))
+        top = np.zeros(len(base), bool)
+        for _, ix in F[ok].groupby("slate_id").indices.items():
+            rows = np.where(ok)[0][ix]
+            f = np.where(np.isfinite(ffc[rows]), ffc[rows], -1.0)
+            r = rows[np.argsort(-f, kind="stable")[:n]]
+            top[r[ffc[r] > 0]] = True
+        lb = np.log(np.maximum(np.where(ok, base, 0.0), .05))
+        Fsc = np.where(top, (1 - b) * lb + b * np.log(np.maximum(np.nan_to_num(ffc), .05)), lb)
+        sub = F[ok]
+        bud = pd.Series(base[ok], index=sub.index).groupby([sub.slate_id, sub.grp]).sum()
+        out = base.copy()
+        for (sid, g), ix in sub.groupby([sub.slate_id, sub.grp]).indices.items():
+            rows = np.where(ok)[0][ix]
+            out[rows] = allocate(F.iloc[rows], Fsc[rows], {g: float(bud[(sid, g)])}, cap=cap)
+        if not np.all(np.isfinite(out[ok])):
+            return base, np.zeros(len(base))
+        return out, np.where(ok, out - base, 0.0)
+    except Exception:  # noqa: BLE001 -- must never break a build
+        return np.asarray(final, float), np.zeros(len(final))
+
+
+# 2026-09-30 chalk-temperature candidate (analysis/chalk_temperature/RESULTS.md): the v2 distribution is "too flat at
+# the top" (real 30%+ players predicted ~20). Sharpen each position group's shares: new_i ∝ final_i ** gamma
+# (= softmax temperature 1/gamma on the log-share), re-allocated to the SAME group total with the usual CAP
+# water-fill. No new data. Switch/param: env DFS_OWN_CHALK_TEMP=<gamma>; unset/1.0 = no-op. Any failure = no-op.
+# NO SHIP (2026-09-30): fixes catch-rate/bias direction in all 5 history seasons but costs correlation every
+# season and overshoots $7k+ on live 2026 (already near-calibrated there via the FFC blend). Off by default.
+CHALK_TEMP_DEFAULT = 1.0
+
+
+def chalk_temp_gamma():
+    try:
+        return float(os.environ.get("DFS_OWN_CHALK_TEMP", CHALK_TEMP_DEFAULT))
+    except ValueError:
+        return CHALK_TEMP_DEFAULT
+
+
+def apply_chalk_temp(F, final, gamma=None, cap=CAP, groups=None):
+    """Returns (sharpened final, audit delta). Groups default to skill groups (QB/RB/WR/TE; DST untouched)."""
+    gamma = chalk_temp_gamma() if gamma is None else gamma
+    base = np.asarray(final, float)
+    try:
+        if gamma == 1.0:
+            return base, np.zeros(len(base))
+        groups = [g for g in GROUPS if g != "DST"] if groups is None else groups
+        sel = (F.grp.isin(groups).to_numpy() & np.isfinite(base) & (base > 0))
+        if not sel.any():
+            return base, np.zeros(len(base))
+        Fsc = gamma * np.log(np.maximum(np.where(sel, base, 1.0), 1e-3))
+        sub = F[sel]
+        bud = pd.Series(base[sel], index=sub.index).groupby([sub.slate_id.to_numpy(), sub.grp.to_numpy()]).sum()
+        out = base.copy()
+        rows_all = np.where(sel)[0]
+        for (sid, g), ix in sub.groupby([sub.slate_id.to_numpy(), sub.grp.to_numpy()]).indices.items():
+            rows = rows_all[ix]
+            out[rows] = allocate(F.iloc[rows], Fsc[rows], {g: float(bud[(sid, g)])}, cap=cap)
+        if not np.all(np.isfinite(out[sel])):
+            return base, np.zeros(len(base))
+        return out, out - base
+    except Exception:  # noqa: BLE001
+        return base, np.zeros(len(base))
+
+
+def predict_v2(frame, ctx, lin, dst, live_pred=None, alpha=FFC_BLEND_ALPHA, vac_k=None, raw_ffc=None):
     """frame: to_frame() output (one or more slates). live_pred: live FFC-model %, aligned to frame,
     or None for no blend. Returns (final, v2_only) numpy arrays aligned to frame; rows outside
     QB/RB/WR/TE/DST are NaN (caller keeps the old number)."""
@@ -500,6 +599,12 @@ def predict_v2(frame, ctx, lin, dst, live_pred=None, alpha=FFC_BLEND_ALPHA, vac_
         final, bump = apply_vac_bump(F, final, vac_k, cap=lin.get("cap", CAP))
         LAST_AUDIT["own_vac_bump"] = bump
         LAST_AUDIT["own_vacated"] = pd.to_numeric(F["vacated"], errors="coerce").fillna(0.0).to_numpy()
+    if raw_ffc is not None and chalk_ffc_enabled():
+        final, pull = apply_chalk_ffc(F, final, raw_ffc, cap=lin.get("cap", CAP))
+        LAST_AUDIT["own_chalk_ffc"] = pull
+    if chalk_temp_gamma() != 1.0:
+        final, dtemp = apply_chalk_temp(F, final, cap=lin.get("cap", CAP))
+        LAST_AUDIT["own_chalk_temp"] = dtemp
     other = ~F.pos.isin(GROUPS).to_numpy()
     final[other] = np.nan
     v2_only[other] = np.nan
@@ -551,5 +656,7 @@ def refine_v2(scored, feats, live_new, ffc_used, site, season, week):
     _check_v2_inputs(stats, prior_sal, lag_own, season, week)
     ctx = Ctx(stats, prior_sal, lag_own)
     live =np.asarray(live_new, float) if ffc_used else None
-    final, v2_only = predict_v2(frame, ctx, lin, dst, live)
+    raw = pd.to_numeric(sc["ffc_own_pct"], errors="coerce").to_numpy() \
+        if (ffc_used and "ffc_own_pct" in sc.columns) else None
+    final, v2_only = predict_v2(frame, ctx, lin, dst, live, raw_ffc=raw)
     return (pd.Series(final, index=scored.index), pd.Series(v2_only, index=scored.index))

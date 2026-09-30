@@ -50,14 +50,31 @@ it from here, don't let this file regrow into another sprawl.
 
 ## Open (added 2026-09-30, from the system-grade review — see `analysis/model_vs_fc/RESULTS.md`) — PRIORITY ORDER, work these next
 
-7. **Expensive-player ($7k+) ownership gap — second priority, not started.** Our ownership corr on
-   $7k+ players is .291 vs FC's historical .797 (`analysis/model_vs_fc/RESULTS.md` section C, a now-frozen
-   comparison) — a much bigger gap than the cheap-WR/TE one that just got fixed, and untouched by that fix
-   (which only targeted cheap WR/TE). This is the same failure class as the original Tyler Shough miss that
-   helped kick off this whole postmortem (chalk QB/stud mis-owned). **Grade against real DK ownership
-   (`ownership_actual_log.csv`), not any commercial product** — the goal is matching the actual field, not
-   matching FC. Same playbook as the cheap-WR/TE fix: analyze residuals against real ownership directly,
-   test candidate features (role/vacated usage, Vegas totals, price tier), no competitor benchmark needed.
+7. **Expensive-player ($7k+) ownership gap — CLOSED 2026-09-30, reframed as a ranking miss, not shipped.**
+   Four held-out studies, in order:
+   - `analysis/stud_ownership/RESULTS.md` (untracked, DO NOT COMMIT — FC-derived aggregates): graded against
+     real DK ownership, not FC's dead projected-Own column (the .291-vs-.797 number above was FC's own
+     pre-lock opinion, 2021-23 only, correctly retired as a calibration target). Live 2026 $7k+ corr is
+     already .743. Five candidate stud features (role/vacated, Vegas, price tier, momentum, pts/$) tested
+     2021-25 LOSO: none moved $7k+ corr by more than +.018, none consistent across seasons —
+     **wrong-direction, killed.** Real finding: $7k+ chalk and cheap-WR/TE chalk are **the same mechanism**
+     (every band's ownership model predicts real 20-30%+ chalk at about half), not two separate problems.
+   - `analysis/chalk_size_fix/RESULTS.md` + `scripts/ownership_v2.py` (`apply_chalk_ffc`, env
+     `DFS_OWN_CHALK_FFC`, default off): pull top-N players toward raw FFC by factor b. Helped 2 of 3
+     held-out 2026 weeks but made the target tier (30%+ real) worse in aggregate — fixed group budgets mean
+     the pull steals share from true mega-chalk. **Inconclusive, off by default**, not re-tested since a
+     mechanistically cleaner candidate (below) doesn't have this flaw.
+   - `analysis/chalk_temperature/RESULTS.md` + `scripts/ownership_v2.py` (`apply_chalk_temp`, env
+     `DFS_OWN_CHALK_TEMP`, default off): sharpen each group's distribution toward its current top (no FFC
+     needed, testable on all 5 history seasons). Catch-rate/bias direction improves in all 5 seasons but
+     correlation drops every season and $7k+ MAE gets worse; overshoots $7k+ on live 2026 (already
+     near-calibrated there via the FFC blend). **Wrong-direction, killed.**
+   - **Root cause, confirmed three ways: this is a ranking/classification miss, not a distribution-shape
+     miss.** 60-65% of real 20%+/30%+-owned players aren't even in our model's top tier, so no amount of
+     resizing/sharpening the tiers we already have right fixes it — it lands on the wrong players.
+   - **Next step (not started, needs a fresh session):** find the signal that predicts *which* players the
+     field will make chalk (not how big to make our current top tier). See
+     `HANDOFF_ownership_ranking_signal_2026-09-30.md` for the pickup plan.
 
 8. **QB/projection-stack refit — RB/WR/TE-only split, from §6.** The 2021-26 stack refit
    (`data/projection_stack_dk_refit_2026-09-26.json`, untracked, not wired) improved RB/WR/TE MAE every

@@ -1,0 +1,8 @@
+﻿{
+  "created": "2026-09-30",
+  "status": "candidate, OFF by default (DFS_OWN_CHALK_FFC=0). Not shipped: mixed leave-one-week-out result, see analysis/chalk_size_fix/RESULTS.md",
+  "n": 15,
+  "b": 0.5,
+  "lowo_choices": {"wk1": [15, 0.25], "wk2": [15, 0.5], "wk3": [20, 0.5]},
+  "selection": "grid n in {3,5,8,10,15,20,30} x b in {0,.25,.5,.75,1}; objective = overall skill-player MAE on training weeks, 2026 wk1-3 real DK ownership"
+}
