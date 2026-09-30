@@ -2009,3 +2009,6 @@ timestamp_utc,trigger_type,site,step,status
 2026-09-30T23:02:43.691810+00:00,full_refresh_dispatch,dk,dk_classic_wk4_early_04Oct2026,build_projections,success
 2026-09-30T23:02:43.691810+00:00,full_refresh_dispatch,dk,dk_classic_wk4_early_04Oct2026,status_apply,success
 2026-09-30T23:02:43.691810+00:00,full_refresh_dispatch,dk,dk_classic_wk4_early_04Oct2026,pivot_finder,skipped
+2026-09-30T23:04:16.128380+00:00,full_refresh_dispatch,dk,dk_showdown_wk4_PIT_CLE_01Oct2026,build_projections,success
+2026-09-30T23:04:16.128380+00:00,full_refresh_dispatch,dk,dk_showdown_wk4_PIT_CLE_01Oct2026,status_apply,success
+2026-09-30T23:04:16.128380+00:00,full_refresh_dispatch,dk,dk_showdown_wk4_PIT_CLE_01Oct2026,pivot_finder,skipped
