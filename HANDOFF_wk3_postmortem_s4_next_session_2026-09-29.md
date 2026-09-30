@@ -142,3 +142,8 @@ role/Vegas/depth features. Never say "the field has info we lack" (memory feedba
 3. **Track 2 (own sessions):** truepool default decision (Wk4-5); vac-bump k; "who replaces whom" projection reallocation (Aaron Jones item);
    `--own-penalty` leverage flag (default 0); early-season blend refit with props ON (+ Wk1 sigma-0 bug); lineup-replay of the ownership changes (impact unmeasured);
    stale reference roster (135/659 fallback matches); FC-lineup construction comparison; ownership refit ~Wk6 with more 2026 weeks.
+
+## UPDATE 3 (Wed 2026-09-30, track-2 closing session) — see checklist "Track-2 closing session outcomes"
+Pushed: 2ed0730 (blend zero-sigma fix + matcher team refresh), 8ca1ebc (RB who-replaces-whom, ON, `DFS_WRW_RB=0` off), edde6ed (`--own-penalty`, default 0; SUBAGENT_BRIEF "history = all five seasons").
+Dropped: blend refit, QB salary blend, cheap-player salary pull, own-penalty fading. Inconclusive/track 2: WR/TE replacement, chalk tilt -0.05 (needs better ownership), stud-level harness-vs-live gap ($6.5k+).
+Next: (1) Sunday Wk4 morning tasks above (unchanged) + confirm wrw audit columns in Actions; (2) Mon 10/5 scoring incl. RB replacement; (3) FC-lineup construction comparison (projections/selection gap ~6 pts/100-lineup pool); (4) stud-level gap; (5) history ownership accuracy (.66) then re-test chalk tilt.
