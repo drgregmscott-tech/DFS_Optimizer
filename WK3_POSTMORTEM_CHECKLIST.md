@@ -563,6 +563,10 @@ FC-derived RESULTS.md files live locally in `analysis/*/RESULTS.md` (not committ
   Questionable weighting available but user judges it too variable; human inactives check Sunday morning is the real solver. No paid X.
   Timing logger `scripts/inactives_timing_log.py` to log when ESPN/Sleeper first show inactives (run Sunday Wk4).
 - **Open:** QB residual gap vs FC from Wk3+ (~0.5 MAE, not bias) needs its own session; cheap WR/TE ownership info gap remains track 2.
+- **Parking lot (track 2, added 2026-09-30): ownership/leverage lever.** Step C showed ownership (v2 or otherwise) never enters the classic solve;
+  lambda is only a sigma-variance penalty. So v2's accuracy gain cannot change lineups today. Wiring idea: new optimizer flag `--own-penalty`
+  (default 0 = off) plus a matching `mme_gpp` key in `data/optimizer_presets.json` left at 0 until swept on held-out history + 2026 the same way
+  lambda was (`analysis/lambda_reverify/`). Prior evidence is weak (modeled-ownership chalk edge +0.08, CI crosses 0), so low bar to test, hard bar to ship.
 
 ### §4 plan A-H status (2026-09-30, user decisions)
 - **A. CLOSED.** Wk3 results + real ownership logged from the DK contest-results exports (`data/contest_results/`, `data/ownership_actual_log.csv`).
