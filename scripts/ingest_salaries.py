@@ -670,6 +670,25 @@ def build_player_reference(weekly_stats_path: Path,
         # when both exist. When weekly_stats was absent entirely (above),
         # `most_recent` starts empty, so every roster player lands here --
         # this is the SAME union logic, just with nothing to compare against.
+        # Stale-team fix: when weekly_stats is from a COMPLETED prior season (the --season 2025
+        # convention), its "most recent team" is last year's team, so every offseason mover
+        # (Walker/KC, Evans/SF, Kyler/MIN...) matched only via auto_fallback_team_mismatch.
+        # Refresh team from the current-season roster snapshot (IDs still come from stats).
+        try:
+            stats_season = int(weekly["season"].max()) if "season" in weekly.columns else None
+            roster_season = int(rosters["season"].max()) if "season" in rosters.columns else None
+        except Exception:  # noqa: BLE001
+            stats_season = roster_season = None
+        if stats_season is not None and roster_season is not None and roster_season > stats_season and len(most_recent):
+            cur = roster_recent.set_index("player_id")["team"]
+            new_team = most_recent["player_id"].map(cur)
+            chg = new_team.notna() & (new_team != most_recent["team"])
+            if chg.any():
+                most_recent.loc[chg, "team"] = new_team[chg]
+                most_recent.loc[chg, "normalized_team"] = most_recent.loc[chg, "team"].map(
+                    lambda t: BASE_TEAM_ABBREV_MAP.get(str(t).strip().upper(), str(t).strip().upper()))
+                print(f"build_player_reference: refreshed team for {int(chg.sum())} player(s) from the "
+                      f"{roster_season} roster snapshot (stats file is {stats_season}).")
         new_players = roster_recent[~roster_recent["player_id"].isin(most_recent["player_id"])].copy()
         if len(new_players):
             new_players["normalized_name"] = new_players["player_display_name"].map(normalize_name)

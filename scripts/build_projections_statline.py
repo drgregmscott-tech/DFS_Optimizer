@@ -389,6 +389,19 @@ def _apply_early_season_blend(df, week, cfg_path=EARLY_BLEND_CONFIG):
         for c in ("statline_p10", "statline_p90"):
             df[c] = (df[c] + delta).clip(lower=0.0)
         df["early_blend_delta"] = delta
+        # A blend can lift a zero-sigma row (no-history player) above 0; a positive
+        # projection with sigma 0 is "risk-free" to the objective and makes
+        # sigma recalibration raise. Give those rows the position's median sigma/proj ratio.
+        if "statline_sigma" in df.columns:
+            sg = pd.to_numeric(df["statline_sigma"], errors="coerce").fillna(0.0)
+            fixed = m & (df["final_projection"] > 0) & (sg <= 0)
+            if fixed.any():
+                ratio = (sg / df["final_projection"].where(df["final_projection"] > 0)).where(sg > 0)
+                med = ratio.groupby(pos).median()
+                fb = pos.map(med).fillna(ratio.median()).fillna(0.6)
+                df.loc[fixed, "statline_sigma"] = (fb * df["final_projection"])[fixed]
+                print(f"Early-season blend: gave {int(fixed.sum())} lifted zero-sigma row(s) a "
+                      f"position-median sigma/proj sigma.")
         print(f"Early-season blend (week {week}): adjusted {int(m.sum())} player(s); mean delta "
               f"{delta[m].mean():+.2f}, mean |delta| {delta[m].abs().mean():.2f} "
               f"(range {delta.min():+.1f} to {delta.max():+.1f}).")
