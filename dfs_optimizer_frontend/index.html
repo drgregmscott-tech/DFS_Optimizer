@@ -1346,7 +1346,8 @@
   }
   .overview-row {
     display: grid;
-    grid-template-columns: 1fr 60px 100px 50px;
+    grid-template-columns: 1fr 56px 44px;
+    column-gap: 10px;
     padding: 8px 12px;
     border-bottom: 1px solid var(--line-soft);
     font-size: 12px;
@@ -1354,7 +1355,10 @@
   }
   .overview-row:last-child { border-bottom: none; }
   .overview-row.head { color: var(--dimmer); font-size: 10px; text-transform: uppercase; letter-spacing: 0.06em; background: var(--panel-2); }
+  .overview-row .matchup { color: var(--bone); }
+  .overview-row .matchup .team-total { color: var(--dimmer); font-family: 'Roboto Mono', monospace; font-size: 11px; }
   .overview-row .ou { text-align: right; font-family: 'Roboto Mono', monospace; color: var(--amber); font-weight: 600; }
+  .overview-row .pace { text-align: right; font-family: 'Roboto Mono', monospace; color: var(--dimmer); font-size: 11px; }
   .overview-bar-wrap { grid-column: 1 / -1; height: 4px; background: var(--line-soft); border-radius: 2px; overflow: hidden; margin-top: 4px; }
   .overview-bar { height: 100%; background: var(--amber); }
 
@@ -4423,19 +4427,19 @@ in this browser's localStorage.</p>
       var rowsHtml = list.map(function (g) {
         var pct = maxOU > 0 ? Math.round((g.over_under / maxOU) * 100) : 0;
         var t0 = g.teamTotals[g.teams[0]], t1 = g.teamTotals[g.teams[1]];
-        var teamTotalsStr = (t0 && t1) ? (t0.toFixed(1) + ' - ' + t1.toFixed(1)) : '';
+        var team0 = escapeHtml(g.teams[0]) + (t0 ? ' <span class="team-total">' + t0.toFixed(1) + '</span>' : '');
+        var team1 = escapeHtml(g.teams[1]) + (t1 ? ' <span class="team-total">' + t1.toFixed(1) + '</span>' : '');
         var p0 = g.plays[g.teams[0]], p1 = g.plays[g.teams[1]];
-        var paceStr = (p0 && p1) ? ((p0 + p1) / 2).toFixed(0) : '';
-        return '<div class="overview-row"><div>' + escapeHtml(g.teams[0]) + ' vs ' + escapeHtml(g.teams[1]) + '</div>' +
+        var paceStr = (p0 && p1) ? ((p0 + p1) / 2).toFixed(0) : '--';
+        return '<div class="overview-row"><div class="matchup">' + team0 + ' vs ' + team1 + '</div>' +
           '<div class="ou">' + g.over_under.toFixed(1) + '</div>' +
-          '<div class="ou" style="opacity:.75">' + teamTotalsStr + '</div>' +
-          '<div class="ou" style="opacity:.75" title="Avg offensive plays/game, both teams -- a pace proxy (not seconds/play)">' + paceStr + '</div>' +
+          '<div class="pace" title="Avg offensive plays/game, both teams -- a pace proxy (not seconds/play)">' + paceStr + '</div>' +
           '<div class="overview-bar-wrap"><div class="overview-bar" style="width:' + pct + '%"></div></div></div>';
       }).join("");
 
-      el.innerHTML = '<span class="field-label">Slate Overview -- Game &amp; Team Totals</span>' +
+      el.innerHTML = '<span class="field-label">Slate Overview</span>' +
         '<div class="overview-panel">' +
-        '<div class="overview-row head"><div>Game</div><div style="text-align:right">O/U</div><div style="text-align:right">Team Totals</div><div style="text-align:right">Pace</div></div>' +
+        '<div class="overview-row head"><div>Game (team totals)</div><div style="text-align:right">O/U</div><div style="text-align:right" title="Avg offensive plays/game, both teams">Pace</div></div>' +
         rowsHtml + '</div>';
     }
     renderStackTeamOptions();
