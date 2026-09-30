@@ -2010,7 +2010,54 @@ def _clean_site_id(value):
     return s
 
 
-def assign_roster_slots(selected: pd.DataFrame, fixed_counts: dict) -> pd.DataFrame:
+LATE_WINDOW_CUTOFF_ET = "16:00"
+GAMES_PARQUET_PATH = REPO_ROOT / "data" / "games.parquet"
+
+
+def load_game_windows(season, week) -> dict:
+    """team -> "early"/"late" for the given season/week from data/games.parquet
+    (gametime is US/Eastern "HH:MM"; >= 16:00 is late). Empty dict on any
+    missing data (no season/week, file missing, no rows, synthetic teams) so
+    the FLEX late-swap preference in assign_roster_slots() is a no-op."""
+    if season is None or week is None:
+        return {}
+    try:
+        g = pd.read_parquet(GAMES_PARQUET_PATH,
+                            columns=["season", "week", "home_team", "away_team", "gametime"])
+    except Exception:
+        return {}
+    g = g[(g["season"] == int(season)) & (g["week"] == int(week))]
+    out = {}
+    for r in g.itertuples():
+        t = str(r.gametime) if r.gametime is not None else ""
+        if not re.match(r"^\d{2}:\d{2}$", t):
+            continue
+        w = "late" if t >= LATE_WINDOW_CUTOFF_ET else "early"
+        out[r.home_team] = w
+        out[r.away_team] = w
+    return out
+
+
+def infer_season_week_from_slate_id(slate_id: str):
+    """Best-effort (season, week) for a slate id containing a DDMonYYYY date
+    (e.g. dk_classic_wk4_main_04Oct2026): the games.parquet week whose
+    gamedays include that date. (None, None) if not resolvable."""
+    try:
+        m = re.search(r"(\d{2}[A-Za-z]{3}\d{4})", str(slate_id))
+        if not m:
+            return None, None
+        d = pd.to_datetime(m.group(1), format="%d%b%Y").strftime("%Y-%m-%d")
+        g = pd.read_parquet(GAMES_PARQUET_PATH, columns=["season", "week", "gameday"])
+        hit = g[g["gameday"].astype(str) == d]
+        if hit.empty:
+            return None, None
+        return int(hit["season"].iloc[0]), int(hit["week"].iloc[0])
+    except Exception:
+        return None, None
+
+
+def assign_roster_slots(selected: pd.DataFrame, fixed_counts: dict,
+                        season=None, week=None) -> pd.DataFrame:
     remaining = selected.copy()
     rows = []
 
@@ -2029,14 +2076,37 @@ def assign_roster_slots(selected: pd.DataFrame, fixed_counts: dict) -> pd.DataFr
     # first (highest projection first, arbitrary but deterministic tie-
     # break -- doesn't affect optimality, already solved), whatever's left
     # over across the whole RB/WR/TE pool becomes FLEX.
+    #
+    # Late-swap FLEX preference (purely a labeling choice -- no effect on
+    # player selection or score): if exactly one position is in surplus and
+    # any of its players are in a late (>=16:00 ET) game, the highest-salary
+    # late one takes FLEX so it keeps RB/WR/TE swap flexibility. Otherwise
+    # (no window data / no late surplus player / odd shape) legacy behavior.
+    surplus = [p for p in ["RB", "WR", "TE"]
+               if (remaining["position"] == p).sum() > fixed_counts.get(p, 0)]
+    flex_pick = None
+    if len(surplus) == 1:
+        windows = load_game_windows(season, week)
+        if windows:
+            sp = remaining[remaining["position"] == surplus[0]]
+            late = sp[sp["team"].map(windows) == "late"]
+            if not late.empty:
+                flex_pick = late.sort_values("salary", ascending=False, kind="stable").index[0]
+
     leftover = []
     for pos in ["RB", "WR", "TE"]:
         count = fixed_counts.get(pos, 0)
         pool = remaining[remaining["position"] == pos].sort_values(
             "final_projection", ascending=False
         )
-        fixed_players = pool.iloc[:count]
-        leftover.append(pool.iloc[count:])
+        if flex_pick is not None and flex_pick in pool.index:
+            leftover.append(pool.loc[[flex_pick]])
+            pool = pool.drop(flex_pick)
+            fixed_players = pool
+            remaining = remaining.drop(flex_pick)
+        else:
+            fixed_players = pool.iloc[:count]
+            leftover.append(pool.iloc[count:])
         for i, row in enumerate(fixed_players.itertuples(), start=1):
             label = pos if count == 1 else f"{pos}{i}"
             rows.append((label, row))
@@ -2358,6 +2428,7 @@ def build_single_lineup(site: str, slate_id: str, randomization_pct: float = DEF
                          classic_shape: dict = None) -> pd.DataFrame:
     config = SITE_CONFIGS[site]
     players = load_final_projections(site, slate_id)
+    _slate_sw = infer_season_week_from_slate_id(slate_id)  # FLEX late-swap labeling only
     fixed_counts, flex_count = parse_roster_requirements(config["roster_slots"])
 
     # Session 7.2 -- exclude (decision #22): filtered once, up front, so the
@@ -2467,7 +2538,7 @@ def build_single_lineup(site: str, slate_id: str, randomization_pct: float = DEF
             f"LOCK VALIDATION FAILED: player_id(s) {sorted(missing)} requested "
             f"locked but not present in the solved lineup"
         )
-    lineup = assign_roster_slots(selected, fixed_counts)
+    lineup = assign_roster_slots(selected, fixed_counts, *_slate_sw)
     # Session 10.5 (decision #1): sigma_total = sum of all nine players'
     # recalibrated sigma values. Stored in attrs so it survives the
     # validate/return chain without widening the per-player DataFrame schema.
@@ -2569,6 +2640,7 @@ def build_multi_lineup(site: str, slate_id: str, n_lineups: int = DEFAULT_N_LINE
     `max_exposure_pct`'s shared default -- everyone else is unaffected."""
     config = SITE_CONFIGS[site]
     players_all = load_final_projections(site, slate_id)
+    _slate_sw = infer_season_week_from_slate_id(slate_id)  # FLEX late-swap labeling only
     fixed_counts, flex_count = parse_roster_requirements(config["roster_slots"])
     rng = np.random.default_rng(seed) if randomization_pct > 0 else None
 
@@ -2795,7 +2867,7 @@ def build_multi_lineup(site: str, slate_id: str, n_lineups: int = DEFAULT_N_LINE
                 f"LOCK VALIDATION FAILED: player_id(s) {sorted(missing)} requested "
                 f"locked but not present in lineup {n_generated + 1}"
             )
-        lineup = assign_roster_slots(selected, fixed_counts)
+        lineup = assign_roster_slots(selected, fixed_counts, *_slate_sw)
         # Session 10.5 (decision #1): sigma_total on each lineup frame,
         # same as the single-lineup path.
         lineup.attrs["sigma_total"] = round(float(lineup["sigma"].sum()), 4)
