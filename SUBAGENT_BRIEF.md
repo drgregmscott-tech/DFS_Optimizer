@@ -14,6 +14,13 @@ projections, lineup-level data, 410 classic contests (`data/fc_history/`, `analy
 questions with large n. FC is NOT a live input (subscription is dead) — history is training/teacher/comparison data only.
 Some inputs do not exist historically (FFC ownership, injury news, props) — say plainly which questions history cannot settle.
 
+**"History" = ALL five seasons, not 2026.** The main test frame is every season/week we have, with projections and
+ownerships REBUILT with current code from the FC-data salaries (2021-25 all weeks), leave-one-season-out; 2026 Wk1-3 is only
+the second check. Never scope a question to "2026 only / thin / wait for more weeks". Only truly 2026-only inputs (props,
+live FFC ownership, injury news) are limited to 2026 — name which one, and test everything else on history. Using FC's
+projections as a stand-in is a fallback, not the answer, when a current-code rebuild is possible. (Owner flagged this as
+recurring, 2026-09-30.)
+
 ## How to work (owner's rules — non-negotiable)
 1. **Restate the question first.** In your first lines, restate what you are testing in the owner's own terms. If the task prompt
    quotes the owner's premise, test THAT premise, not a paraphrase (a past run tested "min-price DST" when the premise was

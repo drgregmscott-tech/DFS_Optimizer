@@ -1701,6 +1701,7 @@ def solve_lineup(players: pd.DataFrame, salary_cap: int, fixed_counts: dict,
                   locked_player_ids: set = None,
                   min_salary: int = 0,
                   min_total_ownership: float = 0.0,
+                  own_penalty: float = 0.0,
                   flex_positions: set = None,
                   lam: float = 0.0,
                   max_team_players: dict = None,
@@ -1838,6 +1839,15 @@ def solve_lineup(players: pd.DataFrame, salary_cap: int, fixed_counts: dict,
     )
     if shape_term is not None:
         objective = objective + shape_term
+    # WK3 postmortem ownership lever (2026-09-30, track 2): optional linear
+    # ownership term, objective -= own_penalty * sum(estimated_ownership_pct).
+    # Positive = fade chalk, negative = reward chalk. Default 0.0 adds NO term
+    # (byte-identical to prior behavior). Unproven -- see analysis/ownership_lever/.
+    if own_penalty != 0.0:
+        if "estimated_ownership_pct" not in players.columns:
+            raise RuntimeError("--own-penalty requires estimated_ownership_pct in the pool")
+        own_s = players.set_index("player_id")["estimated_ownership_pct"].fillna(0.0)
+        objective = objective - own_penalty * pulp.lpSum(x[pid] * float(own_s[pid]) for pid in x)
     prob += objective, "mean_variance_objective"
 
     # Salary cap.
@@ -2337,6 +2347,7 @@ def build_single_lineup(site: str, slate_id: str, randomization_pct: float = DEF
                          min_salary: int = 0,
                          min_projection: float = 0.0,
                          min_total_ownership: float = 0.0,
+                         own_penalty: float = 0.0,
                          flex_positions: set = None,
                          max_team_players: dict = None,
                          max_game_players: dict = None,
@@ -2444,7 +2455,7 @@ def build_single_lineup(site: str, slate_id: str, randomization_pct: float = DEF
         bring_back=bring_back, target_team=target_team, target_game=target_game,
         game_stack_min_players=game_stack_min_players, mini_stack_type=mini_stack_type,
         locked_player_ids=locked_player_ids,
-        min_salary=min_salary, min_total_ownership=min_total_ownership,
+        min_salary=min_salary, min_total_ownership=min_total_ownership, own_penalty=own_penalty,
         flex_positions=flex_positions, lam=lam,
         max_team_players=max_team_players, max_game_players=max_game_players,
         exclude_skill_vs_opp_dst=exclude_skill_vs_opp_dst,
@@ -2505,6 +2516,7 @@ def build_multi_lineup(site: str, slate_id: str, n_lineups: int = DEFAULT_N_LINE
                         min_salary: int = 0,
                         min_projection: float = 0.0,
                         min_total_ownership: float = 0.0,
+                        own_penalty: float = 0.0,
                         flex_positions: set = None,
                         max_team_players: dict = None,
                         max_game_players: dict = None,
@@ -2721,7 +2733,7 @@ def build_multi_lineup(site: str, slate_id: str, n_lineups: int = DEFAULT_N_LINE
                     game_stack_min_players=game_stack_min_players,
                     mini_stack_type=mini_stack_type,
                     locked_player_ids=locked_player_ids,
-                    min_salary=min_salary, min_total_ownership=min_total_ownership,
+                    min_salary=min_salary, min_total_ownership=min_total_ownership, own_penalty=own_penalty,
                     flex_positions=flex_positions, lam=lam,
                     max_team_players=max_team_players, max_game_players=max_game_players,
                     exclude_skill_vs_opp_dst=exclude_skill_vs_opp_dst,
@@ -4134,6 +4146,12 @@ def main():
              "for the old single shared filename.",
     )
     parser.add_argument(
+        "--own-penalty", dest="own_penalty", type=float, default=pdef("own-penalty", 0.0),
+        help="Track-2 test lever (2026-09-30): subtract own_penalty * sum(estimated "
+             "ownership %%) from the classic objective. 0 = off (default). Positive "
+             "fades chalk, negative rewards it. Unproven; see analysis/ownership_lever.",
+    )
+    parser.add_argument(
         "--min-total-ownership", type=float, default=0.0,
         help="Requires the lineup's summed estimated_ownership_pct across "
              "all 9 players to be at least this much (default 0.0 -- no "
@@ -4910,6 +4928,7 @@ def main():
             excluded_player_ids=excluded_player_ids,
             min_salary=min_salary, min_projection=args.min_projection,
             min_total_ownership=args.min_total_ownership,
+            own_penalty=args.own_penalty,
             flex_positions=flex_positions,
             lam=args.lam,
             max_team_players=max_team_players, max_game_players=max_game_players,
@@ -4990,6 +5009,7 @@ def main():
             excluded_player_ids=excluded_player_ids,
             min_salary=min_salary, min_projection=args.min_projection,
             min_total_ownership=args.min_total_ownership,
+            own_penalty=args.own_penalty,
             flex_positions=flex_positions,
             lam=args.lam,
             max_team_players=max_team_players, max_game_players=max_game_players,
