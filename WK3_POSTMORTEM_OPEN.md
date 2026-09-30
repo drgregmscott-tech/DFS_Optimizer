@@ -39,7 +39,23 @@ it from here, don't let this file regrow into another sprawl.
 
 ## Open (added 2026-09-30, from the system-grade review — see `analysis/model_vs_fc/RESULTS.md`)
 
-5. **Expensive-player ($7k+) ownership gap — highest-impact open item, not started.** Our ownership corr on
+5. **Calibrate and ship real `--cl-*` weights into the classic presets — top priority, practicality gap.**
+   The classic Lineup Study (410 real contests) found real construction effects (0-punt bad, DST $2.8-3.1k
+   band good / $3.6k+ bad, FLEX=RB beats FLEX=WR, QB+2 real but smaller than assumed) and the levers were
+   built and wired end-to-end (`--cl-dst-band-bonus`, `--cl-dst-expensive-penalty`, `--cl-zero-punt-penalty`,
+   `--cl-three-plus-punt-penalty`, `--cl-flex-rb-bonus`, `--cl-flex-wr-penalty`) — same pattern as Showdown's
+   `--sd-*` flags. But unlike `showdown_se`/`showdown_gpp`, every classic preset (`cash`, `se_gpp`,
+   `mme_gpp`, `se3max_pool`) ships these at 0 (confirmed in `data/optimizer_presets.json`), because naive
+   cash-pt-lift weights didn't survive a projection control the first time they were tested. Right now a
+   classic build silently ignores everything that study found — the user has to remember to care about
+   this manually, same failure mode the Showdown skill-vs-DST bug just exposed. **Work needed:** calibrate
+   candidate weights against real held-out slates (same bar `showdown_se`/`showdown_gpp` cleared before
+   shipping), verify against a projection control, then set real nonzero values in the classic presets so
+   the top-projected lineup already reflects them — no Claude session required to pick a lineup, matching
+   how Showdown already works. Also worth then writing a `CLASSIC_RULES.md` mirroring `SHOWDOWN_RULES.md`
+   as the living reference, once real weights exist to document.
+
+7. **Expensive-player ($7k+) ownership gap — second priority, not started.** Our ownership corr on
    $7k+ players is .291 vs FC's historical .797 (`analysis/model_vs_fc/RESULTS.md` section C, a now-frozen
    comparison) — a much bigger gap than the cheap-WR/TE one that just got fixed, and untouched by that fix
    (which only targeted cheap WR/TE). This is the same failure class as the original Tyler Shough miss that
@@ -48,10 +64,10 @@ it from here, don't let this file regrow into another sprawl.
    matching FC. Same playbook as the cheap-WR/TE fix: analyze residuals against real ownership directly,
    test candidate features (role/vacated usage, Vegas totals, price tier), no competitor benchmark needed.
 
-6. **QB projection gap vs FC (FC beats us by 0.22 MAE, history) — real but smaller than #5.** QB recal +
+8. **QB projection gap vs FC (FC beats us by 0.22 MAE, history) — real but smaller than #7.** QB recal +
    auto-promote (shipped this postmortem) closed the surprise-starter piece; this is the remaining base
    projection-accuracy gap on known starters. Same note applies: grade against real results, not FC's
-   number specifically. Lower priority than #5, worth a session once that lands.
+   number specifically. Lower priority than #7, worth a session once that lands.
 
 ~~Replace the dead FC ownership benchmark~~ — **partially dropped, corrected 2026-09-30.** FC actually
 gave two separate things, and the first drop conflated them:
