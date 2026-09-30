@@ -1686,34 +1686,35 @@ in this browser's localStorage.</p>
         </div>
         <!-- 2026-09-29 -- classic construction soft terms (optimizer.py --cl-*). Default 0 = off; only nonzero values are sent. -->
         <div id="wrapClRulesField" style="grid-column:1/-1;">
-          <span class="field-label">Classic Construction Rules (soft)</span>
-          <div style="display:grid; margin-top:8px; grid-template-columns:1fr 1fr; gap:12px;">
-            <div>
-              <span class="field-label">DST $2.8-3.1k bonus</span>
-              <input type="number" id="ctrlClDstBandBonus" min="0" step="0.25" value="0">
+          <details>
+            <summary class="field-label" style="cursor:pointer;">Classic Construction Rules (soft)</summary>
+            <div style="display:grid; margin-top:8px; grid-template-columns:1fr 1fr; gap:12px;">
+              <div>
+                <span class="field-label">DST $2.8-3.1k bonus</span>
+                <input type="number" id="ctrlClDstBandBonus" min="0" step="0.25" value="0">
+              </div>
+              <div>
+                <span class="field-label">DST $3.6k+ penalty</span>
+                <input type="number" id="ctrlClDstExpensivePenalty" min="0" step="0.25" value="0">
+              </div>
+              <div>
+                <span class="field-label">Zero-punt penalty</span>
+                <input type="number" id="ctrlClZeroPuntPenalty" min="0" step="0.25" value="0">
+              </div>
+              <div>
+                <span class="field-label">3+ punt penalty</span>
+                <input type="number" id="ctrlClThreePlusPuntPenalty" min="0" step="0.25" value="0">
+              </div>
+              <div>
+                <span class="field-label">FLEX=RB bonus</span>
+                <input type="number" id="ctrlClFlexRbBonus" min="0" step="0.25" value="0">
+              </div>
+              <div>
+                <span class="field-label">FLEX=WR penalty</span>
+                <input type="number" id="ctrlClFlexWrPenalty" min="0" step="0.25" value="0">
+              </div>
             </div>
-            <div>
-              <span class="field-label">DST $3.6k+ penalty</span>
-              <input type="number" id="ctrlClDstExpensivePenalty" min="0" step="0.25" value="0">
-            </div>
-            <div>
-              <span class="field-label">Zero-punt penalty</span>
-              <input type="number" id="ctrlClZeroPuntPenalty" min="0" step="0.25" value="0">
-            </div>
-            <div>
-              <span class="field-label">3+ punt penalty</span>
-              <input type="number" id="ctrlClThreePlusPuntPenalty" min="0" step="0.25" value="0">
-            </div>
-            <div>
-              <span class="field-label">FLEX=RB bonus</span>
-              <input type="number" id="ctrlClFlexRbBonus" min="0" step="0.25" value="0">
-            </div>
-            <div>
-              <span class="field-label">FLEX=WR penalty</span>
-              <input type="number" id="ctrlClFlexWrPenalty" min="0" step="0.25" value="0">
-            </div>
-          </div>
-          <div class="hint" style="margin-top:4px">Classic only. Projected-point nudges from 410 real DK classic contests (HANDOFF_classic_lineupstudy_findings_2026-09-29.md): DST priced $2.8-3.1k is the best band (+0.8 to +1.2 cash pts), $3.6k+ the worst (-2.3 to -2.9); 0 punts (non-DST &le; $4k) is -1.9 to -2.3, 3+ punts -2.7 to -4.7; FLEX=RB +0.7 to +1.0, FLEX=WR -1.2 to -1.5. 0 turns a rule off. Not yet backtest-calibrated.</div>
+          </details>
         </div>
       </div>
 
@@ -1748,7 +1749,6 @@ in this browser's localStorage.</p>
             <button class="upload-btn" id="btnAddGameCap" type="button">Add Cap</button>
           </div>
           <div class="chip-select" id="gameCapList"></div>
-          <div class="hint" style="margin-top:4px">E.g. cap KC vs DEN at 4 combined players. Independent from (and additive with) a Game Stack's minimum -- a contradictory combination will fail to build.</div>
         </div>
         <!-- Session 13.5 -- Showdown-only min-team-players floor (decision
              #47), the mirror of Team Exposure Caps above. Only shown when
