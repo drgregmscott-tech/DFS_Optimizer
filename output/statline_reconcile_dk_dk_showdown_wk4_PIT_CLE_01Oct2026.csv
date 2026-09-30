@@ -1,0 +1,7 @@
+team,component,pool_share,share_basis,raw_sum,target,scale,abs_delta
+PIT,recv,1.0,recent,36.23,32.3,0.8916,3.93
+CLE,pass,1.0,exclusive,28.34,31.09,1.0968,2.74
+CLE,rush,1.0,recent,29.44,26.59,0.9034,2.84
+PIT,pass,1.0,exclusive,36.48,33.74,0.9249,2.74
+CLE,recv,0.9878,recent,30.33,29.86,0.9846,0.47
+PIT,rush,0.9701,recent,26.33,26.04,0.989,0.29
