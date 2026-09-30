@@ -59,13 +59,13 @@ gave two separate things, and the first drop conflated them:
    dropped as a calibration target; the goal is the real field, not parity with a commercial product.
 2. **Post-lock REAL ownership aggregated across many real contests we never personally entered** (the
    410-contest classic / 142-contest Showdown Lineup Study) — this is genuine field data, not an opinion,
-   at a breadth our own `ownership_actual_log.csv` can't match (that file is built from DK's per-contest
-   results export, so it only covers contests we actually played — one SE3max, one single-entry GPP —
-   not the slate's full field). **This access is genuinely gone with the FC account disabled, and that's a
-   real loss, not something to wave off.** Not reopening as an active task (no known free replacement, and
-   the $7k+ work in item 5 can proceed on our own-contest data same as the cheap-WR/TE fix did) — but
-   worth remembering as a real capability lost, in case a cheap alternative (FFC, DFS Army, a friend's
-   FC subscription) surfaces later.
+   at a breadth our own `ownership_actual_log.csv` can't match on any single contest we entered. **Correction
+   (2026-09-30): nothing is lost going forward.** DraftKings itself makes real results + real ownership for
+   every contest we enter downloadable the next day — that's exactly what already feeds
+   `ownership_actual_log.csv` every week, FC or no FC. FC's only unique value here was backfilling
+   **historical breadth we didn't personally capture at the time** (past weeks/seasons, and contests we
+   weren't entered in) — that backfill is what's gone, not any future slate's data. No action needed; the
+   $7k+ work in item 5 and every future week's ownership logging are both fine on the existing pipeline.
 
 ## Track-2 watch items (re-test with Wk4 data, not active work until then)
 
