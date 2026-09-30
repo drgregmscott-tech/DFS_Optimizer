@@ -68,3 +68,52 @@ If agents are not done/lost, relaunch from the descriptions above (prompt templa
   variance (e.g., "killer bust share is normal variance").
 - Top-QB selection in QB recal uses projections, not depth charts (tie/mis-ranked backup => treated as starter).
 - v2 falls back to the old model silently if inputs are missing (see CI-parity).
+
+---
+
+## UPDATE (Wed 2026-09-30) — supersedes the "State of the repo" and "RUNNING agents" sections above
+Everything below is committed AND pushed (origin/main at 69dcf11). The two agents from earlier are done and folded in.
+
+**Shipped / on in production (Actions + UI):**
+- Ownership v2 + DST model (blended with live FFC at 0.45). Verify "Ownership v2: ON" in the Wk4 Actions log; loud-fallback
+  annotations (`DFS_LOUD_FALLBACKS=0` to silence) appear if v2 / QB recal fall back.
+- QB recalibration (wk3+, top QB per team, proj>=8). Config now tracked: `data/qb_recal_config.json`. Lineup replay: better or
+  equal on every preset (cash build 135.3 -> 146.4). KEEP.
+- Best-first lineup ranking: `scripts/optimizer.py::_rank_lineups_by_projection` renumbers lineup_id by total projection (lineup 1 =
+  top pick). `DFS_RANK_LINEUPS=0` turns off. Tested on the real Wk3 CSV; not yet exercised through the UI.
+- `se3max_pool` randomization-pct 20 -> **5** (sweep: pool/top-5 clearly better; #1 pick unchanged; 3 vs 5 a coin flip, history leans 5;
+  uniqueness 3 inconclusive). Flags still worth glancing at on the top 1-5 lineups (backups, stack, punts, ownership, news).
+
+**Disabled:** early-season salary blend (`data/early_season_blend_config.json`, weeks={}; old weights kept under
+`weeks_disabled_2026-09-29`). Lineup replay: wk1-2 pools got WORSE with props on (weights were fit without props; likely double-counts
+salary). Wk7+ weights had the same flaw, so the earlier "re-check Wk7+ before Wk7" TODO is now "REFIT WITH PROPS ON before
+re-enabling anything". Latent bug: on a Wk1 build the blend lifts no-history players (sigma 0) above 0 and sigma recalibration errors.
+
+**Wk4 setup done:** Wk3 stats fully ingested (1,114 rows); `output/matchup_factors_dk_2026_4.csv` built; Wk4 DK salaries ingested and
+slates added to `data/current_slate.json` (main + early lock 2026-10-04T17:00Z; PIT@CLE Thursday showdown lock 2026-10-02T00:15Z).
+No FD Wk4 salaries and no afternoon slate yet — add when files exist (`ingest_salaries.py --site ... --season 2026 --slate-id ...`,
+then a `current_slate.json` entry; showdown needs `--format showdown`). User reorganized `data/raw_salaries/` (Wk3 files now under
+`26_27_Season_Salary_Archives/Week_3/`).
+
+**Key result from the lineup replay (`analysis/lineup_replay/RESULTS.md`, local only):** we match FC at the top of the board (top 3
+lineups: FC no better, -0.7 pts) but lose deeper in the 100-lineup pool (FC +6.3 pts/lineup, cash 25% vs 18%). Biggest leak was HOW we
+pick from the SE3max pool, not the inputs; top-projected lineup cashed ~44% on 2026; the pool average 20-25%. Ownership v2 has no
+lineup effect at lambda 0 (SE presets) — it matters for MME/GPP presets. "Top-projected pick" = the single #1 lineup per batch; top-5:
+avg cash 29% (new) / 39% (old), at least one of top 5 cashes 78%.
+
+**Other findings this session:** the QB gap and the "FC zeroed 1,001 inactives" gap were mostly test-engine artifacts (injuries/QB1
+guard off); backup-QB/depth DNP predictor works (AUC .83) but adds ~0 accuracy, not wired. Cheap-WR/TE and FC-lineup comparison items
+remain (below).
+
+**Open items, updated order:**
+1. Sunday Wk4 morning: run `python scripts/inactives_timing_log.py --season 2026 --week 4` (logs when ESPN/Sleeper show inactives),
+   user does the human inactives check, `status_check pull` + apply, `availability_diff.py`. Confirm "Ownership v2: ON" + QB recal lines
+   in the Actions log; first real UI test of the best-first ranking.
+2. Mon 10/5: log Wk4 real ownership + results (see wk3 raw files in `data/` for the format; `scripts/log_ownership.py`, `log_results.py`);
+   score `est_own_v2_only` vs shipped blend vs `est_own_live_old` vs realized; re-check QB ownership shift; check QB recal on Wk4.
+3. Refit the early-season blend with props ON (only then consider re-enabling); fix the Wk1 sigma-0 bug first.
+4. Cheap WR/TE ownership root cause (v2 corr .65 vs FC .81, role/vacated-usage group added signal; not understood).
+5. FC-lineup construction comparison beyond the replay; pool selection beyond "take the top" (uniqueness 3 inconclusive; MME/GPP
+   presets untested with the new inputs).
+6. Ownership refit with more 2026 weeks around Wk6.
+7. Parking lot: anything else goes in the checklist Parking Lot, not mid-session.
