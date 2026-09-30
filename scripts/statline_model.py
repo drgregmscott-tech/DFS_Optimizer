@@ -2346,6 +2346,130 @@ def reconcile_team_shares(pool: pd.DataFrame, team_vol: pd.DataFrame,
 # Simulation (decisions #1, #2, #6, #8, #9)
 # ---------------------------------------------------------------------------
 
+# ---------------------------------------------------------------------------
+# Who-replaces-whom: RB reallocation for an OUT teammate (analysis/who_replaces_whom)
+# ---------------------------------------------------------------------------
+WRW_RB_PARAMS = DATA_DIR / "wrw_rb_params.json"
+
+
+def _wrw_trailing_usage(season: int, week: int, teams, p: dict):
+    """Per (team, player) trailing usage strictly before (season, week): the player's last
+    <= trail_player_apps appearances within the team's last trail_team_games games (prior season
+    included), plus team trailing carries/targets (mean of last team_vol_games games) and the
+    team's last game index. Same definition the params were fit on (build_frame.py)."""
+    frames = []
+    for s in (season - 1, season):
+        path = DATA_DIR / f"weekly_stats_{s}.parquet"
+        if path.exists():
+            x = pd.read_parquet(path)
+            stc = "season_type" if "season_type" in x.columns else "game_type"
+            x = x[x[stc] == "REG"]
+            frames.append(x[["player_id", "position", "season", "week", "team", "carries", "targets"]])
+    if not frames:
+        return None, None
+    S = pd.concat(frames, ignore_index=True)
+    S = S[(S["season"] < season) | ((S["season"] == season) & (S["week"] < week))]
+    S = S[S["team"].isin(set(teams))]
+    S[["carries", "targets"]] = S[["carries", "targets"]].apply(pd.to_numeric, errors="coerce").fillna(0.0)
+    tv = (S.groupby(["team", "season", "week"])[["carries", "targets"]].sum()
+          .rename(columns={"carries": "tcar", "targets": "ttgt"}).reset_index()
+          .sort_values(["team", "season", "week"]))
+    tv["g"] = tv.groupby("team").cumcount()
+    S = S.merge(tv, on=["team", "season", "week"])
+    last_g = tv.groupby("team")["g"].max()
+    S = S[S["g"] > S["team"].map(last_g) - p["trail_team_games"]]
+    S = S[S["position"].isin(["RB", "WR", "TE"])].sort_values("g")
+    S = S.groupby(["team", "player_id"]).tail(p["trail_player_apps"])
+    ag = S.groupby(["team", "player_id"]).agg(car=("carries", "sum"), tgt=("targets", "sum"),
+                                              tcar=("tcar", "sum"), ttgt=("ttgt", "sum"),
+                                              last_g=("g", "max"), pos=("position", "last"))
+    ag["sh_car"] = ag["car"] / ag["tcar"].clip(lower=1)
+    ag["sh_tgt"] = ag["tgt"] / ag["ttgt"].clip(lower=1)
+    tvr = tv.groupby("team").tail(p["team_vol_games"]).groupby("team")[["tcar", "ttgt"]].mean()
+    tvr["last_g"] = last_g
+    return ag, tvr
+
+
+def apply_rb_replacement(pool: pd.DataFrame, season: int, week: int,
+                         injury_status: pd.DataFrame | None) -> pd.DataFrame:
+    """Give the remaining RBs the vacated work of an OUT/DOUBTFUL teammate by depth rank
+    (analysis/who_replaces_whom/RESULTS.md: held-out 2016-25 RMSE on affected RBs 8.04 -> 7.17,
+    bias +3.4 -> 0.0, better in 10/10 seasons). Returns the pool with audit columns
+    wrw_delta_pts (extra carries/targets x fitted DK points per opportunity) and wrw_vacated_car;
+    the CALLER adds wrw_delta_pts to the final projection AFTER the projection stack / blends.
+    (Tested on the carry/target means first: the DK projection stack shrank ~2/3 of it back out
+    and the shared sim RNG moved every other player's projection; see WIRING.md.)
+    Off: DFS_WRW_RB=0.
+    Any error or missing status/params -> pool unchanged (loud warning on error only)."""
+    import os
+    df = pool.copy()
+    df["wrw_delta_pts"] = 0.0
+    df["wrw_vacated_car"] = 0.0
+    if os.environ.get("DFS_WRW_RB", "1") == "0":
+        return df
+    if injury_status is None or injury_status.empty:
+        return df
+    try:
+        p = json.loads(WRW_RB_PARAMS.read_text(encoding="utf-8"))
+        st = injury_status.copy()
+        st["player_id"] = st["player_id"].astype(str)
+        out_ids = set(st.loc[st["status"].astype(str).str.upper().isin(["OUT", "DOUBTFUL"]), "player_id"])
+        if not out_ids:
+            return df
+        pid = df["player_id"].astype(str)
+        real = ~df["no_real_game_this_week"].fillna(False).astype(bool) \
+            if "no_real_game_this_week" in df.columns else pd.Series(True, index=df.index)
+        teams = sorted(df.loc[real, "team"].dropna().astype(str).unique())
+        ag, tvr = _wrw_trailing_usage(season, week, teams, p)
+        if ag is None or ag.empty:
+            return df
+        frac = {"car": {int(k): v for k, v in p["car_frac_by_rb_rank"].items()},
+                "tgt": {int(k): v for k, v in p["tgt_frac_by_rb_rank"].items()}}
+        done = []
+        for team in teams:
+            if team not in ag.index.get_level_values(0) or team not in tvr.index:
+                continue
+            a = ag.loc[team]
+            lg = tvr.loc[team, "last_g"]
+            outs = a[a.index.astype(str).isin(out_ids) & (a["last_g"] == lg)
+                     & ((a["sh_car"] >= p["min_car_share"]) | (a["sh_tgt"] >= p["min_tgt_share"]))]
+            if outs.empty:
+                continue
+            cand_mask = real & (df["team"].astype(str) == team) & (df["position"].astype(str) == "RB") \
+                & ~pid.isin(out_ids) & pid.isin(set(a.index.astype(str)))
+            if not cand_mask.any():
+                continue
+            a2 = a.copy(); a2.index = a2.index.astype(str)
+            for ch, vol_col in (("car", "tcar"), ("tgt", "ttgt")):
+                V = float(outs[f"sh_{ch}"].sum())
+                if V <= 0 or outs.loc[outs[f"sh_{ch}"].idxmax(), "pos"] != "RB":
+                    continue
+                sh = a2.loc[pid[cand_mask], f"sh_{ch}"].to_numpy()
+                idx = df.index[cand_mask]
+                ranks = pd.Series(sh, index=idx).rank(ascending=False, method="first").clip(upper=3).astype(int)
+                add = ranks.map(frac[ch]).fillna(0.0) * V * float(tvr.loc[team, vol_col])
+                df.loc[idx, "wrw_delta_pts"] += add * p["ppo_rb"][ch] * float(p.get("points_scale", 1.0))
+                if ch == "car":
+                    df.loc[idx, "wrw_vacated_car"] = V
+            hit = df.loc[cand_mask & (df["wrw_delta_pts"] > 0.05)]
+            done += [f"{team}:{r.player_name}+{r.wrw_delta_pts:.1f}" for r in hit.itertuples()] \
+                if "player_name" in df.columns else []
+        if done:
+            print(f"WRW RB reallocation (week {week}): " + "; ".join(done))
+        return df
+    except Exception as exc:  # noqa: BLE001 -- must never break a build
+        msg = f"WRW RB reallocation skipped ({type(exc).__name__}: {exc}); projections unchanged."
+        try:
+            from ownership_v2 import loud_warn
+            loud_warn(msg)
+        except Exception:  # noqa: BLE001
+            print(f"WARNING: {msg}", file=sys.stderr)
+        out = pool.copy()
+        out["wrw_delta_pts"] = 0.0
+        out["wrw_vacated_car"] = 0.0
+        return out
+
+
 def simulate(pool: pd.DataFrame, site: str, variance: dict,
              n_sims: int = DEFAULT_SIMS, seed: int = DEFAULT_SEED) -> pd.DataFrame:
     """Simulate every player's stat line, score each draw with `site`'s exact

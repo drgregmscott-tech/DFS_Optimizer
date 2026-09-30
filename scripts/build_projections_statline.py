@@ -520,6 +520,27 @@ def _apply_qb_autopromote(df, week):
     return df
 
 
+def _apply_wrw_rb(df, season, week):
+    """Add statline_model.apply_rb_replacement's wrw_delta_pts to final_projection, shifting
+    p10/p90 by the same amount. Any failure = projections unchanged (loud warning)."""
+    try:
+        df = statline_model.apply_rb_replacement(df, season, week, statline_model.load_injury_status(week))
+        d = pd.to_numeric(df["wrw_delta_pts"], errors="coerce").fillna(0.0)
+        # a zero-sigma row (no simulated distribution) must stay as is: sigma recal fails loud on
+        # "positive projection, sigma 0" (hit on the 2024 wk16 rebuild).
+        d = d.where(pd.to_numeric(df["statline_sigma"], errors="coerce").fillna(0.0) > 0, 0.0)
+        df["wrw_delta_pts"] = d
+        m = d > 0
+        if m.any():
+            for c in ("final_projection", "statline_p10", "statline_p90"):
+                df.loc[m, c] = (pd.to_numeric(df.loc[m, c], errors="coerce").fillna(0.0) + d[m]).clip(lower=0.0)
+    except Exception as exc:  # noqa: BLE001 -- must never break a build
+        _loud(f"WRW RB reallocation skipped ({type(exc).__name__}: {exc}); projections unchanged.")
+        df["wrw_delta_pts"] = 0.0
+        df["wrw_vacated_car"] = 0.0
+    return df
+
+
 def _apply_ecr_blend(df, slate_id, w_rb, w_te):
     """Opt-in FantasyPros ECR blend for RB/TE (scripts/ecr_blend.py). Failure = projections unchanged."""
     try:
@@ -1016,6 +1037,10 @@ def build_statline_projections(site: str, season: int, week: int, slate_id: str,
     else:
         df["qb_autopromote_delta"] = 0.0
         df["qb_autopromoted"] = False
+    # Who-replaces-whom RB reallocation (analysis/who_replaces_whom): an OUT/DOUBTFUL RB's vacated
+    # carry/target share goes to the remaining RBs by depth rank. Added as points AFTER the stack /
+    # blends (the validated quantity; the stack shrinks engine-side changes). Off: DFS_WRW_RB=0.
+    df = _apply_wrw_rb(df, season, week)
     df["sigma"] = df["statline_sigma"].clip(lower=0.0)
     df["sigma_source"] = "statline_mc"
 
@@ -1049,7 +1074,8 @@ def build_statline_projections(site: str, season: int, week: int, slate_id: str,
                    ["sigma", "sigma_source", "statline_p10",
                     "statline_p90"] + PROJ_STAT_COLUMNS + ["engine_projection", "stack_delta",
                                                                "early_blend_delta", "qb_recal_delta",
-                                                               "qb_autopromote_delta", "qb_autopromoted"]]
+                                                               "qb_autopromote_delta", "qb_autopromoted",
+                                                               "wrw_delta_pts", "wrw_vacated_car"]]
 
     # --- DST (decisions #2, #3; Session 10.4) ------------------------------
     # Session 14.0 FIX: was build_dst_projections(salaries, ...). Now takes
@@ -1122,6 +1148,8 @@ def build_statline_projections(site: str, season: int, week: int, slate_id: str,
     dst_out["qb_recal_delta"] = 0.0
     dst_out["qb_autopromote_delta"] = 0.0
     dst_out["qb_autopromoted"] = False
+    dst_out["wrw_delta_pts"] = 0.0
+    dst_out["wrw_vacated_car"] = 0.0
     dst_out = dst_out[skill_out.columns]
 
     # --- Kicker (Session 13.1 -- this engine never had it wired in at all)
@@ -1158,6 +1186,8 @@ def build_statline_projections(site: str, season: int, week: int, slate_id: str,
         kicker_out["qb_recal_delta"] = 0.0
         kicker_out["qb_autopromote_delta"] = 0.0
         kicker_out["qb_autopromoted"] = False
+        kicker_out["wrw_delta_pts"] = 0.0
+        kicker_out["wrw_vacated_car"] = 0.0
     kicker_out = kicker_out[skill_out.columns] if len(kicker_out) else \
         pd.DataFrame(columns=skill_out.columns)
 

@@ -1,0 +1,24 @@
+{
+ "_doc": "Who-replaces-whom RB reallocation (statline_model.apply_rb_replacement). When an RB/WR/TE with real usage (played the team's previous game; trailing carry share >= .20 or target share >= .12) is OUT/DOUBTFUL and the biggest vacater of a channel is an RB, each remaining RB gets frac[rank] x vacated share x team trailing volume added to that channel's mean (rank = depth by trailing share among active RBs; rank 4+ uses rank 3). Fit leave-one-season-out on 2016-25 nflverse usage (no FC data); analysis/who_replaces_whom. Off: DFS_WRW_RB=0.",
+ "min_car_share": 0.2,
+ "min_tgt_share": 0.12,
+ "trail_team_games": 8,
+ "trail_player_apps": 4,
+ "team_vol_games": 4,
+ "ppo_rb": {
+  "car": 0.677,
+  "tgt": 1.4
+ },
+ "car_frac_by_rb_rank": {
+  "1": 0.376,
+  "2": 0.245,
+  "3": 0.111
+ },
+ "tgt_frac_by_rb_rank": {
+  "1": 0.25,
+  "2": 0.221,
+  "3": 0.178
+ },
+ "points_scale": 0.65,
+ "_scale_doc": "Shrink on the added points, fit on real-pipeline current-code rebuilds of 72 DK main slates 2021-25 (LOSO k .57-.74, all-data .68). Unscaled the pipeline overshoots (bias -1.1) because price-anchored volume already carries part of the bump."
+}
