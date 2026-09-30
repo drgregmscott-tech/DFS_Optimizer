@@ -568,11 +568,15 @@ FC-derived RESULTS.md files live locally in `analysis/*/RESULTS.md` (not committ
 - **A. CLOSED.** Wk3 results + real ownership logged from the DK contest-results exports (`data/contest_results/`, `data/ownership_actual_log.csv`).
   The FC Wk3 Rewind export is intentionally NOT being pulled (FC is not a live input; DK contest data is the source of truth going forward).
 - **B. CLOSED.** Ownership v2 + DST shipped (see outcome section above).
-- **C. OPEN (this season).** Lambda re-verify on MME/GPP presets with the new inputs. Ownership v2 has no effect at lambda 0, so it only
-  matters where lambda > 0; untested.
+- **C. CLOSED (2026-09-30).** Lambda re-verified on the full optimizer (`analysis/lambda_reverify/RESULTS.md`). No preset changes: mme_gpp stays -0.005
+  (tiny gain, within noise), se_gpp stays 0 (positive lambda flat/worse on history, 0.063 = -3.8 cash pts, 0/4 seasons positive). Positive lambda
+  for SE/cash dropped as wrong direction. cash/se3max_pool not run (inferred from se_gpp). **Correction:** the earlier premise "ownership v2 only
+  matters where lambda > 0" was wrong. Lambda is only a sigma-variance penalty; ownership never enters the classic solve at any lambda, so v2
+  affects displayed ownership columns only. Testing v2 as a lineup lever would need a new ownership/leverage term (e.g. `--own-penalty`, default 0),
+  a separate project, not done.
 - **D. CLOSED.** QB recalibration shipped.
-- **E. OPEN, low priority.** Sigma/yards double-count. Only matters where sigma is consumed (lambda > 0 presets, p10/p90 has no consumer); size it
-  as part of C before spending time.
+- **E. CLOSED (2026-09-30), not worth doing.** Sigma/yards double-count. Sigma reaches the solver only through lambda, lambda barely moves outcomes,
+  and sigma is still well calibrated (miss spread ratio ~0.86-1.19 by position). Sized in Step C.
 - **F. DROPPED.** Week-1 sentinel path was a next-season item; not pursued. Only work that improves this season's results.
 - **G. IN PROGRESS.** Inactives: sources ranked, timing logger + diff script built, human check on Sunday. Live ESPN/Sleeper timing test = Wk4 Sunday.
 - **H. CLOSED.** FC-vs-ours re-run done (model_vs_fc + lineup replay).
