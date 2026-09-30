@@ -464,22 +464,26 @@ D) QB1-specific stack/recal; E) sigma/yards double-count fix; F) Week 1 sentinel
 inactives source; H) FC-vs-ours wk3 re-run. Full detail in the handoff doc; don't re-derive, just execute in order.
 
 **Phase 1/2 findings routed here (added 2026-09-28, not yet re-ordered into A-H):**
-- [ ] Step B should fold in the Phase 1 mechanism corrections: FFC-unlisted ownership cliff (wk3), chalk_score
+- [x] Step B should fold in the Phase 1 mechanism corrections: FFC-unlisted ownership cliff (wk3), chalk_score
       *ranking* miscalibration (wk1-2, not the softmax temperature), softmax top-end cap (secondary, TE/top-3 WR),
       and the cheap-DST chalk_score ranking miss (recurring wk1→wk3, e.g. Jets/Titans). Prioritize the cheapest
       salary band specifically — that's where the miscalibration correlates with points (Step 5, WR/TE corr -0.36
       cheap vs. ~-0.1 elsewhere). See `WK3_ROOT_CAUSE_FINDINGS.md` Step 4a/4b/5.
-- [ ] Step D (QB1-specific stack/recal) should fold in the Phase 1 + Phase 2 QB-bust finding: our top-projected
+      **[DONE 2026-09-30]** handled by ownership v2 + DST, then the WR/TE root-cause session (training-data pool bug, teammate-OUT bump).
+- [x] Step D (QB1-specific stack/recal) should fold in the Phase 1 + Phase 2 QB-bust finding: our top-projected
       QBs busted repeatedly (Burrow wk1, Herbert wk1, Caleb Williams wk2, Allen + Lamar wk3), and Phase 2 confirmed
       our QBs are priced above even the non-cashing field's average QB salary. Treat "QB price/bust check" as part
       of this step, not a separate workstream. See `WK3_ROOT_CAUSE_FINDINGS.md` Step 4e and Phase 2 Step 1.
-- [ ] Aaron Jones-style vacated-volume reallocation (OUT teammate's carries/targets not redistributed;
+      **[DONE 2026-09-30]** QB recal shipped; QB residual session found no remaining QB model gap (only surprise starters, covered by QB auto-promote).
+- [~] Aaron Jones-style vacated-volume reallocation (OUT teammate's carries/targets not redistributed;
       `statline_model.py` A4 path) — projection-pipeline fix, add to this plan wherever B/D land it. See
       `WK3_ROOT_CAUSE_FINDINGS.md` Step 4c.
-- [ ] Phase 2 chalk-baseline result used post-lock (hindsight) ownership. Before leaning on the 9/9-beat-us result
+      **[MOVED TO TRACK 2 2026-09-30]** no held-out form of teammate-OUT volume reallocation helped projection MAE; needs a 'who replaces whom' model.
+- [x] Phase 2 chalk-baseline result used post-lock (hindsight) ownership. Before leaning on the 9/9-beat-us result
       as evidence for anything in B-D, rerun the same chalk-baseline construction using our own *pre-lock* modeled
       ownership, to check whether the result survives without hindsight. See `WK3_ROOT_CAUSE_FINDINGS.md` Phase 2
       Step 1.
+      **[DONE 2026-09-29]** see the classic pre-lock ownership re-test (chalk edge roughly halves with modeled ownership; no lever shippable).
 
 ---
 

@@ -117,3 +117,28 @@ remain (below).
    presets untested with the new inputs).
 6. Ownership refit with more 2026 weeks around Wk6.
 7. Parking lot: anything else goes in the checklist Parking Lot, not mid-session.
+
+---
+
+## UPDATE 2 (Wed 2026-09-30, end of the QB / WR-TE ownership session) — supersedes open items 4 and 5 above
+Committed and pushed: `8391432` (QB auto-promote), `84f88bf` (ownership fixes + checklist). Both §4 parking-lot items are CLOSED.
+
+**Shipped, on in production (Actions + UI):**
+- **QB auto-promote** (`_apply_qb_autopromote`, `scripts/build_projections_statline.py`): team with a real game and no QB projected >=8 gets its
+  highest-priced non-OUT QB (>= $4,500, proj > 0) set to a salary-implied projection. Quiet; audit cols `qb_autopromoted`, `qb_autopromote_delta`.
+  Off: `DFS_QB_AUTOPROMOTE=0`. Why: QB gap vs FC is closed on known starters (we win 5.99 vs 6.32); the whole residual is ~2 surprise starters/slate.
+- **Teammate-OUT WR/TE ownership bump** (`apply_vac_bump`, `scripts/ownership_v2.py`), k=1.0, ON. Off: `DFS_OWN_VAC_BUMP=0`. Audit cols `own_vac_bump`,
+  `own_vacated`. 2026 replay corr .876->.880, MAE 1.194->1.179.
+**Wired, default OFF:** true-pool coefficients (`data/ownership_v2_dk_{linear,dst}_truepool.json`, `DFS_OWN_V2_COEF=truepool`); live 2026 replay slightly worse.
+**Root causes found:** (1) 2021-25 ownership training frame pooled off-slate teams (labels exist only for main-slate teams) -> flat slopes; fixed in
+`analysis/ownership_v2/build.py hist()`; earlier "v2 .61 vs FC .83" was inflated by it. (2) teammate-OUT usage bump never reached ownership. NOT causes: model shape,
+role/Vegas/depth features. Never say "the field has info we lack" (memory feedback_no_field_has_info_excuse).
+
+**Open items, in order:**
+1. **Sunday Wk4 morning:** `python scripts/inactives_timing_log.py --season 2026 --week 4`; user human inactives check; `status_check pull` + apply; `availability_diff.py`.
+   In the Actions log confirm "Ownership v2: ON", QB recal line, any "QB auto-promote" line; first UI test of best-first ranking.
+2. **Mon 10/5:** log Wk4 real ownership + results; score est_own_v2_only vs shipped vs old vs realized; score the vac bump and truepool coefs (re-run
+   `analysis/wrte_chalk_root_cause/replay_2026.py` with Wk4 added); check QB auto-promote hits/misses.
+3. **Track 2 (own sessions):** truepool default decision (Wk4-5); vac-bump k; "who replaces whom" projection reallocation (Aaron Jones item);
+   `--own-penalty` leverage flag (default 0); early-season blend refit with props ON (+ Wk1 sigma-0 bug); lineup-replay of the ownership changes (impact unmeasured);
+   stale reference roster (135/659 fallback matches); FC-lineup construction comparison; ownership refit ~Wk6 with more 2026 weeks.
