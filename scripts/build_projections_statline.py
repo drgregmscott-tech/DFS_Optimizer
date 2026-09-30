@@ -158,6 +158,7 @@ Usage:
 
 import argparse
 import json
+import os
 import sys
 from pathlib import Path
 
@@ -450,6 +451,59 @@ def _apply_qb_recal(df, week, cfg_path=QB_RECAL_CONFIG):
     except Exception as exc:  # noqa: BLE001 -- must never break a build
         df["qb_recal_delta"] = 0.0
         _loud(f"QB recal failed ({type(exc).__name__}: {exc}); projections unchanged.")
+    return df
+
+
+QB_AUTOPROMOTE_MIN_SALARY = 4500
+
+
+def _apply_qb_autopromote(df, week):
+    """Safety net for a surprise starter (analysis/qb_residual/RESULTS.md: ~2 per slate, avg $4.8K,
+    FC 14.0 vs ours 1.4, actual 13.8). A team with a real game and no QB projected >= 8 gets its
+    highest-salaried non-OUT QB (salary >= QB_AUTOPROMOTE_MIN_SALARY, projection > 0 -- a 0 means deliberately zeroed) set to a salary-implied
+    projection (linear fit on this slate's other QBs projected >= 8). p10/p90 shift by the same
+    delta. Quiet by design: audit columns `qb_autopromote_delta` / `qb_autopromoted` only.
+    Off: DFS_QB_AUTOPROMOTE=0. Any failure = projections unchanged."""
+    df["qb_autopromote_delta"] = 0.0
+    df["qb_autopromoted"] = False
+    if os.environ.get("DFS_QB_AUTOPROMOTE", "1") == "0":
+        return df
+    try:
+        final = pd.to_numeric(df["final_projection"], errors="coerce")
+        sal = pd.to_numeric(df["salary"], errors="coerce")
+        real = ~df["no_real_game_this_week"].fillna(False).astype(bool)
+        is_qb = (df["position"].astype(str) == "QB") & real
+        starters = is_qb & (final >= 8.0)
+        if starters.sum() < 6:
+            return df
+        slope, icpt = np.polyfit(sal[starters], final[starters], 1)
+        inj = statline_model.load_injury_status(week)
+        out_ids = set(inj.loc[inj["status"].isin(["OUT", "DOUBTFUL"]), "player_id"].astype(str)) \
+            if inj is not None and not inj.empty else set()
+        have = set(df.loc[starters, "team"])
+        done = []
+        for team in sorted(set(df.loc[is_qb, "team"]) - have):
+            cand = df[is_qb & (df["team"] == team) & ~df["player_id"].astype(str).isin(out_ids)
+                      & (sal >= QB_AUTOPROMOTE_MIN_SALARY) & (final > 0)]
+            if cand.empty:
+                continue
+            i = sal[cand.index].idxmax()
+            new = max(float(slope * sal[i] + icpt), 0.0)
+            d = new - float(final[i])
+            if d <= 0:
+                continue
+            df.loc[i, "final_projection"] = final[i] + d
+            for c in ("statline_p10", "statline_p90"):
+                df.loc[i, c] = max(float(df.loc[i, c]) + d, 0.0)
+            df.loc[i, "qb_autopromote_delta"] = d
+            df.loc[i, "qb_autopromoted"] = True
+            done.append(f"{team}:{df.loc[i, 'player_name']} {final[i]:.1f}->{new:.1f}")
+        if done:
+            print(f"QB auto-promote (week {week}): " + "; ".join(done))
+    except Exception as exc:  # noqa: BLE001 -- must never break a build
+        df["qb_autopromote_delta"] = 0.0
+        df["qb_autopromoted"] = False
+        print(f"NOTE: QB auto-promote skipped ({type(exc).__name__}: {exc}).")
     return df
 
 
@@ -945,6 +999,10 @@ def build_statline_projections(site: str, season: int, week: int, slate_id: str,
     df["qb_recal_delta"] = 0.0
     if qb_recal and site == "dk" and not showdown:
         df = _apply_qb_recal(df, week, qb_recal_config or QB_RECAL_CONFIG)
+        df = _apply_qb_autopromote(df, week)
+    else:
+        df["qb_autopromote_delta"] = 0.0
+        df["qb_autopromoted"] = False
     df["sigma"] = df["statline_sigma"].clip(lower=0.0)
     df["sigma_source"] = "statline_mc"
 
@@ -977,7 +1035,8 @@ def build_statline_projections(site: str, season: int, week: int, slate_id: str,
     skill_out = df[LEGACY_COLUMNS + AUDIT_COLUMNS +
                    ["sigma", "sigma_source", "statline_p10",
                     "statline_p90"] + PROJ_STAT_COLUMNS + ["engine_projection", "stack_delta",
-                                                               "early_blend_delta", "qb_recal_delta"]]
+                                                               "early_blend_delta", "qb_recal_delta",
+                                                               "qb_autopromote_delta", "qb_autopromoted"]]
 
     # --- DST (decisions #2, #3; Session 10.4) ------------------------------
     # Session 14.0 FIX: was build_dst_projections(salaries, ...). Now takes
@@ -1048,6 +1107,8 @@ def build_statline_projections(site: str, season: int, week: int, slate_id: str,
     dst_out["stack_delta"] = 0.0
     dst_out["early_blend_delta"] = 0.0
     dst_out["qb_recal_delta"] = 0.0
+    dst_out["qb_autopromote_delta"] = 0.0
+    dst_out["qb_autopromoted"] = False
     dst_out = dst_out[skill_out.columns]
 
     # --- Kicker (Session 13.1 -- this engine never had it wired in at all)
@@ -1082,6 +1143,8 @@ def build_statline_projections(site: str, season: int, week: int, slate_id: str,
         kicker_out["stack_delta"] = 0.0
         kicker_out["early_blend_delta"] = 0.0
         kicker_out["qb_recal_delta"] = 0.0
+        kicker_out["qb_autopromote_delta"] = 0.0
+        kicker_out["qb_autopromoted"] = False
     kicker_out = kicker_out[skill_out.columns] if len(kicker_out) else \
         pd.DataFrame(columns=skill_out.columns)
 
