@@ -3451,11 +3451,22 @@ in this browser's localStorage.</p>
     // also the controls' own HTML default, so a Showdown build that never
     // touches this dropdown still gets the SE rules.
     "Showdown SE": {
+      // n-lineups/max-exposure/uniqueness/randomization/lambda added
+      // 2026-10-01 -- this preset previously set only the sd-* fields, so
+      // loading it left whatever those five controls were already at
+      // (e.g. a leftover MME 100/35/1/18 build). Values match
+      // data/optimizer_presets.json's showdown_se bundle exactly.
+      ctrlNLineups: "3", ctrlMaxExposure: "100", ctrlUniqueness: "3",
+      ctrlRandomization: "3", ctrlLambda: "0",
       ctrlSdRequireCptQb: true, ctrlSdCheapTierPenalty: "1.0", ctrlSdCheapTierRange: "600:1000",
       ctrlSdStackCap: "2", ctrlSdStackCapPenalty: "0.75", ctrlSdQbPartnerBonus: "0.75",
       ctrlSdExcludeCptPositions: "DST", ctrlSdKCptPenalty: "1.0", ctrlSdHeavySideCptPenalty: "0.5"
     },
     "Showdown GPP": {
+      // Same fix as "Showdown SE" above -- matches data/optimizer_presets.json's
+      // showdown_gpp bundle exactly.
+      ctrlNLineups: "100", ctrlMaxExposure: "35", ctrlUniqueness: "1",
+      ctrlRandomization: "18", ctrlLambda: "0",
       ctrlSdRequireCptQb: true, ctrlSdCheapTierPenalty: "2.0", ctrlSdCheapTierRange: "600:1000",
       ctrlSdStackCap: "2", ctrlSdStackCapPenalty: "0.75", ctrlSdQbPartnerBonus: "1.5",
       ctrlSdExcludeCptPositions: "DST", ctrlSdKCptPenalty: "1.5", ctrlSdHeavySideCptPenalty: "0.5"
