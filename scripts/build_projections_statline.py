@@ -614,6 +614,64 @@ def _apply_wrw_te(df, season, week):
     return df
 
 
+# Share of the Q-return engine-level delta added AFTER the stack (analysis/q_return_poststack, 2026-10-01).
+# The stack keeps ~52% of the volume fix's engine change on these rows (2021-25 rebuilds, n=43 active Q-return RB1s,
+# final delta +1.86 of an engine delta +3.55); Q-return RB1s were still under-projected +2.34 (FC +0.84). The
+# leave-one-season-out fit of the extra post-stack share was .43-.69 (mean .58, in-build engine delta); adding the FULL
+# engine delta (1.0) overshoots to bias -1.6. Held-out (LOSO s): bias +2.34 -> +0.11, RMSE 9.55 -> 9.23 (4/5 seasons).
+Q_RETURN_POST_SCALE = 0.6
+
+
+def _apply_q_return_post(df, engine_input, site, variance, n_sims, seed):
+    """Q-return RB1 (statline_model._apply_q_return_and_backup_discount, q_return_flag): add
+    Q_RETURN_POST_SCALE x the engine-level points delta of the volume fix to final_projection and p10/p90,
+    after the stack -- the same pattern as the WRW RB/TE points (_apply_wrw_rb / _apply_wrw_te).
+    Engine delta = simulate(flagged rows as built) - simulate(same rows with each {comp}_mu scaled back by
+    q_return_cf_ratio_{comp}), same seed (common random numbers). Backups are NOT touched (a post-stack add
+    hurt them in testing). Off: DFS_Q_RETURN=0 (no flags) or DFS_Q_RETURN_POST=0. Audit: q_return_engine_delta,
+    q_return_post_pts. Any failure = projections unchanged (loud warning)."""
+    df["q_return_engine_delta"] = 0.0
+    df["q_return_post_pts"] = 0.0
+    if os.environ.get("DFS_Q_RETURN_POST", "1") == "0" or os.environ.get("DFS_Q_RETURN", "1") == "0":
+        return df
+    try:
+        if "q_return_flag" not in engine_input.columns:
+            return df
+        ratio_cols = [c for c in engine_input.columns if c.startswith("q_return_cf_ratio_")]
+        flag = engine_input["q_return_flag"].fillna(False).astype(bool)
+        if "no_real_game_this_week" in engine_input.columns:
+            flag &= ~engine_input["no_real_game_this_week"].fillna(False).astype(bool)
+        if not flag.any() or not ratio_cols:
+            return df
+        rows = engine_input[flag].copy()
+        cf = rows.copy()
+        for rc in ratio_cols:
+            mu_col = rc.replace("q_return_cf_ratio_", "") + "_mu"
+            if mu_col in cf.columns:
+                r = pd.to_numeric(cf[rc], errors="coerce").fillna(1.0).clip(0.0, 1.0)
+                cf[mu_col] = pd.to_numeric(cf[mu_col], errors="coerce").fillna(0.0) * r
+        a = statline_model.simulate(rows, site, variance, n_sims=n_sims, seed=seed).set_index("player_id")
+        b = statline_model.simulate(cf, site, variance, n_sims=n_sims, seed=seed).set_index("player_id")
+        delta = (a["statline_mean"] - b["statline_mean"]).clip(lower=0.0)   # the fix only ever raises volume
+        d = df["player_id"].map(delta).fillna(0.0)
+        d = d.where(pd.to_numeric(df["statline_sigma"], errors="coerce").fillna(0.0) > 0, 0.0)
+        add = Q_RETURN_POST_SCALE * d
+        df["q_return_engine_delta"] = d
+        df["q_return_post_pts"] = add
+        m = add > 0
+        if m.any():
+            for c in ("final_projection", "statline_p10", "statline_p90"):
+                df.loc[m, c] = (pd.to_numeric(df.loc[m, c], errors="coerce").fillna(0.0) + add[m]).clip(lower=0.0)
+            print(f"Q-return post-stack: {int(m.sum())} RB1(s) +{Q_RETURN_POST_SCALE} x engine delta "
+                  f"(mean +{add[m].mean():.2f} pts; " + ", ".join(
+                      f"{n} +{v:.1f}" for n, v in zip(df.loc[m, "player_name"], add[m])) + ").")
+    except Exception as exc:  # noqa: BLE001 -- must never break a build
+        _loud(f"Q-return post-stack add skipped ({type(exc).__name__}: {exc}); projections unchanged.")
+        df["q_return_engine_delta"] = 0.0
+        df["q_return_post_pts"] = 0.0
+    return df
+
+
 def _apply_ecr_blend(df, slate_id, w_rb, w_te):
     """Opt-in FantasyPros ECR blend for RB/TE (scripts/ecr_blend.py). Failure = projections unchanged."""
     try:
@@ -1118,10 +1176,20 @@ def build_statline_projections(site: str, season: int, week: int, slate_id: str,
     df = _apply_wrw_rb(df, season, week)
     # TE OUT -> remaining TEs (analysis/role_bump_chalk_gap). Off: DFS_WRW_TE=0.
     df = _apply_wrw_te(df, season, week)
+    # Q-return RB1 (analysis/q_return_poststack): part of the volume fix's engine delta added as points after the
+    # stack, which keeps only ~half of it. Stack builds only (no stack = the engine change already lands in full).
+    # Off: DFS_Q_RETURN=0 or DFS_Q_RETURN_POST=0.
+    if stack_active:
+        df = _apply_q_return_post(df, df_engine_only, site, variance, n_sims, seed)
+    else:
+        df["q_return_engine_delta"] = 0.0
+        df["q_return_post_pts"] = 0.0
     # Audit: the depth-chart backup boost for a real in-week OUT starter (apply_confirmed_starter_override),
     # previously dropped before the CSV. False when that step did not run.
     df["role_change_injury_flag"] = (df["role_change_injury_flag"].fillna(False).astype(bool)
                                      if "role_change_injury_flag" in df.columns else False)
+    df["q_return_flag"] = (df["q_return_flag"].fillna(False).astype(bool)
+                           if "q_return_flag" in df.columns else False)
     df["sigma"] = df["statline_sigma"].clip(lower=0.0)
     df["sigma_source"] = "statline_mc"
 
@@ -1158,7 +1226,8 @@ def build_statline_projections(site: str, season: int, week: int, slate_id: str,
                                                                "qb_autopromote_delta", "qb_autopromoted",
                                                                "wrw_delta_pts", "wrw_vacated_car",
                                                                "wrw_te_delta_pts", "wrw_te_vacated_tgt",
-                                                               "role_change_injury_flag"]]
+                                                               "role_change_injury_flag",
+                                                               "q_return_flag", "q_return_post_pts"]]
 
     # --- DST (decisions #2, #3; Session 10.4) ------------------------------
     # Session 14.0 FIX: was build_dst_projections(salaries, ...). Now takes
@@ -1235,6 +1304,8 @@ def build_statline_projections(site: str, season: int, week: int, slate_id: str,
     dst_out["wrw_vacated_car"] = 0.0
     dst_out["wrw_te_delta_pts"] = 0.0
     dst_out["wrw_te_vacated_tgt"] = 0.0
+    dst_out["q_return_flag"] = False
+    dst_out["q_return_post_pts"] = 0.0
     dst_out["role_change_injury_flag"] = False
     dst_out = dst_out[skill_out.columns]
 
@@ -1276,6 +1347,8 @@ def build_statline_projections(site: str, season: int, week: int, slate_id: str,
         kicker_out["wrw_vacated_car"] = 0.0
         kicker_out["wrw_te_delta_pts"] = 0.0
         kicker_out["wrw_te_vacated_tgt"] = 0.0
+        kicker_out["q_return_flag"] = False
+        kicker_out["q_return_post_pts"] = 0.0
         kicker_out["role_change_injury_flag"] = False
     kicker_out = kicker_out[skill_out.columns] if len(kicker_out) else \
         pd.DataFrame(columns=skill_out.columns)

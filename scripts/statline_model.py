@@ -2050,10 +2050,14 @@ def _apply_q_return_and_backup_discount(df, confirmed_starter, established_role,
        established role, missed some of the team's recent games (partial participation) and is NOT OUT/DOUBTFUL today,
        remove the share the backup absorbed in the games the #1 missed (see BACKUP_DISCOUNT_LAMBDA). Scales the
        backup's {comp}_mu (never mu_raw) by the same ratio for every component; floor BACKUP_DISCOUNT_MIN_RATIO.
-    Audit columns: q_return_flag, backup_discount_ratio. Any error -> df unchanged (loud warning)."""
+    Audit columns: q_return_flag, backup_discount_ratio, q_return_cf_ratio_{comp} (pre-fix / post-fix {comp}_mu on
+    Q-return rows, 1.0 elsewhere -- build_projections_statline._apply_q_return_post re-simulates that counterfactual
+    and adds part of the engine-level delta after the stack). Any error -> df unchanged (loud warning)."""
     import os
     df["q_return_flag"] = False
     df["backup_discount_ratio"] = 1.0
+    for _name in {n for cs in components.values() for n, _v, _y, _t in cs}:
+        df[f"q_return_cf_ratio_{_name}"] = 1.0
     orig = df.copy()
     try:
         status = pd.Series("", index=df.index)
@@ -2082,7 +2086,12 @@ def _apply_q_return_and_backup_discount(df, confirmed_starter, established_role,
                         if raw_col in df.columns and mu_col in df.columns:
                             cur = pd.to_numeric(df.loc[pm, mu_col], errors="coerce").fillna(0.0).to_numpy(float)
                             raw = pd.to_numeric(df.loc[pm, raw_col], errors="coerce").fillna(0.0).to_numpy(float)
-                            df.loc[pm, mu_col] = np.maximum(cur, raw * pe)
+                            new = np.maximum(cur, raw * pe)
+                            df.loc[pm, mu_col] = new
+                            # pre-fix / post-fix volume, so the build can re-simulate the counterfactual
+                            # and add the engine-level delta after the stack (build_projections_statline.
+                            # _apply_q_return_post)
+                            df.loc[pm, f"q_return_cf_ratio_{name}"] = np.where(new > 0, cur / np.where(new > 0, new, 1.0), 1.0)
 
         if os.environ.get("DFS_BACKUP_DISCOUNT", "1") != "0" and "weeks_played" in df.columns:
             starters = df[confirmed_starter & established_role & partial_participation
