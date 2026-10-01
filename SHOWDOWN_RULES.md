@@ -50,9 +50,10 @@ values and their evidence basis.
    sanity build on a real slate put 21% of captains on K/DST under the first version of the presets. DST captain is Supported-bad, so it is
    excluded outright. K captain is only Weak, so it gets a points penalty.
 
-**UI caveat (found 2026-09-29):** the web UI's dispatch path (`run_optimizer_dispatch.yml`) passes neither `--preset` nor any `--sd-*`
-flag, so none of items 1-4, 6, 7 apply to a Showdown build started from the UI; they apply only to CLI builds with `--preset
-showdown_se`/`showdown_gpp`. The post-build construction lint (below) now surfaces the result either way.
+**UI caveat RESOLVED (fixed after 2026-09-29, confirmed 2026-10-01):** the web UI's Showdown pool controls now default to the
+`showdown_se`/`showdown_gpp` bundle and always send the `sd-*` params; `optimizer_api.js` and `run_optimizer_dispatch.yml` pass them
+through to `optimizer.py` same as a CLI `--preset` run. Items 1-4, 6, 7 apply to UI Showdown builds same as CLI. The post-build
+construction lint (below) surfaces the result either way.
 
 These `--sd-*` weights are first-pass point-scale conversions of the study's cash-lift/return findings, not a backtested-swept calibration like
 `--lambda`'s own grid (Session 10.5b). Treat them as a starting point to validate against real Wk4+ Showdown results, same as any other track-2
