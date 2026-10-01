@@ -1,6 +1,6 @@
 team,component,pool_share,share_basis,raw_sum,target,scale,abs_delta
 TB,pass,1.0,exclusive,5.25,32.68,6.225,27.43
-MIN,pass,1.0,exclusive,21.85,30.08,1.3768,8.23
+MIN,pass,1.0,exclusive,21.85,30.1,1.3775,8.25
 CHI,rush,1.0,recent,45.82,28.84,0.6294,16.98
 GB,recv,1.0,recent,52.33,34.6,0.6611,17.74
 LV,rush,0.9785,recent,38.95,26.05,0.6687,12.9
@@ -13,7 +13,7 @@ ARI,recv,1.0,recent,48.04,35.28,0.7344,12.76
 JAX,rush,0.9884,recent,33.4,24.92,0.7459,8.49
 NYJ,rush,0.9882,recent,34.2,25.59,0.7483,8.61
 SEA,recv,1.0,recent,44.11,33.16,0.7517,10.95
-MIN,rush,1.0,recent,39.22,29.49,0.7521,9.72
+MIN,rush,1.0,recent,39.21,29.49,0.752,9.72
 BUF,rush,0.9889,recent,36.74,27.87,0.7585,8.87
 SF,rush,1.0,recent,34.85,26.59,0.763,8.26
 KC,rush,0.9891,recent,35.71,27.4,0.7674,8.3
@@ -39,7 +39,7 @@ CHI,recv,1.0,recent,39.03,32.2,0.8249,6.83
 CIN,recv,1.0,recent,42.75,35.4,0.8279,7.36
 NYJ,recv,1.0,recent,39.61,32.84,0.8291,6.77
 TEN,rush,1.0,recent,28.83,24.06,0.8344,4.77
-MIA,recv,1.0,recent,36.77,30.68,0.8346,6.08
+MIA,recv,1.0,recent,36.77,30.7,0.8348,6.07
 CIN,rush,1.0,recent,29.85,24.95,0.8359,4.9
 LA,rush,1.0,recent,33.27,27.93,0.8395,5.34
 BUF,pass,1.0,exclusive,28.96,33.6,1.1603,4.64
@@ -51,7 +51,7 @@ NE,recv,1.0,recent,37.92,32.46,0.8561,5.46
 PHI,recv,1.0,recent,36.19,31.14,0.8606,5.04
 NYG,recv,1.0,recent,35.76,31.12,0.8705,4.63
 SEA,pass,1.0,exclusive,30.19,33.84,1.121,3.65
-MIA,pass,1.0,exclusive,28.31,31.55,1.1146,3.24
+MIA,pass,1.0,exclusive,28.31,31.56,1.115,3.26
 PHI,pass,1.0,exclusive,29.32,32.61,1.1122,3.29
 JAX,recv,0.9868,recent,36.12,32.19,0.8913,3.93
 LV,pass,1.0,exclusive,31.04,34.21,1.1022,3.17
@@ -60,9 +60,9 @@ GB,rush,1.0,recent,27.25,24.82,0.9109,2.43
 LA,pass,1.0,exclusive,39.46,35.95,0.9109,3.51
 DEN,pass,1.0,exclusive,31.69,34.44,1.0868,2.75
 LAC,pass,1.0,exclusive,30.09,32.68,1.0861,2.59
-MIN,recv,1.0,recent,31.27,28.58,0.9139,2.69
+MIN,recv,1.0,recent,31.28,28.59,0.9142,2.68
 KC,pass,1.0,exclusive,32.19,34.46,1.0705,2.27
-MIA,rush,0.9872,recent,27.27,25.36,0.9299,1.91
+MIA,rush,0.9872,recent,27.26,25.35,0.9298,1.91
 BAL,recv,1.0,recent,32.04,29.88,0.9325,2.16
 ARI,pass,1.0,exclusive,38.2,36.15,0.9462,2.05
 BUF,recv,0.9878,recent,33.66,31.99,0.9504,1.67
