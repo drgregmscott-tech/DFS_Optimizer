@@ -638,7 +638,10 @@ def build_usage(season: int, week: int, variance: dict) -> pd.DataFrame:
         part = _participation(g["week"].tolist(),
                              team_wks.get(hist_team, []), lookback)
         rec = {"player_id": pid, "position": pos, "games_played": int(len(g)),
-               "hist_team": hist_team, "participation": round(part, 4)}
+               "hist_team": hist_team, "participation": round(part, 4),
+               # this-season weeks played (string), for the returning-#1 backup discount
+               # (_apply_q_return_and_backup_discount)
+               "weeks_played": ",".join(str(int(w)) for w in g["week"].tolist())}
         for name, vol_stat, yd_stat, td_stat in COMPONENTS[pos]:
             comp = vpos["components"][name]
             # rw() averages over games the player APPEARED in, so it is a
@@ -698,7 +701,7 @@ def build_usage(season: int, week: int, variance: dict) -> pd.DataFrame:
         # what a populated frame's columns are) makes the merge a clean
         # all-NaN left join, which is exactly what "no player has any
         # history" should mean.
-        cols = {"player_id": str, "position": str, "hist_team": str}
+        cols = {"player_id": str, "position": str, "hist_team": str, "weeks_played": str}
         num = ["games_played", "participation", "catch_rate", "int_rate"]
         for _pos, _cs in COMPONENTS.items():
             for _n, _v, _y, _t in _cs:
@@ -1992,7 +1995,142 @@ def apply_confirmed_starter_override(pool: pd.DataFrame, team_vol: pd.DataFrame,
                 df.loc[pos_mask, mu_col] = pd.to_numeric(
                     df.loc[pos_mask, raw_col], errors="coerce").fillna(0.0)
 
+    df = _apply_q_return_and_backup_discount(
+        df, confirmed_starter, established_role, partial_participation, eligible,
+        injury_status, COMPONENTS)
     return df.drop(columns=["depth_rank"], errors="ignore")
+
+
+# ---------------------------------------------------------------------------
+# Returning starter on a QUESTIONABLE tag + his hot backup
+# (analysis/q_return_backup, 2026-10-01; HANDOFF_wr_backup_discount_gap_2026-10-01.md)
+# ---------------------------------------------------------------------------
+
+# participation_effective floor, BY POSITION, for a confirmed #1 (established, partial participation) who is
+# QUESTIONABLE on today's report. Share level (nflverse 2016-25, active Q partial #1s, n=288): realized share / own
+# per-game share = .77 vs .95 for clean full-time #1s (relative .80, LOSO .77-.85). But on OUR current-code 2021-25
+# rebuilds (82 DK main weeks, Friday status pinned) only RB benefits: Q-return RBs were under-projected by +4.2 pts
+# (FC +0.8); a .80 floor cut RMSE 10.38 -> 9.77 (5/5 seasons) and the LOSO points scale on that delta was 2.7-3.8,
+# i.e. stronger is still right -> RB 1.0. WR was ALREADY over-projected (bias -1.5, n=54) and got worse (RMSE 6.36 ->
+# 6.64; Collins' position -- wrong-direction, not shipped). TE flat (5.74 -> 5.76) -> not shipped.
+# A position missing here = no Q-return change.
+Q_RETURN_PE = {"RB": 1.0}
+# Share a backup absorbed per game his #1 missed, by the backup's depth rank (2 = next man up). The same per-rank
+# absorption fractions the WRW fits measured (who_replaces_whom: RB carries .376/.245; role_bump_chalk_gap: WR
+# .08/.145, TE .187/.15). When the #1 is back (not OUT/DOUBTFUL), that absorbed share is taken back out of the
+# backup's trailing volume: share -= BACKUP_DISCOUNT_LAMBDA * frac[rank] * starter_share * (recency-weighted
+# fraction of the backup's last <= 5 games the #1 missed). LAMBDA fit LOSO on nflverse 2016-25 backups of a
+# returning #1 (n=3,504): .93-1.01 in all 10 folds, i.e. the theory value 1.0. Pipeline check (2021-25 rebuilds):
+# RB backups MAE 4.09 -> 3.88 (5/5 seasons), RMSE 5.66 -> 5.63, LOSO points scale .54-1.13; WR backups flat with an
+# unstable sign (-.9 to +1.2), TE flat -> only RB is enabled (BACKUP_DISCOUNT_POSITIONS).
+BACKUP_DISCOUNT_LAMBDA = 1.0
+BACKUP_ABSORB_FRAC = {"RB": {2: 0.376, 3: 0.245}, "WR": {2: 0.08, 3: 0.145}, "TE": {2: 0.187, 3: 0.15}}
+BACKUP_DISCOUNT_POSITIONS = {"RB"}
+BACKUP_DISCOUNT_MIN_RATIO = 0.5
+
+
+def _weeks_list(v) -> list:
+    if v is None or (isinstance(v, float) and np.isnan(v)):
+        return []
+    return [int(x) for x in str(v).split(",") if x.strip().lstrip("-").isdigit()]
+
+
+def _apply_q_return_and_backup_discount(df, confirmed_starter, established_role, partial_participation,
+                                        already_eligible, injury_status, components):
+    """Two volume fixes for a #1 returning from missed games (called at the end of
+    apply_confirmed_starter_override, `df` still carries depth_rank):
+
+    1. Q-return (DFS_Q_RETURN=0 = off): a confirmed #1 with an established role, partial participation and a
+       QUESTIONABLE tag, at a position listed in Q_RETURN_PE (RB only today -- WR tested wrong-direction, TE flat),
+       gets participation_effective = max(current, Q_RETURN_PE[pos]) and every {comp}_mu =
+       max(current mu, mu_raw * new pe) -- it only ever raises. (A clean-report #1 already gets 1.0 above; a zero-
+       participation #1 already gets 1.0 above.)
+    2. Backup discount (DFS_BACKUP_DISCOUNT=0 = off; positions in BACKUP_DISCOUNT_POSITIONS, RB only today):
+       for depth ranks 2-3 behind a #1 who is in this pool, has an
+       established role, missed some of the team's recent games (partial participation) and is NOT OUT/DOUBTFUL today,
+       remove the share the backup absorbed in the games the #1 missed (see BACKUP_DISCOUNT_LAMBDA). Scales the
+       backup's {comp}_mu (never mu_raw) by the same ratio for every component; floor BACKUP_DISCOUNT_MIN_RATIO.
+    Audit columns: q_return_flag, backup_discount_ratio. Any error -> df unchanged (loud warning)."""
+    import os
+    df["q_return_flag"] = False
+    df["backup_discount_ratio"] = 1.0
+    orig = df.copy()
+    try:
+        status = pd.Series("", index=df.index)
+        if injury_status is not None and not injury_status.empty:
+            smap = dict(zip(injury_status["player_id"].astype(str),
+                            injury_status["status"].astype(str).str.upper()))
+            status = df["player_id"].astype(str).map(smap).fillna("")
+        pos_s = df["position"].astype(str)
+
+        if os.environ.get("DFS_Q_RETURN", "1") != "0":
+            floor = pos_s.map(Q_RETURN_PE)
+            q_return = (confirmed_starter & established_role & partial_participation
+                        & (status == "QUESTIONABLE") & ~already_eligible & floor.notna())
+            if q_return.any():
+                pe_old = pd.to_numeric(df.loc[q_return, "participation_effective"], errors="coerce").fillna(0.0)
+                pe_new = np.maximum(pe_old.to_numpy(float), floor[q_return].to_numpy(float))
+                df.loc[q_return, "participation_effective"] = pe_new
+                df.loc[q_return, "q_return_flag"] = True
+                for pos, cs in components.items():
+                    pm = q_return & (pos_s == pos)
+                    if not pm.any():
+                        continue
+                    pe = df.loc[pm, "participation_effective"].to_numpy(float)
+                    for name, _v, _y, _t in cs:
+                        raw_col, mu_col = f"{name}_mu_raw", f"{name}_mu"
+                        if raw_col in df.columns and mu_col in df.columns:
+                            cur = pd.to_numeric(df.loc[pm, mu_col], errors="coerce").fillna(0.0).to_numpy(float)
+                            raw = pd.to_numeric(df.loc[pm, raw_col], errors="coerce").fillna(0.0).to_numpy(float)
+                            df.loc[pm, mu_col] = np.maximum(cur, raw * pe)
+
+        if os.environ.get("DFS_BACKUP_DISCOUNT", "1") != "0" and "weeks_played" in df.columns:
+            starters = df[confirmed_starter & established_role & partial_participation
+                          & ~status.isin(["OUT", "DOUBTFUL"])
+                          & pos_s.isin([p for p in BACKUP_DISCOUNT_POSITIONS if p in BACKUP_ABSORB_FRAC])]
+            w_all = RECENCY_WEIGHTS
+            for si, s in starters.iterrows():
+                s_weeks = set(_weeks_list(s["weeks_played"]))
+                s_share = float(s["hist_share_raw"])
+                if not s_weeks or not np.isfinite(s_share) or s_share <= 0:
+                    continue
+                bm = ((df["team"] == s["team"]) & (pos_s == s["position"])
+                      & df["depth_rank"].isin([2, 3]) & (df.index != si))
+                for bi in df.index[bm]:
+                    b_weeks = _weeks_list(df.at[bi, "weeks_played"])[-len(w_all):][::-1]   # most recent first
+                    b_share = float(df.at[bi, "hist_share_raw"])
+                    if not b_weeks or not np.isfinite(b_share) or b_share <= 0:
+                        continue
+                    w = w_all[:len(b_weeks)]
+                    abs_rw = float(np.dot(w, [wk not in s_weeks for wk in b_weeks]) / w.sum())
+                    if abs_rw <= 0:
+                        continue
+                    frac = BACKUP_ABSORB_FRAC[str(s["position"])].get(int(df.at[bi, "depth_rank"]), 0.0)
+                    infl = BACKUP_DISCOUNT_LAMBDA * frac * s_share * abs_rw
+                    ratio = float(np.clip(1.0 - infl / b_share, BACKUP_DISCOUNT_MIN_RATIO, 1.0))
+                    if ratio >= 1.0:
+                        continue
+                    df.at[bi, "backup_discount_ratio"] = min(ratio, float(df.at[bi, "backup_discount_ratio"]))
+            hit = df["backup_discount_ratio"] < 1.0
+            if hit.any():
+                for pos, cs in components.items():
+                    pm = hit & (pos_s == pos)
+                    if not pm.any():
+                        continue
+                    for name, _v, _y, _t in cs:
+                        mu_col = f"{name}_mu"
+                        if mu_col in df.columns:
+                            df.loc[pm, mu_col] = (pd.to_numeric(df.loc[pm, mu_col], errors="coerce").fillna(0.0)
+                                                  * df.loc[pm, "backup_discount_ratio"])
+        n_q, n_b = int(df["q_return_flag"].sum()), int((df["backup_discount_ratio"] < 1.0).sum())
+        if n_q or n_b:
+            print(f"Q-return / backup discount: {n_q} Questionable #1(s) floored to pe {Q_RETURN_PE}, "
+                  f"{n_b} backup(s) discounted.")
+    except Exception as exc:  # noqa: BLE001 -- must never break a build
+        msg = f"Q-return / backup discount skipped ({type(exc).__name__}: {exc}); volumes unchanged."
+        print(f"WARNING: {msg}", file=sys.stderr)
+        return orig
+    return df
 
 
 # ---------------------------------------------------------------------------
