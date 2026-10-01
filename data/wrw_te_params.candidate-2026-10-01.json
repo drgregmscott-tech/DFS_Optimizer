@@ -1,0 +1,10 @@
+{
+ "_doc": "Who-replaces-whom TE reallocation (statline_model.apply_te_replacement). When a TE with real usage (played the team's previous game; trailing target share >= .12) is OUT/DOUBTFUL and is the biggest target vacater on his team, each remaining TE gets frac[rank] x vacated target share x team trailing targets x ppo_te x points_scale added to final_projection (rank = depth by trailing target share among active TEs; rank 3+ gets 0). WR/RB bleed was fit (.12/.12 to WR2/WR3, ~0 to RB) but HURT held-out (WR bias +0.11 -> -0.87, MAE worse), so it is deliberately 0. Fit LOSO 2016-25 on analysis/who_replaces_whom/frame.parquet (nflverse only); points_scale from the 2021-25 current-code history frame (TE next-man-up bias +2.24 vs control +0.84). analysis/role_bump_chalk_gap. Off: DFS_WRW_TE=0.",
+ "min_tgt_share": 0.12,
+ "trail_team_games": 8,
+ "trail_player_apps": 4,
+ "team_vol_games": 4,
+ "ppo_te_tgt": 1.721,
+ "tgt_frac_by_te_rank": {"1": 0.187, "2": 0.15},
+ "points_scale": 0.7
+}

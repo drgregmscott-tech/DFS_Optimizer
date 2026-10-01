@@ -1,11 +1,14 @@
 {
   "version": 1,
   "site": "dk",
-  "fit_at": "2026-09-21T17:36:30+00:00",
-  "n_rows": 12052,
+  "fit_at": "2026-10-01T09:37:19+00:00",
+  "n_rows": 38174,
   "seasons": [
-    2020,
-    2021
+    2021,
+    2022,
+    2023,
+    2024,
+    2025
   ],
   "features": [
     "sal",
@@ -19,15 +22,60 @@
     "u_receiving_air_yards"
   ],
   "usage_fill": {
-    "u_targets": 3.0943781969830257,
-    "u_carries": 2.4367852604828464,
-    "u_attempts": 3.2355097253445413,
-    "u_target_share": 0.09194433847843678,
-    "u_air_yards_share": 0.08966950034210193,
-    "u_wopr": 0.20068515795712658,
-    "u_receiving_air_yards": 24.675862574528395
+    "u_targets": 2.8873980455524775,
+    "u_carries": 2.0144732032933215,
+    "u_attempts": 0.00614131271160357,
+    "u_target_share": 0.08981860430363686,
+    "u_air_yards_share": 0.08722895074960993,
+    "u_wopr": 0.19578817198018228,
+    "u_receiving_air_yards": 22.666253077870113
   },
   "positions": {
+    "RB": {
+      "intercept": -5.5458540217411025,
+      "coefs": {
+        "sal": 1.4903110007872906,
+        "proj": 0.5054924385653282,
+        "u_targets": 0.1390730170026231,
+        "u_carries": 0.10694348600095198,
+        "u_attempts": 0.7506134158854366,
+        "u_target_share": 1.384104435715547,
+        "u_air_yards_share": -2.9084658683714477,
+        "u_wopr": 0.48972840097744297,
+        "u_receiving_air_yards": -0.028804998163447445
+      },
+      "n": 11191
+    },
+    "WR": {
+      "intercept": -4.03159210406302,
+      "coefs": {
+        "sal": 1.6398534499001598,
+        "proj": 0.409367144574603,
+        "u_targets": 0.07841564478900723,
+        "u_carries": -0.33887791814447626,
+        "u_attempts": 0.3063521913796629,
+        "u_target_share": 2.701641854460372,
+        "u_air_yards_share": 1.7495126503500924,
+        "u_wopr": 1.1080848574643967,
+        "u_receiving_air_yards": -0.013367898845823848
+      },
+      "n": 16882
+    },
+    "TE": {
+      "intercept": -2.509391623634871,
+      "coefs": {
+        "sal": 1.1215706596132733,
+        "proj": 0.4852161693809255,
+        "u_targets": 0.20517003915595955,
+        "u_carries": -0.5301135611623098,
+        "u_attempts": 7.055316569862855,
+        "u_target_share": 7.334215180747769,
+        "u_air_yards_share": -1.5202724975491653,
+        "u_wopr": 2.0527671994466172,
+        "u_receiving_air_yards": -0.021996154990611836
+      },
+      "n": 10101
+    },
     "QB": {
       "intercept": -6.988245340862305,
       "coefs": {
@@ -42,51 +90,8 @@
         "u_receiving_air_yards": 0.0
       },
       "n": 1213
-    },
-    "RB": {
-      "intercept": -5.599669562487749,
-      "coefs": {
-        "sal": 1.906284336248744,
-        "proj": 0.324397659776962,
-        "u_targets": 0.23138882450053036,
-        "u_carries": 0.2000553559988296,
-        "u_attempts": -1.207261275789872,
-        "u_target_share": 0.45299171504967994,
-        "u_air_yards_share": -13.50348543492332,
-        "u_wopr": -1.7348318738588657,
-        "u_receiving_air_yards": 0.06183954976302134
-      },
-      "n": 3326
-    },
-    "WR": {
-      "intercept": -2.9148515758378304,
-      "coefs": {
-        "sal": 1.6979330494503961,
-        "proj": 0.2603524193512668,
-        "u_targets": -0.11391732676455253,
-        "u_carries": 0.1320531597918596,
-        "u_attempts": -1.2761277116497294,
-        "u_target_share": 14.503124407940073,
-        "u_air_yards_share": -4.263379256291816,
-        "u_wopr": 2.5738100479170236,
-        "u_receiving_air_yards": 0.004177665380319291
-      },
-      "n": 4782
-    },
-    "TE": {
-      "intercept": -1.530995785893011,
-      "coefs": {
-        "sal": 1.3306043124855178,
-        "proj": 0.22023808639279135,
-        "u_targets": -0.022104068036067504,
-        "u_carries": 0.4503166411329893,
-        "u_attempts": -1.5405655318148186,
-        "u_target_share": 10.61298095969564,
-        "u_air_yards_share": -0.019031031681362158,
-        "u_wopr": 3.1412731441256767,
-        "u_receiving_air_yards": 0.008836456950866116
-      },
-      "n": 2731
     }
-  }
+  },
+  "note": "Refit 2026-09-26 on guarded (QB1-from-salary) production-faithful rebuild, DK main slates, actual = DK pts with DNP=0 (same convention as the 2020-21 fit). analysis/proj_stack/. | QB block kept from the original 2026-09-21T17:36:30+00:00 (2020-21) fit -- QB is intentionally excluded from this 2021-25 refit; it has its own separate wk3+ recal/autopromote layer (build_projections_statline.py), this QB block is only a safety net for week 1-2 before that recal gates on.",
+  "merged_at": "2026-10-01T09:45:36+00:00"
 }

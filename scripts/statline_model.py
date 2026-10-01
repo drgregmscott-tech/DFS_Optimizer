@@ -669,6 +669,16 @@ def build_usage(season: int, week: int, variance: dict) -> pd.DataFrame:
             rec["int_rate"] = _shrink(
                 g["passing_interceptions"].sum(), g["attempts"].sum(),
                 vpos["int_per_attempt"], SHRINK_K["int"])
+            # 2026-10-01 (qb_gap_vs_fc/scope_test): weeks started for the
+            # CURRENT team this season, not just games appeared in -- a
+            # backup's garbage-time snaps (games_played) carry the wrong
+            # sign once calendar week is controlled for; this is the
+            # variable that actually explains the low-sample QB
+            # under-projection (new starters mid-season, not just wk1-2).
+            # Threshold matches the gate used elsewhere for "was a real
+            # starter that week" (10+ attempts).
+            team_rows = g[g["team"] == hist_team]
+            rec["qb_starts_with_team"] = int((team_rows["attempts"] >= 10).sum())
         rows.append(rec)
 
     usage = pd.DataFrame(rows)
@@ -2467,6 +2477,74 @@ def apply_rb_replacement(pool: pd.DataFrame, season: int, week: int,
         out = pool.copy()
         out["wrw_delta_pts"] = 0.0
         out["wrw_vacated_car"] = 0.0
+        return out
+
+
+WRW_TE_PARAMS = DATA_DIR / "wrw_te_params.json"
+
+
+def apply_te_replacement(pool: pd.DataFrame, season: int, week: int,
+                         injury_status: pd.DataFrame | None) -> pd.DataFrame:
+    """TE counterpart of apply_rb_replacement (analysis/role_bump_chalk_gap/RESULTS.md): when the team's top
+    target-vacating OUT/DOUBTFUL player is a TE, the remaining TEs get frac[rank] of his vacated target share
+    (rank by trailing target share among active TEs; next TE .187, TE after .15; WR/RB bleed deliberately 0 --
+    it hurt held-out). Held-out 2016-25: next-TE bias +2.24 -> +0.28, RMSE better 7/10 seasons; on the 2021-25
+    current-code frame TE next-man-up bias +2.2 -> +0.9 (control +0.8), MAE better 4/5 seasons.
+    Returns pool with audit columns wrw_te_delta_pts, wrw_te_vacated_tgt; the CALLER adds the delta to
+    final_projection after the stack (same as WRW RB). Off: DFS_WRW_TE=0. Any error -> unchanged."""
+    import os
+    df = pool.copy()
+    df["wrw_te_delta_pts"] = 0.0
+    df["wrw_te_vacated_tgt"] = 0.0
+    if os.environ.get("DFS_WRW_TE", "1") == "0" or injury_status is None or injury_status.empty:
+        return df
+    try:
+        p = json.loads(WRW_TE_PARAMS.read_text(encoding="utf-8"))
+        st = injury_status.copy()
+        st["player_id"] = st["player_id"].astype(str)
+        out_ids = set(st.loc[st["status"].astype(str).str.upper().isin(["OUT", "DOUBTFUL"]), "player_id"])
+        if not out_ids:
+            return df
+        pid = df["player_id"].astype(str)
+        real = ~df["no_real_game_this_week"].fillna(False).astype(bool) \
+            if "no_real_game_this_week" in df.columns else pd.Series(True, index=df.index)
+        teams = sorted(df.loc[real, "team"].dropna().astype(str).unique())
+        ag, tvr = _wrw_trailing_usage(season, week, teams, p)
+        if ag is None or ag.empty:
+            return df
+        frac = {int(k): float(v) for k, v in p["tgt_frac_by_te_rank"].items()}
+        done = []
+        for team in teams:
+            if team not in ag.index.get_level_values(0) or team not in tvr.index:
+                continue
+            a = ag.loc[team].copy(); a.index = a.index.astype(str)
+            lg = tvr.loc[team, "last_g"]
+            outs = a[a.index.isin(out_ids) & (a["last_g"] == lg) & (a["sh_tgt"] >= p["min_tgt_share"])]
+            if outs.empty or outs.loc[outs["sh_tgt"].idxmax(), "pos"] != "TE":
+                continue
+            V = float(outs.loc[outs["pos"] == "TE", "sh_tgt"].sum())
+            cand = real & (df["team"].astype(str) == team) & (df["position"].astype(str) == "TE") \
+                & ~pid.isin(out_ids) & pid.isin(set(a.index))
+            if V <= 0 or not cand.any():
+                continue
+            idx = df.index[cand]
+            ranks = pd.Series(a.loc[pid[cand], "sh_tgt"].to_numpy(), index=idx).rank(ascending=False, method="first").astype(int)
+            add = ranks.map(frac).fillna(0.0) * V * float(tvr.loc[team, "ttgt"]) \
+                * float(p["ppo_te_tgt"]) * float(p.get("points_scale", 1.0))
+            df.loc[idx, "wrw_te_delta_pts"] += add
+            df.loc[idx, "wrw_te_vacated_tgt"] = V
+            hit = df.loc[cand & (df["wrw_te_delta_pts"] > 0.05)]
+            done += [f"{team}:{r.player_name}+{r.wrw_te_delta_pts:.1f}" for r in hit.itertuples()] \
+                if "player_name" in df.columns else []
+        if done:
+            print(f"WRW TE reallocation (week {week}): " + "; ".join(done))
+        return df
+    except Exception as exc:  # noqa: BLE001 -- must never break a build
+        print(f"WARNING: WRW TE reallocation skipped ({type(exc).__name__}: {exc}); projections unchanged.",
+              file=sys.stderr)
+        out = pool.copy()
+        out["wrw_te_delta_pts"] = 0.0
+        out["wrw_te_vacated_tgt"] = 0.0
         return out
 
 

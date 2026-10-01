@@ -416,52 +416,104 @@ def _apply_early_season_blend(df, week, cfg_path=EARLY_BLEND_CONFIG):
 QB_RECAL_CONFIG = Path(__file__).resolve().parents[1] / "data" / "qb_recal_config.json"
 
 
-def _apply_qb_recal(df, week, cfg_path=QB_RECAL_CONFIG):
-    """QB wk3+ linear recal (analysis/qb_depth/RESULTS.md, "Candidate").
+def _apply_qb_shift(df, mask, shift, delta, label):
+    """Add a flat, clipped shift to final_projection/p10/p90 for masked rows;
+    accumulates into `delta` (caller writes it to qb_recal_delta). Shared by
+    the wk1-2 and low-sample QB shifts below -- same mechanics as the linear
+    recal's own delta application, just a constant instead of a formula."""
+    add = pd.Series(0.0, index=df.index).where(~mask, float(shift))
+    df["final_projection"] = (df["final_projection"] + add).clip(lower=0.0)
+    for c in ("statline_p10", "statline_p90"):
+        if c in df.columns:
+            df[c] = (df[c] + add).clip(lower=0.0)
+    delta = delta + add
+    if mask.any():
+        print(f"{label}: shifted {int(mask.sum())} QB(s) by {float(shift):+.2f}.")
+    return df, delta
 
-    Rows: QB, week >= min_week, final_projection >= gate, the team's top-projected QB,
-    implied_total > 0, over_under > 0, has a real game. new = a + b*proj + c*implied +
-    d*spread + e*rush_pts with spread = over_under/2 - implied (+ = underdog) and
-    rush_pts = 0.1*proj_rush_yd + 6*proj_rush_td. final and statline_p10/p90 shift by
-    the same delta (clip 0); engine_projection untouched; `qb_recal_delta` = applied shift.
-    Missing config / any failure = projections unchanged."""
+
+def _apply_qb_recal(df, week, cfg_path=QB_RECAL_CONFIG):
+    """QB wk3+ linear recal (analysis/qb_depth/RESULTS.md, "Candidate"), plus
+    two additive low-sample shifts (analysis/qb_gap_vs_fc, 2026-10-01).
+
+    Linear recal -- rows: QB, week >= min_week, final_projection >= gate, the team's
+    top-projected QB, implied_total > 0, over_under > 0, has a real game. new = a +
+    b*proj + c*implied + d*spread + e*rush_pts with spread = over_under/2 - implied
+    (+ = underdog) and rush_pts = 0.1*proj_rush_yd + 6*proj_rush_td.
+
+    wk12_shift (config, default off) -- the recal's own min_week gate leaves weeks
+    1-2 completely unadjusted; known-starter QBs are under-projected there (-4.0 pt
+    bias, history). Flat additive shift to the same top-QB rows, no formula.
+
+    qb_lowsample_shift (config, default off) -- the wk1-2 miss is NOT calendar-bound:
+    week 4+ QBs with few prior starts for their CURRENT team (new starter mid-season --
+    injury call-up, trade, benching) show the same under-projection, fading toward 0
+    as `qb_starts_with_team` rises. Flat additive shift on top of the linear recal for
+    those rows specifically.
+
+    final and statline_p10/p90 shift by the combined delta (clip 0); engine_projection
+    untouched; `qb_recal_delta` = total applied shift (all three sources). Missing
+    config / any failure = projections unchanged."""
     df["qb_recal_delta"] = 0.0
     try:
         if not Path(cfg_path).exists():
             _loud(f"QB recal config not found ({cfg_path}); QB recal skipped (projections unchanged).")
             return df
         cfg = json.loads(Path(cfg_path).read_text())
-        if week < int(cfg.get("min_week", 3)):
-            print(f"QB recal: week {week} < min_week {cfg.get('min_week', 3)}; unchanged.")
-            return df
-        k = cfg["coef"]
-        gate = float(cfg.get("gate_min_proj", 8.0))
         final = pd.to_numeric(df["final_projection"], errors="coerce")
+        is_qb = (df["position"].astype(str) == "QB") & ~df["no_real_game_this_week"].fillna(False).astype(bool)
+        top = pd.Series(False, index=df.index)
+        if is_qb.any():
+            top.loc[final[is_qb].groupby(df.loc[is_qb, "team"]).idxmax().values] = True
+        gate = float(cfg.get("gate_min_proj", 8.0))
+        delta = pd.Series(0.0, index=df.index)
+
+        if week < int(cfg.get("min_week", 3)):
+            wk12 = cfg.get("wk12_shift", {})
+            if wk12.get("enabled"):
+                m12 = is_qb & top & (final >= gate) & final.notna()
+                df, delta = _apply_qb_shift(df, m12, wk12["shift"], delta,
+                                             f"QB wk1-2 shift (week {week})")
+            else:
+                print(f"QB recal: week {week} < min_week {cfg.get('min_week', 3)} "
+                      f"(wk12_shift off); unchanged.")
+            df["qb_recal_delta"] = delta
+            return df
+
+        k = cfg["coef"]
         it = pd.to_numeric(df["implied_total"], errors="coerce")
         ou = (pd.to_numeric(df["over_under"], errors="coerce") if "over_under" in df.columns
               else pd.Series(np.nan, index=df.index))
         ryd = pd.to_numeric(df["proj_rush_yd"], errors="coerce")
         rtd = pd.to_numeric(df["proj_rush_td"], errors="coerce")
-        is_qb = (df["position"].astype(str) == "QB") & ~df["no_real_game_this_week"].fillna(False).astype(bool)
-        top = pd.Series(False, index=df.index)
-        if is_qb.any():
-            top.loc[final[is_qb].groupby(df.loc[is_qb, "team"]).idxmax().values] = True
         m = (is_qb & top & (final >= gate) & (it > 0) & (ou > 0)
              & ryd.notna() & rtd.notna() & final.notna())
         spread = ou / 2.0 - it
         rush = 0.1 * ryd + 6.0 * rtd
         new = (k["a"] + k["b_proj"] * final + k["c_implied"] * it + k["d_spread"] * spread
                + k["e_rush_pts"] * rush).clip(lower=0.0)
-        delta = (new - final).where(m, 0.0).fillna(0.0)
-        df["final_projection"] = df["final_projection"] + delta
+        recal_delta = (new - final).where(m, 0.0).fillna(0.0)
+        df["final_projection"] = df["final_projection"] + recal_delta
         for c in ("statline_p10", "statline_p90"):
-            df[c] = (df[c] + delta).clip(lower=0.0)
-        df["qb_recal_delta"] = delta
+            df[c] = (df[c] + recal_delta).clip(lower=0.0)
+        delta = delta + recal_delta
         if m.any():
             print(f"QB recal (week {week}): adjusted {int(m.sum())} top QB(s); mean delta "
-                  f"{delta[m].mean():+.2f} (range {delta[m].min():+.1f} to {delta[m].max():+.1f}).")
+                  f"{recal_delta[m].mean():+.2f} (range {recal_delta[m].min():+.1f} to {recal_delta[m].max():+.1f}).")
         else:
             print(f"QB recal (week {week}): no QB passed the gate; unchanged.")
+
+        lowsample = cfg.get("qb_lowsample_shift", {})
+        if lowsample.get("enabled") and week >= int(lowsample.get("min_week", 4)):
+            starts = (pd.to_numeric(df["qb_starts_with_team"], errors="coerce")
+                      if "qb_starts_with_team" in df.columns
+                      else pd.Series(np.nan, index=df.index))
+            m_low = m & starts.notna() & (starts <= int(lowsample.get("max_starts", 1)))
+            df, delta = _apply_qb_shift(df, m_low, lowsample["shift"], delta,
+                                         f"QB low-sample shift (week {week}, "
+                                         f"starts<={lowsample.get('max_starts', 1)})")
+
+        df["qb_recal_delta"] = delta
     except Exception as exc:  # noqa: BLE001 -- must never break a build
         df["qb_recal_delta"] = 0.0
         _loud(f"QB recal failed ({type(exc).__name__}: {exc}); projections unchanged.")
@@ -539,6 +591,26 @@ def _apply_wrw_rb(df, season, week):
         _loud(f"WRW RB reallocation skipped ({type(exc).__name__}: {exc}); projections unchanged.")
         df["wrw_delta_pts"] = 0.0
         df["wrw_vacated_car"] = 0.0
+    return df
+
+
+def _apply_wrw_te(df, season, week):
+    """Add statline_model.apply_te_replacement's wrw_te_delta_pts (TE OUT -> remaining TEs' vacated-target
+    redistribution, analysis/role_bump_chalk_gap) to final_projection and p10/p90. Off: DFS_WRW_TE=0.
+    Any failure = projections unchanged (loud warning)."""
+    try:
+        df = statline_model.apply_te_replacement(df, season, week, statline_model.load_injury_status(week))
+        d = pd.to_numeric(df["wrw_te_delta_pts"], errors="coerce").fillna(0.0)
+        d = d.where(pd.to_numeric(df["statline_sigma"], errors="coerce").fillna(0.0) > 0, 0.0)
+        df["wrw_te_delta_pts"] = d
+        m = d > 0
+        if m.any():
+            for c in ("final_projection", "statline_p10", "statline_p90"):
+                df.loc[m, c] = (pd.to_numeric(df.loc[m, c], errors="coerce").fillna(0.0) + d[m]).clip(lower=0.0)
+    except Exception as exc:  # noqa: BLE001 -- must never break a build
+        _loud(f"WRW TE reallocation skipped ({type(exc).__name__}: {exc}); projections unchanged.")
+        df["wrw_te_delta_pts"] = 0.0
+        df["wrw_te_vacated_tgt"] = 0.0
     return df
 
 
@@ -735,6 +807,8 @@ def build_statline_projections(site: str, season: int, week: int, slate_id: str,
     n_no_history = int(df["games_played"].isna().sum()) if "games_played" in df else len(df)
     if "games_played" in df:
         df["games_played"] = df["games_played"].fillna(0).astype(int)
+    if "qb_starts_with_team" in df:
+        df["qb_starts_with_team"] = df["qb_starts_with_team"].fillna(0).astype(int)
 
     if prior_art is not None:
         # Decision #17. Must run BEFORE the rates are used for anything --
@@ -1042,6 +1116,12 @@ def build_statline_projections(site: str, season: int, week: int, slate_id: str,
     # carry/target share goes to the remaining RBs by depth rank. Added as points AFTER the stack /
     # blends (the validated quantity; the stack shrinks engine-side changes). Off: DFS_WRW_RB=0.
     df = _apply_wrw_rb(df, season, week)
+    # TE OUT -> remaining TEs (analysis/role_bump_chalk_gap). Off: DFS_WRW_TE=0.
+    df = _apply_wrw_te(df, season, week)
+    # Audit: the depth-chart backup boost for a real in-week OUT starter (apply_confirmed_starter_override),
+    # previously dropped before the CSV. False when that step did not run.
+    df["role_change_injury_flag"] = (df["role_change_injury_flag"].fillna(False).astype(bool)
+                                     if "role_change_injury_flag" in df.columns else False)
     df["sigma"] = df["statline_sigma"].clip(lower=0.0)
     df["sigma_source"] = "statline_mc"
 
@@ -1076,7 +1156,9 @@ def build_statline_projections(site: str, season: int, week: int, slate_id: str,
                     "statline_p90"] + PROJ_STAT_COLUMNS + ["engine_projection", "stack_delta",
                                                                "early_blend_delta", "qb_recal_delta",
                                                                "qb_autopromote_delta", "qb_autopromoted",
-                                                               "wrw_delta_pts", "wrw_vacated_car"]]
+                                                               "wrw_delta_pts", "wrw_vacated_car",
+                                                               "wrw_te_delta_pts", "wrw_te_vacated_tgt",
+                                                               "role_change_injury_flag"]]
 
     # --- DST (decisions #2, #3; Session 10.4) ------------------------------
     # Session 14.0 FIX: was build_dst_projections(salaries, ...). Now takes
@@ -1151,6 +1233,9 @@ def build_statline_projections(site: str, season: int, week: int, slate_id: str,
     dst_out["qb_autopromoted"] = False
     dst_out["wrw_delta_pts"] = 0.0
     dst_out["wrw_vacated_car"] = 0.0
+    dst_out["wrw_te_delta_pts"] = 0.0
+    dst_out["wrw_te_vacated_tgt"] = 0.0
+    dst_out["role_change_injury_flag"] = False
     dst_out = dst_out[skill_out.columns]
 
     # --- Kicker (Session 13.1 -- this engine never had it wired in at all)
@@ -1189,6 +1274,9 @@ def build_statline_projections(site: str, season: int, week: int, slate_id: str,
         kicker_out["qb_autopromoted"] = False
         kicker_out["wrw_delta_pts"] = 0.0
         kicker_out["wrw_vacated_car"] = 0.0
+        kicker_out["wrw_te_delta_pts"] = 0.0
+        kicker_out["wrw_te_vacated_tgt"] = 0.0
+        kicker_out["role_change_injury_flag"] = False
     kicker_out = kicker_out[skill_out.columns] if len(kicker_out) else \
         pd.DataFrame(columns=skill_out.columns)
 

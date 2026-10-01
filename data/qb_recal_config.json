@@ -8,5 +8,16 @@
   "c_implied": 0.59095,
   "d_spread": 0.27336,
   "e_rush_pts": 0.41798
+ },
+ "_lowsample_note": "analysis/qb_gap_vs_fc + qb_gap_vs_fc/scope_test, 2026-10-01. The wk1-2 and wk4+ gaps vs FC are the same mechanism: low prior-starts sample for the QB with his CURRENT team, not calendar week on its own (week4+ low-sample starters show the same under-projection as wk1-2). Both shifts are additive, applied AFTER the wk3+ recal (or in place of it for wk1-2, which the recal skips entirely today). Held-out LOSO 2021-25: wk1-2 known starters MAE 7.39->6.69 (FC 6.82); wk4+ starts<=1 MAE 6.23->6.02 (FC 6.26). Both default OFF pending a lineup replay check (changes QB-vs-flex salary split) -- owner approved building+wiring 2026-10-01, not yet approved default-on.",
+ "wk12_shift": {
+  "enabled": false,
+  "shift": 3.96
+ },
+ "qb_lowsample_shift": {
+  "enabled": false,
+  "min_week": 4,
+  "max_starts": 1,
+  "shift": 2.5
  }
 }

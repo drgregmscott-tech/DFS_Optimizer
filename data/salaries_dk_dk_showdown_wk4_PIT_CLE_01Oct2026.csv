@@ -14,11 +14,11 @@ WR,KC Concepcion Jr. (44315952),KC Concepcion Jr.,44315952,CPT,9600,PIT@CLE 10/0
 QB,Deshaun Watson (44315894),Deshaun Watson,44315894,FLEX,9400,PIT@CLE 10/01/2026 08:15PM ET,CLE,18.3,,FLEX,Deshaun Watson,dk,9400,deshaun watson,CLE,QB,showdown,00-0033537,auto_exact,high
 WR,DK Metcalf (44315895),DK Metcalf,44315895,FLEX,9000,PIT@CLE 10/01/2026 08:15PM ET,PIT,8.9,,FLEX,DK Metcalf,dk,9000,dk metcalf,PIT,WR,showdown,00-0035640,auto_exact,high
 QB,Shedeur Sanders (44315953),Shedeur Sanders,44315953,CPT,9000,PIT@CLE 10/01/2026 08:15PM ET,CLE,0.0,,CPT,Shedeur Sanders,dk,9000,shedeur sanders,CLE,QB,showdown,00-0040668,auto_exact,high
-QB,Dillon Gabriel (44315954),Dillon Gabriel,44315954,CPT,9000,PIT@CLE 10/01/2026 08:15PM ET,CLE,0.0,IR,CPT,Dillon Gabriel,dk,9000,dillon gabriel,CLE,QB,showdown,,,
+QB,Dillon Gabriel (44315954),Dillon Gabriel,44315954,CPT,9000,PIT@CLE 10/01/2026 08:15PM ET,CLE,0.0,IR,CPT,Dillon Gabriel,dk,9000,dillon gabriel,CLE,QB,showdown,00-0040704,auto_exact,high
 QB,Mason Rudolph (44315955),Mason Rudolph,44315955,CPT,9000,PIT@CLE 10/01/2026 08:15PM ET,PIT,0.3,,CPT,Mason Rudolph,dk,9000,mason rudolph,PIT,QB,showdown,00-0034771,auto_exact,high
-QB,Drew Allar (44315956),Drew Allar,44315956,CPT,9000,PIT@CLE 10/01/2026 08:15PM ET,PIT,0.0,,CPT,Drew Allar,dk,9000,drew allar,PIT,QB,showdown,,,
-QB,Will Howard (44315957),Will Howard,44315957,CPT,9000,PIT@CLE 10/01/2026 08:15PM ET,PIT,0.0,,CPT,Will Howard,dk,9000,will howard,PIT,QB,showdown,,,
-QB,Taylen Green (44315958),Taylen Green,44315958,CPT,9000,PIT@CLE 10/01/2026 08:15PM ET,CLE,0.0,,CPT,Taylen Green,dk,9000,taylen green,CLE,QB,showdown,,,
+QB,Drew Allar (44315956),Drew Allar,44315956,CPT,9000,PIT@CLE 10/01/2026 08:15PM ET,PIT,0.0,,CPT,Drew Allar,dk,9000,drew allar,PIT,QB,showdown,00-0041565,auto_exact,high
+QB,Will Howard (44315957),Will Howard,44315957,CPT,9000,PIT@CLE 10/01/2026 08:15PM ET,PIT,0.0,,CPT,Will Howard,dk,9000,will howard,PIT,QB,showdown,00-0040203,auto_exact,high
+QB,Taylen Green (44315958),Taylen Green,44315958,CPT,9000,PIT@CLE 10/01/2026 08:15PM ET,CLE,0.0,,CPT,Taylen Green,dk,9000,taylen green,CLE,QB,showdown,00-0041092,auto_exact,high
 RB,Quinshon Judkins (44315896),Quinshon Judkins,44315896,FLEX,8800,PIT@CLE 10/01/2026 08:15PM ET,CLE,8.9,,FLEX,Quinshon Judkins,dk,8800,quinshon judkins,CLE,RB,showdown,00-0040784,auto_exact,high
 TE,Pat Freiermuth (44315959),Pat Freiermuth,44315959,CPT,8400,PIT@CLE 10/01/2026 08:15PM ET,PIT,9.4,,CPT,Pat Freiermuth,dk,8400,pat freiermuth,PIT,TE,showdown,00-0036894,auto_exact,high
 WR,Denzel Boston (44315897),Denzel Boston,44315897,FLEX,8000,PIT@CLE 10/01/2026 08:15PM ET,CLE,14.2,,FLEX,Denzel Boston,dk,8000,denzel boston,CLE,WR,showdown,00-0041037,auto_exact,high
@@ -32,11 +32,11 @@ RB,Rico Dowdle (44315900),Rico Dowdle,44315900,FLEX,6600,PIT@CLE 10/01/2026 08:1
 RB,Raheim Sanders (44315964),Raheim Sanders,44315964,CPT,6600,PIT@CLE 10/01/2026 08:15PM ET,CLE,5.6,,CPT,Raheim Sanders,dk,6600,raheim sanders,CLE,RB,showdown,00-0040466,auto_exact,high
 WR,KC Concepcion Jr. (44315901),KC Concepcion Jr.,44315901,FLEX,6400,PIT@CLE 10/01/2026 08:15PM ET,CLE,6.6,,FLEX,KC Concepcion Jr.,dk,6400,kc concepcion,CLE,WR,showdown,00-0041547,auto_exact,high
 QB,Shedeur Sanders (44315902),Shedeur Sanders,44315902,FLEX,6000,PIT@CLE 10/01/2026 08:15PM ET,CLE,0.0,,FLEX,Shedeur Sanders,dk,6000,shedeur sanders,CLE,QB,showdown,00-0040668,auto_exact,high
-QB,Dillon Gabriel (44315903),Dillon Gabriel,44315903,FLEX,6000,PIT@CLE 10/01/2026 08:15PM ET,CLE,0.0,IR,FLEX,Dillon Gabriel,dk,6000,dillon gabriel,CLE,QB,showdown,,,
+QB,Dillon Gabriel (44315903),Dillon Gabriel,44315903,FLEX,6000,PIT@CLE 10/01/2026 08:15PM ET,CLE,0.0,IR,FLEX,Dillon Gabriel,dk,6000,dillon gabriel,CLE,QB,showdown,00-0040704,auto_exact,high
 QB,Mason Rudolph (44315904),Mason Rudolph,44315904,FLEX,6000,PIT@CLE 10/01/2026 08:15PM ET,PIT,0.3,,FLEX,Mason Rudolph,dk,6000,mason rudolph,PIT,QB,showdown,00-0034771,auto_exact,high
-QB,Drew Allar (44315905),Drew Allar,44315905,FLEX,6000,PIT@CLE 10/01/2026 08:15PM ET,PIT,0.0,,FLEX,Drew Allar,dk,6000,drew allar,PIT,QB,showdown,,,
-QB,Will Howard (44315906),Will Howard,44315906,FLEX,6000,PIT@CLE 10/01/2026 08:15PM ET,PIT,0.0,,FLEX,Will Howard,dk,6000,will howard,PIT,QB,showdown,,,
-QB,Taylen Green (44315907),Taylen Green,44315907,FLEX,6000,PIT@CLE 10/01/2026 08:15PM ET,CLE,0.0,,FLEX,Taylen Green,dk,6000,taylen green,CLE,QB,showdown,,,
+QB,Drew Allar (44315905),Drew Allar,44315905,FLEX,6000,PIT@CLE 10/01/2026 08:15PM ET,PIT,0.0,,FLEX,Drew Allar,dk,6000,drew allar,PIT,QB,showdown,00-0041565,auto_exact,high
+QB,Will Howard (44315906),Will Howard,44315906,FLEX,6000,PIT@CLE 10/01/2026 08:15PM ET,PIT,0.0,,FLEX,Will Howard,dk,6000,will howard,PIT,QB,showdown,00-0040203,auto_exact,high
+QB,Taylen Green (44315907),Taylen Green,44315907,FLEX,6000,PIT@CLE 10/01/2026 08:15PM ET,CLE,0.0,,FLEX,Taylen Green,dk,6000,taylen green,CLE,QB,showdown,00-0041092,auto_exact,high
 WR,Roman Wilson (44315965),Roman Wilson,44315965,CPT,6000,PIT@CLE 10/01/2026 08:15PM ET,PIT,9.5,,CPT,Roman Wilson,dk,6000,roman wilson,PIT,WR,showdown,00-0039739,auto_exact,high
 TE,Pat Freiermuth (44315908),Pat Freiermuth,44315908,FLEX,5600,PIT@CLE 10/01/2026 08:15PM ET,PIT,9.4,,FLEX,Pat Freiermuth,dk,5600,pat freiermuth,PIT,TE,showdown,00-0036894,auto_exact,high
 TE,Darnell Washington (44315966),Darnell Washington,44315966,CPT,5400,PIT@CLE 10/01/2026 08:15PM ET,PIT,5.1,,CPT,Darnell Washington,dk,5400,darnell washington,PIT,TE,showdown,00-0038558,auto_exact,high
@@ -72,32 +72,32 @@ TE,Robert Tonyan (44315926),Robert Tonyan,44315926,FLEX,600,PIT@CLE 10/01/2026 0
 RB,Jaleel McLaughlin (44315978),Jaleel McLaughlin,44315978,CPT,600,PIT@CLE 10/01/2026 08:15PM ET,CLE,0.2,,CPT,Jaleel McLaughlin,dk,600,jaleel mclaughlin,CLE,RB,showdown,00-0038794,auto_exact,high
 RB,Jaleel McLaughlin (44315927),Jaleel McLaughlin,44315927,FLEX,400,PIT@CLE 10/01/2026 08:15PM ET,CLE,0.2,,FLEX,Jaleel McLaughlin,dk,400,jaleel mclaughlin,CLE,RB,showdown,00-0038794,auto_exact,high
 RB,Dylan Sampson (44315979),Dylan Sampson,44315979,CPT,300,PIT@CLE 10/01/2026 08:15PM ET,CLE,0.0,IR,CPT,Dylan Sampson,dk,300,dylan sampson,CLE,RB,showdown,00-0040162,auto_exact,high
-RB,Eric Gray (44315980),Eric Gray,44315980,CPT,300,PIT@CLE 10/01/2026 08:15PM ET,CLE,0.0,,CPT,Eric Gray,dk,300,eric gray,CLE,RB,showdown,,,
+RB,Eric Gray (44315980),Eric Gray,44315980,CPT,300,PIT@CLE 10/01/2026 08:15PM ET,CLE,0.0,,CPT,Eric Gray,dk,300,eric gray,CLE,RB,showdown,00-0038396,auto_exact,high
 RB,Michael Burton (44315981),Michael Burton,44315981,CPT,300,PIT@CLE 10/01/2026 08:15PM ET,CLE,0.0,,CPT,Michael Burton,dk,300,michael burton,CLE,RB,showdown,00-0031595,auto_exact,high
 RB,Riley Nowakowski (44315982),Riley Nowakowski,44315982,CPT,300,PIT@CLE 10/01/2026 08:15PM ET,PIT,0.0,,CPT,Riley Nowakowski,dk,300,riley nowakowski,PIT,RB,showdown,00-0041398,auto_exact,high
-WR,Cole Burgess (44315983),Cole Burgess,44315983,CPT,300,PIT@CLE 10/01/2026 08:15PM ET,PIT,0.0,IR,CPT,Cole Burgess,dk,300,cole burgess,PIT,WR,showdown,,,
-WR,Jimmy Horn Jr. (44315984),Jimmy Horn Jr.,44315984,CPT,300,PIT@CLE 10/01/2026 08:15PM ET,CLE,-1.0,,CPT,Jimmy Horn Jr.,dk,300,jimmy horn,CLE,WR,showdown,00-0040218,auto_fallback_team_mismatch,medium
-WR,Bub Means (44315985),Bub Means,44315985,CPT,300,PIT@CLE 10/01/2026 08:15PM ET,CLE,0.0,,CPT,Bub Means,dk,300,bub means,CLE,WR,showdown,,,
-WR,Brandon Johnson (44315986),Brandon Johnson,44315986,CPT,300,PIT@CLE 10/01/2026 08:15PM ET,PIT,0.0,,CPT,Brandon Johnson,dk,300,brandon johnson,PIT,WR,showdown,,,
+WR,Cole Burgess (44315983),Cole Burgess,44315983,CPT,300,PIT@CLE 10/01/2026 08:15PM ET,PIT,0.0,IR,CPT,Cole Burgess,dk,300,cole burgess,PIT,WR,showdown,00-0039626,auto_exact,high
+WR,Jimmy Horn Jr. (44315984),Jimmy Horn Jr.,44315984,CPT,300,PIT@CLE 10/01/2026 08:15PM ET,CLE,-1.0,,CPT,Jimmy Horn Jr.,dk,300,jimmy horn,CLE,WR,showdown,00-0040218,auto_exact,high
+WR,Bub Means (44315985),Bub Means,44315985,CPT,300,PIT@CLE 10/01/2026 08:15PM ET,CLE,0.0,,CPT,Bub Means,dk,300,bub means,CLE,WR,showdown,00-0039386,auto_exact,high
+WR,Brandon Johnson (44315986),Brandon Johnson,44315986,CPT,300,PIT@CLE 10/01/2026 08:15PM ET,PIT,0.0,,CPT,Brandon Johnson,dk,300,brandon johnson,PIT,WR,showdown,00-0037382,auto_exact,high
 WR,Kaden Wetjen (44315987),Kaden Wetjen,44315987,CPT,300,PIT@CLE 10/01/2026 08:15PM ET,PIT,0.0,,CPT,Kaden Wetjen,dk,300,kaden wetjen,PIT,WR,showdown,00-0041397,auto_exact,high
-WR,Isaiah Hodgins (44315988),Isaiah Hodgins,44315988,CPT,300,PIT@CLE 10/01/2026 08:15PM ET,PIT,0.0,,CPT,Isaiah Hodgins,dk,300,isaiah hodgins,PIT,WR,showdown,,,
-WR,Brandon Smith (44315989),Brandon Smith,44315989,CPT,300,PIT@CLE 10/01/2026 08:15PM ET,PIT,0.0,,CPT,Brandon Smith,dk,300,brandon smith,PIT,WR,showdown,,,
+WR,Isaiah Hodgins (44315988),Isaiah Hodgins,44315988,CPT,300,PIT@CLE 10/01/2026 08:15PM ET,PIT,0.0,,CPT,Isaiah Hodgins,dk,300,isaiah hodgins,PIT,WR,showdown,00-0036165,auto_exact,high
+WR,Brandon Smith (44315989),Brandon Smith,44315989,CPT,300,PIT@CLE 10/01/2026 08:15PM ET,PIT,0.0,,CPT,Brandon Smith,dk,300,brandon smith,PIT,WR,showdown,00-0036775,auto_exact,high
 TE,Carsen Ryan (44315990),Carsen Ryan,44315990,CPT,300,PIT@CLE 10/01/2026 08:15PM ET,CLE,0.0,,CPT,Carsen Ryan,dk,300,carsen ryan,CLE,TE,showdown,00-0041131,auto_exact,high
-TE,Messiah Swinson (44315991),Messiah Swinson,44315991,CPT,300,PIT@CLE 10/01/2026 08:15PM ET,CLE,0.0,,CPT,Messiah Swinson,dk,300,messiah swinson,CLE,TE,showdown,,,
-TE,Lake McRee (44315992),Lake McRee,44315992,CPT,300,PIT@CLE 10/01/2026 08:15PM ET,PIT,0.0,,CPT,Lake McRee,dk,300,lake mcree,PIT,TE,showdown,,,
-TE,Joe Royer (44315993),Joe Royer,44315993,CPT,300,PIT@CLE 10/01/2026 08:15PM ET,CLE,0.0,OUT,CPT,Joe Royer,dk,300,joe royer,CLE,TE,showdown,,,
+TE,Messiah Swinson (44315991),Messiah Swinson,44315991,CPT,300,PIT@CLE 10/01/2026 08:15PM ET,CLE,0.0,,CPT,Messiah Swinson,dk,300,messiah swinson,CLE,TE,showdown,00-0039275,auto_exact,high
+TE,Lake McRee (44315992),Lake McRee,44315992,CPT,300,PIT@CLE 10/01/2026 08:15PM ET,PIT,0.0,,CPT,Lake McRee,dk,300,lake mcree,PIT,TE,showdown,00-0041263,auto_exact,high
+TE,Joe Royer (44315993),Joe Royer,44315993,CPT,300,PIT@CLE 10/01/2026 08:15PM ET,CLE,0.0,OUT,CPT,Joe Royer,dk,300,joe royer,CLE,TE,showdown,00-0041087,auto_exact,high
 RB,Dylan Sampson (44315928),Dylan Sampson,44315928,FLEX,200,PIT@CLE 10/01/2026 08:15PM ET,CLE,0.0,IR,FLEX,Dylan Sampson,dk,200,dylan sampson,CLE,RB,showdown,00-0040162,auto_exact,high
-RB,Eric Gray (44315929),Eric Gray,44315929,FLEX,200,PIT@CLE 10/01/2026 08:15PM ET,CLE,0.0,,FLEX,Eric Gray,dk,200,eric gray,CLE,RB,showdown,,,
+RB,Eric Gray (44315929),Eric Gray,44315929,FLEX,200,PIT@CLE 10/01/2026 08:15PM ET,CLE,0.0,,FLEX,Eric Gray,dk,200,eric gray,CLE,RB,showdown,00-0038396,auto_exact,high
 RB,Michael Burton (44315930),Michael Burton,44315930,FLEX,200,PIT@CLE 10/01/2026 08:15PM ET,CLE,0.0,,FLEX,Michael Burton,dk,200,michael burton,CLE,RB,showdown,00-0031595,auto_exact,high
 RB,Riley Nowakowski (44315931),Riley Nowakowski,44315931,FLEX,200,PIT@CLE 10/01/2026 08:15PM ET,PIT,0.0,,FLEX,Riley Nowakowski,dk,200,riley nowakowski,PIT,RB,showdown,00-0041398,auto_exact,high
-WR,Cole Burgess (44315932),Cole Burgess,44315932,FLEX,200,PIT@CLE 10/01/2026 08:15PM ET,PIT,0.0,IR,FLEX,Cole Burgess,dk,200,cole burgess,PIT,WR,showdown,,,
-WR,Jimmy Horn Jr. (44315933),Jimmy Horn Jr.,44315933,FLEX,200,PIT@CLE 10/01/2026 08:15PM ET,CLE,-1.0,,FLEX,Jimmy Horn Jr.,dk,200,jimmy horn,CLE,WR,showdown,00-0040218,auto_fallback_team_mismatch,medium
-WR,Bub Means (44315934),Bub Means,44315934,FLEX,200,PIT@CLE 10/01/2026 08:15PM ET,CLE,0.0,,FLEX,Bub Means,dk,200,bub means,CLE,WR,showdown,,,
-WR,Brandon Johnson (44315935),Brandon Johnson,44315935,FLEX,200,PIT@CLE 10/01/2026 08:15PM ET,PIT,0.0,,FLEX,Brandon Johnson,dk,200,brandon johnson,PIT,WR,showdown,,,
+WR,Cole Burgess (44315932),Cole Burgess,44315932,FLEX,200,PIT@CLE 10/01/2026 08:15PM ET,PIT,0.0,IR,FLEX,Cole Burgess,dk,200,cole burgess,PIT,WR,showdown,00-0039626,auto_exact,high
+WR,Jimmy Horn Jr. (44315933),Jimmy Horn Jr.,44315933,FLEX,200,PIT@CLE 10/01/2026 08:15PM ET,CLE,-1.0,,FLEX,Jimmy Horn Jr.,dk,200,jimmy horn,CLE,WR,showdown,00-0040218,auto_exact,high
+WR,Bub Means (44315934),Bub Means,44315934,FLEX,200,PIT@CLE 10/01/2026 08:15PM ET,CLE,0.0,,FLEX,Bub Means,dk,200,bub means,CLE,WR,showdown,00-0039386,auto_exact,high
+WR,Brandon Johnson (44315935),Brandon Johnson,44315935,FLEX,200,PIT@CLE 10/01/2026 08:15PM ET,PIT,0.0,,FLEX,Brandon Johnson,dk,200,brandon johnson,PIT,WR,showdown,00-0037382,auto_exact,high
 WR,Kaden Wetjen (44315936),Kaden Wetjen,44315936,FLEX,200,PIT@CLE 10/01/2026 08:15PM ET,PIT,0.0,,FLEX,Kaden Wetjen,dk,200,kaden wetjen,PIT,WR,showdown,00-0041397,auto_exact,high
-WR,Isaiah Hodgins (44315937),Isaiah Hodgins,44315937,FLEX,200,PIT@CLE 10/01/2026 08:15PM ET,PIT,0.0,,FLEX,Isaiah Hodgins,dk,200,isaiah hodgins,PIT,WR,showdown,,,
-WR,Brandon Smith (44315938),Brandon Smith,44315938,FLEX,200,PIT@CLE 10/01/2026 08:15PM ET,PIT,0.0,,FLEX,Brandon Smith,dk,200,brandon smith,PIT,WR,showdown,,,
+WR,Isaiah Hodgins (44315937),Isaiah Hodgins,44315937,FLEX,200,PIT@CLE 10/01/2026 08:15PM ET,PIT,0.0,,FLEX,Isaiah Hodgins,dk,200,isaiah hodgins,PIT,WR,showdown,00-0036165,auto_exact,high
+WR,Brandon Smith (44315938),Brandon Smith,44315938,FLEX,200,PIT@CLE 10/01/2026 08:15PM ET,PIT,0.0,,FLEX,Brandon Smith,dk,200,brandon smith,PIT,WR,showdown,00-0036775,auto_exact,high
 TE,Carsen Ryan (44315939),Carsen Ryan,44315939,FLEX,200,PIT@CLE 10/01/2026 08:15PM ET,CLE,0.0,,FLEX,Carsen Ryan,dk,200,carsen ryan,CLE,TE,showdown,00-0041131,auto_exact,high
-TE,Messiah Swinson (44315940),Messiah Swinson,44315940,FLEX,200,PIT@CLE 10/01/2026 08:15PM ET,CLE,0.0,,FLEX,Messiah Swinson,dk,200,messiah swinson,CLE,TE,showdown,,,
-TE,Lake McRee (44315941),Lake McRee,44315941,FLEX,200,PIT@CLE 10/01/2026 08:15PM ET,PIT,0.0,,FLEX,Lake McRee,dk,200,lake mcree,PIT,TE,showdown,,,
-TE,Joe Royer (44315942),Joe Royer,44315942,FLEX,200,PIT@CLE 10/01/2026 08:15PM ET,CLE,0.0,OUT,FLEX,Joe Royer,dk,200,joe royer,CLE,TE,showdown,,,
+TE,Messiah Swinson (44315940),Messiah Swinson,44315940,FLEX,200,PIT@CLE 10/01/2026 08:15PM ET,CLE,0.0,,FLEX,Messiah Swinson,dk,200,messiah swinson,CLE,TE,showdown,00-0039275,auto_exact,high
+TE,Lake McRee (44315941),Lake McRee,44315941,FLEX,200,PIT@CLE 10/01/2026 08:15PM ET,PIT,0.0,,FLEX,Lake McRee,dk,200,lake mcree,PIT,TE,showdown,00-0041263,auto_exact,high
+TE,Joe Royer (44315942),Joe Royer,44315942,FLEX,200,PIT@CLE 10/01/2026 08:15PM ET,CLE,0.0,OUT,FLEX,Joe Royer,dk,200,joe royer,CLE,TE,showdown,00-0041087,auto_exact,high

@@ -160,6 +160,38 @@
       "season": 2026,
       "week": 4,
       "lock_time_utc": "2026-10-02T00:15:00Z"
+    },
+    {
+      "slate_id": "dk_classic_wk4_afternoon_04Oct2026",
+      "site": "dk",
+      "format": "classic",
+      "season": 2026,
+      "week": 4,
+      "lock_time_utc": "2026-10-04T20:05:00Z"
+    },
+    {
+      "slate_id": "fd_classic_wk4_main_04Oct2026",
+      "site": "fd",
+      "format": "classic",
+      "season": 2026,
+      "week": 4,
+      "lock_time_utc": "2026-10-04T17:00:00Z"
+    },
+    {
+      "slate_id": "fd_classic_wk4_early_04Oct2026",
+      "site": "fd",
+      "format": "classic",
+      "season": 2026,
+      "week": 4,
+      "lock_time_utc": "2026-10-04T17:00:00Z"
+    },
+    {
+      "slate_id": "fd_classic_wk4_afternoon_04Oct2026",
+      "site": "fd",
+      "format": "classic",
+      "season": 2026,
+      "week": 4,
+      "lock_time_utc": "2026-10-04T20:05:00Z"
     }
   ]
 }
