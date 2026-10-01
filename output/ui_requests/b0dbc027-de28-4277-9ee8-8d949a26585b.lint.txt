@@ -1,0 +1,3 @@
+Construction lint (informational only -- never blocks a build; see WK3_CONSTRUCTION_RULE_AUDIT.md):
+[construction_lint] showdown: 3 lineups, pool=final_projections_dk_dk_showdown_wk4_PIT_CLE_01Oct2026.csv
+  no flags
