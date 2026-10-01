@@ -2018,3 +2018,6 @@ timestamp_utc,trigger_type,site,step,status
 2026-10-01T23:02:47.266050+00:00,full_refresh_dispatch,dk,dk_classic_wk4_early_04Oct2026,build_projections,success
 2026-10-01T23:02:47.266050+00:00,full_refresh_dispatch,dk,dk_classic_wk4_early_04Oct2026,status_apply,success
 2026-10-01T23:02:47.266050+00:00,full_refresh_dispatch,dk,dk_classic_wk4_early_04Oct2026,pivot_finder,success
+2026-10-01T23:03:42.797671+00:00,full_refresh_dispatch,dk,dk_showdown_wk4_PIT_CLE_01Oct2026,build_projections,success
+2026-10-01T23:03:42.797671+00:00,full_refresh_dispatch,dk,dk_showdown_wk4_PIT_CLE_01Oct2026,status_apply,success
+2026-10-01T23:03:42.797671+00:00,full_refresh_dispatch,dk,dk_showdown_wk4_PIT_CLE_01Oct2026,pivot_finder,success
