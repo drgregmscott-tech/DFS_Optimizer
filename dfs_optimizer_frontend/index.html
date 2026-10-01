@@ -3456,6 +3456,17 @@ in this browser's localStorage.</p>
       // loading it left whatever those five controls were already at
       // (e.g. a leftover MME 100/35/1/18 build). Values match
       // data/optimizer_presets.json's showdown_se bundle exactly.
+      // ctrlMinSalary added 2026-10-01 -- the field's HTML default is
+      // $49,700 (a classic-cash-style near-full-cap convention), which
+      // this preset never overrode, so every UI Showdown build silently
+      // got a ~99.4%-of-cap floor that no CLI --preset build ever gets
+      // (optimizer.py's own --min-salary-pct default is 0, no floor).
+      // That floor leaves ~$300 of slack across 6 roster spots (less,
+      // since the CPT's salary counts at 1.5x against the cap), which
+      // makes SHOWDOWN_RULES.md rule 12's validated $1.1-2k cheapest-
+      // piece finding close to unreachable. 0 here matches the CLI
+      // preset and lets sd-cheap-tier-penalty do the actual work.
+      ctrlMinSalary: "0",
       ctrlNLineups: "3", ctrlMaxExposure: "100", ctrlUniqueness: "3",
       ctrlRandomization: "3", ctrlLambda: "0",
       ctrlSdRequireCptQb: true, ctrlSdCheapTierPenalty: "1.0", ctrlSdCheapTierRange: "600:1000",
@@ -3465,6 +3476,7 @@ in this browser's localStorage.</p>
     "Showdown GPP": {
       // Same fix as "Showdown SE" above -- matches data/optimizer_presets.json's
       // showdown_gpp bundle exactly.
+      ctrlMinSalary: "0",
       ctrlNLineups: "100", ctrlMaxExposure: "35", ctrlUniqueness: "1",
       ctrlRandomization: "18", ctrlLambda: "0",
       ctrlSdRequireCptQb: true, ctrlSdCheapTierPenalty: "2.0", ctrlSdCheapTierRange: "600:1000",
