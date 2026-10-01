@@ -1,0 +1,7 @@
+{
+  "n": 15,
+  "b": 0.5,
+  "sal_thresh": 5500,
+  "freeze_pct": 25,
+  "note": "Pre-committed before Wk4 lock, from analysis/chalk_size_fix_v2/RESULTS.md's 'sal<5.5k + freeze' segment. (n, b) chosen by MAE over ALL of wk1-3 (no held-out week left, since wk4 is the real held-out test). Do not re-tune these after seeing Wk4 results -- score Wk4 as-is first, then decide whether to ship via DFS_OWN_CHALK_FFC_SEG=1."
+}

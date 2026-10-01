@@ -529,6 +529,84 @@ def apply_chalk_ffc(F, final, raw_ffc, n=None, b=None, cap=CAP):
         return np.asarray(final, float), np.zeros(len(final))
 
 
+# 2026-10-01 chalk-size fix v2, SEGMENTED (analysis/chalk_size_fix_v2/RESULTS.md): the broad pull above helped
+# cheap WR/TE catch rate but raided budget from real mega-chalk (worse $7k+ bias30) in 1 of 3 weeks. Restricting
+# the FFC pull to salary < CHALK_SEG_SAL_THRESH and freezing already-shipped mega-chalk (>= CHALK_SEG_FREEZE_PCT)
+# out of the group re-allocation was the only segment that lifted cheap WR/TE catch20 (.58 -> .75 pooled wk1-3)
+# with $7k+ bias30 unchanged in every week. (n, b) = (15, 0.5) chosen by in-training MAE over all of wk1-3 (no
+# wk4 data exists yet to hold out) -- re-verify against Wk4 once results land before changing these params.
+# Switch: DFS_OWN_CHALK_FFC_SEG=1 (default 0 = off, not yet shipped). Mutually exclusive with the broad
+# DFS_OWN_CHALK_FFC switch above (segmented takes precedence if both are set). Any failure = no-op.
+CHALK_SEG_FFC_DEFAULT = "0"
+CHALK_SEG_PARAMS_PATH = DATA_DIR / "ownership_v2_chalk_seg.candidate-2026-10-01.json"
+CHALK_SEG_N, CHALK_SEG_B = 15, 0.5
+CHALK_SEG_SAL_THRESH = 5500.0
+CHALK_SEG_FREEZE_PCT = 25.0
+
+
+def chalk_ffc_seg_enabled():
+    return os.environ.get("DFS_OWN_CHALK_FFC_SEG", CHALK_SEG_FFC_DEFAULT).strip().lower() not in (
+        "0", "false", "off", "no", "")
+
+
+def chalk_seg_params():
+    try:
+        with open(CHALK_SEG_PARAMS_PATH, encoding="utf-8-sig") as f:
+            p = json.load(f)
+        return (int(p["n"]), float(p["b"]), float(p["sal_thresh"]), float(p["freeze_pct"]))
+    except Exception:  # noqa: BLE001
+        return CHALK_SEG_N, CHALK_SEG_B, CHALK_SEG_SAL_THRESH, CHALK_SEG_FREEZE_PCT
+
+
+def apply_chalk_ffc_seg(F, final, raw_ffc, n=None, b=None, sal_thresh=None, freeze_pct=None, cap=CAP):
+    """Segmented variant of apply_chalk_ffc(): the FFC pull only hits slate-top-N players that ALSO have
+    salary < sal_thresh, and rows already shipped >= freeze_pct are frozen out of the re-allocation so the
+    pull cannot raid real mega-chalk. Returns (pulled final, audit array). Fail-safe: input unchanged on
+    any problem."""
+    n0, b0, s0, f0 = chalk_seg_params()
+    n = n0 if n is None else n
+    b = b0 if b is None else b
+    sal_thresh = s0 if sal_thresh is None else sal_thresh
+    freeze_pct = f0 if freeze_pct is None else freeze_pct
+    try:
+        base = np.asarray(final, float)
+        ffc = pd.to_numeric(pd.Series(np.asarray(raw_ffc, float)), errors="coerce").to_numpy()
+        sal = pd.to_numeric(F["salary"], errors="coerce").to_numpy()
+        skill = F.pos.isin(["QB", "RB", "WR", "TE"]).to_numpy()
+        ok = np.isfinite(base) & skill
+        if b == 0 or n <= 0 or not (ok & np.isfinite(ffc) & (ffc > 0)).any():
+            return base, np.zeros(len(base))
+        mask = sal < sal_thresh
+        freeze = base >= freeze_pct
+        top = np.zeros(len(base), bool)
+        for _, ix in F[ok].groupby("slate_id").indices.items():
+            rows = np.where(ok)[0][ix]
+            f = np.where(np.isfinite(ffc[rows]), ffc[rows], -1.0)
+            r = rows[np.argsort(-f, kind="stable")[:n]]
+            top[r[ffc[r] > 0]] = True
+        hit = top & mask
+        if not hit.any():
+            return base, np.zeros(len(base))
+        frz = freeze & ~hit
+        lb = np.log(np.maximum(np.where(ok, base, 0.0), .05))
+        Fsc = np.where(hit, (1 - b) * lb + b * np.log(np.maximum(np.nan_to_num(ffc), .05)), lb)
+        al = ok & ~frz
+        sub = F[al]
+        out = base.copy()
+        for (sid, g), ix in sub.groupby([sub.slate_id, sub.grp]).indices.items():
+            rows = np.where(al)[0][ix]
+            grp_all = ok & (F.slate_id.to_numpy() == sid) & (F.grp.to_numpy() == g)
+            if not hit[rows].any():
+                continue
+            bud = base[grp_all].sum() - base[grp_all & frz].sum()
+            out[rows] = allocate(F.iloc[rows], Fsc[rows], {g: float(bud)}, cap=cap)
+        if not np.all(np.isfinite(out[ok])):
+            return base, np.zeros(len(base))
+        return out, np.where(ok, out - base, 0.0)
+    except Exception:  # noqa: BLE001 -- must never break a build
+        return np.asarray(final, float), np.zeros(len(final))
+
+
 # 2026-09-30 chalk-temperature candidate (analysis/chalk_temperature/RESULTS.md): the v2 distribution is "too flat at
 # the top" (real 30%+ players predicted ~20). Sharpen each position group's shares: new_i ∝ final_i ** gamma
 # (= softmax temperature 1/gamma on the log-share), re-allocated to the SAME group total with the usual CAP
@@ -599,7 +677,10 @@ def predict_v2(frame, ctx, lin, dst, live_pred=None, alpha=FFC_BLEND_ALPHA, vac_
         final, bump = apply_vac_bump(F, final, vac_k, cap=lin.get("cap", CAP))
         LAST_AUDIT["own_vac_bump"] = bump
         LAST_AUDIT["own_vacated"] = pd.to_numeric(F["vacated"], errors="coerce").fillna(0.0).to_numpy()
-    if raw_ffc is not None and chalk_ffc_enabled():
+    if raw_ffc is not None and chalk_ffc_seg_enabled():
+        final, pull = apply_chalk_ffc_seg(F, final, raw_ffc, cap=lin.get("cap", CAP))
+        LAST_AUDIT["own_chalk_ffc_seg"] = pull
+    elif raw_ffc is not None and chalk_ffc_enabled():
         final, pull = apply_chalk_ffc(F, final, raw_ffc, cap=lin.get("cap", CAP))
         LAST_AUDIT["own_chalk_ffc"] = pull
     if chalk_temp_gamma() != 1.0:

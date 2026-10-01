@@ -4986,7 +4986,9 @@ in this browser's localStorage.</p>
       .then(function (data) {
         if (data.error) { throw new Error(data.error); }
         state.activeRequestId = data.request_id;
-        setSolveStatus("Dispatched (request " + data.request_id.slice(0, 8) + "…) — waiting for GitHub Actions (usually 20-90s)…", "");
+        var nReq = parseInt(params.n_lineups, 10) || 1;
+        var etaHint = nReq > 30 ? "large builds (50-100 lineups) can take several minutes" : "usually 20-90s";
+        setSolveStatus("Dispatched (request " + data.request_id.slice(0, 8) + "…) — waiting for GitHub Actions (" + etaHint + ")…", "");
         pollForResult(site, data.request_id, 0);
       })
       .catch(function (err) {
@@ -4995,7 +4997,16 @@ in this browser's localStorage.</p>
       });
   }
 
-  var MAX_POLL_ATTEMPTS = 30; // ~2 minutes at the 4s hint below, generous vs. the ~20-90s real runs seen during this session's own live testing
+  // 2026-10-01: was 30 (~2 min at the 4s hint below), sized only against small test
+  // builds (~20-90s). The real failure mode: the built-in "SE3Max Pool (100)" preset
+  // (n_lineups=100) legitimately takes longer than that once you add GitHub Actions
+  // runner cold-start + `pip install -r requirements.txt` + the actual 100-lineup
+  // solve + the commit-retry backoff on concurrent requests (up to 5 attempts x
+  // 2-7s each in run_optimizer_dispatch.yml) -- none of that is an error, it's just
+  // real work that a 2-minute cap can't see past. Raised to 10 minutes; a build that
+  // finishes early still returns on its first "complete" poll, so this costs nothing
+  // for small/fast builds and only matters for the heavy ones that were timing out.
+  var MAX_POLL_ATTEMPTS = 150; // ~10 minutes at the 4s hint below
 
   function pollForResult(site, requestId, attempt) {
     if (requestId !== state.activeRequestId) return; // a newer request superseded this one -- stop polling the stale one

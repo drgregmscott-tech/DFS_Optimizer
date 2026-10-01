@@ -53,9 +53,10 @@ this section is just the active-now subset, ranked.
    if/when it ships: `apply_chalk_ffc` in `scripts/ownership_v2.py` gets `mask`/`protect` args (mask =
    salary < 5500, protect = final >= 25), params N=15 b=.5, new switch `DFS_OWN_CHALK_FFC_SEG` (default 0/
    off), audit column `own_chalk_ffc_seg`. No code shipped, nothing committed, no live artifacts touched.
-3. **Showdown `lsal` candidate re-test (item 1).** Wk4 Showdown (PIT/CLE) already played 2026-10-01 —
-   this is NOT gated on future results, the data already exists. Log it into `ownership_actual_log.csv`
-   and re-test today.
+3. **Showdown `lsal` candidate re-test (item 1).** CORRECTED 2026-10-01: an earlier note here wrongly
+   claimed this game "already played" — it hadn't; kickoff is 8:15pm ET / 7:15pm CT on 2026-10-01
+   (confirmed from `data/salaries_dk_dk_showdown_wk4_PIT_CLE_01Oct2026.csv`'s Game Info). This IS gated
+   on the game finishing. Log it into `ownership_actual_log.csv` and re-test after PIT/CLE wraps tonight.
 4. **Props pipeline timing audit, other lock windows — CLOSED 2026-10-01.** Audited the live cron-job.org
    job list directly (12 enabled jobs at the time) against actual lock times, using the owner's rule:
    injury report lands ~90 min before lock, so the near-lock pull should fire ~60-70 min before lock to
