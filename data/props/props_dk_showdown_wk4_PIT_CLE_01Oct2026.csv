@@ -1,0 +1,665 @@
+event_id,home,away,commence_time,player,market,line,side,price,book,pulled_at
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Jaylen Warren,player_anytime_td,,Yes,-105,draftkings,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Quinshon Judkins,player_anytime_td,,Yes,140,draftkings,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,DK Metcalf,player_anytime_td,,Yes,240,draftkings,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Denzel Boston,player_anytime_td,,Yes,260,draftkings,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Harold Fannin Jr.,player_anytime_td,,Yes,285,draftkings,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,KC Concepcion,player_anytime_td,,Yes,350,draftkings,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Michael Pittman Jr.,player_anytime_td,,Yes,360,draftkings,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Deshaun Watson,player_anytime_td,,Yes,370,draftkings,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Pat Freiermuth,player_anytime_td,,Yes,400,draftkings,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Roman Wilson,player_anytime_td,,Yes,475,draftkings,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Cleveland Browns D/ST,player_anytime_td,,Yes,500,draftkings,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Pittsburgh Steelers D/ST,player_anytime_td,,Yes,500,draftkings,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Darnell Washington,player_anytime_td,,Yes,550,draftkings,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Raheim Sanders,player_anytime_td,,Yes,700,draftkings,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Jerry Jeudy,player_anytime_td,,Yes,900,draftkings,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Germie Bernard,player_anytime_td,,Yes,1000,draftkings,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Blake Whiteheart,player_anytime_td,,Yes,1100,draftkings,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Ben Skowronek,player_anytime_td,,Yes,1300,draftkings,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Aaron Rodgers,player_anytime_td,,Yes,1500,draftkings,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Travis Homer,player_anytime_td,,Yes,1600,draftkings,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Isaiah Bond,player_anytime_td,,Yes,2000,draftkings,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Lew Nichols,player_anytime_td,,Yes,2200,draftkings,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Jaleel McLaughlin,player_anytime_td,,Yes,2500,draftkings,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Kaden Wetjen,player_anytime_td,,Yes,2500,draftkings,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Riley Nowakowski,player_anytime_td,,Yes,2800,draftkings,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Robert Tonyan,player_anytime_td,,Yes,3500,draftkings,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Michael Burton,player_anytime_td,,Yes,4000,draftkings,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Malachi Corley,player_anytime_td,,Yes,4000,draftkings,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Carsen Ryan,player_anytime_td,,Yes,5000,draftkings,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Aaron Rodgers,player_pass_tds,1.5,Over,152,draftkings,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Aaron Rodgers,player_pass_tds,1.5,Under,-196,draftkings,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Deshaun Watson,player_pass_tds,0.5,Over,-224,draftkings,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Deshaun Watson,player_pass_tds,0.5,Under,173,draftkings,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Aaron Rodgers,player_pass_yds,214.5,Over,-113,draftkings,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Aaron Rodgers,player_pass_yds,214.5,Under,-111,draftkings,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Deshaun Watson,player_pass_yds,186.5,Over,-112,draftkings,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Deshaun Watson,player_pass_yds,186.5,Under,-112,draftkings,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,DK Metcalf,player_reception_yds,46.5,Over,-113,draftkings,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,DK Metcalf,player_reception_yds,46.5,Under,-111,draftkings,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Harold Fannin Jr.,player_reception_yds,40.5,Over,-113,draftkings,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Harold Fannin Jr.,player_reception_yds,40.5,Under,-111,draftkings,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Denzel Boston,player_reception_yds,38.5,Over,-114,draftkings,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Denzel Boston,player_reception_yds,38.5,Under,-110,draftkings,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,KC Concepcion,player_reception_yds,36.5,Over,-111,draftkings,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,KC Concepcion,player_reception_yds,36.5,Under,-113,draftkings,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Michael Pittman Jr.,player_reception_yds,34.5,Over,-111,draftkings,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Michael Pittman Jr.,player_reception_yds,34.5,Under,-113,draftkings,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Jaylen Warren,player_reception_yds,26.5,Over,-116,draftkings,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Jaylen Warren,player_reception_yds,26.5,Under,-108,draftkings,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Pat Freiermuth,player_reception_yds,26.5,Over,-116,draftkings,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Pat Freiermuth,player_reception_yds,26.5,Under,-108,draftkings,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Roman Wilson,player_reception_yds,21.5,Over,-116,draftkings,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Roman Wilson,player_reception_yds,21.5,Under,-109,draftkings,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Darnell Washington,player_reception_yds,16.5,Over,-113,draftkings,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Darnell Washington,player_reception_yds,16.5,Under,-111,draftkings,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Jerry Jeudy,player_reception_yds,14.5,Over,-117,draftkings,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Jerry Jeudy,player_reception_yds,14.5,Under,-107,draftkings,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Raheim Sanders,player_reception_yds,12.5,Over,-110,draftkings,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Raheim Sanders,player_reception_yds,12.5,Under,-114,draftkings,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Quinshon Judkins,player_reception_yds,10.5,Over,-118,draftkings,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Quinshon Judkins,player_reception_yds,10.5,Under,-106,draftkings,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Germie Bernard,player_reception_yds,9.5,Over,-107,draftkings,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Germie Bernard,player_reception_yds,9.5,Under,-118,draftkings,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Blake Whiteheart,player_reception_yds,0.5,Over,-101,draftkings,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Blake Whiteheart,player_reception_yds,0.5,Under,-124,draftkings,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Harold Fannin Jr.,player_receptions,4.5,Over,-112,draftkings,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Harold Fannin Jr.,player_receptions,4.5,Under,-114,draftkings,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,KC Concepcion,player_receptions,4.5,Over,122,draftkings,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,KC Concepcion,player_receptions,4.5,Under,-156,draftkings,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,DK Metcalf,player_receptions,3.5,Over,-138,draftkings,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,DK Metcalf,player_receptions,3.5,Under,108,draftkings,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Jaylen Warren,player_receptions,3.5,Over,-121,draftkings,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Jaylen Warren,player_receptions,3.5,Under,-105,draftkings,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Pat Freiermuth,player_receptions,3.5,Over,128,draftkings,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Pat Freiermuth,player_receptions,3.5,Under,-164,draftkings,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Denzel Boston,player_receptions,3.5,Over,132,draftkings,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Denzel Boston,player_receptions,3.5,Under,-169,draftkings,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Michael Pittman Jr.,player_receptions,3.5,Over,134,draftkings,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Michael Pittman Jr.,player_receptions,3.5,Under,-172,draftkings,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Roman Wilson,player_receptions,2.5,Over,126,draftkings,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Roman Wilson,player_receptions,2.5,Under,-161,draftkings,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Quinshon Judkins,player_receptions,1.5,Over,-190,draftkings,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Quinshon Judkins,player_receptions,1.5,Under,148,draftkings,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Raheim Sanders,player_receptions,1.5,Over,-178,draftkings,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Raheim Sanders,player_receptions,1.5,Under,139,draftkings,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Darnell Washington,player_receptions,1.5,Over,-157,draftkings,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Darnell Washington,player_receptions,1.5,Under,123,draftkings,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Jerry Jeudy,player_receptions,1.5,Over,116,draftkings,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Jerry Jeudy,player_receptions,1.5,Under,-149,draftkings,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Germie Bernard,player_receptions,1.5,Over,154,draftkings,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Germie Bernard,player_receptions,1.5,Under,-198,draftkings,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Blake Whiteheart,player_receptions,0.5,Over,-116,draftkings,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Blake Whiteheart,player_receptions,0.5,Under,-110,draftkings,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Jaylen Warren,player_rush_yds,76.5,Over,-112,draftkings,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Jaylen Warren,player_rush_yds,76.5,Under,-112,draftkings,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Quinshon Judkins,player_rush_yds,56.5,Over,-109,draftkings,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Quinshon Judkins,player_rush_yds,56.5,Under,-115,draftkings,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Deshaun Watson,player_rush_yds,29.5,Over,-109,draftkings,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Deshaun Watson,player_rush_yds,29.5,Under,-115,draftkings,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Travis Homer,player_rush_yds,6.5,Over,-117,draftkings,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Travis Homer,player_rush_yds,6.5,Under,-107,draftkings,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Raheim Sanders,player_rush_yds,5.5,Over,-113,draftkings,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Raheim Sanders,player_rush_yds,5.5,Under,-111,draftkings,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Aaron Rodgers,player_rush_yds,1.5,Over,-106,draftkings,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Aaron Rodgers,player_rush_yds,1.5,Under,-118,draftkings,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,KC Concepcion,player_rush_yds,0.5,Over,-108,draftkings,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,KC Concepcion,player_rush_yds,0.5,Under,-117,draftkings,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Jaylen Warren,player_anytime_td,,Yes,105,fanduel,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Quinshon Judkins,player_anytime_td,,Yes,150,fanduel,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,DK Metcalf,player_anytime_td,,Yes,220,fanduel,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Denzel Boston,player_anytime_td,,Yes,270,fanduel,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Harold Fannin Jr.,player_anytime_td,,Yes,290,fanduel,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Michael Pittman Jr.,player_anytime_td,,Yes,350,fanduel,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Pat Freiermuth,player_anytime_td,,Yes,350,fanduel,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,KC Concepcion,player_anytime_td,,Yes,360,fanduel,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Deshaun Watson,player_anytime_td,,Yes,400,fanduel,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Roman Wilson,player_anytime_td,,Yes,480,fanduel,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Darnell Washington,player_anytime_td,,Yes,550,fanduel,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Pittsburgh Steelers Defense,player_anytime_td,,Yes,700,fanduel,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Cleveland Browns Defense,player_anytime_td,,Yes,700,fanduel,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Raheim Sanders,player_anytime_td,,Yes,750,fanduel,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Jerry Jeudy,player_anytime_td,,Yes,900,fanduel,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Germie Bernard,player_anytime_td,,Yes,1100,fanduel,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Blake Whiteheart,player_anytime_td,,Yes,1100,fanduel,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Aaron Rodgers,player_anytime_td,,Yes,1300,fanduel,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Ben Skowronek,player_anytime_td,,Yes,1300,fanduel,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Travis Homer,player_anytime_td,,Yes,1500,fanduel,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Isaiah Bond,player_anytime_td,,Yes,1800,fanduel,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Kaden Wetjen,player_anytime_td,,Yes,2000,fanduel,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Lew Nichols,player_anytime_td,,Yes,2000,fanduel,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Jaleel McLaughlin,player_anytime_td,,Yes,2700,fanduel,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Riley Nowakowski,player_anytime_td,,Yes,3000,fanduel,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Michael Burton,player_anytime_td,,Yes,3000,fanduel,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Robert Tonyan,player_anytime_td,,Yes,3300,fanduel,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Malachi Corley,player_anytime_td,,Yes,5000,fanduel,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Carsen Ryan,player_anytime_td,,Yes,5500,fanduel,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Deshaun Watson,player_pass_tds,0.5,Over,-230,fanduel,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Deshaun Watson,player_pass_tds,0.5,Under,172,fanduel,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Aaron Rodgers,player_pass_tds,1.5,Over,144,fanduel,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Aaron Rodgers,player_pass_tds,1.5,Under,-190,fanduel,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Aaron Rodgers,player_pass_yds,216.5,Over,-113,fanduel,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Aaron Rodgers,player_pass_yds,216.5,Under,-113,fanduel,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Deshaun Watson,player_pass_yds,185.5,Over,-113,fanduel,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Deshaun Watson,player_pass_yds,185.5,Under,-113,fanduel,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Blake Whiteheart,player_reception_yds,3.5,Over,114,fanduel,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Blake Whiteheart,player_reception_yds,3.5,Under,-146,fanduel,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Harold Fannin Jr.,player_reception_yds,40.5,Over,-113,fanduel,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Harold Fannin Jr.,player_reception_yds,40.5,Under,-113,fanduel,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,KC Concepcion,player_reception_yds,36.5,Over,-113,fanduel,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,KC Concepcion,player_reception_yds,36.5,Under,-113,fanduel,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Denzel Boston,player_reception_yds,37.5,Over,-113,fanduel,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Denzel Boston,player_reception_yds,37.5,Under,-113,fanduel,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Pat Freiermuth,player_reception_yds,27.5,Over,-113,fanduel,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Pat Freiermuth,player_reception_yds,27.5,Under,-113,fanduel,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Jerry Jeudy,player_reception_yds,14.5,Over,-113,fanduel,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Jerry Jeudy,player_reception_yds,14.5,Under,-113,fanduel,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Darnell Washington,player_reception_yds,15.5,Over,-113,fanduel,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Darnell Washington,player_reception_yds,15.5,Under,-113,fanduel,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,DK Metcalf,player_reception_yds,45.5,Over,-113,fanduel,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,DK Metcalf,player_reception_yds,45.5,Under,-113,fanduel,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Roman Wilson,player_reception_yds,22.5,Over,-113,fanduel,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Roman Wilson,player_reception_yds,22.5,Under,-113,fanduel,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Quinshon Judkins,player_reception_yds,9.5,Over,-113,fanduel,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Quinshon Judkins,player_reception_yds,9.5,Under,-113,fanduel,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Raheim Sanders,player_reception_yds,12.5,Over,-113,fanduel,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Raheim Sanders,player_reception_yds,12.5,Under,-113,fanduel,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Jaylen Warren,player_reception_yds,25.5,Over,-113,fanduel,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Jaylen Warren,player_reception_yds,25.5,Under,-113,fanduel,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Michael Pittman Jr.,player_reception_yds,33.5,Over,-113,fanduel,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Michael Pittman Jr.,player_reception_yds,33.5,Under,-113,fanduel,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Germie Bernard,player_reception_yds,8.5,Over,-104,fanduel,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Germie Bernard,player_reception_yds,8.5,Under,-122,fanduel,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,DK Metcalf,player_receptions,3.5,Over,-144,fanduel,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,DK Metcalf,player_receptions,3.5,Under,108,fanduel,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Darnell Washington,player_receptions,1.5,Over,-168,fanduel,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Darnell Washington,player_receptions,1.5,Under,126,fanduel,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,KC Concepcion,player_receptions,4.5,Over,124,fanduel,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,KC Concepcion,player_receptions,4.5,Under,-166,fanduel,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Pat Freiermuth,player_receptions,3.5,Over,124,fanduel,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Pat Freiermuth,player_receptions,3.5,Under,-166,fanduel,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Harold Fannin Jr.,player_receptions,4.5,Over,-106,fanduel,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Harold Fannin Jr.,player_receptions,4.5,Under,-125,fanduel,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Quinshon Judkins,player_receptions,2.5,Over,162,fanduel,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Quinshon Judkins,player_receptions,2.5,Under,-220,fanduel,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Jerry Jeudy,player_receptions,1.5,Over,114,fanduel,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Jerry Jeudy,player_receptions,1.5,Under,-152,fanduel,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Blake Whiteheart,player_receptions,0.5,Over,-114,fanduel,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Blake Whiteheart,player_receptions,0.5,Under,-114,fanduel,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Denzel Boston,player_receptions,2.5,Over,-158,fanduel,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Denzel Boston,player_receptions,2.5,Under,118,fanduel,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Raheim Sanders,player_receptions,1.5,Over,-200,fanduel,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Raheim Sanders,player_receptions,1.5,Under,148,fanduel,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Michael Pittman Jr.,player_receptions,3.5,Over,106,fanduel,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Michael Pittman Jr.,player_receptions,3.5,Under,-140,fanduel,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Roman Wilson,player_receptions,2.5,Over,134,fanduel,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Roman Wilson,player_receptions,2.5,Under,-180,fanduel,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Germie Bernard,player_receptions,1.5,Over,172,fanduel,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Germie Bernard,player_receptions,1.5,Under,-235,fanduel,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Jaylen Warren,player_receptions,3.5,Over,-108,fanduel,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Jaylen Warren,player_receptions,3.5,Under,-122,fanduel,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Aaron Rodgers,player_rush_yds,0.5,Over,-140,fanduel,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Aaron Rodgers,player_rush_yds,0.5,Under,110,fanduel,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Travis Homer,player_rush_yds,6.5,Over,-113,fanduel,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Travis Homer,player_rush_yds,6.5,Under,-113,fanduel,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Raheim Sanders,player_rush_yds,5.5,Over,-113,fanduel,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Raheim Sanders,player_rush_yds,5.5,Under,-113,fanduel,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Deshaun Watson,player_rush_yds,27.5,Over,-113,fanduel,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Deshaun Watson,player_rush_yds,27.5,Under,-113,fanduel,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Quinshon Judkins,player_rush_yds,53.5,Over,-113,fanduel,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Quinshon Judkins,player_rush_yds,53.5,Under,-113,fanduel,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,KC Concepcion,player_rush_yds,0.5,Over,-120,fanduel,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,KC Concepcion,player_rush_yds,0.5,Under,-106,fanduel,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Jaylen Warren,player_rush_yds,75.5,Over,-113,fanduel,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Jaylen Warren,player_rush_yds,75.5,Under,-113,fanduel,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Darnell Washington,player_anytime_td,,Yes,400,betonlineag,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Jerry Jeudy,player_anytime_td,,Yes,900,betonlineag,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Roman Wilson,player_anytime_td,,Yes,400,betonlineag,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Ben Skowronek,player_anytime_td,,Yes,1300,betonlineag,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Pat Freiermuth,player_anytime_td,,Yes,350,betonlineag,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Blake Whiteheart,player_anytime_td,,Yes,1100,betonlineag,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Deshaun Watson,player_anytime_td,,Yes,350,betonlineag,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,DK Metcalf,player_anytime_td,,Yes,220,betonlineag,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Jaylen Warren,player_anytime_td,,Yes,-111,betonlineag,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Harold Fannin Jr.,player_anytime_td,,Yes,260,betonlineag,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Raheim Sanders,player_anytime_td,,Yes,650,betonlineag,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Aaron Rodgers,player_anytime_td,,Yes,1100,betonlineag,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Isaiah Bond,player_anytime_td,,Yes,1700,betonlineag,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Michael Burton,player_anytime_td,,Yes,2900,betonlineag,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Quinshon Judkins,player_anytime_td,,Yes,130,betonlineag,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Malachi Corley,player_anytime_td,,Yes,1900,betonlineag,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Tylan Wallace,player_anytime_td,,Yes,1400,betonlineag,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Michael Pittman Jr.,player_anytime_td,,Yes,350,betonlineag,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Travis Homer,player_anytime_td,,Yes,1000,betonlineag,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Denzel Boston,player_anytime_td,,Yes,260,betonlineag,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Carsen Ryan,player_anytime_td,,Yes,3400,betonlineag,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Kaden Wetjen,player_anytime_td,,Yes,1400,betonlineag,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Germie Bernard,player_anytime_td,,Yes,900,betonlineag,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Riley Nowakowski,player_anytime_td,,Yes,1900,betonlineag,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Robert Tonyan,player_anytime_td,,Yes,1900,betonlineag,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,KC Concepcion,player_anytime_td,,Yes,290,betonlineag,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Jaleel McLaughlin,player_anytime_td,,Yes,1400,betonlineag,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Eli Heidenreich,player_anytime_td,,Yes,1400,betonlineag,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Deshaun Watson,player_pass_tds,0.5,Over,-213,betonlineag,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Deshaun Watson,player_pass_tds,0.5,Under,160,betonlineag,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Aaron Rodgers,player_pass_tds,1.5,Over,146,betonlineag,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Aaron Rodgers,player_pass_tds,1.5,Under,-192,betonlineag,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Deshaun Watson,player_pass_yds,186.5,Over,-115,betonlineag,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Deshaun Watson,player_pass_yds,186.5,Under,-112,betonlineag,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Aaron Rodgers,player_pass_yds,215.5,Over,-114,betonlineag,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Aaron Rodgers,player_pass_yds,215.5,Under,-114,betonlineag,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Harold Fannin Jr.,player_reception_yds,40.5,Over,-116,betonlineag,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Harold Fannin Jr.,player_reception_yds,40.5,Under,-111,betonlineag,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Michael Pittman Jr.,player_reception_yds,33.5,Over,-118,betonlineag,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Michael Pittman Jr.,player_reception_yds,33.5,Under,-110,betonlineag,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,KC Concepcion,player_reception_yds,36.5,Over,-114,betonlineag,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,KC Concepcion,player_reception_yds,36.5,Under,-114,betonlineag,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Raheim Sanders,player_reception_yds,11.5,Over,-114,betonlineag,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Raheim Sanders,player_reception_yds,11.5,Under,-114,betonlineag,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Jerry Jeudy,player_reception_yds,14.5,Over,-116,betonlineag,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Jerry Jeudy,player_reception_yds,14.5,Under,-111,betonlineag,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Darnell Washington,player_reception_yds,16.5,Over,-114,betonlineag,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Darnell Washington,player_reception_yds,16.5,Under,-114,betonlineag,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Quinshon Judkins,player_reception_yds,11.5,Over,-108,betonlineag,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Quinshon Judkins,player_reception_yds,11.5,Under,-120,betonlineag,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Roman Wilson,player_reception_yds,21.5,Over,-114,betonlineag,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Roman Wilson,player_reception_yds,21.5,Under,-114,betonlineag,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Denzel Boston,player_reception_yds,38.5,Over,-114,betonlineag,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Denzel Boston,player_reception_yds,38.5,Under,-114,betonlineag,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Germie Bernard,player_reception_yds,8.5,Over,-106,betonlineag,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Germie Bernard,player_reception_yds,8.5,Under,-122,betonlineag,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Jaylen Warren,player_reception_yds,26.5,Over,-114,betonlineag,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Jaylen Warren,player_reception_yds,26.5,Under,-114,betonlineag,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Pat Freiermuth,player_reception_yds,27.5,Over,-116,betonlineag,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Pat Freiermuth,player_reception_yds,27.5,Under,-111,betonlineag,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,DK Metcalf,player_reception_yds,47.5,Over,-114,betonlineag,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,DK Metcalf,player_reception_yds,47.5,Under,-114,betonlineag,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,DK Metcalf,player_receptions,3.5,Over,-135,betonlineag,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,DK Metcalf,player_receptions,3.5,Under,105,betonlineag,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Pat Freiermuth,player_receptions,3.5,Over,130,betonlineag,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Pat Freiermuth,player_receptions,3.5,Under,-169,betonlineag,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Denzel Boston,player_receptions,2.5,Over,-161,betonlineag,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Denzel Boston,player_receptions,2.5,Under,123,betonlineag,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Harold Fannin Jr.,player_receptions,4.5,Over,-105,betonlineag,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Harold Fannin Jr.,player_receptions,4.5,Under,-123,betonlineag,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Michael Pittman Jr.,player_receptions,3.5,Over,110,betonlineag,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Michael Pittman Jr.,player_receptions,3.5,Under,-143,betonlineag,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Jaylen Warren,player_receptions,3.5,Over,100,betonlineag,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Jaylen Warren,player_receptions,3.5,Under,-130,betonlineag,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Darnell Washington,player_receptions,1.5,Over,-156,betonlineag,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Darnell Washington,player_receptions,1.5,Under,120,betonlineag,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Jerry Jeudy,player_receptions,1.5,Over,112,betonlineag,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Jerry Jeudy,player_receptions,1.5,Under,-145,betonlineag,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Roman Wilson,player_receptions,2.5,Over,135,betonlineag,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Roman Wilson,player_receptions,2.5,Under,-175,betonlineag,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Raheim Sanders,player_receptions,1.5,Over,-156,betonlineag,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Raheim Sanders,player_receptions,1.5,Under,120,betonlineag,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Quinshon Judkins,player_receptions,2.5,Over,149,betonlineag,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Quinshon Judkins,player_receptions,2.5,Under,-196,betonlineag,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Germie Bernard,player_receptions,1.5,Over,164,betonlineag,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Germie Bernard,player_receptions,1.5,Under,-217,betonlineag,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,KC Concepcion,player_receptions,4.5,Over,120,betonlineag,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,KC Concepcion,player_receptions,4.5,Under,-156,betonlineag,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Quinshon Judkins,player_rush_yds,56.5,Over,-115,betonlineag,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Quinshon Judkins,player_rush_yds,56.5,Under,-112,betonlineag,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Deshaun Watson,player_rush_yds,29.5,Over,-108,betonlineag,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Deshaun Watson,player_rush_yds,29.5,Under,-120,betonlineag,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Raheim Sanders,player_rush_yds,5.5,Over,-116,betonlineag,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Raheim Sanders,player_rush_yds,5.5,Under,-111,betonlineag,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Jaylen Warren,player_rush_yds,75.5,Over,-116,betonlineag,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Jaylen Warren,player_rush_yds,75.5,Under,-111,betonlineag,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Travis Homer,player_rush_yds,6.5,Over,-118,betonlineag,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Travis Homer,player_rush_yds,6.5,Under,-110,betonlineag,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Germie Bernard,player_anytime_td,,Yes,650,betrivers,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Blake Whiteheart,player_anytime_td,,Yes,1200,betrivers,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Pat Freiermuth,player_anytime_td,,Yes,375,betrivers,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Deshaun Watson,player_anytime_td,,Yes,410,betrivers,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Travis Homer,player_anytime_td,,Yes,650,betrivers,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Jaylen Warren,player_anytime_td,,Yes,-115,betrivers,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Kaden Wetjen,player_anytime_td,,Yes,1900,betrivers,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Riley Nowakowski,player_anytime_td,,Yes,2000,betrivers,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Malachi Corley,player_anytime_td,,Yes,1300,betrivers,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Carsen Ryan,player_anytime_td,,Yes,2800,betrivers,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Ben Skowronek,player_anytime_td,,Yes,1700,betrivers,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Isaiah Bond,player_anytime_td,,Yes,2200,betrivers,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Quinshon Judkins,player_anytime_td,,Yes,-104,betrivers,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Roman Wilson,player_anytime_td,,Yes,510,betrivers,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Jaleel McLaughlin,player_anytime_td,,Yes,2000,betrivers,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Aaron Rodgers,player_anytime_td,,Yes,1600,betrivers,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Jerry Jeudy,player_anytime_td,,Yes,800,betrivers,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Michael Pittman Jr.,player_anytime_td,,Yes,380,betrivers,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Robert Tonyan,player_anytime_td,,Yes,1700,betrivers,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Raheim Sanders,player_anytime_td,,Yes,650,betrivers,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,DK Metcalf,player_anytime_td,,Yes,215,betrivers,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,KC Concepcion,player_anytime_td,,Yes,310,betrivers,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Darnell Washington,player_anytime_td,,Yes,575,betrivers,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Denzel Boston,player_anytime_td,,Yes,320,betrivers,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Harold Fannin Jr.,player_anytime_td,,Yes,290,betrivers,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Michael Burton,player_anytime_td,,Yes,2900,betrivers,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Deshaun Watson,player_pass_tds,0.5,Over,-240,betrivers,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Deshaun Watson,player_pass_tds,0.5,Under,175,betrivers,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Aaron Rodgers,player_pass_tds,1.5,Over,165,betrivers,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Aaron Rodgers,player_pass_tds,1.5,Under,-225,betrivers,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Deshaun Watson,player_pass_yds,184.5,Over,-114,betrivers,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Deshaun Watson,player_pass_yds,184.5,Under,-117,betrivers,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Aaron Rodgers,player_pass_yds,209.5,Over,-115,betrivers,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Aaron Rodgers,player_pass_yds,209.5,Under,-115,betrivers,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Jaylen Warren,player_reception_yds,24.5,Over,-118,betrivers,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Jaylen Warren,player_reception_yds,24.5,Under,-113,betrivers,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,KC Concepcion,player_reception_yds,37.5,Over,-114,betrivers,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,KC Concepcion,player_reception_yds,37.5,Under,-117,betrivers,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Germie Bernard,player_reception_yds,9.5,Over,-114,betrivers,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Germie Bernard,player_reception_yds,9.5,Under,-115,betrivers,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Denzel Boston,player_reception_yds,36.5,Over,-114,betrivers,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Denzel Boston,player_reception_yds,36.5,Under,-117,betrivers,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Pat Freiermuth,player_reception_yds,27.5,Over,-112,betrivers,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Pat Freiermuth,player_reception_yds,27.5,Under,-120,betrivers,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Darnell Washington,player_reception_yds,15.5,Over,-118,betrivers,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Darnell Washington,player_reception_yds,15.5,Under,-113,betrivers,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Jerry Jeudy,player_reception_yds,13.5,Over,-115,betrivers,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Jerry Jeudy,player_reception_yds,13.5,Under,-115,betrivers,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Michael Pittman Jr.,player_reception_yds,32.5,Over,-117,betrivers,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Michael Pittman Jr.,player_reception_yds,32.5,Under,-114,betrivers,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Raheim Sanders,player_reception_yds,11.5,Over,-109,betrivers,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Raheim Sanders,player_reception_yds,11.5,Under,-121,betrivers,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Quinshon Judkins,player_reception_yds,11.5,Over,-110,betrivers,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Quinshon Judkins,player_reception_yds,11.5,Under,-121,betrivers,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Harold Fannin Jr.,player_reception_yds,40.5,Over,-118,betrivers,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Harold Fannin Jr.,player_reception_yds,40.5,Under,-113,betrivers,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Roman Wilson,player_reception_yds,19.5,Over,-117,betrivers,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Roman Wilson,player_reception_yds,19.5,Under,-114,betrivers,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,DK Metcalf,player_reception_yds,47.5,Over,-113,betrivers,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,DK Metcalf,player_reception_yds,47.5,Under,-118,betrivers,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Denzel Boston,player_receptions,2.5,Over,-152,betrivers,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Pat Freiermuth,player_receptions,3.5,Over,125,betrivers,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Harold Fannin Jr.,player_receptions,4.5,Over,-121,betrivers,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Michael Pittman Jr.,player_receptions,3.5,Over,106,betrivers,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Germie Bernard,player_receptions,1.5,Over,155,betrivers,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,DK Metcalf,player_receptions,3.5,Over,-152,betrivers,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Jaylen Warren,player_receptions,3.5,Over,-106,betrivers,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Quinshon Judkins,player_receptions,2.5,Over,133,betrivers,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Roman Wilson,player_receptions,2.5,Over,125,betrivers,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Raheim Sanders,player_receptions,1.5,Over,-190,betrivers,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Jerry Jeudy,player_receptions,1.5,Over,114,betrivers,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Darnell Washington,player_receptions,1.5,Over,-175,betrivers,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,KC Concepcion,player_receptions,3.5,Over,-175,betrivers,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Raheim Sanders,player_rush_yds,5.5,Over,-110,betrivers,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Raheim Sanders,player_rush_yds,5.5,Under,-121,betrivers,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Quinshon Judkins,player_rush_yds,58.5,Over,-115,betrivers,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Quinshon Judkins,player_rush_yds,58.5,Under,-115,betrivers,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Deshaun Watson,player_rush_yds,28.5,Over,-115,betrivers,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Deshaun Watson,player_rush_yds,28.5,Under,-115,betrivers,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Jaylen Warren,player_rush_yds,72.5,Over,-115,betrivers,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Jaylen Warren,player_rush_yds,72.5,Under,-115,betrivers,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Travis Homer,player_rush_yds,6.5,Over,-115,betrivers,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Travis Homer,player_rush_yds,6.5,Under,-114,betrivers,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Riley Nowakowski,player_anytime_td,,Yes,2800,bovada,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Travis Homer,player_anytime_td,,Yes,1600,bovada,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Lew Nichols,player_anytime_td,,Yes,2200,bovada,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Deshaun Watson,player_anytime_td,,Yes,370,bovada,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Harold Fannin Jr.,player_anytime_td,,Yes,285,bovada,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Denzel Boston,player_anytime_td,,Yes,260,bovada,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Jerry Jeudy,player_anytime_td,,Yes,900,bovada,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,KC Concepcion,player_anytime_td,,Yes,350,bovada,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Quinshon Judkins,player_anytime_td,,Yes,140,bovada,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Pittsburgh Steelers D/ST,player_anytime_td,,Yes,500,bovada,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Cleveland Browns D/ST,player_anytime_td,,Yes,500,bovada,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Darnell Washington,player_anytime_td,,Yes,525,bovada,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Aaron Rodgers,player_anytime_td,,Yes,1500,bovada,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Pat Freiermuth,player_anytime_td,,Yes,400,bovada,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Jaylen Warren,player_anytime_td,,Yes,-110,bovada,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Michael Pittman Jr.,player_anytime_td,,Yes,360,bovada,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,DK Metcalf,player_anytime_td,,Yes,240,bovada,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Roman Wilson,player_anytime_td,,Yes,460,bovada,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Germie Bernard,player_anytime_td,,Yes,1000,bovada,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Kaden Wetjen,player_anytime_td,,Yes,2500,bovada,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Raheim Sanders,player_anytime_td,,Yes,700,bovada,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Ben Skowronek,player_anytime_td,,Yes,1300,bovada,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Blake Whiteheart,player_anytime_td,,Yes,1100,bovada,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Robert Tonyan,player_anytime_td,,Yes,3300,bovada,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Malachi Corley,player_anytime_td,,Yes,4000,bovada,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Isaiah Bond,player_anytime_td,,Yes,2000,bovada,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Carsen Ryan,player_anytime_td,,Yes,5000,bovada,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Jaleel McLaughlin,player_anytime_td,,Yes,2500,bovada,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Michael Burton,player_anytime_td,,Yes,4000,bovada,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Aaron Rodgers,player_pass_tds,1.5,Over,150,bovada,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Aaron Rodgers,player_pass_tds,1.5,Under,-200,bovada,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Aaron Rodgers,player_pass_yds,184.5,Over,-250,bovada,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Aaron Rodgers,player_pass_yds,184.5,Under,185,bovada,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Aaron Rodgers,player_pass_yds,194.5,Over,-190,bovada,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Aaron Rodgers,player_pass_yds,194.5,Under,145,bovada,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Aaron Rodgers,player_pass_yds,204.5,Over,-145,bovada,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Aaron Rodgers,player_pass_yds,204.5,Under,110,bovada,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Aaron Rodgers,player_pass_yds,214.5,Over,-115,bovada,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Aaron Rodgers,player_pass_yds,214.5,Under,-115,bovada,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Aaron Rodgers,player_pass_yds,224.5,Over,110,bovada,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Aaron Rodgers,player_pass_yds,224.5,Under,-145,bovada,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Aaron Rodgers,player_pass_yds,234.5,Over,140,bovada,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Aaron Rodgers,player_pass_yds,234.5,Under,-185,bovada,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Aaron Rodgers,player_pass_yds,244.5,Over,175,bovada,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Aaron Rodgers,player_pass_yds,244.5,Under,-240,bovada,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Blake Whiteheart,player_reception_yds,0.5,Over,-105,bovada,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Blake Whiteheart,player_reception_yds,0.5,Under,-125,bovada,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Darnell Washington,player_reception_yds,16.5,Over,-115,bovada,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Darnell Washington,player_reception_yds,16.5,Under,-115,bovada,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Denzel Boston,player_reception_yds,28.5,Over,-215,bovada,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Denzel Boston,player_reception_yds,28.5,Under,160,bovada,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Denzel Boston,player_reception_yds,33.5,Over,-150,bovada,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Denzel Boston,player_reception_yds,33.5,Under,115,bovada,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Denzel Boston,player_reception_yds,38.5,Over,-115,bovada,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Denzel Boston,player_reception_yds,38.5,Under,-115,bovada,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Denzel Boston,player_reception_yds,43.5,Over,115,bovada,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Denzel Boston,player_reception_yds,43.5,Under,-150,bovada,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Denzel Boston,player_reception_yds,48.5,Over,145,bovada,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Denzel Boston,player_reception_yds,48.5,Under,-190,bovada,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,DK Metcalf,player_reception_yds,36.5,Over,-200,bovada,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,DK Metcalf,player_reception_yds,36.5,Under,150,bovada,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,DK Metcalf,player_reception_yds,41.5,Over,-150,bovada,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,DK Metcalf,player_reception_yds,41.5,Under,115,bovada,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,DK Metcalf,player_reception_yds,46.5,Over,-115,bovada,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,DK Metcalf,player_reception_yds,46.5,Under,-115,bovada,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,DK Metcalf,player_reception_yds,51.5,Over,110,bovada,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,DK Metcalf,player_reception_yds,51.5,Under,-145,bovada,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,DK Metcalf,player_reception_yds,56.5,Over,140,bovada,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,DK Metcalf,player_reception_yds,56.5,Under,-185,bovada,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Germie Bernard,player_reception_yds,9.5,Over,-110,bovada,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Germie Bernard,player_reception_yds,9.5,Under,-120,bovada,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Harold Fannin Jr.,player_reception_yds,30.5,Over,-215,bovada,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Harold Fannin Jr.,player_reception_yds,30.5,Under,160,bovada,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Harold Fannin Jr.,player_reception_yds,35.5,Over,-150,bovada,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Harold Fannin Jr.,player_reception_yds,35.5,Under,115,bovada,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Harold Fannin Jr.,player_reception_yds,40.5,Over,-115,bovada,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Harold Fannin Jr.,player_reception_yds,40.5,Under,-115,bovada,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Harold Fannin Jr.,player_reception_yds,45.5,Over,115,bovada,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Harold Fannin Jr.,player_reception_yds,45.5,Under,-150,bovada,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Harold Fannin Jr.,player_reception_yds,50.5,Over,145,bovada,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Harold Fannin Jr.,player_reception_yds,50.5,Under,-190,bovada,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Jaylen Warren,player_reception_yds,26.5,Over,-120,bovada,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Jaylen Warren,player_reception_yds,26.5,Under,-110,bovada,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Jerry Jeudy,player_reception_yds,14.5,Over,-120,bovada,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Jerry Jeudy,player_reception_yds,14.5,Under,-110,bovada,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,KC Concepcion,player_reception_yds,26.5,Over,-220,bovada,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,KC Concepcion,player_reception_yds,26.5,Under,165,bovada,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,KC Concepcion,player_reception_yds,31.5,Over,-160,bovada,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,KC Concepcion,player_reception_yds,31.5,Under,120,bovada,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,KC Concepcion,player_reception_yds,36.5,Over,-115,bovada,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,KC Concepcion,player_reception_yds,36.5,Under,-115,bovada,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,KC Concepcion,player_reception_yds,41.5,Over,115,bovada,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,KC Concepcion,player_reception_yds,41.5,Under,-150,bovada,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,KC Concepcion,player_reception_yds,46.5,Over,150,bovada,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,KC Concepcion,player_reception_yds,46.5,Under,-200,bovada,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Michael Pittman Jr.,player_reception_yds,24.5,Over,-230,bovada,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Michael Pittman Jr.,player_reception_yds,24.5,Under,170,bovada,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Michael Pittman Jr.,player_reception_yds,29.5,Over,-160,bovada,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Michael Pittman Jr.,player_reception_yds,29.5,Under,120,bovada,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Michael Pittman Jr.,player_reception_yds,34.5,Over,-115,bovada,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Michael Pittman Jr.,player_reception_yds,34.5,Under,-115,bovada,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Michael Pittman Jr.,player_reception_yds,39.5,Over,115,bovada,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Michael Pittman Jr.,player_reception_yds,39.5,Under,-150,bovada,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Michael Pittman Jr.,player_reception_yds,44.5,Over,150,bovada,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Michael Pittman Jr.,player_reception_yds,44.5,Under,-200,bovada,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Pat Freiermuth,player_reception_yds,26.5,Over,-120,bovada,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Pat Freiermuth,player_reception_yds,26.5,Under,-110,bovada,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Quinshon Judkins,player_reception_yds,10.5,Over,-125,bovada,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Quinshon Judkins,player_reception_yds,10.5,Under,-105,bovada,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Raheim Sanders,player_reception_yds,12.5,Over,-120,bovada,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Raheim Sanders,player_reception_yds,12.5,Under,-110,bovada,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Roman Wilson,player_reception_yds,21.5,Over,-135,bovada,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Roman Wilson,player_reception_yds,21.5,Under,105,bovada,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Darnell Washington,player_receptions,1.5,Over,-145,bovada,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Darnell Washington,player_receptions,1.5,Under,110,bovada,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Denzel Boston,player_receptions,3.5,Over,130,bovada,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Denzel Boston,player_receptions,3.5,Under,-170,bovada,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,DK Metcalf,player_receptions,3.5,Over,-145,bovada,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,DK Metcalf,player_receptions,3.5,Under,110,bovada,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Germie Bernard,player_receptions,1.5,Over,150,bovada,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Germie Bernard,player_receptions,1.5,Under,-200,bovada,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Harold Fannin Jr.,player_receptions,4.5,Over,-115,bovada,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Harold Fannin Jr.,player_receptions,4.5,Under,-115,bovada,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Jaylen Warren,player_receptions,3.5,Over,-125,bovada,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Jaylen Warren,player_receptions,3.5,Under,-105,bovada,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Jerry Jeudy,player_receptions,1.5,Over,115,bovada,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Jerry Jeudy,player_receptions,1.5,Under,-150,bovada,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,KC Concepcion,player_receptions,4.5,Over,120,bovada,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,KC Concepcion,player_receptions,4.5,Under,-160,bovada,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Michael Pittman Jr.,player_receptions,3.5,Over,130,bovada,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Michael Pittman Jr.,player_receptions,3.5,Under,-170,bovada,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Pat Freiermuth,player_receptions,3.5,Over,130,bovada,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Pat Freiermuth,player_receptions,3.5,Under,-170,bovada,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Quinshon Judkins,player_receptions,1.5,Over,-190,bovada,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Quinshon Judkins,player_receptions,1.5,Under,145,bovada,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Raheim Sanders,player_receptions,1.5,Over,-180,bovada,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Raheim Sanders,player_receptions,1.5,Under,135,bovada,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Roman Wilson,player_receptions,2.5,Over,120,bovada,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Roman Wilson,player_receptions,2.5,Under,-160,bovada,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Aaron Rodgers,player_rush_yds,1.5,Over,-110,bovada,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Aaron Rodgers,player_rush_yds,1.5,Under,-120,bovada,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Jaylen Warren,player_rush_yds,56.5,Over,-360,bovada,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Jaylen Warren,player_rush_yds,56.5,Under,250,bovada,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Jaylen Warren,player_rush_yds,66.5,Over,-190,bovada,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Jaylen Warren,player_rush_yds,66.5,Under,145,bovada,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Jaylen Warren,player_rush_yds,76.5,Over,-115,bovada,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Jaylen Warren,player_rush_yds,76.5,Under,-115,bovada,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Jaylen Warren,player_rush_yds,86.5,Over,140,bovada,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Jaylen Warren,player_rush_yds,86.5,Under,-185,bovada,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Jaylen Warren,player_rush_yds,96.5,Over,210,bovada,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Jaylen Warren,player_rush_yds,96.5,Under,-290,bovada,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,KC Concepcion,player_rush_yds,0.5,Over,-110,bovada,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,KC Concepcion,player_rush_yds,0.5,Under,-120,bovada,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Quinshon Judkins,player_rush_yds,46.5,Over,-200,bovada,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Quinshon Judkins,player_rush_yds,46.5,Under,150,bovada,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Quinshon Judkins,player_rush_yds,51.5,Over,-145,bovada,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Quinshon Judkins,player_rush_yds,51.5,Under,110,bovada,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Quinshon Judkins,player_rush_yds,56.5,Over,-110,bovada,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Quinshon Judkins,player_rush_yds,56.5,Under,-120,bovada,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Quinshon Judkins,player_rush_yds,61.5,Over,120,bovada,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Quinshon Judkins,player_rush_yds,61.5,Under,-160,bovada,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Quinshon Judkins,player_rush_yds,66.5,Over,155,bovada,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Quinshon Judkins,player_rush_yds,66.5,Under,-210,bovada,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Raheim Sanders,player_rush_yds,5.5,Over,-115,bovada,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Raheim Sanders,player_rush_yds,5.5,Under,-115,bovada,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Travis Homer,player_rush_yds,6.5,Over,-120,bovada,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Travis Homer,player_rush_yds,6.5,Under,-110,bovada,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Robert Tonyan,player_anytime_td,,Yes,2500,betmgm,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Michael Pittman Jr.,player_anytime_td,,Yes,320,betmgm,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Quinshon Judkins,player_anytime_td,,Yes,135,betmgm,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Pat Freiermuth,player_anytime_td,,Yes,375,betmgm,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Kaden Wetjen,player_anytime_td,,Yes,2800,betmgm,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Roman Wilson,player_anytime_td,,Yes,475,betmgm,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Isaiah Bond,player_anytime_td,,Yes,1850,betmgm,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Carsen Ryan,player_anytime_td,,Yes,3500,betmgm,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Raheim Sanders,player_anytime_td,,Yes,600,betmgm,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Ben Skowronek,player_anytime_td,,Yes,1700,betmgm,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,KC Concepcion,player_anytime_td,,Yes,350,betmgm,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Denzel Boston,player_anytime_td,,Yes,325,betmgm,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Deshaun Watson,player_anytime_td,,Yes,300,betmgm,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Darnell Washington,player_anytime_td,,Yes,600,betmgm,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,DK Metcalf,player_anytime_td,,Yes,230,betmgm,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Germie Bernard,player_anytime_td,,Yes,850,betmgm,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Jaylen Warren,player_anytime_td,,Yes,-115,betmgm,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Harold Fannin Jr.,player_anytime_td,,Yes,270,betmgm,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Pittsburgh Steelers D/ST,player_anytime_td,,Yes,475,betmgm,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Travis Homer,player_anytime_td,,Yes,850,betmgm,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Jerry Jeudy,player_anytime_td,,Yes,775,betmgm,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Riley Nowakowski,player_anytime_td,,Yes,3300,betmgm,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Jaleel McLaughlin,player_anytime_td,,Yes,2000,betmgm,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Blake Whiteheart,player_anytime_td,,Yes,1300,betmgm,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Malachi Corley,player_anytime_td,,Yes,2800,betmgm,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Cleveland Browns D/ST,player_anytime_td,,Yes,575,betmgm,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Aaron Rodgers,player_anytime_td,,Yes,1550,betmgm,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Lew Nichols,player_anytime_td,,Yes,825,betmgm,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Deshaun Watson,player_pass_tds,0.5,Over,-210,betmgm,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Deshaun Watson,player_pass_tds,0.5,Under,155,betmgm,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Aaron Rodgers,player_pass_tds,1.5,Over,150,betmgm,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Aaron Rodgers,player_pass_tds,1.5,Under,-200,betmgm,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Deshaun Watson,player_pass_yds,188.5,Over,-115,betmgm,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Deshaun Watson,player_pass_yds,188.5,Under,-115,betmgm,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Aaron Rodgers,player_pass_yds,216.5,Over,-115,betmgm,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Aaron Rodgers,player_pass_yds,216.5,Under,-115,betmgm,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Quinshon Judkins,player_reception_yds,11.5,Over,-120,betmgm,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Quinshon Judkins,player_reception_yds,11.5,Under,-110,betmgm,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Jerry Jeudy,player_reception_yds,13.5,Over,-135,betmgm,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Jerry Jeudy,player_reception_yds,13.5,Under,100,betmgm,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,DK Metcalf,player_reception_yds,45.5,Over,-115,betmgm,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,DK Metcalf,player_reception_yds,45.5,Under,-115,betmgm,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Michael Pittman Jr.,player_reception_yds,34.5,Over,-115,betmgm,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Michael Pittman Jr.,player_reception_yds,34.5,Under,-115,betmgm,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Darnell Washington,player_reception_yds,16.5,Over,-115,betmgm,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Darnell Washington,player_reception_yds,16.5,Under,-115,betmgm,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Roman Wilson,player_reception_yds,20.5,Over,-125,betmgm,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Roman Wilson,player_reception_yds,20.5,Under,-105,betmgm,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Pat Freiermuth,player_reception_yds,28.5,Over,-115,betmgm,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Pat Freiermuth,player_reception_yds,28.5,Under,-115,betmgm,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,KC Concepcion,player_reception_yds,37.5,Over,-115,betmgm,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,KC Concepcion,player_reception_yds,37.5,Under,-115,betmgm,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Raheim Sanders,player_reception_yds,11.5,Over,-120,betmgm,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Raheim Sanders,player_reception_yds,11.5,Under,-110,betmgm,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Harold Fannin Jr.,player_reception_yds,40.5,Over,-120,betmgm,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Harold Fannin Jr.,player_reception_yds,40.5,Under,-111,betmgm,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Denzel Boston,player_reception_yds,36.5,Over,-150,betmgm,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Denzel Boston,player_reception_yds,36.5,Under,110,betmgm,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Jaylen Warren,player_reception_yds,25.5,Over,-115,betmgm,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Jaylen Warren,player_reception_yds,25.5,Under,-115,betmgm,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Germie Bernard,player_reception_yds,7.5,Over,-120,betmgm,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Germie Bernard,player_reception_yds,7.5,Under,-110,betmgm,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Blake Whiteheart,player_reception_yds,0.5,Over,-110,betmgm,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Blake Whiteheart,player_reception_yds,0.5,Under,-120,betmgm,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Quinshon Judkins,player_receptions,2.5,Over,145,betmgm,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Quinshon Judkins,player_receptions,2.5,Under,-200,betmgm,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Raheim Sanders,player_receptions,1.5,Over,-185,betmgm,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Raheim Sanders,player_receptions,1.5,Under,135,betmgm,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Harold Fannin Jr.,player_receptions,4.5,Over,-105,betmgm,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Harold Fannin Jr.,player_receptions,4.5,Under,-130,betmgm,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Denzel Boston,player_receptions,2.5,Over,-175,betmgm,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Denzel Boston,player_receptions,2.5,Under,130,betmgm,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Jerry Jeudy,player_receptions,1.5,Over,120,betmgm,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Jerry Jeudy,player_receptions,1.5,Under,-160,betmgm,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,DK Metcalf,player_receptions,3.5,Over,-155,betmgm,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,DK Metcalf,player_receptions,3.5,Under,115,betmgm,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Michael Pittman Jr.,player_receptions,3.5,Over,105,betmgm,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Michael Pittman Jr.,player_receptions,3.5,Under,-140,betmgm,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Pat Freiermuth,player_receptions,3.5,Over,125,betmgm,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Pat Freiermuth,player_receptions,3.5,Under,-165,betmgm,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Roman Wilson,player_receptions,2.5,Over,125,betmgm,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Roman Wilson,player_receptions,2.5,Under,-165,betmgm,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Jaylen Warren,player_receptions,3.5,Over,-115,betmgm,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Jaylen Warren,player_receptions,3.5,Under,-115,betmgm,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Darnell Washington,player_receptions,2.5,Over,145,betmgm,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Darnell Washington,player_receptions,2.5,Under,-200,betmgm,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,KC Concepcion,player_receptions,4.5,Over,125,betmgm,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,KC Concepcion,player_receptions,4.5,Under,-165,betmgm,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Germie Bernard,player_receptions,1.5,Over,165,betmgm,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Germie Bernard,player_receptions,1.5,Under,-225,betmgm,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Blake Whiteheart,player_receptions,0.5,Over,-120,betmgm,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Blake Whiteheart,player_receptions,0.5,Under,-111,betmgm,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Deshaun Watson,player_rush_yds,29.5,Over,-105,betmgm,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Deshaun Watson,player_rush_yds,29.5,Under,-125,betmgm,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Raheim Sanders,player_rush_yds,5.5,Over,-115,betmgm,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Raheim Sanders,player_rush_yds,5.5,Under,-115,betmgm,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Quinshon Judkins,player_rush_yds,54.5,Over,-115,betmgm,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Quinshon Judkins,player_rush_yds,54.5,Under,-115,betmgm,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Jaylen Warren,player_rush_yds,73.5,Over,-125,betmgm,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Jaylen Warren,player_rush_yds,73.5,Under,-105,betmgm,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Travis Homer,player_rush_yds,5.5,Over,-115,betmgm,20261001T230053Z
+d55cb69fed50a09170560b5b75d8de86,Cleveland Browns,Pittsburgh Steelers,2026-10-02T00:15:00Z,Travis Homer,player_rush_yds,5.5,Under,-115,betmgm,20261001T230053Z
