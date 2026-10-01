@@ -3397,6 +3397,13 @@ in this browser's localStorage.</p>
     "Showdown SE", "Showdown GPP"];
   var BUILTIN_PRESETS = {
     "Cash": {
+      // ctrlMinSalary added 2026-10-01, same reason as the Showdown presets'
+      // own fix below: the field's HTML default ($49,700, ~99.4% of cap) was
+      // never overridden here, so every UI Cash build silently got a floor
+      // that no CLI --preset build ever gets (optimizer.py's own
+      // --min-salary-pct default is 0, no floor) and that none of the
+      // CLASSIC_RULES.md evidence (replay_cl_arm.py) was built with either.
+      ctrlMinSalary: "0",
       ctrlNLineups: "3", ctrlMaxExposure: "100", ctrlUniqueness: "0",
       ctrlRandomization: "0", ctrlStackMode: "none",
       ctrlAllowSkillVsOppDst: false, ctrlLambda: "0",
@@ -3408,6 +3415,8 @@ in this browser's localStorage.</p>
       ctrlClFlexRbBonus: "0.6", ctrlClFlexWrPenalty: "1.0"
     },
     "SE / 3-Max GPP": {
+      // ctrlMinSalary added 2026-10-01 -- see "Cash" preset's own comment above.
+      ctrlMinSalary: "0",
       ctrlNLineups: "3", ctrlMaxExposure: "100", ctrlUniqueness: "3",
       ctrlRandomization: "3", ctrlStackMode: "qb", ctrlStackSize: "1",
       ctrlBringBack: true, ctrlAllowSkillVsOppDst: false, ctrlLambda: "0",
@@ -3418,19 +3427,29 @@ in this browser's localStorage.</p>
     // 2026-09-27: the 100-lineup SE3max candidate-pool build (pick the best
     // lineup out of a big diversified pool), separate from the 3-lineup
     // quick pick above. Matches data/optimizer_presets.json's se3max_pool
-    // bundle and analysis/classic_diag/replay_batch.py exactly -- the test
-    // that found the best lineup in a 100-lineup pool lands at the
-    // 98th-99.9th percentile, graded against the real SE3max top-25% cash
-    // line. Confirmed against today's Week 3 pre-lock test builds.
+    // bundle exactly -- the test that found the best lineup in a 100-lineup
+    // pool lands at the 98th-99.9th percentile, graded against the real
+    // SE3max top-25% cash line. Confirmed against today's Week 3 pre-lock
+    // test builds. ctrlRandomization corrected 20 -> 5 on 2026-10-01: commit
+    // 69dcf115 (2026-09-29) dropped data/optimizer_presets.json's own value
+    // from 20 to 5 after a pool sweep found 5% gives a clearly better
+    // pool/top-5 with the #1 pick unchanged (HANDOFF_wk3_postmortem_s4_next_session_2026-09-29.md)
+    // -- this UI preset was never updated to match until now.
+    // ctrlMinSalary added 2026-10-01 -- see "Cash" preset's own comment above;
+    // same bug, and replay_batch.py (this preset's own validation script)
+    // never sets min_salary either, so it ran with the 0 default.
     "SE3Max Pool (100)": {
+      ctrlMinSalary: "0",
       ctrlNLineups: "100", ctrlMaxExposure: "50", ctrlUniqueness: "1",
-      ctrlRandomization: "20", ctrlStackMode: "qb", ctrlStackSize: "2",
+      ctrlRandomization: "5", ctrlStackMode: "qb", ctrlStackSize: "2",
       ctrlBringBack: true, ctrlAllowSkillVsOppDst: false, ctrlLambda: "0",
       ctrlClDstBandBonus: "0.8", ctrlClDstExpensivePenalty: "2.0",
       ctrlClZeroPuntPenalty: "1.5", ctrlClThreePlusPuntPenalty: "2.5",
       ctrlClFlexRbBonus: "0.6", ctrlClFlexWrPenalty: "1.0"
     },
     "MME GPP (20-150)": {
+      // ctrlMinSalary added 2026-10-01 -- see "Cash" preset's own comment above.
+      ctrlMinSalary: "0",
       ctrlNLineups: "100", ctrlMaxExposure: "35", ctrlUniqueness: "1",
       ctrlRandomization: "18", ctrlStackMode: "qb", ctrlStackSize: "1",
       ctrlBringBack: true, ctrlAllowSkillVsOppDst: false, ctrlLambda: "-0.005",
