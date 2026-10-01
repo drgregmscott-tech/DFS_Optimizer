@@ -43,3 +43,15 @@ data/ecr/
 
 # Fantasy Cruncher subscription exports and anything derived from them (repo is PUBLIC -- never commit)
 data/fc_history/
+
+# Scratch research/backtest output (2026-10-01): disposable one-off analysis
+# scripts, logs, and intermediate builds from investigation sessions (ownership
+# refits, QB recal sweeps, lineup-replay backtests, etc.). Grew to 1GB / 15k+
+# files untracked -- unlike data/output/logs above, nothing here is referenced
+# at runtime by scripts/ (only mentioned in code comments as "see analysis/X"
+# for where a tested change was derived), and none of it is a hard-to-reproduce
+# snapshot -- it's all regenerable from the analysis script + the data/ inputs
+# that ARE tracked. Findings worth keeping get written up in a RESULTS.md/
+# HANDOFF doc at the repo root or folded into code -- the raw working files
+# don't need to ride along in git history.
+analysis/
