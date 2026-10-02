@@ -249,19 +249,22 @@ entirely — see the historical record further down if needed.
       already in `pool_summary.csv`/`lineups_graded.csv`, no new solves needed. Check
       `analysis/classic_diag/replay_selection_criteria.py` first so this isn't duplicated.
 
-13. **WR hot-backup discount on a Questionable-returning starter — RB fixed 2026-10-01, WR still open.**
-    Found live on the Wk4 HOU main slate (Collins back from injury, Hutchinson still over-projected over
-    him): full writeup `archive/handoffs/HANDOFF_wr_backup_discount_gap_2026-10-01.md`. The general
-    mechanism (participation floor for a Questionable-but-established starter + discount for the backup
-    who absorbed his share) **shipped for RB same day** (`7cfa10c`, `DFS_Q_RETURN`/`DFS_BACKUP_DISCOUNT`,
-    2021-25 held-out: bias +4.20→+0.11, beats FC's +0.84). That commit explicitly tested the WR/TE version
-    and found the **opposite historical pattern** — Questionable-returning WR1s were already slightly
-    over-projected, so the RB mechanism doesn't transfer as-is — and gated it RB-only on purpose, flagging
-    the WR case "being investigated separately." **Not yet investigated.** This is the Collins/Hutchinson
-    case exactly, so it's still live for Wk4+ builds: no lever currently discounts a hot WR backup once
-    the real starter returns Questionable-but-playing. Needs its own held-out test (same standard as the
-    RB fix), not a copy-paste of the RB params. Until then, treat it as a manual-judgment case on any
-    Wk4+ slate with a similar WR return.
+13. **WR hot-backup discount on a Questionable-returning starter — CLOSED 2026-10-02, tested and correctly
+    rejected for WR (not an open item — don't re-test without new evidence).** Found live on the Wk4 HOU
+    main slate (Collins Questionable at participation_effective .33, Hutchinson riding inflated trailing
+    stats): full writeup `archive/handoffs/HANDOFF_wr_backup_discount_gap_2026-10-01.md`,
+    `analysis/q_return_backup/RESULTS.md` (DO NOT COMMIT, FC-derived). The exact mechanism the Collins
+    case suggests (bump the Questionable #1's participation back toward 1.0, discount the backup who
+    absorbed his share) was built and tested **all-position**, same day: on 82 real 2021-25 DK main weeks,
+    it fixed RB cleanly (bias +4.20→+2.34, RMSE 10.38→9.55, beats FC's 10.06) but **made WR worse**
+    (bias -1.46→-2.30, RMSE 6.36→6.64) — because **the Collins premise doesn't hold for WR in history**:
+    Questionable-return WR1s were already slightly OVER-projected before any fix, unlike RB. Live Wk4 smoke
+    test confirmed the mechanism does what the eye test wants (Collins 11.4→13.4, Hutchinson 8.3→7.8) but
+    that's exactly why it's dangerous to ship on this one case — history says it would make the *next*
+    similar WR case worse on average. **Shipped RB-only** (`7cfa10c`, `Q_RETURN_PE={"RB": 1.0}`,
+    `BACKUP_DISCOUNT_POSITIONS={"RB"}`); WR/TE explicitly labeled "wrong-direction, drop." Collins/
+    Hutchinson this week is a real-looking exception to a real aggregate pattern, not a bug — correct
+    place for it is manual judgment on this one slate, not a model change.
 
 ~~Replace the dead FC ownership benchmark~~ — **partially dropped, corrected 2026-09-30.** FC actually
 gave two separate things, and the first drop conflated them:
