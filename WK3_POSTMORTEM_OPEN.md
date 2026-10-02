@@ -231,18 +231,37 @@ entirely — see the historical record further down if needed.
     the surviving candidate (cheap <$5.5k pull + freeze mega-chalk at 25%+) is track-2, gated on Wk4-5 —
     full writeup in the priority-list item 2 entry above, don't duplicate here.
 12. **Classic construction: wire the Classic Lineup Study's own ownership-predicts-cashing finding into
-    the optimizer, and reconsider se3max_pool's exposure cap — PARKED 2026-10-02, needs its own session.**
-    Found while explaining why Showdown (5-6/6-7 cashes) is currently outperforming Classic (missed 3
-    straight weeks): Showdown's real-field Lineup Study findings are wired into the optimizer as actual
-    `--sd-*` ILP terms (`showdown_se`/`showdown_gpp` presets), but Classic's equivalent real-field finding
-    (`HANDOFF_classic_lineupstudy_findings_2026-09-29.md` — higher realized ownership predicts cashing and
-    return, every format/season, 410 real contests) is documented only, never wired in. Separately,
-    `se3max_pool` caps every player at 50% exposure across the 100-lineup pool (vs `showdown_se`'s 100%),
-    which structurally dilutes even the single highest-conviction lineup — in tension with that same
-    ownership finding. Both untested as fixes; needs a dedicated session to backtest against the classic
-    Lineup Study data (`analysis/classic_history/`) before touching `optimizer_presets.json` live. See the
-    full handoff pasted into chat 2026-10-02 (not saved as a file — ask the user for it if picking this up
-    cold, or re-derive from `HANDOFF_classic_lineupstudy_findings_2026-09-29.md` directly).
+    the optimizer, and reconsider se3max_pool's exposure cap — BACKTESTED 2026-10-02, no ship, real
+    follow-up identified.** Full writeup: `archive/handoffs/HANDOFF_classic_construction_two_candidates_2026-10-02.md`.
+    Both candidates tested against the 9 real 2026 wk1-3 DK classic slates (SE3max + the 2 real MME
+    fields the owner actually entered) — **neither cleared the ship bar, both inconclusive/keep-testing,
+    neither wrong-direction.**
+    - Candidate 1 (stud-count ILP term): raw results flat, not wired.
+    - Candidate 2 (se3max_pool exposure cap): the cap is mechanically irrelevant to the single lineup
+      SE3max actually submits — the pool builds its best lineups uncapped before the 50%-per-player cap
+      can ever bind (same pick 89% of the time at cap 1.0 vs 0.5). Raising the cap helps the multi-entry
+      (MME) case somewhat but every delta is inside ~1 SE on 9 slates.
+    - **Real finding: the loss is in SE3max's pick rule, not exposure.** The 100-lineup pool already
+      contains a ~98th-percentile lineup on average; "rank by projection" (the current rule) picks one
+      that averages the 60th percentile and cashes 22% — about what's actually being cashed. No exposure
+      setting touches this. **Next concrete test, not yet run:** re-rank the existing pool by modeled
+      ownership sum (or a projection+ownership blend) instead of raw projection — pure re-rank on data
+      already in `pool_summary.csv`/`lineups_graded.csv`, no new solves needed. Check
+      `analysis/classic_diag/replay_selection_criteria.py` first so this isn't duplicated.
+
+13. **WR hot-backup discount on a Questionable-returning starter — RB fixed 2026-10-01, WR still open.**
+    Found live on the Wk4 HOU main slate (Collins back from injury, Hutchinson still over-projected over
+    him): full writeup `archive/handoffs/HANDOFF_wr_backup_discount_gap_2026-10-01.md`. The general
+    mechanism (participation floor for a Questionable-but-established starter + discount for the backup
+    who absorbed his share) **shipped for RB same day** (`7cfa10c`, `DFS_Q_RETURN`/`DFS_BACKUP_DISCOUNT`,
+    2021-25 held-out: bias +4.20→+0.11, beats FC's +0.84). That commit explicitly tested the WR/TE version
+    and found the **opposite historical pattern** — Questionable-returning WR1s were already slightly
+    over-projected, so the RB mechanism doesn't transfer as-is — and gated it RB-only on purpose, flagging
+    the WR case "being investigated separately." **Not yet investigated.** This is the Collins/Hutchinson
+    case exactly, so it's still live for Wk4+ builds: no lever currently discounts a hot WR backup once
+    the real starter returns Questionable-but-playing. Needs its own held-out test (same standard as the
+    RB fix), not a copy-paste of the RB params. Until then, treat it as a manual-judgment case on any
+    Wk4+ slate with a similar WR return.
 
 ~~Replace the dead FC ownership benchmark~~ — **partially dropped, corrected 2026-09-30.** FC actually
 gave two separate things, and the first drop conflated them:
