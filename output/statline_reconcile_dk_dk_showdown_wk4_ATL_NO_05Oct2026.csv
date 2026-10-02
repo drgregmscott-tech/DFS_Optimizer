@@ -1,0 +1,7 @@
+team,component,pool_share,share_basis,raw_sum,target,scale,abs_delta
+ATL,rush,1.0,recent,41.79,28.28,0.6766,13.52
+ATL,pass,1.0,exclusive,25.0,32.88,1.3151,7.88
+NO,recv,1.0,recent,49.38,36.51,0.7394,12.87
+NO,rush,1.0,recent,31.26,25.34,0.8106,5.92
+NO,pass,1.0,exclusive,42.12,37.68,0.8947,4.44
+ATL,recv,1.0,recent,32.55,31.32,0.9623,1.23

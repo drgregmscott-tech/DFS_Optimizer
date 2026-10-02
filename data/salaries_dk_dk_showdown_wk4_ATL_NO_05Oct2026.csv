@@ -1,0 +1,113 @@
+Position,Name + ID,Name,ID,Roster Position,Salary,Game Info,TeamAbbrev,AvgPointsPerGame,Status,roster_role,name,site,salary,normalized_name,normalized_team,position_upper,slate_format,player_id,match_method,match_confidence
+RB,Bijan Robinson (44358603),Bijan Robinson,44358603,CPT,17700,ATL@NO 10/05/2026 08:15PM ET,ATL,26.9,,CPT,Bijan Robinson,dk,17700,bijan robinson,ATL,RB,showdown,00-0038542,auto_exact,high
+WR,Chris Olave (44358604),Chris Olave,44358604,CPT,16200,ATL@NO 10/05/2026 08:15PM ET,NO,25.5,,CPT,Chris Olave,dk,16200,chris olave,NO,WR,showdown,00-0037239,auto_exact,high
+WR,Drake London (44358605),Drake London,44358605,CPT,15000,ATL@NO 10/05/2026 08:15PM ET,ATL,15.3,,CPT,Drake London,dk,15000,drake london,ATL,WR,showdown,00-0037238,auto_exact,high
+QB,Tyler Shough (44358606),Tyler Shough,44358606,CPT,14400,ATL@NO 10/05/2026 08:15PM ET,NO,26.1,,CPT,Tyler Shough,dk,14400,tyler shough,NO,QB,showdown,00-0040743,auto_exact,high
+QB,Michael Penix Jr. (44358607),Michael Penix Jr.,44358607,CPT,13500,ATL@NO 10/05/2026 08:15PM ET,ATL,15.0,,CPT,Michael Penix Jr.,dk,13500,michael penix,ATL,QB,showdown,00-0039917,auto_exact,high
+RB,Travis Etienne Jr. (44358608),Travis Etienne Jr.,44358608,CPT,12000,ATL@NO 10/05/2026 08:15PM ET,NO,10.3,IR,CPT,Travis Etienne Jr.,dk,12000,travis etienne,NO,RB,showdown,00-0036973,auto_exact,high
+RB,Bijan Robinson (44358547),Bijan Robinson,44358547,FLEX,11800,ATL@NO 10/05/2026 08:15PM ET,ATL,26.9,,FLEX,Bijan Robinson,dk,11800,bijan robinson,ATL,RB,showdown,00-0038542,auto_exact,high
+WR,Devaughn Vele (44358609),Devaughn Vele,44358609,CPT,11700,ATL@NO 10/05/2026 08:15PM ET,NO,12.7,,CPT,Devaughn Vele,dk,11700,devaughn vele,NO,WR,showdown,00-0039424,auto_exact,high
+TE,Juwan Johnson (44358610),Juwan Johnson,44358610,CPT,11100,ATL@NO 10/05/2026 08:15PM ET,NO,16.4,,CPT,Juwan Johnson,dk,11100,juwan johnson,NO,TE,showdown,00-0036040,auto_exact,high
+WR,Chris Olave (44358548),Chris Olave,44358548,FLEX,10800,ATL@NO 10/05/2026 08:15PM ET,NO,25.5,,FLEX,Chris Olave,dk,10800,chris olave,NO,WR,showdown,00-0037239,auto_exact,high
+RB,Alvin Kamara (44358611),Alvin Kamara,44358611,CPT,10500,ATL@NO 10/05/2026 08:15PM ET,NO,6.2,,CPT,Alvin Kamara,dk,10500,alvin kamara,NO,RB,showdown,00-0033906,auto_exact,high
+WR,Drake London (44358549),Drake London,44358549,FLEX,10000,ATL@NO 10/05/2026 08:15PM ET,ATL,15.3,,FLEX,Drake London,dk,10000,drake london,ATL,WR,showdown,00-0037238,auto_exact,high
+QB,Tyler Shough (44358550),Tyler Shough,44358550,FLEX,9600,ATL@NO 10/05/2026 08:15PM ET,NO,26.1,,FLEX,Tyler Shough,dk,9600,tyler shough,NO,QB,showdown,00-0040743,auto_exact,high
+QB,Michael Penix Jr. (44358551),Michael Penix Jr.,44358551,FLEX,9000,ATL@NO 10/05/2026 08:15PM ET,ATL,15.0,,FLEX,Michael Penix Jr.,dk,9000,michael penix,ATL,QB,showdown,00-0039917,auto_exact,high
+QB,Zach Wilson (44358612),Zach Wilson,44358612,CPT,9000,ATL@NO 10/05/2026 08:15PM ET,NO,0.0,,CPT,Zach Wilson,dk,9000,zach wilson,NO,QB,showdown,00-0037013,auto_exact,high
+QB,Tua Tagovailoa (44358613),Tua Tagovailoa,44358613,CPT,9000,ATL@NO 10/05/2026 08:15PM ET,ATL,0.0,,CPT,Tua Tagovailoa,dk,9000,tua tagovailoa,ATL,QB,showdown,00-0036212,auto_exact,high
+QB,Jack Strand (44358614),Jack Strand,44358614,CPT,9000,ATL@NO 10/05/2026 08:15PM ET,ATL,2.0,,CPT,Jack Strand,dk,9000,jack strand,ATL,QB,showdown,00-0041194,auto_exact,high
+QB,Cooper Rush (44358615),Cooper Rush,44358615,CPT,9000,ATL@NO 10/05/2026 08:15PM ET,ATL,5.1,,CPT,Cooper Rush,dk,9000,cooper rush,ATL,QB,showdown,00-0033662,auto_exact,high
+QB,Spencer Rattler (44358616),Spencer Rattler,44358616,CPT,9000,ATL@NO 10/05/2026 08:15PM ET,NO,0.0,,CPT,Spencer Rattler,dk,9000,spencer rattler,NO,QB,showdown,00-0039376,auto_exact,high
+TE,Kyle Pitts Sr. (44358617),Kyle Pitts Sr.,44358617,CPT,8700,ATL@NO 10/05/2026 08:15PM ET,ATL,1.3,,CPT,Kyle Pitts Sr.,dk,8700,kyle pitts,ATL,TE,showdown,00-0036970,auto_exact,high
+K,Nick Folk (44358618),Nick Folk,44358618,CPT,8100,ATL@NO 10/05/2026 08:15PM ET,ATL,8.0,,CPT,Nick Folk,dk,8100,nick folk,ATL,K,showdown,00-0025565,auto_exact,high
+RB,Travis Etienne Jr. (44358552),Travis Etienne Jr.,44358552,FLEX,8000,ATL@NO 10/05/2026 08:15PM ET,NO,10.3,IR,FLEX,Travis Etienne Jr.,dk,8000,travis etienne,NO,RB,showdown,00-0036973,auto_exact,high
+WR,Devaughn Vele (44358553),Devaughn Vele,44358553,FLEX,7800,ATL@NO 10/05/2026 08:15PM ET,NO,12.7,,FLEX,Devaughn Vele,dk,7800,devaughn vele,NO,WR,showdown,00-0039424,auto_exact,high
+RB,Kendre Miller (44358619),Kendre Miller,44358619,CPT,7500,ATL@NO 10/05/2026 08:15PM ET,NO,6.5,,CPT,Kendre Miller,dk,7500,kendre miller,NO,RB,showdown,00-0038551,auto_exact,high
+TE,Juwan Johnson (44358554),Juwan Johnson,44358554,FLEX,7400,ATL@NO 10/05/2026 08:15PM ET,NO,16.4,,FLEX,Juwan Johnson,dk,7400,juwan johnson,NO,TE,showdown,00-0036040,auto_exact,high
+K,Daniel Carlson (44358620),Daniel Carlson,44358620,CPT,7200,ATL@NO 10/05/2026 08:15PM ET,NO,7.3,,CPT,Daniel Carlson,dk,7200,daniel carlson,NO,K,showdown,00-0034161,auto_exact,high
+K,Charlie Smyth (44358621),Charlie Smyth,44358621,CPT,7200,ATL@NO 10/05/2026 08:15PM ET,NO,0.0,,CPT,Charlie Smyth,dk,7200,charlie smyth,NO,K,showdown,00-0039229,auto_exact,high
+RB,Alvin Kamara (44358555),Alvin Kamara,44358555,FLEX,7000,ATL@NO 10/05/2026 08:15PM ET,NO,6.2,,FLEX,Alvin Kamara,dk,7000,alvin kamara,NO,RB,showdown,00-0033906,auto_exact,high
+TE,Noah Fant (44358622),Noah Fant,44358622,CPT,6600,ATL@NO 10/05/2026 08:15PM ET,NO,10.9,Q,CPT,Noah Fant,dk,6600,noah fant,NO,TE,showdown,00-0035644,auto_exact,high
+DST,Saints (44358623),Saints,44358623,CPT,6300,ATL@NO 10/05/2026 08:15PM ET,NO,3.7,,CPT,Saints,dk,6300,saints,NO,DST,showdown,DST_NO,team_defense,high
+QB,Zach Wilson (44358556),Zach Wilson,44358556,FLEX,6000,ATL@NO 10/05/2026 08:15PM ET,NO,0.0,,FLEX,Zach Wilson,dk,6000,zach wilson,NO,QB,showdown,00-0037013,auto_exact,high
+QB,Tua Tagovailoa (44358557),Tua Tagovailoa,44358557,FLEX,6000,ATL@NO 10/05/2026 08:15PM ET,ATL,0.0,,FLEX,Tua Tagovailoa,dk,6000,tua tagovailoa,ATL,QB,showdown,00-0036212,auto_exact,high
+QB,Jack Strand (44358558),Jack Strand,44358558,FLEX,6000,ATL@NO 10/05/2026 08:15PM ET,ATL,2.0,,FLEX,Jack Strand,dk,6000,jack strand,ATL,QB,showdown,00-0041194,auto_exact,high
+QB,Cooper Rush (44358559),Cooper Rush,44358559,FLEX,6000,ATL@NO 10/05/2026 08:15PM ET,ATL,5.1,,FLEX,Cooper Rush,dk,6000,cooper rush,ATL,QB,showdown,00-0033662,auto_exact,high
+QB,Spencer Rattler (44358560),Spencer Rattler,44358560,FLEX,6000,ATL@NO 10/05/2026 08:15PM ET,NO,0.0,,FLEX,Spencer Rattler,dk,6000,spencer rattler,NO,QB,showdown,00-0039376,auto_exact,high
+TE,Kyle Pitts Sr. (44358561),Kyle Pitts Sr.,44358561,FLEX,5800,ATL@NO 10/05/2026 08:15PM ET,ATL,1.3,,FLEX,Kyle Pitts Sr.,dk,5800,kyle pitts,ATL,TE,showdown,00-0036970,auto_exact,high
+RB,Brian Robinson Jr. (44358624),Brian Robinson Jr.,44358624,CPT,5700,ATL@NO 10/05/2026 08:15PM ET,ATL,7.6,,CPT,Brian Robinson Jr.,dk,5700,brian robinson,ATL,RB,showdown,00-0037746,auto_exact,high
+K,Nick Folk (44358562),Nick Folk,44358562,FLEX,5400,ATL@NO 10/05/2026 08:15PM ET,ATL,8.0,,FLEX,Nick Folk,dk,5400,nick folk,ATL,K,showdown,00-0025565,auto_exact,high
+DST,Falcons (44358625),Falcons,44358625,CPT,5400,ATL@NO 10/05/2026 08:15PM ET,ATL,4.0,,CPT,Falcons,dk,5400,falcons,ATL,DST,showdown,DST_ATL,team_defense,high
+RB,Kendre Miller (44358563),Kendre Miller,44358563,FLEX,5000,ATL@NO 10/05/2026 08:15PM ET,NO,6.5,,FLEX,Kendre Miller,dk,5000,kendre miller,NO,RB,showdown,00-0038551,auto_exact,high
+K,Daniel Carlson (44358564),Daniel Carlson,44358564,FLEX,4800,ATL@NO 10/05/2026 08:15PM ET,NO,7.3,,FLEX,Daniel Carlson,dk,4800,daniel carlson,NO,K,showdown,00-0034161,auto_exact,high
+K,Charlie Smyth (44358565),Charlie Smyth,44358565,FLEX,4800,ATL@NO 10/05/2026 08:15PM ET,NO,0.0,,FLEX,Charlie Smyth,dk,4800,charlie smyth,NO,K,showdown,00-0039229,auto_exact,high
+WR,Jahan Dotson (44358626),Jahan Dotson,44358626,CPT,4500,ATL@NO 10/05/2026 08:15PM ET,ATL,2.7,,CPT,Jahan Dotson,dk,4500,jahan dotson,ATL,WR,showdown,00-0037741,auto_exact,high
+TE,Noah Fant (44358566),Noah Fant,44358566,FLEX,4400,ATL@NO 10/05/2026 08:15PM ET,NO,10.9,Q,FLEX,Noah Fant,dk,4400,noah fant,NO,TE,showdown,00-0035644,auto_exact,high
+DST,Saints (44358567),Saints,44358567,FLEX,4200,ATL@NO 10/05/2026 08:15PM ET,NO,3.7,,FLEX,Saints,dk,4200,saints,NO,DST,showdown,DST_NO,team_defense,high
+TE,Austin Hooper (44358627),Austin Hooper,44358627,CPT,4200,ATL@NO 10/05/2026 08:15PM ET,ATL,4.4,,CPT,Austin Hooper,dk,4200,austin hooper,ATL,TE,showdown,00-0032392,auto_exact,high
+RB,Brian Robinson Jr. (44358568),Brian Robinson Jr.,44358568,FLEX,3800,ATL@NO 10/05/2026 08:15PM ET,ATL,7.6,,FLEX,Brian Robinson Jr.,dk,3800,brian robinson,ATL,RB,showdown,00-0037746,auto_exact,high
+DST,Falcons (44358569),Falcons,44358569,FLEX,3600,ATL@NO 10/05/2026 08:15PM ET,ATL,4.0,,FLEX,Falcons,dk,3600,falcons,ATL,DST,showdown,DST_ATL,team_defense,high
+WR,Zachariah Branch (44358628),Zachariah Branch,44358628,CPT,3600,ATL@NO 10/05/2026 08:15PM ET,ATL,1.7,,CPT,Zachariah Branch,dk,3600,zachariah branch,ATL,WR,showdown,00-0041044,auto_exact,high
+WR,Jahan Dotson (44358570),Jahan Dotson,44358570,FLEX,3000,ATL@NO 10/05/2026 08:15PM ET,ATL,2.7,,FLEX,Jahan Dotson,dk,3000,jahan dotson,ATL,WR,showdown,00-0037741,auto_exact,high
+WR,Olamide Zaccheaus (44358629),Olamide Zaccheaus,44358629,CPT,3000,ATL@NO 10/05/2026 08:15PM ET,ATL,1.9,,CPT,Olamide Zaccheaus,dk,3000,olamide zaccheaus,ATL,WR,showdown,00-0035208,auto_exact,high
+TE,Austin Hooper (44358571),Austin Hooper,44358571,FLEX,2800,ATL@NO 10/05/2026 08:15PM ET,ATL,4.4,,FLEX,Austin Hooper,dk,2800,austin hooper,ATL,TE,showdown,00-0032392,auto_exact,high
+WR,Bryce Lance (44358630),Bryce Lance,44358630,CPT,2700,ATL@NO 10/05/2026 08:15PM ET,NO,3.0,,CPT,Bryce Lance,dk,2700,bryce lance,NO,WR,showdown,00-0041067,auto_exact,high
+WR,Zachariah Branch (44358572),Zachariah Branch,44358572,FLEX,2400,ATL@NO 10/05/2026 08:15PM ET,ATL,1.7,,FLEX,Zachariah Branch,dk,2400,zachariah branch,ATL,WR,showdown,00-0041044,auto_exact,high
+RB,CJ Donaldson (44358631),CJ Donaldson,44358631,CPT,2100,ATL@NO 10/05/2026 08:15PM ET,NO,0.6,,CPT,CJ Donaldson,dk,2100,cj donaldson,NO,RB,showdown,00-0041326,auto_exact,high
+WR,Olamide Zaccheaus (44358573),Olamide Zaccheaus,44358573,FLEX,2000,ATL@NO 10/05/2026 08:15PM ET,ATL,1.9,,FLEX,Olamide Zaccheaus,dk,2000,olamide zaccheaus,ATL,WR,showdown,00-0035208,auto_exact,high
+WR,Bryce Lance (44358574),Bryce Lance,44358574,FLEX,1800,ATL@NO 10/05/2026 08:15PM ET,NO,3.0,,FLEX,Bryce Lance,dk,1800,bryce lance,NO,WR,showdown,00-0041067,auto_exact,high
+WR,Barion Brown (44358632),Barion Brown,44358632,CPT,1800,ATL@NO 10/05/2026 08:15PM ET,NO,0.2,Q,CPT,Barion Brown,dk,1800,barion brown,NO,WR,showdown,00-0041099,auto_exact,high
+WR,Chris Blair (44358633),Chris Blair,44358633,CPT,1500,ATL@NO 10/05/2026 08:15PM ET,ATL,1.2,,CPT,Chris Blair,dk,1500,chris blair,ATL,WR,showdown,00-0036463,auto_exact,high
+RB,CJ Donaldson (44358575),CJ Donaldson,44358575,FLEX,1400,ATL@NO 10/05/2026 08:15PM ET,NO,0.6,,FLEX,CJ Donaldson,dk,1400,cj donaldson,NO,RB,showdown,00-0041326,auto_exact,high
+WR,Barion Brown (44358576),Barion Brown,44358576,FLEX,1200,ATL@NO 10/05/2026 08:15PM ET,NO,0.2,Q,FLEX,Barion Brown,dk,1200,barion brown,NO,WR,showdown,00-0041099,auto_exact,high
+WR,Kevin Austin Jr. (44358634),Kevin Austin Jr.,44358634,CPT,1200,ATL@NO 10/05/2026 08:15PM ET,NO,0.6,,CPT,Kevin Austin Jr.,dk,1200,kevin austin,NO,WR,showdown,00-0037231,auto_exact,high
+WR,Chris Blair (44358577),Chris Blair,44358577,FLEX,1000,ATL@NO 10/05/2026 08:15PM ET,ATL,1.2,,FLEX,Chris Blair,dk,1000,chris blair,ATL,WR,showdown,00-0036463,auto_exact,high
+TE,Charlie Woerner (44358635),Charlie Woerner,44358635,CPT,900,ATL@NO 10/05/2026 08:15PM ET,ATL,0.0,,CPT,Charlie Woerner,dk,900,charlie woerner,ATL,TE,showdown,00-0036429,auto_exact,high
+WR,Kevin Austin Jr. (44358578),Kevin Austin Jr.,44358578,FLEX,800,ATL@NO 10/05/2026 08:15PM ET,NO,0.6,,FLEX,Kevin Austin Jr.,dk,800,kevin austin,NO,WR,showdown,00-0037231,auto_exact,high
+TE,Charlie Woerner (44358579),Charlie Woerner,44358579,FLEX,600,ATL@NO 10/05/2026 08:15PM ET,ATL,0.0,,FLEX,Charlie Woerner,dk,600,charlie woerner,ATL,TE,showdown,00-0036429,auto_exact,high
+TE,Oscar Delp (44358636),Oscar Delp,44358636,CPT,600,ATL@NO 10/05/2026 08:15PM ET,NO,0.9,,CPT,Oscar Delp,dk,600,oscar delp,NO,TE,showdown,00-0041041,auto_exact,high
+TE,Oscar Delp (44358580),Oscar Delp,44358580,FLEX,400,ATL@NO 10/05/2026 08:15PM ET,NO,0.9,,FLEX,Oscar Delp,dk,400,oscar delp,NO,TE,showdown,00-0041041,auto_exact,high
+RB,Khalil Herbert (44358637),Khalil Herbert,44358637,CPT,300,ATL@NO 10/05/2026 08:15PM ET,ATL,0.0,,CPT,Khalil Herbert,dk,300,khalil herbert,ATL,RB,showdown,00-0036906,auto_exact,high
+RB,Ty Chandler (44358638),Ty Chandler,44358638,CPT,300,ATL@NO 10/05/2026 08:15PM ET,NO,0.0,IR,CPT,Ty Chandler,dk,300,ty chandler,NO,RB,showdown,00-0037276,auto_exact,high
+RB,Trey Sermon (44358639),Trey Sermon,44358639,CPT,300,ATL@NO 10/05/2026 08:15PM ET,ATL,0.0,IR,CPT,Trey Sermon,dk,300,trey sermon,ATL,RB,showdown,00-0036984,auto_exact,high
+RB,Cash Jones (44358640),Cash Jones,44358640,CPT,300,ATL@NO 10/05/2026 08:15PM ET,ATL,0.0,,CPT,Cash Jones,dk,300,cash jones,ATL,RB,showdown,00-0041191,auto_exact,high
+RB,Zamir White (44358641),Zamir White,44358641,CPT,300,ATL@NO 10/05/2026 08:15PM ET,NO,0.0,,CPT,Zamir White,dk,300,zamir white,NO,RB,showdown,00-0038040,auto_exact,high
+WR,Beaux Collins (44358642),Beaux Collins,44358642,CPT,300,ATL@NO 10/05/2026 08:15PM ET,ATL,0.0,IR,CPT,Beaux Collins,dk,300,beaux collins,ATL,WR,showdown,00-0040432,auto_exact,high
+WR,Jordyn Tyson (44358643),Jordyn Tyson,44358643,CPT,300,ATL@NO 10/05/2026 08:15PM ET,NO,0.0,IR,CPT,Jordyn Tyson,dk,300,jordyn tyson,NO,WR,showdown,00-0041029,auto_exact,high
+WR,Cedric Tillman (44358644),Cedric Tillman,44358644,CPT,300,ATL@NO 10/05/2026 08:15PM ET,NO,0.0,,CPT,Cedric Tillman,dk,300,cedric tillman,NO,WR,showdown,00-0038979,auto_exact,high
+WR,Dylan Drummond (44358645),Dylan Drummond,44358645,CPT,300,ATL@NO 10/05/2026 08:15PM ET,ATL,0.0,,CPT,Dylan Drummond,dk,300,dylan drummond,ATL,WR,showdown,00-0038953,auto_exact,high
+WR,Antwane Wells Jr. (44358646),Antwane Wells Jr.,44358646,CPT,300,ATL@NO 10/05/2026 08:15PM ET,ATL,0.0,,CPT,Antwane Wells Jr.,dk,300,antwane wells,ATL,WR,showdown,00-0040438,auto_exact,high
+WR,Vinny Anthony II (44358647),Vinny Anthony II,44358647,CPT,300,ATL@NO 10/05/2026 08:15PM ET,ATL,0.0,,CPT,Vinny Anthony II,dk,300,vinny anthony,ATL,WR,showdown,00-0041185,auto_exact,high
+WR,Trey Palmer (44358648),Trey Palmer,44358648,CPT,300,ATL@NO 10/05/2026 08:15PM ET,NO,0.0,,CPT,Trey Palmer,dk,300,trey palmer,NO,WR,showdown,00-0039052,auto_exact,high
+WR,Kyrese Rowan (44358649),Kyrese Rowan,44358649,CPT,300,ATL@NO 10/05/2026 08:15PM ET,NO,0.0,,CPT,Kyrese Rowan,dk,300,kyrese rowan,NO,WR,showdown,00-0040633,auto_exact,high
+WR,Jalen Moreno-Cropper (44358650),Jalen Moreno-Cropper,44358650,CPT,300,ATL@NO 10/05/2026 08:15PM ET,NO,0.0,,CPT,Jalen Moreno-Cropper,dk,300,jalen moreno cropper,NO,WR,showdown,00-0038740,auto_exact,high
+TE,Zach Wood (44358651),Zach Wood,44358651,CPT,300,ATL@NO 10/05/2026 08:15PM ET,NO,0.0,IR,CPT,Zach Wood,dk,300,zach wood,NO,TE,showdown,00-0033063,auto_fallback_name_only_position_mismatch,low
+TE,Treyton Welch (44358652),Treyton Welch,44358652,CPT,300,ATL@NO 10/05/2026 08:15PM ET,NO,0.0,,CPT,Treyton Welch,dk,300,treyton welch,NO,TE,showdown,00-0039518,auto_exact,high
+TE,Jack Velling (44358653),Jack Velling,44358653,CPT,300,ATL@NO 10/05/2026 08:15PM ET,ATL,0.0,,CPT,Jack Velling,dk,300,jack velling,ATL,TE,showdown,00-0041195,auto_exact,high
+TE,Moliki Matavao (44358654),Moliki Matavao,44358654,CPT,300,ATL@NO 10/05/2026 08:15PM ET,NO,0.0,IR,CPT,Moliki Matavao,dk,300,moliki matavao,NO,TE,showdown,00-0040244,auto_exact,high
+TE,Nick Muse (44358655),Nick Muse,44358655,CPT,300,ATL@NO 10/05/2026 08:15PM ET,ATL,0.0,,CPT,Nick Muse,dk,300,nick muse,ATL,TE,showdown,00-0037317,auto_exact,high
+TE,Cal Adomitis (44358656),Cal Adomitis,44358656,CPT,300,ATL@NO 10/05/2026 08:15PM ET,NO,0.0,,CPT,Cal Adomitis,dk,300,cal adomitis,NO,TE,showdown,00-0037412,auto_fallback_name_only_position_mismatch,low
+TE,Stone Smartt (44358657),Stone Smartt,44358657,CPT,300,ATL@NO 10/05/2026 08:15PM ET,NO,0.0,,CPT,Stone Smartt,dk,300,stone smartt,NO,TE,showdown,00-0037475,auto_exact,high
+WR,Mason Tipton (44358658),Mason Tipton,44358658,CPT,300,ATL@NO 10/05/2026 08:15PM ET,NO,0.0,OUT,CPT,Mason Tipton,dk,300,mason tipton,NO,WR,showdown,00-0039623,auto_exact,high
+RB,Khalil Herbert (44358581),Khalil Herbert,44358581,FLEX,200,ATL@NO 10/05/2026 08:15PM ET,ATL,0.0,,FLEX,Khalil Herbert,dk,200,khalil herbert,ATL,RB,showdown,00-0036906,auto_exact,high
+RB,Ty Chandler (44358582),Ty Chandler,44358582,FLEX,200,ATL@NO 10/05/2026 08:15PM ET,NO,0.0,IR,FLEX,Ty Chandler,dk,200,ty chandler,NO,RB,showdown,00-0037276,auto_exact,high
+RB,Trey Sermon (44358583),Trey Sermon,44358583,FLEX,200,ATL@NO 10/05/2026 08:15PM ET,ATL,0.0,IR,FLEX,Trey Sermon,dk,200,trey sermon,ATL,RB,showdown,00-0036984,auto_exact,high
+RB,Cash Jones (44358584),Cash Jones,44358584,FLEX,200,ATL@NO 10/05/2026 08:15PM ET,ATL,0.0,,FLEX,Cash Jones,dk,200,cash jones,ATL,RB,showdown,00-0041191,auto_exact,high
+RB,Zamir White (44358585),Zamir White,44358585,FLEX,200,ATL@NO 10/05/2026 08:15PM ET,NO,0.0,,FLEX,Zamir White,dk,200,zamir white,NO,RB,showdown,00-0038040,auto_exact,high
+WR,Beaux Collins (44358586),Beaux Collins,44358586,FLEX,200,ATL@NO 10/05/2026 08:15PM ET,ATL,0.0,IR,FLEX,Beaux Collins,dk,200,beaux collins,ATL,WR,showdown,00-0040432,auto_exact,high
+WR,Jordyn Tyson (44358587),Jordyn Tyson,44358587,FLEX,200,ATL@NO 10/05/2026 08:15PM ET,NO,0.0,IR,FLEX,Jordyn Tyson,dk,200,jordyn tyson,NO,WR,showdown,00-0041029,auto_exact,high
+WR,Cedric Tillman (44358588),Cedric Tillman,44358588,FLEX,200,ATL@NO 10/05/2026 08:15PM ET,NO,0.0,,FLEX,Cedric Tillman,dk,200,cedric tillman,NO,WR,showdown,00-0038979,auto_exact,high
+WR,Dylan Drummond (44358589),Dylan Drummond,44358589,FLEX,200,ATL@NO 10/05/2026 08:15PM ET,ATL,0.0,,FLEX,Dylan Drummond,dk,200,dylan drummond,ATL,WR,showdown,00-0038953,auto_exact,high
+WR,Antwane Wells Jr. (44358590),Antwane Wells Jr.,44358590,FLEX,200,ATL@NO 10/05/2026 08:15PM ET,ATL,0.0,,FLEX,Antwane Wells Jr.,dk,200,antwane wells,ATL,WR,showdown,00-0040438,auto_exact,high
+WR,Vinny Anthony II (44358591),Vinny Anthony II,44358591,FLEX,200,ATL@NO 10/05/2026 08:15PM ET,ATL,0.0,,FLEX,Vinny Anthony II,dk,200,vinny anthony,ATL,WR,showdown,00-0041185,auto_exact,high
+WR,Trey Palmer (44358592),Trey Palmer,44358592,FLEX,200,ATL@NO 10/05/2026 08:15PM ET,NO,0.0,,FLEX,Trey Palmer,dk,200,trey palmer,NO,WR,showdown,00-0039052,auto_exact,high
+WR,Kyrese Rowan (44358593),Kyrese Rowan,44358593,FLEX,200,ATL@NO 10/05/2026 08:15PM ET,NO,0.0,,FLEX,Kyrese Rowan,dk,200,kyrese rowan,NO,WR,showdown,00-0040633,auto_exact,high
+WR,Jalen Moreno-Cropper (44358594),Jalen Moreno-Cropper,44358594,FLEX,200,ATL@NO 10/05/2026 08:15PM ET,NO,0.0,,FLEX,Jalen Moreno-Cropper,dk,200,jalen moreno cropper,NO,WR,showdown,00-0038740,auto_exact,high
+TE,Zach Wood (44358595),Zach Wood,44358595,FLEX,200,ATL@NO 10/05/2026 08:15PM ET,NO,0.0,IR,FLEX,Zach Wood,dk,200,zach wood,NO,TE,showdown,00-0033063,auto_fallback_name_only_position_mismatch,low
+TE,Treyton Welch (44358596),Treyton Welch,44358596,FLEX,200,ATL@NO 10/05/2026 08:15PM ET,NO,0.0,,FLEX,Treyton Welch,dk,200,treyton welch,NO,TE,showdown,00-0039518,auto_exact,high
+TE,Jack Velling (44358597),Jack Velling,44358597,FLEX,200,ATL@NO 10/05/2026 08:15PM ET,ATL,0.0,,FLEX,Jack Velling,dk,200,jack velling,ATL,TE,showdown,00-0041195,auto_exact,high
+TE,Moliki Matavao (44358598),Moliki Matavao,44358598,FLEX,200,ATL@NO 10/05/2026 08:15PM ET,NO,0.0,IR,FLEX,Moliki Matavao,dk,200,moliki matavao,NO,TE,showdown,00-0040244,auto_exact,high
+TE,Nick Muse (44358599),Nick Muse,44358599,FLEX,200,ATL@NO 10/05/2026 08:15PM ET,ATL,0.0,,FLEX,Nick Muse,dk,200,nick muse,ATL,TE,showdown,00-0037317,auto_exact,high
+TE,Cal Adomitis (44358600),Cal Adomitis,44358600,FLEX,200,ATL@NO 10/05/2026 08:15PM ET,NO,0.0,,FLEX,Cal Adomitis,dk,200,cal adomitis,NO,TE,showdown,00-0037412,auto_fallback_name_only_position_mismatch,low
+TE,Stone Smartt (44358601),Stone Smartt,44358601,FLEX,200,ATL@NO 10/05/2026 08:15PM ET,NO,0.0,,FLEX,Stone Smartt,dk,200,stone smartt,NO,TE,showdown,00-0037475,auto_exact,high
+WR,Mason Tipton (44358602),Mason Tipton,44358602,FLEX,200,ATL@NO 10/05/2026 08:15PM ET,NO,0.0,OUT,FLEX,Mason Tipton,dk,200,mason tipton,NO,WR,showdown,00-0039623,auto_exact,high

@@ -192,6 +192,22 @@
       "season": 2026,
       "week": 4,
       "lock_time_utc": "2026-10-04T20:05:00Z"
+    },
+    {
+      "slate_id": "dk_showdown_wk4_DET_CAR_04Oct2026",
+      "site": "dk",
+      "format": "showdown",
+      "season": 2026,
+      "week": 4,
+      "lock_time_utc": "2026-10-05T00:20:00Z"
+    },
+    {
+      "slate_id": "dk_showdown_wk4_ATL_NO_05Oct2026",
+      "site": "dk",
+      "format": "showdown",
+      "season": 2026,
+      "week": 4,
+      "lock_time_utc": "2026-10-06T00:15:00Z"
     }
   ]
 }
