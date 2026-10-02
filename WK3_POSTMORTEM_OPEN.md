@@ -230,6 +230,19 @@ entirely — see the historical record further down if needed.
     `analysis/chalk_size_fix_v2/RESULTS.md`. Role-bump/vacated-usage gating was dropped (wrong mechanism);
     the surviving candidate (cheap <$5.5k pull + freeze mega-chalk at 25%+) is track-2, gated on Wk4-5 —
     full writeup in the priority-list item 2 entry above, don't duplicate here.
+12. **Classic construction: wire the Classic Lineup Study's own ownership-predicts-cashing finding into
+    the optimizer, and reconsider se3max_pool's exposure cap — PARKED 2026-10-02, needs its own session.**
+    Found while explaining why Showdown (5-6/6-7 cashes) is currently outperforming Classic (missed 3
+    straight weeks): Showdown's real-field Lineup Study findings are wired into the optimizer as actual
+    `--sd-*` ILP terms (`showdown_se`/`showdown_gpp` presets), but Classic's equivalent real-field finding
+    (`HANDOFF_classic_lineupstudy_findings_2026-09-29.md` — higher realized ownership predicts cashing and
+    return, every format/season, 410 real contests) is documented only, never wired in. Separately,
+    `se3max_pool` caps every player at 50% exposure across the 100-lineup pool (vs `showdown_se`'s 100%),
+    which structurally dilutes even the single highest-conviction lineup — in tension with that same
+    ownership finding. Both untested as fixes; needs a dedicated session to backtest against the classic
+    Lineup Study data (`analysis/classic_history/`) before touching `optimizer_presets.json` live. See the
+    full handoff pasted into chat 2026-10-02 (not saved as a file — ask the user for it if picking this up
+    cold, or re-derive from `HANDOFF_classic_lineupstudy_findings_2026-09-29.md` directly).
 
 ~~Replace the dead FC ownership benchmark~~ — **partially dropped, corrected 2026-09-30.** FC actually
 gave two separate things, and the first drop conflated them:
