@@ -2695,6 +2695,88 @@ def apply_te_replacement(pool: pd.DataFrame, season: int, week: int,
         return out
 
 
+WRW_WR_PARAMS = DATA_DIR / "wrw_wr_params.json"
+
+
+def apply_wr_replacement(pool: pd.DataFrame, season: int, week: int,
+                         injury_status: pd.DataFrame | None, params: dict | None = None) -> pd.DataFrame:
+    """WR counterpart of apply_rb_replacement / apply_te_replacement (analysis/role_bump_chalk_gap/RESULTS.md,
+    "WR-out"): when the team's top target-vacating OUT/DOUBTFUL player (played the team's previous game; trailing
+    carry share >= min_car_share or target share >= min_tgt_share -- the frame's event definition) is a WR, each
+    remaining teammate gets frac[pos][rank] x vacated target share (all qualifying outs, as fit) x team trailing
+    targets x ppo_wr_tgt x points_scale. rank = depth by trailing target share among active same-position
+    teammates, clipped at rank_clip (rank 4+ uses rank 3, as fit); ppo = that teammate position's DK points per
+    target. Shipped cells: remaining WR2/WR3 only (WR1-of-
+    remaining, TE and RB cells were fit but did not improve held-out; zero, like the TE-out bleed).
+    Returns pool with audit columns wrw_wr_delta_pts, wrw_wr_vacated_tgt; the CALLER adds the delta to
+    final_projection after the stack (same as WRW RB/TE). Off: DFS_WRW_WR=0. Any error -> unchanged.
+    `params` overrides the params file (tests/analysis only)."""
+    import os
+    df = pool.copy()
+    df["wrw_wr_delta_pts"] = 0.0
+    df["wrw_wr_vacated_tgt"] = 0.0
+    if os.environ.get("DFS_WRW_WR", "1") == "0" or injury_status is None or injury_status.empty:
+        return df
+    try:
+        p = params if params is not None else json.loads(WRW_WR_PARAMS.read_text(encoding="utf-8"))
+        st = injury_status.copy()
+        st["player_id"] = st["player_id"].astype(str)
+        out_ids = set(st.loc[st["status"].astype(str).str.upper().isin(["OUT", "DOUBTFUL"]), "player_id"])
+        if not out_ids:
+            return df
+        pid = df["player_id"].astype(str)
+        real = ~df["no_real_game_this_week"].fillna(False).astype(bool) \
+            if "no_real_game_this_week" in df.columns else pd.Series(True, index=df.index)
+        teams = sorted(df.loc[real, "team"].dropna().astype(str).unique())
+        ag, tvr = _wrw_trailing_usage(season, week, teams, p)
+        if ag is None or ag.empty:
+            return df
+        frac = {pos: {int(k): float(v) for k, v in d.items()} for pos, d in p["tgt_frac_by_rank"].items()}
+        clip = int(p.get("rank_clip", 3))
+        ppo = {pos: float(v) for pos, v in p["ppo_tgt"].items()}
+        k_pts = float(p.get("points_scale", 1.0))
+        done = []
+        for team in teams:
+            if team not in ag.index.get_level_values(0) or team not in tvr.index:
+                continue
+            a = ag.loc[team].copy(); a.index = a.index.astype(str)
+            lg = tvr.loc[team, "last_g"]
+            outs = a[a.index.isin(out_ids) & (a["last_g"] == lg)
+                     & ((a["sh_car"] >= p["min_car_share"]) | (a["sh_tgt"] >= p["min_tgt_share"]))]
+            if outs.empty or outs.loc[outs["sh_tgt"].idxmax(), "pos"] != "WR":
+                continue
+            V = float(outs["sh_tgt"].sum())
+            if V <= 0:
+                continue
+            vol = float(tvr.loc[team, "ttgt"])
+            for pos, fr in frac.items():
+                if not fr:
+                    continue
+                cand = real & (df["team"].astype(str) == team) & (df["position"].astype(str) == pos) \
+                    & ~pid.isin(out_ids) & pid.isin(set(a.index))
+                if not cand.any():
+                    continue
+                idx = df.index[cand]
+                ranks = pd.Series(a.loc[pid[cand], "sh_tgt"].to_numpy(), index=idx) \
+                    .rank(ascending=False, method="first").clip(upper=clip).astype(int)
+                add = ranks.map(fr).fillna(0.0) * V * vol * ppo[pos] * k_pts
+                df.loc[idx, "wrw_wr_delta_pts"] += add
+                df.loc[idx[add.to_numpy() > 0], "wrw_wr_vacated_tgt"] = V
+            hit = df.loc[(df["team"].astype(str) == team) & (df["wrw_wr_delta_pts"] > 0.05)]
+            done += [f"{team}:{r.player_name}+{r.wrw_wr_delta_pts:.1f}" for r in hit.itertuples()] \
+                if "player_name" in df.columns else []
+        if done:
+            print(f"WRW WR reallocation (week {week}): " + "; ".join(done))
+        return df
+    except Exception as exc:  # noqa: BLE001 -- must never break a build
+        print(f"WARNING: WRW WR reallocation skipped ({type(exc).__name__}: {exc}); projections unchanged.",
+              file=sys.stderr)
+        out = pool.copy()
+        out["wrw_wr_delta_pts"] = 0.0
+        out["wrw_wr_vacated_tgt"] = 0.0
+        return out
+
+
 def simulate(pool: pd.DataFrame, site: str, variance: dict,
              n_sims: int = DEFAULT_SIMS, seed: int = DEFAULT_SEED) -> pd.DataFrame:
     """Simulate every player's stat line, score each draw with `site`'s exact

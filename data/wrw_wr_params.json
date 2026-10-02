@@ -1,0 +1,13 @@
+{
+ "_doc": "Who-replaces-whom WR reallocation (statline_model.apply_wr_replacement). When a player with real usage (played the team's previous game; trailing carry share >= .20 or target share >= .12) is OUT/DOUBTFUL and the team's biggest target vacater is a WR, each remaining teammate gets frac[pos][rank] x vacated target share x team trailing targets x ppo_wr_tgt x points_scale added to final_projection (rank = depth by trailing target share among active same-position teammates, rank 4+ uses rank 3). Fit LOSO 2016-25 on analysis/who_replaces_whom/frame.parquet (nflverse only; 493 Friday-OUT WR events, split stable across all 10 folds). Only remaining-WR ranks 2/3 are applied: WR1-of-remaining (.08), TE (.04/.02/.03) and RB (.02-.05) cells were fit but did not improve held-out (see _fitted_not_applied). analysis/role_bump_chalk_gap, analysis/wr_out_redistribution. Off: DFS_WRW_WR=0.",
+ "min_car_share": 0.2,
+ "min_tgt_share": 0.12,
+ "trail_team_games": 8,
+ "trail_player_apps": 4,
+ "team_vol_games": 4,
+ "ppo_tgt": {"WR": 1.758, "TE": 1.721, "RB": 1.4},
+ "rank_clip": 3,
+ "tgt_frac_by_rank": {"WR": {"2": 0.143, "3": 0.151}},
+ "_fitted_not_applied": {"WR": {"1": 0.078}, "TE": {"1": 0.037, "2": 0.021, "3": 0.034}, "RB": {"1": 0.024, "2": 0.043, "3": 0.047}},
+ "points_scale": 0.73
+}

@@ -614,6 +614,28 @@ def _apply_wrw_te(df, season, week):
     return df
 
 
+def _apply_wrw_wr(df, season, week):
+    """Add statline_model.apply_wr_replacement's wrw_wr_delta_pts (WR OUT -> remaining WR2/WR3 vacated-target
+    redistribution, analysis/wr_out_redistribution) to final_projection and p10/p90. Off: DFS_WRW_WR=0.
+    Any failure = projections unchanged (loud warning)."""
+    try:
+        df = statline_model.apply_wr_replacement(df, season, week, statline_model.load_injury_status(week))
+        d = pd.to_numeric(df["wrw_wr_delta_pts"], errors="coerce").fillna(0.0)
+        # zero-sigma rows stay as is (same as WRW RB/TE); a row already projected 0 is never revived by the bump.
+        d = d.where((pd.to_numeric(df["statline_sigma"], errors="coerce").fillna(0.0) > 0)
+                    & (pd.to_numeric(df["final_projection"], errors="coerce").fillna(0.0) > 0), 0.0)
+        df["wrw_wr_delta_pts"] = d
+        m = d > 0
+        if m.any():
+            for c in ("final_projection", "statline_p10", "statline_p90"):
+                df.loc[m, c] = (pd.to_numeric(df.loc[m, c], errors="coerce").fillna(0.0) + d[m]).clip(lower=0.0)
+    except Exception as exc:  # noqa: BLE001 -- must never break a build
+        _loud(f"WRW WR reallocation skipped ({type(exc).__name__}: {exc}); projections unchanged.")
+        df["wrw_wr_delta_pts"] = 0.0
+        df["wrw_wr_vacated_tgt"] = 0.0
+    return df
+
+
 # Share of the Q-return engine-level delta added AFTER the stack (analysis/q_return_poststack, 2026-10-01).
 # The stack keeps ~52% of the volume fix's engine change on these rows (2021-25 rebuilds, n=43 active Q-return RB1s,
 # final delta +1.86 of an engine delta +3.55); Q-return RB1s were still under-projected +2.34 (FC +0.84). The
@@ -1176,6 +1198,8 @@ def build_statline_projections(site: str, season: int, week: int, slate_id: str,
     df = _apply_wrw_rb(df, season, week)
     # TE OUT -> remaining TEs (analysis/role_bump_chalk_gap). Off: DFS_WRW_TE=0.
     df = _apply_wrw_te(df, season, week)
+    # WR OUT -> remaining WR2/WR3 (analysis/wr_out_redistribution). Off: DFS_WRW_WR=0.
+    df = _apply_wrw_wr(df, season, week)
     # Q-return RB1 (analysis/q_return_poststack): part of the volume fix's engine delta added as points after the
     # stack, which keeps only ~half of it. Stack builds only (no stack = the engine change already lands in full).
     # Off: DFS_Q_RETURN=0 or DFS_Q_RETURN_POST=0.
@@ -1226,6 +1250,7 @@ def build_statline_projections(site: str, season: int, week: int, slate_id: str,
                                                                "qb_autopromote_delta", "qb_autopromoted",
                                                                "wrw_delta_pts", "wrw_vacated_car",
                                                                "wrw_te_delta_pts", "wrw_te_vacated_tgt",
+                                                               "wrw_wr_delta_pts", "wrw_wr_vacated_tgt",
                                                                "role_change_injury_flag",
                                                                "q_return_flag", "q_return_post_pts"]]
 
@@ -1304,6 +1329,8 @@ def build_statline_projections(site: str, season: int, week: int, slate_id: str,
     dst_out["wrw_vacated_car"] = 0.0
     dst_out["wrw_te_delta_pts"] = 0.0
     dst_out["wrw_te_vacated_tgt"] = 0.0
+    dst_out["wrw_wr_delta_pts"] = 0.0
+    dst_out["wrw_wr_vacated_tgt"] = 0.0
     dst_out["q_return_flag"] = False
     dst_out["q_return_post_pts"] = 0.0
     dst_out["role_change_injury_flag"] = False
@@ -1347,6 +1374,8 @@ def build_statline_projections(site: str, season: int, week: int, slate_id: str,
         kicker_out["wrw_vacated_car"] = 0.0
         kicker_out["wrw_te_delta_pts"] = 0.0
         kicker_out["wrw_te_vacated_tgt"] = 0.0
+        kicker_out["wrw_wr_delta_pts"] = 0.0
+        kicker_out["wrw_wr_vacated_tgt"] = 0.0
         kicker_out["q_return_flag"] = False
         kicker_out["q_return_post_pts"] = 0.0
         kicker_out["role_change_injury_flag"] = False
