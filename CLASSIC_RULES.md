@@ -74,11 +74,14 @@ raw shape effect may already be reflected in projection that the solver is maxim
 | `--cl-flex-wr-midprice-penalty` | **1.3** | rule 3, controlled WR-$4,900-6,300-vs-TE range -1.3 to -1.5 pts, shaded to the low end |
 
 Every flag can be overridden on the command line (`--cl-... 0` turns one off). All flags at 0 is byte-identical to the
-pre-2026-09-30 solve. **Implementation note:** classic has no explicit FLEX variable -- the solver only knows "3 WR slots
-+ 1 shared FLEX slot," not which specific player occupies FLEX. Like the DST-band bonus above, the two new FLEX-WR terms
-are applied per selected WR row at that salary, not scoped to "only the one in FLEX" -- a roster can carry at most one WR
-beyond the fixed 3 in practice (the salary cap makes 2+ $6,300+ WRs rare), so this is a reasonable proxy, not an exact
-FLEX-only trigger. See `add_classic_shape_terms()`'s docstring in `scripts/optimizer.py` for the full mechanics.
+pre-2026-09-30 solve. **Implementation note (fixed 2026-10-02):** classic has no explicit FLEX variable -- the solver
+only knows "3 WR slots + 1 shared FLEX slot," not which specific player occupies FLEX. The two new FLEX-WR terms solve
+this with an auxiliary binary per selected WR ("is this one the discretionary 4th WR"), pinned exactly to the real
+extra-WR count (0 when you carry your normal 3 WRs, 1 when FLEX is a WR). The practical effect: a mandatory WR among your
+fixed 3 can NEVER take the mid-price penalty no matter its own salary, and two $6,300+ WRs only earn the bonus once, not
+twice -- both of those were real gaps in the first version of this term (same-day fix, never shipped). See
+`add_classic_shape_terms()`'s docstring in `scripts/optimizer.py` for the full mechanics; `classic_shape_adjustment()`
+replicates the same tagging logic for the cross-candidate scorer in `build_multi_lineup()` without needing a second LP solve.
 
 ### Real-slate sanity check (`analysis/classic_shape_weights/replay_cl_arm.py`, outputs `run_out*.txt`, `seeded_arms*.csv`)
 9 real 2026 DK classic slates (Wk1-3 main/early/afternoon), graded against the real contest results in
@@ -114,7 +117,10 @@ FLEX-only trigger. See `add_classic_shape_terms()`'s docstring in `scripts/optim
   **FLEX done 2026-10-02 (rule 3): the flat version collapsed (both old flags now 0), replaced by a WR-price-tier pair
   that IS controlled (`--cl-flex-wr-highprice-bonus`/`--cl-flex-wr-midprice-penalty`). The DST band and the $3.6k+ DST
   penalty are still uncontrolled raw lifts and are next in line for the same test.**
-- The new FLEX-WR price-tier terms are per-row, not FLEX-slot-exact (see "Optimizer enforcement" implementation note
-  above) -- a soft nudge like every other `--cl-*` term, not a precise targeting mechanism.
+- The FLEX-WR price-tier terms are exactly scoped to the discretionary 4th WR (see "Optimizer enforcement" implementation
+  note above, fixed 2026-10-02) -- still a soft nudge like every other `--cl-*` term (it doesn't force a WR into FLEX),
+  but it no longer touches a mandatory WR's own price, and it adds a handful of extra binary variables per build (one
+  per selected-WR-eligible player) whenever either flag is nonzero. Checked against a real 100-lineup `se3max_pool`
+  build on a live Wk4 slate: no meaningful solve-time cost.
 - The 3+ punt term rarely binds (13% of baseline lineups), so it is the least exercised.
 - Punt definition is Phase 2's (non-DST salary ≤ $4,000). DST band is inclusive $2,800-3,100; expensive is ≥ $3,600.
