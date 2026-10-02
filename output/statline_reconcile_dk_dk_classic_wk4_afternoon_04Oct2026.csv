@@ -1,5 +1,5 @@
 team,component,pool_share,share_basis,raw_sum,target,scale,abs_delta
-MIN,pass,1.0,exclusive,21.85,30.11,1.3782,8.26
+MIN,pass,1.0,exclusive,21.85,30.08,1.3768,8.23
 LV,rush,0.9785,recent,37.71,26.04,0.6907,11.66
 LAC,rush,1.0,recent,37.18,26.17,0.7038,11.01
 DEN,rush,0.9853,recent,34.14,24.99,0.7319,9.15
@@ -11,15 +11,15 @@ LAC,recv,0.9535,recent,37.51,30.21,0.8053,7.3
 LV,recv,1.0,recent,40.66,32.9,0.8093,7.75
 SF,recv,0.9383,recent,36.96,29.99,0.8114,6.97
 SF,pass,1.0,exclusive,27.92,33.09,1.1849,5.16
-MIN,rush,1.0,recent,35.95,29.48,0.8201,6.47
-MIA,recv,1.0,recent,36.52,30.71,0.8411,5.8
+MIN,rush,1.0,recent,35.95,29.49,0.8204,6.46
+MIA,recv,1.0,recent,36.5,30.68,0.8406,5.82
 KC,recv,1.0,recent,38.77,33.02,0.8517,5.75
 DEN,recv,0.9885,recent,37.79,32.53,0.861,5.25
 SEA,pass,1.0,exclusive,30.19,33.84,1.121,3.65
-MIA,pass,1.0,exclusive,28.31,31.58,1.1155,3.27
-MIA,rush,0.9872,recent,28.22,25.34,0.8979,2.88
+MIA,pass,1.0,exclusive,28.31,31.55,1.1146,3.24
 LV,pass,1.0,exclusive,31.04,34.2,1.1019,3.16
+MIA,rush,0.9872,recent,28.23,25.36,0.8983,2.87
 LAC,pass,1.0,exclusive,30.09,32.68,1.0861,2.59
 DEN,pass,1.0,exclusive,31.69,34.39,1.0853,2.7
 KC,pass,1.0,exclusive,32.18,34.44,1.0701,2.26
-MIN,recv,1.0,recent,30.38,28.61,0.9417,1.77
+MIN,recv,1.0,recent,30.37,28.58,0.9411,1.79
