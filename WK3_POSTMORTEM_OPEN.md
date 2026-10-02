@@ -84,14 +84,25 @@ entirely — see the historical record further down if needed.
 
 ## Open
 
-1. **Showdown ownership `lsal` candidate re-test — date-gated, not analysis work. CORRECTION 2026-10-01:
-   PIT/CLE has NOT played yet as of this morning (kicks off tonight, ~9 hrs out) — an earlier note in this
-   file wrongly said "already played," premise error, not a real result yet.**
-   Reactivation condition: 2+ more real Showdown slates logged since frozen (still 4 as of 2026-09-28).
-   Wk4 Showdown (PIT/CLE) should satisfy this once it's final. Action: after tonight's game, log real
-   ownership into `ownership_actual_log.csv`, then re-test the candidate against it. If it still doesn't
-   beat production, drop it for good instead of re-parking it again. Not actionable until tonight.
-   Ref: `HANDOFF_showdown_ownership_refit_2026-09-26.md`.
+1. **Showdown ownership `lsal` candidate re-test — CLOSED 2026-10-02, dropped.** PIT/CLE Wk4 played
+   2026-10-01; real ownership logged into `ownership_actual_log.csv` (65/65 matched, 100%) and the
+   candidate artifact (`data/fc_history/derived/showdown/ownership_model_showdown_dk.candidate.json`,
+   `+lsal` feature) was scored head-to-head against production on this genuinely out-of-sample slate
+   (candidate was fit on wk1-3 only). Result: **mixed, not a clean win** — candidate beat production on
+   FLEX MAE (5.17 vs 5.77) and FLEX corr (0.907 vs 0.888), but LOST on FLEX chalk MAE (4.76 vs 3.77), CPT
+   corr (0.867 vs 0.881), and CPT chalk MAE (4.97 vs 3.77). The original handoff's ship bar was "beats
+   production on FLEX MAE AND chalk MAE" — candidate fails the chalk-MAE half. K/DST-as-FLEX-chalk
+   underestimate (Steelers DST -24pts, Boswell -13.7pts) is unchanged by lsal, as expected (not what the
+   feature targets). Per this file's own rule ("if it still doesn't beat production, drop it for good
+   instead of re-parking it again"): **dropped.** Do not re-test lsal again without a new idea, not just
+   more of the same data. Ref: `HANDOFF_showdown_ownership_refit_2026-09-26.md`.
+
+   **Separately, production itself graded well on this slate** (not the candidate — the live model
+   already in use): CPT corr 0.88 / MAE 2.97, FLEX corr 0.89 / MAE 5.77 on players with >=1% real
+   ownership, correctly picked Jaylen Warren as the clear #1 captain (33.4% real vs 28.0% modeled). The
+   two real misses: Aaron Rodgers and KC Concepcion Jr. overrated as captain (+6.0, +9.0 pts), and the
+   long-standing DST/kicker-as-cheap-FLEX-chalk underestimate noted above. User's read: "really good
+   results... will be hard to get a ton more accurate" — see [[project-showdown-rules-doc]].
 
 2. **Inactives timing — in progress, has a concrete Sunday action.**
    `scripts/inactives_timing_log.py` needs to actually run Wk4 Sunday (2026-10-04) to log when
