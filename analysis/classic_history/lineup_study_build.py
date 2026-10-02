@@ -285,6 +285,8 @@ def parse(f, wmeta, smeta, gmeta):
         "studs": studs.astype(np.int8), "punts": punts.astype(np.int8),
         "dst_sal": S9[:, 8].astype(np.float32), "dst_conf": dst_conf.astype(np.int8), "dst_own_rb": dst_own_rb.astype(np.int8),
         "flex_pos": P9[:, 7].astype(np.int8),
+        "flex_sal": S9[:, 7].astype(np.float32), "flex_own": rost[M[:, 7]].astype(np.float32),
+        "flex_proj": proj_f[M[:, 7]].astype(np.float32),
         "te_sal": S9[:, 6].astype(np.float32),
         "own_sum": rost[M].sum(1).astype(np.float32),
         "own_max_rank": rank_own[M].min(1).astype(np.int16),

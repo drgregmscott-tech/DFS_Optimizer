@@ -149,6 +149,17 @@ def slopes(d, meta):
         # multi-feature model: shape features jointly, with projection control (per-SD for continuous, 0/1 dummies)
         X3 = np.column_stack([X2, z(s["qb_sal"]), (s["stack_rec"] >= 2).astype(float), (s["punts"] >= 1).astype(float),
                               (s["bb"] >= 1).astype(float), z(s["left"].clip(upper=5000))])
+        # FLEX-position experiment (2026-10-02): FLEX=RB / FLEX=WR dummies, TE = omitted baseline.
+        #   XF0 raw (dummies only); XF1 = X3 + dummies (lineup-level controls);
+        #   XF2 = XF1 + the FLEX player's own projection / salary / ownership (player-level controls).
+        # X3 itself is left unchanged so the published _m_ coefficients stay reproducible.
+        frb = (s["flex_pos"] == 1).astype(float).values; fwr = (s["flex_pos"] == 2).astype(float).values
+        has_fp = "flex_proj" in s.columns and (frb.mean() > 0.01) and (fwr.mean() > 0.01) and ((1 - frb - fwr).mean() > 0.01)
+        if has_fp:
+            XF0 = np.column_stack([np.ones(len(s)), frb, fwr])
+            XF1 = np.column_stack([X3, frb, fwr])
+            XF2 = np.column_stack([XF1, z(s["flex_proj"]), z(s["flex_sal"].fillna(s["flex_sal"].median())), z(s["flex_own"])])
+            r["flex_share_rb"] = frb.mean(); r["flex_share_wr"] = fwr.mean()
         for y in ("cashed", "ret_cap", "top1", "points"):
             yy = np.nan_to_num(s[y].values.astype(float))
             b1 = np.linalg.lstsq(X1, yy, rcond=None)[0]; b2 = np.linalg.lstsq(X2, yy, rcond=None)[0]
@@ -156,6 +167,12 @@ def slopes(d, meta):
             r[f"{y}_own_raw"] = b1[1]; r[f"{y}_own_ctrl"] = b2[1]; r[f"{y}_proj_ctrl"] = b2[2]
             for k, nm in enumerate(["own", "proj", "qbsal", "stack2", "punt1", "bb1", "left"]):
                 r[f"{y}_m_{nm}"] = b3[k + 1]
+            if has_fp:
+                for tag, X in (("raw", XF0), ("lin", XF1), ("ply", XF2)):
+                    b = np.linalg.lstsq(X, yy, rcond=None)[0]
+                    i0 = 1 if tag == "raw" else X3.shape[1]
+                    r[f"{y}_flexrb_{tag}"] = b[i0]; r[f"{y}_flexwr_{tag}"] = b[i0 + 1]
+                    r[f"{y}_flexrbwr_{tag}"] = b[i0] - b[i0 + 1]
         r["corr_own_proj"] = np.corrcoef(s["own_sum"], s["proj_sum"])[0, 1]
         # QB-salary slope with only a projection control
         X4 = np.column_stack([np.ones(len(s)), z(s["qb_sal"]), z(s["proj_sum"])])

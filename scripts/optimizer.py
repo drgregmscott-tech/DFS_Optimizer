@@ -1581,13 +1581,30 @@ def randomize_projections(players: pd.DataFrame, randomization_pct: float,
 #     -1.9 to -2.3 raw (+1.4 to +1.9 for >=1 punt after §5's projection/
 #     ownership control), 1-2 neutral/best, 3+ -2.7 to -4.7. Different
 #     magnitudes, so two separate weights.
-#   - FLEX position: RB +0.7 to +1.0, WR -1.2 to -1.5 (4/4 both), TE -0.3 to
-#     -0.6 (not touched here).
+#   - FLEX position (ORIGINAL, superseded 2026-10-02): RB +0.7 to +1.0, WR
+#     -1.2 to -1.5 (4/4 both), TE -0.3 to -0.6. This was the RAW cash-lift
+#     table only -- never projection-controlled. A controlled re-fit
+#     (analysis/flex_position/, 381 contests, FLEX dummies + the FLEX
+#     player's own proj/salary/ownership, see CLASSIC_RULES.md rule 3) found
+#     RB vs TE is indistinguishable from 0 at every price tier -- flex_rb_bonus
+#     is dead, kept only for manual override. WR vs TE instead REVERSES with
+#     the FLEX player's own salary: mid-price WR ($4,900-$6,300) is a real
+#     penalty, $6,300+ WR is a real, large bonus. flex_wr_penalty (flat, all
+#     WR prices) is dead for the same reason -- replaced by the two
+#     price-conditional terms below.
 # ---------------------------------------------------------------------------
 CL_DST_BAND_RANGE = (2800, 3100)       # inclusive, the Supported "best" band
 CL_DST_EXPENSIVE_MIN = 3600            # inclusive, the Supported "worst" band
 CL_PUNT_MAX_SALARY = 4000              # punt = non-DST player priced <= this
 CL_DST_POSITIONS = {"DST", "DEF"}
+# 2026-10-02 FLEX price-tier re-fit (see CLASSIC_RULES.md rule 3): global
+# pooled terciles of the FLEX-eligible salary distribution (12.5M entries,
+# 2022-26) land at $4,900 / $6,300 -- matches the per-contest tercile cuts
+# the controlled regression used closely enough to use as fixed CLI
+# thresholds (same convention as CL_DST_BAND_RANGE/CL_PUNT_MAX_SALARY above:
+# a fixed dollar band, not a per-slate percentile).
+CL_FLEX_WR_MID_RANGE = (4900, 6300)    # inclusive lo, exclusive hi -- real penalty tier
+CL_FLEX_WR_HIGH_MIN = 6300             # inclusive -- real, large bonus tier
 
 
 def add_classic_shape_terms(prob, x, players, fixed_counts,
@@ -1596,7 +1613,9 @@ def add_classic_shape_terms(prob, x, players, fixed_counts,
                             zero_punt_penalty: float = 0.0,
                             three_plus_punt_penalty: float = 0.0,
                             flex_rb_bonus: float = 0.0,
-                            flex_wr_penalty: float = 0.0):
+                            flex_wr_penalty: float = 0.0,
+                            flex_wr_highprice_bonus: float = 0.0,
+                            flex_wr_midprice_penalty: float = 0.0):
     """Returns a pulp expression to ADD to the classic objective, or None
     when every weight is 0.0 (nothing added -- no aux variables, no
     constraints, so the problem is byte-identical to before).
@@ -1604,10 +1623,33 @@ def add_classic_shape_terms(prob, x, players, fixed_counts,
     - DST band: per-row coefficient -- +dst_band_bonus on a DST priced in
       CL_DST_BAND_RANGE, -dst_expensive_penalty on one priced >=
       CL_DST_EXPENSIVE_MIN. Exactly one DST is rostered, so it's applied once.
-    - FLEX position: classic has no explicit FLEX variable -- FLEX is
-      whichever of RB/WR/TE exceeds its fixed count. So the term is linear:
-      flex_rb_bonus * (n_RB - fixed_RB) - flex_wr_penalty * (n_WR - fixed_WR).
-      With flex_count=1 each bracket is exactly 0 or 1.
+    - FLEX position (flex_rb_bonus/flex_wr_penalty): classic has no explicit
+      FLEX variable -- FLEX is whichever of RB/WR/TE exceeds its fixed count.
+      So the term is linear: flex_rb_bonus * (n_RB - fixed_RB) -
+      flex_wr_penalty * (n_WR - fixed_WR). With flex_count=1 each bracket is
+      exactly 0 or 1. Both default 0.0 (dead per the 2026-10-02 controlled
+      re-fit -- kept only so an explicit override still works).
+    - FLEX WR price tier (flex_wr_highprice_bonus/flex_wr_midprice_penalty):
+      2026-10-02, the live replacement -- EXACTLY scoped to the discretionary
+      4th WR, unlike flex_rb_bonus/flex_wr_penalty's count-only bracket above
+      (fine for a flat per-position bonus, not fine for a price-conditional
+      one: a flat term doesn't care WHICH extra WR you have, but this one
+      does). Mechanics: a binary y[p] per selected-WR-eligible player, with
+      y[p] <= x[p] and sum(y) == n_WR - fixed_WR (0 normally, 1 when FLEX is
+      a WR -- same bracket as flex_wr_penalty, just now also pinned to
+      specific players). The price term is then written in y, not x, so it
+      can only ever fire on AS MANY players as the roster actually has beyond
+      its fixed WR requirement -- never on a mandatory WR, even if that WR's
+      own salary happens to fall in CL_FLEX_WR_MID_RANGE. The solver (which
+      is free to choose which selected WR(s) get y=1) naturally tags
+      whichever one maximizes this term: the priciest WR if that clears
+      CL_FLEX_WR_HIGH_MIN (to claim the bonus), or the cheapest non-mid WR if
+      one exists (to dodge the penalty) -- so the mid-price penalty only ever
+      bites a roster where EVERY selected WR beyond the fixed 3 is, in fact,
+      mid-priced; it can't land on a required WR, and two $6.3k+ WRs only
+      earn the bonus once (only one y can be 1).
+      +flex_wr_highprice_bonus if the tagged WR is priced >= CL_FLEX_WR_HIGH_MIN,
+      -flex_wr_midprice_penalty if priced in CL_FLEX_WR_MID_RANGE.
     - Punt count is a whole-roster property, so it needs aux variables.
       punt_count = sum(x over non-DST rows with salary <= CL_PUNT_MAX_SALARY).
         z_zero (binary) >= 1 - punt_count      -> forced 1 only at 0 punts
@@ -1617,7 +1659,8 @@ def add_classic_shape_terms(prob, x, players, fixed_counts,
       1 -> (0,0); 2 -> (0,0); 3 -> (0,1); 4 -> (0,1). z_three is a flat
       bucket penalty (the evidence is a "3+" bucket, not per-extra-punt)."""
     if not any((dst_band_bonus, dst_expensive_penalty, zero_punt_penalty,
-                three_plus_punt_penalty, flex_rb_bonus, flex_wr_penalty)):
+                three_plus_punt_penalty, flex_rb_bonus, flex_wr_penalty,
+                flex_wr_highprice_bonus, flex_wr_midprice_penalty)):
         return None
     pl = players.set_index("player_id")
     salary = pl["salary"]
@@ -1642,6 +1685,24 @@ def add_classic_shape_terms(prob, x, players, fixed_counts,
         wrs = [pid for pid in x if position[pid] == "WR"]
         terms.append(-flex_wr_penalty * (pulp.lpSum(x[p] for p in wrs) - fixed_counts.get("WR", 0)))
 
+    if flex_wr_highprice_bonus or flex_wr_midprice_penalty:
+        mid_lo, mid_hi = CL_FLEX_WR_MID_RANGE
+        wrs = [pid for pid in x if position[pid] == "WR"]
+        # y[p]: "is p the discretionary (beyond-fixed-count) WR". Tied exactly
+        # to the real extra-WR bracket, so it can only be 1 for as many
+        # players as the roster actually has beyond fixed_counts["WR"].
+        y = {pid: pulp.LpVariable(f"cl_flex_wr_tag_{pid}", cat="Binary") for pid in wrs}
+        for pid in wrs:
+            prob += y[pid] <= x[pid], f"cl_flex_wr_tag_le_x_{pid}"
+        prob += (pulp.lpSum(y[p] for p in wrs)
+                 == pulp.lpSum(x[p] for p in wrs) - fixed_counts.get("WR", 0)), "cl_flex_wr_tag_count"
+        for pid in wrs:
+            s = salary[pid]
+            if flex_wr_highprice_bonus and s >= CL_FLEX_WR_HIGH_MIN:
+                terms.append(flex_wr_highprice_bonus * y[pid])
+            elif flex_wr_midprice_penalty and mid_lo <= s < mid_hi:
+                terms.append(-flex_wr_midprice_penalty * y[pid])
+
     if zero_punt_penalty or three_plus_punt_penalty:
         punt_ids = [pid for pid in x
                     if position[pid] not in CL_DST_POSITIONS and salary[pid] <= CL_PUNT_MAX_SALARY]
@@ -1665,7 +1726,9 @@ def classic_shape_adjustment(lineup: pd.DataFrame, fixed_counts: dict,
                              zero_punt_penalty: float = 0.0,
                              three_plus_punt_penalty: float = 0.0,
                              flex_rb_bonus: float = 0.0,
-                             flex_wr_penalty: float = 0.0) -> float:
+                             flex_wr_penalty: float = 0.0,
+                             flex_wr_highprice_bonus: float = 0.0,
+                             flex_wr_midprice_penalty: float = 0.0) -> float:
     """Same terms as add_classic_shape_terms(), evaluated on a solved lineup.
     Used by build_multi_lineup()'s cross-stack-candidate comparison so the
     soft terms aren't silently dropped when picking the best candidate.
@@ -1681,6 +1744,20 @@ def classic_shape_adjustment(lineup: pd.DataFrame, fixed_counts: dict,
             total -= dst_expensive_penalty
     total += flex_rb_bonus * (int((pos == "RB").sum()) - fixed_counts.get("RB", 0))
     total -= flex_wr_penalty * (int((pos == "WR").sum()) - fixed_counts.get("WR", 0))
+    if flex_wr_highprice_bonus or flex_wr_midprice_penalty:
+        mid_lo, mid_hi = CL_FLEX_WR_MID_RANGE
+        wr_sal = sal[pos == "WR"]
+        n_extra_wr = len(wr_sal) - fixed_counts.get("WR", 0)
+        if n_extra_wr > 0:
+            # Mirrors add_classic_shape_terms()'s y[p] tagging exactly: the
+            # solver always tags whichever n_extra_wr WR(s) maximize this
+            # term, so replicate that choice here rather than scoring every
+            # selected WR -- a mandatory (non-extra) WR never contributes,
+            # regardless of its own salary.
+            per_row = [flex_wr_highprice_bonus if s >= CL_FLEX_WR_HIGH_MIN
+                       else (-flex_wr_midprice_penalty if mid_lo <= s < mid_hi else 0.0)
+                       for s in wr_sal]
+            total += sum(sorted(per_row, reverse=True)[:n_extra_wr])
     n_punts = int(((~pos.isin(CL_DST_POSITIONS)) & (sal <= CL_PUNT_MAX_SALARY)).sum())
     if n_punts == 0:
         total -= zero_punt_penalty
@@ -1712,8 +1789,10 @@ def solve_lineup(players: pd.DataFrame, salary_cap: int, fixed_counts: dict,
                   zero_punt_penalty: float = 0.0,
                   three_plus_punt_penalty: float = 0.0,
                   flex_rb_bonus: float = 0.0,
-                  flex_wr_penalty: float = 0.0) -> pd.DataFrame:
-    """`dst_band_bonus` .. `flex_wr_penalty` are the 2026-09-29 classic
+                  flex_wr_penalty: float = 0.0,
+                  flex_wr_highprice_bonus: float = 0.0,
+                  flex_wr_midprice_penalty: float = 0.0) -> pd.DataFrame:
+    """`dst_band_bonus` .. `flex_wr_midprice_penalty` are the 2026-09-29 classic
     construction soft terms (`--cl-*` flags; evidence in
     HANDOFF_classic_lineupstudy_findings_2026-09-29.md §3/§5, tier = soft
     per WK3_CONSTRUCTION_RULE_AUDIT.md §2). All default 0.0, which adds no
@@ -1832,6 +1911,8 @@ def solve_lineup(players: pd.DataFrame, salary_cap: int, fixed_counts: dict,
         dst_band_bonus=dst_band_bonus, dst_expensive_penalty=dst_expensive_penalty,
         zero_punt_penalty=zero_punt_penalty, three_plus_punt_penalty=three_plus_punt_penalty,
         flex_rb_bonus=flex_rb_bonus, flex_wr_penalty=flex_wr_penalty,
+        flex_wr_highprice_bonus=flex_wr_highprice_bonus,
+        flex_wr_midprice_penalty=flex_wr_midprice_penalty,
     )
     objective = (
         pulp.lpSum(x[pid] * proj[pid] for pid in x)
@@ -4483,14 +4564,50 @@ def main():
     )
     parser.add_argument(
         "--cl-flex-rb-bonus", type=float, default=pdef("cl-flex-rb-bonus", 0.0),
-        help="Classic ONLY, soft: points added when FLEX is an RB (3 RBs). "
-             "FLEX=RB is +0.7 to +1.0 cash pts, 4/4 seasons. Default 0.0 (off).",
+        help="Classic ONLY, soft, SUPERSEDED 2026-10-02: points added when "
+             "FLEX is an RB (3 RBs). The raw +0.7 to +1.0 cash-pt lift did "
+             "not survive a projection-controlled re-fit (RB vs TE is ~0 "
+             "at every FLEX salary tier) -- see CLASSIC_RULES.md rule 3. "
+             "Kept only for manual override; no evidence supports a "
+             "nonzero value. Default 0.0 (off).",
     )
     parser.add_argument(
         "--cl-flex-wr-penalty", type=float, default=pdef("cl-flex-wr-penalty", 0.0),
-        help="Classic ONLY, soft: points subtracted when FLEX is a WR (4 "
-             "WRs). FLEX=WR is -1.2 to -1.5 cash pts, 0/4 seasons. TE FLEX "
-             "(-0.3 to -0.6) is untouched. Default 0.0 (off).",
+        help="Classic ONLY, soft, SUPERSEDED 2026-10-02: flat points "
+             "subtracted when FLEX is a WR (4 WRs), regardless of that WR's "
+             "price. The raw -1.2 to -1.5 cash-pt lift did not survive a "
+             "controlled re-fit -- WR vs TE is ~0 once controlled, and the "
+             "real effect reverses by FLEX-WR salary (see --cl-flex-wr-"
+             "highprice-bonus / --cl-flex-wr-midprice-penalty below and "
+             "CLASSIC_RULES.md rule 3). Kept only for manual override. "
+             "Default 0.0 (off).",
+    )
+    parser.add_argument(
+        "--cl-flex-wr-highprice-bonus", type=float,
+        default=pdef("cl-flex-wr-highprice-bonus", 0.0),
+        help="Classic ONLY, soft: points added per rostered WR priced >= "
+             f"${CL_FLEX_WR_HIGH_MIN:,} (CL_FLEX_WR_HIGH_MIN). 2026-10-02 "
+             "controlled re-fit (analysis/flex_position/, 381 contests): a "
+             "FLEX-tier WR this expensive beats FLEX=TE by +2.8 to +4.1 "
+             "points and +3.9 to +6.1 cash-rate pts, 4/4 seasons, "
+             "SE/3MAX/20MAX all pass. Applied per selected WR at this price, not scoped "
+             "to 'whichever one is in FLEX' -- classic has no explicit FLEX "
+             "variable (same limitation as --cl-flex-rb-bonus above), and "
+             "the salary cap makes 2+ WRs this expensive rare. See "
+             "CLASSIC_RULES.md rule 3. Default 0.0 (off).",
+    )
+    parser.add_argument(
+        "--cl-flex-wr-midprice-penalty", type=float,
+        default=pdef("cl-flex-wr-midprice-penalty", 0.0),
+        help="Classic ONLY, soft: points subtracted per rostered WR priced "
+             f"${CL_FLEX_WR_MID_RANGE[0]:,}-${CL_FLEX_WR_MID_RANGE[1]:,} "
+             "(CL_FLEX_WR_MID_RANGE). 2026-10-02 controlled re-fit: a "
+             "FLEX-tier WR in this band is a real downgrade vs FLEX=TE "
+             "(-1.3 to -1.5 points, -1.6 to -1.8 cash pts, 4/4 seasons; "
+             "passes in SE and 20MAX, trends same direction but doesn't "
+             "clear in 3MAX). Same per-row scoping caveat as "
+             "--cl-flex-wr-highprice-bonus above. See CLASSIC_RULES.md "
+             "rule 3. Default 0.0 (off).",
     )
     # Session 16 -- Per-Player Exposure Override + Thumbs Up/Down (decisions
     # #48-55).
@@ -4777,6 +4894,8 @@ def main():
         three_plus_punt_penalty=args.cl_three_plus_punt_penalty,
         flex_rb_bonus=args.cl_flex_rb_bonus,
         flex_wr_penalty=args.cl_flex_wr_penalty,
+        flex_wr_highprice_bonus=args.cl_flex_wr_highprice_bonus,
+        flex_wr_midprice_penalty=args.cl_flex_wr_midprice_penalty,
     )
     if any(v < 0 for v in classic_shape.values()):
         parser.error("--cl-* weights must be >= 0 (each flag's sign is already "

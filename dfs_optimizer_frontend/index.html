@@ -1721,12 +1721,20 @@ in this browser's localStorage.</p>
                 <input type="number" id="ctrlClThreePlusPuntPenalty" min="0" step="0.25" value="0">
               </div>
               <div>
-                <span class="field-label">FLEX=RB bonus</span>
+                <span class="field-label">FLEX=RB bonus (superseded, see rule 3)</span>
                 <input type="number" id="ctrlClFlexRbBonus" min="0" step="0.25" value="0">
               </div>
               <div>
-                <span class="field-label">FLEX=WR penalty</span>
+                <span class="field-label">FLEX=WR flat penalty (superseded, see rule 3)</span>
                 <input type="number" id="ctrlClFlexWrPenalty" min="0" step="0.25" value="0">
+              </div>
+              <div>
+                <span class="field-label">WR $6.3k+ FLEX bonus</span>
+                <input type="number" id="ctrlClFlexWrHighpriceBonus" min="0" step="0.25" value="0">
+              </div>
+              <div>
+                <span class="field-label">WR $4.9-6.3k FLEX penalty</span>
+                <input type="number" id="ctrlClFlexWrMidpricePenalty" min="0" step="0.25" value="0">
               </div>
             </div>
           </details>
@@ -3353,7 +3361,9 @@ in this browser's localStorage.</p>
     "ctrlSdExcludeCptPositions", "ctrlSdKCptPenalty", "ctrlSdHeavySideCptPenalty",
     // 2026-09-29 -- classic construction soft terms (--cl-*).
     "ctrlClDstBandBonus", "ctrlClDstExpensivePenalty", "ctrlClZeroPuntPenalty",
-    "ctrlClThreePlusPuntPenalty", "ctrlClFlexRbBonus", "ctrlClFlexWrPenalty"
+    "ctrlClThreePlusPuntPenalty", "ctrlClFlexRbBonus", "ctrlClFlexWrPenalty",
+    // 2026-10-02 -- FLEX WR price-tier re-fit, replaces the flat RB/WR terms above.
+    "ctrlClFlexWrHighpriceBonus", "ctrlClFlexWrMidpricePenalty"
   ];
 
   function readPresetValues() {
@@ -3410,19 +3420,36 @@ in this browser's localStorage.</p>
       // WK3 postmortem item 5 (2026-09-30) -- matches data/optimizer_presets.json's
       // own cl-* values exactly (kept in sync by hand, same convention as every
       // other field here). See CLASSIC_RULES.md for the evidence.
+      // FLEX RB/WR flat terms zeroed 2026-10-02 (all four presets): did not
+      // survive a projection-controlled re-fit. Replaced by a WR-price-tier
+      // pair (ctrlClFlexWrHighpriceBonus/ctrlClFlexWrMidpricePenalty): a
+      // $6,300+ WR in FLEX is a real, large win; a $4,900-6,300 WR is a real
+      // loss; RB/TE/cheap-WR are all a wash. See CLASSIC_RULES.md rule 3.
       ctrlClDstBandBonus: "0.8", ctrlClDstExpensivePenalty: "2.0",
       ctrlClZeroPuntPenalty: "1.5", ctrlClThreePlusPuntPenalty: "2.5",
-      ctrlClFlexRbBonus: "0.6", ctrlClFlexWrPenalty: "1.0"
+      ctrlClFlexRbBonus: "0", ctrlClFlexWrPenalty: "0",
+      ctrlClFlexWrHighpriceBonus: "3", ctrlClFlexWrMidpricePenalty: "1.3"
     },
     "SE / 3-Max GPP": {
       // ctrlMinSalary added 2026-10-01 -- see "Cash" preset's own comment above.
+      // UPDATED 2026-10-02: bring-back dropped (true -> false) -- the controlled
+      // regression behind the FLEX zeroing above also checked bring-back and found
+      // it does not survive the quality subset (CI spans/crosses 0 once other shape
+      // terms are held fixed); it was a HARD constraint (>=1 opponent player), not a
+      // soft lean, so dropping it can only help or be neutral, never hurt. The other
+      // five fields (max-exposure/uniqueness/stack-size/randomization) were changed
+      // to match "SE3Max Pool (100)" below exactly, since that preset is the
+      // validated structure (replay_batch.py) and this one's own settings had never
+      // been checked on their own -- the two presets are now identical apart from
+      // n-lineups (3 vs 100).
       ctrlMinSalary: "0",
-      ctrlNLineups: "3", ctrlMaxExposure: "100", ctrlUniqueness: "3",
-      ctrlRandomization: "3", ctrlStackMode: "qb", ctrlStackSize: "1",
-      ctrlBringBack: true, ctrlAllowSkillVsOppDst: false, ctrlLambda: "0",
+      ctrlNLineups: "3", ctrlMaxExposure: "50", ctrlUniqueness: "1",
+      ctrlRandomization: "5", ctrlStackMode: "qb", ctrlStackSize: "2",
+      ctrlBringBack: false, ctrlAllowSkillVsOppDst: false, ctrlLambda: "0",
       ctrlClDstBandBonus: "0.8", ctrlClDstExpensivePenalty: "2.0",
       ctrlClZeroPuntPenalty: "1.5", ctrlClThreePlusPuntPenalty: "2.5",
-      ctrlClFlexRbBonus: "0.6", ctrlClFlexWrPenalty: "1.0"
+      ctrlClFlexRbBonus: "0", ctrlClFlexWrPenalty: "0",
+      ctrlClFlexWrHighpriceBonus: "3", ctrlClFlexWrMidpricePenalty: "1.3"
     },
     // 2026-09-27: the 100-lineup SE3max candidate-pool build (pick the best
     // lineup out of a big diversified pool), separate from the 3-lineup
@@ -3439,13 +3466,17 @@ in this browser's localStorage.</p>
     // same bug, and replay_batch.py (this preset's own validation script)
     // never sets min_salary either, so it ran with the 0 default.
     "SE3Max Pool (100)": {
+      // UPDATED 2026-10-02: bring-back dropped (true -> false) -- see "SE / 3-Max
+      // GPP" above's own comment for the evidence; it was a HARD constraint, not a
+      // soft lean, so dropping it can only help or be neutral.
       ctrlMinSalary: "0",
       ctrlNLineups: "100", ctrlMaxExposure: "50", ctrlUniqueness: "1",
       ctrlRandomization: "5", ctrlStackMode: "qb", ctrlStackSize: "2",
-      ctrlBringBack: true, ctrlAllowSkillVsOppDst: false, ctrlLambda: "0",
+      ctrlBringBack: false, ctrlAllowSkillVsOppDst: false, ctrlLambda: "0",
       ctrlClDstBandBonus: "0.8", ctrlClDstExpensivePenalty: "2.0",
       ctrlClZeroPuntPenalty: "1.5", ctrlClThreePlusPuntPenalty: "2.5",
-      ctrlClFlexRbBonus: "0.6", ctrlClFlexWrPenalty: "1.0"
+      ctrlClFlexRbBonus: "0", ctrlClFlexWrPenalty: "0",
+      ctrlClFlexWrHighpriceBonus: "3", ctrlClFlexWrMidpricePenalty: "1.3"
     },
     "MME GPP (20-150)": {
       // ctrlMinSalary added 2026-10-01 -- see "Cash" preset's own comment above.
@@ -3461,7 +3492,8 @@ in this browser's localStorage.</p>
       ctrlDartExposureEnabled: true, ctrlDartExposureCap: "10", ctrlDartFloorThreshold: "1.0",
       ctrlClDstBandBonus: "0.8", ctrlClDstExpensivePenalty: "2.0",
       ctrlClZeroPuntPenalty: "1.5", ctrlClThreePlusPuntPenalty: "2.5",
-      ctrlClFlexRbBonus: "0.6", ctrlClFlexWrPenalty: "1.0"
+      ctrlClFlexRbBonus: "0", ctrlClFlexWrPenalty: "0",
+      ctrlClFlexWrHighpriceBonus: "3", ctrlClFlexWrMidpricePenalty: "1.3"
     },
     // WK3 postmortem §2 parking-lot #2 (2026-09-29) -- Showdown construction
     // rules only (every other control is left as-is). Values match
@@ -4970,7 +5002,9 @@ in this browser's localStorage.</p>
        ["ctrlClZeroPuntPenalty", "cl_zero_punt_penalty"],
        ["ctrlClThreePlusPuntPenalty", "cl_three_plus_punt_penalty"],
        ["ctrlClFlexRbBonus", "cl_flex_rb_bonus"],
-       ["ctrlClFlexWrPenalty", "cl_flex_wr_penalty"]].forEach(function (pair) {
+       ["ctrlClFlexWrPenalty", "cl_flex_wr_penalty"],
+       ["ctrlClFlexWrHighpriceBonus", "cl_flex_wr_highprice_bonus"],
+       ["ctrlClFlexWrMidpricePenalty", "cl_flex_wr_midprice_penalty"]].forEach(function (pair) {
         var v = parseFloat(document.getElementById(pair[0]).value);
         if (!isNaN(v) && v > 0) params[pair[1]] = String(v);
       });
