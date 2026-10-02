@@ -313,6 +313,13 @@ async function handleDispatch(url, env) {
     "cl_dst_band_bonus", "cl_dst_expensive_penalty",
     "cl_zero_punt_penalty", "cl_three_plus_punt_penalty",
     "cl_flex_rb_bonus", "cl_flex_wr_penalty",
+    // Require-N-From-Group -- classic-only hard "at least N of this
+    // explicit player_id pool" floor (optimizer.py --require-n-from-
+    // group). One "ID,ID,ID:N" string, passed through unchanged --
+    // optimizer.py's own parse_group_min_spec() does the parsing/
+    // validation. The pool is always the user's own manual selection,
+    // never auto-populated from this project's ownership model.
+    "require_n_from_group",
   ];
   const params = {};
   for (const key of passthroughKeys) {

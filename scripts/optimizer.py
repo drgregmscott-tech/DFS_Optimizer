@@ -784,6 +784,45 @@ def parse_player_exposure_list(raw: str, flag_name: str) -> dict:
 
 
 # ---------------------------------------------------------------------------
+# Require-N-From-Group -- generic "at least N of these specific players"
+# ---------------------------------------------------------------------------
+# A hard-minimum counterpart to --lock: --lock pins the SAME player(s) into
+# every lineup; this pins a floor over a user-supplied POOL of candidates,
+# where WHICH members satisfy it is left to the solver and can vary lineup
+# to lineup within a batch. Deliberately takes only an explicit, manually-
+# chosen player_id list -- never an auto-populated "top-K by our own
+# ownership model" pool, since that model's pre-lock ranking has already
+# failed its own validation check (see SHOWDOWN_RULES.md rule 10's 0.56
+# field correlation) and this flag would otherwise be forcing lineups
+# around a ranking we don't trust yet.
+def parse_group_min_spec(raw: str, flag_name: str) -> tuple:
+    """Parses '--require-n-from-group 101,102,103,104,105:3' into
+    ({'101','102','103','104','105'}, 3) -- the player_id pool and the
+    minimum number of that pool required in every lineup. The ':N' suffix
+    is only on the trailing token; every other comma-separated entry is a
+    bare player_id (same plain-id convention as --lock/--exclude)."""
+    if ":" not in raw:
+        raise SystemExit(
+            f"{flag_name} must end with :N (e.g. 101,102,103:2), got: {raw!r}"
+        )
+    ids_raw, _, n_raw = raw.rpartition(":")
+    try:
+        n = int(n_raw.strip())
+    except ValueError:
+        raise SystemExit(f"{flag_name} -- trailing :N must be an integer, got: {n_raw!r}")
+    if n < 1:
+        raise SystemExit(f"{flag_name} -- N must be >= 1, got {n}.")
+    pool = {pid.strip() for pid in ids_raw.split(",") if pid.strip()}
+    if not pool:
+        raise SystemExit(f"{flag_name} resolved to an empty player pool: {raw!r}")
+    if n > len(pool):
+        raise SystemExit(
+            f"{flag_name} -- N ({n}) cannot exceed the pool size ({len(pool)})."
+        )
+    return pool, n
+
+
+# ---------------------------------------------------------------------------
 # Session 7.2 -- Lock / Exclude (UI-Optimizer Integration)
 # ---------------------------------------------------------------------------
 # Continuing the numbering from Session 3.3's stacking decisions (#14-21).
@@ -1255,6 +1294,25 @@ def add_exposure_cap_constraints(prob, x: dict, players: pd.DataFrame,
             if pool:
                 label = "_".join(sorted(game_key))
                 prob += pulp.lpSum(x[pid] for pid in pool) <= cap, f"max_game_{label}"
+
+
+def add_group_min_constraint(prob, x: dict, group_player_ids: set, group_min_count: int = 0):
+    """Hard ILP floor (--require-n-from-group): requires at least
+    `group_min_count` of `group_player_ids` in the lineup. Unlike --lock,
+    this does NOT pin which members are used -- the solver picks whichever
+    `group_min_count` of the pool score best, and that can differ lineup to
+    lineup in a multi-lineup build. No-op (identical to every prior
+    session's behavior) unless both args are supplied."""
+    if not group_player_ids or not group_min_count:
+        return
+    pool = [pid for pid in group_player_ids if pid in x]
+    if len(pool) < group_min_count:
+        raise RuntimeError(
+            f"--require-n-from-group impossible: only {len(pool)} of the "
+            f"{len(group_player_ids)} requested player_id(s) are in the "
+            f"current candidate pool, need at least {group_min_count}."
+        )
+    prob += pulp.lpSum(x[pid] for pid in pool) >= group_min_count, "group_min"
 
 
 # ---------------------------------------------------------------------------
@@ -1826,6 +1884,8 @@ def solve_lineup(players: pd.DataFrame, salary_cap: int, fixed_counts: dict,
                   lam: float = 0.0,
                   max_team_players: dict = None,
                   max_game_players: dict = None,
+                  group_player_ids: set = None,
+                  group_min_count: int = 0,
                   exclude_skill_vs_opp_dst: bool = DEFAULT_EXCLUDE_SKILL_VS_OPP_DST,
                   dst_band_bonus: float = 0.0,
                   dst_expensive_penalty: float = 0.0,
@@ -2094,6 +2154,10 @@ def solve_lineup(players: pd.DataFrame, salary_cap: int, fixed_counts: dict,
         prob, x, players,
         max_team_players=max_team_players, max_game_players=max_game_players,
     )
+
+    # --require-n-from-group: generic hard "at least N of these specific
+    # players" floor, see add_group_min_constraint()'s own docstring.
+    add_group_min_constraint(prob, x, group_player_ids, group_min_count)
 
     # Session 17 -- skill-vs-opposing-DST exclusion (decision #56). No-op
     # only if explicitly disabled via --allow-skill-vs-opp-dst; ON by
@@ -2550,6 +2614,8 @@ def build_single_lineup(site: str, slate_id: str, randomization_pct: float = DEF
                          flex_positions: set = None,
                          max_team_players: dict = None,
                          max_game_players: dict = None,
+                         group_player_ids: set = None,
+                         group_min_count: int = 0,
                          participation_floors: dict = None,
                          thumbs_up_ids: set = None,
                          thumbs_down_ids: set = None,
@@ -2572,6 +2638,15 @@ def build_single_lineup(site: str, slate_id: str, randomization_pct: float = DEF
                 f"found in this pool -- ignored.", file=sys.stderr,
             )
         players = players[~players["player_id"].isin(excluded_player_ids)].copy()
+
+    if group_player_ids:
+        missing_group = group_player_ids - set(players["player_id"])
+        if missing_group:
+            print(
+                f"NOTE: --require-n-from-group player_id(s) {sorted(missing_group)} "
+                f"not found in this pool -- ignored (shrinks the effective "
+                f"pool, may make the requested N infeasible).", file=sys.stderr,
+            )
 
     # Decision #34 -- see build_multi_lineup() for full rationale. Same
     # filter, same lock exemption, applied here for single-lineup mode too.
@@ -2658,6 +2733,7 @@ def build_single_lineup(site: str, slate_id: str, randomization_pct: float = DEF
         min_salary=min_salary, min_total_ownership=min_total_ownership, own_penalty=own_penalty,
         flex_positions=flex_positions, lam=lam,
         max_team_players=max_team_players, max_game_players=max_game_players,
+        group_player_ids=group_player_ids, group_min_count=group_min_count,
         exclude_skill_vs_opp_dst=exclude_skill_vs_opp_dst,
         **(classic_shape or {}),
     )
@@ -2720,6 +2796,8 @@ def build_multi_lineup(site: str, slate_id: str, n_lineups: int = DEFAULT_N_LINE
                         flex_positions: set = None,
                         max_team_players: dict = None,
                         max_game_players: dict = None,
+                        group_player_ids: set = None,
+                        group_min_count: int = 0,
                         participation_floors: dict = None,
                         thumbs_up_ids: set = None,
                         thumbs_down_ids: set = None,
@@ -2783,6 +2861,15 @@ def build_multi_lineup(site: str, slate_id: str, n_lineups: int = DEFAULT_N_LINE
                 f"found in this pool -- ignored.", file=sys.stderr,
             )
         players_all = players_all[~players_all["player_id"].isin(excluded_player_ids)].copy()
+
+    if group_player_ids:
+        missing_group = group_player_ids - set(players_all["player_id"])
+        if missing_group:
+            print(
+                f"NOTE: --require-n-from-group player_id(s) {sorted(missing_group)} "
+                f"not found in this pool -- ignored (shrinks the effective "
+                f"pool, may make the requested N infeasible).", file=sys.stderr,
+            )
 
     # Decision #34: pool-level minimum-projection filter. This is a
     # distinct step from optimization itself -- the same "filter pools:
@@ -2937,6 +3024,7 @@ def build_multi_lineup(site: str, slate_id: str, n_lineups: int = DEFAULT_N_LINE
                     min_salary=min_salary, min_total_ownership=min_total_ownership, own_penalty=own_penalty,
                     flex_positions=flex_positions, lam=lam,
                     max_team_players=max_team_players, max_game_players=max_game_players,
+                    group_player_ids=group_player_ids, group_min_count=group_min_count,
                     exclude_skill_vs_opp_dst=exclude_skill_vs_opp_dst,
                     **(classic_shape or {}),
                 )
@@ -4329,6 +4417,19 @@ def main():
              "removes BOTH his Captain and FLEX rows; append ':CPT' / ':MVP' "
              "/ ':FLEX' (e.g. '00-0012345:CPT') to remove only that one row.",
     )
+    parser.add_argument(
+        "--require-n-from-group", default=None,
+        help="Comma-separated player_id pool with a trailing :N (e.g. "
+             "'101,102,103,104,105:3') -- requires at least N of that pool "
+             "in every generated lineup (classic only). Unlike --lock, does "
+             "NOT pin which members are used; the solver picks whichever N "
+             "score best, and that can vary lineup to lineup in a batch. "
+             "The pool must be supplied explicitly (manually-chosen "
+             "player_ids) -- there is no auto-populate-from-ownership-model "
+             "option, since this project's own pre-lock ownership ranking "
+             "hasn't been validated against the field closely enough to "
+             "build lineups around yet.",
+    )
     # Session 7.3 -- Salary Floor / FLEX Eligibility Restriction (decisions #28-29).
     parser.add_argument(
         "--min-salary-pct", type=float, default=DEFAULT_MIN_SALARY_PCT,
@@ -5032,6 +5133,17 @@ def main():
                         f"(decision #38).", file=sys.stderr,
                     )
 
+    group_player_ids, group_min_count = (
+        parse_group_min_spec(args.require_n_from_group, "--require-n-from-group")
+        if args.require_n_from_group else (None, 0)
+    )
+    if group_player_ids and showdown_mode:
+        parser.error(
+            "--require-n-from-group is classic-only for now (Showdown's own "
+            "chalk/ownership levers were dropped for the same pre-lock-"
+            "accuracy reason -- see SHOWDOWN_RULES.md rule 10)."
+        )
+
     # Session 15 -- participation floor. Originally scoped to classic
     # slates only, on the theory that Showdown's role/position model
     # (one player occupies Captain/MVP or FLEX, any position eligible
@@ -5205,6 +5317,7 @@ def main():
             flex_positions=flex_positions,
             lam=args.lam,
             max_team_players=max_team_players, max_game_players=max_game_players,
+            group_player_ids=group_player_ids, group_min_count=group_min_count,
             participation_floors=participation_floors,
             thumbs_up_ids=thumbs_up_ids, thumbs_down_ids=thumbs_down_ids,
             player_exposure=player_exposure,
@@ -5253,6 +5366,8 @@ def main():
               + (f", randomization: {args.randomization_pct:.0f}%)" if args.randomization_pct > 0 else ", randomization: off)"))
         _print_control_summary(locked_player_ids, excluded_player_ids,
                                 thumbs_up_ids, thumbs_down_ids, player_exposure)
+        if group_player_ids:
+            print(f"Require-N-from-group: >= {group_min_count} of {sorted(group_player_ids)} in every lineup")
         print("Top exposure (player_id: times used):")
         for pid, cnt in top_exposure:
             if cnt > 0:
@@ -5286,6 +5401,7 @@ def main():
             flex_positions=flex_positions,
             lam=args.lam,
             max_team_players=max_team_players, max_game_players=max_game_players,
+            group_player_ids=group_player_ids, group_min_count=group_min_count,
             participation_floors=participation_floors,
             thumbs_up_ids=thumbs_up_ids, thumbs_down_ids=thumbs_down_ids,
             exclude_skill_vs_opp_dst=not args.allow_skill_vs_opp_dst,

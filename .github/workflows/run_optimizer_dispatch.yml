@@ -147,6 +147,13 @@ jobs:
           args += flag("--lock", "lock")
           args += flag("--exclude", "exclude")
 
+          # Classic-only hard "at least N of this pool" floor -- the pool
+          # is the user's own explicit player_id selection, never an
+          # auto-populated one, so this passes through unchanged as one
+          # "ID,ID,ID:N" string (optimizer.py's parse_group_min_spec does
+          # the actual parsing/validation).
+          args += flag("--require-n-from-group", "require_n_from_group")
+
           args += flag("--min-salary-pct", "min_salary_pct", float)
           args += flag("--flex-positions", "flex_positions")
 

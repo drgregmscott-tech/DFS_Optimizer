@@ -1785,6 +1785,24 @@ in this browser's localStorage.</p>
           </div>
           <div class="chip-select" id="minTeamList"></div>
         </div>
+        <!-- Require-N-From-Group -- classic-only hard "at least N of these
+             specific players" floor. Which N of the picked pool end up in
+             a given lineup is left to the solver (and can differ lineup to
+             lineup in a batch) -- this is NOT the same as Lock above, which
+             pins the SAME player into every lineup. Hidden on Showdown --
+             see updateControlsVisibility(). -->
+        <div id="wrapGroupMinField" style="grid-column:1/-1;">
+          <span class="field-label">Require N From Group (classic only -- force at least N of these specific players into every lineup; which ones is left to the solver)</span>
+          <div class="preset-row">
+            <select id="groupPlayerSelect"></select>
+            <button class="upload-btn" id="btnAddGroupPlayer" type="button">Add to Group</button>
+          </div>
+          <div class="chip-select" id="groupPlayerList"></div>
+          <div class="preset-row" style="margin-top:6px;">
+            <span class="field-label" style="margin:0;">Minimum required in every lineup</span>
+            <input type="number" id="groupMinCountInput" min="1" max="20" value="1" style="width:70px">
+          </div>
+        </div>
       </div>
 
       <div class="controls-grid">
@@ -2038,6 +2056,11 @@ in this browser's localStorage.</p>
     // ---- Session 13.5 addition -- Showdown-only --min-team-players floor
     // (decision #47's UI lever, the mirror of maxTeamCaps above) ----
     minTeamFloors: { dk: {}, fd: {} },          // team -> floor int
+    // ---- Require-N-From-Group addition -- classic-only hard "at least N
+    // of this explicit player pool" floor (optimizer.py --require-n-from-
+    // group). groupPlayers is a manually-picked player_id set, never
+    // auto-populated from the ownership model (see HANDOFF discussion).
+    groupPlayers: { dk: {}, fd: {} },           // player_id -> true
     // ---- Session 4.3 additions (Finding 2 -- pivot panel) ----
     pivots: { dk: null, fd: null },             // each: { filename, byKey: { "name|team": [candidate rows, sorted by pivot_rank] } }
     // index into the CURRENTLY DISPLAYED lineup's rows array of the
@@ -4349,7 +4372,10 @@ in this browser's localStorage.</p>
      "wrapParticipationFloorsField",
      // Ad Hoc Session A6 -- optimizer.py rejects --dart-exposure-cap on
      // Showdown slates the same way (classic only for now).
-     "wrapDartExposureField"].forEach(function (id) {
+     "wrapDartExposureField",
+     // Require-N-From-Group -- classic only for now, same reasoning as
+     // Showdown's own dropped chalk/ownership levers.
+     "wrapGroupMinField"].forEach(function (id) {
       var el = document.getElementById(id);
       if (el) el.style.display = isShowdown ? "none" : "";
     });
@@ -4495,6 +4521,7 @@ in this browser's localStorage.</p>
       renderStackTeamOptions(); renderStackGameOptions();
       renderTeamCapSelect(); renderGameCapSelect(); renderTeamCapList(); renderGameCapList();
       renderMinTeamSelect(); renderMinTeamList();
+      renderGroupPlayerSelect(); renderGroupPlayerList();
       updateControlsVisibility();
       return;
     }
@@ -4539,6 +4566,8 @@ in this browser's localStorage.</p>
     renderGameCapList();
     renderMinTeamSelect();
     renderMinTeamList();
+    renderGroupPlayerSelect();
+    renderGroupPlayerList();
     updateControlsVisibility();
   }
 
@@ -4708,6 +4737,62 @@ in this browser's localStorage.</p>
         escapeHtml(t) + ': min ' + floors[t] + ' \u2715</button>';
     }).join("");
   }
+
+  // Require-N-From-Group -- classic-only hard "at least N of these
+  // specific players" floor. Select is populated from the loaded pool's
+  // player names (sorted), same "pick straight off the loaded slate"
+  // pattern as renderTeamCapSelect above -- a native <select> is also
+  // keyboard-searchable by typing a player's first letters, which covers
+  // "quick basic search to find a name" without a bespoke search widget.
+  function renderGroupPlayerSelect() {
+    var site = state.activeSite;
+    var pool = state.pool[site];
+    var select = document.getElementById("groupPlayerSelect");
+    if (!pool) { select.innerHTML = '<option value="">Upload a slate first</option>'; return; }
+    var already = state.groupPlayers[site];
+    var players = pool.players
+      .filter(function (p) { return !already[p.player_id]; })
+      .slice()
+      .sort(function (a, b) { return a.player_name.localeCompare(b.player_name); });
+    if (!players.length) { select.innerHTML = '<option value="">No more players</option>'; return; }
+    select.innerHTML = players.map(function (p) {
+      return '<option value="' + escapeHtml(p.player_id) + '">' +
+        escapeHtml(p.player_name) + ' (' + escapeHtml(p.position) + '-' + escapeHtml(p.team) + ')</option>';
+    }).join("");
+  }
+
+  function renderGroupPlayerList() {
+    var site = state.activeSite;
+    var pool = state.pool[site];
+    var group = state.groupPlayers[site];
+    var container = document.getElementById("groupPlayerList");
+    var ids = Object.keys(group);
+    if (!ids.length) { container.innerHTML = ""; return; }
+    var nameById = {};
+    if (pool) pool.players.forEach(function (p) { nameById[p.player_id] = p.player_name; });
+    container.innerHTML = ids.map(function (pid) {
+      return '<button type="button" class="tab-btn active" data-group-pid="' + escapeHtml(pid) + '">' +
+        escapeHtml(nameById[pid] || pid) + ' ✕</button>';
+    }).join("");
+  }
+
+  document.getElementById("btnAddGroupPlayer").addEventListener("click", function () {
+    var site = state.activeSite;
+    var pid = document.getElementById("groupPlayerSelect").value;
+    if (!pid) return;
+    state.groupPlayers[site][pid] = true;
+    renderGroupPlayerSelect();
+    renderGroupPlayerList();
+  });
+
+  document.getElementById("groupPlayerList").addEventListener("click", function (e) {
+    var btn = e.target.closest("button[data-group-pid]");
+    if (!btn) return;
+    var site = state.activeSite;
+    delete state.groupPlayers[site][btn.getAttribute("data-group-pid")];
+    renderGroupPlayerSelect();
+    renderGroupPlayerList();
+  });
 
   document.getElementById("btnAddMinTeamFloor").addEventListener("click", function () {
     var site = state.activeSite;
@@ -4894,6 +4979,18 @@ in this browser's localStorage.</p>
       var minFloorKeys = Object.keys(minFloors);
       if (minFloorKeys.length) {
         params.min_team_players = minFloorKeys.map(function (t) { return t + ":" + minFloors[t]; }).join(",");
+      }
+    }
+
+    // Require-N-From-Group -- classic-only hard "at least N of this
+    // explicit player_id pool" floor (optimizer.py --require-n-from-
+    // group). Mirrors the max_team_players "ID:N" shape above, but the
+    // pool is a user-picked list of players, not teams.
+    if (!isShowdown) {
+      var groupIds = Object.keys(state.groupPlayers[site]);
+      var groupMin = parseInt(document.getElementById("groupMinCountInput").value, 10);
+      if (groupIds.length && !isNaN(groupMin) && groupMin >= 1) {
+        params.require_n_from_group = groupIds.join(",") + ":" + Math.min(groupMin, groupIds.length);
       }
     }
 
