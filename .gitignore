@@ -41,7 +41,14 @@ data/_precip_cache.json
 # ECR blend fetch cache (re-fetched every build; audit logs live in data/ecr_blend/)
 data/ecr/
 
-# Fantasy Cruncher subscription exports and anything derived from them (repo is PUBLIC -- never commit)
+# Fantasy Cruncher subscription exports and anything derived from them. The
+# live working copy stays untracked/ungitignored here (so scripts/ can read
+# and regenerate it without a 6k+-file diff on every run) -- but as of
+# 2026-10-02 a zipped snapshot of it IS committed and pushed to this public
+# repo, as a deliberate owner decision (prior access to the source already
+# ended; owner accepted the exposure risk for backup purposes). See
+# `archive/history_data/README.md`. Don't assume this data has no backup
+# just because this line still excludes the live copy.
 data/fc_history/
 
 # Scratch research/backtest output (2026-10-01): disposable one-off analysis
@@ -53,5 +60,8 @@ data/fc_history/
 # snapshot -- it's all regenerable from the analysis script + the data/ inputs
 # that ARE tracked. Findings worth keeping get written up in a RESULTS.md/
 # HANDOFF doc at the repo root or folded into code -- the raw working files
-# don't need to ride along in git history.
+# don't need to ride along in git history. (A one-time zipped snapshot of
+# this folder as of 2026-10-02 is committed at `archive/history_data/` at the
+# owner's request -- that's a backup, not a reason to start tracking this
+# folder live; new scratch work still doesn't need to ride along in git.)
 analysis/
