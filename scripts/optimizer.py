@@ -1335,6 +1335,49 @@ def add_skill_vs_opp_dst_constraints(prob, x: dict, players: pd.DataFrame):
                 )
 
 
+PASS_CATCHER_POSITIONS = {"WR", "TE"}
+
+
+def add_qb_pass_catcher_constraints(prob, x: dict, players: pd.DataFrame):
+    """WK4 2026-10-02 -- was a passive construction_lint.py "info" flag only
+    (CL_pc_pair_no_qb, never enforced, never surfaced in the UI); promoted to
+    a hard roster-validity constraint on user request. For every team, 2+
+    rostered WR/TE from that team requires that team's QB also rostered --
+    same unconditional, no-flag treatment as the salary cap and roster-size
+    constraints above, not an opt-in strategy knob like add_stack_constraints.
+    If a team has no QB in the current pool at all (bye/locked out/excluded),
+    caps that team's rostered pass-catchers at 1 rather than leaving the rule
+    unenforceable. Only players present in `x` are referenced, same defensive
+    pattern as add_skill_vs_opp_dst_constraints()."""
+    for team in players["team"].unique():
+        catcher_pool = [
+            pid for pid in players.loc[
+                (players["team"] == team) & (players["position"].isin(PASS_CATCHER_POSITIONS)),
+                "player_id",
+            ]
+            if pid in x
+        ]
+        if len(catcher_pool) < 2:
+            continue
+        qb_pool = [
+            pid for pid in players.loc[
+                (players["team"] == team) & (players["position"] == "QB"), "player_id"
+            ]
+            if pid in x
+        ]
+        if not qb_pool:
+            prob += (
+                pulp.lpSum(x[pid] for pid in catcher_pool) <= 1,
+                f"qb_catcher_noqb_{team}",
+            )
+            continue
+        prob += (
+            pulp.lpSum(x[pid] for pid in catcher_pool)
+            <= 1 + (len(catcher_pool) - 1) * pulp.lpSum(x[pid] for pid in qb_pool),
+            f"qb_catcher_link_{team}",
+        )
+
+
 def validate_stack(lineup: pd.DataFrame, stack_mode: str,
                     stack_size: int = DEFAULT_STACK_SIZE, stack_positions: set = None,
                     bring_back: bool = False, target_team: str = None,
@@ -2057,6 +2100,11 @@ def solve_lineup(players: pd.DataFrame, salary_cap: int, fixed_counts: dict,
     # default, unlike every other optional constraint above.
     if exclude_skill_vs_opp_dst:
         add_skill_vs_opp_dst_constraints(prob, x, players)
+
+    # WK4 2026-10-02 -- 2+ same-team pass-catchers requires that team's QB
+    # also rostered. Unconditional, no flag -- a roster-validity rule, same
+    # treatment as salary cap/roster size, not an opt-in strategy knob.
+    add_qb_pass_catcher_constraints(prob, x, players)
 
     status = prob.solve(pulp.PULP_CBC_CMD(msg=False))
     if pulp.LpStatus[status] != "Optimal":
