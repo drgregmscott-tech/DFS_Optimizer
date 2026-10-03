@@ -2147,3 +2147,6 @@ timestamp_utc,trigger_type,site,step,status
 2026-10-03T15:24:35.239223+00:00,injury_refresh_scheduled,dk,dk_showdown_wk4_DET_CAR_04Oct2026,build_projections,success
 2026-10-03T15:24:35.239223+00:00,injury_refresh_scheduled,dk,dk_showdown_wk4_DET_CAR_04Oct2026,status_apply,success
 2026-10-03T15:24:35.239223+00:00,injury_refresh_scheduled,dk,dk_showdown_wk4_DET_CAR_04Oct2026,pivot_finder,success
+2026-10-03T15:26:25.506616+00:00,injury_refresh_scheduled,dk,dk_showdown_wk4_ATL_NO_05Oct2026,build_projections,success
+2026-10-03T15:26:25.506616+00:00,injury_refresh_scheduled,dk,dk_showdown_wk4_ATL_NO_05Oct2026,status_apply,success
+2026-10-03T15:26:25.506616+00:00,injury_refresh_scheduled,dk,dk_showdown_wk4_ATL_NO_05Oct2026,pivot_finder,success
