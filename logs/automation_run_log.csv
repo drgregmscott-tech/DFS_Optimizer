@@ -2183,3 +2183,6 @@ timestamp_utc,trigger_type,site,step,status
 2026-10-03T21:18:52.730210+00:00,injury_refresh_scheduled,dk,dk_classic_wk4_afternoon_04Oct2026,build_projections,success
 2026-10-03T21:18:52.730210+00:00,injury_refresh_scheduled,dk,dk_classic_wk4_afternoon_04Oct2026,status_apply,success
 2026-10-03T21:18:52.730210+00:00,injury_refresh_scheduled,dk,dk_classic_wk4_afternoon_04Oct2026,pivot_finder,success
+2026-10-03T21:19:49.081335+00:00,injury_refresh_scheduled,fd,fd_classic_wk4_main_04Oct2026,build_projections,success
+2026-10-03T21:19:49.081335+00:00,injury_refresh_scheduled,fd,fd_classic_wk4_main_04Oct2026,status_apply,success
+2026-10-03T21:19:49.081335+00:00,injury_refresh_scheduled,fd,fd_classic_wk4_main_04Oct2026,pivot_finder,success
