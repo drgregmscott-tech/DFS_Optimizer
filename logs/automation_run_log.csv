@@ -2168,3 +2168,6 @@ timestamp_utc,trigger_type,site,step,status
 2026-10-03T18:11:23.238106+00:00,injury_refresh_scheduled,fd,fd_classic_wk4_afternoon_04Oct2026,build_projections,success
 2026-10-03T18:11:23.238106+00:00,injury_refresh_scheduled,fd,fd_classic_wk4_afternoon_04Oct2026,status_apply,success
 2026-10-03T18:11:23.238106+00:00,injury_refresh_scheduled,fd,fd_classic_wk4_afternoon_04Oct2026,pivot_finder,success
+2026-10-03T18:13:24.895749+00:00,injury_refresh_scheduled,dk,dk_showdown_wk4_DET_CAR_04Oct2026,build_projections,success
+2026-10-03T18:13:24.895749+00:00,injury_refresh_scheduled,dk,dk_showdown_wk4_DET_CAR_04Oct2026,status_apply,success
+2026-10-03T18:13:24.895749+00:00,injury_refresh_scheduled,dk,dk_showdown_wk4_DET_CAR_04Oct2026,pivot_finder,success
