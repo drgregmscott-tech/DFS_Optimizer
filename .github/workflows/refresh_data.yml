@@ -107,6 +107,20 @@
 #      above are the same mechanism, distinguished by `kind=vegas` /
 #      `kind=full` on their own cron-job.org jobs -- see
 #      scheduled_refresh.js's header for exact job specs.
+#   4. injury_refresh_scheduled (repository_dispatch, type
+#      "scheduled_injury_refresh") -- added 2026-10-03. Same mode="full"
+#      pipeline minus the Vegas pull (see mode "injury_only" below) at
+#      Sat ~10am/1pm/4pm ET (`kind=injury` on cron-job.org). Closes the
+#      Thu-23:00-to-Sat-12:00 and Sat-12:00-to-Sun-12:00 gaps in cadence 2
+#      above, where real injury news breaks (Friday practice report,
+#      Saturday roster decisions) and previously sat unapplied for 12-20+
+#      hours with no cost-free way to catch it sooner -- a real Wk4 case
+#      (Justin Jefferson ruled OUT Saturday afternoon, still showing a live
+#      projection and his teammates un-boosted Sunday morning) is what
+#      surfaced this gap. Kept separate from cadence 2 (not just more
+#      `full` runs) specifically so it does NOT also re-pull Vegas lines --
+#      that would spend Odds API quota cadence 2 already budgets for,
+#      for data this cadence doesn't need refreshed.
 #
 # workflow_dispatch is also enabled for manual ad-hoc runs/testing.
 #
@@ -138,7 +152,7 @@ on:
   # keep that mapping in sync with scheduled_refresh.js's
   # KIND_TO_EVENT_TYPE if either changes.
   repository_dispatch:
-    types: [near_lock_refresh, scheduled_vegas_refresh, scheduled_full_refresh]
+    types: [near_lock_refresh, scheduled_vegas_refresh, scheduled_full_refresh, scheduled_injury_refresh]
   workflow_dispatch:
     inputs:
       reason:
@@ -202,6 +216,10 @@ jobs:
               scheduled_full_refresh)
                 echo "mode=full" >> "$GITHUB_OUTPUT"
                 echo "trigger_type=full_refresh_scheduled" >> "$GITHUB_OUTPUT"
+                ;;
+              scheduled_injury_refresh)
+                echo "mode=injury_only" >> "$GITHUB_OUTPUT"
+                echo "trigger_type=injury_refresh_scheduled" >> "$GITHUB_OUTPUT"
                 ;;
               near_lock_refresh)
                 echo "mode=full" >> "$GITHUB_OUTPUT"
@@ -305,8 +323,15 @@ jobs:
       # continue-on-error means the commit step below simply does not
       # overwrite the existing committed file -- every slate falls back to
       # the last successful pull automatically, no extra logic needed.
+      # Session (2026-10-03) -- gated OUT of injury_only mode. That mode
+      # exists specifically so the added Saturday-afternoon injury cadence
+      # (see scheduled_refresh.js's `kind=injury`) doesn't also spend Odds
+      # API quota on a Vegas pull nobody asked for -- the build below falls
+      # back to the last committed lines, the same fallback path already
+      # used whenever this step itself fails.
       - name: Pull fresh Vegas lines
         id: vegas
+        if: needs.prepare.outputs.mode != 'injury_only'
         continue-on-error: true
         run: python3 scripts/vegas_odds.py --slate-id ${{ needs.prepare.outputs.first_slate_id }}
 
@@ -361,7 +386,7 @@ jobs:
       # one season/week pair still doesn't block the rest of this job.
       - name: Pull fresh injury/active status (once per distinct season/week)
         id: status_pull
-        if: needs.prepare.outputs.mode == 'full'
+        if: needs.prepare.outputs.mode == 'full' || needs.prepare.outputs.mode == 'injury_only'
         continue-on-error: true
         env:
           SEASON_WEEK_PAIRS: ${{ needs.prepare.outputs.season_week_pairs }}
@@ -565,7 +590,7 @@ jobs:
       # pivot_finder.py does its own newest-file selection independently.
       - name: Locate built lineup
         id: lineup
-        if: needs.prepare.outputs.mode == 'full'
+        if: needs.prepare.outputs.mode == 'full' || needs.prepare.outputs.mode == 'injury_only'
         run: |
           f=$(ls -t output/lineups_multi_${{ matrix.site }}_${{ matrix.slate_id }}_*.csv 2>/dev/null | head -n1 || true)
           if [ -z "$f" ]; then
@@ -578,7 +603,7 @@ jobs:
 
       - name: Rebuild pivot suggestions
         id: pivot
-        if: needs.prepare.outputs.mode == 'full' && steps.lineup.outputs.path != ''
+        if: (needs.prepare.outputs.mode == 'full' || needs.prepare.outputs.mode == 'injury_only') && steps.lineup.outputs.path != ''
         continue-on-error: true
         run: python3 scripts/pivot_finder.py --site ${{ matrix.site }} --slate-id ${{ matrix.slate_id }}
 
@@ -605,7 +630,7 @@ jobs:
               return os.environ.get(step_id, 'not_run')
 
           rows = []
-          if mode == 'full':
+          if mode in ('full', 'injury_only'):
               rows.append({'timestamp_utc': now, 'trigger_type': trigger_type, 'site': site, 'slate_id': slate_id, 'step': 'build_projections', 'status': outcome('BUILD_OUTCOME')})
               rows.append({'timestamp_utc': now, 'trigger_type': trigger_type, 'site': site, 'slate_id': slate_id, 'step': 'status_apply', 'status': outcome('APPLY_OUTCOME')})
               rows.append({'timestamp_utc': now, 'trigger_type': trigger_type, 'site': site, 'slate_id': slate_id, 'step': 'pivot_finder', 'status': outcome('PIVOT_OUTCOME')})

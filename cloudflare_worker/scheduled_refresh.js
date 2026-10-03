@@ -80,16 +80,25 @@
  * 4. At https://cron-job.org (free account), create one job per cadence
  *    below, each a GET request to:
  *      https://<your-worker-name>.<your-subdomain>.workers.dev/?token=<the same random string as WORKER_AUTH_TOKEN>&kind=<kind>
- *    where <kind> is one of "vegas", "full", or omitted entirely (near-lock
- *    -- kept as the default so any already-configured near-lock job with
- *    no `kind` param keeps working unchanged):
- *      - kind=vegas -- light Vegas-only refresh. Mirrors the old
+ *    where <kind> is one of "vegas", "full", "injury", or omitted entirely
+ *    (near-lock -- kept as the default so any already-configured near-lock
+ *    job with no `kind` param keeps working unchanged):
+ *      - kind=vegas  -- light Vegas-only refresh. Mirrors the old
  *        light_vegas_refresh schedule: Tue-Fri 1x/day (~noon ET), Sat 2x/day
  *        (~11am + 5pm ET), Sun hourly (~11am-1pm ET).
- *      - kind=full  -- full-pipeline refresh. Mirrors the old
+ *      - kind=full   -- full-pipeline refresh (build -> apply -> pivots,
+ *        AND a fresh Vegas/team-stats pull). Mirrors the old
  *        full_refresh_scheduled schedule: Thu ~7pm ET, Sat ~8am ET,
  *        Sun ~4am/8am/12pm/3pm ET, Mon ~7pm ET.
- *      - (no kind)  -- near-lock refresh, ~10 minutes, ONLY during the
+ *      - kind=injury -- (added 2026-10-03) same build -> apply -> pivots
+ *        pipeline as "full", but skips the Vegas-lines pull (reuses the
+ *        last committed lines) so it doesn't burn Odds API quota. Added to
+ *        close the Thu-23:00-to-Sat-12:00 and Sat-12:00-to-Sun-12:00 "full"
+ *        gaps, where real injury news breaks (Friday practice report,
+ *        Saturday roster decisions) and previously sat unapplied for
+ *        12-20+ hours -- see SESSION_LOG.md for the Wk4 Jefferson/Nacua
+ *        case that surfaced this. Scheduled Sat ~10am/1pm/4pm ET.
+ *      - (no kind)   -- near-lock refresh, ~10 minutes, ONLY during the
  *        real near-lock window(s) that week (unchanged from the original
  *        setup).
  *    cron-job.org supports both a time-of-day range AND day-of-week, so
@@ -129,6 +138,7 @@ async function dispatchGithubEvent(env, event_type) {
 const KIND_TO_EVENT_TYPE = {
   vegas: "scheduled_vegas_refresh",
   full: "scheduled_full_refresh",
+  injury: "scheduled_injury_refresh",
 };
 const DEFAULT_EVENT_TYPE = "near_lock_refresh"; // no `kind` param = old behavior, unchanged
 
@@ -159,7 +169,7 @@ export default {
     const kindParam = url.searchParams.get("kind");
     if (kindParam && !(kindParam in KIND_TO_EVENT_TYPE)) {
       return new Response(
-        `Unrecognized kind "${kindParam}" -- expected "vegas", "full", or omit for near-lock.`,
+        `Unrecognized kind "${kindParam}" -- expected "vegas", "full", "injury", or omit for near-lock.`,
         { status: 400 }
       );
     }
