@@ -3505,7 +3505,18 @@ in this browser's localStorage.</p>
       // ctrlMinSalary added 2026-10-01 -- see "Cash" preset's own comment above.
       ctrlMinSalary: "0",
       ctrlNLineups: "100", ctrlMaxExposure: "35", ctrlUniqueness: "1",
-      ctrlRandomization: "18", ctrlStackMode: "qb", ctrlStackSize: "1",
+      // UPDATED 2026-10-03 (analysis/mme_settings_verify/): randomization 18 -> 10.
+      // 35-slate test (3 real 2026 MME + 32 rebuilt history), ceiling-graded
+      // (best-of-pool percentile/top-1%-hit/$ROI). Every ceiling metric trended
+      // positive, none negative, though CIs are thin (n=35, 1 seed/arm) -- changed
+      // on owner's call to act on a one-sided signal under a lock deadline rather
+      // than wait for a tighter CI. Caveat: pool used ~57 unique players vs ~70 at
+      // randomization 18 in testing -- watch real-batch exposure/diversity, since
+      // less player variety across 20 entries cuts against the point of the spread.
+      // max-exposure 0.50 tested WORSE (best-lineup pts -3.9) -- 35 stays. bring-back
+      // true vs false was inconclusive/mixed (not one-sided like randomization) --
+      // stays true. See data/optimizer_presets.json's mme_gpp for the same note.
+      ctrlRandomization: "10", ctrlStackMode: "qb", ctrlStackSize: "1",
       ctrlBringBack: true, ctrlAllowSkillVsOppDst: false, ctrlLambda: "-0.005",
       // Ad Hoc Session A6 -- matches data/optimizer_presets.json's own
       // mme_gpp bundle (kept in sync by hand, same as this preset's other
