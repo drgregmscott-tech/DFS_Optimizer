@@ -563,6 +563,19 @@ def run_apply(site: str, week: int, status_file: str, projections_file: str | No
     # STATUS_MAP collapses "Probable" into ACTIVE, which would otherwise
     # make a probable player indistinguishable from a healthy one.
     status_cols = ["player_id", "status"] + (["raw_status"] if "raw_status" in status.columns else [])
+    # `apply` can run more than once against the same projections file (every
+    # scheduled "full" refresh re-applies the latest pull). injury_status is
+    # safe across repeated runs because `merged["injury_status"] = ...` below
+    # is a label-based assignment, which overwrites every column sharing that
+    # label in place. injury_raw_status is NOT: renaming the merged
+    # `raw_status` column to `injury_raw_status` just ADDS a same-named
+    # column rather than overwriting the one already in `projections` from a
+    # prior apply run (or from the build step), so repeated applies silently
+    # accumulated duplicate `injury_raw_status` columns -- a real player
+    # (Puka Nacua, Wk4) was found reading a stale duplicate ("Questionable")
+    # while the fresh one correctly said cleared/blank. Drop the pre-existing
+    # column first so the merge produces exactly one.
+    projections = projections.drop(columns=["injury_raw_status"], errors="ignore")
     merged = projections.merge(status[status_cols], on="player_id", how="left")
     if "raw_status" in merged.columns:
         merged = merged.rename(columns={"raw_status": "injury_raw_status"})
