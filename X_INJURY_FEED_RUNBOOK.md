@@ -34,16 +34,20 @@ unattended: there is no write action in the code path to misfire.
 tick: read current posts, compare ids against stored last_seen, treat anything newer
 as new, update the stored id to the newest one seen, update `last_checked_utc`.
 
-## Cadence (agreed with user 2026-10-03)
-Self-paced, not a fixed interval -- tighter near a real lock:
-- **Light touch (20-30 min)**: outside any pre-lock window.
-- **Tight (5-10 min)**: within ~2 hours of a lock the user is actively building for.
+## Cadence (revised 2026-10-03, after real usage pattern discussion)
+**No unattended `/loop`.** User is at the computer during the actual pre-lock windows
+(early morning Sun, then continuously ~10:30 AM CT through lineup lock), so this runs
+as periodic checks (~10-15 min) woven into the live working session, not a background
+process running while the user is away. Saturday itself gets, at most, one spot-check
+to confirm the mechanism still works -- real teams mostly hold roster news for Sunday's
+90-minutes-before-kickoff inactive report, so a recurring Saturday cadence would mostly
+fire on nothing.
 
-Wk4 lock times (CT, from `data/current_slate.json`):
-- Main/early classic: **11:00 AM** Sun 10/4
-- Afternoon classic: **3:05 PM** Sun 10/4
-- DET@CAR showdown (SNF): **7:20 PM** Sun 10/4
-- ATL@NO showdown (MNF): locks Mon 10/5 evening
+Wk4 lock times (CT, from `data/current_slate.json`, UTC-5 / CDT):
+- Main/early classic: **12:00 PM** Sun 10/4 (17:00:00Z)
+- Afternoon classic: **3:05 PM** Sun 10/4 (20:05:00Z)
+- DET@CAR showdown (SNF): **7:20 PM** Sun 10/4 (2026-10-05T00:20:00Z)
+- ATL@NO showdown (MNF): **7:15 PM** Mon 10/5 (2026-10-06T00:15:00Z)
 
 ## Per-tick procedure
 1. For each of the 5 accounts: navigate, read_page the timeline, pull new posts
