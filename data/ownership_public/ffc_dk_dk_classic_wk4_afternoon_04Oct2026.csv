@@ -1,47 +1,44 @@
 player,salary,proj_own,lo,hi
-Jaxon Smith-Njigba,9100,80.4,68.4,89.5
-Aaron Jones Sr.,6000,68.1,52.6,78.9
-Christian McCaffrey,7700,62.5,42.1,78.9
-AJ Barner,3000,61.8,42.1,78.9
-Malik Washington,4400,60.7,42.1,84.2
-George Kittle,5100,58.6,36.8,78.9
-Ashton Jeanty,7100,41.1,15.8,63.2
-Rashee Rice,6400,33.7,21.1,52.6
-Las Vegas Defense,2400,33.3,10.5,52.6
-Travis Kelce,5000,33.0,15.8,52.6
-Patrick Mahomes,6500,31.2,15.8,47.4
-T.J. Hockenson,3300,30.9,10.5,52.6
-Kenneth Walker,8200,28.4,10.5,47.4
-Jordan Addison,5300,27.7,15.8,52.6
-LA Chargers Defense,2200,23.9,10.5,52.6
-Ladd McConkey,5800,20.4,0.0,52.6
-Brock Purdy,6700,20.0,10.5,36.8
-Courtland Sutton,4900,18.9,5.3,36.8
-Minnesota Defense,4000,18.6,5.3,31.6
-Kyler Murray,5300,18.2,10.5,31.6
-Seattle Defense,3500,14.7,5.3,36.8
-Bo Nix,5600,13.7,0.0,26.3
-Caleb Douglas,3900,13.0,5.3,21.1
-Xavier Worthy,4600,12.3,5.3,21.1
-Sam Darnold,5500,11.6,0.0,31.6
-Jaylen Waddle,6200,10.5,0.0,31.6
-Brock Bowers,6900,8.1,0.0,15.8
-Miami Defense,2000,6.0,0.0,15.8
-Kirk Cousins,5100,5.3,0.0,15.8
-RJ Harvey,5000,4.9,0.0,10.5
-Deebo Samuel Sr.,5600,4.6,0.0,10.5
-Mike Evans,6600,4.2,0.0,21.1
-Denver Defense,2500,3.5,0.0,15.8
-Tre' Harris,4100,3.2,0.0,10.5
-Tyquan Thornton,3400,2.5,0.0,15.8
-Quentin Johnston,4800,2.5,0.0,5.3
-Chris Bell,3700,1.8,0.0,10.5
-Rashid Shaheed,3900,1.8,0.0,10.5
-Evan Engram,2900,1.4,0.0,5.3
-Justin Jefferson,7300,1.1,0.0,10.5
+Jaxon Smith-Njigba,9100,82.5,63.2,94.7
+Aaron Jones Sr.,6000,69.1,47.4,89.5
+Christian McCaffrey,7700,62.5,47.4,78.9
+AJ Barner,3000,60.7,31.6,78.9
+Jordan Addison,5300,56.5,26.3,73.7
+Malik Washington,4400,53.3,36.8,68.4
+George Kittle,5100,51.2,26.3,68.4
+T.J. Hockenson,3300,38.2,21.1,63.2
+Ashton Jeanty,7100,36.1,15.8,68.4
+Travis Kelce,5000,33.0,10.5,47.4
+Kenneth Walker,8200,32.3,15.8,47.4
+Las Vegas Defense,2400,31.9,10.5,52.6
+Patrick Mahomes,6500,28.8,5.3,42.1
+LA Chargers Defense,2200,27.7,10.5,52.6
+Rashee Rice,6400,25.6,10.5,47.4
+Brock Purdy,6700,20.7,0.0,36.8
+Sam Darnold,5500,19.6,5.3,42.1
+Minnesota Defense,4000,19.6,5.3,42.1
+Kyler Murray,5300,16.8,5.3,31.6
+Ladd McConkey,5800,16.1,5.3,26.3
+Seattle Defense,3500,16.1,5.3,36.8
+Jaylen Waddle,6200,14.7,5.3,31.6
+Courtland Sutton,4900,14.7,5.3,31.6
+Chris Bell,3700,11.9,0.0,21.1
+Bo Nix,5600,10.2,0.0,26.3
+Brock Bowers,6900,9.1,0.0,21.1
+Jauan Jennings,3800,8.1,0.0,21.1
+RJ Harvey,5000,5.3,0.0,10.5
+Xavier Worthy,4600,4.9,0.0,10.5
+Deebo Samuel Sr.,5600,3.2,0.0,15.8
+Kirk Cousins,5100,2.8,0.0,10.5
+Miami Defense,2000,2.5,0.0,10.5
+Denver Defense,2500,2.1,0.0,5.3
+Tre' Harris,4100,2.1,0.0,10.5
+Quentin Johnston,4800,1.8,0.0,5.3
+Mike Evans,6600,1.4,0.0,5.3
+Rashid Shaheed,3900,1.4,0.0,5.3
+Justin Herbert,5400,1.1,0.0,5.3
+Greg Dulcich,3200,1.1,0.0,5.3
+Evan Engram,2900,1.1,0.0,5.3
+Tyquan Thornton,3400,1.1,0.0,5.3
 Tre Tucker,5100,0.7,0.0,5.3
-Cooper Kupp,4100,0.4,0.0,5.3
-Greg Dulcich,3200,0.4,0.0,5.3
-Oronde Gadsden,3600,0.4,0.0,5.3
-Jalen Nailor,3600,0.4,0.0,5.3
-Jauan Jennings,3800,0.4,0.0,5.3
+George Holani,4500,0.4,0.0,5.3
