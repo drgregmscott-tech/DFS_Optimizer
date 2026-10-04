@@ -2300,3 +2300,6 @@ timestamp_utc,trigger_type,site,step,status
 2026-10-04T16:40:03.815634+00:00,full_refresh_dispatch,dk,dk_classic_wk4_afternoon_04Oct2026,build_projections,success
 2026-10-04T16:40:03.815634+00:00,full_refresh_dispatch,dk,dk_classic_wk4_afternoon_04Oct2026,status_apply,success
 2026-10-04T16:40:03.815634+00:00,full_refresh_dispatch,dk,dk_classic_wk4_afternoon_04Oct2026,pivot_finder,success
+2026-10-04T16:41:03.357326+00:00,full_refresh_dispatch,fd,fd_classic_wk4_main_04Oct2026,build_projections,success
+2026-10-04T16:41:03.357326+00:00,full_refresh_dispatch,fd,fd_classic_wk4_main_04Oct2026,status_apply,success
+2026-10-04T16:41:03.357326+00:00,full_refresh_dispatch,fd,fd_classic_wk4_main_04Oct2026,pivot_finder,success
