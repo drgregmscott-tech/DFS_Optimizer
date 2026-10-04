@@ -57,6 +57,7 @@ warning -- ownership must never take down a projection build.
 import json
 import os
 import sys
+from datetime import datetime, timezone
 from pathlib import Path
 
 import numpy as np
@@ -84,6 +85,65 @@ FEATURES = ["l_est", "l_exp", "sal", "top1sal", "cv", "dart", "lo_proj", "pub_va
 FFC_FEATURES = ["l_ffc", "ffc_listed"]
 MIN_FFC_LISTED = 25
 DEFENSE_LABELS = {"DST", "D", "DEF"}
+
+# 2026-10-04 FFC sticky-mode fix (Wk3 postmortem showdown-vs-classic session):
+# ffc_used previously got re-decided fresh on every refresh purely off whether
+# ffc_own_pct's matched count (ingest_public_ownership.py, run by hand, not
+# part of the automated pipeline) cleared MIN_FFC_LISTED that run. The FFC
+# and pure-v2 artifacts are different fitted models, not a smooth blend of
+# each other, so one mid-week flip (confirmed on wk3 main's real history:
+# a single False->True flip on 2026-09-24, then stable the rest of the week)
+# moved several players 8-15 ownership points simultaneously with no
+# projection change behind it. Once a slate has cleared the bar, this keeps
+# it on FFC mode for the rest of the week even if a later run's match count
+# dips (e.g. a slow scrape), rather than flipping back to a different model.
+# A run with ZERO matched players (the table truly absent that run) still
+# falls back for that run only -- never force a blend with no data behind
+# it. State lives in a small per-slate JSON file, same pattern as
+# data/x_injury_feed_state.json. Any failure here is a no-op (falls back to
+# the un-stickied decision for that run); switch off with DFS_OWN_FFC_STICKY=0.
+FFC_STATE_PATH = DATA_DIR / "ownership_ffc_mode_state.json"
+
+
+def ffc_sticky_enabled() -> bool:
+    return os.environ.get("DFS_OWN_FFC_STICKY", "1").strip().lower() not in ("0", "false", "off", "no")
+
+
+def _ffc_state_key(site: str, slate_id: str) -> str:
+    return f"{site}:{slate_id}"
+
+
+def _load_ffc_state() -> dict:
+    try:
+        with open(FFC_STATE_PATH, encoding="utf-8") as f:
+            return json.load(f)
+    except Exception:  # noqa: BLE001 -- missing/corrupt state = nothing locked yet
+        return {}
+
+
+def _is_ffc_locked(site: str, slate_id: str) -> bool:
+    try:
+        return bool(_load_ffc_state().get(_ffc_state_key(site, slate_id), {}).get("locked"))
+    except Exception:  # noqa: BLE001
+        return False
+
+
+def _mark_ffc_locked(site: str, slate_id: str, matched: int) -> None:
+    try:
+        key = _ffc_state_key(site, slate_id)
+        state = _load_ffc_state()
+        if state.get(key, {}).get("locked"):
+            return
+        state[key] = {
+            "locked": True,
+            "matched_at_lock": int(matched),
+            "locked_at_utc": datetime.now(timezone.utc).isoformat(timespec="seconds"),
+        }
+        FFC_STATE_PATH.parent.mkdir(parents=True, exist_ok=True)
+        with open(FFC_STATE_PATH, "w", encoding="utf-8") as f:
+            json.dump(state, f, indent=2, sort_keys=True)
+    except Exception:  # noqa: BLE001 -- state bookkeeping must never break a build
+        pass
 
 
 def artifact_path(site: str, variant: str = "") -> Path:
@@ -244,7 +304,7 @@ def _loud(msg):
 
 
 def refine_ownership(scored: pd.DataFrame, site: str, budgets: dict,
-                     season: int = None, week: int = None) -> pd.DataFrame:
+                     season: int = None, week: int = None, slate_id: str = None) -> pd.DataFrame:
     """Called from build_projections.add_ownership_columns() after the
     heuristic has produced chalk_score / estimated_ownership_pct on `scored`
     (columns: player_id, position, position_group, salary, final_projection,
@@ -256,7 +316,21 @@ def refine_ownership(scored: pd.DataFrame, site: str, budgets: dict,
     if artifact is None or site != "dk":
         return scored
     ffc_used = False
-    if "ffc_own_pct" in scored.columns and             pd.to_numeric(scored["ffc_own_pct"], errors="coerce").notna().sum() >= MIN_FFC_LISTED:
+    matched = pd.to_numeric(scored["ffc_own_pct"], errors="coerce").notna().sum() \
+        if "ffc_own_pct" in scored.columns else 0
+    ffc_eligible = matched >= MIN_FFC_LISTED
+    sticky = ffc_sticky_enabled() and slate_id
+    if ffc_eligible:
+        if sticky:
+            _mark_ffc_locked(site, slate_id, matched)
+    elif sticky and matched > 0 and _is_ffc_locked(site, slate_id):
+        # Thin this run but not empty, and this slate already cleared the
+        # bar earlier in the week -- stay on FFC mode rather than flipping
+        # back to pure v2 over what's likely just a slow/partial scrape.
+        ffc_eligible = True
+        print(f"Ownership: FFC table thin this run ({matched} matched, need {MIN_FFC_LISTED}) "
+              f"but {slate_id} locked into FFC mode earlier this week -- keeping it.")
+    if ffc_eligible:
         ffc_artifact = load_artifact(site, "_ffc")
         if ffc_artifact is not None:
             artifact = ffc_artifact

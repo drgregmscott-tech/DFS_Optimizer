@@ -591,7 +591,7 @@ def build_dst_projections(salaries, vegas, site, *, model="legacy",
 # Ownership + salary anchor
 # ---------------------------------------------------------------------------
 
-def add_ownership_columns(df, site, layered=True, season=None, week=None):
+def add_ownership_columns(df, site, layered=True, season=None, week=None, slate_id=None):
     scored = compute_chalk_scores(df, site)
     scored = compute_estimated_ownership(scored, site)
     # Week 2 post-mortem: replace the heuristic estimate with the layered
@@ -600,10 +600,12 @@ def add_ownership_columns(df, site, layered=True, season=None, week=None):
     # any failure -- see ownership_model.py. layered=False returns the pure
     # heuristic (used by fit_ownership_model.py to build its own features).
     # season/week feed ownership v2 (ownership_v2.py; needs the slate week).
+    # slate_id feeds the FFC sticky-mode guard (2026-10-04).
     if layered:
         import ownership_model
         scored = ownership_model.refine_ownership(
-            scored, site, compute_position_slot_budgets(site), season=season, week=week)
+            scored, site, compute_position_slot_budgets(site), season=season, week=week,
+            slate_id=slate_id)
     keep = ["player_id", "chalk_score", "estimated_ownership_pct"]
     for extra in ("estimated_ownership_pct_heuristic", "est_own_live_old", "est_own_v2_only", "own_vacated", "own_vac_bump"):
         if extra in scored.columns:
@@ -1037,7 +1039,7 @@ def build_final_projections(site, season, week, slate_id,
         out["slate_format"] = "showdown"
         out = add_showdown_ownership_columns(out, site)
     else:
-        out = add_ownership_columns(out, site, season=season, week=week)
+        out = add_ownership_columns(out, site, season=season, week=week, slate_id=slate_id)
         out["roster_role"] = None
         out["slate_format"] = "classic"
         out["ownership_available"] = True

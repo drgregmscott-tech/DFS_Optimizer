@@ -1452,7 +1452,7 @@ def build_statline_projections(site: str, season: int, week: int, slate_id: str,
                 print(f"Public ownership: matched {out['ffc_own_pct'].notna().sum()} players from FFC table.")
         except Exception as _exc:  # noqa: BLE001 -- optional input, never break a build
             print(f"WARNING: public ownership table not used ({type(_exc).__name__}: {_exc}).")
-        out = add_ownership_columns(out, site, season=season, week=week)
+        out = add_ownership_columns(out, site, season=season, week=week, slate_id=slate_id)
         out["roster_role"] = None
         out["slate_format"] = "classic"
         out["ownership_available"] = True
