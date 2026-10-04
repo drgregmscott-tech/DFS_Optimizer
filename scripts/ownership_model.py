@@ -68,7 +68,28 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 REPO_ROOT = Path(__file__).resolve().parent.parent
 DATA_DIR = REPO_ROOT / "data"
 
-EXPOSURE_LINEUPS = 60
+# 2026-10-04 (Problem B, showdown-vs-classic ownership session): was 60.
+# Replaying two REAL consecutive lock-morning refreshes (wk3 main, 9/27)
+# through this module confirmed the mechanism behind classic's recurring
+# refresh-to-refresh ownership churn -- not a bug, not FFC-mode flapping
+# (ruled out separately), but this feature's own sampling noise. l_exp has
+# the 2nd-largest coefficient in the fitted model (0.39, bigger than the
+# heuristic itself), and at n=60 it only resolves in 1/60=1.67-point steps,
+# so an ordinary refresh's totally unremarkable <2% final_projection/
+# season_avg/vegas_factor wobble can flip a handful of the 60 draws'
+# marginal lineup picks and swing l_exp by several points for no real
+# reason -- then BOTH ownership layers (this module's predict() and
+# ownership_v2's own allocate()) zero-sum-reallocate that noise across
+# every other player in the position group. Replaying the same two real
+# snapshots reproduced the actual historical swings at 0.86 correlation
+# (JSN -6.27 real vs -3.28 recomputed) at n=60; raising n to 300 cut the
+# recomputed noise by ~2x (mean 0.11->0.06, max 3.28->1.34) with no coefficient
+# refit needed -- l_exp's EXPECTED value is unchanged, only its noise floor
+# drops, so the model trained at n=60 is still valid at a quieter n. Costs
+# ~70s more per classic slate per refresh (minor against a multi-minute
+# full-pipeline refresh). See analysis/ownership_exposure_noise/ for the
+# replay scripts and raw numbers.
+EXPOSURE_LINEUPS = 300
 EXPOSURE_RANDOMIZATION_PCT = 25.0
 EXPOSURE_SEED = 7
 
