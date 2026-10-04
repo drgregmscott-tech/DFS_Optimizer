@@ -1,10 +1,10 @@
 {
   "_comment": "State for the X/Twitter injury-news monitor (2026-10-03). Tracks the newest status/post id already seen per account so each poll only reports genuinely NEW posts, not the same ones every tick. Updated by Claude at the end of every poll tick, not by any script. See X_INJURY_FEED_RUNBOOK.md for the full procedure, account list, and cadence.",
   "accounts": {
-    "RotoWireNFL": { "last_seen_status_id": "2106770179224973423", "last_checked_utc": "2026-10-04T15:48:00Z" },
-    "UnderdogNFL": { "last_seen_status_id": "2106769850140119353", "last_checked_utc": "2026-10-04T15:48:00Z" },
-    "AdamSchefter": { "last_seen_status_id": "2106770994534723688", "last_checked_utc": "2026-10-04T15:48:00Z" },
-    "RapSheet": { "last_seen_status_id": "2106772518988284184", "last_checked_utc": "2026-10-04T15:48:00Z" },
-    "MySportsUpdate": { "last_seen_status_id": "2106772583773257841", "last_checked_utc": "2026-10-04T15:48:00Z" }
+    "RotoWireNFL": { "last_seen_status_id": "2106775437875565004", "last_checked_utc": "2026-10-04T16:06:00Z" },
+    "UnderdogNFL": { "last_seen_status_id": "2106775406971916778", "last_checked_utc": "2026-10-04T16:06:00Z" },
+    "AdamSchefter": { "last_seen_status_id": "2106774305086603452", "last_checked_utc": "2026-10-04T16:06:00Z" },
+    "RapSheet": { "last_seen_status_id": "2106772518988284184", "last_checked_utc": "2026-10-04T16:06:00Z" },
+    "MySportsUpdate": { "last_seen_status_id": "2106772583773257841", "last_checked_utc": "2026-10-04T16:06:00Z" }
   }
 }
