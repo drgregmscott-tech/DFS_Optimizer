@@ -2273,3 +2273,6 @@ timestamp_utc,trigger_type,site,step,status
 2026-10-04T15:59:03.080844+00:00,full_refresh_dispatch,dk,dk_classic_wk4_main_04Oct2026,build_projections,success
 2026-10-04T15:59:03.080844+00:00,full_refresh_dispatch,dk,dk_classic_wk4_main_04Oct2026,status_apply,success
 2026-10-04T15:59:03.080844+00:00,full_refresh_dispatch,dk,dk_classic_wk4_main_04Oct2026,pivot_finder,success
+2026-10-04T16:01:06.715236+00:00,full_refresh_dispatch,dk,dk_classic_wk4_early_04Oct2026,build_projections,success
+2026-10-04T16:01:06.715236+00:00,full_refresh_dispatch,dk,dk_classic_wk4_early_04Oct2026,status_apply,success
+2026-10-04T16:01:06.715236+00:00,full_refresh_dispatch,dk,dk_classic_wk4_early_04Oct2026,pivot_finder,success
