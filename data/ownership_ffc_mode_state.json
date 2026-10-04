@@ -1,4 +1,14 @@
 {
+  "dk:dk_classic_wk4_afternoon_04Oct2026": {
+    "locked": true,
+    "locked_at_utc": "2026-10-04T10:18:51+00:00",
+    "matched_at_lock": 35
+  },
+  "dk:dk_classic_wk4_early_04Oct2026": {
+    "locked": true,
+    "locked_at_utc": "2026-10-04T10:18:30+00:00",
+    "matched_at_lock": 43
+  },
   "dk:dk_classic_wk4_main_04Oct2026": {
     "locked": true,
     "locked_at_utc": "2026-10-04T10:12:30+00:00",
