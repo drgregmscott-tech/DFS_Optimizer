@@ -34,20 +34,31 @@ unattended: there is no write action in the code path to misfire.
 tick: read current posts, compare ids against stored last_seen, treat anything newer
 as new, update the stored id to the newest one seen, update `last_checked_utc`.
 
-## Cadence (revised 2026-10-03, after real usage pattern discussion)
-**No unattended `/loop`.** User is at the computer during the actual pre-lock windows
-(early morning Sun, then continuously ~10:30 AM CT through lineup lock), so this runs
-as periodic checks (~10-15 min) woven into the live working session, not a background
-process running while the user is away. Saturday itself gets, at most, one spot-check
-to confirm the mechanism still works -- real teams mostly hold roster news for Sunday's
-90-minutes-before-kickoff inactive report, so a recurring Saturday cadence would mostly
-fire on nothing.
+## Cadence (revised 2026-10-04 -- now data-driven, not hand-typed per week)
+Windows are derived automatically from whatever's in `data/current_slate.json` --
+**never hand-type a week's lock times into a monitor prompt again.** Run:
 
-Wk4 lock times (CT, from `data/current_slate.json`, UTC-5 / CDT):
-- Main/early classic: **12:00 PM** Sun 10/4 (17:00:00Z)
-- Afternoon classic: **3:05 PM** Sun 10/4 (20:05:00Z)
-- DET@CAR showdown (SNF): **7:20 PM** Sun 10/4 (2026-10-05T00:20:00Z)
-- ATL@NO showdown (MNF): **7:15 PM** Mon 10/5 (2026-10-06T00:15:00Z)
+    python scripts/x_monitor_windows.py
+
+It groups every still-future `lock_time_utc` across the whole `slates` list (deduped,
+since DK/FD main/early share a lock) into one window per distinct lock time -- default
+90 minutes before lock through lock -- and reports whether "now" falls inside one, how
+long until the next one starts, or "done" once every slate has locked. This is day-of-
+week agnostic: a Thursday TNF showdown, a Sunday wave of classic slates, and a Monday
+MNF showdown each just show up as their own window the moment that slate's entry is
+added to `current_slate.json` (same step the user already does every week to let
+`refresh_data.yml` track it) -- no code or runbook change needed week to week.
+
+Within an active window, poll every ~10-15 min (same grain `x_monitor_windows.py`'s
+default lead and the near-lock refresh cadence already use). Outside any window,
+there's nothing to do -- re-check `x_monitor_windows.py`'s `seconds_until_next_event`
+and wait. Saturday / weekday gaps between windows get no checks: real teams mostly
+hold roster news for the 90-minutes-before-kickoff inactive report, which is exactly
+what the window around each lock already covers.
+
+The live `/loop` driving this should call `x_monitor_windows.py` each tick rather than
+carry a fixed set of times -- that's what makes the same /loop invocation work
+unmodified week after week, slate mix after slate mix.
 
 ## Per-tick procedure
 1. For each of the 5 accounts: navigate, read_page the timeline, pull new posts
