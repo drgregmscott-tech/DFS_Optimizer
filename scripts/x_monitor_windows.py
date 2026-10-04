@@ -57,7 +57,12 @@ from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 DATA_DIR = Path(__file__).resolve().parent.parent / "data"
-DEFAULT_LEAD_MIN = 90
+# 105, not 90: the official inactive report that drives most pre-lock status
+# news doesn't reliably land exactly at the 90-minutes-before-kickoff mark --
+# per real usage (2026-10-04), it sometimes breaks a bit earlier. 105 opens
+# the window ~15 min sooner to cover that without meaningfully widening the
+# window's cost (still closes at the same lock time either way).
+DEFAULT_LEAD_MIN = 105
 
 
 def parse_utc(s: str) -> datetime:
