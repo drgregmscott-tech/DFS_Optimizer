@@ -191,12 +191,14 @@ and resolves none.
      but has never been run — only real way to tell if a faster primary feed than ESPN exists. Run it
      next Sunday.
 
-5. **Permission allow-list fix — scheduled tasks re-prompting every run.** Root cause confirmed:
-   `.claude/settings.local.json`'s Bash allow-list entries are literal full command strings (exact slate ids,
-   exact timestamped filenames), so a new timestamp or slate id never matches and every run re-prompts.
-   Fix: widen the relevant entries to wildcard patterns (`Bash(python scripts/status_check.py apply *)`,
-   `Bash(python scripts/status_check.py pull *)`, etc.) so routine, already-proven-safe commands stop
-   prompting, while leaving anything genuinely risky ungated. Agreed, low-risk, do this early.
+5. **Permission allow-list fix — scheduled tasks re-prompting every run. DONE (2026-10-05).** Root cause
+   confirmed: `.claude/settings.local.json`'s Bash allow-list entries were literal full command strings
+   (exact slate ids, exact timestamped filenames), so a new timestamp or slate id never matched and every
+   run re-prompted. Fixed by widening to wildcards: `status_check.py pull *`, `status_check.py apply *`
+   (replacing the two one-off literal `apply` entries), plus `optimizer.py *` and `pivot_finder.py *` —
+   the latter two pre-empt the same re-prompt for the "rebuild pivots" step the X-monitor SKILL.md files
+   call for on a confirmed status contradiction (not yet exercised live, but same failure mode). Everything
+   else in the allow-list (git, the `python -c` json reads, x_monitor_windows.py) was already fine as-is.
 
 6. **GH Actions `refresh_data.yml` runtime — currently 10+ min on a full run, target ~50% reduction.**
    `refresh_slate` runs as a `max-parallel: 1` matrix (deliberately serialized to avoid matrix legs racing
