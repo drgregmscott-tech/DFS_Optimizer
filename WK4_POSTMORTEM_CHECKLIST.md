@@ -12,14 +12,48 @@ context to pick back up cold. A session that fully resolves one narrow question 
 and resolves none.
 
 ## Parking Lot (add here, don't chase inline)
-(empty — nothing parked yet)
+- **What's actually driving Trevor Lawrence's (and the broader cheap-chalk-QB) ownership miss.** Found
+  while closing item 1 (2026-10-05): the QB `my_share` kneel-down/low-snap theory (both the attempts-only
+  swap and the narrower min-snap floor) only explains a small slice of Lawrence's ~15-point miss (moves
+  predicted ownership from ~3-4% to ~5-8% against 20-22% actual) — both fixes held, see item 1 writeup.
+  Real driver is still unidentified. Kyler Murray's low share was also wrongly lumped into the kneel-down
+  theory — his low share isn't attendance-driven at all. Needs its own session, not a quick follow-up.
 
 ## Open items
 
-1. **Projections & ownership accuracy vs. Week 4 actuals.** Standard post-slate grading: compare final
-   projections and modeled ownership to real DK results across all slates played (main, early, afternoon,
-   both showdowns once ATL/NO wraps Monday). Flag the biggest misses by position/player type, log real
-   ownership into `ownership_actual_log.csv`. Feeds items 2, 3, and 8 below — do this first.
+1. **Projections & ownership accuracy vs. Week 4 actuals.** ✅ DONE 2026-10-05. Standard post-slate
+   grading: compare final projections and modeled ownership to real DK results across all slates played
+   (main, early, afternoon, both showdowns once ATL/NO wraps Monday). Flag the biggest misses by
+   position/player type, log real ownership into `ownership_actual_log.csv`. Feeds items 2, 3, and 8
+   below — do this first.
+
+   **Findings (full detail in `analysis/wk4_postmortem/` — local, gitignored):**
+   - Correlation vs. actual: classic projections .63 (Wk1-3 avg) → .67 (Wk4); classic ownership .69 → .89;
+     showdown projections .76 → .84; showdown ownership .86 → .93. Ownership clearly improved; projections
+     flat vs. Wk3, up vs. Wk1-2 (edge over salary-only baseline: +.03/+.10/+.16/+.14, Wk1-4).
+   - Logged Wk4 real ownership (main/early/afternoon/DET_CAR) into `ownership_actual_log.csv`. ATL/NO and
+     FD out of scope (not played yet / no FD ownership export exists).
+   - **Shipped:** showdown DST ownership floor bug (`exclude_skill_vs_opp_dst` in the ownership model's
+     internal exposure sim was flooring every showdown DST to ~0.5%; fixed + retrained + rebuilt ATL/NO
+     before lock) — `scripts/ownership_model_showdown.py`. Chalk-size fix v2 segmented, default now on
+     (`DFS_OWN_CHALK_FFC_SEG`) after passing its first held-out week. DST projection recalibration
+     (`dst_recal_v2`, `scripts/dst_model.py`) — 2014-17-fit intercept was running DST projections ~0.8-1.2
+     pts high every season since 2021; refit intercept only, held out clean across every season/bucket.
+   - **Investigated, answered, no code change:** FFC ownership disagreements are genuine wrongness, not
+     staleness (re-pulling later doesn't help, MAE 10.18 vs 10.28) — FFC over-concentrates ownership into
+     its own top plays. When FFC and our model disagree with FFC higher (the common case), we win ~3:1;
+     closer to a coin flip when FFC is lower. Recommendation: keep trusting our model on disagreement, no
+     code change needed (an adaptive down-weight-on-disagreement blend was tested and held — never beat
+     the flat 0.45 blend held-out, see below).
+   - **Tested and held (off by default, documented in code comments):**
+     - Cheap-chalk-QB ownership tilt — wrong direction, history rules it out, dropped entirely.
+     - QB `my_share` attempts-only swap (`DFS_OWN_V2_QB_ATT_SHARE`) — fixes Wk4 kneel-down artifact but
+       makes 2021-25 history worse (loses real signal about unsettled QB competitions).
+     - QB `my_share` min-snap floor (`DFS_OWN_V2_QB_SHARE_MINSNAP`) — same verdict as above for a sharper
+       reason: 24% of historical starter-slates have a low-attempt backup game in the window, and the
+       "diluted" share actually predicts those starters' real ownership well. Not a bug — see Parking Lot.
+     - Adaptive FFC blend (down-weight FFC on disagreement, `DFS_OWN_FFC_ADAPTIVE`) — never beat the flat
+       0.45 blend held-out on any of 2026's 12 live-FFC slates; every raw-FFC fold picked zero slope.
 
 2. **Winning-lineup/construction-rule review — should become standing weekly cadence, not just this week.**
    Separate from projection/ownership accuracy: look at what actually won/cashed this week (classic and

@@ -80,12 +80,63 @@ def v2_coef_choice():
     return "truepool" if v == "truepool" else "current"
 
 
+# 2026-10-05 QB attempts share (analysis/wk4_postmortem/qb_share_refit/RESULTS.md): the QB `my_share` feature was
+# carries+targets averaged over games PLAYED / the team's other QBs' same average (last 3 team games), so one game of
+# backup kneel-downs got equal weight to a real start (Lawrence read .47 in Wk4 because Mullens had 3 kneel carries,
+# costing him ~35-40% of his modeled ownership; Darnold/Kyler hit the same way). With the switch on, QB my_share =
+# the QB's passing attempts summed over the team's last-3-game window / the team's QB attempts summed (same window,
+# same pre-lock rule), and the linear coefficients come from data/ownership_v2_{site}_linear_qbatt.json, refit on
+# 2021-25 with that feature (same frame/pool as the current artifact). The feature follows the artifact
+# (lin["qb_share"] == "attempts"), so the feature and its coefficients can never be mixed. Missing artifact = no-op.
+# Switch: DFS_OWN_V2_QB_ATT_SHARE=1 (default 0 = off).
+# HOLD (2026-10-05): 2026 is clearly better held-out (QB starter corr wk1-3 .684->.728, wk4 .351->.570, 10/12 slates),
+# but 2021-25 leave-one-season-out with the refit is slightly WORSE (QB starter corr .663->.656, QB CE 2.866->2.886,
+# worse in 4 of 5 seasons, better on only 25/86 slates). Fails the "history not worse" bar, so it stays off.
+QB_ATT_SHARE_DEFAULT = "0"
+
+
+def qb_att_share_enabled():
+    return os.environ.get("DFS_OWN_V2_QB_ATT_SHARE", QB_ATT_SHARE_DEFAULT).strip().lower() not in (
+        "0", "false", "off", "no", "")
+
+
+# 2026-10-05 QB min-attempts floor (analysis/wk4_postmortem/qb_share_refit/minsnap/RESULTS.md): narrower fix for the same
+# bug as QB_ATT_SHARE above. Keeps the OLD QB my_share (carries+targets averaged over games played / sum of the team's
+# QBs' same averages, last 3 team games), but a QB's game only counts if he threw >= QB_SHARE_MIN_ATT passes. A backup's
+# kneel-down/garbage-time game no longer counts as a "game"; a QB with no counted game in the window gets my_share 0.
+# Shipped coefficients are reused (no artifact change). Only QB my_share changes; vacated and other groups untouched.
+# Switch: DFS_OWN_V2_QB_SHARE_MINSNAP=1 (default 0 = off); threshold via DFS_OWN_V2_QB_SHARE_MIN_ATT (default 10).
+# Ignored when the QB_ATT_SHARE artifact is active (that feature replaces this one).
+# HOLD (2026-10-05): 2026 better (QB starter corr wk1-3 .684->.716, wk4 .351->.525, shipped coefs) but 2021-25 worse:
+# shipped coefs .682->.642 (in-sample), LOSO refit .663->.655 (QB CE 2.866->2.884, worse in 4/5 seasons, 25/86 slates
+# better). K=5/15 the same. Not a rare case in history: 24% of starter-slates move, mostly backup-kneel games on
+# BUF/KC/SF-type teams, and the old diluted read predicted those starters well (actual 5.6%, old 5.7%, floored 7.6%).
+QB_SHARE_MINSNAP_DEFAULT = "0"
+QB_SHARE_MIN_ATT = 10
+
+
+def qb_share_minsnap_enabled():
+    return os.environ.get("DFS_OWN_V2_QB_SHARE_MINSNAP", QB_SHARE_MINSNAP_DEFAULT).strip().lower() not in (
+        "0", "false", "off", "no", "")
+
+
+def qb_share_min_att():
+    try:
+        return float(os.environ.get("DFS_OWN_V2_QB_SHARE_MIN_ATT", QB_SHARE_MIN_ATT))
+    except ValueError:
+        return float(QB_SHARE_MIN_ATT)
+
+
 def load_artifacts(site="dk"):
     lp, dp = linear_path(site), dst_path(site)
     if v2_coef_choice() == "truepool":
         tl, td = DATA_DIR / f"ownership_v2_{site}_linear_truepool.json", DATA_DIR / f"ownership_v2_{site}_dst_truepool.json"
         if tl.exists() and td.exists():
             lp, dp = tl, td
+    elif qb_att_share_enabled():
+        ql = DATA_DIR / f"ownership_v2_{site}_linear_qbatt.json"
+        if ql.exists():
+            lp = ql
     if not lp.exists() or not dp.exists():
         return None, None
     with open(lp, encoding="utf-8") as f:
@@ -132,7 +183,7 @@ def load_stats(season, week):
         w["team"] = w.team.replace(TEAM_FIX)
         w["usage"] = w.targets.fillna(0) + w.carries.fillna(0)
         keep = ["player_id", "season", "week", "team", "position", "dk", "targets", "carries", "usage",
-                "def_sacks", "sacks_suffered", "opponent_team"]
+                "attempts", "def_sacks", "sacks_suffered", "opponent_team"]
         out.append(w[[c for c in keep if c in w]])
     if not out:
         raise RuntimeError("no weekly_stats parquet files for ownership v2")
@@ -234,8 +285,38 @@ class Ctx:
         return o
 
 
+def qb_att_share(ts):
+    """ts: Ctx.team_share() rows. Per QB: passing attempts summed over his team's last-3-game window / the team's QB
+    attempts summed over the same window. Series indexed by player_id (first team wins for a traded QB, matching
+    my_share). Empty when there are no attempts."""
+    if not len(ts) or "attempts" not in ts:
+        return pd.Series(dtype=float)
+    q = ts[ts.position == "QB"]
+    a = q.assign(attempts=q.attempts.fillna(0)).groupby(["team", "player_id"]).attempts.sum()
+    tot = a.groupby(level="team").transform("sum")
+    sh = (a / tot.where(tot > 0)).dropna().reset_index(level="team", drop=True)
+    return sh[~sh.index.duplicated()]
+
+
+def qb_share_minsnap(ts, min_att):
+    """ts: Ctx.team_share() rows. The old QB my_share (carries+targets mean over games / team QBs' sum of means),
+    counting only games where the QB threw >= min_att passes. Series indexed by player_id; QBs with no counted game are
+    absent (caller maps them to 0). None when attempts are unavailable (caller keeps the old value = fail-safe no-op)."""
+    if not len(ts) or "attempts" not in ts:
+        return None
+    q = ts[(ts.position == "QB") & (ts.attempts.fillna(0) >= min_att)]
+    per = q.groupby(["team", "player_id"]).usage.mean()
+    tot = per.groupby(level="team").transform("sum")
+    sh = (per / tot.where(tot > 0)).fillna(0.0).reset_index(level="team", drop=True)
+    return sh[~sh.index.duplicated()]
+
+
 # ----------------------------------------------------------------------------- features (port of analysis/ownership_v2/common.py)
-def build_features(df, ctx):
+def build_features(df, ctx, qb_att=False, qb_minsnap=None):
+    """qb_att=True: QB my_share = passing-attempt share (see QB_ATT_SHARE_DEFAULT). Only valid with an artifact fit on
+    that feature (lin["qb_share"] == "attempts"); predict_v2 sets it from the artifact.
+    qb_minsnap=<min attempts>: old QB my_share but only counting games with >= that many pass attempts (see
+    QB_SHARE_MINSNAP_DEFAULT). None/0 = off. Ignored when qb_att is on."""
     df = df.copy()
     df["team"] = df.team.replace(TEAM_FIX)
     df["opp"] = df.opp.replace(TEAM_FIX)
@@ -288,6 +369,14 @@ def build_features(df, ctx):
             s["vacated"] = [vac.get((a, b), 0.0) for a, b in zip(s.team, s.g2)]
             ms = per.set_index("player_id").share
             s["my_share"] = s.player_id.map(ms[~ms.index.duplicated()]).fillna(0.0)
+            if qb_att:
+                qb = s.pos == "QB"
+                s.loc[qb, "my_share"] = s.loc[qb, "player_id"].map(qb_att_share(ts)).fillna(s.loc[qb, "my_share"])
+            elif qb_minsnap:
+                ms2 = qb_share_minsnap(ts, qb_minsnap)
+                if ms2 is not None:
+                    qb = s.pos == "QB"
+                    s.loc[qb, "my_share"] = s.loc[qb, "player_id"].map(ms2).fillna(0.0)
         else:
             s["vacated"] = 0.0
             s["my_share"] = 0.0
@@ -651,16 +740,69 @@ def apply_chalk_temp(F, final, gamma=None, cap=CAP, groups=None):
         return base, np.zeros(len(base))
 
 
+# 2026-10-05 adaptive FFC blend (analysis/wk4_postmortem/ffc_adaptive_blend/, local): per-row alpha that leans harder
+# on our v2 number the more v2 and the live FFC model disagree, d = log(v2_only%) - log(live%) (d<0 = FFC side higher):
+#   a_i = min(1, a0 + kH*max(-d,0) + kL*max(d,0)),  score = a_i*log(v2_only%) + (1-a_i)*log(live%)
+# (log(v2_only%) in place of raw Fs so per-row alphas stay in the same units). Tested leave-one-week-out on all 12
+# 2026 DK classic slates (wk1-4), symmetric and asymmetric, with d vs the live FFC model AND vs raw FFC:
+# NO SHIP -- never beat the flat 0.45 held out (pooled corr .894 -> .889/.888, MAE 1.088 -> 1.095); with d vs raw
+# FFC every fold picked zero slope. Off by default. Switch: DFS_OWN_FFC_ADAPTIVE=1; params via
+# DFS_OWN_FFC_ADAPTIVE_PARAMS="a0,kH,kL" (default = in-sample best 0.45,0,0.15). Bad params / any failure = flat blend.
+FFC_ADAPTIVE_DEFAULT = "0"
+FFC_ADAPTIVE_PARAMS = (0.45, 0.0, 0.15)
+
+
+def ffc_adaptive_enabled():
+    return os.environ.get("DFS_OWN_FFC_ADAPTIVE", FFC_ADAPTIVE_DEFAULT).strip().lower() not in (
+        "0", "false", "off", "no", "")
+
+
+def ffc_adaptive_params():
+    try:
+        raw = os.environ.get("DFS_OWN_FFC_ADAPTIVE_PARAMS", "").strip()
+        a0, kh, kl = (float(x) for x in raw.split(",")) if raw else FFC_ADAPTIVE_PARAMS
+        if not (0 <= a0 <= 1 and kh >= 0 and kl >= 0 and all(np.isfinite([a0, kh, kl]))):
+            return None
+        return a0, kh, kl
+    except Exception:  # noqa: BLE001
+        return None
+
+
+def adaptive_blend_score(v2_only, live_pred, params=None):
+    """Per-row adaptive log-blend score (see block comment). Returns (score, alpha array) or None on any problem
+    (caller then uses the flat blend)."""
+    try:
+        p = ffc_adaptive_params() if params is None else params
+        if p is None:
+            return None
+        a0, kh, kl = p
+        lv2 = np.log(np.maximum(np.asarray(v2_only, float), .05))
+        lf = np.log(np.maximum(np.asarray(live_pred, float), .05))
+        d = lv2 - lf
+        a = np.minimum(1.0, a0 + kh * np.maximum(-d, 0) + kl * np.maximum(d, 0))
+        sc = a * lv2 + (1 - a) * lf
+        if not np.all(np.isfinite(sc)):
+            return None
+        return sc, a
+    except Exception:  # noqa: BLE001
+        return None
+
+
 def predict_v2(frame, ctx, lin, dst, live_pred=None, alpha=FFC_BLEND_ALPHA, vac_k=None, raw_ffc=None):
     """frame: to_frame() output (one or more slates). live_pred: live FFC-model %, aligned to frame,
     or None for no blend. Returns (final, v2_only) numpy arrays aligned to frame; rows outside
     QB/RB/WR/TE/DST are NaN (caller keeps the old number)."""
-    F = build_features(frame, ctx)
+    qb_att = lin.get("qb_share") == "attempts"
+    F = build_features(frame, ctx, qb_att=qb_att,
+                       qb_minsnap=qb_share_min_att() if (not qb_att and qb_share_minsnap_enabled()) else None)
     F = F.loc[frame.index] if F.index.is_unique else F
     Fs = score_linear(F, lin)
     budgets = lin["budgets"]
     v2_only = allocate(F, Fs, budgets, cap=lin.get("cap", CAP))
-    if live_pred is not None:
+    ad = adaptive_blend_score(v2_only, live_pred) if (live_pred is not None and ffc_adaptive_enabled()) else None
+    if ad is not None:
+        final = allocate(F, ad[0], budgets, cap=lin.get("cap", CAP))
+    elif live_pred is not None:
         lf = np.log(np.maximum(np.asarray(live_pred, float), .05))
         final = allocate(F, alpha * Fs + (1 - alpha) * lf, budgets, cap=lin.get("cap", CAP))
     else:
@@ -675,6 +817,8 @@ def predict_v2(frame, ctx, lin, dst, live_pred=None, alpha=FFC_BLEND_ALPHA, vac_
         final[pos_ix] = pd_
         v2_only[pos_ix] = pd_
     LAST_AUDIT.clear()
+    if ad is not None:
+        LAST_AUDIT["own_ffc_alpha"] = ad[1]
     if vac_bump_enabled() and (vac_k is None or vac_k != 0):
         final, bump = apply_vac_bump(F, final, vac_k, cap=lin.get("cap", CAP))
         LAST_AUDIT["own_vac_bump"] = bump

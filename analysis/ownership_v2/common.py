@@ -49,7 +49,7 @@ def load_stats(seasons=range(2019, 2027)):
         w["team"] = w.team.replace(TEAM_FIX)
         w["usage"] = w.targets.fillna(0) + w.carries.fillna(0)
         keep = ["player_id", "season", "week", "team", "position", "dk", "targets", "carries", "usage",
-                "def_sacks", "sacks_suffered", "opponent_team"]
+                "attempts", "def_sacks", "sacks_suffered", "opponent_team"]
         out.append(w[[c for c in keep if c in w]])
     a = pd.concat(out, ignore_index=True)
     a["opponent_team"] = a.opponent_team.replace(TEAM_FIX)
@@ -121,10 +121,46 @@ class Ctx:
 
 
 # ----------------------------------------------------------------------------- features
-def build_features(df, ctx):
+def qb_att_share(ts):
+    """Mirror of scripts/ownership_v2.qb_att_share (keep in sync). Per QB: passing attempts summed over his team's
+    last-3-game window / the team's QB attempts summed over the same window; Series by player_id."""
+    if not len(ts) or "attempts" not in ts:
+        return pd.Series(dtype=float)
+    q = ts[ts.position == "QB"]
+    a = q.assign(attempts=q.attempts.fillna(0)).groupby(["team", "player_id"]).attempts.sum()
+    tot = a.groupby(level="team").transform("sum")
+    sh = (a / tot.where(tot > 0)).dropna().reset_index(level="team", drop=True)
+    return sh[~sh.index.duplicated()]
+
+
+def qb_share_minsnap(ts, min_att):
+    """Mirror of scripts/ownership_v2.qb_share_minsnap (keep in sync). Old QB my_share (carries+targets mean over games /
+    team QBs' sum of means) counting only games with >= min_att pass attempts. None when attempts are unavailable."""
+    if not len(ts) or "attempts" not in ts:
+        return None
+    q = ts[(ts.position == "QB") & (ts.attempts.fillna(0) >= min_att)]
+    per = q.groupby(["team", "player_id"]).usage.mean()
+    tot = per.groupby(level="team").transform("sum")
+    sh = (per / tot.where(tot > 0)).fillna(0.0).reset_index(level="team", drop=True)
+    return sh[~sh.index.duplicated()]
+
+
+def build_features(df, ctx, qb_att=None, qb_minsnap=None):
     """df: one or more slates. Required columns:
     slate_id, season, week, player_id, pos, team, opp, salary, proj, sigma, team_total, game_total, in_pool,
-    l_exp, l_est (optional; NaN -> floor).  Returns df with feature columns appended."""
+    l_exp, l_est (optional; NaN -> floor).  Returns df with feature columns appended.
+    qb_att: QB my_share = passing-attempt share (2026-10-05, analysis/wk4_postmortem/qb_share_refit). None = read the
+    production switch DFS_OWN_V2_QB_ATT_SHARE (same default as scripts/ownership_v2.QB_ATT_SHARE_DEFAULT)."""
+    if qb_att is None:
+        import os
+        qb_att = os.environ.get("DFS_OWN_V2_QB_ATT_SHARE", "0").strip().lower() not in ("0", "false", "off", "no", "")
+    if qb_minsnap is None:  # production switch DFS_OWN_V2_QB_SHARE_MINSNAP (see scripts/ownership_v2.QB_SHARE_MINSNAP_DEFAULT)
+        import os
+        if os.environ.get("DFS_OWN_V2_QB_SHARE_MINSNAP", "0").strip().lower() not in ("0", "false", "off", "no", ""):
+            try:
+                qb_minsnap = float(os.environ.get("DFS_OWN_V2_QB_SHARE_MIN_ATT", 10))
+            except ValueError:
+                qb_minsnap = 10.0
     df = df.copy()
     df["team"] = df.team.replace(TEAM_FIX)
     df["opp"] = df.opp.replace(TEAM_FIX)
@@ -181,6 +217,14 @@ def build_features(df, ctx):
             s["vacated"] = [vac.get((a, b), 0.0) for a, b in zip(s.team, s.g2)]
             ms = per.set_index("player_id").share
             s["my_share"] = s.player_id.map(ms[~ms.index.duplicated()]).fillna(0.0)
+            if qb_att:
+                qb = s.pos == "QB"
+                s.loc[qb, "my_share"] = s.loc[qb, "player_id"].map(qb_att_share(ts)).fillna(s.loc[qb, "my_share"])
+            elif qb_minsnap:
+                ms2 = qb_share_minsnap(ts, qb_minsnap)
+                if ms2 is not None:
+                    qb = s.pos == "QB"
+                    s.loc[qb, "my_share"] = s.loc[qb, "player_id"].map(ms2).fillna(0.0)
         else:
             s["vacated"] = 0.0; s["my_share"] = 0.0
         s.loc[s.pos == "DST", ["vacated", "my_share"]] = 0.0
