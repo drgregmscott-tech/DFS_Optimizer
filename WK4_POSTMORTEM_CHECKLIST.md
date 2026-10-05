@@ -18,6 +18,19 @@ and resolves none.
   predicted ownership from ~3-4% to ~5-8% against 20-22% actual) — both fixes held, see item 1 writeup.
   Real driver is still unidentified. Kyler Murray's low share was also wrongly lumped into the kneel-down
   theory — his low share isn't attendance-driven at all. Needs its own session, not a quick follow-up.
+- **Classic ownership position-budget gap: TE and QB totals run short of real on every slate.** Found while
+  closing item 3 (2026-10-05, `scripts/grade_accuracy_week.py` output): on all 6 Wk3-4 classic slates, our
+  modeled ownership undershoots the real per-slate TE total by 10-36 pts and the QB total by 2.5-10 pts
+  (WR/RB/DST totals are close). This is a different mechanism from the showdown DST/kicker chalk-underestimate
+  in item 8 — it's classic-format, position-level, and consistent in direction every slate, which is exactly
+  the kind of persistent pattern worth a real look (not yet root-caused: could be a genuine modeled-ownership
+  scale issue per position, or a downstream step — chalk-size fix, FFC blend, renormalization — not preserving
+  position totals the way the raw model intends). `own_budget_walkforward.py` in
+  `analysis/recal_vs_spotadjust/` already found something adjacent: TE's history-fit budget has been slowly
+  drifting (113→121, 2021-25) and a rolling budget narrows slate-total error without moving player-level MAE —
+  suggesting the gap is post-model normalization, not a stale learned budget. Needs its own session: pull the
+  position-sum chain (raw model output → chalk-size step → FFC blend → final renorm) and find where TE/QB mass
+  leaks out.
 - **FLEX-WR lineup-level rebuild.** Found while closing item 2 (2026-10-05): the `cl-flex-wr-highprice-bonus`
   was zeroed (was 3.0) because it's scoped wrong — DK's FLEX slot can be any of the 4 WRs, so "a $6,300+ WR
   in FLEX" as the solver sees it means "any 4-WR lineup holding a $6,300+ WR" (92% of real 4-WR lineups
@@ -165,7 +178,9 @@ and resolves none.
 
 8. **Showdown-specific review.** DET/CAR and ATL/NO (once played) grading — same ownership/projection
    accuracy check as item 1, scoped to showdown. Persistent DST/kicker-as-cheap-FLEX-chalk underestimate
-   (seen on PIT/CLE) — check if it recurs.
+   (seen on PIT/CLE) — check if it recurs. Also fold in: item 3's tracker run flagged showdown DST
+   *projections* over-estimated by +3.1 pts (FLEX scale, Wk1-4 pooled) — separate from the ownership-side
+   chalk underestimate above, check if it's real/persistent once ATL/NO is in.
 
 9. **Carried over from the Wk3 postmortem, still open — see `WK3_POSTMORTEM_OPEN.md` for full detail:**
    - Track-2 candidates gated on "re-test with Wk4 data" (own-penalty, truepool coef, vac-bump k, WR/TE
