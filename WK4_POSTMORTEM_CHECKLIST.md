@@ -237,27 +237,111 @@ and resolves none.
    overlapping cron-job.org triggers queuing behind each other, and `vegas_only` mode not actually being
    light.
 
-7. **FD injury issues — diagnose what actually happened.** User flagged FD had injury-related issues this
-   week, separate from the Parkinson/Spears X-monitor catches (which worked correctly). Needs its own look:
-   what went wrong on FD specifically, was it a pipeline gap or a one-off.
-   *(Parker Washington's early-only SE miss is explicitly NOT part of this — confirmed true variance, drop it.)*
+7. **FD injury issues — diagnose what actually happened. ✅ DONE 2026-10-05.** Clarified with the user:
+   the issue is Ja'Marr Chase (rostered on FD over Tee Higgins) getting hurt mid-game, and that FD build
+   not cashing.
 
-8. **Showdown-specific review.** DET/CAR and ATL/NO (once played) grading — same ownership/projection
-   accuracy check as item 1, scoped to showdown. Persistent DST/kicker-as-cheap-FLEX-chalk underestimate
-   (seen on PIT/CLE) — check if it recurs. Also fold in: item 3's tracker run flagged showdown DST
-   *projections* over-estimated by +3.1 pts (FLEX scale, Wk1-4 pooled) — separate from the ownership-side
-   chalk underestimate above, check if it's real/persistent once ATL/NO is in.
+   **Verdict: confirmed true variance, no pipeline fix needed — agrees with the user's own read.**
+   - Checked every `player_status_4_*` snapshot for Chase from 10/3 through pre-kickoff on 10/4: `ACTIVE`,
+     no raw status flag, all week. Zero pre-game signal of injury risk.
+   - Our model and the public DFF projection both correctly ranked Chase above Higgins pre-game (ours:
+     14.1 proj/$9,100/15.6% own vs. 12.4 proj/$6,900/13.9% own; DFF: 17.3 vs. 12.2) — this was the right
+     call with the information available at lock, not a model error.
+   - The `OUT` → `QUESTIONABLE` status flips start at 19:01 UTC on 10/4 (~30 min after this game's kickoff),
+     confirming the injury happened live, in-game — not a missed pre-game inactive or a feed lag the
+     injury pipeline (items 4/7-adjacent) could have caught.
+   - No construction angle either: this isn't a correlation/stacking issue (both Chase and Higgins show up
+     across the FD pool builds for main and early), and FD's own rules (no real in-game swap window once
+     locked) mean there was no realistic chance to react mid-slate.
+   - **Real gap, noted but out of scope to fix today:** there's no FD contest-results export/grading
+     pipeline (unlike DK's `data/contest_results/`), so "FD didn't cash" can't be quantified or graded the
+     way item 1 does for DK — we're going on the user's report alone. Not worth building for one site with
+     no judged export available; flagged for awareness only.
 
-9. **Carried over from the Wk3 postmortem, still open — see `WK3_POSTMORTEM_OPEN.md` for full detail:**
+8. **Showdown-specific review.** ⏳ PART DONE 2026-10-05 (ATL/NO wasn't played yet when this ran — kicked off
+   ~7:15pm CT tonight; grade it with `grade_wk4.py`/`grade_accuracy_week.py` once it's final). Opus-agent
+   deep-dive, full writeup `analysis/wk4_postmortem/RESULTS_showdown_item8.md` (local, gitignored).
+
+   **Shipped (code changed, NOT YET COMMITTED — needs a decision, see below):** Kicker FLEX ownership was
+   badly under-owned (Bates 8.5% modeled vs 19.7% real on DET_CAR; Boswell 19.4% vs 32.7% real on PIT_CLE)
+   — not a 2-slate fluke. Root cause: kicker FLEX ownership is sized from noisy optimizer exposure, which
+   only correlates .11-.14 with the real field because our kicker projections are flat (7.9-8.3 across every
+   2026 kicker, SD 0.19 in history) — tiny noise swings the rank. The real field instead rosters each team's
+   kicker at a near-fixed rate regardless of projection: 23.8% for the favorite's kicker, 16.8% for the
+   underdog's (97 kickers, 49 FC showdown slates, 2023-25; 2026 matches at 15-33%). Fix in
+   `scripts/ownership_model_showdown.py` (`_k_prior`, `DFS_SD_K_PRIOR` env off-switch, default on): the
+   top-projected live FLEX kicker per team gets that field prior instead of the exposure score; backups
+   unaffected. Held out leave-one-season-out on 2023-25: kicker MAE 9.3→6.8, corr .11→.42, and overall FLEX
+   MAE improves in every held-out season; on the 6 real 2026 slates kicker MAE 7.9→4.8, corr .33→.75.
+   **To take effect for tonight's ATL/NO, this needs: commit + push + a showdown pool rebuild before lock —
+   ask the user before doing this given it's a live-contest change close to lock.**
+
+   **Investigated, no change:**
+   - DST FLEX ownership (after the floor-fix already shipped in item 1) — same field-prior idea tested, but
+     disagrees between history (helps, MAE 5.97→4.44) and real 2026 (hurts, 4.35→4.89). History-replay
+     exposure doesn't behave like live exposure for DST, so history can't settle it here. **Inconclusive,
+     keep testing** — re-check after 4-6 more real showdown slates. Candidate code exists
+     (`sd_item8/kd_candidate.py`), not wired in.
+   - Showdown DST projection +3.1 claim (from item 3's tracker) — **wrong-direction, drop.** Showdown DST
+     uses the exact same `dst_model` path as classic (already covered by `dst_recal_v2`), and isolating
+     primetime/standalone games (the ones that become showdown slates) in the 5-year history shows no extra
+     bias vs. Sunday day games (-0.21 ± 0.22 vs. +0.06, not statistically different). The 2026 +2.46 reading
+     was from pre-recal-v2 builds; ATL_NO was rebuilt after recal v2 went in, so tonight's DST numbers
+     already reflect the fix. Nothing to ship, not showdown-specific.
+   - Noted in passing, not acted on: kicker projections are essentially flat (would need real projection
+     signal to improve further — separate, future projection-model item, not ownership).
+
+9. **Carried over from the Wk3 postmortem — see `WK3_POSTMORTEM_OPEN.md` for full detail.** Two
+   sub-items closed this session (2026-10-05, quick confirmations only — the rest below stays open,
+   scoped deliberately per session-discipline rather than attempted in one sitting):
+
+   - **Inactives timing log — CLOSED, confirmed NOT run.** `logs/inactives_timing_2026_wk4.csv` does not
+     exist anywhere in the repo or any worktree. `scripts/inactives_timing_log.py` is a manual,
+     terminal-attended script (must be started by hand Sunday morning) — nobody ran it. Same root cause
+     as item 4's X-monitor afternoon outage (nobody at the keyboard). No code gap; this is pure execution
+     — needs an explicit Sunday-morning reminder/habit, not a fix. Still a real gap: without it there's
+     still no measured answer to "ESPN vs. Sleeper, who's faster," which is what item 4's
+     `inactives_timing_log.py` was built to answer. Try again Wk5 Sunday.
+
+   - **TE role-bump fix (`apply_te_replacement`) — CLOSED, checked against two real Wk4 TE-out cases,
+     found a real structural gap (not shipped — single data point, and not firing was actually correct
+     this week).** Real case: LA @ PHI (early slate) lost THREE pass catchers at once — PHI: A.J. Brown
+     (WR, OUT), DeVonta Smith (WR, OUT), Dallas Goedert (TE, OUT); LA: Terrance Ferguson (TE, OUT), Colby
+     Parkinson (TE, OUT). `wrw_te_delta_pts` was 0.0 for every TE on both teams in the live build.
+     Reproduced `apply_te_replacement`'s trailing-usage inputs directly to confirm why:
+     - **PHI:** the function picks the single OUT player with the *highest* trailing target share on the
+       team and only proceeds if that player is a TE — A.J. Brown (.318 share) outranks Goedert (.150),
+       so the whole TE-bump path is skipped regardless of Goedert's own vacancy. This is a real design
+       gap: any team losing a bigger-target-share WR/RB alongside its TE1 can never get the TE bump, no
+       matter how real the TE vacancy is, because the three replacement functions (`apply_rb_replacement`
+       / `apply_te_replacement` / `apply_wr_replacement`) are mutually exclusive by construction (each
+       only fires if its own position is the team's single biggest OUT vacator). Goedert's own row also
+       failed independently on a `last_g` staleness check (his last played game trails the team's by one
+       week).
+     - **LA:** both OUT TEs (Ferguson .113, Parkinson .084 trailing target share) individually fall below
+       the `min_tgt_share` 0.12 floor, so neither enters the vacated-share pool even combined (.197) —
+       correctly reads as "no real starter lost," since Higbee (LA's actual TE1, .168 share, active) never
+       lost any usage.
+     - **Outcome check against real results:** not firing cost nothing this week. Ertz (PHI backup TE)
+       scored 3.3 real points, in line with (slightly under) his un-bumped projection — no missed
+       explosion. Higbee (LA) scored 11.7 vs. our 6.8 projection (and the real field also missed it,
+       7.3% owned) — a real miss, but unrelated to the TE-bump mechanism (his own trailing share didn't
+       move; reads as game-script/TD variance, not a vacated-target effect).
+     - **Verdict: logged, not shipped.** The multi-position-OUT exclusivity gap is real and plausibly
+       common (teams rarely lose exactly one position group), but this is one slate where it happened not
+       to matter — not enough to justify a change on its own. Needs a few more real multi-position-OUT
+       cases before deciding whether to make the three replacement functions additive instead of
+       mutually exclusive. Logged here instead of in `WK3_POSTMORTEM_OPEN.md` since it's Wk4-sourced
+       evidence on a Wk3-tracked item.
+
+   **Still open, untouched this session (deliberately — see session-discipline note above):**
    - Track-2 candidates gated on "re-test with Wk4 data" (own-penalty, truepool coef, vac-bump k, WR/TE
      reallocation, stud-gap mismatch, QB residual gap, chalk-size fix v2 segmented, next-man-up props bump).
-   - TE role-bump fix (`apply_te_replacement`) — check against a real Wk4 TE-out case.
    - WR-out props-anchor question — do fresh pregame props already catch chalk-explosion cases the engine
      misses? Not yet tested.
-   - Inactives timing log — confirm it ran and ran correctly on Wk4 Sunday.
    - Classic construction re-rank test (re-rank SE3max's 100-lineup pool by modeled-ownership-sum instead
      of raw projection) — not yet run, no new solves needed, data already in `pool_summary.csv`.
    - Multi-session concurrency gap (`MULTI_SESSION_CONCURRENCY_GAP.md`) — needs its own session, leading
      candidate is a lock file + shrinking the X-monitor's footprint.
    - Ownership v2 refit against the new RB/WR/TE projection-stack coefficients (shipped 10/1) — full
-     history-rebuild refit never done.
+     history-rebuild refit never done. Scoped to its own dedicated session, not bundled into item 9 again.
