@@ -65,12 +65,31 @@ and resolves none.
        0.45 blend held-out on any of 2026's 12 live-FFC slates; every raw-FFC fold picked zero slope.
 
 2. **Winning-lineup/construction-rule review — should become standing weekly cadence, not just this week.**
-   Separate from projection/ownership accuracy: look at what actually won/cashed this week (classic and
-   showdown) and check whether `CLASSIC_RULES.md` / `SHOWDOWN_RULES.md` still hold up, or need an
-   adjustment/addition based on real winning construction this week. Same grading motion as item 1 but
-   aimed at construction rules instead of player-level projections. Going forward this should run every
-   week as part of the standard post-slate review, not just get added ad hoc — fold it into whatever
-   process item 1 ends up being.
+   ✅ DONE 2026-10-05. Graded real Wk4 classic (4 contests) and showdown (DET/CAR, PIT/CLE) winning/cashing
+   lineups against `CLASSIC_RULES.md` / `SHOWDOWN_RULES.md`, re-checked any drift with projection-controlled
+   fits on FC history (362 classic / 118 showdown contests), and shipped what held up.
+
+   **Shipped (commit `976f3350`):**
+   - `cl-three-plus-punt-penalty` 2.5 → 0.5 (all classic presets) — no real penalty once projection is
+     controlled for on 353 history contests; 2026 real fields favored 3+ punt lineups 9/13 contests.
+   - `sd-stack-cap-penalty` 0.75 → 0, `sd-heavy-side-cpt-penalty` 0.5 → 1.25 in `showdown_se` only — the old
+     per-extra-FLEX charge was wrong-direction past 3 same-team players on 118 history contests and 2026
+     real slates.
+   - **Found and fixed a real production bug**, not just a weight issue: the 2026-10-02 FLEX-WR price-tier
+     terms were never added to the Cloudflare worker's parameter allowlist or the GH Actions dispatch
+     workflow, so every UI classic build since then silently ran them at 0 regardless of preset — this is
+     why real Wk4 builds were TE-heavy despite the "shipped" WR bonus. Wiring fixed and worker redeployed
+     (`dfs-optimizer-api`, version `9d8593a0`).
+   - `cl-flex-wr-highprice-bonus` 3.0 → 0 — now that the wiring fix would actually apply it, found the
+     lineup-level version is scoped wrong (DK's FLEX slot can be any of 4 WRs, so the bonus pays for "any
+     4-WR lineup" rather than the slot-level effect the history study measured — 92% of real 4-WR lineups
+     qualify). Proper lineup-level rebuild/retest parked below, needs its own session.
+   - New standing weekly tool: `scripts/grade_construction_week.py` — run `python
+     scripts/grade_construction_week.py --week N` each week going forward (`--replay 20` adds an optional
+     30-60 min optimizer on/off check). Report lands in `analysis/weekly_construction_review/out/wkN/`.
+   - Everything else checked (DST $2.8-3.1k band, 0-punt penalty, DST-vs-own-player ban, FLEX WR mid-price
+     penalty, QB-CPT-partner bonus, CPT-QB requirement, DST captain ban) confirmed again, no change.
+   - Full write-up: `analysis/wk4_construction_review/` (local, gitignored, FC-derived numbers).
 
 3. **Recalibration vs. spot-adjust — objective assessment.** Right now there's no standing "recalibrate
    against this week's actuals" job for anything except QB (which has its own recal/autopromote layer).
