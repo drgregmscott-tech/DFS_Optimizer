@@ -68,6 +68,11 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: ${{ env.PYTHON_VERSION }}
+          # This job runs on a tight (5-10 min) cadence, unlike refresh_data.yml's
+          # coarser jobs -- pip's own cache keeps each run's dependency install
+          # down to a few seconds instead of a full cold install every tick,
+          # which matters for the Actions-minutes budget item 6 is tracking.
+          cache: pip
 
       - name: Install dependencies
         run: pip install -r requirements.txt
