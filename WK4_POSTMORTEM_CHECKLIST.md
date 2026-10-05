@@ -91,13 +91,47 @@ and resolves none.
      penalty, QB-CPT-partner bonus, CPT-QB requirement, DST captain ban) confirmed again, no change.
    - Full write-up: `analysis/wk4_construction_review/` (local, gitignored, FC-derived numbers).
 
-3. **Recalibration vs. spot-adjust — objective assessment.** Right now there's no standing "recalibrate
-   against this week's actuals" job for anything except QB (which has its own recal/autopromote layer).
-   Everything else (RB/WR/TE/DST projections, the ownership model) gets fixed by ad hoc postmortem-driven
-   patches. Decide, with evidence: is spot-adjusting outliers the right model, or has enough real data
-   (4 weeks now) accumulated to justify a lighter-weight recurring refit for some pieces? Don't assume the
-   answer — look at what a recalibration cadence would actually have changed this season vs. what the
-   current ad hoc fixes already caught.
+3. **Recalibration vs. spot-adjust — objective assessment.** ✅ DONE 2026-10-05. Opus-agent walk-forward
+   analysis (`analysis/recal_vs_spotadjust/RESULTS.md`, local, gitignored).
+
+   **Premise correction:** "QB has a standing weekly recal" was wrong — `_apply_qb_recal` is a one-time
+   2021-25 coefficient fit (`data/qb_recal_config.json`), not a job that refits against new actuals. Nothing
+   in the system refits weekly today.
+
+   **Verdict: don't build an automatic weekly coefficient refit for DST, the RB/WR/TE stack, or the
+   ownership model — wrong direction, evidence says drop it.**
+   - DST bias is a fixed per-season offset (season-to-season SD 0.11 pts), not a weekly drift; in-season
+     data gets ~0 optimal weight (n0 ≈ 75 weeks). Weekly/annual refit score identically (MAE 4.144 vs the
+     shipped one-off v2 fit's 4.152) — refitting more often buys nothing.
+   - RB/WR/TE stack coefficients bounce on salary/projection collinearity in-season (RB salary coef 2.62 ±
+     1.20 after Wk1 vs. 1.52 in the 5-yr fit) and don't converge to a real signal; the one "gain" found
+     (RB intercept refit) was an MAE artifact — bias got worse (-0.15 → -0.68) and RMSE got worse too.
+   - Ownership: a weekly a+b recal is flat on MAE and makes chalk sizing *worse* on both history (-14.2 →
+     -14.9) and 2026 (-8.9 → -10.1).
+   - Catalog of every real Wk1-4 fix (table in RESULTS.md) shows each one was a bug, a static bias already
+     visible across all 5 years of FC history (DST, the old stack, QB compression — found by a one-off
+     history audit, not needing 2026 data), or a missing mechanism (who-replaces-whom, Q-return). None was
+     a coefficient that drifted mid-season and needed in-season data to catch.
+
+   **Shipped instead: a weekly accuracy/drift tracker — `scripts/grade_accuracy_week.py`.** Flags only,
+   changes nothing automatically (same pattern as item 2's `grade_construction_week.py`). Run `python
+   scripts/grade_accuracy_week.py --week N` after each week's results are logged (right after item 1).
+   Auto-discovers played slates from `data/contest_results/`, grades current `output/final_projections_dk_*`
+   against real DK results, flags PERSISTENT (season-to-date, ≥2/3 weeks same sign, |z|≥2.5) vs WEEK
+   (single-week, |z|≥3) drift by position/salary tier, tracks ownership chalk sizing and position-budget
+   gaps, and resets its trend window automatically when a governing config file changes. Verified against
+   real Wk4 data: reproduces this week's known issues (DST +1.13 PERSISTENT pre-fix, QB -2.36 PERSISTENT,
+   WR $7k+ -6.26 PERSISTENT, TE ownership budget short by 10-36 pts/slate) — on history it would have raised
+   the DST/QB/stud-WR issues the same week or earlier than the manual postmortems did, with a low false-alarm
+   rate (0-1 false positive across 15 history season-positions).
+
+   **Kept standing:** full refits stay annual/offseason on the growing history pile; any *new* model still
+   gets a one-time bias-by-season/tier/quintile audit against 2021-25 history before shipping (that audit is
+   what would have caught DST and the stack years earlier — not a recurring job).
+
+   **Still open, parked (tracker-flagged, not root-caused):** WR $7k+ and $4.5-7k under-projection persists
+   all 4 weeks — ties into the existing stud-gap item below. QB/TE ownership totals run short on real
+   slates. Showdown DST over-projected +3.1. Pick these up in a future session, not this one.
 
 4. **Injury pipeline: ESPN lag + X-monitor override timeline, start-to-end.** ESPN is the nominal gold-standard
    status source but is lagging real news by enough that the X monitor exists as a rescue — confirmed again
