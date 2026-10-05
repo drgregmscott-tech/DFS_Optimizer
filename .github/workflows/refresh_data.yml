@@ -23,14 +23,28 @@
 #   3. refresh_slate -- runs once per entry still active after `prepare`
 #                       (GitHub Actions matrix), rebuilding that one slate's
 #                       projections, applying status, and rebuilding pivots.
-#                       max-parallel: 1 -- these jobs each commit their own
-#                       output back to the repo, and running them serially
-#                       avoids two jobs' git commits racing each other
-#                       (same reasoning the old single-job version already
-#                       used for near-lock dispatches arriving close
-#                       together).
+#                       Session (2026-10-05, WK4 postmortem item 6): legs now
+#                       run IN PARALLEL (no max-parallel cap). The old
+#                       `max-parallel: 1` existed only because each leg used
+#                       to `git commit`+`push` its own output directly, and
+#                       concurrent pushes from parallel legs raced each
+#                       other's commits (a real incident, Session 16.x).
+#                       Legs no longer touch git at all -- each one uploads
+#                       its changed files as a build artifact instead (see
+#                       "Package this leg's changes as an artifact" below),
+#                       so there is nothing left to race. See JOB 3.5.
+#   3.5 commit_results -- NEW (2026-10-05). Downloads every leg's artifact
+#                       (and shared_pull's own commit already landed before
+#                       this job runs), merges all the per-leg run-log
+#                       fragments into logs/automation_run_log.csv, and does
+#                       ONE commit+push for the whole run instead of one per
+#                       leg. This is what makes parallelizing JOB 3 safe --
+#                       a single serial writer at the end, same as
+#                       shared_pull already was.
 #   4. finalize      -- rolls up shared_pull's and refresh_slate's results
-#                       into one pass/fail for the whole run.
+#                       into one pass/fail for the whole run. Now depends on
+#                       commit_results instead of refresh_slate directly, so
+#                       it reads the run log AFTER it's been merged in.
 #
 # IMPORTANT SCOPE NOTE (unchanged from Session 5.2 -- see SESSION_LOG.md for
 # the full reasoning): this workflow does NOT run ingest_salaries.py,
@@ -131,8 +145,45 @@
 #   - Settings -> Actions -> General -> Workflow permissions -> set to
 #     "Read and write permissions", so this workflow can commit its own
 #     output/log files back to the repo.
+#
+# Runtime note (WK4 postmortem item 6, 2026-10-05): a full run had grown
+# from ~6.5min (2026-10-01) to ~16min (2026-10-04), confirmed via real
+# per-job/per-step GH Actions timing, not a guess. Root causes found, in
+# order of actual cost:
+#   1. archive/history_data/ (a one-time 1.75GB backup snapshot committed
+#      2026-10-02, not used by any script here) was being re-downloaded on
+#      EVERY job's checkout -- ~28s x 11-12 jobs per run, the single
+#      largest cost (~28% of total runtime). Fixed below: every checkout
+#      step now uses a blob-none partial-clone filter + sparse-checkout
+#      that excludes archive/ entirely. The backup itself is untouched --
+#      this only stops CI from re-fetching it every run.
+#   2. No pip cache -- every job re-ran `pip install -r requirements.txt`
+#      from scratch (~10-15% of total runtime). Fixed below via
+#      actions/setup-python's built-in `cache: pip`.
+#   3. `max-parallel: 1` on JOB 3's matrix serialized 5-8 slates that could
+#      otherwise run concurrently (~30%+ of total runtime) -- it only
+#      existed to avoid concurrent legs' git commits racing each other
+#      (Session 16.x incident). Fixed below by having legs upload artifacts
+#      instead of committing directly, with ONE new job (commit_results)
+#      doing the single commit+push after all legs finish. `fetch-depth: 0`
+#      was checked and ruled out as a cost (repo history is small; it was
+#      file SIZE at HEAD, not history depth, that was expensive).
+concurrency:
+  group: refresh-data
+  cancel-in-progress: false
 
-name: Refresh Data
+permissions:
+  contents: write
+
+env:
+  PYTHON_VERSION: "3.12"
+  # Every checkout step uses this same sparse-checkout pattern (everything
+  # except the one-time archive backup) plus a blob-none partial-clone
+  # filter, so CI stops re-downloading archive/history_data/'s 1.75GB on
+  # every job. See the runtime note above.
+  SPARSE_CHECKOUT_PATTERNS: |
+    /*
+    !/archive/
 
 on:
   # WK3 postmortem §1 (2026-09-28) -- this workflow no longer has a native
@@ -159,26 +210,6 @@ on:
         description: "Optional note for why this was triggered manually"
         required: false
         default: "manual test run"
-
-# Session 16.x correction: this guard existed in the original single-job
-# version of this workflow (Session 5.2) and was accidentally dropped
-# during the multi-slate rework -- confirmed as a real, live gap when a
-# scheduled run (#251) and a near-lock dispatch (#250) queued and began
-# running at the same time during real testing, each one's jobs able to
-# race the other's git commits on top of the CRLF/rebase issue fixed
-# elsewhere in this file. Restored: overlapping runs now queue instead of
-# running concurrently. cancel-in-progress: false, unchanged from the
-# original reasoning -- a delayed refresh is better than a skipped one,
-# especially for a near-lock dispatch.
-concurrency:
-  group: refresh-data
-  cancel-in-progress: false
-
-permissions:
-  contents: write
-
-env:
-  PYTHON_VERSION: "3.12"
 
 jobs:
   # ---------------------------------------------------------------------
@@ -237,6 +268,10 @@ jobs:
 
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          filter: blob:none
+          sparse-checkout: ${{ env.SPARSE_CHECKOUT_PATTERNS }}
+          sparse-checkout-cone-mode: false
 
       - name: Read current_slate.json, drop locked slates
         id: slates
@@ -300,11 +335,16 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          filter: blob:none
+          sparse-checkout: ${{ env.SPARSE_CHECKOUT_PATTERNS }}
+          sparse-checkout-cone-mode: false
 
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: ${{ env.PYTHON_VERSION }}
+          cache: pip
+          cache-dependency-path: requirements.txt
 
       - name: Install dependencies
         run: pip install -r requirements.txt
@@ -477,6 +517,13 @@ jobs:
   # ---------------------------------------------------------------------
   # JOB 3 -- one pass per active slate: rebuild projections, apply status,
   # rebuild pivots. Runs once per entry prepare left in the matrix.
+  #
+  # Session (2026-10-05, WK4 postmortem item 6): no more `max-parallel: 1`.
+  # Legs now run concurrently -- the old serialization existed only to
+  # avoid concurrent legs' `git commit`+`push` racing each other, and legs
+  # no longer touch git directly (see "Package this leg's changes as an
+  # artifact" below). commit_results (JOB 3.5) does the one real commit
+  # after every leg finishes.
   # ---------------------------------------------------------------------
   refresh_slate:
     needs: [prepare, shared_pull]
@@ -484,13 +531,15 @@ jobs:
     strategy:
       matrix: ${{ fromJson(needs.prepare.outputs.matrix) }}
       fail-fast: false
-      max-parallel: 1
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          filter: blob:none
+          sparse-checkout: ${{ env.SPARSE_CHECKOUT_PATTERNS }}
+          sparse-checkout-cone-mode: false
           # Check out the branch HEAD, not the SHA that triggered the run --
           # shared_pull commits the fresh status/Vegas pull AFTER that SHA,
           # so a SHA-pinned checkout applied a stale player_status file.
@@ -500,6 +549,8 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: ${{ env.PYTHON_VERSION }}
+          cache: pip
+          cache-dependency-path: requirements.txt
 
       - name: Install dependencies
         run: pip install -r requirements.txt
@@ -607,7 +658,14 @@ jobs:
         continue-on-error: true
         run: python3 scripts/pivot_finder.py --site ${{ matrix.site }} --slate-id ${{ matrix.slate_id }}
 
-      - name: Append run-log row
+      # Session (2026-10-05): writes to a workspace-local fragment, NOT the
+      # shared logs/automation_run_log.csv -- this leg runs on its own
+      # runner in parallel with every other leg, each starting from the
+      # same checkout, so appending straight to the shared file would just
+      # produce N independent single-row versions of it with no way to
+      # merge them after the fact. commit_results (JOB 3.5) concatenates
+      # every leg's fragment into the real log once, after all legs finish.
+      - name: Append run-log row (local fragment)
         if: always()
         run: |
           python3 -c "
@@ -615,10 +673,8 @@ jobs:
           from datetime import datetime, timezone
           from pathlib import Path
 
-          log_path = Path('logs/automation_run_log.csv')
+          frag_path = Path('run_log_fragment.csv')
           fieldnames = ['timestamp_utc', 'trigger_type', 'site', 'slate_id', 'step', 'status']
-          is_new = not log_path.exists()
-          log_path.parent.mkdir(parents=True, exist_ok=True)
 
           now = datetime.now(timezone.utc).isoformat()
           trigger_type = '${{ needs.prepare.outputs.trigger_type }}'
@@ -635,61 +691,124 @@ jobs:
               rows.append({'timestamp_utc': now, 'trigger_type': trigger_type, 'site': site, 'slate_id': slate_id, 'step': 'status_apply', 'status': outcome('APPLY_OUTCOME')})
               rows.append({'timestamp_utc': now, 'trigger_type': trigger_type, 'site': site, 'slate_id': slate_id, 'step': 'pivot_finder', 'status': outcome('PIVOT_OUTCOME')})
 
-          with log_path.open('a', newline='') as f:
+          with frag_path.open('w', newline='') as f:
               writer = csv.DictWriter(f, fieldnames=fieldnames)
-              if is_new:
-                  writer.writeheader()
+              writer.writeheader()
               writer.writerows(rows)
 
-          print(f'Appended {len(rows)} row(s) to {log_path}')
+          print(f'Wrote {len(rows)} row(s) to {frag_path}')
           "
         env:
           BUILD_OUTCOME: ${{ steps.build_proj.outcome }}
           APPLY_OUTCOME: ${{ steps.apply_status.outcome }}
           PIVOT_OUTCOME: ${{ steps.pivot.outcome }}
 
-      # max-parallel: 1 above means these matrix legs never run AT THE SAME
-      # TIME, but each one still starts from its own fresh checkout, and a
-      # prior leg's commit (or shared_pull's) may have already landed on
-      # the remote branch by the time this leg is ready to push -- so a
-      # rebase here is still genuinely needed, just never a true
-      # simultaneous race. Session 16.x correction: an earlier version of
-      # this comment claimed no rebase conflict was possible here at all,
-      # which real testing (Session 16.x's six-slate live run) disproved --
-      # every one of six legs needed and got a real rebase against a
-      # commit that had landed since its own checkout.
-      - name: Commit this slate's refreshed outputs + run log
+      # Session (2026-10-05): replaces the old per-leg `git commit`+`push`.
+      # Packages only the files THIS leg actually changed (via `git add` +
+      # `git diff --cached --name-only`, same path set the old commit step
+      # used) into a tarball, plus the run-log fragment above, and uploads
+      # both as one artifact for commit_results (JOB 3.5) to pick up. No
+      # git write happens on this runner, so parallel legs can't race each
+      # other -- `git reset` at the end undoes the `git add` since this
+      # job never commits.
+      - name: Package this leg's changes as an artifact
+        if: always()
+        run: |
+          mkdir -p data/ecr_archive  # pathspec must exist even if the archive step failed
+          git add output/ data/ownership_public/ data/projections_public/ data/ecr_archive/
+          # data/props/audit_{slate_id}.csv is written by build_projections_statline.py's
+          # props anchor step but only exists when props-weight > 0 and a snapshot was
+          # available -- `|| true` since it legitimately won't exist otherwise.
+          git add "data/props/audit_${{ matrix.slate_id }}.csv" 2>/dev/null || true
+          mkdir -p /tmp/payload
+          cp run_log_fragment.csv /tmp/payload/run_log_fragment.csv
+          if git diff --cached --quiet; then
+            echo "No output changes for ${{ matrix.slate_id }} -- uploading run-log fragment only."
+          else
+            git diff --cached --name-only > /tmp/changed_files.txt
+            tar -czf /tmp/payload/files.tar.gz -T /tmp/changed_files.txt
+          fi
+          git reset
+
+      - name: Upload leg artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: refresh-leg-${{ matrix.site }}-${{ matrix.slate_id }}
+          path: /tmp/payload
+          retention-days: 1
+
+  # ---------------------------------------------------------------------
+  # JOB 3.5 -- NEW (2026-10-05, WK4 postmortem item 6). Downloads every
+  # refresh_slate leg's artifact, merges the run-log fragments into
+  # logs/automation_run_log.csv, and does the ONE commit+push for the
+  # whole matrix. This is what lets JOB 3's legs run in parallel without
+  # their git writes racing each other (see JOB 3's header comment).
+  # ---------------------------------------------------------------------
+  commit_results:
+    needs: [prepare, refresh_slate]
+    if: always() && needs.prepare.outputs.has_slates == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          filter: blob:none
+          sparse-checkout: ${{ env.SPARSE_CHECKOUT_PATTERNS }}
+          sparse-checkout-cone-mode: false
+          ref: ${{ github.ref_name }}
+
+      - name: Download all leg artifacts
+        uses: actions/download-artifact@v4
+        with:
+          pattern: refresh-leg-*
+          path: /tmp/artifacts
+
+      - name: Merge leg outputs and run-log fragments
+        run: |
+          for dir in /tmp/artifacts/*/; do
+            if [ -f "$dir/files.tar.gz" ]; then
+              tar -xzf "$dir/files.tar.gz" -C .
+            fi
+          done
+
+          python3 -c "
+          import csv
+          from pathlib import Path
+
+          fieldnames = ['timestamp_utc', 'trigger_type', 'site', 'slate_id', 'step', 'status']
+          log_path = Path('logs/automation_run_log.csv')
+          is_new = not log_path.exists()
+          log_path.parent.mkdir(parents=True, exist_ok=True)
+
+          rows = []
+          frags = sorted(Path('/tmp/artifacts').glob('*/run_log_fragment.csv'))
+          for frag in frags:
+              with frag.open(newline='') as f:
+                  rows.extend(csv.DictReader(f))
+
+          with log_path.open('a', newline='') as f:
+              writer = csv.DictWriter(f, fieldnames=fieldnames)
+              if is_new:
+                  writer.writeheader()
+              writer.writerows(rows)
+
+          print(f'Merged {len(rows)} run-log row(s) from {len(frags)} leg(s)')
+          "
+
+      - name: Commit all slates' refreshed outputs + run log
         if: always()
         run: |
           git config user.name "dfs-optimizer-bot"
           git config user.email "actions@users.noreply.github.com"
-          # Session 16.x fix -- same root cause and same fix as
-          # shared_pull's commit step above: without this, line-ending
-          # renormalization can make the working tree look dirty again
-          # right after a clean commit, which then makes `git pull
-          # --rebase` refuse to proceed with "you have unstaged changes"
-          # even though nothing was genuinely left uncommitted. Confirmed
-          # live: this exact failure hit all six matrix legs in Session
-          # 16.x's real six-slate test run before this fix was added.
           git config core.autocrlf false
-          mkdir -p data/ecr_archive  # pathspec must exist even if the archive step failed
-          git add output/ logs/automation_run_log.csv data/ownership_public/ data/projections_public/ data/ecr_archive/
-          # data/props/audit_{slate_id}.csv is written by build_projections_statline.py's
-          # props anchor step but lives only on this job's runner -- shared_pull's commit
-          # (before this build ran) can't have it, and this was the only commit step for
-          # this slate, so it was never persisted. That's not just a lost audit trail: the
-          # UI/prelock_check.py's "props anchor ... build USED it" check reads this file's
-          # existence as its proof, so it produced a false "did NOT use it" WARN every run
-          # even when the anchor applied correctly (confirmed 2026-09-27 pre-lock: log showed
-          # "Props anchor ... adjusted N player(s)" but the committed repo had no audit file).
-          # `|| true` since the file legitimately won't exist when props-weight is 0 or no
-          # snapshot was available (engine-only build).
-          git add "data/props/audit_${{ matrix.slate_id }}.csv" 2>/dev/null || true
+          git add output/ logs/automation_run_log.csv data/ownership_public/ data/projections_public/ data/ecr_archive/ data/props/
           if git diff --cached --quiet; then
-            echo "No changes to commit for ${{ matrix.slate_id }}."
+            echo "No changes to commit for this run."
             exit 0
           fi
-          git commit -m "Automated refresh: ${{ matrix.slate_id }} (${{ needs.prepare.outputs.trigger_type }}) [skip ci]"
+          git commit -m "Automated refresh: ${{ needs.prepare.outputs.trigger_type }} (all active slates) [skip ci]"
           git pull --rebase --autostash origin "${{ github.ref_name }}" || true
           git push origin HEAD:"${{ github.ref_name }}"
 
@@ -709,17 +828,24 @@ jobs:
   # per-leg outcomes as already recorded in logs/automation_run_log.csv
   # (matrix jobs don't expose per-leg outputs, but every leg appends a row
   # there regardless of outcome -- see "Append run-log row").
+  #
+  # Session (2026-10-05): now needs commit_results (not refresh_slate
+  # directly), so its checkout below sees the merged run log, not a
+  # pre-merge snapshot.
   # ---------------------------------------------------------------------
   finalize:
-    needs: [prepare, shared_pull, refresh_slate]
+    needs: [prepare, shared_pull, refresh_slate, commit_results]
     if: always()
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          # Branch HEAD so the run-log rows the matrix legs just committed
-          # are visible to the failure cross-check below.
+          filter: blob:none
+          sparse-checkout: ${{ env.SPARSE_CHECKOUT_PATTERNS }}
+          sparse-checkout-cone-mode: false
+          # Branch HEAD so the run-log rows commit_results just merged
+          # in are visible to the failure cross-check below.
           ref: ${{ github.ref_name }}
 
       - name: Check for failures
@@ -731,8 +857,8 @@ jobs:
             FAIL=1
           fi
 
-          if [ "${{ needs.shared_pull.result }}" = "failure" ] || [ "${{ needs.refresh_slate.result }}" = "failure" ]; then
-            echo "::error::shared_pull or refresh_slate reported a hard job failure -- see the job logs above."
+          if [ "${{ needs.shared_pull.result }}" = "failure" ] || [ "${{ needs.refresh_slate.result }}" = "failure" ] || [ "${{ needs.commit_results.result }}" = "failure" ]; then
+            echo "::error::shared_pull, refresh_slate, or commit_results reported a hard job failure -- see the job logs above."
             FAIL=1
           fi
 
