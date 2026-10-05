@@ -1,0 +1,4 @@
+Construction lint (informational only -- never blocks a build; see WK3_CONSTRUCTION_RULE_AUDIT.md):
+[construction_lint] showdown: 10 lineups, pool=final_projections_dk_dk_showdown_wk4_ATL_NO_05Oct2026.csv
+           rule severity                                 evidence  lineups share
+SD12_cheap_tier backstop Weak-to-Supported (SE) / Supported (GPP)        3   30%
