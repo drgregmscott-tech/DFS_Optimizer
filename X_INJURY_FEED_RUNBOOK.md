@@ -69,15 +69,45 @@ unmodified week after week, slate mix after slate mix.
    -- if the X post's implied status doesn't match what's already on file, that's a
    real find: surface it to the user immediately, don't wait for the next scheduled
    GH Actions run.
-4. If confirmed as a genuine new status change close to a lock, the fix is a targeted
-   re-run: `python scripts/status_check.py pull --season 2026 --week 4` then
-   `apply` against the affected slate(s) -- same as the manual fix done earlier this
-   session for Jefferson/Nacua/Collins -- rather than waiting for the next cron slot.
+4. If confirmed as a genuine new status change close to a lock, act on the FIRST
+   confirmed hit -- don't keep reading the remaining accounts first. The fix is:
+   append one row to `config/manual_status_overrides.csv` (columns
+   `week,player_name,team,status[,note]` -- see that file's existing rows), then
+   `git add config/manual_status_overrides.csv && git commit -m "..." && git push`.
+   **Stop there -- do not also run `status_check.py pull`/`apply`/`pivot_finder.py`
+   locally for each affected slate.** WK4 postmortem item 4 (2026-10-05) traced the
+   full timeline on two real cases (Parkinson, Coker) and found that local
+   apply-chain was never the bottleneck (2.5-5 min even across 4 slates) but DID
+   cause ~10 minutes of real git-push collision overhead against CI's own commits
+   on the Parkinson case, because `status_check.py apply` already reads
+   `manual_status_overrides.csv` on every run (see that function's docstring) --
+   CI's existing per-slate `apply` step will pick the override up automatically on
+   its own next pull, for every affected slate, with no local work and no
+   collision risk. To shave the wait for CI's next scheduled pull, immediately
+   after pushing the override row also run:
+   `gh api repos/drgregmscott-tech/DFS_Optimizer/dispatches -f event_type=near_lock_refresh`
+   (confirmed 2026-10-05: this session's `gh` auth already has the scopes this
+   needs, no new token required). If that call fails for any reason, nothing is
+   lost -- the override is already committed and the regular cadence still picks
+   it up; the dispatch only shaves latency, it was never the only path to
+   correctness.
 5. Update `data/x_injury_feed_state.json` with the new last_seen ids.
 
 ## Known constraints
 - Only works while a Claude Code session with Claude in Chrome is open -- this is a
   session-based loop (`/loop`), not a 24/7 unattended service like the GH Actions cron.
+  WK4's afternoon window (2026-10-04) had zero successful checks for ~4.5 hours --
+  root cause: the loop needed a permission approval nobody was at the keyboard to give,
+  not a Chrome rendering bug (the "Viewport: 0x0" symptom in its log was downstream of
+  that). Per the user (2026-10-05), this is now fixed to need less/no standing approval
+  going forward.
 - X occasionally shows a transient login/rate-limit wall even when logged in; if a
   profile page doesn't render real tweets, wait and retry once before reporting a
   failure.
+- Regardless of the fix above, this is still an attended, session-based monitor, not an
+  unattended service -- `scripts/espn_diff_probe.py` /
+  `.github/workflows/espn_diff_probe.yml` (added 2026-10-05, WK4 postmortem item 4) is
+  the unattended, browser-free backstop for the same "catch ESPN's lag faster" goal: it
+  re-pulls ESPN and diffs against the last snapshot on a tight cadence, escalating to a
+  real refresh only on a real change, so a gap in THIS monitor (attended or not) isn't
+  the only thing standing between a status change and the pipeline picking it up.

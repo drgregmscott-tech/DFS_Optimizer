@@ -146,15 +146,50 @@ and resolves none.
    all 4 weeks — ties into the existing stud-gap item below. QB/TE ownership totals run short on real
    slates. Showdown DST over-projected +3.1. Pick these up in a future session, not this one.
 
-4. **Injury pipeline: ESPN lag + X-monitor override timeline, start-to-end.** ESPN is the nominal gold-standard
-   status source but is lagging real news by enough that the X monitor exists as a rescue — confirmed again
-   on the Colby Parkinson case (10/4 ~15:40Z, UnderdogNFL ahead of ESPN). The manual override-and-rebuild
-   chain took an extra 5-10 minutes end to end. Before picking a fix, **trace the full current timeline**
-   step by step (X post appears → read/judgment → write override → re-pull status → apply to each affected
-   slate → rebuild pivots, per slate) and measure where the time actually goes. Only then evaluate whether
-   scripting the apply chain is a net win (vs. just moving the bottleneck) or whether a faster primary status
-   source would cut more time with less new surface area. Don't default to "automate the apply chain" without
-   checking this first — flagged explicitly by the user as worth getting right, not rushing.
+4. **Injury pipeline: ESPN lag + X-monitor override timeline, start-to-end.** ✅ DONE 2026-10-05.
+   Opus-agent timeline trace using git commit times, ESPN's own `last_updated` field, and X post ids
+   (Parkinson 10/4 and Coker 10/4 cases) — not estimated.
+
+   **Finding: the manual apply chain was never the bottleneck.** It measured 2.5 min (1 slate) to ~5 min
+   (4 slates) end to end. The real costs were: (1) CI's own near-lock pull cadence running up to **~55
+   minutes apart**; (2) ~20 min of front-end delay in the agent reading all 5 X accounts before acting
+   instead of acting on the first confirmed hit; (3) ~10 min of git-push collision overhead on Parkinson
+   plus one fully duplicated chain on Coker (the known multi-session concurrency gap, in action); (4)
+   ESPN's own lag, measured at 5-16 min across 3 cases.
+
+   **X monitor reliability, now measured not estimated:** worked noon/evening, but had a **complete
+   outage for the entire ~4.5hr afternoon window** (zero successful checks). Root cause per the user
+   (2026-10-05): the loop needed a permission approval nobody was at the keyboard to give — not a Chrome
+   bug — and the user has since reduced the standing-approval requirement, expected to fix this going
+   forward.
+
+   **Shipped:**
+   - `X_INJURY_FEED_RUNBOOK.md` per-tick procedure rewritten: on a confirmed hit, act on the first
+     account that confirms it (don't read the rest first), append the override row, commit/push, and
+     stop — **do not** run `status_check.py pull`/`apply`/`pivot_finder.py` locally per slate.
+     `status_check.py apply`'s existing `apply_manual_status_overrides()` already re-reads
+     `config/manual_status_overrides.csv` on every CI run, so CI's own next pull applies the override
+     to every affected slate automatically; the local apply chain only duplicated that work while adding
+     real collision risk for ~3 minutes saved. Added `gh api .../dispatches -f event_type=near_lock_refresh`
+     (confirmed working with the existing `gh` auth, no new token) as the immediate-trigger step instead,
+     to shave the wait for CI's own cadence without re-running the heavy chain locally.
+   - New unattended, browser-free backstop: `scripts/espn_diff_probe.py` +
+     `.github/workflows/espn_diff_probe.yml` — pulls ESPN status and diffs against the last committed
+     snapshot on a cheap, tight (5-10 min) cadence, escalating to a real `near_lock_refresh` dispatch
+     only when something actually changed. This is what cuts the ~55-min CI cadence gap down without
+     paying the full build+pivot cost (and its Actions-minutes budget, see item 6) on every tick, and
+     covers any gap in the attended X monitor (the afternoon outage included) since it needs no browser
+     or session to be open. Wired into the same cron-job.org → `cloudflare_worker/scheduled_refresh.js`
+     relay as every other cadence (`kind=espn_diff`, proven reliable; GitHub's native `schedule:` trigger
+     was not, see `refresh_data.yml`'s header).
+   - **Manual one-time setup still needed (outside this repo's code, not yet done):** redeploy
+     `cloudflare_worker/scheduled_refresh.js` (`npx wrangler deploy`), then add one cron-job.org job
+     hitting the worker with `kind=espn_diff`, scoped to the same pre-lock windows
+     `x_monitor_windows.py` reports, 5-10 min interval. Test via this workflow's `workflow_dispatch`
+     before relying on it live.
+   - **Not done:** `scripts/inactives_timing_log.py` (Sleeper vs. ESPN timing, observe-only) still exists
+     but has never been run — only real way to tell if a faster primary feed than ESPN exists. Run it
+     next Sunday.
 
 5. **Permission allow-list fix — scheduled tasks re-prompting every run.** Root cause confirmed:
    `.claude/settings.local.json`'s Bash allow-list entries are literal full command strings (exact slate ids,

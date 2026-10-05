@@ -98,6 +98,19 @@
  *        Saturday roster decisions) and previously sat unapplied for
  *        12-20+ hours -- see SESSION_LOG.md for the Wk4 Jefferson/Nacua
  *        case that surfaced this. Scheduled Sat ~10am/1pm/4pm ET.
+ *      - kind=espn_diff -- (added 2026-10-05, WK4 postmortem item 4) a
+ *        CHEAP probe: pull ESPN status + diff against the last committed
+ *        snapshot, escalate to a real near-lock refresh only if something
+ *        actually changed (scripts/espn_diff_probe.py,
+ *        .github/workflows/espn_diff_probe.yml). This exists so the
+ *        near-lock cadence's real gap (measured up to ~55 minutes between
+ *        pulls on 2026-10-04) can be covered by a tight 5-10 min cadence
+ *        WITHOUT paying the full build+pivot cost on every tick the way a
+ *        tighter kind=(no kind) cadence would -- see
+ *        X_INJURY_FEED_RUNBOOK.md for the full reasoning. Configure this
+ *        on cron-job.org scoped to the same pre-lock windows
+ *        x_monitor_windows.py reports (105 min before each lock through
+ *        lock), 5-10 min interval.
  *      - (no kind)   -- near-lock refresh, ~10 minutes, ONLY during the
  *        real near-lock window(s) that week (unchanged from the original
  *        setup).
@@ -139,6 +152,7 @@ const KIND_TO_EVENT_TYPE = {
   vegas: "scheduled_vegas_refresh",
   full: "scheduled_full_refresh",
   injury: "scheduled_injury_refresh",
+  espn_diff: "scheduled_espn_diff_probe",
 };
 const DEFAULT_EVENT_TYPE = "near_lock_refresh"; // no `kind` param = old behavior, unchanged
 
@@ -169,7 +183,7 @@ export default {
     const kindParam = url.searchParams.get("kind");
     if (kindParam && !(kindParam in KIND_TO_EVENT_TYPE)) {
       return new Response(
-        `Unrecognized kind "${kindParam}" -- expected "vegas", "full", "injury", or omit for near-lock.`,
+        `Unrecognized kind "${kindParam}" -- expected "vegas", "full", "injury", "espn_diff", or omit for near-lock.`,
         { status: 400 }
       );
     }

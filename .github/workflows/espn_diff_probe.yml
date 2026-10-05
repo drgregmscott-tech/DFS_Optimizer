@@ -1,0 +1,104 @@
+# WK4 postmortem item 4 (2026-10-05) -- see WK4_POSTMORTEM_CHECKLIST.md and
+# X_INJURY_FEED_RUNBOOK.md for the full reasoning.
+#
+# This is deliberately a SEPARATE, cheap workflow from refresh_data.yml, not
+# a new mode inside it. The timeline trace that motivated this found the
+# automated path's near-lock cron-job.org cadence (refresh_data.yml's
+# full_refresh_dispatch) running up to ~55 minutes apart on 2026-10-04 --
+# that's the real gap, not the manual override chain (measured at 2.5-5
+# minutes end to end). Tightening that cadence to 5-10 min by just adding
+# more `kind=(no kind)` cron-job.org jobs would work, but every one of those
+# runs the FULL build+apply+pivot pipeline for every active slate, which is
+# exactly the Actions-minutes cost item 6 of the same postmortem is trying
+# to cut, not grow. This workflow does the cheap half (pull ESPN, diff
+# against the last committed status snapshot) on the tight cadence instead,
+# and only escalates to a real near-lock refresh when something changed.
+#
+# Trigger: repository_dispatch type "scheduled_espn_diff_probe", relayed by
+# cloudflare_worker/scheduled_refresh.js's `kind=espn_diff` -- same
+# cron-job.org -> Worker -> repository_dispatch relay every other cadence
+# in refresh_data.yml already uses (proven reliable; GitHub's native
+# `schedule:` trigger was NOT -- see refresh_data.yml's header). One-time
+# setup still needed outside this file: redeploy the Worker
+# (cloudflare_worker/scheduled_refresh.js) with the new `espn_diff` kind,
+# then add one cron-job.org job hitting it with `kind=espn_diff`, scoped to
+# the same pre-lock windows x_monitor_windows.py reports (105 min before
+# each lock through lock), 5-10 min interval.
+#
+# workflow_dispatch is also enabled so this can be test-run manually before
+# relying on it live.
+
+name: ESPN Status Diff Probe
+
+on:
+  repository_dispatch:
+    types: [scheduled_espn_diff_probe]
+  workflow_dispatch:
+    inputs:
+      reason:
+        description: "Optional note for why this was triggered manually"
+        required: false
+        default: "manual test run"
+
+# Separate concurrency group from refresh-data -- this job's own git commit
+# (the freshly pulled status file) can safely queue behind or ahead of a
+# refresh-data run; it doesn't need to block/be blocked by the heavier
+# pipeline the way refresh-data's own matrix legs need to serialize against
+# each other.
+concurrency:
+  group: espn-diff-probe
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+env:
+  PYTHON_VERSION: "3.12"
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Pull ESPN status and diff against last committed snapshot
+        id: diff
+        run: python3 scripts/espn_diff_probe.py --dispatch-on-change
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # Commit the freshly pulled status file(s) regardless of whether a
+      # change was detected -- harmless record, and gives the NEXT probe
+      # tick an up-to-date baseline instead of diffing against an
+      # increasingly stale one between real full refreshes.
+      - name: Commit freshly pulled status snapshot
+        if: always()
+        run: |
+          git config user.name "dfs-optimizer-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git config core.autocrlf false
+          git add output/player_status_*.csv logs/unmatched_status_*.csv
+          if git diff --cached --quiet; then
+            echo "No new status snapshot to commit."
+            exit 0
+          fi
+          git commit -m "ESPN diff probe: status snapshot (changed=${{ steps.diff.outputs.changed }}) [skip ci]"
+          git pull --rebase --autostash origin "${{ github.ref_name }}" || true
+          git push origin HEAD:"${{ github.ref_name }}"
+
+      - name: Summary
+        if: always()
+        run: |
+          echo "changed output: ${{ steps.diff.outputs.changed }}"
+          echo "If 'true', a near_lock_refresh dispatch was attempted (see the diff step's log for whether it succeeded) -- even if that dispatch failed, the committed status change above will still be picked up by the next scheduled full refresh."
