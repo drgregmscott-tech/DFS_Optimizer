@@ -305,19 +305,22 @@ and resolves none.
 
    - **TE role-bump fix (`apply_te_replacement`) — CLOSED, checked against two real Wk4 TE-out cases,
      found a real structural gap (not shipped — single data point, and not firing was actually correct
-     this week).** Real case: LA @ PHI (early slate) lost THREE pass catchers at once — PHI: A.J. Brown
-     (WR, OUT), DeVonta Smith (WR, OUT), Dallas Goedert (TE, OUT); LA: Terrance Ferguson (TE, OUT), Colby
-     Parkinson (TE, OUT). `wrw_te_delta_pts` was 0.0 for every TE on both teams in the live build.
-     Reproduced `apply_te_replacement`'s trailing-usage inputs directly to confirm why:
-     - **PHI:** the function picks the single OUT player with the *highest* trailing target share on the
-       team and only proceeds if that player is a TE — A.J. Brown (.318 share) outranks Goedert (.150),
-       so the whole TE-bump path is skipped regardless of Goedert's own vacancy. This is a real design
+     this week).** Real case: LA @ PHI (early slate) — PHI: DeVonta Smith (WR, OUT), Dallas Goedert
+     (TE, OUT); LA: Terrance Ferguson (TE, OUT), Colby Parkinson (TE, OUT). `wrw_te_delta_pts` was 0.0 for
+     every TE on both teams in the live build. Reproduced `apply_te_replacement`'s exact `outs` filter
+     (not just the raw trailing-usage table — an earlier pass through this check skipped the `last_g`
+     staleness gate and wrongly implicated A.J. Brown, who is correctly on NE now per the live DK salary
+     file and was correctly excluded by that same gate; corrected before shipping this note) to confirm
+     the real cause:
+     - **PHI:** of the two OUT players, only DeVonta Smith (.270 trailing target share) passes the
+       function's own filters — Goedert himself is filtered OUT of the vacancy pool by the `last_g`
+       staleness gate (his last tracked game trails the team's current index by one week) before the
+       position check even runs. Smith, a WR, becomes the team's single top OUT vacator, and the function
+       only proceeds if that player is a TE — so the whole TE-bump path is skipped. This is a real design
        gap: any team losing a bigger-target-share WR/RB alongside its TE1 can never get the TE bump, no
        matter how real the TE vacancy is, because the three replacement functions (`apply_rb_replacement`
        / `apply_te_replacement` / `apply_wr_replacement`) are mutually exclusive by construction (each
-       only fires if its own position is the team's single biggest OUT vacator). Goedert's own row also
-       failed independently on a `last_g` staleness check (his last played game trails the team's by one
-       week).
+       only fires if its own position is the team's single biggest OUT vacator).
      - **LA:** both OUT TEs (Ferguson .113, Parkinson .084 trailing target share) individually fall below
        the `min_tgt_share` 0.12 floor, so neither enters the vacated-share pool even combined (.197) —
        correctly reads as "no real starter lost," since Higbee (LA's actual TE1, .168 share, active) never
