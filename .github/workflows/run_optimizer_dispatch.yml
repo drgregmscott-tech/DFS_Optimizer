@@ -166,6 +166,10 @@ jobs:
           args += flag("--cl-three-plus-punt-penalty", "cl_three_plus_punt_penalty", float)
           args += flag("--cl-flex-rb-bonus", "cl_flex_rb_bonus", float)
           args += flag("--cl-flex-wr-penalty", "cl_flex_wr_penalty", float)
+          # 2026-10-05 -- price-tier pair was missing here and in the worker
+          # allowlist, so UI builds never received it (ran at 0).
+          args += flag("--cl-flex-wr-highprice-bonus", "cl_flex_wr_highprice_bonus", float)
+          args += flag("--cl-flex-wr-midprice-penalty", "cl_flex_wr_midprice_penalty", float)
 
           # Session 12 -- decisions #36-38. Same "omit means optimizer.py's
           # own default (no cap)" convention as every other optional field

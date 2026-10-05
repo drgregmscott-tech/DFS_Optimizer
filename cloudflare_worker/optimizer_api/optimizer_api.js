@@ -313,6 +313,10 @@ async function handleDispatch(url, env) {
     "cl_dst_band_bonus", "cl_dst_expensive_penalty",
     "cl_zero_punt_penalty", "cl_three_plus_punt_penalty",
     "cl_flex_rb_bonus", "cl_flex_wr_penalty",
+    // 2026-10-05 -- the FLEX-WR price-tier pair (added to optimizer.py and
+    // the UI 2026-10-02) was never added here, so the worker silently
+    // dropped it and every UI classic build ran it at 0.
+    "cl_flex_wr_highprice_bonus", "cl_flex_wr_midprice_penalty",
     // Require-N-From-Group -- classic-only hard "at least N of this
     // explicit player_id pool" floor (optimizer.py --require-n-from-
     // group). One "ID,ID,ID:N" string, passed through unchanged --

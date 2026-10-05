@@ -18,6 +18,15 @@ and resolves none.
   predicted ownership from ~3-4% to ~5-8% against 20-22% actual) — both fixes held, see item 1 writeup.
   Real driver is still unidentified. Kyler Murray's low share was also wrongly lumped into the kneel-down
   theory — his low share isn't attendance-driven at all. Needs its own session, not a quick follow-up.
+- **FLEX-WR lineup-level rebuild.** Found while closing item 2 (2026-10-05): the `cl-flex-wr-highprice-bonus`
+  was zeroed (was 3.0) because it's scoped wrong — DK's FLEX slot can be any of the 4 WRs, so "a $6,300+ WR
+  in FLEX" as the solver sees it means "any 4-WR lineup holding a $6,300+ WR" (92% of real 4-WR lineups
+  qualify), which isn't the same thing the original slot-based history finding measured. Next step: rebuild
+  the FC classic history entries with every WR's own salary, then test a real lineup-level version on
+  history with the §5 controls — either (a) 4-WR vs 3-WR split by the price of the *cheapest* WR, or (b) an
+  "expected slot" term weighted by the share of the 4 WRs priced $6,300+. Only ship a bonus back if a
+  lineup-level effect holds up held-out. Details/scripts: `analysis/wk4_construction_review/RESULTS_flex_wr.md`
+  (`flex_slot_rank.py`, `flex_bonus_cost.py`). Needs its own session, not a quick follow-up.
 
 ## Open items
 

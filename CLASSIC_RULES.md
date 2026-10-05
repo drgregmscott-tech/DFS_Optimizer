@@ -18,10 +18,32 @@ replaced 2026-10-02 with a WR-price-tier version (see rule 3)** via all four cla
 
 1. **DST salary: $2.8-3.1k is best, $3.6k+ is worst. Supported, all 3 formats.** Cash lift $2.8-3.1k +0.8 / +1.2 / +1.2
    (SE / 3MAX / 20MAX, 3MAX 4/4 seasons); $3.6k+ -2.3 / -2.8 / -2.9 (20MAX 0/4 seasons, return 0.86-0.90x). Under $2.8k is
-   only neutral (+0.3 / +0.4), so the rule is "cheap and believable", not "cheapest DST". No projection-controlled term.
+   only neutral (+0.3 / +0.4), so the rule is "cheap and believable", not "cheapest DST".
+   **Projection-controlled re-fit, 2026-10-05 (Wk4 construction review):** `analysis/wk4_construction_review/
+   dst_band_controlled.py`, 362 contests, §5 controls (ownership, projection, QB salary, stack, punt, bring-back, salary
+   left) + DST band dummies vs <$2.8k + FLEX dummies + DST conflict. Controlled cash lift (SE / 3MAX / 20MAX):
+   - **$2.8-3.1k: +1.5 / +1.9 / +1.2, passes in all three (4/4 seasons pooled). Points +1.4 / +1.5 / +1.0.** Band holds,
+     and is slightly stronger after controls than raw.
+   - $3.2-3.5k: +0.8 / +1.6 / +0.6 cash (CI touches 0), points +0.9 pooled (passes). Not distinguishable from the band.
+   - **$3.6k+: +0.2 / +0.2 / -0.3 cash, points +0.04 pooled -- zero in every format.** The raw -2.3 to -2.9 was the
+     salary/projection confound (an expensive DST leaves less for everything else), which the solver already prices.
+   - **But 2026 real DK fields say the opposite for OUR projections:** Wk1-4, 12 contests with a $3.6k+ DST in play,
+     $3.6k+ lineups cashed **-8.2 raw / -9.4 controlled by our projection + realized ownership, 0/12 contests positive**
+     (Wk4 alone -3.0 / -4.7, 0/4). FC's projection explains the expensive-DST gap away; ours doesn't -- i.e. our
+     projections still over-rate expensive DSTs (the 2026-10-04 `dst_recal_v2` fix was intercept-only, not salary-tier).
+   - **Decision: no weight change.** The penalty is doing real work as a correction on our own DST projection. The
+     proper fix is on the projection side (salary-tier check of DST projection error), not here -- parked. A 2.0 -> 0.4 cut
+     was drafted from the FC-controlled fit and reverted for this reason. Band: history-controlled holds; 2026 mixed
+     (8/15 contests positive raw, Wk4 0/4). Holds, no change.
 2. **Punts (non-DST at $4,000 or less): 0 is bad, 1 is best, 3+ is bad. Supported.** 0 punts -2.2 / -2.3 / -1.9 raw. After
    §5's projection control, having at least 1 punt is still worth **+1.4 to +1.9** (Supported in SE and 20MAX). 2 punts is
    neutral (+0.1 to +0.3). 3+ punts -2.7 / -4.1 / -4.7 raw (no controlled term). "More punts is better" is contradicted.
+   **2026-10-05 update (Wk4 construction review):** a controlled re-fit (`analysis/wk4_construction_review/
+   history_controlled_checks.py`, 353 contests, §5 controls + punt-count dummies vs 1 punt) gives **0 punts -1.2 cash /
+   -1.0 pts (passes, holds)**, 2 punts +0.7 / +0.5 (ns), **3+ punts +0.4 cash / -0.35 pts, CI spans 0 in every format**.
+   The raw 3+ penalty was a projection confound. 2026 real DK fields agree: Wk1-4, 0 punts -7.0 raw / -8.6 controlled,
+   1/15 contests positive (Wk4 0/4) -- strongly holds; 3+ punts +8.5 raw / +6.6 controlled, 9/13 positive (Wk4 1/3).
+   **Shipped: `--cl-three-plus-punt-penalty` 2.5 -> 0.5** (all four presets + UI defaults). Zero-punt 1.5 unchanged.
 3. **FLEX position: the flat "RB > TE > WR" rule is NOT supported. Replaced 2026-10-02 by a WR-price-tier rule: pay up
    for a WR in FLEX, or don't use one at all.** The old grade came from §3's raw lift only (FLEX RB +0.7 to +1.0, FLEX WR
    -1.2 to -1.5). Controlled re-fit (`analysis/flex_position/flex_experiment.py`, 381 contests 2022-26, per-contest OLS =
@@ -44,6 +66,27 @@ replaced 2026-10-02 with a WR-price-tier version (see rule 3)** via all four cla
    - Net ranking: **WR $6,300+ > {RB any price, TE any price, WR under $4,900} > WR $4,900-$6,300**, with only the top and
      bottom groups statistically real.
    - Results tables: `analysis/flex_position/out/` (local only, FC-derived).
+   - **FLAG, 2026-10-05 (Wk4 construction review) -- 2026 real fields do not show it, and the optimizer applies it more
+     broadly than the evidence.** (a) DK FLEX-slot WR $6.3k+ on 2026 Wk1-4 fields (15 contests): cash -0.3 raw vs field,
+     6/15 positive (Wk4 -5.2, 1/4); TE in FLEX was the best raw FLEX (+5.3 Wk1-3 10/11, +1.8 Wk4 3/4). (b) The study's
+     variable is the player in DK's FLEX *slot*; the solver can't see slots, so it gives +3.0 to ANY 4-WR lineup holding a
+     $6.3k+ WR. In the replay (se3max_pool, 15 slates x 20 seeds) that turns **95% of builds into 4-WR lineups** (11% with
+     the terms off). That lineup-level version was never tested on history (the FC parquet stores only the FLEX-slot
+     player's salary); on 2026 fields it is -0.7 raw, 7/15. **Not changed** -- 15 contests don't overturn a 4/4-season
+     finding -- but it is the top inconclusive-keep-testing item: rebuild the FC classic entries with every WR's salary and
+     test "4 WR incl. a $6.3k+ WR" vs 3-WR builds with the same controls.
+   - **Drill-down, same day (`analysis/wk4_construction_review/RESULTS_flex_wr.md`) -- bonus set 3.0 -> 0.**
+     (1) Live UI builds never had it: the Cloudflare worker allowlist and `run_optimizer_dispatch.yml` were never given
+     `cl_flex_wr_highprice_bonus`/`cl_flex_wr_midprice_penalty` when they were added 2026-10-02. The UI sent them; the
+     worker dropped them; the Wk4 main MME run's actual command line has no `--cl-flex-wr-*` flags. Fixed in both files.
+     **The worker needs a redeploy** for that to take effect. (2) The TE lean in live builds is plain projection-per-dollar:
+     with every FLEX term off, TE wins FLEX on 8/12 2026 pools and RB on 4. TE-in-FLEX was also the best raw FLEX on 2026
+     fields. (3) With the bonus on, 10/12 pools flip to 4 WR at -1.4 projected pts. The added WR is usually cheap
+     ($3.0-4.4k). The bonus is "earned" by a stud WR that was already in the 3-WR lineup. 92% of real 4-WR lineups hold a
+     $6.3k+ WR, and DK FLEX-slot placement is close to random by price (cheapest WR in FLEX 35%, priciest 24%), so the
+     history's slot finding doesn't map to that lineup property. Pooled WR-vs-TE is ~0 on history. Midprice penalty 1.3
+     kept (near-inert). Next test: same as above, plus an "expected slot" version (bonus x share of the 4 WRs priced
+     $6.3k+).
 4. **DST facing your own skill player: bad. Supported** (-1.9 / -2.1 / -3.0, 0/4 seasons, 11-13% of the field does it).
    Already a hard constraint (`exclude_skill_vs_opp_dst`, default on), not a `--cl-*` term.
 5. **Ownership:** realized ownership predicts cashing (+1.1 DST to +2.8 RB per SD of log-ownership, 4/4 seasons), but
@@ -65,12 +108,12 @@ raw shape effect may already be reflected in projection that the solver is maxim
 | Flag | Value | Basis |
 |---|---|---|
 | `--cl-dst-band-bonus` | **0.8** | rule 1, raw +0.8/+1.2/+1.2 (mean ~1.07) x0.75 |
-| `--cl-dst-expensive-penalty` | **2.0** | rule 1, raw -2.3/-2.8/-2.9 (mean ~2.67) x0.75 |
+| `--cl-dst-expensive-penalty` | **2.0** | rule 1, raw -2.3/-2.8/-2.9 (mean ~2.67) x0.75. 2026-10-05: ~0 after FC-projection controls, but -9.4 cash vs OUR projection on 2026 fields (0/12) -- kept as a projection correction |
 | `--cl-zero-punt-penalty` | **1.5** | rule 2, §5 controlled "≥1 punt" +1.4 to +1.9 |
-| `--cl-three-plus-punt-penalty` | **2.5** | rule 2, raw -2.7 to -4.7 x0.75 at the low-mid end; flat, once |
+| `--cl-three-plus-punt-penalty` | **0.5** (was 2.5) | rule 2, 2026-10-05 controlled re-fit: 3+ punts -0.35 pts / +0.4 cash, CI spans 0; 2026 fields +6.6 controlled, 9/13 |
 | `--cl-flex-rb-bonus` | **0** (was 0.6) | rule 3: dead at every price tier after controls (2026-10-02). Kept for override only. |
 | `--cl-flex-wr-penalty` | **0** (was 1.0) | rule 3: flat version dead after controls (2026-10-02) -- replaced by the two price-tier flags below. Kept for override only. |
-| `--cl-flex-wr-highprice-bonus` | **3.0** | rule 3, controlled WR-$6,300+-vs-TE range +2.8 to +4.1 pts, shaded to the low end |
+| `--cl-flex-wr-highprice-bonus` | **0** (was 3.0) | 2026-10-05: as implemented it paid +3.0 for adding a cheap 4th WR next to a stud already rostered (see rule 3 drill-down); never reached live UI builds anyway (worker bug). Parked pending a lineup-level history test |
 | `--cl-flex-wr-midprice-penalty` | **1.3** | rule 3, controlled WR-$4,900-6,300-vs-TE range -1.3 to -1.5 pts, shaded to the low end |
 
 Every flag can be overridden on the command line (`--cl-... 0` turns one off). All flags at 0 is byte-identical to the
@@ -110,13 +153,31 @@ replicates the same tagging logic for the cross-candidate scorer in `build_multi
   the old, now-dead flat RB-bonus/WR-penalty weights, not `--cl-flex-wr-highprice-bonus`/`--cl-flex-wr-midprice-penalty`.
   Re-run `replay_cl_arm.py` with the new weights before trusting this table for the current FLEX behavior.
 
+### Re-run 2026-10-05 with the FLEX-WR price-tier weights, 15 contests (Wk1-4, main MME and SE3max graded separately)
+`analysis/weekly_construction_review/grade_week.py --week 1-4 --replay 20`, 300 pairs. Note: run while the DST
+penalty was drafted at 0.4 (later reverted to 2.0), so the "on" arm is 0.8/0.4/1.5/2.5/3.0/1.3.
+
+| | off | on |
+|---|---|---|
+| DST $2.8-3.1k / $3.6k+ | 13% / 19% | 50% / 9% |
+| 0 punts / 3+ punts | 17% / 12% | 2% / 0% |
+| FLEX RB / WR / TE | 20% / 11% / 69% | 1% / 95% / 5% |
+| Mean projection | 125.1 | 123.5 (-1.6) |
+| Real points | 129.7 | 130.1 |
+| Mean real percentile | 0.582 | 0.591 (+0.008, slate SE 0.041, 8/15 slates up) |
+| Top-25% cash rate | 34.0% | 37.3% |
+
+Still inside noise. The big shape move is FLEX: the price-tier bonus makes nearly every build a 4-WR build (see the rule 3
+flag). Wk4 alone was negative (main MME -0.19, main SE -0.18, afternoon -0.10, early +0.06).
+
 ## Caveats
 - **First-pass point-scale calibration, like Showdown's `--sd-*` weights. Not a swept optimum.** Revisit once Wk4+ classic
   slates accumulate: re-run `replay_cl_arm.py 20` with new slates added and compare percentile/cash off vs on.
 - DST band and FLEX never got a projection control in §5. If a future controlled fit shrinks them, lower the weights.
   **FLEX done 2026-10-02 (rule 3): the flat version collapsed (both old flags now 0), replaced by a WR-price-tier pair
-  that IS controlled (`--cl-flex-wr-highprice-bonus`/`--cl-flex-wr-midprice-penalty`). The DST band and the $3.6k+ DST
-  penalty are still uncontrolled raw lifts and are next in line for the same test.**
+  that IS controlled (`--cl-flex-wr-highprice-bonus`/`--cl-flex-wr-midprice-penalty`). DST done 2026-10-05 (rule 1):
+  band held; $3.6k+ is ~0 after FC-projection controls but kept at 2.0 because 2026 fields show our own projection
+  over-rates expensive DSTs. 3+ punts done 2026-10-05 (rule 2): cut 2.5 -> 0.5.**
 - The FLEX-WR price-tier terms are exactly scoped to the discretionary 4th WR (see "Optimizer enforcement" implementation
   note above, fixed 2026-10-02) -- still a soft nudge like every other `--cl-*` term (it doesn't force a WR into FLEX),
   but it no longer touches a mandatory WR's own price, and it adds a handful of extra binary variables per build (one

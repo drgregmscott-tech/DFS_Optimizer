@@ -50,6 +50,20 @@ values and their evidence basis.
    sanity build on a real slate put 21% of captains on K/DST under the first version of the presets. DST captain is Supported-bad, so it is
    excluded outright. K captain is only Weak, so it gets a points penalty.
 
+8. **Stack cap / heavy-side re-weighted 2026-10-05 (Wk4 construction review).** Controlled history re-fit
+   (`analysis/wk4_construction_review/history_controlled_checks.py`, 118 FC contests, per-contest LPM cash ~ projection +
+   ownership + CPT-team FLEX >=3 + >=4 + CPT position + 2K + DST): **3 same-team FLEX -1.25 cash pooled (SE -2.2 passes
+   4/4; big -0.4 ns; QB captains -2.2, skill captains -0.8)**, but **4+ adds +1.27 back (passes, 4/4 seasons)** -- so 4-5
+   same-team FLEX is ~even with <=2, not worse. The per-extra-player stack-cap charge (4 FLEX paid 2.0, 5 paid 2.75) was
+   wrong-direction past the first unit. 2026 real DK slates (Wk1-4, 6 slates) agree on direction and go further: 3+
+   same-team FLEX +4.9 controlled cash (5/6 slates positive), 4+ +7.6 (5/6). **Shipped: `--sd-stack-cap-penalty` 0.75 -> 0
+   (both presets); `--sd-heavy-side-cpt-penalty` 0.5 -> 1.25 in `showdown_se`, stays 0.5 in `showdown_gpp`.** Net charge for
+   CPT-heavy builds: SE 1.25 flat at 3+ FLEX (was 1.25/2.0/2.75 for 3/4/5); GPP 0.5 flat (was 1.25/2.0/2.75).
+9. **DST in showdown is effectively excluded, and that's fine (documented 2026-10-05).** `exclude_skill_vs_opp_dst` (default
+   on) bans a DST with any opposing skill player, so a DST can only be rostered in a 5-1/6-0 build -- in practice never
+   (0 of 20 DET/CAR builds). History: any DST ~0 controlled (+0.4, ns). 2026 real fields: lineups with a DST -7.8 raw /
+   -16.4 controlled cash, 5/6 and 6/6 slates negative. No change; turn on `--allow-skill-vs-opp-dst` if you want one.
+
 **UI caveat RESOLVED (fixed after 2026-09-29, confirmed 2026-10-01):** the web UI's Showdown pool controls now default to the
 `showdown_se`/`showdown_gpp` bundle and always send the `sd-*` params; `optimizer_api.js` and `run_optimizer_dispatch.yml` pass them
 through to `optimizer.py` same as a CLI `--preset` run. Items 1-4, 6, 7 apply to UI Showdown builds same as CLI. The post-build
@@ -129,12 +143,14 @@ part as informational when both were already enforced.
 **Enforced by `--preset showdown_se` / `--preset showdown_gpp` (CLI builds only; see the UI caveat above):**
 - Rule 1: the ILP objective itself (every build, preset or not).
 - Rule 3: DST captain hard-excluded (`sd-exclude-cpt-positions DST`); K captain soft-penalized (`sd-k-cpt-penalty` 1.0 SE / 1.5 GPP).
-- Rule 7: CPT-heavy 4-2/5-1 soft-penalized (`sd-heavy-side-cpt-penalty` 0.5, new 2026-09-29), on top of the stack cap below.
+- Rule 7: CPT-heavy 4-2/5-1 soft-penalized (`sd-heavy-side-cpt-penalty` 1.25 SE / 0.5 GPP since 2026-10-05; the stack-cap
+  penalty below is now 0, so this flat charge is the only stack-depth term -- see "Optimizer enforcement" item 8).
 - Rule 10: lambda 0 in both presets.
 - Rule 11: QB-captain RB/TE partner bonus (`sd-qb-partner-bonus` 0.75 SE / 1.5 GPP).
 - Rule 12: $600-1k FLEX tier penalty (`sd-cheap-tier-penalty` 1.0 SE / 2.0 GPP).
 - Rule 13: WR/TE captain requires own QB in FLEX, hard (`sd-require-cpt-qb`).
-- Not a numbered rule: same-team FLEX cap 2 (`sd-stack-cap` 2 / penalty 0.75), from the construction-detail QB stack-depth finding.
+- Not a numbered rule: same-team FLEX cap 2 (`sd-stack-cap` 2 / penalty **0**, was 0.75 until 2026-10-05 -- the per-extra charge
+  past 3 same-team FLEX was wrong-direction on 118 controlled history contests; item 8).
 
 **Not enforced, and why:** rule 2 (dropped, no restriction by design); rule 3's TE part (TE CPT is fine, no restriction needed); rule 4
 (the $600-1k band is covered by rule 12, but "is this a real role player" is not checked); rules 5, 6 (Weak); rule 8 (evidence is on
