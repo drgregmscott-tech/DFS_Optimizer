@@ -40,6 +40,22 @@ and resolves none.
   "expected slot" term weighted by the share of the 4 WRs priced $6,300+. Only ship a bonus back if a
   lineup-level effect holds up held-out. Details/scripts: `analysis/wk4_construction_review/RESULTS_flex_wr.md`
   (`flex_slot_rank.py`, `flex_bonus_cost.py`). Needs its own session, not a quick follow-up.
+- **Overlapping cron-job.org triggers queue behind each other near lock.** Found while closing item 6
+  (2026-10-05): `refresh_data.yml`'s `concurrency: cancel-in-progress: false` means a second run that fires
+  while one is still in progress waits for it instead of running concurrently — by design (a delayed refresh
+  beats a skipped one), but real runs show this costing 10-14 minutes: 10-04 19:00 (`scheduled_full_refresh` +
+  `near_lock_refresh` fired the same second, second one waited 581s and then repeated identical work), 10-03
+  15:00/21:00 (vegas vs. injury collision, 818s/768s waits), 10-04 16:00 (vegas run queued 636s). Fix is in the
+  cron-job.org schedule (offset the cadences so a full/near-lock run and a vegas/injury run never land in the
+  same minute) or a dedupe in `cloudflare_worker/scheduled_refresh.js`, not in `refresh_data.yml` itself.
+- **`vegas_only` mode isn't actually light.** Found while closing item 6 (2026-10-05): `mode == 'vegas_only'`
+  only skips the Vegas-pull-adjacent steps (team stats, status pull, public ownership/projections, ECR,
+  props) — `build_projections_statline.py`, `status_check.py apply`, and `pivot_finder.py` still run for every
+  active slate regardless of mode. Real 10-04 16:00/17:00 vegas-only runs took 17-18 minutes, at least 11
+  billed job-minutes each, for what the naming implies should be a quick Vegas-only check. Needs a decision:
+  is the full DK rebuild actually wanted on every vegas-only tick (new lines moving a projection is plausibly
+  worth a rebuild), or should `vegas_only` skip `refresh_slate`'s build/apply/pivot steps entirely and let the
+  next `full`/`near_lock` run pick it up?
 
 ## Open items
 
@@ -200,13 +216,26 @@ and resolves none.
    call for on a confirmed status contradiction (not yet exercised live, but same failure mode). Everything
    else in the allow-list (git, the `python -c` json reads, x_monitor_windows.py) was already fine as-is.
 
-6. **GH Actions `refresh_data.yml` runtime — currently 10+ min on a full run, target ~50% reduction.**
-   `refresh_slate` runs as a `max-parallel: 1` matrix (deliberately serialized to avoid matrix legs racing
-   each other's git commits) — with 5-6 active slates most weeks, that's 5-6 fully serial jobs, each paying
-   its own checkout + `pip install` + network pulls + commit/push/rebase. That's a meaningful chunk of the
-   hour-to-lock window. Needs real investigation, not a guess from reading the YAML: instrument where time
-   actually goes per step, then evaluate pip caching and/or restructuring so legs don't each commit
-   individually (letting them run in parallel again without the race) as the two likely levers.
+6. **GH Actions `refresh_data.yml` runtime — currently 10+ min on a full run, target ~50% reduction.
+   ✅ DONE (2026-10-05).** Opus-agent-measured real per-job/per-step timing (not a guess) found a full run had
+   grown from ~6.5min (10-01) to ~16min (10-04) in two days. Root causes, ranked by real cost: (1) biggest —
+   `archive/history_data/`, a 1.75GB one-time backup committed 2026-10-02 and read by no script here, was
+   being re-downloaded on every job's checkout (~28s × 11-12 jobs, ~28% of total runtime); (2) no pip cache,
+   every job reinstalled `requirements.txt` from scratch (~10-15%); (3) `max-parallel: 1` serialized 5-8
+   `refresh_slate` matrix legs that only needed to be serial because each one committed+pushed directly,
+   racing other legs' commits (the Session 16.x incident this existed to prevent) (~30%+). `fetch-depth: 0`
+   was checked and ruled out — repo history is small; it was file size at HEAD (the archive), not history
+   depth. Shipped in `.github/workflows/refresh_data.yml` (commit `0244ad17`): blob:none partial-clone filter
+   + sparse-checkout excluding `archive/` on every checkout step; `cache: pip` on both jobs that install
+   deps; `refresh_slate` legs now upload their changed files as artifacts instead of touching git, and a new
+   `commit_results` job does the one real commit+push after all legs finish, which is what made removing
+   `max-parallel: 1` safe. Validated live via `workflow_dispatch` (run `37359070795`): full
+   prepare→shared_pull→refresh_slate→commit_results→finalize chain succeeded, checkout times dropped from
+   ~28s to 7-16s per job. That test only had 1 active slate (everything else was already locked), so true
+   concurrent-multi-leg behavior is unverified until the next real multi-slate full run — check that run's
+   timing when it happens. Two related gaps found but NOT fixed (out of scope for this item, see Parking Lot):
+   overlapping cron-job.org triggers queuing behind each other, and `vegas_only` mode not actually being
+   light.
 
 7. **FD injury issues — diagnose what actually happened.** User flagged FD had injury-related issues this
    week, separate from the Parkinson/Spears X-monitor catches (which worked correctly). Needs its own look:
