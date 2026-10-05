@@ -48,6 +48,40 @@ MIN_PRICE_FLEX = 1000  # players at/below this FLEX price are ~never rostered (r
 LAMBDA = 5.0
 FLOOR = 0.003
 
+# FLEX kicker field prior (WK4 postmortem item 8, 2026-10-05; analysis/wk4_postmortem/sd_item8/).
+# The field rosters the top kicker of each team at a near-constant FLEX rate (FC history 2023-25, 97 kickers:
+# mean 20.3%, favorite's K 23.8%, underdog's K 16.8%), while noisy-ILP exposure barely tracks it (corr .11-.14)
+# and swings with 0.1-pt projection differences (Wk4: Bates 8.5% modeled vs 19.7% real). For the top-projected
+# live FLEX K per team the pre-waterfill raw score is replaced by K_PRIOR_BASE + K_PRIOR_FAV * fav (fav = team
+# implied total > opponent's; 0.5 if unknown). Backup kickers keep the exposure score. Held out: FLEX MAE
+# improves in all 3 history seasons (LOSeason) and on the 6 real 2026 slates (3.90 -> 3.72; K MAE 7.85 -> 4.79).
+# Switch: DFS_SD_K_PRIOR=0 restores the pure exposure model. Fail-safe: missing columns -> no-op.
+K_PRIOR_BASE = 16.8
+K_PRIOR_FAV = 7.0
+
+
+def _k_prior_on() -> bool:
+    import os
+    return os.environ.get("DFS_SD_K_PRIOR", "1").strip().lower() not in ("0", "false", "off", "no")
+
+
+def _k_prior(pool: pd.DataFrame, role: pd.Series) -> np.ndarray:
+    out = np.full(len(pool), np.nan)
+    if "team" not in pool.columns:
+        return out
+    fav = pd.Series(0.5, index=pool.index)
+    if "implied_total" in pool.columns:
+        it = pd.to_numeric(pool["implied_total"], errors="coerce").groupby(pool["team"]).first().dropna()
+        if len(it) == 2:
+            hi, lo = it.idxmax(), it.idxmin()
+            if it[hi] > it[lo]:
+                fav = pool["team"].map({hi: 1.0, lo: 0.0}).fillna(0.5)
+    m = (pool["position"].astype(str) == "K") & (role.values == "FLEX") & (pool["final_projection"] > 0)
+    top = pool[m].sort_values("final_projection", ascending=False).groupby("team").head(1).index
+    pos = pool.index.get_indexer(top)
+    out[pos] = K_PRIOR_BASE + K_PRIOR_FAV * fav.loc[top].to_numpy(float)
+    return out
+
 
 def _logit(p, cap):
     x = np.clip(np.asarray(p, float) / cap, FLOOR, 1 - FLOOR)
@@ -95,6 +129,10 @@ def build_features(df: pd.DataFrame) -> pd.DataFrame:
     sal_flex = pool["salary"].to_numpy(float) / np.where(role.to_numpy() == "CPT", 1.5, 1.0)
     f["isMin"] = (sal_flex <= MIN_PRICE_FLEX).astype(float)
     f["live"] = (pool["final_projection"] > 0).values
+    try:
+        f["k_prior"] = _k_prior(pool, role)
+    except Exception:  # noqa: BLE001 -- prior is optional; exposure model stands alone
+        f["k_prior"] = np.nan
     return f
 
 
@@ -125,6 +163,9 @@ def predict(feats: pd.DataFrame, artifact: dict) -> pd.Series:
         X = (feats.loc[idx, FEATURES] - pd.Series(m["mu"])) / pd.Series(m["sd"])
         z = m["intercept"] + X.to_numpy() @ np.array([m["coefs"][k] for k in FEATURES])
         raw = np.where(feats.loc[idx, "live"].to_numpy(), _inv(z, CAP[role]), 0.0)
+        if role == "FLEX" and "k_prior" in feats.columns and _k_prior_on():
+            kp = feats.loc[idx, "k_prior"].to_numpy(float)
+            raw = np.where(np.isfinite(kp) & feats.loc[idx, "live"].to_numpy(), kp, raw)
         out.loc[idx] = _waterfill(raw, BUDGET[role], CAP[role])
     return out
 
@@ -143,6 +184,8 @@ def refine_showdown_ownership(df: pd.DataFrame, site: str) -> pd.DataFrame:
         if "estimated_ownership_pct_heuristic" not in out.columns:
             out["estimated_ownership_pct_heuristic"] = df["estimated_ownership_pct"]
         out["estimated_ownership_pct"] = new.values
+        out["sd_k_prior_applied"] = (feats["k_prior"].notna().values & _k_prior_on()
+                                     if "k_prior" in feats.columns else False)
         return out
     except Exception as exc:  # noqa: BLE001 -- ownership must never break a build
         print(f"WARNING: showdown ownership model failed ({type(exc).__name__}: {exc}); "
