@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "name": "dst_recal_v2",
+  "fitted_on": "2026-10-05",
+  "replaces": "dst_model.json['recalibration'] (10.4b, fit 2014-17: intercept -4.80969, slope 1.63683)",
+  "form": "final = intercept + slope * raw_simulator_mean, clipped at 0; sigma untouched, p10/p90 shifted",
+  "intercept": -5.62817,
+  "slope": 1.63683,
+  "fit": "slope kept at the 10.4b value (ordering and spread were already calibrated); intercept refit on 2021-25 DK DST scores, n=2590 team-weeks",
+  "why": "DST scoring environment fell ~1 pt/game since 2014-17 (fewer INTs, fumble recoveries, return TDs, sacks); the 2014-17 base rates made every DST run ~+0.8-1.1 high in every season 2018-2025",
+  "heldout_loso_2021_25": {
+    "live_10_4b": {"bias": 0.818, "MAE": 4.473, "RMSE": 5.587, "corr": 0.297},
+    "v2":         {"bias": -0.004, "MAE": 4.309, "RMSE": 5.530, "corr": 0.295}
+  },
+  "check_2026_wk1_3": {"live_bias": 1.24, "v2_bias": 0.42, "live_MAE": 4.57, "v2_MAE": 4.30, "n": 96},
+  "off_switch": "DFS_DST_RECAL_V2=0",
+  "analysis": "analysis/wk4_postmortem/dst_recal/"
+}

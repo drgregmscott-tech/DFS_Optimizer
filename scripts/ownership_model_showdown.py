@@ -65,7 +65,8 @@ def _exposure(pool: pd.DataFrame, noise: float) -> pd.Series:
     for _ in range(N_LINEUPS):
         opt = optimizer.randomize_showdown_projections(pool, noise, rng)
         sel = optimizer.solve_showdown_lineup(pool, "dk", previous_player_sets=prev, uniqueness=1,
-                                              optimization_projection=opt)
+                                              optimization_projection=opt,
+                                              exclude_skill_vs_opp_dst=False)
         prev.append(set(sel["player_id"]))
         for k in sel[optimizer.ROW_KEY_COL]:
             cnt[k] = cnt.get(k, 0) + 1

@@ -535,9 +535,11 @@ def apply_chalk_ffc(F, final, raw_ffc, n=None, b=None, cap=CAP):
 # out of the group re-allocation was the only segment that lifted cheap WR/TE catch20 (.58 -> .75 pooled wk1-3)
 # with $7k+ bias30 unchanged in every week. (n, b) = (15, 0.5) chosen by in-training MAE over all of wk1-3 (no
 # wk4 data exists yet to hold out) -- re-verify against Wk4 once results land before changing these params.
-# Switch: DFS_OWN_CHALK_FFC_SEG=1 (default 0 = off, not yet shipped). Mutually exclusive with the broad
-# DFS_OWN_CHALK_FFC switch above (segmented takes precedence if both are set). Any failure = no-op.
-CHALK_SEG_FFC_DEFAULT = "0"
+# Switch: DFS_OWN_CHALK_FFC_SEG=1 (default 1 = on, shipped 2026-10-05 after passing its first held-out week,
+# Wk4: corr .900->.909, cheap WR/TE chalk-catch 63%->100% on all 3 classic slates, $7k+ unaffected --
+# see analysis/wk4_postmortem/RESULTS.md). Mutually exclusive with the broad DFS_OWN_CHALK_FFC switch above
+# (segmented takes precedence if both are set). Any failure = no-op. DFS_OWN_CHALK_FFC_SEG=0 to disable.
+CHALK_SEG_FFC_DEFAULT = "1"
 CHALK_SEG_PARAMS_PATH = DATA_DIR / "ownership_v2_chalk_seg.candidate-2026-10-01.json"
 CHALK_SEG_N, CHALK_SEG_B = 15, 0.5
 CHALK_SEG_SAL_THRESH = 5500.0

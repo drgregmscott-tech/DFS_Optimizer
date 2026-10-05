@@ -120,6 +120,7 @@ Numbered decisions (continuing fit_dst_model.py's numbering):
 """
 
 import json
+import os
 import sys
 from pathlib import Path
 
@@ -182,6 +183,45 @@ def load_model(path: Path = MODEL_PATH) -> dict:
             f"rather than reading a stale artifact -- a silently-mismatched "
             f"model would project plausible-looking wrong numbers."
         )
+    return _apply_recal_v2(model)
+
+
+RECAL_V2_PATH = DATA_DIR / "dst_recal_v2.json"
+
+
+def recal_v2_enabled() -> bool:
+    return os.environ.get("DFS_DST_RECAL_V2", "1").strip().lower() not in ("0", "false", "off", "no")
+
+
+def _apply_recal_v2(model: dict, path: Path = RECAL_V2_PATH) -> dict:
+    """Wk4 postmortem (2026-10-05): DST level recalibration.
+
+    The 10.4b recalibration was fit on 2014-17, when DSTs averaged ~7.4 DK
+    points. Rebuilt with this code over every 2018-25 team-week, the live
+    projection ran high in EVERY season (+0.7 to +1.3; +0.82 pooled 2021-25
+    vs real DK scores, n=2590), and evenly across salary tier, opponent
+    implied total, projection quintile and home/away -- a pure level drift
+    from stale turnover/sack/return-TD base rates, not a ranking problem.
+    v2 keeps the 10.4b slope and refits only the intercept on 2021-25.
+    Held-out (leave-one-season-out): bias +0.82 -> 0.00, MAE 4.47 -> 4.31.
+
+    Applied here (not in simulate) so fit_dst_model.py, which builds its own
+    model dict, is never affected. Fail-safe: a missing/unreadable artifact
+    or DFS_DST_RECAL_V2=0 leaves the 10.4b recalibration in place.
+    """
+    if not recal_v2_enabled() or not model.get("recalibration"):
+        return model
+    try:
+        v2 = json.loads(Path(path).read_text())
+        a, b = float(v2["intercept"]), float(v2["slope"])
+    except (OSError, ValueError, KeyError, TypeError):
+        return model
+    if b <= 0:
+        return model
+    model = dict(model)
+    model["recalibration_10_4b"] = model["recalibration"]
+    model["recalibration"] = dict(model["recalibration"], intercept=a, slope=b,
+                                  version="dst_recal_v2")
     return model
 
 

@@ -405,7 +405,8 @@ def _build_dst_distributional(salaries, vegas, site, season, week, sims, seed,
     dst["dst_p90"] = dst["p90"].fillna(0.0).where(played, 0.0)
 
     print(f"{n_bye} defense(s) had no game this week (bye) -- final_projection forced to 0.0.")
-    print(f"DST model: distributional (Session 10.4). "
+    print(f"DST model: distributional (Session 10.4), recalibration "
+          f"{model_obj.get('recalibration', {}).get('version', '10_4b')}. "
           f"mean projection {dst.loc[played, 'final_projection'].mean():.2f}, "
           f"sigma {dst.loc[played, 'sigma'].mean():.2f} "
           f"(range {dst.loc[played, 'sigma'].min():.2f}-{dst.loc[played, 'sigma'].max():.2f}).")
