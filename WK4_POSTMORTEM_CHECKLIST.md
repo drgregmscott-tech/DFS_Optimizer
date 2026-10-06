@@ -22,12 +22,22 @@ and resolves none.
   Jennings under today's live chalk-FFC code gives 16.3% modeled vs 9.9% real ownership, driven by an FFC
   number of 48.8 that ran well ahead of what actually happened. One data point, not enough to act on, but
   worth checking again once more WR-out slates with the chalk-FFC fix live have been played.
-- **Showdown skill-player FLEX ownership miss on ATL/NO.** Found while closing item 8's follow-up
-  (2026-10-06): once K/DST were ruled out as the driver of ATL/NO's FLEX miss, the real error was
-  skill-player ownership — Penix (QB2) over-owned by ~22pts, Kamara over-owned by ~18pts, cheap TEs
-  (Hooper/Pitts/Delp) and RB2 (B. Robinson) under-owned by 13-16pts. Not root-caused yet. Needs its own
-  session — check whether this is a one-game artifact (ATL/NO specifics: backup QB, bellcow RB
-  concentration) or a pattern worth checking across more showdown slates.
+- **Showdown skill-player FLEX ownership miss on ATL/NO — root-caused 2026-10-06, keep-testing, no ship.**
+  Full session (Opus/general-purpose agent, `analysis/wk4_postmortem/RESULTS_showdown_skillplayer_flex.md`,
+  local/gitignored): pooled FC showdown history (49 slates 2023-25, usable here unlike the K/DST case) with
+  all 7 real 2026 showdown slates. Pooled skill-FLEX accuracy is fine (LOSO MAE 3.92, corr .91, bias +0.03);
+  ATL/NO's 5.27 MAE is the worst of 7 but not a wild outlier. No cross-slate, sign-consistent positional bias
+  — backup/change-of-scenery QBs get *under*-owned on other slates (Dart, Young), opposite of Penix's
+  over-ownership; Penix repeating the same direction on both his 2026 slates is the one real thread but n=2.
+  The TE/RB2 miss traces to a narrow, real cause: ATL/NO was the one slate (of 7) with a flat four-way TE
+  group instead of one clear lead TE — exactly where the exposure model's known small-projection-gap-swings-
+  ownership weakness (same mechanism already fixed for kickers) bites. Tested the obvious fix (QB/RB/TE
+  position dummies in the ridge features) — made everything worse everywhere, including ATL/NO itself,
+  because FLEX ownership is water-filled to a fixed budget after the raw score and the ridge fit ends up
+  fighting a budget mechanism it can't see; a real fix needs `_waterfill`/`predict` itself to be
+  position-aware, out of scope for a time-boxed session. **Verdict: watch, don't build.** Re-open when 2-3
+  more slates repeat either shape: a Penix-style QB over-ownership, or another flat/no-favorite TE or RB
+  committee slate — then there's enough n to fit a real feature with a wiring plan through the water-fill.
 - **Classic PERSISTENT flags from `grade_accuracy_week.py --week 4` (2026-10-06) — WR $7k+ piece
   [CLOSED 2026-10-06, confirmed stale-snapshot artifact]; DST/QB/TE/general-WR pieces still open, same
   trigger.** After fixing the tracker's per-format fallback gap (see item 1 fix log / commit `a962958b`),
