@@ -154,22 +154,56 @@ and resolves none.
   wk3_early) so it can't poison future re-grading — downstream code already treats a missing FFC file as a
   safe no-op (falls back to the pub_val-only artifact), so losing that one file is strictly safer than
   keeping wrong data.
-- **Overlapping cron-job.org triggers queue behind each other near lock.** Found while closing item 6
-  (2026-10-05): `refresh_data.yml`'s `concurrency: cancel-in-progress: false` means a second run that fires
-  while one is still in progress waits for it instead of running concurrently — by design (a delayed refresh
-  beats a skipped one), but real runs show this costing 10-14 minutes: 10-04 19:00 (`scheduled_full_refresh` +
-  `near_lock_refresh` fired the same second, second one waited 581s and then repeated identical work), 10-03
-  15:00/21:00 (vegas vs. injury collision, 818s/768s waits), 10-04 16:00 (vegas run queued 636s). Fix is in the
-  cron-job.org schedule (offset the cadences so a full/near-lock run and a vegas/injury run never land in the
-  same minute) or a dedupe in `cloudflare_worker/scheduled_refresh.js`, not in `refresh_data.yml` itself.
-- **`vegas_only` mode isn't actually light.** Found while closing item 6 (2026-10-05): `mode == 'vegas_only'`
-  only skips the Vegas-pull-adjacent steps (team stats, status pull, public ownership/projections, ECR,
-  props) — `build_projections_statline.py`, `status_check.py apply`, and `pivot_finder.py` still run for every
-  active slate regardless of mode. Real 10-04 16:00/17:00 vegas-only runs took 17-18 minutes, at least 11
-  billed job-minutes each, for what the naming implies should be a quick Vegas-only check. Needs a decision:
-  is the full DK rebuild actually wanted on every vegas-only tick (new lines moving a projection is plausibly
-  worth a rebuild), or should `vegas_only` skip `refresh_slate`'s build/apply/pivot steps entirely and let the
-  next `full`/`near_lock` run pick it up?
+- **Overlapping cron-job.org triggers queue behind each other near lock, and on Sunday one gets cancelled
+  outright.** Found while closing item 6 (2026-10-05): `refresh_data.yml`'s `concurrency: cancel-in-progress:
+  false` means a second run that fires while one is still in progress waits for it instead of running
+  concurrently — by design (a delayed refresh beats a skipped one) — but real runs show this costing 10-14
+  minutes: 10-04 19:00 (`scheduled_full_refresh` + `near_lock_refresh` fired the same second, second one
+  waited 581s and then repeated identical work), 10-03 15:00/21:00 (vegas vs. injury collision, 818s/768s
+  waits), 10-04 16:00 (vegas run queued 636s).
+  **`vegas_only` investigated 2026-10-06 as a separate angle, folded in here — same root cause, worse on
+  Sunday.** Original question: `mode == 'vegas_only'` runs `build_projections_statline.py` and
+  `status_check.py apply` for every active slate ungated (only `pivot_finder.py`/"Locate built lineup" are
+  already gated to `full`/`injury_only`, `refresh_data.yml:644,657`) — real 10-04 16:00/17:00 vegas-only runs
+  took 17-18 min, ≥11 billed job-minutes. **Conclusion: don't gate build/apply.** The 17.5 job-min was
+  pre-parallel legs (10-04 17:00Z ran its 8 legs serially); build+apply was only ~7.5 of that, the rest is
+  per-leg checkout+pip (~45s/leg) a step gate can't touch. Weekday ticks are already cheap on their own
+  (10-02 Fri: build 3-13s, apply 0-8s per leg). `output/vegas_implied_totals_{slate_id}.csv` is read ONLY by
+  the build (`build_projections_statline.py:755`; frontend totals come from `final_projections` rows,
+  `dfs_optimizer_frontend/index.html:4535-4537`, not the raw file) — so gating build would make a vegas-only
+  pull invisible until the next rebuild (Wed noon lines wait until Thu 7pm `full`, Fri noon until Sat 8am,
+  Sat 5pm until Sun 4am; each of those re-pulls Vegas anyway, so the gated tick's own pull would just be
+  wasted). No lock falls inside any of those gaps, but mid-week displayed projections would carry up to ~1
+  day staler lines to save ~1 billed minute per weekday tick — not worth it. Apply must stay paired with
+  build if ever gated together (build re-emits OUT players live, apply re-zeroes them; apply-on-unchanged is
+  idempotent, `status_check.py:566-578`, so gating both together would be safe, apply alone would not) — one
+  side-effect a gate would cost: today, when `espn_diff_probe.yml` commits a new status file but its own
+  near-lock dispatch fails (`espn_diff_probe.yml:109`), the next vegas tick's build+apply is what picks that
+  status up.
+  **The real Sunday harm is concurrency, not cost, and it's this same overlapping-trigger bug:** on 10-04 the
+  16:00Z `scheduled_full_refresh` (run 37215124889) was CANCELLED with 0 jobs, 2s after queueing — a
+  `near_lock` run was already in progress, and the same-second `vegas_only` tick (37215125245) took the
+  group's one pending slot instead, so Sunday noon lost a status/props/FFC/team-stats refresh to a
+  lines-only run. (Same mechanism recurred 10-05 23:00Z: `near_lock` 37385937097 cancelled, 0 jobs.) Sunday
+  `vegas_only` ticks are fully redundant with that window's `near_lock`/`full` runs anyway (all re-pull
+  Vegas), so unlike the weekday ticks there's no freshness trade-off to losing them.
+  **✅ DONE 2026-10-06, on cron-job.org (not this repo — nothing to commit for these four, the
+  config lives entirely on cron-job.org's dashboard):**
+  1. **"Sun 10-12 CT Vegas Refresh"** (job 8532024) trimmed from hours 10/11/12 to **12 CT only**.
+     10am collided with the no-`kind` "Sun 10AM CT Refresh"; 11am collided with `kind=full`'s 11am tick;
+     both of those already re-pull Vegas themselves, so those two ticks were pure waste. Noon kept —
+     it covers a real ~2.5hr gap (11:30am-2pm CT) with no other refresh.
+  2. **"Sat 10AM+4PM CT Vegas Refresh"** (job 8532017) offset from `:00` to **`:10` past the hour**.
+     Not redundant (vegas lines vs. the same-time injury jobs' status pull — different data), so this one
+     needed de-collision, not removal; new crontab `10 10,16 * * 6`.
+  3. **"Thu+Mon 6PM CT Full Refresh"** (job 8532028) disabled outright. Both its ticks were exact
+     duplicates: Thursday 6pm already covered by "Wed/Thu 6PM CT Refresh", Monday 6pm already covered
+     (with more density, 6:00-6:45 every 15 min) by "Monday 6PM" — both no-`kind` jobs resolve to the same
+     `mode=full` as this one, so disabling it loses nothing.
+  4. **"Sun 2PM CT Refresh"** (job 8555339) disabled outright. Exact duplicate of `kind=full`'s Sunday
+     2:00 PM tick; "Sun 230PM CT Refresh" already provides the extra near-lock density 30 min later.
+  Net effect: removes all 5 concretely-identified same-second collisions (Sun 10am, Sun 11am, Sun 2pm,
+  Sat 10am, Sat 4pm) without losing any real freshness coverage.
 
 ## Open items
 
