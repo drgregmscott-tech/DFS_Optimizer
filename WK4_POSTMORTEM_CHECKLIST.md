@@ -55,12 +55,26 @@ and resolves none.
   If they still show PERSISTENT with a genuine current-era week in the mix, that's real drift; if they
   shrink, same artifact. If they persist, the actual fix is adding engine-code commit dates to the
   era-detection window, not a projection change.
-- **What's actually driving Trevor Lawrence's (and the broader cheap-chalk-QB) ownership miss.** Found
-  while closing item 1 (2026-10-05): the QB `my_share` kneel-down/low-snap theory (both the attempts-only
-  swap and the narrower min-snap floor) only explains a small slice of Lawrence's ~15-point miss (moves
-  predicted ownership from ~3-4% to ~5-8% against 20-22% actual) — both fixes held, see item 1 writeup.
-  Real driver is still unidentified. Kyler Murray's low share was also wrongly lumped into the kneel-down
-  theory — his low share isn't attendance-driven at all. Needs its own session, not a quick follow-up.
+- **Trevor Lawrence / cheap-chalk-QB ownership miss — root-caused and fixed, SHIPPED 2026-10-06.**
+  Real driver was never the QB `my_share` feature (that theory, closed 2026-10-05, only explained a small
+  slice). The actual cause: the chalk-seg FFC pull (`apply_chalk_ffc_seg`) that's supposed to correct
+  exactly this kind of miss is structurally blind to QBs for two independent reasons — (1) its $5,500
+  salary gate was tuned for WR/TE price tiers, but chalk QBs cost $5.5-7k (Lawrence $5,900, Darnold exactly
+  $5,500, both failed the `<` test); (2) its top-15-FFC cut is shared across all positions, and a 20%-owned
+  QB (one roster slot) ranks below the slate's RB/WR/TE chalk (2-4 slots each) — Lawrence was 16th on
+  wk4_main, Darnold 16th on wk4_afternoon, so even removing the salary gate didn't reach them. Fix: QBs now
+  get their own top-3-by-FFC cut, no salary gate, re-allocated inside the QB budget only — RB/WR/TE output
+  is byte-identical by construction, zero regression risk. 12 classic 2026 slates (only sample FFC exists
+  for): QB corr .815→.843, QB MAE better on 11/12 slates, wins 3 of 4 leave-one-week-out weeks. Lawrence
+  9.6→13.5 / 7.2→11.2 against real 22.2/19.9 — real improvement, still ~8pts short (remaining gap is in the
+  base QB model, not the FFC pull). Shipped as `DFS_OWN_CHALK_QB_CUT=3` (default on) in `scripts/ownership_v2.py`.
+  Re-grade after Wk5 (2026-only sample, FFC doesn't exist in 5-year history — same precedent as chalk-seg
+  itself). Found a data bug in passing: `ffc_dk_dk_classic_wk3_main_27Sep2026.csv` was a byte-copy of the
+  wk3_early file (ingest wrote the wrong table) — parking-lot, needs an md5-duplicate guard on the FFC
+  ingest. Kyler Murray is a separate, smaller miss: FFC misses him too (both models under-own him vs. real),
+  not attendance-driven — he's a cheap rushing QB the field likes more than either model does. **NEEDS
+  HISTORY, parking lot** (testable as a rushing-QB value feature on the 5-year set).
+  Full writeup: `analysis/wk4_postmortem/qb_chalk_lawrence/RESULTS.md` (local, gitignored).
 - **Classic ownership position-budget gap: TE and QB totals run short of real on every slate.** Found while
   closing item 3 (2026-10-05, `scripts/grade_accuracy_week.py` output): on all 6 Wk3-4 classic slates, our
   modeled ownership undershoots the real per-slate TE total by 10-36 pts and the QB total by 2.5-10 pts
@@ -83,6 +97,14 @@ and resolves none.
   "expected slot" term weighted by the share of the 4 WRs priced $6,300+. Only ship a bonus back if a
   lineup-level effect holds up held-out. Details/scripts: `analysis/wk4_construction_review/RESULTS_flex_wr.md`
   (`flex_slot_rank.py`, `flex_bonus_cost.py`). Needs its own session, not a quick follow-up.
+- **Kyler Murray — cheap rushing QB, under-owned by both FFC and our model.** Found closing the cheap-chalk-QB
+  session (2026-10-06): not an FFC-staleness or attendance issue — FFC misses him by as much as we do (e.g.
+  wk1_afternoon: FFC 10.5, ours 8.1, real 19.8). The field likes cheap rushing QBs more than either model
+  captures. Testable on the 5-year history as a rushing-QB value feature. **NEEDS HISTORY.**
+- **FFC ingest wrote the wk3_early table to wk3_main.** Found closing the cheap-chalk-QB session (2026-10-06):
+  `data/ownership_public/ffc_dk_dk_classic_wk3_main_27Sep2026.csv` is a byte-for-byte copy of the wk3_early
+  file (same md5) — live wk3_main ran ownership off the wrong FFC table all week. Needs an md5-duplicate
+  guard on the FFC ingest step so a repeat fetch gets caught instead of silently overwriting with stale data.
 - **Overlapping cron-job.org triggers queue behind each other near lock.** Found while closing item 6
   (2026-10-05): `refresh_data.yml`'s `concurrency: cancel-in-progress: false` means a second run that fires
   while one is still in progress waits for it instead of running concurrently — by design (a delayed refresh
