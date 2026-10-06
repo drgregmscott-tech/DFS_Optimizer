@@ -71,9 +71,7 @@ and resolves none.
   Re-grade after Wk5 (2026-only sample, FFC doesn't exist in 5-year history — same precedent as chalk-seg
   itself). Found a data bug in passing: `ffc_dk_dk_classic_wk3_main_27Sep2026.csv` was a byte-copy of the
   wk3_early file (ingest wrote the wrong table) — parking-lot, needs an md5-duplicate guard on the FFC
-  ingest. Kyler Murray is a separate, smaller miss: FFC misses him too (both models under-own him vs. real),
-  not attendance-driven — he's a cheap rushing QB the field likes more than either model does. **NEEDS
-  HISTORY, parking lot** (testable as a rushing-QB value feature on the 5-year set).
+  ingest. Kyler Murray investigated 2026-10-06 — see below, **HOLD, not the rushing theory.**
   Full writeup: `analysis/wk4_postmortem/qb_chalk_lawrence/RESULTS.md` (local, gitignored).
 - **Classic ownership position-budget gap: TE and QB totals run short of real on every slate.** Found while
   closing item 3 (2026-10-05, `scripts/grade_accuracy_week.py` output): on all 6 Wk3-4 classic slates, our
@@ -97,10 +95,25 @@ and resolves none.
   "expected slot" term weighted by the share of the 4 WRs priced $6,300+. Only ship a bonus back if a
   lineup-level effect holds up held-out. Details/scripts: `analysis/wk4_construction_review/RESULTS_flex_wr.md`
   (`flex_slot_rank.py`, `flex_bonus_cost.py`). Needs its own session, not a quick follow-up.
-- **Kyler Murray — cheap rushing QB, under-owned by both FFC and our model.** Found closing the cheap-chalk-QB
-  session (2026-10-06): not an FFC-staleness or attendance issue — FFC misses him by as much as we do (e.g.
-  wk1_afternoon: FFC 10.5, ours 8.1, real 19.8). The field likes cheap rushing QBs more than either model
-  captures. Testable on the 5-year history as a rushing-QB value feature. **NEEDS HISTORY.**
+- **Kyler Murray — rushing theory tested and rejected on history; real cause is a `my_share` staleness case,
+  HOLD. Investigated 2026-10-06.** Full 2021-25 LOSO check (86 slates, same frame as `qb_share_refit`):
+  rushing volume has ~zero correlation with the model's ownership miss (|r| < .04 for p3_car / recent rush
+  yards / season rush yds/g). There IS a real cheap-rusher pocket (QBs < $6.5k with 25+ rush yds/g get 1.25x
+  real ownership vs. predicted, holds 3/5 seasons, ~+1 pt) but it's small, and adding `p3_car` or a
+  rush-yards feature to the live ridge model doesn't move Kyler (predicted 4.7→5.2 against real 19.8) and
+  doesn't clear the ship bar (p3_car coefficient ~0, wins only 38/86 slates; a season-rush-yards variant is
+  better in all 5 seasons but Wk1-3 live doesn't confirm it). **On history Kyler is actually predicted fine**
+  (31 starts, real 5.44 vs. predicted 5.41) — 2026's miss is a live-only artifact of his `my_share` feature
+  reading stale/diluted: 0.00 in Wk1 (traded to MIN, no games in the team's 3-game window yet), 0.33 in
+  Wk3-4 (he left Wk1 early after 5 attempts). Forcing `my_share=1` largely closes the gap (Wk1 aft 5.3→15.3
+  vs real 19.8; Wk4 aft 3.8→8.0 vs real 17.7) but no generic fix clears the live bar: filling zero-`my_share`
+  QBs is flat on history and worse on 2026 (corr .684→.616-.658); a "no-share" dummy calibrates history but
+  still loses on 2026, because the field faded OTHER zero-share starters that week (Daniels, Jones, Mariota,
+  Bagent) while playing Kyler up — a generic flag can't tell them apart. **Open question for next pass:**
+  what actually separates Kyler from those faded zero-share starters — price vs. the backup's projection
+  gap, or a projected-starter/depth-chart signal we don't have yet. Test frame (`noshare_dummy.py`) is ready,
+  ~2 min/variant, in `analysis/wk4_postmortem/qb_rushing_murray/` (local, gitignored). Same family as the
+  already-held `DFS_OWN_V2_QB_ATT_SHARE` / `DFS_OWN_V2_QB_SHARE_MINSNAP` switches — not a new mechanism.
 - **FFC ingest wrote the wk3_early table to wk3_main — FIXED 2026-10-06.** `ingest_public_ownership.py` now
   hashes the picked table's content (player/salary/proj_own, order-independent) and compares it against
   every other already-saved `ffc_{site}_*.csv` before writing; a byte-identical match to a different
