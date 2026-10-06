@@ -284,34 +284,68 @@ gave two separate things, and the first drop conflated them:
    weren't entered in) — that backfill is what's gone, not any future slate's data. No action needed; the
    $7k+ work in item 5 and every future week's ownership logging are both fine on the existing pipeline.
 
-## Track-2 watch items (re-test with Wk4 data, not active work until then)
+## Track-2 watch items (re-tested with Wk4 held-out data 2026-10-06; Wk5 still pending)
 
-- `--own-penalty` fading: dropped as wrong direction on history + 2026 replay; flag stays default 0.
-  Re-test only if ownership accuracy improves further (history v2 corr is .66 vs FC's .83-.88).
-- `DFS_OWN_V2_COEF=truepool`: refit coefficients built but default OFF (2026 replay was slightly worse).
-  Re-score on Wk4-5.
-- Vac-bump k=1.0: shipped default ON; re-check the constant against Wk4-5 results.
-- WR/TE "who replaces whom" projection reallocation: inconclusive (bias better, MAE worse) — keep
-  watching, don't ship yet.
-- Stud-gap harness-vs-live mismatch ($6.5k+ RB/WR/TE: history harness over-projects, 2026 live
-  under-projects) — find the root cause (suspect the Wk1 `--season 2025 --week 23` convention) before
-  any stud calibration change.
-- QB residual gap vs FC — closed per the checklist (surprise starters only, covered by QB auto-promote),
-  but keep an eye on it in Wk4 results since it was only a 1-week check.
+- `--own-penalty` fading: **closed, no-change.** Dropped as wrong-direction on history + 2026 replay —
+  the history sweep (`analysis/own_penalty_sweep/RESULTS.md`) shows fading loses even against perfect,
+  real-field ownership (-5.8 pick pts at +0.05, 0 of 4 seasons positive), so no amount of ownership-model
+  improvement (Wk4 corr included) can flip this. Flag stays default 0. The separate K=-0.05 chalk-tilt
+  variant stays inconclusive-keep-testing, untouched by this check.
+- `DFS_OWN_V2_COEF=truepool`: **inconclusive-keep-testing, no flip.** Rebuilt v2 features with production
+  code on the 3 Wk4 classic slates: truepool beats current on corr (.832 vs .814 pure-v2; .906 vs .902
+  w/ FFC blend) and on $7k+ bias20 (-1.21 vs -2.35), but is slightly worse on QB and cheap WR/TE MAE.
+  Wk4 alone is a small win; Wk1-3 favored current (catch20 .726 vs .663). Pooled across all 4 weeks it's
+  still a wash — stays off. Re-score again after Wk5.
+- Vac-bump k=1.0: **confirmed, keep as-is.** This is an ownership bump (`ownership_v2.apply_vac_bump`,
+  `VAC_BUMP_K`), not a projection bump. On real Wk4 ownership: all WR/TE (n=313) MAE 1.70→1.63, corr
+  .885→.894; players who were really 10%+ owned after losing a teammate (n=23) bias -1.5→0.0, MAE
+  6.8→6.2. A k sweep (0.5–1.5) is flat with corr peaking exactly at k=1.0; k≥2 is worse. Remaining misses
+  (Washington, Wicks, Addison under; Garrett Wilson over) are ranking errors, not the constant — don't
+  touch k.
+- WR/TE "who replaces whom" projection reallocation: **still inconclusive, same split, n too small to
+  move.** The narrow version (WR-out bumps WR2/WR3, TE-out version) is already live by default in
+  `statline_model.apply_wr_replacement`/`apply_te_replacement` — this watch item's text was stale. On Wk4
+  only 5 WR bumps fired (PHI/MIN), no TE bumps: bias improved -2.0→-0.6 but MAE worsened 4.60→4.85 (same
+  bias-better/MAE-worse pattern as before, driven by one player). Hockenson (TE) scored 27.9 vs our 9.1
+  unbumped — a second real example of the multi-position-OUT exclusivity gap logged under item 9 in
+  `WK4_POSTMORTEM_CHECKLIST.md`. Keep watching; don't change the bump logic on this sample.
+- Stud-gap harness-vs-live mismatch: **suspected root cause ruled out as the sole cause; narrowed to WR
+  $7k+.** The `--week 23` convention is confirmed Week-1-only in `DFS_Weekly_Process.md`, and Wk2 (built
+  with real settings, no week-23 convention) still showed the same gap, so that convention isn't the
+  (only) cause. By week, stud ($6.5k+ RB/WR/TE) vs control ($4-6.5k) bias: Wk1 -6.9 vs -1.5, Wk2 -7.1 vs
+  -1.2, Wk3 0.0 vs +0.6, Wk4 -0.9 vs -0.6 — the RB/TE stud gap has disappeared since Wk3. What's left is
+  WR $7k+ specifically: -6.7 / -17.4 / -1.7 / -4.6 by week (n=4-6/week, SD~14, Wk4 alone is noise-sized
+  but flagged PERSISTENT across the season at -6.3). Next step: history rebuild split by week-of-season
+  (1-2 vs 3+) for WR $7k+ only — do not apply a blanket stud calibration change.
+- QB residual gap vs FC: **closed verdict holds for a second week.** No FC Wk4 comparison exists
+  (subscription dead), so graded against actual results. QBs projected or scoring 8+ (n=24): bias +0.6,
+  MAE 4.5 — best week of the season (Wk1-3 MAE was 9.6/6.4/6.1). No surprise-starter misses (no QB
+  projected under 8 scored 6+); Malik Willis (12.3 proj vs 3.5 actual) is the one big miss and isn't a
+  depth problem. Auto-promote didn't need to fire. Stays closed.
 - FFC cliff (model-side fix) — SUPERSEDED 2026-10-01: most of what looked like an unlisted-chalk model
   problem on Wk3 main was actually the table-selection bug fixed in item 1 above. A real model-side
   tradeoff still exists for genuinely-unlisted players (per-row alpha=1 tested and killed as
   wrong-direction, -13 chalk bias; budget-preserving re-rank tested and inconclusive) but it's secondary
   now — re-evaluate only after a few weeks on the bug-fixed ingest, since the input data itself was wrong.
-- Chalk-size fix v2, segmented (`analysis/chalk_size_fix_v2/RESULTS.md`, `DFS_OWN_CHALK_FFC_SEG` not yet
-  wired): cheap (<$5.5k) FFC-pull + freeze mega-chalk at 25%+ is the only segment that avoids hurting
-  $7k+ bias30 while still lifting cheap WR/TE catch20 .58→.75. Params picked in-sample on wk1-3 (not a
-  clean held-out test) — re-run with Wk4-5 held out, pre-committed params, before considering shipping.
-- Next-man-up props bump (`analysis/wr_ownership_props_bump_segmented/`) — closes the aggregate cheap-chalk
-  gap but lifts chased and ignored beneficiaries alike (can't tell Downs/Gadsden from Warren/Achane); only
-  .45 corr with the actual residual vs .81 with ownership overall. Re-test pooled Wk3-5 once more props
-  weeks exist; needs a second signal to separate "field bought this" from "field ignored this" before
-  it's shippable.
+- Chalk-size fix v2, segmented: **SHIPPED 2026-10-05** (`DFS_OWN_CHALK_FFC_SEG` defaults on in
+  `scripts/ownership_v2.py`) after passing its first held-out check in
+  `analysis/wk4_postmortem/chalk_seg_wk4_heldout.py` — this watch item's premise (not yet wired) was
+  stale. Re-confirmed this session with the pre-committed params (<$5.5k FFC-pull, freeze mega-chalk at
+  25%+): corr .900→.909, bias20 -5.2→-4.5, cheap WR/TE bias20 -11.7→-8.2. Caveat the original writeup
+  left out: $7k+ catch20 slipped .875→.75 (one player, early slate) though $7k+ bias30 held. Treat Wk5 as
+  the second held-out week; no action needed now.
+- Next-man-up props bump (`analysis/wr_ownership_props_bump_segmented/`): **flips to wrong-direction-drop.**
+  Applied the pre-committed additive k=1.1 to a Wk4 cohort (50 players, 14 at 10%+ owned; no exact
+  `who_replaces_whom/frame.parquet` rows for Wk4, so this is an approximation of the original flag).
+  MAE worsened 3.35→4.61, corr flat (.906→.908); non-chalk players got inflated 2.3→5.7 against a real
+  2.2. The bump's size had ~zero relationship with the field's actual miss (rank corr .03 vs .45 in Wk3)
+  — it can't separate chased from ignored beneficiaries. Do not ship this bump. What did separate them in
+  Wk4 was **price**: cheap WR1/RB1 replacements were under-owned by us (Wicks +14 ×2, Allen +7/+13,
+  Addison +9.5), pricier ones over-owned (G. Wilson -11 ×2, Skattebo -5 ×2) — the same shape as Wk3's
+  Downs/Gadsden (cheap, chased) vs Achane (expensive, ignored). That's a hypothesis from ~10 cases, not a
+  fix — the shipped chalk-seg cheap-pull already partly covers it. Worth a quick history-only test
+  (price-split among next-man-up beneficiaries) in its own session since the history replacement frame
+  doesn't need props.
 
 ## Housekeeping flagged this session, not yet decided
 

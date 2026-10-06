@@ -12,6 +12,12 @@ context to pick back up cold. A session that fully resolves one narrow question 
 and resolves none.
 
 ## Parking Lot (add here, don't chase inline)
+- **Showdown skill-player FLEX ownership miss on ATL/NO.** Found while closing item 8's follow-up
+  (2026-10-06): once K/DST were ruled out as the driver of ATL/NO's FLEX miss, the real error was
+  skill-player ownership — Penix (QB2) over-owned by ~22pts, Kamara over-owned by ~18pts, cheap TEs
+  (Hooper/Pitts/Delp) and RB2 (B. Robinson) under-owned by 13-16pts. Not root-caused yet. Needs its own
+  session — check whether this is a one-game artifact (ATL/NO specifics: backup QB, bellcow RB
+  concentration) or a pattern worth checking across more showdown slates.
 - **Classic PERSISTENT flags from `grade_accuracy_week.py --week 4` (2026-10-06) — not yet a confirmed
   issue, needs a real current-era week to check.** After fixing the tracker's per-format fallback gap
   (see item 1 fix log / commit `a962958b`), classic showed PERSISTENT flags: DST +1.13, QB -2.36, TE -0.76,
@@ -269,38 +275,44 @@ and resolves none.
      way item 1 does for DK — we're going on the user's report alone. Not worth building for one site with
      no judged export available; flagged for awareness only.
 
-8. **Showdown-specific review.** ⏳ PART DONE 2026-10-05 (ATL/NO wasn't played yet when this ran — kicked off
-   ~7:15pm CT tonight; grade it with `grade_wk4.py`/`grade_accuracy_week.py` once it's final). Opus-agent
-   deep-dive, full writeup `analysis/wk4_postmortem/RESULTS_showdown_item8.md` (local, gitignored).
+8. **Showdown-specific review.** ✅ DONE 2026-10-06 (ATL/NO graded; two Opus-agent passes, full writeup
+   `analysis/wk4_postmortem/RESULTS_showdown_item8.md`, local/gitignored).
 
-   **Shipped (code changed, NOT YET COMMITTED — needs a decision, see below):** Kicker FLEX ownership was
-   badly under-owned (Bates 8.5% modeled vs 19.7% real on DET_CAR; Boswell 19.4% vs 32.7% real on PIT_CLE)
-   — not a 2-slate fluke. Root cause: kicker FLEX ownership is sized from noisy optimizer exposure, which
-   only correlates .11-.14 with the real field because our kicker projections are flat (7.9-8.3 across every
-   2026 kicker, SD 0.19 in history) — tiny noise swings the rank. The real field instead rosters each team's
-   kicker at a near-fixed rate regardless of projection: 23.8% for the favorite's kicker, 16.8% for the
-   underdog's (97 kickers, 49 FC showdown slates, 2023-25; 2026 matches at 15-33%). Fix in
-   `scripts/ownership_model_showdown.py` (`_k_prior`, `DFS_SD_K_PRIOR` env off-switch, default on): the
-   top-projected live FLEX kicker per team gets that field prior instead of the exposure score; backups
-   unaffected. Held out leave-one-season-out on 2023-25: kicker MAE 9.3→6.8, corr .11→.42, and overall FLEX
-   MAE improves in every held-out season; on the 6 real 2026 slates kicker MAE 7.9→4.8, corr .33→.75.
-   **To take effect for tonight's ATL/NO, this needs: commit + push + a showdown pool rebuild before lock —
-   ask the user before doing this given it's a live-contest change close to lock.**
+   **Shipped and confirmed: kicker FLEX field-rate prior (`DFS_SD_K_PRIOR`, default on).** Committed and
+   pushed same day (`f3b09d64`); GitHub Actions had a real platform-wide outage that evening (confirmed via
+   status.github.com), so the ATL/NO pool was rebuilt locally to get the fix live before lock
+   (`sd_k_prior_applied=True` verified on Folk/Carlson). Root cause: kicker FLEX ownership was sized from
+   noisy optimizer exposure (corr .11-.14 with the real field, because our kicker projections are flat,
+   7.9-8.3 across every 2026 kicker) — the field instead rosters each team's kicker at a near-fixed rate
+   regardless of projection (23.8% favorite's K, 16.8% underdog's K, 2023-25 FC history). ATL/NO was the
+   first genuinely out-of-sample test (not in the fit, not in the original 6-slate check) and it missed on
+   this one slate (K MAE 2.4→5.8) — a pick'em game (NO favored by only 1.2) where the field split the
+   kickers almost evenly and both ran ~1 SD light on total kicker ownership, ordinary noise, not a
+   structural break. Two tweaks were tested to fix the miss (spread-graded favorite weight, scaled-down
+   prior level) — both made overall FLEX worse on history and on the other 6 real slates, so neither
+   shipped. Across all 7 real 2026 slates the prior still wins clearly: kicker MAE 7.13→4.93, corr .36→.72,
+   overall FLEX MAE 4.06→3.92. **Kept as shipped, no change.**
 
-   **Investigated, no change:**
-   - DST FLEX ownership (after the floor-fix already shipped in item 1) — same field-prior idea tested, but
-     disagrees between history (helps, MAE 5.97→4.44) and real 2026 (hurts, 4.35→4.89). History-replay
-     exposure doesn't behave like live exposure for DST, so history can't settle it here. **Inconclusive,
-     keep testing** — re-check after 4-6 more real showdown slates. Candidate code exists
-     (`sd_item8/kd_candidate.py`), not wired in.
-   - Showdown DST projection +3.1 claim (from item 3's tracker) — **wrong-direction, drop.** Showdown DST
-     uses the exact same `dst_model` path as classic (already covered by `dst_recal_v2`), and isolating
-     primetime/standalone games (the ones that become showdown slates) in the 5-year history shows no extra
-     bias vs. Sunday day games (-0.21 ± 0.22 vs. +0.06, not statistically different). The 2026 +2.46 reading
-     was from pre-recal-v2 builds; ATL_NO was rebuilt after recal v2 went in, so tonight's DST numbers
-     already reflect the fix. Nothing to ship, not showdown-specific.
-   - Noted in passing, not acted on: kicker projections are essentially flat (would need real projection
-     signal to improve further — separate, future projection-model item, not ownership).
+   **DST FLEX field-prior: tested, now DROPPED (not shipped).** Same prior idea for DST was inconclusive
+   after the first 3 real slates; with ATL/NO added (4 real slates post-floor-fix) it's now a clear drop —
+   helps on 3 of 7 live slates, hurts on 4, pooled DST MAE gets worse (4.11→4.49) and adds +2pts of bias
+   on top of an already-well-calibrated production DST (+0.3 bias, 1.82 MAE on the 3 post-fix slates).
+   Root cause of the history/live disagreement was run down (not just asserted): history-replay DST
+   exposure (`l_exp`) runs structurally low vs. live (mean -1.37 vs -0.64) because the FC-derived history
+   replay pools only contain the ~32 FC-listed players per slate vs. full DK pools live — confirmed this
+   isn't the floor-bug artifact (history features predate both the bug and its fix). Conclusion: **history
+   cannot be trusted to judge K/DST exposure-based ownership questions in showdown** (the kicker prior is
+   unaffected since it doesn't use `l_exp`) unless the replay pools are rebuilt at full depth — not
+   attempted, real scaffolding work, not worth it for one DST question.
+
+   **Showdown DST projection +3.1 claim (item 3's tracker):** wrong-direction, dropped — showdown DST uses
+   the same `dst_model`/`dst_recal_v2` path as classic, and isolating primetime/standalone games in 5-year
+   history shows no extra bias vs. Sunday day games. The 2026 reading was from pre-recal-v2 builds.
+
+   **New finding, not yet acted on — candidate for the next showdown ownership session:** ATL/NO's real
+   FLEX miss wasn't K/DST at all, it was skill-player ownership — Penix (QB2) over-owned by 22pts, Kamara
+   over-owned by 18pts, cheap TEs and RB2 Bijan/B.Robinson under-owned by 13-16pts. Parked, needs its own
+   look.
 
 9. **Carried over from the Wk3 postmortem — see `WK3_POSTMORTEM_OPEN.md` for full detail.** Two
    sub-items closed this session (2026-10-05, quick confirmations only — the rest below stays open,
@@ -353,14 +365,21 @@ and resolves none.
    earlier history on each; it is no longer the active to-do list, this checklist is. One topic per
    session still applies — pick ONE of 10-14 per session, don't batch them.
 
-10. **Track-2 candidates — re-test with Wk4(+5) data.** Not started. Eight candidates, full detail/params
-    in `WK3_POSTMORTEM_OPEN.md`'s "Track-2 watch items" section (don't duplicate here, that section is
-    current): `--own-penalty` fading, `DFS_OWN_V2_COEF=truepool`, vac-bump k=1.0, WR/TE "who replaces
-    whom" reallocation, stud-gap harness-vs-live mismatch, QB residual gap vs FC, chalk-size fix v2
-    segmented (`DFS_OWN_CHALK_FFC_SEG`), next-man-up props bump. Each has its own prior verdict/ship-bar
-    already written down — this item is "run each against real Wk4(+5) ownership/results and update its
-    verdict," not fresh design work. Likely splits into its own sub-session per candidate rather than one
-    sitting for all eight.
+10. **[Wk4 triage done 2026-10-06; Wk5 still owed]** Track-2 candidates re-tested against real Wk4 data.
+    Full updated verdicts in `WK3_POSTMORTEM_OPEN.md`'s "Track-2 watch items" section. Summary: nothing
+    newly shippable. **Own-penalty fading** — closed for good, perfect ownership loses too. **Truepool
+    coef** — Wk4 alone is a small win but pooled Wk1-4 still a wash, stays off. **Vac-bump k=1.0** —
+    confirmed correct on held-out Wk4 ownership, no change. **WR/TE reallocation** — still inconclusive
+    (n=5 this week); found the multi-position-OUT exclusivity gap (item 9) has a second real example
+    (Hockenson). **Stud-gap** — suspected `--week 23` cause ruled out as sole cause (Wk2 showed the same
+    gap without it); RB/TE stud gap has actually closed since Wk3, narrowed the open question to WR
+    $7k+ only (flagged PERSISTENT, needs a week-of-season split on history). **QB residual** — closed
+    verdict holds for a 2nd week (best MAE of the season, 4.5). **Chalk-size fix v2 segmented** — this
+    watch item's premise was stale, it already shipped 2026-10-05 and passed its first held-out week;
+    re-confirmed again this session. **Next-man-up props bump** — flips to wrong-direction-drop (MAE
+    worse, ~zero correlation with the field's real miss); found a price-split hypothesis (cheap
+    replacements chased, pricier ones faded) worth a history-only follow-up test. Re-run all of this
+    again once Wk5 results land.
 
 11. **WR-out props-anchor question.** Not started. Do fresh pregame sportsbook props (already pulled via
     `_apply_props_anchor` in `scripts/build_projections_statline.py`, which reach ownership indirectly
@@ -383,10 +402,9 @@ and resolves none.
     (`config/manual_status_overrides.csv`, `output/final_projections_*.csv`,
     `output/pivot_suggestions_*.csv`, `data/x_injury_feed_state.json`).
 
-14. **Ownership v2 refit against the new RB/WR/TE projection-stack coefficients.** Not started. The
-    RB/WR/TE-only projection-stack refit shipped 2026-10-01 (`data/projection_stack_dk.json`); ownership
-    v2's own coefficients were never re-fit against the new projections — a full history-rebuild refit
-    chain. Not a blocker (the ranking-signal diagnostic already showed the gain lands even on ownership's
-    *unrefit* coefficients), but the loop should close. Context:
-    `archive/handoffs/HANDOFF_ownership_refit_after_projstack_2026-10-01.md`.
-    Biggest single item in this group — scope it as its own full session, don't bundle with 10-13.
+14. **[CLOSED 2026-10-06, found stale]** Ownership v2 refit against the new RB/WR/TE projection-stack
+    coefficients. This was already run and rejected on 2026-10-01 —
+    `analysis/ownership_v2_refit_after_projstack/RESULTS.md`: the new stack shifted projections almost
+    uniformly (corr to old proj 0.985-0.991) with little ranking change per slate×position, so there was
+    nothing for a refit to recalibrate; LOSO refit on the new features was flat-to-worse than just
+    swapping the feature. Verdict: wrong-direction, drop. No further action.
