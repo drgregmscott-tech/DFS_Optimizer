@@ -101,10 +101,14 @@ and resolves none.
   session (2026-10-06): not an FFC-staleness or attendance issue — FFC misses him by as much as we do (e.g.
   wk1_afternoon: FFC 10.5, ours 8.1, real 19.8). The field likes cheap rushing QBs more than either model
   captures. Testable on the 5-year history as a rushing-QB value feature. **NEEDS HISTORY.**
-- **FFC ingest wrote the wk3_early table to wk3_main.** Found closing the cheap-chalk-QB session (2026-10-06):
-  `data/ownership_public/ffc_dk_dk_classic_wk3_main_27Sep2026.csv` is a byte-for-byte copy of the wk3_early
-  file (same md5) — live wk3_main ran ownership off the wrong FFC table all week. Needs an md5-duplicate
-  guard on the FFC ingest step so a repeat fetch gets caught instead of silently overwriting with stale data.
+- **FFC ingest wrote the wk3_early table to wk3_main — FIXED 2026-10-06.** `ingest_public_ownership.py` now
+  hashes the picked table's content (player/salary/proj_own, order-independent) and compares it against
+  every other already-saved `ffc_{site}_*.csv` before writing; a byte-identical match to a different
+  slate_id aborts the save instead of silently overwriting (two real slates should never share one 50-row
+  FFC table). Deleted the known-corrupt `ffc_dk_dk_classic_wk3_main_27Sep2026.csv` (was a copy of
+  wk3_early) so it can't poison future re-grading — downstream code already treats a missing FFC file as a
+  safe no-op (falls back to the pub_val-only artifact), so losing that one file is strictly safer than
+  keeping wrong data.
 - **Overlapping cron-job.org triggers queue behind each other near lock.** Found while closing item 6
   (2026-10-05): `refresh_data.yml`'s `concurrency: cancel-in-progress: false` means a second run that fires
   while one is still in progress waits for it instead of running concurrently — by design (a delayed refresh

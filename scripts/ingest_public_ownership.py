@@ -26,6 +26,7 @@ ownership model uses its pub_val-only artifact.
 """
 
 import argparse
+import hashlib
 import os
 import re
 import sys
@@ -64,6 +65,34 @@ def norm_key(name, salary) -> str:
 
 def public_path(site: str, slate_id: str) -> Path:
     return PUBLIC_DIR / f"ffc_{site}_{slate_id}.csv"
+
+
+def table_hash(t: pd.DataFrame) -> str:
+    """Content hash robust to row order / float formatting -- used to catch the picker saving one FFC
+    slate's table under a different slate_id (2026-10-06: wk3_main silently saved the wk3_early table,
+    see analysis/wk4_postmortem/qb_chalk_lawrence/RESULTS.md)."""
+    rows = sorted(
+        (norm_key(p, s), round(float(o), 2)) for p, s, o in zip(t["player"], t["salary"], t["proj_own"])
+    )
+    return hashlib.md5(repr(rows).encode("utf-8")).hexdigest()
+
+
+def find_duplicate_sibling(site: str, slate_id: str, t: pd.DataFrame):
+    """Returns the slate_id of another already-saved FFC table with identical content, or None. Two
+    genuinely different slates on the same site essentially never share an identical 50-row ownership
+    table -- a match means the picker saved the wrong one under this slate_id."""
+    h = table_hash(t)
+    mine = public_path(site, slate_id)
+    for p in PUBLIC_DIR.glob(f"ffc_{site}_*.csv"):
+        if p == mine:
+            continue
+        try:
+            other = pd.read_csv(p)
+            if table_hash(other) == h:
+                return p.stem[len(f"ffc_{site}_"):]
+        except Exception:  # noqa: BLE001 -- a corrupt sibling file should not block this save
+            continue
+    return None
 
 
 def list_slates(site: str) -> list:
@@ -162,6 +191,13 @@ def main():
         print(f"WARNING: saved FFC table for {args.slate_id} covers only "
               f"{best['coverage']:.0%} of this slate's teams ({best['label']}, id {best['num']}) "
               f"-- likely a partial/wrong-slate match.", file=sys.stderr)
+    dup = find_duplicate_sibling(args.site, args.slate_id, best["t"])
+    if dup is not None:
+        raise SystemExit(
+            f"Picked table for {args.slate_id} ('{best['label']}', id {best['num']}) is byte-identical "
+            f"to the already-saved table for '{dup}'. Two different slates should never share one "
+            f"50-row FFC table -- refusing to save a likely wrong-slate duplicate. Nothing saved."
+        )
     PUBLIC_DIR.mkdir(parents=True, exist_ok=True)
     out = public_path(args.site, args.slate_id)
     best["t"].to_csv(out, index=False)
