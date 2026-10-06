@@ -76,6 +76,39 @@ to be enough in practice.
 
 ## Status
 Flagged by the user during the Wk4 noon-lock window (2026-10-04) as something
-we didn't design for ahead of time. Not addressed today -- today's actual
-conflict was resolved manually and safely. Pick this up as its own session,
-likely starting 2026-10-05.
+we didn't design for ahead of time. Picked up as its own session 2026-10-06
+(WK4 postmortem item 13).
+
+**Root cause found and fixed (2026-10-06):** the actual Wk4 incident was caused
+by BOTH sides of the collision -- the interactive session and the
+`x-injury-monitor-sunday-midday` scheduled task -- running the full local
+`status_check.py pull` -> `apply` -> `pivot_finder.py` -> `git commit/push`
+chain inside a live near-lock window, racing GH Actions' own commits to the
+same files. WK4 postmortem item 4 (2026-10-05) had already traced this and
+decided the fix (push just the override row, let CI's existing `apply` step
+pick it up on its own next pull, dispatch `near_lock_refresh` to shave the
+wait) and wrote it into `X_INJURY_FEED_RUNBOOK.md` -- but the 5 live
+`x-injury-monitor-*` scheduled task prompts
+(`~/.claude/scheduled-tasks/x-injury-monitor-*/SKILL.md`) were never updated to
+match, so they were still telling Claude to run the heavy local chain every
+time they found a real status contradiction. That's option #5 from this doc's
+list, already decided, just not wired into the thing that actually runs.
+
+Shipped 2026-10-06:
+1. All 5 `x-injury-monitor-*` SKILL.md prompts rewritten to the push-only
+   procedure + a non-fast-forward rebase-retry (`git pull --rebase --autostash`,
+   retry once, never force-push) -- this was option #5 (shrink footprint) plus
+   option #4 (retry-on-reject) from the list above, applied to the actual
+   collision mechanism rather than left as a documented-but-undeployed fix.
+2. `X_INJURY_FEED_RUNBOOK.md` updated to say this push-only + retry pattern
+   applies to any manual status fix close to a lock -- interactive session
+   included -- not just the X monitor, since the interactive session was the
+   other half of the real incident.
+
+**Not done, and not needed right now:** a lock file (option #2) or a real
+dispatcher (option #3). With the local write chain this narrow (one CSV row +
+a push, with retry-on-reject instead of failure), checked against git history
+(only one real collision ever, `89dff567`, now explained and closed), the
+remaining residual risk is low enough that a lock file would be solving a
+problem that no longer exists in practice. Revisit only if a new push
+rejection actually recurs after this fix.

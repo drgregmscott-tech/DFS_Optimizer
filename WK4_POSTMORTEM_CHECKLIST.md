@@ -470,12 +470,15 @@ and resolves none.
       RESULTS.md (`_rank_lineups_by_proj_own`, env `DFS_RANK_OWN_W` off-switch, called at optimizer.py's two
       pool-ranking call sites ~3116/~4189).
 
-13. **Multi-session concurrency gap.** Not started — full writeup already exists in
-    `MULTI_SESSION_CONCURRENCY_GAP.md`, don't duplicate it here. Leading candidate per that doc: a lock
-    file plus shrinking the X-monitor's local footprint so interactive sessions, local scheduled tasks,
-    and GH Actions automated refreshes stop racing each other on the same tracked files
-    (`config/manual_status_overrides.csv`, `output/final_projections_*.csv`,
-    `output/pivot_suggestions_*.csv`, `data/x_injury_feed_state.json`).
+13. **Multi-session concurrency gap.** Done (2026-10-06) — full writeup/status in
+    `MULTI_SESSION_CONCURRENCY_GAP.md`. Root cause: the real Wk4 collision was the interactive session and
+    a scheduled `x-injury-monitor-*` task both running the full local pull/apply/pivot/push chain inside a
+    live window; item 4's decided fix (push-only, let CI's apply pick it up) was written into
+    `X_INJURY_FEED_RUNBOOK.md` on 2026-10-05 but never applied to the 5 live scheduled-task prompts, which
+    were still telling Claude to run the heavy chain. Fixed by rewriting all 5
+    `~/.claude/scheduled-tasks/x-injury-monitor-*/SKILL.md` prompts to push-only + rebase-retry-on-reject,
+    and generalizing the same pattern to interactive sessions in the runbook. Lock file / dispatcher not
+    needed — only one real collision in git history, and it's now explained and closed at the source.
 
 14. **[CLOSED 2026-10-06, found stale]** Ownership v2 refit against the new RB/WR/TE projection-stack
     coefficients. This was already run and rejected on 2026-10-01 —

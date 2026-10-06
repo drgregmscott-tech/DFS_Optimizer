@@ -93,6 +93,18 @@ unmodified week after week, slate mix after slate mix.
    correctness.
 5. Update `data/x_injury_feed_state.json` with the new last_seen ids.
 
+## Applies beyond this monitor
+The push-only pattern in step 4 (append the override row, commit, push, dispatch
+`near_lock_refresh`, stop -- let CI's own `apply` pick it up) is the right move for
+**any** manual status fix made close to a lock, not just this monitor's. An
+interactive session fixing a status by hand during a live window should follow the
+same pattern and the same rebase-retry on a rejected push (`git pull --rebase
+--autostash` then retry once, never force-push) -- running the full local
+`pull`/`apply`/`pivot_finder.py`/`push` chain in that window is what caused the real
+collision this postmortem item traces (see `MULTI_SESSION_CONCURRENCY_GAP.md`). The
+full local chain is still fine well outside any lock window, when no CI cadence is
+likely to be running against the same files at the same time.
+
 ## Known constraints
 - Only works while a Claude Code session with Claude in Chrome is open -- this is a
   session-based loop (`/loop`), not a 24/7 unattended service like the GH Actions cron.
