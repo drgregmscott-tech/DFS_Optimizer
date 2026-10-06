@@ -1,10 +1,14 @@
 # WK3 Postmortem — Open Items Only (2026-09-30)
 
+**SUPERSEDED 2026-10-06 as the active to-do list.** `WK4_POSTMORTEM_CHECKLIST.md` items 10-14 are now the
+canonical tracker for what's still open here (track-2 re-tests, WR-out props question, classic re-rank
+test, multi-session concurrency gap, ownership v2 refit). This file is kept only as the detail store each
+of those items points back to (full params/history/prior verdicts) — don't work from this file directly,
+and don't let it regrow; when a WK4 item closes, fold its resolution into the WK4 checklist, not here.
+
 Everything else from `WK3_POSTMORTEM_CHECKLIST.md` (§0-§4 root cause, ownership v2, QB recal, inactives
 tooling, the Showdown/classic Lineup Study, lambda reverify, own-penalty, etc.) is CLOSED/SHIPPED/RESOLVED.
-That file is kept as the historical record — don't re-open it as a task list. This file is the only
-active WK3 to-do list. When an item below closes, move its resolution note into the checklist and delete
-it from here, don't let this file regrow into another sprawl.
+That file is kept as the historical record — don't re-open it as a task list.
 
 ## Pre-weekend priority list (narrowed 2026-10-01) — work these today/tomorrow
 

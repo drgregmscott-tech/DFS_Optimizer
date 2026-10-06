@@ -337,14 +337,45 @@ and resolves none.
        mutually exclusive. Logged here instead of in `WK3_POSTMORTEM_OPEN.md` since it's Wk4-sourced
        evidence on a Wk3-tracked item.
 
-   **Still open, untouched this session (deliberately — see session-discipline note above):**
-   - Track-2 candidates gated on "re-test with Wk4 data" (own-penalty, truepool coef, vac-bump k, WR/TE
-     reallocation, stud-gap mismatch, QB residual gap, chalk-size fix v2 segmented, next-man-up props bump).
-   - WR-out props-anchor question — do fresh pregame props already catch chalk-explosion cases the engine
-     misses? Not yet tested.
-   - Classic construction re-rank test (re-rank SE3max's 100-lineup pool by modeled-ownership-sum instead
-     of raw projection) — not yet run, no new solves needed, data already in `pool_summary.csv`.
-   - Multi-session concurrency gap (`MULTI_SESSION_CONCURRENCY_GAP.md`) — needs its own session, leading
-     candidate is a lock file + shrinking the X-monitor's footprint.
-   - Ownership v2 refit against the new RB/WR/TE projection-stack coefficients (shipped 10/1) — full
-     history-rebuild refit never done. Scoped to its own dedicated session, not bundled into item 9 again.
+   **Everything else that was still open under item 9 is promoted to its own item below (10-14)** —
+   `WK3_POSTMORTEM_OPEN.md` is kept only as the detail store for the track-2 watch list (item 10) and the
+   earlier history on each; it is no longer the active to-do list, this checklist is. One topic per
+   session still applies — pick ONE of 10-14 per session, don't batch them.
+
+10. **Track-2 candidates — re-test with Wk4(+5) data.** Not started. Eight candidates, full detail/params
+    in `WK3_POSTMORTEM_OPEN.md`'s "Track-2 watch items" section (don't duplicate here, that section is
+    current): `--own-penalty` fading, `DFS_OWN_V2_COEF=truepool`, vac-bump k=1.0, WR/TE "who replaces
+    whom" reallocation, stud-gap harness-vs-live mismatch, QB residual gap vs FC, chalk-size fix v2
+    segmented (`DFS_OWN_CHALK_FFC_SEG`), next-man-up props bump. Each has its own prior verdict/ship-bar
+    already written down — this item is "run each against real Wk4(+5) ownership/results and update its
+    verdict," not fresh design work. Likely splits into its own sub-session per candidate rather than one
+    sitting for all eight.
+
+11. **WR-out props-anchor question.** Not started. Do fresh pregame sportsbook props (already pulled via
+    `_apply_props_anchor` in `scripts/build_projections_statline.py`, which reach ownership indirectly
+    through `final_projection`) already catch the chalk-explosion cases the engine-only model misses on a
+    WR-out slate? Full context in `WK3_POSTMORTEM_OPEN.md` item 10's "Props check" sub-bullet — this is the
+    one open thread left from the WR-out role-bump investigation (RB/TE already shipped, WR correctly not
+    shipped). Needs a real WR-out slate with a fresh props snapshot at lock to test against.
+
+12. **Classic construction re-rank test.** Not started, no new solves needed. Re-rank SE3max's existing
+    100-lineup pool by modeled-ownership-sum (or a projection+ownership blend) instead of raw projection —
+    data already sitting in `pool_summary.csv`/`lineups_graded.csv`. Full context: `WK3_POSTMORTEM_OPEN.md`
+    item 12 — the diagnosed root cause is SE3max's *pick rule* (ranks by raw projection, picks a lineup
+    that cashes ~22% when the pool already contains a ~98th-percentile lineup on average), not exposure
+    caps. Check `analysis/classic_diag/replay_selection_criteria.py` first so this isn't duplicated.
+
+13. **Multi-session concurrency gap.** Not started — full writeup already exists in
+    `MULTI_SESSION_CONCURRENCY_GAP.md`, don't duplicate it here. Leading candidate per that doc: a lock
+    file plus shrinking the X-monitor's local footprint so interactive sessions, local scheduled tasks,
+    and GH Actions automated refreshes stop racing each other on the same tracked files
+    (`config/manual_status_overrides.csv`, `output/final_projections_*.csv`,
+    `output/pivot_suggestions_*.csv`, `data/x_injury_feed_state.json`).
+
+14. **Ownership v2 refit against the new RB/WR/TE projection-stack coefficients.** Not started. The
+    RB/WR/TE-only projection-stack refit shipped 2026-10-01 (`data/projection_stack_dk.json`); ownership
+    v2's own coefficients were never re-fit against the new projections — a full history-rebuild refit
+    chain. Not a blocker (the ranking-signal diagnostic already showed the gain lands even on ownership's
+    *unrefit* coefficients), but the loop should close. Context:
+    `archive/handoffs/HANDOFF_ownership_refit_after_projstack_2026-10-01.md`.
+    Biggest single item in this group — scope it as its own full session, don't bundle with 10-13.
