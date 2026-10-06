@@ -95,7 +95,7 @@ and resolves none.
     chalk bias improves but that's the chalk-size fix's job). One kept-alive thread: an in-season (2026-only)
     TE budget was a noise-level wash on only 3 weeks of data — re-test with `step7_inseason_te.py` after Wk5-6
     if the 2026 TE total stays ≥125.
-- **FLEX-WR lineup-level rebuild — CLOSED 2026-10-06, SHIPPED a replacement term (uncommitted).** Rebuilt the
+- **FLEX-WR lineup-level rebuild — CLOSED 2026-10-06, SHIPPED a replacement term.** Rebuilt the
   FC classic entries with every WR's salary (additive columns in `lineup_study_build.py`; `flex_experiment.py`
   re-run, output identical) and re-ran §5 on 382 contests. (a) 4-WR vs 3-WR split by the cheapest WR's price:
   no tier passes all formats — dropped. (b) "expected slot" (4-WR x share of WRs $6.3k+): looks positive, but
@@ -105,7 +105,9 @@ and resolves none.
   pts / -1.4 to -1.6 cash even vs 3-WR builds that also lack a stud, passes SE/3MAX/20MAX, 3-4/4 seasons; 2026
   real fields agree (12/15 contests negative, Wk4 4/4). Shipped `--cl-four-wr-no-stud-penalty` 1.0 in all four
   presets + UI bundles, `--cl-flex-wr-midprice-penalty` 1.3 → 0 (subset of the new term, ~0 at lineup level),
-  highprice bonus stays 0. Wired through worker/workflow/frontend — **worker needs a redeploy**. Real-slate
+  highprice bonus stays 0. Wired through worker/workflow/frontend — **worker redeployed 2026-10-06**
+  (`dfs-optimizer-api`, version `110adc9c`), confirmed `cl_four_wr_no_stud_penalty` live in the allowlist.
+  Real-slate
   replay (Wk1-4, 300 pairs): identical lineups on every pair — our solver never builds this shape today, so
   it's a free guardrail, not a fix for the 2026 misses. FLEX-WR is not where the accuracy gap is. Details:
   CLASSIC_RULES.md rule 3; `analysis/wk4_construction_review/RESULTS_flex_wr_lineup_level.md` (local).
