@@ -1,0 +1,4 @@
+Id,Position,First Name,Nickname,Last Name,FPPG,Played,Salary,Game,Team,Opponent,Injury Indicator,Injury Details,Tier,Unnamed: 14,Unnamed: 15,Roster Position,name,site,salary,normalized_name,normalized_team,position_upper,slate_format,player_id,match_method,match_confidence
+135023-128912,WR,Mitch,Mitch Tinsley,Tinsley,6.400000095367432,1,4900,CIN@MIA,CIN,MIA,,,,,,WR/FLEX,Mitch Tinsley,fd,4900,mitch tinsley,CIN,WR,classic,,,
+135023-154020,RB,Al-Jay,Al-Jay Henderson,Henderson,,0,4000,CLE@NYJ,NYJ,CLE,,,,,,RB/FLEX,Al-Jay Henderson,fd,4000,al jay henderson,NYJ,RB,classic,,,
+135023-157150,RB,Audric,Audric Estime,Estime,8.419999694824218,5,4000,MIN@NO,MIN,NO,,,,,,RB/FLEX,Audric Estime,fd,4000,audric estime,MIN,RB,classic,,,
