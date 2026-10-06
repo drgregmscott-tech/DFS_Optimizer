@@ -172,20 +172,26 @@ def tier(r):
 
 
 def current_era(F, proj_dates):
-    """Mark which rows were built under the config version currently live. If NOTHING graded so far was
-    built under it (a config changed the same day as grading, e.g. right after this week's lock), fall back
-    to treating every week as current -- an empty trend table is worse than a trend that includes one
-    stale week, and next week's run will have a real current-era week to anchor on."""
+    """Mark which rows were built under the config version currently live. If NOTHING graded so far in a
+    given FORMAT (classic vs showdown) was built under it (e.g. only a showdown file got rebuilt right after
+    a fix, as happened 2026-10-05 when only ATL/NO was rebuilt and classic wk4 wasn't touched), fall back to
+    treating that format's weeks as current -- an empty trend table for that format is worse than one that
+    includes a stale week, and a later run will have a real current-era week to anchor on. The fallback is
+    per-format, not global: one format having a current-era row must not hide the other format's rows."""
     changed = [d for d in (last_commit_date(c) for c in GOVERNING_CONFIGS) if d is not None]
     if not changed:
-        return F.assign(current_era=True), None, False
+        return F.assign(current_era=True), None, {}
     era_start = max(changed)
     F = F.copy()
     F["current_era"] = F.sid.map(lambda s: (proj_dates.get(s) is not None) and (proj_dates[s] >= era_start))
-    if not F["current_era"].any():
-        F["current_era"] = True
-        return F, era_start, True  # fell back
-    return F, era_start, False
+    fell_back = {}
+    for fmt, idx in F.groupby("fmt").groups.items():
+        if F.loc[idx, "current_era"].any():
+            fell_back[fmt] = False
+        else:
+            F.loc[idx, "current_era"] = True
+            fell_back[fmt] = True
+    return F, era_start, fell_back
 
 
 def seg_stats(d, pcol, acol):
@@ -286,15 +292,18 @@ def main():
 
     p(f"##### Accuracy tracker -- 2026 through week {a.week} (current output/ vs real DK contest results) #####")
     if era_start is not None:
-        if fell_back:
-            p(f"Governing config last changed {era_start.date()} -- no graded week was built after that, so "
-              f"falling back to treating all weeks as current era this run. A real post-fix week will anchor "
-              f"the window starting next time this is run.")
-        else:
-            current_weeks = sorted(F[F.current_era].week.unique().tolist())
-            stale_weeks = sorted(F[~F.current_era].week.unique().tolist())
-            p(f"Governing config last changed: {era_start.date()}. Current-era weeks (used for PERSISTENT "
-              f"trend): {current_weeks}. Pre-current-model weeks (shown per-week only): {stale_weeks or 'none'}.")
+        p(f"Governing config last changed: {era_start.date()}.")
+        for fmt in sorted(F.fmt.unique()):
+            d = F[F.fmt == fmt]
+            if fell_back.get(fmt):
+                p(f"  {fmt}: no graded {fmt} week was built after that, so falling back to treating all "
+                  f"{fmt} weeks as current era this run. A real post-fix {fmt} week will anchor the window "
+                  f"starting next time this is run.")
+            else:
+                current_weeks = sorted(d[d.current_era].week.unique().tolist())
+                stale_weeks = sorted(d[~d.current_era].week.unique().tolist())
+                p(f"  {fmt}: current-era weeks (used for PERSISTENT trend): {current_weeks}. "
+                  f"Pre-current-model weeks (shown per-week only): {stale_weeks or 'none'}.")
     p("\n== projections, classic, by position ==")
     p(report(C, a.week, "proj", "final_projection", "fpts", "position").to_string(index=False))
     p("\n== projections, classic, by position x salary tier ==")
