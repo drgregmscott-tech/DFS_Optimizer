@@ -12,6 +12,16 @@ context to pick back up cold. A session that fully resolves one narrow question 
 and resolves none.
 
 ## Parking Lot (add here, don't chase inline)
+- **Standing re-check: Σlog(own+.5) v2 re-rank blend for SE3max (from item 15, 2026-10-06).** Closed as
+  inconclusive on history + 18 live 2026 pools — didn't clear the ship bar, no code shipped. Re-score
+  cheaply as each week's SE3max pools accrue using `analysis/lineup_own_signal/check_2026.py` (just add
+  the new pools). Ship bar per item 15's writeup: positive on held-out history in both comparable
+  projection arms AND a 2026 result that isn't carried by one slate. Until then, stays closed/unwired.
+- **Chalk-FFC fix (shipped `cbfc9db0`, 2026-10-05) may overshoot cheap backups on WR-out teams.** Found
+  while closing item 11 (2026-10-06): on the Wk4 afternoon MIN slate (Justin Jefferson OUT), re-scoring
+  Jennings under today's live chalk-FFC code gives 16.3% modeled vs 9.9% real ownership, driven by an FFC
+  number of 48.8 that ran well ahead of what actually happened. One data point, not enough to act on, but
+  worth checking again once more WR-out slates with the chalk-FFC fix live have been played.
 - **Showdown skill-player FLEX ownership miss on ATL/NO.** Found while closing item 8's follow-up
   (2026-10-06): once K/DST were ruled out as the driver of ATL/NO's FLEX miss, the real error was
   skill-player ownership — Penix (QB2) over-owned by ~22pts, Kamara over-owned by ~18pts, cheap TEs
@@ -399,19 +409,66 @@ and resolves none.
     season — a projection-side fix, not an ownership-side one. Re-run all of item 10 again once Wk5
     results land.
 
-11. **WR-out props-anchor question.** Not started. Do fresh pregame sportsbook props (already pulled via
-    `_apply_props_anchor` in `scripts/build_projections_statline.py`, which reach ownership indirectly
-    through `final_projection`) already catch the chalk-explosion cases the engine-only model misses on a
-    WR-out slate? Full context in `WK3_POSTMORTEM_OPEN.md` item 10's "Props check" sub-bullet — this is the
-    one open thread left from the WR-out role-bump investigation (RB/TE already shipped, WR correctly not
-    shipped). Needs a real WR-out slate with a fresh props snapshot at lock to test against.
+11. **WR-out props-anchor question. ✅ DONE 2026-10-06, no ship — plumbing is fine, props just can't size a
+    chalk explosion.** Opus-agent test, full writeup `analysis/wk4_postmortem/RESULTS_item11_props_anchor.md`
+    (local, gitignored). Props only exist for Wk3-4 (classic) and Wk2-4 (showdown), so this is a small
+    live-data check by necessity — usable fresh-at-lock cases: DeVonta Smith OUT (Wk4 early+main, PHI
+    backups Wicks/Lemon) and Justin Jefferson OUT (Wk4 afternoon+main, MIN backups Addison/Hockenson/
+    Jennings). Legette (Wk3) was stale — props pulled before the OUT news broke; Chase/Coker/McConkey were
+    in-game injuries, not pregame WR-out cases, out of scope.
 
-12. **Classic construction re-rank test.** Not started, no new solves needed. Re-rank SE3max's existing
-    100-lineup pool by modeled-ownership-sum (or a projection+ownership blend) instead of raw projection —
-    data already sitting in `pool_summary.csv`/`lineups_graded.csv`. Full context: `WK3_POSTMORTEM_OPEN.md`
-    item 12 — the diagnosed root cause is SE3max's *pick rule* (ranks by raw projection, picks a lineup
-    that cashes ~22% when the pool already contains a ~98th-percentile lineup on average), not exposure
-    caps. Check `analysis/classic_diag/replay_selection_criteria.py` first so this isn't duplicated.
+    **Plumbing confirmed clean:** the props-driven projection shift survives all the way through to
+    `estimated_ownership_pct` — the projection stack only dampens its own correction term, not the props
+    component, and both ownership models read the post-props `final_projection`. Nothing downstream washes
+    the signal out (corrects an open question in the brief: `own_vacated`/`own_vac_bump` were suspected
+    swapped, checked and they're not — no bug there).
+
+    **Props help, but only partly, and 0.5 (today's default) is already near-best:** re-scoring the real
+    live builds at props_weight 0/0.5/1.0 shows 0.5 closes 15-55% of each beneficiary's ownership gap
+    (Wicks 16.2 -> 20.1 vs 25.8 actual); pushing to 1.0 adds only 1-3 more points and makes WR/TE ownership
+    error flat-to-worse across all three test slates.
+
+    **Root cause of the remaining miss: the props market itself can't distinguish an explosion from an
+    ordinary promotion.** Lemon's market bump (2.2x engine) was bigger than Wicks's (1.9x) but Lemon drew
+    3% real ownership against Wicks's 26% — the market signal doesn't rank-order correctly here. A direct
+    "market edge" ownership bump (fit on one week, checked on the other) only moved error ~0.02-0.05 and
+    didn't fix chalk sizing — left unshipped, logged as keep-testing in the parking lot below, not killed
+    outright (one train/test split, not enough to call it dead).
+
+    **The signal that does separate them is raw FFC public ownership** (Wicks 39 vs Lemon 6 vs Addison 70)
+    — already live via the chalk-FFC change shipped 2026-10-05 (`cbfc9db0`), after these slates locked;
+    under today's code it alone lifts Wicks 11.35 -> 20.1, same ballpark as the props blend. **Verdict:
+    nothing new to ship for props specifically — the chalk-FFC fix already shipped is doing this job.**
+    See parking lot for one watch item this surfaced.
+
+12. **Classic construction re-rank test. ✅ DONE 2026-10-06, no ship — real limit found one level deeper.**
+    Pure re-rank on existing pool data (no new solves), Opus-agent deep-dive, full writeup
+    `analysis/classic_rerank/RESULTS.md` (local, gitignored — uses FC-derived history). Paired test across
+    18 real-2026 SE3max pools (9 Wk1-3 slates x 2 seeds, two independently-built pool sources) plus 20
+    held-out 2022-25 history pools.
+    - **Ranking by modeled-ownership-sum alone: wrong-direction, drop.** +.048 / -.021 / -.078 percentile
+      across the three comparable sets; no within-pool signal on history.
+    - **Projection+ownership blend (weight ~0.5-1): inconclusive, keep testing at a low bar, not shipped.**
+      Net effect ~+.01 percentile pooled; the one apparent win (A/cap50, +.054) comes from 2 of 9 slates
+      (wk2_main, wk1_early) — drops to +.014 excluding them. Datasets disagree on sign for several variants
+      (e.g. lean-contrarian w=-.5 is +.09 on one pool source, -.17 on the other) — flagged as noise, not a
+      lever. No production code changed; `scripts/optimizer.py`'s `_rank_lineups_by_projection` untouched.
+    - **Real finding: the pick rule isn't the main limiter, our ownership model's lineup-level signal is.**
+      On the identical held-out history pools, picking the most-owned lineup by **real** post-lock
+      ownership adds +.10 to +.13 percentile and +10 to +40 cash points over the current projection pick —
+      confirming the Classic Lineup Study's "chalk cashes" effect holds inside our own pools. Picking by
+      **our modeled** ownership instead adds -.08 to +.01 — i.e. `estimated_ownership_pct` has decent
+      player-level accuracy (~.8 corr) but ~zero signal at the lineup-sum level once projection is held
+      fixed (partial corr of modeled-own vs. real finish, controlling for proj: history ~0 today vs. ~+.18
+      with real ownership).
+    - **Next concrete step (not this item, needs its own session):** train/score ownership at the
+      lineup-sum level, not just per-player — target is that partial-corr gap (~0 → closer to +.18) on the
+      20 already-graded history pools (`analysis/lineup_replay/hist_lineups_graded.csv` + `builds/hist`).
+      If a future ownership-model change closes even half that gap on held-out history, re-run
+      `analysis/classic_rerank/rerank_test.py` — the re-rank lever itself is proven worth ~+.10 percentile
+      per pick once ownership is accurate enough. Wiring plan for that future test already drafted in
+      RESULTS.md (`_rank_lineups_by_proj_own`, env `DFS_RANK_OWN_W` off-switch, called at optimizer.py's two
+      pool-ranking call sites ~3116/~4189).
 
 13. **Multi-session concurrency gap.** Not started — full writeup already exists in
     `MULTI_SESSION_CONCURRENCY_GAP.md`, don't duplicate it here. Leading candidate per that doc: a lock
@@ -426,3 +483,24 @@ and resolves none.
     uniformly (corr to old proj 0.985-0.991) with little ranking change per slate×position, so there was
     nothing for a refit to recalibrate; LOSO refit on the new features was flat-to-worse than just
     swapping the feature. Verdict: wrong-direction, drop. No further action.
+
+15. **Lineup-level ownership signal. ✅ DONE 2026-10-06, no ship. The gap was mostly a stale-model artifact.**
+    Opus-agent re-analysis of existing pools, no new solves. Full writeup: `analysis/lineup_own_signal/RESULTS.md` (local,
+    gitignored, FC-derived). It covers all 63 built history SE3max pools, 2022-25 x 3 projection arms, re-graded from
+    `hist_meta`, plus the 18 live-settings 2026 pools.
+    - **Why item 12 saw ~0:** `builds/hist/*/final_projections` (09-29) carry the **pre-v2** layered ownership model. Production
+      v2 lives in the 10-01 `ourproj` regen, which was never joined to these pools. Scored with v2 refit
+      leave-one-season-out (held-out), the partial corr of lineup own vs real finish given proj goes from -.040 to
+      **+.084 as a sum and +.111 as Σlog(own+.5)**. Real post-lock ownership gets +.105 / +.133 on the same 63 slates.
+      Item 12's "+.18 ceiling" came from its 21-slate subset, where real is +.20. The held-out v2 number is ~the same as
+      in-sample (+.093), so it is not a fit artifact. The log-sum adds about +.03 for ours and for real alike, positive in
+      all 4 seasons. Max-owned player, top-2, spread and the count of 20%+ players carry little. The signal is "fewer
+      low-owned darts", not "one max-chalk play".
+    - **Re-rank pick with z(proj)+w·z(Σlog v2), w chosen leave-one-season-out: inconclusive, keep testing, not shipped.**
+      History arm new is +.032 pct [-.017,+.081] (23-12 W-L). Arm old is -.019 and arm fc is +.046. On 2026 there is no gain
+      outside wk2_main. Inside the top 30 projected lineups, where the pick happens, our signal halves (+.057, real +.088).
+      Even perfect real ownership gives an unstable pick gain on 63 slates (+.10 / .00 / +.04 by arm). Plain v2 sum re-rank:
+      drop. **No production code changed.**
+    - Re-test cheaply as Wk4+ SE3max pools accrue (`check_2026.py`). Wiring if it ever clears: item 12's
+      `_rank_lineups_by_proj_own` scoring Σlog(own+.5), env `DFS_RANK_OWN_W` default 0. Item 12's RESULTS.md line "our
+      modeled ownership has no within-pool signal on history" describes the pre-v2 model only.
