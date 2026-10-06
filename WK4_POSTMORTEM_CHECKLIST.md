@@ -12,6 +12,17 @@ context to pick back up cold. A session that fully resolves one narrow question 
 and resolves none.
 
 ## Parking Lot (add here, don't chase inline)
+- **Classic PERSISTENT flags from `grade_accuracy_week.py --week 4` (2026-10-06) — not yet a confirmed
+  issue, needs a real current-era week to check.** After fixing the tracker's per-format fallback gap
+  (see item 1 fix log / commit `a962958b`), classic showed PERSISTENT flags: DST +1.13, QB -2.36, TE -0.76,
+  WR -1.04 (plus salary-tier breakdowns, worst: WR $7k+ -6.26). These are graded against Week 1-4 classic
+  `output/` files, which are frozen at their original lock-time state (pre- the 2026-10-05 DST
+  recalibration / chalk-seg fixes) — there's no current-era classic week to anchor the trend yet, so this
+  may just be the already-known, already-fixed pre-fix bias re-surfacing, not new drift.
+  **Trigger / next action:** once Week 5's classic slates lock and get graded, re-run
+  `python scripts/grade_accuracy_week.py --week 5`. If classic DST/QB/TE/WR still show PERSISTENT with a
+  genuine current-era week in the mix, that's real post-fix drift and becomes its own postmortem item. If
+  the flags disappear or shrink, this was just the stale-snapshot artifact — close with no action.
 - **What's actually driving Trevor Lawrence's (and the broader cheap-chalk-QB) ownership miss.** Found
   while closing item 1 (2026-10-05): the QB `my_share` kneel-down/low-snap theory (both the attempts-only
   swap and the narrower min-snap floor) only explains a small slice of Lawrence's ~15-point miss (moves
