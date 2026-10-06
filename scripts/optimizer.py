@@ -1716,7 +1716,8 @@ def add_classic_shape_terms(prob, x, players, fixed_counts,
                             flex_rb_bonus: float = 0.0,
                             flex_wr_penalty: float = 0.0,
                             flex_wr_highprice_bonus: float = 0.0,
-                            flex_wr_midprice_penalty: float = 0.0):
+                            flex_wr_midprice_penalty: float = 0.0,
+                            four_wr_no_stud_penalty: float = 0.0):
     """Returns a pulp expression to ADD to the classic objective, or None
     when every weight is 0.0 (nothing added -- no aux variables, no
     constraints, so the problem is byte-identical to before).
@@ -1751,6 +1752,19 @@ def add_classic_shape_terms(prob, x, players, fixed_counts,
       earn the bonus once (only one y can be 1).
       +flex_wr_highprice_bonus if the tagged WR is priced >= CL_FLEX_WR_HIGH_MIN,
       -flex_wr_midprice_penalty if priced in CL_FLEX_WR_MID_RANGE.
+      NOTE 2026-10-06: both price-tier terms come from a DK FLEX-*slot*
+      finding that does not hold at lineup level (CLASSIC_RULES.md rule 3);
+      both default 0 in the presets, replaced by four_wr_no_stud_penalty.
+    - four_wr_no_stud_penalty (2026-10-06, the lineup-level replacement):
+      points subtracted ONCE when the lineup carries a WR beyond its fixed
+      count (a 4-WR build) AND none of its WRs is priced >=
+      CL_FLEX_WR_HIGH_MIN. History (FC Lineup Study, 382 contests, §5
+      controls): 4-WR-no-$6.3k+-WR vs 3-WR is -1.6 to -1.8 points, and vs a
+      3-WR lineup that also has no $6.3k+ WR still -0.9 to -1.0 points, 3-4/4
+      seasons, SE/3MAX/20MAX all pass; 2026 real DK fields agree (12/15
+      contests). Slot placement is irrelevant here -- it is a pure roster
+      property. One binary z: M*z >= (n_WR - fixed_WR) - M*n_WR_stud, so z
+      is forced to 1 only when there is an extra WR and zero studs.
     - Punt count is a whole-roster property, so it needs aux variables.
       punt_count = sum(x over non-DST rows with salary <= CL_PUNT_MAX_SALARY).
         z_zero (binary) >= 1 - punt_count      -> forced 1 only at 0 punts
@@ -1761,7 +1775,8 @@ def add_classic_shape_terms(prob, x, players, fixed_counts,
       bucket penalty (the evidence is a "3+" bucket, not per-extra-punt)."""
     if not any((dst_band_bonus, dst_expensive_penalty, zero_punt_penalty,
                 three_plus_punt_penalty, flex_rb_bonus, flex_wr_penalty,
-                flex_wr_highprice_bonus, flex_wr_midprice_penalty)):
+                flex_wr_highprice_bonus, flex_wr_midprice_penalty,
+                four_wr_no_stud_penalty)):
         return None
     pl = players.set_index("player_id")
     salary = pl["salary"]
@@ -1804,6 +1819,16 @@ def add_classic_shape_terms(prob, x, players, fixed_counts,
             elif flex_wr_midprice_penalty and mid_lo <= s < mid_hi:
                 terms.append(-flex_wr_midprice_penalty * y[pid])
 
+    if four_wr_no_stud_penalty:
+        wrs = [pid for pid in x if position[pid] == "WR"]
+        studs = [pid for pid in wrs if salary[pid] >= CL_FLEX_WR_HIGH_MIN]
+        big_m = sum(fixed_counts.values()) + 1  # >= any possible extra-WR count
+        z_4ns = pulp.LpVariable("cl_four_wr_no_stud", cat="Binary")
+        prob += (big_m * z_4ns
+                 >= (pulp.lpSum(x[p] for p in wrs) - fixed_counts.get("WR", 0))
+                 - big_m * pulp.lpSum(x[p] for p in studs)), "cl_four_wr_no_stud_def"
+        terms.append(-four_wr_no_stud_penalty * z_4ns)
+
     if zero_punt_penalty or three_plus_punt_penalty:
         punt_ids = [pid for pid in x
                     if position[pid] not in CL_DST_POSITIONS and salary[pid] <= CL_PUNT_MAX_SALARY]
@@ -1829,7 +1854,8 @@ def classic_shape_adjustment(lineup: pd.DataFrame, fixed_counts: dict,
                              flex_rb_bonus: float = 0.0,
                              flex_wr_penalty: float = 0.0,
                              flex_wr_highprice_bonus: float = 0.0,
-                             flex_wr_midprice_penalty: float = 0.0) -> float:
+                             flex_wr_midprice_penalty: float = 0.0,
+                             four_wr_no_stud_penalty: float = 0.0) -> float:
     """Same terms as add_classic_shape_terms(), evaluated on a solved lineup.
     Used by build_multi_lineup()'s cross-stack-candidate comparison so the
     soft terms aren't silently dropped when picking the best candidate.
@@ -1859,6 +1885,11 @@ def classic_shape_adjustment(lineup: pd.DataFrame, fixed_counts: dict,
                        else (-flex_wr_midprice_penalty if mid_lo <= s < mid_hi else 0.0)
                        for s in wr_sal]
             total += sum(sorted(per_row, reverse=True)[:n_extra_wr])
+    if four_wr_no_stud_penalty:
+        wr_sal_all = sal[pos == "WR"]
+        if (len(wr_sal_all) > fixed_counts.get("WR", 0)
+                and not (wr_sal_all >= CL_FLEX_WR_HIGH_MIN).any()):
+            total -= four_wr_no_stud_penalty
     n_punts = int(((~pos.isin(CL_DST_POSITIONS)) & (sal <= CL_PUNT_MAX_SALARY)).sum())
     if n_punts == 0:
         total -= zero_punt_penalty
@@ -1894,7 +1925,8 @@ def solve_lineup(players: pd.DataFrame, salary_cap: int, fixed_counts: dict,
                   flex_rb_bonus: float = 0.0,
                   flex_wr_penalty: float = 0.0,
                   flex_wr_highprice_bonus: float = 0.0,
-                  flex_wr_midprice_penalty: float = 0.0) -> pd.DataFrame:
+                  flex_wr_midprice_penalty: float = 0.0,
+                  four_wr_no_stud_penalty: float = 0.0) -> pd.DataFrame:
     """`dst_band_bonus` .. `flex_wr_midprice_penalty` are the 2026-09-29 classic
     construction soft terms (`--cl-*` flags; evidence in
     HANDOFF_classic_lineupstudy_findings_2026-09-29.md §3/§5, tier = soft
@@ -2016,6 +2048,7 @@ def solve_lineup(players: pd.DataFrame, salary_cap: int, fixed_counts: dict,
         flex_rb_bonus=flex_rb_bonus, flex_wr_penalty=flex_wr_penalty,
         flex_wr_highprice_bonus=flex_wr_highprice_bonus,
         flex_wr_midprice_penalty=flex_wr_midprice_penalty,
+        four_wr_no_stud_penalty=four_wr_no_stud_penalty,
     )
     objective = (
         pulp.lpSum(x[pid] * proj[pid] for pid in x)
@@ -4756,7 +4789,20 @@ def main():
              "passes in SE and 20MAX, trends same direction but doesn't "
              "clear in 3MAX). Same per-row scoping caveat as "
              "--cl-flex-wr-highprice-bonus above. See CLASSIC_RULES.md "
-             "rule 3. Default 0.0 (off).",
+             "rule 3. Default 0.0 (off). 2026-10-06: superseded by "
+             "--cl-four-wr-no-stud-penalty (presets set this to 0).",
+    )
+    parser.add_argument(
+        "--cl-four-wr-no-stud-penalty", type=float,
+        default=pdef("cl-four-wr-no-stud-penalty", 0.0),
+        help="Classic ONLY, soft: points subtracted ONCE when the lineup is "
+             "a 4-WR build (a WR beyond the fixed count, i.e. WR in FLEX) and "
+             f"NONE of its WRs is priced >= ${CL_FLEX_WR_HIGH_MIN:,}. "
+             "2026-10-06 lineup-level re-test of the FLEX-WR finding (FC "
+             "history, §5 controls): -1.6 to -1.8 pts vs 3-WR builds, -0.9 to "
+             "-1.0 pts vs 3-WR builds that also lack a $6.3k+ WR, passes "
+             "SE/3MAX/20MAX, 3-4/4 seasons; 2026 real fields agree. See "
+             "CLASSIC_RULES.md rule 3. Default 0.0 (off).",
     )
     # Session 16 -- Per-Player Exposure Override + Thumbs Up/Down (decisions
     # #48-55).
@@ -5045,6 +5091,7 @@ def main():
         flex_wr_penalty=args.cl_flex_wr_penalty,
         flex_wr_highprice_bonus=args.cl_flex_wr_highprice_bonus,
         flex_wr_midprice_penalty=args.cl_flex_wr_midprice_penalty,
+        four_wr_no_stud_penalty=args.cl_four_wr_no_stud_penalty,
     )
     if any(v < 0 for v in classic_shape.values()):
         parser.error("--cl-* weights must be >= 0 (each flag's sign is already "

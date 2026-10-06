@@ -18,6 +18,8 @@ Schema (verified by inspection 2026-09-29):
 - Checks per file: sum of FC fantasy_points vs entry points (if p99 residual > 0.05, all scores are re-solved by sparse
   least squares); salary > cap lineups (a mis-priced player is repaired from the cap bound); realized vs FC own%;
   cash_amt vs payout table rebuild.
+- 2026-10-06: entries also carry lineup-level WR columns (n_wr, wr_sal_min/2nd/3rd/4th/max, n_wr_hp, share_wr_hp,
+  wr_min_proj, wr_min_own) for the FLEX-WR lineup-level test (analysis/wk4_construction_review/). Additive only.
 """
 import glob, gzip, json, os, re, sys
 from collections import Counter, defaultdict
@@ -266,6 +268,16 @@ def parse(f, wmeta, smeta, gmeta):
     dupkey = pd.Series([tuple(sorted(x)) for x in M.tolist()])
     dupes = dupkey.map(dupkey.value_counts()).values
     rank_own = np.argsort(np.argsort(-rost))  # 0 = most owned overall
+    # every WR's own salary, lineup level (2026-10-06 FLEX-WR lineup-level rebuild; additive columns).
+    # DK's FLEX can be any of the 4 WRs, so these ignore slot placement. Sorted ascending, NaN-padded (3-WR lineups
+    # have wr_sal_4th = NaN); wr_sal_max is always the priciest WR. n_wr_hp uses optimizer CL_FLEX_WR_HIGH_MIN (6300).
+    n_wr = isWR.sum(1)
+    WS = np.sort(np.where(isWR, S9, np.inf), axis=1)[:, :4]
+    WS = np.where(np.isinf(WS), np.nan, WS)
+    wr_max = np.nanmax(np.where(isWR, S9, -np.inf), axis=1)
+    n_wr_hp = (isWR & (S9 >= 6300)).sum(1)
+    cheap_col = np.argmin(np.where(isWR, np.nan_to_num(S9, nan=1e9), np.inf), axis=1)
+    cheap_pid = M[np.arange(n), cheap_col]
     qbs = np.where(pos == 0)[0]
     qb_own_rank = {q: k + 1 for k, q in enumerate(sorted(qbs, key=lambda q: -rost[q]))}
     qb_sal_rank = {}
@@ -294,6 +306,12 @@ def parse(f, wmeta, smeta, gmeta):
         "n_lt2own": (rost[M] < 2).sum(1).astype(np.int8),
         "proj_sum": proj_f[M].sum(1).astype(np.float32), "proj_ok": projok[M].all(1),
         "dupes": dupes.astype(np.int32),
+        "n_wr": n_wr.astype(np.int8),
+        "wr_sal_min": WS[:, 0].astype(np.float32), "wr_sal_2nd": WS[:, 1].astype(np.float32),
+        "wr_sal_3rd": WS[:, 2].astype(np.float32), "wr_sal_4th": WS[:, 3].astype(np.float32),
+        "wr_sal_max": np.where(np.isfinite(wr_max), wr_max, np.nan).astype(np.float32),
+        "n_wr_hp": n_wr_hp.astype(np.int8), "share_wr_hp": (n_wr_hp / np.maximum(n_wr, 1)).astype(np.float32),
+        "wr_min_proj": proj_f[cheap_pid].astype(np.float32), "wr_min_own": rost[cheap_pid].astype(np.float32),
     })
     for k in ("season", "week"):
         ent[k] = qa[k]

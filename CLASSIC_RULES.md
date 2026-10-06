@@ -87,6 +87,39 @@ replaced 2026-10-02 with a WR-price-tier version (see rule 3)** via all four cla
      history's slot finding doesn't map to that lineup property. Pooled WR-vs-TE is ~0 on history. Midprice penalty 1.3
      kept (near-inert). Next test: same as above, plus an "expected slot" version (bonus x share of the 4 WRs priced
      $6.3k+).
+   - **Lineup-level re-test, 2026-10-06 -- SHIPPED as a replacement: `--cl-four-wr-no-stud-penalty` 1.0, both price-tier
+     flags 0.** (`analysis/wk4_construction_review/RESULTS_flex_wr_lineup_level.md`, local only.) Rebuilt the FC classic
+     entries with every WR's own salary (`lineup_study_build.py`, additive columns `n_wr`, `wr_sal_min..max`, `n_wr_hp`,
+     `share_wr_hp`) and re-ran §5 (382 contests, 2022-26, same controls, same grading, plus a slate-clustered bootstrap
+     because contests on one slate share one outcome). Every number is per-contest OLS, 3-WR lineups as the baseline:
+     - **The scope the bonus used ("4 WR incl. any $6.3k+ WR") is ~0:** -0.1 pts / -0.3 to -0.6 cash, 2/4 seasons, fails
+       in every format. Zeroing the 3.0 bonus was right. 4-WR vs 3-WR overall is also ~0 (-0.2 to -0.35 pts).
+     - **Option (a), split by the cheapest WR's price: dropped.** No cheapest-WR tier passes in all three formats
+       (<$4k -0.1 pts, $4-4.9k -0.4 to -0.7, $4.9-6.3k -0.2; "cheapest WR $6.3k+" is 0.1% of lineups, pure noise).
+     - **Option (b), expected-slot (4-WR x share of WRs $6.3k+): the effect is real but it is not a slot effect.** Read
+       literally it is +4.3 pts per unit share on a -1.7 pt 4-WR baseline. But once the plain count of $6.3k+ WRs is
+       controlled, the 4-WR x count interaction is ~0 (+0.0 to +0.1 pts, fails everywhere). The count effect itself
+       (+1.0 pt per $6.3k+ WR) is an era effect: +1.9 to +2.4 in 2022-23, -0.0 to -1.3 in 2024-25, and it fails on the
+       slate-clustered CI. Not shipped.
+     - **What does hold: a 4-WR build with NO WR priced $6,300+.** vs all 3-WR lineups: **-1.6 / -1.6 / -1.8 pts, -2.5 /
+       -2.4 / -2.7 cash, return 0.83-0.87x** (SE / 3MAX / 20MAX), passes in all three, 3-4/4 seasons, also passes
+       slate-clustered pooled (-1.7 pts, 4/4). Quality subset the same (-1.8 to -2.1 pts). It is NOT just "no stud WR
+       is bad": vs a 3-WR lineup that also has no $6.3k+ WR it is still **-0.9 / -1.0 / -1.0 pts, -1.4 / -1.4 / -1.6
+       cash**, passes in all three formats, 3-4/4 seasons (slate-clustered: passes pooled and in 3MAX/20MAX, SE cash
+       only). A 3-WR no-stud lineup alone is a weak,
+       fading -1.0 pts (2/4 seasons). ~3.5% of the real field builds it.
+     - **2026 real DK fields agree (15 contests Wk1-4, our projection + realized ownership controls):** 4-WR no stud vs
+       3-WR -10.1 cash / -6.6 pts, 2/15 contests positive; vs 3-WR no stud -3.8 cash / -2.4 pts, 3/15 positive, Wk4
+       -5.7 cash, 0/4 positive. The 2026 field is not in conflict this time.
+     - **Shipped:** `--cl-four-wr-no-stud-penalty` 1.0 in all four presets and the UI preset bundles (sized from the
+       cleanest effect, the -0.9 to -1.0 pts vs 3-WR-no-stud, not the bigger -1.7 that includes the fading no-stud
+       part). `--cl-flex-wr-midprice-penalty` 1.3 -> 0: it was the same slot-scoped finding, it only fired when all 4
+       WRs were $4.9-6.3k (a subset of the new term), and at lineup level that tier is -0.2 pts, ns.
+       `--cl-flex-wr-highprice-bonus` stays 0. Wired through the worker allowlist, `run_optimizer_dispatch.yml` and
+       `index.html` (**the worker needs a redeploy**). Replay ("Re-run 2026-10-06" below): identical lineups on all
+       300 pairs. Our solver doesn't build this shape today, so it is a guardrail, not a fix for the 2026 misses.
+       **Bottom line for rule 3: no FLEX-WR bonus exists at lineup level; the only real FLEX-WR effect is "don't play
+       a 4th WR unless one of your WRs is $6,300+".**
 4. **DST facing your own skill player: bad. Supported** (-1.9 / -2.1 / -3.0, 0/4 seasons, 11-13% of the field does it).
    Already a hard constraint (`exclude_skill_vs_opp_dst`, default on), not a `--cl-*` term.
 5. **Ownership:** realized ownership predicts cashing (+1.1 DST to +2.8 RB per SD of log-ownership, 4/4 seasons), but
@@ -114,7 +147,8 @@ raw shape effect may already be reflected in projection that the solver is maxim
 | `--cl-flex-rb-bonus` | **0** (was 0.6) | rule 3: dead at every price tier after controls (2026-10-02). Kept for override only. |
 | `--cl-flex-wr-penalty` | **0** (was 1.0) | rule 3: flat version dead after controls (2026-10-02) -- replaced by the two price-tier flags below. Kept for override only. |
 | `--cl-flex-wr-highprice-bonus` | **0** (was 3.0) | 2026-10-05: as implemented it paid +3.0 for adding a cheap 4th WR next to a stud already rostered (see rule 3 drill-down); never reached live UI builds anyway (worker bug). Parked pending a lineup-level history test |
-| `--cl-flex-wr-midprice-penalty` | **1.3** | rule 3, controlled WR-$4,900-6,300-vs-TE range -1.3 to -1.5 pts, shaded to the low end |
+| `--cl-flex-wr-midprice-penalty` | **0** (was 1.3) | 2026-10-06: slot-based finding; at lineup level "all 4 WRs $4.9-6.3k" is -0.2 pts, ns, and is a subset of the term below. Kept for override only |
+| `--cl-four-wr-no-stud-penalty` | **1.0** | rule 3 lineup-level re-test (2026-10-06): 4-WR build with no WR $6,300+ is -0.9 to -1.0 pts vs a 3-WR build that also lacks one (-1.6 to -1.8 vs all 3-WR), passes SE/3MAX/20MAX, 3-4/4 seasons; 2026 fields 12/15 negative |
 
 Every flag can be overridden on the command line (`--cl-... 0` turns one off). All flags at 0 is byte-identical to the
 pre-2026-09-30 solve. **Implementation note (fixed 2026-10-02):** classic has no explicit FLEX variable -- the solver
@@ -170,6 +204,23 @@ penalty was drafted at 0.4 (later reverted to 2.0), so the "on" arm is 0.8/0.4/1
 Still inside noise. The big shape move is FLEX: the price-tier bonus makes nearly every build a 4-WR build (see the rule 3
 flag). Wk4 alone was negative (main MME -0.19, main SE -0.18, afternoon -0.10, early +0.06).
 
+### Re-run 2026-10-06 for the rule 3 lineup-level swap, 15 contests (Wk1-4), 300 pairs
+`scripts/grade_construction_week.py --week 1-4 --replay 20 --candidate flex_wr_midprice_penalty=0,four_wr_no_stud_penalty=1.0`
+(out: `analysis/wk4_construction_review/out/replay_4wr_nostud/`). "on" = the presets before this change (bonus 0, midprice
+1.3); "cand" = the shipped swap.
+
+| | off | on (old) | cand (shipped) |
+|---|---|---|---|
+| FLEX RB / WR / TE | 20% / 11% / 69% | 20% / 12% / 68% | same as on |
+| 4-WR with no $6.3k+ WR | 0% | 0% | 0% |
+| Mean real percentile | 0.582 | 0.628 | 0.628 (identical on 300/300 pairs) |
+| Top-25% cash rate | 34.0% | 37.0% | 37.0% |
+
+**The swap changes no lineup on these slates.** Our projections never build a 4-WR-no-stud lineup in the se3max_pool
+structure (also 0/96 with no stack + 10% randomization). The term is a zero-cost guardrail for builds where exposure
+caps, locks or thumbs push into cheap WRs; it is not a lever on current output. (The "on vs off" row differs from the
+10-05 table because DST is back at 2.0 and the FLEX bonus is 0.)
+
 ## Caveats
 - **First-pass point-scale calibration, like Showdown's `--sd-*` weights. Not a swept optimum.** Revisit once Wk4+ classic
   slates accumulate: re-run `replay_cl_arm.py 20` with new slates added and compare percentile/cash off vs on.
@@ -178,7 +229,8 @@ flag). Wk4 alone was negative (main MME -0.19, main SE -0.18, afternoon -0.10, e
   that IS controlled (`--cl-flex-wr-highprice-bonus`/`--cl-flex-wr-midprice-penalty`). DST done 2026-10-05 (rule 1):
   band held; $3.6k+ is ~0 after FC-projection controls but kept at 2.0 because 2026 fields show our own projection
   over-rates expensive DSTs. 3+ punts done 2026-10-05 (rule 2): cut 2.5 -> 0.5.**
-- The FLEX-WR price-tier terms are exactly scoped to the discretionary 4th WR (see "Optimizer enforcement" implementation
+- **2026-10-06: both FLEX-WR price-tier terms are now 0 in every preset, replaced by `--cl-four-wr-no-stud-penalty`
+  (one binary, no slot assumption; see rule 3).** Historical note on the old terms: they were exactly scoped to the discretionary 4th WR (see "Optimizer enforcement" implementation
   note above, fixed 2026-10-02) -- still a soft nudge like every other `--cl-*` term (it doesn't force a WR into FLEX),
   but it no longer touches a mandatory WR's own price, and it adds a handful of extra binary variables per build (one
   per selected-WR-eligible player) whenever either flag is nonzero. Checked against a real 100-lineup `se3max_pool`

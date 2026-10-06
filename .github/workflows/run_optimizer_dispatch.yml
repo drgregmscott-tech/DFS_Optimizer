@@ -170,6 +170,8 @@ jobs:
           # allowlist, so UI builds never received it (ran at 0).
           args += flag("--cl-flex-wr-highprice-bonus", "cl_flex_wr_highprice_bonus", float)
           args += flag("--cl-flex-wr-midprice-penalty", "cl_flex_wr_midprice_penalty", float)
+          # 2026-10-06 -- lineup-level replacement for the FLEX-WR pair (CLASSIC_RULES.md rule 3).
+          args += flag("--cl-four-wr-no-stud-penalty", "cl_four_wr_no_stud_penalty", float)
 
           # Session 12 -- decisions #36-38. Same "omit means optimizer.py's
           # own default (no cap)" convention as every other optional field

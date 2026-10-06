@@ -95,7 +95,21 @@ and resolves none.
     chalk bias improves but that's the chalk-size fix's job). One kept-alive thread: an in-season (2026-only)
     TE budget was a noise-level wash on only 3 weeks of data — re-test with `step7_inseason_te.py` after Wk5-6
     if the 2026 TE total stays ≥125.
-- **FLEX-WR lineup-level rebuild.** Found while closing item 2 (2026-10-05): the `cl-flex-wr-highprice-bonus`
+- **FLEX-WR lineup-level rebuild — CLOSED 2026-10-06, SHIPPED a replacement term (uncommitted).** Rebuilt the
+  FC classic entries with every WR's salary (additive columns in `lineup_study_build.py`; `flex_experiment.py`
+  re-run, output identical) and re-ran §5 on 382 contests. (a) 4-WR vs 3-WR split by the cheapest WR's price:
+  no tier passes all formats — dropped. (b) "expected slot" (4-WR x share of WRs $6.3k+): looks positive, but
+  it's just a per-stud-WR count effect (4-WR x count interaction ~0), and that count effect fades to ≤0 in
+  2024-25 — not shipped. The old bonus's actual scope (4 WR incl. any $6.3k+ WR) is ~0 — zeroing it was right.
+  **What holds: a 4-WR build with NO WR priced $6,300+** — -1.6 to -1.8 pts vs 3-WR builds, and -0.9 to -1.0
+  pts / -1.4 to -1.6 cash even vs 3-WR builds that also lack a stud, passes SE/3MAX/20MAX, 3-4/4 seasons; 2026
+  real fields agree (12/15 contests negative, Wk4 4/4). Shipped `--cl-four-wr-no-stud-penalty` 1.0 in all four
+  presets + UI bundles, `--cl-flex-wr-midprice-penalty` 1.3 → 0 (subset of the new term, ~0 at lineup level),
+  highprice bonus stays 0. Wired through worker/workflow/frontend — **worker needs a redeploy**. Real-slate
+  replay (Wk1-4, 300 pairs): identical lineups on every pair — our solver never builds this shape today, so
+  it's a free guardrail, not a fix for the 2026 misses. FLEX-WR is not where the accuracy gap is. Details:
+  CLASSIC_RULES.md rule 3; `analysis/wk4_construction_review/RESULTS_flex_wr_lineup_level.md` (local).
+  Original note: Found while closing item 2 (2026-10-05): the `cl-flex-wr-highprice-bonus`
   was zeroed (was 3.0) because it's scoped wrong — DK's FLEX slot can be any of the 4 WRs, so "a $6,300+ WR
   in FLEX" as the solver sees it means "any 4-WR lineup holding a $6,300+ WR" (92% of real 4-WR lineups
   qualify), which isn't the same thing the original slot-based history finding measured. Next step: rebuild
@@ -104,6 +118,15 @@ and resolves none.
   "expected slot" term weighted by the share of the 4 WRs priced $6,300+. Only ship a bonus back if a
   lineup-level effect holds up held-out. Details/scripts: `analysis/wk4_construction_review/RESULTS_flex_wr.md`
   (`flex_slot_rank.py`, `flex_bonus_cost.py`). Needs its own session, not a quick follow-up.
+- **Stud-WR ($6,300+) count effect on 2026 fields — projection-side lead, not construction. Flagged while closing
+  the FLEX-WR lineup-level rebuild above (2026-10-06).** Controlling for our own projection + realized ownership,
+  real cash rate rose sharply with the count of $6.3k+ WRs rostered on 2026 Wk2-3 (+10 to +14 cash pts per stud
+  WR), then reversed in Wk4 (negative). History says the same count effect faded to ~0/negative after 2023. Reads
+  like our stud-WR projection is miscalibrated in a way that shows up on some slates and not others, not a
+  construction lever (the FLEX-WR term itself tests ~0 once this count is controlled). Not tested further this
+  session — belongs with the existing projection-side WR $7k+ stud-gap track (see the "Classic PERSISTENT flags"
+  item above), not here. Details: `analysis/wk4_construction_review/RESULTS_flex_wr_lineup_level.md` §"2026 real
+  fields" and "Bottom line" (local, gitignored).
 - **Kyler Murray — rushing theory tested and rejected on history; real cause is a `my_share` staleness case,
   HOLD. Investigated 2026-10-06.** Full 2021-25 LOSO check (86 slates, same frame as `qb_share_refit`):
   rushing volume has ~zero correlation with the model's ownership miss (|r| < .04 for p3_car / recent rush

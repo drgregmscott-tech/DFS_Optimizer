@@ -317,6 +317,8 @@ async function handleDispatch(url, env) {
     // the UI 2026-10-02) was never added here, so the worker silently
     // dropped it and every UI classic build ran it at 0.
     "cl_flex_wr_highprice_bonus", "cl_flex_wr_midprice_penalty",
+    // 2026-10-06 -- lineup-level 4-WR-without-a-$6.3k+-WR penalty (rule 3).
+    "cl_four_wr_no_stud_penalty",
     // Require-N-From-Group -- classic-only hard "at least N of this
     // explicit player_id pool" floor (optimizer.py --require-n-from-
     // group). One "ID,ID,ID:N" string, passed through unchanged --
