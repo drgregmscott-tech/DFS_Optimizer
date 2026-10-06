@@ -123,10 +123,16 @@ def load_slate(row):
     rel = f"output/final_projections_dk_{row['sid']}.csv"
     p_path = ROOT / rel
     if not p_path.exists():
-        return None, None
+        return None, None, None
     p = pd.read_csv(p_path)
     p = p[p.position.isin(["QB", "RB", "WR", "TE", "DST"])].copy()
     p["k"] = p.player_name.map(norm)
+    # Full-pool model-side ownership sum by position, BEFORE the inner join below drops it -- used by
+    # budget() so an undrafted-backup tail (real ownership ~0, genuinely absent from the contest export,
+    # not matchable) doesn't make the model total look short. See WK4_POSTMORTEM_CHECKLIST.md Parking Lot
+    # ("grade_accuracy_week.py's budget() table reports a phantom QB ownership gap", 2026-10-06).
+    full_own_by_pos = (p.groupby("position").estimated_ownership_pct.sum().to_dict()
+                        if row["fmt"] == "classic" else None)
     a = actual_table(row["file"], row["fmt"])
     if row["fmt"] == "classic":
         m = a.merge(p.drop_duplicates("k")[["k", "position", "salary", "final_projection",
@@ -140,25 +146,27 @@ def load_slate(row):
     m["week"] = row["week"]
     m["fmt"] = row["fmt"]
     m["slate"] = f"{row['label']}_{row['date']}"
-    return m, last_commit_date(rel)
+    return m, last_commit_date(rel), full_own_by_pos
 
 
 def build_frame(through_week):
-    rows, proj_dates = [], {}
+    rows, proj_dates, full_own = [], {}, {}
     for row in discover_slates():
         if row["week"] > through_week:
             continue
-        m, pdate = load_slate(row)
+        m, pdate, fo = load_slate(row)
         if m is None:
             print(f"skip {row['sid']} (no final_projections file)")
             continue
         rows.append(m)
         proj_dates[row["sid"]] = pdate
+        if fo is not None:
+            full_own[row["sid"]] = fo
     if not rows:
         raise SystemExit("No played slates with both a contest export and a final_projections file found.")
     F = pd.concat(rows, ignore_index=True)
     F = F[F.final_projection.notna()].copy()
-    return F, proj_dates
+    return F, proj_dates, full_own
 
 
 def tier(r):
@@ -259,11 +267,18 @@ def chalk(F, week):
     return pd.DataFrame(out).round(2)
 
 
-def budget(F, week):
+def budget(F, week, full_own):
+    """Real side: summed from the matched (inner-joined) rows -- the real contest export omits players who
+    drew literal 0% ownership, so virtually every nonzero-owned real player already has a match and this is
+    already the true real total. Model side: summed from the FULL per-slate output file (full_own), not the
+    matched rows -- our model legitimately spreads a few points per slate across undrafted backups that have
+    no real-side counterpart to match against, and summing only the matched rows made the model total look
+    short by exactly that undrafted-backup mass (see WK4_POSTMORTEM_CHECKLIST.md Parking Lot, 2026-10-06)."""
     d = F[(F.week == week) & (F.fmt == "classic")]
-    b = d.groupby(["slate", "position"])[["estimated_ownership_pct", "own"]].sum()
+    b = d.groupby(["slate", "sid", "position"])["own"].sum().reset_index()
+    b["estimated_ownership_pct"] = [full_own.get(sid, {}).get(pos, np.nan) for sid, pos in zip(b.sid, b.position)]
     b["gap"] = b.estimated_ownership_pct - b.own
-    return b.round(1)
+    return b.drop(columns="sid").round(1)
 
 
 def main():
@@ -274,7 +289,7 @@ def main():
     a = ap.parse_args()
     through = a.through or a.week
 
-    F, proj_dates = build_frame(through)
+    F, proj_dates, full_own = build_frame(through)
     F, era_start, fell_back = current_era(F, proj_dates)
     F["tier"] = F.apply(tier, axis=1)
     C = F[F.fmt == "classic"]
@@ -320,7 +335,7 @@ def main():
         p("\n== chalk sizing (classic, real own >= 20%) and top-10 overlap ==")
         p(chalk(O, a.week).to_string(index=False))
         p(f"\n== week {a.week} ownership budget by position (sum of ours vs real, classic) ==")
-        p(budget(O, a.week).to_string())
+        p(budget(O, a.week, full_own).to_string(index=False))
     p("\nFlags are a trigger to open a postmortem item, not a diagnosis. Any fix gets tested on 2021-25 "
       "held-out history before shipping (see SUBAGENT_BRIEF.md). This tool changes nothing on its own.")
 

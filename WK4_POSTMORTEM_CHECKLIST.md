@@ -73,19 +73,28 @@ and resolves none.
   wk3_early file (ingest wrote the wrong table) — parking-lot, needs an md5-duplicate guard on the FFC
   ingest. Kyler Murray investigated 2026-10-06 — see below, **HOLD, not the rushing theory.**
   Full writeup: `analysis/wk4_postmortem/qb_chalk_lawrence/RESULTS.md` (local, gitignored).
-- **Classic ownership position-budget gap: TE and QB totals run short of real on every slate.** Found while
-  closing item 3 (2026-10-05, `scripts/grade_accuracy_week.py` output): on all 6 Wk3-4 classic slates, our
-  modeled ownership undershoots the real per-slate TE total by 10-36 pts and the QB total by 2.5-10 pts
-  (WR/RB/DST totals are close). This is a different mechanism from the showdown DST/kicker chalk-underestimate
-  in item 8 — it's classic-format, position-level, and consistent in direction every slate, which is exactly
-  the kind of persistent pattern worth a real look (not yet root-caused: could be a genuine modeled-ownership
-  scale issue per position, or a downstream step — chalk-size fix, FFC blend, renormalization — not preserving
-  position totals the way the raw model intends). `own_budget_walkforward.py` in
-  `analysis/recal_vs_spotadjust/` already found something adjacent: TE's history-fit budget has been slowly
-  drifting (113→121, 2021-25) and a rolling budget narrows slate-total error without moving player-level MAE —
-  suggesting the gap is post-model normalization, not a stale learned budget. Needs its own session: pull the
-  position-sum chain (raw model output → chalk-size step → FFC blend → final renorm) and find where TE/QB mass
-  leaks out.
+- **Classic ownership position-budget gap: TE and QB totals run short of real on every slate — ROOT-CAUSED
+  2026-10-06, NO SHIP.** Full session (Opus agent, `analysis/wk4_postmortem/te_qb_budget_gap/RESULTS.md`,
+  local/gitignored): the v2 pipeline conserves TE/QB budget mass exactly through every step (vac bump →
+  chalk-seg → QB cut) on a 12-slate 2026 production replay — there is no downstream leak. Two different,
+  separate findings instead:
+  - **The QB "gap" was a grading artifact, not real — FIXED 2026-10-06.** The full-file QB total is 98.6-100
+    against real 99.5-99.9 (true gap ~1 pt). `grade_accuracy_week.budget()` was inner-joining to the contest
+    export before summing, which dropped the 5-8 pts/slate v2 puts on 30-45 undrafted backup QBs (the live
+    pool projects far more thin backups than the history training pool did, because the history rebuild gave
+    most backups proj 0) — that's where the reported -2.5 to -10 came from. Fixed by summing the model side
+    from the full per-slate `output/final_projections_dk_<sid>.csv` file instead of the matched rows
+    (reporting-only change, re-verified on Wk3-4: QB gap now reads -0.1 to -1.2, matching the ~1pt true gap).
+  - **The TE gap is real but is a 2026 field-level shift plus individual chalk misses, not a budget problem.**
+    History real TE total/slate is 116.8±7.2; 2026 is 125.3±12.1 (Wk3-4: 128-149). Not predictable from slate
+    features (value-feature corr only +0.37 in history). Inside a slate the shortfall sits on specific TE
+    chalk (Mayer 33% real vs 2% ours, Kelce 31/16, Strange 14/4, Kincaid 21/10) — that's the chalk-size
+    problem (item above), not the position budget. Tested and dropped: static TE budget refit (LOSO/rolling/
+    2025-mean — wash or worse on history, worse TE MAE 10/12 2026 slates), adaptive per-slate TE budget
+    (same), QB budget = 99.8 (worse QB MAE 12/12), tail-cut-and-respread (worse on relevant rows 12/12,
+    chalk bias improves but that's the chalk-size fix's job). One kept-alive thread: an in-season (2026-only)
+    TE budget was a noise-level wash on only 3 weeks of data — re-test with `step7_inseason_te.py` after Wk5-6
+    if the 2026 TE total stays ≥125.
 - **FLEX-WR lineup-level rebuild.** Found while closing item 2 (2026-10-05): the `cl-flex-wr-highprice-bonus`
   was zeroed (was 3.0) because it's scoped wrong — DK's FLEX slot can be any of the 4 WRs, so "a $6,300+ WR
   in FLEX" as the solver sees it means "any 4-WR lineup holding a $6,300+ WR" (92% of real 4-WR lineups
