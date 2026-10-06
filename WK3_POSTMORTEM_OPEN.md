@@ -309,14 +309,27 @@ gave two separate things, and the first drop conflated them:
   bias-better/MAE-worse pattern as before, driven by one player). Hockenson (TE) scored 27.9 vs our 9.1
   unbumped — a second real example of the multi-position-OUT exclusivity gap logged under item 9 in
   `WK4_POSTMORTEM_CHECKLIST.md`. Keep watching; don't change the bump logic on this sample.
-- Stud-gap harness-vs-live mismatch: **suspected root cause ruled out as the sole cause; narrowed to WR
-  $7k+.** The `--week 23` convention is confirmed Week-1-only in `DFS_Weekly_Process.md`, and Wk2 (built
-  with real settings, no week-23 convention) still showed the same gap, so that convention isn't the
-  (only) cause. By week, stud ($6.5k+ RB/WR/TE) vs control ($4-6.5k) bias: Wk1 -6.9 vs -1.5, Wk2 -7.1 vs
-  -1.2, Wk3 0.0 vs +0.6, Wk4 -0.9 vs -0.6 — the RB/TE stud gap has disappeared since Wk3. What's left is
-  WR $7k+ specifically: -6.7 / -17.4 / -1.7 / -4.6 by week (n=4-6/week, SD~14, Wk4 alone is noise-sized
-  but flagged PERSISTENT across the season at -6.3). Next step: history rebuild split by week-of-season
-  (1-2 vs 3+) for WR $7k+ only — do not apply a blanket stud calibration change.
+- Stud-gap harness-vs-live mismatch: **[CLOSED 2026-10-06] no real stud gap, week-of-season split
+  confirms it's a grading artifact.** Rebuilt all of 2021-25 WR $7k+ with current code (884 player-weeks,
+  LOSO): bias is flat across the season (week 1 +1.1, week 2 -4.0, weeks 3-4 -0.7, weeks 5-8 -0.4, weeks
+  9-18 +0.8) — from week 3 on we beat FC's MAE outright (8.28 vs 8.92). Weeks 1-2 combined are -1.5 ± 1.4,
+  not significant; only 2022 shows a real early gap. **The 2026 PERSISTENT -6.3 flag was never a model
+  problem**: the Wk1-2 2026 `output/` files genuinely predate current code (confirmed — they're missing
+  the `engine_projection` column current-code files have) and can't be reproduced by rebuilding (e.g. Wk1
+  lock had Jefferson at 11.5, current code gives 18-20 for the same inputs). On current code, Wk2 2026 was
+  a real blowout week everyone missed (studs averaged 29.9; FC bias was -12.8, ours -11.5) — not a us-only
+  miss. This directly resolves the parking-lot item "Classic PERSISTENT flags from grade_accuracy_week.py"
+  in `WK4_POSTMORTEM_CHECKLIST.md` (added same day): it's the stale-pre-fix-snapshot artifact that item
+  suspected, not new drift. The `--season prev --week 23` Week-1 convention is separately re-confirmed
+  correct (beats both plain-price harness and FC on 2021-23/2025/2026 rebuilds) — keep it.
+  `data/early_season_blend_config.json` was checked and ruled out as a lever: it's been disabled
+  (`weeks: {}`) since 2026-09-29, so it can't be causing or fixing anything right now.
+  **Action needed (reporting fix, not a model fix):** `scripts/grade_accuracy_week.py`'s current-era
+  detection only tracks `GOVERNING_CONFIGS` (JSON config files) via git commit date — it has no way to
+  know the WR-out redistribution and RB replacement-bump fixes (shipped as code changes, not config
+  changes, in commits `a85dbd1`/`7cfa10c` etc.) exist, so stale Wk1-2 files can still misclassify as
+  current-era. Confirm this stays resolved once Wk5 grades in (per the existing parking-lot trigger); if
+  it recurs, the real fix is adding those code paths' last-commit dates to the era-detection window.
 - QB residual gap vs FC: **closed verdict holds for a second week.** No FC Wk4 comparison exists
   (subscription dead), so graded against actual results. QBs projected or scoring 8+ (n=24): bias +0.6,
   MAE 4.5 — best week of the season (Wk1-3 MAE was 9.6/6.4/6.1). No surprise-starter misses (no QB
@@ -346,6 +359,26 @@ gave two separate things, and the first drop conflated them:
   fix — the shipped chalk-seg cheap-pull already partly covers it. Worth a quick history-only test
   (price-split among next-man-up beneficiaries) in its own session since the history replacement frame
   doesn't need props.
+  **[2026-10-06 history follow-up]** Half the hypothesis holds on all 5 seasons (648 next-man-up players,
+  86 slates), half doesn't — **confirmed-but-needs-more-design, and the real fix is on the projection
+  side, not ownership.** Cheap (<$5k) replacements are under-owned by us every season on both a history-only
+  base and the current production pipeline (bias -3.7 and -3.3 respectively; real field owns them ~2× what
+  we predict on Friday-known cases). But "expensive ones are over-owned" does NOT hold on production data
+  (-0.6, not significant) — that half of the Wk4 pattern was an artifact of using injury-blind history
+  projections as the base, not a real field behavior; the production pipeline (which knows Friday injury
+  status) shows mid-price ($5-7k) replacements are also under-owned (-1.8), so the real shape is "cheap
+  and mid get chased," not a clean two-sided split. Nothing before lock (vacated share, projection, value,
+  salary) separates chased cheap backups from ignored ones (rank corr -.07 to +.03) — the miss is heavy-
+  tailed, with 10% of cases (e.g. D'Ernest Johnson 52% real vs 2.7% ours) holding 56% of the total
+  under-ownership. Every ownership-side fix tried (price-conditioned bumps, vac-share scaling) moved pool
+  MAE ≤0.02 — not worth shipping as an ownership change. **Root cause: our projections for cheap
+  replacements run ~2 pts low** (field scores them ~2.0-2.3 pts above our projection at RB/WR/TE; ownership
+  tracks projection, so fixing the projection should close roughly half the ownership miss). The existing
+  RB replacement bump is deliberately scaled down (`points_scale` 0.65 in `data/wrw_rb_params.json`,
+  confirmed) — next step is re-running the price-tier check on rebuilds that include the WR-out
+  redistribution (shipped after these test rebuilds were made) and testing a less-conservative scale for
+  cheap backups only, held out by season. If a gap remains after that, any residual ownership fix should
+  key off FFC (already live via chalk-seg) rather than price, since history can't test FFC.
 
 ## Housekeeping flagged this session, not yet decided
 

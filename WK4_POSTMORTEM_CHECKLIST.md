@@ -18,17 +18,23 @@ and resolves none.
   (Hooper/Pitts/Delp) and RB2 (B. Robinson) under-owned by 13-16pts. Not root-caused yet. Needs its own
   session — check whether this is a one-game artifact (ATL/NO specifics: backup QB, bellcow RB
   concentration) or a pattern worth checking across more showdown slates.
-- **Classic PERSISTENT flags from `grade_accuracy_week.py --week 4` (2026-10-06) — not yet a confirmed
-  issue, needs a real current-era week to check.** After fixing the tracker's per-format fallback gap
-  (see item 1 fix log / commit `a962958b`), classic showed PERSISTENT flags: DST +1.13, QB -2.36, TE -0.76,
-  WR -1.04 (plus salary-tier breakdowns, worst: WR $7k+ -6.26). These are graded against Week 1-4 classic
-  `output/` files, which are frozen at their original lock-time state (pre- the 2026-10-05 DST
-  recalibration / chalk-seg fixes) — there's no current-era classic week to anchor the trend yet, so this
-  may just be the already-known, already-fixed pre-fix bias re-surfacing, not new drift.
-  **Trigger / next action:** once Week 5's classic slates lock and get graded, re-run
-  `python scripts/grade_accuracy_week.py --week 5`. If classic DST/QB/TE/WR still show PERSISTENT with a
-  genuine current-era week in the mix, that's real post-fix drift and becomes its own postmortem item. If
-  the flags disappear or shrink, this was just the stale-snapshot artifact — close with no action.
+- **Classic PERSISTENT flags from `grade_accuracy_week.py --week 4` (2026-10-06) — WR $7k+ piece
+  [CLOSED 2026-10-06, confirmed stale-snapshot artifact]; DST/QB/TE/general-WR pieces still open, same
+  trigger.** After fixing the tracker's per-format fallback gap (see item 1 fix log / commit `a962958b`),
+  classic showed PERSISTENT flags: DST +1.13, QB -2.36, TE -0.76, WR -1.04 (plus salary-tier breakdowns,
+  worst: WR $7k+ -6.26). The track-2 WR $7k+ stud-gap follow-up (`WK3_POSTMORTEM_OPEN.md`, same day)
+  confirmed this exact suspicion for WR $7k+: a full 2021-25 current-code rebuild shows no real bias at any
+  point in the season, and the 2026 Wk1-2 `output/` files are confirmed to predate current code (missing
+  `engine_projection`, can't be reproduced by rebuilding) — so the WR $7k+ -6.26 flag was the stale
+  pre-fix snapshot, not new drift. Root cause of the false flag: `grade_accuracy_week.py`'s current-era
+  detection only tracks `GOVERNING_CONFIGS` (JSON files) by commit date, with no visibility into
+  engine-code-only fixes (e.g. the WR-out redistribution / RB replacement bump, shipped as code commits)
+  — those don't move the era window, so stale Wk1-2 files can still read as "current." DST/QB/TE/general-WR
+  were NOT tested by this follow-up (it was WR $7k+-only) — same trigger still applies to those: once
+  Week 5's classic slates lock and get graded, re-run `python scripts/grade_accuracy_week.py --week 5`.
+  If they still show PERSISTENT with a genuine current-era week in the mix, that's real drift; if they
+  shrink, same artifact. If they persist, the actual fix is adding engine-code commit dates to the
+  era-detection window, not a projection change.
 - **What's actually driving Trevor Lawrence's (and the broader cheap-chalk-QB) ownership miss.** Found
   while closing item 1 (2026-10-05): the QB `my_share` kneel-down/low-snap theory (both the attempts-only
   swap and the narrower min-snap floor) only explains a small slice of Lawrence's ~15-point miss (moves
@@ -365,21 +371,33 @@ and resolves none.
    earlier history on each; it is no longer the active to-do list, this checklist is. One topic per
    session still applies — pick ONE of 10-14 per session, don't batch them.
 
-10. **[Wk4 triage done 2026-10-06; Wk5 still owed]** Track-2 candidates re-tested against real Wk4 data.
-    Full updated verdicts in `WK3_POSTMORTEM_OPEN.md`'s "Track-2 watch items" section. Summary: nothing
-    newly shippable. **Own-penalty fading** — closed for good, perfect ownership loses too. **Truepool
-    coef** — Wk4 alone is a small win but pooled Wk1-4 still a wash, stays off. **Vac-bump k=1.0** —
-    confirmed correct on held-out Wk4 ownership, no change. **WR/TE reallocation** — still inconclusive
-    (n=5 this week); found the multi-position-OUT exclusivity gap (item 9) has a second real example
-    (Hockenson). **Stud-gap** — suspected `--week 23` cause ruled out as sole cause (Wk2 showed the same
-    gap without it); RB/TE stud gap has actually closed since Wk3, narrowed the open question to WR
-    $7k+ only (flagged PERSISTENT, needs a week-of-season split on history). **QB residual** — closed
-    verdict holds for a 2nd week (best MAE of the season, 4.5). **Chalk-size fix v2 segmented** — this
-    watch item's premise was stale, it already shipped 2026-10-05 and passed its first held-out week;
-    re-confirmed again this session. **Next-man-up props bump** — flips to wrong-direction-drop (MAE
-    worse, ~zero correlation with the field's real miss); found a price-split hypothesis (cheap
-    replacements chased, pricier ones faded) worth a history-only follow-up test. Re-run all of this
-    again once Wk5 results land.
+10. **[Wk4 triage + both follow-ups done 2026-10-06; Wk5 still owed]** Track-2 candidates re-tested
+    against real Wk4 data, then the two follow-up questions it raised were each tested on full 2021-25
+    history. Full updated verdicts in `WK3_POSTMORTEM_OPEN.md`'s "Track-2 watch items" section. Summary:
+    nothing newly shippable, but two real findings closed out and one real lead identified for projections.
+    **Own-penalty fading** — closed for good, perfect ownership loses too. **Truepool coef** — Wk4 alone
+    is a small win but pooled Wk1-4 still a wash, stays off. **Vac-bump k=1.0** — confirmed correct on
+    held-out Wk4 ownership, no change. **WR/TE reallocation** — still inconclusive (n=5 this week); found
+    the multi-position-OUT exclusivity gap (item 9) has a second real example (Hockenson). **Stud-gap —
+    [CLOSED]**: the full-history week-of-season split found no real WR $7k+ bias anywhere in the season;
+    the PERSISTENT -6.3 flag was a stale-snapshot grading artifact (2026 Wk1-2 `output/` files predate
+    current code and can't be reproduced by rebuilding) — this also resolves the WR $7k+ piece of the
+    Parking Lot's "Classic PERSISTENT flags" item. Found a real gap in `grade_accuracy_week.py`'s
+    current-era detection: it only tracks JSON config commit dates, not engine-code-only fixes, so stale
+    weeks can still read as current — worth fixing once confirmed it causes more false flags. The
+    `--week 23` convention is re-confirmed correct, keep it. **QB residual** — closed verdict holds for a
+    2nd week (best MAE of the season, 4.5). **Chalk-size fix v2 segmented** — this watch item's premise
+    was stale, it already shipped 2026-10-05 and passed its first held-out week; re-confirmed again this
+    session. **Next-man-up props bump** — flips to wrong-direction-drop (MAE worse, ~zero correlation with
+    the field's real miss). The price-split follow-up on full history **confirmed half the hypothesis**:
+    cheap (<$5k) and mid ($5-7k) replacements are genuinely under-owned by us every season (real field
+    owns them ~2× what we predict) — but "expensive ones are over-owned" didn't hold on production data,
+    that was a history-base-is-injury-blind artifact. Root cause traced to the **projection, not
+    ownership**: our cheap-replacement point projections run ~2 pts low, which is why ownership (which
+    tracks projection) misses too. Next step is retesting with the WR-out redistribution included and
+    loosening the RB replacement bump's `points_scale` (0.65) for cheap backups specifically, held out by
+    season — a projection-side fix, not an ownership-side one. Re-run all of item 10 again once Wk5
+    results land.
 
 11. **WR-out props-anchor question.** Not started. Do fresh pregame sportsbook props (already pulled via
     `_apply_props_anchor` in `scripts/build_projections_statline.py`, which reach ownership indirectly
