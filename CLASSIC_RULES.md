@@ -79,7 +79,8 @@ replaced 2026-10-02 with a WR-price-tier version (see rule 3)** via all four cla
      (1) Live UI builds never had it: the Cloudflare worker allowlist and `run_optimizer_dispatch.yml` were never given
      `cl_flex_wr_highprice_bonus`/`cl_flex_wr_midprice_penalty` when they were added 2026-10-02. The UI sent them; the
      worker dropped them; the Wk4 main MME run's actual command line has no `--cl-flex-wr-*` flags. Fixed in both files.
-     **The worker needs a redeploy** for that to take effect. (2) The TE lean in live builds is plain projection-per-dollar:
+     (Moot now — both flags were zeroed the next day, see below; the worker redeploy that actually matters, for
+     `cl_four_wr_no_stud_penalty`, is confirmed done — see rule 3's bottom line.) (2) The TE lean in live builds is plain projection-per-dollar:
      with every FLEX term off, TE wins FLEX on 8/12 2026 pools and RB on 4. TE-in-FLEX was also the best raw FLEX on 2026
      fields. (3) With the bonus on, 10/12 pools flip to 4 WR at -1.4 projected pts. The added WR is usually cheap
      ($3.0-4.4k). The bonus is "earned" by a stud WR that was already in the 3-WR lineup. 92% of real 4-WR lineups hold a
@@ -116,15 +117,27 @@ replaced 2026-10-02 with a WR-price-tier version (see rule 3)** via all four cla
        part). `--cl-flex-wr-midprice-penalty` 1.3 -> 0: it was the same slot-scoped finding, it only fired when all 4
        WRs were $4.9-6.3k (a subset of the new term), and at lineup level that tier is -0.2 pts, ns.
        `--cl-flex-wr-highprice-bonus` stays 0. Wired through the worker allowlist, `run_optimizer_dispatch.yml` and
-       `index.html` (**the worker needs a redeploy**). Replay ("Re-run 2026-10-06" below): identical lineups on all
+       `index.html` — **worker redeployed 2026-10-07** (`dfs-optimizer-api`, version `110adc9c`), confirmed
+       `cl_four_wr_no_stud_penalty` live in the allowlist, so UI builds now actually apply this term. Replay ("Re-run 2026-10-06" below): identical lineups on all
        300 pairs. Our solver doesn't build this shape today, so it is a guardrail, not a fix for the 2026 misses.
        **Bottom line for rule 3: no FLEX-WR bonus exists at lineup level; the only real FLEX-WR effect is "don't play
        a 4th WR unless one of your WRs is $6,300+".**
 4. **DST facing your own skill player: bad. Supported** (-1.9 / -2.1 / -3.0, 0/4 seasons, 11-13% of the field does it).
    Already a hard constraint (`exclude_skill_vs_opp_dst`, default on), not a `--cl-*` term.
 5. **Ownership:** realized ownership predicts cashing (+1.1 DST to +2.8 RB per SD of log-ownership, 4/4 seasons), but
-   `--own-penalty` fading is dropped and chalk tilt with our own modeled ownership showed no gain on history. Not a lever
-   until the ownership model improves. See `WK3_POSTMORTEM_CHECKLIST.md` track-2 outcomes.
+   `--own-penalty` fading is dropped and chalk tilt with our own modeled ownership showed no gain on history. Not a shape
+   lever until the ownership model improves. See `WK3_POSTMORTEM_CHECKLIST.md` track-2 outcomes.
+   **Superseded 2026-10-07 for pool ranking (not a shape term): our own modeled ownership DOES carry real lineup-sum
+   signal once scored correctly** (WK4 postmortem items 12/15 — the earlier "no signal" reading used a pre-v2 ownership
+   model never joined to the test pools). Held-out history partial-corr of lineup-sum ownership vs. real finish
+   (controlling for projection) is +.08 to +.11 with today's v2 model, vs ~0 with the old one. **Shipped:** the built
+   pool is now re-ranked by `z(sum projection) + 0.75*z(sum log(estimated_ownership_pct+.5))` after the existing
+   projection-only sort (`_rank_lineups_by_proj_own()`, `scripts/optimizer.py`, single call site in classic
+   `build_multi_lineup`, commit `97be43a7`, default ON — env `DFS_RANK_OWN_W` controls the weight, `0` turns it off,
+   fails safe to pure-projection order on any error). **This changes which lineup lands at #1** — it's a noisy-but-real
+   nudge toward chalk-awareness on the sort order, not an auto-submit signal; re-check it after each new week
+   (`analysis/lineup_own_signal/check_2026.py`) and flip `DFS_RANK_OWN_W=0` if a future week turns it wrong-direction.
+   Showdown untouched — separate ownership model/question.
 6. **QB price, stud count, punts beyond 1-2: matter little or not at all.** QB+2 is real but smaller than assumed.
 
 ## Optimizer enforcement (2026-09-30)

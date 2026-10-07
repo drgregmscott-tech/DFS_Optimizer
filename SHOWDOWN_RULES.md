@@ -128,6 +128,19 @@ item — see `data/optimizer_presets.json`'s per-preset comments for exactly whi
   20-build were worth ~65 pts vs ~85 at the top). For a single entry, enumerate/rank directly or use a small N.
 - Both teams must be represented (enforced). Per-row lock/exclude: `pid:CPT` / `pid:FLEX`.
 
+## Known ownership-model blind spot (watch, not a construction rule, 2026-10-06)
+WK4 postmortem item 8: on ATL/NO (the first out-of-sample Wk4 showdown slate), the real FLEX miss wasn't K/DST — it
+was skill-player ownership (Penix over-owned by 22pts, Kamara by 18pts, cheap TEs and RB2 Bijan/Robinson
+under-owned 13-16pts). Root-caused to a real, narrow mechanism: ATL/NO was the one slate (of 7) with a flat
+four-way TE group instead of one clear lead TE — exactly where the ownership model's small-projection-gap-swings-
+ownership weakness (same one already fixed for kickers) bites. The obvious fix (position-aware ridge features)
+made things worse everywhere, including ATL/NO itself, because FLEX ownership is water-filled to a fixed budget
+the ridge fit can't see — a real fix needs the water-fill step itself to be position-aware, parked as its own
+session. **Practical takeaway for now: on a slate with no single clear-favorite TE, or a flat RB-committee
+backfield, trust the modeled skill-player ownership less than usual** — eyeball it against public ownership sites
+before leaning on it for a captain/FLEX decision. Re-open the model fix once 2-3 more slates repeat either shape
+(a Penix-style backup-QB over-ownership, or another flat-TE/RB-committee slate).
+
 ## Not yet in the optimizer (candidate opt-in settings, no evidence base yet or not worth the complexity)
 `--max-kickers 1` (harmless, no real edge at n=142 — see rule 5). [2026-09-29 correction: this paragraph used to list a candidate
 `--no-cpt-positions K,DST` as unbuilt. It was built as `--sd-exclude-cpt-positions` plus `--sd-k-cpt-penalty`; see "Optimizer enforcement"
