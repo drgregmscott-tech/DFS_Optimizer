@@ -3147,6 +3147,7 @@ def build_multi_lineup(site: str, slate_id: str, n_lineups: int = DEFAULT_N_LINE
 
     all_lineups = pd.concat(all_lineup_frames, ignore_index=True)
     all_lineups = _rank_lineups_by_projection(all_lineups)
+    all_lineups = _rank_lineups_by_proj_own(all_lineups, players_all)
     return all_lineups, exposure_count, n_generated
 
 
@@ -4248,6 +4249,53 @@ def _rank_lineups_by_projection(lineups):
         return out.sort_values("lineup_id", kind="stable").reset_index(drop=True)
     except Exception as exc:  # noqa: BLE001 -- ranking must never break a build
         print(f"WARNING: lineup ranking skipped ({type(exc).__name__}: {exc}).", file=sys.stderr)
+        return lineups
+
+
+def _rank_lineups_by_proj_own(lineups, players_all, w=None):
+    """Re-rank lineup_id 1..N (classic only) by z(sum projection) + w*z(sum log(own+0.5)),
+    best first, on top of _rank_lineups_by_projection's pure-projection order.
+
+    WK4 postmortem items 12/15/the 2026-10-07 lineup-sum re-check: production ownership-v2
+    summed per lineup carries real held-out signal on history (partial corr +.032 to +.111,
+    log-sum beats plain sum), and on a Wk4 re-check with the live preset it's directionally
+    real but noisy at the single-pick level (combined Wk1-4: +.14 top-1 pct, CI crosses 0;
+    steadier on a top-3/5 average, +.02 to +.07). Owner's call 2026-10-07: turn it ON by
+    default at the history-picked weight (0.75) -- the #1 lineup is a starting point to sort
+    through, not an auto-submit, so the extra chalk-awareness is worth it even on a noisy
+    single-pick signal. Off: env DFS_RANK_OWN_W=0. Re-test after each new week (see
+    analysis/lineup_own_signal/). Missing/NaN ownership is treated as 0.
+    """
+    import os
+    w = float(os.environ.get("DFS_RANK_OWN_W", "0.75") or 0) if w is None else w
+    if not w:
+        return lineups
+    try:
+        if lineups.empty or "lineup_id" not in lineups.columns or "projection" not in lineups.columns:
+            return lineups
+        if players_all is None or "estimated_ownership_pct" not in players_all.columns:
+            return lineups
+        own_map = players_all.set_index("player_id")["estimated_ownership_pct"]
+        g = lineups.groupby("lineup_id", sort=False)
+        proj = g["projection"].sum()
+        own_logsum = g["player_id"].apply(
+            lambda ids: np.log(own_map.reindex(ids).fillna(0).clip(lower=0) + 0.5).sum()
+        )
+        tot = pd.DataFrame({"projection": proj, "own_logsum": own_logsum}).reset_index()
+        tot["_b"] = range(len(tot))
+        p_std = tot["projection"].std(ddof=0) or 1.0
+        o_std = tot["own_logsum"].std(ddof=0) or 1.0
+        zp = (tot["projection"] - tot["projection"].mean()) / p_std
+        zo = (tot["own_logsum"] - tot["own_logsum"].mean()) / o_std
+        tot["_score"] = zp + w * zo
+        tot = tot.sort_values(["_score", "_b"], ascending=[False, True])
+        new_id = {old: i + 1 for i, old in enumerate(tot["lineup_id"])}
+        out = lineups.copy()
+        out["proj_rank"] = out["lineup_id"]
+        out["lineup_id"] = out["lineup_id"].map(new_id)
+        return out.sort_values("lineup_id", kind="stable").reset_index(drop=True)
+    except Exception as exc:  # noqa: BLE001 -- ranking must never break a build
+        print(f"WARNING: proj+ownership ranking skipped ({type(exc).__name__}: {exc}).", file=sys.stderr)
         return lineups
 
 
