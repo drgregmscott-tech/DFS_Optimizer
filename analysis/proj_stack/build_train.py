@@ -4,6 +4,9 @@ Research only; no FC data in this file. Output (FC-derived salaries/scores -> gi
 Features recomputed exactly as at runtime: projection_stack.usage_features(season, week) (games strictly
 before the slate week, rolling across seasons), salary/1000, engine_projection (pre-stack, guard on).
 Sanity check: old artifact re-applied via apply_stack+combine must reproduce the rebuild's final_projection.
+Carries a `dnp` column (no real stat line) through to train.csv -- any script that FITS on this output must
+filter `~dnp` first (2026-10-07: the 10-01 refit trained on dnp-as-0 rows and shaded every active player down
+~1pt, since live already zeroes those players before serving; see analysis/projstack_bias_fix/RESULTS.md).
     python analysis/proj_stack/build_train.py
 """
 import glob, os, sys
