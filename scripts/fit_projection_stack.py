@@ -15,6 +15,14 @@ saw only stats from earlier weeks (see WK2_POSTMORTEM.md's correction note).
 To extend the training set, append rows with the same columns from future
 pre-game ENGINE-ONLY builds (props blended in would change the input
 distribution the stack was fit on).
+
+IMPORTANT (2026-10-07, see analysis/projstack_bias_fix/RESULTS.md): this file's rows must be
+PLAYERS WHO ACTUALLY PLAYED (actual_points = a real stat line), never a DNP/inactive player scored
+as 0. Live serving already zeroes OUT/inactive players before anyone uses the numbers, so training
+on DNP-as-0 rows shades every active player down (~1pt), double-counting that zero. The 2026-10-01
+RB/WR/TE refit (analysis/proj_stack/refit_eval_rbwrte.py) made exactly this mistake and was
+corrected by refitting on active rows only -- that script now filters `~dnp` before fitting; if you
+extend projection_stack_training_dk.csv and rerun this script, filter the same way first.
 """
 
 import argparse

@@ -12,6 +12,26 @@ context to pick back up cold. A session that fully resolves one narrow question 
 and resolves none.
 
 ## Parking Lot (add here, don't chase inline)
+- **[CLOSED/SHIPPED 2026-10-07] `projection_stack_dk.json` refit (commit `7c479336`, 2026-10-01) ran RB/WR/TE
+  ~0.5-1.7 pts low across 2021-25 history and on live Wk4.** Root cause (not engine drift — directly ruled
+  out, mean `engine_projection` diff <= 0.011 vs a fresh current-code pull): the 10-01 refit trained on every
+  RB/WR/TE row including DNP/T-90-inactive players scored as 0, so it shaded everyone down ~1pt to fit those
+  zeros. Live already zeroes OUT/inactive players before serving, so that drag got counted twice. The 09-30
+  stack happened to look fine only because it was fit on an older engine that ran ~1pt hot on the same
+  frame — the two errors cancelled; the refit removed one and exposed the other. Fix: refit RB/WR/TE on
+  ACTIVE rows only (QB block untouched), same ridge/LOSO method, validated on the current-code 72-week
+  rebuild (bias better 15/15 position-seasons held out, RMSE 14/15, pooled RMSE -0.078 [-0.099,-0.058]) and
+  on a true 2026 Wk3/Wk4 live check (bias +0.73→+0.31). **Shipped live**: backed up to
+  `data/projection_stack_dk.json.bak_2026-10-07`, new coefficients now in `data/projection_stack_dk.json`.
+  Training-script bug fixed at the source (`analysis/proj_stack/refit_eval_rbwrte.py` now filters `~dnp`
+  before fitting and when scoring; `scripts/fit_projection_stack.py` / `build_train.py` docstrings flag the
+  trap for any future refit). RB `points_scale` (item 10) confirmed unaffected — the level problem was here,
+  not the bump. Full writeup: `analysis/projstack_bias_fix/RESULTS.md` (gitignored, FC-derived).
+  **Not yet done, watch for it:** ownership v2 (`data/ownership_v2_dk_linear.json`) was calibrated against the
+  09-30 stack's levels and was never refit after either the 10-01 or this correction — the candidate's active
+  levels land close to what ownership already expects, so this should be neutral-to-positive, but eyeball
+  chalk/ownership on the next real build. A residual +0.2 to +0.4 low bias remains from the stack's
+  `[0.5E, 1.8E]` clamp on cheap players — not chased, small.
 - **Standing re-check: Σlog(own+.5) v2 re-rank blend for SE3max (from item 15, 2026-10-06).** Closed as
   inconclusive on history + 18 live 2026 pools — didn't clear the ship bar, no code shipped. Re-score
   cheaply as each week's SE3max pools accrue using `analysis/lineup_own_signal/check_2026.py` (just add
@@ -498,7 +518,25 @@ and resolves none.
    earlier history on each; it is no longer the active to-do list, this checklist is. One topic per
    session still applies — pick ONE of 10-14 per session, don't batch them.
 
-10. **[Wk4 triage + both follow-ups done 2026-10-06; Wk5 still owed]** Track-2 candidates re-tested
+10. **[CLOSED 2026-10-06 — cheap-backup RB `points_scale` raise: wrong direction, drop. Keep flat 0.65.]**
+    Retested on a fresh current-code rebuild of all 72 2021-25 history weeks (parallelized, 0 failures,
+    includes the WR-out redistribution and Q-return fix that postdated the original 09-30 build), segmented
+    by the replacement RB's salary tier. Raw numbers looked like a case for raising the scale to ~0.95 for
+    everyone (<$5k and $5-7k both beat 0.65 on 3/5 held-out seasons) — but that was an artifact: the 10-01
+    `projection_stack_dk.json` refit (commit `7c479336`) lowered every RB/WR/TE projection by ~0.5-1.7 pts
+    regardless of the bump (bumped rows matched the stale build exactly, 411/411; turning off WR-out
+    redistribution and the Q-return fix changed nothing). After removing that global shift and refitting the
+    bump's own scale per tier, the held-out numbers match the original stale-build fit almost exactly (<$5k
+    k=.57-.82, $5-7k k=.46-.64 LOSO, both bracketing the shipped 0.65) and the cheap tier's best-k swings
+    .26-1.46 by season with no consistent direction. 2026 Wk2-4 check (n=25) also shows no case for a raise.
+    $7k+ replacements (n=12, starters taking over) run 6-8 pts low in all 4 seasons that have them —
+    inconclusive, too few to fit, keep watching. **No params change, nothing to wire.** The real finding —
+    the stack refit's global under-projection — is now its own parking-lot item above, since it's the more
+    likely explanation for the "~2 pts low" observation that opened this item. Full writeup, scripts and
+    history rebuild in `analysis/wrw_rb_cheap_scale_retest/RESULTS.md` (gitignored, FC-derived, never
+    commit). ~40 min wall-clock, full 72-week sample, no time-box compromise.
+
+    **[Superseded — original triage summary, kept for history below:]** Track-2 candidates re-tested
     against real Wk4 data, then the two follow-up questions it raised were each tested on full 2021-25
     history. Full updated verdicts in `WK3_POSTMORTEM_OPEN.md`'s "Track-2 watch items" section. Summary:
     nothing newly shippable, but two real findings closed out and one real lead identified for projections.
