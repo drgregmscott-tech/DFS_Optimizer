@@ -20,10 +20,13 @@ What it does:
     as grade_construction_week.py) and merges it against the contest's %Drafted/FPTS table by normalized name
     (+ roster role for showdown CPT/FLEX), same matching rule as analysis/wk4_postmortem/grade_wk4.py.
   - Builds one long player-level frame across every week played so far this season.
-  - MODEL-VERSION WINDOW: finds the most recent commit date among the governing config files (below). Any
-    slate whose final_projections file was last committed before that date is still shown per-week, but
-    excluded from the season-to-date PERSISTENT trend calc -- otherwise a bias that a fix already shipped for
-    keeps re-raising the same flag. Printed explicitly so you can see which weeks are "current era."
+  - MODEL-VERSION WINDOW: finds the most recent commit date among the governing config files AND the engine
+    code files (below -- both lists feed the same era_start). Any slate whose final_projections file was
+    last committed before that date is still shown per-week, but excluded from the season-to-date PERSISTENT
+    trend calc -- otherwise a bias that a fix already shipped for keeps re-raising the same flag. Printed
+    explicitly so you can see which weeks are "current era." (Originally config-only; a code-only fix with
+    no config change couldn't move the window, which let a stale Wk1-2 snapshot read as current and raise a
+    false WR $7k+ PERSISTENT flag -- fixed 2026-10-07, see ENGINE_CODE below.)
   - Flags, using the thresholds fit in analysis/recal_vs_spotadjust/ (grade_accuracy_week_proto.py):
       PERSISTENT  current-era season-to-date |bias| >= MATERIAL and |z| >= 2.5, >= 2 weeks, same sign in
                   >= 2/3 of weeks -- the "real drift" signature (this is what the DST v2 fix looked like).
@@ -66,6 +69,18 @@ GOVERNING_CONFIGS = [
     "data/ownership_model_dk_ffc.json",
     "data/ownership_model_showdown_dk.json",
     "data/sigma_recalibration_dk.json",
+]
+
+# Engine code: the actual projection/ownership pipeline. A fix shipped here (e.g. the WR-out
+# redistribution or Q-return RB commits, a85dbd1/7cfa10c) moves model output just like a config change
+# but previously had no effect on the era window -- a stale pre-fix output/ file could still read as
+# "current" and raise a false PERSISTENT flag (confirmed root cause of the WR $7k+ -6.26 false flag,
+# WK4_POSTMORTEM_CHECKLIST.md "Classic PERSISTENT flags" item, closed 2026-10-06).
+ENGINE_CODE = [
+    "scripts/build_projections_statline.py",
+    "scripts/statline_model.py",
+    "scripts/ownership_v2.py",
+    "scripts/ownership_model_showdown.py",
 ]
 
 
@@ -186,7 +201,7 @@ def current_era(F, proj_dates):
     treating that format's weeks as current -- an empty trend table for that format is worse than one that
     includes a stale week, and a later run will have a real current-era week to anchor on. The fallback is
     per-format, not global: one format having a current-era row must not hide the other format's rows."""
-    changed = [d for d in (last_commit_date(c) for c in GOVERNING_CONFIGS) if d is not None]
+    changed = [d for d in (last_commit_date(c) for c in GOVERNING_CONFIGS + ENGINE_CODE) if d is not None]
     if not changed:
         return F.assign(current_era=True), None, {}
     era_start = max(changed)
