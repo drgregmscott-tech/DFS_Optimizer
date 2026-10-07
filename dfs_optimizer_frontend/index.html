@@ -1415,10 +1415,14 @@
   .player-list-head .sortcol.active::after { content: attr(data-arrow); margin-left: 3px; }
 
   .player-row .pown, .player-row .pval { font-family: 'Roboto Mono', monospace; font-size: 11px; color: var(--dim); text-align: right; }
-  /* Ownership range (model-FFC). Amber + warning mark = the two sources disagree by OWN_DISAGREE_PTS or more. */
-  .own-range { white-space: nowrap; cursor: help; }
-  .own-range.disagree { color: var(--amber); }
-  .own-range .own-flag { margin-left: 2px; font-weight: 700; }
+  /* Ownership: model number is primary and always the normal column color (never recolored). FFC is a
+     smaller secondary line below it -- normally dim, turning amber with a warning mark only when the two
+     disagree by OWN_DISAGREE_PTS or more (model wins ~3:1 on disagreement -- still worth a manual look,
+     just not split-the-difference, and not a reason to recolor our own number). */
+  .own-range { display: flex; flex-direction: column; align-items: flex-end; line-height: 1.25; cursor: help; }
+  .own-range .own-ffc-sub { color: var(--dimmer); font-size: 9px; margin-top: 1px; }
+  .own-range.disagree .own-ffc-sub { color: var(--amber); }
+  .own-range .own-flag { margin-left: 2px; font-weight: 700; color: var(--amber); }
 
   /* ---------------- Session 7.3 -- min-salary slider ---------------- */
 
@@ -2313,7 +2317,7 @@ in this browser's localStorage.</p>
       applyOwnershipToPool(site);
       if (site === state.activeSite && !state.ownership[site]) {
         var hasBaked = payload.some(function (p) { return p.estimated_ownership_pct != null; });
-        setOwnershipStatus(hasBaked ? "Loaded from this slate's estimated_ownership_pct column" + (payload.some(function (p) { return p.ffc != null; }) ? " \u2014 shown as model\u2013FFC range where FFC lists the player (\u26A0 = 10+ pt gap, real ownership uncertain); Own% sort/filter use the higher of the two" : "") : "This slate has no estimated_ownership_pct column — rebuild it with the updated build_projections.py, or upload an override CSV", hasBaked);
+        setOwnershipStatus(hasBaked ? "Loaded from this slate's estimated_ownership_pct column" + (payload.some(function (p) { return p.ffc != null; }) ? " \u2014 model is primary, FFC shown as a reference where it lists the player (⚠ = 10+ pt gap, worth a manual look); Own% sort/filter use the model" : "") : "This slate has no estimated_ownership_pct column — rebuild it with the updated build_projections.py, or upload an override CSV", hasBaked);
       }
     } else if (kind === "pivots") {
       applyPivotsPayload(site, filename, payload);
@@ -3726,26 +3730,31 @@ in this browser's localStorage.</p>
   // estimated_ownership_pct). Purely informational -- never sent to the
   // solver, just displayed and averaged per built lineup.
 
-  // ---- Ownership display: model vs public (FFC) projected ownership ----
-  // One number = the model alone (no FFC table for this slate, or FFC does not
-  // list the player). Two numbers = a low-high range with a warning mark when
-  // they differ by OWN_DISAGREE_PTS or more (a signal that true ownership is
-  // uncertain). Sorting/filtering by ownership uses the higher of the two.
+  // ---- Ownership display: our model's number is primary; FFC (public projected
+  // ownership) is shown as a secondary reference only. Backtested 2026-10-07
+  // (analysis/ffc_dependency_reduction/RESULTS.md): the model beats raw FFC on
+  // every 2026 slate, both overall (.885 vs .778 corr) and on FFC's own listed
+  // players only (.758 vs .612) -- not a close call. A gap of OWN_DISAGREE_PTS+
+  // still gets flagged for a manual look (model wins disagreements ~3:1 per
+  // WK4_POSTMORTEM_CHECKLIST item 1, so it's worth trusting on disagreement, not
+  // splitting the difference). Sorting/filtering by ownership uses the model
+  // number alone.
   var OWN_DISAGREE_PTS = 10;
   function fmtOwnPct(v) { return v < 1 ? "<1" : String(Math.round(v)); }
   function ownRangeHtml(model, ffc) {
     if (model == null) return "\u2014";
     if (ffc == null) return model.toFixed(1) + "%";
-    var lo = Math.min(model, ffc), hi = Math.max(model, ffc), gap = hi - lo;
+    var gap = Math.abs(model - ffc);
     var dis = gap >= OWN_DISAGREE_PTS;
     var tip = "Model " + model.toFixed(1) + "% \u00b7 FFC " + ffc.toFixed(1) + "% \u00b7 gap " + gap.toFixed(1) + " pts" +
-      (dis ? " \u2014 sources disagree, real ownership is uncertain" : "");
+      (dis ? " \u2014 sources disagree; the model is right more often on disagreement, but worth a manual look" : "");
     return '<span class="own-range' + (dis ? " disagree" : "") + '" title="' + tip + '">' +
-      fmtOwnPct(lo) + "\u2013" + fmtOwnPct(hi) + "%" + (dis ? '<span class="own-flag">\u26A0</span>' : "") + "</span>";
+      '<span class="own-model">' + fmtOwnPct(model) + '%</span>' +
+      '<span class="own-ffc-sub">FFC ' + fmtOwnPct(ffc) + (dis ? '<span class="own-flag">\u26A0</span>' : "") + '</span>' +
+      "</span>";
   }
-  function ownHi(p) {
-    var m = p.ownership != null ? p.ownership : 0;
-    return p.ffc != null ? Math.max(m, p.ffc) : m;
+  function ownModelVal(p) {
+    return p.ownership != null ? p.ownership : (p.ffc != null ? p.ffc : 0);
   }
 
   function applyOwnershipToPool(site) {
@@ -4001,7 +4010,7 @@ in this browser's localStorage.</p>
     if (f.projMax !== "" && p.final_projection > parseFloat(f.projMax)) return false;
     if (f.valMin !== "" && p.value < parseFloat(f.valMin)) return false;
     if (f.valMax !== "" && p.value > parseFloat(f.valMax)) return false;
-    var own = ownHi(p);
+    var own = ownModelVal(p);
     if (f.ownMin !== "" && own < parseFloat(f.ownMin)) return false;
     if (f.ownMax !== "" && own > parseFloat(f.ownMax)) return false;
     return true;
@@ -4051,8 +4060,8 @@ in this browser's localStorage.</p>
 
     var sortKey = state.poolSort.key, sortDir = state.poolSort.dir;
     rows.sort(function (a, b) {
-      var av = sortKey === "ownership" ? ownHi(a) : a[sortKey];
-      var bv = sortKey === "ownership" ? ownHi(b) : b[sortKey];
+      var av = sortKey === "ownership" ? ownModelVal(a) : a[sortKey];
+      var bv = sortKey === "ownership" ? ownModelVal(b) : b[sortKey];
       return sortDir === "asc" ? av - bv : bv - av;
     });
 
