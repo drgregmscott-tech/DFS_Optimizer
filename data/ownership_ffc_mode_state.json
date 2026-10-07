@@ -13,5 +13,15 @@
     "locked": true,
     "locked_at_utc": "2026-10-04T10:12:30+00:00",
     "matched_at_lock": 45
+  },
+  "dk:dk_classic_wk5_early_11Oct2026": {
+    "locked": true,
+    "locked_at_utc": "2026-10-07T12:26:10+00:00",
+    "matched_at_lock": 45
+  },
+  "dk:dk_classic_wk5_main_11Oct2026": {
+    "locked": true,
+    "locked_at_utc": "2026-10-07T12:24:36+00:00",
+    "matched_at_lock": 45
   }
 }

@@ -1,0 +1,845 @@
+event_id,home,away,commence_time,player,market,line,side,price,book,pulled_at
+2caea57b1e5cfbba1334cfbfd46f6771,Green Bay Packers,Chicago Bears,2026-10-11T17:00:00Z,D'Andre Swift,player_anytime_td,,Yes,110,draftkings,20261007T122329Z
+2caea57b1e5cfbba1334cfbfd46f6771,Green Bay Packers,Chicago Bears,2026-10-11T17:00:00Z,Kyle Monangai,player_anytime_td,,Yes,125,draftkings,20261007T122329Z
+2caea57b1e5cfbba1334cfbfd46f6771,Green Bay Packers,Chicago Bears,2026-10-11T17:00:00Z,MarShawn Lloyd,player_anytime_td,,Yes,160,draftkings,20261007T122329Z
+2caea57b1e5cfbba1334cfbfd46f6771,Green Bay Packers,Chicago Bears,2026-10-11T17:00:00Z,Kaleb Johnson,player_anytime_td,,Yes,185,draftkings,20261007T122329Z
+2caea57b1e5cfbba1334cfbfd46f6771,Green Bay Packers,Chicago Bears,2026-10-11T17:00:00Z,Christian Watson,player_anytime_td,,Yes,205,draftkings,20261007T122329Z
+2caea57b1e5cfbba1334cfbfd46f6771,Green Bay Packers,Chicago Bears,2026-10-11T17:00:00Z,Luther Burden III,player_anytime_td,,Yes,220,draftkings,20261007T122329Z
+2caea57b1e5cfbba1334cfbfd46f6771,Green Bay Packers,Chicago Bears,2026-10-11T17:00:00Z,Rome Odunze,player_anytime_td,,Yes,220,draftkings,20261007T122329Z
+2caea57b1e5cfbba1334cfbfd46f6771,Green Bay Packers,Chicago Bears,2026-10-11T17:00:00Z,Tucker Kraft,player_anytime_td,,Yes,225,draftkings,20261007T122329Z
+2caea57b1e5cfbba1334cfbfd46f6771,Green Bay Packers,Chicago Bears,2026-10-11T17:00:00Z,Matthew Golden,player_anytime_td,,Yes,235,draftkings,20261007T122329Z
+2caea57b1e5cfbba1334cfbfd46f6771,Green Bay Packers,Chicago Bears,2026-10-11T17:00:00Z,Colston Loveland,player_anytime_td,,Yes,240,draftkings,20261007T122329Z
+2caea57b1e5cfbba1334cfbfd46f6771,Green Bay Packers,Chicago Bears,2026-10-11T17:00:00Z,Kalif Raymond,player_anytime_td,,Yes,380,draftkings,20261007T122329Z
+2caea57b1e5cfbba1334cfbfd46f6771,Green Bay Packers,Chicago Bears,2026-10-11T17:00:00Z,Skyy Moore,player_anytime_td,,Yes,500,draftkings,20261007T122329Z
+2caea57b1e5cfbba1334cfbfd46f6771,Green Bay Packers,Chicago Bears,2026-10-11T17:00:00Z,Cole Kmet,player_anytime_td,,Yes,500,draftkings,20261007T122329Z
+2caea57b1e5cfbba1334cfbfd46f6771,Green Bay Packers,Chicago Bears,2026-10-11T17:00:00Z,Chicago Bears D/ST,player_anytime_td,,Yes,500,draftkings,20261007T122329Z
+2caea57b1e5cfbba1334cfbfd46f6771,Green Bay Packers,Chicago Bears,2026-10-11T17:00:00Z,Chris Brooks,player_anytime_td,,Yes,550,draftkings,20261007T122329Z
+2caea57b1e5cfbba1334cfbfd46f6771,Green Bay Packers,Chicago Bears,2026-10-11T17:00:00Z,Tyson Bagent,player_anytime_td,,Yes,550,draftkings,20261007T122329Z
+2caea57b1e5cfbba1334cfbfd46f6771,Green Bay Packers,Chicago Bears,2026-10-11T17:00:00Z,Green Bay Packers D/ST,player_anytime_td,,Yes,600,draftkings,20261007T122329Z
+2caea57b1e5cfbba1334cfbfd46f6771,Green Bay Packers,Chicago Bears,2026-10-11T17:00:00Z,Jordan Love,player_anytime_td,,Yes,800,draftkings,20261007T122329Z
+2caea57b1e5cfbba1334cfbfd46f6771,Green Bay Packers,Chicago Bears,2026-10-11T17:00:00Z,Jonnu Smith,player_anytime_td,,Yes,950,draftkings,20261007T122329Z
+2caea57b1e5cfbba1334cfbfd46f6771,Green Bay Packers,Chicago Bears,2026-10-11T17:00:00Z,Bo Melton,player_anytime_td,,Yes,1600,draftkings,20261007T122329Z
+2caea57b1e5cfbba1334cfbfd46f6771,Green Bay Packers,Chicago Bears,2026-10-11T17:00:00Z,Sam Roush,player_anytime_td,,Yes,1700,draftkings,20261007T122329Z
+2caea57b1e5cfbba1334cfbfd46f6771,Green Bay Packers,Chicago Bears,2026-10-11T17:00:00Z,Tyson Bagent,player_pass_tds,1.5,Over,102,draftkings,20261007T122329Z
+2caea57b1e5cfbba1334cfbfd46f6771,Green Bay Packers,Chicago Bears,2026-10-11T17:00:00Z,Tyson Bagent,player_pass_tds,1.5,Under,-130,draftkings,20261007T122329Z
+2caea57b1e5cfbba1334cfbfd46f6771,Green Bay Packers,Chicago Bears,2026-10-11T17:00:00Z,Jordan Love,player_pass_tds,1.5,Over,116,draftkings,20261007T122329Z
+2caea57b1e5cfbba1334cfbfd46f6771,Green Bay Packers,Chicago Bears,2026-10-11T17:00:00Z,Jordan Love,player_pass_tds,1.5,Under,-148,draftkings,20261007T122329Z
+2caea57b1e5cfbba1334cfbfd46f6771,Green Bay Packers,Chicago Bears,2026-10-11T17:00:00Z,Jordan Love,player_pass_yds,231.5,Over,-113,draftkings,20261007T122329Z
+2caea57b1e5cfbba1334cfbfd46f6771,Green Bay Packers,Chicago Bears,2026-10-11T17:00:00Z,Jordan Love,player_pass_yds,231.5,Under,-111,draftkings,20261007T122329Z
+2caea57b1e5cfbba1334cfbfd46f6771,Green Bay Packers,Chicago Bears,2026-10-11T17:00:00Z,Tyson Bagent,player_pass_yds,219.5,Over,-112,draftkings,20261007T122329Z
+2caea57b1e5cfbba1334cfbfd46f6771,Green Bay Packers,Chicago Bears,2026-10-11T17:00:00Z,Tyson Bagent,player_pass_yds,219.5,Under,-112,draftkings,20261007T122329Z
+2caea57b1e5cfbba1334cfbfd46f6771,Green Bay Packers,Chicago Bears,2026-10-11T17:00:00Z,Christian Watson,player_reception_yds,60.5,Over,-111,draftkings,20261007T122329Z
+2caea57b1e5cfbba1334cfbfd46f6771,Green Bay Packers,Chicago Bears,2026-10-11T17:00:00Z,Christian Watson,player_reception_yds,60.5,Under,-113,draftkings,20261007T122329Z
+2caea57b1e5cfbba1334cfbfd46f6771,Green Bay Packers,Chicago Bears,2026-10-11T17:00:00Z,Matthew Golden,player_reception_yds,55.5,Over,-112,draftkings,20261007T122329Z
+2caea57b1e5cfbba1334cfbfd46f6771,Green Bay Packers,Chicago Bears,2026-10-11T17:00:00Z,Matthew Golden,player_reception_yds,55.5,Under,-112,draftkings,20261007T122329Z
+2caea57b1e5cfbba1334cfbfd46f6771,Green Bay Packers,Chicago Bears,2026-10-11T17:00:00Z,Tucker Kraft,player_reception_yds,49.5,Over,-113,draftkings,20261007T122329Z
+2caea57b1e5cfbba1334cfbfd46f6771,Green Bay Packers,Chicago Bears,2026-10-11T17:00:00Z,Tucker Kraft,player_reception_yds,49.5,Under,-111,draftkings,20261007T122329Z
+2caea57b1e5cfbba1334cfbfd46f6771,Green Bay Packers,Chicago Bears,2026-10-11T17:00:00Z,Luther Burden III,player_reception_yds,48.5,Over,-113,draftkings,20261007T122329Z
+2caea57b1e5cfbba1334cfbfd46f6771,Green Bay Packers,Chicago Bears,2026-10-11T17:00:00Z,Luther Burden III,player_reception_yds,48.5,Under,-111,draftkings,20261007T122329Z
+2caea57b1e5cfbba1334cfbfd46f6771,Green Bay Packers,Chicago Bears,2026-10-11T17:00:00Z,Rome Odunze,player_reception_yds,37.5,Over,-111,draftkings,20261007T122329Z
+2caea57b1e5cfbba1334cfbfd46f6771,Green Bay Packers,Chicago Bears,2026-10-11T17:00:00Z,Rome Odunze,player_reception_yds,37.5,Under,-112,draftkings,20261007T122329Z
+2caea57b1e5cfbba1334cfbfd46f6771,Green Bay Packers,Chicago Bears,2026-10-11T17:00:00Z,Colston Loveland,player_reception_yds,36.5,Over,-109,draftkings,20261007T122329Z
+2caea57b1e5cfbba1334cfbfd46f6771,Green Bay Packers,Chicago Bears,2026-10-11T17:00:00Z,Colston Loveland,player_reception_yds,36.5,Under,-115,draftkings,20261007T122329Z
+2caea57b1e5cfbba1334cfbfd46f6771,Green Bay Packers,Chicago Bears,2026-10-11T17:00:00Z,Kalif Raymond,player_reception_yds,28.5,Over,-116,draftkings,20261007T122329Z
+2caea57b1e5cfbba1334cfbfd46f6771,Green Bay Packers,Chicago Bears,2026-10-11T17:00:00Z,Kalif Raymond,player_reception_yds,28.5,Under,-108,draftkings,20261007T122329Z
+2caea57b1e5cfbba1334cfbfd46f6771,Green Bay Packers,Chicago Bears,2026-10-11T17:00:00Z,D'Andre Swift,player_reception_yds,13.5,Over,-107,draftkings,20261007T122329Z
+2caea57b1e5cfbba1334cfbfd46f6771,Green Bay Packers,Chicago Bears,2026-10-11T17:00:00Z,D'Andre Swift,player_reception_yds,13.5,Under,-117,draftkings,20261007T122329Z
+2caea57b1e5cfbba1334cfbfd46f6771,Green Bay Packers,Chicago Bears,2026-10-11T17:00:00Z,Luther Burden III,player_receptions,4.5,Over,-122,draftkings,20261007T122329Z
+2caea57b1e5cfbba1334cfbfd46f6771,Green Bay Packers,Chicago Bears,2026-10-11T17:00:00Z,Luther Burden III,player_receptions,4.5,Under,-105,draftkings,20261007T122329Z
+2caea57b1e5cfbba1334cfbfd46f6771,Green Bay Packers,Chicago Bears,2026-10-11T17:00:00Z,Tucker Kraft,player_receptions,4.5,Over,-115,draftkings,20261007T122329Z
+2caea57b1e5cfbba1334cfbfd46f6771,Green Bay Packers,Chicago Bears,2026-10-11T17:00:00Z,Tucker Kraft,player_receptions,4.5,Under,-111,draftkings,20261007T122329Z
+2caea57b1e5cfbba1334cfbfd46f6771,Green Bay Packers,Chicago Bears,2026-10-11T17:00:00Z,Matthew Golden,player_receptions,4.5,Over,-112,draftkings,20261007T122329Z
+2caea57b1e5cfbba1334cfbfd46f6771,Green Bay Packers,Chicago Bears,2026-10-11T17:00:00Z,Matthew Golden,player_receptions,4.5,Under,-114,draftkings,20261007T122329Z
+2caea57b1e5cfbba1334cfbfd46f6771,Green Bay Packers,Chicago Bears,2026-10-11T17:00:00Z,Christian Watson,player_receptions,4.5,Over,118,draftkings,20261007T122329Z
+2caea57b1e5cfbba1334cfbfd46f6771,Green Bay Packers,Chicago Bears,2026-10-11T17:00:00Z,Christian Watson,player_receptions,4.5,Under,-151,draftkings,20261007T122329Z
+2caea57b1e5cfbba1334cfbfd46f6771,Green Bay Packers,Chicago Bears,2026-10-11T17:00:00Z,Colston Loveland,player_receptions,3.5,Over,-156,draftkings,20261007T122329Z
+2caea57b1e5cfbba1334cfbfd46f6771,Green Bay Packers,Chicago Bears,2026-10-11T17:00:00Z,Colston Loveland,player_receptions,3.5,Under,122,draftkings,20261007T122329Z
+2caea57b1e5cfbba1334cfbfd46f6771,Green Bay Packers,Chicago Bears,2026-10-11T17:00:00Z,Kalif Raymond,player_receptions,3.5,Over,117,draftkings,20261007T122329Z
+2caea57b1e5cfbba1334cfbfd46f6771,Green Bay Packers,Chicago Bears,2026-10-11T17:00:00Z,Kalif Raymond,player_receptions,3.5,Under,-149,draftkings,20261007T122329Z
+2caea57b1e5cfbba1334cfbfd46f6771,Green Bay Packers,Chicago Bears,2026-10-11T17:00:00Z,Rome Odunze,player_receptions,2.5,Over,-167,draftkings,20261007T122329Z
+2caea57b1e5cfbba1334cfbfd46f6771,Green Bay Packers,Chicago Bears,2026-10-11T17:00:00Z,Rome Odunze,player_receptions,2.5,Under,130,draftkings,20261007T122329Z
+2caea57b1e5cfbba1334cfbfd46f6771,Green Bay Packers,Chicago Bears,2026-10-11T17:00:00Z,D'Andre Swift,player_receptions,2.5,Over,148,draftkings,20261007T122329Z
+2caea57b1e5cfbba1334cfbfd46f6771,Green Bay Packers,Chicago Bears,2026-10-11T17:00:00Z,D'Andre Swift,player_receptions,2.5,Under,-191,draftkings,20261007T122329Z
+2caea57b1e5cfbba1334cfbfd46f6771,Green Bay Packers,Chicago Bears,2026-10-11T17:00:00Z,D'Andre Swift,player_rush_yds,61.5,Over,-110,draftkings,20261007T122329Z
+2caea57b1e5cfbba1334cfbfd46f6771,Green Bay Packers,Chicago Bears,2026-10-11T17:00:00Z,D'Andre Swift,player_rush_yds,61.5,Under,-114,draftkings,20261007T122329Z
+2caea57b1e5cfbba1334cfbfd46f6771,Green Bay Packers,Chicago Bears,2026-10-11T17:00:00Z,D'Andre Swift,player_anytime_td,,Yes,105,fanduel,20261007T122329Z
+2caea57b1e5cfbba1334cfbfd46f6771,Green Bay Packers,Chicago Bears,2026-10-11T17:00:00Z,MarShawn Lloyd,player_anytime_td,,Yes,110,fanduel,20261007T122329Z
+2caea57b1e5cfbba1334cfbfd46f6771,Green Bay Packers,Chicago Bears,2026-10-11T17:00:00Z,Kyle Monangai,player_anytime_td,,Yes,130,fanduel,20261007T122329Z
+2caea57b1e5cfbba1334cfbfd46f6771,Green Bay Packers,Chicago Bears,2026-10-11T17:00:00Z,Kaleb Johnson,player_anytime_td,,Yes,185,fanduel,20261007T122329Z
+2caea57b1e5cfbba1334cfbfd46f6771,Green Bay Packers,Chicago Bears,2026-10-11T17:00:00Z,Christian Watson,player_anytime_td,,Yes,195,fanduel,20261007T122329Z
+2caea57b1e5cfbba1334cfbfd46f6771,Green Bay Packers,Chicago Bears,2026-10-11T17:00:00Z,Luther Burden III,player_anytime_td,,Yes,220,fanduel,20261007T122329Z
+2caea57b1e5cfbba1334cfbfd46f6771,Green Bay Packers,Chicago Bears,2026-10-11T17:00:00Z,Colston Loveland,player_anytime_td,,Yes,220,fanduel,20261007T122329Z
+2caea57b1e5cfbba1334cfbfd46f6771,Green Bay Packers,Chicago Bears,2026-10-11T17:00:00Z,Rome Odunze,player_anytime_td,,Yes,220,fanduel,20261007T122329Z
+2caea57b1e5cfbba1334cfbfd46f6771,Green Bay Packers,Chicago Bears,2026-10-11T17:00:00Z,Matthew Golden,player_anytime_td,,Yes,230,fanduel,20261007T122329Z
+2caea57b1e5cfbba1334cfbfd46f6771,Green Bay Packers,Chicago Bears,2026-10-11T17:00:00Z,Tucker Kraft,player_anytime_td,,Yes,240,fanduel,20261007T122329Z
+2caea57b1e5cfbba1334cfbfd46f6771,Green Bay Packers,Chicago Bears,2026-10-11T17:00:00Z,Kalif Raymond,player_anytime_td,,Yes,410,fanduel,20261007T122329Z
+2caea57b1e5cfbba1334cfbfd46f6771,Green Bay Packers,Chicago Bears,2026-10-11T17:00:00Z,Skyy Moore,player_anytime_td,,Yes,500,fanduel,20261007T122329Z
+2caea57b1e5cfbba1334cfbfd46f6771,Green Bay Packers,Chicago Bears,2026-10-11T17:00:00Z,Cole Kmet,player_anytime_td,,Yes,550,fanduel,20261007T122329Z
+2caea57b1e5cfbba1334cfbfd46f6771,Green Bay Packers,Chicago Bears,2026-10-11T17:00:00Z,Tyson Bagent,player_anytime_td,,Yes,600,fanduel,20261007T122329Z
+2caea57b1e5cfbba1334cfbfd46f6771,Green Bay Packers,Chicago Bears,2026-10-11T17:00:00Z,Chicago Bears Defense,player_anytime_td,,Yes,650,fanduel,20261007T122329Z
+2caea57b1e5cfbba1334cfbfd46f6771,Green Bay Packers,Chicago Bears,2026-10-11T17:00:00Z,Green Bay Packers Defense,player_anytime_td,,Yes,650,fanduel,20261007T122329Z
+2caea57b1e5cfbba1334cfbfd46f6771,Green Bay Packers,Chicago Bears,2026-10-11T17:00:00Z,Jordan Love,player_anytime_td,,Yes,750,fanduel,20261007T122329Z
+2caea57b1e5cfbba1334cfbfd46f6771,Green Bay Packers,Chicago Bears,2026-10-11T17:00:00Z,Jonnu Smith,player_anytime_td,,Yes,900,fanduel,20261007T122329Z
+2caea57b1e5cfbba1334cfbfd46f6771,Green Bay Packers,Chicago Bears,2026-10-11T17:00:00Z,Sam Roush,player_anytime_td,,Yes,1600,fanduel,20261007T122329Z
+2caea57b1e5cfbba1334cfbfd46f6771,Green Bay Packers,Chicago Bears,2026-10-11T17:00:00Z,Bo Melton,player_anytime_td,,Yes,1700,fanduel,20261007T122329Z
+2caea57b1e5cfbba1334cfbfd46f6771,Green Bay Packers,Chicago Bears,2026-10-11T17:00:00Z,Tyson Bagent,player_pass_tds,1.5,Over,-104,fanduel,20261007T122329Z
+2caea57b1e5cfbba1334cfbfd46f6771,Green Bay Packers,Chicago Bears,2026-10-11T17:00:00Z,Tyson Bagent,player_pass_tds,1.5,Under,-128,fanduel,20261007T122329Z
+2caea57b1e5cfbba1334cfbfd46f6771,Green Bay Packers,Chicago Bears,2026-10-11T17:00:00Z,Jordan Love,player_pass_tds,1.5,Over,124,fanduel,20261007T122329Z
+2caea57b1e5cfbba1334cfbfd46f6771,Green Bay Packers,Chicago Bears,2026-10-11T17:00:00Z,Jordan Love,player_pass_tds,1.5,Under,-166,fanduel,20261007T122329Z
+2caea57b1e5cfbba1334cfbfd46f6771,Green Bay Packers,Chicago Bears,2026-10-11T17:00:00Z,Tyson Bagent,player_pass_yds,219.5,Over,-114,fanduel,20261007T122329Z
+2caea57b1e5cfbba1334cfbfd46f6771,Green Bay Packers,Chicago Bears,2026-10-11T17:00:00Z,Tyson Bagent,player_pass_yds,219.5,Under,-114,fanduel,20261007T122329Z
+2caea57b1e5cfbba1334cfbfd46f6771,Green Bay Packers,Chicago Bears,2026-10-11T17:00:00Z,Jordan Love,player_pass_yds,233.5,Over,-114,fanduel,20261007T122329Z
+2caea57b1e5cfbba1334cfbfd46f6771,Green Bay Packers,Chicago Bears,2026-10-11T17:00:00Z,Jordan Love,player_pass_yds,233.5,Under,-114,fanduel,20261007T122329Z
+2caea57b1e5cfbba1334cfbfd46f6771,Green Bay Packers,Chicago Bears,2026-10-11T17:00:00Z,Colston Loveland,player_reception_yds,35.5,Over,-114,fanduel,20261007T122329Z
+2caea57b1e5cfbba1334cfbfd46f6771,Green Bay Packers,Chicago Bears,2026-10-11T17:00:00Z,Colston Loveland,player_reception_yds,35.5,Under,-114,fanduel,20261007T122329Z
+2caea57b1e5cfbba1334cfbfd46f6771,Green Bay Packers,Chicago Bears,2026-10-11T17:00:00Z,Rome Odunze,player_reception_yds,38.5,Over,-114,fanduel,20261007T122329Z
+2caea57b1e5cfbba1334cfbfd46f6771,Green Bay Packers,Chicago Bears,2026-10-11T17:00:00Z,Rome Odunze,player_reception_yds,38.5,Under,-114,fanduel,20261007T122329Z
+2caea57b1e5cfbba1334cfbfd46f6771,Green Bay Packers,Chicago Bears,2026-10-11T17:00:00Z,D'Andre Swift,player_reception_yds,13.5,Over,-114,fanduel,20261007T122329Z
+2caea57b1e5cfbba1334cfbfd46f6771,Green Bay Packers,Chicago Bears,2026-10-11T17:00:00Z,D'Andre Swift,player_reception_yds,13.5,Under,-114,fanduel,20261007T122329Z
+2caea57b1e5cfbba1334cfbfd46f6771,Green Bay Packers,Chicago Bears,2026-10-11T17:00:00Z,Matthew Golden,player_reception_yds,55.5,Over,-114,fanduel,20261007T122329Z
+2caea57b1e5cfbba1334cfbfd46f6771,Green Bay Packers,Chicago Bears,2026-10-11T17:00:00Z,Matthew Golden,player_reception_yds,55.5,Under,-114,fanduel,20261007T122329Z
+2caea57b1e5cfbba1334cfbfd46f6771,Green Bay Packers,Chicago Bears,2026-10-11T17:00:00Z,Luther Burden III,player_reception_yds,48.5,Over,-114,fanduel,20261007T122329Z
+2caea57b1e5cfbba1334cfbfd46f6771,Green Bay Packers,Chicago Bears,2026-10-11T17:00:00Z,Luther Burden III,player_reception_yds,48.5,Under,-114,fanduel,20261007T122329Z
+2caea57b1e5cfbba1334cfbfd46f6771,Green Bay Packers,Chicago Bears,2026-10-11T17:00:00Z,Kalif Raymond,player_reception_yds,29.5,Over,-114,fanduel,20261007T122329Z
+2caea57b1e5cfbba1334cfbfd46f6771,Green Bay Packers,Chicago Bears,2026-10-11T17:00:00Z,Kalif Raymond,player_reception_yds,29.5,Under,-114,fanduel,20261007T122329Z
+2caea57b1e5cfbba1334cfbfd46f6771,Green Bay Packers,Chicago Bears,2026-10-11T17:00:00Z,Tucker Kraft,player_reception_yds,49.5,Over,-114,fanduel,20261007T122329Z
+2caea57b1e5cfbba1334cfbfd46f6771,Green Bay Packers,Chicago Bears,2026-10-11T17:00:00Z,Tucker Kraft,player_reception_yds,49.5,Under,-114,fanduel,20261007T122329Z
+2caea57b1e5cfbba1334cfbfd46f6771,Green Bay Packers,Chicago Bears,2026-10-11T17:00:00Z,Christian Watson,player_reception_yds,60.5,Over,-114,fanduel,20261007T122329Z
+2caea57b1e5cfbba1334cfbfd46f6771,Green Bay Packers,Chicago Bears,2026-10-11T17:00:00Z,Christian Watson,player_reception_yds,60.5,Under,-114,fanduel,20261007T122329Z
+2caea57b1e5cfbba1334cfbfd46f6771,Green Bay Packers,Chicago Bears,2026-10-11T17:00:00Z,Kalif Raymond,player_receptions,3.5,Over,114,fanduel,20261007T122329Z
+2caea57b1e5cfbba1334cfbfd46f6771,Green Bay Packers,Chicago Bears,2026-10-11T17:00:00Z,Kalif Raymond,player_receptions,3.5,Under,-152,fanduel,20261007T122329Z
+2caea57b1e5cfbba1334cfbfd46f6771,Green Bay Packers,Chicago Bears,2026-10-11T17:00:00Z,Tucker Kraft,player_receptions,4.5,Over,-114,fanduel,20261007T122329Z
+2caea57b1e5cfbba1334cfbfd46f6771,Green Bay Packers,Chicago Bears,2026-10-11T17:00:00Z,Tucker Kraft,player_receptions,4.5,Under,-114,fanduel,20261007T122329Z
+2caea57b1e5cfbba1334cfbfd46f6771,Green Bay Packers,Chicago Bears,2026-10-11T17:00:00Z,Christian Watson,player_receptions,4.5,Over,116,fanduel,20261007T122329Z
+2caea57b1e5cfbba1334cfbfd46f6771,Green Bay Packers,Chicago Bears,2026-10-11T17:00:00Z,Christian Watson,player_receptions,4.5,Under,-154,fanduel,20261007T122329Z
+2caea57b1e5cfbba1334cfbfd46f6771,Green Bay Packers,Chicago Bears,2026-10-11T17:00:00Z,Matthew Golden,player_receptions,4.5,Over,-114,fanduel,20261007T122329Z
+2caea57b1e5cfbba1334cfbfd46f6771,Green Bay Packers,Chicago Bears,2026-10-11T17:00:00Z,Matthew Golden,player_receptions,4.5,Under,-114,fanduel,20261007T122329Z
+2caea57b1e5cfbba1334cfbfd46f6771,Green Bay Packers,Chicago Bears,2026-10-11T17:00:00Z,D'Andre Swift,player_receptions,2.5,Over,148,fanduel,20261007T122329Z
+2caea57b1e5cfbba1334cfbfd46f6771,Green Bay Packers,Chicago Bears,2026-10-11T17:00:00Z,D'Andre Swift,player_receptions,2.5,Under,-200,fanduel,20261007T122329Z
+2caea57b1e5cfbba1334cfbfd46f6771,Green Bay Packers,Chicago Bears,2026-10-11T17:00:00Z,Colston Loveland,player_receptions,3.5,Over,-160,fanduel,20261007T122329Z
+2caea57b1e5cfbba1334cfbfd46f6771,Green Bay Packers,Chicago Bears,2026-10-11T17:00:00Z,Colston Loveland,player_receptions,3.5,Under,120,fanduel,20261007T122329Z
+2caea57b1e5cfbba1334cfbfd46f6771,Green Bay Packers,Chicago Bears,2026-10-11T17:00:00Z,Luther Burden III,player_receptions,4.5,Over,-128,fanduel,20261007T122329Z
+2caea57b1e5cfbba1334cfbfd46f6771,Green Bay Packers,Chicago Bears,2026-10-11T17:00:00Z,Luther Burden III,player_receptions,4.5,Under,-104,fanduel,20261007T122329Z
+2caea57b1e5cfbba1334cfbfd46f6771,Green Bay Packers,Chicago Bears,2026-10-11T17:00:00Z,Rome Odunze,player_receptions,2.5,Over,-182,fanduel,20261007T122329Z
+2caea57b1e5cfbba1334cfbfd46f6771,Green Bay Packers,Chicago Bears,2026-10-11T17:00:00Z,Rome Odunze,player_receptions,2.5,Under,136,fanduel,20261007T122329Z
+2caea57b1e5cfbba1334cfbfd46f6771,Green Bay Packers,Chicago Bears,2026-10-11T17:00:00Z,D'Andre Swift,player_rush_yds,61.5,Over,-114,fanduel,20261007T122329Z
+2caea57b1e5cfbba1334cfbfd46f6771,Green Bay Packers,Chicago Bears,2026-10-11T17:00:00Z,D'Andre Swift,player_rush_yds,61.5,Under,-114,fanduel,20261007T122329Z
+2caea57b1e5cfbba1334cfbfd46f6771,Green Bay Packers,Chicago Bears,2026-10-11T17:00:00Z,Christian Watson,player_anytime_td,,Yes,160,betonlineag,20261007T122329Z
+2caea57b1e5cfbba1334cfbfd46f6771,Green Bay Packers,Chicago Bears,2026-10-11T17:00:00Z,Colston Loveland,player_anytime_td,,Yes,180,betonlineag,20261007T122329Z
+2caea57b1e5cfbba1334cfbfd46f6771,Green Bay Packers,Chicago Bears,2026-10-11T17:00:00Z,Matthew Golden,player_anytime_td,,Yes,190,betonlineag,20261007T122329Z
+2caea57b1e5cfbba1334cfbfd46f6771,Green Bay Packers,Chicago Bears,2026-10-11T17:00:00Z,Jahdae Walker,player_anytime_td,,Yes,1400,betonlineag,20261007T122329Z
+2caea57b1e5cfbba1334cfbfd46f6771,Green Bay Packers,Chicago Bears,2026-10-11T17:00:00Z,Bo Melton,player_anytime_td,,Yes,1100,betonlineag,20261007T122329Z
+2caea57b1e5cfbba1334cfbfd46f6771,Green Bay Packers,Chicago Bears,2026-10-11T17:00:00Z,Sam Roush,player_anytime_td,,Yes,1100,betonlineag,20261007T122329Z
+2caea57b1e5cfbba1334cfbfd46f6771,Green Bay Packers,Chicago Bears,2026-10-11T17:00:00Z,Josh Whyle,player_anytime_td,,Yes,900,betonlineag,20261007T122329Z
+2caea57b1e5cfbba1334cfbfd46f6771,Green Bay Packers,Chicago Bears,2026-10-11T17:00:00Z,Mark Redman,player_anytime_td,,Yes,900,betonlineag,20261007T122329Z
+2caea57b1e5cfbba1334cfbfd46f6771,Green Bay Packers,Chicago Bears,2026-10-11T17:00:00Z,Zavion Thomas,player_anytime_td,,Yes,800,betonlineag,20261007T122329Z
+2caea57b1e5cfbba1334cfbfd46f6771,Green Bay Packers,Chicago Bears,2026-10-11T17:00:00Z,Jordan Love,player_anytime_td,,Yes,700,betonlineag,20261007T122329Z
+2caea57b1e5cfbba1334cfbfd46f6771,Green Bay Packers,Chicago Bears,2026-10-11T17:00:00Z,Jonnu Smith,player_anytime_td,,Yes,700,betonlineag,20261007T122329Z
+2caea57b1e5cfbba1334cfbfd46f6771,Green Bay Packers,Chicago Bears,2026-10-11T17:00:00Z,Chris Brooks,player_anytime_td,,Yes,450,betonlineag,20261007T122329Z
+2caea57b1e5cfbba1334cfbfd46f6771,Green Bay Packers,Chicago Bears,2026-10-11T17:00:00Z,Skyy Moore,player_anytime_td,,Yes,450,betonlineag,20261007T122329Z
+2caea57b1e5cfbba1334cfbfd46f6771,Green Bay Packers,Chicago Bears,2026-10-11T17:00:00Z,Roschon Johnson,player_anytime_td,,Yes,450,betonlineag,20261007T122329Z
+2caea57b1e5cfbba1334cfbfd46f6771,Green Bay Packers,Chicago Bears,2026-10-11T17:00:00Z,Tyson Bagent,player_anytime_td,,Yes,450,betonlineag,20261007T122329Z
+2caea57b1e5cfbba1334cfbfd46f6771,Green Bay Packers,Chicago Bears,2026-10-11T17:00:00Z,Cole Kmet,player_anytime_td,,Yes,350,betonlineag,20261007T122329Z
+2caea57b1e5cfbba1334cfbfd46f6771,Green Bay Packers,Chicago Bears,2026-10-11T17:00:00Z,Kalif Raymond,player_anytime_td,,Yes,290,betonlineag,20261007T122329Z
+2caea57b1e5cfbba1334cfbfd46f6771,Green Bay Packers,Chicago Bears,2026-10-11T17:00:00Z,Rome Odunze,player_anytime_td,,Yes,180,betonlineag,20261007T122329Z
+2caea57b1e5cfbba1334cfbfd46f6771,Green Bay Packers,Chicago Bears,2026-10-11T17:00:00Z,Luther Burden III,player_anytime_td,,Yes,180,betonlineag,20261007T122329Z
+2caea57b1e5cfbba1334cfbfd46f6771,Green Bay Packers,Chicago Bears,2026-10-11T17:00:00Z,Tucker Kraft,player_anytime_td,,Yes,190,betonlineag,20261007T122329Z
+2caea57b1e5cfbba1334cfbfd46f6771,Green Bay Packers,Chicago Bears,2026-10-11T17:00:00Z,MarShawn Lloyd,player_anytime_td,,Yes,110,betonlineag,20261007T122329Z
+2caea57b1e5cfbba1334cfbfd46f6771,Green Bay Packers,Chicago Bears,2026-10-11T17:00:00Z,Kaleb Johnson,player_anytime_td,,Yes,140,betonlineag,20261007T122329Z
+2caea57b1e5cfbba1334cfbfd46f6771,Green Bay Packers,Chicago Bears,2026-10-11T17:00:00Z,Kyle Monangai,player_anytime_td,,Yes,100,betonlineag,20261007T122329Z
+2caea57b1e5cfbba1334cfbfd46f6771,Green Bay Packers,Chicago Bears,2026-10-11T17:00:00Z,D'Andre Swift,player_anytime_td,,Yes,-125,betonlineag,20261007T122329Z
+2caea57b1e5cfbba1334cfbfd46f6771,Green Bay Packers,Chicago Bears,2026-10-11T17:00:00Z,Jordan Love,player_pass_tds,1.5,Over,118,betonlineag,20261007T122329Z
+2caea57b1e5cfbba1334cfbfd46f6771,Green Bay Packers,Chicago Bears,2026-10-11T17:00:00Z,Jordan Love,player_pass_tds,1.5,Under,-154,betonlineag,20261007T122329Z
+2caea57b1e5cfbba1334cfbfd46f6771,Green Bay Packers,Chicago Bears,2026-10-11T17:00:00Z,Tyson Bagent,player_pass_tds,1.5,Over,100,betonlineag,20261007T122329Z
+2caea57b1e5cfbba1334cfbfd46f6771,Green Bay Packers,Chicago Bears,2026-10-11T17:00:00Z,Tyson Bagent,player_pass_tds,1.5,Under,-130,betonlineag,20261007T122329Z
+2caea57b1e5cfbba1334cfbfd46f6771,Green Bay Packers,Chicago Bears,2026-10-11T17:00:00Z,Tyson Bagent,player_pass_yds,219.5,Over,-114,betonlineag,20261007T122329Z
+2caea57b1e5cfbba1334cfbfd46f6771,Green Bay Packers,Chicago Bears,2026-10-11T17:00:00Z,Tyson Bagent,player_pass_yds,219.5,Under,-114,betonlineag,20261007T122329Z
+2caea57b1e5cfbba1334cfbfd46f6771,Green Bay Packers,Chicago Bears,2026-10-11T17:00:00Z,Jordan Love,player_pass_yds,233.5,Over,-114,betonlineag,20261007T122329Z
+2caea57b1e5cfbba1334cfbfd46f6771,Green Bay Packers,Chicago Bears,2026-10-11T17:00:00Z,Jordan Love,player_pass_yds,233.5,Under,-114,betonlineag,20261007T122329Z
+2caea57b1e5cfbba1334cfbfd46f6771,Green Bay Packers,Chicago Bears,2026-10-11T17:00:00Z,Roschon Johnson,player_anytime_td,,Yes,500,betrivers,20261007T122329Z
+2caea57b1e5cfbba1334cfbfd46f6771,Green Bay Packers,Chicago Bears,2026-10-11T17:00:00Z,Chris Brooks,player_anytime_td,,Yes,335,betrivers,20261007T122329Z
+2caea57b1e5cfbba1334cfbfd46f6771,Green Bay Packers,Chicago Bears,2026-10-11T17:00:00Z,Christian Watson,player_anytime_td,,Yes,200,betrivers,20261007T122329Z
+2caea57b1e5cfbba1334cfbfd46f6771,Green Bay Packers,Chicago Bears,2026-10-11T17:00:00Z,Cole Kmet,player_anytime_td,,Yes,575,betrivers,20261007T122329Z
+2caea57b1e5cfbba1334cfbfd46f6771,Green Bay Packers,Chicago Bears,2026-10-11T17:00:00Z,Luther Burden III,player_anytime_td,,Yes,215,betrivers,20261007T122329Z
+2caea57b1e5cfbba1334cfbfd46f6771,Green Bay Packers,Chicago Bears,2026-10-11T17:00:00Z,MarShawn Lloyd,player_anytime_td,,Yes,138,betrivers,20261007T122329Z
+2caea57b1e5cfbba1334cfbfd46f6771,Green Bay Packers,Chicago Bears,2026-10-11T17:00:00Z,Tucker Kraft,player_anytime_td,,Yes,210,betrivers,20261007T122329Z
+2caea57b1e5cfbba1334cfbfd46f6771,Green Bay Packers,Chicago Bears,2026-10-11T17:00:00Z,J. Michael Sturdivant,player_anytime_td,,Yes,1600,betrivers,20261007T122329Z
+2caea57b1e5cfbba1334cfbfd46f6771,Green Bay Packers,Chicago Bears,2026-10-11T17:00:00Z,Matthew Golden,player_anytime_td,,Yes,240,betrivers,20261007T122329Z
+2caea57b1e5cfbba1334cfbfd46f6771,Green Bay Packers,Chicago Bears,2026-10-11T17:00:00Z,Josh Whyle,player_anytime_td,,Yes,1100,betrivers,20261007T122329Z
+2caea57b1e5cfbba1334cfbfd46f6771,Green Bay Packers,Chicago Bears,2026-10-11T17:00:00Z,Colston Loveland,player_anytime_td,,Yes,215,betrivers,20261007T122329Z
+2caea57b1e5cfbba1334cfbfd46f6771,Green Bay Packers,Chicago Bears,2026-10-11T17:00:00Z,Jahdae Walker,player_anytime_td,,Yes,1700,betrivers,20261007T122329Z
+2caea57b1e5cfbba1334cfbfd46f6771,Green Bay Packers,Chicago Bears,2026-10-11T17:00:00Z,Jonnu Smith,player_anytime_td,,Yes,800,betrivers,20261007T122329Z
+2caea57b1e5cfbba1334cfbfd46f6771,Green Bay Packers,Chicago Bears,2026-10-11T17:00:00Z,Sam Roush,player_anytime_td,,Yes,1800,betrivers,20261007T122329Z
+2caea57b1e5cfbba1334cfbfd46f6771,Green Bay Packers,Chicago Bears,2026-10-11T17:00:00Z,Jordan Love,player_anytime_td,,Yes,900,betrivers,20261007T122329Z
+2caea57b1e5cfbba1334cfbfd46f6771,Green Bay Packers,Chicago Bears,2026-10-11T17:00:00Z,Bo Melton,player_anytime_td,,Yes,1400,betrivers,20261007T122329Z
+2caea57b1e5cfbba1334cfbfd46f6771,Green Bay Packers,Chicago Bears,2026-10-11T17:00:00Z,Kalif Raymond,player_anytime_td,,Yes,430,betrivers,20261007T122329Z
+2caea57b1e5cfbba1334cfbfd46f6771,Green Bay Packers,Chicago Bears,2026-10-11T17:00:00Z,Rome Odunze,player_anytime_td,,Yes,235,betrivers,20261007T122329Z
+2caea57b1e5cfbba1334cfbfd46f6771,Green Bay Packers,Chicago Bears,2026-10-11T17:00:00Z,Zavion Thomas,player_anytime_td,,Yes,1100,betrivers,20261007T122329Z
+2caea57b1e5cfbba1334cfbfd46f6771,Green Bay Packers,Chicago Bears,2026-10-11T17:00:00Z,Kyle Monangai,player_anytime_td,,Yes,148,betrivers,20261007T122329Z
+2caea57b1e5cfbba1334cfbfd46f6771,Green Bay Packers,Chicago Bears,2026-10-11T17:00:00Z,Mark Redman,player_anytime_td,,Yes,1100,betrivers,20261007T122329Z
+2caea57b1e5cfbba1334cfbfd46f6771,Green Bay Packers,Chicago Bears,2026-10-11T17:00:00Z,Tyson Bagent,player_anytime_td,,Yes,525,betrivers,20261007T122329Z
+2caea57b1e5cfbba1334cfbfd46f6771,Green Bay Packers,Chicago Bears,2026-10-11T17:00:00Z,Skyy Moore,player_anytime_td,,Yes,480,betrivers,20261007T122329Z
+2caea57b1e5cfbba1334cfbfd46f6771,Green Bay Packers,Chicago Bears,2026-10-11T17:00:00Z,D'Andre Swift,player_anytime_td,,Yes,-106,betrivers,20261007T122329Z
+2caea57b1e5cfbba1334cfbfd46f6771,Green Bay Packers,Chicago Bears,2026-10-11T17:00:00Z,Kaleb Johnson,player_anytime_td,,Yes,185,betrivers,20261007T122329Z
+2caea57b1e5cfbba1334cfbfd46f6771,Green Bay Packers,Chicago Bears,2026-10-11T17:00:00Z,Tyson Bagent,player_pass_tds,1.5,Over,106,betrivers,20261007T122329Z
+2caea57b1e5cfbba1334cfbfd46f6771,Green Bay Packers,Chicago Bears,2026-10-11T17:00:00Z,Tyson Bagent,player_pass_tds,1.5,Under,-141,betrivers,20261007T122329Z
+2caea57b1e5cfbba1334cfbfd46f6771,Green Bay Packers,Chicago Bears,2026-10-11T17:00:00Z,Jordan Love,player_pass_tds,1.5,Over,117,betrivers,20261007T122329Z
+2caea57b1e5cfbba1334cfbfd46f6771,Green Bay Packers,Chicago Bears,2026-10-11T17:00:00Z,Jordan Love,player_pass_tds,1.5,Under,-157,betrivers,20261007T122329Z
+2caea57b1e5cfbba1334cfbfd46f6771,Green Bay Packers,Chicago Bears,2026-10-11T17:00:00Z,Tyson Bagent,player_pass_yds,216.5,Over,-117,betrivers,20261007T122329Z
+2caea57b1e5cfbba1334cfbfd46f6771,Green Bay Packers,Chicago Bears,2026-10-11T17:00:00Z,Tyson Bagent,player_pass_yds,216.5,Under,-114,betrivers,20261007T122329Z
+2caea57b1e5cfbba1334cfbfd46f6771,Green Bay Packers,Chicago Bears,2026-10-11T17:00:00Z,Jordan Love,player_pass_yds,233.5,Over,-117,betrivers,20261007T122329Z
+2caea57b1e5cfbba1334cfbfd46f6771,Green Bay Packers,Chicago Bears,2026-10-11T17:00:00Z,Jordan Love,player_pass_yds,233.5,Under,-114,betrivers,20261007T122329Z
+2caea57b1e5cfbba1334cfbfd46f6771,Green Bay Packers,Chicago Bears,2026-10-11T17:00:00Z,Kalif Raymond,player_anytime_td,,Yes,380,bovada,20261007T122329Z
+2caea57b1e5cfbba1334cfbfd46f6771,Green Bay Packers,Chicago Bears,2026-10-11T17:00:00Z,Cole Kmet,player_anytime_td,,Yes,500,bovada,20261007T122329Z
+2caea57b1e5cfbba1334cfbfd46f6771,Green Bay Packers,Chicago Bears,2026-10-11T17:00:00Z,Luther Burden III,player_anytime_td,,Yes,220,bovada,20261007T122329Z
+2caea57b1e5cfbba1334cfbfd46f6771,Green Bay Packers,Chicago Bears,2026-10-11T17:00:00Z,Rome Odunze,player_anytime_td,,Yes,220,bovada,20261007T122329Z
+2caea57b1e5cfbba1334cfbfd46f6771,Green Bay Packers,Chicago Bears,2026-10-11T17:00:00Z,Sam Roush,player_anytime_td,,Yes,1700,bovada,20261007T122329Z
+2caea57b1e5cfbba1334cfbfd46f6771,Green Bay Packers,Chicago Bears,2026-10-11T17:00:00Z,Kyle Monangai,player_anytime_td,,Yes,125,bovada,20261007T122329Z
+2caea57b1e5cfbba1334cfbfd46f6771,Green Bay Packers,Chicago Bears,2026-10-11T17:00:00Z,D'Andre Swift,player_anytime_td,,Yes,110,bovada,20261007T122329Z
+2caea57b1e5cfbba1334cfbfd46f6771,Green Bay Packers,Chicago Bears,2026-10-11T17:00:00Z,Tyson Bagent,player_anytime_td,,Yes,525,bovada,20261007T122329Z
+2caea57b1e5cfbba1334cfbfd46f6771,Green Bay Packers,Chicago Bears,2026-10-11T17:00:00Z,Christian Watson,player_anytime_td,,Yes,205,bovada,20261007T122329Z
+2caea57b1e5cfbba1334cfbfd46f6771,Green Bay Packers,Chicago Bears,2026-10-11T17:00:00Z,Colston Loveland,player_anytime_td,,Yes,240,bovada,20261007T122329Z
+2caea57b1e5cfbba1334cfbfd46f6771,Green Bay Packers,Chicago Bears,2026-10-11T17:00:00Z,Matthew Golden,player_anytime_td,,Yes,235,bovada,20261007T122329Z
+2caea57b1e5cfbba1334cfbfd46f6771,Green Bay Packers,Chicago Bears,2026-10-11T17:00:00Z,Green Bay Packers D/ST,player_anytime_td,,Yes,600,bovada,20261007T122329Z
+2caea57b1e5cfbba1334cfbfd46f6771,Green Bay Packers,Chicago Bears,2026-10-11T17:00:00Z,Chicago Bears D/ST,player_anytime_td,,Yes,500,bovada,20261007T122329Z
+2caea57b1e5cfbba1334cfbfd46f6771,Green Bay Packers,Chicago Bears,2026-10-11T17:00:00Z,Skyy Moore,player_anytime_td,,Yes,500,bovada,20261007T122329Z
+2caea57b1e5cfbba1334cfbfd46f6771,Green Bay Packers,Chicago Bears,2026-10-11T17:00:00Z,Jonnu Smith,player_anytime_td,,Yes,900,bovada,20261007T122329Z
+2caea57b1e5cfbba1334cfbfd46f6771,Green Bay Packers,Chicago Bears,2026-10-11T17:00:00Z,Tucker Kraft,player_anytime_td,,Yes,225,bovada,20261007T122329Z
+2caea57b1e5cfbba1334cfbfd46f6771,Green Bay Packers,Chicago Bears,2026-10-11T17:00:00Z,Kaleb Johnson,player_anytime_td,,Yes,185,bovada,20261007T122329Z
+2caea57b1e5cfbba1334cfbfd46f6771,Green Bay Packers,Chicago Bears,2026-10-11T17:00:00Z,MarShawn Lloyd,player_anytime_td,,Yes,160,bovada,20261007T122329Z
+2caea57b1e5cfbba1334cfbfd46f6771,Green Bay Packers,Chicago Bears,2026-10-11T17:00:00Z,Jordan Love,player_anytime_td,,Yes,800,bovada,20261007T122329Z
+2caea57b1e5cfbba1334cfbfd46f6771,Green Bay Packers,Chicago Bears,2026-10-11T17:00:00Z,Bo Melton,player_anytime_td,,Yes,1600,bovada,20261007T122329Z
+2caea57b1e5cfbba1334cfbfd46f6771,Green Bay Packers,Chicago Bears,2026-10-11T17:00:00Z,Chris Brooks,player_anytime_td,,Yes,525,bovada,20261007T122329Z
+2caea57b1e5cfbba1334cfbfd46f6771,Green Bay Packers,Chicago Bears,2026-10-11T17:00:00Z,Jordan Love,player_pass_tds,1.5,Over,115,bovada,20261007T122329Z
+2caea57b1e5cfbba1334cfbfd46f6771,Green Bay Packers,Chicago Bears,2026-10-11T17:00:00Z,Jordan Love,player_pass_tds,1.5,Under,-150,bovada,20261007T122329Z
+2caea57b1e5cfbba1334cfbfd46f6771,Green Bay Packers,Chicago Bears,2026-10-11T17:00:00Z,Tyson Bagent,player_pass_tds,1.5,Over,100,bovada,20261007T122329Z
+2caea57b1e5cfbba1334cfbfd46f6771,Green Bay Packers,Chicago Bears,2026-10-11T17:00:00Z,Tyson Bagent,player_pass_tds,1.5,Under,-130,bovada,20261007T122329Z
+2caea57b1e5cfbba1334cfbfd46f6771,Green Bay Packers,Chicago Bears,2026-10-11T17:00:00Z,Jordan Love,player_pass_yds,231.5,Over,-115,bovada,20261007T122329Z
+2caea57b1e5cfbba1334cfbfd46f6771,Green Bay Packers,Chicago Bears,2026-10-11T17:00:00Z,Jordan Love,player_pass_yds,231.5,Under,-115,bovada,20261007T122329Z
+2caea57b1e5cfbba1334cfbfd46f6771,Green Bay Packers,Chicago Bears,2026-10-11T17:00:00Z,Tyson Bagent,player_pass_yds,219.5,Over,-115,bovada,20261007T122329Z
+2caea57b1e5cfbba1334cfbfd46f6771,Green Bay Packers,Chicago Bears,2026-10-11T17:00:00Z,Tyson Bagent,player_pass_yds,219.5,Under,-115,bovada,20261007T122329Z
+c4647ca1201e6768501877267ca8251b,Miami Dolphins,Cincinnati Bengals,2026-10-11T17:00:00Z,Chase Brown,player_anytime_td,,Yes,-155,draftkings,20261007T122329Z
+c4647ca1201e6768501877267ca8251b,Miami Dolphins,Cincinnati Bengals,2026-10-11T17:00:00Z,Ollie Gordon II,player_anytime_td,,Yes,140,draftkings,20261007T122329Z
+c4647ca1201e6768501877267ca8251b,Miami Dolphins,Cincinnati Bengals,2026-10-11T17:00:00Z,Ollie Gordon II,player_anytime_td,,Yes,130,betonlineag,20261007T122329Z
+c4647ca1201e6768501877267ca8251b,Miami Dolphins,Cincinnati Bengals,2026-10-11T17:00:00Z,Chase Brown,player_anytime_td,,Yes,-167,betonlineag,20261007T122329Z
+c4647ca1201e6768501877267ca8251b,Miami Dolphins,Cincinnati Bengals,2026-10-11T17:00:00Z,Seydou Traore,player_anytime_td,,Yes,2400,betonlineag,20261007T122329Z
+c4647ca1201e6768501877267ca8251b,Miami Dolphins,Cincinnati Bengals,2026-10-11T17:00:00Z,Justin Joly,player_anytime_td,,Yes,2400,betonlineag,20261007T122329Z
+c4647ca1201e6768501877267ca8251b,Miami Dolphins,Cincinnati Bengals,2026-10-11T17:00:00Z,Tanner Hudson,player_anytime_td,,Yes,1300,betonlineag,20261007T122329Z
+c4647ca1201e6768501877267ca8251b,Miami Dolphins,Cincinnati Bengals,2026-10-11T17:00:00Z,Jalen Tolbert,player_anytime_td,,Yes,900,betonlineag,20261007T122329Z
+c4647ca1201e6768501877267ca8251b,Miami Dolphins,Cincinnati Bengals,2026-10-11T17:00:00Z,Will Kacmarek,player_anytime_td,,Yes,1100,betonlineag,20261007T122329Z
+c4647ca1201e6768501877267ca8251b,Miami Dolphins,Cincinnati Bengals,2026-10-11T17:00:00Z,Ryan Miller,player_anytime_td,,Yes,1100,betonlineag,20261007T122329Z
+c4647ca1201e6768501877267ca8251b,Miami Dolphins,Cincinnati Bengals,2026-10-11T17:00:00Z,Jack Endries,player_anytime_td,,Yes,1400,betonlineag,20261007T122329Z
+c4647ca1201e6768501877267ca8251b,Miami Dolphins,Cincinnati Bengals,2026-10-11T17:00:00Z,Tahj Brooks,player_anytime_td,,Yes,1100,betonlineag,20261007T122329Z
+c4647ca1201e6768501877267ca8251b,Miami Dolphins,Cincinnati Bengals,2026-10-11T17:00:00Z,Kevin Coleman Jr.,player_anytime_td,,Yes,900,betonlineag,20261007T122329Z
+c4647ca1201e6768501877267ca8251b,Miami Dolphins,Cincinnati Bengals,2026-10-11T17:00:00Z,Colbie Young,player_anytime_td,,Yes,750,betonlineag,20261007T122329Z
+c4647ca1201e6768501877267ca8251b,Miami Dolphins,Cincinnati Bengals,2026-10-11T17:00:00Z,Joe Burrow,player_anytime_td,,Yes,500,betonlineag,20261007T122329Z
+c4647ca1201e6768501877267ca8251b,Miami Dolphins,Cincinnati Bengals,2026-10-11T17:00:00Z,Drew Sample,player_anytime_td,,Yes,650,betonlineag,20261007T122329Z
+c4647ca1201e6768501877267ca8251b,Miami Dolphins,Cincinnati Bengals,2026-10-11T17:00:00Z,Erick All,player_anytime_td,,Yes,550,betonlineag,20261007T122329Z
+c4647ca1201e6768501877267ca8251b,Miami Dolphins,Cincinnati Bengals,2026-10-11T17:00:00Z,Caleb Douglas,player_anytime_td,,Yes,400,betonlineag,20261007T122329Z
+c4647ca1201e6768501877267ca8251b,Miami Dolphins,Cincinnati Bengals,2026-10-11T17:00:00Z,Mitchell Tinsley,player_anytime_td,,Yes,450,betonlineag,20261007T122329Z
+c4647ca1201e6768501877267ca8251b,Miami Dolphins,Cincinnati Bengals,2026-10-11T17:00:00Z,Greg Dulcich,player_anytime_td,,Yes,325,betonlineag,20261007T122329Z
+c4647ca1201e6768501877267ca8251b,Miami Dolphins,Cincinnati Bengals,2026-10-11T17:00:00Z,Dohnte Meyers,player_anytime_td,,Yes,210,betonlineag,20261007T122329Z
+c4647ca1201e6768501877267ca8251b,Miami Dolphins,Cincinnati Bengals,2026-10-11T17:00:00Z,Samaje Perine,player_anytime_td,,Yes,270,betonlineag,20261007T122329Z
+c4647ca1201e6768501877267ca8251b,Miami Dolphins,Cincinnati Bengals,2026-10-11T17:00:00Z,Chris Bell,player_anytime_td,,Yes,290,betonlineag,20261007T122329Z
+c4647ca1201e6768501877267ca8251b,Miami Dolphins,Cincinnati Bengals,2026-10-11T17:00:00Z,Malik Washington,player_anytime_td,,Yes,240,betonlineag,20261007T122329Z
+c4647ca1201e6768501877267ca8251b,Miami Dolphins,Cincinnati Bengals,2026-10-11T17:00:00Z,Jaylen Wright,player_anytime_td,,Yes,290,betonlineag,20261007T122329Z
+c4647ca1201e6768501877267ca8251b,Miami Dolphins,Cincinnati Bengals,2026-10-11T17:00:00Z,Malik Willis,player_anytime_td,,Yes,300,betonlineag,20261007T122329Z
+c4647ca1201e6768501877267ca8251b,Miami Dolphins,Cincinnati Bengals,2026-10-11T17:00:00Z,Mike Gesicki,player_anytime_td,,Yes,180,betonlineag,20261007T122329Z
+c4647ca1201e6768501877267ca8251b,Miami Dolphins,Cincinnati Bengals,2026-10-11T17:00:00Z,Tee Higgins,player_anytime_td,,Yes,-125,betonlineag,20261007T122329Z
+c4647ca1201e6768501877267ca8251b,Miami Dolphins,Cincinnati Bengals,2026-10-11T17:00:00Z,Ja'Marr Chase,player_anytime_td,,Yes,-125,betonlineag,20261007T122329Z
+c4647ca1201e6768501877267ca8251b,Miami Dolphins,Cincinnati Bengals,2026-10-11T17:00:00Z,Ollie Gordon II,player_anytime_td,,Yes,140,bovada,20261007T122329Z
+c4647ca1201e6768501877267ca8251b,Miami Dolphins,Cincinnati Bengals,2026-10-11T17:00:00Z,Chase Brown,player_anytime_td,,Yes,-157,bovada,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Braelon Allen,player_anytime_td,,Yes,-105,draftkings,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Quinshon Judkins,player_anytime_td,,Yes,140,draftkings,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Garrett Wilson,player_anytime_td,,Yes,145,draftkings,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Kenyon Sadiq,player_anytime_td,,Yes,205,draftkings,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Denzel Boston,player_anytime_td,,Yes,210,draftkings,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Harold Fannin Jr.,player_anytime_td,,Yes,220,draftkings,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,KC Concepcion,player_anytime_td,,Yes,310,draftkings,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Deshaun Watson,player_anytime_td,,Yes,370,draftkings,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Isaiah Williams,player_anytime_td,,Yes,400,draftkings,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,New York Jets D/ST,player_anytime_td,,Yes,500,draftkings,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Isaiah Davis,player_anytime_td,,Yes,500,draftkings,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Cleveland Browns D/ST,player_anytime_td,,Yes,550,draftkings,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Jeremy Ruckert,player_anytime_td,,Yes,650,draftkings,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Jerry Jeudy,player_anytime_td,,Yes,700,draftkings,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Raheim Sanders,player_anytime_td,,Yes,700,draftkings,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Geno Smith,player_anytime_td,,Yes,850,draftkings,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Blake Whiteheart,player_anytime_td,,Yes,1000,draftkings,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Jelani Woods,player_anytime_td,,Yes,1700,draftkings,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Jaleel McLaughlin,player_anytime_td,,Yes,1800,draftkings,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Malachi Corley,player_anytime_td,,Yes,1800,draftkings,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Kene Nwangwu,player_anytime_td,,Yes,2000,draftkings,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Malik McClain,player_anytime_td,,Yes,2000,draftkings,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Isaiah Bond,player_anytime_td,,Yes,2200,draftkings,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Jamaal Pritchett,player_anytime_td,,Yes,2500,draftkings,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Michael Burton,player_anytime_td,,Yes,3000,draftkings,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Andrew Beck,player_anytime_td,,Yes,4000,draftkings,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Carsen Ryan,player_anytime_td,,Yes,4500,draftkings,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Geno Smith,player_pass_tds,1.5,Over,139,draftkings,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Geno Smith,player_pass_tds,1.5,Under,-178,draftkings,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Deshaun Watson,player_pass_tds,1.5,Over,150,draftkings,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Deshaun Watson,player_pass_tds,1.5,Under,-192,draftkings,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Geno Smith,player_pass_yds,206.5,Over,-113,draftkings,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Geno Smith,player_pass_yds,206.5,Under,-111,draftkings,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Deshaun Watson,player_pass_yds,201.5,Over,-112,draftkings,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Deshaun Watson,player_pass_yds,201.5,Under,-112,draftkings,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Garrett Wilson,player_reception_yds,71.5,Over,-110,draftkings,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Garrett Wilson,player_reception_yds,71.5,Under,-114,draftkings,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Denzel Boston,player_reception_yds,47.5,Over,-112,draftkings,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Denzel Boston,player_reception_yds,47.5,Under,-112,draftkings,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,KC Concepcion,player_reception_yds,39.5,Over,-110,draftkings,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,KC Concepcion,player_reception_yds,39.5,Under,-115,draftkings,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Harold Fannin Jr.,player_reception_yds,36.5,Over,-111,draftkings,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Harold Fannin Jr.,player_reception_yds,36.5,Under,-113,draftkings,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Garrett Wilson,player_receptions,6.5,Over,110,draftkings,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Garrett Wilson,player_receptions,6.5,Under,-141,draftkings,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,KC Concepcion,player_receptions,4.5,Over,112,draftkings,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,KC Concepcion,player_receptions,4.5,Under,-143,draftkings,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Harold Fannin Jr.,player_receptions,4.5,Over,123,draftkings,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Harold Fannin Jr.,player_receptions,4.5,Under,-157,draftkings,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Denzel Boston,player_receptions,3.5,Over,106,draftkings,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Denzel Boston,player_receptions,3.5,Under,-135,draftkings,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Braelon Allen,player_rush_yds,69.5,Over,-110,draftkings,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Braelon Allen,player_rush_yds,69.5,Under,-114,draftkings,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Quinshon Judkins,player_rush_yds,58.5,Over,-110,draftkings,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Quinshon Judkins,player_rush_yds,58.5,Under,-114,draftkings,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Deshaun Watson,player_rush_yds,25.5,Over,-115,draftkings,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Deshaun Watson,player_rush_yds,25.5,Under,-109,draftkings,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Geno Smith,player_rush_yds,10.5,Over,-108,draftkings,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Geno Smith,player_rush_yds,10.5,Under,-116,draftkings,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Isaiah Davis,player_rush_yds,9.5,Over,-113,draftkings,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Isaiah Davis,player_rush_yds,9.5,Under,-111,draftkings,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Braelon Allen,player_anytime_td,,Yes,-105,fanduel,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Quinshon Judkins,player_anytime_td,,Yes,135,fanduel,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Garrett Wilson,player_anytime_td,,Yes,145,fanduel,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Denzel Boston,player_anytime_td,,Yes,200,fanduel,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Kenyon Sadiq,player_anytime_td,,Yes,210,fanduel,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Harold Fannin Jr.,player_anytime_td,,Yes,220,fanduel,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,KC Concepcion,player_anytime_td,,Yes,320,fanduel,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Deshaun Watson,player_anytime_td,,Yes,380,fanduel,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Isaiah Williams,player_anytime_td,,Yes,410,fanduel,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Isaiah Davis,player_anytime_td,,Yes,500,fanduel,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Cleveland Browns Defense,player_anytime_td,,Yes,650,fanduel,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Raheim Sanders,player_anytime_td,,Yes,700,fanduel,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Jerry Jeudy,player_anytime_td,,Yes,700,fanduel,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Jeremy Ruckert,player_anytime_td,,Yes,700,fanduel,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,New York Jets Defense,player_anytime_td,,Yes,700,fanduel,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Geno Smith,player_anytime_td,,Yes,800,fanduel,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Blake Whiteheart,player_anytime_td,,Yes,950,fanduel,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Jelani Woods,player_anytime_td,,Yes,1600,fanduel,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Jaleel McLaughlin,player_anytime_td,,Yes,1700,fanduel,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Malachi Corley,player_anytime_td,,Yes,1900,fanduel,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Malik McClain,player_anytime_td,,Yes,1900,fanduel,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Isaiah Bond,player_anytime_td,,Yes,2000,fanduel,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Kene Nwangwu,player_anytime_td,,Yes,2500,fanduel,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Jamaal Pritchett,player_anytime_td,,Yes,2700,fanduel,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Michael Burton,player_anytime_td,,Yes,3500,fanduel,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Carsen Ryan,player_anytime_td,,Yes,4500,fanduel,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Deshaun Watson,player_pass_tds,1.5,Over,148,fanduel,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Deshaun Watson,player_pass_tds,1.5,Under,-200,fanduel,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Geno Smith,player_pass_tds,1.5,Over,142,fanduel,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Geno Smith,player_pass_tds,1.5,Under,-192,fanduel,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Geno Smith,player_pass_yds,206.5,Over,-114,fanduel,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Geno Smith,player_pass_yds,206.5,Under,-114,fanduel,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Deshaun Watson,player_pass_yds,203.5,Over,-114,fanduel,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Deshaun Watson,player_pass_yds,203.5,Under,-114,fanduel,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,KC Concepcion,player_reception_yds,37.5,Over,-114,fanduel,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,KC Concepcion,player_reception_yds,37.5,Under,-114,fanduel,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Harold Fannin Jr.,player_reception_yds,35.5,Over,-114,fanduel,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Harold Fannin Jr.,player_reception_yds,35.5,Under,-114,fanduel,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Garrett Wilson,player_reception_yds,68.5,Over,-114,fanduel,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Garrett Wilson,player_reception_yds,68.5,Under,-114,fanduel,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Denzel Boston,player_reception_yds,47.5,Over,-114,fanduel,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Denzel Boston,player_reception_yds,47.5,Under,-114,fanduel,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Harold Fannin Jr.,player_receptions,4.5,Over,118,fanduel,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Harold Fannin Jr.,player_receptions,4.5,Under,-158,fanduel,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Garrett Wilson,player_receptions,6.5,Over,-106,fanduel,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Garrett Wilson,player_receptions,6.5,Under,-125,fanduel,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Denzel Boston,player_receptions,3.5,Over,108,fanduel,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Denzel Boston,player_receptions,3.5,Under,-144,fanduel,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,KC Concepcion,player_receptions,4.5,Over,124,fanduel,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,KC Concepcion,player_receptions,4.5,Under,-166,fanduel,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Geno Smith,player_rush_yds,10.5,Over,-114,fanduel,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Geno Smith,player_rush_yds,10.5,Under,-114,fanduel,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Deshaun Watson,player_rush_yds,26.5,Over,-114,fanduel,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Deshaun Watson,player_rush_yds,26.5,Under,-114,fanduel,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Isaiah Davis,player_rush_yds,10.5,Over,-114,fanduel,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Isaiah Davis,player_rush_yds,10.5,Under,-114,fanduel,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Braelon Allen,player_rush_yds,69.5,Over,-114,fanduel,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Braelon Allen,player_rush_yds,69.5,Under,-114,fanduel,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Quinshon Judkins,player_rush_yds,59.5,Over,-114,fanduel,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Quinshon Judkins,player_rush_yds,59.5,Under,-114,fanduel,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Garrett Wilson,player_anytime_td,,Yes,120,betonlineag,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Quinshon Judkins,player_anytime_td,,Yes,120,betonlineag,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Braelon Allen,player_anytime_td,,Yes,-125,betonlineag,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Malachi Corley,player_anytime_td,,Yes,1700,betonlineag,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Carsen Ryan,player_anytime_td,,Yes,2900,betonlineag,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Michael Burton,player_anytime_td,,Yes,2900,betonlineag,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Jamaal Pritchett,player_anytime_td,,Yes,1900,betonlineag,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Isaiah Bond,player_anytime_td,,Yes,1400,betonlineag,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Kene Nwangwu,player_anytime_td,,Yes,1900,betonlineag,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Jelani Woods,player_anytime_td,,Yes,1400,betonlineag,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Jaleel McLaughlin,player_anytime_td,,Yes,800,betonlineag,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Malik McClain,player_anytime_td,,Yes,1100,betonlineag,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Raheim Sanders,player_anytime_td,,Yes,550,betonlineag,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Jerry Jeudy,player_anytime_td,,Yes,550,betonlineag,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Blake Whiteheart,player_anytime_td,,Yes,800,betonlineag,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Geno Smith,player_anytime_td,,Yes,550,betonlineag,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Jeremy Ruckert,player_anytime_td,,Yes,550,betonlineag,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Isaiah Davis,player_anytime_td,,Yes,300,betonlineag,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Isaiah Williams,player_anytime_td,,Yes,400,betonlineag,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Deshaun Watson,player_anytime_td,,Yes,300,betonlineag,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,KC Concepcion,player_anytime_td,,Yes,300,betonlineag,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Harold Fannin Jr.,player_anytime_td,,Yes,190,betonlineag,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Kenyon Sadiq,player_anytime_td,,Yes,190,betonlineag,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Denzel Boston,player_anytime_td,,Yes,200,betonlineag,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Breece Hall,player_anytime_td,,Yes,-125,betonlineag,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Andrew Beck,player_anytime_td,,Yes,1400,betonlineag,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Tylan Wallace,player_anytime_td,,Yes,1400,betonlineag,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Adonai Mitchell,player_anytime_td,,Yes,230,betonlineag,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Geno Smith,player_pass_tds,1.5,Over,144,betonlineag,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Geno Smith,player_pass_tds,1.5,Under,-189,betonlineag,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Deshaun Watson,player_pass_tds,1.5,Over,152,betonlineag,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Deshaun Watson,player_pass_tds,1.5,Under,-200,betonlineag,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Geno Smith,player_pass_yds,206.5,Over,-115,betonlineag,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Geno Smith,player_pass_yds,206.5,Under,-112,betonlineag,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Deshaun Watson,player_pass_yds,203.5,Over,-112,betonlineag,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Deshaun Watson,player_pass_yds,203.5,Under,-115,betonlineag,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,KC Concepcion,player_reception_yds,37.5,Over,-114,betonlineag,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,KC Concepcion,player_reception_yds,37.5,Under,-114,betonlineag,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Denzel Boston,player_reception_yds,47.5,Over,-115,betonlineag,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Denzel Boston,player_reception_yds,47.5,Under,-112,betonlineag,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Garrett Wilson,player_reception_yds,69.5,Over,-114,betonlineag,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Garrett Wilson,player_reception_yds,69.5,Under,-114,betonlineag,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Harold Fannin Jr.,player_reception_yds,36.5,Over,-115,betonlineag,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Harold Fannin Jr.,player_reception_yds,36.5,Under,-112,betonlineag,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Garrett Wilson,player_receptions,6.5,Over,103,betonlineag,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Garrett Wilson,player_receptions,6.5,Under,-133,betonlineag,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Harold Fannin Jr.,player_receptions,4.5,Over,122,betonlineag,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Harold Fannin Jr.,player_receptions,4.5,Under,-159,betonlineag,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Denzel Boston,player_receptions,3.5,Over,106,betonlineag,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Denzel Boston,player_receptions,3.5,Under,-137,betonlineag,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,KC Concepcion,player_receptions,4.5,Over,118,betonlineag,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,KC Concepcion,player_receptions,4.5,Under,-154,betonlineag,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Braelon Allen,player_rush_yds,69.5,Over,-115,betonlineag,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Braelon Allen,player_rush_yds,69.5,Under,-112,betonlineag,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Deshaun Watson,player_rush_yds,26.5,Over,-114,betonlineag,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Deshaun Watson,player_rush_yds,26.5,Under,-114,betonlineag,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Quinshon Judkins,player_rush_yds,59.5,Over,-114,betonlineag,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Quinshon Judkins,player_rush_yds,59.5,Under,-114,betonlineag,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Isaiah Davis,player_rush_yds,10.5,Over,-114,betonlineag,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Isaiah Davis,player_rush_yds,10.5,Under,-114,betonlineag,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Geno Smith,player_rush_yds,10.5,Over,-112,betonlineag,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Geno Smith,player_rush_yds,10.5,Under,-115,betonlineag,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Malik McClain,player_anytime_td,,Yes,850,betrivers,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Jeremy Ruckert,player_anytime_td,,Yes,800,betrivers,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Isaiah Bond,player_anytime_td,,Yes,1800,betrivers,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Jelani Woods,player_anytime_td,,Yes,1100,betrivers,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Malachi Corley,player_anytime_td,,Yes,1400,betrivers,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Carsen Ryan,player_anytime_td,,Yes,2500,betrivers,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Deshaun Watson,player_anytime_td,,Yes,420,betrivers,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Isaiah Davis,player_anytime_td,,Yes,360,betrivers,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Jaleel McLaughlin,player_anytime_td,,Yes,1200,betrivers,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Raheim Sanders,player_anytime_td,,Yes,800,betrivers,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,KC Concepcion,player_anytime_td,,Yes,230,betrivers,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Kene Nwangwu,player_anytime_td,,Yes,1050,betrivers,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Jamaal Pritchett,player_anytime_td,,Yes,1150,betrivers,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Garrett Wilson,player_anytime_td,,Yes,145,betrivers,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Harold Fannin Jr.,player_anytime_td,,Yes,210,betrivers,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Tylan Wallace,player_anytime_td,,Yes,1700,betrivers,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Jerry Jeudy,player_anytime_td,,Yes,600,betrivers,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Quinshon Judkins,player_anytime_td,,Yes,128,betrivers,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Michael Burton,player_anytime_td,,Yes,3000,betrivers,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Blake Whiteheart,player_anytime_td,,Yes,1300,betrivers,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Kenyon Sadiq,player_anytime_td,,Yes,195,betrivers,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Isaiah Williams,player_anytime_td,,Yes,420,betrivers,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Geno Smith,player_anytime_td,,Yes,700,betrivers,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Braelon Allen,player_anytime_td,,Yes,102,betrivers,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Denzel Boston,player_anytime_td,,Yes,190,betrivers,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Geno Smith,player_pass_tds,1.5,Over,148,betrivers,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Geno Smith,player_pass_tds,1.5,Under,-200,betrivers,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Deshaun Watson,player_pass_tds,1.5,Over,155,betrivers,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Deshaun Watson,player_pass_tds,1.5,Under,-210,betrivers,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Geno Smith,player_pass_yds,207.5,Over,-114,betrivers,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Geno Smith,player_pass_yds,207.5,Under,-117,betrivers,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Deshaun Watson,player_pass_yds,203.5,Over,-117,betrivers,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Deshaun Watson,player_pass_yds,203.5,Under,-114,betrivers,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Harold Fannin Jr.,player_reception_yds,38.5,Over,-114,betrivers,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Harold Fannin Jr.,player_reception_yds,38.5,Under,-117,betrivers,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Garrett Wilson,player_reception_yds,70.5,Over,-113,betrivers,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Garrett Wilson,player_reception_yds,70.5,Under,-118,betrivers,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,KC Concepcion,player_reception_yds,36.5,Over,-114,betrivers,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,KC Concepcion,player_reception_yds,36.5,Under,-117,betrivers,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Denzel Boston,player_reception_yds,49.5,Over,-117,betrivers,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Denzel Boston,player_reception_yds,49.5,Under,-114,betrivers,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Garrett Wilson,player_receptions,6.5,Over,-106,betrivers,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Denzel Boston,player_receptions,3.5,Over,102,betrivers,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Harold Fannin Jr.,player_receptions,4.5,Over,110,betrivers,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,KC Concepcion,player_receptions,4.5,Over,128,betrivers,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Isaiah Davis,player_rush_yds,12.5,Over,-109,betrivers,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Isaiah Davis,player_rush_yds,12.5,Under,-122,betrivers,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Geno Smith,player_rush_yds,11.5,Over,-115,betrivers,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Geno Smith,player_rush_yds,11.5,Under,-114,betrivers,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Deshaun Watson,player_rush_yds,25.5,Over,-113,betrivers,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Deshaun Watson,player_rush_yds,25.5,Under,-118,betrivers,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Braelon Allen,player_rush_yds,68.5,Over,-118,betrivers,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Braelon Allen,player_rush_yds,68.5,Under,-113,betrivers,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Quinshon Judkins,player_rush_yds,58.5,Over,-115,betrivers,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Quinshon Judkins,player_rush_yds,58.5,Under,-115,betrivers,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Raheim Sanders,player_anytime_td,,Yes,700,bovada,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Harold Fannin Jr.,player_anytime_td,,Yes,220,bovada,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Malachi Corley,player_anytime_td,,Yes,1800,bovada,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Jaleel McLaughlin,player_anytime_td,,Yes,1800,bovada,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,KC Concepcion,player_anytime_td,,Yes,310,bovada,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Isaiah Bond,player_anytime_td,,Yes,2200,bovada,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Jerry Jeudy,player_anytime_td,,Yes,700,bovada,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Deshaun Watson,player_anytime_td,,Yes,370,bovada,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Denzel Boston,player_anytime_td,,Yes,210,bovada,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Isaiah Davis,player_anytime_td,,Yes,500,bovada,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Jeremy Ruckert,player_anytime_td,,Yes,625,bovada,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Jelani Woods,player_anytime_td,,Yes,1700,bovada,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Kenyon Sadiq,player_anytime_td,,Yes,205,bovada,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Isaiah Williams,player_anytime_td,,Yes,400,bovada,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Geno Smith,player_anytime_td,,Yes,725,bovada,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Cleveland Browns D/ST,player_anytime_td,,Yes,525,bovada,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,New York Jets D/ST,player_anytime_td,,Yes,500,bovada,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Garrett Wilson,player_anytime_td,,Yes,150,bovada,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Quinshon Judkins,player_anytime_td,,Yes,140,bovada,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Braelon Allen,player_anytime_td,,Yes,-110,bovada,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Kene Nwangwu,player_anytime_td,,Yes,2200,bovada,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Malik McClain,player_anytime_td,,Yes,2000,bovada,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Jamaal Pritchett,player_anytime_td,,Yes,2500,bovada,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Carsen Ryan,player_anytime_td,,Yes,4000,bovada,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Michael Burton,player_anytime_td,,Yes,2800,bovada,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Blake Whiteheart,player_anytime_td,,Yes,1000,bovada,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Geno Smith,player_pass_tds,1.5,Over,135,bovada,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Geno Smith,player_pass_tds,1.5,Under,-180,bovada,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Geno Smith,player_pass_yds,206.5,Over,-115,bovada,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Geno Smith,player_pass_yds,206.5,Under,-115,bovada,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Denzel Boston,player_reception_yds,47.5,Over,-115,bovada,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Denzel Boston,player_reception_yds,47.5,Under,-115,bovada,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Garrett Wilson,player_reception_yds,71.5,Over,-115,bovada,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Garrett Wilson,player_reception_yds,71.5,Under,-115,bovada,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Harold Fannin Jr.,player_reception_yds,36.5,Over,-115,bovada,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Harold Fannin Jr.,player_reception_yds,36.5,Under,-115,bovada,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,KC Concepcion,player_reception_yds,39.5,Over,-110,bovada,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,KC Concepcion,player_reception_yds,39.5,Under,-120,bovada,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Denzel Boston,player_receptions,3.5,Over,105,bovada,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Denzel Boston,player_receptions,3.5,Under,-135,bovada,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Garrett Wilson,player_receptions,6.5,Over,110,bovada,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Garrett Wilson,player_receptions,6.5,Under,-145,bovada,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Harold Fannin Jr.,player_receptions,4.5,Over,120,bovada,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Harold Fannin Jr.,player_receptions,4.5,Under,-160,bovada,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,KC Concepcion,player_receptions,4.5,Over,110,bovada,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,KC Concepcion,player_receptions,4.5,Under,-145,bovada,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Braelon Allen,player_rush_yds,69.5,Over,-115,bovada,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Braelon Allen,player_rush_yds,69.5,Under,-115,bovada,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Geno Smith,player_rush_yds,10.5,Over,-110,bovada,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Geno Smith,player_rush_yds,10.5,Under,-120,bovada,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Isaiah Davis,player_rush_yds,9.5,Over,-115,bovada,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Isaiah Davis,player_rush_yds,9.5,Under,-115,bovada,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Quinshon Judkins,player_rush_yds,58.5,Over,-115,bovada,20261007T122329Z
+9db4ed15fe34fca1fb62f040cd244591,New York Jets,Cleveland Browns,2026-10-11T17:00:00Z,Quinshon Judkins,player_rush_yds,58.5,Under,-115,bovada,20261007T122329Z
+cc52bba56e74f5cddbe9011046181c3d,Tennessee Titans,Houston Texans,2026-10-11T17:00:00Z,David Montgomery,player_anytime_td,,Yes,-110,draftkings,20261007T122329Z
+cc52bba56e74f5cddbe9011046181c3d,Tennessee Titans,Houston Texans,2026-10-11T17:00:00Z,Nico Collins,player_anytime_td,,Yes,115,draftkings,20261007T122329Z
+cc52bba56e74f5cddbe9011046181c3d,Tennessee Titans,Houston Texans,2026-10-11T17:00:00Z,Woody Marks,player_anytime_td,,Yes,150,draftkings,20261007T122329Z
+cc52bba56e74f5cddbe9011046181c3d,Tennessee Titans,Houston Texans,2026-10-11T17:00:00Z,Tony Pollard,player_anytime_td,,Yes,215,draftkings,20261007T122329Z
+cc52bba56e74f5cddbe9011046181c3d,Tennessee Titans,Houston Texans,2026-10-11T17:00:00Z,Carnell Tate,player_anytime_td,,Yes,290,draftkings,20261007T122329Z
+cc52bba56e74f5cddbe9011046181c3d,Tennessee Titans,Houston Texans,2026-10-11T17:00:00Z,Wan'Dale Robinson,player_anytime_td,,Yes,450,draftkings,20261007T122329Z
+cc52bba56e74f5cddbe9011046181c3d,Tennessee Titans,Houston Texans,2026-10-11T17:00:00Z,Cam Ward,player_anytime_td,,Yes,550,draftkings,20261007T122329Z
+cc52bba56e74f5cddbe9011046181c3d,Tennessee Titans,Houston Texans,2026-10-11T17:00:00Z,C.J. Stroud,player_anytime_td,,Yes,650,draftkings,20261007T122329Z
+cc52bba56e74f5cddbe9011046181c3d,Tennessee Titans,Houston Texans,2026-10-11T17:00:00Z,C.J. Stroud,player_pass_tds,1.5,Over,116,draftkings,20261007T122329Z
+cc52bba56e74f5cddbe9011046181c3d,Tennessee Titans,Houston Texans,2026-10-11T17:00:00Z,C.J. Stroud,player_pass_tds,1.5,Under,-149,draftkings,20261007T122329Z
+cc52bba56e74f5cddbe9011046181c3d,Tennessee Titans,Houston Texans,2026-10-11T17:00:00Z,Cam Ward,player_pass_tds,0.5,Over,-169,draftkings,20261007T122329Z
+cc52bba56e74f5cddbe9011046181c3d,Tennessee Titans,Houston Texans,2026-10-11T17:00:00Z,Cam Ward,player_pass_tds,0.5,Under,132,draftkings,20261007T122329Z
+cc52bba56e74f5cddbe9011046181c3d,Tennessee Titans,Houston Texans,2026-10-11T17:00:00Z,C.J. Stroud,player_pass_yds,231.5,Over,-111,draftkings,20261007T122329Z
+cc52bba56e74f5cddbe9011046181c3d,Tennessee Titans,Houston Texans,2026-10-11T17:00:00Z,C.J. Stroud,player_pass_yds,231.5,Under,-112,draftkings,20261007T122329Z
+cc52bba56e74f5cddbe9011046181c3d,Tennessee Titans,Houston Texans,2026-10-11T17:00:00Z,Cam Ward,player_pass_yds,189.5,Over,-111,draftkings,20261007T122329Z
+cc52bba56e74f5cddbe9011046181c3d,Tennessee Titans,Houston Texans,2026-10-11T17:00:00Z,Cam Ward,player_pass_yds,189.5,Under,-113,draftkings,20261007T122329Z
+cc52bba56e74f5cddbe9011046181c3d,Tennessee Titans,Houston Texans,2026-10-11T17:00:00Z,Nico Collins,player_reception_yds,77.5,Over,-111,draftkings,20261007T122329Z
+cc52bba56e74f5cddbe9011046181c3d,Tennessee Titans,Houston Texans,2026-10-11T17:00:00Z,Nico Collins,player_reception_yds,77.5,Under,-113,draftkings,20261007T122329Z
+cc52bba56e74f5cddbe9011046181c3d,Tennessee Titans,Houston Texans,2026-10-11T17:00:00Z,Carnell Tate,player_reception_yds,50.5,Over,-111,draftkings,20261007T122329Z
+cc52bba56e74f5cddbe9011046181c3d,Tennessee Titans,Houston Texans,2026-10-11T17:00:00Z,Carnell Tate,player_reception_yds,50.5,Under,-112,draftkings,20261007T122329Z
+cc52bba56e74f5cddbe9011046181c3d,Tennessee Titans,Houston Texans,2026-10-11T17:00:00Z,Wan'Dale Robinson,player_reception_yds,34.5,Over,-111,draftkings,20261007T122329Z
+cc52bba56e74f5cddbe9011046181c3d,Tennessee Titans,Houston Texans,2026-10-11T17:00:00Z,Wan'Dale Robinson,player_reception_yds,34.5,Under,-113,draftkings,20261007T122329Z
+cc52bba56e74f5cddbe9011046181c3d,Tennessee Titans,Houston Texans,2026-10-11T17:00:00Z,Nico Collins,player_receptions,5.5,Over,-106,draftkings,20261007T122329Z
+cc52bba56e74f5cddbe9011046181c3d,Tennessee Titans,Houston Texans,2026-10-11T17:00:00Z,Nico Collins,player_receptions,5.5,Under,-120,draftkings,20261007T122329Z
+cc52bba56e74f5cddbe9011046181c3d,Tennessee Titans,Houston Texans,2026-10-11T17:00:00Z,Carnell Tate,player_receptions,4.5,Over,-118,draftkings,20261007T122329Z
+cc52bba56e74f5cddbe9011046181c3d,Tennessee Titans,Houston Texans,2026-10-11T17:00:00Z,Carnell Tate,player_receptions,4.5,Under,-108,draftkings,20261007T122329Z
+cc52bba56e74f5cddbe9011046181c3d,Tennessee Titans,Houston Texans,2026-10-11T17:00:00Z,Wan'Dale Robinson,player_receptions,3.5,Over,-140,draftkings,20261007T122329Z
+cc52bba56e74f5cddbe9011046181c3d,Tennessee Titans,Houston Texans,2026-10-11T17:00:00Z,Wan'Dale Robinson,player_receptions,3.5,Under,109,draftkings,20261007T122329Z
+cc52bba56e74f5cddbe9011046181c3d,Tennessee Titans,Houston Texans,2026-10-11T17:00:00Z,Tony Pollard,player_rush_yds,48.5,Over,-111,draftkings,20261007T122329Z
+cc52bba56e74f5cddbe9011046181c3d,Tennessee Titans,Houston Texans,2026-10-11T17:00:00Z,Tony Pollard,player_rush_yds,48.5,Under,-113,draftkings,20261007T122329Z
+cc52bba56e74f5cddbe9011046181c3d,Tennessee Titans,Houston Texans,2026-10-11T17:00:00Z,Woody Marks,player_anytime_td,,Yes,110,betonlineag,20261007T122329Z
+cc52bba56e74f5cddbe9011046181c3d,Tennessee Titans,Houston Texans,2026-10-11T17:00:00Z,Tony Pollard,player_anytime_td,,Yes,210,betonlineag,20261007T122329Z
+cc52bba56e74f5cddbe9011046181c3d,Tennessee Titans,Houston Texans,2026-10-11T17:00:00Z,Nico Collins,player_anytime_td,,Yes,110,betonlineag,20261007T122329Z
+cc52bba56e74f5cddbe9011046181c3d,Tennessee Titans,Houston Texans,2026-10-11T17:00:00Z,David Montgomery,player_anytime_td,,Yes,-125,betonlineag,20261007T122329Z
+cc52bba56e74f5cddbe9011046181c3d,Tennessee Titans,Houston Texans,2026-10-11T17:00:00Z,Michael Carter,player_anytime_td,,Yes,2900,betonlineag,20261007T122329Z
+cc52bba56e74f5cddbe9011046181c3d,Tennessee Titans,Houston Texans,2026-10-11T17:00:00Z,Julius Chestnut,player_anytime_td,,Yes,2900,betonlineag,20261007T122329Z
+cc52bba56e74f5cddbe9011046181c3d,Tennessee Titans,Houston Texans,2026-10-11T17:00:00Z,Brevin Jordan,player_anytime_td,,Yes,2400,betonlineag,20261007T122329Z
+cc52bba56e74f5cddbe9011046181c3d,Tennessee Titans,Houston Texans,2026-10-11T17:00:00Z,Marlin Klein,player_anytime_td,,Yes,2400,betonlineag,20261007T122329Z
+cc52bba56e74f5cddbe9011046181c3d,Tennessee Titans,Houston Texans,2026-10-11T17:00:00Z,Nicholas Singleton,player_anytime_td,,Yes,1400,betonlineag,20261007T122329Z
+cc52bba56e74f5cddbe9011046181c3d,Tennessee Titans,Houston Texans,2026-10-11T17:00:00Z,Dare Ogunbowale,player_anytime_td,,Yes,1400,betonlineag,20261007T122329Z
+cc52bba56e74f5cddbe9011046181c3d,Tennessee Titans,Houston Texans,2026-10-11T17:00:00Z,Cade Stover,player_anytime_td,,Yes,1400,betonlineag,20261007T122329Z
+cc52bba56e74f5cddbe9011046181c3d,Tennessee Titans,Houston Texans,2026-10-11T17:00:00Z,Daniel Bellinger,player_anytime_td,,Yes,750,betonlineag,20261007T122329Z
+cc52bba56e74f5cddbe9011046181c3d,Tennessee Titans,Houston Texans,2026-10-11T17:00:00Z,Calvin Ridley,player_anytime_td,,Yes,750,betonlineag,20261007T122329Z
+cc52bba56e74f5cddbe9011046181c3d,Tennessee Titans,Houston Texans,2026-10-11T17:00:00Z,Chimere Dike,player_anytime_td,,Yes,750,betonlineag,20261007T122329Z
+cc52bba56e74f5cddbe9011046181c3d,Tennessee Titans,Houston Texans,2026-10-11T17:00:00Z,Cam Ward,player_anytime_td,,Yes,550,betonlineag,20261007T122329Z
+cc52bba56e74f5cddbe9011046181c3d,Tennessee Titans,Houston Texans,2026-10-11T17:00:00Z,Jared Wayne,player_anytime_td,,Yes,500,betonlineag,20261007T122329Z
+cc52bba56e74f5cddbe9011046181c3d,Tennessee Titans,Houston Texans,2026-10-11T17:00:00Z,Gunnar Helm,player_anytime_td,,Yes,500,betonlineag,20261007T122329Z
+cc52bba56e74f5cddbe9011046181c3d,Tennessee Titans,Houston Texans,2026-10-11T17:00:00Z,Foster Moreau,player_anytime_td,,Yes,400,betonlineag,20261007T122329Z
+cc52bba56e74f5cddbe9011046181c3d,Tennessee Titans,Houston Texans,2026-10-11T17:00:00Z,Tyjae Spears,player_anytime_td,,Yes,450,betonlineag,20261007T122329Z
+cc52bba56e74f5cddbe9011046181c3d,Tennessee Titans,Houston Texans,2026-10-11T17:00:00Z,C.J. Stroud,player_anytime_td,,Yes,400,betonlineag,20261007T122329Z
+cc52bba56e74f5cddbe9011046181c3d,Tennessee Titans,Houston Texans,2026-10-11T17:00:00Z,Elic Ayomanor,player_anytime_td,,Yes,500,betonlineag,20261007T122329Z
+cc52bba56e74f5cddbe9011046181c3d,Tennessee Titans,Houston Texans,2026-10-11T17:00:00Z,Xavier Hutchinson,player_anytime_td,,Yes,300,betonlineag,20261007T122329Z
+cc52bba56e74f5cddbe9011046181c3d,Tennessee Titans,Houston Texans,2026-10-11T17:00:00Z,Kayshon Boutte,player_anytime_td,,Yes,400,betonlineag,20261007T122329Z
+cc52bba56e74f5cddbe9011046181c3d,Tennessee Titans,Houston Texans,2026-10-11T17:00:00Z,Jaylin Noel,player_anytime_td,,Yes,350,betonlineag,20261007T122329Z
+cc52bba56e74f5cddbe9011046181c3d,Tennessee Titans,Houston Texans,2026-10-11T17:00:00Z,Wan'Dale Robinson,player_anytime_td,,Yes,300,betonlineag,20261007T122329Z
+cc52bba56e74f5cddbe9011046181c3d,Tennessee Titans,Houston Texans,2026-10-11T17:00:00Z,Carnell Tate,player_anytime_td,,Yes,290,betonlineag,20261007T122329Z
+cc52bba56e74f5cddbe9011046181c3d,Tennessee Titans,Houston Texans,2026-10-11T17:00:00Z,Dalton Schultz,player_anytime_td,,Yes,160,betonlineag,20261007T122329Z
+cc52bba56e74f5cddbe9011046181c3d,Tennessee Titans,Houston Texans,2026-10-11T17:00:00Z,Kylen Granson,player_anytime_td,,Yes,2900,betonlineag,20261007T122329Z
+cc52bba56e74f5cddbe9011046181c3d,Tennessee Titans,Houston Texans,2026-10-11T17:00:00Z,David Martin-Robinson,player_anytime_td,,Yes,2900,betonlineag,20261007T122329Z
+cc52bba56e74f5cddbe9011046181c3d,Tennessee Titans,Houston Texans,2026-10-11T17:00:00Z,Wan'Dale Robinson,player_anytime_td,,Yes,440,bovada,20261007T122329Z
+cc52bba56e74f5cddbe9011046181c3d,Tennessee Titans,Houston Texans,2026-10-11T17:00:00Z,Carnell Tate,player_anytime_td,,Yes,290,bovada,20261007T122329Z
+cc52bba56e74f5cddbe9011046181c3d,Tennessee Titans,Houston Texans,2026-10-11T17:00:00Z,Cam Ward,player_anytime_td,,Yes,525,bovada,20261007T122329Z
+cc52bba56e74f5cddbe9011046181c3d,Tennessee Titans,Houston Texans,2026-10-11T17:00:00Z,C.J. Stroud,player_anytime_td,,Yes,625,bovada,20261007T122329Z
+cc52bba56e74f5cddbe9011046181c3d,Tennessee Titans,Houston Texans,2026-10-11T17:00:00Z,Nico Collins,player_anytime_td,,Yes,115,bovada,20261007T122329Z
+cc52bba56e74f5cddbe9011046181c3d,Tennessee Titans,Houston Texans,2026-10-11T17:00:00Z,David Montgomery,player_anytime_td,,Yes,-114,bovada,20261007T122329Z
+cc52bba56e74f5cddbe9011046181c3d,Tennessee Titans,Houston Texans,2026-10-11T17:00:00Z,Woody Marks,player_anytime_td,,Yes,150,bovada,20261007T122329Z
+cc52bba56e74f5cddbe9011046181c3d,Tennessee Titans,Houston Texans,2026-10-11T17:00:00Z,Tony Pollard,player_anytime_td,,Yes,215,bovada,20261007T122329Z
+cc52bba56e74f5cddbe9011046181c3d,Tennessee Titans,Houston Texans,2026-10-11T17:00:00Z,C.J. Stroud,player_pass_tds,1.5,Over,115,bovada,20261007T122329Z
+cc52bba56e74f5cddbe9011046181c3d,Tennessee Titans,Houston Texans,2026-10-11T17:00:00Z,C.J. Stroud,player_pass_tds,1.5,Under,-150,bovada,20261007T122329Z
+cc52bba56e74f5cddbe9011046181c3d,Tennessee Titans,Houston Texans,2026-10-11T17:00:00Z,Cam Ward,player_pass_tds,0.5,Over,-170,bovada,20261007T122329Z
+cc52bba56e74f5cddbe9011046181c3d,Tennessee Titans,Houston Texans,2026-10-11T17:00:00Z,Cam Ward,player_pass_tds,0.5,Under,130,bovada,20261007T122329Z
+cc52bba56e74f5cddbe9011046181c3d,Tennessee Titans,Houston Texans,2026-10-11T17:00:00Z,C.J. Stroud,player_pass_yds,231.5,Over,-115,bovada,20261007T122329Z
+cc52bba56e74f5cddbe9011046181c3d,Tennessee Titans,Houston Texans,2026-10-11T17:00:00Z,C.J. Stroud,player_pass_yds,231.5,Under,-115,bovada,20261007T122329Z
+cc52bba56e74f5cddbe9011046181c3d,Tennessee Titans,Houston Texans,2026-10-11T17:00:00Z,Cam Ward,player_pass_yds,189.5,Over,-115,bovada,20261007T122329Z
+cc52bba56e74f5cddbe9011046181c3d,Tennessee Titans,Houston Texans,2026-10-11T17:00:00Z,Cam Ward,player_pass_yds,189.5,Under,-115,bovada,20261007T122329Z
+cc52bba56e74f5cddbe9011046181c3d,Tennessee Titans,Houston Texans,2026-10-11T17:00:00Z,Carnell Tate,player_reception_yds,50.5,Over,-115,bovada,20261007T122329Z
+cc52bba56e74f5cddbe9011046181c3d,Tennessee Titans,Houston Texans,2026-10-11T17:00:00Z,Carnell Tate,player_reception_yds,50.5,Under,-115,bovada,20261007T122329Z
+cc52bba56e74f5cddbe9011046181c3d,Tennessee Titans,Houston Texans,2026-10-11T17:00:00Z,Nico Collins,player_reception_yds,77.5,Over,-115,bovada,20261007T122329Z
+cc52bba56e74f5cddbe9011046181c3d,Tennessee Titans,Houston Texans,2026-10-11T17:00:00Z,Nico Collins,player_reception_yds,77.5,Under,-115,bovada,20261007T122329Z
+cc52bba56e74f5cddbe9011046181c3d,Tennessee Titans,Houston Texans,2026-10-11T17:00:00Z,Wan'Dale Robinson,player_reception_yds,34.5,Over,-115,bovada,20261007T122329Z
+cc52bba56e74f5cddbe9011046181c3d,Tennessee Titans,Houston Texans,2026-10-11T17:00:00Z,Wan'Dale Robinson,player_reception_yds,34.5,Under,-115,bovada,20261007T122329Z
+cc52bba56e74f5cddbe9011046181c3d,Tennessee Titans,Houston Texans,2026-10-11T17:00:00Z,Carnell Tate,player_receptions,4.5,Over,-120,bovada,20261007T122329Z
+cc52bba56e74f5cddbe9011046181c3d,Tennessee Titans,Houston Texans,2026-10-11T17:00:00Z,Carnell Tate,player_receptions,4.5,Under,-110,bovada,20261007T122329Z
+cc52bba56e74f5cddbe9011046181c3d,Tennessee Titans,Houston Texans,2026-10-11T17:00:00Z,Nico Collins,player_receptions,5.5,Over,-110,bovada,20261007T122329Z
+cc52bba56e74f5cddbe9011046181c3d,Tennessee Titans,Houston Texans,2026-10-11T17:00:00Z,Nico Collins,player_receptions,5.5,Under,-120,bovada,20261007T122329Z
+cc52bba56e74f5cddbe9011046181c3d,Tennessee Titans,Houston Texans,2026-10-11T17:00:00Z,Wan'Dale Robinson,player_receptions,3.5,Over,-145,bovada,20261007T122329Z
+cc52bba56e74f5cddbe9011046181c3d,Tennessee Titans,Houston Texans,2026-10-11T17:00:00Z,Wan'Dale Robinson,player_receptions,3.5,Under,110,bovada,20261007T122329Z
+cc52bba56e74f5cddbe9011046181c3d,Tennessee Titans,Houston Texans,2026-10-11T17:00:00Z,Tony Pollard,player_rush_yds,48.5,Over,-115,bovada,20261007T122329Z
+cc52bba56e74f5cddbe9011046181c3d,Tennessee Titans,Houston Texans,2026-10-11T17:00:00Z,Tony Pollard,player_rush_yds,48.5,Under,-115,bovada,20261007T122329Z
+448d7cf18c6db4c811ed82ded1b72867,Pittsburgh Steelers,Indianapolis Colts,2026-10-11T17:00:00Z,Jonathan Taylor,player_anytime_td,,Yes,-270,draftkings,20261007T122329Z
+448d7cf18c6db4c811ed82ded1b72867,Pittsburgh Steelers,Indianapolis Colts,2026-10-11T17:00:00Z,Jaylen Warren,player_anytime_td,,Yes,-115,draftkings,20261007T122329Z
+448d7cf18c6db4c811ed82ded1b72867,Pittsburgh Steelers,Indianapolis Colts,2026-10-11T17:00:00Z,Tyler Warren,player_anytime_td,,Yes,160,draftkings,20261007T122329Z
+448d7cf18c6db4c811ed82ded1b72867,Pittsburgh Steelers,Indianapolis Colts,2026-10-11T17:00:00Z,DK Metcalf,player_anytime_td,,Yes,170,draftkings,20261007T122329Z
+448d7cf18c6db4c811ed82ded1b72867,Pittsburgh Steelers,Indianapolis Colts,2026-10-11T17:00:00Z,Jaylen Warren,player_anytime_td,,Yes,-125,betonlineag,20261007T122329Z
+448d7cf18c6db4c811ed82ded1b72867,Pittsburgh Steelers,Indianapolis Colts,2026-10-11T17:00:00Z,Tyler Warren,player_anytime_td,,Yes,150,betonlineag,20261007T122329Z
+448d7cf18c6db4c811ed82ded1b72867,Pittsburgh Steelers,Indianapolis Colts,2026-10-11T17:00:00Z,DK Metcalf,player_anytime_td,,Yes,170,betonlineag,20261007T122329Z
+448d7cf18c6db4c811ed82ded1b72867,Pittsburgh Steelers,Indianapolis Colts,2026-10-11T17:00:00Z,Jonathan Taylor,player_anytime_td,,Yes,-333,betonlineag,20261007T122329Z
+448d7cf18c6db4c811ed82ded1b72867,Pittsburgh Steelers,Indianapolis Colts,2026-10-11T17:00:00Z,Robert Tonyan,player_anytime_td,,Yes,2900,betonlineag,20261007T122329Z
+448d7cf18c6db4c811ed82ded1b72867,Pittsburgh Steelers,Indianapolis Colts,2026-10-11T17:00:00Z,Riley Nowakowski,player_anytime_td,,Yes,2900,betonlineag,20261007T122329Z
+448d7cf18c6db4c811ed82ded1b72867,Pittsburgh Steelers,Indianapolis Colts,2026-10-11T17:00:00Z,Anthony Gould,player_anytime_td,,Yes,1900,betonlineag,20261007T122329Z
+448d7cf18c6db4c811ed82ded1b72867,Pittsburgh Steelers,Indianapolis Colts,2026-10-11T17:00:00Z,Deion Burks,player_anytime_td,,Yes,1400,betonlineag,20261007T122329Z
+448d7cf18c6db4c811ed82ded1b72867,Pittsburgh Steelers,Indianapolis Colts,2026-10-11T17:00:00Z,Drew Ogletree,player_anytime_td,,Yes,1900,betonlineag,20261007T122329Z
+448d7cf18c6db4c811ed82ded1b72867,Pittsburgh Steelers,Indianapolis Colts,2026-10-11T17:00:00Z,Ben Skowronek,player_anytime_td,,Yes,1100,betonlineag,20261007T122329Z
+448d7cf18c6db4c811ed82ded1b72867,Pittsburgh Steelers,Indianapolis Colts,2026-10-11T17:00:00Z,Ashton Dulin,player_anytime_td,,Yes,1100,betonlineag,20261007T122329Z
+448d7cf18c6db4c811ed82ded1b72867,Pittsburgh Steelers,Indianapolis Colts,2026-10-11T17:00:00Z,Mo Alie-Cox,player_anytime_td,,Yes,1400,betonlineag,20261007T122329Z
+448d7cf18c6db4c811ed82ded1b72867,Pittsburgh Steelers,Indianapolis Colts,2026-10-11T17:00:00Z,Kaden Wetjen,player_anytime_td,,Yes,1100,betonlineag,20261007T122329Z
+448d7cf18c6db4c811ed82ded1b72867,Pittsburgh Steelers,Indianapolis Colts,2026-10-11T17:00:00Z,Aaron Rodgers,player_anytime_td,,Yes,1000,betonlineag,20261007T122329Z
+448d7cf18c6db4c811ed82ded1b72867,Pittsburgh Steelers,Indianapolis Colts,2026-10-11T17:00:00Z,Travis Homer,player_anytime_td,,Yes,800,betonlineag,20261007T122329Z
+448d7cf18c6db4c811ed82ded1b72867,Pittsburgh Steelers,Indianapolis Colts,2026-10-11T17:00:00Z,Seth McGowan,player_anytime_td,,Yes,750,betonlineag,20261007T122329Z
+448d7cf18c6db4c811ed82ded1b72867,Pittsburgh Steelers,Indianapolis Colts,2026-10-11T17:00:00Z,Germie Bernard,player_anytime_td,,Yes,700,betonlineag,20261007T122329Z
+448d7cf18c6db4c811ed82ded1b72867,Pittsburgh Steelers,Indianapolis Colts,2026-10-11T17:00:00Z,Daniel Jones,player_anytime_td,,Yes,450,betonlineag,20261007T122329Z
+448d7cf18c6db4c811ed82ded1b72867,Pittsburgh Steelers,Indianapolis Colts,2026-10-11T17:00:00Z,Laquon Treadwell,player_anytime_td,,Yes,550,betonlineag,20261007T122329Z
+448d7cf18c6db4c811ed82ded1b72867,Pittsburgh Steelers,Indianapolis Colts,2026-10-11T17:00:00Z,Roman Wilson,player_anytime_td,,Yes,350,betonlineag,20261007T122329Z
+448d7cf18c6db4c811ed82ded1b72867,Pittsburgh Steelers,Indianapolis Colts,2026-10-11T17:00:00Z,Pat Freiermuth,player_anytime_td,,Yes,290,betonlineag,20261007T122329Z
+448d7cf18c6db4c811ed82ded1b72867,Pittsburgh Steelers,Indianapolis Colts,2026-10-11T17:00:00Z,Keenan Allen,player_anytime_td,,Yes,350,betonlineag,20261007T122329Z
+448d7cf18c6db4c811ed82ded1b72867,Pittsburgh Steelers,Indianapolis Colts,2026-10-11T17:00:00Z,Michael Pittman Jr.,player_anytime_td,,Yes,325,betonlineag,20261007T122329Z
+448d7cf18c6db4c811ed82ded1b72867,Pittsburgh Steelers,Indianapolis Colts,2026-10-11T17:00:00Z,Rico Dowdle,player_anytime_td,,Yes,120,betonlineag,20261007T122329Z
+448d7cf18c6db4c811ed82ded1b72867,Pittsburgh Steelers,Indianapolis Colts,2026-10-11T17:00:00Z,Darnell Washington,player_anytime_td,,Yes,200,betonlineag,20261007T122329Z
+448d7cf18c6db4c811ed82ded1b72867,Pittsburgh Steelers,Indianapolis Colts,2026-10-11T17:00:00Z,Josh Downs,player_anytime_td,,Yes,250,betonlineag,20261007T122329Z
+448d7cf18c6db4c811ed82ded1b72867,Pittsburgh Steelers,Indianapolis Colts,2026-10-11T17:00:00Z,Tyler Warren,player_anytime_td,,Yes,160,bovada,20261007T122329Z
+448d7cf18c6db4c811ed82ded1b72867,Pittsburgh Steelers,Indianapolis Colts,2026-10-11T17:00:00Z,DK Metcalf,player_anytime_td,,Yes,170,bovada,20261007T122329Z
+448d7cf18c6db4c811ed82ded1b72867,Pittsburgh Steelers,Indianapolis Colts,2026-10-11T17:00:00Z,Jonathan Taylor,player_anytime_td,,Yes,-275,bovada,20261007T122329Z
+448d7cf18c6db4c811ed82ded1b72867,Pittsburgh Steelers,Indianapolis Colts,2026-10-11T17:00:00Z,Jaylen Warren,player_anytime_td,,Yes,-117,bovada,20261007T122329Z
+6b024bad1abb54f597225e4ab9b39d89,New England Patriots,Las Vegas Raiders,2026-10-11T17:00:00Z,Ashton Jeanty,player_anytime_td,,Yes,-120,draftkings,20261007T122329Z
+6b024bad1abb54f597225e4ab9b39d89,New England Patriots,Las Vegas Raiders,2026-10-11T17:00:00Z,Rhamondre Stevenson,player_anytime_td,,Yes,100,draftkings,20261007T122329Z
+6b024bad1abb54f597225e4ab9b39d89,New England Patriots,Las Vegas Raiders,2026-10-11T17:00:00Z,TreVeyon Henderson,player_anytime_td,,Yes,125,draftkings,20261007T122329Z
+6b024bad1abb54f597225e4ab9b39d89,New England Patriots,Las Vegas Raiders,2026-10-11T17:00:00Z,Brock Bowers,player_anytime_td,,Yes,140,draftkings,20261007T122329Z
+6b024bad1abb54f597225e4ab9b39d89,New England Patriots,Las Vegas Raiders,2026-10-11T17:00:00Z,Romeo Doubs,player_anytime_td,,Yes,170,draftkings,20261007T122329Z
+6b024bad1abb54f597225e4ab9b39d89,New England Patriots,Las Vegas Raiders,2026-10-11T17:00:00Z,Hunter Henry,player_anytime_td,,Yes,195,draftkings,20261007T122329Z
+6b024bad1abb54f597225e4ab9b39d89,New England Patriots,Las Vegas Raiders,2026-10-11T17:00:00Z,DeMario Douglas,player_anytime_td,,Yes,310,draftkings,20261007T122329Z
+6b024bad1abb54f597225e4ab9b39d89,New England Patriots,Las Vegas Raiders,2026-10-11T17:00:00Z,Tre Tucker,player_anytime_td,,Yes,330,draftkings,20261007T122329Z
+6b024bad1abb54f597225e4ab9b39d89,New England Patriots,Las Vegas Raiders,2026-10-11T17:00:00Z,Michael Mayer,player_anytime_td,,Yes,390,draftkings,20261007T122329Z
+6b024bad1abb54f597225e4ab9b39d89,New England Patriots,Las Vegas Raiders,2026-10-11T17:00:00Z,Drake Maye,player_anytime_td,,Yes,400,draftkings,20261007T122329Z
+6b024bad1abb54f597225e4ab9b39d89,New England Patriots,Las Vegas Raiders,2026-10-11T17:00:00Z,Efton Chism III,player_anytime_td,,Yes,500,draftkings,20261007T122329Z
+6b024bad1abb54f597225e4ab9b39d89,New England Patriots,Las Vegas Raiders,2026-10-11T17:00:00Z,New England Patriots D/ST,player_anytime_td,,Yes,500,draftkings,20261007T122329Z
+6b024bad1abb54f597225e4ab9b39d89,New England Patriots,Las Vegas Raiders,2026-10-11T17:00:00Z,Cody White,player_anytime_td,,Yes,500,draftkings,20261007T122329Z
+6b024bad1abb54f597225e4ab9b39d89,New England Patriots,Las Vegas Raiders,2026-10-11T17:00:00Z,Mike Washington Jr.,player_anytime_td,,Yes,550,draftkings,20261007T122329Z
+6b024bad1abb54f597225e4ab9b39d89,New England Patriots,Las Vegas Raiders,2026-10-11T17:00:00Z,Las Vegas Raiders D/ST,player_anytime_td,,Yes,550,draftkings,20261007T122329Z
+6b024bad1abb54f597225e4ab9b39d89,New England Patriots,Las Vegas Raiders,2026-10-11T17:00:00Z,Eli Raridon,player_anytime_td,,Yes,600,draftkings,20261007T122329Z
+6b024bad1abb54f597225e4ab9b39d89,New England Patriots,Las Vegas Raiders,2026-10-11T17:00:00Z,Kyle Williams,player_anytime_td,,Yes,650,draftkings,20261007T122329Z
+6b024bad1abb54f597225e4ab9b39d89,New England Patriots,Las Vegas Raiders,2026-10-11T17:00:00Z,Malik Benson,player_anytime_td,,Yes,700,draftkings,20261007T122329Z
+6b024bad1abb54f597225e4ab9b39d89,New England Patriots,Las Vegas Raiders,2026-10-11T17:00:00Z,Dareke Young,player_anytime_td,,Yes,1700,draftkings,20261007T122329Z
+6b024bad1abb54f597225e4ab9b39d89,New England Patriots,Las Vegas Raiders,2026-10-11T17:00:00Z,Kirk Cousins,player_anytime_td,,Yes,1800,draftkings,20261007T122329Z
+6b024bad1abb54f597225e4ab9b39d89,New England Patriots,Las Vegas Raiders,2026-10-11T17:00:00Z,Ian Thomas,player_anytime_td,,Yes,2500,draftkings,20261007T122329Z
+6b024bad1abb54f597225e4ab9b39d89,New England Patriots,Las Vegas Raiders,2026-10-11T17:00:00Z,Drake Maye,player_pass_tds,1.5,Over,-122,draftkings,20261007T122329Z
+6b024bad1abb54f597225e4ab9b39d89,New England Patriots,Las Vegas Raiders,2026-10-11T17:00:00Z,Drake Maye,player_pass_tds,1.5,Under,-105,draftkings,20261007T122329Z
+6b024bad1abb54f597225e4ab9b39d89,New England Patriots,Las Vegas Raiders,2026-10-11T17:00:00Z,Kirk Cousins,player_pass_tds,1.5,Over,121,draftkings,20261007T122329Z
+6b024bad1abb54f597225e4ab9b39d89,New England Patriots,Las Vegas Raiders,2026-10-11T17:00:00Z,Kirk Cousins,player_pass_tds,1.5,Under,-155,draftkings,20261007T122329Z
+6b024bad1abb54f597225e4ab9b39d89,New England Patriots,Las Vegas Raiders,2026-10-11T17:00:00Z,Kirk Cousins,player_pass_yds,228.5,Over,-113,draftkings,20261007T122329Z
+6b024bad1abb54f597225e4ab9b39d89,New England Patriots,Las Vegas Raiders,2026-10-11T17:00:00Z,Kirk Cousins,player_pass_yds,228.5,Under,-111,draftkings,20261007T122329Z
+6b024bad1abb54f597225e4ab9b39d89,New England Patriots,Las Vegas Raiders,2026-10-11T17:00:00Z,Drake Maye,player_pass_yds,226.5,Over,-112,draftkings,20261007T122329Z
+6b024bad1abb54f597225e4ab9b39d89,New England Patriots,Las Vegas Raiders,2026-10-11T17:00:00Z,Drake Maye,player_pass_yds,226.5,Under,-112,draftkings,20261007T122329Z
+6b024bad1abb54f597225e4ab9b39d89,New England Patriots,Las Vegas Raiders,2026-10-11T17:00:00Z,Rhamondre Stevenson,player_anytime_td,,Yes,-150,fanduel,20261007T122329Z
+6b024bad1abb54f597225e4ab9b39d89,New England Patriots,Las Vegas Raiders,2026-10-11T17:00:00Z,TreVeyon Henderson,player_anytime_td,,Yes,-150,fanduel,20261007T122329Z
+6b024bad1abb54f597225e4ab9b39d89,New England Patriots,Las Vegas Raiders,2026-10-11T17:00:00Z,Ashton Jeanty,player_anytime_td,,Yes,-120,fanduel,20261007T122329Z
+6b024bad1abb54f597225e4ab9b39d89,New England Patriots,Las Vegas Raiders,2026-10-11T17:00:00Z,Brock Bowers,player_anytime_td,,Yes,145,fanduel,20261007T122329Z
+6b024bad1abb54f597225e4ab9b39d89,New England Patriots,Las Vegas Raiders,2026-10-11T17:00:00Z,Romeo Doubs,player_anytime_td,,Yes,170,fanduel,20261007T122329Z
+6b024bad1abb54f597225e4ab9b39d89,New England Patriots,Las Vegas Raiders,2026-10-11T17:00:00Z,Hunter Henry,player_anytime_td,,Yes,195,fanduel,20261007T122329Z
+6b024bad1abb54f597225e4ab9b39d89,New England Patriots,Las Vegas Raiders,2026-10-11T17:00:00Z,DeMario Douglas,player_anytime_td,,Yes,320,fanduel,20261007T122329Z
+6b024bad1abb54f597225e4ab9b39d89,New England Patriots,Las Vegas Raiders,2026-10-11T17:00:00Z,Tre Tucker,player_anytime_td,,Yes,340,fanduel,20261007T122329Z
+6b024bad1abb54f597225e4ab9b39d89,New England Patriots,Las Vegas Raiders,2026-10-11T17:00:00Z,Michael Mayer,player_anytime_td,,Yes,390,fanduel,20261007T122329Z
+6b024bad1abb54f597225e4ab9b39d89,New England Patriots,Las Vegas Raiders,2026-10-11T17:00:00Z,Drake Maye,player_anytime_td,,Yes,410,fanduel,20261007T122329Z
+6b024bad1abb54f597225e4ab9b39d89,New England Patriots,Las Vegas Raiders,2026-10-11T17:00:00Z,Efton Chism III,player_anytime_td,,Yes,500,fanduel,20261007T122329Z
+6b024bad1abb54f597225e4ab9b39d89,New England Patriots,Las Vegas Raiders,2026-10-11T17:00:00Z,Cody White,player_anytime_td,,Yes,500,fanduel,20261007T122329Z
+6b024bad1abb54f597225e4ab9b39d89,New England Patriots,Las Vegas Raiders,2026-10-11T17:00:00Z,Mike Washington Jr.,player_anytime_td,,Yes,550,fanduel,20261007T122329Z
+6b024bad1abb54f597225e4ab9b39d89,New England Patriots,Las Vegas Raiders,2026-10-11T17:00:00Z,Kyle Williams,player_anytime_td,,Yes,600,fanduel,20261007T122329Z
+6b024bad1abb54f597225e4ab9b39d89,New England Patriots,Las Vegas Raiders,2026-10-11T17:00:00Z,Eli Raridon,player_anytime_td,,Yes,600,fanduel,20261007T122329Z
+6b024bad1abb54f597225e4ab9b39d89,New England Patriots,Las Vegas Raiders,2026-10-11T17:00:00Z,New England Patriots Defense,player_anytime_td,,Yes,650,fanduel,20261007T122329Z
+6b024bad1abb54f597225e4ab9b39d89,New England Patriots,Las Vegas Raiders,2026-10-11T17:00:00Z,Las Vegas Raiders Defense,player_anytime_td,,Yes,700,fanduel,20261007T122329Z
+6b024bad1abb54f597225e4ab9b39d89,New England Patriots,Las Vegas Raiders,2026-10-11T17:00:00Z,Malik Benson,player_anytime_td,,Yes,700,fanduel,20261007T122329Z
+6b024bad1abb54f597225e4ab9b39d89,New England Patriots,Las Vegas Raiders,2026-10-11T17:00:00Z,Dareke Young,player_anytime_td,,Yes,1600,fanduel,20261007T122329Z
+6b024bad1abb54f597225e4ab9b39d89,New England Patriots,Las Vegas Raiders,2026-10-11T17:00:00Z,Kirk Cousins,player_anytime_td,,Yes,1700,fanduel,20261007T122329Z
+6b024bad1abb54f597225e4ab9b39d89,New England Patriots,Las Vegas Raiders,2026-10-11T17:00:00Z,Ian Thomas,player_anytime_td,,Yes,2500,fanduel,20261007T122329Z
+6b024bad1abb54f597225e4ab9b39d89,New England Patriots,Las Vegas Raiders,2026-10-11T17:00:00Z,Kirk Cousins,player_pass_tds,1.5,Over,116,fanduel,20261007T122329Z
+6b024bad1abb54f597225e4ab9b39d89,New England Patriots,Las Vegas Raiders,2026-10-11T17:00:00Z,Kirk Cousins,player_pass_tds,1.5,Under,-154,fanduel,20261007T122329Z
+6b024bad1abb54f597225e4ab9b39d89,New England Patriots,Las Vegas Raiders,2026-10-11T17:00:00Z,Drake Maye,player_pass_tds,1.5,Over,-110,fanduel,20261007T122329Z
+6b024bad1abb54f597225e4ab9b39d89,New England Patriots,Las Vegas Raiders,2026-10-11T17:00:00Z,Drake Maye,player_pass_tds,1.5,Under,-120,fanduel,20261007T122329Z
+6b024bad1abb54f597225e4ab9b39d89,New England Patriots,Las Vegas Raiders,2026-10-11T17:00:00Z,Kirk Cousins,player_pass_yds,225.5,Over,-114,fanduel,20261007T122329Z
+6b024bad1abb54f597225e4ab9b39d89,New England Patriots,Las Vegas Raiders,2026-10-11T17:00:00Z,Kirk Cousins,player_pass_yds,225.5,Under,-114,fanduel,20261007T122329Z
+6b024bad1abb54f597225e4ab9b39d89,New England Patriots,Las Vegas Raiders,2026-10-11T17:00:00Z,Drake Maye,player_pass_yds,227.5,Over,-114,fanduel,20261007T122329Z
+6b024bad1abb54f597225e4ab9b39d89,New England Patriots,Las Vegas Raiders,2026-10-11T17:00:00Z,Drake Maye,player_pass_yds,227.5,Under,-114,fanduel,20261007T122329Z
+6b024bad1abb54f597225e4ab9b39d89,New England Patriots,Las Vegas Raiders,2026-10-11T17:00:00Z,Ashton Jeanty,player_anytime_td,,Yes,-125,betonlineag,20261007T122329Z
+6b024bad1abb54f597225e4ab9b39d89,New England Patriots,Las Vegas Raiders,2026-10-11T17:00:00Z,Rhamondre Stevenson,player_anytime_td,,Yes,-167,betonlineag,20261007T122329Z
+6b024bad1abb54f597225e4ab9b39d89,New England Patriots,Las Vegas Raiders,2026-10-11T17:00:00Z,Romeo Doubs,player_anytime_td,,Yes,170,betonlineag,20261007T122329Z
+6b024bad1abb54f597225e4ab9b39d89,New England Patriots,Las Vegas Raiders,2026-10-11T17:00:00Z,TreVeyon Henderson,player_anytime_td,,Yes,-167,betonlineag,20261007T122329Z
+6b024bad1abb54f597225e4ab9b39d89,New England Patriots,Las Vegas Raiders,2026-10-11T17:00:00Z,Brock Bowers,player_anytime_td,,Yes,140,betonlineag,20261007T122329Z
+6b024bad1abb54f597225e4ab9b39d89,New England Patriots,Las Vegas Raiders,2026-10-11T17:00:00Z,Ian Thomas,player_anytime_td,,Yes,1400,betonlineag,20261007T122329Z
+6b024bad1abb54f597225e4ab9b39d89,New England Patriots,Las Vegas Raiders,2026-10-11T17:00:00Z,Dareke Young,player_anytime_td,,Yes,1400,betonlineag,20261007T122329Z
+6b024bad1abb54f597225e4ab9b39d89,New England Patriots,Las Vegas Raiders,2026-10-11T17:00:00Z,Kirk Cousins,player_anytime_td,,Yes,1400,betonlineag,20261007T122329Z
+6b024bad1abb54f597225e4ab9b39d89,New England Patriots,Las Vegas Raiders,2026-10-11T17:00:00Z,Malik Benson,player_anytime_td,,Yes,700,betonlineag,20261007T122329Z
+6b024bad1abb54f597225e4ab9b39d89,New England Patriots,Las Vegas Raiders,2026-10-11T17:00:00Z,Efton Chism III,player_anytime_td,,Yes,500,betonlineag,20261007T122329Z
+6b024bad1abb54f597225e4ab9b39d89,New England Patriots,Las Vegas Raiders,2026-10-11T17:00:00Z,Kyle Williams,player_anytime_td,,Yes,600,betonlineag,20261007T122329Z
+6b024bad1abb54f597225e4ab9b39d89,New England Patriots,Las Vegas Raiders,2026-10-11T17:00:00Z,Mike Washington Jr.,player_anytime_td,,Yes,450,betonlineag,20261007T122329Z
+6b024bad1abb54f597225e4ab9b39d89,New England Patriots,Las Vegas Raiders,2026-10-11T17:00:00Z,Drake Maye,player_anytime_td,,Yes,350,betonlineag,20261007T122329Z
+6b024bad1abb54f597225e4ab9b39d89,New England Patriots,Las Vegas Raiders,2026-10-11T17:00:00Z,DeMario Douglas,player_anytime_td,,Yes,300,betonlineag,20261007T122329Z
+6b024bad1abb54f597225e4ab9b39d89,New England Patriots,Las Vegas Raiders,2026-10-11T17:00:00Z,Tre Tucker,player_anytime_td,,Yes,325,betonlineag,20261007T122329Z
+6b024bad1abb54f597225e4ab9b39d89,New England Patriots,Las Vegas Raiders,2026-10-11T17:00:00Z,Michael Mayer,player_anytime_td,,Yes,350,betonlineag,20261007T122329Z
+6b024bad1abb54f597225e4ab9b39d89,New England Patriots,Las Vegas Raiders,2026-10-11T17:00:00Z,Hunter Henry,player_anytime_td,,Yes,190,betonlineag,20261007T122329Z
+6b024bad1abb54f597225e4ab9b39d89,New England Patriots,Las Vegas Raiders,2026-10-11T17:00:00Z,Eli Raridon,player_anytime_td,,Yes,600,betonlineag,20261007T122329Z
+6b024bad1abb54f597225e4ab9b39d89,New England Patriots,Las Vegas Raiders,2026-10-11T17:00:00Z,Drake Maye,player_pass_tds,1.5,Over,-114,betonlineag,20261007T122329Z
+6b024bad1abb54f597225e4ab9b39d89,New England Patriots,Las Vegas Raiders,2026-10-11T17:00:00Z,Drake Maye,player_pass_tds,1.5,Under,-114,betonlineag,20261007T122329Z
+6b024bad1abb54f597225e4ab9b39d89,New England Patriots,Las Vegas Raiders,2026-10-11T17:00:00Z,Kirk Cousins,player_pass_tds,1.5,Over,120,betonlineag,20261007T122329Z
+6b024bad1abb54f597225e4ab9b39d89,New England Patriots,Las Vegas Raiders,2026-10-11T17:00:00Z,Kirk Cousins,player_pass_tds,1.5,Under,-156,betonlineag,20261007T122329Z
+6b024bad1abb54f597225e4ab9b39d89,New England Patriots,Las Vegas Raiders,2026-10-11T17:00:00Z,Kirk Cousins,player_pass_yds,225.5,Over,-115,betonlineag,20261007T122329Z
+6b024bad1abb54f597225e4ab9b39d89,New England Patriots,Las Vegas Raiders,2026-10-11T17:00:00Z,Kirk Cousins,player_pass_yds,225.5,Under,-112,betonlineag,20261007T122329Z
+6b024bad1abb54f597225e4ab9b39d89,New England Patriots,Las Vegas Raiders,2026-10-11T17:00:00Z,Drake Maye,player_pass_yds,227.5,Over,-115,betonlineag,20261007T122329Z
+6b024bad1abb54f597225e4ab9b39d89,New England Patriots,Las Vegas Raiders,2026-10-11T17:00:00Z,Drake Maye,player_pass_yds,227.5,Under,-112,betonlineag,20261007T122329Z
+6b024bad1abb54f597225e4ab9b39d89,New England Patriots,Las Vegas Raiders,2026-10-11T17:00:00Z,Dareke Young,player_anytime_td,,Yes,2000,betrivers,20261007T122329Z
+6b024bad1abb54f597225e4ab9b39d89,New England Patriots,Las Vegas Raiders,2026-10-11T17:00:00Z,Romeo Doubs,player_anytime_td,,Yes,195,betrivers,20261007T122329Z
+6b024bad1abb54f597225e4ab9b39d89,New England Patriots,Las Vegas Raiders,2026-10-11T17:00:00Z,Kyle Williams,player_anytime_td,,Yes,850,betrivers,20261007T122329Z
+6b024bad1abb54f597225e4ab9b39d89,New England Patriots,Las Vegas Raiders,2026-10-11T17:00:00Z,Ashton Jeanty,player_anytime_td,,Yes,-120,betrivers,20261007T122329Z
+6b024bad1abb54f597225e4ab9b39d89,New England Patriots,Las Vegas Raiders,2026-10-11T17:00:00Z,Michael Mayer,player_anytime_td,,Yes,430,betrivers,20261007T122329Z
+6b024bad1abb54f597225e4ab9b39d89,New England Patriots,Las Vegas Raiders,2026-10-11T17:00:00Z,Brock Bowers,player_anytime_td,,Yes,138,betrivers,20261007T122329Z
+6b024bad1abb54f597225e4ab9b39d89,New England Patriots,Las Vegas Raiders,2026-10-11T17:00:00Z,Kirk Cousins,player_anytime_td,,Yes,1400,betrivers,20261007T122329Z
+6b024bad1abb54f597225e4ab9b39d89,New England Patriots,Las Vegas Raiders,2026-10-11T17:00:00Z,Cameron Latu,player_anytime_td,,Yes,2800,betrivers,20261007T122329Z
+6b024bad1abb54f597225e4ab9b39d89,New England Patriots,Las Vegas Raiders,2026-10-11T17:00:00Z,Dylan Laube,player_anytime_td,,Yes,1500,betrivers,20261007T122329Z
+6b024bad1abb54f597225e4ab9b39d89,New England Patriots,Las Vegas Raiders,2026-10-11T17:00:00Z,Mack Hollins,player_anytime_td,,Yes,255,betrivers,20261007T122329Z
+6b024bad1abb54f597225e4ab9b39d89,New England Patriots,Las Vegas Raiders,2026-10-11T17:00:00Z,Malik Benson,player_anytime_td,,Yes,650,betrivers,20261007T122329Z
+6b024bad1abb54f597225e4ab9b39d89,New England Patriots,Las Vegas Raiders,2026-10-11T17:00:00Z,Efton Chism III,player_anytime_td,,Yes,600,betrivers,20261007T122329Z
+6b024bad1abb54f597225e4ab9b39d89,New England Patriots,Las Vegas Raiders,2026-10-11T17:00:00Z,Hunter Henry,player_anytime_td,,Yes,225,betrivers,20261007T122329Z
+6b024bad1abb54f597225e4ab9b39d89,New England Patriots,Las Vegas Raiders,2026-10-11T17:00:00Z,Rhamondre Stevenson,player_anytime_td,,Yes,-117,betrivers,20261007T122329Z
+6b024bad1abb54f597225e4ab9b39d89,New England Patriots,Las Vegas Raiders,2026-10-11T17:00:00Z,Ian Thomas,player_anytime_td,,Yes,1400,betrivers,20261007T122329Z
+6b024bad1abb54f597225e4ab9b39d89,New England Patriots,Las Vegas Raiders,2026-10-11T17:00:00Z,TreVeyon Henderson,player_anytime_td,,Yes,120,betrivers,20261007T122329Z
+6b024bad1abb54f597225e4ab9b39d89,New England Patriots,Las Vegas Raiders,2026-10-11T17:00:00Z,Jalen Nailor,player_anytime_td,,Yes,370,betrivers,20261007T122329Z
+6b024bad1abb54f597225e4ab9b39d89,New England Patriots,Las Vegas Raiders,2026-10-11T17:00:00Z,Cody White,player_anytime_td,,Yes,650,betrivers,20261007T122329Z
+6b024bad1abb54f597225e4ab9b39d89,New England Patriots,Las Vegas Raiders,2026-10-11T17:00:00Z,Tanner Arkin,player_anytime_td,,Yes,3500,betrivers,20261007T122329Z
+6b024bad1abb54f597225e4ab9b39d89,New England Patriots,Las Vegas Raiders,2026-10-11T17:00:00Z,Corey Kiner,player_anytime_td,,Yes,4500,betrivers,20261007T122329Z
+6b024bad1abb54f597225e4ab9b39d89,New England Patriots,Las Vegas Raiders,2026-10-11T17:00:00Z,Eli Raridon,player_anytime_td,,Yes,600,betrivers,20261007T122329Z
+6b024bad1abb54f597225e4ab9b39d89,New England Patriots,Las Vegas Raiders,2026-10-11T17:00:00Z,Mike Washington Jr.,player_anytime_td,,Yes,430,betrivers,20261007T122329Z
+6b024bad1abb54f597225e4ab9b39d89,New England Patriots,Las Vegas Raiders,2026-10-11T17:00:00Z,DeMario Douglas,player_anytime_td,,Yes,360,betrivers,20261007T122329Z
+6b024bad1abb54f597225e4ab9b39d89,New England Patriots,Las Vegas Raiders,2026-10-11T17:00:00Z,Tre Tucker,player_anytime_td,,Yes,300,betrivers,20261007T122329Z
+6b024bad1abb54f597225e4ab9b39d89,New England Patriots,Las Vegas Raiders,2026-10-11T17:00:00Z,Drake Maye,player_anytime_td,,Yes,425,betrivers,20261007T122329Z
+6b024bad1abb54f597225e4ab9b39d89,New England Patriots,Las Vegas Raiders,2026-10-11T17:00:00Z,Drake Maye,player_pass_tds,1.5,Over,-114,betrivers,20261007T122329Z
+6b024bad1abb54f597225e4ab9b39d89,New England Patriots,Las Vegas Raiders,2026-10-11T17:00:00Z,Drake Maye,player_pass_tds,1.5,Under,-115,betrivers,20261007T122329Z
+6b024bad1abb54f597225e4ab9b39d89,New England Patriots,Las Vegas Raiders,2026-10-11T17:00:00Z,Kirk Cousins,player_pass_tds,1.5,Over,132,betrivers,20261007T122329Z
+6b024bad1abb54f597225e4ab9b39d89,New England Patriots,Las Vegas Raiders,2026-10-11T17:00:00Z,Kirk Cousins,player_pass_tds,1.5,Under,-180,betrivers,20261007T122329Z
+6b024bad1abb54f597225e4ab9b39d89,New England Patriots,Las Vegas Raiders,2026-10-11T17:00:00Z,Kirk Cousins,player_pass_yds,220.5,Over,-115,betrivers,20261007T122329Z
+6b024bad1abb54f597225e4ab9b39d89,New England Patriots,Las Vegas Raiders,2026-10-11T17:00:00Z,Kirk Cousins,player_pass_yds,220.5,Under,-115,betrivers,20261007T122329Z
+6b024bad1abb54f597225e4ab9b39d89,New England Patriots,Las Vegas Raiders,2026-10-11T17:00:00Z,Drake Maye,player_pass_yds,225.5,Over,-115,betrivers,20261007T122329Z
+6b024bad1abb54f597225e4ab9b39d89,New England Patriots,Las Vegas Raiders,2026-10-11T17:00:00Z,Drake Maye,player_pass_yds,225.5,Under,-115,betrivers,20261007T122329Z
+6b024bad1abb54f597225e4ab9b39d89,New England Patriots,Las Vegas Raiders,2026-10-11T17:00:00Z,Eli Raridon,player_anytime_td,,Yes,600,bovada,20261007T122329Z
+6b024bad1abb54f597225e4ab9b39d89,New England Patriots,Las Vegas Raiders,2026-10-11T17:00:00Z,Drake Maye,player_anytime_td,,Yes,400,bovada,20261007T122329Z
+6b024bad1abb54f597225e4ab9b39d89,New England Patriots,Las Vegas Raiders,2026-10-11T17:00:00Z,New England Patriots D/ST,player_anytime_td,,Yes,500,bovada,20261007T122329Z
+6b024bad1abb54f597225e4ab9b39d89,New England Patriots,Las Vegas Raiders,2026-10-11T17:00:00Z,Las Vegas Raiders D/ST,player_anytime_td,,Yes,525,bovada,20261007T122329Z
+6b024bad1abb54f597225e4ab9b39d89,New England Patriots,Las Vegas Raiders,2026-10-11T17:00:00Z,Kyle Williams,player_anytime_td,,Yes,625,bovada,20261007T122329Z
+6b024bad1abb54f597225e4ab9b39d89,New England Patriots,Las Vegas Raiders,2026-10-11T17:00:00Z,DeMario Douglas,player_anytime_td,,Yes,310,bovada,20261007T122329Z
+6b024bad1abb54f597225e4ab9b39d89,New England Patriots,Las Vegas Raiders,2026-10-11T17:00:00Z,Hunter Henry,player_anytime_td,,Yes,195,bovada,20261007T122329Z
+6b024bad1abb54f597225e4ab9b39d89,New England Patriots,Las Vegas Raiders,2026-10-11T17:00:00Z,Efton Chism III,player_anytime_td,,Yes,500,bovada,20261007T122329Z
+6b024bad1abb54f597225e4ab9b39d89,New England Patriots,Las Vegas Raiders,2026-10-11T17:00:00Z,Mike Washington Jr.,player_anytime_td,,Yes,525,bovada,20261007T122329Z
+6b024bad1abb54f597225e4ab9b39d89,New England Patriots,Las Vegas Raiders,2026-10-11T17:00:00Z,Cody White,player_anytime_td,,Yes,500,bovada,20261007T122329Z
+6b024bad1abb54f597225e4ab9b39d89,New England Patriots,Las Vegas Raiders,2026-10-11T17:00:00Z,Ian Thomas,player_anytime_td,,Yes,2500,bovada,20261007T122329Z
+6b024bad1abb54f597225e4ab9b39d89,New England Patriots,Las Vegas Raiders,2026-10-11T17:00:00Z,Kirk Cousins,player_anytime_td,,Yes,1800,bovada,20261007T122329Z
+6b024bad1abb54f597225e4ab9b39d89,New England Patriots,Las Vegas Raiders,2026-10-11T17:00:00Z,Dareke Young,player_anytime_td,,Yes,1700,bovada,20261007T122329Z
+6b024bad1abb54f597225e4ab9b39d89,New England Patriots,Las Vegas Raiders,2026-10-11T17:00:00Z,Malik Benson,player_anytime_td,,Yes,700,bovada,20261007T122329Z
+6b024bad1abb54f597225e4ab9b39d89,New England Patriots,Las Vegas Raiders,2026-10-11T17:00:00Z,TreVeyon Henderson,player_anytime_td,,Yes,125,bovada,20261007T122329Z
+6b024bad1abb54f597225e4ab9b39d89,New England Patriots,Las Vegas Raiders,2026-10-11T17:00:00Z,Rhamondre Stevenson,player_anytime_td,,Yes,100,bovada,20261007T122329Z
+6b024bad1abb54f597225e4ab9b39d89,New England Patriots,Las Vegas Raiders,2026-10-11T17:00:00Z,Romeo Doubs,player_anytime_td,,Yes,170,bovada,20261007T122329Z
+6b024bad1abb54f597225e4ab9b39d89,New England Patriots,Las Vegas Raiders,2026-10-11T17:00:00Z,Michael Mayer,player_anytime_td,,Yes,390,bovada,20261007T122329Z
+6b024bad1abb54f597225e4ab9b39d89,New England Patriots,Las Vegas Raiders,2026-10-11T17:00:00Z,Tre Tucker,player_anytime_td,,Yes,330,bovada,20261007T122329Z
+6b024bad1abb54f597225e4ab9b39d89,New England Patriots,Las Vegas Raiders,2026-10-11T17:00:00Z,Ashton Jeanty,player_anytime_td,,Yes,-122,bovada,20261007T122329Z
+6b024bad1abb54f597225e4ab9b39d89,New England Patriots,Las Vegas Raiders,2026-10-11T17:00:00Z,Brock Bowers,player_anytime_td,,Yes,140,bovada,20261007T122329Z
+6b024bad1abb54f597225e4ab9b39d89,New England Patriots,Las Vegas Raiders,2026-10-11T17:00:00Z,Drake Maye,player_pass_tds,1.5,Over,-125,bovada,20261007T122329Z
+6b024bad1abb54f597225e4ab9b39d89,New England Patriots,Las Vegas Raiders,2026-10-11T17:00:00Z,Drake Maye,player_pass_tds,1.5,Under,-105,bovada,20261007T122329Z
+6b024bad1abb54f597225e4ab9b39d89,New England Patriots,Las Vegas Raiders,2026-10-11T17:00:00Z,Kirk Cousins,player_pass_tds,1.5,Over,120,bovada,20261007T122329Z
+6b024bad1abb54f597225e4ab9b39d89,New England Patriots,Las Vegas Raiders,2026-10-11T17:00:00Z,Kirk Cousins,player_pass_tds,1.5,Under,-160,bovada,20261007T122329Z
+6b024bad1abb54f597225e4ab9b39d89,New England Patriots,Las Vegas Raiders,2026-10-11T17:00:00Z,Drake Maye,player_pass_yds,226.5,Over,-115,bovada,20261007T122329Z
+6b024bad1abb54f597225e4ab9b39d89,New England Patriots,Las Vegas Raiders,2026-10-11T17:00:00Z,Drake Maye,player_pass_yds,226.5,Under,-115,bovada,20261007T122329Z
+6b024bad1abb54f597225e4ab9b39d89,New England Patriots,Las Vegas Raiders,2026-10-11T17:00:00Z,Kirk Cousins,player_pass_yds,228.5,Over,-115,bovada,20261007T122329Z
+6b024bad1abb54f597225e4ab9b39d89,New England Patriots,Las Vegas Raiders,2026-10-11T17:00:00Z,Kirk Cousins,player_pass_yds,228.5,Under,-115,bovada,20261007T122329Z
+2cda9bf0fbe35a2735f0dd8aaafe9eff,New Orleans Saints,Minnesota Vikings,2026-10-11T17:00:00Z,Juwan Johnson,player_anytime_td,,Yes,260,betonlineag,20261007T122329Z
+2cda9bf0fbe35a2735f0dd8aaafe9eff,New Orleans Saints,Minnesota Vikings,2026-10-11T17:00:00Z,Justin Jefferson,player_anytime_td,,Yes,120,betonlineag,20261007T122329Z
+2cda9bf0fbe35a2735f0dd8aaafe9eff,New Orleans Saints,Minnesota Vikings,2026-10-11T17:00:00Z,Chris Olave,player_anytime_td,,Yes,180,betonlineag,20261007T122329Z
+2cda9bf0fbe35a2735f0dd8aaafe9eff,New Orleans Saints,Minnesota Vikings,2026-10-11T17:00:00Z,Alvin Kamara,player_anytime_td,,Yes,110,betonlineag,20261007T122329Z
+2cda9bf0fbe35a2735f0dd8aaafe9eff,New Orleans Saints,Minnesota Vikings,2026-10-11T17:00:00Z,Kendre Miller,player_anytime_td,,Yes,325,betonlineag,20261007T122329Z
+2cda9bf0fbe35a2735f0dd8aaafe9eff,New Orleans Saints,Minnesota Vikings,2026-10-11T17:00:00Z,Jordan Addison,player_anytime_td,,Yes,130,betonlineag,20261007T122329Z
+2cda9bf0fbe35a2735f0dd8aaafe9eff,New Orleans Saints,Minnesota Vikings,2026-10-11T17:00:00Z,Aaron Jones,player_anytime_td,,Yes,-167,betonlineag,20261007T122329Z
+2cda9bf0fbe35a2735f0dd8aaafe9eff,New Orleans Saints,Minnesota Vikings,2026-10-11T17:00:00Z,Kevin Austin,player_anytime_td,,Yes,1900,betonlineag,20261007T122329Z
+2cda9bf0fbe35a2735f0dd8aaafe9eff,New Orleans Saints,Minnesota Vikings,2026-10-11T17:00:00Z,T.J. Hockenson,player_anytime_td,,Yes,160,betonlineag,20261007T122329Z
+2cda9bf0fbe35a2735f0dd8aaafe9eff,New Orleans Saints,Minnesota Vikings,2026-10-11T17:00:00Z,Tai Felton,player_anytime_td,,Yes,750,betonlineag,20261007T122329Z
+2cda9bf0fbe35a2735f0dd8aaafe9eff,New Orleans Saints,Minnesota Vikings,2026-10-11T17:00:00Z,Devaughn Vele,player_anytime_td,,Yes,300,betonlineag,20261007T122329Z
+2cda9bf0fbe35a2735f0dd8aaafe9eff,New Orleans Saints,Minnesota Vikings,2026-10-11T17:00:00Z,Myles Price,player_anytime_td,,Yes,1100,betonlineag,20261007T122329Z
+2cda9bf0fbe35a2735f0dd8aaafe9eff,New Orleans Saints,Minnesota Vikings,2026-10-11T17:00:00Z,Tyler Shough,player_anytime_td,,Yes,325,betonlineag,20261007T122329Z
+2cda9bf0fbe35a2735f0dd8aaafe9eff,New Orleans Saints,Minnesota Vikings,2026-10-11T17:00:00Z,Noah Fant,player_anytime_td,,Yes,650,betonlineag,20261007T122329Z
+2cda9bf0fbe35a2735f0dd8aaafe9eff,New Orleans Saints,Minnesota Vikings,2026-10-11T17:00:00Z,Gavin Bartholomew,player_anytime_td,,Yes,1100,betonlineag,20261007T122329Z
+2cda9bf0fbe35a2735f0dd8aaafe9eff,New Orleans Saints,Minnesota Vikings,2026-10-11T17:00:00Z,CJ Donaldson,player_anytime_td,,Yes,500,betonlineag,20261007T122329Z
+2cda9bf0fbe35a2735f0dd8aaafe9eff,New Orleans Saints,Minnesota Vikings,2026-10-11T17:00:00Z,Kyler Murray,player_anytime_td,,Yes,325,betonlineag,20261007T122329Z
+2cda9bf0fbe35a2735f0dd8aaafe9eff,New Orleans Saints,Minnesota Vikings,2026-10-11T17:00:00Z,Oscar Delp,player_anytime_td,,Yes,1100,betonlineag,20261007T122329Z
+2cda9bf0fbe35a2735f0dd8aaafe9eff,New Orleans Saints,Minnesota Vikings,2026-10-11T17:00:00Z,Jauan Jennings,player_anytime_td,,Yes,300,betonlineag,20261007T122329Z
+2cda9bf0fbe35a2735f0dd8aaafe9eff,New Orleans Saints,Minnesota Vikings,2026-10-11T17:00:00Z,Demond Claiborne,player_anytime_td,,Yes,650,betonlineag,20261007T122329Z
+2cda9bf0fbe35a2735f0dd8aaafe9eff,New Orleans Saints,Minnesota Vikings,2026-10-11T17:00:00Z,DeeJay Dallas,player_anytime_td,,Yes,1100,betonlineag,20261007T122329Z
+2cda9bf0fbe35a2735f0dd8aaafe9eff,New Orleans Saints,Minnesota Vikings,2026-10-11T17:00:00Z,Max Bredeson,player_anytime_td,,Yes,1100,betonlineag,20261007T122329Z
+2cda9bf0fbe35a2735f0dd8aaafe9eff,New Orleans Saints,Minnesota Vikings,2026-10-11T17:00:00Z,Barion Brown,player_anytime_td,,Yes,1400,betonlineag,20261007T122329Z
+2cda9bf0fbe35a2735f0dd8aaafe9eff,New Orleans Saints,Minnesota Vikings,2026-10-11T17:00:00Z,Bryce Lance,player_anytime_td,,Yes,750,betonlineag,20261007T122329Z
+fbffd0b7722fd81d68d5d62472dc80e8,Washington Commanders,New York Giants,2026-10-11T17:00:00Z,Cam Skattebo,player_anytime_td,,Yes,-110,draftkings,20261007T122329Z
+fbffd0b7722fd81d68d5d62472dc80e8,Washington Commanders,New York Giants,2026-10-11T17:00:00Z,Malik Nabers,player_anytime_td,,Yes,180,draftkings,20261007T122329Z
+fbffd0b7722fd81d68d5d62472dc80e8,Washington Commanders,New York Giants,2026-10-11T17:00:00Z,Isaiah Likely,player_anytime_td,,Yes,275,draftkings,20261007T122329Z
+fbffd0b7722fd81d68d5d62472dc80e8,Washington Commanders,New York Giants,2026-10-11T17:00:00Z,Isaiah Likely,player_anytime_td,,Yes,270,betonlineag,20261007T122329Z
+fbffd0b7722fd81d68d5d62472dc80e8,Washington Commanders,New York Giants,2026-10-11T17:00:00Z,Malik Nabers,player_anytime_td,,Yes,170,betonlineag,20261007T122329Z
+fbffd0b7722fd81d68d5d62472dc80e8,Washington Commanders,New York Giants,2026-10-11T17:00:00Z,Cam Skattebo,player_anytime_td,,Yes,-111,betonlineag,20261007T122329Z
+fbffd0b7722fd81d68d5d62472dc80e8,Washington Commanders,New York Giants,2026-10-11T17:00:00Z,Malik Nabers,player_anytime_td,,Yes,180,bovada,20261007T122329Z
+fbffd0b7722fd81d68d5d62472dc80e8,Washington Commanders,New York Giants,2026-10-11T17:00:00Z,Cam Skattebo,player_anytime_td,,Yes,-114,bovada,20261007T122329Z
+fbffd0b7722fd81d68d5d62472dc80e8,Washington Commanders,New York Giants,2026-10-11T17:00:00Z,Isaiah Likely,player_anytime_td,,Yes,275,bovada,20261007T122329Z

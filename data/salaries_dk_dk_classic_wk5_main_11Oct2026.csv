@@ -212,7 +212,7 @@ RB,Cody Schrader (44392060),Cody Schrader,44392060,RB/FLEX,4000,DEN@LAC 10/11/20
 RB,Adam Prentice (44392062),Adam Prentice,44392062,RB/FLEX,4000,DEN@LAC 10/11/2026 04:05PM ET,DEN,0.3,,Adam Prentice,dk,4000,adam prentice,DEN,RB,classic,00-0036727,auto_exact,high
 RB,Craig Reynolds (44392064),Craig Reynolds,44392064,RB/FLEX,4000,NYG@WAS 10/11/2026 01:00PM ET,WAS,0.4,,Craig Reynolds,dk,4000,craig reynolds,WAS,RB,classic,00-0035567,auto_exact,high
 RB,Jeremy McNichols (44392066),Jeremy McNichols,44392066,RB/FLEX,4000,NYG@WAS 10/11/2026 01:00PM ET,WAS,0.0,IR,Jeremy McNichols,dk,4000,jeremy mcnichols,WAS,RB,classic,00-0033955,auto_exact,high
-RB,Robert Henry Jr. (44392068),Robert Henry Jr.,44392068,RB/FLEX,4000,NYG@WAS 10/11/2026 01:00PM ET,WAS,0.0,,Robert Henry Jr.,dk,4000,robert henry,WAS,RB,classic,00-0041178,auto_exact,high
+RB,Robert Henry Jr. (44392068),Robert Henry Jr.,44392068,RB/FLEX,4000,NYG@WAS 10/11/2026 01:00PM ET,WAS,0.0,,Robert Henry Jr.,dk,4000,robert henry,WAS,RB,classic,00-0041178,auto_fallback_team_mismatch,medium
 RB,Devin Singletary (44392070),Devin Singletary,44392070,RB/FLEX,4000,NYG@WAS 10/11/2026 01:00PM ET,NYG,7.4,,Devin Singletary,dk,4000,devin singletary,NYG,RB,classic,00-0035250,auto_exact,high
 RB,Patrick Ricard (44392072),Patrick Ricard,44392072,RB/FLEX,4000,NYG@WAS 10/11/2026 01:00PM ET,NYG,0.3,,Patrick Ricard,dk,4000,patrick ricard,NYG,RB,classic,00-0033376,auto_exact,high
 RB,Phil Mafah (44392074),Phil Mafah,44392074,RB/FLEX,4000,NYG@WAS 10/11/2026 01:00PM ET,NYG,0.0,,Phil Mafah,dk,4000,phil mafah,NYG,RB,classic,00-0040021,auto_exact,high
@@ -242,7 +242,7 @@ RB,Ulysses Bentley IV (44392120),Ulysses Bentley IV,44392120,RB/FLEX,4000,MIN@NO
 RB,Demond Claiborne (44392122),Demond Claiborne,44392122,RB/FLEX,4000,MIN@NO 10/11/2026 01:00PM ET,MIN,0.8,,Demond Claiborne,dk,4000,demond claiborne,MIN,RB,classic,00-0041104,auto_exact,high
 RB,Jordan Mason (44392124),Jordan Mason,44392124,RB/FLEX,4000,MIN@NO 10/11/2026 01:00PM ET,MIN,11.9,IR,Jordan Mason,dk,4000,jordan mason,MIN,RB,classic,00-0037525,auto_exact,high
 RB,Devin Neal (44392126),Devin Neal,44392126,RB/FLEX,4000,MIN@NO 10/11/2026 01:00PM ET,MIN,0.0,,Devin Neal,dk,4000,devin neal,MIN,RB,classic,00-0040202,auto_exact,high
-RB,Audric Estime (44392128),Audric Estime,44392128,RB/FLEX,4000,MIN@NO 10/11/2026 01:00PM ET,MIN,0.0,,Audric Estime,dk,4000,audric estime,MIN,RB,classic,,,
+RB,Audric Estime (44392128),Audric Estime,44392128,RB/FLEX,4000,MIN@NO 10/11/2026 01:00PM ET,MIN,0.0,,Audric Estime,dk,4000,audric estime,MIN,RB,classic,00-0039373,manual_override,high
 RB,Max Bredeson (44392130),Max Bredeson,44392130,RB/FLEX,4000,MIN@NO 10/11/2026 01:00PM ET,MIN,0.0,,Max Bredeson,dk,4000,max bredeson,MIN,RB,classic,00-0041081,auto_exact,high
 RB,Corey Kiner (44392132),Corey Kiner,44392132,RB/FLEX,4000,LV@NE 10/11/2026 01:00PM ET,NE,1.2,,Corey Kiner,dk,4000,corey kiner,NE,RB,classic,00-0040556,auto_exact,high
 RB,Myles Montgomery (44392134),Myles Montgomery,44392134,RB/FLEX,4000,LV@NE 10/11/2026 01:00PM ET,NE,0.0,IR,Myles Montgomery,dk,4000,myles montgomery,NE,RB,classic,00-0041323,auto_exact,high
@@ -298,7 +298,7 @@ WR,Cody White (44392302),Cody White,44392302,WR/FLEX,3300,LV@NE 10/11/2026 01:00
 WR,Darius Slayton (44392304),Darius Slayton,44392304,WR/FLEX,3300,IND@PIT 10/11/2026 01:00PM ET,IND,0.0,,Darius Slayton,dk,3300,darius slayton,IND,WR,classic,00-0035535,auto_exact,high
 WR,Christian Kirk (44392306),Christian Kirk,44392306,WR/FLEX,3300,SF@SEA 10/11/2026 04:25PM ET,SF,0.0,IR,Christian Kirk,dk,3300,christian kirk,SF,WR,classic,00-0034775,auto_exact,high
 WR,Marquez Valdes-Scantling (44392308),Marquez Valdes-Scantling,44392308,WR/FLEX,3300,DEN@LAC 10/11/2026 04:05PM ET,LAC,0.0,,Marquez Valdes-Scantling,dk,3300,marquez valdes scantling,LAC,WR,classic,00-0034272,auto_exact,high
-WR,Mitch Tinsley (44392310),Mitch Tinsley,44392310,WR/FLEX,3300,CIN@MIA 10/11/2026 01:00PM ET,CIN,7.9,,Mitch Tinsley,dk,3300,mitch tinsley,CIN,WR,classic,,,
+WR,Mitch Tinsley (44392310),Mitch Tinsley,44392310,WR/FLEX,3300,CIN@MIA 10/11/2026 01:00PM ET,CIN,7.9,,Mitch Tinsley,dk,3300,mitch tinsley,CIN,WR,classic,00-0038839,manual_override,high
 TE,Chig Okonkwo (44392624),Chig Okonkwo,44392624,TE/FLEX,3300,NYG@WAS 10/11/2026 01:00PM ET,WAS,3.1,,Chig Okonkwo,dk,3300,chig okonkwo,WAS,TE,classic,00-0037809,auto_exact,high
 DST,Steelers (44392854),Steelers,44392854,DST,3300,IND@PIT 10/11/2026 01:00PM ET,PIT,9.3,,Steelers,dk,3300,steelers,PIT,DST,classic,DST_PIT,team_defense,high
 WR,Efton Chism III (44392312),Efton Chism III,44392312,WR/FLEX,3200,LV@NE 10/11/2026 01:00PM ET,NE,4.9,,Efton Chism III,dk,3200,efton chism,NE,WR,classic,00-0040563,auto_exact,high

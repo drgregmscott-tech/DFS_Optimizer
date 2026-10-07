@@ -1,7 +1,7 @@
 Construction lint (informational only -- never blocks a build; see WK3_CONSTRUCTION_RULE_AUDIT.md):
 [construction_lint] classic: 20 lineups, pool=final_projections_dk_dk_classic_wk5_main_11Oct2026.csv
               rule severity                                                           evidence  lineups share
-   CL_no_bringback     info                            Mixed (replay: recommend; WK2: neutral)        4   20%
+   CL_no_bringback     info                            Mixed (replay: recommend; WK2: neutral)        6   30%
        CL_qb_price     info                                       Directional (Phase 2, 3 wks)        8   40%
-CL_stack_depth_lt2     info Directional (Phase 2 +3.7pt QB+2, n small; WK2 said stack 2 worse)       13   65%
-     CL_zero_punts     warn                Directional (Phase 2 field lift -8.9pt, real field)        6   30%
+CL_stack_depth_lt2     info Directional (Phase 2 +3.7pt QB+2, n small; WK2 said stack 2 worse)        8   40%
+     CL_zero_punts     warn                Directional (Phase 2 field lift -8.9pt, real field)        9   45%

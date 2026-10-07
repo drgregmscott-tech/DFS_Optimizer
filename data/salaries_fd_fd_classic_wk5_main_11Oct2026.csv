@@ -210,7 +210,7 @@ Id,Position,First Name,Nickname,Last Name,FPPG,Played,Salary,Game,Team,Opponent,
 135023-29501,WR,Brandin,Brandin Cooks,Cooks,0.0,1,4900,SF@SEA,SF,SEA,,,,,,WR/FLEX,Brandin Cooks,fd,4900,brandin cooks,SF,WR,classic,00-0031236,auto_exact,high
 135023-41806,WR,Laquon,Laquon Treadwell,Treadwell,4.199999809265137,4,4900,IND@PIT,IND,PIT,,,,,,WR/FLEX,Laquon Treadwell,fd,4900,laquon treadwell,IND,WR,classic,00-0032951,auto_exact,high
 135023-41872,TE,Evan,Evan Engram,Engram,3.900000095367432,4,4900,DEN@LAC,DEN,LAC,,,,,,TE/FLEX,Evan Engram,fd,4900,evan engram,DEN,TE,classic,00-0033881,auto_exact,high
-135023-128912,WR,Mitch,Mitch Tinsley,Tinsley,6.400000095367432,1,4900,CIN@MIA,CIN,MIA,,,,,,WR/FLEX,Mitch Tinsley,fd,4900,mitch tinsley,CIN,WR,classic,,,
+135023-128912,WR,Mitch,Mitch Tinsley,Tinsley,6.400000095367432,1,4900,CIN@MIA,CIN,MIA,,,,,,WR/FLEX,Mitch Tinsley,fd,4900,mitch tinsley,CIN,WR,classic,00-0038839,manual_override,high
 135023-64555,WR,Calvin,Calvin Ridley,Ridley,2.100000063578288,3,4800,HOU@TEN,TEN,HOU,,,,,,WR/FLEX,Calvin Ridley,fd,4800,calvin ridley,TEN,WR,classic,00-0034837,auto_exact,high
 135023-12547,D,Pittsburgh,Pittsburgh Steelers,Steelers,9.25,4,4800,IND@PIT,PIT,IND,,,,,,DEF,Pittsburgh Steelers,fd,4800,pittsburgh steelers,PIT,D,classic,DST_PIT,team_defense,high
 135023-91488,RB,Chris,Chris Brooks,Brooks,2.7249999046325684,4,4800,CHI@GB,GB,CHI,Q,Ankle,,,,RB/FLEX,Chris Brooks,fd,4800,chris brooks,GB,RB,classic,00-0038685,auto_exact,high
@@ -449,7 +449,7 @@ Id,Position,First Name,Nickname,Last Name,FPPG,Played,Salary,Game,Team,Opponent,
 135023-54746,TE,Tyler,Tyler Ott,Ott,0.0,1,4000,NYG@WAS,WAS,NYG,,,,,,TE/FLEX,Tyler Ott,fd,4000,tyler ott,WAS,TE,classic,00-0031156,auto_fallback_name_only_position_mismatch,low
 135023-155096,WR,Quincy,Quincy Skinner Jr.,Skinner Jr.,,0,4000,CHI@GB,GB,CHI,,,,,,WR/FLEX,Quincy Skinner Jr.,fd,4000,quincy skinner,GB,WR,classic,00-0040553,auto_exact,high
 135023-243160,WR,Michael,Michael Briscoe,Briscoe,,0,4000,MIN@NO,MIN,NO,,,,,,WR/FLEX,Michael Briscoe,fd,4000,michael briscoe,MIN,WR,classic,00-0040970,auto_exact,high
-135023-157150,RB,Audric,Audric Estime,Estime,8.419999694824218,5,4000,MIN@NO,MIN,NO,,,,,,RB/FLEX,Audric Estime,fd,4000,audric estime,MIN,RB,classic,,,
+135023-157150,RB,Audric,Audric Estime,Estime,8.419999694824218,5,4000,MIN@NO,MIN,NO,,,,,,RB/FLEX,Audric Estime,fd,4000,audric estime,MIN,RB,classic,00-0039373,manual_override,high
 135023-63967,WR,Lucky,Lucky Jackson,Jackson,,0,4000,DET@ARI,DET,ARI,,,,,,WR/FLEX,Lucky Jackson,fd,4000,lucky jackson,DET,WR,classic,00-0038181,auto_exact,high
 135023-80353,TE,Robert,Robert Tonyan,Tonyan,0.699999988079071,1,4000,IND@PIT,PIT,IND,,,,,,TE/FLEX,Robert Tonyan,fd,4000,robert tonyan,PIT,TE,classic,00-0033757,auto_exact,high
 135023-157154,WR,Jaden,Jaden Bradley,Bradley,,0,4000,NYG@WAS,WAS,NYG,,,,,,WR/FLEX,Jaden Bradley,fd,4000,jaden bradley,WAS,WR,classic,00-0041176,auto_exact,high
@@ -459,7 +459,7 @@ Id,Position,First Name,Nickname,Last Name,FPPG,Played,Salary,Game,Team,Opponent,
 135023-191983,TE,Dallen,Dallen Bentley,Bentley,0.0,1,4000,DEN@LAC,DEN,LAC,,,,,,TE/FLEX,Dallen Bentley,fd,4000,dallen bentley,DEN,TE,classic,00-0041133,auto_exact,high
 135023-177644,TE,Justin,Justin Joly,Joly,0.0,1,4000,CIN@MIA,MIA,CIN,,,,,,TE/FLEX,Justin Joly,fd,4000,justin joly,MIA,TE,classic,00-0041077,auto_exact,high
 135023-102902,WR,Trey,Trey Palmer,Palmer,,0,4000,MIN@NO,NO,MIN,,,,,,WR/FLEX,Trey Palmer,fd,4000,trey palmer,NO,WR,classic,00-0039052,auto_exact,high
-135023-184821,RB,Robert,Robert Henry Jr.,Henry Jr.,,0,4000,NYG@WAS,WAS,NYG,,,,,,RB/FLEX,Robert Henry Jr.,fd,4000,robert henry,WAS,RB,classic,00-0041178,auto_exact,high
+135023-184821,RB,Robert,Robert Henry Jr.,Henry Jr.,,0,4000,NYG@WAS,WAS,NYG,,,,,,RB/FLEX,Robert Henry Jr.,fd,4000,robert henry,WAS,RB,classic,00-0041178,auto_fallback_team_mismatch,medium
 135023-185850,TE,Julian,Julian Hill,Hill,2.136363636363636,11,4000,LV@NE,NE,LV,IR,Knee,,,,TE/FLEX,Julian Hill,fd,4000,julian hill,NE,TE,classic,00-0038720,auto_exact,high
 135023-89613,WR,Simi,Simi Fehoko,Fehoko,0.0,3,4000,DET@ARI,ARI,DET,,,,,,WR/FLEX,Simi Fehoko,fd,4000,simi fehoko,ARI,WR,classic,00-0036646,auto_exact,high
 135023-102928,RB,Eric,Eric Gray,Gray,0.0,1,4000,CLE@NYJ,CLE,NYJ,,,,,,RB/FLEX,Eric Gray,fd,4000,eric gray,CLE,RB,classic,00-0038396,auto_exact,high

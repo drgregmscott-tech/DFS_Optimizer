@@ -51,3 +51,7 @@ fd,Matt Hibner,BAL,TE,00-0040879,matched via nflverse 2026 roster (Matthew Hibne
 fd,Matt Orzech,GB,TE,00-0035118,matched via nflverse 2026 roster (Matthew Orzech LS listed as TE by FD) - Week 2 2026 FD classic main
 fd,Joshua Palmer,BUF,WR,00-0036988,FD lists formal 'Joshua'; nflverse uses 'Josh Palmer' - Week 3 2026 wk3_main unmatched fix
 fd,Drew Ogletree,IND,TE,00-0037292,FD lists nickname 'Drew'; nflverse uses formal 'Andrew Ogletree' - Week 3 2026 wk3_main unmatched fix
+dk,Mitch Tinsley,CIN,WR,00-0038839,matched via nflverse (Mitchell Tinsley -- now CIN) - Week 5 2026 dk classic
+fd,Mitch Tinsley,CIN,WR,00-0038839,matched via nflverse (Mitchell Tinsley -- now CIN) - Week 5 2026 fd classic
+dk,Audric Estime,MIN,RB,00-0039373,matched via nflverse weekly_stats_2025 (A.Estime) - Week 5 2026 dk classic -- DK shows team MIN vs NO in depth chart feed; verify before trusting a large role
+fd,Audric Estime,MIN,RB,00-0039373,matched via nflverse weekly_stats_2025 (A.Estime) - Week 5 2026 fd classic -- DK shows team MIN vs NO in depth chart feed; verify before trusting a large role
