@@ -153,8 +153,27 @@ and resolves none.
   session — belongs with the existing projection-side WR $7k+ stud-gap track (see the "Classic PERSISTENT flags"
   item above), not here. Details: `analysis/wk4_construction_review/RESULTS_flex_wr_lineup_level.md` §"2026 real
   fields" and "Bottom line" (local, gitignored).
-- **Kyler Murray — rushing theory tested and rejected on history; real cause is a `my_share` staleness case,
-  HOLD. Investigated 2026-10-06.** Full 2021-25 LOSO check (86 slates, same frame as `qb_share_refit`):
+- **Kyler Murray — CLOSED FOR GOOD 2026-10-07.** Follow-up session tested the three candidates the open
+  question (below) left on the table: price, projection gap to team's QB2, and a depth-chart signal.
+  Price and QB2-gap don't separate Kyler from the faded zero-share starters (D. Jones is $5.4k vs Kyler's
+  $5.5k; every flagged starter clears QB2 by 13-15 pts, Kyler included). No depth-chart feature exists in
+  production 2026 data to test (FC's `pdepth` label only, not wired in) — correctly skipped rather than
+  built fresh for a parked, low-priority item. A fourth candidate found along the way — prior-season team
+  change — does cleanly separate Kyler (plus Cousins/Geno/Rush) from Daniels/Jones/Mariota/Bagent and looks
+  good on 2026 (QB starter corr .684→.705 wk1-3, .351→.377 wk4, moves Kyler's predicted ownership toward
+  real without touching the other four) — but fails 5 years of history: new-team/low-share starters are
+  only mildly under-owned in reality (1.11-1.18x), so any fill strength overshoots them and starter
+  correlation drops at every strength tested (full fill .682→.654, worse on 50/86 slates; even a half fill
+  costs .004). **Verdict: no feature in current data separates Kyler without a clear history cost — he's a
+  player-specific outlier, not a learnable pattern. No code change. Handle cases like this with manual
+  judgment on the slate**, same policy as borderline backups. Side finding (not a new bug): 2 of the 4
+  "faded" names (Mariota, Bagent wk2) weren't ownership fades at all — the real starters (Daniels, Caleb)
+  played while our projections had them OUT, which is an injury-feed miss (item G), not an ownership one.
+  Full writeup §4: `analysis/wk4_postmortem/qb_rushing_murray/RESULTS.md` (local, gitignored).
+
+  **Original finding below, for history:** rushing theory tested and rejected on history; real cause is a
+  `my_share` staleness case. Investigated 2026-10-06. Full 2021-25 LOSO check (86 slates, same frame as
+  `qb_share_refit`):
   rushing volume has ~zero correlation with the model's ownership miss (|r| < .04 for p3_car / recent rush
   yards / season rush yds/g). There IS a real cheap-rusher pocket (QBs < $6.5k with 25+ rush yds/g get 1.25x
   real ownership vs. predicted, holds 3/5 seasons, ~+1 pt) but it's small, and adding `p3_car` or a
