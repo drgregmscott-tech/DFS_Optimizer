@@ -32,11 +32,15 @@ and resolves none.
   levels land close to what ownership already expects, so this should be neutral-to-positive, but eyeball
   chalk/ownership on the next real build. A residual +0.2 to +0.4 low bias remains from the stack's
   `[0.5E, 1.8E]` clamp on cheap players — not chased, small.
-- **Standing re-check: Σlog(own+.5) v2 re-rank blend for SE3max (from item 15, 2026-10-06).** Closed as
-  inconclusive on history + 18 live 2026 pools — didn't clear the ship bar, no code shipped. Re-score
-  cheaply as each week's SE3max pools accrue using `analysis/lineup_own_signal/check_2026.py` (just add
-  the new pools). Ship bar per item 15's writeup: positive on held-out history in both comparable
-  projection arms AND a 2026 result that isn't carried by one slate. Until then, stays closed/unwired.
+- **[SHIPPED 2026-10-07, see item 12 update below] Standing re-check: Σlog(own+.5) v2 re-rank blend for
+  SE3max (from item 15, 2026-10-06).** Was closed inconclusive on history + 18 live 2026 pools. Re-checked
+  with Wk4 added (and, incidentally, found `exposure_sweep.py`'s classic_shape weights had drifted stale
+  vs the live SE3Max Pool preset — rebuilt all of Wk1-4 on the real live preset instead). Still doesn't
+  cleanly clear item 15's own bar (history positive in only 2 of 3 projection arms, one is -.019; top-1
+  pick CI crosses 0), but the 2026-not-carried-by-one-slate half now holds (17-2 pools, +.14 top-1 pct,
+  steadier +.02 to +.07 on a top-3/5 average) and history is directionally consistent. Owner's call: ship
+  it anyway as a default-on, kill-switchable re-rank — the #1 slot is a sort-starting-point the owner
+  reviews, not an auto-submit, so a noisy-but-real signal is worth it there. See item 12.
 - **Chalk-FFC fix (shipped `cbfc9db0`, 2026-10-05) may overshoot cheap backups on WR-out teams.** Found
   while closing item 11 (2026-10-06): on the Wk4 afternoon MIN slate (Justin Jefferson OUT), re-scoring
   Jennings under today's live chalk-FFC code gives 16.3% modeled vs 9.9% real ownership, driven by an FFC
@@ -596,7 +600,8 @@ and resolves none.
     nothing new to ship for props specifically — the chalk-FFC fix already shipped is doing this job.**
     See parking lot for one watch item this surfaced.
 
-12. **Classic construction re-rank test. ✅ DONE 2026-10-06, no ship — real limit found one level deeper.**
+12. **Classic construction re-rank test. ✅ DONE 2026-10-06, originally no ship — SHIPPED 2026-10-07 after
+    a Wk4 re-check and an owner judgment call. See bottom of this item for the update.**
     Pure re-rank on existing pool data (no new solves), Opus-agent deep-dive, full writeup
     `analysis/classic_rerank/RESULTS.md` (local, gitignored — uses FC-derived history). Paired test across
     18 real-2026 SE3max pools (9 Wk1-3 slates x 2 seeds, two independently-built pool sources) plus 20
@@ -624,6 +629,42 @@ and resolves none.
       per pick once ownership is accurate enough. Wiring plan for that future test already drafted in
       RESULTS.md (`_rank_lineups_by_proj_own`, env `DFS_RANK_OWN_W` off-switch, called at optimizer.py's two
       pool-ranking call sites ~3116/~4189).
+
+    **UPDATE 2026-10-07 — SHIPPED.** Session dedicated to this item's "next concrete step." Owner picked
+    the cheap path: re-check with Wk4 data added (not the bigger lineup-level-model-training option).
+    Opus-agent re-check (`analysis/lineup_own_signal/RESULTS_wk4.md`, local/gitignored):
+    - Also caught that `exposure_sweep.py` (the script behind every 2026 number in this item and item 15)
+      had drifted stale against the real live SE3Max Pool (100) preset — wrong 3+punt penalty (2.5 vs live
+      0.5), wrong flex_rb/flex_wr (.6/1.0 vs live 0/0), missing the four-WR-no-stud term (live 1.0),
+      `bring_back=True` vs live `False`. Rebuilt all 12 Wk1-4 slates x 2 seeds on the real live preset
+      (pulled from `data/optimizer_presets.json`) instead of trusting the sweep script's copy.
+    - With correct settings: re-ranking by z(proj) + 0.75*z(sum log(own+.5)) (v2 ownership, w fixed in
+      advance from history LOSO, not refit on this sample) is no longer carried by one slate — 17-2 pools,
+      +.140 top-1 pct [-.001,+.275], holds excluding the best slate (+.087, cash rate 21%->50%). But the
+      CI crosses 0 and the same slates under the OLD stale settings flip sign (-.012) — the single-pick
+      number is noisy. Steadier: averaging the top-3/top-5 picks instead of just #1 stays positive
+      everywhere, +.02 to +.07, matching history's +.032.
+    - Against item 15's own bar: history positive in only 2 of 3 projection arms (one is -.019) — that half
+      was never actually met, the original writeup overstated it. The "2026 not carried by one slate" half
+      IS now met.
+    - **Not a clean pass of the stated bar, but directionally real on both history and the Wk4 live-preset
+      re-check.** Owner's call, given "act on directionally correct improvements": ship it anyway, default
+      ON, not gated behind an unused opt-in switch — reasoning being the #1 lineup is a sort-starting-point
+      the owner reviews (often picks from the top 10 against the Classic Lineup Checklist), not an
+      auto-submit, so a noisy-but-real nudge toward chalk-awareness is worth having live even without a
+      clean statistical pass.
+    - **Shipped:** `_rank_lineups_by_proj_own()` in `scripts/optimizer.py` (next to
+      `_rank_lineups_by_projection`, single call site in classic `build_multi_lineup`, commit `97be43a7`).
+      Re-ranks the built pool by z(sum projection) + w*z(sum log(estimated_ownership_pct+.5)) after the
+      existing projection-only rank. **Default ON at w=0.75** (env `DFS_RANK_OWN_W`, set to `0` to turn
+      off). Adds an audit `proj_rank` column (the pre-rerank order) so the shift is always visible. Fails
+      safe to pure-projection order on any error or missing ownership column. No worker/GH-Actions wiring
+      needed (unlike the FLEX-WR argparse flags) — it's an unconditional step inside the build function
+      itself, so it's live everywhere the optimizer runs as of this commit. Showdown untouched (separate
+      ownership model/question, out of scope here).
+    - **Re-test cheaply as weeks accrue**, same as item 15's standing re-check: add new SE3max pools to
+      `analysis/lineup_own_signal/check_2026.py` (now pointed at the corrected live-preset pools) and
+      re-run. If a future week's data turns this wrong-direction, flip `DFS_RANK_OWN_W=0` and re-open.
 
 13. **Multi-session concurrency gap.** Done (2026-10-06) — full writeup/status in
     `MULTI_SESSION_CONCURRENCY_GAP.md`. Root cause: the real Wk4 collision was the interactive session and
