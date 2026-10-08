@@ -256,6 +256,14 @@
       "season": 2026,
       "week": 5,
       "lock_time_utc": "2026-10-11T20:05:00Z"
+    },
+    {
+      "slate_id": "dk_classic_wk5_afternoon_11Oct2026",
+      "site": "dk",
+      "format": "classic",
+      "season": 2026,
+      "week": 5,
+      "lock_time_utc": "2026-10-11T20:05:00Z"
     }
   ]
 }
