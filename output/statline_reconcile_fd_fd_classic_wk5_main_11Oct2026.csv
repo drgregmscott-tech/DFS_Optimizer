@@ -1,6 +1,6 @@
 team,component,pool_share,share_basis,raw_sum,target,scale,abs_delta
 CHI,rush,1.0,recent,50.22,31.49,0.6271,18.73
-NO,recv,1.0,recent,53.14,33.77,0.6356,19.36
+NO,recv,1.0,recent,53.14,33.77,0.6355,19.37
 HOU,recv,1.0,recent,43.3,29.84,0.6892,13.46
 SEA,pass,1.0,exclusive,25.67,32.92,1.2825,7.25
 GB,recv,1.0,recent,45.46,33.6,0.7391,11.86
@@ -17,10 +17,10 @@ TEN,recv,1.0,recent,35.33,27.4,0.7756,7.93
 LAC,rush,0.9912,recent,36.03,27.98,0.7766,8.05
 WAS,recv,0.9922,recent,39.93,31.1,0.7789,8.83
 IND,recv,1.0,recent,40.14,31.37,0.7815,8.77
-NO,pass,1.0,exclusive,44.37,34.72,0.7826,9.65
+NO,pass,1.0,exclusive,44.37,34.72,0.7825,9.65
 PIT,recv,1.0,recent,42.2,33.24,0.7876,8.96
-MIN,rush,1.0,recent,36.3,28.79,0.793,7.51
-NO,rush,1.0,recent,32.81,26.02,0.7931,6.79
+NO,rush,1.0,recent,32.8,26.01,0.7929,6.79
+MIN,rush,1.0,recent,36.3,28.8,0.7933,7.5
 SF,rush,1.0,recent,34.2,27.31,0.7985,6.89
 CLE,rush,1.0,recent,36.08,28.92,0.8016,7.16
 MIA,pass,1.0,exclusive,24.77,29.65,1.1967,4.87
@@ -35,9 +35,9 @@ CLE,recv,0.9913,recent,34.82,29.02,0.8336,5.8
 CHI,recv,1.0,recent,38.33,32.08,0.8371,6.24
 LAC,recv,0.9573,recent,33.93,28.72,0.8465,5.21
 SF,pass,1.0,exclusive,27.97,32.2,1.1514,4.23
-MIN,recv,1.0,recent,34.55,29.34,0.8491,5.21
+MIN,recv,1.0,recent,34.55,29.33,0.8491,5.22
 NYG,recv,1.0,recent,33.86,29.19,0.8619,4.68
-MIN,pass,1.0,exclusive,27.3,30.97,1.1347,3.68
+MIN,pass,1.0,exclusive,27.3,30.97,1.1345,3.67
 HOU,pass,1.0,exclusive,36.08,31.27,0.8669,4.8
 TEN,rush,1.0,recent,30.53,26.52,0.8685,4.01
 NYG,pass,1.0,exclusive,26.7,30.2,1.131,3.5
