@@ -3663,6 +3663,16 @@ in this browser's localStorage.</p>
       setPresetStatus("Preset not found — try refreshing.", "error"); return;
     }
     applyPresetValues(cachedPresets[name]);
+    // 2026-10-10 (user request): on load, floor min-salary to near-full-cap
+    // by site -- $49,500 DK / $59,500 FD -- regardless of what the preset's
+    // own stored ctrlMinSalary was (built-ins all store 0; see BUILTIN_PRESETS'
+    // own 2026-10-01 comment for why they were zeroed). Site-dependent because
+    // caps differ (DK $50,000 / FD $60,000) and the stored preset value is a
+    // flat dollar figure, not a % of cap.
+    var floorVal = state.activeSite === "fd" ? "59500" : "49500";
+    document.getElementById("ctrlMinSalary").value = floorVal;
+    document.getElementById("ctrlMinSalarySlider").value = floorVal;
+    updateMinSalaryBounds();
     setPresetStatus("Loaded \"" + name + "\".", "ok");
   });
 
