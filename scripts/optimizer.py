@@ -4260,14 +4260,18 @@ def _rank_lineups_by_proj_own(lineups, players_all, w=None):
     summed per lineup carries real held-out signal on history (partial corr +.032 to +.111,
     log-sum beats plain sum), and on a Wk4 re-check with the live preset it's directionally
     real but noisy at the single-pick level (combined Wk1-4: +.14 top-1 pct, CI crosses 0;
-    steadier on a top-3/5 average, +.02 to +.07). Owner's call 2026-10-07: turn it ON by
-    default at the history-picked weight (0.75) -- the #1 lineup is a starting point to sort
-    through, not an auto-submit, so the extra chalk-awareness is worth it even on a noisy
-    single-pick signal. Off: env DFS_RANK_OWN_W=0. Re-test after each new week (see
-    analysis/lineup_own_signal/). Missing/NaN ownership is treated as 0.
+    steadier on a top-3/5 average, +.02 to +.07). Owner's call 2026-10-07: turned this ON by
+    default at the history-picked weight (0.75). Reverted 2026-10-10: the literal ship bar
+    (positive on both projection arms, held-out history) was never actually met -- arm "old"
+    is -.019 -- and the +.14 headline number was mostly one slate (wk2_main); the real size is
+    +.02 to +.04. The owner's actual goal for lineup_id order is "sortable by projection, since
+    higher projection correlates with cashing," and the ownership signal is weakest exactly at
+    the top of the pool where SE3max picks from (log-sum drops from +.111 across the whole pool
+    to +.057 in the top 30). Default is OFF again: env DFS_RANK_OWN_W=0. Re-test after each new
+    week (see analysis/lineup_own_signal/). Missing/NaN ownership is treated as 0.
     """
     import os
-    w = float(os.environ.get("DFS_RANK_OWN_W", "0.75") or 0) if w is None else w
+    w = float(os.environ.get("DFS_RANK_OWN_W", "0") or 0) if w is None else w
     if not w:
         return lineups
     try:
