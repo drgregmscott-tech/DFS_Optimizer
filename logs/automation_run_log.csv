@@ -3020,3 +3020,15 @@ timestamp_utc,trigger_type,site,step,status
 2026-10-11T18:12:30.475694+00:00,full_refresh_dispatch,fd,fd_classic_wk5_afternoon_11Oct2026,build_projections,success
 2026-10-11T18:12:30.475694+00:00,full_refresh_dispatch,fd,fd_classic_wk5_afternoon_11Oct2026,status_apply,success
 2026-10-11T18:12:30.475694+00:00,full_refresh_dispatch,fd,fd_classic_wk5_afternoon_11Oct2026,pivot_finder,success
+2026-10-11T18:23:56.756929+00:00,full_refresh_dispatch,dk,dk_classic_wk5_afternoon_11Oct2026,build_projections,success
+2026-10-11T18:23:56.756929+00:00,full_refresh_dispatch,dk,dk_classic_wk5_afternoon_11Oct2026,status_apply,success
+2026-10-11T18:23:56.756929+00:00,full_refresh_dispatch,dk,dk_classic_wk5_afternoon_11Oct2026,pivot_finder,success
+2026-10-11T18:23:03.940761+00:00,full_refresh_dispatch,dk,dk_showdown_wk5_BAL_ATL_11Oct2026,build_projections,success
+2026-10-11T18:23:03.940761+00:00,full_refresh_dispatch,dk,dk_showdown_wk5_BAL_ATL_11Oct2026,status_apply,success
+2026-10-11T18:23:03.940761+00:00,full_refresh_dispatch,dk,dk_showdown_wk5_BAL_ATL_11Oct2026,pivot_finder,success
+2026-10-11T18:23:05.795193+00:00,full_refresh_dispatch,dk,dk_showdown_wk5_BUF_LAR_12Oct2026,build_projections,success
+2026-10-11T18:23:05.795193+00:00,full_refresh_dispatch,dk,dk_showdown_wk5_BUF_LAR_12Oct2026,status_apply,success
+2026-10-11T18:23:05.795193+00:00,full_refresh_dispatch,dk,dk_showdown_wk5_BUF_LAR_12Oct2026,pivot_finder,success
+2026-10-11T18:22:37.149981+00:00,full_refresh_dispatch,fd,fd_classic_wk5_afternoon_11Oct2026,build_projections,success
+2026-10-11T18:22:37.149981+00:00,full_refresh_dispatch,fd,fd_classic_wk5_afternoon_11Oct2026,status_apply,success
+2026-10-11T18:22:37.149981+00:00,full_refresh_dispatch,fd,fd_classic_wk5_afternoon_11Oct2026,pivot_finder,success
