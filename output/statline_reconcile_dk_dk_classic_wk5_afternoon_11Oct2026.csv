@@ -1,8 +1,8 @@
 team,component,pool_share,share_basis,raw_sum,target,scale,abs_delta
-SEA,rush,0.9912,recent,44.28,27.17,0.6136,17.11
+SEA,rush,0.9912,recent,44.29,27.18,0.6137,17.11
 LAC,rush,0.9912,recent,41.09,27.4,0.667,13.68
 ARI,rush,1.0,recent,35.86,24.4,0.6803,11.47
-SF,rush,1.0,recent,39.33,26.95,0.6853,12.38
+SF,rush,1.0,recent,39.33,26.94,0.6851,12.39
 SEA,pass,1.0,exclusive,25.67,33.48,1.3043,7.81
 DET,recv,1.0,recent,51.99,38.33,0.7373,13.66
 ARI,recv,1.0,recent,49.8,37.09,0.7448,12.71
