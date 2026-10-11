@@ -56,6 +56,22 @@
       "season": 2026,
       "week": 5,
       "lock_time_utc": "2026-10-11T20:05:00Z"
+    },
+    {
+      "slate_id": "dk_showdown_wk5_BAL_ATL_11Oct2026",
+      "site": "dk",
+      "format": "showdown",
+      "season": 2026,
+      "week": 5,
+      "lock_time_utc": "2026-10-12T00:20:00Z"
+    },
+    {
+      "slate_id": "dk_showdown_wk5_BUF_LAR_12Oct2026",
+      "site": "dk",
+      "format": "showdown",
+      "season": 2026,
+      "week": 5,
+      "lock_time_utc": "2026-10-13T00:15:00Z"
     }
   ]
 }

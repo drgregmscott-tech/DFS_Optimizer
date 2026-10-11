@@ -1,0 +1,105 @@
+Position,Name + ID,Name,ID,Roster Position,Salary,Game Info,TeamAbbrev,AvgPointsPerGame,Status,roster_role,name,site,salary,normalized_name,normalized_team,position_upper,slate_format,player_id,match_method,match_confidence
+RB,Bijan Robinson (44446744),Bijan Robinson,44446744,CPT,17700,BAL@ATL 10/11/2026 08:20PM ET,ATL,27.9,,CPT,Bijan Robinson,dk,17700,bijan robinson,ATL,RB,showdown,00-0038542,auto_exact,high
+RB,Derrick Henry (44446745),Derrick Henry,44446745,CPT,16500,BAL@ATL 10/11/2026 08:20PM ET,BAL,23.5,,CPT,Derrick Henry,dk,16500,derrick henry,BAL,RB,showdown,00-0032764,auto_exact,high
+QB,Lamar Jackson (44446746),Lamar Jackson,44446746,CPT,16200,BAL@ATL 10/11/2026 08:20PM ET,BAL,21.0,OUT,CPT,Lamar Jackson,dk,16200,lamar jackson,BAL,QB,showdown,00-0034796,auto_exact,high
+WR,Zay Flowers (44446747),Zay Flowers,44446747,CPT,15000,BAL@ATL 10/11/2026 08:20PM ET,BAL,24.4,Q,CPT,Zay Flowers,dk,15000,zay flowers,BAL,WR,showdown,00-0039064,auto_exact,high
+WR,Drake London (44446748),Drake London,44446748,CPT,14700,BAL@ATL 10/11/2026 08:20PM ET,ATL,15.1,,CPT,Drake London,dk,14700,drake london,ATL,WR,showdown,00-0037238,auto_exact,high
+QB,Michael Penix Jr. (44446749),Michael Penix Jr.,44446749,CPT,14100,BAL@ATL 10/11/2026 08:20PM ET,ATL,13.9,,CPT,Michael Penix Jr.,dk,14100,michael penix,ATL,QB,showdown,00-0039917,auto_exact,high
+QB,Tyler Huntley (44446750),Tyler Huntley,44446750,CPT,13200,BAL@ATL 10/11/2026 08:20PM ET,BAL,4.1,,CPT,Tyler Huntley,dk,13200,tyler huntley,BAL,QB,showdown,00-0035993,auto_exact,high
+RB,Bijan Robinson (44446692),Bijan Robinson,44446692,FLEX,11800,BAL@ATL 10/11/2026 08:20PM ET,ATL,27.9,,FLEX,Bijan Robinson,dk,11800,bijan robinson,ATL,RB,showdown,00-0038542,auto_exact,high
+RB,Derrick Henry (44446693),Derrick Henry,44446693,FLEX,11000,BAL@ATL 10/11/2026 08:20PM ET,BAL,23.5,,FLEX,Derrick Henry,dk,11000,derrick henry,BAL,RB,showdown,00-0032764,auto_exact,high
+QB,Lamar Jackson (44446694),Lamar Jackson,44446694,FLEX,10800,BAL@ATL 10/11/2026 08:20PM ET,BAL,21.0,OUT,FLEX,Lamar Jackson,dk,10800,lamar jackson,BAL,QB,showdown,00-0034796,auto_exact,high
+WR,Zay Flowers (44446695),Zay Flowers,44446695,FLEX,10000,BAL@ATL 10/11/2026 08:20PM ET,BAL,24.4,Q,FLEX,Zay Flowers,dk,10000,zay flowers,BAL,WR,showdown,00-0039064,auto_exact,high
+WR,Drake London (44446696),Drake London,44446696,FLEX,9800,BAL@ATL 10/11/2026 08:20PM ET,ATL,15.1,,FLEX,Drake London,dk,9800,drake london,ATL,WR,showdown,00-0037238,auto_exact,high
+TE,Mark Andrews (44446751),Mark Andrews,44446751,CPT,9600,BAL@ATL 10/11/2026 08:20PM ET,BAL,9.7,,CPT,Mark Andrews,dk,9600,mark andrews,BAL,TE,showdown,00-0034753,auto_exact,high
+QB,Michael Penix Jr. (44446697),Michael Penix Jr.,44446697,FLEX,9400,BAL@ATL 10/11/2026 08:20PM ET,ATL,13.9,,FLEX,Michael Penix Jr.,dk,9400,michael penix,ATL,QB,showdown,00-0039917,auto_exact,high
+WR,Rashod Bateman (44446752),Rashod Bateman,44446752,CPT,9300,BAL@ATL 10/11/2026 08:20PM ET,BAL,8.5,,CPT,Rashod Bateman,dk,9300,rashod bateman,BAL,WR,showdown,00-0036550,auto_exact,high
+QB,Cooper Rush (44446753),Cooper Rush,44446753,CPT,9000,BAL@ATL 10/11/2026 08:20PM ET,ATL,5.1,,CPT,Cooper Rush,dk,9000,cooper rush,ATL,QB,showdown,00-0033662,auto_exact,high
+QB,Jack Strand (44446754),Jack Strand,44446754,CPT,9000,BAL@ATL 10/11/2026 08:20PM ET,ATL,2.0,,CPT,Jack Strand,dk,9000,jack strand,ATL,QB,showdown,00-0041194,auto_exact,high
+QB,Skylar Thompson (44446755),Skylar Thompson,44446755,CPT,9000,BAL@ATL 10/11/2026 08:20PM ET,BAL,0.0,IR,CPT,Skylar Thompson,dk,9000,skylar thompson,BAL,QB,showdown,00-0037327,auto_exact,high
+QB,Tua Tagovailoa (44446756),Tua Tagovailoa,44446756,CPT,9000,BAL@ATL 10/11/2026 08:20PM ET,ATL,0.0,,CPT,Tua Tagovailoa,dk,9000,tua tagovailoa,ATL,QB,showdown,00-0036212,auto_exact,high
+QB,Joe Fagnano (44446757),Joe Fagnano,44446757,CPT,9000,BAL@ATL 10/11/2026 08:20PM ET,BAL,0.0,,CPT,Joe Fagnano,dk,9000,joe fagnano,BAL,QB,showdown,00-0040981,auto_exact,high
+QB,Tyler Huntley (44446698),Tyler Huntley,44446698,FLEX,8800,BAL@ATL 10/11/2026 08:20PM ET,BAL,4.1,,FLEX,Tyler Huntley,dk,8800,tyler huntley,BAL,QB,showdown,00-0035993,auto_exact,high
+RB,Brian Robinson Jr. (44446758),Brian Robinson Jr.,44446758,CPT,8700,BAL@ATL 10/11/2026 08:20PM ET,ATL,12.1,,CPT,Brian Robinson Jr.,dk,8700,brian robinson,ATL,RB,showdown,00-0037746,auto_exact,high
+K,Nick Folk (44446759),Nick Folk,44446759,CPT,8100,BAL@ATL 10/11/2026 08:20PM ET,ATL,8.3,,CPT,Nick Folk,dk,8100,nick folk,ATL,K,showdown,00-0025565,auto_exact,high
+K,Tyler Loop (44446760),Tyler Loop,44446760,CPT,7500,BAL@ATL 10/11/2026 08:20PM ET,BAL,10.0,,CPT,Tyler Loop,dk,7500,tyler loop,BAL,K,showdown,00-0040074,auto_exact,high
+TE,Kyle Pitts Sr. (44446761),Kyle Pitts Sr.,44446761,CPT,7200,BAL@ATL 10/11/2026 08:20PM ET,ATL,2.9,,CPT,Kyle Pitts Sr.,dk,7200,kyle pitts,ATL,TE,showdown,00-0036970,auto_exact,high
+DST,Ravens (44446762),Ravens,44446762,CPT,6600,BAL@ATL 10/11/2026 08:20PM ET,BAL,4.8,,CPT,Ravens,dk,6600,ravens,BAL,DST,showdown,DST_BAL,team_defense,high
+TE,Mark Andrews (44446699),Mark Andrews,44446699,FLEX,6400,BAL@ATL 10/11/2026 08:20PM ET,BAL,9.7,,FLEX,Mark Andrews,dk,6400,mark andrews,BAL,TE,showdown,00-0034753,auto_exact,high
+WR,Rashod Bateman (44446700),Rashod Bateman,44446700,FLEX,6200,BAL@ATL 10/11/2026 08:20PM ET,BAL,8.5,,FLEX,Rashod Bateman,dk,6200,rashod bateman,BAL,WR,showdown,00-0036550,auto_exact,high
+QB,Cooper Rush (44446701),Cooper Rush,44446701,FLEX,6000,BAL@ATL 10/11/2026 08:20PM ET,ATL,5.1,,FLEX,Cooper Rush,dk,6000,cooper rush,ATL,QB,showdown,00-0033662,auto_exact,high
+QB,Jack Strand (44446702),Jack Strand,44446702,FLEX,6000,BAL@ATL 10/11/2026 08:20PM ET,ATL,2.0,,FLEX,Jack Strand,dk,6000,jack strand,ATL,QB,showdown,00-0041194,auto_exact,high
+QB,Skylar Thompson (44446703),Skylar Thompson,44446703,FLEX,6000,BAL@ATL 10/11/2026 08:20PM ET,BAL,0.0,IR,FLEX,Skylar Thompson,dk,6000,skylar thompson,BAL,QB,showdown,00-0037327,auto_exact,high
+QB,Tua Tagovailoa (44446704),Tua Tagovailoa,44446704,FLEX,6000,BAL@ATL 10/11/2026 08:20PM ET,ATL,0.0,,FLEX,Tua Tagovailoa,dk,6000,tua tagovailoa,ATL,QB,showdown,00-0036212,auto_exact,high
+QB,Joe Fagnano (44446705),Joe Fagnano,44446705,FLEX,6000,BAL@ATL 10/11/2026 08:20PM ET,BAL,0.0,,FLEX,Joe Fagnano,dk,6000,joe fagnano,BAL,QB,showdown,00-0040981,auto_exact,high
+DST,Falcons (44446763),Falcons,44446763,CPT,6000,BAL@ATL 10/11/2026 08:20PM ET,ATL,4.0,,CPT,Falcons,dk,6000,falcons,ATL,DST,showdown,DST_ATL,team_defense,high
+RB,Brian Robinson Jr. (44446706),Brian Robinson Jr.,44446706,FLEX,5800,BAL@ATL 10/11/2026 08:20PM ET,ATL,12.1,,FLEX,Brian Robinson Jr.,dk,5800,brian robinson,ATL,RB,showdown,00-0037746,auto_exact,high
+K,Nick Folk (44446707),Nick Folk,44446707,FLEX,5400,BAL@ATL 10/11/2026 08:20PM ET,ATL,8.3,,FLEX,Nick Folk,dk,5400,nick folk,ATL,K,showdown,00-0025565,auto_exact,high
+WR,Jahan Dotson (44446764),Jahan Dotson,44446764,CPT,5400,BAL@ATL 10/11/2026 08:20PM ET,ATL,5.4,,CPT,Jahan Dotson,dk,5400,jahan dotson,ATL,WR,showdown,00-0037741,auto_exact,high
+K,Tyler Loop (44446708),Tyler Loop,44446708,FLEX,5000,BAL@ATL 10/11/2026 08:20PM ET,BAL,10.0,,FLEX,Tyler Loop,dk,5000,tyler loop,BAL,K,showdown,00-0040074,auto_exact,high
+TE,Kyle Pitts Sr. (44446709),Kyle Pitts Sr.,44446709,FLEX,4800,BAL@ATL 10/11/2026 08:20PM ET,ATL,2.9,,FLEX,Kyle Pitts Sr.,dk,4800,kyle pitts,ATL,TE,showdown,00-0036970,auto_exact,high
+RB,Justice Hill (44446765),Justice Hill,44446765,CPT,4800,BAL@ATL 10/11/2026 08:20PM ET,BAL,3.9,,CPT,Justice Hill,dk,4800,justice hill,BAL,RB,showdown,00-0034975,auto_exact,high
+WR,Devontez Walker (44446766),Devontez Walker,44446766,CPT,4500,BAL@ATL 10/11/2026 08:20PM ET,BAL,2.9,,CPT,Devontez Walker,dk,4500,devontez walker,BAL,WR,showdown,00-0039792,auto_exact,high
+DST,Ravens (44446710),Ravens,44446710,FLEX,4400,BAL@ATL 10/11/2026 08:20PM ET,BAL,4.8,,FLEX,Ravens,dk,4400,ravens,BAL,DST,showdown,DST_BAL,team_defense,high
+WR,Chris Moore (44446767),Chris Moore,44446767,CPT,4200,BAL@ATL 10/11/2026 08:20PM ET,BAL,5.1,,CPT,Chris Moore,dk,4200,chris moore,BAL,WR,showdown,00-0032398,auto_exact,high
+DST,Falcons (44446711),Falcons,44446711,FLEX,4000,BAL@ATL 10/11/2026 08:20PM ET,ATL,4.0,,FLEX,Falcons,dk,4000,falcons,ATL,DST,showdown,DST_ATL,team_defense,high
+WR,Jahan Dotson (44446712),Jahan Dotson,44446712,FLEX,3600,BAL@ATL 10/11/2026 08:20PM ET,ATL,5.4,,FLEX,Jahan Dotson,dk,3600,jahan dotson,ATL,WR,showdown,00-0037741,auto_exact,high
+WR,Olamide Zaccheaus (44446768),Olamide Zaccheaus,44446768,CPT,3600,BAL@ATL 10/11/2026 08:20PM ET,ATL,1.4,,CPT,Olamide Zaccheaus,dk,3600,olamide zaccheaus,ATL,WR,showdown,00-0035208,auto_exact,high
+RB,Justice Hill (44446713),Justice Hill,44446713,FLEX,3200,BAL@ATL 10/11/2026 08:20PM ET,BAL,3.9,,FLEX,Justice Hill,dk,3200,justice hill,BAL,RB,showdown,00-0034975,auto_exact,high
+WR,Devontez Walker (44446714),Devontez Walker,44446714,FLEX,3000,BAL@ATL 10/11/2026 08:20PM ET,BAL,2.9,,FLEX,Devontez Walker,dk,3000,devontez walker,BAL,WR,showdown,00-0039792,auto_exact,high
+WR,Zachariah Branch (44446769),Zachariah Branch,44446769,CPT,3000,BAL@ATL 10/11/2026 08:20PM ET,ATL,2.0,,CPT,Zachariah Branch,dk,3000,zachariah branch,ATL,WR,showdown,00-0041044,auto_exact,high
+WR,Chris Moore (44446715),Chris Moore,44446715,FLEX,2800,BAL@ATL 10/11/2026 08:20PM ET,BAL,5.1,,FLEX,Chris Moore,dk,2800,chris moore,BAL,WR,showdown,00-0032398,auto_exact,high
+WR,Olamide Zaccheaus (44446716),Olamide Zaccheaus,44446716,FLEX,2400,BAL@ATL 10/11/2026 08:20PM ET,ATL,1.4,,FLEX,Olamide Zaccheaus,dk,2400,olamide zaccheaus,ATL,WR,showdown,00-0035208,auto_exact,high
+TE,Austin Hooper (44446770),Austin Hooper,44446770,CPT,2400,BAL@ATL 10/11/2026 08:20PM ET,ATL,3.8,,CPT,Austin Hooper,dk,2400,austin hooper,ATL,TE,showdown,00-0032392,auto_exact,high
+TE,Matt Hibner (44446771),Matt Hibner,44446771,CPT,2100,BAL@ATL 10/11/2026 08:20PM ET,BAL,4.5,,CPT,Matt Hibner,dk,2100,matt hibner,BAL,TE,showdown,00-0040879,manual_override,high
+WR,Zachariah Branch (44446717),Zachariah Branch,44446717,FLEX,2000,BAL@ATL 10/11/2026 08:20PM ET,ATL,2.0,,FLEX,Zachariah Branch,dk,2000,zachariah branch,ATL,WR,showdown,00-0041044,auto_exact,high
+WR,Elijah Sarratt (44446772),Elijah Sarratt,44446772,CPT,1800,BAL@ATL 10/11/2026 08:20PM ET,BAL,2.3,,CPT,Elijah Sarratt,dk,1800,elijah sarratt,BAL,WR,showdown,00-0040876,auto_exact,high
+TE,Austin Hooper (44446718),Austin Hooper,44446718,FLEX,1600,BAL@ATL 10/11/2026 08:20PM ET,ATL,3.8,,FLEX,Austin Hooper,dk,1600,austin hooper,ATL,TE,showdown,00-0032392,auto_exact,high
+WR,LaJohntay Wester (44446773),LaJohntay Wester,44446773,CPT,1500,BAL@ATL 10/11/2026 08:20PM ET,BAL,1.5,,CPT,LaJohntay Wester,dk,1500,lajohntay wester,BAL,WR,showdown,00-0040075,auto_exact,high
+TE,Matt Hibner (44446719),Matt Hibner,44446719,FLEX,1400,BAL@ATL 10/11/2026 08:20PM ET,BAL,4.5,,FLEX,Matt Hibner,dk,1400,matt hibner,BAL,TE,showdown,00-0040879,manual_override,high
+WR,Elijah Sarratt (44446720),Elijah Sarratt,44446720,FLEX,1200,BAL@ATL 10/11/2026 08:20PM ET,BAL,2.3,,FLEX,Elijah Sarratt,dk,1200,elijah sarratt,BAL,WR,showdown,00-0040876,auto_exact,high
+WR,Chris Blair (44446774),Chris Blair,44446774,CPT,1200,BAL@ATL 10/11/2026 08:20PM ET,ATL,0.9,,CPT,Chris Blair,dk,1200,chris blair,ATL,WR,showdown,00-0036463,auto_exact,high
+WR,LaJohntay Wester (44446721),LaJohntay Wester,44446721,FLEX,1000,BAL@ATL 10/11/2026 08:20PM ET,BAL,1.5,,FLEX,LaJohntay Wester,dk,1000,lajohntay wester,BAL,WR,showdown,00-0040075,auto_exact,high
+TE,Charlie Woerner (44446775),Charlie Woerner,44446775,CPT,900,BAL@ATL 10/11/2026 08:20PM ET,ATL,0.0,,CPT,Charlie Woerner,dk,900,charlie woerner,ATL,TE,showdown,00-0036429,auto_exact,high
+WR,Chris Blair (44446722),Chris Blair,44446722,FLEX,800,BAL@ATL 10/11/2026 08:20PM ET,ATL,0.9,,FLEX,Chris Blair,dk,800,chris blair,ATL,WR,showdown,00-0036463,auto_exact,high
+TE,Charlie Woerner (44446723),Charlie Woerner,44446723,FLEX,600,BAL@ATL 10/11/2026 08:20PM ET,ATL,0.0,,FLEX,Charlie Woerner,dk,600,charlie woerner,ATL,TE,showdown,00-0036429,auto_exact,high
+RB,Rasheen Ali (44446776),Rasheen Ali,44446776,CPT,600,BAL@ATL 10/11/2026 08:20PM ET,BAL,0.0,,CPT,Rasheen Ali,dk,600,rasheen ali,BAL,RB,showdown,00-0039796,auto_exact,high
+RB,Rasheen Ali (44446724),Rasheen Ali,44446724,FLEX,400,BAL@ATL 10/11/2026 08:20PM ET,BAL,0.0,,FLEX,Rasheen Ali,dk,400,rasheen ali,BAL,RB,showdown,00-0039796,auto_exact,high
+RB,Trey Sermon (44446777),Trey Sermon,44446777,CPT,300,BAL@ATL 10/11/2026 08:20PM ET,ATL,0.0,IR,CPT,Trey Sermon,dk,300,trey sermon,ATL,RB,showdown,00-0036984,auto_exact,high
+RB,Adam Randall (44446778),Adam Randall,44446778,CPT,300,BAL@ATL 10/11/2026 08:20PM ET,BAL,0.0,IR,CPT,Adam Randall,dk,300,adam randall,BAL,RB,showdown,00-0040888,auto_exact,high
+RB,Jonathan Ward (44446779),Jonathan Ward,44446779,CPT,300,BAL@ATL 10/11/2026 08:20PM ET,BAL,0.0,,CPT,Jonathan Ward,dk,300,jonathan ward,BAL,RB,showdown,00-0035924,auto_exact,high
+RB,Jam Miller (44446780),Jam Miller,44446780,CPT,300,BAL@ATL 10/11/2026 08:20PM ET,ATL,0.0,,CPT,Jam Miller,dk,300,jam miller,ATL,RB,showdown,00-0041129,auto_exact,high
+RB,Lucas Scott (44446781),Lucas Scott,44446781,CPT,300,BAL@ATL 10/11/2026 08:20PM ET,BAL,0.0,,CPT,Lucas Scott,dk,300,lucas scott,BAL,RB,showdown,00-0040637,auto_exact,high
+RB,Khalil Herbert (44446782),Khalil Herbert,44446782,CPT,300,BAL@ATL 10/11/2026 08:20PM ET,ATL,0.0,,CPT,Khalil Herbert,dk,300,khalil herbert,ATL,RB,showdown,00-0036906,auto_exact,high
+WR,Ja'Kobi Lane (44446783),Ja'Kobi Lane,44446783,CPT,300,BAL@ATL 10/11/2026 08:20PM ET,BAL,2.1,IR,CPT,Ja'Kobi Lane,dk,300,jakobi lane,BAL,WR,showdown,00-0040870,auto_exact,high
+WR,Beaux Collins (44446784),Beaux Collins,44446784,CPT,300,BAL@ATL 10/11/2026 08:20PM ET,ATL,0.0,IR,CPT,Beaux Collins,dk,300,beaux collins,ATL,WR,showdown,00-0040432,auto_exact,high
+WR,Gage Larvadain (44446785),Gage Larvadain,44446785,CPT,300,BAL@ATL 10/11/2026 08:20PM ET,BAL,0.0,,CPT,Gage Larvadain,dk,300,gage larvadain,BAL,WR,showdown,00-0040259,auto_exact,high
+WR,Dylan Drummond (44446786),Dylan Drummond,44446786,CPT,300,BAL@ATL 10/11/2026 08:20PM ET,ATL,0.0,,CPT,Dylan Drummond,dk,300,dylan drummond,ATL,WR,showdown,00-0038953,auto_exact,high
+WR,Xavier Guillory (44446787),Xavier Guillory,44446787,CPT,300,BAL@ATL 10/11/2026 08:20PM ET,BAL,0.0,,CPT,Xavier Guillory,dk,300,xavier guillory,BAL,WR,showdown,00-0040099,auto_exact,high
+WR,Antwane Wells Jr. (44446788),Antwane Wells Jr.,44446788,CPT,300,BAL@ATL 10/11/2026 08:20PM ET,ATL,0.0,,CPT,Antwane Wells Jr.,dk,300,antwane wells,ATL,WR,showdown,00-0040438,auto_exact,high
+WR,Vinny Anthony II (44446789),Vinny Anthony II,44446789,CPT,300,BAL@ATL 10/11/2026 08:20PM ET,ATL,0.0,,CPT,Vinny Anthony II,dk,300,vinny anthony,ATL,WR,showdown,00-0041185,auto_exact,high
+TE,Durham Smythe (44446790),Durham Smythe,44446790,CPT,300,BAL@ATL 10/11/2026 08:20PM ET,BAL,0.4,IR,CPT,Durham Smythe,dk,300,durham smythe,BAL,TE,showdown,00-0034798,auto_exact,high
+TE,Ty Pezza (44446791),Ty Pezza,44446791,CPT,300,BAL@ATL 10/11/2026 08:20PM ET,BAL,0.0,,CPT,Ty Pezza,dk,300,ty pezza,BAL,TE,showdown,00-0040986,auto_fallback_name_only_position_mismatch,low
+TE,Josh Cuevas (44446792),Josh Cuevas,44446792,CPT,300,BAL@ATL 10/11/2026 08:20PM ET,BAL,0.6,,CPT,Josh Cuevas,dk,300,josh cuevas,BAL,TE,showdown,00-0040887,auto_exact,high
+TE,Nick Vannett (44446793),Nick Vannett,44446793,CPT,300,BAL@ATL 10/11/2026 08:20PM ET,BAL,0.0,,CPT,Nick Vannett,dk,300,nick vannett,BAL,TE,showdown,00-0032394,auto_exact,high
+TE,Jack Velling (44446794),Jack Velling,44446794,CPT,300,BAL@ATL 10/11/2026 08:20PM ET,ATL,0.0,,CPT,Jack Velling,dk,300,jack velling,ATL,TE,showdown,00-0041195,auto_exact,high
+TE,Nick Muse (44446795),Nick Muse,44446795,CPT,300,BAL@ATL 10/11/2026 08:20PM ET,ATL,0.0,,CPT,Nick Muse,dk,300,nick muse,ATL,TE,showdown,00-0037317,auto_exact,high
+RB,Trey Sermon (44446725),Trey Sermon,44446725,FLEX,200,BAL@ATL 10/11/2026 08:20PM ET,ATL,0.0,IR,FLEX,Trey Sermon,dk,200,trey sermon,ATL,RB,showdown,00-0036984,auto_exact,high
+RB,Adam Randall (44446726),Adam Randall,44446726,FLEX,200,BAL@ATL 10/11/2026 08:20PM ET,BAL,0.0,IR,FLEX,Adam Randall,dk,200,adam randall,BAL,RB,showdown,00-0040888,auto_exact,high
+RB,Jonathan Ward (44446727),Jonathan Ward,44446727,FLEX,200,BAL@ATL 10/11/2026 08:20PM ET,BAL,0.0,,FLEX,Jonathan Ward,dk,200,jonathan ward,BAL,RB,showdown,00-0035924,auto_exact,high
+RB,Jam Miller (44446728),Jam Miller,44446728,FLEX,200,BAL@ATL 10/11/2026 08:20PM ET,ATL,0.0,,FLEX,Jam Miller,dk,200,jam miller,ATL,RB,showdown,00-0041129,auto_exact,high
+RB,Lucas Scott (44446729),Lucas Scott,44446729,FLEX,200,BAL@ATL 10/11/2026 08:20PM ET,BAL,0.0,,FLEX,Lucas Scott,dk,200,lucas scott,BAL,RB,showdown,00-0040637,auto_exact,high
+RB,Khalil Herbert (44446730),Khalil Herbert,44446730,FLEX,200,BAL@ATL 10/11/2026 08:20PM ET,ATL,0.0,,FLEX,Khalil Herbert,dk,200,khalil herbert,ATL,RB,showdown,00-0036906,auto_exact,high
+WR,Ja'Kobi Lane (44446731),Ja'Kobi Lane,44446731,FLEX,200,BAL@ATL 10/11/2026 08:20PM ET,BAL,2.1,IR,FLEX,Ja'Kobi Lane,dk,200,jakobi lane,BAL,WR,showdown,00-0040870,auto_exact,high
+WR,Beaux Collins (44446732),Beaux Collins,44446732,FLEX,200,BAL@ATL 10/11/2026 08:20PM ET,ATL,0.0,IR,FLEX,Beaux Collins,dk,200,beaux collins,ATL,WR,showdown,00-0040432,auto_exact,high
+WR,Gage Larvadain (44446733),Gage Larvadain,44446733,FLEX,200,BAL@ATL 10/11/2026 08:20PM ET,BAL,0.0,,FLEX,Gage Larvadain,dk,200,gage larvadain,BAL,WR,showdown,00-0040259,auto_exact,high
+WR,Dylan Drummond (44446734),Dylan Drummond,44446734,FLEX,200,BAL@ATL 10/11/2026 08:20PM ET,ATL,0.0,,FLEX,Dylan Drummond,dk,200,dylan drummond,ATL,WR,showdown,00-0038953,auto_exact,high
+WR,Xavier Guillory (44446735),Xavier Guillory,44446735,FLEX,200,BAL@ATL 10/11/2026 08:20PM ET,BAL,0.0,,FLEX,Xavier Guillory,dk,200,xavier guillory,BAL,WR,showdown,00-0040099,auto_exact,high
+WR,Antwane Wells Jr. (44446736),Antwane Wells Jr.,44446736,FLEX,200,BAL@ATL 10/11/2026 08:20PM ET,ATL,0.0,,FLEX,Antwane Wells Jr.,dk,200,antwane wells,ATL,WR,showdown,00-0040438,auto_exact,high
+WR,Vinny Anthony II (44446737),Vinny Anthony II,44446737,FLEX,200,BAL@ATL 10/11/2026 08:20PM ET,ATL,0.0,,FLEX,Vinny Anthony II,dk,200,vinny anthony,ATL,WR,showdown,00-0041185,auto_exact,high
+TE,Durham Smythe (44446738),Durham Smythe,44446738,FLEX,200,BAL@ATL 10/11/2026 08:20PM ET,BAL,0.4,IR,FLEX,Durham Smythe,dk,200,durham smythe,BAL,TE,showdown,00-0034798,auto_exact,high
+TE,Ty Pezza (44446739),Ty Pezza,44446739,FLEX,200,BAL@ATL 10/11/2026 08:20PM ET,BAL,0.0,,FLEX,Ty Pezza,dk,200,ty pezza,BAL,TE,showdown,00-0040986,auto_fallback_name_only_position_mismatch,low
+TE,Josh Cuevas (44446740),Josh Cuevas,44446740,FLEX,200,BAL@ATL 10/11/2026 08:20PM ET,BAL,0.6,,FLEX,Josh Cuevas,dk,200,josh cuevas,BAL,TE,showdown,00-0040887,auto_exact,high
+TE,Nick Vannett (44446741),Nick Vannett,44446741,FLEX,200,BAL@ATL 10/11/2026 08:20PM ET,BAL,0.0,,FLEX,Nick Vannett,dk,200,nick vannett,BAL,TE,showdown,00-0032394,auto_exact,high
+TE,Jack Velling (44446742),Jack Velling,44446742,FLEX,200,BAL@ATL 10/11/2026 08:20PM ET,ATL,0.0,,FLEX,Jack Velling,dk,200,jack velling,ATL,TE,showdown,00-0041195,auto_exact,high
+TE,Nick Muse (44446743),Nick Muse,44446743,FLEX,200,BAL@ATL 10/11/2026 08:20PM ET,ATL,0.0,,FLEX,Nick Muse,dk,200,nick muse,ATL,TE,showdown,00-0037317,auto_exact,high

@@ -1,0 +1,99 @@
+Position,Name + ID,Name,ID,Roster Position,Salary,Game Info,TeamAbbrev,AvgPointsPerGame,Status,roster_role,name,site,salary,normalized_name,normalized_team,position_upper,slate_format,player_id,match_method,match_confidence
+QB,Josh Allen (44446845),Josh Allen,44446845,CPT,17700,BUF@LAR 10/12/2026 08:15PM ET,BUF,29.9,,CPT,Josh Allen,dk,17700,josh allen,BUF,QB,showdown,00-0034857,auto_exact,high
+WR,Puka Nacua (44446846),Puka Nacua,44446846,CPT,17100,BUF@LAR 10/12/2026 08:15PM ET,LAR,21.6,,CPT,Puka Nacua,dk,17100,puka nacua,LA,WR,showdown,00-0039075,auto_exact,high
+RB,James Cook III (44446847),James Cook III,44446847,CPT,15900,BUF@LAR 10/12/2026 08:15PM ET,BUF,18.4,,CPT,James Cook III,dk,15900,james cook,BUF,RB,showdown,00-0037248,auto_exact,high
+RB,Kyren Williams (44446848),Kyren Williams,44446848,CPT,14700,BUF@LAR 10/12/2026 08:15PM ET,LAR,22.7,,CPT,Kyren Williams,dk,14700,kyren williams,LA,RB,showdown,00-0037840,auto_exact,high
+WR,Davante Adams (44446849),Davante Adams,44446849,CPT,14100,BUF@LAR 10/12/2026 08:15PM ET,LAR,19.8,,CPT,Davante Adams,dk,14100,davante adams,LA,WR,showdown,00-0031381,auto_exact,high
+QB,Matthew Stafford (44446850),Matthew Stafford,44446850,CPT,13500,BUF@LAR 10/12/2026 08:15PM ET,LAR,19.2,,CPT,Matthew Stafford,dk,13500,matthew stafford,LA,QB,showdown,00-0026498,auto_exact,high
+QB,Josh Allen (44446796),Josh Allen,44446796,FLEX,11800,BUF@LAR 10/12/2026 08:15PM ET,BUF,29.9,,FLEX,Josh Allen,dk,11800,josh allen,BUF,QB,showdown,00-0034857,auto_exact,high
+WR,Puka Nacua (44446797),Puka Nacua,44446797,FLEX,11400,BUF@LAR 10/12/2026 08:15PM ET,LAR,21.6,,FLEX,Puka Nacua,dk,11400,puka nacua,LA,WR,showdown,00-0039075,auto_exact,high
+WR,DJ Moore (44446851),DJ Moore,44446851,CPT,11400,BUF@LAR 10/12/2026 08:15PM ET,BUF,9.8,Q,CPT,DJ Moore,dk,11400,dj moore,BUF,WR,showdown,00-0034827,auto_exact,high
+RB,James Cook III (44446798),James Cook III,44446798,FLEX,10600,BUF@LAR 10/12/2026 08:15PM ET,BUF,18.4,,FLEX,James Cook III,dk,10600,james cook,BUF,RB,showdown,00-0037248,auto_exact,high
+WR,Khalil Shakir (44446852),Khalil Shakir,44446852,CPT,10500,BUF@LAR 10/12/2026 08:15PM ET,BUF,7.9,,CPT,Khalil Shakir,dk,10500,khalil shakir,BUF,WR,showdown,00-0037261,auto_exact,high
+TE,Dalton Kincaid (44446853),Dalton Kincaid,44446853,CPT,9900,BUF@LAR 10/12/2026 08:15PM ET,BUF,12.5,,CPT,Dalton Kincaid,dk,9900,dalton kincaid,BUF,TE,showdown,00-0038933,auto_exact,high
+RB,Kyren Williams (44446799),Kyren Williams,44446799,FLEX,9800,BUF@LAR 10/12/2026 08:15PM ET,LAR,22.7,,FLEX,Kyren Williams,dk,9800,kyren williams,LA,RB,showdown,00-0037840,auto_exact,high
+WR,Davante Adams (44446800),Davante Adams,44446800,FLEX,9400,BUF@LAR 10/12/2026 08:15PM ET,LAR,19.8,,FLEX,Davante Adams,dk,9400,davante adams,LA,WR,showdown,00-0031381,auto_exact,high
+QB,Matthew Stafford (44446801),Matthew Stafford,44446801,FLEX,9000,BUF@LAR 10/12/2026 08:15PM ET,LAR,19.2,,FLEX,Matthew Stafford,dk,9000,matthew stafford,LA,QB,showdown,00-0026498,auto_exact,high
+QB,Matthew Caldwell (44446854),Matthew Caldwell,44446854,CPT,9000,BUF@LAR 10/12/2026 08:15PM ET,LAR,0.0,IR,CPT,Matthew Caldwell,dk,9000,matthew caldwell,LA,QB,showdown,00-0041414,auto_exact,high
+QB,Kyle Allen (44446855),Kyle Allen,44446855,CPT,9000,BUF@LAR 10/12/2026 08:15PM ET,BUF,0.0,,CPT,Kyle Allen,dk,9000,kyle allen,BUF,QB,showdown,00-0034577,auto_exact,high
+QB,Ty Simpson (44446856),Ty Simpson,44446856,CPT,9000,BUF@LAR 10/12/2026 08:15PM ET,LAR,0.0,,CPT,Ty Simpson,dk,9000,ty simpson,LA,QB,showdown,00-0041568,auto_exact,high
+QB,Stetson Bennett IV (44446857),Stetson Bennett IV,44446857,CPT,9000,BUF@LAR 10/12/2026 08:15PM ET,LAR,1.4,,CPT,Stetson Bennett IV,dk,9000,stetson bennett,LA,QB,showdown,00-0039107,auto_exact,high
+QB,Shane Buechele (44446858),Shane Buechele,44446858,CPT,9000,BUF@LAR 10/12/2026 08:15PM ET,BUF,0.0,,CPT,Shane Buechele,dk,9000,shane buechele,BUF,QB,showdown,00-0036679,auto_exact,high
+WR,Keon Coleman (44446859),Keon Coleman,44446859,CPT,8400,BUF@LAR 10/12/2026 08:15PM ET,BUF,11.2,,CPT,Keon Coleman,dk,8400,keon coleman,BUF,WR,showdown,00-0039901,auto_exact,high
+WR,DJ Moore (44446802),DJ Moore,44446802,FLEX,7600,BUF@LAR 10/12/2026 08:15PM ET,BUF,9.8,Q,FLEX,DJ Moore,dk,7600,dj moore,BUF,WR,showdown,00-0034827,auto_exact,high
+K,Harrison Mevis (44446860),Harrison Mevis,44446860,CPT,7500,BUF@LAR 10/12/2026 08:15PM ET,LAR,7.0,,CPT,Harrison Mevis,dk,7500,harrison mevis,LA,K,showdown,00-0039498,auto_exact,high
+K,Tyler Bass (44446861),Tyler Bass,44446861,CPT,7200,BUF@LAR 10/12/2026 08:15PM ET,BUF,8.0,,CPT,Tyler Bass,dk,7200,tyler bass,BUF,K,showdown,00-0036162,auto_exact,high
+WR,Khalil Shakir (44446803),Khalil Shakir,44446803,FLEX,7000,BUF@LAR 10/12/2026 08:15PM ET,BUF,7.9,,FLEX,Khalil Shakir,dk,7000,khalil shakir,BUF,WR,showdown,00-0037261,auto_exact,high
+TE,Dalton Kincaid (44446804),Dalton Kincaid,44446804,FLEX,6600,BUF@LAR 10/12/2026 08:15PM ET,BUF,12.5,,FLEX,Dalton Kincaid,dk,6600,dalton kincaid,BUF,TE,showdown,00-0038933,auto_exact,high
+TE,Tyler Higbee (44446862),Tyler Higbee,44446862,CPT,6600,BUF@LAR 10/12/2026 08:15PM ET,LAR,8.5,,CPT,Tyler Higbee,dk,6600,tyler higbee,LA,TE,showdown,00-0033110,auto_exact,high
+DST,Rams (44446863),Rams,44446863,CPT,6300,BUF@LAR 10/12/2026 08:15PM ET,LAR,5.3,,CPT,Rams,dk,6300,rams,LA,DST,showdown,DST_LA,team_defense,high
+QB,Matthew Caldwell (44446805),Matthew Caldwell,44446805,FLEX,6000,BUF@LAR 10/12/2026 08:15PM ET,LAR,0.0,IR,FLEX,Matthew Caldwell,dk,6000,matthew caldwell,LA,QB,showdown,00-0041414,auto_exact,high
+QB,Kyle Allen (44446806),Kyle Allen,44446806,FLEX,6000,BUF@LAR 10/12/2026 08:15PM ET,BUF,0.0,,FLEX,Kyle Allen,dk,6000,kyle allen,BUF,QB,showdown,00-0034577,auto_exact,high
+QB,Ty Simpson (44446807),Ty Simpson,44446807,FLEX,6000,BUF@LAR 10/12/2026 08:15PM ET,LAR,0.0,,FLEX,Ty Simpson,dk,6000,ty simpson,LA,QB,showdown,00-0041568,auto_exact,high
+QB,Stetson Bennett IV (44446808),Stetson Bennett IV,44446808,FLEX,6000,BUF@LAR 10/12/2026 08:15PM ET,LAR,1.4,,FLEX,Stetson Bennett IV,dk,6000,stetson bennett,LA,QB,showdown,00-0039107,auto_exact,high
+QB,Shane Buechele (44446809),Shane Buechele,44446809,FLEX,6000,BUF@LAR 10/12/2026 08:15PM ET,BUF,0.0,,FLEX,Shane Buechele,dk,6000,shane buechele,BUF,QB,showdown,00-0036679,auto_exact,high
+RB,Blake Corum (44446864),Blake Corum,44446864,CPT,5700,BUF@LAR 10/12/2026 08:15PM ET,LAR,5.6,,CPT,Blake Corum,dk,5700,blake corum,LA,RB,showdown,00-0039738,auto_exact,high
+WR,Keon Coleman (44446810),Keon Coleman,44446810,FLEX,5600,BUF@LAR 10/12/2026 08:15PM ET,BUF,11.2,,FLEX,Keon Coleman,dk,5600,keon coleman,BUF,WR,showdown,00-0039901,auto_exact,high
+DST,Bills (44446865),Bills,44446865,CPT,5100,BUF@LAR 10/12/2026 08:15PM ET,BUF,4.5,,CPT,Bills,dk,5100,bills,BUF,DST,showdown,DST_BUF,team_defense,high
+K,Harrison Mevis (44446811),Harrison Mevis,44446811,FLEX,5000,BUF@LAR 10/12/2026 08:15PM ET,LAR,7.0,,FLEX,Harrison Mevis,dk,5000,harrison mevis,LA,K,showdown,00-0039498,auto_exact,high
+K,Tyler Bass (44446812),Tyler Bass,44446812,FLEX,4800,BUF@LAR 10/12/2026 08:15PM ET,BUF,8.0,,FLEX,Tyler Bass,dk,4800,tyler bass,BUF,K,showdown,00-0036162,auto_exact,high
+RB,Ty Johnson (44446866),Ty Johnson,44446866,CPT,4800,BUF@LAR 10/12/2026 08:15PM ET,BUF,6.1,,CPT,Ty Johnson,dk,4800,ty johnson,BUF,RB,showdown,00-0035537,auto_exact,high
+WR,Joshua Palmer (44446867),Joshua Palmer,44446867,CPT,4500,BUF@LAR 10/12/2026 08:15PM ET,BUF,5.8,OUT,CPT,Joshua Palmer,dk,4500,joshua palmer,BUF,WR,showdown,00-0036988,manual_override,high
+TE,Tyler Higbee (44446813),Tyler Higbee,44446813,FLEX,4400,BUF@LAR 10/12/2026 08:15PM ET,LAR,8.5,,FLEX,Tyler Higbee,dk,4400,tyler higbee,LA,TE,showdown,00-0033110,auto_exact,high
+DST,Rams (44446814),Rams,44446814,FLEX,4200,BUF@LAR 10/12/2026 08:15PM ET,LAR,5.3,,FLEX,Rams,dk,4200,rams,LA,DST,showdown,DST_LA,team_defense,high
+TE,Dawson Knox (44446868),Dawson Knox,44446868,CPT,3900,BUF@LAR 10/12/2026 08:15PM ET,BUF,3.8,,CPT,Dawson Knox,dk,3900,dawson knox,BUF,TE,showdown,00-0035689,auto_exact,high
+RB,Blake Corum (44446815),Blake Corum,44446815,FLEX,3800,BUF@LAR 10/12/2026 08:15PM ET,LAR,5.6,,FLEX,Blake Corum,dk,3800,blake corum,LA,RB,showdown,00-0039738,auto_exact,high
+TE,Colby Parkinson (44446869),Colby Parkinson,44446869,CPT,3600,BUF@LAR 10/12/2026 08:15PM ET,LAR,1.7,,CPT,Colby Parkinson,dk,3600,colby parkinson,LA,TE,showdown,00-0036244,auto_exact,high
+DST,Bills (44446816),Bills,44446816,FLEX,3400,BUF@LAR 10/12/2026 08:15PM ET,BUF,4.5,,FLEX,Bills,dk,3400,bills,BUF,DST,showdown,DST_BUF,team_defense,high
+WR,Konata Mumpfield (44446870),Konata Mumpfield,44446870,CPT,3300,BUF@LAR 10/12/2026 08:15PM ET,LAR,5.8,,CPT,Konata Mumpfield,dk,3300,konata mumpfield,LA,WR,showdown,00-0040590,auto_exact,high
+RB,Ty Johnson (44446817),Ty Johnson,44446817,FLEX,3200,BUF@LAR 10/12/2026 08:15PM ET,BUF,6.1,,FLEX,Ty Johnson,dk,3200,ty johnson,BUF,RB,showdown,00-0035537,auto_exact,high
+WR,Joshua Palmer (44446818),Joshua Palmer,44446818,FLEX,3000,BUF@LAR 10/12/2026 08:15PM ET,BUF,5.8,OUT,FLEX,Joshua Palmer,dk,3000,joshua palmer,BUF,WR,showdown,00-0036988,manual_override,high
+WR,Jordan Whittington (44446871),Jordan Whittington,44446871,CPT,3000,BUF@LAR 10/12/2026 08:15PM ET,LAR,1.1,,CPT,Jordan Whittington,dk,3000,jordan whittington,LA,WR,showdown,00-0039751,auto_exact,high
+TE,Dawson Knox (44446819),Dawson Knox,44446819,FLEX,2600,BUF@LAR 10/12/2026 08:15PM ET,BUF,3.8,,FLEX,Dawson Knox,dk,2600,dawson knox,BUF,TE,showdown,00-0035689,auto_exact,high
+TE,Colby Parkinson (44446820),Colby Parkinson,44446820,FLEX,2400,BUF@LAR 10/12/2026 08:15PM ET,LAR,1.7,,FLEX,Colby Parkinson,dk,2400,colby parkinson,LA,TE,showdown,00-0036244,auto_exact,high
+TE,Davis Allen (44446872),Davis Allen,44446872,CPT,2400,BUF@LAR 10/12/2026 08:15PM ET,LAR,2.0,,CPT,Davis Allen,dk,2400,davis allen,LA,TE,showdown,00-0039074,auto_exact,high
+WR,Konata Mumpfield (44446821),Konata Mumpfield,44446821,FLEX,2200,BUF@LAR 10/12/2026 08:15PM ET,LAR,5.8,,FLEX,Konata Mumpfield,dk,2200,konata mumpfield,LA,WR,showdown,00-0040590,auto_exact,high
+RB,Ray Davis (44446873),Ray Davis,44446873,CPT,2100,BUF@LAR 10/12/2026 08:15PM ET,BUF,0.5,,CPT,Ray Davis,dk,2100,ray davis,BUF,RB,showdown,00-0039875,auto_exact,high
+WR,Jordan Whittington (44446822),Jordan Whittington,44446822,FLEX,2000,BUF@LAR 10/12/2026 08:15PM ET,LAR,1.1,,FLEX,Jordan Whittington,dk,2000,jordan whittington,LA,WR,showdown,00-0039751,auto_exact,high
+TE,Max Klare (44446874),Max Klare,44446874,CPT,1800,BUF@LAR 10/12/2026 08:15PM ET,LAR,0.0,,CPT,Max Klare,dk,1800,max klare,LA,TE,showdown,00-0041510,auto_exact,high
+TE,Davis Allen (44446823),Davis Allen,44446823,FLEX,1600,BUF@LAR 10/12/2026 08:15PM ET,LAR,2.0,,FLEX,Davis Allen,dk,1600,davis allen,LA,TE,showdown,00-0039074,auto_exact,high
+WR,Tutu Atwell (44446875),Tutu Atwell,44446875,CPT,1500,BUF@LAR 10/12/2026 08:15PM ET,LAR,2.4,,CPT,Tutu Atwell,dk,1500,tutu atwell,LA,WR,showdown,00-0036849,auto_exact,high
+RB,Ray Davis (44446824),Ray Davis,44446824,FLEX,1400,BUF@LAR 10/12/2026 08:15PM ET,BUF,0.5,,FLEX,Ray Davis,dk,1400,ray davis,BUF,RB,showdown,00-0039875,auto_exact,high
+TE,Max Klare (44446825),Max Klare,44446825,FLEX,1200,BUF@LAR 10/12/2026 08:15PM ET,LAR,0.0,,FLEX,Max Klare,dk,1200,max klare,LA,TE,showdown,00-0041510,auto_exact,high
+WR,Greg Dortch (44446876),Greg Dortch,44446876,CPT,1200,BUF@LAR 10/12/2026 08:15PM ET,BUF,0.0,,CPT,Greg Dortch,dk,1200,greg dortch,BUF,WR,showdown,00-0035500,auto_exact,high
+WR,Tutu Atwell (44446826),Tutu Atwell,44446826,FLEX,1000,BUF@LAR 10/12/2026 08:15PM ET,LAR,2.4,,FLEX,Tutu Atwell,dk,1000,tutu atwell,LA,WR,showdown,00-0036849,auto_exact,high
+TE,Jackson Hawes (44446877),Jackson Hawes,44446877,CPT,900,BUF@LAR 10/12/2026 08:15PM ET,BUF,0.0,,CPT,Jackson Hawes,dk,900,jackson hawes,BUF,TE,showdown,00-0040194,auto_exact,high
+WR,Greg Dortch (44446827),Greg Dortch,44446827,FLEX,800,BUF@LAR 10/12/2026 08:15PM ET,BUF,0.0,,FLEX,Greg Dortch,dk,800,greg dortch,BUF,WR,showdown,00-0035500,auto_exact,high
+TE,Jackson Hawes (44446828),Jackson Hawes,44446828,FLEX,600,BUF@LAR 10/12/2026 08:15PM ET,BUF,0.0,,FLEX,Jackson Hawes,dk,600,jackson hawes,BUF,TE,showdown,00-0040194,auto_exact,high
+RB,Dean Connors (44446878),Dean Connors,44446878,CPT,600,BUF@LAR 10/12/2026 08:15PM ET,LAR,0.0,,CPT,Dean Connors,dk,600,dean connors,LA,RB,showdown,00-0041415,auto_exact,high
+RB,Dean Connors (44446829),Dean Connors,44446829,FLEX,400,BUF@LAR 10/12/2026 08:15PM ET,LAR,0.0,,FLEX,Dean Connors,dk,400,dean connors,LA,RB,showdown,00-0041415,auto_exact,high
+RB,Ronnie Rivers (44446879),Ronnie Rivers,44446879,CPT,300,BUF@LAR 10/12/2026 08:15PM ET,LAR,1.7,IR,CPT,Ronnie Rivers,dk,300,ronnie rivers,LA,RB,showdown,00-0037557,auto_exact,high
+RB,Brock Lampe (44446880),Brock Lampe,44446880,CPT,300,BUF@LAR 10/12/2026 08:15PM ET,BUF,0.0,,CPT,Brock Lampe,dk,300,brock lampe,BUF,RB,showdown,00-0040567,auto_exact,high
+RB,Jordan Waters (44446881),Jordan Waters,44446881,CPT,300,BUF@LAR 10/12/2026 08:15PM ET,LAR,0.0,,CPT,Jordan Waters,dk,300,jordan waters,LA,RB,showdown,00-0040601,auto_exact,high
+RB,Frank Gore Jr. (44446882),Frank Gore Jr.,44446882,CPT,300,BUF@LAR 10/12/2026 08:15PM ET,BUF,0.2,,CPT,Frank Gore Jr.,dk,300,frank gore,BUF,RB,showdown,00-0039471,auto_exact,high
+WR,CJ Daniels (44446883),CJ Daniels,44446883,CPT,300,BUF@LAR 10/12/2026 08:15PM ET,LAR,0.0,,CPT,CJ Daniels,dk,300,cj daniels,LA,WR,showdown,00-0041399,auto_exact,high
+WR,Trent Sherfield Sr. (44446884),Trent Sherfield Sr.,44446884,CPT,300,BUF@LAR 10/12/2026 08:15PM ET,BUF,0.0,,CPT,Trent Sherfield Sr.,dk,300,trent sherfield,BUF,WR,showdown,00-0034487,auto_exact,high
+WR,Skyler Bell (44446885),Skyler Bell,44446885,CPT,300,BUF@LAR 10/12/2026 08:15PM ET,BUF,0.0,,CPT,Skyler Bell,dk,300,skyler bell,BUF,WR,showdown,00-0041443,auto_exact,high
+WR,Ja'Mori Maclin (44446886),Ja'Mori Maclin,44446886,CPT,300,BUF@LAR 10/12/2026 08:15PM ET,BUF,0.0,,CPT,Ja'Mori Maclin,dk,300,jamori maclin,BUF,WR,showdown,00-0041272,auto_exact,high
+WR,Stephen Gosnell (44446887),Stephen Gosnell,44446887,CPT,300,BUF@LAR 10/12/2026 08:15PM ET,BUF,0.0,,CPT,Stephen Gosnell,dk,300,stephen gosnell,BUF,WR,showdown,00-0040361,auto_exact,high
+WR,Brennan Presley (44446888),Brennan Presley,44446888,CPT,300,BUF@LAR 10/12/2026 08:15PM ET,LAR,0.0,,CPT,Brennan Presley,dk,300,brennan presley,LA,WR,showdown,00-0040597,auto_exact,high
+WR,Alex Bachman (44446889),Alex Bachman,44446889,CPT,300,BUF@LAR 10/12/2026 08:15PM ET,LAR,0.0,,CPT,Alex Bachman,dk,300,alex bachman,LA,WR,showdown,00-0035602,auto_exact,high
+TE,Terrance Ferguson (44446890),Terrance Ferguson,44446890,CPT,300,BUF@LAR 10/12/2026 08:15PM ET,LAR,6.4,IR,CPT,Terrance Ferguson,dk,300,terrance ferguson,LA,TE,showdown,00-0040737,auto_exact,high
+TE,Dan Villari (44446891),Dan Villari,44446891,CPT,300,BUF@LAR 10/12/2026 08:15PM ET,LAR,0.0,,CPT,Dan Villari,dk,300,dan villari,LA,TE,showdown,00-0041422,auto_exact,high
+TE,Keleki Latu (44446892),Keleki Latu,44446892,CPT,300,BUF@LAR 10/12/2026 08:15PM ET,BUF,0.0,,CPT,Keleki Latu,dk,300,keleki latu,BUF,TE,showdown,00-0040363,auto_exact,high
+WR,Tyrell Shavers (44446893),Tyrell Shavers,44446893,CPT,300,BUF@LAR 10/12/2026 08:15PM ET,BUF,0.0,OUT,CPT,Tyrell Shavers,dk,300,tyrell shavers,BUF,WR,showdown,00-0038679,auto_exact,high
+RB,Ronnie Rivers (44446830),Ronnie Rivers,44446830,FLEX,200,BUF@LAR 10/12/2026 08:15PM ET,LAR,1.7,IR,FLEX,Ronnie Rivers,dk,200,ronnie rivers,LA,RB,showdown,00-0037557,auto_exact,high
+RB,Brock Lampe (44446831),Brock Lampe,44446831,FLEX,200,BUF@LAR 10/12/2026 08:15PM ET,BUF,0.0,,FLEX,Brock Lampe,dk,200,brock lampe,BUF,RB,showdown,00-0040567,auto_exact,high
+RB,Jordan Waters (44446832),Jordan Waters,44446832,FLEX,200,BUF@LAR 10/12/2026 08:15PM ET,LAR,0.0,,FLEX,Jordan Waters,dk,200,jordan waters,LA,RB,showdown,00-0040601,auto_exact,high
+RB,Frank Gore Jr. (44446833),Frank Gore Jr.,44446833,FLEX,200,BUF@LAR 10/12/2026 08:15PM ET,BUF,0.2,,FLEX,Frank Gore Jr.,dk,200,frank gore,BUF,RB,showdown,00-0039471,auto_exact,high
+WR,CJ Daniels (44446834),CJ Daniels,44446834,FLEX,200,BUF@LAR 10/12/2026 08:15PM ET,LAR,0.0,,FLEX,CJ Daniels,dk,200,cj daniels,LA,WR,showdown,00-0041399,auto_exact,high
+WR,Trent Sherfield Sr. (44446835),Trent Sherfield Sr.,44446835,FLEX,200,BUF@LAR 10/12/2026 08:15PM ET,BUF,0.0,,FLEX,Trent Sherfield Sr.,dk,200,trent sherfield,BUF,WR,showdown,00-0034487,auto_exact,high
+WR,Skyler Bell (44446836),Skyler Bell,44446836,FLEX,200,BUF@LAR 10/12/2026 08:15PM ET,BUF,0.0,,FLEX,Skyler Bell,dk,200,skyler bell,BUF,WR,showdown,00-0041443,auto_exact,high
+WR,Ja'Mori Maclin (44446837),Ja'Mori Maclin,44446837,FLEX,200,BUF@LAR 10/12/2026 08:15PM ET,BUF,0.0,,FLEX,Ja'Mori Maclin,dk,200,jamori maclin,BUF,WR,showdown,00-0041272,auto_exact,high
+WR,Stephen Gosnell (44446838),Stephen Gosnell,44446838,FLEX,200,BUF@LAR 10/12/2026 08:15PM ET,BUF,0.0,,FLEX,Stephen Gosnell,dk,200,stephen gosnell,BUF,WR,showdown,00-0040361,auto_exact,high
+WR,Brennan Presley (44446839),Brennan Presley,44446839,FLEX,200,BUF@LAR 10/12/2026 08:15PM ET,LAR,0.0,,FLEX,Brennan Presley,dk,200,brennan presley,LA,WR,showdown,00-0040597,auto_exact,high
+WR,Alex Bachman (44446840),Alex Bachman,44446840,FLEX,200,BUF@LAR 10/12/2026 08:15PM ET,LAR,0.0,,FLEX,Alex Bachman,dk,200,alex bachman,LA,WR,showdown,00-0035602,auto_exact,high
+TE,Terrance Ferguson (44446841),Terrance Ferguson,44446841,FLEX,200,BUF@LAR 10/12/2026 08:15PM ET,LAR,6.4,IR,FLEX,Terrance Ferguson,dk,200,terrance ferguson,LA,TE,showdown,00-0040737,auto_exact,high
+TE,Dan Villari (44446842),Dan Villari,44446842,FLEX,200,BUF@LAR 10/12/2026 08:15PM ET,LAR,0.0,,FLEX,Dan Villari,dk,200,dan villari,LA,TE,showdown,00-0041422,auto_exact,high
+TE,Keleki Latu (44446843),Keleki Latu,44446843,FLEX,200,BUF@LAR 10/12/2026 08:15PM ET,BUF,0.0,,FLEX,Keleki Latu,dk,200,keleki latu,BUF,TE,showdown,00-0040363,auto_exact,high
+WR,Tyrell Shavers (44446844),Tyrell Shavers,44446844,FLEX,200,BUF@LAR 10/12/2026 08:15PM ET,BUF,0.0,OUT,FLEX,Tyrell Shavers,dk,200,tyrell shavers,BUF,WR,showdown,00-0038679,auto_exact,high
