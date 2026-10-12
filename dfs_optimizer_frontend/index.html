@@ -1484,20 +1484,23 @@
        column, so Own% stays a visible, tappable sort control like its
        siblings. */
     .roster-row {
-      /* 1fr 1fr split the row 50/50 regardless of how little either side
-         actually needed -- "SAL $9,000" (~70px) sitting alone in a ~140px
-         column left a visible dead gap before PROJ started at the
-         midpoint. max-content sizes the first column to its own tightest
-         content instead, so PROJ/OWN start right after SAL/VALUE with just
-         the row-gap between -- any slack lands at the row's end, not in
-         the middle. The "player player" name area still spans both
-         columns, so it keeps the exact same total width as before; only
-         how that width splits for the stat rows changes. */
-      grid-template-columns: 44px max-content 1fr;
+      /* User feedback (2026-10-13): the 2x2 (then max-content/1fr) version
+         still left visible dead space, two stats to a line. Back to ALL
+         FOUR stats on one line -- same shape this block originally had --
+         but with the actual bug fixed this time: that first attempt used
+         equal 1fr/0.85fr columns, which forced a FIXED width per column
+         regardless of content, so a long value (long salary, decimal
+         projection) didn't fit its slice and wrapped. max-content sizes
+         each column to its own tightest real content instead of an equal
+         or ratio'd split, so every stat packs tight against its neighbor
+         with just the column-gap between, and nothing is forced narrower
+         than it needs -- verified live at $11,800 (this slate's widest
+         real salary) with no wrap, no overflow. */
+      grid-template-columns: 44px max-content max-content max-content max-content;
       grid-template-areas:
-        "slot player player"
-        "pos  salary proj"
-        ".    value  own";
+        "slot player player player player"
+        "pos  salary proj   value  own";
+      column-gap: 10px;
       row-gap: 6px;
     }
     .roster-row.head { display: none; } /* labels are redundant once each stat gets its own line below */
@@ -1537,11 +1540,11 @@
     }
 
     .player-list-head {
-      grid-template-columns: 54px max-content 1fr !important;
+      grid-template-columns: 54px max-content max-content max-content max-content !important;
       grid-template-areas:
-        "act  player player"
-        "act  price  proj"
-        "act  value  own";
+        "act  player player player player"
+        "act  price  proj   value  own";
+      column-gap: 10px;
       row-gap: 4px;
       padding: 8px 12px;
     }
@@ -1554,11 +1557,11 @@
     .player-list-head .sortcol { text-align: left; }
 
     .player-row {
-      grid-template-columns: 54px max-content 1fr !important;
+      grid-template-columns: 54px max-content max-content max-content max-content !important;
       grid-template-areas:
-        "act  name  name"
-        "act  price proj"
-        "act  value own";
+        "act  name  name  name  name"
+        "act  price proj  value own";
+      column-gap: 10px;
       row-gap: 6px;
     }
     .player-row .pactions { grid-area: act; grid-template-columns: repeat(2, auto); gap: 3px; justify-content: center; align-items: center; }
