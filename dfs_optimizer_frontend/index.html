@@ -1466,7 +1466,9 @@
      column gets real room instead of being squeezed sideways. */
   @media (max-width: 640px) {
     .roster-row {
-      grid-template-columns: 44px 1fr 1fr 1fr 1fr;
+      /* own carries two numbers (model% + FFC sub-line) where salary/proj/
+         value carry one -- give it more of the row than an even split. */
+      grid-template-columns: 44px 0.85fr 0.85fr 0.85fr 1.6fr;
       grid-template-areas:
         "slot player player player player"
         "pos  salary proj   value  own";
@@ -1490,16 +1492,42 @@
     .proj-cell::before  { content: "PROJ "; color: var(--dimmer); }
     .value-cell::before { content: "VAL "; color: var(--dimmer); }
     .own-cell::before   { content: "OWN "; color: var(--dimmer); }
+    /* .own-range (model% + FFC sub-line) was built for a narrow right-
+       aligned desktop column: display:flex/flex-direction:column/
+       align-items:flex-end. Dropped unchanged into a mobile stat cell, that
+       block-level flex box breaks onto its own line below the "OWN "/"EXP% "
+       label instead of sitting beside it, and still right-aligns against the
+       row's edge -- the one cell that doesn't match the plain "LABEL value"
+       line every sibling cell (SAL/PROJ/VAL) uses (confirmed live on a real
+       375px-wide mobile viewport, not just by reading the CSS). Un-flex it
+       back to plain inline here so the model% sits on the same line as the
+       "OWN "/"EXP% " label like every sibling cell, and force just the FFC
+       sub-line onto its own line below with display:block (a block-level
+       child inside an inline parent always starts a fresh line per the CSS
+       inline layout spec) instead of flex's column/align-end stacking. An
+       inline-flex container was tried first and measured NOT to reliably
+       share the line with the label at this column's ~45-65px width --
+       display:block is the version actually verified fixed on-device. */
+    .own-cell .own-range, .player-row .pown .own-range {
+      display: inline;
+    }
+    .own-cell .own-range .own-ffc-sub, .player-row .pown .own-range .own-ffc-sub {
+      display: block;
+      margin-top: 1px;
+      text-align: left;
+    }
 
     .player-list-head {
-      grid-template-columns: 54px 1fr 1fr 1fr 1fr !important;
+      grid-template-columns: 54px 0.85fr 0.85fr 0.85fr 1.6fr !important;
       padding: 8px 12px;
     }
     .player-list-head > div:last-child { display: none; }
     .player-list-head .sortcol { text-align: left; }
 
     .player-row {
-      grid-template-columns: 54px 1fr 1fr 1fr 1fr !important;
+      /* own carries two numbers (model% + FFC sub-line) where
+         price/proj/value carry one -- give it more of the row. */
+      grid-template-columns: 54px 0.85fr 0.85fr 0.85fr 1.6fr !important;
       grid-template-areas:
         "act  name  name  name  name"
         "act  price proj  value own";
