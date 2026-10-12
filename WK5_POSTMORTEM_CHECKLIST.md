@@ -167,8 +167,8 @@ touches five and resolves none.
      weeks reappear when switching slates on the desktop version (likely a stale cache/sync issue, not
      mobile-specific). Needs its own session.
 
-7. **DK early slate near-miss — OPEN, real lead found, keep digging here.** Initial look (2026-10-12)
-   found two different mechanisms, not one:
+7. **DK early slate near-miss — CLOSED for the Bagent lead; one narrow refinement parked.** Initial look
+   (2026-10-12) found two different mechanisms, not one:
    - **CHI/GB (early slate): Bagent-led correlated bust, and it was flaggable.** Bagent projected 17.4,
      scored 3.18 — and every CHI pass-catcher busted alongside him (Kmet 3.5→1.8, Loveland 10.2→3.9,
      Burden 12.1→8.9, Odunze 10.2→6.0), the signature of a bad QB game dragging the whole passing
@@ -188,9 +188,35 @@ touches five and resolves none.
      signal anywhere. Reads as genuine unpredictable game-level variance on a correctly-projected
      established player, same category as Wk4's Parker Washington miss — nothing in available pre-game
      data separates this case. No further action.
-   - **Next step, own session:** backtest the `games_played`-thin / `dk_avg_ppg`-divergence signal on
-     2021-25 history before touching anything — one data point today, needs the same held-out-history bar
-     every other change here has cleared.
+   - **Backtest result (2026-10-12, Opus agent, held-out 2021-25 + 2026 wk3-5, n=2,077 projected-starter
+     QB rows, 86 slates) — wrong-direction, drop as a standalone dampener.** Rebuilt `dk_avg_ppg`
+     historically from pre-week stat lines (verified exact vs. real 2026 values: QB corr 1.000). Regressing
+     projection error on (our projection − DK average) across all QBs: slope +0.017, t=0.3 — no signal.
+     On Bagent-type rows specifically (≤2 starts, gap ≥6, n=33) we already beat FC (MAE 6.12 vs 6.94);
+     pulling toward DK's average moves MAE 6.12→6.01 but the CI [−0.71, +0.49] flips sign season to season.
+     RB/WR/TE: nothing. Bagent's own 17.4 was in-range for his one real start (9.8 pts/start) and reads as
+     a variance bust, not a pattern — the correlated-CHI-bust signature was real but not a *projection*
+     bug this signal can catch.
+   - **One real, narrow finding: an exclusion rule for the existing (currently OFF) `qb_lowsample_shift`
+     feature.** That feature (`scripts/build_projections_statline.py`, `_apply_qb_recal`, config
+     `data/qb_recal_config.json`) already exists to fix wk4+ new-starter QB under-projection but is
+     disabled. Held out by season on the 58 rows it would touch: MAE 7.28 (today, shift off) → 7.10 (shift
+     on, as configured) → **6.85** (shift on, but excluded when `final_projection − dk_avg_ppg ≥ 6`). The
+     shift's gain comes from low-start QBs whose number already agrees with DK's average; it hurts the
+     ones with a large gap. n=58, noisy season to season, threshold insensitive (6 vs 8 same result) —
+     not enough alone to flip `qb_lowsample_shift` to default-on, but **when that feature next goes through
+     its own lineup-replay review before shipping, add this exclusion in the same pass**: gate `m_low` in
+     `_apply_qb_recal` by `final_projection - dk_avg_ppg < cfg["qb_lowsample_shift"]["max_dkavg_gap"]`
+     (config key `max_dkavg_gap: 6`, missing/null = off = today's behavior). `dk_avg_ppg` is currently
+     attached after the recal runs (build_projections_statline.py ~line 1443 vs. recal ~line 1190) — needs
+     to move earlier to be available at that gate. Live effect today: none, since `qb_lowsample_shift`
+     itself is off.
+   - **Also kept on the parking lot, not shipped:** a GPP tail-risk hint — among QBs projected 11-15 pts,
+     high-dk_avg-gap rows bust (score <60% of projection) 33-43% of the time vs 16% baseline (~13 vs 7
+     expected busts, n=43, p≈0.02). Mean error is near zero and flips sign by season, so it's a
+     variance/ceiling-risk signal, not a projection-accuracy fix — could matter for MME dart-filtering later,
+     not for the point estimate.
+   - Full analysis (local only, FC-derived, not committed): `analysis/qb_dkavg_divergence/RESULTS.md`.
 
 ## Parking Lot (add here, don't chase inline)
 - **Does the injury pipeline already down-adjust same-team RB/WR/TE projections when a QB is ruled OUT?**
