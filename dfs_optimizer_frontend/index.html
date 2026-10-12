@@ -1465,13 +1465,30 @@
      which grid area each existing element lands in changes), so every
      column gets real room instead of being squeezed sideways. */
   @media (max-width: 640px) {
+    /* Found live on a real phone (2026-10-13), two bugs in the one-row
+       4-equal-column stat layout below (previous version of this block):
+       (1) giving OWN extra width (0.85fr/0.85fr/0.85fr/1.6fr) by shrinking
+       its 3 siblings made SAL ("SAL $9,800") and PROJ ("PROJ 26.89") too
+       narrow to fit their own label+value on one line -- they wrapped to
+       label-on-top/value-below while VALUE and OWN (shorter strings, extra
+       room) stayed one-line, an inconsistent zig-zag the user flagged
+       directly ("salary and projection [is] the word on top... but with
+       ownership... it's one line"). (2) hiding the OWN sort header
+       (`:last-child { display:none }`) removed the only way to tap-sort
+       by ownership on mobile -- every other stat column stayed sortable.
+       Fix: a 2x2 sub-grid (salary+proj on one line, value+own on the next,
+       each pair splitting the row's width 50/50) instead of 4-across --
+       every cell gets equal, generous room regardless of string length, so
+       nothing wraps and nothing needs to steal width from a neighbor. For
+       the header, mirror the same 2-row shape instead of dropping the last
+       column, so Own% stays a visible, tappable sort control like its
+       siblings. */
     .roster-row {
-      /* own carries two numbers (model% + FFC sub-line) where salary/proj/
-         value carry one -- give it more of the row than an even split. */
-      grid-template-columns: 44px 0.85fr 0.85fr 0.85fr 1.6fr;
+      grid-template-columns: 44px 1fr 1fr;
       grid-template-areas:
-        "slot player player player player"
-        "pos  salary proj   value  own";
+        "slot player player"
+        "pos  salary proj"
+        ".    value  own";
       row-gap: 6px;
     }
     .roster-row.head { display: none; } /* labels are redundant once each stat gets its own line below */
@@ -1494,20 +1511,13 @@
     .own-cell::before   { content: "OWN "; color: var(--dimmer); }
     /* .own-range (model% + FFC sub-line) was built for a narrow right-
        aligned desktop column: display:flex/flex-direction:column/
-       align-items:flex-end. Dropped unchanged into a mobile stat cell, that
-       block-level flex box breaks onto its own line below the "OWN "/"EXP% "
-       label instead of sitting beside it, and still right-aligns against the
-       row's edge -- the one cell that doesn't match the plain "LABEL value"
-       line every sibling cell (SAL/PROJ/VAL) uses (confirmed live on a real
-       375px-wide mobile viewport, not just by reading the CSS). Un-flex it
-       back to plain inline here so the model% sits on the same line as the
-       "OWN "/"EXP% " label like every sibling cell, and force just the FFC
-       sub-line onto its own line below with display:block (a block-level
-       child inside an inline parent always starts a fresh line per the CSS
-       inline layout spec) instead of flex's column/align-end stacking. An
-       inline-flex container was tried first and measured NOT to reliably
-       share the line with the label at this column's ~45-65px width --
-       display:block is the version actually verified fixed on-device. */
+       align-items:flex-end. Un-flex it back to plain inline here so the
+       model% sits on the same line as the "OWN "/"EXP% " label like every
+       sibling cell, and force just the FFC sub-line onto its own line
+       below with display:block (a block-level child inside an inline
+       parent always starts a fresh line per the CSS inline layout spec)
+       instead of flex's column/align-end stacking. Confirmed live on a
+       real 375px-wide mobile viewport, not just by reading the CSS. */
     .own-cell .own-range, .player-row .pown .own-range {
       display: inline;
     }
@@ -1518,19 +1528,28 @@
     }
 
     .player-list-head {
-      grid-template-columns: 54px 0.85fr 0.85fr 0.85fr 1.6fr !important;
+      grid-template-columns: 54px 1fr 1fr !important;
+      grid-template-areas:
+        "act  player player"
+        "act  price  proj"
+        "act  value  own";
+      row-gap: 4px;
       padding: 8px 12px;
     }
-    .player-list-head > div:last-child { display: none; }
+    .player-list-head > div:nth-child(1) { grid-area: act; }
+    .player-list-head > div:nth-child(2) { grid-area: player; }
+    .player-list-head > div:nth-child(3) { grid-area: price; }
+    .player-list-head > div:nth-child(4) { grid-area: proj; }
+    .player-list-head > div:nth-child(5) { grid-area: value; }
+    .player-list-head > div:nth-child(6) { grid-area: own; }
     .player-list-head .sortcol { text-align: left; }
 
     .player-row {
-      /* own carries two numbers (model% + FFC sub-line) where
-         price/proj/value carry one -- give it more of the row. */
-      grid-template-columns: 54px 0.85fr 0.85fr 0.85fr 1.6fr !important;
+      grid-template-columns: 54px 1fr 1fr !important;
       grid-template-areas:
-        "act  name  name  name  name"
-        "act  price proj  value own";
+        "act  name  name"
+        "act  price proj"
+        "act  value own";
       row-gap: 6px;
     }
     .player-row .pactions { grid-area: act; grid-template-columns: repeat(2, auto); gap: 3px; justify-content: center; align-items: center; }
@@ -1543,6 +1562,26 @@
     .player-row .pproj::before { content: "PROJ "; color: var(--dimmer); font-size: 9px; }
     .player-row .pval::before  { content: "VAL "; color: var(--dimmer); font-size: 9px; }
     .player-row .pown::before  { content: "OWN "; color: var(--dimmer); font-size: 9px; }
+
+    /* Position chips (ALL/QB/RB/WR/TE/DST/K), Filter, and Exclude/Un-exclude
+       were all crammed onto shared flex rows sized for desktop -- on phone
+       that pushed K off the end of the chip row (competing with the Filter
+       button for the same line) and wrapped Un-exclude onto its own
+       orphaned line while the player count + Exclude shared one. Give each
+       its own full-width row so nothing has to fight a neighbor for space. */
+    .pool-tabs-row { flex-wrap: wrap; }
+    .pool-tabs-row .pool-tabs { flex-basis: 100%; min-width: 0 !important; }
+    .pool-tabs-row .filter-toggle-row { flex-basis: 100%; }
+    .pool-tabs-row .filter-toggle-row .filter-toggle-btn { width: 100%; }
+    /* Even with the Filter button moved to its own row above, the 7 chips
+       (ALL/QB/RB/WR/TE/DST/K) at their desktop padding/gap still measured
+       ~339px of content against a ~297px-wide row on a real phone --
+       narrower padding/gap closes that gap so every chip, K included,
+       lands on one row instead of DST/K spilling to a second. */
+    .pool-tabs-row .tab-btn { padding: 6px 8px; }
+    .pool-tabs-row .pool-tabs { gap: 4px; }
+    .bulk-action-row { flex-direction: column; align-items: stretch; }
+    .bulk-action-row .bulk-btn { width: 100%; text-align: center; }
   }
 </style>
 </head>
@@ -1913,7 +1952,7 @@ in this browser's localStorage.</p>
           </div>
         </div>
         <input type="text" id="playerSearch" placeholder="Search player, team, or position&hellip;" style="margin-top:10px;">
-        <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap; margin-top:10px;">
+        <div class="pool-tabs-row" style="display:flex; align-items:center; gap:8px; flex-wrap:wrap; margin-top:10px;">
           <div class="pool-tabs" id="poolTabs" style="margin-top:0; flex:1; min-width:200px;"></div>
           <div class="filter-toggle-row" style="margin-top:0;">
             <button class="filter-toggle-btn" id="btnFilterToggle" type="button">Filter ▾</button>
