@@ -67,14 +67,20 @@ touches five and resolves none.
      contests, or at least enough to not be fitting noise); FD's single-entry contest mix above may also
      need accounting for before rules derived from it are trusted the same way DK's are.
 
-3. **Carried from the Wk5 Sunday parking lot — RB+WR same-team-no-QB correlation rule.** During Sunday's
-   main-slate lineup review, builds rostered D'Andre Swift (RB, CHI) + Burden/Raymond (WR, CHI) with
-   Caleb Williams out and an unrelated QB in the lineup. No lint rule covers RB+WR same-team-no-QB pairs
-   today (`CL_pc_pair_no_qb` in `scripts/construction_lint.py` only fires for 2+ pass-catchers, and is
-   itself untested/info-only). Question: is this a real negative correlation (run-heavy game script good
-   for the RB, bad for the WR) or just two independently-strong plays sharing a team? Check real
-   contest/replay data before deciding flag-only vs. enforce. Full context in memory
-   `project_wk5_parking_lot`.
+3. **Carried from the Wk5 Sunday parking lot — RB+WR same-team-no-QB correlation rule.** ✅ CLOSED,
+   NO LINT CHANGE 2026-10-12. Tested on 8 seasons of real DK box scores (2014-2021, RotoGuru + nflverse
+   starter/game data), not simulation. Teams with their primary QB out (575 of 4,128 team-weeks, 13.9%):
+   salary-adjusted RB-vs-WR/TE correlation is -0.022 (95% CI -0.078 to +0.035) vs -0.034 when the QB
+   plays (CI -0.057 to -0.011) — essentially the same, not more negative. The claimed mechanism ("RB
+   booms while WR busts") doesn't show up: that joint outcome is *less* frequent with the QB out (0.95x
+   independent-odds) than with him in (1.05x). Held up across rank correlation, WR-only/TE-only splits,
+   holding team total points constant, and per-season breakdown (QB-out only looked worse in 1 of 8
+   seasons, n~125, reads as noise). What QB-out actually does: **both** players score less (team total
+   23.6→18.9 pts) — a level drop, not an opposite-direction split. Verdict: wrong-direction-drop. No
+   `CL_rb_pc_pair_no_qb` rule added, `CL_pc_pair_no_qb` left as-is (WR/TE-only). Full writeup:
+   `analysis/rb_wr_no_qb_correlation/RESULTS.md`. Parking-lot note from the agent, not yet tested: whether
+   the injury pipeline already lowers same-team RB/WR/TE projections when a QB is ruled OUT (separate
+   question from this lint rule).
 
 4. **Carried from the Wk5 Sunday parking lot — model-vs-FFC ownership gap on high-chalk TE/RB.** Three
    of four ⚠-flagged high-chalk players in Sunday's lineup 1 review were under on the model side vs. FFC
@@ -128,4 +134,7 @@ touches five and resolves none.
      every other change here has cleared.
 
 ## Parking Lot (add here, don't chase inline)
-(empty — add anything that comes up mid-session here instead of discussing it inline)
+- **Does the injury pipeline already down-adjust same-team RB/WR/TE projections when a QB is ruled OUT?**
+  Raised by the item-3 agent as a byproduct, not tested. Real effect of a QB-out game is a team-wide
+  points drop (see item 3), which is a projection question, not a lineup-construction rule — worth
+  checking whether `build_projections_statline.py` already captures it before assuming it's missing.
