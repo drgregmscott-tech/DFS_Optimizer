@@ -1500,7 +1500,7 @@
       grid-template-areas:
         "slot player player player player"
         "pos  salary proj   value  own";
-      column-gap: 10px;
+      column-gap: 5px;
       row-gap: 6px;
     }
     .roster-row.head { display: none; } /* labels are redundant once each stat gets its own line below */
@@ -1540,12 +1540,13 @@
     }
 
     .player-list-head {
-      grid-template-columns: 54px max-content max-content max-content max-content !important;
-      grid-template-areas:
-        "act  player player player player"
-        "act  price  proj   value  own";
-      column-gap: 10px;
-      row-gap: 4px;
+      /* Header only -- not a real data row, so it doesn't need the name/
+         stats split the data rows below it use. User asked for Player to
+         sit on the same line as the sort controls instead of its own line
+         above them. */
+      grid-template-columns: 54px max-content max-content max-content max-content max-content !important;
+      grid-template-areas: "act  player price  proj   value  own";
+      column-gap: 6px;
       padding: 8px 12px;
     }
     .player-list-head > div:nth-child(1) { grid-area: act; }
@@ -1561,7 +1562,7 @@
       grid-template-areas:
         "act  name  name  name  name"
         "act  price proj  value own";
-      column-gap: 10px;
+      column-gap: 5px;
       row-gap: 6px;
     }
     .player-row .pactions { grid-area: act; grid-template-columns: repeat(2, auto); gap: 3px; justify-content: center; align-items: center; }
@@ -1594,6 +1595,22 @@
     .pool-tabs-row .pool-tabs { gap: 4px; }
     .bulk-action-row { flex-direction: column; align-items: stretch; }
     .bulk-action-row .bulk-btn { width: 100%; text-align: center; }
+
+    /* Filter bar: found live, Salary/Projection/Value/Own% min-max fields
+       were visibly OVERLAPPING each other, not just crowded. Cause: each
+       .filter-group has min-width:120px, but its real content (two fixed
+       width:70px number inputs + a separator) needs ~160px -- min-width
+       set lower than a flex item's true content floor doesn't protect it
+       from shrinking below that content size, so flex-wrap kept 2 groups
+       per line (since 120px x2 + gap looked like it fit) and their inputs
+       then overflowed past their own shrunk group box into the next
+       group's space instead of cleanly wrapping. One filter group per row
+       sidesteps the miscalculation entirely instead of tuning widths
+       further, and matches the user's own suggested fix (give Clear
+       Filters its own row too). */
+    .filter-bar { flex-direction: column; }
+    .filter-group { min-width: 0; width: 100%; }
+    .filter-clear-btn { margin-left: 0; align-self: stretch; text-align: center; }
   }
 </style>
 </head>
