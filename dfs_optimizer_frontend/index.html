@@ -1484,7 +1484,16 @@
        column, so Own% stays a visible, tappable sort control like its
        siblings. */
     .roster-row {
-      grid-template-columns: 44px 1fr 1fr;
+      /* 1fr 1fr split the row 50/50 regardless of how little either side
+         actually needed -- "SAL $9,000" (~70px) sitting alone in a ~140px
+         column left a visible dead gap before PROJ started at the
+         midpoint. max-content sizes the first column to its own tightest
+         content instead, so PROJ/OWN start right after SAL/VALUE with just
+         the row-gap between -- any slack lands at the row's end, not in
+         the middle. The "player player" name area still spans both
+         columns, so it keeps the exact same total width as before; only
+         how that width splits for the stat rows changes. */
+      grid-template-columns: 44px max-content 1fr;
       grid-template-areas:
         "slot player player"
         "pos  salary proj"
@@ -1528,7 +1537,7 @@
     }
 
     .player-list-head {
-      grid-template-columns: 54px 1fr 1fr !important;
+      grid-template-columns: 54px max-content 1fr !important;
       grid-template-areas:
         "act  player player"
         "act  price  proj"
@@ -1545,7 +1554,7 @@
     .player-list-head .sortcol { text-align: left; }
 
     .player-row {
-      grid-template-columns: 54px 1fr 1fr !important;
+      grid-template-columns: 54px max-content 1fr !important;
       grid-template-areas:
         "act  name  name"
         "act  price proj"
