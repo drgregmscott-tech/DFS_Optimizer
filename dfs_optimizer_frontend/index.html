@@ -2271,14 +2271,31 @@ in this browser's localStorage.</p>
     // here so the deleted slate can't race back in from the cloud before
     // the DELETE request completes.
     buildDropdown(readSlateIndex());
-    // Cloud delete -- fire and forget after local cleanup is done.
+    // Cloud delete. FIX (found live 2026-10-12): this used to be truly
+    // fire-and-forget -- .catch() only swallows a network-level failure,
+    // never checked the response at all, so a non-2xx from the Worker (the
+    // GitHub delete 409ing on a stale sha, rate-limited, etc.) was silently
+    // treated as success. The slate's data/ui_slates/ file was never
+    // actually removed, and the next page load's cloud merge
+    // (renderSlateDropdown/initSlates) brought it right back -- this is
+    // what the user was seeing as "deleted slates reappearing," not every
+    // time, since it only happened on the races that lost. The Worker side
+    // now retries a 409 with a fresh sha (optimizer_api.js's withFreshSha),
+    // which should make this rare; this still checks the result so a
+    // failure that survives the retries is surfaced instead of hidden.
     if (cloudConfigured()) {
-      fetch(workerUrl("delete_slate", { site: site, slate_id: slateId }), {
-        method: "DELETE", cache: "no-store",
-      }).catch(function () { /* ignore network errors on delete */ });
-      fetch(workerUrl("delete_slate", { site: site, slate_id: slateId + "__pivots" }), {
-        method: "DELETE", cache: "no-store",
-      }).catch(function () { /* ignore network errors on delete */ });
+      Promise.all([
+        fetch(workerUrl("delete_slate", { site: site, slate_id: slateId }), { method: "DELETE", cache: "no-store" })
+          .then(function (r) { return r.json(); }).catch(function (err) { return { error: err.message }; }),
+        fetch(workerUrl("delete_slate", { site: site, slate_id: slateId + "__pivots" }), { method: "DELETE", cache: "no-store" })
+          .then(function (r) { return r.json(); }).catch(function (err) { return { error: err.message }; }),
+      ]).then(function (results) {
+        var failed = results.filter(function (r) { return r && r.error; });
+        if (failed.length) {
+          setSlateStatus("Removed locally, but the cloud delete failed (" + failed[0].error +
+            ") -- it may reappear here or on another device. Try deleting it again.", false);
+        }
+      });
     }
   }
 

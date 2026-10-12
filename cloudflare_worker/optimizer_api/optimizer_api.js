@@ -409,31 +409,72 @@ function ghHeaders(env) {
   };
 }
 
+// A GitHub Contents API write (PUT or DELETE) requires the file's current
+// `sha`, fetched by a GET immediately before it -- but that GET-then-write
+// pair isn't atomic. If anything else (the frontend's own save_slate from a
+// second tab/device, a concurrent request to the same file) writes to the
+// same path in between, the sha this call fetched is already stale and
+// GitHub's write rejects it with 409. Found live (2026-10-12): this is the
+// root cause of "deleted" UI slates reappearing in the dropdown -- the
+// delete's DELETE call 409'd, the Worker returned a 502 the frontend's
+// fire-and-forget delete fetch never even checked, so the file was never
+// actually removed from data/ui_slates/ and the next page load's
+// list_slates merged it right back in. 409 specifically means "your sha is
+// stale, not that the operation itself is invalid" -- re-fetching a fresh
+// sha and retrying is the correct, safe response (same idempotent-retry
+// pattern as this file's existing poll_retry_hint_ms backoff), not
+// something to give up on after one attempt.
+const GITHUB_WRITE_RETRY_ATTEMPTS = 3;
+
+// attemptFn receives (sha, exists) from each fresh GET: for a PUT
+// (create-or-update), exists=false just means "no existing file" -- sha is
+// correctly omitted and the write proceeds as a create, a real success
+// path, not a reason to stop. For a DELETE, exists=false means the file is
+// already gone -- the caller returns its own synthetic ok response instead
+// of calling fetch at all; see handleDeleteSlate below.
+async function withFreshSha(env, apiUrl, attemptFn) {
+  let lastErr;
+  for (let attempt = 1; attempt <= GITHUB_WRITE_RETRY_ATTEMPTS; attempt++) {
+    const getRes = await fetch(apiUrl, { headers: ghHeaders(env) });
+    let sha, exists;
+    if (getRes.status === 200) {
+      sha = (await getRes.json()).sha;
+      exists = true;
+    } else if (getRes.status === 404) {
+      sha = undefined;
+      exists = false;
+    } else {
+      throw new Error(`GitHub contents API GET failed for ${apiUrl} (status ${getRes.status}): ${await getRes.text()}`);
+    }
+    const res = await attemptFn(sha, exists);
+    if (res.ok) return res;
+    if (res.status === 409 && attempt < GITHUB_WRITE_RETRY_ATTEMPTS) {
+      lastErr = `409 on attempt ${attempt}, retrying with a fresh sha`;
+      continue;
+    }
+    throw new Error(`GitHub contents API write failed for ${apiUrl} (status ${res.status}): ${await res.text()}`);
+  }
+  throw new Error(`GitHub contents API write failed for ${apiUrl} after ${GITHUB_WRITE_RETRY_ATTEMPTS} attempts (${lastErr})`);
+}
+
 // Session 7.3 -- create-or-update a repo file via the Contents API's
 // standard flow: GET first to find the existing sha (required by GitHub
-// for an update, omitted entirely for a brand-new file), then PUT.
+// for an update, omitted entirely for a brand-new file), then PUT. Retries
+// on a 409 (stale sha from a concurrent write) -- see withFreshSha above.
 async function putRepoFile(env, path, contentText, message) {
   const apiUrl = `https://api.github.com/repos/${env.GITHUB_OWNER}/${env.GITHUB_REPO}/contents/${path}`;
-  let sha;
-  const getRes = await fetch(apiUrl, { headers: ghHeaders(env) });
-  if (getRes.status === 200) {
-    sha = (await getRes.json()).sha;
-  } else if (getRes.status !== 404) {
-    throw new Error(`GitHub contents API GET failed for ${path} (status ${getRes.status}): ${await getRes.text()}`);
-  }
   // UTF-8-safe base64 encode (btoa alone chokes on non-Latin1 chars --
   // player names are ASCII in practice, but this is cheap insurance).
   const b64 = btoa(unescape(encodeURIComponent(contentText)));
-  const body = { message, content: b64, branch: "main" };
-  if (sha) body.sha = sha;
-  const putRes = await fetch(apiUrl, {
-    method: "PUT",
-    headers: { ...ghHeaders(env), "Content-Type": "application/json" },
-    body: JSON.stringify(body),
+  await withFreshSha(env, apiUrl, function (sha) {
+    const body = { message, content: b64, branch: "main" };
+    if (sha) body.sha = sha;
+    return fetch(apiUrl, {
+      method: "PUT",
+      headers: { ...ghHeaders(env), "Content-Type": "application/json" },
+      body: JSON.stringify(body),
+    });
   });
-  if (!putRes.ok) {
-    throw new Error(`GitHub contents API PUT failed for ${path} (status ${putRes.status}): ${await putRes.text()}`);
-  }
 }
 
 async function listRepoDir(env, dirPath) {
@@ -623,28 +664,29 @@ async function handleDeleteSlate(url, env) {
   }
   const path = `data/ui_slates/${site}_${slateId}.json`;
   const apiUrl = `https://api.github.com/repos/${env.GITHUB_OWNER}/${env.GITHUB_REPO}/contents/${path}`;
-  // GET to find the SHA (required by GitHub's DELETE endpoint).
-  const getRes = await fetch(apiUrl, { headers: ghHeaders(env) });
-  if (getRes.status === 404) {
-    return json({ ok: true, note: "not found" }); // idempotent -- already gone
+  try {
+    // Retries on a 409 (stale sha from a concurrent write -- e.g. this same
+    // slate being re-saved by "Pull Latest Projections" on another
+    // tab/device right as the delete fires) instead of giving up after one
+    // attempt. See withFreshSha's docstring for why this was the real
+    // cause of "deleted" slates reappearing in the dropdown.
+    let alreadyGone = false;
+    await withFreshSha(env, apiUrl, function (sha, exists) {
+      if (!exists) { alreadyGone = true; return { ok: true }; } // idempotent -- already gone
+      return fetch(apiUrl, {
+        method: "DELETE",
+        headers: { ...ghHeaders(env), "Content-Type": "application/json" },
+        body: JSON.stringify({
+          message: `UI slate delete: ${site} ${slateId} [skip ci]`,
+          sha,
+          branch: "main",
+        }),
+      });
+    });
+    return json(alreadyGone ? { ok: true, note: "not found" } : { ok: true });
+  } catch (err) {
+    return json({ error: `Delete failed: ${err.message}` }, 502);
   }
-  if (!getRes.ok) {
-    return json({ error: `Delete pre-check failed (status ${getRes.status})` }, 502);
-  }
-  const sha = (await getRes.json()).sha;
-  const delRes = await fetch(apiUrl, {
-    method: "DELETE",
-    headers: { ...ghHeaders(env), "Content-Type": "application/json" },
-    body: JSON.stringify({
-      message: `UI slate delete: ${site} ${slateId} [skip ci]`,
-      sha,
-      branch: "main",
-    }),
-  });
-  if (!delRes.ok) {
-    return json({ error: `Delete failed (status ${delRes.status}): ${await delRes.text()}` }, 502);
-  }
-  return json({ ok: true });
 }
 
 // Presets are stored as a single JSON object at data/ui_presets.json.
