@@ -14,9 +14,10 @@ makes chalk sizing worse; stack: window-refit coefficients bounce on noise). A t
 drift a human would eventually find, on the same week or sooner, was the piece worth shipping.
 
 What it does:
-  - Auto-discovers every played slate from data/contest_results/dk_*_full.csv (classic + showdown), matching
-    scripts/grade_construction_week.py's filename convention. No per-week hardcoding needed.
-  - For each slate, reads output/final_projections_dk_<sid>.csv (current committed version -- same convention
+  - Auto-discovers every played slate from data/contest_results/<site>_*_full.csv (site = dk or fd; classic +
+    showdown for DK, classic only for FD), matching scripts/grade_construction_week.py's filename convention
+    (<site>_<fmt>_wk<N>_<label>_<ddMonYYYY>[_mme|_se3max]_full.csv). No per-week hardcoding needed.
+  - For each slate, reads output/final_projections_<site>_<sid>.csv (current committed version -- same convention
     as grade_construction_week.py) and merges it against the contest's %Drafted/FPTS table by normalized name
     (+ roster role for showdown CPT/FLEX), same matching rule as analysis/wk4_postmortem/grade_wk4.py.
   - Builds one long player-level frame across every week played so far this season.
@@ -38,6 +39,13 @@ Usage (from repo root):
 
 Writes report.txt + segments.csv + players.csv to analysis/weekly_accuracy_review/out/wk<N>/ (gitignored).
 
+FanDuel (added 2026-10-12, WK5_POSTMORTEM_CHECKLIST item 2): FD slates are graded in a separate section appended
+after the DK report, from their own frame (players_fd.csv) -- FD and DK rows are NEVER pooled into one number:
+different salary scale (FD cap $60k, compressed pricing), different scoring (half-PPR), separate ownership.
+Every per-site piece (salary tiers, current-era window, governing configs) is looked up by site. The MATERIAL
+and Z thresholds are DK-fit and carried over to FD unvalidated -- the FD section says so in its own text.
+FD showdown is discovered but skipped (its CPT/MVP role labels are not verified against FD exports yet).
+
 Caveat: this reads output/final_projections_dk_<sid>.csv as currently committed, not a git-show-at-lock
 snapshot -- if a slate's file was touched again after lock (see MULTI_SESSION_CONCURRENCY_GAP.md), this grades
 whatever is committed now. Fine for a flags-only diagnostic; re-derive from git history if a flagged number
@@ -54,9 +62,22 @@ import pandas as pd
 ROOT = Path(__file__).resolve().parents[1]
 CR = ROOT / "data" / "contest_results"
 OUT_BASE = ROOT / "analysis" / "weekly_accuracy_review" / "out"
-FN = re.compile(r"^dk_(classic|showdown)_wk(\d+)_(.+?)_(\d{2}[A-Za-z]{3}\d{4})(?:_(mme|se3max))?_full\.csv$")
+FN = re.compile(r"^(dk|fd)_(classic|showdown)_wk(\d+)_(.+?)_(\d{2}[A-Za-z]{3}\d{4})(?:_(mme|se3max))?_full\.csv$")
+SITES = ("dk", "fd")
+
+# Site-specific position labels in output/final_projections_<site>_*.csv, mapped onto the DK labels the rest of
+# this file uses. FD writes defense as "D"; DK as "DST". Applied once, where the projections file is read.
+POS_ALIASES = {"fd": {"D": "DST"}}
+
+# Salary-tier cut points (top tier >=, bottom tier <) per site. DK's are the original, unchanged. FD's are DK's
+# mapped onto FD pricing: a linear fit of FD salary on DK salary over the same players on all three Wk5 2026
+# classic slates (main/early/afternoon, n=539/390/145) put DK $7000 at FD ~$7550-7570 and DK $4500 at FD
+# ~$5500-5510, stable across all three -> rounded to $7.5k / $5.5k. A judgment call, not a validated FD
+# convention -- revisit if FD tiers ever drive a decision.
+TIERS = {"dk": (7000, 4500, "$7k+", "<$4.5k"), "fd": (7500, 5500, "$7.5k+", "<$5.5k")}
 
 MATERIAL = {"proj": 0.75, "own": 1.5}  # DK pts / ownership pts; below this it would not move a lineup
+# (applied to FD unchanged -- unvalidated for FD's scoring/ownership scale; the FD report section says so)
 Z_PERSIST, Z_WEEK = 2.5, 3.0
 
 # Governing config files: if one of these changed more recently than a slate's projections were built,
@@ -83,6 +104,15 @@ ENGINE_CODE = [
     "scripts/ownership_model_showdown.py",
 ]
 
+# FD's governing configs: the site-agnostic ones the statline engine loads for any site (DST recal v2, QB recal)
+# plus FD's own sigma recal / volume prior. Best-effort list (DK's list above is unchanged); with one FD week
+# graded so far the current-era fallback makes it moot, revisit once FD has several weeks.
+GOVERNING_CONFIGS_BY_SITE = {
+    "dk": GOVERNING_CONFIGS,
+    "fd": ["data/dst_recal_v2.json", "data/qb_recal_config.json", "data/sigma_recalibration_fd.json",
+           "data/volume_prior_fd.json"],
+}
+
 
 def git(*a):
     return subprocess.run(["git", *a], cwd=ROOT, capture_output=True, text=True, encoding="utf-8").stdout.strip()
@@ -105,17 +135,21 @@ def discover_slates():
     """One row per played slate, preferring se3max > mme > plain when a slate has more than one contest
     export (same projections, just graded against one contest type to avoid double-weighting a slate)."""
     cands = {}
-    for f in sorted(CR.glob("dk_*_full.csv")):
-        m = FN.match(f.name)
-        if not m:
-            continue
-        fmt, week, label, date, variant = m.groups()
-        sid = f"dk_{fmt}_wk{week}_{label}_{date}"
-        rank = {"se3max": 0, "mme": 1, None: 2}[variant]
-        if sid not in cands or rank < cands[sid][0]:
-            cands[sid] = (rank, f, fmt, int(week), label, date)
-    rows = [dict(sid=sid, file=f, fmt=fmt, week=week, label=label, date=date)
-            for sid, (rank, f, fmt, week, label, date) in cands.items()]
+    for site in SITES:
+        for f in sorted(CR.rglob(f"{site}_*_full.csv")):
+            m = FN.match(f.name)
+            if not m:
+                continue
+            site, fmt, week, label, date, variant = m.groups()
+            if site == "fd" and fmt == "showdown":
+                print(f"skip {f.name} (FD showdown not wired: CPT/MVP role labels unverified)")
+                continue
+            sid = f"{site}_{fmt}_wk{week}_{label}_{date}"
+            rank = {"se3max": 0, "mme": 1, None: 2}[variant]
+            if sid not in cands or rank < cands[sid][0]:
+                cands[sid] = (rank, f, site, fmt, int(week), label, date)
+    rows = [dict(sid=sid, file=f, site=site, fmt=fmt, week=week, label=label, date=date)
+            for sid, (rank, f, site, fmt, week, label, date) in cands.items()]
     return sorted(rows, key=lambda r: (r["week"], r["sid"]))
 
 
@@ -135,11 +169,12 @@ def actual_table(f, fmt):
 
 
 def load_slate(row):
-    rel = f"output/final_projections_dk_{row['sid']}.csv"
+    rel = f"output/final_projections_{row['site']}_{row['sid']}.csv"
     p_path = ROOT / rel
     if not p_path.exists():
         return None, None, None
     p = pd.read_csv(p_path)
+    p["position"] = p.position.replace(POS_ALIASES.get(row["site"], {}))
     p = p[p.position.isin(["QB", "RB", "WR", "TE", "DST"])].copy()
     p["k"] = p.player_name.map(norm)
     # Full-pool model-side ownership sum by position, BEFORE the inner join below drops it -- used by
@@ -158,6 +193,7 @@ def load_slate(row):
                     on=["k", "role"], how="inner")
         m = m[m.role == "FLEX"].copy()  # grade points/ownership on the FLEX scale; CPT is a multiplier of it
     m["sid"] = row["sid"]
+    m["site"] = row["site"]
     m["week"] = row["week"]
     m["fmt"] = row["fmt"]
     m["slate"] = f"{row['label']}_{row['date']}"
@@ -187,21 +223,23 @@ def build_frame(through_week):
 def tier(r):
     if r.position in ("DST", "K"):
         return r.position
-    if r.salary >= 7000:
-        return f"{r.position} $7k+"
-    if r.salary < 4500:
-        return f"{r.position} <$4.5k"
+    hi, lo, hi_lab, lo_lab = TIERS[r.site]
+    if r.salary >= hi:
+        return f"{r.position} {hi_lab}"
+    if r.salary < lo:
+        return f"{r.position} {lo_lab}"
     return f"{r.position} mid"
 
 
-def current_era(F, proj_dates):
+def current_era(F, proj_dates, site="dk"):
     """Mark which rows were built under the config version currently live. If NOTHING graded so far in a
     given FORMAT (classic vs showdown) was built under it (e.g. only a showdown file got rebuilt right after
     a fix, as happened 2026-10-05 when only ATL/NO was rebuilt and classic wk4 wasn't touched), fall back to
     treating that format's weeks as current -- an empty trend table for that format is worse than one that
     includes a stale week, and a later run will have a real current-era week to anchor on. The fallback is
     per-format, not global: one format having a current-era row must not hide the other format's rows."""
-    changed = [d for d in (last_commit_date(c) for c in GOVERNING_CONFIGS + ENGINE_CODE) if d is not None]
+    changed = [d for d in (last_commit_date(c) for c in GOVERNING_CONFIGS_BY_SITE[site] + ENGINE_CODE)
+               if d is not None]
     if not changed:
         return F.assign(current_era=True), None, {}
     era_start = max(changed)
@@ -304,11 +342,7 @@ def main():
     a = ap.parse_args()
     through = a.through or a.week
 
-    F, proj_dates, full_own = build_frame(through)
-    F, era_start, fell_back = current_era(F, proj_dates)
-    F["tier"] = F.apply(tier, axis=1)
-    C = F[F.fmt == "classic"]
-    O = C[C.estimated_ownership_pct.notna() & C.own.notna()]
+    F_all, proj_dates, full_own = build_frame(through)
 
     out_dir = OUT_BASE / f"wk{a.week}"
     out_dir.mkdir(parents=True, exist_ok=True)
@@ -320,7 +354,43 @@ def main():
         print(s)
         lines.append(str(s))
 
-    p(f"##### Accuracy tracker -- 2026 through week {a.week} (current output/ vs real DK contest results) #####")
+    # One fully separate pass per site: its own frame, current-era window, tiers and tables. Nothing below
+    # ever groups across sites, so a DK number never includes an FD row and vice versa.
+    written = []
+    for site in SITES:
+        F = F_all[F_all.site == site]
+        if not len(F):
+            continue
+        if site != "dk":
+            p(f"\n\n##### {site.upper()} SECTION -- graded separately from DK, never pooled with it #####")
+            p(f"CAVEAT: MATERIAL thresholds (proj {MATERIAL['proj']} pts, own {MATERIAL['own']} pts) and Z cutoffs "
+              f"(PERSISTENT {Z_PERSIST}, WEEK {Z_WEEK}) are carried over from DK, unvalidated for "
+              f"{site.upper()}'s scoring/ownership scale.")
+            hi, lo, hi_lab, lo_lab = TIERS[site]
+            p(f"CAVEAT: {site.upper()} salary tiers ({hi_lab} / mid / {lo_lab}) are DK's $7k/$4.5k cut points "
+              f"mapped onto {site.upper()} pricing via a same-player salary fit on the Wk5 2026 slates -- a "
+              f"judgment call, not a validated {site.upper()} convention.")
+            p(f"CAVEAT: governing-config list for the {site.upper()} current-era window is best-effort "
+              f"(see GOVERNING_CONFIGS_BY_SITE).")
+        F = section(F, site, proj_dates, full_own, a.week, p)
+        name = "players.csv" if site == "dk" else f"players_{site}.csv"
+        (F.drop(columns="site") if site == "dk" else F).to_csv(out_dir / name, index=False)
+        written.append(name)
+
+    (out_dir / "report.txt").write_text("\n".join(lines), encoding="utf-8")
+    print(f"\nWrote {out_dir / 'report.txt'} and " + ", ".join(str(out_dir / n) for n in written))
+
+
+def section(F, site, proj_dates, full_own, week, p):
+    """The original (DK) report, run on one site's frame. For site == "dk" this prints exactly what the
+    pre-FD version of this script printed."""
+    F, era_start, fell_back = current_era(F, proj_dates, site)
+    F["tier"] = F.apply(tier, axis=1)
+    C = F[F.fmt == "classic"]
+    O = C[C.estimated_ownership_pct.notna() & C.own.notna()]
+    S = site.upper()
+
+    p(f"##### Accuracy tracker -- 2026 through week {week} (current output/ vs real {S} contest results) #####")
     if era_start is not None:
         p(f"Governing config last changed: {era_start.date()}.")
         for fmt in sorted(F.fmt.unique()):
@@ -335,28 +405,25 @@ def main():
                 p(f"  {fmt}: current-era weeks (used for PERSISTENT trend): {current_weeks}. "
                   f"Pre-current-model weeks (shown per-week only): {stale_weeks or 'none'}.")
     p("\n== projections, classic, by position ==")
-    p(report(C, a.week, "proj", "final_projection", "fpts", "position").to_string(index=False))
+    p(report(C, week, "proj", "final_projection", "fpts", "position").to_string(index=False))
     p("\n== projections, classic, by position x salary tier ==")
-    p(report(C, a.week, "proj", "final_projection", "fpts", "tier").to_string(index=False))
+    p(report(C, week, "proj", "final_projection", "fpts", "tier").to_string(index=False))
     sd_f = F[F.fmt == "showdown"]
     if len(sd_f):
         p("\n== projections, showdown (FLEX scale), by position ==")
-        p(report(sd_f, a.week, "proj", "final_projection", "fpts", "position").to_string(index=False))
+        p(report(sd_f, week, "proj", "final_projection", "fpts", "position").to_string(index=False))
     p("\n== projection edge over salary-only baseline (corr) ==")
-    p(salary_edge(F, a.week).to_string(index=False))
+    p(salary_edge(F, week).to_string(index=False))
     if len(O):
         p("\n== ownership, classic, by position x salary tier ==")
-        p(report(O, a.week, "own", "estimated_ownership_pct", "own", "tier").to_string(index=False))
+        p(report(O, week, "own", "estimated_ownership_pct", "own", "tier").to_string(index=False))
         p("\n== chalk sizing (classic, real own >= 20%) and top-10 overlap ==")
-        p(chalk(O, a.week).to_string(index=False))
-        p(f"\n== week {a.week} ownership budget by position (sum of ours vs real, classic) ==")
-        p(budget(O, a.week, full_own).to_string(index=False))
+        p(chalk(O, week).to_string(index=False))
+        p(f"\n== week {week} ownership budget by position (sum of ours vs real, classic) ==")
+        p(budget(O, week, full_own).to_string(index=False))
     p("\nFlags are a trigger to open a postmortem item, not a diagnosis. Any fix gets tested on 2021-25 "
       "held-out history before shipping (see SUBAGENT_BRIEF.md). This tool changes nothing on its own.")
-
-    (out_dir / "report.txt").write_text("\n".join(lines), encoding="utf-8")
-    F.to_csv(out_dir / "players.csv", index=False)
-    print(f"\nWrote {out_dir / 'report.txt'} and {out_dir / 'players.csv'}")
+    return F
 
 
 if __name__ == "__main__":

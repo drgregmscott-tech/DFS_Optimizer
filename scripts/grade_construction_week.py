@@ -24,6 +24,12 @@ data/contest_results/dk_*_full.csv exports, data/salaries_dk_<slate>.csv and out
 Run AFTER item-1 grading (same post-slate session). Read the per-contest sign columns first; a rule that flips sign
 for 2+ straight weeks is the trigger for a controlled history re-fit (see analysis/wk4_construction_review/).
 
+FanDuel (2026-10-12): discovery and the salary/projection loaders are site-aware (dk|fd filenames, FD salary columns
+and its "D" defense label mapped onto the DK shape), but FD contests are NOT rule-graded. Every rule below
+(DST $2.8-3.1k band, punt = <=$4k, FLEX WR $4.9k/$6.3k cuts, showdown $600-1000 tier) is a DK price threshold fit on
+~410 DK classic / 142 DK showdown contests; FD's salary scale and roster (no FLEX-vs-TE DK slot semantics, MVP not
+CPT) need their own derivation from FD history. Any FD exports present are listed and skipped at the end of the report.
+
 Caveats printed with the report: one week is 4-6 contests -- this is a DRIFT check against the 410-contest classic /
 142-contest showdown evidence base, not a re-derivation. Lineups inside one contest are heavily duplicated, so a
 per-contest standard error overstates certainty; read the per-contest sign agreement first.
@@ -42,7 +48,7 @@ CR = ROOT / "data" / "contest_results"
 CASH_PCT = 0.25
 CL_TOK = re.compile(r"\b(QB|RB|WR|TE|FLEX|DST)\s+")
 SD_TOK = re.compile(r"\b(CPT|FLEX)\s+")
-FN = re.compile(r"dk_(classic|showdown)_wk(\d+)_(.+?)_(\d{2}[A-Za-z]{3}\d{4})(?:_(mme|se3max))?_full\.csv$")
+FN = re.compile(r"(dk|fd)_(classic|showdown)_wk(\d+)_(.+?)_(\d{2}[A-Za-z]{3}\d{4})(?:_(mme|se3max))?_full\.csv$")
 pd.set_option("display.width", 250)
 pd.set_option("display.max_columns", 50)
 pd.set_option("display.max_rows", 500)
@@ -100,15 +106,19 @@ def weeks_arg(w):
 
 
 def discover(weeks):
+    """All dk + fd contest exports for the weeks. Each row carries `site`; main() rule-grades DK rows only.
+    DK rows (sid, label) are exactly what the DK-only version produced; FD labels get an "fd_" prefix so their
+    output files could never collide with DK's."""
     out = []
-    for f in sorted(CR.glob("dk_*_full.csv")):
-        m = FN.match(f.name)
-        if not m or int(m.group(2)) not in weeks:
-            continue
-        fmt, wk, slate, date, ctype = m.groups()
-        sid = f"dk_{fmt}_wk{wk}_{slate}_{date}"
-        out.append(dict(fmt=fmt, week=int(wk), slate=slate, sid=sid, ctype=ctype or "", path=f,
-                        label=f"wk{wk}_{slate}" + (f"_{ctype}" if ctype else "")))
+    for site in ("dk", "fd"):
+        for f in sorted(CR.rglob(f"{site}_*_full.csv")):
+            m = FN.match(f.name)
+            if not m or int(m.group(3)) not in weeks:
+                continue
+            site, fmt, wk, slate, date, ctype = m.groups()
+            sid = f"{site}_{fmt}_wk{wk}_{slate}_{date}"
+            out.append(dict(site=site, fmt=fmt, week=int(wk), slate=slate, sid=sid, ctype=ctype or "", path=f,
+                            label=("" if site == "dk" else f"{site}_") + f"wk{wk}_{slate}" + (f"_{ctype}" if ctype else "")))
     return out
 
 
@@ -127,8 +137,19 @@ def load_contest(path):
     return e, own
 
 
-def salary_info(sid, showdown):
-    s = pd.read_csv(ROOT / "data" / f"salaries_dk_{sid}.csv")
+# FD files differ from DK's only in labels: defense "D" (DK "DST"); salary file uses Nickname/Team/Opponent
+# instead of Name/TeamAbbrev/Game Info. Mapped onto the DK shape at load time so downstream code is site-blind.
+POS_ALIASES = {"fd": {"D": "DST"}}
+
+
+def salary_info(sid, showdown, site="dk"):
+    s = pd.read_csv(ROOT / "data" / f"salaries_{site}_{sid}.csv")
+    if site == "fd":
+        s = s.rename(columns={"Nickname": "Name", "Team": "TeamAbbrev"})
+        s["Position"] = s.Position.replace(POS_ALIASES["fd"])
+        s["k"] = s.Name.map(norm)
+        s["opp"] = s.Opponent.astype(str)
+        return s.drop_duplicates("k").set_index("k")[["Position", "Salary", "TeamAbbrev", "opp"]]
     if showdown:
         s = s[s["Roster Position"] != "CPT"]
     s["k"] = s.Name.map(norm)
@@ -137,11 +158,12 @@ def salary_info(sid, showdown):
     return s.drop_duplicates("k").set_index("k")[["Position", "Salary", "TeamAbbrev", "opp"]]
 
 
-def proj_info(sid, showdown):
-    f = ROOT / "output" / f"final_projections_dk_{sid}.csv"
+def proj_info(sid, showdown, site="dk"):
+    f = ROOT / "output" / f"final_projections_{site}_{sid}.csv"
     if not f.exists():
         return None
     p = pd.read_csv(f)
+    p["position"] = p.position.replace(POS_ALIASES.get(site, {}))
     if showdown:
         p = p[p.roster_role == "FLEX"]
     p["k"] = p.player_name.map(norm)
@@ -301,7 +323,7 @@ def showdown_features(c):
 def sd_dst_k_own(c):
     """Modeled vs real ownership for DST/K rows (checklist item 8)."""
     _, own = load_contest(c["path"])
-    p = ROOT / "output" / f"final_projections_dk_{c['sid']}.csv"
+    p = ROOT / "output" / f"final_projections_{c.get('site', 'dk')}_{c['sid']}.csv"
     if not p.exists():
         return pd.DataFrame()
     P = pd.read_csv(p)
@@ -412,7 +434,9 @@ def main():
     weeks = weeks_arg(a.week)
     out = Path(a.out) if a.out else ROOT / "analysis" / "weekly_construction_review" / "out" / f"wk{a.week}"
     out.mkdir(parents=True, exist_ok=True)
-    C = discover(weeks)
+    C_all = discover(weeks)
+    C = [c for c in C_all if c["site"] == "dk"]  # rule grading is DK-only; see module docstring
+    skipped_fd = [c for c in C_all if c["site"] != "dk"]
     rep = [f"# Construction-rule review, week(s) {a.week}. Cash = top {int(CASH_PCT * 100)}% by rank; lifts in pct pts.",
            "raw = feature rate minus contest base rate; ctl = per-contest LPM coefficient controlling our projection + "
            "realized ownership + all other rule indicators; sign = contests where the effect matches the rule's direction.",
@@ -473,6 +497,9 @@ def main():
                     "\n## SHOWDOWN rule x slate", T.round(2).to_string(index=False),
                     "\n## SHOWDOWN DST/K modeled vs real ownership (checklist item 8)", O.round(1).to_string(index=False)]
 
+    if skipped_fd:
+        rep += [f"\n## NOT GRADED: {len(skipped_fd)} non-DK export(s) present, skipped -- rules are DK price "
+                "thresholds, not derived for FD (see module docstring): " + ", ".join(c["label"] for c in skipped_fd)]
     txt = "\n".join(rep)
     (out / "report.txt").write_text(txt, encoding="utf-8")
     print(txt)

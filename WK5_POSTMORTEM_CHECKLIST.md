@@ -34,12 +34,38 @@ touches five and resolves none.
    --week 5` once showdown is in (or run DK/FD classic now, showdown separately later). Log Wk5 real
    ownership into `ownership_actual_log.csv`. Feeds everything else below.
 
-2. **Build FD into the grading pipeline, if the beta export is a standing feature (see above).** Scope:
-   extend `grade_accuracy_week.py` (and ideally `grade_construction_week.py`) to accept an FD slate the
-   way it already does DK, using the new full-export file. Start with this one data point (FD main
-   Wk5); re-run once more weeks exist. This directly answers the user's "can we improve FD like we've
-   done for DK" question — right now there's no FD accuracy signal to improve *against*, this item
-   creates one.
+2. **Build FD into the grading pipeline, if the beta export is a standing feature (see above).** ✅ DONE
+   2026-10-12. User confirmed it's standing and supplied FD main-slate exports for weeks 1-5, not just
+   Wk5. `grade_accuracy_week.py` now grades FD in its own section (`players_fd.csv`), fully segmented
+   from DK — different salary scale, different scoring, never pooled into one number; caveats stated in
+   the report text (DK-fit MATERIAL/Z thresholds and FD salary tiers carried over unvalidated).
+   `grade_construction_week.py` got only safe plumbing (discovery/salary/proj loaders); FD rule-grading
+   was deliberately NOT attempted — every rule is a DK price threshold fit on ~410 DK contests, and one
+   data point (now five, still thin) isn't enough to derive FD's own.
+   - **Side-effect bug found and fixed:** a 2026-10-10 reorg moved DK wk1-4 contest files into
+     `data/contest_results/2026/Week_N/` subfolders; both graders' slate-discovery glob was non-recursive,
+     so since that reorg the season-to-date tracker was silently seeing Wk5 only. Fixed (`CR.rglob`).
+     Didn't cause a wrong PERSISTENT flag this time (Wk5 was the current-model window regardless), but
+     stripped historical context from the un-gated chalk/salary-edge trend tables, and would have blocked
+     real multi-week PERSISTENT detection going forward. Confirmed fixed: `--week 1-5` construction run
+     and `--week 5` accuracy run both complete clean with full history visible again.
+   - **Real finding, independently verified (not just the grading plumbing):** FD under-projects every
+     skill position, every one of the 5 weeks now available (WR/RB/TE negative bias 5/5 weeks, QB
+     negative 4/5) while DK's bias on the same players/weeks is near zero. Root cause traced to
+     `scripts/build_projections_statline.py:1153-1189` — the projection stack, the early-season salary
+     blend, and QB wk3+ recal are each gated `site == "dk"` and never run for FD at all. FD ownership also
+     reads too flat (real chalk ~30% vs. modeled ~9%, 5/5 weeks), though all 5 FD exports are single-entry
+     (1/1) contests — chalkier than the multi-entry fields the model is calibrated on — so that one is a
+     softer signal than the projection-bias finding.
+   - **Next step (own session, don't rush it into this one):** test extending those three DK-only layers
+     to FD, backtested against FD's 2021-25 history (`output/baseline_recent_form_fd_2021..2025_*.csv`
+     already exist) before touching anything live — same held-out-history bar every other model change
+     here clears, not a quick patch off 5 weeks of 2026 data alone.
+   - **Also needed, possibly its own session(s) once the above lands:** FD-specific roster-construction
+     rules (an FD analog to `CLASSIC_RULES.md`) — DK's rules are DK price-band/slot-specific and don't
+     transfer. Revisit once there's enough FD contest history to derive rules from (same bar as DK's ~410
+     contests, or at least enough to not be fitting noise); FD's single-entry contest mix above may also
+     need accounting for before rules derived from it are trusted the same way DK's are.
 
 3. **Carried from the Wk5 Sunday parking lot — RB+WR same-team-no-QB correlation rule.** During Sunday's
    main-slate lineup review, builds rostered D'Andre Swift (RB, CHI) + Burden/Raymond (WR, CHI) with
