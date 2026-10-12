@@ -146,10 +146,26 @@ touches five and resolves none.
      status snapshots' own `last_updated` timestamps (ESPN clears inactives ~70-75 min before kickoff,
      confirmed from real Wk5 data). Not worth automating.
 
-6. **Mobile/phone frontend UI cleanup — things are messy, ownership view broken on mobile.** User says
-   some views (at minimum player ownership) can't be read correctly on the phone version of the frontend.
-   Needs its own session: reproduce on a real mobile viewport, identify which views/components break
-   (ownership columns specifically called out, check for others), fix layout/overflow issues.
+6. **Mobile/phone frontend UI cleanup — things are messy, ownership view broken on mobile.** ✅ DONE
+   2026-10-12 (`316f18c2`). Reproduced live on a real 375px mobile viewport (both the deployed site and
+   the local file, via a simulated file-upload + fabricated roster row — no real phone needed). Root
+   cause: `.own-range` (model% + FFC sub-line span) was built for a narrow right-aligned desktop column
+   (`flex-direction:column; align-items:flex-end`). The prior mobile-reflow session (Session 7.3) gave
+   every stat cell an `::before` label to match a "LABEL value" one-line pattern, but never adapted this
+   span's internal flex layout — so on phone it rendered as three disconnected lines (`OWN` / `18%` /
+   `FFC 22`) instead of one line like its siblings. Fixed in both places that use it (Player Pool list and
+   Built Lineup roster view, same `ownRangeHtml()` output): model% now sits inline with the "OWN "/"EXP% "
+   label, FFC sub-line (and the ⚠ disagree flag) wraps to its own line below via `display:block` instead
+   of flex stacking; own/exp% column also widened slightly since it carries two numbers vs. one. Verified
+   no regression to SAL/PROJ/VAL column widths at the same viewport.
+   - **User's landscape-mode question — tested, not the fix.** At landscape width (~812px) the layout
+     falls back to the original desktop grid and looks fine, but `manifest.json` has
+     `"orientation": "portrait-primary"`, which would block rotating to landscape at all for an installed
+     Android home-screen app (iOS doesn't enforce it). Landscape would be a workaround at best, not a
+     substitute for the portrait fix above.
+   - **Parked — separate bug, not investigated:** user reports seeing already-deleted slates from previous
+     weeks reappear when switching slates on the desktop version (likely a stale cache/sync issue, not
+     mobile-specific). Needs its own session.
 
 7. **DK early slate near-miss — OPEN, real lead found, keep digging here.** Initial look (2026-10-12)
    found two different mechanisms, not one:
