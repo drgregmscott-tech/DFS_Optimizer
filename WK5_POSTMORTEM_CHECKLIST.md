@@ -219,10 +219,24 @@ touches five and resolves none.
    - Full analysis (local only, FC-derived, not committed): `analysis/qb_dkavg_divergence/RESULTS.md`.
 
 ## Parking Lot (add here, don't chase inline)
-- **Does the injury pipeline already down-adjust same-team RB/WR/TE projections when a QB is ruled OUT?**
-  Raised by the item-3 agent as a byproduct, not tested. Real effect of a QB-out game is a team-wide
-  points drop (see item 3), which is a projection question, not a lineup-construction rule — worth
-  checking whether `build_projections_statline.py` already captures it before assuming it's missing.
+- ~~**Does the injury pipeline already down-adjust same-team RB/WR/TE projections when a QB is ruled
+  OUT?**~~ ✅ SHIPPED 2026-10-12. Real gap, not already handled: no explicit QB-out rule existed for
+  teammates — only Vegas/props flow through, and the projection stack's low engine weight (WR 16.5%,
+  TE 31.2%) keeps just ~32-50% of that line move. Measured on 85 FC main slates (2021-25, real
+  QB-out cases): first week a new backup starts, we over-project that team's WR by 0.44 pts and TE by
+  0.18 pts (both real, gone once the backup has started before); RB shows no gap. FC misses the same
+  spots (not materially better), so this isn't a "field has info we lack" case. Leave-one-season-out
+  validated fix, re-confirmed under the actual production trigger (not just a hindsight proxy):
+  same-team WR/TE x0.93 (x0.965 if the props anchor already matched that row) when a QB who started
+  last week (`qb_starts_with_team >= 1`) is marked OUT/DOUBTFUL and the team's other QB(s) haven't
+  started this season yet (`qb_starts_with_team == 0`) — i.e. genuinely new starter, not an
+  established backup (Bagent-after-week-1 correctly doesn't re-fire). Shipped as
+  `_apply_qb_out_teammates` in `scripts/build_projections_statline.py`, called right after
+  `_apply_wrw_wr`. Off switch `DFS_QB_OUT_TEAMMATES=0`, audit columns `qb_out_teammates_flag` /
+  `qb_out_teammates_mult`. Verified live on the real Wk5 main slate rebuild (fired correctly for
+  CHI/NYG/WAS, 44 WR/TE rows, no crash). The 0.965 props-matched split is an untested guess at how
+  much the market has already closed — re-check after ~5 more live triggered team-weeks with props
+  on. Full analysis (local only, FC-derived, not committed): `analysis/qb_out_teammate_adjustment/RESULTS.md`.
 - **Follow-up on item 5's "X monitor gives no edge" claim — live check requested (2026-10-12).** The
   6-case review backing that claim is retrospective (Wk3-5 history). User wants a forward-looking,
   practical confirmation: watch the probe vs. any real X/beat-reporter news around tonight's BUF/LAR MNF

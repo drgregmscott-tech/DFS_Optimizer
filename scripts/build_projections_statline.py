@@ -644,6 +644,61 @@ def _apply_wrw_wr(df, season, week):
 Q_RETURN_POST_SCALE = 0.6
 
 
+def _apply_qb_out_teammates(df, week):
+    """Same-team WR/TE down-adjustment the first week a team's starting QB is ruled OUT/DOUBTFUL
+    (analysis/qb_out_teammate_adjustment/RESULTS.md). Vegas/props already move for this, but the
+    stack's low engine weight (WR 16.5%, TE 31.2%) keeps only ~1/3 of that line move, leaving WR/TE
+    over-projected 0.44/0.18 pts the first week a new, unproven backup starts -- gone once the backup
+    has started before. RB showed no gap (excluded; including it made the held-out fit worse).
+
+    Trigger (production-style, LOSO-validated): a QB marked OUT/DOUBTFUL who started last week
+    (qb_starts_with_team >= 1) whose team's remaining QB(s) have NOT started this season
+    (qb_starts_with_team == 0) -- i.e. a genuinely new starter, not an already-established backup
+    (Bagent-after-week-1 case correctly does not re-fire). Multiplier 0.93, softened to 0.965 for
+    rows the props anchor already matched (props_matched) as an untested guess at how much the
+    market has already closed. Off: DFS_QB_OUT_TEAMMATES=0. Any failure = projections unchanged."""
+    df["qb_out_teammates_flag"] = False
+    df["qb_out_teammates_mult"] = 1.0
+    if os.environ.get("DFS_QB_OUT_TEAMMATES", "1") == "0":
+        return df
+    try:
+        if "qb_starts_with_team" not in df.columns:
+            return df
+        inj = statline_model.load_injury_status(week)
+        if inj is None or inj.empty:
+            return df
+        out_ids = set(inj.loc[inj["status"].isin(["OUT", "DOUBTFUL"]), "player_id"].astype(str))
+        is_qb = df["position"].astype(str) == "QB"
+        starts = pd.to_numeric(df["qb_starts_with_team"], errors="coerce").fillna(0)
+        pid = df["player_id"].astype(str)
+        out_starter = is_qb & pid.isin(out_ids) & (starts >= 1)
+        if not out_starter.any():
+            return df
+        teams = set(df.loc[out_starter, "team"])
+        new_backup = is_qb & df["team"].isin(teams) & ~pid.isin(out_ids) & (starts == 0)
+        fire_teams = set(df.loc[new_backup, "team"])
+        if not fire_teams:
+            return df
+        target = df["position"].astype(str).isin(["WR", "TE"]) & df["team"].isin(fire_teams)
+        if not target.any():
+            return df
+        matched = (df["props_matched"].fillna(False).astype(bool) if "props_matched" in df.columns
+                   else pd.Series(False, index=df.index))
+        mult = pd.Series(0.93, index=df.index).where(~matched, 0.965)
+        for c in ("final_projection", "statline_p10", "statline_p90"):
+            df.loc[target, c] = (pd.to_numeric(df.loc[target, c], errors="coerce").fillna(0.0)
+                                  * mult[target]).clip(lower=0.0)
+        df.loc[target, "qb_out_teammates_flag"] = True
+        df.loc[target, "qb_out_teammates_mult"] = mult[target]
+        print(f"QB-out teammate dampener (week {week}): {sorted(fire_teams)} WR/TE x0.93 "
+              f"(x0.965 if props-matched); {int(target.sum())} row(s).")
+    except Exception as exc:  # noqa: BLE001 -- must never break a build
+        df["qb_out_teammates_flag"] = False
+        df["qb_out_teammates_mult"] = 1.0
+        _loud(f"QB-out teammate dampener skipped ({type(exc).__name__}: {exc}); projections unchanged.")
+    return df
+
+
 def _apply_q_return_post(df, engine_input, site, variance, n_sims, seed):
     """Q-return RB1 (statline_model._apply_q_return_and_backup_discount, q_return_flag): add
     Q_RETURN_POST_SCALE x the engine-level points delta of the volume fix to final_projection and p10/p90,
@@ -1200,6 +1255,9 @@ def build_statline_projections(site: str, season: int, week: int, slate_id: str,
     df = _apply_wrw_te(df, season, week)
     # WR OUT -> remaining WR2/WR3 (analysis/wr_out_redistribution). Off: DFS_WRW_WR=0.
     df = _apply_wrw_wr(df, season, week)
+    # Same-team WR/TE down-adjustment when a starting QB is newly OUT/DOUBTFUL
+    # (analysis/qb_out_teammate_adjustment). Off: DFS_QB_OUT_TEAMMATES=0.
+    df = _apply_qb_out_teammates(df, week)
     # Q-return RB1 (analysis/q_return_poststack): part of the volume fix's engine delta added as points after the
     # stack, which keeps only ~half of it. Stack builds only (no stack = the engine change already lands in full).
     # Off: DFS_Q_RETURN=0 or DFS_Q_RETURN_POST=0.
