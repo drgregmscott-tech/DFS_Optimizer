@@ -1,29 +1,29 @@
-# WK4 postmortem item 4 (2026-10-05) -- see WK4_POSTMORTEM_CHECKLIST.md and
-# X_INJURY_FEED_RUNBOOK.md for the full reasoning.
+# WK4 postmortem item 4 (2026-10-05) built this; WK5 postmortem item 5
+# (2026-10-12) made it the PERMANENT primary unattended injury-news
+# mechanism, not a one-week Sunday workaround -- see X_INJURY_FEED_RUNBOOK.md
+# and scripts/espn_diff_probe.py's own docstring for the full reasoning and
+# the real-case review that motivated it.
 #
 # This is deliberately a SEPARATE, cheap workflow from refresh_data.yml, not
-# a new mode inside it. The timeline trace that motivated this found the
-# automated path's near-lock cron-job.org cadence (refresh_data.yml's
-# full_refresh_dispatch) running up to ~55 minutes apart on 2026-10-04 --
-# that's the real gap, not the manual override chain (measured at 2.5-5
-# minutes end to end). Tightening that cadence to 5-10 min by just adding
-# more `kind=(no kind)` cron-job.org jobs would work, but every one of those
-# runs the FULL build+apply+pivot pipeline for every active slate, which is
-# exactly the Actions-minutes cost item 6 of the same postmortem is trying
-# to cut, not grow. This workflow does the cheap half (pull ESPN, diff
-# against the last committed status snapshot) on the tight cadence instead,
-# and only escalates to a real near-lock refresh when something changed.
+# a new mode inside it: it only pulls ESPN + diffs against the last
+# committed status snapshot, and only escalates to the full pipeline when
+# this tick's logic (computed INSIDE scripts/espn_diff_probe.py, not here
+# and not on cron-job.org) calls for one.
+#
+# As of 2026-10-12, the script itself decides when it's worth doing any
+# work at all -- it no-ops with zero network calls outside a pre-lock
+# window (x_monitor_windows.compute_window(), 105 min before each lock
+# through lock). That means cron-job.org no longer needs a per-week
+# windowed schedule for this job: ONE job, "every 10 minutes, every day,
+# all day," is both sufficient and cheap, since 95%+ of ticks outside a
+# real window return instantly. See cloudflare_worker/scheduled_refresh.js's
+# header for the exact one-time cron-job.org setup.
 #
 # Trigger: repository_dispatch type "scheduled_espn_diff_probe", relayed by
 # cloudflare_worker/scheduled_refresh.js's `kind=espn_diff` -- same
 # cron-job.org -> Worker -> repository_dispatch relay every other cadence
 # in refresh_data.yml already uses (proven reliable; GitHub's native
-# `schedule:` trigger was NOT -- see refresh_data.yml's header). One-time
-# setup still needed outside this file: redeploy the Worker
-# (cloudflare_worker/scheduled_refresh.js) with the new `espn_diff` kind,
-# then add one cron-job.org job hitting it with `kind=espn_diff`, scoped to
-# the same pre-lock windows x_monitor_windows.py reports (105 min before
-# each lock through lock), 5-10 min interval.
+# `schedule:` trigger was NOT -- see refresh_data.yml's header).
 #
 # workflow_dispatch is also enabled so this can be test-run manually before
 # relying on it live.

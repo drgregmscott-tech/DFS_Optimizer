@@ -109,18 +109,42 @@ touches five and resolves none.
    - Full analysis: `analysis/wk5_postmortem_item4_terb_chalk_gap/RESULTS.md` (local). Full context in
      memory `project_wk5_parking_lot`.
 
-5. **X injury monitor — need a Sunday-unattended workaround, this week specifically.** User will not be
-   at the computer this coming Sunday (lock day). The X monitor (Chrome-based, attended) can't run
-   unsupervised. Start from what Wk4's postmortem already found (item 4, `WK4_POSTMORTEM_CHECKLIST.md`):
-   - `scripts/espn_diff_probe.py` + `.github/workflows/espn_diff_probe.yml` already exist as an
-     unattended, browser-free backstop (diffs ESPN status on a tight cadence, escalates to a real refresh
-     on a real change) — built specifically to cover gaps in the attended X monitor. Need to verify it's
-     actually deployed/scheduled (Wk4 notes said manual cron-job.org setup was still pending) and decide
-     if it's sufficient alone for a fully-unattended Sunday, or if something else is needed to approximate
-     what the X monitor catches that ESPN's own feed lags on.
-   - `scripts/inactives_timing_log.py` (Sleeper vs. ESPN timing) has never actually been run on a real
-     Sunday (flagged open in both the Wk3 and Wk4 postmortems) — if it needs a human to start it, that's
-     also blocked this Sunday; worth deciding whether to automate its start or skip it this week.
+5. **X injury monitor — shipped (2026-10-12), made permanent, not a one-week workaround.
+   Accuracy claim below has a live-data follow-up still open (see Parking Lot) before fully closing.**
+   - **Verified deployed and already running:** `git log --grep="ESPN diff probe"` showed 120+ real runs,
+     including 48 on the actual Wk5 Sunday lock day (2026-10-11), so the one-time cron-job.org setup from
+     Wk4 was in fact done.
+   - **Real-case review (6 cases, Wk3-5) found the attended X monitor gives no reliable speed edge over
+     the probe:** X was ahead twice (4 and 8 min), ESPN-first three times, and **wrong once** (Flowers,
+     Wk3 — X/override said OUT, ESPN kept him ACTIVE, he scored 15.4 pts). Probe-to-pipeline latency is
+     5-13 min. This is retrospective (Wk3-5 history) — **user asked for a live, forward-looking check
+     against tonight's BUF/LAR MNF showdown (2026-10-12) and Thursday's showdown before treating this as
+     fully confirmed; see Parking Lot.** Pending that, the probe is being treated as the real mechanism,
+     attended or not — see `X_INJURY_FEED_RUNBOOK.md`'s new "Status" section. The X monitor is now optional
+     best-effort, nothing depends on it.
+   - **Real bug found and fixed:** the probe diffed every player all week, including already-kicked-off
+     games — in-game status flicker was triggering refreshes for games nobody could act on anyway.
+     `espn_diff_probe.py` now excludes any player whose team's game has already started.
+   - **Real cost found and fixed: Odds API credits, not Actions minutes** (repo is public — Actions are
+     free). Every probe-triggered refresh re-pulled Vegas lines; one Sunday (10/11) alone burned ~70 of a
+     free-tier 500-credit/month budget. Fixed: the probe now only triggers a full (Vegas) refresh at two
+     fixed anchors per lock (~75 min and ~60 min before — chosen, per the user, to land just after the
+     ~90-minute official inactive report rather than at an arbitrary round number), and a Vegas-free
+     `scheduled_injury_refresh` on every other real detected change. **Inside 60 minutes of lock there is
+     deliberately no more automatic Vegas pull** — per the user, that's by request only:
+     `gh api repos/drgregmscott-tech/DFS_Optimizer/dispatches -f event_type=near_lock_refresh` (same manual
+     command `X_INJURY_FEED_RUNBOOK.md` step 4 already documents). The Vegas-free injury-only check keeps
+     running every ~10 min all the way to lock regardless. Non-lock-anchored cadences (cron-job.org's old
+     `(no kind)` near-lock job and the `kind=full` Thu/Sat/Sun/Mon job) are now redundant and should be
+     deleted — see `cloudflare_worker/scheduled_refresh.js`'s header for the one-time cron-job.org cleanup.
+   - **Permanent, not weekly-maintained:** the probe now decides its own active window in code
+     (`x_monitor_windows.compute_window()`, reading `data/current_slate.json`) and no-ops outside it, so
+     cron-job.org only needs ONE simplified job (`kind=espn_diff`, every 10 min, every day, no schedule
+     edits ever — handles DST and lock-time shifts automatically).
+   - **`inactives_timing_log.py`: skipped, deprioritized.** It's a manual, observe-only diagnostic (not
+     wired into production) measuring ESPN/Sleeper lag — that lag is already answered by the committed
+     status snapshots' own `last_updated` timestamps (ESPN clears inactives ~70-75 min before kickoff,
+     confirmed from real Wk5 data). Not worth automating.
 
 6. **Mobile/phone frontend UI cleanup — things are messy, ownership view broken on mobile.** User says
    some views (at minimum player ownership) can't be read correctly on the phone version of the frontend.
@@ -157,3 +181,9 @@ touches five and resolves none.
   Raised by the item-3 agent as a byproduct, not tested. Real effect of a QB-out game is a team-wide
   points drop (see item 3), which is a projection question, not a lineup-construction rule — worth
   checking whether `build_projections_statline.py` already captures it before assuming it's missing.
+- **Follow-up on item 5's "X monitor gives no edge" claim — live check requested (2026-10-12).** The
+  6-case review backing that claim is retrospective (Wk3-5 history). User wants a forward-looking,
+  practical confirmation: watch the probe vs. any real X/beat-reporter news around tonight's BUF/LAR MNF
+  showdown lock (2026-10-13T00:15Z) and Thursday's showdown lock, and compare timing/accuracy the same
+  way the Wk3-5 cases were graded (which caught it first, was either one wrong). Do this as its own short
+  session once both locks have passed — don't chase it mid-session now.

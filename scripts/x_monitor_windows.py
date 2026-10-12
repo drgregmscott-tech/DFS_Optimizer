@@ -69,15 +69,11 @@ def parse_utc(s: str) -> datetime:
     return datetime.fromisoformat(s.replace("Z", "+00:00"))
 
 
-def main():
-    ap = argparse.ArgumentParser()
-    ap.add_argument("--lead-minutes", type=int, default=DEFAULT_LEAD_MIN,
-                     help="how long before a lock the monitor should start polling (default 90)")
-    ap.add_argument("--now", default=None, help="override the clock (ISO UTC, for testing)")
-    args = ap.parse_args()
-
-    now = parse_utc(args.now) if args.now else datetime.now(timezone.utc)
-    lead = timedelta(minutes=args.lead_minutes)
+def compute_window(now: datetime, lead_minutes: int = DEFAULT_LEAD_MIN) -> dict:
+    """Same computation main() prints, factored out so other scripts (e.g.
+    espn_diff_probe.py) can gate their own work on it without shelling out.
+    `now` must be timezone-aware UTC."""
+    lead = timedelta(minutes=lead_minutes)
 
     out = {
         "now_utc": now.isoformat(),
@@ -106,8 +102,7 @@ def main():
         by_lock.setdefault(lock, []).append(s["slate_id"])
 
     if not by_lock:
-        print(json.dumps(out, indent=2))
-        return
+        return out
 
     locks_sorted = sorted(by_lock)
     # Only windows that start "today" in the sense of being the remaining
@@ -136,7 +131,18 @@ def main():
         out["next_window_starts_utc"] = (nxt - lead).isoformat()
         out["seconds_until_next_event"] = int((nxt - lead - now).total_seconds())
 
-    print(json.dumps(out, indent=2))
+    return out
+
+
+def main():
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--lead-minutes", type=int, default=DEFAULT_LEAD_MIN,
+                     help="how long before a lock the monitor should start polling (default 90)")
+    ap.add_argument("--now", default=None, help="override the clock (ISO UTC, for testing)")
+    args = ap.parse_args()
+
+    now = parse_utc(args.now) if args.now else datetime.now(timezone.utc)
+    print(json.dumps(compute_window(now, args.lead_minutes), indent=2))
 
 
 if __name__ == "__main__":

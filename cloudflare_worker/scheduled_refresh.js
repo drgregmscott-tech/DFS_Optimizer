@@ -77,49 +77,55 @@
  *      GITHUB_OWNER = drgregmscott-tech
  *      GITHUB_REPO  = DFS_Optimizer
  *
- * 4. At https://cron-job.org (free account), create one job per cadence
- *    below, each a GET request to:
+ * 4. At https://cron-job.org (free account), create jobs, each a GET
+ *    request to:
  *      https://<your-worker-name>.<your-subdomain>.workers.dev/?token=<the same random string as WORKER_AUTH_TOKEN>&kind=<kind>
- *    where <kind> is one of "vegas", "full", "injury", or omitted entirely
- *    (near-lock -- kept as the default so any already-configured near-lock
- *    job with no `kind` param keeps working unchanged):
- *      - kind=vegas  -- light Vegas-only refresh. Mirrors the old
- *        light_vegas_refresh schedule: Tue-Fri 1x/day (~noon ET), Sat 2x/day
- *        (~11am + 5pm ET), Sun hourly (~11am-1pm ET).
- *      - kind=full   -- full-pipeline refresh (build -> apply -> pivots,
- *        AND a fresh Vegas/team-stats pull). Mirrors the old
- *        full_refresh_scheduled schedule: Thu ~7pm ET, Sat ~8am ET,
- *        Sun ~4am/8am/12pm/3pm ET, Mon ~7pm ET.
- *      - kind=injury -- (added 2026-10-03) same build -> apply -> pivots
- *        pipeline as "full", but skips the Vegas-lines pull (reuses the
- *        last committed lines) so it doesn't burn Odds API quota. Added to
- *        close the Thu-23:00-to-Sat-12:00 and Sat-12:00-to-Sun-12:00 "full"
- *        gaps, where real injury news breaks (Friday practice report,
- *        Saturday roster decisions) and previously sat unapplied for
- *        12-20+ hours -- see SESSION_LOG.md for the Wk4 Jefferson/Nacua
- *        case that surfaced this. Scheduled Sat ~10am/1pm/4pm ET.
- *      - kind=espn_diff -- (added 2026-10-05, WK4 postmortem item 4) a
- *        CHEAP probe: pull ESPN status + diff against the last committed
- *        snapshot, escalate to a real near-lock refresh only if something
- *        actually changed (scripts/espn_diff_probe.py,
- *        .github/workflows/espn_diff_probe.yml). This exists so the
- *        near-lock cadence's real gap (measured up to ~55 minutes between
- *        pulls on 2026-10-04) can be covered by a tight 5-10 min cadence
- *        WITHOUT paying the full build+pivot cost on every tick the way a
- *        tighter kind=(no kind) cadence would -- see
- *        X_INJURY_FEED_RUNBOOK.md for the full reasoning. Configure this
- *        on cron-job.org scoped to the same pre-lock windows
- *        x_monitor_windows.py reports (105 min before each lock through
- *        lock), 5-10 min interval.
- *      - (no kind)   -- near-lock refresh, ~10 minutes, ONLY during the
- *        real near-lock window(s) that week (unchanged from the original
- *        setup).
- *    cron-job.org supports both a time-of-day range AND day-of-week, so
- *    each job's schedule can be set to fire only in its real window.
  *
- * That's the whole setup -- after this, every cadence is entirely
- * controlled from cron-job.org's UI, no redeploy needed to shift a lock
- * time or a refresh window.
+ *    REVISED 2026-10-12 (WK5 postmortem item 5) -- the near-lock cadence
+ *    and the `kind=full` cadence are BOTH now replaced by one simplified,
+ *    never-needs-weekly-editing job:
+ *      - kind=espn_diff -- run this EVERY 10 MINUTES, EVERY DAY, ALL DAY,
+ *        no time-of-day restriction needed. scripts/espn_diff_probe.py
+ *        decides in code (via x_monitor_windows.compute_window(), reading
+ *        data/current_slate.json) whether a given tick is inside a real
+ *        pre-lock window (105 min before each lock through lock) and
+ *        no-ops with zero network calls otherwise -- so this one job
+ *        safely covers every week's lock times automatically, with no
+ *        cron-job.org edits needed when lock times shift or DST changes.
+ *        Inside a window, the script itself also decides whether THIS
+ *        tick needs a full refresh (two fixed ~75-/~60-minutes-to-lock
+ *        anchors, which re-pull Vegas lines -- chosen to land just after
+ *        the ~90-minute official inactive report) or just a free
+ *        injury-only check (every other in-window tick, escalating to a
+ *        Vegas-free `scheduled_injury_refresh` only on a real detected
+ *        status change for a game that hasn't kicked off yet). Inside 60
+ *        minutes of lock there is deliberately no MORE automatic Vegas
+ *        pull -- a real need that close to lock is a manual
+ *        `gh api .../dispatches -f event_type=near_lock_refresh` call
+ *        (X_INJURY_FEED_RUNBOOK.md step 4), not another automatic one.
+ *        This is why the OLD `(no kind)` near-lock job and the OLD
+ *        `kind=full` job (Thu/Sat/Sun/Mon scheduled full refreshes) are
+ *        no longer needed -- DELETE
+ *        both from cron-job.org; they're now redundant with what this one
+ *        job's own per-tick logic already guarantees, and removing them
+ *        is the main fix for the real finding here: one real Sunday
+ *        (2026-10-11) burned ~70 of a free-tier 500-credit/month Odds API
+ *        budget on Vegas pulls this one job's new logic no longer needs.
+ *        See scripts/espn_diff_probe.py's docstring for the full reasoning.
+ *      - kind=vegas  -- UNCHANGED, keep as-is. Light Vegas-only refresh:
+ *        Tue-Fri 1x/day (~noon ET), Sat 2x/day (~11am + 5pm ET), Sun hourly
+ *        (~11am-1pm ET). Cheap (a handful of Odds API credits/week) and
+ *        not part of this fix.
+ *      - kind=injury -- UNCHANGED, keep as-is. Saturday ~10am/1pm/4pm ET,
+ *        no Vegas pull. Covers the Thu-night-to-Saturday and
+ *        Saturday-to-Sunday gaps, which are outside any pre-lock window
+ *        and so NOT covered by the espn_diff job above -- still needed.
+ *
+ * That's the whole setup -- after the one-time cron-job.org cleanup above
+ * (delete the old near-lock and `kind=full` jobs, replace with a single
+ * always-on `kind=espn_diff` job every 10 min), no further cron-job.org
+ * edits are needed week to week, ever -- lock times, DST, and slate mix
+ * are all handled in code now.
  * ---------------------------------------------------------------------
  */
 

@@ -1,13 +1,30 @@
-# X/Twitter injury-news monitor (built 2026-10-03)
+# X/Twitter injury-news monitor (built 2026-10-03; demoted to optional 2026-10-12)
 
-## Why this exists
+## Status as of the Wk5 postmortem (2026-10-12): optional, not the primary mechanism
+A real-case review across Wk3-5 (6 cases where X caught something close to a lock)
+found **no consistent speed edge for X once `scripts/espn_diff_probe.py` existed**:
+X was ahead twice (by 4 and 8 minutes), ESPN-first three times, and wrong once
+(Flowers, Wk3 -- X/manual override said OUT, ESPN kept him Questionable->ACTIVE, he
+scored 15.4 DK pts). The probe's own pull-to-pipeline latency is 5-13 minutes, which is
+fast enough that X's remaining edge is marginal and not reliable in the direction of
+being RIGHT, only sometimes early.
+
+**The automated backstop (`espn_diff_probe.py` + `refresh_data.yml`) is now the real,
+permanently-relied-upon mechanism for every Sunday, attended or not** -- see that
+script's own docstring for the full redesign. This monitor is kept as a nice-to-have
+when a Claude Code session happens to be open with Chrome available, but nothing
+depends on it running, and a hit from it should be treated as a lead to cross-check
+against ESPN's own feed, not acted on by itself (the Flowers case above is exactly the
+failure mode to watch for).
+
+## Why this exists (original, still accurate as context)
 ESPN's own status feed (what `status_check.py pull` reads) lags real injury news by
-minutes to hours. X/beat-reporter accounts break news faster. The automated GH Actions
-cadence (full/vegas/injury_only dispatches, see `refresh_data.yml`) is the reliable
-backstop that eventually picks up any real status change within a few hours at most.
-This monitor's job is narrower: catch news **faster** than that backstop, specifically
-in the hour or two before a lock, where a Q->O flip or a backup promotion actually
-changes a lineup decision in time to matter.
+minutes to hours in the general case. X/beat-reporter accounts break news faster. The
+automated GH Actions cadence (full/vegas/injury_only dispatches, see `refresh_data.yml`)
+is the reliable backstop that eventually picks up any real status change within a few
+hours at most. This monitor's original job was narrower: catch news **faster** than
+that backstop, specifically in the hour or two before a lock. In practice, close to a
+lock, `espn_diff_probe.py` already closes most of that gap on its own (see above).
 
 ## Accounts (5, confirmed working 2026-10-03)
 - `RotoWireNFL` -- fast aggregator, DFS-focused
@@ -111,15 +128,13 @@ likely to be running against the same files at the same time.
   WK4's afternoon window (2026-10-04) had zero successful checks for ~4.5 hours --
   root cause: the loop needed a permission approval nobody was at the keyboard to give,
   not a Chrome rendering bug (the "Viewport: 0x0" symptom in its log was downstream of
-  that). Per the user (2026-10-05), this is now fixed to need less/no standing approval
-  going forward.
+  that). This is exactly why nothing is allowed to depend on this monitor any more
+  (see "Status as of the Wk5 postmortem" above) -- an unattended Sunday (no session
+  open at all) is now a fully normal case, not a special workaround.
 - X occasionally shows a transient login/rate-limit wall even when logged in; if a
   profile page doesn't render real tweets, wait and retry once before reporting a
   failure.
-- Regardless of the fix above, this is still an attended, session-based monitor, not an
-  unattended service -- `scripts/espn_diff_probe.py` /
-  `.github/workflows/espn_diff_probe.yml` (added 2026-10-05, WK4 postmortem item 4) is
-  the unattended, browser-free backstop for the same "catch ESPN's lag faster" goal: it
-  re-pulls ESPN and diffs against the last snapshot on a tight cadence, escalating to a
-  real refresh only on a real change, so a gap in THIS monitor (attended or not) isn't
-  the only thing standing between a status change and the pipeline picking it up.
+- `scripts/espn_diff_probe.py` / `.github/workflows/espn_diff_probe.yml` is the real,
+  unattended, browser-free mechanism every week now relies on -- see that script's own
+  docstring for exactly how it decides when to pull, when to do a guaranteed full
+  (Vegas) refresh vs. a Vegas-free injury-only one, and why.
