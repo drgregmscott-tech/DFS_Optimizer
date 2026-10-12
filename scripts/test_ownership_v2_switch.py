@@ -27,7 +27,7 @@ season = int(sys.argv[3]) if len(sys.argv) > 3 else None
 raw = pd.read_csv(path, dtype={"player_id": str, "site_player_id": str})
 base = raw.drop(columns=[c for c in raw.columns if c in ("chalk_score", "estimated_ownership_pct")
                          or c.startswith("estimated_ownership_pct_heuristic") or c.startswith("est_own_")
-                         or c in ("own_vacated", "own_vac_bump")])
+                         or c in ("own_vacated", "own_vac_bump") or c.startswith("own_chalk_")])
 
 
 def run(flag):

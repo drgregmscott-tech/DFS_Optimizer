@@ -82,13 +82,32 @@ touches five and resolves none.
    the injury pipeline already lowers same-team RB/WR/TE projections when a QB is ruled OUT (separate
    question from this lint rule).
 
-4. **Carried from the Wk5 Sunday parking lot — model-vs-FFC ownership gap on high-chalk TE/RB.** Three
-   of four ⚠-flagged high-chalk players in Sunday's lineup 1 review were under on the model side vs. FFC
-   despite very high chalk scores: Swift (model 33.5% vs FFC 54.4%, chalk 91.3), McBride (18.2% vs
-   52.6%, chalk 96.1), Likely (16.4% vs 40.4%, chalk 68.0); Gibbs was the inverse. Check whether the
-   ownership model compresses/caps predicted ownership at the extreme-chalk end for TE/RB, same shape as
-   the QB chalk-seg gap already root-caused and fixed in Wk4 (`project_wk4_cheap_chalk_qb_fix`). Full
-   context in memory `project_wk5_parking_lot`.
+4. **Carried from the Wk5 Sunday parking lot — model-vs-FFC ownership gap on high-chalk TE/RB.** ✅
+   RB SHIPPED, TE DROPPED/PARKED 2026-10-12. Not a general cap/compression at the chalk end — each player
+   had a different cause:
+   - **Swift ($6,200) and Gibbs' underlying mechanism — real, fixed.** Both priced above the $5,500 seg
+     salary gate, so (like the Wk4 QB gap) structurally excluded from the chalk-FFC pull regardless of FFC
+     rank. New RB-only top-3-by-FFC cut (`apply_chalk_ffc_rb_cut` in `scripts/ownership_v2.py`, same
+     construction as the QB cut — no salary gate, re-allocated inside RB's own budget, QB/WR/TE output
+     byte-identical by construction, verified on all 15 slates). Settings (k=3, b=.5) inherited from the QB
+     cut, not tuned on this data. 15 DK classic slates wk1-5 2026: RB MAE 1.313→1.232, RB corr .912→.920,
+     wins 4/5 weeks; leave-one-week-out held-out MAE 1.313→1.264, 3/5 weeks; no regression at $7k+/$9k+ RB.
+     Shipped default-on: `DFS_OWN_CHALK_RB_CUT=3` (0 = off), `DFS_OWN_CHALK_RB_CUT_B` to override b.
+     Re-grade after Wk6.
+   - **McBride ($6,700) — same salary-gate cause plus a second mechanism (budget drag from cheap-TE pulls),
+     both tested, both dropped for TE.** The identical RB-style cut applied to TE is wrong-direction (worse
+     on 11-13 of 15 slates) — not shipped. Shielding McBride-like priced-up TEs from the drag was also
+     tested and made TE worse overall — dropped. A narrower pull-up for $5,500+ TEs only is inconclusive
+     (wins just Wk5 itself) — parked, re-test once 3+ more slates have a priced-up TE as FFC's slate-top TE.
+   - **Likely — not our bug.** Already inside the existing chalk pull (raised to 16.1); real was 13.1, so
+     FFC's 40.4 was the actual miss, not the model.
+   - **Broader finding for lineup review:** FFC runs systematically hot on chalky RB/TE across all 15
+     slates (+8 to +15 pt average overshoot); our shipped numbers are already closer to real in every
+     salary band outside the untouched top-3. Unlike the QB case (where FFC was the accurate side), a
+     large "model under FFC" gap on a chalky RB/TE is normal and usually means *we're* closer to right —
+     don't reflexively flag it as a miss in Sunday review.
+   - Full analysis: `analysis/wk5_postmortem_item4_terb_chalk_gap/RESULTS.md` (local). Full context in
+     memory `project_wk5_parking_lot`.
 
 5. **X injury monitor — need a Sunday-unattended workaround, this week specifically.** User will not be
    at the computer this coming Sunday (lock day). The X monitor (Chrome-based, attended) can't run

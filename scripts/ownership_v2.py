@@ -721,26 +721,71 @@ def chalk_qb_cut_k():
         return 0
 
 
-def apply_chalk_ffc_qb_cut(F, final, raw_ffc, k=None, cap=CAP):
-    """QB-only FFC pull for the slate's top-k QBs by raw FFC. Returns (pulled final, audit delta)."""
-    k = chalk_qb_cut_k() if k is None else k
+def apply_chalk_ffc_pos_cut(F, final, raw_ffc, pos, k, b=None, cap=CAP):
+    """Single-position FFC pull for the slate's top-k players of `pos` by raw FFC: no salary gate, seg's b (unless
+    given) and freeze, re-allocated inside that position's budget only (every other position is untouched by
+    construction). Returns (pulled final, audit delta). Fail-safe: input unchanged on any problem."""
     base = np.asarray(final, float)
     try:
-        qb = F.pos.eq("QB").to_numpy() & np.isfinite(base)
-        if k <= 0 or not qb.any():
+        m = F.pos.eq(pos).to_numpy() & np.isfinite(base)
+        if k <= 0 or not m.any():
             return base, np.zeros(len(base))
-        _, b, _, fz = chalk_seg_params()
-        Q = F[qb].copy()
-        Q["salary"] = 0.0  # no salary gate for QBs
-        qo, _ = apply_chalk_ffc_seg(Q, base[qb].copy(), np.asarray(raw_ffc, float)[qb], n=k, b=b,
+        _, b0, _, fz = chalk_seg_params()
+        b = b0 if b is None else b
+        Q = F[m].copy()
+        Q["salary"] = 0.0  # no salary gate
+        qo, _ = apply_chalk_ffc_seg(Q, base[m].copy(), np.asarray(raw_ffc, float)[m], n=k, b=b,
                                     sal_thresh=1.0, freeze_pct=fz, cap=cap)
         out = base.copy()
-        out[qb] = qo
-        if not np.all(np.isfinite(out[qb])):
+        out[m] = qo
+        if not np.all(np.isfinite(out[m])):
             return base, np.zeros(len(base))
         return out, out - base
     except Exception:  # noqa: BLE001 -- must never break a build
         return base, np.zeros(len(base))
+
+
+def apply_chalk_ffc_qb_cut(F, final, raw_ffc, k=None, cap=CAP):
+    """QB-only FFC pull for the slate's top-k QBs by raw FFC. Returns (pulled final, audit delta)."""
+    k = chalk_qb_cut_k() if k is None else k
+    return apply_chalk_ffc_pos_cut(F, final, raw_ffc, "QB", k, cap=cap)
+
+
+# 2026-10-12 RB own-cut (analysis/wk5_postmortem_item4_terb_chalk_gap/RESULTS.md, local): the seg pull above never
+# touches $5.5k+ RBs (Swift $6.2k / FFC #1 on wk5_main: base 34.0, shipped 34.0, real 44.3), and the v2 RB number is
+# off in BOTH directions at the top of the position (Bijan 34 vs 59 real; Henry 72 vs 60, Etienne 52 vs 11). Same
+# construction as the QB cut: the slate's top-k RBs by raw FFC, no salary gate, seg's b/freeze, re-allocated inside
+# the RB budget only -- QB/WR/TE output is byte-identical by construction. k=3 / b=.5 inherited from the QB cut / seg
+# (not tuned here). 15 DK classic slates 2026 wk1-5: RB MAE 1.313 -> 1.232, RB corr .912 -> .920, better on 4/5 weeks
+# (MAE and corr; loses wk3, which holds the corrupt wk3_main FFC file), whole-slate skill corr .891 -> .895. LOWO
+# (k, b) pick: held-out RB MAE 1.313 -> 1.264, 3/5 weeks. The same cut for TE is WRONG-DIRECTION (worse on 12-13 of
+# 15 slates) -- do not extend it to TE. Switch: DFS_OWN_CHALK_RB_CUT=<k> (default 3 = on; 0 = off);
+# DFS_OWN_CHALK_RB_CUT_B=<b> overrides b (default = seg b). Only runs with the seg switch on. Any failure = no-op.
+CHALK_RB_CUT_DEFAULT = "3"
+
+
+def chalk_rb_cut_k():
+    try:
+        return max(0, int(os.environ.get("DFS_OWN_CHALK_RB_CUT", CHALK_RB_CUT_DEFAULT).strip() or 0))
+    except ValueError:
+        return 0
+
+
+def chalk_rb_cut_b():
+    try:
+        raw = os.environ.get("DFS_OWN_CHALK_RB_CUT_B", "").strip()
+        if not raw:
+            return None
+        b = float(raw)
+        return b if 0.0 <= b <= 1.0 else None
+    except ValueError:
+        return None
+
+
+def apply_chalk_ffc_rb_cut(F, final, raw_ffc, k=None, cap=CAP):
+    """RB-only FFC pull for the slate's top-k RBs by raw FFC. Returns (pulled final, audit delta)."""
+    k = chalk_rb_cut_k() if k is None else k
+    return apply_chalk_ffc_pos_cut(F, final, raw_ffc, "RB", k, b=chalk_rb_cut_b(), cap=cap)
 
 
 # 2026-09-30 chalk-temperature candidate (analysis/chalk_temperature/RESULTS.md): the v2 distribution is "too flat at
@@ -875,6 +920,10 @@ def predict_v2(frame, ctx, lin, dst, live_pred=None, alpha=FFC_BLEND_ALPHA, vac_
         if qk > 0:
             final, qpull = apply_chalk_ffc_qb_cut(F, final, raw_ffc, k=qk, cap=lin.get("cap", CAP))
             LAST_AUDIT["own_chalk_qb_cut"] = qpull
+        rk = chalk_rb_cut_k()
+        if rk > 0:
+            final, rpull = apply_chalk_ffc_rb_cut(F, final, raw_ffc, k=rk, cap=lin.get("cap", CAP))
+            LAST_AUDIT["own_chalk_rb_cut"] = rpull
     elif raw_ffc is not None and chalk_ffc_enabled():
         final, pull = apply_chalk_ffc(F, final, raw_ffc, cap=lin.get("cap", CAP))
         LAST_AUDIT["own_chalk_ffc"] = pull
