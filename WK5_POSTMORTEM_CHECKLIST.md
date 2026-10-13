@@ -247,6 +247,22 @@ touches five and resolves none.
   alone, unattended, in ~15 minutes. One clean data point in favor of the item-5 claim. Still want
   Thursday's showdown lock as the second leg before treating this as fully confirmed — do that as its own
   short check once Thursday's lock has passed.
+  - **Independently re-verified 2026-10-13, not just taken on trust:** re-derived the BUF/LAR timeline
+    directly from `git log` (DJ Moore ESPN flip, probe catch, dispatch, build-complete timestamps all
+    checked against real commit times, not re-stated from the write-up above), confirmed
+    `manual_status_overrides.csv` has zero BUF/LAR entries, and diffed the actual `final_projections` CSV
+    across the two build commits to confirm Moore's status/ownership-input fields really did flip from
+    Questionable/non-zero to OUT/zeroed. Also confirmed both guaranteed anchors (~75/~60 min before lock)
+    fired on schedule — including the second one with `changed=false`, proving the anchor isn't just
+    riding along with lucky news timing. All of it held up.
+  - **Sunday-confidence reassessment (2026-10-13):** this resolves the two biggest pre-Sunday unknowns —
+    first live in-window CI run (previously untested beyond local `--now` simulation), and the
+    single-mechanism-no-redundancy trade-off holding up under real conditions. **What it does NOT test:
+    multiple distinct locks in one day.** BUF/LAR and Thursday's showdown are both single-lock days;
+    Sunday has early/main sharing one lock plus a separate later afternoon lock (and possibly SNF) — the
+    window-closes/next-window-opens sequencing across a day has only been exercised in local offline
+    tests against real Wk5 lock times, never in a live full day of real CI ticks. Same code path, nothing
+    exotic about it, but it's the one honest remaining gap going into this Sunday specifically.
 - **BUF/LAR showdown result: missed cash (rank 3,285/8,917, ~63rd percentile).** Graded clean otherwise —
   proj corr 0.907 (best slate of the week), own corr 0.886, construction rules held normal direction
   (QB-CPT-RB/TE bonus, DST/K-captain avoidance). No model issue indicated; reads as a normal non-cash
