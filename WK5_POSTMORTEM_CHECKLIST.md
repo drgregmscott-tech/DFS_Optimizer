@@ -237,9 +237,17 @@ touches five and resolves none.
   CHI/NYG/WAS, 44 WR/TE rows, no crash). The 0.965 props-matched split is an untested guess at how
   much the market has already closed — re-check after ~5 more live triggered team-weeks with props
   on. Full analysis (local only, FC-derived, not committed): `analysis/qb_out_teammate_adjustment/RESULTS.md`.
-- **Follow-up on item 5's "X monitor gives no edge" claim — live check requested (2026-10-12).** The
-  6-case review backing that claim is retrospective (Wk3-5 history). User wants a forward-looking,
-  practical confirmation: watch the probe vs. any real X/beat-reporter news around tonight's BUF/LAR MNF
-  showdown lock (2026-10-13T00:15Z) and Thursday's showdown lock, and compare timing/accuracy the same
-  way the Wk3-5 cases were graded (which caught it first, was either one wrong). Do this as its own short
-  session once both locks have passed — don't chase it mid-session now.
+- **Follow-up on item 5's "X monitor gives no edge" claim — live check requested (2026-10-12). BUF/LAR
+  leg done 2026-10-13, Thursday's showdown still pending before fully closing.** Traced real git history
+  around the BUF/LAR lock (2026-10-13T00:15Z): ESPN flipped DJ Moore (BUF WR) to OUT at 22:49Z, the probe
+  caught it at 23:01:21Z (12 min lag, matches the prior 5-13 min range), a triggered refresh fired 1 min
+  later, and the build had him correctly zeroed in `final_projections` by 23:03:46Z — confirmed directly
+  in the output file, 72 min before lock. **No manual X-monitor override was logged anywhere for this
+  game** (`config/manual_status_overrides.csv` has nothing for BUF/LAR) — the probe caught this one
+  alone, unattended, in ~15 minutes. One clean data point in favor of the item-5 claim. Still want
+  Thursday's showdown lock as the second leg before treating this as fully confirmed — do that as its own
+  short check once Thursday's lock has passed.
+- **BUF/LAR showdown result: missed cash (rank 3,285/8,917, ~63rd percentile).** Graded clean otherwise —
+  proj corr 0.907 (best slate of the week), own corr 0.886, construction rules held normal direction
+  (QB-CPT-RB/TE bonus, DST/K-captain avoidance). No model issue indicated; reads as a normal non-cash
+  outcome, not investigated further.
