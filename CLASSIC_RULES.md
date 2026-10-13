@@ -250,3 +250,28 @@ caps, locks or thumbs push into cheap WRs; it is not a lever on current output. 
   build on a live Wk4 slate: no meaningful solve-time cost.
 - The 3+ punt term rarely binds (13% of baseline lineups), so it is the least exercised.
 - Punt definition is Phase 2's (non-DST salary ≤ $4,000). DST band is inclusive $2,800-3,100; expensive is ≥ $3,600.
+
+## FD Classic — preliminary, NOT evidence-graded like the rules above (added 2026-10-13)
+
+Everything above is DK-specific: DK price bands, 410 real contests, 5 seasons, §5-controlled (projection/ownership/
+salary-left held constant before crediting an effect). FD's own rule-building bar is the same standard
+([WK5_POSTMORTEM_CHECKLIST.md](WK5_POSTMORTEM_CHECKLIST.md) item 2) and isn't there yet — this section is a manual
+judgment call the user applies by hand, not a graded rule, and not wired into the optimizer.
+
+**TE: play $4,100-5,400, not $5,500+.** Checked against all 5 weeks of real FD main-slate full-field results
+(25,000+ entries pooled, top-25%-by-rank cash proxy, raw tier cash rate, no controls): $4,100-5,400 tier 29.0% cash
+(n=15,885), $5,500+ 21.8% (n=19,239), wins in 4 of 5 weeks. The $4,000 floor/punt tier has only 21 real instances
+across all 5 weeks (nobody plays it) — no real signal either way there, don't read "FD TE punt is bad" into this.
+**This replaces an earlier recommendation to exclude this exact band** (was pure salary-ladder reasoning, no data
+checked at the time) — the real field data says the opposite. Keep re-checking each week; re-derive if it flips.
+
+**DEF: avoid $4,700+; cheap and mid (anything under $4,600) are both fine.** $4,700+ tier 17.2% cash pooled, worst
+or near-worst in 4 of 5 weeks. <$3,300 (27.7%) and $3,300-4,600 (27.2%) are a wash, no consistent winner week to
+week — narrower than the earlier version of this recommendation, which also said to avoid the cheap end; that part
+doesn't hold up and is dropped.
+
+**Caveats, same bar as everywhere else in this doc:** uncontrolled (no projection/ownership/salary-left regression
+like DK's §5 — some of this could be a confound, e.g. builds that pay up for mid-tier TE may just be sharper
+builds overall), 5 weeks not 410 contests, and FD's own projection pipeline currently under-projects every skill
+position (item 2, same checklist) so the pool these entries were built from may not match ours. Re-check after
+each new week; worth real §5-style controls once there's enough FD history to support it.
