@@ -1,7 +1,7 @@
 team,component,pool_share,share_basis,raw_sum,target,scale,abs_delta
-SEA,rush,0.9928,recent,41.28,28.29,0.6854,12.99
-SEA,recv,1.0,recent,40.12,30.92,0.7705,9.21
-DEN,recv,0.9932,recent,38.39,30.87,0.8041,7.52
-SEA,pass,1.0,exclusive,27.05,32.04,1.1842,4.98
-DEN,rush,0.9832,recent,31.43,26.08,0.8299,5.35
-DEN,pass,1.0,exclusive,32.71,32.88,1.0053,0.17
+SEA,rush,0.9928,recent,41.25,28.22,0.6841,13.03
+SEA,recv,1.0,recent,40.12,30.9,0.7703,9.22
+DEN,recv,0.9932,recent,38.39,30.86,0.8039,7.53
+SEA,pass,1.0,exclusive,27.05,32.03,1.1838,4.97
+DEN,rush,0.9832,recent,31.45,26.17,0.8323,5.28
+DEN,pass,1.0,exclusive,32.71,32.87,1.0048,0.16
