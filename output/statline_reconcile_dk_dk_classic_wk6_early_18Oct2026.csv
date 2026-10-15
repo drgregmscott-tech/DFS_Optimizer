@@ -13,7 +13,7 @@ NYJ,rush,0.9924,recent,32.98,24.56,0.7446,8.42
 IND,recv,1.0,recent,45.68,34.07,0.7458,11.61
 CLE,rush,0.9921,recent,34.88,26.15,0.7496,8.74
 NYG,rush,1.0,recent,36.82,27.73,0.753,9.09
-IND,rush,0.9781,recent,36.67,27.88,0.7603,8.79
+IND,rush,0.9781,recent,36.67,27.87,0.7602,8.79
 TB,rush,1.0,recent,36.25,27.61,0.7618,8.64
 CHI,pass,1.0,exclusive,29.79,36.56,1.2272,6.77
 PIT,recv,1.0,recent,41.62,32.38,0.778,9.24
@@ -28,7 +28,7 @@ TEN,recv,1.0,recent,40.27,32.52,0.8076,7.75
 CLE,recv,0.9932,recent,38.39,31.53,0.8212,6.86
 CAR,rush,1.0,recent,33.61,27.76,0.8259,5.85
 CAR,pass,1.0,exclusive,41.29,34.95,0.8466,6.33
-TEN,rush,1.0,recent,27.98,24.09,0.8612,3.88
+TEN,rush,1.0,recent,27.98,24.1,0.8613,3.88
 NYJ,pass,1.0,exclusive,28.47,32.4,1.138,3.93
 BAL,recv,1.0,recent,35.35,30.69,0.8682,4.66
 ATL,recv,0.9921,recent,36.89,32.69,0.8863,4.2
@@ -36,8 +36,8 @@ NYJ,recv,1.0,recent,33.88,31.18,0.9203,2.7
 PIT,rush,0.9722,recent,27.07,24.97,0.9222,2.11
 NE,pass,1.0,exclusive,31.59,33.56,1.0623,1.97
 PIT,pass,1.0,exclusive,35.54,33.46,0.9415,2.08
-IND,pass,1.0,exclusive,37.28,35.22,0.9447,2.06
+IND,pass,1.0,exclusive,37.28,35.21,0.9447,2.06
 NO,pass,1.0,exclusive,37.69,35.65,0.9461,2.03
 CLE,pass,1.0,exclusive,31.17,32.59,1.0455,1.42
-TEN,pass,1.0,exclusive,32.49,33.87,1.0425,1.38
+TEN,pass,1.0,exclusive,32.49,33.87,1.0426,1.38
 NYG,pass,1.0,exclusive,36.7,35.37,0.9636,1.34
