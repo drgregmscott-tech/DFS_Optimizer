@@ -1,51 +1,51 @@
 player,salary,proj_own,lo,hi
-Kyren Williams,6800,78.2,57.9,100.0
-Puka Nacua,8100,71.9,52.6,84.2
-Dallas Goedert,3900,61.8,36.8,73.7
-Isaiah Likely,4800,47.0,31.6,68.4
-Carnell Tate,5000,41.1,21.1,57.9
-Matthew Stafford,6400,40.7,15.8,57.9
-Bijan Robinson,8700,38.9,21.1,57.9
-Carolina Defense,2500,32.6,15.8,47.4
-Ashton Jeanty,6500,31.6,10.5,52.6
-Davante Adams,6600,30.2,10.5,52.6
-Harold Fannin Jr.,4100,28.1,10.5,47.4
-LA Chargers Defense,2100,26.0,10.5,47.4
-Cade Otton,3300,22.8,10.5,36.8
-Josh Allen,7500,20.0,5.3,36.8
-Jonathan Taylor,8000,18.9,5.3,26.3
-Drake London,7000,17.9,5.3,31.6
-Wan'Dale Robinson,4500,17.5,0.0,36.8
-Chuba Hubbard,6300,15.8,0.0,42.1
-Xavier Worthy,4600,12.3,0.0,26.3
-Keenan Allen,4300,11.9,0.0,21.1
-Rome Odunze,4900,10.9,0.0,21.1
-Malik Nabers,6500,10.5,0.0,21.1
-Rashee Rice,6400,9.8,5.3,15.8
-Romeo Doubs,5200,9.5,0.0,26.3
-Kirk Cousins,5400,8.8,0.0,15.8
-Bucky Irving,6200,8.8,0.0,15.8
-Pittsburgh Defense,3300,8.8,0.0,26.3
-Emeka Egbuka,5200,8.4,0.0,21.1
-Drake Maye,6600,8.1,0.0,21.1
-Germie Bernard,4000,7.4,0.0,21.1
-Zay Flowers,7100,7.0,0.0,26.3
-Cleveland Defense,2500,7.0,0.0,21.1
-James Cook III,7400,6.3,0.0,21.1
-New Orleans Defense,2600,6.0,0.0,15.8
-Juwan Johnson,4500,5.6,0.0,10.5
-Tyler Shough,5600,5.3,0.0,15.8
-Luther Burden III,5400,5.3,0.0,15.8
-Cam Skattebo,5800,5.3,0.0,10.5
-NY Giants Defense,2800,5.3,0.0,15.8
-Bryce Young,5700,4.6,0.0,15.8
+Kyren Williams,6800,75.8,57.9,94.7
+Puka Nacua,8100,75.8,52.6,89.5
+Dallas Goedert,3900,56.1,36.8,78.9
+Rhamondre Stevenson,6000,48.1,31.6,73.7
+Isaiah Likely,4800,44.2,21.1,73.7
+Matthew Stafford,6400,39.3,21.1,57.9
+Bijan Robinson,8700,35.4,21.1,57.9
+Carnell Tate,5000,28.1,10.5,42.1
+Davante Adams,6600,27.0,15.8,42.1
+Harold Fannin Jr.,4100,24.9,10.5,42.1
+LA Chargers Defense,2100,24.2,10.5,42.1
+Josh Allen,7500,22.8,10.5,36.8
+Keenan Allen,4300,21.8,10.5,31.6
+Germie Bernard,4000,20.7,0.0,31.6
+Wan'Dale Robinson,4500,18.2,0.0,36.8
+Carolina Defense,2500,16.5,5.3,26.3
+Drake London,7000,15.1,5.3,31.6
+New Orleans Defense,2600,15.1,0.0,26.3
+Chuba Hubbard,6300,14.4,5.3,36.8
+Ashton Jeanty,6500,13.3,0.0,26.3
+Malik Nabers,6500,13.0,0.0,36.8
+DJ Moore,5600,11.9,0.0,21.1
+Cade Otton,3300,11.6,0.0,21.1
+Jonathan Taylor,8000,10.5,0.0,31.6
+Juwan Johnson,4500,10.5,0.0,36.8
+Xavier Worthy,4600,9.5,0.0,21.1
+Kirk Cousins,5400,8.8,0.0,21.1
+Pittsburgh Defense,3300,8.4,0.0,21.1
+Rashee Rice,6400,8.1,0.0,15.8
+Drake Maye,6600,7.7,0.0,31.6
+Tyler Warren,5300,7.7,0.0,15.8
+Baltimore Defense,3200,7.7,0.0,26.3
+Luther Burden III,5400,7.0,0.0,21.1
+James Cook III,7400,6.7,0.0,15.8
+Rome Odunze,4900,6.7,0.0,21.1
+Bucky Irving,6200,6.0,0.0,10.5
+NY Jets Defense,2200,6.0,0.0,10.5
+Cleveland Defense,2500,6.0,0.0,15.8
+Zay Flowers,7100,5.6,0.0,15.8
+Jalen Coker,5900,5.6,0.0,10.5
+NY Giants Defense,2800,5.6,0.0,21.1
+Cam Skattebo,5800,4.9,0.0,10.5
+Tyler Shough,5600,4.6,0.0,15.8
+Jameis Winston,5100,4.6,0.0,15.8
 Tennessee Defense,2300,4.2,0.0,10.5
-Chris Godwin Jr.,4400,3.9,0.0,10.5
-NY Jets Defense,2200,3.9,0.0,10.5
-Efton Chism III,3500,3.9,0.0,10.5
-Jerry Jeudy,3400,3.9,0.0,10.5
-Jalen Coker,5900,3.5,0.0,10.5
-Jameis Winston,5100,3.5,0.0,10.5
-Denzel Boston,5500,3.5,0.0,10.5
-Hunter Henry,4000,3.5,0.0,10.5
-Patrick Mahomes,6500,2.8,0.0,10.5
+Bryce Young,5700,3.9,0.0,15.8
+Tyler Higbee,3400,3.9,0.0,10.5
+Tre Tucker,4700,3.5,0.0,10.5
+Emeka Egbuka,5200,3.5,0.0,15.8
+Braelon Allen,5700,3.2,0.0,15.8
