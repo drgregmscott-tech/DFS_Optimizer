@@ -3,6 +3,6 @@ Construction lint (informational only -- never blocks a build; see WK3_CONSTRUCT
                rule severity                                    evidence  lineups share
 SD13_cpt_wrte_no_qb backstop                                   Supported        5   25%
     SD5_two_kickers     info                           Weak (CI spans 0)        4   20%
-SD7_split_cpt_heavy backstop         Supported (mild, -1.2 to -1.6 cash)       11   55%
+SD7_split_cpt_heavy backstop         Supported (mild, -1.2 to -1.6 cash)       12   60%
   SD8_low_owned_cpt     info Supported on realized own; modeled own weak        5   25%
      SD_stack_depth backstop                           Weak-to-Supported        7   35%

@@ -651,12 +651,19 @@ def _apply_qb_out_teammates(df, week):
     over-projected 0.44/0.18 pts the first week a new, unproven backup starts -- gone once the backup
     has started before. RB showed no gap (excluded; including it made the held-out fit worse).
 
-    Trigger (production-style, LOSO-validated): a QB marked OUT/DOUBTFUL who started last week
-    (qb_starts_with_team >= 1) whose team's remaining QB(s) have NOT started this season
-    (qb_starts_with_team == 0) -- i.e. a genuinely new starter, not an already-established backup
-    (Bagent-after-week-1 case correctly does not re-fire). Multiplier 0.93, softened to 0.965 for
-    rows the props anchor already matched (props_matched) as an untested guess at how much the
-    market has already closed. Off: DFS_QB_OUT_TEAMMATES=0. Any failure = projections unchanged."""
+    Trigger (production-style, LOSO-validated): the team's ACTUAL starter (depth-chart rank 1 at QB,
+    per statline_model.load_depth_chart()) is marked OUT/DOUBTFUL and had started before
+    (qb_starts_with_team >= 1), AND the next QB up the chart (lowest rank among the remaining,
+    non-OUT/DOUBTFUL QBs) has NOT started this season (qb_starts_with_team == 0) -- i.e. a genuinely
+    new starter, not an already-established backup (Bagent-after-week-1 case correctly does not
+    re-fire). 2026-10-16 fix: this used to flag a team as soon as ANY QB on the roster, in ANY depth
+    spot, was OUT/DOUBTFUL with starts>=1 -- so a healthy, active, well-established starter (e.g.
+    Jayden Daniels, 3 starts, ACTIVE) got his own WR/TE corps dampened just because the real QB2
+    (Mariota, DOUBTFUL) existed and some never-played 4th-string arm (Hartman, 0 starts) was also on
+    the roster. Depth-chart rank now identifies who's actually QB1 and who actually replaces him.
+    Multiplier 0.93, softened to 0.965 for rows the props anchor already matched (props_matched) as
+    an untested guess at how much the market has already closed. Off: DFS_QB_OUT_TEAMMATES=0. No
+    depth chart available, or any other failure, degrades to a no-op -- never breaks a build."""
     df["qb_out_teammates_flag"] = False
     df["qb_out_teammates_mult"] = 1.0
     if os.environ.get("DFS_QB_OUT_TEAMMATES", "1") == "0":
@@ -667,16 +674,33 @@ def _apply_qb_out_teammates(df, week):
         inj = statline_model.load_injury_status(week)
         if inj is None or inj.empty:
             return df
-        out_ids = set(inj.loc[inj["status"].isin(["OUT", "DOUBTFUL"]), "player_id"].astype(str))
-        is_qb = df["position"].astype(str) == "QB"
-        starts = pd.to_numeric(df["qb_starts_with_team"], errors="coerce").fillna(0)
-        pid = df["player_id"].astype(str)
-        out_starter = is_qb & pid.isin(out_ids) & (starts >= 1)
-        if not out_starter.any():
+        depth_chart = statline_model.load_depth_chart()
+        if depth_chart is None or depth_chart.empty:
             return df
-        teams = set(df.loc[out_starter, "team"])
-        new_backup = is_qb & df["team"].isin(teams) & ~pid.isin(out_ids) & (starts == 0)
-        fire_teams = set(df.loc[new_backup, "team"])
+        out_ids = set(inj.loc[inj["status"].isin(["OUT", "DOUBTFUL"]), "player_id"].astype(str))
+        starts_by_id = pd.to_numeric(
+            df.assign(player_id=df["player_id"].astype(str))
+              .drop_duplicates("player_id")
+              .set_index("player_id")["qb_starts_with_team"],
+            errors="coerce").fillna(0)
+        qb_chart = depth_chart.loc[depth_chart["position"] == "QB"].copy()
+        qb_chart["player_id"] = qb_chart["player_id"].astype(str)
+        qb_chart["depth_rank"] = pd.to_numeric(qb_chart["depth_rank"], errors="coerce")
+        fire_teams = set()
+        for team, chart in qb_chart.groupby("team"):
+            chart = chart.dropna(subset=["depth_rank"]).sort_values("depth_rank")
+            if chart.empty:
+                continue
+            incumbent_id = chart.iloc[0]["player_id"]
+            if incumbent_id not in out_ids or starts_by_id.get(incumbent_id, 0) < 1:
+                continue
+            remaining = chart.iloc[1:]
+            remaining = remaining.loc[~remaining["player_id"].isin(out_ids)]
+            if remaining.empty:
+                continue
+            next_id = remaining.iloc[0]["player_id"]
+            if starts_by_id.get(next_id, 0) == 0:
+                fire_teams.add(team)
         if not fire_teams:
             return df
         target = df["position"].astype(str).isin(["WR", "TE"]) & df["team"].isin(fire_teams)
