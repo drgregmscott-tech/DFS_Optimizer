@@ -263,7 +263,39 @@ touches five and resolves none.
     window-closes/next-window-opens sequencing across a day has only been exercised in local offline
     tests against real Wk5 lock times, never in a live full day of real CI ticks. Same code path, nothing
     exotic about it, but it's the one honest remaining gap going into this Sunday specifically.
+  - **Thursday leg done 2026-10-16 (SEA/DEN showdown, locked 2026-10-16T00:15Z) — item 5's live check is
+    now CLOSED.** Re-derived directly from git log/commit diffs (same method as BUF/LAR, re-synced to
+    origin first after catching a stale-local-file mistake mid-check — see note below). ESPN posted the
+    official pregame-inactives batch (Dallen Bentley, Jalen Milroe, Montorie Foster Jr., Robert Henry Jr.
+    all OUT) at 22:49-22:54Z; the probe's 23:01:16Z tick caught it, a fresh pull completed 23:02:09Z, and
+    the build had all four correctly zeroed in `final_projections` by 23:04:51Z — confirmed directly in
+    the committed CSV — 70 min before lock. Zero Week 6 entries in `manual_status_overrides.csv`. Unlike
+    BUF/LAR's single surprise flip, this was a batch of min-salary/inactive-list names (all already
+    near-zero projected, $200-1500 salaries) — a less dramatic but equally valid test of the same
+    mechanism, and it also exercised a case BUF/LAR didn't: a real change caught early in the window (104
+    min to lock, well before either anchor) correctly fired a Vegas-free `injury_refresh_scheduled`
+    dispatch rather than waiting for an anchor, confirming that path works too. **Two clean, independently
+    verified data points now — the "X monitor gives no edge" claim is confirmed, not just retrospective.**
+    The multi-window-in-one-day gap noted above is still the one real thing only Sunday itself tests.
+  - **Process note:** mid-check, a local working-tree file that was 29 commits behind origin briefly made
+    it look like the SEA/DEN players were still showing ACTIVE in `final_projections` — a real-looking
+    false alarm caused by not syncing first. Re-pulling (`git stash` → `pull --rebase --autostash` →
+    `stash pop`) resolved it; the live data was correct the whole time. Reinforces
+    `feedback_verify_git_sync_before_analysis` — always sync before trusting a local file read when
+    automated jobs are writing to the same repo.
 - **BUF/LAR showdown result: missed cash (rank 3,285/8,917, ~63rd percentile).** Graded clean otherwise —
   proj corr 0.907 (best slate of the week), own corr 0.886, construction rules held normal direction
   (QB-CPT-RB/TE bonus, DST/K-captain avoidance). No model issue indicated; reads as a normal non-cash
   outcome, not investigated further.
+  - **Construction-specific follow-up (2026-10-13), user's own entry traced from the real contest export.**
+    CPT Stafford/FLEX Allen/Williams/Coleman/Bass/Higbee, 133.58 pts, $49,900/$50,000 used (full cap, no
+    waste). 65 other entries rostered the identical 6-player lineup with the identical captain; 1,463
+    entries (16.4% of the 8,917-entry field) had Stafford as CPT in some form — real-world confirmation of
+    the SE chalk-CPT finding ([[SHOWDOWN_RULES.md]] item 8), live. Checked whether a legal swap inside the
+    same core beats it: CPT Allen instead of Stafford (cutting Bass for Ty Johnson to fit cap) scores
+    133.87 — a wash, not a fix; CPT Allen with the original 5 FLEX is cap-illegal ($51,300). The real
+    separator for cashing builds was James Cook III (26.8 real vs 14.93 projected, +80%), who wasn't a
+    good value play pre-game (1.41 pts/$1k vs Stafford's 2.4) and wasn't flagged by ownership, chalk
+        score, or projections. Verdict: not a fixable construction mistake — legal, full-cap, defensible
+    value build; the nearest realistic alternate construction gains ~nothing; the gap to cash was an
+    unpredictable correlated boom outside anything available pre-game.
