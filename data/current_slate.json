@@ -128,6 +128,22 @@
       "season": 2026,
       "week": 6,
       "lock_time_utc": "2026-10-18T20:05:00Z"
+    },
+    {
+      "slate_id": "dk_showdown_wk6_DAL_GB_18Oct2026",
+      "site": "dk",
+      "format": "showdown",
+      "season": 2026,
+      "week": 6,
+      "lock_time_utc": "2026-10-19T00:20:00Z"
+    },
+    {
+      "slate_id": "dk_showdown_wk6_WAS_SF_19Oct2026",
+      "site": "dk",
+      "format": "showdown",
+      "season": 2026,
+      "week": 6,
+      "lock_time_utc": "2026-10-20T00:15:00Z"
     }
   ]
 }

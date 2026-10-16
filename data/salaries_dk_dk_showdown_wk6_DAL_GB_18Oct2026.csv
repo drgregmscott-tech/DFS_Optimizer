@@ -1,0 +1,111 @@
+Position,Name + ID,Name,ID,Roster Position,Salary,Game Info,TeamAbbrev,AvgPointsPerGame,Status,roster_role,name,site,salary,normalized_name,normalized_team,position_upper,slate_format,player_id,match_method,match_confidence
+WR,CeeDee Lamb (44531550),CeeDee Lamb,44531550,CPT,16200,DAL@GB 10/18/2026 08:20PM ET,DAL,24.8,,CPT,CeeDee Lamb,dk,16200,ceedee lamb,DAL,WR,showdown,00-0036358,auto_exact,high
+QB,Dak Prescott (44531551),Dak Prescott,44531551,CPT,15600,DAL@GB 10/18/2026 08:20PM ET,DAL,20.6,,CPT,Dak Prescott,dk,15600,dak prescott,DAL,QB,showdown,00-0033077,auto_exact,high
+RB,Javonte Williams (44531552),Javonte Williams,44531552,CPT,14400,DAL@GB 10/18/2026 08:20PM ET,DAL,19.2,,CPT,Javonte Williams,dk,14400,javonte williams,DAL,RB,showdown,00-0036997,auto_exact,high
+QB,Jordan Love (44531553),Jordan Love,44531553,CPT,14100,DAL@GB 10/18/2026 08:20PM ET,GB,20.6,,CPT,Jordan Love,dk,14100,jordan love,GB,QB,showdown,00-0036264,auto_exact,high
+WR,Christian Watson (44531554),Christian Watson,44531554,CPT,13500,DAL@GB 10/18/2026 08:20PM ET,GB,23.1,,CPT,Christian Watson,dk,13500,christian watson,GB,WR,showdown,00-0038124,auto_exact,high
+WR,George Pickens (44531555),George Pickens,44531555,CPT,13200,DAL@GB 10/18/2026 08:20PM ET,DAL,14.3,,CPT,George Pickens,dk,13200,george pickens,DAL,WR,showdown,00-0037247,auto_exact,high
+RB,Josh Jacobs (44531556),Josh Jacobs,44531556,CPT,12600,DAL@GB 10/18/2026 08:20PM ET,GB,0.0,OUT,CPT,Josh Jacobs,dk,12600,josh jacobs,GB,RB,showdown,00-0035700,auto_exact,high
+WR,Matthew Golden (44531557),Matthew Golden,44531557,CPT,12000,DAL@GB 10/18/2026 08:20PM ET,GB,16.9,,CPT,Matthew Golden,dk,12000,matthew golden,GB,WR,showdown,00-0040667,auto_exact,high
+RB,MarShawn Lloyd (44531558),MarShawn Lloyd,44531558,CPT,11100,DAL@GB 10/18/2026 08:20PM ET,GB,8.7,,CPT,MarShawn Lloyd,dk,11100,marshawn lloyd,GB,RB,showdown,00-0039811,auto_exact,high
+WR,CeeDee Lamb (44531495),CeeDee Lamb,44531495,FLEX,10800,DAL@GB 10/18/2026 08:20PM ET,DAL,24.8,,FLEX,CeeDee Lamb,dk,10800,ceedee lamb,DAL,WR,showdown,00-0036358,auto_exact,high
+QB,Dak Prescott (44531496),Dak Prescott,44531496,FLEX,10400,DAL@GB 10/18/2026 08:20PM ET,DAL,20.6,,FLEX,Dak Prescott,dk,10400,dak prescott,DAL,QB,showdown,00-0033077,auto_exact,high
+TE,Tucker Kraft (44531559),Tucker Kraft,44531559,CPT,10200,DAL@GB 10/18/2026 08:20PM ET,GB,9.5,,CPT,Tucker Kraft,dk,10200,tucker kraft,GB,TE,showdown,00-0038996,auto_exact,high
+RB,Javonte Williams (44531497),Javonte Williams,44531497,FLEX,9600,DAL@GB 10/18/2026 08:20PM ET,DAL,19.2,,FLEX,Javonte Williams,dk,9600,javonte williams,DAL,RB,showdown,00-0036997,auto_exact,high
+QB,Jordan Love (44531498),Jordan Love,44531498,FLEX,9400,DAL@GB 10/18/2026 08:20PM ET,GB,20.6,,FLEX,Jordan Love,dk,9400,jordan love,GB,QB,showdown,00-0036264,auto_exact,high
+WR,Christian Watson (44531499),Christian Watson,44531499,FLEX,9000,DAL@GB 10/18/2026 08:20PM ET,GB,23.1,,FLEX,Christian Watson,dk,9000,christian watson,GB,WR,showdown,00-0038124,auto_exact,high
+QB,Joe Milton III (44531560),Joe Milton III,44531560,CPT,9000,DAL@GB 10/18/2026 08:20PM ET,DAL,0.0,,CPT,Joe Milton III,dk,9000,joe milton,DAL,QB,showdown,00-0039398,auto_exact,high
+QB,Kedon Slovis (44531561),Kedon Slovis,44531561,CPT,9000,DAL@GB 10/18/2026 08:20PM ET,GB,0.0,,CPT,Kedon Slovis,dk,9000,kedon slovis,GB,QB,showdown,00-0039577,auto_exact,high
+QB,Sam Howell (44531562),Sam Howell,44531562,CPT,9000,DAL@GB 10/18/2026 08:20PM ET,DAL,0.0,,CPT,Sam Howell,dk,9000,sam howell,DAL,QB,showdown,00-0037077,auto_exact,high
+QB,Tyrod Taylor (44531563),Tyrod Taylor,44531563,CPT,9000,DAL@GB 10/18/2026 08:20PM ET,GB,-0.2,,CPT,Tyrod Taylor,dk,9000,tyrod taylor,GB,QB,showdown,00-0028118,auto_exact,high
+WR,George Pickens (44531500),George Pickens,44531500,FLEX,8800,DAL@GB 10/18/2026 08:20PM ET,DAL,14.3,,FLEX,George Pickens,dk,8800,george pickens,DAL,WR,showdown,00-0037247,auto_exact,high
+RB,Josh Jacobs (44531501),Josh Jacobs,44531501,FLEX,8400,DAL@GB 10/18/2026 08:20PM ET,GB,0.0,OUT,FLEX,Josh Jacobs,dk,8400,josh jacobs,GB,RB,showdown,00-0035700,auto_exact,high
+TE,Jake Ferguson (44531564),Jake Ferguson,44531564,CPT,8400,DAL@GB 10/18/2026 08:20PM ET,DAL,8.4,,CPT,Jake Ferguson,dk,8400,jake ferguson,DAL,TE,showdown,00-0038041,auto_exact,high
+WR,Matthew Golden (44531502),Matthew Golden,44531502,FLEX,8000,DAL@GB 10/18/2026 08:20PM ET,GB,16.9,,FLEX,Matthew Golden,dk,8000,matthew golden,GB,WR,showdown,00-0040667,auto_exact,high
+K,Brandon Aubrey (44531565),Brandon Aubrey,44531565,CPT,7800,DAL@GB 10/18/2026 08:20PM ET,DAL,9.2,,CPT,Brandon Aubrey,dk,7800,brandon aubrey,DAL,K,showdown,00-0037692,auto_exact,high
+RB,MarShawn Lloyd (44531503),MarShawn Lloyd,44531503,FLEX,7400,DAL@GB 10/18/2026 08:20PM ET,GB,8.7,,FLEX,MarShawn Lloyd,dk,7400,marshawn lloyd,GB,RB,showdown,00-0039811,auto_exact,high
+K,Trey Smack (44531566),Trey Smack,44531566,CPT,7200,DAL@GB 10/18/2026 08:20PM ET,GB,7.0,,CPT,Trey Smack,dk,7200,trey smack,GB,K,showdown,00-0040899,auto_exact,high
+K,Lenny Krieg (44531567),Lenny Krieg,44531567,CPT,7200,DAL@GB 10/18/2026 08:20PM ET,GB,0.0,,CPT,Lenny Krieg,dk,7200,lenny krieg,GB,K,showdown,00-0040003,auto_exact,high
+TE,Tucker Kraft (44531504),Tucker Kraft,44531504,FLEX,6800,DAL@GB 10/18/2026 08:20PM ET,GB,9.5,,FLEX,Tucker Kraft,dk,6800,tucker kraft,GB,TE,showdown,00-0038996,auto_exact,high
+WR,Ryan Flournoy (44531568),Ryan Flournoy,44531568,CPT,6600,DAL@GB 10/18/2026 08:20PM ET,DAL,7.1,,CPT,Ryan Flournoy,dk,6600,ryan flournoy,DAL,WR,showdown,00-0039410,auto_exact,high
+QB,Joe Milton III (44531505),Joe Milton III,44531505,FLEX,6000,DAL@GB 10/18/2026 08:20PM ET,DAL,0.0,,FLEX,Joe Milton III,dk,6000,joe milton,DAL,QB,showdown,00-0039398,auto_exact,high
+QB,Kedon Slovis (44531506),Kedon Slovis,44531506,FLEX,6000,DAL@GB 10/18/2026 08:20PM ET,GB,0.0,,FLEX,Kedon Slovis,dk,6000,kedon slovis,GB,QB,showdown,00-0039577,auto_exact,high
+QB,Sam Howell (44531507),Sam Howell,44531507,FLEX,6000,DAL@GB 10/18/2026 08:20PM ET,DAL,0.0,,FLEX,Sam Howell,dk,6000,sam howell,DAL,QB,showdown,00-0037077,auto_exact,high
+QB,Tyrod Taylor (44531508),Tyrod Taylor,44531508,FLEX,6000,DAL@GB 10/18/2026 08:20PM ET,GB,-0.2,,FLEX,Tyrod Taylor,dk,6000,tyrod taylor,GB,QB,showdown,00-0028118,auto_exact,high
+DST,Packers (44531569),Packers,44531569,CPT,6000,DAL@GB 10/18/2026 08:20PM ET,GB,6.0,,CPT,Packers,dk,6000,packers,GB,DST,showdown,DST_GB,team_defense,high
+TE,Jake Ferguson (44531509),Jake Ferguson,44531509,FLEX,5600,DAL@GB 10/18/2026 08:20PM ET,DAL,8.4,,FLEX,Jake Ferguson,dk,5600,jake ferguson,DAL,TE,showdown,00-0038041,auto_exact,high
+DST,Cowboys (44531570),Cowboys,44531570,CPT,5400,DAL@GB 10/18/2026 08:20PM ET,DAL,1.4,,CPT,Cowboys,dk,5400,cowboys,DAL,DST,showdown,DST_DAL,team_defense,high
+K,Brandon Aubrey (44531510),Brandon Aubrey,44531510,FLEX,5200,DAL@GB 10/18/2026 08:20PM ET,DAL,9.2,,FLEX,Brandon Aubrey,dk,5200,brandon aubrey,DAL,K,showdown,00-0037692,auto_exact,high
+RB,Kaleb Johnson (44531571),Kaleb Johnson,44531571,CPT,5100,DAL@GB 10/18/2026 08:20PM ET,GB,2.3,,CPT,Kaleb Johnson,dk,5100,kaleb johnson,GB,RB,showdown,00-0040142,auto_exact,high
+K,Trey Smack (44531511),Trey Smack,44531511,FLEX,4800,DAL@GB 10/18/2026 08:20PM ET,GB,7.0,,FLEX,Trey Smack,dk,4800,trey smack,GB,K,showdown,00-0040899,auto_exact,high
+K,Lenny Krieg (44531512),Lenny Krieg,44531512,FLEX,4800,DAL@GB 10/18/2026 08:20PM ET,GB,0.0,,FLEX,Lenny Krieg,dk,4800,lenny krieg,GB,K,showdown,00-0040003,auto_exact,high
+RB,Pierre Strong Jr. (44531572),Pierre Strong Jr.,44531572,CPT,4500,DAL@GB 10/18/2026 08:20PM ET,GB,4.8,,CPT,Pierre Strong Jr.,dk,4500,pierre strong,GB,RB,showdown,00-0038098,auto_exact,high
+WR,Ryan Flournoy (44531513),Ryan Flournoy,44531513,FLEX,4400,DAL@GB 10/18/2026 08:20PM ET,DAL,7.1,,FLEX,Ryan Flournoy,dk,4400,ryan flournoy,DAL,WR,showdown,00-0039410,auto_exact,high
+WR,Bo Melton (44531573),Bo Melton,44531573,CPT,4200,DAL@GB 10/18/2026 08:20PM ET,GB,1.4,,CPT,Bo Melton,dk,4200,bo melton,GB,WR,showdown,00-0037091,auto_exact,high
+DST,Packers (44531514),Packers,44531514,FLEX,4000,DAL@GB 10/18/2026 08:20PM ET,GB,6.0,,FLEX,Packers,dk,4000,packers,GB,DST,showdown,DST_GB,team_defense,high
+DST,Cowboys (44531515),Cowboys,44531515,FLEX,3600,DAL@GB 10/18/2026 08:20PM ET,DAL,1.4,,FLEX,Cowboys,dk,3600,cowboys,DAL,DST,showdown,DST_DAL,team_defense,high
+WR,Skyy Moore (44531574),Skyy Moore,44531574,CPT,3600,DAL@GB 10/18/2026 08:20PM ET,GB,2.1,Q,CPT,Skyy Moore,dk,3600,skyy moore,GB,WR,showdown,00-0038090,auto_exact,high
+RB,Kaleb Johnson (44531516),Kaleb Johnson,44531516,FLEX,3400,DAL@GB 10/18/2026 08:20PM ET,GB,2.3,,FLEX,Kaleb Johnson,dk,3400,kaleb johnson,GB,RB,showdown,00-0040142,auto_exact,high
+RB,Pierre Strong Jr. (44531517),Pierre Strong Jr.,44531517,FLEX,3000,DAL@GB 10/18/2026 08:20PM ET,GB,4.8,,FLEX,Pierre Strong Jr.,dk,3000,pierre strong,GB,RB,showdown,00-0038098,auto_exact,high
+WR,KaVontae Turpin (44531575),KaVontae Turpin,44531575,CPT,3000,DAL@GB 10/18/2026 08:20PM ET,DAL,2.8,,CPT,KaVontae Turpin,dk,3000,kavontae turpin,DAL,WR,showdown,00-0037801,auto_exact,high
+WR,Bo Melton (44531518),Bo Melton,44531518,FLEX,2800,DAL@GB 10/18/2026 08:20PM ET,GB,1.4,,FLEX,Bo Melton,dk,2800,bo melton,GB,WR,showdown,00-0037091,auto_exact,high
+WR,Skyy Moore (44531519),Skyy Moore,44531519,FLEX,2400,DAL@GB 10/18/2026 08:20PM ET,GB,2.1,Q,FLEX,Skyy Moore,dk,2400,skyy moore,GB,WR,showdown,00-0038090,auto_exact,high
+TE,Jonnu Smith (44531576),Jonnu Smith,44531576,CPT,2400,DAL@GB 10/18/2026 08:20PM ET,GB,2.7,,CPT,Jonnu Smith,dk,2400,jonnu smith,GB,TE,showdown,00-0033858,auto_exact,high
+RB,Tyler Goodson (44531577),Tyler Goodson,44531577,CPT,2100,DAL@GB 10/18/2026 08:20PM ET,DAL,1.3,,CPT,Tyler Goodson,dk,2100,tyler goodson,DAL,RB,showdown,00-0037120,auto_exact,high
+WR,KaVontae Turpin (44531520),KaVontae Turpin,44531520,FLEX,2000,DAL@GB 10/18/2026 08:20PM ET,DAL,2.8,,FLEX,KaVontae Turpin,dk,2000,kavontae turpin,DAL,WR,showdown,00-0037801,auto_exact,high
+TE,Luke Schoonmaker (44531578),Luke Schoonmaker,44531578,CPT,1800,DAL@GB 10/18/2026 08:20PM ET,DAL,1.2,,CPT,Luke Schoonmaker,dk,1800,luke schoonmaker,DAL,TE,showdown,00-0038547,auto_exact,high
+TE,Jonnu Smith (44531521),Jonnu Smith,44531521,FLEX,1600,DAL@GB 10/18/2026 08:20PM ET,GB,2.7,,FLEX,Jonnu Smith,dk,1600,jonnu smith,GB,TE,showdown,00-0033858,auto_exact,high
+WR,J. Michael Sturdivant (44531579),J. Michael Sturdivant,44531579,CPT,1500,DAL@GB 10/18/2026 08:20PM ET,GB,1.3,,CPT,J. Michael Sturdivant,dk,1500,j michael sturdivant,GB,WR,showdown,00-0040948,auto_exact,high
+RB,Tyler Goodson (44531522),Tyler Goodson,44531522,FLEX,1400,DAL@GB 10/18/2026 08:20PM ET,DAL,1.3,,FLEX,Tyler Goodson,dk,1400,tyler goodson,DAL,RB,showdown,00-0037120,auto_exact,high
+TE,Luke Schoonmaker (44531523),Luke Schoonmaker,44531523,FLEX,1200,DAL@GB 10/18/2026 08:20PM ET,DAL,1.2,,FLEX,Luke Schoonmaker,dk,1200,luke schoonmaker,DAL,TE,showdown,00-0038547,auto_exact,high
+WR,Jonathan Mingo (44531580),Jonathan Mingo,44531580,CPT,1200,DAL@GB 10/18/2026 08:20PM ET,DAL,1.2,,CPT,Jonathan Mingo,dk,1200,jonathan mingo,DAL,WR,showdown,00-0039062,auto_exact,high
+WR,J. Michael Sturdivant (44531524),J. Michael Sturdivant,44531524,FLEX,1000,DAL@GB 10/18/2026 08:20PM ET,GB,1.3,,FLEX,J. Michael Sturdivant,dk,1000,j michael sturdivant,GB,WR,showdown,00-0040948,auto_exact,high
+TE,Brevyn Spann-Ford (44531581),Brevyn Spann-Ford,44531581,CPT,900,DAL@GB 10/18/2026 08:20PM ET,DAL,1.3,,CPT,Brevyn Spann-Ford,dk,900,brevyn spann ford,DAL,TE,showdown,00-0039530,auto_exact,high
+WR,Jonathan Mingo (44531525),Jonathan Mingo,44531525,FLEX,800,DAL@GB 10/18/2026 08:20PM ET,DAL,1.2,,FLEX,Jonathan Mingo,dk,800,jonathan mingo,DAL,WR,showdown,00-0039062,auto_exact,high
+TE,Brevyn Spann-Ford (44531526),Brevyn Spann-Ford,44531526,FLEX,600,DAL@GB 10/18/2026 08:20PM ET,DAL,1.3,,FLEX,Brevyn Spann-Ford,dk,600,brevyn spann ford,DAL,TE,showdown,00-0039530,auto_exact,high
+RB,Hunter Luepke (44531582),Hunter Luepke,44531582,CPT,600,DAL@GB 10/18/2026 08:20PM ET,DAL,0.5,,CPT,Hunter Luepke,dk,600,hunter luepke,DAL,RB,showdown,00-0038738,auto_exact,high
+RB,Hunter Luepke (44531527),Hunter Luepke,44531527,FLEX,400,DAL@GB 10/18/2026 08:20PM ET,DAL,0.5,,FLEX,Hunter Luepke,dk,400,hunter luepke,DAL,RB,showdown,00-0038738,auto_exact,high
+RB,Chris Brooks (44531583),Chris Brooks,44531583,CPT,300,DAL@GB 10/18/2026 08:20PM ET,GB,3.1,IR,CPT,Chris Brooks,dk,300,chris brooks,GB,RB,showdown,00-0038685,auto_exact,high
+RB,Malik Davis (44531584),Malik Davis,44531584,CPT,300,DAL@GB 10/18/2026 08:20PM ET,DAL,0.0,IR,CPT,Malik Davis,dk,300,malik davis,DAL,RB,showdown,00-0037563,auto_exact,high
+RB,Damon Bankston (44531585),Damon Bankston,44531585,CPT,300,DAL@GB 10/18/2026 08:20PM ET,GB,0.0,,CPT,Damon Bankston,dk,300,damon bankston,GB,RB,showdown,00-0041139,auto_exact,high
+RB,Emari Demercado (44531586),Emari Demercado,44531586,CPT,300,DAL@GB 10/18/2026 08:20PM ET,DAL,0.8,,CPT,Emari Demercado,dk,300,emari demercado,DAL,RB,showdown,00-0038705,auto_exact,high
+RB,Israel Abanikanda (44531587),Israel Abanikanda,44531587,CPT,300,DAL@GB 10/18/2026 08:20PM ET,DAL,0.0,,CPT,Israel Abanikanda,dk,300,israel abanikanda,DAL,RB,showdown,00-0038389,auto_exact,high
+WR,Jayden Reed (44531588),Jayden Reed,44531588,CPT,300,DAL@GB 10/18/2026 08:20PM ET,GB,3.2,IR,CPT,Jayden Reed,dk,300,jayden reed,GB,WR,showdown,00-0039146,auto_exact,high
+WR,Savion Williams (44531589),Savion Williams,44531589,CPT,300,DAL@GB 10/18/2026 08:20PM ET,GB,0.0,IR,CPT,Savion Williams,dk,300,savion williams,GB,WR,showdown,00-0040009,auto_exact,high
+WR,Isaiah Neyor (44531590),Isaiah Neyor,44531590,CPT,300,DAL@GB 10/18/2026 08:20PM ET,GB,0.0,,CPT,Isaiah Neyor,dk,300,isaiah neyor,GB,WR,showdown,00-0040558,auto_exact,high
+WR,Coleman Owen (44531591),Coleman Owen,44531591,CPT,300,DAL@GB 10/18/2026 08:20PM ET,GB,0.0,,CPT,Coleman Owen,dk,300,coleman owen,GB,WR,showdown,00-0040352,auto_exact,high
+WR,Quincy Skinner Jr. (44531592),Quincy Skinner Jr.,44531592,CPT,300,DAL@GB 10/18/2026 08:20PM ET,GB,0.0,,CPT,Quincy Skinner Jr.,dk,300,quincy skinner,GB,WR,showdown,00-0040553,auto_exact,high
+WR,Jordan Hudson (44531593),Jordan Hudson,44531593,CPT,300,DAL@GB 10/18/2026 08:20PM ET,DAL,0.0,,CPT,Jordan Hudson,dk,300,jordan hudson,DAL,WR,showdown,00-0040934,auto_exact,high
+WR,Anthony Smith (44531594),Anthony Smith,44531594,CPT,300,DAL@GB 10/18/2026 08:20PM ET,DAL,0.0,,CPT,Anthony Smith,dk,300,anthony smith,DAL,WR,showdown,00-0040900,auto_exact,high
+WR,Camden Brown (44531595),Camden Brown,44531595,CPT,300,DAL@GB 10/18/2026 08:20PM ET,DAL,0.0,,CPT,Camden Brown,dk,300,camden brown,DAL,WR,showdown,00-0040930,auto_exact,high
+TE,Josh Whyle (44531596),Josh Whyle,44531596,CPT,300,DAL@GB 10/18/2026 08:20PM ET,GB,0.0,,CPT,Josh Whyle,dk,300,josh whyle,GB,TE,showdown,00-0038589,auto_exact,high
+TE,Thomas Yassmin (44531597),Thomas Yassmin,44531597,CPT,300,DAL@GB 10/18/2026 08:20PM ET,GB,0.0,IR,CPT,Thomas Yassmin,dk,300,thomas yassmin,GB,TE,showdown,00-0039936,auto_exact,high
+TE,Mark Redman (44531598),Mark Redman,44531598,CPT,300,DAL@GB 10/18/2026 08:20PM ET,GB,1.0,,CPT,Mark Redman,dk,300,mark redman,GB,TE,showdown,00-0040598,auto_exact,high
+TE,Princeton Fant (44531599),Princeton Fant,44531599,CPT,300,DAL@GB 10/18/2026 08:20PM ET,DAL,0.0,IR,CPT,Princeton Fant,dk,300,princeton fant,DAL,TE,showdown,00-0038735,auto_exact,high
+TE,Michael Trigg (44531600),Michael Trigg,44531600,CPT,300,DAL@GB 10/18/2026 08:20PM ET,DAL,0.0,,CPT,Michael Trigg,dk,300,michael trigg,DAL,TE,showdown,00-0040939,auto_exact,high
+TE,Drake Dabney (44531601),Drake Dabney,44531601,CPT,300,DAL@GB 10/18/2026 08:20PM ET,GB,0.0,,CPT,Drake Dabney,dk,300,drake dabney,GB,TE,showdown,00-0040628,auto_exact,high
+TE,James Mitchell (44531602),James Mitchell,44531602,CPT,300,DAL@GB 10/18/2026 08:20PM ET,DAL,0.0,,CPT,James Mitchell,dk,300,james mitchell,DAL,TE,showdown,00-0037282,auto_exact,high
+TE,DJ Rogers (44531603),DJ Rogers,44531603,CPT,300,DAL@GB 10/18/2026 08:20PM ET,DAL,0.0,IR,CPT,DJ Rogers,dk,300,dj rogers,DAL,TE,showdown,00-0040938,auto_exact,high
+TE,Luke Musgrave (44531604),Luke Musgrave,44531604,CPT,300,DAL@GB 10/18/2026 08:20PM ET,GB,0.0,OUT,CPT,Luke Musgrave,dk,300,luke musgrave,GB,TE,showdown,00-0039144,auto_exact,high
+RB,Chris Brooks (44531528),Chris Brooks,44531528,FLEX,200,DAL@GB 10/18/2026 08:20PM ET,GB,3.1,IR,FLEX,Chris Brooks,dk,200,chris brooks,GB,RB,showdown,00-0038685,auto_exact,high
+RB,Malik Davis (44531529),Malik Davis,44531529,FLEX,200,DAL@GB 10/18/2026 08:20PM ET,DAL,0.0,IR,FLEX,Malik Davis,dk,200,malik davis,DAL,RB,showdown,00-0037563,auto_exact,high
+RB,Damon Bankston (44531530),Damon Bankston,44531530,FLEX,200,DAL@GB 10/18/2026 08:20PM ET,GB,0.0,,FLEX,Damon Bankston,dk,200,damon bankston,GB,RB,showdown,00-0041139,auto_exact,high
+RB,Emari Demercado (44531531),Emari Demercado,44531531,FLEX,200,DAL@GB 10/18/2026 08:20PM ET,DAL,0.8,,FLEX,Emari Demercado,dk,200,emari demercado,DAL,RB,showdown,00-0038705,auto_exact,high
+RB,Israel Abanikanda (44531532),Israel Abanikanda,44531532,FLEX,200,DAL@GB 10/18/2026 08:20PM ET,DAL,0.0,,FLEX,Israel Abanikanda,dk,200,israel abanikanda,DAL,RB,showdown,00-0038389,auto_exact,high
+WR,Jayden Reed (44531533),Jayden Reed,44531533,FLEX,200,DAL@GB 10/18/2026 08:20PM ET,GB,3.2,IR,FLEX,Jayden Reed,dk,200,jayden reed,GB,WR,showdown,00-0039146,auto_exact,high
+WR,Savion Williams (44531534),Savion Williams,44531534,FLEX,200,DAL@GB 10/18/2026 08:20PM ET,GB,0.0,IR,FLEX,Savion Williams,dk,200,savion williams,GB,WR,showdown,00-0040009,auto_exact,high
+WR,Isaiah Neyor (44531535),Isaiah Neyor,44531535,FLEX,200,DAL@GB 10/18/2026 08:20PM ET,GB,0.0,,FLEX,Isaiah Neyor,dk,200,isaiah neyor,GB,WR,showdown,00-0040558,auto_exact,high
+WR,Coleman Owen (44531536),Coleman Owen,44531536,FLEX,200,DAL@GB 10/18/2026 08:20PM ET,GB,0.0,,FLEX,Coleman Owen,dk,200,coleman owen,GB,WR,showdown,00-0040352,auto_exact,high
+WR,Quincy Skinner Jr. (44531537),Quincy Skinner Jr.,44531537,FLEX,200,DAL@GB 10/18/2026 08:20PM ET,GB,0.0,,FLEX,Quincy Skinner Jr.,dk,200,quincy skinner,GB,WR,showdown,00-0040553,auto_exact,high
+WR,Jordan Hudson (44531538),Jordan Hudson,44531538,FLEX,200,DAL@GB 10/18/2026 08:20PM ET,DAL,0.0,,FLEX,Jordan Hudson,dk,200,jordan hudson,DAL,WR,showdown,00-0040934,auto_exact,high
+WR,Anthony Smith (44531539),Anthony Smith,44531539,FLEX,200,DAL@GB 10/18/2026 08:20PM ET,DAL,0.0,,FLEX,Anthony Smith,dk,200,anthony smith,DAL,WR,showdown,00-0040900,auto_exact,high
+WR,Camden Brown (44531540),Camden Brown,44531540,FLEX,200,DAL@GB 10/18/2026 08:20PM ET,DAL,0.0,,FLEX,Camden Brown,dk,200,camden brown,DAL,WR,showdown,00-0040930,auto_exact,high
+TE,Josh Whyle (44531541),Josh Whyle,44531541,FLEX,200,DAL@GB 10/18/2026 08:20PM ET,GB,0.0,,FLEX,Josh Whyle,dk,200,josh whyle,GB,TE,showdown,00-0038589,auto_exact,high
+TE,Thomas Yassmin (44531542),Thomas Yassmin,44531542,FLEX,200,DAL@GB 10/18/2026 08:20PM ET,GB,0.0,IR,FLEX,Thomas Yassmin,dk,200,thomas yassmin,GB,TE,showdown,00-0039936,auto_exact,high
+TE,Mark Redman (44531543),Mark Redman,44531543,FLEX,200,DAL@GB 10/18/2026 08:20PM ET,GB,1.0,,FLEX,Mark Redman,dk,200,mark redman,GB,TE,showdown,00-0040598,auto_exact,high
+TE,Princeton Fant (44531544),Princeton Fant,44531544,FLEX,200,DAL@GB 10/18/2026 08:20PM ET,DAL,0.0,IR,FLEX,Princeton Fant,dk,200,princeton fant,DAL,TE,showdown,00-0038735,auto_exact,high
+TE,Michael Trigg (44531545),Michael Trigg,44531545,FLEX,200,DAL@GB 10/18/2026 08:20PM ET,DAL,0.0,,FLEX,Michael Trigg,dk,200,michael trigg,DAL,TE,showdown,00-0040939,auto_exact,high
+TE,Drake Dabney (44531546),Drake Dabney,44531546,FLEX,200,DAL@GB 10/18/2026 08:20PM ET,GB,0.0,,FLEX,Drake Dabney,dk,200,drake dabney,GB,TE,showdown,00-0040628,auto_exact,high
+TE,James Mitchell (44531547),James Mitchell,44531547,FLEX,200,DAL@GB 10/18/2026 08:20PM ET,DAL,0.0,,FLEX,James Mitchell,dk,200,james mitchell,DAL,TE,showdown,00-0037282,auto_exact,high
+TE,DJ Rogers (44531548),DJ Rogers,44531548,FLEX,200,DAL@GB 10/18/2026 08:20PM ET,DAL,0.0,IR,FLEX,DJ Rogers,dk,200,dj rogers,DAL,TE,showdown,00-0040938,auto_exact,high
+TE,Luke Musgrave (44531549),Luke Musgrave,44531549,FLEX,200,DAL@GB 10/18/2026 08:20PM ET,GB,0.0,OUT,FLEX,Luke Musgrave,dk,200,luke musgrave,GB,TE,showdown,00-0039144,auto_exact,high
