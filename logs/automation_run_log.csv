@@ -3491,3 +3491,15 @@ timestamp_utc,trigger_type,site,step,status
 2026-10-18T16:22:18.117748+00:00,injury_refresh_scheduled,fd,fd_classic_wk6_main_18Oct2026,build_projections,success
 2026-10-18T16:22:18.117748+00:00,injury_refresh_scheduled,fd,fd_classic_wk6_main_18Oct2026,status_apply,success
 2026-10-18T16:22:18.117748+00:00,injury_refresh_scheduled,fd,fd_classic_wk6_main_18Oct2026,pivot_finder,success
+2026-10-18T18:43:00.121563+00:00,injury_refresh_scheduled,dk,dk_classic_wk6_afternoon_18Oct2026,build_projections,failure
+2026-10-18T18:43:00.121563+00:00,injury_refresh_scheduled,dk,dk_classic_wk6_afternoon_18Oct2026,status_apply,success
+2026-10-18T18:43:00.121563+00:00,injury_refresh_scheduled,dk,dk_classic_wk6_afternoon_18Oct2026,pivot_finder,success
+2026-10-18T18:42:34.083264+00:00,injury_refresh_scheduled,dk,dk_showdown_wk6_DAL_GB_18Oct2026,build_projections,failure
+2026-10-18T18:42:34.083264+00:00,injury_refresh_scheduled,dk,dk_showdown_wk6_DAL_GB_18Oct2026,status_apply,success
+2026-10-18T18:42:34.083264+00:00,injury_refresh_scheduled,dk,dk_showdown_wk6_DAL_GB_18Oct2026,pivot_finder,success
+2026-10-18T18:42:45.810579+00:00,injury_refresh_scheduled,dk,dk_showdown_wk6_WAS_SF_19Oct2026,build_projections,failure
+2026-10-18T18:42:45.810579+00:00,injury_refresh_scheduled,dk,dk_showdown_wk6_WAS_SF_19Oct2026,status_apply,success
+2026-10-18T18:42:45.810579+00:00,injury_refresh_scheduled,dk,dk_showdown_wk6_WAS_SF_19Oct2026,pivot_finder,success
+2026-10-18T18:42:19.552275+00:00,injury_refresh_scheduled,fd,fd_classic_wk6_afternoon_18Oct2026,build_projections,failure
+2026-10-18T18:42:19.552275+00:00,injury_refresh_scheduled,fd,fd_classic_wk6_afternoon_18Oct2026,status_apply,success
+2026-10-18T18:42:19.552275+00:00,injury_refresh_scheduled,fd,fd_classic_wk6_afternoon_18Oct2026,pivot_finder,success
