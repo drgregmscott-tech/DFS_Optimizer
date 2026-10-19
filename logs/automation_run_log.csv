@@ -3560,3 +3560,6 @@ timestamp_utc,trigger_type,site,step,status
 2026-10-19T23:03:45.089669+00:00,full_refresh_dispatch,dk,dk_showdown_wk6_WAS_SF_19Oct2026,build_projections,success
 2026-10-19T23:03:45.089669+00:00,full_refresh_dispatch,dk,dk_showdown_wk6_WAS_SF_19Oct2026,status_apply,success
 2026-10-19T23:03:45.089669+00:00,full_refresh_dispatch,dk,dk_showdown_wk6_WAS_SF_19Oct2026,pivot_finder,success
+2026-10-19T23:12:54.327782+00:00,full_refresh_dispatch,dk,dk_showdown_wk6_WAS_SF_19Oct2026,build_projections,success
+2026-10-19T23:12:54.327782+00:00,full_refresh_dispatch,dk,dk_showdown_wk6_WAS_SF_19Oct2026,status_apply,success
+2026-10-19T23:12:54.327782+00:00,full_refresh_dispatch,dk,dk_showdown_wk6_WAS_SF_19Oct2026,pivot_finder,success
