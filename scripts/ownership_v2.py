@@ -256,6 +256,7 @@ class Ctx:
         o["last_dk"] = last.dk
         o["last_same_season"] = (last.season == season).astype(float)
         o["last_team"] = last.team
+        o["last_tgt"] = last.targets
         l3 = st.groupby("player_id").tail(3).groupby("player_id")
         o["p3_usage"] = l3.usage.mean()
         o["p3_tgt"] = l3.targets.mean()
@@ -329,6 +330,13 @@ def build_features(df, ctx, qb_att=False, qb_minsnap=None):
         s = s.copy()
         pf = ctx.player_feats(season, week, s.player_id.unique())
         s = s.join(pf, on="player_id")
+        # Recency-spike signal (analysis/ownership_recency_spike/RESULTS.md, 2026-10-19): how much a
+        # player's most recent game exceeded his own trailing-3-game rate. 5/5 seasons 2021-25 and 4/5
+        # usable 2026 live weeks show the field owns a post-spike player more than our model does, even
+        # controlling for our own projection -- this is NOT news we lack, it's nflverse target data
+        # already loaded here, just never fed to the ownership model before. WR/TE only (same scope as
+        # the vac bump below; RB/QB spikes weren't part of the validated population).
+        s["spike_tgt"] = (s.last_tgt - s.p3_tgt).clip(lower=0, upper=6).fillna(0.0)
         tt = s[s.pos != "DST"].groupby("team").team_total.median()
         s["team_total"] = s.team.map(tt).fillna(s.team_total)
         s["opp_total"] = s.opp.map(tt)
@@ -548,6 +556,46 @@ def apply_vac_bump(F, final, k=None, cap=CAP):
         if not (wr & ok & (vac > 0)).any() or k == 0:
             return base, np.zeros(len(base))
         Fsc = np.log(np.maximum(np.where(ok, base, 0.0), .05)) + k * vac * wr
+        sub = F[wr & ok]
+        bud = pd.Series(base[wr & ok], index=sub.index).groupby([sub.slate_id, sub.grp]).sum()
+        out = base.copy()
+        for (sid, g), ix in sub.groupby([sub.slate_id, sub.grp]).indices.items():
+            rows = np.where(wr & ok)[0][ix]
+            out[rows] = allocate(F.iloc[rows], Fsc[rows], {g: float(bud[(sid, g)])}, cap=cap)
+        if not np.all(np.isfinite(out[wr & ok])):
+            return base, np.zeros(len(base))
+        return out, np.where(wr & ok, out - base, 0.0)
+    except Exception:  # noqa: BLE001 -- the bump must never break a build
+        return np.asarray(final, float), np.zeros(len(final))
+
+
+# 2026-10-19 recency-spike bump (analysis/ownership_recency_spike/RESULTS.md): the field owns a WR/TE more
+# than our model does when his most recent game notably exceeded his own trailing-3-game rate, even
+# controlling for our own projection -- real in 5/5 seasons 2021-25 (b=+0.22 to +0.32 WR/TE overall,
+# +0.32 to +0.52 restricted to cheap salary) and 4/5 usable 2026 live weeks (one flat, none reversed),
+# using the share-based version of this signal; this raw-target-count version (spike_tgt, built in
+# build_features from data already loaded for p3_tgt/last_tgt) uses the conservative low end of that
+# range. final WR/TE log-score += SPIKE_BUMP_K * spike_tgt, re-allocated to the same group budgets, same
+# pattern as the vac bump above. Switch: DFS_OWN_SPIKE=0. Any failure = no-op.
+SPIKE_BUMP_K = 0.33
+
+
+def spike_bump_enabled():
+    return os.environ.get("DFS_OWN_SPIKE", "1").strip().lower() not in ("0", "false", "off", "no")
+
+
+def apply_spike_bump(F, final, k=None, cap=CAP):
+    """Returns (bumped final, audit array of bumped-minus-before; 0 where untouched). Fail-safe: on any
+    problem returns the input unchanged. Same mechanics as apply_vac_bump, different signal."""
+    k = SPIKE_BUMP_K if k is None else k
+    try:
+        spike = pd.to_numeric(F["spike_tgt"], errors="coerce").fillna(0.0).clip(lower=0).to_numpy()
+        wr = F.pos.isin(["WR", "TE"]).to_numpy()
+        base = np.asarray(final, float)
+        ok = np.isfinite(base)
+        if not (wr & ok & (spike > 0)).any() or k == 0:
+            return base, np.zeros(len(base))
+        Fsc = np.log(np.maximum(np.where(ok, base, 0.0), .05)) + k * spike * wr
         sub = F[wr & ok]
         bud = pd.Series(base[wr & ok], index=sub.index).groupby([sub.slate_id, sub.grp]).sum()
         out = base.copy()
@@ -878,7 +926,7 @@ def adaptive_blend_score(v2_only, live_pred, params=None):
         return None
 
 
-def predict_v2(frame, ctx, lin, dst, live_pred=None, alpha=FFC_BLEND_ALPHA, vac_k=None, raw_ffc=None):
+def predict_v2(frame, ctx, lin, dst, live_pred=None, alpha=FFC_BLEND_ALPHA, vac_k=None, raw_ffc=None, spike_k=None):
     """frame: to_frame() output (one or more slates). live_pred: live FFC-model %, aligned to frame,
     or None for no blend. Returns (final, v2_only) numpy arrays aligned to frame; rows outside
     QB/RB/WR/TE/DST are NaN (caller keeps the old number)."""
@@ -913,6 +961,10 @@ def predict_v2(frame, ctx, lin, dst, live_pred=None, alpha=FFC_BLEND_ALPHA, vac_
         final, bump = apply_vac_bump(F, final, vac_k, cap=lin.get("cap", CAP))
         LAST_AUDIT["own_vac_bump"] = bump
         LAST_AUDIT["own_vacated"] = pd.to_numeric(F["vacated"], errors="coerce").fillna(0.0).to_numpy()
+    if spike_bump_enabled() and (spike_k is None or spike_k != 0):
+        final, sbump = apply_spike_bump(F, final, spike_k, cap=lin.get("cap", CAP))
+        LAST_AUDIT["own_spike_bump"] = sbump
+        LAST_AUDIT["own_spike_tgt"] = pd.to_numeric(F["spike_tgt"], errors="coerce").fillna(0.0).to_numpy()
     if raw_ffc is not None and chalk_ffc_seg_enabled():
         qk = chalk_qb_cut_k()
         final, pull = apply_chalk_ffc_seg(F, final, raw_ffc, cap=lin.get("cap", CAP), exclude_qb=qk > 0)
