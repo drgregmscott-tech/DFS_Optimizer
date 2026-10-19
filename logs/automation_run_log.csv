@@ -3551,3 +3551,6 @@ timestamp_utc,trigger_type,site,step,status
 2026-10-18T23:23:10.824104+00:00,full_refresh_dispatch,dk,dk_showdown_wk6_WAS_SF_19Oct2026,build_projections,success
 2026-10-18T23:23:10.824104+00:00,full_refresh_dispatch,dk,dk_showdown_wk6_WAS_SF_19Oct2026,status_apply,success
 2026-10-18T23:23:10.824104+00:00,full_refresh_dispatch,dk,dk_showdown_wk6_WAS_SF_19Oct2026,pivot_finder,success
+2026-10-19T22:32:59.201408+00:00,injury_refresh_scheduled,dk,dk_showdown_wk6_WAS_SF_19Oct2026,build_projections,success
+2026-10-19T22:32:59.201408+00:00,injury_refresh_scheduled,dk,dk_showdown_wk6_WAS_SF_19Oct2026,status_apply,success
+2026-10-19T22:32:59.201408+00:00,injury_refresh_scheduled,dk,dk_showdown_wk6_WAS_SF_19Oct2026,pivot_finder,success
