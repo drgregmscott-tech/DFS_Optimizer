@@ -48,28 +48,42 @@ the scoped mechanism. That invalidity is a reason to disregard that one test, no
 auto-selected #1 pick specifically, that needs to freeze the preceding batch state and vary only one
 targeted lineup/slot's cap — not regenerate two full independent batches as done here.
 
-### A2. Lineup pool-summary / recommendation feature (the owner's original ask)
-**Problem:** the built pool already contains better, less-chalky, higher-scoring alternatives most weeks
-(proven directly: Wk6 FD lineups #9/#12/#16 beat the submission on both real points and real ownership) —
-nothing surfaces them pre-lock. Every automatic selection rule tested (raw projection, our modeled
-ownership, real ownership, blends, contrarian, FFC crowd data) failed to reliably beat picking the
-top-projection lineup using only pre-lock information — so this is a visibility feature, not an auto-picker.
-**Scope:** add a `--show-pool-summary` flag to the SE3max pool build path in `scripts/optimizer.py` that
-writes a `*_pool_summary.csv` (proj rank, own-sum + rank, rule-grade columns reused from
-`grade_construction_week.py`'s `CLASSIC_RULES.md`/`SHOWDOWN_RULES.md` logic) alongside the existing lineup
-CSV. Pure read/report, no solver or ranking change, off by default, fails safe. **Open product question for
-the owner before/while building:** passive pre-lock view (eyeball before submit) or active (warn only when
-top-2 picks differ meaningfully on a rule grade)?
-**Evidence:** items 5 and 6 below, especially the "5/6. SUMMARY" block and item 6's feature spec.
+### A2. Lineup pool-summary / recommendation feature (the owner's original ask) — ⛔ CLOSED 2026-10-20, don't build
+**Problem (as originally scoped):** the built pool already contains better, less-chalky, higher-scoring
+alternatives most weeks (proven directly: Wk6 FD lineups #9/#12/#16 beat the submission on both real points
+and real ownership) — nothing surfaces them pre-lock. Every automatic selection rule tested (raw projection,
+our modeled ownership, real ownership, blends, contrarian, FFC crowd data) failed to reliably beat picking
+the top-projection lineup using only pre-lock information — so this was scoped as a visibility feature, not
+an auto-picker.
+**Closed, not built — on a much bigger sample the premise itself didn't hold up.** A 2026-10-20 session
+reran `se3max_pool` on today's actual preset across all 64 usable real history slates (2022-25, not the
+~21-slate/mostly-one-season sample the table above was built from) and found lineup #1 (today's default) has
+the BEST cash rate in the pool, not just a tied/unclear one — 33.3% vs the pool average 28.6%, holding across
+all 3 projection arms and a separate 16-slate 2026 check. 63 single-signal pre-lock rules and 9 fitted models
+all cashed the same or less. There is nothing left to surface: a pool-summary view would just be dressing up
+a pick that's already correct by default. Full data: `analysis/wk6_pool_selection_objective/RESULTS.md`
+(item 7 below).
+**Where this redirected:** the real, bigger problem it surfaced — the whole pool, including lineup #1, only
+cashes 28-33% of the time, well under the ~67% needed to break even — became **A6** (new item below), after
+a follow-up diagnostic (item 8 below) found the fixable driver is projection ranking accuracy (specifically
+WR/TE), not ownership and not pool-selection.
+**Evidence:** items 5 and 6 below (the original, now-superseded scoping work), and items 7-8 (the
+2026-10-20 re-test that closed it).
 
-### A3. Ownership-floor "near the line" transparency flag
+### A3. Ownership-floor "near the line" transparency flag — ✅ SHIPPED 2026-10-20
 **Problem:** ~7.2% of true sub-1.5%-real-owned players historically get modeled ≥2% and slip past a
 manual "exclude low-ownership players" filter (not a coincidence — a real, repeatable miss rate). Moving
 the filter threshold doesn't help (raising it to 3-4% cuts the miss rate only 7.2%→2.2% while excluding
 28%→47% of real ≥3%-owned players — wrong-direction).
-**Scope:** surface players whose `estimated_ownership_pct` sits within ~1pt of whatever min-ownership
-cutoff is in use as "near the line, model uncertain here" — same manual-judgment pattern the owner already
-uses for borderline backups. Natural to build as part of A2's pool-summary output rather than standalone.
+**Built and shipped:** standalone in the player pool table (`dfs_optimizer_frontend/index.html`) —
+A2, the pool-summary feature this was originally scoped to piggyback on, was closed 2026-10-20 without
+being built, so there was nothing to attach to. `isNearOwnFloor(p)` flags any player whose
+`estimated_ownership_pct` is within `OWN_FLOOR_NEAR_PTS` (1.0pt) of the currently-set "Own %" min filter;
+`ownRangeHtml()` renders a blue ◆ (distinct from the existing amber ⚠ FFC-disagree flag, same row) with a
+tooltip explaining the miss rate. No filter set → no flags, by construction. Verified live in-browser
+against the real `dk_classic_wk6_main` slate at a 2% cutoff (matches the Andrews/Otton case this item was
+partly built from): 18/87 players in the 2-3% band correctly flagged, including Cade Otton himself
+(modeled 2.6%, actual bust); flags disappeared on clearing the filter.
 **Evidence:** item 3 below, "Mechanism A."
 
 ### A4. Compounding-vacancy fix for the WR/TE/RB replacement model (Fix 2)
@@ -104,6 +118,48 @@ recalibrations against real ownership history, held out, before concluding a fix
 valuable underlying gap in the whole postmortem if it can be resolved — treat it accordingly.
 **Evidence:** item 3 below ("Mechanism A," "cheap dart vs chalk" steps 1-3) and item 5's "corrected
 conclusion" / FFC-pivot-test sections.
+**Clarified scope, 2026-10-20 (owner):** this item is not about raising SE `se3max_pool` cash rate directly —
+item 7 below found that pool runs at lambda=0 (ownership never enters the solve), so ownership accuracy is
+structurally disconnected from that number. The owner's point still stands and is the actual reason this
+stays a priority: projections and ownership answer two different questions. Projection accuracy is about
+picking correct/high-EV plays; ownership accuracy is about knowing when the top-projected play is ALSO the
+top-owned play, in which case riding it concentrates risk with the field (no leverage if the chalk busts) —
+that's the real use case for A5 (MME construction, pivot/dart flags, any future leverage-aware pick), not a
+lever for raw SE cash rate.
+
+### A6. Slate-level "why didn't we cash" autopsy, and the WR/TE projection-ranking gap it points to — NEW, 2026-10-20
+**Problem, in the owner's own words:** "we need to be answering the question of why didn't we cash? why
+didn't the top projected line give us a winning lineup? ... sharp players cash most weeks, lets say 13 out
+of 17 or something. they are doing it....which means we can do [it]. but we have to find out the answers to
+how they are doing it, unlock that and implement it into our system."
+**What's already established (item 7 below, `analysis/wk6_cash_rate_driver/RESULTS.md`):** across 64 real
+historical `se3max_pool` slates, lineup #1 (today's pick) cashes 33.3% and the whole pool averages 28.6% —
+both well under the ~67% cash rate needed to just break even at DK's 1.5x min-cash payout, confirmed by a
+real mean ROI of -0.36. No pre-lock pool-selection rule fixes this (item 7/A2's finding) — every lineup in a
+built pool has roughly the same expected value, so the gap is in what the pool is built FROM, not which of
+the 100 we submit. The one factor found so far with a real, consistent (all 4 seasons, all 3 projection
+arms, clean placebo-controlled) relationship to cash rate is **projection ranking edge over a salary-only
+baseline, within position** — not raw accuracy, specifically being right where the market (salary, FC) is
+wrong. We already have a real edge at RB (+0.026 today). **WR is no better than salary (+0.001) and TE is
+worse than salary (-0.026)** — both move cash rate by about as much per SD as RB does, so these are the two
+most fixable, highest-leverage spots identified so far.
+**Scope — this is a case-study/autopsy loop, not another regression pass:** take a sample of real busted
+slates (both historical and the 2026 Wk1-6 live misses), and for each one: (1) identify which specific
+players we ranked wrong relative to what a sharper source got right (Vegas lines/implied team totals, real
+box-score outcomes, whatever the real winning/cashing lineups in that slate's contest actually rostered —
+"what did the top-1% lineups contain that ours didn't, and was it predictable pre-lock"); (2) for each miss,
+figure out WHY — role change, game-script shift, injury-driven usage bump, matchup, etc. — don't assume,
+test against the data per SUBAGENT_BRIEF.md's "no assumed causes" rule; (3) mock up a corrected projection
+set for that slate using the real answer, rebuild the pool with the SAME optimizer/preset, and replay it
+against the real contest result — did the corrected build actually cash? This directly operationalizes the
+owner's "here's the solution, mock up the slate, see if it leads down a different path, did it cash or not"
+loop, and should be repeated across enough slates to see whether a consistent, implementable correction
+emerges (not just a one-slate story).
+**Also worth checking:** benchmark against real sharp/consistently-cashing players' construction choices if
+any such data is obtainable (the owner's "13 of 17 weeks" framing) rather than only against FC, since item 7
+found FC is barely better than us (+0.012 edge) — FC may not be the right "sharp" bar to chase.
+**Evidence:** item 7 below (`analysis/wk6_cash_rate_driver/RESULTS.md`), and item 6's pool-selection finding
+(A2, now closed — see that item's note).
 
 ## Evidence trail (background — the action items above are the distilled next steps; items are kept
 below for the investigation history, not as a second to-do list)
@@ -660,6 +716,56 @@ below for the investigation history, not as a second to-do list)
      This is additive to the existing pipeline and does not require resolving the ownership-model calibration
      gap first (that gap limits how *useful* the "own-sum" column is, but the rule-grade columns are useful
      today, independent of it).
+
+7. **A2 re-opened and closed on a much bigger sample (2026-10-20).** Before building item 6's feature, the
+   owner pushed back: "picking some [rules] and saying they didn't pass isn't going to work... what criteria
+   are we grading it against? min cashing? top 1%?" — and separately flagged that the 21-slate table behind
+   items 5/6 "seemed assumed." Both were right:
+   - **The 21-slate sample was not what it looked like.** File timestamps show `hist_grade.py` ran mid-build
+     on 2026-09-29 and only caught 16 slates from 2022 + 5 from 2023 (mostly one season), using an old preset
+     (20% randomization, forced bring-back) that isn't today's `se3max_pool`. 63 slates sat ungraded.
+   - **The real history is 64 usable slates (2022-25, all seasons) — this is all that exists**, not a 6-week-
+     per-year sample as previously described. Rebuilt today's actual preset on all 64 x 3 projection arms =
+     19,200 graded lineups (real $1 SE DK prize tables), plus a 16-slate 2026 check. ~90 min compute.
+   - **Grading objective defined from the real prize tables, not assumed:** min-cash pays 1.5x (breakeven
+     needs 67% cash rate — nowhere close to achievable), 49% of all pool profit comes from top-1% finishes.
+     Owner's stated order (cash rate first, top-1% second) used directly, with real ROI as the money check.
+   - **Result: lineup #1 (today's default) is the best spot in the pool for cash rate — 33.3% vs pool average
+     28.6%, holding in all 3 arms and a separate 2026 check (43.8% vs 38.4%).** 63 single-signal rules and 9
+     fitted scoring models all cashed the same or less. The earlier "near-max-2%, least-owned" pivot finding
+     (behind the shipped `near_max_pivot` tag) does not survive this sample, even given a look-ahead real-
+     ownership ceiling case (+1.0 [-4.7,+6.8], not the old +24pt figure).
+   - **A2 is closed, don't build it** — there's nothing to surface; #1 is already correct. See A2's entry
+     above for the full close-out note. Full data/scripts: `analysis/wk6_pool_selection_objective/RESULTS.md`.
+   - **What this redirects to:** every lineup in the pool — including #1 — has roughly the same (negative)
+     expected value against the real field (#1 mean ROI -0.36). The owner's reaction: "cashing 33% of the
+     time means I'll lose all of my bankroll over time... what we need to do is find the mechanism that
+     increases this number." That's item 8.
+
+8. **What actually drives cash rate: projection accuracy, not ownership (2026-10-20).** Diagnostic reusing
+   item 7's 64-slate dataset (no new builds) to test whether per-slate projection accuracy or per-slate
+   ownership-model accuracy predicts whether a slate's pool actually cashes.
+   - **Structural fact first:** `se3max_pool` runs at lambda=0 with ownership-rerank off — ownership never
+     enters the solve, so it has no mechanical path to move the 33% either way.
+   - **Ownership accuracy: no reliable relationship.** Correlation with pool cash rate -0.1 [-4.0,+3.6],
+     flips sign by season (+9.2 in 2023, -12.3 in 2025). A5's low-end metrics (Spearman, AUC) also null here.
+     Controlling for projection edge doesn't change this. (This doesn't retire A5 — see A5's 2026-10-20
+     addendum above: ownership still matters for MME/pivot/leverage use cases, just not this number.)
+   - **Projection "edge" — our Spearman rank-accuracy minus a salary-only baseline's, same slate — is a real,
+     consistent driver: +4.9 cash points per SD [+1.9,+7.8], positive in all 4 seasons, significant in all 3
+     projection arms.** Placebo-checked: FC's own edge-over-salary does NOT predict our pools' cash rate
+     (-1.9, CI crosses 0), but OUR edge over FC does (+5.9 [+2.2,+9.2]) — confirms it's our skill on a given
+     slate, not "this slate was easy for everyone."
+   - **Sized:** slates in the worst edge-quartile cash 20% (pool)/25% (#1); best quartile cashes 36%/56%. Our
+     average edge today is +0.030; breakeven is around +0.045. 12 of 64 slates were at/below zero edge.
+   - **By position, the fixable gap:** RB is the strongest, most consistent driver and we already have a real
+     edge there (+0.026). **WR is no better than salary (+0.001 edge) and TE is worse than salary (-0.026)**
+     — both move cash rate about as much per SD as RB does. No existing checklist item covers WR/TE
+     within-position ranking accuracy specifically.
+   - **Rough size if closed:** lifting average edge from +0.03 to the +0.05-0.08 range looks worth +3 to +6
+     pool-cash points, plausibly +5-10 on #1 — stated as an estimate from cross-slate comparison, not a
+     promise, and a real stretch (we beat FC by only 0.012 edge today).
+   - Full data/scripts: `analysis/wk6_cash_rate_driver/RESULTS.md`. Became **A6** (new item above).
 
 ## Parking Lot (add here, don't chase inline)
 - Thursday's SEA/DEN showdown miss (rank 2,545/8,917, ~71st percentile) — not investigated this session,
