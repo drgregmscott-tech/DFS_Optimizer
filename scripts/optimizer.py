@@ -3177,6 +3177,7 @@ def build_multi_lineup(site: str, slate_id: str, n_lineups: int = DEFAULT_N_LINE
     all_lineups = pd.concat(all_lineup_frames, ignore_index=True)
     all_lineups = _rank_lineups_by_projection(all_lineups)
     all_lineups = _rank_lineups_by_proj_own(all_lineups, players_all)
+    all_lineups = _tag_near_max_pivot(all_lineups, players_all)
     return all_lineups, exposure_count, n_generated
 
 
@@ -4329,6 +4330,63 @@ def _rank_lineups_by_proj_own(lineups, players_all, w=None):
         return out.sort_values("lineup_id", kind="stable").reset_index(drop=True)
     except Exception as exc:  # noqa: BLE001 -- ranking must never break a build
         print(f"WARNING: proj+ownership ranking skipped ({type(exc).__name__}: {exc}).", file=sys.stderr)
+        return lineups
+
+
+def _tag_near_max_pivot(lineups, players_all, pct=None):
+    """Wk6 postmortem item 5/A1 follow-up (2026-10-20): tags the single pool lineup, within
+    `pct` of the pool's best projection, that carries the LOWEST summed real estimated_ownership_pct
+    -- the "near-max-N%, least-owned" pivot rule (`analysis/classic_rerank_payout/RESULTS.md`),
+    validated on 21 real history pools: using REAL post-lock ownership it beats the raw-projection
+    pick on every metric at once (mean ROI, cash rate 48% vs 24%, tail nearly matched). On our own
+    pre-lock modeled ownership the effect is NOT statistically distinguishable from zero in any of
+    3 independent projection arms (all 90% CIs cross zero) -- correcting the original write-up's
+    "2 of 3 arms hurt" framing, which mis-cited its own saved numbers (the "new" arm's dROI is
+    actually -0.029, not the -0.21 quoted) and read wide, zero-crossing noise as a directional
+    failure.
+
+    Given that corrected picture (inconclusive-but-not-harmful, not "fails to transfer"), this
+    ships as a purely ADDITIVE audit tag for the owner's own SE3Max Pool manual review to use or
+    ignore -- it never touches `lineup_id` or sort order. That distinction matters: the
+    projection+ownership BLEND re-rank (`_rank_lineups_by_proj_own`) was shipped default-on
+    2026-10-07 then reverted 2026-10-10 specifically because it silently overrode `lineup_id`'s
+    pure-projection order, which is the owner's explicit, deliberate intent (the frontend's real
+    use case is "browse the top-projected lineups"). This feature doesn't repeat that mistake --
+    it adds `near_max_pivot` (bool, True on every row of the ONE tagged lineup) plus
+    `near_max_pivot_proj`/`near_max_pivot_own_sum` (float, repeated per row, context for review)
+    and changes nothing else.
+
+    `pct` (default 0.02, i.e. 2% -- the one band that held up on real history; 1%/5%/top-K
+    variants were inconsistent) is read from env `DFS_NEAR_MAX_PIVOT_PCT` when not passed
+    explicitly; set to 0 to disable (no columns added). No-op if ownership data isn't present."""
+    import os
+    if pct is None:
+        pct = float(os.environ.get("DFS_NEAR_MAX_PIVOT_PCT", "0.02") or 0.0)
+    if pct <= 0:
+        return lineups
+    try:
+        if lineups.empty or "lineup_id" not in lineups.columns or "projection" not in lineups.columns:
+            return lineups
+        if players_all is None or "estimated_ownership_pct" not in players_all.columns:
+            return lineups
+        own_map = players_all.set_index("player_id")["estimated_ownership_pct"]
+        g = lineups.groupby("lineup_id", sort=False)
+        proj = g["projection"].sum()
+        own_sum = g["player_id"].apply(
+            lambda ids: own_map.reindex(ids).fillna(0).clip(lower=0).sum()
+        )
+        pmax = proj.max()
+        band = proj[proj >= pmax * (1 - pct)]
+        if band.empty:
+            return lineups
+        pivot_lid = own_sum.loc[band.index].idxmin()
+        out = lineups.copy()
+        out["near_max_pivot"] = out["lineup_id"] == pivot_lid
+        out["near_max_pivot_proj"] = float(proj.loc[pivot_lid])
+        out["near_max_pivot_own_sum"] = float(own_sum.loc[pivot_lid])
+        return out
+    except Exception as exc:  # noqa: BLE001 -- an audit tag must never break a build
+        print(f"WARNING: near-max pivot tagging skipped ({type(exc).__name__}: {exc}).", file=sys.stderr)
         return lineups
 
 

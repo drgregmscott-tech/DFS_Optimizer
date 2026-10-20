@@ -505,19 +505,43 @@ below for the investigation history, not as a second to-do list)
        staying near the top of the projection board. The 1%/5% versions of the same rule and the "top-10/20
        by projection, then least-owned" variants were inconsistent — the 2%-band version is the one that held
        up; this should be read as one promising calibration, not a swept/robust optimum.
-     - **Honest limitation — this does not yet transfer to OUR modeled ownership.** The same rule run on our
-       own pre-game `estimated_ownership_pct` (the only version we could act on pre-lock) **helps on 1 of 3
-       independent modeled-ownership arms and hurts on 2 of 3** (fc arm: +0.17 ROI; new/old arms: -0.21 to
-       -0.31 ROI, both worse than baseline). This is the same root cause already flagged above: our modeled
-       ownership doesn't carry real lineup-level chalk signal, so we can't yet reliably tell which pool lineup
-       *is* the single chalkiest one to pivot away from. The concept is validated; the input we'd need to
-       execute it reliably isn't there yet.
-     - **Confidence caveat, stated plainly:** this is the same n as the original study (17-21 history slates,
-       one pick per slate per rule) — small enough that several of these deltas have 90% CIs that cross zero
-       (e.g. the near-max-2%-minown gain on real ownership: +0.31 mean ROI, CI [-0.05, +0.67]). Directionally
-       consistent and the *only* rule that wins on mean, cash rate, and tail simultaneously, but it is
-       **inconclusive-keep-testing**, not proven at a ship bar, and it is not actionable without first fixing
-       the modeled-ownership gap above. Full data: `analysis/classic_rerank_payout/`.
+     - **⚠️ CORRECTED 2026-10-20 — the "doesn't transfer" framing above overstated noise as failure.**
+       Re-pulled the raw numbers from `analysis/classic_rerank_payout/payout_rerank_out.txt` instead of
+       trusting this write-up's own summary, prompted by the owner catching the same mistake on item A1.
+       The actual per-arm `dROI` and 90% CIs for `nearmax2pct_minown` on our modeled ownership are:
+       fc +0.167 [-0.167,+0.583], new **-0.029** [-0.559,+0.471], old -0.306 [-1.000,+0.222]. The "new"
+       arm was mis-cited above as -0.21 — it's actually -0.029, essentially flat. **All three CIs cross
+       zero.** That's not "helps 1 of 3, hurts 2 of 3" — it's "statistically indistinguishable from zero in
+       all 3 arms, with 2 of 3 point estimates non-negative." Overstating wide, zero-crossing noise as a
+       directional failure is exactly the error already caught and corrected on item A1 this same session
+       ([[feedback_ship_inconclusive_when_human_reviewed]]) — same root cause (grading a human-reviewed,
+       opt-in signal against too strict a bar), same fix.
+     - **Corrected verdict and action taken:** this is a pick suggestion for the SE3Max Pool manual review,
+       not an auto-submit mechanism — the same category that already clears a lower ship bar. Shipped as
+       `_tag_near_max_pivot()` in `scripts/optimizer.py` (classic `build_multi_lineup`, called after the
+       existing rank functions): adds a purely additive `near_max_pivot` boolean column (plus
+       `near_max_pivot_proj`/`near_max_pivot_own_sum` context columns) marking the one pool lineup, within
+       2% of the pool's best projection, with the lowest summed modeled ownership — **never reorders
+       `lineup_id` or changes which lineup ranks #1**, so it doesn't repeat the mistake that got
+       `_rank_lineups_by_proj_own` reverted on 2026-10-10 (that one silently changed `lineup_id` sort order,
+       which conflicted with the owner's explicit intent that it stay pure-projection-sorted). Smoke-tested
+       on a real historical pool: correctly tagged a different, legitimately lower-owned lineup (not the #1
+       pick) within the 2% band. Default on (env `DFS_NEAR_MAX_PIVOT_PCT`, 0 disables).
+     - **Confidence caveat, stated plainly (unchanged, still accurate):** this is the same n as the original
+       study (17-21 history slates, one pick per slate per rule) — small. On REAL ownership the rule wins on
+       every metric at once (mean ROI, cash rate, near-matched tail) but even that CI is wide (+0.31 mean
+       ROI, CI [-0.05, +0.67]). Directionally consistent, not proven at a strict ship bar — shipped anyway
+       as a review aid per the corrected verdict above, same reasoning as item A1. Full data:
+       `analysis/classic_rerank_payout/`.
+     - **Also re-checked while correcting this (2026-10-20): the full-chalk (`max_own`) rejection above is
+       partly built on a shaky statistic.** Its P99 ROI figures (4.60 vs 2.80) come from `np.nanpercentile`
+       of only 21 values — effectively reading off the single best slate, not a stable tail estimate.
+       Pulling the raw per-slate ROIs (`per_pool_picks_roi.csv`) shows that "drop" is almost entirely ONE
+       slate (`h2022w04`) flipping from the best outcome under `base_proj` (ROI +5.0) to a bust under
+       `max_own` (ROI -1.0) — a single-slate artifact, not a systematic tail cost. The practical call to
+       prefer `nearmax2pct_minown` over full chalk still stands (it matches or beats `max_own` on every
+       metric in this same data), but the *reason* given — "chasing chalk provably costs the tail" — should
+       be read as unproven, not as settled evidence.
    - **Tried to make the pivot automatic/reliable using a non-circular signal, before giving up on it.** Our
      own `estimated_ownership_pct` is partly a function of our own projection (that's why the pivot rule is
      unreliable with it). FFC crowd ownership (`data/ownership_public/ffc_dk_*`, DK main only, real for all
