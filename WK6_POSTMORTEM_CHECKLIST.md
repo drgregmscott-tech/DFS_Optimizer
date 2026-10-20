@@ -20,32 +20,33 @@ Everything below is a real, scoped finding from the investigation trail in "Evid
 this file. None of it is built yet. Pick one per session; each entry below is self-contained enough to
 start cold (file/function pointers, what done looks like, where the supporting evidence lives).
 
-### A1. Pool salary-slack lever (se3max_pool pivot room) — ⚠️ TESTED 2026-10-19, INCONCLUSIVE, NOT SHIPPED
+### A1. Pool salary-slack lever (se3max_pool pivot room) — ✅ SHIPPED 2026-10-19 (opt-in, default off)
 **Problem:** the submitted FD lineup spent $59,900 of a $60,000 cap (the pool's 20 lineups spend a median
 of $59,900) — leaving no room to swap in a cheaper, similarly-projected, less-owned stud-tier alternative
 even when one exists and is confirmed beneficial (pricier-vs-cheaper at the $8-9k RB tier: cheaper side is
 real-owned 16.85% vs pricier 10.95%, pricier wins only 34% of 665 matched pairs, holds in 11/15 real
 slates 2022/2024/2025).
-**Built:** `--pool-slack-share`/`--pool-slack-amount` in `scripts/optimizer.py`'s classic `se3max_pool`
-path (`build_multi_lineup()`), default OFF (0.0 = byte-identical to prior behavior), not added to
-`data/optimizer_presets.json` (stays fully opt-in, same convention as `--own-penalty`). Mechanically
-verified: at share=0.2/amount=$500 it legally forces ~1/5 of a 100-lineup pool under the full cap.
+**Built and shipped:** `--pool-slack-share`/`--pool-slack-amount` in `scripts/optimizer.py`'s classic
+`se3max_pool` path (`build_multi_lineup()`), default OFF (0.0 = byte-identical to prior behavior), not
+added to `data/optimizer_presets.json` (stays fully opt-in, same convention as `--own-penalty`) —
+turn it on manually when building a pool you intend to review by hand (the SE3Max Pool (100) process).
+Mechanically verified: at share=0.2/amount=$500 it legally forces ~1/5 of a 100-lineup pool under the
+full cap.
 **Tested, `analysis/pool_slack/RESULTS.md`:** reused the real-prize-table ROI pipeline
 (`analysis/lineup_replay/`) on the same 20 real historical se3max_pool slates already validating this
-item's premise. **Result: inconclusive, not a clean win.** Pool-wide (all 100 lineups) mean ROI is flat
-(-0.041, 90% CI crosses zero) while cash rate improves (+4.3pp, CI excludes zero but n=20 slates is
-small) — mixed. The metric that actually matters, the #1-by-projection pick an SE3max build submits,
-turned out to be an **invalid test of this mechanism as implemented**: `build_multi_lineup`'s greedy
-batch loop is path-dependent (each lineup's uniqueness/exposure state depends on every lineup generated
-before it), so inserting slack-capped lineups at specific generation indices reshuffles the ENTIRE
-batch's generation path — the #1 pick differed in 20/20 slates, but in 19 of those the swap was a
-different combination at essentially the same spend, not the scoped cheaper-stud pivot. Only 1/20 showed
-the literal mechanism reaching the #1 pick, and trivially ($100).
-**Verdict: kept OFF, not rejected outright** — the underlying $8-9k-RB-tier premise is still validated
-and uncontradicted; this specific pool-wide implementation just can't isolate the mechanism cleanly with
-the existing greedy generation loop. A real test needs to freeze the preceding batch state and vary only
-one targeted lineup/slot's cap, not regenerate two full independent batches — not built this session
-(time-boxed). Picking this back up: start from that isolation-test design, not from scratch.
+item's premise. Pool-wide (all 100 lineups) mean ROI is flat (CI crosses zero, no harm shown), cash rate
+improves (+4.3pp, CI excludes zero) — clears the lower ship bar this project already uses for a lever
+the owner manually reviews rather than one that auto-executes
+([[feedback_ship_inconclusive_when_human_reviewed]]). A first pass at this verdict wrongly graded the
+lever against whether it reaches the literal #1-by-projection pick automatically — corrected after
+owner pushback: that specific test is invalid (not just unfavorable) because `build_multi_lineup`'s
+greedy batch loop is path-dependent (each lineup's state depends on every lineup generated before it),
+so inserting slack-capped lineups anywhere reshuffles the whole batch's generation path — the #1 pick
+differed in 20/20 slates, but 19 of those were just batch-path noise (same spend, different combo), not
+the scoped mechanism. That invalidity is a reason to disregard that one test, not to withhold shipping.
+**Open follow-up, not blocking:** if a future need arises to test this lever's effect on the
+auto-selected #1 pick specifically, that needs to freeze the preceding batch state and vary only one
+targeted lineup/slot's cap — not regenerate two full independent batches as done here.
 
 ### A2. Lineup pool-summary / recommendation feature (the owner's original ask)
 **Problem:** the built pool already contains better, less-chalky, higher-scoring alternatives most weeks
