@@ -153,6 +153,13 @@ and resolves none.
   session — belongs with the existing projection-side WR $7k+ stud-gap track (see the "Classic PERSISTENT flags"
   item above), not here. Details: `analysis/wk4_construction_review/RESULTS_flex_wr_lineup_level.md` §"2026 real
   fields" and "Bottom line" (local, gitignored).
+  - **Re-verified 2026-10-20** (`analysis/stud_wr_count/RESULTS.md`, part of the same postmortem audit that
+    caught the near-max-pivot mis-citation on item 5/A1 — spot-checked this one too, not just taken on faith):
+    reran both `s1_player_resid_2026.py` and `s2_hist_stud_premium.py` from scratch. Every cited number
+    reproduced exactly (2026 coef_pts/prem corr=0.94, coef_cash/prem corr=0.92; history mean prem -0.735/sd
+    2.758/SE 0.325; by-season -0.81/+0.18/-0.58/-0.93/-1.75; LOSO slopes 0.751-0.929; RMSE better 4/5 seasons,
+    MAE better 3/5; rank corr ours=0.190/sal=0.199/corrected=0.199). **Confirmed, no correction needed** —
+    unlike the near-max-pivot item, this rejection holds up against its own raw data.
 - **Kyler Murray — CLOSED FOR GOOD 2026-10-07.** Follow-up session tested the three candidates the open
   question (below) left on the table: price, projection gap to team's QB2, and a depth-chart signal.
   Price and QB2-gap don't separate Kyler from the faded zero-share starters (D. Jones is $5.4k vs Kyler's
