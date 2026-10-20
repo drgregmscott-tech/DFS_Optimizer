@@ -2836,7 +2836,9 @@ def build_multi_lineup(site: str, slate_id: str, n_lineups: int = DEFAULT_N_LINE
                         thumbs_down_ids: set = None,
                         player_exposure: dict = None,
                         exclude_skill_vs_opp_dst: bool = DEFAULT_EXCLUDE_SKILL_VS_OPP_DST,
-                        classic_shape: dict = None) -> tuple:
+                        classic_shape: dict = None,
+                        pool_slack_share: float = 0.0,
+                        pool_slack_amount: int = 0) -> tuple:
     """Generates up to `n_lineups` distinct, salary-cap-legal lineups, none
     of which use any single player in more than `max_exposure_pct` of the
     total requested lineups (decisions #5/#6 above). Returns
@@ -2877,7 +2879,20 @@ def build_multi_lineup(site: str, slate_id: str, n_lineups: int = DEFAULT_N_LINE
     therefore the real output, are never touched (see
     compute_thumbs_projection()). `player_exposure` (decisions #52-55)
     gives named players their own exposure cap instead of
-    `max_exposure_pct`'s shared default -- everyone else is unaffected."""
+    `max_exposure_pct`'s shared default -- everyone else is unaffected.
+
+    `pool_slack_share`/`pool_slack_amount` are the Wk6 postmortem item A1
+    addition (2026-10-19): an optional soft floor that forces a share of
+    the batch to leave salary cap room unspent, so a cheaper, similarly-
+    projected, less-owned stud-tier alternative has somewhere to go even
+    when the top-projection combination would otherwise spend the cap out
+    (see analysis/pool_slack/RESULTS.md). `pool_slack_share` (0.0 default
+    = off, identical to every prior session's behavior) is the fraction of
+    `n_lineups` solved against a reduced cap of `salary_cap -
+    pool_slack_amount` instead of the real cap; those lineup slots are
+    spread evenly across the batch (not bunched at the start) so they
+    don't all compete for the same early exposure slots. `pool_slack_amount`
+    (dollars withheld) only matters when `pool_slack_share > 0`."""
     config = SITE_CONFIGS[site]
     players_all = load_final_projections(site, slate_id)
     _slate_sw = infer_season_week_from_slate_id(slate_id)  # FLEX late-swap labeling only
@@ -3005,6 +3020,16 @@ def build_multi_lineup(site: str, slate_id: str, n_lineups: int = DEFAULT_N_LINE
     # whole build, unlike randomization's fresh per-lineup draw below).
     thumbs_projection = compute_thumbs_projection(players_all, thumbs_up_ids, thumbs_down_ids)
 
+    # Pool-slack lever (item A1): evenly-spaced lineup indices (0-based)
+    # that solve against a reduced cap, instead of the first N -- spreads
+    # the slack lineups across the batch so they don't all collide with
+    # each other for the same early exposure slots.
+    slack_target_count = round(pool_slack_share * n_lineups) if pool_slack_share > 0 else 0
+    slack_indices = (
+        {round(i * n_lineups / slack_target_count) for i in range(slack_target_count)}
+        if slack_target_count > 0 else set()
+    )
+
     while n_generated < n_lineups:
         locked_out = {
             pid for pid, cnt in exposure_count.items()
@@ -3041,10 +3066,14 @@ def build_multi_lineup(site: str, slate_id: str, n_lineups: int = DEFAULT_N_LINE
         chosen_cand = None
         stack_infeasible_reason = None
         best_score = None
+        lineup_salary_cap = (
+            config["salary_cap"] - pool_slack_amount
+            if n_generated in slack_indices else config["salary_cap"]
+        )
         for cand in candidates:
             try:
                 candidate_selected = solve_lineup(
-                    pool, config["salary_cap"], fixed_counts, flex_count,
+                    pool, lineup_salary_cap, fixed_counts, flex_count,
                     previous_lineups=previous_lineups,
                     uniqueness=current_uniqueness,
                     optimization_projection=optimization_projection,
@@ -4571,6 +4600,24 @@ def main():
              "fades chalk, negative rewards it. Unproven; see analysis/ownership_lever.",
     )
     parser.add_argument(
+        "--pool-slack-share", type=float, default=pdef("pool-slack-share", 0.0),
+        help="Wk6 postmortem item A1 (2026-10-19): fraction of the batch "
+             "(0.0-1.0) solved against a reduced salary cap (cap minus "
+             "--pool-slack-amount) instead of the full cap, so some pool "
+             "lineups deliberately leave room to pivot to a cheaper, "
+             "similarly-projected, less-owned stud-tier alternative. "
+             "Default 0.0 = off, identical to every prior session's "
+             "behavior. Classic (se3max_pool) only; see "
+             "analysis/pool_slack/RESULTS.md before shipping this on.",
+    )
+    parser.add_argument(
+        "--pool-slack-amount", type=int, default=pdef("pool-slack-amount", 500),
+        help="Dollars of salary cap withheld on each pool-slack lineup "
+             "(default 500, the middle of the $300-800 range scoped in "
+             "the Wk6 postmortem). Only has an effect when "
+             "--pool-slack-share > 0.",
+    )
+    parser.add_argument(
         "--min-total-ownership", type=float, default=0.0,
         help="Requires the lineup's summed estimated_ownership_pct across "
              "all 9 players to be at least this much (default 0.0 -- no "
@@ -5422,6 +5469,8 @@ def main():
             player_exposure=player_exposure,
             exclude_skill_vs_opp_dst=not args.allow_skill_vs_opp_dst,
             classic_shape=classic_shape,
+            pool_slack_share=args.pool_slack_share,
+            pool_slack_amount=args.pool_slack_amount,
             **stack_kwargs,
         )
         if args.request_id:
