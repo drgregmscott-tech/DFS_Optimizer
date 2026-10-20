@@ -93,6 +93,21 @@ players (incl. Cade Otton at 2.6%, the real case this item was partly built from
 2.4%, the other half of that same bust); Max=2% (the owner's actual filter direction) flags 26/425 players
 — previously flagged zero before the fix. Banner and row tint confirmed rendering correctly in both
 directions; flags/banner disappear when both bounds are cleared.
+**Band-width fix, same day (owner pushback: "these decisions have to be data backed... before we settle
+on 1.0 pt or whatever it should actually be"):** the shipped 1.0pt width was never actually tested — it
+was a round number pulled from the original write-up's illustrative prose, not a measured value. Tested
+properly on the same 2021-25 history (`analysis/own_floor_calibration/band_width.py`, n=15,028, not
+committed — FC-derived): **Min-filter side, 1.0pt holds up** — recall/precision trade off smoothly across
+0.5-3.0pt at every cutoff tested (1.5/2/3%) with no sharp knee, so 1.0pt is defensible (44% recall, 28%
+precision vs a 12.6% base rate at the owner's usual 2% cutoff) though not uniquely optimal — list-length
+is a judgment call past this point, not something the data forces. **Max-filter side, a flat 1.0pt
+actively breaks at low cutoffs** — real deep-punt players pile up at ~0.3-0.8% modeled ownership, so at a
+1.5% Max cutoff the old flat-1.0pt band flagged 62% of the shown pool (useless as a signal). Fixed:
+Max-side width now caps at `min(1.0, maxCutoff - 1.0)` — a no-op at 2% (unchanged), narrows automatically
+below that. Verified live: Max=1.5% now flags 15/414 (was ~62% pre-fix); Max=2% unchanged at 26/425.
+Tooltip wording also split by direction (Min cites the real "~1 in 14" miss rate; Max no longer borrows
+that Min-specific number). One honest limit no width fixes: ~half of real misses sit well above the
+cutoff (median 1.17pt) — a short, scannable flag list will never catch more than roughly half of them.
 **Evidence:** item 3 below, "Mechanism A."
 
 ### A4. Compounding-vacancy fix for the WR/TE/RB replacement model (Fix 2)

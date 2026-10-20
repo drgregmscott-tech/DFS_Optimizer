@@ -3890,13 +3890,21 @@ in this browser's localStorage.</p>
   var OWN_DISAGREE_PTS = 10;
   // A3 (WK6_POSTMORTEM_CHECKLIST): moving the min-ownership filter threshold doesn't reduce
   // the miss rate (raising 2%->3-4% cuts misses only 7.2%->2.2% while excluding far more real
-  // chalk) -- the actionable fix is flagging, not re-tuning. 1pt matches the item's own scope.
+  // chalk) -- the actionable fix is flagging, not re-tuning. 1.0pt is data-backed, not a round
+  // guess (analysis/own_floor_calibration/band_width.py, 2021-25 history) -- see the fuller
+  // justification on isNearOwnFloor() below, which also covers why the Max-filter direction
+  // needs a capped width rather than this same flat constant.
   var OWN_FLOOR_NEAR_PTS = 1.0;
   function fmtOwnPct(v) { return v < 1 ? "<1" : String(Math.round(v)); }
   function ownRangeHtml(model, ffc, nearFloor) {
     if (model == null) return "\u2014";
-    var floorTip = nearFloor
+    // Tooltip wording differs by direction -- the two have different measured precision
+    // (analysis/own_floor_calibration/band_width.py): ~28% of Min-flagged players are real
+    // misses (vs a 12.6% base rate); Max-flagged precision runs 30-48% depending on cutoff.
+    var floorTip = nearFloor === "min"
       ? "within " + OWN_FLOOR_NEAR_PTS.toFixed(1) + " pt of your Own % min filter \u2014 the model is noisy right at this line (historically ~1 in 14 true sub-1.5%-owned players get modeled high enough to slip past a filter like this), worth a manual look"
+      : nearFloor === "max"
+      ? "near your Own % max filter \u2014 the model is noisy right at this line, worth a manual look"
       : "";
     var floorFlag = nearFloor ? '<span class="near-floor-flag" title="' + floorTip + '">\u25c6</span>' : "";
     if (ffc == null) {
@@ -3918,22 +3926,38 @@ in this browser's localStorage.</p>
     return p.ownership != null ? p.ownership : (p.ffc != null ? p.ffc : 0);
   }
   // True when a min- or max-ownership filter is set and this player's model number only
-  // cleared it by less than OWN_FLOOR_NEAR_PTS -- i.e. it passed passesFilters() by a hair,
+  // cleared it by less than the band width below -- i.e. it passed passesFilters() by a hair,
   // right where the model is least trustworthy (analysis/own_floor_calibration). Checks BOTH
   // bounds: a Min filter (the "exclude low-ownership players" exclude-floor use case this item
   // was built from) and a Max filter (real use found 2026-10-20: filtering players DOWN to a
   // ceiling, e.g. hunting cheap darts under 2%, is just as common and was silently never
-  // flagged before this fix -- min-only missed every player who only cleared a Max cutoff).
+  // flagged before that day's fix -- min-only missed every player who only cleared a Max cutoff).
+  //
+  // Band width, data-backed (analysis/own_floor_calibration/band_width.py, 2021-25 history,
+  // n=15,028, same frame as the main calibration analysis): on the Min side, OWN_FLOOR_NEAR_PTS
+  // (1.0pt) holds up at every cutoff tested (1.5/2/3%) -- recall/precision trade off smoothly
+  // with no sharp knee, so 1.0pt is a defensible, not uniquely-optimal, pick. On the Max side a
+  // flat 1.0pt band BREAKS at low cutoffs: real deep-punt players pile up at ~0.3-0.8% modeled,
+  // so at a 1.5% Max cutoff a flat 1.0pt band flags 62% of the shown pool -- useless as a
+  // signal, not a short list. Capping the Max band so it never reaches below 1% modeled
+  // ownership (width = min(OWN_FLOOR_NEAR_PTS, maxCutoff - 1.0)) fixes that: a no-op at the
+  // owner's usual 2% cutoff, narrows automatically at tighter cutoffs. No width catches more
+  // than ~half of real misses either way -- about half sit well above the cutoff (median
+  // 1.17pt), a real limit of a short-list flag, not something band width can fix.
+  // Returns "min" or "max" (both truthy, so existing boolean-style callers keep working) when
+  // flagged, naming which filter bound triggered it -- the two directions have different real
+  // miss-rate/precision numbers (see comment above), so the tooltip needs to know which one.
   function isNearOwnFloor(p) {
     var f = state.poolFilters;
     if (!f || p.ownership == null) return false;
     if (f.ownMin !== "" && f.ownMin != null) {
       var minCutoff = parseFloat(f.ownMin);
-      if (!isNaN(minCutoff) && (p.ownership - minCutoff) < OWN_FLOOR_NEAR_PTS) return true;
+      if (!isNaN(minCutoff) && (p.ownership - minCutoff) < OWN_FLOOR_NEAR_PTS) return "min";
     }
     if (f.ownMax !== "" && f.ownMax != null) {
       var maxCutoff = parseFloat(f.ownMax);
-      if (!isNaN(maxCutoff) && (maxCutoff - p.ownership) < OWN_FLOOR_NEAR_PTS) return true;
+      var maxWidth = Math.min(OWN_FLOOR_NEAR_PTS, maxCutoff - 1.0);
+      if (!isNaN(maxCutoff) && maxWidth > 0 && (maxCutoff - p.ownership) < maxWidth) return "max";
     }
     return false;
   }
@@ -4266,9 +4290,12 @@ in this browser's localStorage.</p>
       var nearFloorCount = rows.filter(isNearOwnFloor).length;
       if (nearFloorCount > 0) {
         nearFloorBanner.style.display = "block";
+        // Doesn't quote a fixed point value here -- the Max-side width is capped tighter than
+        // OWN_FLOOR_NEAR_PTS at low cutoffs (see isNearOwnFloor), so a single number here would
+        // be wrong for that case. Each row's own tooltip gives the precise distance/direction.
         nearFloorBanner.innerHTML = "◆ " + nearFloorCount + " player" + (nearFloorCount === 1 ? "" : "s") +
-          " shown " + (nearFloorCount === 1 ? "is" : "are") + " within " + OWN_FLOOR_NEAR_PTS.toFixed(1) +
-          " pt of your Own % filter — model is noisy right at this line, worth a manual look (marked below)";
+          " shown " + (nearFloorCount === 1 ? "is" : "are") +
+          " right near your Own % filter — model is noisy right at this line, worth a manual look (marked below)";
       } else {
         nearFloorBanner.style.display = "none";
       }
