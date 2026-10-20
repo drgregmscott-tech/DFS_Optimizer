@@ -78,12 +78,21 @@ the filter threshold doesn't help (raising it to 3-4% cuts the miss rate only 7.
 **Built and shipped:** standalone in the player pool table (`dfs_optimizer_frontend/index.html`) —
 A2, the pool-summary feature this was originally scoped to piggyback on, was closed 2026-10-20 without
 being built, so there was nothing to attach to. `isNearOwnFloor(p)` flags any player whose
-`estimated_ownership_pct` is within `OWN_FLOOR_NEAR_PTS` (1.0pt) of the currently-set "Own %" min filter;
+`estimated_ownership_pct` is within `OWN_FLOOR_NEAR_PTS` (1.0pt) of the currently-set "Own %" filter;
 `ownRangeHtml()` renders a blue ◆ (distinct from the existing amber ⚠ FFC-disagree flag, same row) with a
-tooltip explaining the miss rate. No filter set → no flags, by construction. Verified live in-browser
-against the real `dk_classic_wk6_main` slate at a 2% cutoff (matches the Andrews/Otton case this item was
-partly built from): 18/87 players in the 2-3% band correctly flagged, including Cade Otton himself
-(modeled 2.6%, actual bust); flags disappeared on clearing the filter.
+tooltip explaining the miss rate. No filter set → no flags, by construction.
+**Follow-up fix, same day (real-use bug + visibility gap, both found live by the owner within minutes of
+shipping):** (1) the first version only checked the Own % **Min** box — the owner filtered using the
+**Max** box (a legitimate, equally common use: capping to find cheap/low-owned plays) and got zero flags,
+since `ownMax` was never checked. `isNearOwnFloor()` now checks both bounds, flagging within 1pt of
+whichever is set. (2) the lone per-row ◆ glyph was too easy to miss scrolling a long list ("this is like
+silent flagging, i'll never see it") — added a summary banner above the list ("◆ N players shown are
+within 1.0pt of your Own % filter...") plus a visible blue tint/left-border on each flagged row, not just
+the small icon. Verified live in-browser against the real `dk_classic_wk6_main` slate: Min=2% flags 18/87
+players (incl. Cade Otton at 2.6%, the real case this item was partly built from, and Mark Andrews at
+2.4%, the other half of that same bust); Max=2% (the owner's actual filter direction) flags 26/425 players
+— previously flagged zero before the fix. Banner and row tint confirmed rendering correctly in both
+directions; flags/banner disappear when both bounds are cleared.
 **Evidence:** item 3 below, "Mechanism A."
 
 ### A4. Compounding-vacancy fix for the WR/TE/RB replacement model (Fix 2)

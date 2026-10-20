@@ -1430,6 +1430,23 @@
      manual look instead of being trusted blindly -- same pattern as the FFC-disagree flag,
      a different color (--fd blue) so the two don't read as the same warning. */
   .own-range .own-model .near-floor-flag { margin-left: 2px; font-weight: 700; color: var(--fd); }
+  /* A3 follow-up (2026-10-20): a tiny per-row glyph alone went unnoticed in real use (user
+     report: "this is like a silent flagging, i'll never see it"). A summary banner above the
+     list is the thing actually seen first, and the row itself gets a visible tint/border
+     instead of relying on the ◆ alone to carry it. */
+  .near-floor-banner {
+    background: var(--fd-dim);
+    border: 1px solid var(--fd);
+    border-radius: var(--radius);
+    color: var(--fd);
+    font-size: 12px;
+    padding: 8px 12px;
+    margin-top: 8px;
+  }
+  .player-row.near-floor-row {
+    background: var(--fd-dim);
+    border-left: 3px solid var(--fd);
+  }
 
   /* ---------------- Session 7.3 -- min-salary slider ---------------- */
 
@@ -2035,6 +2052,7 @@ in this browser's localStorage.</p>
           <button class="bulk-btn exclude-all-btn" id="btnExcludeAll" type="button">Exclude All Shown</button>
           <button class="bulk-btn include-all-btn" id="btnIncludeAll" type="button">Un-exclude All Shown</button>
         </div>
+        <div class="near-floor-banner" id="nearFloorBanner" style="display:none;"></div>
         <div class="player-list" id="playerList"></div>
       </div>
 
@@ -3899,16 +3917,25 @@ in this browser's localStorage.</p>
   function ownModelVal(p) {
     return p.ownership != null ? p.ownership : (p.ffc != null ? p.ffc : 0);
   }
-  // True only when a min-ownership filter is actually set and this player's model number
-  // only cleared it by less than OWN_FLOOR_NEAR_PTS -- i.e. it passed passesFilters() by a
-  // hair, right where the model is least trustworthy (analysis/own_floor_calibration).
+  // True when a min- or max-ownership filter is set and this player's model number only
+  // cleared it by less than OWN_FLOOR_NEAR_PTS -- i.e. it passed passesFilters() by a hair,
+  // right where the model is least trustworthy (analysis/own_floor_calibration). Checks BOTH
+  // bounds: a Min filter (the "exclude low-ownership players" exclude-floor use case this item
+  // was built from) and a Max filter (real use found 2026-10-20: filtering players DOWN to a
+  // ceiling, e.g. hunting cheap darts under 2%, is just as common and was silently never
+  // flagged before this fix -- min-only missed every player who only cleared a Max cutoff).
   function isNearOwnFloor(p) {
     var f = state.poolFilters;
-    if (!f || f.ownMin === "" || f.ownMin == null) return false;
-    if (p.ownership == null) return false;
-    var cutoff = parseFloat(f.ownMin);
-    if (isNaN(cutoff)) return false;
-    return (p.ownership - cutoff) < OWN_FLOOR_NEAR_PTS;
+    if (!f || p.ownership == null) return false;
+    if (f.ownMin !== "" && f.ownMin != null) {
+      var minCutoff = parseFloat(f.ownMin);
+      if (!isNaN(minCutoff) && (p.ownership - minCutoff) < OWN_FLOOR_NEAR_PTS) return true;
+    }
+    if (f.ownMax !== "" && f.ownMax != null) {
+      var maxCutoff = parseFloat(f.ownMax);
+      if (!isNaN(maxCutoff) && (maxCutoff - p.ownership) < OWN_FLOOR_NEAR_PTS) return true;
+    }
+    return false;
   }
 
   function applyOwnershipToPool(site) {
@@ -4180,6 +4207,8 @@ in this browser's localStorage.</p>
     if (!pool) {
       var bulkRowNP = document.getElementById("bulkActionRow");
       if (bulkRowNP) bulkRowNP.style.display = "none";
+      var nearFloorBannerNP = document.getElementById("nearFloorBanner");
+      if (nearFloorBannerNP) nearFloorBannerNP.style.display = "none";
       listEl.innerHTML = '<div class="player-list-head sticky-head" id="playerListHead"></div>' +
         '<div class="player-row"><div></div><div class="pmeta">Upload your slate above to lock/exclude players.</div></div>';
       renderPlayerListHead();
@@ -4229,6 +4258,22 @@ in this browser's localStorage.</p>
       if (bulkCountEl) bulkCountEl.textContent = rows.length + " player" + (rows.length === 1 ? "" : "s") + " shown";
     }
 
+    // A3 follow-up (2026-10-20): the per-row ◆ alone went unnoticed in real use -- this
+    // banner is the thing seen first, above the scrollable list, summing up how many of the
+    // currently-shown players are riding the edge of whatever Own % filter is set.
+    var nearFloorBanner = document.getElementById("nearFloorBanner");
+    if (nearFloorBanner) {
+      var nearFloorCount = rows.filter(isNearOwnFloor).length;
+      if (nearFloorCount > 0) {
+        nearFloorBanner.style.display = "block";
+        nearFloorBanner.innerHTML = "◆ " + nearFloorCount + " player" + (nearFloorCount === 1 ? "" : "s") +
+          " shown " + (nearFloorCount === 1 ? "is" : "are") + " within " + OWN_FLOOR_NEAR_PTS.toFixed(1) +
+          " pt of your Own % filter — model is noisy right at this line, worth a manual look (marked below)";
+      } else {
+        nearFloorBanner.style.display = "none";
+      }
+    }
+
     if (!shown.length) {
       listEl.innerHTML = '<div class="player-list-head sticky-head" id="playerListHead"></div>' +
         '<div class="player-row"><div></div><div class="pmeta">No players match.</div></div>';
@@ -4250,7 +4295,8 @@ in this browser's localStorage.</p>
         + (isLocked ? " is-locked" : "")
         + (isExcluded ? " is-excluded" : "")
         + (isThumbUp ? " is-thumb-up" : "")
-        + (isThumbDown ? " is-thumb-down" : "");
+        + (isThumbDown ? " is-thumb-down" : "")
+        + (isNearOwnFloor(p) ? " near-floor-row" : "");
       var lockIcon = isLocked ? "&#128274;" : "&#128275;";
       var globalExpPlaceholder = document.getElementById("ctrlMaxExposure").value || "100";
       // Bug fix (found live, Sep 2026): a Showdown pool lists each player
