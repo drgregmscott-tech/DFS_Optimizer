@@ -144,6 +144,46 @@
       "season": 2026,
       "week": 6,
       "lock_time_utc": "2026-10-20T00:15:00Z"
+    },
+    {
+      "slate_id": "dk_showdown_wk7_NE_CHI_22Oct2026",
+      "site": "dk",
+      "format": "showdown",
+      "season": 2026,
+      "week": 7,
+      "lock_time_utc": "2026-10-23T00:15:00Z"
+    },
+    {
+      "slate_id": "dk_classic_wk7_main_25Oct2026",
+      "site": "dk",
+      "format": "classic",
+      "season": 2026,
+      "week": 7,
+      "lock_time_utc": "2026-10-25T17:00:00Z"
+    },
+    {
+      "slate_id": "dk_classic_wk7_early_25Oct2026",
+      "site": "dk",
+      "format": "classic",
+      "season": 2026,
+      "week": 7,
+      "lock_time_utc": "2026-10-25T17:00:00Z"
+    },
+    {
+      "slate_id": "dk_classic_wk7_afternoon_25Oct2026",
+      "site": "dk",
+      "format": "classic",
+      "season": 2026,
+      "week": 7,
+      "lock_time_utc": "2026-10-25T20:05:00Z"
+    },
+    {
+      "slate_id": "fd_classic_wk7_main_25Oct2026",
+      "site": "fd",
+      "format": "classic",
+      "season": 2026,
+      "week": 7,
+      "lock_time_utc": "2026-10-25T17:00:00Z"
     }
   ]
 }

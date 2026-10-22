@@ -1,0 +1,511 @@
+Id,Position,First Name,Nickname,Last Name,FPPG,Played,Salary,Game,Team,Opponent,Injury Indicator,Injury Details,Tier,Unnamed: 14,Unnamed: 15,Roster Position,name,site,salary,normalized_name,normalized_team,position_upper,slate_format,player_id,match_method,match_confidence
+135562-129368,RB,Jahmyr,Jahmyr Gibbs,Gibbs,29.23999938964844,5,9800,GB@DET,DET,GB,,,,,,RB/FLEX,Jahmyr Gibbs,fd,9800,jahmyr gibbs,DET,RB,classic,00-0039139,auto_exact,high
+135562-136855,RB,Bijan,Bijan Robinson,Robinson,20.75,6,9400,SF@ATL,ATL,SF,,,,,,RB/FLEX,Bijan Robinson,fd,9400,bijan robinson,ATL,RB,classic,00-0038542,auto_exact,high
+135562-103020,WR,Puka,Puka Nacua,Nacua,15.860000610351562,5,9100,LAR@LV,LAR,LV,,,,,,WR/FLEX,Puka Nacua,fd,9100,puka nacua,LA,WR,classic,00-0039075,auto_exact,high
+135562-39280,RB,Derrick,Derrick Henry,Henry,19.71666717529297,6,9000,CIN@BAL,BAL,CIN,,,,,,RB/FLEX,Derrick Henry,fd,9000,derrick henry,BAL,RB,classic,00-0032764,auto_exact,high
+135562-86997,WR,Amon-Ra,Amon-Ra St. Brown,St. Brown,17.73999938964844,5,9000,GB@DET,DET,GB,,,,,,WR/FLEX,Amon-Ra St. Brown,fd,9000,amon ra st brown,DET,WR,classic,00-0036963,auto_exact,high
+135562-85701,WR,Ja'Marr,Ja'Marr Chase,Chase,13.28000030517578,5,8800,CIN@BAL,CIN,BAL,,,,,,WR/FLEX,Ja'Marr Chase,fd,8800,jamarr chase,CIN,WR,classic,00-0036900,auto_exact,high
+135562-55050,RB,Christian,Christian McCaffrey,McCaffrey,18.0,6,8700,SF@ATL,SF,ATL,,,,,,RB/FLEX,Christian McCaffrey,fd,8700,christian mccaffrey,SF,RB,classic,00-0033280,auto_exact,high
+135562-63115,QB,Lamar,Lamar Jackson,Jackson,20.770000457763672,4,8600,CIN@BAL,BAL,CIN,Q,Ankle,,,,QB,Lamar Jackson,fd,8600,lamar jackson,BAL,QB,classic,00-0034796,auto_exact,high
+135562-89675,RB,Jonathan,Jonathan Taylor,Taylor,18.5,6,8500,IND@MIN,IND,MIN,,,,,,RB/FLEX,Jonathan Taylor,fd,8500,jonathan taylor,IND,RB,classic,00-0036223,auto_exact,high
+135562-85607,QB,Brock,Brock Purdy,Purdy,22.666666666666668,6,8500,SF@ATL,SF,ATL,,,,,,QB,Brock Purdy,fd,8500,brock purdy,SF,QB,classic,00-0037834,auto_exact,high
+135562-85671,WR,Justin,Justin Jefferson,Jefferson,13.550000190734863,4,8400,IND@MIN,MIN,IND,,,,,,WR/FLEX,Justin Jefferson,fd,8400,justin jefferson,MIN,WR,classic,00-0036322,auto_exact,high
+135562-63336,QB,Joe,Joe Burrow,Burrow,21.447999572753908,5,8300,CIN@BAL,CIN,BAL,,,,,,QB,Joe Burrow,fd,8300,joe burrow,CIN,QB,classic,00-0036442,auto_exact,high
+135562-151794,TE,Brock,Brock Bowers,Bowers,18.549999237060547,4,8000,LAR@LV,LV,LAR,,,,,,TE/FLEX,Brock Bowers,fd,8000,brock bowers,LV,TE,classic,00-0039338,auto_exact,high
+135562-38435,QB,Jared,Jared Goff,Goff,24.2,5,8000,GB@DET,DET,GB,,,,,,QB,Jared Goff,fd,8000,jared goff,DET,QB,classic,00-0033106,auto_exact,high
+135562-151761,WR,Malik,Malik Nabers,Nabers,15.15000025431315,6,7900,NYG@HOU,NYG,HOU,,,,,,WR/FLEX,Malik Nabers,fd,7900,malik nabers,NYG,WR,classic,00-0039337,auto_exact,high
+135562-104433,RB,Kyren,Kyren Williams,Williams,17.333333333333332,6,7900,LAR@LV,LAR,LV,,,,,,RB/FLEX,Kyren Williams,fd,7900,kyren williams,LA,RB,classic,00-0037840,auto_exact,high
+135562-112745,WR,Drake,Drake London,London,13.15000025431315,6,7800,SF@ATL,ATL,SF,,,,,,WR/FLEX,Drake London,fd,7800,drake london,ATL,WR,classic,00-0037238,auto_exact,high
+135562-89493,RB,Chase,Chase Brown,Brown,10.6,5,7800,CIN@BAL,CIN,BAL,,,,,,RB/FLEX,Chase Brown,fd,7800,chase brown,CIN,RB,classic,00-0038597,auto_exact,high
+135562-112295,WR,Zay,Zay Flowers,Flowers,16.9,5,7800,CIN@BAL,BAL,CIN,,,,,,WR/FLEX,Zay Flowers,fd,7800,zay flowers,BAL,WR,classic,00-0039064,auto_exact,high
+135562-119606,QB,Bryce,Bryce Young,Young,23.69199981689453,5,7800,TB@CAR,CAR,TB,,,,,,QB,Bryce Young,fd,7800,bryce young,CAR,QB,classic,00-0039150,auto_exact,high
+135562-91419,WR,Nico,Nico Collins,Collins,13.1,5,7700,NYG@HOU,HOU,NYG,,,,,,WR/FLEX,Nico Collins,fd,7700,nico collins,HOU,WR,classic,00-0036554,auto_exact,high
+135562-6654,QB,Matthew,Matthew Stafford,Stafford,20.643333435058597,6,7700,LAR@LV,LAR,LV,,,,,,QB,Matthew Stafford,fd,7700,matthew stafford,LA,QB,classic,00-0026498,auto_exact,high
+135562-69017,QB,Jordan,Jordan Love,Love,20.56000010172526,6,7600,GB@DET,GB,DET,,,,,,QB,Jordan Love,fd,7600,jordan love,GB,QB,classic,00-0036264,auto_exact,high
+135562-129471,QB,C.J.,C.J. Stroud,Stroud,20.36000061035156,6,7500,NYG@HOU,HOU,NYG,,,,,,QB,C.J. Stroud,fd,7500,cj stroud,HOU,QB,classic,00-0039163,auto_exact,high
+135562-32384,WR,Mike,Mike Evans,Evans,13.083333333333334,6,7500,SF@ATL,SF,ATL,Q,Achilles,,,,WR/FLEX,Mike Evans,fd,7500,mike evans,SF,WR,classic,00-0031408,auto_exact,high
+135562-167031,RB,Ashton,Ashton Jeanty,Jeanty,15.066666920979818,6,7400,LAR@LV,LV,LAR,,,,,,RB/FLEX,Ashton Jeanty,fd,7400,ashton jeanty,LV,RB,classic,00-0040122,auto_exact,high
+135562-54879,QB,Deshaun,Deshaun Watson,Watson,15.093332926432293,6,7400,CLE@TEN,CLE,TEN,,,,,,QB,Deshaun Watson,fd,7400,deshaun watson,CLE,QB,classic,00-0033537,auto_exact,high
+135562-169776,WR,Christian,Christian Watson,Watson,18.38333384195964,6,7400,GB@DET,GB,DET,,,,,,WR/FLEX,Christian Watson,fd,7400,christian watson,GB,WR,classic,00-0038124,auto_exact,high
+135562-103564,WR,Garrett,Garrett Wilson,Wilson,13.883333841959637,6,7300,MIA@NYJ,NYJ,MIA,,,,,,WR/FLEX,Garrett Wilson,fd,7300,garrett wilson,NYJ,WR,classic,00-0037740,auto_exact,high
+135562-63484,QB,Kyler,Kyler Murray,Murray,10.44499969482422,4,7300,IND@MIN,MIN,IND,,,,,,QB,Kyler Murray,fd,7300,kyler murray,MIN,QB,classic,00-0035228,auto_exact,high
+135562-152664,RB,Bucky,Bucky Irving,Irving,13.34999974568685,6,7200,TB@CAR,TB,CAR,,,,,,RB/FLEX,Bucky Irving,fd,7200,bucky irving,TB,RB,classic,00-0039361,auto_exact,high
+135562-102965,QB,Bo,Bo Nix,Nix,12.110000610351562,6,7200,DEN@ARI,DEN,ARI,,,,,,QB,Bo Nix,fd,7200,bo nix,DEN,QB,classic,00-0039732,auto_exact,high
+135562-91750,TE,Trey,Trey McBride,McBride,13.09999974568685,6,7200,DEN@ARI,ARI,DEN,,,,,,TE/FLEX,Trey McBride,fd,7200,trey mcbride,ARI,TE,classic,00-0037744,auto_exact,high
+135562-45889,WR,Davante,Davante Adams,Adams,15.5,6,7200,LAR@LV,LAR,LV,IR,Hamstring,,,,WR/FLEX,Davante Adams,fd,7200,davante adams,LA,WR,classic,00-0031381,auto_exact,high
+135562-87467,RB,Chuba,Chuba Hubbard,Hubbard,19.719999694824217,5,7100,TB@CAR,CAR,TB,,,,,,RB/FLEX,Chuba Hubbard,fd,7100,chuba hubbard,CAR,RB,classic,00-0036555,auto_exact,high
+135562-41535,QB,Baker,Baker Mayfield,Mayfield,12.366666158040363,3,7100,TB@CAR,TB,CAR,Q,Thumb,,,,QB,Baker Mayfield,fd,7100,baker mayfield,TB,QB,classic,00-0034855,auto_exact,high
+135562-167620,WR,Tetairoa,Tetairoa McMillan,McMillan,15.81999969482422,5,7100,TB@CAR,CAR,TB,,,,,,WR/FLEX,Tetairoa McMillan,fd,7100,tetairoa mcmillan,CAR,WR,classic,00-0040124,auto_exact,high
+135562-70051,QB,Tyler,Tyler Huntley,Huntley,10.390000343322754,4,7000,CIN@BAL,BAL,CIN,,,,,,QB,Tyler Huntley,fd,7000,tyler huntley,BAL,QB,classic,00-0035993,auto_exact,high
+135562-30231,QB,Jacoby,Jacoby Brissett,Brissett,16.12000020345052,6,7000,DEN@ARI,ARI,DEN,,,,,,QB,Jacoby Brissett,fd,7000,jacoby brissett,ARI,QB,classic,00-0033119,auto_exact,high
+135562-89981,WR,Tee,Tee Higgins,Higgins,12.960000610351562,5,7000,CIN@BAL,CIN,BAL,,,,,,WR/FLEX,Tee Higgins,fd,7000,tee higgins,CIN,WR,classic,00-0036410,auto_exact,high
+135562-103064,RB,Breece,Breece Hall,Hall,13.5,3,6900,MIA@NYJ,NYJ,MIA,Q,Quadriceps,,,,RB/FLEX,Breece Hall,fd,6900,breece hall,NYJ,RB,classic,00-0038120,auto_exact,high
+135562-88797,QB,Michael,Michael Penix Jr.,Penix Jr.,16.315000534057617,4,6900,SF@ATL,ATL,SF,,,,,,QB,Michael Penix Jr.,fd,6900,michael penix,ATL,QB,classic,00-0039917,auto_exact,high
+135562-26483,QB,Geno,Geno Smith,Smith,14.273333231608072,6,6900,MIA@NYJ,NYJ,MIA,,,,,,QB,Geno Smith,fd,6900,geno smith,NYJ,QB,classic,00-0030565,auto_exact,high
+135562-175137,QB,Fernando,Fernando Mendoza,Mendoza,1.1100000143051147,2,6800,LAR@LV,LV,LAR,,,,,,QB,Fernando Mendoza,fd,6800,fernando mendoza,LV,QB,classic,00-0041562,auto_exact,high
+135562-22038,QB,Kirk,Kirk Cousins,Cousins,20.34666697184245,6,6800,LAR@LV,LV,LAR,,,,,,QB,Kirk Cousins,fd,6800,kirk cousins,LV,QB,classic,00-0029604,auto_exact,high
+135562-135811,QB,Jalon,Jalon Daniels,Daniels,9.960000038146973,4,6800,TB@CAR,TB,CAR,,,,,,QB,Jalon Daniels,fd,6800,jalon daniels,TB,QB,classic,00-0041251,auto_exact,high
+135562-166916,WR,Matthew,Matthew Golden,Golden,15.783332824707031,6,6700,GB@DET,GB,DET,,,,,,WR/FLEX,Matthew Golden,fd,6700,matthew golden,GB,WR,classic,00-0040667,auto_exact,high
+135562-63519,QB,Daniel,Daniel Jones,Jones,11.183333079020182,6,6700,IND@MIN,IND,MIN,,,,,,QB,Daniel Jones,fd,6700,daniel jones,IND,QB,classic,00-0035710,auto_exact,high
+135562-24849,QB,Jameis,Jameis Winston,Winston,13.375999450683594,5,6700,NYG@HOU,NYG,HOU,,,,,,QB,Jameis Winston,fd,6700,jameis winston,NYG,QB,classic,00-0031503,auto_exact,high
+135562-152575,QB,J.J.,J.J. McCarthy,McCarthy,5.840000152587891,3,6700,NYG@HOU,NYG,HOU,,,,,,QB,J.J. McCarthy,fd,6700,jj mccarthy,NYG,QB,classic,00-0039923,auto_exact,high
+135562-87691,QB,Malik,Malik Willis,Willis,12.91199951171875,5,6600,MIA@NYJ,MIA,NYJ,,,,,,QB,Malik Willis,fd,6600,malik willis,MIA,QB,classic,00-0038128,auto_exact,high
+135562-56018,WR,Deebo,Deebo Samuel Sr.,Samuel Sr.,10.480000305175782,5,6600,SF@ATL,SF,ATL,O,Hamstring,,,,WR/FLEX,Deebo Samuel Sr.,fd,6600,deebo samuel,SF,WR,classic,00-0035719,auto_exact,high
+135562-183240,RB,Cam,Cam Skattebo,Skattebo,9.259999847412107,5,6600,NYG@HOU,NYG,HOU,,,,,,RB/FLEX,Cam Skattebo,fd,6600,cam skattebo,NYG,RB,classic,00-0040715,auto_exact,high
+135562-168356,QB,Cam,Cam Ward,Ward,12.086666107177734,6,6500,CLE@TEN,TEN,CLE,,,,,,QB,Cam Ward,fd,6500,cam ward,TEN,QB,classic,00-0040676,auto_exact,high
+135562-169410,RB,Quinshon,Quinshon Judkins,Judkins,9.45999984741211,5,6500,CLE@TEN,CLE,TEN,Q,Ankle,,,,RB/FLEX,Quinshon Judkins,fd,6500,quinshon judkins,CLE,RB,classic,00-0040784,auto_exact,high
+135562-90573,WR,Jaylen,Jaylen Waddle,Waddle,7.849999745686849,6,6500,DEN@ARI,DEN,ARI,,,,,,WR/FLEX,Jaylen Waddle,fd,6500,jaylen waddle,DEN,WR,classic,00-0036613,auto_exact,high
+135562-90584,QB,Mac,Mac Jones,Jones,-0.1000000014901161,2,6500,SF@ATL,SF,ATL,,,,,,QB,Mac Jones,fd,6500,mac jones,SF,QB,classic,00-0036972,auto_exact,high
+135562-39793,TE,George,George Kittle,Kittle,12.783332824707031,6,6500,SF@ATL,SF,ATL,,,,,,TE/FLEX,George Kittle,fd,6500,george kittle,SF,TE,classic,00-0033288,auto_exact,high
+135562-89612,WR,Michael,Michael Wilson,Wilson,9.12999979654948,6,6400,DEN@ARI,ARI,DEN,,,,,,WR/FLEX,Michael Wilson,fd,6400,michael wilson,ARI,WR,classic,00-0038559,auto_exact,high
+135562-73273,RB,David,David Montgomery,Montgomery,8.4,5,6400,NYG@HOU,HOU,NYG,Q,Groin,,,,RB/FLEX,David Montgomery,fd,6400,david montgomery,HOU,RB,classic,00-0035685,auto_exact,high
+135562-111631,WR,Jameson,Jameson Williams,Williams,10.31999969482422,5,6300,GB@DET,DET,GB,,,,,,WR/FLEX,Jameson Williams,fd,6300,jameson williams,DET,WR,classic,00-0037240,auto_exact,high
+135562-158412,RB,Braelon,Braelon Allen,Allen,9.233333587646484,6,6300,MIA@NYJ,NYJ,MIA,,,,,,RB/FLEX,Braelon Allen,fd,6300,braelon allen,NYJ,RB,classic,00-0039794,auto_exact,high
+135562-152646,QB,Kyle,Kyle McCord,McCord,0.0,1,6200,MIA@NYJ,MIA,NYJ,,,,,,QB,Kyle McCord,fd,6200,kyle mccord,MIA,QB,classic,00-0040014,auto_exact,high
+135562-90572,QB,Tua,Tua Tagovailoa,Tagovailoa,0.1800000071525573,2,6200,SF@ATL,ATL,SF,,,,,,QB,Tua Tagovailoa,fd,6200,tua tagovailoa,ATL,QB,classic,00-0036212,auto_exact,high
+135562-138774,RB,Woody,Woody Marks,Marks,7.816666920979817,6,6200,NYG@HOU,HOU,NYG,,,,,,RB/FLEX,Woody Marks,fd,6200,woody marks,HOU,RB,classic,00-0040583,auto_exact,high
+135562-44715,QB,Cooper,Cooper Rush,Rush,3.053333282470703,3,6200,SF@ATL,ATL,SF,,,,,,QB,Cooper Rush,fd,6200,cooper rush,ATL,QB,classic,00-0033662,auto_exact,high
+135562-201547,WR,Jalen,Jalen Coker,Coker,14.725000381469728,4,6200,TB@CAR,CAR,TB,,,,,,WR/FLEX,Jalen Coker,fd,6200,jalen coker,CAR,WR,classic,00-0039491,auto_exact,high
+135562-129305,WR,Josh,Josh Downs,Downs,6.933333079020183,6,6100,IND@MIN,IND,MIN,,,,,,WR/FLEX,Josh Downs,fd,6100,josh downs,IND,WR,classic,00-0038997,auto_exact,high
+135562-87787,RB,J.K.,J.K. Dobbins,Dobbins,7.616666793823242,6,6100,DEN@ARI,DEN,ARI,,,,,,RB/FLEX,J.K. Dobbins,fd,6100,jk dobbins,DEN,RB,classic,00-0036158,auto_exact,high
+135562-188171,RB,Jeremiyah,Jeremiyah Love,Love,9.11999969482422,5,6100,DEN@ARI,ARI,DEN,Q,Ankle,,,,RB/FLEX,Jeremiyah Love,fd,6100,jeremiyah love,ARI,RB,classic,00-0041027,auto_exact,high
+135562-14377,QB,Tyrod,Tyrod Taylor,Taylor,-0.1000000014901161,2,6000,GB@DET,GB,DET,,,,,,QB,Tyrod Taylor,fd,6000,tyrod taylor,GB,QB,classic,00-0028118,auto_exact,high
+135562-243753,QB,Jack,Jack Strand,Strand,0.4799999892711639,2,6000,SF@ATL,ATL,SF,,,,,,QB,Jack Strand,fd,6000,jack strand,ATL,QB,classic,00-0041194,auto_exact,high
+135562-152655,WR,Emeka,Emeka Egbuka,Egbuka,9.516666412353516,6,6000,TB@CAR,TB,CAR,,,,,,WR/FLEX,Emeka Egbuka,fd,6000,emeka egbuka,TB,WR,classic,00-0040129,auto_exact,high
+135562-103591,QB,Graham,Graham Mertz,Mertz,,0,6000,NYG@HOU,HOU,NYG,IR,Knee - acl,,,,QB,Graham Mertz,fd,6000,graham mertz,HOU,QB,classic,00-0040211,auto_exact,high
+135562-86200,QB,Sean,Sean Clifford,Clifford,,0,6000,CIN@BAL,CIN,BAL,,,,,,QB,Sean Clifford,fd,6000,sean clifford,CIN,QB,classic,00-0038391,auto_exact,high
+135562-103619,WR,Tre,Tre Tucker,Tucker,11.583333333333334,6,6000,LAR@LV,LV,LAR,,,,,,WR/FLEX,Tre Tucker,fd,6000,tre tucker,LV,WR,classic,00-0038563,auto_exact,high
+135562-93382,QB,Aidan,Aidan O'Connell,O'Connell,0.0,1,6000,LAR@LV,LV,LAR,,,,,,QB,Aidan O'Connell,fd,6000,aidan oconnell,LV,QB,classic,00-0038579,auto_exact,high
+135562-86243,QB,Will,Will Levis,Levis,,0,6000,MIA@NYJ,NYJ,MIA,,,,,,QB,Will Levis,fd,6000,will levis,NYJ,QB,classic,00-0039152,auto_exact,high
+135562-166112,RB,Ollie,Ollie Gordon II,Gordon II,12.125,4,6000,MIA@NYJ,MIA,NYJ,,,,,,RB/FLEX,Ollie Gordon II,fd,6000,ollie gordon,MIA,RB,classic,00-0040198,auto_exact,high
+135562-152820,QB,Taylen,Taylen Green,Green,0.0,1,6000,CLE@TEN,CLE,TEN,,,,,,QB,Taylen Green,fd,6000,taylen green,CLE,QB,classic,00-0041092,auto_exact,high
+135562-103698,QB,Dillon,Dillon Gabriel,Gabriel,7.208000183105469,10,6000,CLE@TEN,CLE,TEN,IR,Back,,,,QB,Dillon Gabriel,fd,6000,dillon gabriel,CLE,QB,classic,00-0040704,auto_exact,high
+135562-129315,QB,Anthony,Anthony Richardson Sr.,Richardson Sr.,0.0,1,6000,IND@MIN,IND,MIN,,,,,,QB,Anthony Richardson Sr.,fd,6000,anthony richardson,IND,QB,classic,00-0039164,auto_exact,high
+135562-61798,QB,Gardner,Gardner Minshew II,Minshew II,0.0,1,6000,DEN@ARI,ARI,DEN,,,,,,QB,Gardner Minshew II,fd,6000,gardner minshew,ARI,QB,classic,00-0035289,auto_exact,high
+135562-151938,QB,Luke,Luke Altmyer,Altmyer,,0,6000,GB@DET,DET,GB,,,,,,QB,Luke Altmyer,fd,6000,luke altmyer,DET,QB,classic,00-0041453,auto_exact,high
+135562-92560,QB,Sam,Sam Ehlinger,Ehlinger,0.0,1,6000,DEN@ARI,DEN,ARI,,,,,,QB,Sam Ehlinger,fd,6000,sam ehlinger,DEN,QB,classic,00-0036879,auto_exact,high
+135562-103824,QB,Easton,Easton Stick,Stick,,0,6000,TB@CAR,TB,CAR,,,,,,QB,Easton Stick,fd,6000,easton stick,TB,QB,classic,00-0035282,auto_exact,high
+135562-151966,QB,Jaxson,Jaxson Dart,Dart,13.699999809265137,2,6000,NYG@HOU,NYG,HOU,IR,Knee - meniscus,,,,QB,Jaxson Dart,fd,6000,jaxson dart,NYG,QB,classic,00-0040691,auto_exact,high
+135562-166314,QB,Cade,Cade Klubnik,Klubnik,0.0,1,6000,MIA@NYJ,NYJ,MIA,,,,,,QB,Cade Klubnik,fd,6000,cade klubnik,NYJ,QB,classic,00-0041056,auto_exact,high
+135562-91583,QB,Stetson,Stetson Bennett IV,Bennett IV,0.7099999785423279,2,6000,LAR@LV,LAR,LV,,,,,,QB,Stetson Bennett IV,fd,6000,stetson bennett,LA,QB,classic,00-0039107,auto_exact,high
+135562-40407,QB,Joshua,Joshua Dobbs,Dobbs,0.0,1,6000,GB@DET,DET,GB,,,,,,QB,Joshua Dobbs,fd,6000,joshua dobbs,DET,QB,classic,00-0033949,auto_exact,high
+135562-160265,QB,Mark,Mark Gronowski,Gronowski,,0,6000,NYG@HOU,HOU,NYG,,,,,,QB,Mark Gronowski,fd,6000,mark gronowski,HOU,QB,classic,00-0041156,auto_exact,high
+135562-60947,QB,Jarrett,Jarrett Stidham,Stidham,0.0,1,6000,DEN@ARI,DEN,ARI,,,,,,QB,Jarrett Stidham,fd,6000,jarrett stidham,DEN,QB,classic,00-0035264,auto_exact,high
+135562-102933,QB,Kedon,Kedon Slovis,Slovis,-0.0399999991059303,2,6000,GB@DET,GB,DET,,,,,,QB,Kedon Slovis,fd,6000,kedon slovis,GB,QB,classic,00-0039577,auto_exact,high
+135562-89628,QB,Davis,Davis Mills,Mills,0.0,1,6000,NYG@HOU,HOU,NYG,,,,,,QB,Davis Mills,fd,6000,davis mills,HOU,QB,classic,00-0036898,auto_exact,high
+135562-6714,QB,Joe,Joe Flacco,Flacco,0.0,1,6000,CIN@BAL,CIN,BAL,,,,,,QB,Joe Flacco,fd,6000,joe flacco,CIN,QB,classic,00-0026158,auto_exact,high
+135562-184983,QB,Joe,Joe Fagnano,Fagnano,0.0,1,6000,CIN@BAL,BAL,CIN,,,,,,QB,Joe Fagnano,fd,6000,joe fagnano,BAL,QB,classic,00-0040981,auto_exact,high
+135562-69294,QB,Skylar,Skylar Thompson,Thompson,,0,6000,CIN@BAL,BAL,CIN,IR,Undisclosed,,,,QB,Skylar Thompson,fd,6000,skylar thompson,BAL,QB,classic,00-0037327,auto_exact,high
+135562-70324,QB,Carson,Carson Wentz,Wentz,8.513333638509115,3,6000,IND@MIN,MIN,IND,,,,,,QB,Carson Wentz,fd,6000,carson wentz,MIN,QB,classic,00-0032950,auto_exact,high
+135562-38628,QB,Mitchell,Mitchell Trubisky,Trubisky,0.0,1,6000,CLE@TEN,TEN,CLE,,,,,,QB,Mitchell Trubisky,fd,6000,mitchell trubisky,TEN,QB,classic,00-0033869,auto_exact,high
+135562-61157,QB,Brett,Brett Rypien,Rypien,0.0,1,6000,TB@CAR,TB,CAR,,,,,,QB,Brett Rypien,fd,6000,brett rypien,TB,QB,classic,00-0034955,auto_exact,high
+135562-86793,QB,Jake,Jake Haener,Haener,0.0,1,6000,NYG@HOU,NYG,HOU,,,,,,QB,Jake Haener,fd,6000,jake haener,NYG,QB,classic,00-0038998,auto_exact,high
+135562-154450,QB,Riley,Riley Leonard,Leonard,0.0,1,6000,IND@MIN,IND,MIN,,,,,,QB,Riley Leonard,fd,6000,riley leonard,IND,QB,classic,00-0040206,auto_exact,high
+135562-8023,QB,Josh,Josh Johnson,Johnson,8.793333053588867,3,6000,CIN@BAL,CIN,BAL,,,,,,QB,Josh Johnson,fd,6000,josh johnson,CIN,QB,classic,00-0026300,auto_exact,high
+135562-119641,QB,Brady,Brady Cook,Cook,0.0,1,6000,MIA@NYJ,MIA,NYJ,,,,,,QB,Brady Cook,fd,6000,brady cook,MIA,QB,classic,00-0040398,auto_exact,high
+135562-104306,QB,Kurtis,Kurtis Rourke,Rourke,0.0,1,6000,SF@ATL,SF,ATL,,,,,,QB,Kurtis Rourke,fd,6000,kurtis rourke,SF,QB,classic,00-0040589,auto_exact,high
+135562-92020,QB,Kenny,Kenny Pickett,Pickett,0.6666666666666666,3,6000,TB@CAR,CAR,TB,,,,,,QB,Kenny Pickett,fd,6000,kenny pickett,CAR,QB,classic,00-0038102,auto_exact,high
+135562-184183,QB,Shedeur,Shedeur Sanders,Sanders,0.0,1,6000,CLE@TEN,CLE,TEN,,,,,,QB,Shedeur Sanders,fd,6000,shedeur sanders,CLE,QB,classic,00-0040668,auto_exact,high
+135562-119670,QB,Carson,Carson Beck,Beck,0.0,1,6000,DEN@ARI,ARI,DEN,,,,,,QB,Carson Beck,fd,6000,carson beck,ARI,QB,classic,00-0041561,auto_exact,high
+135562-166781,QB,Ty,Ty Simpson,Simpson,0.0,1,6000,LAR@LV,LAR,LV,,,,,,QB,Ty Simpson,fd,6000,ty simpson,LA,QB,classic,00-0041568,auto_exact,high
+135562-160669,QB,Matthew,Matthew Caldwell,Caldwell,,0,6000,LAR@LV,LAR,LV,IR,Undisclosed,,,,QB,Matthew Caldwell,fd,6000,matthew caldwell,LA,QB,classic,00-0041414,auto_exact,high
+135562-128944,QB,Haynes,Haynes King,King,0.0,1,6000,TB@CAR,CAR,TB,,,,,,QB,Haynes King,fd,6000,haynes king,CAR,QB,classic,00-0041149,auto_exact,high
+135562-200653,QB,Max,Max Brosmer,Brosmer,1.1742857524326868,7,6000,IND@MIN,MIN,IND,,,,,,QB,Max Brosmer,fd,6000,max brosmer,MIN,QB,classic,00-0040494,auto_exact,high
+135562-85983,QB,Hendon,Hendon Hooker,Hooker,,0,6000,CLE@TEN,TEN,CLE,,,,,,QB,Hendon Hooker,fd,6000,hendon hooker,TEN,QB,classic,00-0038550,auto_exact,high
+135562-129210,WR,Jordan,Jordan Addison,Addison,6.925000190734863,4,5900,IND@MIN,MIN,IND,Q,Hamstring,,,,WR/FLEX,Jordan Addison,fd,5900,jordan addison,MIN,WR,classic,00-0038994,auto_exact,high
+135562-40442,RB,Aaron,Aaron Jones Sr.,Jones Sr.,14.039999389648438,5,5900,IND@MIN,MIN,IND,,,,,,RB/FLEX,Aaron Jones Sr.,fd,5900,aaron jones,MIN,RB,classic,00-0033293,auto_exact,high
+135562-29253,WR,Keenan,Keenan Allen,Allen,8.34000015258789,5,5900,IND@MIN,IND,MIN,,,,,,WR/FLEX,Keenan Allen,fd,5900,keenan allen,IND,WR,classic,00-0030279,auto_exact,high
+135562-57403,WR,Courtland,Courtland Sutton,Sutton,4.133333206176758,6,5800,DEN@ARI,DEN,ARI,,,,,,WR/FLEX,Courtland Sutton,fd,5800,courtland sutton,DEN,WR,classic,00-0034348,auto_exact,high
+135562-86229,WR,Jahan,Jahan Dotson,Dotson,6.849999745686849,6,5800,SF@ATL,ATL,SF,,,,,,WR/FLEX,Jahan Dotson,fd,5800,jahan dotson,ATL,WR,classic,00-0037741,auto_exact,high
+135562-183756,WR,Carnell,Carnell Tate,Tate,9.316666920979818,6,5800,CLE@TEN,TEN,CLE,,,,,,WR/FLEX,Carnell Tate,fd,5800,carnell tate,TEN,WR,classic,00-0041438,auto_exact,high
+135562-86875,RB,Jordan,Jordan Mason,Mason,11.899999618530272,1,5800,IND@MIN,MIN,IND,IR,Thumb,,,,RB/FLEX,Jordan Mason,fd,5800,jordan mason,MIN,RB,classic,00-0037525,auto_exact,high
+135562-110484,RB,RJ,RJ Harvey,Harvey,8.38000030517578,5,5800,DEN@ARI,DEN,ARI,,,,,,RB/FLEX,RJ Harvey,fd,5800,rj harvey,DEN,RB,classic,00-0040730,auto_exact,high
+135562-105646,TE,Sam,Sam LaPorta,LaPorta,12.61999969482422,5,5700,GB@DET,DET,GB,,,,,,TE/FLEX,Sam LaPorta,fd,5700,sam laporta,DET,TE,classic,00-0039065,auto_exact,high
+135562-167110,WR,Denzel,Denzel Boston,Boston,10.5,6,5700,CLE@TEN,CLE,TEN,,,,,,WR/FLEX,Denzel Boston,fd,5700,denzel boston,CLE,WR,classic,00-0041037,auto_exact,high
+135562-90428,RB,Tyler,Tyler Allgeier,Allgeier,5.599999745686849,6,5700,DEN@ARI,ARI,DEN,,,,,,RB/FLEX,Tyler Allgeier,fd,5700,tyler allgeier,ARI,RB,classic,00-0037263,auto_exact,high
+135562-110974,WR,Malik,Malik Washington,Washington,7.740000152587891,5,5700,MIA@NYJ,MIA,NYJ,,,,,,WR/FLEX,Malik Washington,fd,5700,malik washington,MIA,WR,classic,00-0039880,auto_exact,high
+135562-85845,WR,Rashod,Rashod Bateman,Bateman,6.216666539510091,6,5700,CIN@BAL,BAL,CIN,Q,Shoulder,,,,WR/FLEX,Rashod Bateman,fd,5700,rashod bateman,BAL,WR,classic,00-0036550,auto_exact,high
+135562-63759,RB,Tony,Tony Pollard,Pollard,7.883333206176758,6,5600,CLE@TEN,TEN,CLE,,,,,,RB/FLEX,Tony Pollard,fd,5600,tony pollard,TEN,RB,classic,00-0035261,auto_exact,high
+135562-183649,WR,KC,KC Concepcion Jr.,Concepcion Jr.,4.783333460489909,6,5600,CLE@TEN,CLE,TEN,,,,,,WR/FLEX,KC Concepcion Jr.,fd,5600,kc concepcion,CLE,WR,classic,00-0041547,auto_exact,high
+135562-80289,WR,Kendrick,Kendrick Bourne,Bourne,6.7,5,5600,DEN@ARI,ARI,DEN,,,,,,WR/FLEX,Kendrick Bourne,fd,5600,kendrick bourne,ARI,WR,classic,00-0033307,auto_exact,high
+135562-152651,WR,Marvin,Marvin Harrison Jr.,Harrison Jr.,4.379999923706055,5,5500,NYG@HOU,HOU,NYG,,,,,,WR/FLEX,Marvin Harrison Jr.,fd,5500,marvin harrison,HOU,WR,classic,00-0039849,auto_exact,high
+135562-87260,TE,Isaiah,Isaiah Likely,Likely,14.966667175292969,6,5500,NYG@HOU,NYG,HOU,,,,,,TE/FLEX,Isaiah Likely,fd,5500,isaiah likely,NYG,TE,classic,00-0037838,auto_exact,high
+135562-86312,WR,Alec,Alec Pierce,Pierce,4.849999904632568,2,5500,IND@MIN,IND,MIN,IR,Heel,,,,WR/FLEX,Alec Pierce,fd,5500,alec pierce,IND,WR,classic,00-0037664,auto_exact,high
+135562-152007,WR,Jaylin,Jaylin Noel,Noel,9.916666666666666,6,5500,NYG@HOU,HOU,NYG,,,,,,WR/FLEX,Jaylin Noel,fd,5500,jaylin noel,HOU,WR,classic,00-0040138,auto_exact,high
+135562-160303,TE,Tucker,Tucker Kraft,Kraft,7.316666920979817,6,5500,GB@DET,GB,DET,,,,,,TE/FLEX,Tucker Kraft,fd,5500,tucker kraft,GB,TE,classic,00-0038996,auto_exact,high
+135562-147051,RB,Jaleel,Jaleel McLaughlin,McLaughlin,3.320000076293945,5,5500,CLE@TEN,CLE,TEN,,,,,,RB/FLEX,Jaleel McLaughlin,fd,5500,jaleel mclaughlin,CLE,RB,classic,00-0038794,auto_exact,high
+135562-137967,RB,Blake,Blake Corum,Corum,7.983333587646484,6,5500,LAR@LV,LAR,LV,,,,,,RB/FLEX,Blake Corum,fd,5500,blake corum,LA,RB,classic,00-0039738,auto_exact,high
+135562-114530,WR,Jacob,Jacob Cowing,Cowing,-0.0666666676600774,6,5500,SF@ATL,SF,ATL,,,,,,WR/FLEX,Jacob Cowing,fd,5500,jacob cowing,SF,WR,classic,00-0039365,auto_exact,high
+135562-137530,TE,Tyler,Tyler Warren,Warren,10.980000305175782,5,5400,IND@MIN,IND,MIN,Q,Groin,,,,TE/FLEX,Tyler Warren,fd,5400,tyler warren,IND,TE,classic,00-0040128,auto_exact,high
+135562-90561,WR,Jerry,Jerry Jeudy,Jeudy,3.5,6,5400,CLE@TEN,CLE,TEN,,,,,,WR/FLEX,Jerry Jeudy,fd,5400,jerry jeudy,CLE,WR,classic,00-0036407,auto_exact,high
+135562-90562,RB,Brian,Brian Robinson Jr.,Robinson Jr.,8.433333079020182,6,5400,SF@ATL,ATL,SF,,,,,,RB/FLEX,Brian Robinson Jr.,fd,5400,brian robinson,ATL,RB,classic,00-0037746,auto_exact,high
+135562-172699,TE,Harold,Harold Fannin Jr.,Fannin Jr.,7.349999745686849,6,5400,CLE@TEN,CLE,TEN,,,,,,TE/FLEX,Harold Fannin Jr.,fd,5400,harold fannin,CLE,TE,classic,00-0040663,auto_exact,high
+135562-29501,WR,Brandin,Brandin Cooks,Cooks,3.0,3,5400,SF@ATL,SF,ATL,,,,,,WR/FLEX,Brandin Cooks,fd,5400,brandin cooks,SF,WR,classic,00-0031236,auto_exact,high
+135562-134014,WR,Jordan,Jordan Watkins,Watkins,4.849999904632568,2,5400,SF@ATL,SF,ATL,,,,,,WR/FLEX,Jordan Watkins,fd,5400,jordan watkins,SF,WR,classic,00-0040172,auto_exact,high
+135562-167881,RB,Kaelon,Kaelon Black,Black,3.133333206176758,6,5400,SF@ATL,SF,ATL,,,,,,RB/FLEX,Kaelon Black,fd,5400,kaelon black,SF,RB,classic,00-0041052,auto_exact,high
+135562-86080,TE,Kyle,Kyle Pitts Sr.,Pitts Sr.,7.066666920979817,6,5300,SF@ATL,ATL,SF,,,,,,TE/FLEX,Kyle Pitts Sr.,fd,5300,kyle pitts,ATL,TE,classic,00-0036970,auto_exact,high
+135562-86153,RB,Tyrone,Tyrone Tracy Jr.,Tracy Jr.,3.5333334604899087,6,5300,NYG@HOU,NYG,HOU,,,,,,RB/FLEX,Tyrone Tracy Jr.,fd,5300,tyrone tracy,NYG,RB,classic,00-0039384,auto_exact,high
+135562-55635,WR,Chris,Chris Godwin Jr.,Godwin Jr.,5.816666920979817,6,5300,TB@CAR,TB,CAR,,,,,,WR/FLEX,Chris Godwin Jr.,fd,5300,chris godwin,TB,WR,classic,00-0033921,auto_exact,high
+135562-25011,TE,Darren,Darren Waller,Waller,6.659999847412109,5,5300,TB@CAR,CAR,TB,,,,,,TE/FLEX,Darren Waller,fd,5300,darren waller,CAR,TE,classic,00-0031610,auto_exact,high
+135562-60858,WR,Christian,Christian Kirk,Kirk,6.1769233116736775,13,5300,SF@ATL,SF,ATL,IR,Calf,,,,WR/FLEX,Christian Kirk,fd,5300,christian kirk,SF,WR,classic,00-0034775,auto_exact,high
+135562-152103,RB,Jaylen,Jaylen Wright,Wright,0.5599999904632569,5,5300,MIA@NYJ,MIA,NYJ,,,,,,RB/FLEX,Jaylen Wright,fd,5300,jaylen wright,MIA,RB,classic,00-0039874,auto_exact,high
+135562-55042,TE,Dalton,Dalton Schultz,Schultz,7.450000127156575,6,5300,NYG@HOU,HOU,NYG,,,,,,TE/FLEX,Dalton Schultz,fd,5300,dalton schultz,HOU,TE,classic,00-0034383,auto_exact,high
+135562-103539,WR,Wan'Dale,Wan'Dale Robinson,Robinson,7.400000254313151,6,5200,CLE@TEN,TEN,CLE,,,,,,WR/FLEX,Wan'Dale Robinson,fd,5200,wandale robinson,TEN,WR,classic,00-0038117,auto_exact,high
+135562-52436,TE,Mark,Mark Andrews,Andrews,5.599999745686849,6,5200,CIN@BAL,BAL,CIN,,,,,,TE/FLEX,Mark Andrews,fd,5200,mark andrews,BAL,TE,classic,00-0034753,auto_exact,high
+135562-174486,RB,Dylan,Dylan Sampson,Sampson,0.0,1,5200,CLE@TEN,CLE,TEN,IR,Knee,,,,RB/FLEX,Dylan Sampson,fd,5200,dylan sampson,CLE,RB,classic,00-0040162,auto_exact,high
+135562-172647,WR,Caleb,Caleb Douglas,Douglas,4.933333396911621,3,5200,MIA@NYJ,MIA,NYJ,Q,Ankle,,,,WR/FLEX,Caleb Douglas,fd,5200,caleb douglas,MIA,WR,classic,00-0041523,auto_exact,high
+135562-119697,RB,MarShawn,MarShawn Lloyd,Lloyd,6.450000127156575,6,5200,GB@DET,GB,DET,,,,,,RB/FLEX,MarShawn Lloyd,fd,5200,marshawn lloyd,GB,RB,classic,00-0039811,auto_exact,high
+135562-56265,TE,Mike,Mike Gesicki,Gesicki,11.475000381469728,4,5200,CIN@BAL,CIN,BAL,,,,,,TE/FLEX,Mike Gesicki,fd,5200,mike gesicki,CIN,TE,classic,00-0034829,auto_exact,high
+135562-119788,WR,Xavier,Xavier Hutchinson,Hutchinson,5.583333333333333,6,5200,NYG@HOU,HOU,NYG,,,,,,WR/FLEX,Xavier Hutchinson,fd,5200,xavier hutchinson,HOU,WR,classic,00-0038618,auto_exact,high
+135562-71706,TE,T.J.,T.J. Hockenson,Hockenson,8.140000152587891,5,5100,IND@MIN,MIN,IND,Q,Concussion,,,,TE/FLEX,T.J. Hockenson,fd,5100,tj hockenson,MIN,TE,classic,00-0035229,auto_exact,high
+135562-61593,WR,Jauan,Jauan Jennings,Jennings,0.4749999940395355,4,5100,IND@MIN,MIN,IND,,,,,,WR/FLEX,Jauan Jennings,fd,5100,jauan jennings,MIN,WR,classic,00-0036259,auto_exact,high
+135562-129291,WR,Tank,Tank Dell,Dell,,0,5100,NYG@HOU,HOU,NYG,IR,Knee - acl + mcl,,,,WR/FLEX,Tank Dell,fd,5100,tank dell,HOU,WR,classic,00-0038977,auto_exact,high
+135562-154008,RB,Mike,Mike Washington Jr.,Washington Jr.,4.233333269755046,6,5100,LAR@LV,LV,LAR,,,,,,RB/FLEX,Mike Washington Jr.,fd,5100,mike washington,LV,RB,classic,00-0040878,auto_exact,high
+135562-112041,WR,Isaiah,Isaiah Williams,Williams,4.783333460489909,6,5100,MIA@NYJ,NYJ,MIA,,,,,,WR/FLEX,Isaiah Williams,fd,5100,isaiah williams,NYJ,WR,classic,00-0039451,auto_exact,high
+135562-160213,RB,Isaiah,Isaiah Davis,Davis,1.0600000381469727,5,5100,MIA@NYJ,NYJ,MIA,,,,,,RB/FLEX,Isaiah Davis,fd,5100,isaiah davis,NYJ,RB,classic,00-0039798,auto_exact,high
+135562-89588,TE,Colby,Colby Parkinson,Parkinson,3.2,5,5100,LAR@LV,LAR,LV,,,,,,TE/FLEX,Colby Parkinson,fd,5100,colby parkinson,LA,TE,classic,00-0036244,auto_exact,high
+135562-172715,WR,Omar,Omar Cooper Jr.,Cooper Jr.,12.899999618530272,2,5100,MIA@NYJ,NYJ,MIA,,,,,,WR/FLEX,Omar Cooper Jr.,fd,5100,omar cooper,NYJ,WR,classic,00-0041511,auto_exact,high
+135562-90912,RB,Kenny,Kenny Gainwell,Gainwell,4.033333460489909,6,5100,TB@CAR,TB,CAR,,,,,,RB/FLEX,Kenny Gainwell,fd,5100,kenny gainwell,TB,RB,classic,00-0036919,auto_exact,high
+135562-52451,RB,Samaje,Samaje Perine,Perine,5.320000076293946,5,5000,CIN@BAL,CIN,BAL,,,,,,RB/FLEX,Samaje Perine,fd,5000,samaje perine,CIN,RB,classic,00-0033526,auto_exact,high
+135562-151789,WR,Adonai,Adonai Mitchell,Mitchell,5.599999745686849,3,5000,MIA@NYJ,NYJ,MIA,D,Finger,,,,WR/FLEX,Adonai Mitchell,fd,5000,adonai mitchell,NYJ,WR,classic,00-0039890,auto_exact,high
+135562-12556,D,Houston,Houston Texans,Texans,5.833333333333333,6,5000,NYG@HOU,HOU,NYG,,,,,,DEF,Houston Texans,fd,5000,houston texans,HOU,D,classic,DST_HOU,team_defense,high
+135562-38264,WR,Demarcus,Demarcus Robinson,Robinson,8.449999809265137,2,5000,SF@ATL,SF,ATL,IR,Ankle,,,,WR/FLEX,Demarcus Robinson,fd,5000,demarcus robinson,SF,WR,classic,00-0032775,auto_exact,high
+135562-184873,TE,Kenyon,Kenyon Sadiq,Sadiq,6.099999745686849,6,5000,MIA@NYJ,NYJ,MIA,,,,,,TE/FLEX,Kenyon Sadiq,fd,5000,kenyon sadiq,NYJ,TE,classic,00-0041032,auto_exact,high
+135562-92859,WR,Jalen,Jalen Nailor,Nailor,2.275000095367432,4,5000,LAR@LV,LV,LAR,,,,,,WR/FLEX,Jalen Nailor,fd,5000,jalen nailor,LV,WR,classic,00-0037291,auto_exact,high
+135562-40687,RB,James,James Conner,Conner,9.766666412353516,3,5000,DEN@ARI,ARI,DEN,IR,Foot,,,,RB/FLEX,James Conner,fd,5000,james conner,ARI,RB,classic,00-0033553,auto_exact,high
+135562-41806,WR,Laquon,Laquon Treadwell,Treadwell,4.049999872843425,6,5000,IND@MIN,IND,MIN,,,,,,WR/FLEX,Laquon Treadwell,fd,5000,laquon treadwell,IND,WR,classic,00-0032951,auto_exact,high
+135562-41872,TE,Evan,Evan Engram,Engram,4.233333269755046,6,5000,DEN@ARI,DEN,ARI,,,,,,TE/FLEX,Evan Engram,fd,5000,evan engram,DEN,TE,classic,00-0033881,auto_exact,high
+135562-168916,RB,Kaleb,Kaleb Johnson,Johnson,1.6499999364217122,6,5000,GB@DET,GB,DET,,,,,,RB/FLEX,Kaleb Johnson,fd,5000,kaleb johnson,GB,RB,classic,00-0040142,auto_exact,high
+135562-64496,WR,Olamide,Olamide Zaccheaus,Zaccheaus,0.6166666746139526,6,5000,SF@ATL,ATL,SF,,,,,,WR/FLEX,Olamide Zaccheaus,fd,5000,olamide zaccheaus,ATL,WR,classic,00-0035208,auto_exact,high
+135562-156740,WR,Malachi,Malachi Fields,Fields,4.75,6,4900,NYG@HOU,NYG,HOU,,,,,,WR/FLEX,Malachi Fields,fd,4900,malachi fields,NYG,WR,classic,00-0041042,auto_exact,high
+135562-69777,WR,Darnell,Darnell Mooney,Mooney,2.9666665395100917,6,4900,NYG@HOU,NYG,HOU,Q,Neck,,,,WR/FLEX,Darnell Mooney,fd,4900,darnell mooney,NYG,WR,classic,00-0036309,auto_exact,high
+135562-183488,WR,Isaac,Isaac TeSlaa,TeSlaa,4.64000015258789,5,4900,GB@DET,DET,GB,,,,,,WR/FLEX,Isaac TeSlaa,fd,4900,isaac teslaa,DET,WR,classic,00-0040669,auto_exact,high
+135562-12544,D,New York,New York Jets,Jets,6.833333333333333,6,4900,MIA@NYJ,NYJ,MIA,,,,,,DEF,New York Jets,fd,4900,new york jets,NYJ,D,classic,DST_NYJ,team_defense,high
+135562-154000,WR,Konata,Konata Mumpfield,Mumpfield,4.540000152587891,5,4900,LAR@LV,LAR,LV,,,,,,WR/FLEX,Konata Mumpfield,fd,4900,konata mumpfield,LA,WR,classic,00-0040590,auto_exact,high
+135562-90575,RB,Najee,Najee Harris,Harris,2.1799999237060548,5,4900,NYG@HOU,NYG,HOU,,,,,,RB/FLEX,Najee Harris,fd,4900,najee harris,NYG,RB,classic,00-0036893,auto_exact,high
+135562-206341,WR,Ted,Ted Hurst III,Hurst III,5.659999847412109,5,4900,TB@CAR,TB,CAR,,,,,,WR/FLEX,Ted Hurst III,fd,4900,ted hurst,TB,WR,classic,00-0041048,auto_exact,high
+135562-92890,WR,Cody,Cody White,White,5.716666539510091,6,4900,LAR@LV,LV,LAR,,,,,,WR/FLEX,Cody White,fd,4900,cody white,LV,WR,classic,00-0035891,auto_exact,high
+135562-138998,TE,Michael,Michael Mayer,Mayer,7.766666412353516,6,4900,LAR@LV,LV,LAR,,,,,,TE/FLEX,Michael Mayer,fd,4900,michael mayer,LV,TE,classic,00-0039066,auto_exact,high
+135562-47870,TE,Tyler,Tyler Higbee,Higbee,7.719999694824219,5,4900,LAR@LV,LAR,LV,,,,,,TE/FLEX,Tyler Higbee,fd,4900,tyler higbee,LA,TE,classic,00-0033110,auto_exact,high
+135562-86811,TE,Cade,Cade Otton,Otton,4.683333396911621,6,4900,TB@CAR,TB,CAR,,,,,,TE/FLEX,Cade Otton,fd,4900,cade otton,TB,TE,classic,00-0038129,auto_exact,high
+135562-91931,TE,Greg,Greg Dulcich,Dulcich,5.300000190734863,4,4900,MIA@NYJ,MIA,NYJ,,,,,,TE/FLEX,Greg Dulcich,fd,4900,greg dulcich,MIA,TE,classic,00-0037252,auto_exact,high
+135562-170825,WR,Chris,Chris Bell,Bell,2.860000038146973,5,4900,MIA@NYJ,MIA,NYJ,,,,,,WR/FLEX,Chris Bell,fd,4900,chris bell,MIA,WR,classic,00-0041525,auto_exact,high
+135562-71521,RB,Justice,Justice Hill,Hill,4.016666730244954,6,4900,CIN@BAL,BAL,CIN,,,,,,RB/FLEX,Justice Hill,fd,4900,justice hill,BAL,RB,classic,00-0034975,auto_exact,high
+135562-119653,WR,Kayshon,Kayshon Boutte,Boutte,3.983333269755045,6,4900,NYG@HOU,HOU,NYG,,,,,,WR/FLEX,Kayshon Boutte,fd,4900,kayshon boutte,HOU,WR,classic,00-0038608,auto_exact,high
+135562-103308,RB,Jawhar,Jawhar Jordan,Jordan,11.5,1,4900,NYG@HOU,HOU,NYG,,,,,,RB/FLEX,Jawhar Jordan,fd,4900,jawhar jordan,HOU,RB,classic,00-0039405,auto_exact,high
+135562-93107,RB,AJ,AJ Dillon,Dillon,1.399999976158142,4,4900,TB@CAR,CAR,TB,Q,Ankle,,,,RB/FLEX,AJ Dillon,fd,4900,aj dillon,CAR,RB,classic,00-0036265,auto_exact,high
+135562-183251,WR,Zachariah,Zachariah Branch,Branch,1.3333333333333333,6,4900,SF@ATL,ATL,SF,,,,,,WR/FLEX,Zachariah Branch,fd,4900,zachariah branch,ATL,WR,classic,00-0041044,auto_exact,high
+135562-64555,WR,Calvin,Calvin Ridley,Ridley,2.120000076293945,5,4800,CLE@TEN,TEN,CLE,,,,,,WR/FLEX,Calvin Ridley,fd,4800,calvin ridley,TEN,WR,classic,00-0034837,auto_exact,high
+135562-12540,D,Minnesota,Minnesota Vikings,Vikings,12.2,5,4800,IND@MIN,MIN,IND,,,,,,DEF,Minnesota Vikings,fd,4800,minnesota vikings,MIN,D,classic,DST_MIN,team_defense,high
+135562-33047,WR,Chris,Chris Moore,Moore,4.600000063578288,3,4800,CIN@BAL,BAL,CIN,,,,,,WR/FLEX,Chris Moore,fd,4800,chris moore,BAL,WR,classic,00-0032398,auto_exact,high
+135562-151903,WR,Troy,Troy Franklin,Franklin,1.920000076293945,5,4800,DEN@ARI,DEN,ARI,,,,,,WR/FLEX,Troy Franklin,fd,4800,troy franklin,DEN,WR,classic,00-0039868,auto_exact,high
+135562-241064,WR,Dohnte,Dohnte Meyers,Meyers,4.320000076293946,5,4800,CIN@BAL,CIN,BAL,,,,,,WR/FLEX,Dohnte Meyers,fd,4800,dohnte meyers,CIN,WR,classic,00-0040785,auto_exact,high
+135562-92606,WR,Bo,Bo Melton,Melton,0.8333333333333334,6,4800,GB@DET,GB,DET,,,,,,WR/FLEX,Bo Melton,fd,4800,bo melton,GB,WR,classic,00-0037091,auto_exact,high
+135562-113096,WR,Xavier,Xavier Smith,Smith,0.0,3,4800,SF@ATL,SF,ATL,,,,,,WR/FLEX,Xavier Smith,fd,4800,xavier smith,SF,WR,classic,00-0038359,auto_exact,high
+135562-172646,RB,Trevor,Trevor Etienne,Etienne,-0.1000000014901161,1,4800,TB@CAR,CAR,TB,,,,,,RB/FLEX,Trevor Etienne,fd,4800,trevor etienne,CAR,RB,classic,00-0040644,auto_exact,high
+135562-107293,RB,Tyjae,Tyjae Spears,Spears,3.2666667302449546,6,4800,CLE@TEN,TEN,CLE,,,,,,RB/FLEX,Tyjae Spears,fd,4800,tyjae spears,TEN,RB,classic,00-0039032,auto_exact,high
+135562-103252,RB,Bam,Bam Knight,Knight,3.5,4,4800,DEN@ARI,ARI,DEN,,,,,,RB/FLEX,Bam Knight,fd,4800,bam knight,ARI,RB,classic,00-0037157,auto_exact,high
+135562-138277,WR,Jalen,Jalen Brooks,Brooks,1.3199999809265135,5,4700,DEN@ARI,ARI,DEN,,,,,,WR/FLEX,Jalen Brooks,fd,4700,jalen brooks,ARI,WR,classic,00-0038640,auto_exact,high
+135562-168054,TE,Mason,Mason Taylor,Taylor,2.5,4,4700,MIA@NYJ,NYJ,MIA,,,,,,TE/FLEX,Mason Taylor,fd,4700,mason taylor,NYJ,TE,classic,00-0040736,auto_exact,high
+135562-168076,RB,Sione,Sione Vaki,Vaki,2.4600000381469727,5,4700,GB@DET,DET,GB,,,,,,RB/FLEX,Sione Vaki,fd,4700,sione vaki,DET,RB,classic,00-0039364,auto_exact,high
+135562-174245,WR,Isaiah,Isaiah Bond,Bond,2.775000095367432,4,4700,CLE@TEN,CLE,TEN,,,,,,WR/FLEX,Isaiah Bond,fd,4700,isaiah bond,CLE,WR,classic,00-0040782,auto_exact,high
+135562-12549,D,San Francisco,San Francisco 49ers,49ers,7.166666666666667,6,4700,SF@ATL,SF,ATL,,,,,,DEF,San Francisco 49ers,fd,4700,san francisco 49ers,SF,D,classic,DST_SF,team_defense,high
+135562-120085,RB,Seth,Seth McGowan,McGowan,1.8833333651224773,6,4700,IND@MIN,IND,MIN,,,,,,RB/FLEX,Seth McGowan,fd,4700,seth mcgowan,IND,RB,classic,00-0041125,auto_exact,high
+135562-157973,WR,J. Michael,J. Michael Sturdivant,Sturdivant,0.7400000095367432,5,4700,GB@DET,GB,DET,,,,,,WR/FLEX,J. Michael Sturdivant,fd,4700,j michael sturdivant,GB,WR,classic,00-0040948,auto_exact,high
+135562-73176,TE,Luke,Luke Farrell,Farrell,0.5800000190734863,5,4700,SF@ATL,SF,ATL,,,,,,TE/FLEX,Luke Farrell,fd,4700,luke farrell,SF,TE,classic,00-0036887,auto_exact,high
+135562-157150,RB,Audric,Audric Estime,Estime,7.900000095367432,1,4700,CLE@TEN,CLE,TEN,,,,,,RB/FLEX,Audric Estime,fd,4700,audric estime,CLE,RB,classic,00-0039373,manual_override,high
+135562-183828,WR,Kevin,Kevin Coleman Jr.,Coleman Jr.,3.025000095367432,4,4700,MIA@NYJ,MIA,NYJ,,,,,,WR/FLEX,Kevin Coleman Jr.,fd,4700,kevin coleman,MIA,WR,classic,00-0041529,auto_exact,high
+135562-89627,WR,Brycen,Brycen Tremayne,Tremayne,2.9,5,4700,TB@CAR,CAR,TB,,,,,,WR/FLEX,Brycen Tremayne,fd,4700,brycen tremayne,CAR,WR,classic,00-0038840,auto_exact,high
+135562-128624,WR,Tez,Tez Johnson,Johnson,3.100000063578288,6,4700,TB@CAR,TB,CAR,,,,,,WR/FLEX,Tez Johnson,fd,4700,tez johnson,TB,WR,classic,00-0040237,auto_exact,high
+135562-40126,TE,Austin,Austin Hooper,Hooper,3.400000095367432,4,4600,SF@ATL,ATL,SF,,,,,,TE/FLEX,Austin Hooper,fd,4600,austin hooper,ATL,TE,classic,00-0032392,auto_exact,high
+135562-12529,D,Cleveland,Cleveland Browns,Browns,6.5,6,4600,CLE@TEN,CLE,TEN,,,,,,DEF,Cleveland Browns,fd,4600,cleveland browns,CLE,D,classic,DST_CLE,team_defense,high
+135562-102986,TE,Elijah,Elijah Higgins,Higgins,4.779999923706055,5,4600,DEN@ARI,ARI,DEN,,,,,,TE/FLEX,Elijah Higgins,fd,4600,elijah higgins,ARI,TE,classic,00-0039041,auto_exact,high
+135562-172861,WR,Elic,Elic Ayomanor,Ayomanor,3.799999872843424,6,4600,CLE@TEN,TEN,CLE,,,,,,WR/FLEX,Elic Ayomanor,fd,4600,elic ayomanor,TEN,WR,classic,00-0040170,auto_exact,high
+135562-91046,TE,Brock,Brock Wright,Wright,1.1199999809265138,5,4600,GB@DET,DET,GB,,,,,,TE/FLEX,Brock Wright,fd,4600,brock wright,DET,TE,classic,00-0036754,auto_exact,high
+135562-70603,RB,Devin,Devin Singletary,Singletary,4.125,4,4600,NYG@HOU,NYG,HOU,,,,,,RB/FLEX,Devin Singletary,fd,4600,devin singletary,NYG,RB,classic,00-0035250,auto_exact,high
+135562-166896,RB,Kaytron,Kaytron Allen,Allen,1.024999976158142,4,4600,MIA@NYJ,MIA,NYJ,,,,,,RB/FLEX,Kaytron Allen,fd,4600,kaytron allen,MIA,RB,classic,00-0041096,auto_exact,high
+135562-12531,D,Denver,Denver Broncos,Broncos,8.5,6,4500,DEN@ARI,DEN,ARI,,,,,,DEF,Denver Broncos,fd,4500,denver broncos,DEN,D,classic,DST_DEN,team_defense,high
+135562-120093,WR,Marvin,Marvin Mims Jr.,Mims Jr.,0.7400000095367432,5,4500,DEN@ARI,DEN,ARI,,,,,,WR/FLEX,Marvin Mims Jr.,fd,4500,marvin mims,DEN,WR,classic,00-0038976,auto_exact,high
+135562-60712,TE,Foster,Foster Moreau,Moreau,5.116666793823242,6,4500,NYG@HOU,HOU,NYG,,,,,,TE/FLEX,Foster Moreau,fd,4500,foster moreau,HOU,TE,classic,00-0034981,auto_exact,high
+135562-102696,WR,John,John Metchie III,Metchie III,4.375,4,4500,TB@CAR,CAR,TB,,,,,,WR/FLEX,John Metchie III,fd,4500,john metchie,CAR,WR,classic,00-0037614,auto_exact,high
+135562-201230,RB,Dylan,Dylan Laube,Laube,1.3999999364217122,6,4500,LAR@LV,LV,LAR,,,,,,RB/FLEX,Dylan Laube,fd,4500,dylan laube,LV,RB,classic,00-0039407,auto_exact,high
+135562-104012,WR,Ashton,Ashton Dulin,Dulin,1.4666666984558103,3,4500,IND@MIN,IND,MIN,Q,Hamstring,,,,WR/FLEX,Ashton Dulin,fd,4500,ashton dulin,IND,WR,classic,00-0035021,auto_exact,high
+135562-152148,TE,Gunnar,Gunnar Helm,Helm,2.5,5,4500,CLE@TEN,TEN,CLE,,,,,,TE/FLEX,Gunnar Helm,fd,4500,gunnar helm,TEN,TE,classic,00-0040584,auto_exact,high
+135562-57091,WR,Tim,Tim Patrick,Patrick,2.799999952316284,2,4500,MIA@NYJ,NYJ,MIA,,,,,,WR/FLEX,Tim Patrick,fd,4500,tim patrick,NYJ,WR,classic,00-0033375,auto_exact,high
+135562-103195,WR,Jordan,Jordan Whittington,Whittington,0.550000011920929,4,4500,LAR@LV,LAR,LV,,,,,,WR/FLEX,Jordan Whittington,fd,4500,jordan whittington,LA,WR,classic,00-0039751,auto_exact,high
+135562-128810,TE,Theo,Theo Johnson,Johnson,2.7,5,4500,NYG@HOU,NYG,HOU,Q,Neck,,,,TE/FLEX,Theo Johnson,fd,4500,theo johnson,NYG,TE,classic,00-0039847,auto_exact,high
+135562-156527,WR,Devontez,Devontez Walker,Walker,3.1,5,4500,CIN@BAL,BAL,CIN,,,,,,WR/FLEX,Devontez Walker,fd,4500,devontez walker,BAL,WR,classic,00-0039792,auto_exact,high
+135562-94087,RB,DeeJay,DeeJay Dallas,Dallas,1.2800000190734864,5,4500,IND@MIN,MIN,IND,,,,,,RB/FLEX,DeeJay Dallas,fd,4500,deejay dallas,MIN,RB,classic,00-0036425,auto_exact,high
+135562-128912,WR,Mitch,Mitch Tinsley,Tinsley,6.400000095367432,1,4500,CIN@BAL,CIN,BAL,,,,,,WR/FLEX,Mitch Tinsley,fd,4500,mitch tinsley,CIN,WR,classic,00-0038839,manual_override,high
+135562-103378,TE,Erick,Erick All Jr.,All Jr.,1.8333333333333333,3,4500,CIN@BAL,CIN,BAL,,,,,,TE/FLEX,Erick All Jr.,fd,4500,erick all,CIN,TE,classic,00-0039814,auto_exact,high
+135562-91101,TE,Tommy,Tommy Tremble,Tremble,6.459999847412109,5,4500,TB@CAR,CAR,TB,,,,,,TE/FLEX,Tommy Tremble,fd,4500,tommy tremble,CAR,TE,classic,00-0037005,auto_exact,high
+135562-60451,TE,Tyler,Tyler Conklin,Conklin,0.0,1,4400,GB@DET,DET,GB,,,,,,TE/FLEX,Tyler Conklin,fd,4400,tyler conklin,DET,TE,classic,00-0034270,auto_exact,high
+135562-112780,WR,Jamari,Jamari Thrash,Thrash,1.962499976158142,8,4400,LAR@LV,LV,LAR,,,,,,WR/FLEX,Jamari Thrash,fd,4400,jamari thrash,LV,WR,classic,00-0039379,auto_exact,high
+135562-171217,RB,Demond,Demond Claiborne,Claiborne,0.7749999761581421,4,4400,IND@MIN,MIN,IND,,,,,,RB/FLEX,Demond Claiborne,fd,4400,demond claiborne,MIN,RB,classic,00-0041104,auto_exact,high
+135562-151799,WR,Jackson,Jackson Meeks,Meeks,1.2999999523162842,1,4400,GB@DET,DET,GB,,,,,,WR/FLEX,Jackson Meeks,fd,4400,jackson meeks,DET,WR,classic,00-0040390,auto_fallback_name_only_position_mismatch,low
+135562-12538,D,Los Angeles,Los Angeles Rams,Rams,4.166666666666667,6,4400,LAR@LV,LAR,LV,,,,,,DEF,Los Angeles Rams,fd,4400,los angeles rams,LA,D,classic,DST_LA,team_defense,high
+135562-56711,TE,Drew,Drew Sample,Sample,1.6333333651224773,3,4400,CIN@BAL,CIN,BAL,,,,,,TE/FLEX,Drew Sample,fd,4400,drew sample,CIN,TE,classic,00-0035631,auto_exact,high
+135562-102882,WR,Anthony,Anthony Gould,Gould,0.0,4,4400,IND@MIN,IND,MIN,Q,Concussion,,,,WR/FLEX,Anthony Gould,fd,4400,anthony gould,IND,WR,classic,00-0039816,auto_exact,high
+135562-112101,WR,Jared,Jared Wayne,Wayne,2.833333333333333,3,4400,MIA@NYJ,MIA,NYJ,,,,,,WR/FLEX,Jared Wayne,fd,4400,jared wayne,MIA,WR,classic,00-0038728,auto_exact,high
+135562-154124,TE,Mitchell,Mitchell Evans,Evans,1.9399999618530277,5,4400,TB@CAR,CAR,TB,,,,,,TE/FLEX,Mitchell Evans,fd,4400,mitchell evans,CAR,TE,classic,00-0040187,auto_exact,high
+135562-94887,RB,Tyler,Tyler Badie,Badie,2.779999923706055,5,4400,DEN@ARI,DEN,ARI,Q,Thumb,,,,RB/FLEX,Tyler Badie,fd,4400,tyler badie,DEN,RB,classic,00-0037085,auto_exact,high
+135562-72412,RB,Khalil,Khalil Herbert,Herbert,1.2199999809265136,5,4400,SF@ATL,ATL,SF,,,,,,RB/FLEX,Khalil Herbert,fd,4400,khalil herbert,ATL,RB,classic,00-0036906,auto_exact,high
+135562-147168,WR,Chris,Chris Blair,Blair,0.6199999809265136,5,4400,SF@ATL,ATL,SF,,,,,,WR/FLEX,Chris Blair,fd,4400,chris blair,ATL,WR,classic,00-0036463,auto_exact,high
+135562-157490,TE,Will,Will Kacmarek,Kacmarek,0.7800000190734864,5,4400,MIA@NYJ,MIA,NYJ,,,,,,TE/FLEX,Will Kacmarek,fd,4400,will kacmarek,MIA,TE,classic,00-0041524,auto_exact,high
+135562-137059,RB,Sean,Sean Tucker,Tucker,2.933333396911621,3,4400,TB@CAR,TB,CAR,Q,Quadriceps,,,,RB/FLEX,Sean Tucker,fd,4400,sean tucker,TB,RB,classic,00-0038951,auto_exact,high
+135562-169834,WR,Dareke,Dareke Young,Young,0.6499999761581421,4,4400,LAR@LV,LV,LAR,,,,,,WR/FLEX,Dareke Young,fd,4400,dareke young,LV,WR,classic,00-0037093,auto_exact,high
+135562-24533,TE,Mo,Mo Alie-Cox,Alie-Cox,3.700000127156576,3,4400,IND@MIN,IND,MIN,,,,,,TE/FLEX,Mo Alie-Cox,fd,4400,mo alie cox,IND,TE,classic,00-0033217,auto_exact,high
+135562-48116,TE,Jonnu,Jonnu Smith,Smith,3.6666666666666665,3,4400,GB@DET,GB,DET,,,,,,TE/FLEX,Jonnu Smith,fd,4400,jonnu smith,GB,TE,classic,00-0033858,auto_exact,high
+135562-152607,WR,Deion,Deion Burks,Burks,1.6600000381469726,5,4300,IND@MIN,IND,MIN,,,,,,WR/FLEX,Deion Burks,fd,4300,deion burks,IND,WR,classic,00-0041132,auto_exact,high
+135562-183404,TE,Josh,Josh Cuevas,Cuevas,4.474999904632568,4,4300,CIN@BAL,BAL,CIN,,,,,,TE/FLEX,Josh Cuevas,fd,4300,josh cuevas,BAL,TE,classic,00-0040887,auto_exact,high
+135562-90307,TE,Daniel,Daniel Bellinger,Bellinger,0.9166666666666666,6,4300,CLE@TEN,TEN,CLE,,,,,,TE/FLEX,Daniel Bellinger,fd,4300,daniel bellinger,TEN,TE,classic,00-0038115,auto_exact,high
+135562-130270,TE,Adam,Adam Trautman,Trautman,0.6666666666666666,3,4300,DEN@ARI,DEN,ARI,,,,,,TE/FLEX,Adam Trautman,fd,4300,adam trautman,DEN,TE,classic,00-0036422,auto_exact,high
+135562-158983,TE,Ja'Tavion,Ja'Tavion Sanders,Sanders,0.0,1,4300,TB@CAR,CAR,TB,,,,,,TE/FLEX,Ja'Tavion Sanders,fd,4300,jatavion sanders,CAR,TE,classic,00-0039356,auto_exact,high
+135562-137488,RB,Rasheen,Rasheen Ali,Ali,0.0,5,4300,CIN@BAL,BAL,CIN,,,,,,RB/FLEX,Rasheen Ali,fd,4300,rasheen ali,BAL,RB,classic,00-0039796,auto_exact,high
+135562-171332,WR,Reggie,Reggie Virgil,Virgil,1.950000047683716,2,4300,DEN@ARI,ARI,DEN,,,,,,WR/FLEX,Reggie Virgil,fd,4300,reggie virgil,ARI,WR,classic,00-0041070,auto_exact,high
+135562-71031,WR,Lil'Jordan,Lil'Jordan Humphrey,Humphrey,0.4333333174387614,3,4300,DEN@ARI,DEN,ARI,,,,,,WR/FLEX,Lil'Jordan Humphrey,fd,4300,liljordan humphrey,DEN,WR,classic,00-0035406,auto_exact,high
+135562-138649,WR,LaJohntay,LaJohntay Wester,Wester,0.7333333492279053,6,4300,CIN@BAL,BAL,CIN,,,,,,WR/FLEX,LaJohntay Wester,fd,4300,lajohntay wester,BAL,WR,classic,00-0040075,auto_exact,high
+135562-185827,RB,Jacob,Jacob Saylors,Saylors,0.0,5,4300,GB@DET,DET,GB,,,,,,RB/FLEX,Jacob Saylors,fd,4300,jacob saylors,DET,RB,classic,00-0038896,auto_exact,high
+135562-88548,WR,Jalen,Jalen Tolbert,Tolbert,0.9000000158945719,3,4300,MIA@NYJ,MIA,NYJ,,,,,,WR/FLEX,Jalen Tolbert,fd,4300,jalen tolbert,MIA,WR,classic,00-0037666,auto_exact,high
+135562-39428,RB,Kyle,Kyle Juszczyk,Juszczyk,3.75,4,4300,SF@ATL,SF,ATL,,,,,,RB/FLEX,Kyle Juszczyk,fd,4300,kyle juszczyk,SF,RB,classic,00-0029892,auto_exact,high
+135562-87634,TE,Blake,Blake Whiteheart,Whiteheart,2.279999923706055,5,4300,CLE@TEN,CLE,TEN,,,,,,TE/FLEX,Blake Whiteheart,fd,4300,blake whiteheart,CLE,TE,classic,00-0038710,auto_exact,high
+135562-184917,WR,Elijah,Elijah Sarratt,Sarratt,0.8999999761581421,2,4300,CIN@BAL,BAL,CIN,,,,,,WR/FLEX,Elijah Sarratt,fd,4300,elijah sarratt,BAL,WR,classic,00-0040876,auto_exact,high
+135562-87815,TE,Jeremy,Jeremy Ruckert,Ruckert,4.933333396911621,3,4300,MIA@NYJ,NYJ,MIA,,,,,,TE/FLEX,Jeremy Ruckert,fd,4300,jeremy ruckert,NYJ,TE,classic,00-0037805,auto_exact,high
+135562-152363,TE,Gavin,Gavin Bartholomew,Bartholomew,2.233333269755045,3,4300,IND@MIN,MIN,IND,,,,,,TE/FLEX,Gavin Bartholomew,fd,4300,gavin bartholomew,MIN,TE,classic,00-0040215,auto_exact,high
+135562-92976,WR,Tutu,Tutu Atwell,Atwell,1.149999976158142,4,4300,LAR@LV,LAR,LV,,,,,,WR/FLEX,Tutu Atwell,fd,4300,tutu atwell,LA,WR,classic,00-0036849,auto_exact,high
+135562-27477,WR,Sterling,Sterling Shepard,Shepard,1.399999976158142,2,4300,MIA@NYJ,NYJ,MIA,,,,,,WR/FLEX,Sterling Shepard,fd,4300,sterling shepard,NYJ,WR,classic,00-0032385,auto_exact,high
+135562-93026,TE,Teagan,Teagan Quitoriano,Quitoriano,14.5,1,4300,DEN@ARI,ARI,DEN,,,,,,TE/FLEX,Teagan Quitoriano,fd,4300,teagan quitoriano,ARI,TE,classic,00-0037277,auto_exact,high
+135562-111637,TE,Cade,Cade Stover,Stover,0.6599999904632569,5,4200,NYG@HOU,HOU,NYG,,,,,,TE/FLEX,Cade Stover,fd,4200,cade stover,HOU,TE,classic,00-0039359,auto_exact,high
+135562-129112,WR,Chimere,Chimere Dike,Dike,0.7166666984558105,6,4200,CLE@TEN,TEN,CLE,,,,,,WR/FLEX,Chimere Dike,fd,4200,chimere dike,TEN,WR,classic,00-0040705,auto_exact,high
+135562-183410,WR,Malik,Malik Benson,Benson,0.2799999952316284,5,4200,LAR@LV,LV,LAR,,,,,,WR/FLEX,Malik Benson,fd,4200,malik benson,LV,WR,classic,00-0040894,auto_exact,high
+135562-79987,WR,David,David Moore,Moore,1.0666666825612383,3,4200,TB@CAR,CAR,TB,,,,,,WR/FLEX,David Moore,fd,4200,david moore,CAR,WR,classic,00-0033589,auto_exact,high
+135562-83117,TE,Tanner,Tanner Hudson,Hudson,3.200000047683716,4,4200,CIN@BAL,CIN,BAL,IR,Pectoral,,,,TE/FLEX,Tanner Hudson,fd,4200,tanner hudson,CIN,TE,classic,00-0034613,auto_exact,high
+135562-12555,D,Baltimore,Baltimore Ravens,Ravens,5.666666666666667,6,4200,CIN@BAL,BAL,CIN,,,,,,DEF,Baltimore Ravens,fd,4200,baltimore ravens,BAL,D,classic,DST_BAL,team_defense,high
+135562-151909,WR,Dont'e,Dont'e Thornton Jr.,Thornton Jr.,1.681818181818182,11,4200,LAR@LV,LV,LAR,IR,Hamstring,,,,WR/FLEX,Dont'e Thornton Jr.,fd,4200,donte thornton,LV,WR,classic,00-0040581,auto_exact,high
+135562-87469,TE,Jelani,Jelani Woods,Woods,1.375,4,4200,MIA@NYJ,NYJ,MIA,,,,,,TE/FLEX,Jelani Woods,fd,4200,jelani woods,NYJ,TE,classic,00-0037755,auto_exact,high
+135562-102831,TE,Davis,Davis Allen,Allen,1.5500000317891438,6,4200,LAR@LV,LAR,LV,,,,,,TE/FLEX,Davis Allen,fd,4200,davis allen,LA,TE,classic,00-0039074,auto_exact,high
+135562-87515,WR,Tylan,Tylan Wallace,Wallace,0.8500000238418579,2,4200,CLE@TEN,CLE,TEN,,,,,,WR/FLEX,Tylan Wallace,fd,4200,tylan wallace,CLE,WR,classic,00-0036630,auto_exact,high
+135562-147049,TE,Drew,Drew Ogletree,Ogletree,0.1799999952316284,5,4200,IND@MIN,IND,MIN,,,,,,TE/FLEX,Drew Ogletree,fd,4200,drew ogletree,IND,TE,classic,00-0037292,manual_override,high
+135562-31360,WR,Odell,Odell Beckham Jr.,Beckham Jr.,0.0,1,4200,IND@MIN,MIN,IND,,,,,,WR/FLEX,Odell Beckham Jr.,fd,4200,odell beckham,MIN,WR,classic,00-0031235,auto_exact,high
+135562-93845,WR,Tay,Tay Martin,Martin,0.0,5,4200,GB@DET,DET,GB,,,,,,WR/FLEX,Tay Martin,fd,4200,tay martin,DET,WR,classic,00-0037524,auto_exact,high
+135562-155293,RB,DJ,DJ Giddens,Giddens,0.0,1,4200,IND@MIN,IND,MIN,,,,,,RB/FLEX,DJ Giddens,fd,4200,dj giddens,IND,RB,classic,00-0040179,auto_exact,high
+135562-65231,RB,Adam,Adam Prentice,Prentice,0.2,5,4200,DEN@ARI,DEN,ARI,,,,,,RB/FLEX,Adam Prentice,fd,4200,adam prentice,DEN,RB,classic,00-0036727,auto_exact,high
+135562-201535,WR,Kameron,Kameron Johnson,Johnson,0.1333333353201548,6,4200,TB@CAR,TB,CAR,,,,,,WR/FLEX,Kameron Johnson,fd,4200,kameron johnson,TB,WR,classic,00-0039589,auto_exact,high
+135562-72515,TE,Ian,Ian Thomas,Thomas,3.299999952316284,4,4200,LAR@LV,LV,LAR,,,,,,TE/FLEX,Ian Thomas,fd,4200,ian thomas,LV,TE,classic,00-0034365,auto_exact,high
+135562-28570,TE,Nick,Nick Vannett,Vannett,,0,4200,CIN@BAL,BAL,CIN,,,,,,TE/FLEX,Nick Vannett,fd,4200,nick vannett,BAL,TE,classic,00-0032394,auto_exact,high
+135562-175021,RB,Jordan,Jordan James,James,0.375,4,4200,SF@ATL,SF,ATL,,,,,,RB/FLEX,Jordan James,fd,4200,jordan james,SF,RB,classic,00-0040177,auto_exact,high
+135562-152537,WR,Tai,Tai Felton,Felton,1.8666666348775227,3,4200,IND@MIN,MIN,IND,,,,,,WR/FLEX,Tai Felton,fd,4200,tai felton,MIN,WR,classic,00-0040154,auto_exact,high
+135562-178158,WR,Colbie,Colbie Young,Young,0.949999988079071,2,4200,CIN@BAL,CIN,BAL,Q,Knee,,,,WR/FLEX,Colbie Young,fd,4200,colbie young,CIN,WR,classic,00-0041069,auto_exact,high
+135562-166898,RB,Nick,Nick Singleton,Singleton,0.4000000158945719,3,4200,CLE@TEN,TEN,CLE,,,,,,RB/FLEX,Nick Singleton,fd,4200,nick singleton,TEN,RB,classic,00-0040886,manual_override,high
+135562-175154,TE,Jack,Jack Endries,Endries,0.0,1,4100,CIN@BAL,CIN,BAL,,,,,,TE/FLEX,Jack Endries,fd,4100,jack endries,CIN,TE,classic,00-0041116,auto_exact,high
+135562-64634,WR,Alex,Alex Bachman,Bachman,0.0,3,4100,LAR@LV,LAR,LV,,,,,,WR/FLEX,Alex Bachman,fd,4100,alex bachman,LA,WR,classic,00-0035602,auto_exact,high
+135562-93391,TE,Payne,Payne Durham,Durham,0.5,2,4100,TB@CAR,TB,CAR,,,,,,TE/FLEX,Payne Durham,fd,4100,payne durham,TB,TE,classic,00-0039050,auto_exact,high
+135562-12553,D,Carolina,Carolina Panthers,Panthers,7.0,5,4100,TB@CAR,CAR,TB,,,,,,DEF,Carolina Panthers,fd,4100,carolina panthers,CAR,D,classic,DST_CAR,team_defense,high
+135562-71032,WR,Devin,Devin Duvernay,Duvernay,0.0,6,4100,DEN@ARI,ARI,DEN,,,,,,WR/FLEX,Devin Duvernay,fd,4100,devin duvernay,ARI,WR,classic,00-0036331,auto_exact,high
+135562-80299,RB,Patrick,Patrick Ricard,Ricard,0.2000000079472859,3,4100,NYG@HOU,NYG,HOU,,,,,,RB/FLEX,Patrick Ricard,fd,4100,patrick ricard,NYG,RB,classic,00-0033376,auto_exact,high
+135562-71143,TE,Kylen,Kylen Granson,Granson,0.0,2,4100,CLE@TEN,TEN,CLE,,,,,,TE/FLEX,Kylen Granson,fd,4100,kylen granson,TEN,TE,classic,00-0036876,auto_exact,high
+135562-173626,TE,Nate,Nate Adkins,Adkins,4.650000095367432,4,4100,DEN@ARI,DEN,ARI,,,,,,TE/FLEX,Nate Adkins,fd,4100,nate adkins,DEN,TE,classic,00-0038783,auto_exact,high
+135562-152128,WR,Dominic,Dominic Lovett,Lovett,0.0,1,4100,GB@DET,DET,GB,,,,,,WR/FLEX,Dominic Lovett,fd,4100,dominic lovett,DET,WR,classic,00-0040241,auto_exact,high
+135562-152219,WR,Lewis,Lewis Bond,Bond,0.0,1,4100,NYG@HOU,HOU,NYG,,,,,,WR/FLEX,Lewis Bond,fd,4100,lewis bond,HOU,WR,classic,00-0041467,auto_exact,high
+135562-64389,WR,Nick,Nick Westbrook-Ikhine,Westbrook-Ikhine,0.0,3,4100,IND@MIN,IND,MIN,,,,,,WR/FLEX,Nick Westbrook-Ikhine,fd,4100,nick westbrook ikhine,IND,WR,classic,00-0036182,auto_exact,high
+135562-114591,TE,William,William Wagner,Wagner,0.0,2,4100,CIN@BAL,CIN,BAL,,,,,,TE/FLEX,William Wagner,fd,4100,william wagner,CIN,TE,classic,00-0040379,auto_fallback_name_only_position_mismatch,low
+135562-159649,RB,DJ,DJ Herman,Herman,1.149999976158142,2,4100,MIA@NYJ,MIA,NYJ,,,,,,RB/FLEX,DJ Herman,fd,4100,dj herman,MIA,RB,classic,00-0041436,auto_exact,high
+135562-137139,WR,Myles,Myles Price,Price,1.8600000381469728,5,4100,IND@MIN,MIN,IND,,,,,,WR/FLEX,Myles Price,fd,4100,myles price,MIN,WR,classic,00-0040506,auto_exact,high
+135562-136172,WR,CJ,CJ Daniels,Daniels,0.0,1,4100,LAR@LV,LAR,LV,,,,,,WR/FLEX,CJ Daniels,fd,4100,cj daniels,LA,WR,classic,00-0041399,auto_exact,high
+135562-96269,RB,Owen,Owen Wright,Wright,0.3000000119209289,2,4000,LAR@LV,LV,LAR,,,,,,RB/FLEX,Owen Wright,fd,4000,owen wright,LV,RB,classic,00-0038458,auto_exact,high
+135562-152593,WR,Harrison,Harrison Wallace III,Wallace III,,0,4000,DEN@ARI,ARI,DEN,,,,,,WR/FLEX,Harrison Wallace III,fd,4000,harrison wallace,ARI,WR,classic,00-0041368,auto_exact,high
+135562-175126,WR,Chris,Chris Brazzell II,Brazzell II,,0,4000,TB@CAR,CAR,TB,IR,Knee,,,,WR/FLEX,Chris Brazzell II,fd,4000,chris brazzell,CAR,WR,classic,00-0041047,auto_exact,high
+135562-110617,WR,Isaiah,Isaiah Neyor,Neyor,,0,4000,GB@DET,GB,DET,,,,,,WR/FLEX,Isaiah Neyor,fd,4000,isaiah neyor,GB,WR,classic,00-0040558,auto_exact,high
+135562-152603,RB,Anthony,Anthony Tyus III,Tyus III,0.0,2,4000,TB@CAR,CAR,TB,,,,,,RB/FLEX,Anthony Tyus III,fd,4000,anthony tyus,CAR,RB,classic,00-0040394,auto_exact,high
+135562-137254,RB,Deuce,Deuce Vaughn,Vaughn,,0,4000,NYG@HOU,HOU,NYG,,,,,,RB/FLEX,Deuce Vaughn,fd,4000,deuce vaughn,HOU,RB,classic,00-0038622,auto_exact,high
+135562-154661,WR,Michael,Michael Bandy,Bandy,2.75,4,4000,DEN@ARI,DEN,ARI,,,,,,WR/FLEX,Michael Bandy,fd,4000,michael bandy,DEN,WR,classic,00-0036959,auto_exact,high
+135562-243761,WR,Kolbe,Kolbe Katsis,Katsis,0.0,1,4000,DEN@ARI,DEN,ARI,,,,,,WR/FLEX,Kolbe Katsis,fd,4000,kolbe katsis,DEN,WR,classic,00-0041292,auto_exact,high
+135562-152628,TE,Thomas,Thomas Fidone II,Fidone II,0.0,1,4000,NYG@HOU,NYG,HOU,,,,,,TE/FLEX,Thomas Fidone II,fd,4000,thomas fidone,NYG,TE,classic,00-0040225,auto_exact,high
+135562-129081,RB,Ahmani,Ahmani Marshall,Marshall,,0,4000,TB@CAR,CAR,TB,,,,,,RB/FLEX,Ahmani Marshall,fd,4000,ahmani marshall,CAR,RB,classic,00-0040260,auto_exact,high
+135562-86075,TE,Lucas,Lucas Krull,Krull,1.25,2,4000,DEN@ARI,DEN,ARI,,,,,,TE/FLEX,Lucas Krull,fd,4000,lucas krull,DEN,TE,classic,00-0037539,auto_exact,high
+135562-42046,TE,Durham,Durham Smythe,Smythe,0.2249999940395355,4,4000,CIN@BAL,BAL,CIN,IR,Achilles,,,,TE/FLEX,Durham Smythe,fd,4000,durham smythe,BAL,TE,classic,00-0034798,auto_exact,high
+135562-133180,TE,Ben,Ben Yurosek,Yurosek,1.5,1,4000,IND@MIN,MIN,IND,,,,,,TE/FLEX,Ben Yurosek,fd,4000,ben yurosek,MIN,TE,classic,00-0040509,auto_exact,high
+135562-87109,WR,Bryce,Bryce Oliver,Oliver,1.2999999523162842,1,4000,NYG@HOU,HOU,NYG,,,,,,WR/FLEX,Bryce Oliver,fd,4000,bryce oliver,HOU,WR,classic,00-0039650,auto_exact,high
+135562-174148,RB,Carlos,Carlos Washington Jr.,Washington Jr.,,0,4000,MIA@NYJ,MIA,NYJ,,,,,,RB/FLEX,Carlos Washington Jr.,fd,4000,carlos washington,MIA,RB,classic,00-0038930,auto_exact,high
+135562-152669,TE,Jameson,Jameson Geers,Geers,,0,4000,DEN@ARI,ARI,DEN,IR,Undisclosed,,,,TE/FLEX,Jameson Geers,fd,4000,jameson geers,ARI,TE,classic,00-0041366,auto_exact,high
+135562-86113,WR,Ihmir,Ihmir Smith-Marsette,Smith-Marsette,,0,4000,TB@CAR,CAR,TB,,,,,,WR/FLEX,Ihmir Smith-Marsette,fd,4000,ihmir smith marsette,CAR,WR,classic,00-0036635,auto_exact,high
+135562-154730,WR,Dean,Dean Patterson IV,Patterson IV,,0,4000,TB@CAR,TB,CAR,,,,,,WR/FLEX,Dean Patterson IV,fd,4000,dean patterson,TB,WR,classic,00-0041435,auto_exact,high
+135562-68714,TE,Ko,Ko Kieft,Kieft,0.0,2,4000,TB@CAR,TB,CAR,,,,,,TE/FLEX,Ko Kieft,fd,4000,ko kieft,TB,TE,classic,00-0037311,auto_exact,high
+135562-61555,WR,David,David Sills V,Sills V,3.3416665395100917,12,4000,TB@CAR,TB,CAR,IR,Hamstring,,,,WR/FLEX,David Sills V,fd,4000,david sills,TB,WR,classic,00-0035359,auto_exact,high
+135562-158836,RB,Lucas,Lucas Scott,Scott,,0,4000,CIN@BAL,BAL,CIN,,,,,,RB/FLEX,Lucas Scott,fd,4000,lucas scott,BAL,RB,classic,00-0040637,auto_exact,high
+135562-104577,WR,Gunner,Gunner Olszewski,Olszewski,1.9887499809265137,16,4000,NYG@HOU,NYG,HOU,IR,Achilles,,,,WR/FLEX,Gunner Olszewski,fd,4000,gunner olszewski,NYG,WR,classic,00-0035645,auto_exact,high
+135562-94345,TE,Cole,Cole Turner,Turner,,0,4000,MIA@NYJ,MIA,NYJ,IR,Undisclosed,,,,TE/FLEX,Cole Turner,fd,4000,cole turner,MIA,TE,classic,00-0037078,auto_exact,high
+135562-87179,TE,Thomas,Thomas Yassmin,Yassmin,,0,4000,GB@DET,GB,DET,IR,Undisclosed,,,,TE/FLEX,Thomas Yassmin,fd,4000,thomas yassmin,GB,TE,classic,00-0039936,auto_exact,high
+135562-152717,WR,Beaux,Beaux Collins,Collins,1.1666666666666667,3,4000,SF@ATL,ATL,SF,IR,Undisclosed,,,,WR/FLEX,Beaux Collins,fd,4000,beaux collins,ATL,WR,classic,00-0040432,auto_exact,high
+135562-143509,TE,Caleb,Caleb Lohner,Lohner,,0,4000,DEN@ARI,DEN,ARI,IR,Lower body,,,,TE/FLEX,Caleb Lohner,fd,4000,caleb lohner,DEN,TE,classic,00-0040240,auto_exact,high
+135562-54426,TE,Andrew,Andrew Beck,Beck,0.0,3,4000,MIA@NYJ,NYJ,MIA,,,,,,TE/FLEX,Andrew Beck,fd,4000,andrew beck,NYJ,TE,classic,00-0034959,manual_override,high
+135562-28827,RB,Dare,Dare Ogunbowale,Ogunbowale,0.0,1,4000,NYG@HOU,HOU,NYG,,,,,,RB/FLEX,Dare Ogunbowale,fd,4000,dare ogunbowale,HOU,RB,classic,00-0033854,auto_exact,high
+135562-201903,WR,Coleman,Coleman Owen,Owen,0.0,1,4000,GB@DET,GB,DET,,,,,,WR/FLEX,Coleman Owen,fd,4000,coleman owen,GB,WR,classic,00-0040352,auto_exact,high
+135562-152756,WR,Will,Will Pauling,Pauling,,0,4000,SF@ATL,SF,ATL,,,,,,WR/FLEX,Will Pauling,fd,4000,will pauling,SF,WR,classic,00-0041361,auto_exact,high
+135562-151741,WR,Jack,Jack Bech,Bech,4.433333396911621,3,4000,LAR@LV,LV,LAR,IR,Forearm,,,,WR/FLEX,Jack Bech,fd,4000,jack bech,LV,WR,classic,00-0040729,auto_exact,high
+135562-158916,TE,Bauer,Bauer Sharp,Sharp,0.5199999809265137,5,4000,TB@CAR,TB,CAR,,,,,,TE/FLEX,Bauer Sharp,fd,4000,bauer sharp,TB,TE,classic,00-0041094,auto_exact,high
+135562-176325,TE,Jack,Jack Velling,Velling,,0,4000,SF@ATL,ATL,SF,,,,,,TE/FLEX,Jack Velling,fd,4000,jack velling,ATL,TE,classic,00-0041195,auto_exact,high
+135562-170184,RB,Julius,Julius Chestnut,Chestnut,0.0,4,4000,CLE@TEN,TEN,CLE,,,,,,RB/FLEX,Julius Chestnut,fd,4000,julius chestnut,TEN,RB,classic,00-0037594,auto_exact,high
+135562-166095,RB,Cody,Cody Schrader,Schrader,,0,4000,DEN@ARI,DEN,ARI,,,,,,RB/FLEX,Cody Schrader,fd,4000,cody schrader,DEN,RB,classic,00-0039703,auto_exact,high
+135562-171212,WR,Wesley,Wesley Grimes,Grimes,,0,4000,SF@ATL,SF,ATL,,,,,,WR/FLEX,Wesley Grimes,fd,4000,wesley grimes,SF,WR,classic,00-0041359,auto_exact,high
+135562-25813,WR,Phillip,Phillip Dorsett II,Dorsett II,,0,4000,LAR@LV,LV,LAR,,,,,,WR/FLEX,Phillip Dorsett II,fd,4000,phillip dorsett,LV,WR,classic,00-0032208,auto_exact,high
+135562-95455,WR,D.J.,D.J. Montgomery,Montgomery,,0,4000,IND@MIN,IND,MIN,IR,Abdomen,,,,WR/FLEX,D.J. Montgomery,fd,4000,dj montgomery,IND,WR,classic,00-0035045,auto_exact,high
+135562-120035,TE,Mark,Mark Redman,Redman,1.950000047683716,2,4000,GB@DET,GB,DET,,,,,,TE/FLEX,Mark Redman,fd,4000,mark redman,GB,TE,classic,00-0040598,auto_exact,high
+135562-88290,WR,Jeshaun,Jeshaun Jones,Jones,1.850000023841858,2,4000,IND@MIN,MIN,IND,,,,,,WR/FLEX,Jeshaun Jones,fd,4000,jeshaun jones,MIN,WR,classic,00-0039710,auto_exact,high
+135562-169185,WR,Jamaal,Jamaal Pritchett,Pritchett,0.0,1,4000,MIA@NYJ,NYJ,MIA,,,,,,WR/FLEX,Jamaal Pritchett,fd,4000,jamaal pritchett,NYJ,WR,classic,00-0040405,auto_exact,high
+135562-168171,TE,Jaren,Jaren Kanak,Kanak,,0,4000,CLE@TEN,TEN,CLE,IR,Pectoral,,,,TE/FLEX,Jaren Kanak,fd,4000,jaren kanak,TEN,TE,classic,00-0040901,auto_exact,high
+135562-120042,WR,Jalen,Jalen McMillan,McMillan,0.0,1,4000,TB@CAR,TB,CAR,IR,Knee - pcl,,,,WR/FLEX,Jalen McMillan,fd,4000,jalen mcmillan,TB,WR,classic,00-0039855,auto_exact,high
+135562-86255,TE,Josh,Josh Whyle,Whyle,0.0,1,4000,GB@DET,GB,DET,,,,,,TE/FLEX,Josh Whyle,fd,4000,josh whyle,GB,TE,classic,00-0038589,auto_exact,high
+135562-12528,D,Cincinnati,Cincinnati Bengals,Bengals,9.0,5,4000,CIN@BAL,CIN,BAL,,,,,,DEF,Cincinnati Bengals,fd,4000,cincinnati bengals,CIN,D,classic,DST_CIN,team_defense,high
+135562-158968,RB,Jonathon,Jonathon Brooks,Brooks,4.150000095367432,2,4000,TB@CAR,CAR,TB,IR,Abdomen,,,,RB/FLEX,Jonathon Brooks,fd,4000,jonathon brooks,CAR,RB,classic,00-0039344,auto_exact,high
+135562-185593,WR,Andrei,Andrei Iosivas,Iosivas,1.7000000476837158,2,4000,CIN@BAL,CIN,BAL,IR,Thumb,,,,WR/FLEX,Andrei Iosivas,fd,4000,andrei iosivas,CIN,WR,classic,00-0038619,auto_exact,high
+135562-151806,RB,Raheim,Raheim Sanders,Sanders,3.4400001525878907,5,4000,CLE@TEN,CLE,TEN,IR,Hip,,,,RB/FLEX,Raheim Sanders,fd,4000,raheim sanders,CLE,RB,classic,00-0040466,auto_exact,high
+135562-61693,TE,Danny,Danny Pinter,Pinter,0.0,1,4000,CIN@BAL,BAL,CIN,IR,Knee,,,,TE/FLEX,Danny Pinter,fd,4000,danny pinter,BAL,TE,classic,00-0036215,auto_fallback_name_only_position_mismatch,low
+135562-52495,WR,Braxton,Braxton Berrios,Berrios,0.0,4,4000,NYG@HOU,NYG,HOU,IR,Foot,,,,WR/FLEX,Braxton Berrios,fd,4000,braxton berrios,NYG,WR,classic,00-0034419,auto_exact,high
+135562-94481,WR,Deven,Deven Thompkins,Thompkins,1.2999999523162842,1,4000,LAR@LV,LV,LAR,,,,,,WR/FLEX,Deven Thompkins,fd,4000,deven thompkins,LV,WR,classic,00-0037487,auto_exact,high
+135562-110868,RB,Josh,Josh Williams,Williams,0.0,1,4000,TB@CAR,TB,CAR,,,,,,RB/FLEX,Josh Williams,fd,4000,josh williams,TB,RB,classic,00-0040429,auto_exact,high
+135562-137495,RB,Kentrel,Kentrel Bullock,Bullock,,0,4000,CIN@BAL,CIN,BAL,,,,,,RB/FLEX,Kentrel Bullock,fd,4000,kentrel bullock,CIN,RB,classic,00-0041241,auto_exact,high
+135562-168217,RB,Dean,Dean Connors,Connors,0.0,3,4000,LAR@LV,LAR,LV,,,,,,RB/FLEX,Dean Connors,fd,4000,dean connors,LA,RB,classic,00-0041415,auto_exact,high
+135562-92479,TE,David,David Martin-Robinson,Martin-Robinson,0.0,1,4000,CLE@TEN,TEN,CLE,,,,,,TE/FLEX,David Martin-Robinson,fd,4000,david martin robinson,TEN,TE,classic,00-0039648,auto_exact,high
+135562-91467,TE,Jake,Jake Tonges,Tonges,7.049999872843425,12,4000,SF@ATL,SF,ATL,IR,Knee - mcl,,,,TE/FLEX,Jake Tonges,fd,4000,jake tonges,SF,TE,classic,00-0037112,auto_exact,high
+135562-91488,RB,Chris,Chris Brooks,Brooks,2.7249999046325684,4,4000,GB@DET,GB,DET,IR,Ankle,,,,RB/FLEX,Chris Brooks,fd,4000,chris brooks,GB,RB,classic,00-0038685,auto_exact,high
+135562-185699,WR,Eric,Eric Rivers Jr.,Rivers Jr.,,0,4000,TB@CAR,TB,CAR,,,,,,WR/FLEX,Eric Rivers Jr.,fd,4000,eric rivers,TB,WR,classic,00-0041257,auto_exact,high
+135562-93539,RB,Michael,Michael Carter,Carter,0.0,1,4000,CLE@TEN,TEN,CLE,,,,,,RB/FLEX,Michael Carter,fd,4000,michael carter,TEN,RB,classic,00-0036924,auto_exact,high
+135562-133478,WR,Arian,Arian Smith,Smith,0.0,2,4000,MIA@NYJ,NYJ,MIA,IR,Knee - acl,,,,WR/FLEX,Arian Smith,fd,4000,arian smith,NYJ,WR,classic,00-0040582,auto_exact,high
+135562-93540,RB,British,British Brooks,Brooks,0.0,2,4000,NYG@HOU,HOU,NYG,IR,Hamstring,,,,RB/FLEX,British Brooks,fd,4000,british brooks,HOU,RB,classic,00-0039603,auto_exact,high
+135562-225637,TE,Ben,Ben Mann,Mann,0.0,1,4000,NYG@HOU,NYG,HOU,,,,,,TE/FLEX,Ben Mann,fd,4000,ben mann,NYG,TE,classic,00-0041143,auto_fallback_name_only_position_mismatch,low
+135562-153957,TE,Zaire,Zaire Mitchell-Paden,Mitchell-Paden,0.9000000158945719,3,4000,NYG@HOU,HOU,NYG,,,,,,TE/FLEX,Zaire Mitchell-Paden,fd,4000,zaire mitchell paden,HOU,TE,classic,00-0037340,auto_exact,high
+135562-151915,TE,Terrance,Terrance Ferguson,Ferguson,5.266666730244954,3,4000,LAR@LV,LAR,LV,IR,Ankle,,,,TE/FLEX,Terrance Ferguson,fd,4000,terrance ferguson,LA,TE,classic,00-0040737,auto_exact,high
+135562-110954,RB,Jordan,Jordan Waters,Waters,,0,4000,LAR@LV,LAR,LV,,,,,,RB/FLEX,Jordan Waters,fd,4000,jordan waters,LA,RB,classic,00-0040601,auto_exact,high
+135562-89455,WR,Jayden,Jayden Reed,Reed,1.4666666984558103,3,4000,GB@DET,GB,DET,IR,Neck,,,,WR/FLEX,Jayden Reed,fd,4000,jayden reed,GB,WR,classic,00-0039146,auto_exact,high
+135562-63855,WR,K.J.,K.J. Osborn,Osborn,,0,4000,CLE@TEN,TEN,CLE,,,,,,WR/FLEX,K.J. Osborn,fd,4000,kj osborn,TEN,WR,classic,00-0036345,auto_exact,high
+135562-90480,TE,Joel,Joel Wilson,Wilson,,0,4000,CLE@TEN,TEN,CLE,,,,,,TE/FLEX,Joel Wilson,fd,4000,joel wilson,TEN,TE,classic,00-0039023,auto_exact,high
+135562-90483,TE,Bernhard,Bernhard Raimann,Raimann,0.0,1,4000,IND@MIN,IND,MIN,,,,,,TE/FLEX,Bernhard Raimann,fd,4000,bernhard raimann,IND,TE,classic,00-0037757,auto_fallback_name_only_position_mismatch,low
+135562-110977,TE,Thomas,Thomas Gordon,Gordon,,0,4000,GB@DET,DET,GB,,,,,,TE/FLEX,Thomas Gordon,fd,4000,thomas gordon,DET,TE,classic,00-0040697,auto_exact,high
+135562-110978,RB,Evan,Evan Hull,Hull,0.9833333492279052,6,4000,DEN@ARI,ARI,DEN,,,,,,RB/FLEX,Evan Hull,fd,4000,evan hull,ARI,RB,classic,00-0038397,auto_exact,high
+135562-114054,WR,Dalen,Dalen Cambre,Cambre,0.0,1,4000,NYG@HOU,NYG,HOU,,,,,,WR/FLEX,Dalen Cambre,fd,4000,dalen cambre,NYG,WR,classic,00-0040431,auto_exact,high
+135562-102796,WR,Ricky,Ricky Pearsall,Pearsall,7.659999847412109,10,4000,SF@ATL,SF,ATL,IR,Knee - pcl,,,,WR/FLEX,Ricky Pearsall,fd,4000,ricky pearsall,SF,WR,classic,00-0039916,auto_exact,high
+135562-175504,TE,Max,Max Klare,Klare,0.0,1,4000,LAR@LV,LAR,LV,,,,,,TE/FLEX,Max Klare,fd,4000,max klare,LA,TE,classic,00-0041510,auto_exact,high
+135562-174494,TE,Miles,Miles Kitselman,Kitselman,,0,4000,GB@DET,DET,GB,,,,,,TE/FLEX,Miles Kitselman,fd,4000,miles kitselman,DET,TE,classic,00-0041457,auto_exact,high
+135562-92575,RB,Isiah,Isiah Pacheco,Pacheco,5.984615619365986,13,4000,GB@DET,DET,GB,IR,Back,,,,RB/FLEX,Isiah Pacheco,fd,4000,isiah pacheco,DET,RB,classic,00-0037197,auto_exact,high
+135562-94625,WR,Jalen,Jalen Reagor,Reagor,,0,4000,MIA@NYJ,MIA,NYJ,,,,,,WR/FLEX,Jalen Reagor,fd,4000,jalen reagor,MIA,WR,classic,00-0036387,auto_exact,high
+135562-63907,TE,Josh,Josh Oliver,Oliver,2.033333301544189,3,4000,IND@MIN,MIN,IND,IR,Biceps,,,,TE/FLEX,Josh Oliver,fd,4000,josh oliver,MIN,TE,classic,00-0035249,auto_exact,high
+135562-90533,RB,Jerome,Jerome Ford,Ford,2.353846183189979,13,4000,DEN@ARI,ARI,DEN,,,,,,RB/FLEX,Jerome Ford,fd,4000,jerome ford,ARI,RB,classic,00-0037267,auto_exact,high
+135562-112037,WR,Casey,Casey Washington,Washington,2.4799999237060546,5,4000,TB@CAR,CAR,TB,,,,,,WR/FLEX,Casey Washington,fd,4000,casey washington,CAR,WR,classic,00-0039394,auto_exact,high
+135562-154020,RB,Al-Jay,Al-Jay Henderson,Henderson,,0,4000,MIA@NYJ,NYJ,MIA,,,,,,RB/FLEX,Al-Jay Henderson,fd,4000,al jay henderson,NYJ,RB,classic,,,
+135562-166313,RB,Adam,Adam Randall,Randall,,0,4000,CIN@BAL,BAL,CIN,IR,Undisclosed,,,,RB/FLEX,Adam Randall,fd,4000,adam randall,BAL,RB,classic,00-0040888,auto_exact,high
+135562-175539,WR,Vinny,Vinny Anthony II,Anthony II,,0,4000,SF@ATL,ATL,SF,,,,,,WR/FLEX,Vinny Anthony II,fd,4000,vinny anthony,ATL,WR,classic,00-0041185,auto_exact,high
+135562-112062,WR,Skyy,Skyy Moore,Moore,1.4,5,4000,GB@DET,GB,DET,IR,Ankle,,,,WR/FLEX,Skyy Moore,fd,4000,skyy moore,GB,WR,classic,00-0038090,auto_exact,high
+135562-26057,RB,Michael,Michael Burton,Burton,0.0666666676600774,3,4000,CLE@TEN,CLE,TEN,,,,,,RB/FLEX,Michael Burton,fd,4000,michael burton,CLE,RB,classic,00-0031595,auto_exact,high
+135562-177614,TE,Marlin,Marlin Klein,Klein,1.0499999523162842,2,4000,NYG@HOU,HOU,NYG,,,,,,TE/FLEX,Marlin Klein,fd,4000,marlin klein,HOU,TE,classic,00-0041472,auto_exact,high
+135562-69068,RB,Jonathan,Jonathan Ward,Ward,,0,4000,CIN@BAL,BAL,CIN,,,,,,RB/FLEX,Jonathan Ward,fd,4000,jonathan ward,BAL,RB,classic,00-0035924,auto_exact,high
+135562-109007,WR,Josh,Josh Kelly,Kelly,,0,4000,NYG@HOU,HOU,NYG,,,,,,WR/FLEX,Josh Kelly,fd,4000,josh kelly,HOU,WR,classic,00-0040049,auto_exact,high
+135562-190930,WR,Ja'Kobi,Ja'Kobi Lane,Lane,3.799999952316284,2,4000,CIN@BAL,BAL,CIN,,,,,,WR/FLEX,Ja'Kobi Lane,fd,4000,jakobi lane,BAL,WR,classic,00-0040870,auto_exact,high
+135562-243158,WR,Tyren,Tyren Montgomery,Montgomery,,0,4000,CLE@TEN,TEN,CLE,,,,,,WR/FLEX,Tyren Montgomery,fd,4000,tyren montgomery,TEN,WR,classic,00-0040919,auto_exact,high
+135562-155096,WR,Quincy,Quincy Skinner Jr.,Skinner Jr.,,0,4000,GB@DET,GB,DET,,,,,,WR/FLEX,Quincy Skinner Jr.,fd,4000,quincy skinner,GB,WR,classic,00-0040553,auto_exact,high
+135562-243161,TE,Ty,Ty Pezza,Pezza,,0,4000,CIN@BAL,BAL,CIN,,,,,,TE/FLEX,Ty Pezza,fd,4000,ty pezza,BAL,TE,classic,00-0040986,auto_fallback_name_only_position_mismatch,low
+135562-243160,WR,Michael,Michael Briscoe,Briscoe,,0,4000,IND@MIN,MIN,IND,,,,,,WR/FLEX,Michael Briscoe,fd,4000,michael briscoe,MIN,WR,classic,00-0040970,auto_exact,high
+135562-63967,WR,Lucky,Lucky Jackson,Jackson,,0,4000,GB@DET,DET,GB,,,,,,WR/FLEX,Lucky Jackson,fd,4000,lucky jackson,DET,WR,classic,00-0038181,auto_exact,high
+135562-91618,TE,John,John FitzPatrick,FitzPatrick,1.920000076293945,10,4000,CLE@TEN,CLE,TEN,,,,,,TE/FLEX,John FitzPatrick,fd,4000,john fitzpatrick,CLE,TE,classic,00-0037306,auto_exact,high
+135562-208360,RB,Damon,Damon Bankston,Bankston,,0,4000,GB@DET,GB,DET,,,,,,RB/FLEX,Damon Bankston,fd,4000,damon bankston,GB,RB,classic,00-0041139,auto_exact,high
+135562-133615,WR,Dontae,Dontae Fleming,Fleming,,0,4000,NYG@HOU,NYG,HOU,,,,,,WR/FLEX,Dontae Fleming,fd,4000,dontae fleming,NYG,WR,classic,00-0040498,auto_exact,high
+135562-191983,TE,Dallen,Dallen Bentley,Bentley,0.0,1,4000,DEN@ARI,DEN,ARI,,,,,,TE/FLEX,Dallen Bentley,fd,4000,dallen bentley,DEN,TE,classic,00-0041133,auto_exact,high
+135562-177644,TE,Justin,Justin Joly,Joly,0.0,1,4000,MIA@NYJ,MIA,NYJ,Q,Concussion,,,,TE/FLEX,Justin Joly,fd,4000,justin joly,MIA,TE,classic,00-0041077,auto_exact,high
+135562-89613,WR,Simi,Simi Fehoko,Fehoko,0.0,5,4000,DEN@ARI,ARI,DEN,,,,,,WR/FLEX,Simi Fehoko,fd,4000,simi fehoko,ARI,WR,classic,00-0036646,auto_exact,high
+135562-114198,WR,Xavier,Xavier Legette,Legette,2.4666666984558105,3,4000,TB@CAR,CAR,TB,IR,Knee,,,,WR/FLEX,Xavier Legette,fd,4000,xavier legette,CAR,WR,classic,00-0039342,auto_exact,high
+135562-129560,WR,Xavier,Xavier Restrepo,Restrepo,2.799999952316284,2,4000,CLE@TEN,TEN,CLE,,,,,,WR/FLEX,Xavier Restrepo,fd,4000,xavier restrepo,TEN,WR,classic,00-0040522,auto_exact,high
+135562-73247,RB,Kene,Kene Nwangwu,Nwangwu,0.0,4,4000,MIA@NYJ,NYJ,MIA,,,,,,RB/FLEX,Kene Nwangwu,fd,4000,kene nwangwu,NYJ,RB,classic,00-0036842,auto_exact,high
+135562-166434,WR,Dane,Dane Key,Key,,0,4000,DEN@ARI,DEN,ARI,,,,,,WR/FLEX,Dane Key,fd,4000,dane key,DEN,WR,classic,00-0041293,auto_exact,high
+135562-173606,WR,Dillon,Dillon Bell,Bell,,0,4000,IND@MIN,MIN,IND,,,,,,WR/FLEX,Dillon Bell,fd,4000,dillon bell,MIN,WR,classic,00-0041342,auto_exact,high
+135562-160306,RB,Pierre,Pierre Strong Jr.,Strong Jr.,6.25,2,4000,GB@DET,GB,DET,,,,,,RB/FLEX,Pierre Strong Jr.,fd,4000,pierre strong,GB,RB,classic,00-0038098,auto_exact,high
+135562-226875,WR,Ja'seem,Ja'seem Reed,Reed,0.0,1,4000,TB@CAR,CAR,TB,,,,,,WR/FLEX,Ja'seem Reed,fd,4000,jaseem reed,CAR,WR,classic,00-0040265,auto_exact,high
+135562-226878,TE,Carter,Carter Runyon,Runyon,0.2666666706403096,3,4000,LAR@LV,LV,LAR,IR,Lower body,,,,TE/FLEX,Carter Runyon,fd,4000,carter runyon,LV,TE,classic,00-0040488,auto_exact,high
+135562-138820,RB,De'Von,De'Von Achane,Achane,7.033333460489909,3,4000,MIA@NYJ,MIA,NYJ,IR,Knee - acl,,,,RB/FLEX,De'Von Achane,fd,4000,devon achane,MIA,RB,classic,00-0039040,auto_exact,high
+135562-104019,TE,Matt,Matt Orzech,Orzech,0.0,1,4000,GB@DET,GB,DET,,,,,,TE/FLEX,Matt Orzech,fd,4000,matt orzech,GB,TE,classic,00-0035118,manual_override,high
+135562-86612,TE,Brayden,Brayden Willis,Willis,0.0,4,4000,SF@ATL,SF,ATL,,,,,,TE/FLEX,Brayden Willis,fd,4000,brayden willis,SF,TE,classic,00-0038643,auto_exact,high
+135562-18009,TE,Chris,Chris Manhertz,Manhertz,0.0,1,4000,NYG@HOU,NYG,HOU,,,,,,TE/FLEX,Chris Manhertz,fd,4000,chris manhertz,NYG,TE,classic,00-0031484,auto_exact,high
+135562-138854,WR,Ke'Shawn,Ke'Shawn Williams,Williams,-2.0,1,4000,CIN@BAL,CIN,BAL,,,,,,WR/FLEX,Ke'Shawn Williams,fd,4000,keshawn williams,CIN,WR,classic,00-0040534,auto_exact,high
+135562-129641,WR,Will,Will Sheppard,Sheppard,,0,4000,MIA@NYJ,MIA,NYJ,,,,,,WR/FLEX,Will Sheppard,fd,4000,will sheppard,MIA,WR,classic,00-0040753,auto_exact,high
+135562-56947,TE,Chris,Chris Myarick,Myarick,,0,4000,LAR@LV,LV,LAR,,,,,,TE/FLEX,Chris Myarick,fd,4000,chris myarick,LV,TE,classic,00-0035345,auto_exact,high
+135562-87668,WR,Shedrick,Shedrick Jackson,Jackson,4.633333206176758,3,4000,DEN@ARI,ARI,DEN,,,,,,WR/FLEX,Shedrick Jackson,fd,4000,shedrick jackson,ARI,WR,classic,00-0038891,auto_exact,high
+135562-86646,RB,Trey,Trey Sermon,Sermon,0.0,1,4000,SF@ATL,ATL,SF,IR,Undisclosed,,,,RB/FLEX,Trey Sermon,fd,4000,trey sermon,ATL,RB,classic,00-0036984,auto_exact,high
+135562-104054,RB,Sincere,Sincere McCormick,McCormick,,0,4000,SF@ATL,SF,ATL,,,,,,RB/FLEX,Sincere McCormick,fd,4000,sincere mccormick,SF,RB,classic,00-0037509,auto_exact,high
+135562-88699,RB,Jaret,Jaret Patterson,Patterson,3.4571429661342075,7,4000,CLE@TEN,CLE,TEN,,,,,,RB/FLEX,Jaret Patterson,fd,4000,jaret patterson,CLE,RB,classic,00-0036755,auto_exact,high
+135562-201342,RB,Chris,Chris Collier,Collier,,0,4000,LAR@LV,LV,LAR,IR,Undisclosed,,,,RB/FLEX,Chris Collier,fd,4000,chris collier,LV,RB,classic,00-0039244,auto_exact,high
+135562-154245,TE,Seydou,Seydou Traore,Traore,0.0,2,4000,MIA@NYJ,MIA,NYJ,,,,,,TE/FLEX,Seydou Traore,fd,4000,seydou traore,MIA,TE,classic,00-0041579,auto_exact,high
+135562-167561,WR,Antwane,Antwane Wells Jr.,Wells Jr.,,0,4000,SF@ATL,ATL,SF,,,,,,WR/FLEX,Antwane Wells Jr.,fd,4000,antwane wells,ATL,WR,classic,00-0040438,auto_exact,high
+135562-137889,WR,Brennan,Brennan Presley,Presley,,0,4000,LAR@LV,LAR,LV,,,,,,WR/FLEX,Brennan Presley,fd,4000,brennan presley,LA,WR,classic,00-0040597,auto_exact,high
+135562-152232,WR,Jordan,Jordan Moore,Moore,,0,4000,CIN@BAL,CIN,BAL,,,,,,WR/FLEX,Jordan Moore,fd,4000,jordan moore,CIN,WR,classic,00-0040375,auto_exact,high
+135562-88752,WR,Charlie,Charlie Jones,Jones,1.8666666348775227,3,4000,NYG@HOU,NYG,HOU,,,,,,WR/FLEX,Charlie Jones,fd,4000,charlie jones,NYG,WR,classic,00-0038576,auto_exact,high
+135562-87731,WR,Dominique,Dominique Robinson,Robinson,0.0,4,4000,NYG@HOU,HOU,NYG,,,,,,WR/FLEX,Dominique Robinson,fd,4000,dominique robinson,HOU,WR,classic,00-0037082,auto_fallback_name_only_position_mismatch,low
+135562-71351,TE,Charlie,Charlie Woerner,Woerner,0.449999988079071,4,4000,SF@ATL,ATL,SF,,,,,,TE/FLEX,Charlie Woerner,fd,4000,charlie woerner,ATL,TE,classic,00-0036429,auto_exact,high
+135562-69302,TE,Feleipe,Feleipe Franks,Franks,0.0,4,4000,TB@CAR,CAR,TB,,,,,,TE/FLEX,Feleipe Franks,fd,4000,feleipe franks,CAR,TE,classic,00-0036825,auto_exact,high
+135562-110274,WR,Bub,Bub Means,Means,,0,4000,CLE@TEN,CLE,TEN,O,Knee,,,,WR/FLEX,Bub Means,fd,4000,bub means,CLE,WR,classic,00-0039386,auto_exact,high
+135562-167622,RB,Jonah,Jonah Coleman,Coleman,6.650000095367432,2,4000,DEN@ARI,DEN,ARI,IR,Ankle,,,,RB/FLEX,Jonah Coleman,fd,4000,jonah coleman,DEN,RB,classic,00-0041496,auto_exact,high
+135562-128717,WR,Corey,Corey Rucker,Rucker,,0,4000,LAR@LV,LV,LAR,Q,Undisclosed,,,,WR/FLEX,Corey Rucker,fd,4000,corey rucker,LV,WR,classic,00-0041005,auto_exact,high
+135562-152272,WR,De'Zhaun,De'Zhaun Stribling,Stribling,,0,4000,SF@ATL,SF,ATL,IR,Ankle,,,,WR/FLEX,De'Zhaun Stribling,fd,4000,dezhaun stribling,SF,WR,classic,00-0041035,auto_exact,high
+135562-92882,TE,Connor,Connor Heyward,Heyward,0.2400000095367431,5,4000,LAR@LV,LV,LAR,,,,,,TE/FLEX,Connor Heyward,fd,4000,connor heyward,LV,TE,classic,00-0037304,auto_fallback_name_only_position_mismatch,low
+135562-156374,TE,Tre,Tre Watson,Watson,,0,4000,MIA@NYJ,MIA,NYJ,,,,,,TE/FLEX,Tre Watson,fd,4000,tre watson,MIA,TE,classic,00-0040094,auto_exact,high
+135562-142042,RB,Trey,Trey Benson,Benson,7.224999904632568,4,4000,DEN@ARI,ARI,DEN,IR,Knee,,,,RB/FLEX,Trey Benson,fd,4000,trey benson,ARI,RB,classic,00-0039921,auto_exact,high
+135562-86747,WR,Dylan,Dylan Drummond,Drummond,1.5399999618530271,5,4000,SF@ATL,ATL,SF,,,,,,WR/FLEX,Dylan Drummond,fd,4000,dylan drummond,ATL,WR,classic,00-0038953,auto_exact,high
+135562-29411,TE,Pharaoh,Pharaoh Brown,Brown,1.2000000476837158,1,4000,IND@MIN,IND,MIN,,,,,,TE/FLEX,Pharaoh Brown,fd,4000,pharaoh brown,IND,TE,classic,00-0033439,auto_exact,high
+135562-137966,WR,AJ,AJ Henning,Henning,,0,4000,MIA@NYJ,MIA,NYJ,,,,,,WR/FLEX,AJ Henning,fd,4000,aj henning,MIA,WR,classic,00-0040302,auto_exact,high
+135562-252655,RB,Grant,Grant Finley,Finley,,0,4000,NYG@HOU,NYG,HOU,,,,,,RB/FLEX,Grant Finley,fd,4000,grant finley,NYG,RB,classic,00-0041585,auto_exact,high
+135562-137965,TE,Dan,Dan Villari,Villari,,0,4000,LAR@LV,LAR,LV,,,,,,TE/FLEX,Dan Villari,fd,4000,dan villari,LA,TE,classic,00-0041422,auto_exact,high
+135562-156400,RB,Roman,Roman Hemby,Hemby,,0,4000,LAR@LV,LV,LAR,,,,,,RB/FLEX,Roman Hemby,fd,4000,roman hemby,LV,RB,classic,00-0040998,auto_exact,high
+135562-90870,WR,Calvin,Calvin Austin III,Austin III,4.866666666666666,15,4000,NYG@HOU,NYG,HOU,IR,Knee,,,,WR/FLEX,Calvin Austin III,fd,4000,calvin austin,NYG,WR,classic,00-0037837,auto_exact,high
+135562-86778,TE,Devin,Devin Culp,Culp,3.549999952316284,2,4000,CLE@TEN,CLE,TEN,,,,,,TE/FLEX,Devin Culp,fd,4000,devin culp,CLE,TE,classic,00-0039754,auto_exact,high
+135562-157438,WR,Jimmy,Jimmy Horn Jr.,Horn Jr.,-2.0,1,4000,CLE@TEN,CLE,TEN,,,,,,WR/FLEX,Jimmy Horn Jr.,fd,4000,jimmy horn,CLE,WR,classic,00-0040218,auto_exact,high
+135562-169733,TE,Carsen,Carsen Ryan,Ryan,0.0,2,4000,CLE@TEN,CLE,TEN,,,,,,TE/FLEX,Carsen Ryan,fd,4000,carsen ryan,CLE,TE,classic,00-0041131,auto_exact,high
+135562-152333,WR,Malik,Malik McClain,McClain,0.0,1,4000,MIA@NYJ,NYJ,MIA,,,,,,WR/FLEX,Malik McClain,fd,4000,malik mcclain,NYJ,WR,classic,00-0041267,auto_exact,high
+135562-119584,TE,Carson,Carson Towt,Towt,,0,4000,IND@MIN,IND,MIN,IR,Undisclosed,,,,TE/FLEX,Carson Towt,fd,4000,carson towt,IND,TE,classic,00-0040853,auto_exact,high
+135562-158511,RB,Max,Max Bredeson,Bredeson,0.0,1,4000,IND@MIN,MIN,IND,,,,,,RB/FLEX,Max Bredeson,fd,4000,max bredeson,MIN,RB,classic,00-0041081,auto_exact,high
+135562-138028,RB,Kalel,Kalel Mullings,Mullings,0.3000000119209289,1,4000,CLE@TEN,TEN,CLE,,,,,,RB/FLEX,Kalel Mullings,fd,4000,kalel mullings,TEN,RB,classic,00-0040205,auto_exact,high
+135562-103214,WR,Eli,Eli Pancol,Pancol,,0,4000,IND@MIN,IND,MIN,,,,,,WR/FLEX,Eli Pancol,fd,4000,eli pancol,IND,WR,classic,00-0040337,auto_exact,high
+135562-55088,WR,Malik,Malik Turner,Turner,0.0,2,4000,SF@ATL,SF,ATL,,,,,,WR/FLEX,Malik Turner,fd,4000,malik turner,SF,WR,classic,00-0034867,auto_exact,high
+135562-138039,TE,Matt,Matt Hibner,Hibner,5.166666666666667,3,4000,CIN@BAL,BAL,CIN,Q,Hand,,,,TE/FLEX,Matt Hibner,fd,4000,matt hibner,BAL,TE,classic,00-0040879,manual_override,high
+135562-137017,TE,Drake,Drake Dabney,Dabney,0.800000011920929,1,4000,GB@DET,GB,DET,,,,,,TE/FLEX,Drake Dabney,fd,4000,drake dabney,GB,TE,classic,00-0040628,auto_exact,high
+135562-91971,RB,Ronnie,Ronnie Rivers,Rivers,2.900000095367432,1,4000,LAR@LV,LAR,LV,IR,Calf,,,,RB/FLEX,Ronnie Rivers,fd,4000,ronnie rivers,LA,RB,classic,00-0037557,auto_exact,high
+135562-120642,WR,Savion,Savion Williams,Williams,6.099999904632568,1,4000,GB@DET,GB,DET,,,,,,WR/FLEX,Savion Williams,fd,4000,savion williams,GB,WR,classic,00-0040009,auto_exact,high
+135562-185153,RB,Davon,Davon Booth,Booth,,0,4000,IND@MIN,IND,MIN,,,,,,RB/FLEX,Davon Booth,fd,4000,davon booth,IND,RB,classic,00-0041277,auto_exact,high
+135562-69451,TE,Jack,Jack Stoll,Stoll,1.7000000476837158,8,4000,SF@ATL,SF,ATL,,,,,,TE/FLEX,Jack Stoll,fd,4000,jack stoll,SF,TE,classic,00-0036741,auto_exact,high
+135562-58189,TE,Mitchell,Mitchell Fraboni,Fraboni,0.0,2,4000,DEN@ARI,DEN,ARI,,,,,,TE/FLEX,Mitchell Fraboni,fd,4000,mitchell fraboni,DEN,TE,classic,00-0036943,auto_fallback_name_only_position_mismatch,low
+135562-139094,WR,Jalin,Jalin Hyatt,Hyatt,0.8571428571428571,7,4000,NYG@HOU,NYG,HOU,,,,,,WR/FLEX,Jalin Hyatt,fd,4000,jalin hyatt,NYG,WR,classic,00-0038938,auto_exact,high
+135562-201564,TE,Cam,Cam Grandy,Grandy,0.8500000238418579,2,4000,IND@MIN,MIN,IND,,,,,,TE/FLEX,Cam Grandy,fd,4000,cam grandy,MIN,TE,classic,00-0039631,auto_exact,high
+135562-192358,TE,Shawn,Shawn Bowman,Bowman,,0,4000,DEN@ARI,ARI,DEN,,,,,,TE/FLEX,Shawn Bowman,fd,4000,shawn bowman,ARI,TE,classic,00-0039550,auto_exact,high
+135562-139114,RB,Jabari,Jabari Small,Small,,0,4000,GB@DET,DET,GB,,,,,,RB/FLEX,Jabari Small,fd,4000,jabari small,DET,RB,classic,00-0039652,auto_exact,high
+135562-120684,WR,Garrett,Garrett Greene,Greene,,0,4000,TB@CAR,TB,CAR,,,,,,WR/FLEX,Garrett Greene,fd,4000,garrett greene,TB,WR,classic,00-0040419,auto_exact,high
+135562-166770,WR,Kendrick,Kendrick Law,Law,,0,4000,GB@DET,DET,GB,IR,Knee - acl,,,,WR/FLEX,Kendrick Law,fd,4000,kendrick law,DET,WR,classic,00-0041446,auto_exact,high
+135562-147315,WR,Jayden,Jayden Higgins,Higgins,6.489473844829359,19,4000,NYG@HOU,HOU,NYG,IR,Knee - acl,,,,WR/FLEX,Jayden Higgins,fd,4000,jayden higgins,HOU,WR,classic,00-0040130,auto_exact,high
+135562-119672,RB,Kendall,Kendall Milton,Milton,0.2000000029802322,1,4000,CIN@BAL,CIN,BAL,,,,,,RB/FLEX,Kendall Milton,fd,4000,kendall milton,CIN,RB,classic,00-0039266,auto_exact,high
+135562-166780,RB,Jam,Jam Miller,Miller,,0,4000,SF@ATL,ATL,SF,,,,,,RB/FLEX,Jam Miller,fd,4000,jam miller,ATL,RB,classic,00-0041129,auto_exact,high
+135562-23435,TE,Andrew,Andrew DePaola,DePaola,0.0,3,4000,IND@MIN,MIN,IND,,,,,,TE/FLEX,Andrew DePaola,fd,4000,andrew depaola,MIN,TE,classic,00-0029714,auto_fallback_name_only_position_mismatch,low
+135562-94094,TE,Brevin,Brevin Jordan,Jordan,0.550000011920929,4,4000,NYG@HOU,HOU,NYG,,,,,,TE/FLEX,Brevin Jordan,fd,4000,brevin jordan,HOU,TE,classic,00-0036556,auto_exact,high
+135562-128913,WR,Malachi,Malachi Corley,Corley,-0.3333333333333333,6,4000,CLE@TEN,CLE,TEN,,,,,,WR/FLEX,Malachi Corley,fd,4000,malachi corley,CLE,WR,classic,00-0039920,auto_exact,high
+135562-93075,TE,Hunter,Hunter Long,Long,0.8333333333333334,3,4000,DEN@ARI,ARI,DEN,IR,Knee,,,,TE/FLEX,Hunter Long,fd,4000,hunter long,ARI,TE,classic,00-0037004,auto_exact,high
+135562-176025,WR,Noah,Noah Thomas,Thomas,,0,4000,CIN@BAL,CIN,BAL,,,,,,WR/FLEX,Noah Thomas,fd,4000,noah thomas,CIN,WR,classic,00-0041248,auto_exact,high
+135562-155551,WR,Pat,Pat Bryant,Bryant,6.849999904632568,4,4000,DEN@ARI,DEN,ARI,IR,Ankle,,,,WR/FLEX,Pat Bryant,fd,4000,pat bryant,DEN,WR,classic,00-0040134,auto_exact,high
+135562-137122,RB,Tahj,Tahj Brooks,Brooks,0.0,3,4000,CIN@BAL,CIN,BAL,,,,,,RB/FLEX,Tahj Brooks,fd,4000,tahj brooks,CIN,RB,classic,00-0040208,auto_exact,high
+135562-94116,TE,Will,Will Mallory,Mallory,3.0,1,4000,IND@MIN,IND,MIN,,,,,,TE/FLEX,Will Mallory,fd,4000,will mallory,IND,TE,classic,00-0038394,auto_exact,high
+135562-119718,RB,Chip,Chip Trayanum,Trayanum,,0,4000,MIA@NYJ,NYJ,MIA,IR,Neck,,,,RB/FLEX,Chip Trayanum,fd,4000,chip trayanum,NYJ,RB,classic,00-0041239,auto_exact,high
+135562-157609,WR,Gage,Gage Larvadain,Larvadain,0.7416666348775228,12,4000,CIN@BAL,BAL,CIN,,,,,,WR/FLEX,Gage Larvadain,fd,4000,gage larvadain,BAL,WR,classic,00-0040259,auto_exact,high
+135562-138164,TE,Patrick,Patrick Gurd,Gurd,,0,4000,LAR@LV,LV,LAR,,,,,,TE/FLEX,Patrick Gurd,fd,4000,patrick gurd,LV,TE,classic,00-0041016,auto_exact,high
+135562-104388,WR,Tom,Tom Kennedy,Kennedy,0.0,5,4000,GB@DET,DET,GB,IR,Knee - mcl,,,,WR/FLEX,Tom Kennedy,fd,4000,tom kennedy,DET,WR,classic,00-0035544,auto_exact,high
+135562-152522,RB,Phil,Phil Mafah,Mafah,9.899999618530272,1,4000,NYG@HOU,NYG,HOU,,,,,,RB/FLEX,Phil Mafah,fd,4000,phil mafah,NYG,RB,classic,00-0040021,auto_exact,high
+135562-73687,WR,Quez,Quez Watkins,Watkins,,0,4000,IND@MIN,IND,MIN,,,,,,WR/FLEX,Quez Watkins,fd,4000,quez watkins,IND,WR,classic,00-0036271,auto_exact,high
+135562-72665,TE,Kenny,Kenny Yeboah,Yeboah,,0,4000,DEN@ARI,ARI,DEN,,,,,,TE/FLEX,Kenny Yeboah,fd,4000,kenny yeboah,ARI,TE,classic,00-0036510,auto_exact,high
+135562-110555,WR,Cameron,Cameron Ross,Ross,,0,4000,DEN@ARI,DEN,ARI,,,,,,WR/FLEX,Cameron Ross,fd,4000,cameron ross,DEN,WR,classic,00-0041299,auto_exact,high
+135562-91098,WR,Lawrence,Lawrence Keys III,Keys III,,0,4000,GB@DET,DET,GB,,,,,,WR/FLEX,Lawrence Keys III,fd,4000,lawrence keys,DET,WR,classic,00-0039474,auto_exact,high
+135562-152540,TE,CJ,CJ Dippre,Dippre,,0,4000,TB@CAR,TB,CAR,,,,,,TE/FLEX,CJ Dippre,fd,4000,cj dippre,TB,TE,classic,00-0040566,auto_exact,high
+135562-155629,TE,Khalil,Khalil Dinkins,Dinkins,,0,4000,SF@ATL,SF,ATL,,,,,,TE/FLEX,Khalil Dinkins,fd,4000,khalil dinkins,SF,TE,classic,00-0041357,auto_exact,high
+135562-96254,TE,Nick,Nick Muse,Muse,0.0,4,4000,SF@ATL,ATL,SF,,,,,,TE/FLEX,Nick Muse,fd,4000,nick muse,ATL,TE,classic,00-0037317,auto_exact,high
+135562-12535,D,Indianapolis,Indianapolis Colts,Colts,2.6666666666666665,6,3900,IND@MIN,IND,MIN,,,,,,DEF,Indianapolis Colts,fd,3900,indianapolis colts,IND,D,classic,DST_IND,team_defense,high
+135562-12543,D,New York,New York Giants,Giants,5.833333333333333,6,3800,NYG@HOU,NYG,HOU,,,,,,DEF,New York Giants,fd,3800,new york giants,NYG,D,classic,DST_NYG,team_defense,high
+135562-12532,D,Detroit,Detroit Lions,Lions,4.8,5,3700,GB@DET,DET,GB,,,,,,DEF,Detroit Lions,fd,3700,detroit lions,DET,D,classic,DST_DET,team_defense,high
+135562-12533,D,Green Bay,Green Bay Packers,Packers,6.5,6,3500,GB@DET,GB,DET,,,,,,DEF,Green Bay Packers,fd,3500,green bay packers,GB,D,classic,DST_GB,team_defense,high
+135562-12525,D,Atlanta,Atlanta Falcons,Falcons,5.333333333333333,6,3400,SF@ATL,ATL,SF,,,,,,DEF,Atlanta Falcons,fd,3400,atlanta falcons,ATL,D,classic,DST_ATL,team_defense,high
+135562-12537,D,Las Vegas,Las Vegas Raiders,Raiders,6.333333333333333,6,3400,LAR@LV,LV,LAR,,,,,,DEF,Las Vegas Raiders,fd,3400,las vegas raiders,LV,D,classic,DST_LV,team_defense,high
+135562-12546,D,Arizona,Arizona Cardinals,Cardinals,4.0,6,3400,DEN@ARI,ARI,DEN,,,,,,DEF,Arizona Cardinals,fd,3400,arizona cardinals,ARI,D,classic,DST_ARI,team_defense,high
+135562-12551,D,Tampa Bay,Tampa Bay Buccaneers,Buccaneers,6.0,6,3300,TB@CAR,TB,CAR,,,,,,DEF,Tampa Bay Buccaneers,fd,3300,tampa bay buccaneers,TB,D,classic,DST_TB,team_defense,high
+135562-12534,D,Tennessee,Tennessee Titans,Titans,6.5,6,3200,CLE@TEN,TEN,CLE,,,,,,DEF,Tennessee Titans,fd,3200,tennessee titans,TEN,D,classic,DST_TEN,team_defense,high
+135562-12539,D,Miami,Miami Dolphins,Dolphins,1.6,5,3000,MIA@NYJ,MIA,NYJ,,,,,,DEF,Miami Dolphins,fd,3000,miami dolphins,MIA,D,classic,DST_MIA,team_defense,high

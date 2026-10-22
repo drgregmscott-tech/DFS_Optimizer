@@ -1,0 +1,16 @@
+event_id,home_abbr,away_abbr,home,away,commence_time
+b1be064fb52a198a62109c279e7ab24c,ATL,SF,Atlanta Falcons,San Francisco 49ers,2026-10-25T17:00:00Z
+550ec5290f935d311995affbcb0b5c79,BAL,CIN,Baltimore Ravens,Cincinnati Bengals,2026-10-25T17:00:00Z
+2823e986597c449ab94126cd5ed3fae9,CAR,TB,Carolina Panthers,Tampa Bay Buccaneers,2026-10-25T17:00:00Z
+5dce18baccec5d3ad5fb3a3ce52f7619,TEN,CLE,Tennessee Titans,Cleveland Browns,2026-10-25T17:00:00Z
+2bba7fde6f97d0e54403d53676e4ab63,HOU,NYG,Houston Texans,New York Giants,2026-10-25T17:00:00Z
+f3992ad4496724baf7dcd1ef58245d6b,MIN,IND,Minnesota Vikings,Indianapolis Colts,2026-10-25T17:00:00Z
+be5dd120ca08b43d647b6caa8953500a,NYJ,MIA,New York Jets,Miami Dolphins,2026-10-25T17:00:00Z
+436119bb3ccdaa6ed7808aa3ebd82b76,ARI,DEN,Arizona Cardinals,Denver Broncos,2026-10-25T20:05:00Z
+e8e5715eefb6a9ce64765e9ddf49c0cc,DET,GB,Detroit Lions,Green Bay Packers,2026-10-25T20:25:00Z
+f7679cf18454e4d88a8f2b990c3f08ac,LV,LA,Las Vegas Raiders,Los Angeles Rams,2026-10-25T20:25:00Z
+ab2865e9f2d4b012de8bc6fb6de11a7c,GB,CAR,Green Bay Packers,Carolina Panthers,2026-10-30T00:15:00Z
+921859689f5f8b3b8b1caf4248bdb1ec,TB,ATL,Tampa Bay Buccaneers,Atlanta Falcons,2026-11-01T18:00:00Z
+9c5d8f57e0ba0fbd9ef436c1f0898f99,CIN,TEN,Cincinnati Bengals,Tennessee Titans,2026-11-01T18:00:00Z
+52e7ee9c42525e6deec02da32dc2fad8,DET,MIN,Detroit Lions,Minnesota Vikings,2026-11-01T18:00:00Z
+98f1b121b793977434c046e76c707145,NYJ,LV,New York Jets,Las Vegas Raiders,2026-11-01T18:00:00Z

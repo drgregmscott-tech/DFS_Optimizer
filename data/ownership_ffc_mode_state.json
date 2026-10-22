@@ -43,5 +43,20 @@
     "locked": true,
     "locked_at_utc": "2026-10-13T12:19:31+00:00",
     "matched_at_lock": 42
+  },
+  "dk:dk_classic_wk7_afternoon_25Oct2026": {
+    "locked": true,
+    "locked_at_utc": "2026-10-22T10:17:49+00:00",
+    "matched_at_lock": 37
+  },
+  "dk:dk_classic_wk7_early_25Oct2026": {
+    "locked": true,
+    "locked_at_utc": "2026-10-22T10:16:31+00:00",
+    "matched_at_lock": 45
+  },
+  "dk:dk_classic_wk7_main_25Oct2026": {
+    "locked": true,
+    "locked_at_utc": "2026-10-22T10:15:01+00:00",
+    "matched_at_lock": 45
   }
 }
