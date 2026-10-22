@@ -1,6 +1,6 @@
 team,component,pool_share,share_basis,raw_sum,target,scale,abs_delta
 ARI,recv,0.9424,recent,46.96,32.81,0.6985,14.16
-LV,recv,0.9945,recent,47.96,35.66,0.7436,12.3
+LV,recv,0.9945,recent,48.41,35.66,0.7368,12.74
 DEN,rush,0.9848,recent,36.27,27.1,0.7473,9.16
 ARI,rush,1.0,recent,35.32,26.58,0.7525,8.74
 LA,recv,1.0,recent,49.31,37.43,0.7591,11.88
