@@ -50,6 +50,11 @@ URL_TEMPLATES = {
     # "genuinely lost the job" -- see that function's docstring for why a
     # price/history-only signal can't make that distinction on its own.
     "depth_charts": f"{BASE_URL}/depth_charts/depth_charts_{{season}}.parquet",
+    # PFR-sourced per-game snap counts (offense_snaps / offense_pct = PFR's own player/team share), one row per
+    # player per game, keyed by PFR id (2026-10-22, analysis/snap_share_signal). players.parquet is the id crosswalk
+    # (pfr_id -> gsis_id, which is our player_id); 99.8% of skill snap rows map.
+    "snap_counts": f"{BASE_URL}/snap_counts/snap_counts_{{season}}.parquet",
+    "players": f"{BASE_URL}/players/players.parquet",
 }
 
 
@@ -117,6 +122,34 @@ def import_depth_charts(season: int) -> pd.DataFrame:
     retry rather than a batch that partially succeeds.
     """
     return _read_parquet(URL_TEMPLATES["depth_charts"].format(season=season))
+
+
+SNAP_COUNT_COLUMNS = ["season", "week", "game_type", "player_id", "pfr_player_id", "player", "position", "team",
+                      "opponent", "offense_snaps", "offense_pct"]
+
+
+def import_snap_counts(years: list[int], save_dir=None) -> pd.DataFrame:
+    """Pull PFR snap counts for the given seasons, mapped to gsis ids (our player_id) via nflverse players.parquet
+    (2026-10-22, analysis/snap_role_projection_confirm; same source/mapping as snap_share_signal/build.py::snaps()).
+
+    Returns one row per (season, week, PFR player) that maps to a gsis id (inner join, as validated), columns
+    SNAP_COUNT_COLUMNS. With `save_dir`, also writes `{save_dir}/snap_counts_{season}.parquet` per season -- the
+    cache statline_model.build_snap_role_features() reads (and re-pulls through here when the current season's file
+    is behind the target week). A season that 404s raises, like every other import_* here.
+    """
+    pl = _read_parquet(URL_TEMPLATES["players"])[["pfr_id", "gsis_id"]].dropna().drop_duplicates("pfr_id")
+    frames = []
+    for y in years:
+        sc = _read_parquet(URL_TEMPLATES["snap_counts"].format(season=y))
+        sc = sc.merge(pl, left_on="pfr_player_id", right_on="pfr_id", how="inner")
+        sc = sc.rename(columns={"gsis_id": "player_id"})
+        sc = sc[[c for c in SNAP_COUNT_COLUMNS if c in sc.columns]].reset_index(drop=True)
+        if save_dir is not None:
+            from pathlib import Path
+            Path(save_dir).mkdir(parents=True, exist_ok=True)
+            sc.to_parquet(Path(save_dir) / f"snap_counts_{y}.parquet", index=False)
+        frames.append(sc)
+    return pd.concat(frames, ignore_index=True)
 
 
 if __name__ == "__main__":

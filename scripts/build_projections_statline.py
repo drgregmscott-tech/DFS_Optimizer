@@ -636,6 +636,78 @@ def _apply_wrw_wr(df, season, week):
     return df
 
 
+SNAP_ROLE_CLIP_PTS = 1.5
+
+
+def _apply_snap_role(df, site, season, week):
+    """Snap-role projection adjustment (analysis/snap_role_projection_confirm §6; features/coefficients in
+    statline_model.snap_role_adjust_pts, data/snap_role_adjust_dk.json): RB/WR/TE whose recent PFR snap share is high
+    for their target/carry share get points added, the reverse get points taken off -- what the snap lags add on top
+    of the usage lags, fit on 2021-25 current-code residuals (held out LOSO: RMSE 5.389->5.371, MAE 3.594->3.557,
+    5/5 seasons). Added AFTER the stack/blends/WRW (the stack keeps only ~42% of an engine-side change), clipped to
+    +/-SNAP_ROLE_CLIP_PTS, to final_projection and p10/p90; audit column snap_adj_pts. Ownership is computed on the
+    pre-snap projection (final_projection - snap_adj_pts; it measured slightly worse seeing it).
+    DK only (fit on DK points). Default ON by owner decision 2026-10-22 (2026 wk2-6 did not confirm the history
+    effect; re-grade after wk9). Off: DFS_PROJ_SNAP=0. Any failure = projections unchanged (loud warning)."""
+    df["snap_adj_pts"] = 0.0
+    if os.environ.get("DFS_PROJ_SNAP", "1") == "0" or site != "dk":
+        return df
+    try:
+        p = json.loads(statline_model.SNAP_ROLE_PARAMS.read_text(encoding="utf-8"))
+        clip = float(p.get("clip_pts", SNAP_ROLE_CLIP_PTS))
+        d = statline_model.snap_role_adjust_pts(df, season, week, params=p).astype(float).clip(-clip, clip)
+        # same guards as WRW WR: zero-sigma rows and rows already projected 0 are left alone; confirmed-no-game rows
+        # are zeroed further down anyway, so they carry no adj either.
+        ok = (pd.to_numeric(df["statline_sigma"], errors="coerce").fillna(0.0) > 0) \
+            & (pd.to_numeric(df["final_projection"], errors="coerce").fillna(0.0) > 0)
+        if "no_real_game_this_week" in df.columns:
+            ok &= ~df["no_real_game_this_week"].fillna(False).astype(bool)
+        # never take a player below 0
+        d = d.where(ok, 0.0).fillna(0.0).clip(lower=-pd.to_numeric(df["final_projection"], errors="coerce").fillna(0.0))
+    except Exception as exc:  # noqa: BLE001 -- must never break a build
+        _loud(f"Snap-role adjustment skipped ({type(exc).__name__}: {exc}); projections unchanged.")
+        return df
+    n = int(d.ne(0).sum())
+    if n:
+        for c in ("final_projection", "statline_p10", "statline_p90"):
+            df[c] = (pd.to_numeric(df[c], errors="coerce").fillna(0.0) + d).clip(lower=0.0)
+        df["snap_adj_pts"] = d
+        names =df["player_name"].astype(str) if "player_name" in df.columns else df["player_id"].astype(str)
+        big = d.abs().sort_values(ascending=False).index[:6]
+        print(f"Snap-role adjustment (week {week}): {n} RB/WR/TE row(s) adjusted, net {d.sum():+.1f} pts, "
+              f"mean |adj| {d[d.ne(0)].abs().mean():.2f}; largest: "
+              + "; ".join(f"{names[i]} {d[i]:+.2f}" for i in big) + ". Off: DFS_PROJ_SNAP=0.")
+    elif week > 1:
+        _loud(f"Snap-role adjustment ON but adjusted 0 rows for {season} week {week} "
+              f"(no snap history / snap data missing?); projections unchanged.")
+    return df
+
+
+def _ownership_on_pre_snap(out, own_fn):
+    """Run an ownership function on the PRE-snap projection (final_projection - snap_adj_pts; CPT rows carry the
+    FLEX adj, so x CAPTAIN_MULTIPLIER there), then restore the snap-adjusted final_projection. Ownership measured
+    slightly worse when it saw the snap adj (analysis/snap_role_projection_confirm §2/§5). No adj -> plain call."""
+    adj = pd.to_numeric(out["snap_adj_pts"], errors="coerce").fillna(0.0) if "snap_adj_pts" in out.columns else None
+    if adj is None or not adj.ne(0).any():
+        return own_fn(out)
+    try:
+        from build_projections import CAPTAIN_MULTIPLIER
+        scale = np.where(out["roster_role"].isin(CAPTAIN_ROLES), CAPTAIN_MULTIPLIER, 1.0) \
+            if "roster_role" in out.columns else 1.0
+        post = out["final_projection"].to_numpy(copy=True)
+        pre = out.copy()
+        pre["_snap_row"] = np.arange(len(pre))
+        pre["final_projection"] = (pd.to_numeric(pre["final_projection"], errors="coerce").fillna(0.0)
+                                   - adj.to_numpy() * scale).clip(lower=0.0)
+        res = own_fn(pre)
+        res["final_projection"] = post[res["_snap_row"].to_numpy()]
+        return res.drop(columns="_snap_row")
+    except Exception as exc:  # noqa: BLE001 -- must never break a build
+        _loud(f"Snap-role: pre-snap ownership failed ({type(exc).__name__}: {exc}); ownership sees the "
+              f"snap-adjusted projection this run.")
+        return own_fn(out)
+
+
 # Share of the Q-return engine-level delta added AFTER the stack (analysis/q_return_poststack, 2026-10-01).
 # The stack keeps ~52% of the volume fix's engine change on these rows (2021-25 rebuilds, n=43 active Q-return RB1s,
 # final delta +1.86 of an engine delta +3.55); Q-return RB1s were still under-projected +2.34 (FC +0.84). The
@@ -1279,6 +1351,9 @@ def build_statline_projections(site: str, season: int, week: int, slate_id: str,
     df = _apply_wrw_te(df, season, week)
     # WR OUT -> remaining WR2/WR3 (analysis/wr_out_redistribution). Off: DFS_WRW_WR=0.
     df = _apply_wrw_wr(df, season, week)
+    # Snap-role adjustment (analysis/snap_role_projection_confirm): PFR snap share vs usage share, points added
+    # post-stack, clipped +/-1.5; ownership sees the pre-snap projection. DK only. Off: DFS_PROJ_SNAP=0.
+    df = _apply_snap_role(df, site, season, week)
     # Same-team WR/TE down-adjustment when a starting QB is newly OUT/DOUBTFUL
     # (analysis/qb_out_teammate_adjustment). Off: DFS_QB_OUT_TEAMMATES=0.
     df = _apply_qb_out_teammates(df, week)
@@ -1333,6 +1408,7 @@ def build_statline_projections(site: str, season: int, week: int, slate_id: str,
                                                                "wrw_delta_pts", "wrw_vacated_car",
                                                                "wrw_te_delta_pts", "wrw_te_vacated_tgt",
                                                                "wrw_wr_delta_pts", "wrw_wr_vacated_tgt",
+                                                               "snap_adj_pts",
                                                                "role_change_injury_flag",
                                                                "q_return_flag", "q_return_post_pts"]]
 
@@ -1413,6 +1489,7 @@ def build_statline_projections(site: str, season: int, week: int, slate_id: str,
     dst_out["wrw_te_vacated_tgt"] = 0.0
     dst_out["wrw_wr_delta_pts"] = 0.0
     dst_out["wrw_wr_vacated_tgt"] = 0.0
+    dst_out["snap_adj_pts"] = 0.0
     dst_out["q_return_flag"] = False
     dst_out["q_return_post_pts"] = 0.0
     dst_out["role_change_injury_flag"] = False
@@ -1458,6 +1535,7 @@ def build_statline_projections(site: str, season: int, week: int, slate_id: str,
         kicker_out["wrw_te_vacated_tgt"] = 0.0
         kicker_out["wrw_wr_delta_pts"] = 0.0
         kicker_out["wrw_wr_vacated_tgt"] = 0.0
+        kicker_out["snap_adj_pts"] = 0.0
         kicker_out["q_return_flag"] = False
         kicker_out["q_return_post_pts"] = 0.0
         kicker_out["role_change_injury_flag"] = False
@@ -1513,7 +1591,7 @@ def build_statline_projections(site: str, season: int, week: int, slate_id: str,
         captain_out = apply_captain_multiplier(out, captain_salaries, site)
         out = pd.concat([out, captain_out], ignore_index=True)
         out["slate_format"] = "showdown"
-        out = add_showdown_ownership_columns(out, site)
+        out = _ownership_on_pre_snap(out, lambda o: add_showdown_ownership_columns(o, site))
     else:
         # Ownership review 2026-09-23: DK's own displayed AvgPointsPerGame is
         # what the field sees in the lobby; ownership_model.py uses it (as
@@ -1534,7 +1612,8 @@ def build_statline_projections(site: str, season: int, week: int, slate_id: str,
                 print(f"Public ownership: matched {out['ffc_own_pct'].notna().sum()} players from FFC table.")
         except Exception as _exc:  # noqa: BLE001 -- optional input, never break a build
             print(f"WARNING: public ownership table not used ({type(_exc).__name__}: {_exc}).")
-        out = add_ownership_columns(out, site, season=season, week=week, slate_id=slate_id)
+        out = _ownership_on_pre_snap(out, lambda o: add_ownership_columns(o, site, season=season, week=week,
+                                                                          slate_id=slate_id))
         out["roster_role"] = None
         out["slate_format"] = "classic"
         out["ownership_available"] = True

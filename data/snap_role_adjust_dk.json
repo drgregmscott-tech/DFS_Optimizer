@@ -1,0 +1,46 @@
+{
+ "_doc": "Snap-role projection adjustment (statline_model.snap_role_adjust_pts, applied by build_projections_statline._apply_snap_role right after WRW WR, post-stack). Per RB/WR/TE row with same-season snap history: adj = design(use+snap).full - design(use).base, design = per-position intercept + use_l1/use_l3/use_jump (+ snap_l1/snap_l3/snap_jump) x position; i.e. only what PFR snap share adds on top of the usage-share lags (spec S2). Clipped to +/-clip_pts, added to final_projection and p10/p90; ownership is computed on final_projection - snap_adj_pts. Fit: OLS of (actual DK pts - current-code OFF final_projection) on all 2021-25 RB/WR/TE eval rows with snap history (20,520 of 26,109 rows, 86 DK main slates, analysis/wrw_compounding_vacancy/hist_builds/fixed) -- the FULL-history fit (analysis/snap_role_projection_confirm/fit_s2.py fit_pair(H); matches data/coefs_s2.json full_all/base_all to 5e-5). Held out LOSO: RMSE 5.389->5.371, MAE 3.594->3.557, 5/5 seasons, pipeline placebo null. 2026 wk2-6 did not confirm (dMSE +0.03 [-.03,+.12]); shipped ON by owner decision 2026-10-22, re-grade after wk9. The three snap terms are collinear: read predictions, not signs. Off: DFS_PROJ_SNAP=0.",
+ "clip_pts": 1.5,
+ "positions": [
+  "RB",
+  "WR",
+  "TE"
+ ],
+ "full": {
+  "icpt_RB": -0.814423,
+  "icpt_WR": -1.037095,
+  "icpt_TE": -1.216581,
+  "use_l1_RB": 1.008137,
+  "use_l1_WR": -10.729157,
+  "use_l1_TE": -2.661861,
+  "use_l3_RB": -5.88588,
+  "use_l3_WR": 4.056501,
+  "use_l3_TE": -4.64749,
+  "use_jump_RB": 0.653955,
+  "use_jump_WR": 8.729984,
+  "use_jump_TE": 1.517397,
+  "snap_l1_RB": 3.000096,
+  "snap_l1_WR": 5.465325,
+  "snap_l1_TE": 2.670999,
+  "snap_l3_RB": 0.970128,
+  "snap_l3_WR": -2.246072,
+  "snap_l3_TE": 0.220397,
+  "snap_jump_RB": 1.370353,
+  "snap_jump_WR": -2.223355,
+  "snap_jump_TE": 0.517116
+ },
+ "base": {
+  "icpt_RB": -0.5417,
+  "icpt_WR": -0.426296,
+  "icpt_TE": -0.571548,
+  "use_l1_RB": 6.323355,
+  "use_l1_WR": -1.713401,
+  "use_l1_TE": 4.714688,
+  "use_l3_RB": -4.245402,
+  "use_l3_WR": 3.653911,
+  "use_l3_TE": -3.627778,
+  "use_jump_RB": 1.517222,
+  "use_jump_WR": 3.668517,
+  "use_jump_TE": -1.705342
+ }
+}

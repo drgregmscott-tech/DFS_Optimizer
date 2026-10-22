@@ -2777,6 +2777,132 @@ def apply_wr_replacement(pool: pd.DataFrame, season: int, week: int,
         return out
 
 
+# ---------------------------------------------------------------------------
+# Snap-role projection adjustment (analysis/snap_share_signal, analysis/snap_role_projection_confirm, 2026-10-22)
+# ---------------------------------------------------------------------------
+SNAP_ROLE_PARAMS = DATA_DIR / "snap_role_adjust_dk.json"
+SNAP_ROLE_POS = ["RB", "WR", "TE"]
+SNAP_ROLE_USE = ["use_l1", "use_l3", "use_jump"]
+SNAP_ROLE_SNAP = ["snap_l1", "snap_l3", "snap_jump"]
+_SNAP_TEAMFIX = {"JAC": "JAX", "LAR": "LA", "OAK": "LV", "SD": "LAC", "STL": "LA", "WSH": "WAS"}
+_SNAP_FIRST_SEASON = 2021  # first season the snap files are ingested for (and the fit's first season)
+
+
+def _load_snap_counts(season: int, week: int) -> pd.DataFrame | None:
+    """data/snap_counts_{season}.parquet (nflverse_fetch.import_snap_counts). When the file is missing, or it is the
+    season being built and it stops before week-1, re-pull it through nflverse (current-week data at build time).
+    A failed pull keeps whatever is cached (loud warning); None when nothing is available at all."""
+    path = DATA_DIR / f"snap_counts_{season}.parquet"
+    sc = pd.read_parquet(path) if path.exists() else None
+    reg_max = (int(sc.loc[sc["game_type"] == "REG", "week"].max())
+               if sc is not None and (sc["game_type"] == "REG").any() else 0)
+    if sc is None or reg_max < week - 1:
+        try:
+            import nflverse_fetch
+            fresh = nflverse_fetch.import_snap_counts([season], save_dir=DATA_DIR)
+            print(f"Snap counts: pulled {season} from nflverse ({len(fresh)} rows, through week "
+                  f"{int(fresh.loc[fresh['game_type'] == 'REG', 'week'].max()) if len(fresh) else 0}).")
+            sc = fresh
+        except Exception as exc:  # noqa: BLE001 -- optional input, never break a build
+            print(f"WARNING: snap counts {season} re-pull failed ({type(exc).__name__}: {exc}); "
+                  f"{'using cached file through week ' + str(reg_max) if sc is not None else 'no snap data'}.",
+                  file=sys.stderr)
+    return sc
+
+
+def build_snap_role_features(season: int, week: int) -> pd.DataFrame | None:
+    """Per-player pre-lock snap and usage lags for (season, week): snap_l1 / snap_l3 / snap_jump and use_l1 / use_l3 /
+    use_jump from the player's SAME-SEASON games with week < target (none -> no row -> adjustment 0).
+    Exact re-implementation of the validated research features (snap_share_signal/build.py: snaps(), lag_features(),
+    attach(); usage share = stacked_signal_interaction/build_frame.load_stats):
+      snap      = PFR offense_pct (max per player-game; REG; snap position RB/WR/TE/FB; pfr->gsis mapped)
+      use       = WR/TE targets / team targets, RB (carries+targets) / team (carries+targets) (team totals over ALL
+                  positions, from weekly_stats). A stat row with no snap match gets snap 0; a snap row with no stat
+                  row (0 touches) counts as an appearance with use 0 if the player has any RB/WR/TE stat row since
+                  2021 (as in the research frame).
+      x_l1 = last appearance, x_l3 = mean of last <= 3, x_jump = x_l1 - mean(appearances 2..4 back) (NaN if none).
+    Team-agnostic within the season (a traded player keeps his season trajectory), as fit.
+    Returns DataFrame [player_id, last_week, snap_l1, snap_l3, snap_jump, use_l1, use_l3, use_jump] or None."""
+    if season < _SNAP_FIRST_SEASON or week <= 1:
+        return None
+    sc = _load_snap_counts(season, week)
+    stats_path = DATA_DIR / f"weekly_stats_{season}.parquet"
+    if sc is None or sc.empty or not stats_path.exists():
+        return None
+    S = pd.read_parquet(stats_path)
+    stc = "season_type" if "season_type" in S.columns else "game_type"
+    S = S[(S[stc] == "REG") & (S["week"] < week)].copy()
+    if S.empty:
+        return None
+    for c in ("carries", "targets"):
+        S[c] = pd.to_numeric(S[c], errors="coerce").fillna(0.0)
+    S["team"] = S["team"].replace(_SNAP_TEAMFIX)
+    tv = S.groupby(["season", "week", "team"])[["carries", "targets"]].sum().rename(
+        columns={"carries": "tcar", "targets": "ttgt"}).reset_index()
+    S = S.merge(tv, on=["season", "week", "team"])
+    S = S[S["position"].isin(SNAP_ROLE_POS)].copy()
+    S["player_id"] = S["player_id"].astype(str)
+    S["use"] = np.where(S["position"] == "RB", (S["carries"] + S["targets"]) / (S["tcar"] + S["ttgt"]).clip(lower=1),
+                        S["targets"] / S["ttgt"].clip(lower=1))
+    sc = sc[(sc["game_type"] == "REG") & sc["position"].isin(["RB", "WR", "TE", "FB"]) & (sc["week"] < week)].copy()
+    sc["player_id"] = sc["player_id"].astype(str)
+    SN = sc.groupby(["season", "week", "player_id"], as_index=False).agg(snap=("offense_pct", "max"))
+    G = S[["season", "week", "player_id", "use"]].merge(SN, on=["season", "week", "player_id"], how="left")
+    # snap-only appearances (0 touches): players with any RB/WR/TE stat row in any ingested season since 2021
+    # (research membership rule; on a historical rebuild that includes later seasons, as fit -- membership only)
+    known = set(S["player_id"])
+    for s in range(_SNAP_FIRST_SEASON, season + 6):
+        p = DATA_DIR / f"weekly_stats_{s}.parquet"
+        if p.exists():
+            x = pd.read_parquet(p, columns=["player_id", "position", stc])
+            known |= set(x.loc[x["position"].isin(SNAP_ROLE_POS) & (x[stc] == "REG"), "player_id"].astype(str))
+    extra = SN.merge(G[["season", "week", "player_id"]], how="left", indicator=True)
+    extra = extra[(extra["_merge"] == "left_only") & extra["player_id"].isin(known)].drop(columns="_merge")
+    G = pd.concat([G, extra.assign(use=0.0)], ignore_index=True)
+    G["snap"] = G["snap"].fillna(0.0)
+    G = G.sort_values(["player_id", "season", "week"]).reset_index(drop=True)
+    for c in ("snap", "use"):
+        g = G.groupby(["player_id", "season"])[c]
+        G[f"{c}_l1"] = G[c]
+        G[f"{c}_l3"] = g.transform(lambda x: x.rolling(3, min_periods=1).mean())
+        pri = g.transform(lambda x: x.shift(1).rolling(3, min_periods=1).mean())
+        G[f"{c}_jump"] = G[f"{c}_l1"] - pri
+    L = G.groupby("player_id").tail(1)  # latest appearance with week < target
+    return L.rename(columns={"week": "last_week"})[
+        ["player_id", "last_week"] + SNAP_ROLE_SNAP + SNAP_ROLE_USE].reset_index(drop=True)
+
+
+def snap_role_adjust_pts(pool: pd.DataFrame, season: int, week: int, params: dict | None = None) -> pd.Series:
+    """Raw snap-role adjustment in DK points per pool row (before the caller's guards/clip):
+        adj = design(use + snap) . full  -  design(use) . base     (per position RB/WR/TE; intercepts included)
+    i.e. only what the snap lags add on top of the usage lags (spec S2, analysis/snap_role_projection_confirm §1).
+    0 for non-RB/WR/TE rows and rows without same-season snap history. Raises on missing params / data problems --
+    the caller (build_projections_statline._apply_snap_role) turns that into a loud no-op."""
+    p = params if params is not None else json.loads(SNAP_ROLE_PARAMS.read_text(encoding="utf-8"))
+    full, base = p["full"], p["base"]
+    adj = pd.Series(0.0, index=pool.index)
+    F = build_snap_role_features(season, week)
+    if F is None or F.empty:
+        return adj
+    F = F.set_index("player_id")
+    pid = pool["player_id"].astype(str)
+    pos = pool["position"].astype(str)
+    m = pos.isin(SNAP_ROLE_POS) & pid.isin(F.index)
+    if not m.any():
+        return adj
+    X = F.loc[pid[m]].reset_index(drop=True)
+    P = pos[m].reset_index(drop=True)
+    a = np.array([full[f"icpt_{q}"] - base[f"icpt_{q}"] for q in P], dtype=float)
+    for c in SNAP_ROLE_USE:
+        v = X[c].fillna(0.0).to_numpy(float)
+        a += v * np.array([full[f"{c}_{q}"] - base[f"{c}_{q}"] for q in P], dtype=float)
+    for c in SNAP_ROLE_SNAP:
+        v = X[c].fillna(0.0).to_numpy(float)
+        a += v * np.array([full[f"{c}_{q}"] for q in P], dtype=float)
+    adj.loc[m] = a
+    return adj
+
+
 def simulate(pool: pd.DataFrame, site: str, variance: dict,
              n_sims: int = DEFAULT_SIMS, seed: int = DEFAULT_SEED) -> pd.DataFrame:
     """Simulate every player's stat line, score each draw with `site`'s exact
