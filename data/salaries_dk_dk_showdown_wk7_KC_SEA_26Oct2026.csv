@@ -1,0 +1,113 @@
+Position,Name + ID,Name,ID,Roster Position,Salary,Game Info,TeamAbbrev,AvgPointsPerGame,Status,roster_role,name,site,salary,normalized_name,normalized_team,position_upper,slate_format,player_id,match_method,match_confidence
+RB,Kenneth Walker III (44628441),Kenneth Walker III,44628441,CPT,18000,KC@SEA 10/25/2026 08:20PM ET,KC,30.0,,CPT,Kenneth Walker III,dk,18000,kenneth walker,KC,RB,showdown,00-0038134,auto_exact,high
+WR,Jaxon Smith-Njigba (44628442),Jaxon Smith-Njigba,44628442,CPT,17400,KC@SEA 10/25/2026 08:20PM ET,SEA,30.0,,CPT,Jaxon Smith-Njigba,dk,17400,jaxon smith njigba,SEA,WR,showdown,00-0038543,auto_exact,high
+QB,Patrick Mahomes (44628443),Patrick Mahomes,44628443,CPT,15600,KC@SEA 10/25/2026 08:20PM ET,KC,20.0,,CPT,Patrick Mahomes,dk,15600,patrick mahomes,KC,QB,showdown,00-0033873,auto_exact,high
+QB,Sam Darnold (44628444),Sam Darnold,44628444,CPT,14100,KC@SEA 10/25/2026 08:20PM ET,SEA,14.2,,CPT,Sam Darnold,dk,14100,sam darnold,SEA,QB,showdown,00-0034869,auto_exact,high
+WR,Rashee Rice (44628445),Rashee Rice,44628445,CPT,13500,KC@SEA 10/25/2026 08:20PM ET,KC,9.5,Q,CPT,Rashee Rice,dk,13500,rashee rice,KC,WR,showdown,00-0039067,auto_exact,high
+RB,Kenneth Walker III (44628385),Kenneth Walker III,44628385,FLEX,12000,KC@SEA 10/25/2026 08:20PM ET,KC,30.0,,FLEX,Kenneth Walker III,dk,12000,kenneth walker,KC,RB,showdown,00-0038134,auto_exact,high
+TE,Travis Kelce (44628446),Travis Kelce,44628446,CPT,12000,KC@SEA 10/25/2026 08:20PM ET,KC,13.0,Q,CPT,Travis Kelce,dk,12000,travis kelce,KC,TE,showdown,00-0030506,auto_exact,high
+WR,Jaxon Smith-Njigba (44628386),Jaxon Smith-Njigba,44628386,FLEX,11600,KC@SEA 10/25/2026 08:20PM ET,SEA,30.0,,FLEX,Jaxon Smith-Njigba,dk,11600,jaxon smith njigba,SEA,WR,showdown,00-0038543,auto_exact,high
+RB,Zach Charbonnet (44628447),Zach Charbonnet,44628447,CPT,11100,KC@SEA 10/25/2026 08:20PM ET,SEA,0.0,Q,CPT,Zach Charbonnet,dk,11100,zach charbonnet,SEA,RB,showdown,00-0039165,auto_exact,high
+WR,Xavier Worthy (44628448),Xavier Worthy,44628448,CPT,10500,KC@SEA 10/25/2026 08:20PM ET,KC,9.5,,CPT,Xavier Worthy,dk,10500,xavier worthy,KC,WR,showdown,00-0039894,auto_exact,high
+QB,Patrick Mahomes (44628387),Patrick Mahomes,44628387,FLEX,10400,KC@SEA 10/25/2026 08:20PM ET,KC,20.0,,FLEX,Patrick Mahomes,dk,10400,patrick mahomes,KC,QB,showdown,00-0033873,auto_exact,high
+RB,Emanuel Wilson (44628449),Emanuel Wilson,44628449,CPT,9600,KC@SEA 10/25/2026 08:20PM ET,SEA,9.6,,CPT,Emanuel Wilson,dk,9600,emanuel wilson,SEA,RB,showdown,00-0038797,auto_exact,high
+QB,Sam Darnold (44628388),Sam Darnold,44628388,FLEX,9400,KC@SEA 10/25/2026 08:20PM ET,SEA,14.2,,FLEX,Sam Darnold,dk,9400,sam darnold,SEA,QB,showdown,00-0034869,auto_exact,high
+WR,Rashid Shaheed (44628450),Rashid Shaheed,44628450,CPT,9300,KC@SEA 10/25/2026 08:20PM ET,SEA,6.9,,CPT,Rashid Shaheed,dk,9300,rashid shaheed,SEA,WR,showdown,00-0037545,auto_exact,high
+WR,Rashee Rice (44628389),Rashee Rice,44628389,FLEX,9000,KC@SEA 10/25/2026 08:20PM ET,KC,9.5,Q,FLEX,Rashee Rice,dk,9000,rashee rice,KC,WR,showdown,00-0039067,auto_exact,high
+QB,Garrett Nussmeier (44628451),Garrett Nussmeier,44628451,CPT,9000,KC@SEA 10/25/2026 08:20PM ET,KC,0.0,,CPT,Garrett Nussmeier,dk,9000,garrett nussmeier,KC,QB,showdown,00-0040906,auto_exact,high
+QB,Drew Lock (44628452),Drew Lock,44628452,CPT,9000,KC@SEA 10/25/2026 08:20PM ET,SEA,17.1,Q,CPT,Drew Lock,dk,9000,drew lock,SEA,QB,showdown,00-0035704,auto_exact,high
+QB,Jalen Milroe (44628453),Jalen Milroe,44628453,CPT,9000,KC@SEA 10/25/2026 08:20PM ET,SEA,0.0,,CPT,Jalen Milroe,dk,9000,jalen milroe,SEA,QB,showdown,00-0040673,auto_exact,high
+QB,Justin Fields (44628454),Justin Fields,44628454,CPT,9000,KC@SEA 10/25/2026 08:20PM ET,KC,0.0,,CPT,Justin Fields,dk,9000,justin fields,KC,QB,showdown,00-0036945,auto_exact,high
+WR,Cooper Kupp (44628455),Cooper Kupp,44628455,CPT,8400,KC@SEA 10/25/2026 08:20PM ET,SEA,6.7,,CPT,Cooper Kupp,dk,8400,cooper kupp,SEA,WR,showdown,00-0033908,auto_exact,high
+TE,Travis Kelce (44628390),Travis Kelce,44628390,FLEX,8000,KC@SEA 10/25/2026 08:20PM ET,KC,13.0,Q,FLEX,Travis Kelce,dk,8000,travis kelce,KC,TE,showdown,00-0030506,auto_exact,high
+K,Jason Myers (44628456),Jason Myers,44628456,CPT,7800,KC@SEA 10/25/2026 08:20PM ET,SEA,10.0,,CPT,Jason Myers,dk,7800,jason myers,SEA,K,showdown,00-0031492,auto_exact,high
+RB,Zach Charbonnet (44628391),Zach Charbonnet,44628391,FLEX,7400,KC@SEA 10/25/2026 08:20PM ET,SEA,0.0,Q,FLEX,Zach Charbonnet,dk,7400,zach charbonnet,SEA,RB,showdown,00-0039165,auto_exact,high
+K,Harrison Butker (44628457),Harrison Butker,44628457,CPT,7200,KC@SEA 10/25/2026 08:20PM ET,KC,9.8,,CPT,Harrison Butker,dk,7200,harrison butker,KC,K,showdown,00-0033303,auto_exact,high
+WR,Xavier Worthy (44628392),Xavier Worthy,44628392,FLEX,7000,KC@SEA 10/25/2026 08:20PM ET,KC,9.5,,FLEX,Xavier Worthy,dk,7000,xavier worthy,KC,WR,showdown,00-0039894,auto_exact,high
+TE,AJ Barner (44628458),AJ Barner,44628458,CPT,6900,KC@SEA 10/25/2026 08:20PM ET,SEA,5.8,,CPT,AJ Barner,dk,6900,aj barner,SEA,TE,showdown,00-0039793,auto_exact,high
+RB,George Holani (44628459),George Holani,44628459,CPT,6600,KC@SEA 10/25/2026 08:20PM ET,SEA,5.6,,CPT,George Holani,dk,6600,george holani,SEA,RB,showdown,00-0039299,auto_exact,high
+RB,Emanuel Wilson (44628393),Emanuel Wilson,44628393,FLEX,6400,KC@SEA 10/25/2026 08:20PM ET,SEA,9.6,,FLEX,Emanuel Wilson,dk,6400,emanuel wilson,SEA,RB,showdown,00-0038797,auto_exact,high
+DST,Seahawks (44628460),Seahawks,44628460,CPT,6300,KC@SEA 10/25/2026 08:20PM ET,SEA,7.8,,CPT,Seahawks,dk,6300,seahawks,SEA,DST,showdown,DST_SEA,team_defense,high
+WR,Rashid Shaheed (44628394),Rashid Shaheed,44628394,FLEX,6200,KC@SEA 10/25/2026 08:20PM ET,SEA,6.9,,FLEX,Rashid Shaheed,dk,6200,rashid shaheed,SEA,WR,showdown,00-0037545,auto_exact,high
+QB,Garrett Nussmeier (44628395),Garrett Nussmeier,44628395,FLEX,6000,KC@SEA 10/25/2026 08:20PM ET,KC,0.0,,FLEX,Garrett Nussmeier,dk,6000,garrett nussmeier,KC,QB,showdown,00-0040906,auto_exact,high
+QB,Drew Lock (44628396),Drew Lock,44628396,FLEX,6000,KC@SEA 10/25/2026 08:20PM ET,SEA,17.1,Q,FLEX,Drew Lock,dk,6000,drew lock,SEA,QB,showdown,00-0035704,auto_exact,high
+QB,Jalen Milroe (44628397),Jalen Milroe,44628397,FLEX,6000,KC@SEA 10/25/2026 08:20PM ET,SEA,0.0,,FLEX,Jalen Milroe,dk,6000,jalen milroe,SEA,QB,showdown,00-0040673,auto_exact,high
+QB,Justin Fields (44628398),Justin Fields,44628398,FLEX,6000,KC@SEA 10/25/2026 08:20PM ET,KC,0.0,,FLEX,Justin Fields,dk,6000,justin fields,KC,QB,showdown,00-0036945,auto_exact,high
+TE,Noah Gray (44628461),Noah Gray,44628461,CPT,6000,KC@SEA 10/25/2026 08:20PM ET,KC,4.1,,CPT,Noah Gray,dk,6000,noah gray,KC,TE,showdown,00-0036637,auto_exact,high
+DST,Chiefs (44628462),Chiefs,44628462,CPT,5700,KC@SEA 10/25/2026 08:20PM ET,KC,8.0,,CPT,Chiefs,dk,5700,chiefs,KC,DST,showdown,DST_KC,team_defense,high
+WR,Cooper Kupp (44628399),Cooper Kupp,44628399,FLEX,5600,KC@SEA 10/25/2026 08:20PM ET,SEA,6.7,,FLEX,Cooper Kupp,dk,5600,cooper kupp,SEA,WR,showdown,00-0033908,auto_exact,high
+K,Jason Myers (44628400),Jason Myers,44628400,FLEX,5200,KC@SEA 10/25/2026 08:20PM ET,SEA,10.0,,FLEX,Jason Myers,dk,5200,jason myers,SEA,K,showdown,00-0031492,auto_exact,high
+WR,Jalen Royals (44628463),Jalen Royals,44628463,CPT,5100,KC@SEA 10/25/2026 08:20PM ET,KC,3.0,,CPT,Jalen Royals,dk,5100,jalen royals,KC,WR,showdown,00-0040646,auto_exact,high
+K,Harrison Butker (44628401),Harrison Butker,44628401,FLEX,4800,KC@SEA 10/25/2026 08:20PM ET,KC,9.8,,FLEX,Harrison Butker,dk,4800,harrison butker,KC,K,showdown,00-0033303,auto_exact,high
+TE,AJ Barner (44628402),AJ Barner,44628402,FLEX,4600,KC@SEA 10/25/2026 08:20PM ET,SEA,5.8,,FLEX,AJ Barner,dk,4600,aj barner,SEA,TE,showdown,00-0039793,auto_exact,high
+RB,Emmett Johnson (44628464),Emmett Johnson,44628464,CPT,4500,KC@SEA 10/25/2026 08:20PM ET,KC,4.5,,CPT,Emmett Johnson,dk,4500,emmett johnson,KC,RB,showdown,00-0041013,auto_exact,high
+RB,George Holani (44628403),George Holani,44628403,FLEX,4400,KC@SEA 10/25/2026 08:20PM ET,SEA,5.6,,FLEX,George Holani,dk,4400,george holani,SEA,RB,showdown,00-0039299,auto_exact,high
+DST,Seahawks (44628404),Seahawks,44628404,FLEX,4200,KC@SEA 10/25/2026 08:20PM ET,SEA,7.8,,FLEX,Seahawks,dk,4200,seahawks,SEA,DST,showdown,DST_SEA,team_defense,high
+WR,Tory Horton (44628465),Tory Horton,44628465,CPT,4200,KC@SEA 10/25/2026 08:20PM ET,SEA,3.5,,CPT,Tory Horton,dk,4200,tory horton,SEA,WR,showdown,00-0040648,auto_exact,high
+TE,Noah Gray (44628405),Noah Gray,44628405,FLEX,4000,KC@SEA 10/25/2026 08:20PM ET,KC,4.1,,FLEX,Noah Gray,dk,4000,noah gray,KC,TE,showdown,00-0036637,auto_exact,high
+DST,Chiefs (44628406),Chiefs,44628406,FLEX,3800,KC@SEA 10/25/2026 08:20PM ET,KC,8.0,,FLEX,Chiefs,dk,3800,chiefs,KC,DST,showdown,DST_KC,team_defense,high
+WR,Cyrus Allen (44628466),Cyrus Allen,44628466,CPT,3600,KC@SEA 10/25/2026 08:20PM ET,KC,0.9,,CPT,Cyrus Allen,dk,3600,cyrus allen,KC,WR,showdown,00-0040890,auto_exact,high
+WR,Jalen Royals (44628407),Jalen Royals,44628407,FLEX,3400,KC@SEA 10/25/2026 08:20PM ET,KC,3.0,,FLEX,Jalen Royals,dk,3400,jalen royals,KC,WR,showdown,00-0040646,auto_exact,high
+RB,Emmett Johnson (44628408),Emmett Johnson,44628408,FLEX,3000,KC@SEA 10/25/2026 08:20PM ET,KC,4.5,,FLEX,Emmett Johnson,dk,3000,emmett johnson,KC,RB,showdown,00-0041013,auto_exact,high
+WR,Andrew Armstrong (44628467),Andrew Armstrong,44628467,CPT,3000,KC@SEA 10/25/2026 08:20PM ET,KC,2.3,,CPT,Andrew Armstrong,dk,3000,andrew armstrong,KC,WR,showdown,00-0040298,auto_exact,high
+WR,Tory Horton (44628409),Tory Horton,44628409,FLEX,2800,KC@SEA 10/25/2026 08:20PM ET,SEA,3.5,,FLEX,Tory Horton,dk,2800,tory horton,SEA,WR,showdown,00-0040648,auto_exact,high
+WR,Cyrus Allen (44628410),Cyrus Allen,44628410,FLEX,2400,KC@SEA 10/25/2026 08:20PM ET,KC,0.9,,FLEX,Cyrus Allen,dk,2400,cyrus allen,KC,WR,showdown,00-0040890,auto_exact,high
+TE,Eric Saubert (44628468),Eric Saubert,44628468,CPT,2400,KC@SEA 10/25/2026 08:20PM ET,SEA,1.4,,CPT,Eric Saubert,dk,2400,eric saubert,SEA,TE,showdown,00-0033576,auto_exact,high
+RB,Velus Jones Jr. (44628469),Velus Jones Jr.,44628469,CPT,2100,KC@SEA 10/25/2026 08:20PM ET,SEA,0.6,,CPT,Velus Jones Jr.,dk,2100,velus jones,SEA,RB,showdown,00-0037745,auto_fallback_name_only_position_mismatch,low
+WR,Andrew Armstrong (44628411),Andrew Armstrong,44628411,FLEX,2000,KC@SEA 10/25/2026 08:20PM ET,KC,2.3,,FLEX,Andrew Armstrong,dk,2000,andrew armstrong,KC,WR,showdown,00-0040298,auto_exact,high
+WR,Justin Watson (44628470),Justin Watson,44628470,CPT,1800,KC@SEA 10/25/2026 08:20PM ET,KC,0.0,,CPT,Justin Watson,dk,1800,justin watson,KC,WR,showdown,00-0034386,auto_exact,high
+TE,Eric Saubert (44628412),Eric Saubert,44628412,FLEX,1600,KC@SEA 10/25/2026 08:20PM ET,SEA,1.4,,FLEX,Eric Saubert,dk,1600,eric saubert,SEA,TE,showdown,00-0033576,auto_exact,high
+RB,Brashard Smith (44628471),Brashard Smith,44628471,CPT,1500,KC@SEA 10/25/2026 08:20PM ET,KC,0.3,,CPT,Brashard Smith,dk,1500,brashard smith,KC,RB,showdown,00-0040078,auto_exact,high
+RB,Velus Jones Jr. (44628413),Velus Jones Jr.,44628413,FLEX,1400,KC@SEA 10/25/2026 08:20PM ET,SEA,0.6,,FLEX,Velus Jones Jr.,dk,1400,velus jones,SEA,RB,showdown,00-0037745,auto_fallback_name_only_position_mismatch,low
+WR,Justin Watson (44628414),Justin Watson,44628414,FLEX,1200,KC@SEA 10/25/2026 08:20PM ET,KC,0.0,,FLEX,Justin Watson,dk,1200,justin watson,KC,WR,showdown,00-0034386,auto_exact,high
+WR,Nikko Remigio (44628472),Nikko Remigio,44628472,CPT,1200,KC@SEA 10/25/2026 08:20PM ET,KC,-0.2,,CPT,Nikko Remigio,dk,1200,nikko remigio,KC,WR,showdown,00-0038519,auto_exact,high
+RB,Brashard Smith (44628415),Brashard Smith,44628415,FLEX,1000,KC@SEA 10/25/2026 08:20PM ET,KC,0.3,,FLEX,Brashard Smith,dk,1000,brashard smith,KC,RB,showdown,00-0040078,auto_exact,high
+TE,Jake Briningstool (44628473),Jake Briningstool,44628473,CPT,900,KC@SEA 10/25/2026 08:20PM ET,KC,0.4,,CPT,Jake Briningstool,dk,900,jake briningstool,KC,TE,showdown,00-0040081,auto_exact,high
+WR,Nikko Remigio (44628416),Nikko Remigio,44628416,FLEX,800,KC@SEA 10/25/2026 08:20PM ET,KC,-0.2,,FLEX,Nikko Remigio,dk,800,nikko remigio,KC,WR,showdown,00-0038519,auto_exact,high
+TE,Jake Briningstool (44628417),Jake Briningstool,44628417,FLEX,600,KC@SEA 10/25/2026 08:20PM ET,KC,0.4,,FLEX,Jake Briningstool,dk,600,jake briningstool,KC,TE,showdown,00-0040081,auto_exact,high
+RB,Brady Russell (44628474),Brady Russell,44628474,CPT,600,KC@SEA 10/25/2026 08:20PM ET,SEA,1.2,,CPT,Brady Russell,dk,600,brady russell,SEA,RB,showdown,00-0038488,auto_exact,high
+RB,Brady Russell (44628418),Brady Russell,44628418,FLEX,400,KC@SEA 10/25/2026 08:20PM ET,SEA,1.2,,FLEX,Brady Russell,dk,400,brady russell,SEA,RB,showdown,00-0038488,auto_exact,high
+RB,Jadarian Price (44628475),Jadarian Price,44628475,CPT,300,KC@SEA 10/25/2026 08:20PM ET,SEA,5.3,IR,CPT,Jadarian Price,dk,300,jadarian price,SEA,RB,showdown,00-0041512,auto_exact,high
+RB,Ben VanSumeren (44628476),Ben VanSumeren,44628476,CPT,300,KC@SEA 10/25/2026 08:20PM ET,KC,0.0,,CPT,Ben VanSumeren,dk,300,ben vansumeren,KC,RB,showdown,00-0038489,auto_exact,high
+RB,Robert Henry Jr. (44628477),Robert Henry Jr.,44628477,CPT,300,KC@SEA 10/25/2026 08:20PM ET,SEA,0.0,,CPT,Robert Henry Jr.,dk,300,robert henry,SEA,RB,showdown,00-0041178,auto_exact,high
+RB,Jackson Acker (44628478),Jackson Acker,44628478,CPT,300,KC@SEA 10/25/2026 08:20PM ET,SEA,0.0,,CPT,Jackson Acker,dk,300,jackson acker,SEA,RB,showdown,00-0041221,auto_exact,high
+RB,Jaydn Ott (44628479),Jaydn Ott,44628479,CPT,300,KC@SEA 10/25/2026 08:20PM ET,KC,0.0,,CPT,Jaydn Ott,dk,300,jaydn ott,KC,RB,showdown,00-0040959,auto_exact,high
+RB,Robbie Ouzts (44628480),Robbie Ouzts,44628480,CPT,300,KC@SEA 10/25/2026 08:20PM ET,SEA,0.0,IR,CPT,Robbie Ouzts,dk,300,robbie ouzts,SEA,RB,showdown,00-0040649,auto_exact,high
+WR,Jake Bobo (44628481),Jake Bobo,44628481,CPT,300,KC@SEA 10/25/2026 08:20PM ET,SEA,0.0,IR,CPT,Jake Bobo,dk,300,jake bobo,SEA,WR,showdown,00-0038752,auto_exact,high
+WR,Tyquan Thornton (44628482),Tyquan Thornton,44628482,CPT,300,KC@SEA 10/25/2026 08:20PM ET,KC,12.0,IR,CPT,Tyquan Thornton,dk,300,tyquan thornton,KC,WR,showdown,00-0038104,auto_exact,high
+WR,Ricky White III (44628483),Ricky White III,44628483,CPT,300,KC@SEA 10/25/2026 08:20PM ET,SEA,0.0,,CPT,Ricky White III,dk,300,ricky white,SEA,WR,showdown,00-0040653,auto_exact,high
+WR,Jimmy Holiday (44628484),Jimmy Holiday,44628484,CPT,300,KC@SEA 10/25/2026 08:20PM ET,KC,0.0,IR,CPT,Jimmy Holiday,dk,300,jimmy holiday,KC,WR,showdown,00-0040120,auto_exact,high
+WR,Jeff Caldwell (44628485),Jeff Caldwell,44628485,CPT,300,KC@SEA 10/25/2026 08:20PM ET,KC,0.0,IR,CPT,Jeff Caldwell,dk,300,jeff caldwell,KC,WR,showdown,00-0040953,auto_exact,high
+WR,Emmanuel Henderson Jr. (44628486),Emmanuel Henderson Jr.,44628486,CPT,300,KC@SEA 10/25/2026 08:20PM ET,SEA,0.0,,CPT,Emmanuel Henderson Jr.,dk,300,emmanuel henderson,SEA,WR,showdown,00-0040895,auto_exact,high
+WR,Omari Evans (44628487),Omari Evans,44628487,CPT,300,KC@SEA 10/25/2026 08:20PM ET,KC,0.0,,CPT,Omari Evans,dk,300,omari evans,KC,WR,showdown,00-0040954,auto_exact,high
+WR,Irvin Charles (44628488),Irvin Charles,44628488,CPT,300,KC@SEA 10/25/2026 08:20PM ET,SEA,0.0,,CPT,Irvin Charles,dk,300,irvin charles,SEA,WR,showdown,00-0037156,auto_exact,high
+WR,Montorie Foster Jr. (44628489),Montorie Foster Jr.,44628489,CPT,300,KC@SEA 10/25/2026 08:20PM ET,SEA,0.0,,CPT,Montorie Foster Jr.,dk,300,montorie foster,SEA,WR,showdown,00-0040621,auto_exact,high
+TE,John Michael Gyllenborg (44628490),John Michael Gyllenborg,44628490,CPT,300,KC@SEA 10/25/2026 08:20PM ET,KC,0.0,IR,CPT,John Michael Gyllenborg,dk,300,john michael gyllenborg,KC,TE,showdown,00-0040955,auto_exact,high
+TE,Elijah Arroyo (44628491),Elijah Arroyo,44628491,CPT,300,KC@SEA 10/25/2026 08:20PM ET,SEA,0.5,IR,CPT,Elijah Arroyo,dk,300,elijah arroyo,SEA,TE,showdown,00-0040739,auto_exact,high
+TE,Thomas Odukoya (44628492),Thomas Odukoya,44628492,CPT,300,KC@SEA 10/25/2026 08:20PM ET,KC,0.0,,CPT,Thomas Odukoya,dk,300,thomas odukoya,KC,TE,showdown,00-0038145,auto_exact,high
+TE,Josiah Deguara (44628493),Josiah Deguara,44628493,CPT,300,KC@SEA 10/25/2026 08:20PM ET,SEA,0.0,,CPT,Josiah Deguara,dk,300,josiah deguara,SEA,TE,showdown,00-0036332,auto_exact,high
+TE,Jared Wiley (44628494),Jared Wiley,44628494,CPT,300,KC@SEA 10/25/2026 08:20PM ET,KC,0.0,,CPT,Jared Wiley,dk,300,jared wiley,KC,TE,showdown,00-0039824,auto_exact,high
+TE,James Winchester (44628495),James Winchester,44628495,CPT,300,KC@SEA 10/25/2026 08:20PM ET,KC,0.0,,CPT,James Winchester,dk,300,james winchester,KC,TE,showdown,00-0030615,auto_fallback_name_only_position_mismatch,low
+TE,Nick Kallerup (44628496),Nick Kallerup,44628496,CPT,300,KC@SEA 10/25/2026 08:20PM ET,SEA,0.0,,CPT,Nick Kallerup,dk,300,nick kallerup,SEA,TE,showdown,00-0040058,auto_exact,high
+RB,Jadarian Price (44628419),Jadarian Price,44628419,FLEX,200,KC@SEA 10/25/2026 08:20PM ET,SEA,5.3,IR,FLEX,Jadarian Price,dk,200,jadarian price,SEA,RB,showdown,00-0041512,auto_exact,high
+RB,Ben VanSumeren (44628420),Ben VanSumeren,44628420,FLEX,200,KC@SEA 10/25/2026 08:20PM ET,KC,0.0,,FLEX,Ben VanSumeren,dk,200,ben vansumeren,KC,RB,showdown,00-0038489,auto_exact,high
+RB,Robert Henry Jr. (44628421),Robert Henry Jr.,44628421,FLEX,200,KC@SEA 10/25/2026 08:20PM ET,SEA,0.0,,FLEX,Robert Henry Jr.,dk,200,robert henry,SEA,RB,showdown,00-0041178,auto_exact,high
+RB,Jackson Acker (44628422),Jackson Acker,44628422,FLEX,200,KC@SEA 10/25/2026 08:20PM ET,SEA,0.0,,FLEX,Jackson Acker,dk,200,jackson acker,SEA,RB,showdown,00-0041221,auto_exact,high
+RB,Jaydn Ott (44628423),Jaydn Ott,44628423,FLEX,200,KC@SEA 10/25/2026 08:20PM ET,KC,0.0,,FLEX,Jaydn Ott,dk,200,jaydn ott,KC,RB,showdown,00-0040959,auto_exact,high
+RB,Robbie Ouzts (44628424),Robbie Ouzts,44628424,FLEX,200,KC@SEA 10/25/2026 08:20PM ET,SEA,0.0,IR,FLEX,Robbie Ouzts,dk,200,robbie ouzts,SEA,RB,showdown,00-0040649,auto_exact,high
+WR,Jake Bobo (44628425),Jake Bobo,44628425,FLEX,200,KC@SEA 10/25/2026 08:20PM ET,SEA,0.0,IR,FLEX,Jake Bobo,dk,200,jake bobo,SEA,WR,showdown,00-0038752,auto_exact,high
+WR,Tyquan Thornton (44628426),Tyquan Thornton,44628426,FLEX,200,KC@SEA 10/25/2026 08:20PM ET,KC,12.0,IR,FLEX,Tyquan Thornton,dk,200,tyquan thornton,KC,WR,showdown,00-0038104,auto_exact,high
+WR,Ricky White III (44628427),Ricky White III,44628427,FLEX,200,KC@SEA 10/25/2026 08:20PM ET,SEA,0.0,,FLEX,Ricky White III,dk,200,ricky white,SEA,WR,showdown,00-0040653,auto_exact,high
+WR,Jimmy Holiday (44628428),Jimmy Holiday,44628428,FLEX,200,KC@SEA 10/25/2026 08:20PM ET,KC,0.0,IR,FLEX,Jimmy Holiday,dk,200,jimmy holiday,KC,WR,showdown,00-0040120,auto_exact,high
+WR,Jeff Caldwell (44628429),Jeff Caldwell,44628429,FLEX,200,KC@SEA 10/25/2026 08:20PM ET,KC,0.0,IR,FLEX,Jeff Caldwell,dk,200,jeff caldwell,KC,WR,showdown,00-0040953,auto_exact,high
+WR,Emmanuel Henderson Jr. (44628430),Emmanuel Henderson Jr.,44628430,FLEX,200,KC@SEA 10/25/2026 08:20PM ET,SEA,0.0,,FLEX,Emmanuel Henderson Jr.,dk,200,emmanuel henderson,SEA,WR,showdown,00-0040895,auto_exact,high
+WR,Omari Evans (44628431),Omari Evans,44628431,FLEX,200,KC@SEA 10/25/2026 08:20PM ET,KC,0.0,,FLEX,Omari Evans,dk,200,omari evans,KC,WR,showdown,00-0040954,auto_exact,high
+WR,Irvin Charles (44628432),Irvin Charles,44628432,FLEX,200,KC@SEA 10/25/2026 08:20PM ET,SEA,0.0,,FLEX,Irvin Charles,dk,200,irvin charles,SEA,WR,showdown,00-0037156,auto_exact,high
+WR,Montorie Foster Jr. (44628433),Montorie Foster Jr.,44628433,FLEX,200,KC@SEA 10/25/2026 08:20PM ET,SEA,0.0,,FLEX,Montorie Foster Jr.,dk,200,montorie foster,SEA,WR,showdown,00-0040621,auto_exact,high
+TE,John Michael Gyllenborg (44628434),John Michael Gyllenborg,44628434,FLEX,200,KC@SEA 10/25/2026 08:20PM ET,KC,0.0,IR,FLEX,John Michael Gyllenborg,dk,200,john michael gyllenborg,KC,TE,showdown,00-0040955,auto_exact,high
+TE,Elijah Arroyo (44628435),Elijah Arroyo,44628435,FLEX,200,KC@SEA 10/25/2026 08:20PM ET,SEA,0.5,IR,FLEX,Elijah Arroyo,dk,200,elijah arroyo,SEA,TE,showdown,00-0040739,auto_exact,high
+TE,Thomas Odukoya (44628436),Thomas Odukoya,44628436,FLEX,200,KC@SEA 10/25/2026 08:20PM ET,KC,0.0,,FLEX,Thomas Odukoya,dk,200,thomas odukoya,KC,TE,showdown,00-0038145,auto_exact,high
+TE,Josiah Deguara (44628437),Josiah Deguara,44628437,FLEX,200,KC@SEA 10/25/2026 08:20PM ET,SEA,0.0,,FLEX,Josiah Deguara,dk,200,josiah deguara,SEA,TE,showdown,00-0036332,auto_exact,high
+TE,Jared Wiley (44628438),Jared Wiley,44628438,FLEX,200,KC@SEA 10/25/2026 08:20PM ET,KC,0.0,,FLEX,Jared Wiley,dk,200,jared wiley,KC,TE,showdown,00-0039824,auto_exact,high
+TE,James Winchester (44628439),James Winchester,44628439,FLEX,200,KC@SEA 10/25/2026 08:20PM ET,KC,0.0,,FLEX,James Winchester,dk,200,james winchester,KC,TE,showdown,00-0030615,auto_fallback_name_only_position_mismatch,low
+TE,Nick Kallerup (44628440),Nick Kallerup,44628440,FLEX,200,KC@SEA 10/25/2026 08:20PM ET,SEA,0.0,,FLEX,Nick Kallerup,dk,200,nick kallerup,SEA,TE,showdown,00-0040058,auto_exact,high

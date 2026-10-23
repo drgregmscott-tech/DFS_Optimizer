@@ -184,6 +184,22 @@
       "season": 2026,
       "week": 7,
       "lock_time_utc": "2026-10-25T17:00:00Z"
+    },
+    {
+      "slate_id": "dk_showdown_wk7_KC_SEA_26Oct2026",
+      "site": "dk",
+      "format": "showdown",
+      "season": 2026,
+      "week": 7,
+      "lock_time_utc": "2026-10-26T00:20:00Z"
+    },
+    {
+      "slate_id": "dk_showdown_wk7_DAL_PHI_25Oct2026",
+      "site": "dk",
+      "format": "showdown",
+      "season": 2026,
+      "week": 7,
+      "lock_time_utc": "2026-10-27T00:15:00Z"
     }
   ]
 }
