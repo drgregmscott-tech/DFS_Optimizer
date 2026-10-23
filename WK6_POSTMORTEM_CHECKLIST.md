@@ -151,8 +151,27 @@ top-owned play, in which case riding it concentrates risk with the field (no lev
 that's the real use case for A5 (MME construction, pivot/dart flags, any future leverage-aware pick), not a
 lever for raw SE cash rate.
 
-### A6. Slate-level "why didn't we cash" autopsy, and the WR/TE projection-ranking gap it points to — NEW, 2026-10-20
-**Problem, in the owner's own words:** "we need to be answering the question of why didn't we cash? why
+### A6. Slate-level "why didn't we cash" autopsy, and the WR/TE projection-ranking gap it points to — ⛔ CLOSED 2026-10-22, redirected (see below)
+**Result (2026-10-22 session, `analysis/wk6_wrte_autopsy/RESULTS.md`):** ran the full case-study/mock-replay
+loop below across 8 historical worst-WR/TE-edge slates (n-weighted, 2 per season 2022-25) + 8 random
+historical slates for the mock step + all 18 2026 DK classic Wk1-6 slates (16 replayed) against the owner's
+real `gmscott81` entries. Found one real, consistent mechanism — **our WR/TE target projections are too
+spread out vs. what price/target-history implies: we over-project the top TEs by ~25% above their real
+target share and under-project the cheap ones** (fits the owner's actual Wk6 busts: Loveland, Pitts,
+Schultz, Andrews, Otton). A TE price-weight correction built from this is a real, consistent accuracy gain
+(Spearman edge +0.059, positive all 4 seasons) — **but it does not move cash rate** (pool 30.0%→29.7%,
+slightly worse on the 2026 live check). Why: cash rate is driven by week-specific information (who actually
+gets the targets/TDs that week), not by a better average-case ranking. A mock test nudging projections just
+5% toward the real post-game answer lifted pool cash 31%→40% — confirming the room is real, but a static
+projection-formula tweak can't deliver real-time information, it only redistributes an average. The WR
+price-weight version is wrong-direction (FC is also worse than salary at WR — a market-wide miss, not
+uniquely ours). **Two-track verdict: TE price-weight is inconclusive-keep-testing as a pure accuracy fix,
+wrong-direction as a cash lever; WR price-weight is wrong-direction. Nothing from this item ships.**
+**Where this redirects:** the mock-replay numbers (31%→40% from a 5% nudge toward the real answer) point
+at **week-specific signals** — vacated targets from injuries, props, late news — as the next real lever,
+since that's what actually carries new information a static projection can't. Not scoped or built this
+session; added to the Parking Lot below as a candidate for a future dedicated item.
+**Original problem, in the owner's own words (for context):** "we need to be answering the question of why didn't we cash? why
 didn't the top projected line give us a winning lineup? ... sharp players cash most weeks, lets say 13 out
 of 17 or something. they are doing it....which means we can do [it]. but we have to find out the answers to
 how they are doing it, unlock that and implement it into our system."
@@ -184,6 +203,43 @@ any such data is obtainable (the owner's "13 of 17 weeks" framing) rather than o
 found FC is barely better than us (+0.012 edge) — FC may not be the right "sharp" bar to chase.
 **Evidence:** item 7 below (`analysis/wk6_cash_rate_driver/RESULTS.md`), and item 6's pool-selection finding
 (A2, now closed — see that item's note).
+
+### A7. Mega-chalk player exclusion (ownership ceiling, not lineup-level contrarianism) — scoped, not built, 2026-10-23
+**Owner's observation:** Week 6's main-slate miss was driven partly by mega-chalk studs failing — Stafford,
+Nacua, and Kyren Williams, two of them around ~50% projected ownership (same Rams stack covered in item 4
+below). The owner ran an informal backtest excluding mega-chalk plays entirely from the builder and got
+better results — but flagged himself that this hasn't been tested properly, just tried once.
+**Why this is a real, untested gap, not a repeat of A2/item 5's rejected finding:** everything already
+tested under "full chalk vs. full contrarian" (item 5, and A2's closed pool-selection work) picks *among
+already-built lineups* — e.g., picking the least-owned lineup out of a pool that still contains every mega-
+chalk player as an option. This is mechanically different: **excluding a mega-chalk player from the player
+pool entirely**, so no lineup in the batch can roster him at all. Nobody has scoped or tested this lever.
+Item 5's contrarian-lineup-picking being rejected does not transfer to this question.
+**Honest caveat on the owner's own backtest:** one favorable week is not evidence — it's a legitimate
+hypothesis, not a result yet. Needs the same real-history treatment as every other item here before trusting
+the direction (same discipline as A1/A6 above).
+**A known wrinkle to build into the test, not guess at:** Mechanism A (item 3's evidence trail, A3's
+shipped flag) already found our own modeled `estimated_ownership_pct` is biased high specifically at the
+top end — players modeled at 20%+ ownership are overestimated vs. real ownership 76% of the time. Any
+exclusion rule built off our own modeled number for "mega chalk" is triggering off a number that already
+runs hot there — could mean we'd over-exclude, or could mean the very top of our model's confidence (true
+40-50%+ calls) is still trustworthy. Needs to be checked directly, not assumed either way.
+**Scope — not yet run, blocked on the credit limit, next dedicated session's starting point:**
+1. Define "mega chalk" by *real* ownership on the existing 64-slate real-history `se3max_pool` dataset
+   (`analysis/wk6_cash_rate_driver/` / `analysis/wk6_pool_selection_objective/` already has this built) —
+   test a couple thresholds (e.g. ≥25%, ≥35%).
+2. **Ceiling test first** (same two-step pattern as the cheap-dart-vs-chalk item above): using real
+   ownership, rebuild each historical pool with mega-chalk players removed from the player pool entirely
+   (not just deprioritized), replay against the real DK prize table (`analysis/lineup_replay/`'s pipeline),
+   compare mean ROI / cash rate / tail (P90, P99) to the unmodified baseline. Establishes whether the
+   mechanism is real at all, with perfect hindsight.
+3. **Floor test second:** repeat using *our own modeled* ownership as the pre-lock exclusion trigger (what's
+   actually actionable), see how much of the ceiling-test gain survives — same honesty check used
+   everywhere else in this postmortem.
+4. **Isolate ownership from salary/stud tier** — mega chalk and high-salary studs correlate but aren't the
+   same thing; confirm the effect (if any) is about ownership, not just "faded the studs."
+**Evidence:** item 4 below (the Rams chalk stack this observation is drawn from), and item 3's Mechanism A
+(the high-end modeled-ownership bias noted above).
 
 ## Evidence trail (background — the action items above are the distilled next steps; items are kept
 below for the investigation history, not as a second to-do list)
@@ -791,7 +847,27 @@ below for the investigation history, not as a second to-do list)
      promise, and a real stretch (we beat FC by only 0.012 edge today).
    - Full data/scripts: `analysis/wk6_cash_rate_driver/RESULTS.md`. Became **A6** (new item above).
 
+9. **A6 case-study/mock-replay autopsy, closed (2026-10-22).** Full WR/TE miss autopsy across 8
+   worst-edge historical slates + 8 random historical slates (mock step) + 2026 Wk1-6 (16 slates
+   replayed). Found a real mechanism — our WR/TE target projections are over-spread vs. price/target
+   history (top TEs over-projected ~25%, matches real busts Loveland/Pitts/Schultz/Andrews/Otton) — but
+   correcting it (TE price-weight, Spearman edge +0.059, all 4 seasons positive) does not move cash rate
+   (pool 30.0%→29.7%, worse on 2026 live). WR price-weight is wrong-direction (FC is also worse than
+   salary at WR — a market-wide gap, not ours alone). Cause: cash rate is decided by week-specific
+   information (who gets the targets/TDs that specific week), not by a better average-case ranking — a
+   mock nudge of just 5% toward the real post-game answer lifted pool cash 31%→40%, confirming the room
+   is real but not reachable by a static formula fix. **Nothing ships. Redirects to week-specific
+   signals (injury-driven vacated targets, props, late news) as the next candidate lever — see Parking
+   Lot.** Full data/scripts: `analysis/wk6_wrte_autopsy/RESULTS.md` (local only, FC-derived, not
+   committed).
+
 ## Parking Lot (add here, don't chase inline)
+- **Week-specific WR/TE signals (from A6's close-out, 2026-10-22).** A6's mock-replay showed a 5% nudge
+  toward the real post-game answer lifts pool cash 31%→40% — real room that a static projection-formula
+  fix (price-weighting) can't reach, because the information that actually decides cash is week-specific
+  (who gets the vacated targets/TDs that week), not an average-case ranking improvement. Next candidate:
+  test whether injury-driven vacated-target signals, props, or late news can close any of that gap
+  pre-lock. Not scoped yet — needs its own dedicated session.
 - Thursday's SEA/DEN showdown miss (rank 2,545/8,917, ~71st percentile) — not investigated this session,
   reads as a normal non-cash finish, not flagged as systemic. Revisit only if the user wants to dig in.
 - `data/ownership_actual_log.csv` is only logged through week 4 (`scripts/log_ownership.py`) — weeks 5 and
