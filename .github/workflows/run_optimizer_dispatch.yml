@@ -164,6 +164,11 @@ jobs:
           args += flag("--cl-dst-expensive-penalty", "cl_dst_expensive_penalty", float)
           args += flag("--cl-zero-punt-penalty", "cl_zero_punt_penalty", float)
           args += flag("--cl-three-plus-punt-penalty", "cl_three_plus_punt_penalty", float)
+          # 2026-10-23 -- Wk6 postmortem A7 follow-up: same-position 2+ punt
+          # penalty. Added here, the worker allowlist, and the frontend's
+          # BUILTIN_PRESETS in the same change, to avoid repeating the
+          # FLEX-WR-pair bug noted above (one new flag, three places to wire).
+          args += flag("--cl-same-pos-punt-penalty", "cl_same_pos_punt_penalty", float)
           args += flag("--cl-flex-rb-bonus", "cl_flex_rb_bonus", float)
           args += flag("--cl-flex-wr-penalty", "cl_flex_wr_penalty", float)
           # 2026-10-05 -- price-tier pair was missing here and in the worker

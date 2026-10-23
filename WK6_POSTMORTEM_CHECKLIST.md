@@ -204,7 +204,40 @@ found FC is barely better than us (+0.012 edge) — FC may not be the right "sha
 **Evidence:** item 7 below (`analysis/wk6_cash_rate_driver/RESULTS.md`), and item 6's pool-selection finding
 (A2, now closed — see that item's note).
 
-### A7. Mega-chalk player exclusion (ownership ceiling, not lineup-level contrarianism) — scoped, not built, 2026-10-23
+### A7. Mega-chalk player exclusion (ownership ceiling, not lineup-level contrarianism) — ⛔ CLOSED 2026-10-23, don't build
+**Result (ceiling test, `analysis/mega_chalk_exclusion/RESULTS.md`, local only/FC-derived, not committed):**
+banning mega-chalk players from the player pool entirely loses money on 4 seasons of real contests, at every
+threshold the owner named (30%/40%/50% real ownership). 30%+ (n=56): cash -4.9pp [-8.0,-1.9], capped ROI -0.13
+[-0.25,-0.02], both exclude zero. 40%+ (n=33): cash -3.0pp, capped ROI -0.14, top-1% rate halved, all exclude
+zero. 50%+ (n=10): inconclusive, every point estimate still negative, CIs cross zero on a small sample. Held up
+against controls: seed-noise alone moves metrics ~±1pp/±0.01, a placebo removing a similarly-priced non-chalk
+player does nothing, head-to-head X40-vs-placebo is -3.8pp cash excl0. Not a disguised "fade the studs" effect
+— only 6% of 40%+-owned players were even top-salary at their position (median ~$6.1k); the field is usually
+*right* about these plays (they beat our projection by +3-5pts on average). Worst single result: removing a
+whole same-team chalk stack (the Rams-type case) rather than one player, -14.5pp cash (n=11) — the single worst
+number in the test. Why the owner's informal Wk6 test looked good: mega chalk only busts ~1 week in 3; exclusion
+gains a little in bust weeks (+0.05 to +0.08 ROI) and loses 3-5x more in the other 2 of 3 weeks (-0.24 to -0.25)
+— a one-week test on a bust week reads as a win, 4 seasons says it's a loss.
+**Owner's decision, 2026-10-23: close, no further testing.** His words: *"i dont think we need to do any more
+testing. seems we just have another situation that is based on feels. pivots can be good but its nuanced and
+depends on the situation."* No exposure-cap follow-up, no 50%-tier revisit — treat the ceiling result as the
+answer, not a reason to keep probing a softer version. On the 50% tier specifically: *"the info is what it is. i
+don't think there's anything to fix or correct, rather its just info to keep in mind."*
+**Game-theory note on chalk stacks (owner, not tested, not actionable today):** fading an entire multi-piece
+chalk stack is a different question from fading one piece of it — *"what's the likelihood of each of a 3 piece
+stack being in the optimal lineup? ... unless very specific conditions exist to streamline usage to only a few
+players, its unlikely that all 3 of them will be in the optimal."* The -14.5pp full-cluster-removal result above
+doesn't settle this (it tested removing the whole stack, not one piece) — logged here as a reasoning note for a
+future session, not scoped or tested.
+**Side finding, parked (see Parking Lot):** our own projections run ~5pts low on 40%+-owned players (FC is only
+~2pts low on the same players) — a real, separate projection-accuracy gap on exactly the players that decide
+slates, pointing the opposite direction from fading them. Owner: open it as its own item eventually, "but
+probably not today."
+
+<details>
+<summary>Original scoping (2026-10-23, superseded by the result above)</summary>
+
+### A7 (original scoping). Mega-chalk player exclusion (ownership ceiling, not lineup-level contrarianism) — scoped, not built, 2026-10-23
 **Owner's observation:** Week 6's main-slate miss was driven partly by mega-chalk studs failing — Stafford,
 Nacua, and Kyren Williams, two of them around ~50% projected ownership (same Rams stack covered in item 4
 below). The owner ran an informal backtest excluding mega-chalk plays entirely from the builder and got
@@ -240,6 +273,8 @@ runs hot there — could mean we'd over-exclude, or could mean the very top of o
    same thing; confirm the effect (if any) is about ownership, not just "faded the studs."
 **Evidence:** item 4 below (the Rams chalk stack this observation is drawn from), and item 3's Mechanism A
 (the high-end modeled-ownership bias noted above).
+
+</details>
 
 ## Evidence trail (background — the action items above are the distilled next steps; items are kept
 below for the investigation history, not as a second to-do list)
@@ -862,6 +897,10 @@ below for the investigation history, not as a second to-do list)
    committed).
 
 ## Parking Lot (add here, don't chase inline)
+- **Chalk under-projection (from A7's close-out, 2026-10-23).** Our projections run ~5pts low on 40%+
+  real-owned players (95% CI [+1.3,+7.6]); FC is only ~2pts low on the same players (CI crosses zero), and our
+  general bias at 10-20% owned is only ~+1.35. A real, measurable projection-accuracy gap specifically on the
+  players that decide slates — not acted on this session. Owner: open as its own item eventually, not now.
 - **Week-specific WR/TE signals (from A6's close-out, 2026-10-22).** A6's mock-replay showed a 5% nudge
   toward the real post-game answer lifts pool cash 31%→40% — real room that a static projection-formula
   fix (price-weighting) can't reach, because the information that actually decides cash is week-specific

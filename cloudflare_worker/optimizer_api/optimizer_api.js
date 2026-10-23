@@ -312,6 +312,11 @@ async function handleDispatch(url, env) {
     // Plain float strings; absent = optimizer.py's 0.0 (off) default.
     "cl_dst_band_bonus", "cl_dst_expensive_penalty",
     "cl_zero_punt_penalty", "cl_three_plus_punt_penalty",
+    // 2026-10-23 -- Wk6 postmortem A7 follow-up: same-position 2+ punt
+    // penalty (e.g. two sub-$4k TEs). Added here from day one, unlike the
+    // FLEX-WR pair below -- see that pair's own comment for the bug this
+    // repeats if a new --cl-* flag is ever added without updating this list.
+    "cl_same_pos_punt_penalty",
     "cl_flex_rb_bonus", "cl_flex_wr_penalty",
     // 2026-10-05 -- the FLEX-WR price-tier pair (added to optimizer.py and
     // the UI 2026-10-02) was never added here, so the worker silently

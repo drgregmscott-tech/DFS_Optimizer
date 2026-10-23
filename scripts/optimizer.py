@@ -1713,6 +1713,7 @@ def add_classic_shape_terms(prob, x, players, fixed_counts,
                             dst_expensive_penalty: float = 0.0,
                             zero_punt_penalty: float = 0.0,
                             three_plus_punt_penalty: float = 0.0,
+                            same_pos_punt_penalty: float = 0.0,
                             flex_rb_bonus: float = 0.0,
                             flex_wr_penalty: float = 0.0,
                             flex_wr_highprice_bonus: float = 0.0,
@@ -1772,11 +1773,35 @@ def add_classic_shape_terms(prob, x, players, fixed_counts,
       Both are penalized in the objective, so the solver sets each to 0
       whenever it's allowed. Hand trace (z_zero, z_three): pc=0 -> (1,0);
       1 -> (0,0); 2 -> (0,0); 3 -> (0,1); 4 -> (0,1). z_three is a flat
-      bucket penalty (the evidence is a "3+" bucket, not per-extra-punt)."""
+      bucket penalty (the evidence is a "3+" bucket, not per-extra-punt).
+    - same_pos_punt_penalty (2026-10-23, Wk6 postmortem follow-up: the
+      owner's own build rule -- "don't play two sub-$4,000 players at the
+      same position" -- was never actually wired into the solver; the punt
+      terms above only see a whole-roster COUNT, blind to which positions
+      the punts sit in, so a double-cheap-TE build (the Wk6 Andrews+Otton
+      bust, repeated in an early Wk7 look with Otton+Higbee) reads as a
+      normal, allowed "2 punts" to the optimizer. A real-field raw check
+      (`analysis/mega_chalk_exclusion`-adjacent ad hoc test, 62 SE_big
+      contests 2022-25, exactly-2-punt entries split same-position vs
+      different-position) leans the expected direction but does NOT clear
+      this project's usual statistical bar: TE+TE -1.11 cash pts [95% CI
+      -3.12,+1.08], WR+WR -1.18 [-4.08,+2.25], both CIs cross zero, season
+      sign only 2-3 of 4. Shipped anyway as a SOFT owner-judgment term (not
+      a hard constraint) on the owner's explicit instruction and value-math
+      reasoning (a $3.5k player needing ~20 pts is needing ~6x value, which
+      "is never" the base rate; two such plays needing to BOTH hit is a
+      materially less likely joint event than one) -- same category as
+      other manual-judgment levers in this codebase, not a backtested rule.
+      One binary z[pos] per non-DST position actually present in the pool:
+      M*z[pos] >= punt_count_by_pos[pos] - 1 (forced to 1 only when that
+      position has 2+ punts, same M*z >= count-1 trick as z_three above).
+      Summed across positions, not a single flat flag -- a lineup with BOTH
+      a TE-TE punt and a WR-WR punt is doubly penalized, since that's two
+      separate concentrated-risk events, not one."""
     if not any((dst_band_bonus, dst_expensive_penalty, zero_punt_penalty,
-                three_plus_punt_penalty, flex_rb_bonus, flex_wr_penalty,
-                flex_wr_highprice_bonus, flex_wr_midprice_penalty,
-                four_wr_no_stud_penalty)):
+                three_plus_punt_penalty, same_pos_punt_penalty, flex_rb_bonus,
+                flex_wr_penalty, flex_wr_highprice_bonus,
+                flex_wr_midprice_penalty, four_wr_no_stud_penalty)):
         return None
     pl = players.set_index("player_id")
     salary = pl["salary"]
@@ -1843,6 +1868,19 @@ def add_classic_shape_terms(prob, x, players, fixed_counts,
             prob += big_m * z_three >= punt_count - 2, "cl_three_plus_punt_def"
             terms.append(-three_plus_punt_penalty * z_three)
 
+    if same_pos_punt_penalty:
+        punt_positions = sorted({position[pid] for pid in x
+                                  if position[pid] not in CL_DST_POSITIONS
+                                  and salary[pid] <= CL_PUNT_MAX_SALARY})
+        for pos in punt_positions:
+            pos_punt_ids = [pid for pid in x
+                             if position[pid] == pos and salary[pid] <= CL_PUNT_MAX_SALARY]
+            pos_punt_count = pulp.lpSum(x[p] for p in pos_punt_ids)
+            big_m = len(pos_punt_ids) + 1  # >= any possible pos_punt_count
+            z_pos = pulp.LpVariable(f"cl_same_pos_punt_{pos}", cat="Binary")
+            prob += big_m * z_pos >= pos_punt_count - 1, f"cl_same_pos_punt_def_{pos}"
+            terms.append(-same_pos_punt_penalty * z_pos)
+
     return pulp.lpSum(terms) if terms else None
 
 
@@ -1851,6 +1889,7 @@ def classic_shape_adjustment(lineup: pd.DataFrame, fixed_counts: dict,
                              dst_expensive_penalty: float = 0.0,
                              zero_punt_penalty: float = 0.0,
                              three_plus_punt_penalty: float = 0.0,
+                             same_pos_punt_penalty: float = 0.0,
                              flex_rb_bonus: float = 0.0,
                              flex_wr_penalty: float = 0.0,
                              flex_wr_highprice_bonus: float = 0.0,
@@ -1895,6 +1934,10 @@ def classic_shape_adjustment(lineup: pd.DataFrame, fixed_counts: dict,
         total -= zero_punt_penalty
     if n_punts >= 3:
         total -= three_plus_punt_penalty
+    if same_pos_punt_penalty:
+        punt_mask = (~pos.isin(CL_DST_POSITIONS)) & (sal <= CL_PUNT_MAX_SALARY)
+        pos_punt_counts = pos[punt_mask].value_counts()
+        total -= same_pos_punt_penalty * int((pos_punt_counts >= 2).sum())
     return total
 
 
@@ -1922,6 +1965,7 @@ def solve_lineup(players: pd.DataFrame, salary_cap: int, fixed_counts: dict,
                   dst_expensive_penalty: float = 0.0,
                   zero_punt_penalty: float = 0.0,
                   three_plus_punt_penalty: float = 0.0,
+                  same_pos_punt_penalty: float = 0.0,
                   flex_rb_bonus: float = 0.0,
                   flex_wr_penalty: float = 0.0,
                   flex_wr_highprice_bonus: float = 0.0,
@@ -2045,6 +2089,7 @@ def solve_lineup(players: pd.DataFrame, salary_cap: int, fixed_counts: dict,
         prob, x, players, fixed_counts,
         dst_band_bonus=dst_band_bonus, dst_expensive_penalty=dst_expensive_penalty,
         zero_punt_penalty=zero_punt_penalty, three_plus_punt_penalty=three_plus_punt_penalty,
+        same_pos_punt_penalty=same_pos_punt_penalty,
         flex_rb_bonus=flex_rb_bonus, flex_wr_penalty=flex_wr_penalty,
         flex_wr_highprice_bonus=flex_wr_highprice_bonus,
         flex_wr_midprice_penalty=flex_wr_midprice_penalty,
@@ -4902,6 +4947,24 @@ def main():
              "penalty, not per extra punt. Default 0.0 (off).",
     )
     parser.add_argument(
+        "--cl-same-pos-punt-penalty", type=float,
+        default=pdef("cl-same-pos-punt-penalty", 0.0),
+        help="Classic ONLY, soft: points subtracted ONCE PER POSITION that "
+             "has 2+ punts (non-DST player priced <=$4,000), e.g. two "
+             "sub-$4k TEs (TE + FLEX). The whole-roster punt-count terms "
+             "above are blind to which position the punts sit in -- this "
+             "catches the Wk6 Andrews+Otton / Wk7 Otton+Higbee double-cheap-"
+             "TE shape they'd otherwise score as a normal '2 punts'. "
+             "2026-10-23: a raw real-field check (62 SE_big contests "
+             "2022-25, exactly-2-punt entries, same- vs different-position) "
+             "leans the expected direction but does not clear this "
+             "project's usual bar -- TE+TE -1.11 cash pts [95%% CI "
+             "-3.12,+1.08], WR+WR -1.18 [-4.08,+2.25], both cross zero. "
+             "Shipped as a soft owner-judgment term on the owner's explicit "
+             "call (not a backtested rule) -- see CLASSIC_RULES.md rule 2 "
+             "and WK6_POSTMORTEM_CHECKLIST.md A7. Default 0.0 (off).",
+    )
+    parser.add_argument(
         "--cl-flex-rb-bonus", type=float, default=pdef("cl-flex-rb-bonus", 0.0),
         help="Classic ONLY, soft, SUPERSEDED 2026-10-02: points added when "
              "FLEX is an RB (3 RBs). The raw +0.7 to +1.0 cash-pt lift did "
@@ -5244,6 +5307,7 @@ def main():
         dst_expensive_penalty=args.cl_dst_expensive_penalty,
         zero_punt_penalty=args.cl_zero_punt_penalty,
         three_plus_punt_penalty=args.cl_three_plus_punt_penalty,
+        same_pos_punt_penalty=args.cl_same_pos_punt_penalty,
         flex_rb_bonus=args.cl_flex_rb_bonus,
         flex_wr_penalty=args.cl_flex_wr_penalty,
         flex_wr_highprice_bonus=args.cl_flex_wr_highprice_bonus,

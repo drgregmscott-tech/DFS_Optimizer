@@ -1845,6 +1845,10 @@ in this browser's localStorage.</p>
                 <input type="number" id="ctrlClThreePlusPuntPenalty" min="0" step="0.25" value="0">
               </div>
               <div>
+                <span class="field-label">Same-position 2+ punt penalty</span>
+                <input type="number" id="ctrlClSamePosPuntPenalty" min="0" step="0.25" value="0">
+              </div>
+              <div>
                 <span class="field-label">FLEX=RB bonus (superseded, see rule 3)</span>
                 <input type="number" id="ctrlClFlexRbBonus" min="0" step="0.25" value="0">
               </div>
@@ -3534,7 +3538,9 @@ in this browser's localStorage.</p>
     // 2026-10-02 -- FLEX WR price-tier re-fit, replaces the flat RB/WR terms above.
     "ctrlClFlexWrHighpriceBonus", "ctrlClFlexWrMidpricePenalty",
     // 2026-10-06 -- lineup-level replacement for the FLEX-WR pair (rule 3).
-    "ctrlClFourWrNoStudPenalty"
+    "ctrlClFourWrNoStudPenalty",
+    // 2026-10-23 -- Wk6 postmortem A7 follow-up: same-position 2+ punt penalty.
+    "ctrlClSamePosPuntPenalty"
   ];
 
   function readPresetValues() {
@@ -3601,6 +3607,7 @@ in this browser's localStorage.</p>
       // (1.0): a 4-WR build with no $6,300+ WR is the real loser.
       ctrlClDstBandBonus: "0.8", ctrlClDstExpensivePenalty: "2.0",
       ctrlClZeroPuntPenalty: "1.5", ctrlClThreePlusPuntPenalty: "0.5",
+      ctrlClSamePosPuntPenalty: "1.0",
       ctrlClFlexRbBonus: "0", ctrlClFlexWrPenalty: "0",
       ctrlClFlexWrHighpriceBonus: "0", ctrlClFlexWrMidpricePenalty: "0",
       ctrlClFourWrNoStudPenalty: "1.0"
@@ -3623,6 +3630,7 @@ in this browser's localStorage.</p>
       ctrlBringBack: false, ctrlAllowSkillVsOppDst: false, ctrlLambda: "0",
       ctrlClDstBandBonus: "0.8", ctrlClDstExpensivePenalty: "2.0",
       ctrlClZeroPuntPenalty: "1.5", ctrlClThreePlusPuntPenalty: "0.5",
+      ctrlClSamePosPuntPenalty: "1.0",
       ctrlClFlexRbBonus: "0", ctrlClFlexWrPenalty: "0",
       ctrlClFlexWrHighpriceBonus: "0", ctrlClFlexWrMidpricePenalty: "0",
       ctrlClFourWrNoStudPenalty: "1.0"
@@ -3651,6 +3659,7 @@ in this browser's localStorage.</p>
       ctrlBringBack: false, ctrlAllowSkillVsOppDst: false, ctrlLambda: "0",
       ctrlClDstBandBonus: "0.8", ctrlClDstExpensivePenalty: "2.0",
       ctrlClZeroPuntPenalty: "1.5", ctrlClThreePlusPuntPenalty: "0.5",
+      ctrlClSamePosPuntPenalty: "1.0",
       ctrlClFlexRbBonus: "0", ctrlClFlexWrPenalty: "0",
       ctrlClFlexWrHighpriceBonus: "0", ctrlClFlexWrMidpricePenalty: "0",
       ctrlClFourWrNoStudPenalty: "1.0"
@@ -3680,6 +3689,7 @@ in this browser's localStorage.</p>
       ctrlDartExposureEnabled: true, ctrlDartExposureCap: "10", ctrlDartFloorThreshold: "1.0",
       ctrlClDstBandBonus: "0.8", ctrlClDstExpensivePenalty: "2.0",
       ctrlClZeroPuntPenalty: "1.5", ctrlClThreePlusPuntPenalty: "0.5",
+      ctrlClSamePosPuntPenalty: "1.0",
       ctrlClFlexRbBonus: "0", ctrlClFlexWrPenalty: "0",
       ctrlClFlexWrHighpriceBonus: "0", ctrlClFlexWrMidpricePenalty: "0",
       ctrlClFourWrNoStudPenalty: "1.0"
@@ -5358,6 +5368,7 @@ in this browser's localStorage.</p>
        ["ctrlClDstExpensivePenalty", "cl_dst_expensive_penalty"],
        ["ctrlClZeroPuntPenalty", "cl_zero_punt_penalty"],
        ["ctrlClThreePlusPuntPenalty", "cl_three_plus_punt_penalty"],
+       ["ctrlClSamePosPuntPenalty", "cl_same_pos_punt_penalty"],
        ["ctrlClFlexRbBonus", "cl_flex_rb_bonus"],
        ["ctrlClFlexWrPenalty", "cl_flex_wr_penalty"],
        ["ctrlClFlexWrHighpriceBonus", "cl_flex_wr_highprice_bonus"],
