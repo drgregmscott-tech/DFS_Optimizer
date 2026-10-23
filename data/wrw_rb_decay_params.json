@@ -1,0 +1,48 @@
+{
+ "_doc": "RB replacement decay (statline_model._rb_decay_addon; analysis/rb_replacement_decay). 2nd-4th week of an RB absence, team has no first-week OUT: each active RB gets frac[k][rank] x vacated share x team trailing volume x ppo_rb x points_scale. Fit LOSO on 2016-25 nflverse usage + status panel (no FC data). On: DFS_RB_REPLACEMENT_DECAY=1. RANK-1 ONLY variant: only the top remaining RB (by trailing share) gets the add-on.",
+ "points_scale": 0.65,
+ "buckets": [
+  {
+   "k_min": 2,
+   "k_max": 2,
+   "car_frac_by_rb_rank": {
+    "1": 0.2248,
+    "2": 0.0,
+    "3": 0.0
+   },
+   "tgt_frac_by_rb_rank": {
+    "1": 0.0542,
+    "2": 0.0,
+    "3": 0.0
+   }
+  },
+  {
+   "k_min": 3,
+   "k_max": 3,
+   "car_frac_by_rb_rank": {
+    "1": 0.1619,
+    "2": 0.0,
+    "3": 0.0
+   },
+   "tgt_frac_by_rb_rank": {
+    "1": 0.0578,
+    "2": 0.0,
+    "3": 0.0
+   }
+  },
+  {
+   "k_min": 4,
+   "k_max": 4,
+   "car_frac_by_rb_rank": {
+    "1": 0.0648,
+    "2": 0.0,
+    "3": 0.0
+   },
+   "tgt_frac_by_rb_rank": {
+    "1": 0.0,
+    "2": 0.0,
+    "3": 0.0
+   }
+  }
+ ]
+}

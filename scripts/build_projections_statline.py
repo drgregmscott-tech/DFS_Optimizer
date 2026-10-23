@@ -1371,6 +1371,8 @@ def build_statline_projections(site: str, season: int, week: int, slate_id: str,
                                      if "role_change_injury_flag" in df.columns else False)
     df["q_return_flag"] = (df["q_return_flag"].fillna(False).astype(bool)
                            if "q_return_flag" in df.columns else False)
+    df["wrw_decay_pts"] = (pd.to_numeric(df["wrw_decay_pts"], errors="coerce").fillna(0.0)
+                           if "wrw_decay_pts" in df.columns else 0.0)
     df["sigma"] = df["statline_sigma"].clip(lower=0.0)
     df["sigma_source"] = "statline_mc"
 
@@ -1406,6 +1408,7 @@ def build_statline_projections(site: str, season: int, week: int, slate_id: str,
                                                                "early_blend_delta", "qb_recal_delta",
                                                                "qb_autopromote_delta", "qb_autopromoted",
                                                                "wrw_delta_pts", "wrw_vacated_car",
+                                                               "wrw_decay_pts",
                                                                "wrw_te_delta_pts", "wrw_te_vacated_tgt",
                                                                "wrw_wr_delta_pts", "wrw_wr_vacated_tgt",
                                                                "snap_adj_pts",
@@ -1485,6 +1488,7 @@ def build_statline_projections(site: str, season: int, week: int, slate_id: str,
     dst_out["qb_autopromoted"] = False
     dst_out["wrw_delta_pts"] = 0.0
     dst_out["wrw_vacated_car"] = 0.0
+    dst_out["wrw_decay_pts"] = 0.0
     dst_out["wrw_te_delta_pts"] = 0.0
     dst_out["wrw_te_vacated_tgt"] = 0.0
     dst_out["wrw_wr_delta_pts"] = 0.0
@@ -1531,6 +1535,7 @@ def build_statline_projections(site: str, season: int, week: int, slate_id: str,
         kicker_out["qb_autopromoted"] = False
         kicker_out["wrw_delta_pts"] = 0.0
         kicker_out["wrw_vacated_car"] = 0.0
+        kicker_out["wrw_decay_pts"] = 0.0
         kicker_out["wrw_te_delta_pts"] = 0.0
         kicker_out["wrw_te_vacated_tgt"] = 0.0
         kicker_out["wrw_wr_delta_pts"] = 0.0

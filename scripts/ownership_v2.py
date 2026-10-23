@@ -377,6 +377,11 @@ def build_features(df, ctx, qb_att=False, qb_minsnap=None):
             s["vacated"] = [vac.get((a, b), 0.0) for a, b in zip(s.team, s.g2)]
             ms = per.set_index("player_id").share
             s["my_share"] = s.player_id.map(ms[~ms.index.duplicated()]).fillna(0.0)
+            # Recent usage (targets+carries+pass attempts, team's last-3-game window, any team) -- read only by the
+            # default-off tail-floor switch (apply_tail_floor); not a model feature, so scores are unchanged.
+            u3 = (ts.targets.fillna(0) + ts.carries.fillna(0)
+                  + (ts.attempts.fillna(0) if "attempts" in ts else 0)).groupby(ts.player_id).sum()
+            s["u3_recent"] = s.player_id.map(u3).fillna(0.0)
             if qb_att:
                 qb = s.pos == "QB"
                 s.loc[qb, "my_share"] = s.loc[qb, "player_id"].map(qb_att_share(ts)).fillna(s.loc[qb, "my_share"])
@@ -388,6 +393,7 @@ def build_features(df, ctx, qb_att=False, qb_minsnap=None):
         else:
             s["vacated"] = 0.0
             s["my_share"] = 0.0
+            s["u3_recent"] = np.nan  # unknown -> tail floor never fires (fail-safe)
         s.loc[s.pos == "DST", ["vacated", "my_share"]] = 0.0
         dfe = ctx.dst_feats(season, week, list(set(s.team) | set(s.opp.dropna())))
         s["dst_sk"] = s.team.map(dfe.sk_pg)
@@ -576,12 +582,15 @@ def apply_vac_bump(F, final, k=None, cap=CAP):
 # using the share-based version of this signal; this raw-target-count version (spike_tgt, built in
 # build_features from data already loaded for p3_tgt/last_tgt) uses the conservative low end of that
 # range. final WR/TE log-score += SPIKE_BUMP_K * spike_tgt, re-allocated to the same group budgets, same
-# pattern as the vac bump above. Switch: DFS_OWN_SPIKE=0. Any failure = no-op.
+# pattern as the vac bump above. Switch: DFS_OWN_SPIKE=1 to re-enable.
+# Default OFF as of 2026-10-23 (analysis/ownership_tail_floor/RESULTS.md side-finding): on real 2026 slates,
+# spike-on is LESS accurate than spike-off (Pearson .920->.847, MAE 1.04->1.30) and badly overshoots on live
+# Wk7 production rows (Golden +32pts to 56.9%, Egbuka +22.5 to 29.1%). Held off pending re-check.
 SPIKE_BUMP_K = 0.33
 
 
 def spike_bump_enabled():
-    return os.environ.get("DFS_OWN_SPIKE", "1").strip().lower() not in ("0", "false", "off", "no")
+    return os.environ.get("DFS_OWN_SPIKE", "0").strip().lower() not in ("0", "false", "off", "no")
 
 
 def apply_spike_bump(F, final, k=None, cap=CAP):
@@ -926,6 +935,84 @@ def adaptive_blend_score(v2_only, live_pred, params=None):
         return None
 
 
+# 2026-10-22 live tail floor (analysis/ownership_tail_floor/RESULTS.md, local; diagnosis in
+# analysis/ownership_low_end_calib/RESULTS.md item #1): v2 was fit on a pool of players who PLAYED (~16 skill rows per
+# game), but the live pool is every row with final_projection > 0 (~39 per game). The extra rows are mostly scrubs with
+# no usage in their team's last 3 games and a ~1-pt projection; inside the softmax they soak up 22-29 ownership points
+# per slate (field gives them 1-8), and with fixed group budgets that mass comes out of everyone else. With the switch
+# on, "dead" skill rows (u3_recent == 0 -- no targets/carries/pass attempts in the team's last-3-game window -- AND
+# proj < TAIL_FLOOR_PROJ_MAX) are shrunk (rank-preserving) to a mean of TAIL_FLOOR_VALUE each, and every other row of the same slate x group is
+# re-allocated (proportional, same CAP water-fill) to the group's unchanged budget. Pure reallocation: group totals
+# identical. Runs last, so it is equivalent to running every upstream softmax over the live-only pool. Never fires in
+# week 1 (the usage window is then last season, so every rookie would read as dead).
+# Switch: DFS_OWN_V2_TAIL_FLOOR=0 to disable (default 1 = on, shipped 2026-10-22 per analysis/ownership_tail_floor/
+# RESULTS.md: MAE better on 7/7 real 2026 slates, history-neutral, group totals identical). Params:
+# DFS_OWN_V2_TAIL_FLOOR_PROJ (default 3.0), DFS_OWN_V2_TAIL_FLOOR_VALUE (default 0.02). Any failure = no-op.
+TAIL_FLOOR_DEFAULT = "1"
+TAIL_FLOOR_PROJ_MAX = 3.0
+TAIL_FLOOR_VALUE = 0.02
+
+
+def tail_floor_enabled():
+    return os.environ.get("DFS_OWN_V2_TAIL_FLOOR", TAIL_FLOOR_DEFAULT).strip().lower() not in (
+        "0", "false", "off", "no", "")
+
+
+def tail_floor_params():
+    try:
+        pm = float(os.environ.get("DFS_OWN_V2_TAIL_FLOOR_PROJ", TAIL_FLOOR_PROJ_MAX))
+        v = float(os.environ.get("DFS_OWN_V2_TAIL_FLOOR_VALUE", TAIL_FLOOR_VALUE))
+        if not (np.isfinite(pm) and np.isfinite(v) and pm >= 0 and v >= 0):
+            raise ValueError
+        return pm, v
+    except ValueError:
+        return TAIL_FLOOR_PROJ_MAX, TAIL_FLOOR_VALUE
+
+
+def tail_dead_mask(F, proj_max=None):
+    """Skill rows in the pool with no recent usage and a tiny projection. Unknown usage (NaN) is never dead."""
+    proj_max = tail_floor_params()[0] if proj_max is None else proj_max
+    u3 = pd.to_numeric(F["u3_recent"], errors="coerce").to_numpy() if "u3_recent" in F else np.full(len(F), np.nan)
+    proj = pd.to_numeric(F["proj"], errors="coerce").fillna(0).to_numpy()
+    # Week 1: the usage window is last season's final games, so every rookie reads u3=0 -> never floor week 1.
+    wk1 = (pd.to_numeric(F["week"], errors="coerce") == 1).to_numpy() if "week" in F else np.zeros(len(F), bool)
+    return (F.pos.isin(["QB", "RB", "WR", "TE"]).to_numpy() & F.in_pool.to_numpy().astype(bool) & (proj > 0)
+            & (u3 == 0) & (proj < proj_max) & ~wk1)
+
+
+def apply_tail_floor(F, final, proj_max=None, value=None, cap=CAP):
+    """Returns (floored final, audit delta). Fail-safe: input unchanged on any problem."""
+    pm0, v0 = tail_floor_params()
+    proj_max = pm0 if proj_max is None else proj_max
+    value = v0 if value is None else value
+    base = np.asarray(final, float)
+    try:
+        dead = tail_dead_mask(F, proj_max) & np.isfinite(base)
+        if not dead.any():
+            return base, np.zeros(len(base))
+        ok = F.pos.isin(["QB", "RB", "WR", "TE"]).to_numpy() & np.isfinite(base)
+        out = base.copy()
+        sub = F[ok]
+        rows_all = np.where(ok)[0]
+        for (sid, g), ix in sub.groupby([sub.slate_id.to_numpy(), sub.grp.to_numpy()]).indices.items():
+            rows = rows_all[ix]
+            d = dead[rows]
+            live = rows[~d & (base[rows] > 0)]
+            if not d.any() or not len(live):
+                continue
+            drows = rows[d]
+            md = base[drows].mean()
+            newd = base[drows] * (value / md) if md > value else base[drows]  # rank-preserving shrink to mean=value
+            bud = base[rows].sum() - newd.sum() - base[rows[~d & ~(base[rows] > 0)]].sum()
+            out[drows] = newd
+            out[live] = allocate(F.iloc[live], np.log(np.maximum(base[live], 1e-12)), {g: float(bud)}, cap=cap)
+        if not np.all(np.isfinite(out[ok])):
+            return base, np.zeros(len(base))
+        return out, np.where(ok, out - base, 0.0)
+    except Exception:  # noqa: BLE001 -- must never break a build
+        return base, np.zeros(len(base))
+
+
 def predict_v2(frame, ctx, lin, dst, live_pred=None, alpha=FFC_BLEND_ALPHA, vac_k=None, raw_ffc=None, spike_k=None):
     """frame: to_frame() output (one or more slates). live_pred: live FFC-model %, aligned to frame,
     or None for no blend. Returns (final, v2_only) numpy arrays aligned to frame; rows outside
@@ -982,6 +1069,10 @@ def predict_v2(frame, ctx, lin, dst, live_pred=None, alpha=FFC_BLEND_ALPHA, vac_
     if chalk_temp_gamma() != 1.0:
         final, dtemp = apply_chalk_temp(F, final, cap=lin.get("cap", CAP))
         LAST_AUDIT["own_chalk_temp"] = dtemp
+    if tail_floor_enabled():
+        final, tfl = apply_tail_floor(F, final, cap=lin.get("cap", CAP))
+        v2_only, _ = apply_tail_floor(F, v2_only, cap=lin.get("cap", CAP))
+        LAST_AUDIT["own_tail_floor"] = tfl
     other = ~F.pos.isin(GROUPS).to_numpy()
     final[other] = np.nan
     v2_only[other] = np.nan

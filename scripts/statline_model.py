@@ -2547,8 +2547,69 @@ def _wrw_trailing_usage(season: int, week: int, teams, p: dict):
     return ag, tvr
 
 
+WRW_RB_DECAY_PARAMS = DATA_DIR / "wrw_rb_decay_params.json"
+
+
+def _rb_decay_params(override: dict | None) -> dict | None:
+    """Params for the multi-week RB replacement extension, OFF by default as of 2026-10-23
+    (analysis/rb_replacement_decay/RESULTS.md: rank-1 variant is inconclusive-leaning-positive, does not
+    clear the hard ship bar on its own numbers -- MAE flat, RMSE CIs cross zero. Kept off pending owner
+    sign-off, consistent with the two-track rule: inconclusive stays in keep-testing, not shipped).
+    On: DFS_RB_REPLACEMENT_DECAY=1 (or an explicit `override` dict, tests/analysis only)."""
+    import os
+    if override is not None:
+        return override
+    if os.environ.get("DFS_RB_REPLACEMENT_DECAY", "0") not in ("1", "true", "True"):
+        return None
+    try:
+        return json.loads(WRW_RB_DECAY_PARAMS.read_text(encoding="utf-8"))
+    except Exception as exc:  # noqa: BLE001 -- a bad decay file must not take the shipped bump down with it
+        print(f"WARNING: RB replacement decay off ({type(exc).__name__}: {exc}); first-week bump unaffected.",
+              file=sys.stderr)
+        return None
+
+
+def _rb_decay_addon(df, a, lg, out_ids, pid, real, team, tvr, p, dp) -> list:
+    """2nd+ week of an RB absence (analysis/rb_replacement_decay). Fires only for a team with NO first-week
+    (last_g == lg) qualifying OUT, i.e. exactly where the shipped bump is silent. Vacaters = OUT RBs who did not
+    play the team's previous game but are still in the trailing window (same usage thresholds); k = weeks into the
+    absence (lg + 1 - last_g, so 2 = second week out). Each active RB gets frac[k bucket][rank] x vacated share x
+    team trailing volume x ppo_rb x points_scale, k bucket taken from the biggest carry vacater; fracs fade to 0 by
+    k=5 as the backups' own trailing usage absorbs the role. Adds to wrw_delta_pts (so the caller needs no change)
+    and records the add-on in wrw_decay_pts. Mutates df in place; returns log strings."""
+    a2 = a.copy(); a2.index = a2.index.astype(str)
+    o2 = a2[a2.index.isin(out_ids) & (a2["last_g"] < lg) & (a2["pos"] == "RB")
+            & ((a2["sh_car"] >= p["min_car_share"]) | (a2["sh_tgt"] >= p["min_tgt_share"]))]
+    if o2.empty:
+        return []
+    k = int(lg + 1 - o2.loc[o2["sh_car"].idxmax(), "last_g"])
+    bk = next((b for b in dp["buckets"] if b["k_min"] <= k <= b["k_max"]), None)
+    if bk is None:
+        return []
+    cand = real & (df["team"].astype(str) == team) & (df["position"].astype(str) == "RB") \
+        & ~pid.isin(out_ids) & pid.isin(set(a2.index))
+    if not cand.any():
+        return []
+    idx = df.index[cand]
+    scale = float(dp.get("points_scale", p.get("points_scale", 1.0)))
+    for ch, vol_col in (("car", "tcar"), ("tgt", "ttgt")):
+        V = float(o2[f"sh_{ch}"].sum())
+        fr = {int(r): float(v) for r, v in bk[f"{ch}_frac_by_rb_rank"].items()}
+        if V <= 0 or not fr:
+            continue
+        ranks = pd.Series(a2.loc[pid[cand], f"sh_{ch}"].to_numpy(), index=idx) \
+            .rank(ascending=False, method="first").clip(upper=3).astype(int)
+        add = ranks.map(fr).fillna(0.0) * V * float(tvr.loc[team, vol_col]) * p["ppo_rb"][ch] * scale
+        df.loc[idx, "wrw_decay_pts"] += add
+        df.loc[idx, "wrw_delta_pts"] += add
+    if "player_name" not in df.columns:
+        return []
+    return [f"{team}:{r.player_name}{r.wrw_decay_pts:+.1f}(wk{k} out)"
+            for r in df.loc[cand & (df["wrw_decay_pts"].abs() > 0.05)].itertuples()]
+
+
 def apply_rb_replacement(pool: pd.DataFrame, season: int, week: int,
-                         injury_status: pd.DataFrame | None) -> pd.DataFrame:
+                         injury_status: pd.DataFrame | None, decay_params: dict | None = None) -> pd.DataFrame:
     """Give the remaining RBs the vacated work of an OUT/DOUBTFUL teammate by depth rank
     (analysis/who_replaces_whom/RESULTS.md: held-out 2016-25 RMSE on affected RBs 8.04 -> 7.17,
     bias +3.4 -> 0.0, better in 10/10 seasons). Returns the pool with audit columns
@@ -2557,6 +2618,10 @@ def apply_rb_replacement(pool: pd.DataFrame, season: int, week: int,
     (Tested on the carry/target means first: the DK projection stack shrank ~2/3 of it back out
     and the shared sim RNG moved every other player's projection; see WIRING.md.)
     Off: DFS_WRW_RB=0.
+    Multi-week extension (analysis/rb_replacement_decay, OFF by default, DFS_RB_REPLACEMENT_DECAY=1 turns it on):
+    the bump above only fires in the first week of an absence (last_g == lg); with the switch on, a team whose RB
+    is in his 2nd-4th week out also gets a fading bump (_rb_decay_addon), audit column wrw_decay_pts. Off ->
+    byte-identical to before (no extra column). `decay_params` overrides the params file (tests/analysis only).
     Any error or missing status/params -> pool unchanged (loud warning on error only)."""
     import os
     df = pool.copy()
@@ -2582,6 +2647,9 @@ def apply_rb_replacement(pool: pd.DataFrame, season: int, week: int,
             return df
         frac = {"car": {int(k): v for k, v in p["car_frac_by_rb_rank"].items()},
                 "tgt": {int(k): v for k, v in p["tgt_frac_by_rb_rank"].items()}}
+        decay_p = _rb_decay_params(decay_params)
+        if decay_p is not None:
+            df["wrw_decay_pts"] = 0.0
         done = []
         for team in teams:
             if team not in ag.index.get_level_values(0) or team not in tvr.index:
@@ -2590,6 +2658,15 @@ def apply_rb_replacement(pool: pd.DataFrame, season: int, week: int,
             lg = tvr.loc[team, "last_g"]
             outs = a[a.index.astype(str).isin(out_ids) & (a["last_g"] == lg)
                      & ((a["sh_car"] >= p["min_car_share"]) | (a["sh_tgt"] >= p["min_tgt_share"]))]
+            if decay_p is not None and outs.empty:
+                try:
+                    done += _rb_decay_addon(df, a, lg, out_ids, pid, real, team, tvr, p, decay_p)
+                except Exception as exc:  # noqa: BLE001 -- undo this team's add-on, keep everything else
+                    tm = df["team"].astype(str) == team
+                    df.loc[tm, "wrw_delta_pts"] -= df.loc[tm, "wrw_decay_pts"]
+                    df.loc[tm, "wrw_decay_pts"] = 0.0
+                    print(f"WARNING: RB replacement decay skipped for {team} ({type(exc).__name__}: {exc}).",
+                          file=sys.stderr)
             if outs.empty:
                 continue
             cand_mask = real & (df["team"].astype(str) == team) & (df["position"].astype(str) == "RB") \

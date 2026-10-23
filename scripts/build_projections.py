@@ -609,7 +609,8 @@ def add_ownership_columns(df, site, layered=True, season=None, week=None, slate_
             slate_id=slate_id)
     keep = ["player_id", "chalk_score", "estimated_ownership_pct"]
     for extra in ("estimated_ownership_pct_heuristic", "est_own_live_old", "est_own_v2_only", "own_vacated", "own_vac_bump",
-                  "own_spike_tgt", "own_spike_bump", "own_chalk_ffc_seg", "own_chalk_qb_cut", "own_chalk_rb_cut"):
+                  "own_spike_tgt", "own_spike_bump", "own_chalk_ffc_seg", "own_chalk_qb_cut", "own_chalk_rb_cut",
+                  "own_tail_floor"):
         if extra in scored.columns:
             keep.append(extra)
     # A re-run on an already-scored frame (status_check apply refresh) must
