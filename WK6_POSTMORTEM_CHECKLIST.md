@@ -150,6 +150,57 @@ picking correct/high-EV plays; ownership accuracy is about knowing when the top-
 top-owned play, in which case riding it concentrates risk with the field (no leverage if the chalk busts) —
 that's the real use case for A5 (MME construction, pivot/dart flags, any future leverage-aware pick), not a
 lever for raw SE cash rate.
+**Diagnosis done, 2026-10-22 (`analysis/ownership_low_end_calib/RESULTS.md`, local only).** The characterization
+this item asked for is complete. Headline: the raw "0.11-0.18 correlation below 5%" is mostly a slicing
+artifact — any narrow ownership band looks that noisy, and FC (the system the owner cashes with) gets the
+same ~.2 in the 1-5% band. The real, ranked, fixable gaps found: **#1** live train/serve pool mismatch
+(scrub rows soak up ownership budget) — highest confidence. **#2** RB injury-replacement concentration.
+**#3** low-band shape too flat (slope 1.37). **#4** QB low-end gap vs FC (.56 vs .84 AUC) — needs role/
+projection info we don't have, lowest odds of a clean fix.
+**#1 SHIPPED 2026-10-23** (commit `29fb8e5d`, `analysis/ownership_tail_floor/RESULTS.md`): tail-floor fix,
+validated 7/7 real 2026 slates, MAE better every slate, budget-neutral. Same commit also turned OFF an
+unrelated unvalidated "spike bump" found actively hurting accuracy as a side-finding (Pearson .920→.847) and
+corrected an RB-decay default that had been flipped on by mistake. **Honest result: #1 closes only ~6% of the
+1-5% band's under-call gap (2.44→2.50 modeled vs 3.35 real) — confirmed real, not the whole fix.**
+**#2 and #3 triaged 2026-10-24 (this session, `analysis/a5_triage_2026-10-24/`, local only, nothing shipped):**
+- **#3 (shape too flat): CLOSED, don't build.** Slope 1.36 is real and stable (5/5 seasons), but a within-band
+  stretch is mathematically equivalent to just moving the owner's filter cutoff from 2.0% to ~2.2% — no new
+  rank or threshold information. Live 2026 production is already near slope 1 (the FFC blend removes most of
+  it). Doesn't touch the live 1-5% level gap at all.
+- **#2 as originally framed ("field concentrates on one RB, we spread"): NOT CONFIRMED.** We already put ~84%
+  of team RB share on the right guy, same as the field (diff +0.007, CI crosses zero, no consistent sign
+  across 5 seasons). Drop this framing.
+- **#2 narrowed to a specific archetype: real, not yet shippable.** When a team has an RB out (`vacated` ≥
+  .4) and our model's top healthy RB on that team is modeled under 5%, it's under-called 5/5 seasons in
+  history (2.58% modeled vs 5.60% real, ~1 row/slate) **and confirmed live** on the 7 real 2026 DK slates with
+  contest results (wk4-6 main/early/afternoon): 2.62% modeled vs 7.18% real. **Root cause found directly, live
+  only:** pure v2 is roughly unbiased on these players (mean 7.26 vs real 7.18) — it's our own FFC blend that
+  cuts them ~64% after v2 gets it right, because FFC doesn't list 8 of the 10 archetype rows and the old blend
+  partner model guesses low (e.g. Braelon Allen pure-v2 14.4 → blended 1.9, real 17.6). This single archetype
+  accounts for ~17% of the entire live 1-5% band's under-call.
+  - Built and tested two fixes, both read-only/uncommitted at the code level except as noted below: (a) an
+    additive top-RB bump (history-fit, k=.5) and (b) a per-row blend-trust override (raise alpha toward v2 for
+    this archetype only, cap at 5% modeled to avoid firing on chalk). **Neither clears the ship bar — n is too
+    thin:** live test is only **10 rows / 6 distinct players** (Ollie Gordon ×4 slates, Braelon Allen ×2), not
+    independent across shared-game weeks. (a) fixes bias in history but makes archetype MAE *worse* 5/5
+    seasons there (fixes the mean, not the median); (b) can't be tested on history at all (no blend partner
+    exists there) but gets closest to zero bias live (archetype bias −1.6 vs base −4.56). Both are budget-
+    neutral and don't hurt non-archetype RBs.
+  - **Built into `scripts/ownership_v2.py`/`scripts/build_projections.py` as switch `DFS_OWN_RB_VAC_TRUST`,
+    default OFF (`RB_VAC_TRUST_DEFAULT = "0"`), committed 2026-10-24 inert** (byte-identical to unset when
+    off, confirmed on all 7 slates) — approach (b), ready to flip on without rebuilding if validated. Params:
+    `DFS_OWN_RB_VAC_TRUST_ALPHA` (default .9), `..._VAC_MIN` (default .4), `..._MAX_OWN` (default 5). Audit
+    column `own_rb_vac_trust`.
+  - **Re-test trigger, concrete (don't let this one go stale — this is the whole point of writing it down
+    here instead of just leaving the switch off and moving on):** re-run
+    `analysis/a5_triage_2026-10-24/h2b_live_test.py` once Wk7 DK contest results land (add wk7 main/early/
+    afternoon to `SLATES`, delete the cached `h2b_live_frame.parquet`), and again after Wk8. **Ship only if**
+    the direction (archetype bias shrinking toward zero, non-archetype RB MAE not hurt) holds across at least
+    ~20 archetype rows from at least ~10 distinct players — roughly double today's n, enough to move past
+    "6 players' worth of noise." Until then, deliberately kept off: shipping a real-money ownership number off
+    6 players would violate [[project_dfs_two_track_philosophy]]'s hard ship bar, which this project has held
+    to on every other item in this file (including turning OFF the RB-decay default when it didn't clear its
+    own bar on 2026-10-23, same commit as the tail-floor ship).
 
 ### A6. Slate-level "why didn't we cash" autopsy, and the WR/TE projection-ranking gap it points to — ⛔ CLOSED 2026-10-22, redirected (see below)
 **Result (2026-10-22 session, `analysis/wk6_wrte_autopsy/RESULTS.md`):** ran the full case-study/mock-replay

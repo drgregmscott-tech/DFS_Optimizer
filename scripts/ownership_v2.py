@@ -1013,6 +1013,74 @@ def apply_tail_floor(F, final, proj_max=None, value=None, cap=CAP):
         return base, np.zeros(len(base))
 
 
+# 2026-10-24 RB-vacancy blend trust (EXPERIMENTAL, default OFF; analysis/a5_triage_2026-10-24/, local, FC-derived):
+# when a team has an RB out (RB `vacated` >= RB_VAC_TRUST_VAC_MIN), its top healthy RB by v2_only is under-called
+# live because the FFC-blend partner (live_pred: the old layered model / FFC, which mostly doesn't list these players)
+# guesses very low -- 2026 wk4-6: pure v2 7.3 vs real 7.2 on these rows, shipped blend 2.6. With the switch on,
+# those rows' blend alpha is raised to RB_VAC_TRUST_ALPHA (lean on v2) when the flat-blend number is below
+# RB_VAC_TRUST_MAX_OWN (0 = no cap). Pure re-blend: same allocate() call, same group budgets. Trigger rows' score moves
+# by (a_i - alpha)*(log v2_only - log live); every other row keeps its flat-blend score (only rescaled to the budget).
+# Switch: DFS_OWN_RB_VAC_TRUST=1. Params: DFS_OWN_RB_VAC_TRUST_ALPHA, DFS_OWN_RB_VAC_TRUST_VAC_MIN,
+# DFS_OWN_RB_VAC_TRUST_MAX_OWN. Audit column own_rb_vac_trust (final minus flat-blend final). Any failure = no-op.
+RB_VAC_TRUST_DEFAULT = "0"
+RB_VAC_TRUST_ALPHA = 0.9
+RB_VAC_TRUST_VAC_MIN = 0.4
+RB_VAC_TRUST_MAX_OWN = 5.0
+
+
+def rb_vac_trust_enabled():
+    return os.environ.get("DFS_OWN_RB_VAC_TRUST", RB_VAC_TRUST_DEFAULT).strip().lower() not in (
+        "0", "false", "off", "no", "")
+
+
+def rb_vac_trust_params():
+    try:
+        a = float(os.environ.get("DFS_OWN_RB_VAC_TRUST_ALPHA", RB_VAC_TRUST_ALPHA))
+        v = float(os.environ.get("DFS_OWN_RB_VAC_TRUST_VAC_MIN", RB_VAC_TRUST_VAC_MIN))
+        m = float(os.environ.get("DFS_OWN_RB_VAC_TRUST_MAX_OWN", RB_VAC_TRUST_MAX_OWN))
+        if not (np.isfinite(a) and np.isfinite(v) and np.isfinite(m) and 0 <= a <= 1 and v >= 0 and m >= 0):
+            raise ValueError
+        return a, v, m
+    except ValueError:
+        return RB_VAC_TRUST_ALPHA, RB_VAC_TRUST_VAC_MIN, RB_VAC_TRUST_MAX_OWN
+
+
+def rb_vac_trust_mask(F, v2_only, flat_final, vac_min, max_own):
+    """RB in pool, team RB vacated >= vac_min, top RB on his slate x team by v2_only, flat-blend final < max_own."""
+    v2 = np.asarray(v2_only, float)
+    rb = (F.pos == "RB").to_numpy() & F.in_pool.to_numpy().astype(bool) & np.isfinite(v2)
+    vac = pd.to_numeric(F["vacated"], errors="coerce").fillna(0.0).to_numpy()
+    s = pd.Series(np.where(rb, v2, -np.inf), index=F.index)
+    top = (s.groupby([F.slate_id.to_numpy(), F.team.to_numpy()]).rank(ascending=False, method="first") == 1).to_numpy()
+    m = rb & top & (vac >= vac_min)
+    if max_own > 0:
+        m &= np.asarray(flat_final, float) < max_own
+    return m
+
+
+def apply_rb_vac_trust(F, v2_only, live_pred, flat_final, budgets, alpha_base, cap=CAP):
+    """Returns (re-blended final, audit delta). Fail-safe: flat_final unchanged on any problem."""
+    base = np.asarray(flat_final, float)
+    try:
+        a_t, vmin, mx = rb_vac_trust_params()
+        m = rb_vac_trust_mask(F, v2_only, base, vmin, mx)
+        if not m.any():
+            return base, np.zeros(len(base))
+        a = np.where(m, max(a_t, alpha_base), alpha_base)
+        lv2 = np.log(np.maximum(np.asarray(v2_only, float), .05))
+        lf = np.log(np.maximum(np.asarray(live_pred, float), .05))
+        # flat-blend score in log-% units (log(flat_final) = flat score + group constant), then shift ONLY the trigger
+        # rows by (a_i - alpha)*(log v2 - log live): every other row's score is exactly the flat one.
+        sc = np.log(np.maximum(np.where(np.isfinite(base), base, .05), 1e-12)) + np.where(m, (a - alpha_base) * (lv2 - lf), 0.0)
+        out = allocate(F, sc, budgets, cap=cap)
+        sk = F.pos.isin(["QB", "RB", "WR", "TE"]).to_numpy()
+        if not np.all(np.isfinite(out[sk & np.isfinite(base)])):
+            return base, np.zeros(len(base))
+        return out, np.where(np.isfinite(base), out - base, 0.0)
+    except Exception:  # noqa: BLE001 -- must never break a build
+        return base, np.zeros(len(base))
+
+
 def predict_v2(frame, ctx, lin, dst, live_pred=None, alpha=FFC_BLEND_ALPHA, vac_k=None, raw_ffc=None, spike_k=None):
     """frame: to_frame() output (one or more slates). live_pred: live FFC-model %, aligned to frame,
     or None for no blend. Returns (final, v2_only) numpy arrays aligned to frame; rows outside
@@ -1032,6 +1100,9 @@ def predict_v2(frame, ctx, lin, dst, live_pred=None, alpha=FFC_BLEND_ALPHA, vac_
         final = allocate(F, alpha * Fs + (1 - alpha) * lf, budgets, cap=lin.get("cap", CAP))
     else:
         final = v2_only.copy()
+    rbt = None
+    if ad is None and live_pred is not None and rb_vac_trust_enabled():
+        final, rbt = apply_rb_vac_trust(F, v2_only, live_pred, final, budgets, alpha, cap=lin.get("cap", CAP))
     # DST group: v2 DST model
     D = dst_features(F)
     if len(D):
@@ -1044,6 +1115,8 @@ def predict_v2(frame, ctx, lin, dst, live_pred=None, alpha=FFC_BLEND_ALPHA, vac_
     LAST_AUDIT.clear()
     if ad is not None:
         LAST_AUDIT["own_ffc_alpha"] = ad[1]
+    if rbt is not None:
+        LAST_AUDIT["own_rb_vac_trust"] = rbt
     if vac_bump_enabled() and (vac_k is None or vac_k != 0):
         final, bump = apply_vac_bump(F, final, vac_k, cap=lin.get("cap", CAP))
         LAST_AUDIT["own_vac_bump"] = bump
