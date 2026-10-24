@@ -110,20 +110,42 @@ that Min-specific number). One honest limit no width fixes: ~half of real misses
 cutoff (median 1.17pt) — a short, scannable flag list will never catch more than roughly half of them.
 **Evidence:** item 3 below, "Mechanism A."
 
-### A4. Compounding-vacancy fix for the WR/TE/RB replacement model (Fix 2)
+### A4. Compounding-vacancy fix for the WR/TE/RB replacement model (Fix 2) — ⛔ CLOSED 2026-10-24, wrong-direction-drop
 **Problem:** today a teammate only counts as "vacating" targets/role if he played the team's most recent
 game. A player who fell off 1-2 games *before* the current OUT event (e.g. Skowronek, out a week before
-Wilson, in the Germie Bernard case) is never folded into the vacancy pool for anyone. Lower priority than
-it was — the already-shipped ownership recency-spike bump (see below) now covers part of this same symptom
-at the ownership-output level.
-**Scope:** `scripts/statline_model.py`, new helper alongside `_wrw_trailing_usage()`. New
-`compounding_lookback_weeks` param (candidate `K=2`), **off by default** (`DFS_WRW_COMPOUNDING=0`) since
-unvalidated. Test via `analysis/who_replaces_whom/build_frame.py` + `evaluate.py` on the real 2016-25
-injury panel (`analysis/inactives/status_panel_2016_2025.csv`), LOSO, on a labeled "compounding" event
-subset — expect this to be noisier (smaller subset), so an inconclusive result is an acceptable, honestly-
-reported outcome here, not a failure.
-**Evidence:** item 3 below, "Fix 2 (bigger, the real 'model sharpness' gap)." Note: Fix 1 (a different,
-simpler approach to the same function) was already built, tested, and rejected — don't re-try it.
+Wilson, in the Germie Bernard case) is never folded into the vacancy pool for anyone.
+**Result — four rounds of testing, all local/FC-derived, nothing committed (`analysis/wrw_compounding_vacancy/`):**
+1. **Round 1** (frame-level LOSO 2016-25): real bias signal (+0.6-0.8pt under-projection on compounding
+   events, beats placebo) but held-out MAE worse — a mean/median artifact on right-skewed points.
+   Inconclusive.
+2. **Round 2** (full current-code pipeline rebuild, LOSO 2021-25, 86 DK main slates): small RMSE gain
+   (+0.04 on 6.9) but 95% CI crossed zero, only 3/5 seasons better, 2024 clearly worse, ownership RMSE/corr
+   flat. Inconclusive.
+3. **Round 3** (K=1 locked, out-of-time check on 2026 wk2-6): too few events (6 team-weeks) to settle it —
+   **and found the mechanism as specified would not have fixed the Germie Bernard case it was built for**:
+   his two compounding faders (Pittman .112, Skowronek .026) each fall individually under the model's
+   usage-share gate (`tgt >= .12`); only their summed share (.14) clears it.
+4. **Harness bug found and reassessed:** the history rebuild harness never zeroed an OUT player's own
+   projection in 2021-22 (it did, by accident of FC's data, in 2023-25) — this inflated Round 2's apparent
+   gain ~3x. Re-run on the corrected ("harmonized") pool: K=1 RMSE gain shrank to +0.028 (CI still crosses
+   zero), and the 2026 ownership check flipped sign (bias +0.77, now overshooting, RMSE worse). Downgraded
+   to inconclusive-leaning-drop, pending one named remaining test.
+5. **Final test, summed-gate variant on the harmonized pool (2026-10-24, this session):** gating on the
+   *combined* fader share instead of each fader individually. **Changes nothing** — across all 86 real
+   history slates (2021-25) it adds **zero new qualifying team-weeks** (Bernard's two-faders-each-under-
+   gate setup is nearly unheard of: 1 extra event out of 137 in the full 2016-25 frame). Head-to-head vs.
+   the original gate: RMSE delta -0.006 [-0.018, +0.005], pure noise. On 2026 it's worse on the pre-declared
+   population and ownership gets worse under both gate versions. It does fire on the actual Bernard case now
+   (threshold .139 clears .12) but moves his projection only 8.03→8.35 (real 25.7) and ownership only
+   9.75%→10.24% (real 26.4%) — nowhere near the size of the miss.
+**Verdict:** across all four rounds, the RMSE CI crossed zero every time and MAE was worse every time; only
+bias ever moved toward zero. **Wrong-direction-drop — park it, no further testing.** The cheap-chalk/Bernard-
+type miss this was chasing is better explained by low-end ownership calibration (A5, already in flight) —
+Bernard was under-owned by ~16 real-ownership points with or without this term.
+**Evidence:** item 3 below, "Fix 2 (bigger, the real 'model sharpness' gap)," plus
+`analysis/wrw_compounding_vacancy/{fix2_test,fix2_rebuild_test,fix2_k1_2026,harness_bug_and_reassessment,summed_gate}_RESULTS.md`
+(all local-only, FC-derived, never committed). Fix 1 (a different, simpler approach to the same function)
+was already built, tested, and rejected earlier — don't re-try it either.
 
 ### A5. Ownership-model calibration at the low end (0-5% band) — the root-cause item
 **Problem:** identified independently three separate times this postmortem (A3's miss-rate finding, item
