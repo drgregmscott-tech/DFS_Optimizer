@@ -580,6 +580,22 @@
     line-height: 1.4;
   }
   .cheat-empty { font-size: 12px; color: var(--dimmer); font-style: italic; }
+  .cheat-row.bonus { background: var(--panel-2); border-left: 2px solid var(--amber); }
+  .cheat-tag {
+    display: inline-block;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--good);
+    background: rgba(63,191,127,0.14);
+    border-radius: 4px;
+    padding: 1px 6px;
+    margin-left: 7px;
+    vertical-align: middle;
+  }
+  .cheat-tag.bonus { color: var(--amber); background: var(--amber-dim); }
 
   /* ---------------- Integrity strip ---------------- */
 
@@ -4299,11 +4315,15 @@ in this browser's localStorage.</p>
     }
     var rowsHtml = rows.map(function (r) {
       var conf = parseInt(r.confidence, 10) || 0;
-      return '<div class="cheat-row">' +
+      var isBonus = String(r.is_bonus) === "True";
+      var tagHtml = r.badge
+        ? '<span class="cheat-tag' + (isBonus ? " bonus" : "") + '">' + (isBonus ? "Bonus — " : "") + escapeHtml(r.badge) + '</span>'
+        : "";
+      return '<div class="cheat-row' + (isBonus ? " bonus" : "") + '">' +
         '<div class="cheat-row-stats">' +
-        '<div class="cheat-rank">' + escapeHtml(r.rank) + '</div>' +
+        '<div class="cheat-rank">' + (isBonus ? "+" : escapeHtml(r.rank)) + '</div>' +
         '<div class="slot-badge" style="width:40px;">' + escapeHtml(r.position) + '</div>' +
-        '<div class="player-cell"><div class="player-name">' + escapeHtml(String(r.player_name).trim()) + (injuryByPid[r.player_id] || "") + '</div>' +
+        '<div class="player-cell"><div class="player-name">' + escapeHtml(String(r.player_name).trim()) + (injuryByPid[r.player_id] || "") + tagHtml + '</div>' +
         '<div class="player-meta">' + escapeHtml(r.team) + ' vs ' + escapeHtml(r.opponent) + '</div></div>' +
         '<div class="cheat-stat">' + fmtMoney(parseFloat(r.salary) || 0) + '</div>' +
         '<div class="cheat-stat" style="color:var(--amber);">' + fmtPts(parseFloat(r.final_projection) || 0) + ' pts</div>' +

@@ -186,10 +186,20 @@ def score_position_group(group: pd.DataFrame, team_implied_total: dict) -> pd.Da
         composite += w * z
         weight_sum += w
         g[f"_z_{factor}"] = z
-    # leverage already an own-vs-ownership z-score, always applicable
-    composite += FACTOR_WEIGHTS["leverage"] * g["_leverage_raw"]
+    # _leverage_raw is already a DIFFERENCE of two z-scores (not a raw
+    # value like the other factor_cols above), so it does NOT share their
+    # ~unit-std scale by construction -- re-zscoring it here puts it back
+    # on the same ~1-std footing as every other factor before weighting.
+    # Found via real-data validation (2026-10-24): without this, a single
+    # outlier leverage value (a min-priced, highly-owned "chalk trap" play)
+    # could swing 3-4 std, dwarfing six other factors each individually
+    # capped near 1 std, and silently bury a genuinely strong value play
+    # (Ted Hurst III, WR, $3000 -- 2nd-best _z_value in the whole WR pool
+    # but ranked 94th/157 overall before this fix).
+    z_leverage = zscore(g["_leverage_raw"])
+    composite += FACTOR_WEIGHTS["leverage"] * z_leverage
     weight_sum += FACTOR_WEIGHTS["leverage"]
-    g["_z_leverage"] = g["_leverage_raw"]
+    g["_z_leverage"] = z_leverage
 
     g["composite_score"] = composite / weight_sum
     g["composite_z"] = zscore(g["composite_score"])
@@ -254,8 +264,29 @@ def build_rationale(row: pd.Series) -> tuple:
 OUTPUT_COLUMNS = [
     "position", "rank", "player_id", "player_name", "team", "opponent",
     "salary", "final_projection", "estimated_ownership_pct", "confidence",
-    "composite_score", "top_factors", "rationale",
+    "composite_score", "top_factors", "rationale", "badge", "is_bonus",
 ]
+
+
+def _build_row(pos: str, row: pd.Series, rank, is_bonus: bool, badge: str) -> dict:
+    top_factors, rationale = build_rationale(row)
+    return {
+        "position": pos,
+        "rank": rank,
+        "player_id": row["player_id"],
+        "player_name": row["player_name"],
+        "team": row["team"],
+        "opponent": row["opponent"],
+        "salary": row["salary"],
+        "final_projection": row["final_projection"],
+        "estimated_ownership_pct": row["estimated_ownership_pct"],
+        "confidence": row["confidence"],
+        "composite_score": row["composite_score"],
+        "top_factors": top_factors,
+        "rationale": rationale,
+        "badge": badge,
+        "is_bonus": is_bonus,
+    }
 
 
 def build_cheat_sheet(site: str, slate_id: str) -> pd.DataFrame:
@@ -282,23 +313,72 @@ def build_cheat_sheet(site: str, slate_id: str) -> pd.DataFrame:
             print(f"NOTE: only {len(pool)}/{top_n} eligible {pos} players found "
                   f"for {site}/{slate_id}.", file=sys.stderr)
         top = pool.sort_values("composite_score", ascending=False).head(top_n).reset_index(drop=True)
+        top_ids = set(top["player_id"])
+
+        # Guaranteed Value/Leverage slots (user decision, 2026-10-24): a
+        # single global composite blend structurally favors players who
+        # are strong across every factor at once -- a min-priced "best
+        # bang-for-buck" play can almost never out-rank a $7-8K stud on
+        # raw ceiling/floor/usage (absolute point totals, not per-dollar),
+        # even when its pts-per-$1K value is the best on the slate. Rather
+        # than reweighting the whole composite (which the user explicitly
+        # didn't want -- it would distort every other pick too), the
+        # single best Value play and single best Leverage play per
+        # position are identified directly and guaranteed visibility: if
+        # either already made the composite top-N, that row is just
+        # badged; if not, it's appended as an extra "bonus" row (is_bonus
+        # =True) past the normal top_n count, same pattern for both so a
+        # thin/non-existent leverage standout doesn't silently mean a
+        # thin/non-existent value standout either.
+        # "Value Pick" means cheap-and-efficient in normal DFS usage, not
+        # literally the single best pts-per-$1K in the pool -- an expensive
+        # stud can win that ratio outright in a top-heavy week (confirmed
+        # on real data: Amon-Ra St. Brown, $7800, had the single best WR
+        # value ratio this slate), which isn't what anyone means by "value
+        # play." Restricted to the cheaper half of this position's own
+        # salary pool (median split, self-adjusting per slate/position --
+        # no hardcoded salary threshold) so this surfaces genuine punts.
+        #
+        # Cheap alone isn't enough, though -- found via real-data
+        # validation: a min-salary QB pool is mostly third-string/emergency
+        # arms with a near-zero (but nonzero) garbage-time projection, and
+        # the "best value" among pure scrubs is still a scrub, not a real
+        # play (Carson Wentz, $4000, 1.1 projected points, projected for
+        # literally zero pass attempts, briefly "won" this slot). Also
+        # requires a real projected role (_usage_raw > 0) wherever usage
+        # applies (not DST, which has none -- see usage_value()). If NO
+        # cheap player at this position has a real role, there just isn't
+        # a legitimate value play here this week -- no bonus row is forced
+        # (same "an empty result is real information" philosophy
+        # pivot_finder.py already uses for thin pivot pools).
+        cheap_half = pool[pool["salary"] <= pool["salary"].median()]
+        if pos != "DST":
+            cheap_half = cheap_half[cheap_half["_usage_raw"] > 0]
+        best_value_row = (
+            cheap_half.loc[cheap_half["_z_value"].idxmax()] if not cheap_half.empty else None
+        )
+        best_leverage_row = pool.loc[pool["_z_leverage"].idxmax()]
+        badges_by_id = {}
+        if best_value_row is not None:
+            badges_by_id.setdefault(best_value_row["player_id"], []).append("Value Pick")
+        badges_by_id.setdefault(best_leverage_row["player_id"], []).append("Leverage Pick")
+
         for rank, (_, row) in enumerate(top.iterrows(), start=1):
-            top_factors, rationale = build_rationale(row)
-            rows.append({
-                "position": pos,
-                "rank": rank,
-                "player_id": row["player_id"],
-                "player_name": row["player_name"],
-                "team": row["team"],
-                "opponent": row["opponent"],
-                "salary": row["salary"],
-                "final_projection": row["final_projection"],
-                "estimated_ownership_pct": row["estimated_ownership_pct"],
-                "confidence": row["confidence"],
-                "composite_score": row["composite_score"],
-                "top_factors": top_factors,
-                "rationale": rationale,
-            })
+            badge = ", ".join(badges_by_id.get(row["player_id"], []))
+            rows.append(_build_row(pos, row, rank, False, badge))
+
+        bonus_rank = top_n + 1
+        if best_value_row is None:
+            print(f"NOTE: no eligible cheap/real-role value play found for {pos} "
+                  f"on {site}/{slate_id} -- no Value Pick bonus row added.", file=sys.stderr)
+        elif best_value_row["player_id"] not in top_ids:
+            rows.append(_build_row(pos, best_value_row, bonus_rank, True, "Value Pick"))
+            bonus_rank += 1
+        best_value_id = best_value_row["player_id"] if best_value_row is not None else None
+        if (best_leverage_row["player_id"] not in top_ids
+                and best_leverage_row["player_id"] != best_value_id):
+            rows.append(_build_row(pos, best_leverage_row, bonus_rank, True, "Leverage Pick"))
+
     return pd.DataFrame(rows, columns=OUTPUT_COLUMNS)
 
 
