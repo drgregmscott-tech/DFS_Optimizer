@@ -27,17 +27,22 @@ composite score:
   - usage       QB: proj_pass_att. RB: proj_rush_att + proj_targets.
                 WR/TE: proj_targets. DST: not applicable (omitted from
                 DST's composite, weights renormalized accordingly).
-  - leverage    zscore(final_projection) - zscore(estimated_ownership_pct)
-                within the position pool -- a generalized version of
-                pivot_finder.py's leverage_score (decision #6 there), but
-                without that script's "candidate vs one specific cash
-                player" framing: this just rewards being underowned
-                relative to how good the projection is, full stop.
+
+Ownership leverage (zscore(final_projection) - zscore(estimated_ownership_pct)
+within the position pool) is deliberately EXCLUDED from the composite/
+ranking -- see score_position_group()'s comment for the real-data finding
+(Jordan Love, 2026-10-24) that drove this: leverage answers "is this
+underowned?", not "is this good?", and blending the two penalizes a player
+for being correctly popular, which buried an obviously-elite, deservedly-
+chalky QB at rank 20/63. It's still computed and surfaced as its own
+"Leverage Pick" badge in build_cheat_sheet() (the single best true
+leverage play per position gets guaranteed visibility, same treatment as
+Value Pick below) -- just never as a penalty on the main ranking.
 
 Weights are named constants below (FACTOR_WEIGHTS) so they're easy to see
 and retune later -- not fitted to anything, just a reasonable starting
 split where ceiling/floor get a little less weight than value/matchup/
-game_env/usage/leverage since they're already correlated with value.
+game_env/usage since they're already correlated with value.
 
 Confidence (1-10): the composite score is re-standardized (z-scored a
 second time) against the FULL eligible pool for that position -- not just
@@ -186,20 +191,20 @@ def score_position_group(group: pd.DataFrame, team_implied_total: dict) -> pd.Da
         composite += w * z
         weight_sum += w
         g[f"_z_{factor}"] = z
-    # _leverage_raw is already a DIFFERENCE of two z-scores (not a raw
-    # value like the other factor_cols above), so it does NOT share their
-    # ~unit-std scale by construction -- re-zscoring it here puts it back
-    # on the same ~1-std footing as every other factor before weighting.
-    # Found via real-data validation (2026-10-24): without this, a single
-    # outlier leverage value (a min-priced, highly-owned "chalk trap" play)
-    # could swing 3-4 std, dwarfing six other factors each individually
-    # capped near 1 std, and silently bury a genuinely strong value play
-    # (Ted Hurst III, WR, $3000 -- 2nd-best _z_value in the whole WR pool
-    # but ranked 94th/157 overall before this fix).
-    z_leverage = zscore(g["_leverage_raw"])
-    composite += FACTOR_WEIGHTS["leverage"] * z_leverage
-    weight_sum += FACTOR_WEIGHTS["leverage"]
-    g["_z_leverage"] = z_leverage
+    # Leverage is deliberately EXCLUDED from the composite/ranking itself
+    # (real-data finding, 2026-10-24): it answers "is this underowned?",
+    # not "is this good?" -- those are different questions, and blending
+    # them penalizes a player for being correctly popular. Confirmed on
+    # real data: Jordan Love (top-3 or better on value/ceiling/floor/usage,
+    # a 20.0-pt QB at 17.4% ownership -- the highest-owned QB on the slate,
+    # i.e. deservedly chalky) had a _leverage_raw z of -4.1, the most
+    # extreme value in the whole QB pool, which alone dragged him from a
+    # clear top play down to rank 20/63 when leverage was still weighted
+    # into the composite. Still computed and reported (_z_leverage,
+    # rationale text) for its ONE real purpose -- surfacing the single
+    # best true leverage play per position as a separate badge in
+    # build_cheat_sheet(), never as a penalty on an otherwise-great play.
+    g["_z_leverage"] = zscore(g["_leverage_raw"])
 
     g["composite_score"] = composite / weight_sum
     g["composite_z"] = zscore(g["composite_score"])
