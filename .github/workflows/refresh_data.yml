@@ -630,6 +630,21 @@ jobs:
             --status-file "${{ steps.status_file.outputs.path }}" \
             --projections-file "output/final_projections_${{ matrix.site }}_${{ matrix.slate_id }}.csv"
 
+      # Cheat sheet (weekly top-plays list) -- classic main slate only, per
+      # user scope. Rebuilt fresh off final_projections every time this
+      # step runs, same cadence as "Rebuild projections" above (no mode
+      # gate -- that step itself has none, so vegas_only refreshes already
+      # rebuild final_projections with the latest vegas_factor baked in,
+      # and the cheat sheet should reflect that same refresh). Slate-id
+      # naming convention (see data/current_slate.json's _field_notes) is
+      # "..._main_...", "..._early_...", "..._afternoon_..." -- matched the
+      # same way the DK ownership pull step above excludes showdown slates.
+      - name: Rebuild cheat sheet
+        id: cheat_sheet
+        if: contains(matrix.slate_id, '_main_') && !contains(matrix.slate_id, 'showdown')
+        continue-on-error: true
+        run: python3 scripts/cheat_sheet.py --site ${{ matrix.site }} --slate-id ${{ matrix.slate_id }}
+
       # Session 15 decision #B1 (unchanged): checks lineups_multi first,
       # falls back to lineup_single. Missing lineup file is a normal
       # not_run outcome, not a failure -- nothing to pivot on yet.
@@ -690,6 +705,10 @@ jobs:
               rows.append({'timestamp_utc': now, 'trigger_type': trigger_type, 'site': site, 'slate_id': slate_id, 'step': 'build_projections', 'status': outcome('BUILD_OUTCOME')})
               rows.append({'timestamp_utc': now, 'trigger_type': trigger_type, 'site': site, 'slate_id': slate_id, 'step': 'status_apply', 'status': outcome('APPLY_OUTCOME')})
               rows.append({'timestamp_utc': now, 'trigger_type': trigger_type, 'site': site, 'slate_id': slate_id, 'step': 'pivot_finder', 'status': outcome('PIVOT_OUTCOME')})
+          # cheat_sheet.py runs on every mode (same as build_projections --
+          # see "Rebuild cheat sheet" step's own comment), so it's logged
+          # unconditionally rather than inside the mode check above.
+          rows.append({'timestamp_utc': now, 'trigger_type': trigger_type, 'site': site, 'slate_id': slate_id, 'step': 'cheat_sheet', 'status': outcome('CHEAT_SHEET_OUTCOME')})
 
           with frag_path.open('w', newline='') as f:
               writer = csv.DictWriter(f, fieldnames=fieldnames)
@@ -702,6 +721,7 @@ jobs:
           BUILD_OUTCOME: ${{ steps.build_proj.outcome }}
           APPLY_OUTCOME: ${{ steps.apply_status.outcome }}
           PIVOT_OUTCOME: ${{ steps.pivot.outcome }}
+          CHEAT_SHEET_OUTCOME: ${{ steps.cheat_sheet.outcome }}
 
       # Session (2026-10-05): replaces the old per-leg `git commit`+`push`.
       # Packages only the files THIS leg actually changed (via `git add` +
