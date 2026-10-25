@@ -1,51 +1,51 @@
 player,salary,proj_own,lo,hi
-George Kittle,5700,75.4,63.2,89.5
-Ted Hurst III,3000,74.0,63.2,94.7
-Christian McCaffrey,7600,72.3,57.9,89.5
-Bijan Robinson,8500,48.8,36.8,57.9
-Tennessee Defense,2600,48.4,26.3,63.2
-Chris Godwin Jr.,4300,47.0,26.3,63.2
-Bucky Irving,6100,38.9,21.1,57.9
-Ja'Marr Chase,8100,33.7,15.8,57.9
-Zay Flowers,6900,31.6,15.8,47.4
-C.J. Stroud,5700,29.1,5.3,42.1
-Cade Otton,3100,27.7,5.3,42.1
-Garrett Wilson,6500,26.0,15.8,36.8
-Malik Nabers,6800,24.6,10.5,42.1
-Jalen Coker,6100,21.4,5.3,31.6
-Brock Purdy,6600,20.7,5.3,52.6
-Carnell Tate,5100,16.5,0.0,26.3
-Bryce Young,5900,15.4,5.3,26.3
-Cleveland Defense,2800,14.4,5.3,26.3
-Chuba Hubbard,6700,13.3,5.3,26.3
-Ollie Gordon II,5500,13.3,0.0,31.6
-Woody Marks,5600,12.3,0.0,26.3
-Joe Burrow,6900,11.6,0.0,21.1
-Nico Collins,7200,11.6,0.0,26.3
-Isaiah Likely,5300,11.6,0.0,26.3
-Breece Hall,6000,11.2,0.0,26.3
-Chase Brown,6600,9.8,0.0,21.1
-Dalton Schultz,3600,9.8,0.0,21.1
-Kyler Murray,5400,9.1,0.0,15.8
-Derrick Henry,7900,8.8,0.0,26.3
-Justin Jefferson,7300,7.7,0.0,21.1
-Houston Defense,3400,7.7,0.0,21.1
-Tee Higgins,6600,7.0,0.0,15.8
-Lamar Jackson,6700,5.6,0.0,21.1
-Geno Smith,5100,5.3,0.0,15.8
-Cincinnati Defense,2500,5.3,0.0,15.8
-Kyle Pitts Sr.,4000,5.3,0.0,10.5
-NY Jets Defense,2900,5.3,0.0,15.8
-Quinshon Judkins,5400,4.9,0.0,15.8
-Mark Andrews,3900,4.9,0.0,15.8
-Atlanta Defense,2200,4.9,0.0,15.8
-Harold Fannin Jr.,4200,4.6,0.0,26.3
-Jaylin Noel,3900,4.2,0.0,15.8
-Drake London,7500,3.5,0.0,10.5
-Minnesota Defense,3500,3.5,0.0,15.8
-Tampa Bay Defense,2200,3.2,0.0,10.5
-NY Giants Defense,2100,3.2,0.0,10.5
-Miami Defense,2300,2.5,0.0,10.5
-Tetairoa McMillan,7100,2.5,0.0,10.5
-Denzel Boston,5400,2.1,0.0,10.5
-Tony Pollard,5300,2.1,0.0,10.5
+Christian McCaffrey,7600,80.0,63.2,94.7
+George Kittle,5700,73.3,63.2,78.9
+Ted Hurst III,3000,70.2,47.4,84.2
+Bijan Robinson,8500,53.0,36.8,73.7
+Chris Godwin Jr.,4300,51.6,31.6,73.7
+Tennessee Defense,2600,48.8,31.6,73.7
+C.J. Stroud,5700,36.1,21.1,47.4
+Garrett Wilson,6500,33.7,21.1,42.1
+Bucky Irving,6100,33.7,10.5,47.4
+Ja'Marr Chase,8100,32.6,10.5,52.6
+Cade Otton,3100,32.3,15.8,57.9
+Malik Nabers,6800,24.9,10.5,42.1
+Jalen Coker,6100,23.9,15.8,36.8
+Brock Purdy,6600,18.9,5.3,36.8
+Woody Marks,5600,17.5,0.0,31.6
+Bryce Young,5900,15.1,0.0,36.8
+Carnell Tate,5100,14.4,5.3,26.3
+Zay Flowers,6900,13.3,0.0,31.6
+Nico Collins,7200,13.3,5.3,26.3
+Cleveland Defense,2800,12.6,0.0,31.6
+Isaiah Likely,5300,12.3,5.3,26.3
+Chuba Hubbard,6700,11.9,0.0,21.1
+Joe Burrow,6900,11.2,0.0,26.3
+Ollie Gordon II,5500,10.5,5.3,21.1
+Breece Hall,6000,10.2,0.0,31.6
+Houston Defense,3400,10.2,0.0,21.1
+Dalton Schultz,3600,9.8,0.0,26.3
+Tee Higgins,6600,9.1,0.0,21.1
+NY Jets Defense,2900,8.8,0.0,15.8
+Drake London,7500,8.4,0.0,26.3
+Kyle Pitts Sr.,4000,8.4,0.0,15.8
+Justin Jefferson,7300,7.4,0.0,15.8
+Chase Brown,6600,7.0,0.0,15.8
+Kyler Murray,5400,7.0,0.0,21.1
+Derrick Henry,7900,4.9,0.0,15.8
+Cincinnati Defense,2500,4.9,0.0,10.5
+NY Giants Defense,2100,4.9,0.0,15.8
+Harold Fannin Jr.,4200,4.2,0.0,15.8
+Tampa Bay Defense,2200,4.2,0.0,10.5
+Geno Smith,5100,3.9,0.0,15.8
+Jaylin Noel,3900,3.5,0.0,10.5
+Quinshon Judkins,5400,3.5,0.0,10.5
+Baker Mayfield,5500,3.2,0.0,15.8
+Malik Washington,4900,3.2,0.0,10.5
+Tony Pollard,5300,3.2,0.0,10.5
+Denzel Boston,5400,2.5,0.0,21.1
+Jonathan Taylor,8000,2.1,0.0,10.5
+Tyler Huntley,4900,2.1,0.0,5.3
+Minnesota Defense,3500,2.1,0.0,10.5
+Tetairoa McMillan,7100,1.8,0.0,5.3
