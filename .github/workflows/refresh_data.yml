@@ -706,7 +706,7 @@ jobs:
               rows.append({'timestamp_utc': now, 'trigger_type': trigger_type, 'site': site, 'slate_id': slate_id, 'step': 'status_apply', 'status': outcome('APPLY_OUTCOME')})
               rows.append({'timestamp_utc': now, 'trigger_type': trigger_type, 'site': site, 'slate_id': slate_id, 'step': 'pivot_finder', 'status': outcome('PIVOT_OUTCOME')})
           # cheat_sheet.py runs on every mode (same as build_projections --
-          # see "Rebuild cheat sheet" step's own comment), so it's logged
+          # see the Rebuild cheat sheet step's own comment), so it's logged
           # unconditionally rather than inside the mode check above.
           rows.append({'timestamp_utc': now, 'trigger_type': trigger_type, 'site': site, 'slate_id': slate_id, 'step': 'cheat_sheet', 'status': outcome('CHEAT_SHEET_OUTCOME')})
 
