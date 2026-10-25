@@ -3845,3 +3845,15 @@ timestamp_utc,trigger_type,site,step,status
 2026-10-25T19:03:02.804031+00:00,full_refresh_dispatch,dk,dk_showdown_wk7_KC_SEA_25Oct2026,status_apply,success
 2026-10-25T19:03:02.804031+00:00,full_refresh_dispatch,dk,dk_showdown_wk7_KC_SEA_25Oct2026,pivot_finder,success
 2026-10-25T19:03:02.804031+00:00,full_refresh_dispatch,dk,dk_showdown_wk7_KC_SEA_25Oct2026,cheat_sheet,skipped
+2026-10-25T19:13:33.419228+00:00,injury_refresh_scheduled,dk,dk_classic_wk7_afternoon_25Oct2026,build_projections,success
+2026-10-25T19:13:33.419228+00:00,injury_refresh_scheduled,dk,dk_classic_wk7_afternoon_25Oct2026,status_apply,success
+2026-10-25T19:13:33.419228+00:00,injury_refresh_scheduled,dk,dk_classic_wk7_afternoon_25Oct2026,pivot_finder,skipped
+2026-10-25T19:13:33.419228+00:00,injury_refresh_scheduled,dk,dk_classic_wk7_afternoon_25Oct2026,cheat_sheet,skipped
+2026-10-25T19:12:46.297017+00:00,injury_refresh_scheduled,dk,dk_showdown_wk7_DAL_PHI_26Oct2026,build_projections,success
+2026-10-25T19:12:46.297017+00:00,injury_refresh_scheduled,dk,dk_showdown_wk7_DAL_PHI_26Oct2026,status_apply,success
+2026-10-25T19:12:46.297017+00:00,injury_refresh_scheduled,dk,dk_showdown_wk7_DAL_PHI_26Oct2026,pivot_finder,success
+2026-10-25T19:12:46.297017+00:00,injury_refresh_scheduled,dk,dk_showdown_wk7_DAL_PHI_26Oct2026,cheat_sheet,skipped
+2026-10-25T19:12:49.045141+00:00,injury_refresh_scheduled,dk,dk_showdown_wk7_KC_SEA_25Oct2026,build_projections,success
+2026-10-25T19:12:49.045141+00:00,injury_refresh_scheduled,dk,dk_showdown_wk7_KC_SEA_25Oct2026,status_apply,success
+2026-10-25T19:12:49.045141+00:00,injury_refresh_scheduled,dk,dk_showdown_wk7_KC_SEA_25Oct2026,pivot_finder,success
+2026-10-25T19:12:49.045141+00:00,injury_refresh_scheduled,dk,dk_showdown_wk7_KC_SEA_25Oct2026,cheat_sheet,skipped
