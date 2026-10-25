@@ -3821,3 +3821,15 @@ timestamp_utc,trigger_type,site,step,status
 2026-10-25T17:02:02.859649+00:00,light_vegas_refresh,dk,dk_showdown_wk7_DAL_PHI_26Oct2026,cheat_sheet,skipped
 2026-10-25T17:01:52.018566+00:00,light_vegas_refresh,dk,dk_showdown_wk7_KC_SEA_25Oct2026,cheat_sheet,skipped
 2026-10-25T17:01:31.388098+00:00,light_vegas_refresh,fd,fd_classic_wk7_main_25Oct2026,cheat_sheet,success
+2026-10-25T18:53:37.147636+00:00,full_refresh_dispatch,dk,dk_classic_wk7_afternoon_25Oct2026,build_projections,success
+2026-10-25T18:53:37.147636+00:00,full_refresh_dispatch,dk,dk_classic_wk7_afternoon_25Oct2026,status_apply,success
+2026-10-25T18:53:37.147636+00:00,full_refresh_dispatch,dk,dk_classic_wk7_afternoon_25Oct2026,pivot_finder,skipped
+2026-10-25T18:53:37.147636+00:00,full_refresh_dispatch,dk,dk_classic_wk7_afternoon_25Oct2026,cheat_sheet,skipped
+2026-10-25T18:52:50.224194+00:00,full_refresh_dispatch,dk,dk_showdown_wk7_DAL_PHI_26Oct2026,build_projections,success
+2026-10-25T18:52:50.224194+00:00,full_refresh_dispatch,dk,dk_showdown_wk7_DAL_PHI_26Oct2026,status_apply,success
+2026-10-25T18:52:50.224194+00:00,full_refresh_dispatch,dk,dk_showdown_wk7_DAL_PHI_26Oct2026,pivot_finder,success
+2026-10-25T18:52:50.224194+00:00,full_refresh_dispatch,dk,dk_showdown_wk7_DAL_PHI_26Oct2026,cheat_sheet,skipped
+2026-10-25T18:53:22.500112+00:00,full_refresh_dispatch,dk,dk_showdown_wk7_KC_SEA_25Oct2026,build_projections,success
+2026-10-25T18:53:22.500112+00:00,full_refresh_dispatch,dk,dk_showdown_wk7_KC_SEA_25Oct2026,status_apply,success
+2026-10-25T18:53:22.500112+00:00,full_refresh_dispatch,dk,dk_showdown_wk7_KC_SEA_25Oct2026,pivot_finder,success
+2026-10-25T18:53:22.500112+00:00,full_refresh_dispatch,dk,dk_showdown_wk7_KC_SEA_25Oct2026,cheat_sheet,skipped
