@@ -591,6 +591,7 @@ def _apply_wrw_rb(df, season, week):
         _loud(f"WRW RB reallocation skipped ({type(exc).__name__}: {exc}); projections unchanged.")
         df["wrw_delta_pts"] = 0.0
         df["wrw_vacated_car"] = 0.0
+        df["wrw_stepup_pts"] = 0.0
     return df
 
 
@@ -611,6 +612,7 @@ def _apply_wrw_te(df, season, week):
         _loud(f"WRW TE reallocation skipped ({type(exc).__name__}: {exc}); projections unchanged.")
         df["wrw_te_delta_pts"] = 0.0
         df["wrw_te_vacated_tgt"] = 0.0
+        df["wrw_te_stepup_pts"] = 0.0
     return df
 
 
@@ -633,6 +635,7 @@ def _apply_wrw_wr(df, season, week):
         _loud(f"WRW WR reallocation skipped ({type(exc).__name__}: {exc}); projections unchanged.")
         df["wrw_wr_delta_pts"] = 0.0
         df["wrw_wr_vacated_tgt"] = 0.0
+        df["wrw_wr_stepup_pts"] = 0.0
     return df
 
 
@@ -1373,6 +1376,12 @@ def build_statline_projections(site: str, season: int, week: int, slate_id: str,
                            if "q_return_flag" in df.columns else False)
     df["wrw_decay_pts"] = (pd.to_numeric(df["wrw_decay_pts"], errors="coerce").fillna(0.0)
                            if "wrw_decay_pts" in df.columns else 0.0)
+    df["wrw_stepup_pts"] = (pd.to_numeric(df["wrw_stepup_pts"], errors="coerce").fillna(0.0)
+                            if "wrw_stepup_pts" in df.columns else 0.0)
+    df["wrw_te_stepup_pts"] = (pd.to_numeric(df["wrw_te_stepup_pts"], errors="coerce").fillna(0.0)
+                               if "wrw_te_stepup_pts" in df.columns else 0.0)
+    df["wrw_wr_stepup_pts"] = (pd.to_numeric(df["wrw_wr_stepup_pts"], errors="coerce").fillna(0.0)
+                               if "wrw_wr_stepup_pts" in df.columns else 0.0)
     df["sigma"] = df["statline_sigma"].clip(lower=0.0)
     df["sigma_source"] = "statline_mc"
 
@@ -1408,9 +1417,11 @@ def build_statline_projections(site: str, season: int, week: int, slate_id: str,
                                                                "early_blend_delta", "qb_recal_delta",
                                                                "qb_autopromote_delta", "qb_autopromoted",
                                                                "wrw_delta_pts", "wrw_vacated_car",
-                                                               "wrw_decay_pts",
+                                                               "wrw_decay_pts", "wrw_stepup_pts",
                                                                "wrw_te_delta_pts", "wrw_te_vacated_tgt",
+                                                               "wrw_te_stepup_pts",
                                                                "wrw_wr_delta_pts", "wrw_wr_vacated_tgt",
+                                                               "wrw_wr_stepup_pts",
                                                                "snap_adj_pts",
                                                                "role_change_injury_flag",
                                                                "q_return_flag", "q_return_post_pts"]]
@@ -1489,10 +1500,13 @@ def build_statline_projections(site: str, season: int, week: int, slate_id: str,
     dst_out["wrw_delta_pts"] = 0.0
     dst_out["wrw_vacated_car"] = 0.0
     dst_out["wrw_decay_pts"] = 0.0
+    dst_out["wrw_stepup_pts"] = 0.0
     dst_out["wrw_te_delta_pts"] = 0.0
     dst_out["wrw_te_vacated_tgt"] = 0.0
+    dst_out["wrw_te_stepup_pts"] = 0.0
     dst_out["wrw_wr_delta_pts"] = 0.0
     dst_out["wrw_wr_vacated_tgt"] = 0.0
+    dst_out["wrw_wr_stepup_pts"] = 0.0
     dst_out["snap_adj_pts"] = 0.0
     dst_out["q_return_flag"] = False
     dst_out["q_return_post_pts"] = 0.0
@@ -1536,10 +1550,13 @@ def build_statline_projections(site: str, season: int, week: int, slate_id: str,
         kicker_out["wrw_delta_pts"] = 0.0
         kicker_out["wrw_vacated_car"] = 0.0
         kicker_out["wrw_decay_pts"] = 0.0
+        kicker_out["wrw_stepup_pts"] = 0.0
         kicker_out["wrw_te_delta_pts"] = 0.0
         kicker_out["wrw_te_vacated_tgt"] = 0.0
+        kicker_out["wrw_te_stepup_pts"] = 0.0
         kicker_out["wrw_wr_delta_pts"] = 0.0
         kicker_out["wrw_wr_vacated_tgt"] = 0.0
+        kicker_out["wrw_wr_stepup_pts"] = 0.0
         kicker_out["snap_adj_pts"] = 0.0
         kicker_out["q_return_flag"] = False
         kicker_out["q_return_post_pts"] = 0.0

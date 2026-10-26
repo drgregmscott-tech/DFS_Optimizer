@@ -2551,21 +2551,77 @@ WRW_RB_DECAY_PARAMS = DATA_DIR / "wrw_rb_decay_params.json"
 
 
 def _rb_decay_params(override: dict | None) -> dict | None:
-    """Params for the multi-week RB replacement extension, OFF by default as of 2026-10-23
-    (analysis/rb_replacement_decay/RESULTS.md: rank-1 variant is inconclusive-leaning-positive, does not
-    clear the hard ship bar on its own numbers -- MAE flat, RMSE CIs cross zero. Kept off pending owner
-    sign-off, consistent with the two-track rule: inconclusive stays in keep-testing, not shipped).
-    On: DFS_RB_REPLACEMENT_DECAY=1 (or an explicit `override` dict, tests/analysis only)."""
+    """Params for the multi-week RB replacement (rank-1-only) extension. ON by default as of 2026-10-26
+    (owner decision, analysis/rb_replacement_decay/RESULTS.md + live_2026_rerun_wk1-7_out.txt): the 2026-10-23
+    verdict was "inconclusive, keep testing, leaning positive" on 21 live rows; re-tested 2026-10-26 on 35
+    rows (all of Wk1-7, all slate types, after fixing a cross-team contamination bug in _rb_decay_addon) --
+    same result, same direction, CIs still cross zero but the point estimates haven't moved (MAE -0.16, RMSE
+    -0.22). Owner's call: direction has been consistent across every test so far and the downside is small
+    (2-3 RBs/slate, +0.1 to +2 pts each, 0 WR/TE/QB impact) -- ship it and keep collecting data rather than
+    stay parked on an effect that keeps confirming itself. Off: DFS_RB_REPLACEMENT_DECAY=0.
+    Override: an explicit `override` dict (tests/analysis only)."""
     import os
     if override is not None:
         return override
-    if os.environ.get("DFS_RB_REPLACEMENT_DECAY", "0") not in ("1", "true", "True"):
+    if os.environ.get("DFS_RB_REPLACEMENT_DECAY", "1") in ("0", "false", "False"):
         return None
     try:
         return json.loads(WRW_RB_DECAY_PARAMS.read_text(encoding="utf-8"))
     except Exception as exc:  # noqa: BLE001 -- a bad decay file must not take the shipped bump down with it
         print(f"WARNING: RB replacement decay off ({type(exc).__name__}: {exc}); first-week bump unaffected.",
               file=sys.stderr)
+        return None
+
+
+def _rb_stepup_params(override: dict | None) -> dict | None:
+    """Flat/proportional top-up for the rank-1 healthy RB whenever a qualifying teammate RB is OUT, at ANY
+    week of the absence (on top of the first-week bump and the decay add-on above, which both still leave a
+    real, measured residual -- analysis/role_step_up_bias/RESULTS.md, 2026-10-26: step-up RBs are under-
+    projected by +1.55 pts [+0.37,+2.72] even with those two already applied, 4/5 historical seasons, same
+    direction live in 2026, FC's miss on the same rows is only +0.53 (CI crosses zero) -- this is our gap,
+    not a shared one. A same-session matchup_factor revisit (analysis/proj_b1_revisit) found matchup explains
+    at most ~0.5 pt of this at a realistic weight, confirming a flat/proportional term (not matchup-aware) is
+    the right shape. ON by default (owner decision, 2026-10-26): the bias never reversed across any cut
+    tested; a flat fix trades a small amount of historical MAE for removing the bias (same mean-vs-median
+    tension as the decay add-on) -- owner's call to ship rather than keep re-testing an effect that keeps
+    confirming itself. Off: DFS_RB_STEPUP=0. Size: DFS_RB_STEPUP_PCT (default 0.15, i.e. +15% of the rank-1
+    candidate's final_projection so far this build, which carries game environment/vegas along with it --
+    the sketch's preferred shape over a flat points add)."""
+    import os
+    if override is not None:
+        return override
+    if os.environ.get("DFS_RB_STEPUP", "1") in ("0", "false", "False"):
+        return None
+    try:
+        return {"pct": float(os.environ.get("DFS_RB_STEPUP_PCT", "0.15"))}
+    except Exception as exc:  # noqa: BLE001 -- a bad override must not take anything else down
+        print(f"WARNING: RB step-up top-up off ({type(exc).__name__}: {exc}).", file=sys.stderr)
+        return None
+
+
+def _wrte_stepup_params(override: dict | None) -> dict | None:
+    """WR/TE counterpart of _rb_stepup_params, for the Bernard-type case: a SECONDARY receiver OUT (not the
+    team's clear #1) promoting a low-overlap teammate into a bigger-than-usual role. analysis/role_step_up_bias/
+    RESULTS.md, 2026-10-26: true WR1/TE1-out cases show NO bias (well-powered, n=138/84, ~0) -- left alone,
+    this function only targets the separate "secondary-out" sub-case the owner specifically asked to be
+    bundled in. That sub-case's own point estimate is the same direction/rough size as the RB finding (+1.20
+    historical, n=37; +10.10 live 2026, n=4) but far thinner -- NOT well-powered, unlike the RB fix. ON by
+    default per the owner's same ship-it-anyway decision, at a smaller, more conservative weight than RB given
+    how thin the sample is. Off: DFS_WRTE_STEPUP=0. Size: DFS_WRTE_STEPUP_PCT (default 0.10). Low-overlap gate:
+    DFS_WRTE_STEPUP_SHARE_WR / _TE (default 0.15 / 0.10) -- only a recipient whose OWN trailing share was
+    already below this (i.e. not already a featured piece) qualifies, same thresholds the analysis used to
+    separate "step-up" from "established" players."""
+    import os
+    if override is not None:
+        return override
+    if os.environ.get("DFS_WRTE_STEPUP", "1") in ("0", "false", "False"):
+        return None
+    try:
+        return {"pct": float(os.environ.get("DFS_WRTE_STEPUP_PCT", "0.10")),
+                "share_wr": float(os.environ.get("DFS_WRTE_STEPUP_SHARE_WR", "0.15")),
+                "share_te": float(os.environ.get("DFS_WRTE_STEPUP_SHARE_TE", "0.10"))}
+    except Exception as exc:  # noqa: BLE001 -- a bad override must not take anything else down
+        print(f"WARNING: WR/TE step-up top-up off ({type(exc).__name__}: {exc}).", file=sys.stderr)
         return None
 
 
@@ -2618,8 +2674,9 @@ def apply_rb_replacement(pool: pd.DataFrame, season: int, week: int,
     (Tested on the carry/target means first: the DK projection stack shrank ~2/3 of it back out
     and the shared sim RNG moved every other player's projection; see WIRING.md.)
     Off: DFS_WRW_RB=0.
-    Multi-week extension (analysis/rb_replacement_decay, OFF by default, DFS_RB_REPLACEMENT_DECAY=1 turns it on):
-    the bump above only fires in the first week of an absence (last_g == lg); with the switch on, a team whose RB
+    Multi-week extension (analysis/rb_replacement_decay, ON by default as of 2026-10-26, DFS_RB_REPLACEMENT_DECAY=0
+    turns it off): the bump above only fires in the first week of an absence (last_g == lg); with the switch on,
+    a team whose RB
     is in his 2nd-4th week out also gets a fading bump (_rb_decay_addon), audit column wrw_decay_pts. Off ->
     byte-identical to before (no extra column). `decay_params` overrides the params file (tests/analysis only).
     Any error or missing status/params -> pool unchanged (loud warning on error only)."""
@@ -2627,6 +2684,7 @@ def apply_rb_replacement(pool: pd.DataFrame, season: int, week: int,
     df = pool.copy()
     df["wrw_delta_pts"] = 0.0
     df["wrw_vacated_car"] = 0.0
+    df["wrw_stepup_pts"] = 0.0
     if os.environ.get("DFS_WRW_RB", "1") == "0":
         return df
     if injury_status is None or injury_status.empty:
@@ -2639,6 +2697,7 @@ def apply_rb_replacement(pool: pd.DataFrame, season: int, week: int,
         if not out_ids:
             return df
         pid = df["player_id"].astype(str)
+        pid_to_team = dict(zip(pid, df["team"].astype(str)))
         real = ~df["no_real_game_this_week"].fillna(False).astype(bool) \
             if "no_real_game_this_week" in df.columns else pd.Series(True, index=df.index)
         teams = sorted(df.loc[real, "team"].dropna().astype(str).unique())
@@ -2650,17 +2709,40 @@ def apply_rb_replacement(pool: pd.DataFrame, season: int, week: int,
         decay_p = _rb_decay_params(decay_params)
         if decay_p is not None:
             df["wrw_decay_pts"] = 0.0
+        stepup_p = _rb_stepup_params(None)
         done = []
         for team in teams:
             if team not in ag.index.get_level_values(0) or team not in tvr.index:
                 continue
             a = ag.loc[team]
             lg = tvr.loc[team, "last_g"]
-            outs = a[a.index.astype(str).isin(out_ids) & (a["last_g"] == lg)
+            # Scope OUT players to this team -- out_ids is a global OUT list, but a player who changed
+            # teams keeps a stale trailing-usage row under his OLD team (last_g from before the move),
+            # which _rb_decay_addon's last_g < lg check can't distinguish from a real continuing absence.
+            team_out_ids = {o for o in out_ids if pid_to_team.get(o) == team}
+            # Step-up top-up: any qualifying teammate RB OUT this week, first-week or continuing (any k) --
+            # independent of the outs/decay branching below, which both leave a real residual on their own.
+            if stepup_p is not None:
+                a_su = a.copy(); a_su.index = a_su.index.astype(str)
+                out_rbs = a_su[a_su.index.isin(team_out_ids) & (a_su["pos"] == "RB")
+                               & ((a_su["sh_car"] >= p["min_car_share"]) | (a_su["sh_tgt"] >= p["min_tgt_share"]))]
+                if not out_rbs.empty:
+                    su_cand = real & (df["team"].astype(str) == team) & (df["position"].astype(str) == "RB") \
+                        & ~pid.isin(out_ids) & pid.isin(set(a_su.index))
+                    if su_cand.any():
+                        su_idx = df.index[su_cand]
+                        su_sh = (a_su.loc[pid[su_cand], "sh_car"] + a_su.loc[pid[su_cand], "sh_tgt"]).to_numpy()
+                        su_rank1 = pd.Series(su_sh, index=su_idx).rank(ascending=False, method="first") == 1
+                        top_idx = su_idx[su_rank1.to_numpy()]
+                        bump = pd.to_numeric(df.loc[top_idx, "final_projection"], errors="coerce").fillna(0.0) \
+                            * float(stepup_p["pct"])
+                        df.loc[top_idx, "wrw_stepup_pts"] += bump
+                        df.loc[top_idx, "wrw_delta_pts"] += bump
+            outs = a[a.index.astype(str).isin(team_out_ids) & (a["last_g"] == lg)
                      & ((a["sh_car"] >= p["min_car_share"]) | (a["sh_tgt"] >= p["min_tgt_share"]))]
             if decay_p is not None and outs.empty:
                 try:
-                    done += _rb_decay_addon(df, a, lg, out_ids, pid, real, team, tvr, p, decay_p)
+                    done += _rb_decay_addon(df, a, lg, team_out_ids, pid, real, team, tvr, p, decay_p)
                 except Exception as exc:  # noqa: BLE001 -- undo this team's add-on, keep everything else
                     tm = df["team"].astype(str) == team
                     df.loc[tm, "wrw_delta_pts"] -= df.loc[tm, "wrw_decay_pts"]
@@ -2720,9 +2802,11 @@ def apply_te_replacement(pool: pd.DataFrame, season: int, week: int,
     df = pool.copy()
     df["wrw_te_delta_pts"] = 0.0
     df["wrw_te_vacated_tgt"] = 0.0
+    df["wrw_te_stepup_pts"] = 0.0
     if os.environ.get("DFS_WRW_TE", "1") == "0" or injury_status is None or injury_status.empty:
         return df
     try:
+        stepup_p = _wrte_stepup_params(None)
         p = json.loads(WRW_TE_PARAMS.read_text(encoding="utf-8"))
         st = injury_status.copy()
         st["player_id"] = st["player_id"].astype(str)
@@ -2757,6 +2841,15 @@ def apply_te_replacement(pool: pd.DataFrame, season: int, week: int,
                 * float(p["ppo_te_tgt"]) * float(p.get("points_scale", 1.0))
             df.loc[idx, "wrw_te_delta_pts"] += add
             df.loc[idx, "wrw_te_vacated_tgt"] = V
+            if stepup_p is not None:
+                own_share = a.loc[pid[cand], "sh_tgt"].to_numpy()
+                low_overlap = (add.to_numpy() > 0.05) & (own_share < stepup_p["share_te"])
+                if low_overlap.any():
+                    su_idx = idx[low_overlap]
+                    bump = pd.to_numeric(df.loc[su_idx, "final_projection"], errors="coerce").fillna(0.0) \
+                        * float(stepup_p["pct"])
+                    df.loc[su_idx, "wrw_te_stepup_pts"] += bump
+                    df.loc[su_idx, "wrw_te_delta_pts"] += bump
             hit = df.loc[cand & (df["wrw_te_delta_pts"] > 0.05)]
             done += [f"{team}:{r.player_name}+{r.wrw_te_delta_pts:.1f}" for r in hit.itertuples()] \
                 if "player_name" in df.columns else []
@@ -2769,6 +2862,7 @@ def apply_te_replacement(pool: pd.DataFrame, season: int, week: int,
         out = pool.copy()
         out["wrw_te_delta_pts"] = 0.0
         out["wrw_te_vacated_tgt"] = 0.0
+        out["wrw_te_stepup_pts"] = 0.0
         return out
 
 
@@ -2792,9 +2886,11 @@ def apply_wr_replacement(pool: pd.DataFrame, season: int, week: int,
     df = pool.copy()
     df["wrw_wr_delta_pts"] = 0.0
     df["wrw_wr_vacated_tgt"] = 0.0
+    df["wrw_wr_stepup_pts"] = 0.0
     if os.environ.get("DFS_WRW_WR", "1") == "0" or injury_status is None or injury_status.empty:
         return df
     try:
+        stepup_p = _wrte_stepup_params(None)
         p = params if params is not None else json.loads(WRW_WR_PARAMS.read_text(encoding="utf-8"))
         st = injury_status.copy()
         st["player_id"] = st["player_id"].astype(str)
@@ -2839,6 +2935,15 @@ def apply_wr_replacement(pool: pd.DataFrame, season: int, week: int,
                 add = ranks.map(fr).fillna(0.0) * V * vol * ppo[pos] * k_pts
                 df.loc[idx, "wrw_wr_delta_pts"] += add
                 df.loc[idx[add.to_numpy() > 0], "wrw_wr_vacated_tgt"] = V
+                if stepup_p is not None and pos == "WR":
+                    own_share = a.loc[pid[cand], "sh_tgt"].to_numpy()
+                    low_overlap = (add.to_numpy() > 0.05) & (own_share < stepup_p["share_wr"])
+                    if low_overlap.any():
+                        su_idx = idx[low_overlap]
+                        bump = pd.to_numeric(df.loc[su_idx, "final_projection"], errors="coerce").fillna(0.0) \
+                            * float(stepup_p["pct"])
+                        df.loc[su_idx, "wrw_wr_stepup_pts"] += bump
+                        df.loc[su_idx, "wrw_wr_delta_pts"] += bump
             hit = df.loc[(df["team"].astype(str) == team) & (df["wrw_wr_delta_pts"] > 0.05)]
             done += [f"{team}:{r.player_name}+{r.wrw_wr_delta_pts:.1f}" for r in hit.itertuples()] \
                 if "player_name" in df.columns else []
@@ -2851,6 +2956,7 @@ def apply_wr_replacement(pool: pd.DataFrame, season: int, week: int,
         out = pool.copy()
         out["wrw_wr_delta_pts"] = 0.0
         out["wrw_wr_vacated_tgt"] = 0.0
+        out["wrw_wr_stepup_pts"] = 0.0
         return out
 
 
