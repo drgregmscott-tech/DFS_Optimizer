@@ -316,19 +316,77 @@ with OUT players zeroed.
 
 ---
 
-## 5. Pool-reachability check
+## 5. Pool-reachability check — `[~]` data collected, not yet analyzed (2026-10-26)
 
 **Hypothesis:** the full 100-lineup pool (not the one lineup played) contains at least one lineup, built only
 from players/exposures already in the pool, that clears the reachability bar (Q2).
 
-**Data to collect:** per slate, yes/no + the best qualifying lineup found (if any) + its rank/score.
+**Method agreed with owner 2026-10-26, before building:**
+- **"Clears the reachability bar"** = cashes on actual points, using this repo's standing top-25% cash-line
+  convention (same as `CLASSIC_RULES.md`, `WK3_ROOT_CAUSE_FINDINGS.md`, `analysis/lineup_replay/*`) — not a
+  new bar invented for this item.
+- **Two readings run side by side:**
+  - **Broad** (primary, per owner's choice): pool the *player universe* across all 100 lineups in the
+    reconstructed real pool, then ILP-search for ANY salary-legal, position-legal 9-man combo from that
+    universe — not necessarily one the optimizer actually built — maximizing ACTUAL points. Tests whether
+    construction ever had the right pieces available, isolated from selection (Items 6/7/9).
+  - **Narrow** (comparison only): does any of the 100 actually-built lineups itself cash on actual points.
+- **Pool used:** the same strict owner-exclusion-rule reconstruction as Items 2/4/9
+  (`analysis/wk7_postmortem_item2/pools/{site}_wk{week}.csv`), weeks 1-7, DK+FD main slates (14 combos) — not
+  week 7 alone, per Q2's resolution that this item is a cross-week diagnostic read with a CI, not a one-week
+  grade.
+- **ILP constraints:** real salary cap + exact roster-slot legality (QB/RB/RB/WR/WR/WR/TE/FLEX/DST per site),
+  `exclude_skill_vs_opp_dst` OFF (that's our own house construction rule, not real roster legality, so turning
+  it off keeps the broad search to "any legally draftable combo"); no stack/bring-back requirement (also an
+  own-house rule, not legality) — this is deliberately a looser test than "could our actual strategy have
+  reached it," i.e. the most generous version of "did construction have the pieces at all."
+- Real contest files: `data/contest_results/.../*_full.csv` (DK wk2-4 use the `_se3max_full` split; every
+  other site/week has one plain `_full.csv`, already single-entry — verified unique `EntryName` per row).
+  Scripts: `analysis/wk7_postmortem_item5/run_item5.py` (not committed, regenerable).
 
-**Success (system-level, across weeks):** if "yes" dominates across weeks, construction is reaching the right
-combinations and the issue lies elsewhere (selection or pure variance in which single lineup wins).
-**Failure:** if "no" dominates, that's evidence of a construction-stage failure — the pool never had access to
-the winning combination at all.
+**Data (2026-10-26, 14 slates, weeks 1-7, DK+FD main):**
 
-**Data:** *(pending)*
+| site | wk | pool lineups | universe size | broad cashes | % of 100 that cash | top-proj lineup pctile | top-proj cashes |
+|---|---|---|---|---|---|---|---|
+| dk | 1 | 50 | 25 | Y | 46.0% | 65.2% | N |
+| dk | 2 | 50 | 29 | Y | 8.0% | 32.8% | N |
+| dk | 3 | 100 | 49 | Y | 6.0% | 35.7% | N |
+| dk | 4 | 100 | 48 | Y | 52.0% | 97.1% | Y |
+| dk | 5 | 50 | 29 | Y | 42.0% | 59.1% | N |
+| dk | 6 | 100 | 49 | Y | 3.0% | 27.9% | N |
+| dk | 7 | 97 | 45 | Y | 18.6% | 8.0% | N |
+| fd | 1 | 50 | 26 | Y | 34.0% | 83.8% | Y |
+| fd | 2 | 50 | 34 | Y | 16.0% | 62.9% | N |
+| fd | 3 | 100 | 58 | Y | 6.0% | 32.7% | N |
+| fd | 4 | 100 | 44 | Y | 11.0% | 42.0% | N |
+| fd | 5 | 100 | 52 | Y | 20.0% | 78.6% | Y |
+| fd | 6 | 50 | 30 | Y | 44.0% | 50.7% | N |
+| fd | 7 | 50 | 39 | Y | 8.0% | 82.8% | Y |
+
+**Broad reachability: 14/14 slates (100%). Narrow (≥1 of the 100 cashes): 14/14 (100%).** Not a single-lineup
+fluke — the share of the 100-lineup pool that itself clears the cash line ranges 3-52% (mean 22.5%, median
+17.3%), so cashing lineups are typically a meaningfully-sized chunk of the pool, not one lucky draw. Universe
+size (distinct players across the 100-lineup pool) ranges 25-58 per slate.
+
+**The question that actually matters — can we FIND the cashing lineup, not just whether the pool contains
+one:** the single highest-pre-lock-projection lineup in each pool (a proxy for "the one we'd actually have
+picked," since the exact played lineup isn't forensically recoverable per this doc's own resolved note) cashes
+in only **4/14 slates (28.6%)** — statistically indistinguishable from the 22.5% mean random-draw-from-pool
+rate at n=14. **Picking by top projection shows no visible edge over blind luck at finding the cashing lineup
+in this sample** — construction has access to cashing combinations essentially every week, but there is no
+evidence yet that our selection step preferentially surfaces them over picking a random lineup from the same
+pool. This is the same question Items 6 (naive-baseline) and 7 (winning-tail positioning) are built to test
+properly with real baselines and larger samples — this is a same-session, lower-rigor echo of that question
+using data already in hand, not a replacement for those items.
+
+**Data-quality flag:** 4 of ~511 total universe-player rows (across all 14 slates) had no match in that
+slate's real contest player table (`Theo Wease Jr.` wk1 FD, `Tom Kennedy` wk3 FD, `Konata Mumpfield` wk6 FD,
+`Myles Price` wk7 FD) — all sub-$4k dart-throw WRs, treated as actual=0. Negligible: none of these could
+plausibly have been the ILP's chosen player over a known-scoring alternative at a similar price, and a few
+missed points on a deep punt can't move a lineup already sitting at 85-100th percentile.
+
+**Not yet interpreted** — per this doc's own collect-then-analyze rule, held for discussion with owner before
+any conclusion or action item.
 
 ---
 
