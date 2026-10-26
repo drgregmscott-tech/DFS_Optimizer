@@ -144,23 +144,62 @@ and read together.
 
 ---
 
-## 3. Field-implied projection backout
+## 3. Field-implied projection backout — `[x]` analyzed, 2026-10-26
 
 **Hypothesis:** where the field's implied projection (backed out from real field ownership) diverges sharply
 from ours, the field is closer to the actual outcome more often than chance (>50%).
 
-**Data to collect:** per player where |our projection − field-implied projection| exceeds a materiality
-threshold (TBD — need a number here too), record both projections and the actual result.
+**Materiality threshold used:** same 1.5 std_dev "notable miss" bar locked in above (no new bar invented).
 
-**Success:** across all logged weeks, field wins the divergence cases significantly more than 50% of the time
-(binomial test, acknowledging small-sample weeks need pooling before this is meaningful — see
-[[feedback_verify_full_history_and_power_before_concluding]]).
-**Failure/inconclusive:** indistinguishable from 50/50 — no signal that the field holds information we're missing.
+**Method:** the field doesn't publish a point projection, only ownership. Per slate and position, fit real
+ownership against the percentile rank of our projection with a simple monotonic (isotonic) curve, invert it —
+given a player's real ownership, back out what projection-percentile the field's ownership implies, then read
+that back into points using the slate's own projection distribution. That derived number is the "field-implied
+projection." Scripts in `analysis/wk7_postmortem_item3/` (not committed, regenerable — see repo convention);
+outputs under `data/fc_history/derived/wk7_item3/` (FC-derived, not committed).
 
-**Build note:** the field-implied-projection backout itself doesn't exist yet — needs to be built from FC field
-ownership data before this can run.
+**Primary test result (FAILED, in the wrong direction):** 93 slates (86 history 2021-25 + 2026 wk1-7), 509
+divergent rows (2.0% of the pool). The field-implied projection was closer to actual points only **36.5%** of
+the time (186/509, p=1e-9) — our own projection wins the "closer to actual" contest more often, not the field.
+Every individual season came in between 33-41%, no season flipped the result.
 
-**Data:** *(pending)*
+**Secondary, separately-logged check (direction, not magnitude) — also did not survive a live-usable test:**
+in 72% of those same divergence cases (p=6e-24, consistent 74-76% every history season), actual points moved in
+the direction the field was pointing, just by much less than the implied gap suggested (realized move ≈ 40% of
+implied). This looked like it might support a small corrective nudge, so it was tested four ways before any
+conclusion was drawn:
+
+| Ownership input used to build the field-implied number | Divergent rows | MAE gain, held out | 2026 clean out-of-sample |
+|---|---|---|---|
+| Real post-contest ownership (not available pre-lock — can't act on live) | 493 | +0.91 [+0.49, +1.28] | worse |
+| FC's pre-lock *projected* ownership (genuinely pre-lock, but FC subscription is now dead) | 262 (2021-23 only) | +1.56 [+1.03, +2.14] | n/a |
+| Our own live v2 ownership model — the only input actually usable at lock | 95 | +1.22 [+0.29, +2.08] | worse |
+| Same, properly refit leaving out the scored season (leak removed) | 88 | +0.60 [−0.21, +1.44] — CI crosses zero | worse |
+
+The only inputs that showed a stable effect (real ownership, FC's dead subscription) aren't accessible at lock
+time. The one input we could actually use — our own ownership model — only showed the effect because it had
+been trained on the slates it was tested against; once that leak was removed the effect roughly halved, the CI
+no longer excludes zero, and it reversed sign in the most recent full season (2025) and in 2026. Gating attempts
+(projection floors, ownership floors, field-higher-only) did not rescue it in any variant.
+
+**Conclusion: no shippable fix from this item.** Nothing added to the action-items file — a dropped idea with no
+surviving live-usable signal doesn't clear either the ship-bar or the test-bar track. The one real takeaway: a
+*better* pre-lock ownership estimate (FC's dead one, or a hypothetically improved version of ours) does carry
+real signal that our current one doesn't — that's a restatement of the already-tracked ownership-model-quality
+gap (see `analysis/model_vs_fc/RESULTS.md` section C, `analysis/ownership_v2_refit_after_projstack/RESULTS.md`),
+not a new lever this item discovered. Improving ownership-model quality remains the live lever; a projection
+nudge built on top of the current model is not.
+
+**Methodology note, worth remembering for future field-vs-us comparisons:** the 50% bar used for the primary
+test is the correct null for a symmetric two-estimator "which is closer" contest (no a priori reason either
+side should win more than half the time if neither carries extra information) — it is not borrowed from, and
+isn't the same thing as, the unrelated top-20%-cash-line threshold used elsewhere in this doc. A caveat worth
+flagging: the field-implied number is a *constructed* quantity (curve-fit + inverted), which stacks extra
+modeling noise on top of whatever real signal real ownership carries, so a sub-50% result partly reflects that
+the backout is a noisier instrument than our direct, mature projection model — not purely "the field has no
+information." That is exactly why the direction-only secondary check was run before concluding anything, and
+why its failure under a leak-free, live-usable input is the thing that actually closes this item, not the
+36.5% headline number by itself.
 
 ---
 
