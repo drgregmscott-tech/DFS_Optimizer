@@ -3885,3 +3885,7 @@ timestamp_utc,trigger_type,site,step,status
 2026-10-26T22:33:17.532967+00:00,injury_refresh_scheduled,dk,dk_showdown_wk7_DAL_PHI_26Oct2026,status_apply,success
 2026-10-26T22:33:17.532967+00:00,injury_refresh_scheduled,dk,dk_showdown_wk7_DAL_PHI_26Oct2026,pivot_finder,success
 2026-10-26T22:33:17.532967+00:00,injury_refresh_scheduled,dk,dk_showdown_wk7_DAL_PHI_26Oct2026,cheat_sheet,skipped
+2026-10-26T22:53:12.304012+00:00,injury_refresh_scheduled,dk,dk_showdown_wk7_DAL_PHI_26Oct2026,build_projections,success
+2026-10-26T22:53:12.304012+00:00,injury_refresh_scheduled,dk,dk_showdown_wk7_DAL_PHI_26Oct2026,status_apply,success
+2026-10-26T22:53:12.304012+00:00,injury_refresh_scheduled,dk,dk_showdown_wk7_DAL_PHI_26Oct2026,pivot_finder,success
+2026-10-26T22:53:12.304012+00:00,injury_refresh_scheduled,dk,dk_showdown_wk7_DAL_PHI_26Oct2026,cheat_sheet,skipped
