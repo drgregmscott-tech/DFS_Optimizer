@@ -1,7 +1,7 @@
 team,component,pool_share,share_basis,raw_sum,target,scale,abs_delta
-DAL,recv,1.0,recent,53.58,37.21,0.6945,16.37
-PHI,pass,1.0,exclusive,45.0,35.12,0.7805,9.88
-DAL,pass,1.0,exclusive,45.68,37.55,0.8219,8.13
-PHI,recv,1.0,recent,41.27,33.99,0.8237,7.28
-PHI,rush,1.0,recent,28.14,24.78,0.8804,3.37
-DAL,rush,1.0,recent,25.94,25.92,0.9993,0.02
+DAL,recv,1.0,recent,53.54,37.08,0.6925,16.47
+PHI,pass,1.0,exclusive,45.0,34.98,0.7773,10.02
+DAL,pass,1.0,exclusive,45.68,37.41,0.8189,8.27
+PHI,recv,1.0,recent,41.24,33.85,0.8209,7.38
+PHI,rush,1.0,recent,28.16,24.84,0.8822,3.32
+DAL,rush,1.0,recent,25.96,26.0,1.0014,0.04
