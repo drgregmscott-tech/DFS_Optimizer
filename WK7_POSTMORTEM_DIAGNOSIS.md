@@ -87,7 +87,60 @@ no red flag) / ceiling-miss (field had a high-ceiling outcome we had negligible 
 
 **Success/failure:** N/A for a single week. Logged to ledger; only evaluated once multiple weeks are in.
 
-**Data:** *(pending)*
+**Data (2026-10-26, weeks 1-7, main slates only — DK main + FD main):**
+
+Scope and method, agreed with owner before building (cost/rigor tradeoff discussed explicitly — see session):
+exposure is the owner's *actual reconstructed pool exposure*, not our model's projected ownership. Reconstructed
+real pool = owner's stated manual exclusion rules, applied strictly (no "unless top value play" override, same
+convention as Item 9), fed into `se3max_pool` (100 lineups) for each of the 14 main-slate week/site
+combinations. Owner's stated rules (2026-10-26): DK — exclude ownership <2%, TE salary $4,500-5,900, DST outside
+$2,800-3,100, QB unless projected >20; FD — same concept, TE exclusion is salary <=$4,100 only (no upper band).
+Game-environment QB lean is a judgment tie-break, not coded (same treatment as the value-play override).
+Per-player exposure % = share of that slate's 100-lineup pool rostering him; <5% = negligible (ceiling-miss).
+Floor-break = under-miss where Item 1's own attribution left `stage=indeterminate` (no known cause already
+logged); an under already attributed to engine/ingestion (e.g. "volume/role projection wrong", "probable missed
+inactive") is tagged `neither` — already explained elsewhere, not a floor/ceiling finding.
+Scripts: `analysis/wk7_postmortem_item2/` (`build_exclusions.py`, `run_all.py`, `tag.py`).
+
+**Side finding during the build, flagged not acted on:** applying the QB rule (>20 proj) strictly produced
+**zero surviving QBs** in 3 of 14 slates (DK wk2, FD wk1, FD wk2) — every QB that week projected under 20, making
+the build literally infeasible without invoking the override. Recovered by exempting that slate's single
+highest-projected QB (as the "top value play" override would in practice); those 3 pools are n=50 lineups (the
+lone QB hit the preset's 50% max-exposure cap), not n=100. This means the override isn't a rare edge case — it
+was load-bearing in ~21% of these 14 slates just to field a legal lineup. Not re-litigated here per Item 9's own
+"known limitation" convention; noted for whoever picks up Item 9.
+
+**Results, 411 main-slate notable misses across 7 weeks:**
+
+| tag | count | share |
+|---|---|---|
+| ceiling-miss | 351 | 85% |
+| neither | 52 | 13% |
+| floor-break | 8 | 2% |
+
+By week:
+
+| week | ceiling-miss | floor-break | neither |
+|---|---|---|---|
+| 1 | 90 | 2 | 14 |
+| 2 | 52 | 1 | 4 |
+| 3 | 63 | 1 | 5 |
+| 4 | 46 | 0 | 6 |
+| 5 | 32 | 0 | 12 |
+| 6 | 31 | 0 | 6 |
+| 7 | 37 | 4 | 5 |
+
+By position: ceiling-miss dominates WR (139/160, 87%), TE (71/85, 84%), RB (71/82, 87%); QB is more mixed
+(50 ceiling-miss / 5 neither / 3 floor-break of 58); DST/D skews floor-break-or-ceiling-miss, almost no `neither`
+(21/24). Ceiling-miss salary is cheaper on average (median $5,100) than real-exposure overs tagged `neither`
+(median $6,200) — consistent with the exclusion rules squeezing out cheaper/longer-tail plays specifically.
+
+The 8 floor-breaks: 5 DST/D (Titans x2, Dolphins, Panthers x2), 3 QB (Josh Allen wk3, Brock Purdy + Bryce Young
+wk7 FD) — all had real ownership/projection (not excluded), busted well below projection, and Item 1 found no
+pipeline-stage cause.
+
+**Not yet interpreted** — per this doc's own collect-then-analyze rule, held until the other items are populated
+and read together.
 
 ---
 
