@@ -2720,24 +2720,37 @@ def apply_rb_replacement(pool: pd.DataFrame, season: int, week: int,
             # teams keeps a stale trailing-usage row under his OLD team (last_g from before the move),
             # which _rb_decay_addon's last_g < lg check can't distinguish from a real continuing absence.
             team_out_ids = {o for o in out_ids if pid_to_team.get(o) == team}
-            # Step-up top-up: any qualifying teammate RB OUT this week, first-week or continuing (any k) --
-            # independent of the outs/decay branching below, which both leave a real residual on their own.
+            # Step-up top-up: ONLY the analysis's actual population -- the team's LEAD back (>=35% CARRIES,
+            # analysis/role_step_up_bias's "established" cutoff -- carry share specifically, not combined
+            # car+tgt) is OUT, and the recipient himself was NOT already established (<35% carry share
+            # pre-event). First fix shipped this session (commit 5caf712c) wrongly used the broader
+            # next-man-up thresholds (min_car_share~.20) with no check on the recipient -- it fired on
+            # already-lead backs whose OWN backup was out (Bijan, Warren, Hubbard), pushing established
+            # starters to their exposure cap instead of targeting true step-up backups like Allen/Gordon
+            # (confirmed in a real-pool exposure check, 2026-10-26, analysis/stepup_exposure_check/RESULTS.md).
+            # Fixed same day: both gates below are new, and both use carry share alone (a first attempt at
+            # this same fix used combined car+tgt share and wrongly excluded Allen himself: his carry share
+            # was .333, under the line, but his combined share was .397, over it).
+            STEPUP_LEAD_SHARE = 0.35
             if stepup_p is not None:
                 a_su = a.copy(); a_su.index = a_su.index.astype(str)
                 out_rbs = a_su[a_su.index.isin(team_out_ids) & (a_su["pos"] == "RB")
-                               & ((a_su["sh_car"] >= p["min_car_share"]) | (a_su["sh_tgt"] >= p["min_tgt_share"]))]
+                               & (a_su["sh_car"] >= STEPUP_LEAD_SHARE)]
                 if not out_rbs.empty:
                     su_cand = real & (df["team"].astype(str) == team) & (df["position"].astype(str) == "RB") \
                         & ~pid.isin(out_ids) & pid.isin(set(a_su.index))
                     if su_cand.any():
                         su_idx = df.index[su_cand]
-                        su_sh = (a_su.loc[pid[su_cand], "sh_car"] + a_su.loc[pid[su_cand], "sh_tgt"]).to_numpy()
-                        su_rank1 = pd.Series(su_sh, index=su_idx).rank(ascending=False, method="first") == 1
-                        top_idx = su_idx[su_rank1.to_numpy()]
-                        bump = pd.to_numeric(df.loc[top_idx, "final_projection"], errors="coerce").fillna(0.0) \
-                            * float(stepup_p["pct"])
-                        df.loc[top_idx, "wrw_stepup_pts"] += bump
-                        df.loc[top_idx, "wrw_delta_pts"] += bump
+                        su_sh = a_su.loc[pid[su_cand], "sh_car"].to_numpy()
+                        su_eligible = su_sh < STEPUP_LEAD_SHARE
+                        if su_eligible.any():
+                            su_rank1 = pd.Series(np.where(su_eligible, su_sh, -1.0), index=su_idx) \
+                                .rank(ascending=False, method="first") == 1
+                            top_idx = su_idx[su_eligible & su_rank1.to_numpy()]
+                            bump = pd.to_numeric(df.loc[top_idx, "final_projection"], errors="coerce").fillna(0.0) \
+                                * float(stepup_p["pct"])
+                            df.loc[top_idx, "wrw_stepup_pts"] += bump
+                            df.loc[top_idx, "wrw_delta_pts"] += bump
             outs = a[a.index.astype(str).isin(team_out_ids) & (a["last_g"] == lg)
                      & ((a["sh_car"] >= p["min_car_share"]) | (a["sh_tgt"] >= p["min_tgt_share"]))]
             if decay_p is not None and outs.empty:
