@@ -66,3 +66,42 @@ Every item below should say which track it's on.
 - Track: test-bar (worth investigating further) — confirmed the data exists and is free/automatable; nothing
   built or tested yet.
 - Status: open, not yet scoped.
+
+## classic_field.py simulator over-concentrates team stacking beyond ≥1 correlated piece
+- Source: diagnosis item 4 (classic_field.py simulation validation), 2026-10-26.
+- Evidence: 134 real DK SE main-slate contests (2022-2026) vs sim (`simulate_field()`, 2026 wk1/wk2 target
+  ownerships). QB stack ≥1 teammate: real 83.8% [IQR 80.2-88.9] vs sim 90.3-91.4% — inside the real-vs-real
+  band, a parameter calibrated correctly on its own target stat. But QB stack ≥2: real 36.3% [32.4-42.3] vs
+  sim 68.6-69.2% (+35 pts, outside); max players from one team, mean: real 2.44 vs sim 3.29-3.42 (outside);
+  share with 3+ from one team: real 41.7% vs sim 73.2-73.6% (+34 pts, outside); share with 4+: real 5.8% vs
+  sim 39.2-44.2% (+34-39 pts, outside). Same direction and magnitude in both weeks. Owner confirmed this
+  matches real-world SE play: single-entry fields deliberately spread correlation risk (one correlated piece
+  for a small edge) rather than stacking hard the way large-field MME GPPs do — the real data's low ≥2/3+/4+
+  rates are expected field behavior, not noise.
+- Proposed change: `scripts/classic_field.py`'s `stack_boost` multiplier applies independently to every
+  skill-slot draw (RB, RB, WR, WR, WR, TE, FLEX) when filling a lineup around a boosted QB, and was calibrated
+  only against the stack≥1 rate (per the function's own doc comment) — nothing checked the higher-order stats.
+  That single-parameter boost compounds across slots, correctly hitting ≥1 while overshooting ≥2/3+/4+.
+  Needs recalibration against stack≥2 / 3+-from-one-team directly, likely via capping how much the boost
+  compounds per additional correlated slot rather than just rescaling the one multiplier. Not yet
+  designed/built.
+- Track: test-bar (worth investigating further) — real, data-driven finding; no code change built or tested.
+- Status: open, not yet scoped.
+
+## classic_field.py simulator under-uses the salary cap vs real fields
+- Source: diagnosis item 4 (classic_field.py simulation validation), 2026-10-26.
+- Evidence: 134 real DK SE main-slate contests: total lineup salary mean $49,880 [IQR 49,870-49,900], p10
+  ≈$49,700, p50 ≈$49,900 (real-vs-real p90 diff only ~$52-100 — a tight, consistent real-field floor). Sim
+  (`MIN_SALARY` = $49,300) came in $200-400 light in both 2026 wk1/wk2: mean $49,627-49,637, p10 sitting right
+  on the $49,300 floor, p50 $49,600 — outside the real-vs-real band in both weeks. Owner's read from
+  commercial-optimizer experience: ~$49,700 is the common practical floor for real main-slate classic builds
+  (a smaller contingent deliberately uses ~$49,500 as a diversification lever, but leaving $500+ unspent with
+  no reason is generally a mistake — pay up somewhere instead); showdown is the one format where leaving up to
+  ~$1,000 unspent is normal, which doesn't apply here.
+- Proposed change: raise `MIN_SALARY` in `scripts/classic_field.py` from $49,300 toward ~$49,700 to match the
+  dominant real-field floor, possibly with a configurable lower option (~$49,500) for the smaller real
+  contingent that uses it as a diversification choice. Check how raising the floor interacts with the IPF
+  ownership-correction step before just changing the constant — a tighter salary-legal pool per batch could
+  change how well IPF converges to target ownership. Not yet designed/built.
+- Track: test-bar (worth investigating further) — real, data-driven finding; no code change built or tested.
+- Status: open, not yet scoped.

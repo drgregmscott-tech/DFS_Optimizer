@@ -203,7 +203,7 @@ why its failure under a leak-free, live-usable input is the thing that actually 
 
 ---
 
-## 4. classic_field.py simulation validation
+## 4. classic_field.py simulation validation — `[x]` analyzed, 2026-10-26
 
 **Hypothesis:** feeding our pre-lock target ownerships into `scripts/classic_field.py`'s simulator produces a
 simulated field whose construction-shape stats (position counts, salary usage, stack rate, duplication) match
@@ -216,7 +216,103 @@ differ on the same stats (Q5) — needed to know what counts as "beyond normal" 
 are adequate, any ownership gap traces upstream to our input targets.
 **Failure:** gap exceeds normal variability → simulation mechanics themselves don't capture real field behavior.
 
-**Data:** *(pending)*
+**Status: `[x]` analyzed, logged to action items (2026-10-26).**
+
+**Data (2026-10-26):**
+
+Scope agreed with owner: real field = **SE contests only** (`data/fc_history/lineup_study`, types `SE*`, not
+showdown); duplication = share of entries whose exact 9-player set matches ≥1 other distinct entrant in the same
+contest. Scripts/outputs: `analysis/wk7_postmortem_item4/` (`run_item4.py`, `compare.py`, CSVs; FC-derived, not
+committed).
+
+- **Real population:** 134 DK SE main-slate classic contests, one file = one data point (2022: 35, 2023: 31,
+  2024: 25, 2025: 33, 2026: 10). 7 non-main slates dropped (2024wk4 Mon-only, 2023wk17 Thu-Sun, Fri-Mon
+  Thanksgiving slates). 2026 wk2 has **5** SE contests, not 1: the `2026wk2b_*` files are 4 more SE contests on the
+  same DK slate (153428).
+- **Stats:** (1) mean salary per slot (QB, RB avg of 2, WR avg of 3, TE, FLEX, DST) + total salary mean/p10/p50,
+  + FLEX position mix; (2) QB stack = ≥1 (and ≥2) of the 7 skill slots on the QB's team; (3) most players from one
+  team in the 9 (DST included), mean and share 3+/4+; (4) duplication.
+- **Band:** spread across real contests. "IN" = |sim − mean of that week's 5 real contests| ≤ p90 of
+  |difference| between two real contests on different slates.
+- **Sim:** `classic_field.simulate_field()` (seed 0, n=25,000), own = `estimated_ownership_pct` from
+  `output/final_projections_dk_dk_classic_wk{1,2}_main_*.csv`.
+
+**Data-quality flags:**
+- Some rostered players have no team/salary in FC's data (e.g. a 26%-owned 2025 player). Affected lineups are
+  dropped for stats 1-3 (kept for dup). The band uses only contests with ≤5% of lineups affected (107 of 134).
+  2026 affected share: wk1 ~3%, wk2 ~8% (the wk2 comparison is still run, flagged).
+- Our pre-lock targets put **30.3 (wk1) / 74.4 (wk2) ownership points on OUT-status players**, which shows up in
+  16% / 52% of sim lineups. Everything was re-run with OUT players zeroed: no stat changed IN/OUT status (wk1
+  stack≥1 moved to 92.9%, still IN).
+- `simulate_field` keeps only one 200k batch's salary-legal draws (2-4k lineups) and resamples them **with
+  replacement** up to n, so its output as returned is mostly exact copies. A second sim dup figure pools distinct
+  draws from 7-13 seeds (≥26.5k distinct lineups).
+- Sim's achieved ownership vs its input target: MAE 0.36 (wk1) / 0.72 (wk2) pts overall; 1.2 / 1.7 for players
+  with target ≥1%.
+
+| stat | real median [IQR] | p90 real-vs-real diff | wk1 sim / real (5 contests) / gap | wk2 sim / real (5 contests) / gap |
+|---|---|---|---|---|
+| QB salary | 6261 [6000-6485] | 886 | 5994 / 5966-6000 / +8 IN | 5930 / 5967-5985 / −45 IN |
+| RB salary | 6507 [6253-6664] | 830 | 6639 / 6796-6853 / −186 IN | 6516 / 6804-6855 / −311 IN |
+| WR salary | 5942 [5773-6062] | 492 | 5824 / 5897-5929 / −83 IN | 5913 / 5769-5784 / +139 IN |
+| TE salary | 4114 [3919-4331] | 729 | 3925 / 3859-3921 / +23 IN | 3816 / 3940-3995 / −160 IN |
+| FLEX salary | 5724 [5610-5859] | 503 | 5897 / 5608-5678 / +252 IN | 5934 / 5910-5948 / +5 IN |
+| DST salary | 2935 [2872-3050] | 355 | 3061 / 2914-2943 / +134 IN | 3187 / 3006-3040 / +166 IN |
+| total salary, mean | 49,880 [49,870-49,900] | 52 | 49,627 / 49,818-49,846 / −204 **OUT** | 49,637 / 49,866-49,884 / −239 **OUT** |
+| total salary, p10 | 49,700 | 100 | 49,300 / 49,600-49,700 / −380 **OUT** | 49,300 / 49,700 / −400 **OUT** |
+| total salary, p50 | 49,900 | 100 | 49,600 / 49,900-50,000 / −360 **OUT** | 49,600 / 49,900-50,000 / −340 **OUT** |
+| FLEX is TE | 16.1% [12.1-20.8] | 19.5 pts | 9.3% / 19.5-21.1% / −11 IN | 6.4% / 13.3-13.8% / −7 IN |
+| QB stack ≥1 | 83.8% [80.2-88.9] | 13.1 pts | 91.4% / 79.5-83.8% / +9.2 IN | 90.3% / 81.1-86.7% / +6.1 IN |
+| QB stack ≥2 | 36.3% [32.4-42.3] | 16.0 pts | 69.2% / 31.7-36.4% / +35 **OUT** | 68.6% / 31.1-37.1% / +35 **OUT** |
+| max-team count, mean | 2.44 [2.40-2.52] | 0.19 | 3.29 / 2.40-2.44 / +0.88 **OUT** | 3.42 / 2.38-2.43 / +1.03 **OUT** |
+| share with 3+ from one team | 41.7% [38.6-47.3] | 14.1 pts | 73.2% / 38.2-41.9% / +34 **OUT** | 73.6% / 37.1-41.7% / +35 **OUT** |
+| share with 4+ from one team | 5.8% [4.9-6.9] | 3.7 pts | 39.2% / 4.7-5.7% / +34 **OUT** | 44.2% / 4.6-5.6% / +39 **OUT** |
+
+Duplication (band over all 134 contests: median 4.2% [IQR 3.0-5.3%], p5-p95 1.5-7.1%, p90 real-vs-real diff
+3.9 pts; real dup rises somewhat with contest size, corr 0.29). Sim dup measured at each real contest's entry
+count:
+
+| contest (entries) | real dup | sim dup, as returned | sim dup, pooled distinct draws |
+|---|---|---|---|
+| wk1 Fair Catch (17,145) | 3.95% | 98.7% | 0.05% |
+| wk1 Huddle (11,880) | 2.50% | 95.1% | 0.04% |
+| wk1 $40K Pylon (15,830) | 3.95% | 98.2% | 0.03% |
+| wk1 $20K Pylon (7,914) | 2.97% | 86.4% | 0.03% |
+| wk1 Daily Dollar (17,812) | 4.23% | 98.9% | 0.06% |
+| wk2 Daily Dollar (17,810) | 3.41% | 99.98% | 0.02% |
+| wk2 Fair Catch (17,148) | 3.18% | 99.97% | 0.03% |
+| wk2 Huddle (23,758) | 2.66% | 99.99% | 0.05% |
+| wk2 $40K Pylon (15,838) | 3.25% | 99.96% | 0.03% |
+| wk2 $20K Pylon (7,921) | 2.70% | 97.9% | 0.02% |
+
+Substitute clean sim dup, **pre-resample, single batch, not multi-seed-pooled** (seed 0's own unique salary-legal
+draws from its one 200k batch, deduped among themselves): wk1 **0.00%** of 3,967 draws (0.00% of 2,045 with OUT
+players zeroed); wk2 **0.00%** of 2,056 draws (0.09% of 2,243 with OUT zeroed). For scale, real contests under
+6,000 entries: median 3.5%, p5 1.0% (n=63). OUT of the band, same direction as the pooled number.
+
+All clean sim dup figures are **OUT** of the band, below it (single batch 0-0.09%, pooled 0.02-0.06%, real
+2.5-4.2%). The as-returned figure is OUT above it (86-100%), but that's a resampling artifact, not field behavior.
+
+**Plain read of the measurements (no interpretation):** IN for every per-slot salary, FLEX mix, and QB stack ≥1.
+OUT for total salary usage, QB stack ≥2, all max-team stats, and duplication. Same verdicts in both weeks and
+with OUT players zeroed.
+
+**Interpreted with owner 2026-10-26:**
+- **Duplication** is not an actionable simulator gap. Real SE duplicates are largely syndicate/"touting"
+  behavior (one lineup provider, many entrants playing it), not independent convergence — the simulator models
+  no such thing and isn't expected to. Owner's view: these should arguably be treated as one entry, not N.
+  No action item.
+- **QB stack ≥2 / max-team concentration** and **total salary usage** are real, explained simulator gaps —
+  both logged to `WK7_POSTMORTEM_ACTION_ITEMS.md` (test-bar, open, not yet scoped): (1) `stack_boost` is
+  calibrated only against stack≥1 and compounds across skill slots, overshooting higher-order team
+  concentration that real single-entry fields deliberately avoid (SE players spread correlation risk for a
+  small edge, reserving heavy stacking for large-field MME); (2) `MIN_SALARY` ($49,300) sits well below the
+  real-field practical floor (~$49,700, with a smaller real contingent at ~$49,500) — sim leaves $200-400 more
+  unspent than real fields ever do on a main slate (showdown is the one format where that's normal, not
+  applicable here).
+- Per-slot salary, FLEX mix, and stack≥1 being IN means the simulator's baseline ownership/salary allocation
+  mechanics are sound — the two gaps above are specific, scoped parameter issues, not a sign the simulation
+  approach itself is broken.
 
 ---
 
