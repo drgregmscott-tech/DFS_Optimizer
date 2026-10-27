@@ -495,13 +495,17 @@ or Item 1's ceiling-miss-dominant pipeline attribution) before any action item i
 
 ---
 
-## 8. Running ledger across all weeks
+## 8. Running ledger across all weeks — `[x]` built, 2026-10-27
 
 Infrastructure, not a hypothesis — every item gets appended to `ALL_WEEKS_LEDGER.md` (or equivalent) in a
 consistent schema per slate, covering weeks 1–7, so patterns can be read across weeks instead of guessed at from
 one slate. No pass/fail criterion of its own; success = nothing above gets interpreted before this exists.
 
-**Data:** *(pending — backfill weeks 1–6 + week 7 going forward)*
+**Data:** `ALL_WEEKS_LEDGER.md` created, backfilled weeks 1-7 from items 1/2/5/6/7's already-computed CSVs —
+pure compilation, no new numbers computed and no new interpretation drawn. Covers the 14-slate DK+FD-main grain
+shared by items 2/5/6/7, plus item 1's broader all-slate-type rollup. Items 3/4 don't fit the per-slate schema
+(3 is a closed pooled test, 4 only covers 2 of 14 slates) — noted as narrative-only in the ledger's section C.
+Item 9 has a reserved section, still pending.
 
 ---
 
