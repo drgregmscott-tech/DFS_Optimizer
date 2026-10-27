@@ -436,19 +436,62 @@ to close this item.
 
 ---
 
-## 7. Winners-vs-field positioning
+## 7. Winners-vs-field positioning — `[~]` data collected, not yet interpreted (2026-10-27)
 
 **Hypothesis:** our pool's player-exposure vector correlates more strongly with the field's winning-tail
 exposure vector (Q4) than with the full-field average exposure vector.
 
-**Data to collect:** per slate, correlation(our exposures, winning-tail exposures) vs correlation(our exposures,
-full-field-average exposures).
+**Method agreed with owner 2026-10-27, before building:**
+- **Vector space:** every player who appears in any entry of the full field that slate, per slate (union with
+  our own pool's players). Our exposure = 0 for a field-rostered player we didn't touch.
+- **Our exposure vector:** same reconstructed real-pool files as Items 2/4/5/6/9
+  (`analysis/wk7_postmortem_item2/pools/{site}_wk{week}.csv`), % of the 100 lineups rostering each player.
+- **Field vectors:** parsed directly from each contest's `Lineup` text column in `data/contest_results/.../*_full.csv`
+  (same files as Item 5) — full-field average = % of all entries rostering a player; winning tail = % of the
+  **top 20% of entries by actual Points** rostering a player (Q4's resolved "top 20%/cashers" convention, same as
+  Item 4 — not the top-1% secondary definition).
+- **Correlation:** Pearson primary, Spearman reported alongside (pre-registered, since exposure distributions are
+  right-skewed and a Pearson-only read risks a few chalk outliers driving the result).
+- **Bar:** same discipline as other items — ~11-14/14 slates (sign-test-significant) showing tail-corr >
+  field-avg-corr needed to call "we look like winners," scaled up from the n=7/"6-or-7 of 7" convention to n=14
+  slates.
+- **Sampling-noise control added during the build (not in the original plan, needed before trusting the sign):**
+  the winning tail is a much smaller group (938-4,752 entries) than the full field (4,690-23,758), so a smaller
+  sample is mechanically noisier and could show lower correlation with *anything* regardless of whether winners
+  really look different. Control: 30 random subsamples of entries, same size as that slate's tail, drawn from the
+  full field with no regard to points, same exposure/correlation calc. If tail-corr ≈ random-subsample-corr, the
+  gap is just sample-size noise; if tail-corr is meaningfully below the random-subsample floor, that's signal.
+  Script: `analysis/wk7_postmortem_item7/run_item7.py` (not committed, regenerable); output
+  `analysis/wk7_postmortem_item7/item7_results.csv`.
 
-**Success:** we consistently correlate more with the winning tail than the field average.
-**Failure:** we correlate more with (or no better than) the full-field average — we look like a median field
-entrant rather than a differentiated one.
+**Data (14 slates, DK+FD main, weeks 1-7):**
 
-**Data:** *(pending)*
+| | corr vs field-avg | corr vs winning tail | corr vs random same-size subsample | tail beats avg (Pearson) |
+|---|---|---|---|---|
+| **Pearson, mean** | 0.5180 | 0.4633 | 0.5172 | 1/14 slates |
+| **Spearman, mean** | 0.4541 | 0.4440 | 0.4553 | 4/14 slates |
+
+- **Pearson: tail-corr > field-avg-corr in only 1/14 slates** (dk wk1) — sign test p=0.0018, clears the
+  significance bar in the **opposite direction of the hypothesis**. Mean gap −0.055, median −0.057; every other
+  slate's winning-tail correlation is lower than its field-average correlation, several by a wide margin (fd wk4
+  −0.097, dk wk2 −0.125, dk wk6 −0.118).
+- **Spearman: tail-corr > field-avg-corr in 4/14 slates** — not significant (p=0.18), but same direction on
+  average (mean gap −0.010).
+- **Sampling-noise control confirms this is not a sample-size artifact:** mean correlation against a random
+  same-size subsample (0.5172) is essentially identical to the full-field average (0.5180) — shrinking the
+  sample size alone costs almost nothing. The winning tail (0.4633) sits clearly below *both*. Tail beats the
+  random-subsample floor in only 1/14 slates (Pearson, p=0.0018) — the same single slate, same margin. This
+  rules out "the tail just looks different because it's a smaller sample" as the explanation.
+- Per-slate numbers, including Spearman detail and the noise-floor comparison, in
+  `analysis/wk7_postmortem_item7/item7_results.csv`.
+
+**Not yet interpreted** — per this doc's own collect-then-analyze rule, held for discussion with owner before any
+conclusion or action item. Flagging for that discussion: this reads as a fairly clean, consistent result in the
+*failure* direction defined above (we correlate measurably more with the median field entrant than with the
+winning tail, in 13/14 slates, and the noise control rules out the obvious "just noise" objection) — but per the
+"check direction before significance" protocol, worth triangulating against Items 1/5/6/9 before treating it as
+an independent new finding vs. a restatement of something already logged (e.g. Item 6's chalk-baseline result,
+or Item 1's ceiling-miss-dominant pipeline attribution) before any action item is drafted.
 
 ---
 
