@@ -1,12 +1,13 @@
 <!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"></head><body>
-<title>Classic Lineup Checklist</title>
+<title>NFL Classic Lineup Checklist</title>
 <style>
-  /* layout: tab switcher (SE3max pick-1 vs MME 20-entry) over the existing single-column scan list, grouped by enforced-vs-manual with a status pill */
+  /* layout: tab switcher (SE3max pick-1 vs MME 20-entry vs FD) over the existing single-column scan list, grouped by enforced-vs-manual with a status pill */
   :root {
     --bg: #faf8f5; --surface: #ffffff; --border: #e4ddd1; --fg: #2b2620; --fg-dim: #6e6558;
     --accent: #1f6f4a; --accent-soft: #e4f1ea; --bad: #b5472b; --bad-soft: #fbe9e3;
     --warn: #a3741a; --warn-soft: #f6ecd8; --mono: #4a4337;
     --ceiling: #7a4bb3; --ceiling-soft: #ece2f6; --pending: #8a6d2f; --pending-soft: #f4ead2;
+    --fd: #1d5ba3; --fd-soft: #e2ecf7;
     --font-display: 'Fraunces', Georgia, serif; --font-body: 'Inter', -apple-system, sans-serif;
     --font-mono: 'IBM Plex Mono', 'Courier New', monospace;
   }
@@ -16,6 +17,7 @@
       --accent: #5bc995; --accent-soft: #1e3329; --bad: #e8795c; --bad-soft: #3a2420;
       --warn: #e0b256; --warn-soft: #3a311d; --mono: #c9bfae;
       --ceiling: #b48fe0; --ceiling-soft: #2e2438; --pending: #d9b964; --pending-soft: #3a3120;
+      --fd: #6fa8dc; --fd-soft: #1c2a3a;
       color-scheme: dark;
     }
   }
@@ -24,6 +26,7 @@
     --accent: #5bc995; --accent-soft: #1e3329; --bad: #e8795c; --bad-soft: #3a2420;
     --warn: #e0b256; --warn-soft: #3a311d; --mono: #c9bfae;
     --ceiling: #b48fe0; --ceiling-soft: #2e2438; --pending: #d9b964; --pending-soft: #3a3120;
+    --fd: #6fa8dc; --fd-soft: #1c2a3a;
     color-scheme: dark;
   }
   * { box-sizing: border-box; }
@@ -43,7 +46,7 @@
   }
   .sub { color: var(--fg-dim); font-size: 14.5px; line-height: 1.55; max-width: 62ch; margin: 0; }
 
-  .tabbar { display: flex; gap: 6px; margin-top: 22px; border-bottom: 1px solid var(--border); }
+  .tabbar { display: flex; gap: 6px; margin-top: 22px; border-bottom: 1px solid var(--border); flex-wrap: wrap; }
   .tabbtn {
     font-family: var(--font-body); font-weight: 600; font-size: 14px; color: var(--fg-dim);
     background: none; border: none; padding: 10px 4px 12px; margin-right: 18px; cursor: pointer;
@@ -52,12 +55,15 @@
   .tabbtn .tabsub { display: block; font-family: var(--font-mono); font-size: 10.5px; font-weight: 500; letter-spacing: 0.04em; margin-top: 2px; text-transform: none; }
   .tabbtn[aria-selected="true"] { color: var(--fg); border-bottom-color: var(--accent); }
   .tabbtn[aria-selected="true"] .tabsub { color: var(--accent); }
+  .tabbtn[data-tab="fd"][aria-selected="true"] { border-bottom-color: var(--fd); }
+  .tabbtn[data-tab="fd"][aria-selected="true"] .tabsub { color: var(--fd); }
 
   .progress-row {
     display: flex; align-items: center; gap: 12px; margin-top: 18px; font-family: var(--font-mono); font-size: 12.5px; color: var(--fg-dim);
   }
   .progress-track { flex: 1; height: 6px; border-radius: 3px; background: var(--border); overflow: hidden; }
   .progress-fill { height: 100%; background: var(--accent); width: 0%; transition: width 0.25s ease; }
+  .progress-fill.fd-fill { background: var(--fd); }
 
   .banner {
     display: flex; gap: 10px; align-items: flex-start; margin-top: 20px; padding: 12px 14px;
@@ -67,6 +73,9 @@
     color: var(--ceiling); text-transform: uppercase; flex-shrink: 0; padding-top: 1px; }
   .banner p { margin: 0; font-size: 13.5px; line-height: 1.55; color: var(--fg); }
   .banner strong { color: var(--ceiling); }
+  .banner.fd-banner { background: var(--fd-soft); border-color: var(--fd); }
+  .banner.fd-banner .banner-icon { color: var(--fd); }
+  .banner.fd-banner strong { color: var(--fd); }
 
   .group { margin-top: 30px; }
   .group-head {
@@ -80,6 +89,7 @@
   .tag-auto { background: var(--accent-soft); color: var(--accent); }
   .tag-manual { background: var(--warn-soft); color: var(--warn); }
   .tag-pool { background: var(--ceiling-soft); color: var(--ceiling); }
+  .tag-fd { background: var(--fd-soft); color: var(--fd); }
 
   .item {
     display: grid; grid-template-columns: 24px 1fr; gap: 12px;
@@ -89,6 +99,7 @@
   .item input[type="checkbox"] {
     width: 18px; height: 18px; margin-top: 2px; accent-color: var(--accent); cursor: pointer;
   }
+  .item[data-id^="fd-"] input[type="checkbox"] { accent-color: var(--fd); }
   .item-body { min-width: 0; }
   .item-title { font-weight: 600; font-size: 14.5px; line-height: 1.4; }
   .item-title .thresh { font-family: var(--font-mono); color: var(--mono); font-weight: 500; }
@@ -103,6 +114,7 @@
   .flag-red { background: var(--bad-soft); color: var(--bad); }
   .flag-pending { background: var(--pending-soft); color: var(--pending); }
   .flag-ceiling { background: var(--ceiling-soft); color: var(--ceiling); }
+  .flag-fd { background: var(--fd-soft); color: var(--fd); }
 
   footer { margin-top: 36px; padding-top: 18px; border-top: 1px solid var(--border); }
   .reset-btn {
@@ -115,13 +127,14 @@
 
 <div class="wrap">
   <header>
-    <p class="eyebrow">Pre-submit · DK Classic</p>
+    <p class="eyebrow">Pre-submit · Classic</p>
     <h1>Final lineup checklist</h1>
     <p class="sub" id="pageSub">Run through this on the exact players you're about to submit — not the pool, not an earlier draft. The first group is already handled by the preset; the rest needs your own eyes.</p>
 
     <div class="tabbar" role="tablist">
       <button class="tabbtn" id="tabBtnSe" role="tab" aria-selected="true" data-tab="se">SE3max<span class="tabsub">pick 1 of 100</span></button>
       <button class="tabbtn" id="tabBtnMme" role="tab" aria-selected="false" data-tab="mme">MME<span class="tabsub">build 20, play all 20</span></button>
+      <button class="tabbtn" id="tabBtnFd" role="tab" aria-selected="false" data-tab="fd">FD<span class="tabsub">FanDuel, preliminary</span></button>
     </div>
 
     <div class="progress-row">
@@ -209,7 +222,7 @@
         <input type="checkbox">
         <div class="item-body">
           <div class="item-title">TE isn't priced in the <span class="thresh">$4,500–5,900</span> dead zone</div>
-          <div class="item-why">Weak evidence, not enforced as a flag. That band is the worst TE price tier (−1.6 to −1.9 pts) — worse than cheap TE or expensive TE. If your TE sits there, it should be for a specific matchup/role reason, not just "the next tier up."</div>
+          <div class="item-why">Weak evidence, not enforced as a flag. That band is the worst TE price tier (−1.6 to −1.9 pts) — worse than cheap TE or expensive TE. If your TE sits there, it should be for a specific matchup/role reason, not just "the next tier up." DK only — FD's own TE pricing works the opposite way, see the FD tab.</div>
         </div>
       </label>
 
@@ -355,6 +368,14 @@
         </div>
       </label>
 
+      <label class="item" data-id="m-stud-count">
+        <input type="checkbox">
+        <div class="item-body">
+          <div class="item-title">Not every lineup is loaded with 3+ expensive "studs"</div>
+          <div class="item-why">3+ studs is specifically bad at 20MAX (−2.2, 0/4 seasons) — more punishing than SE. There's no lever for this in the optimizer at all yet (checked — it doesn't exist in any preset). Manual eyeball only, on a sample across the 20.</div>
+        </div>
+      </label>
+
       <label class="item" data-id="m-ceiling-spread">
         <input type="checkbox">
         <div class="item-body">
@@ -389,6 +410,45 @@
     </div>
   </div>
 
+  <!-- ============ FD tab ============ -->
+  <div id="panelFd" data-panel="fd" hidden>
+    <div class="banner fd-banner">
+      <span class="banner-icon">Preliminary — not graded like DK</span>
+      <p>Everything in the SE3max/MME tabs is DK-specific: DK price bands, 410 real contests, 5 seasons, controlled for projection/ownership/salary left before crediting an effect. FD doesn't have that bar cleared yet (<strong>5 weeks</strong> of real FD data, raw tier cash rate, no controls — same bar as the DK rules, just not there). Treat this tab as a judgment call you apply by hand, not an enforced rule — nothing here is wired into the optimizer.</p>
+    </div>
+
+    <div class="group">
+      <div class="group-head">
+        <h2 class="group-title">TE and DEF salary bands — checked against real FD data</h2>
+        <span class="group-tag tag-fd">FD only, preliminary</span>
+      </div>
+
+      <label class="item" data-id="fd-te-band">
+        <input type="checkbox">
+        <div class="item-body">
+          <div class="item-title">TE priced <span class="thresh">$4,100–5,400</span>, not $5,500+</div>
+          <div class="item-why">Checked against all 5 weeks of real FD main-slate full-field results (25,000+ entries pooled, top-25%-cash proxy): $4,100–5,400 cashes <strong>29.0%</strong> (n=15,885) vs. <strong>21.8%</strong> for $5,500+ (n=19,239) — wins in 4 of 5 weeks. <span class="flag flag-fd">inverted</span> This replaces an earlier recommendation to avoid this exact band, which was pure salary-ladder reasoning never checked against real data — the real field says the opposite. The $4,000 floor has only 21 real instances across all 5 weeks; too thin to read either way.</div>
+        </div>
+      </label>
+
+      <label class="item" data-id="fd-def-band">
+        <input type="checkbox">
+        <div class="item-body">
+          <div class="item-title">DEF priced under <span class="thresh">$4,700</span></div>
+          <div class="item-why">$4,700+ cashes 17.2% pooled, worst or near-worst in 4 of 5 weeks. Anything under $4,700 — cheap or mid — is a wash: &lt;$3,300 cashes 27.7%, $3,300–4,600 cashes 27.2%, no consistent winner week to week. Only the top band is a real avoid; don't also exclude cheap DEF.</div>
+        </div>
+      </label>
+
+      <label class="item" data-id="fd-caveat-ack">
+        <input type="checkbox">
+        <div class="item-body">
+          <div class="item-title">Remembered this is uncontrolled and 5 weeks, not 410 contests</div>
+          <div class="item-why">No projection/ownership/salary-left regression behind these two rows yet — some of it could be a confound (builds that pay up for mid-tier TE may just be sharper builds overall). FD's own projection pipeline also currently under-projects every skill position, so the pool these entries were built from may not match ours. Re-check after each new week; full writeup and methodology in <code>CLASSIC_RULES.md</code>.</div>
+        </div>
+      </label>
+    </div>
+  </div>
+
   <footer>
     <button class="reset-btn" id="resetBtn">Reset this tab's checklist</button>
     <p class="note" id="footNote">Saved locally in this browser only — checking boxes here doesn't change or validate anything in the optimizer itself.</p>
@@ -399,9 +459,14 @@
 (function () {
   var TABS = {
     se: { storageKey: 'classic_lineup_checklist_v1', panel: 'panelSe', btn: 'tabBtnSe',
-          sub: "Run through this on the exact 9 players you're about to submit — not the pool, not an earlier draft of the lineup. The first group is already handled by the preset; the second group needs your own eyes." },
+          sub: "Run through this on the exact 9 players you're about to submit — not the pool, not an earlier draft of the lineup. The first group is already handled by the preset; the second group needs your own eyes.",
+          fillClass: '' },
     mme: { storageKey: 'classic_lineup_checklist_mme_v1', panel: 'panelMme', btn: 'tabBtnMme',
-           sub: "You're building 20 lineups to ENTER, not pick from. Judge the batch as a pool aimed at the ceiling, not each lineup against single-entry cash-floor standards." }
+           sub: "You're building 20 lineups to ENTER, not pick from. Judge the batch as a pool aimed at the ceiling, not each lineup against single-entry cash-floor standards.",
+           fillClass: '' },
+    fd: { storageKey: 'classic_lineup_checklist_fd_v1', panel: 'panelFd', btn: 'tabBtnFd',
+          sub: "FanDuel Classic. Preliminary, judgment-call guidance only — nothing here is enforced by the optimizer the way the DK rules are.",
+          fillClass: 'fd-fill' }
   };
   var fill = document.getElementById('progressFill');
   var label = document.getElementById('progressLabel');
@@ -438,6 +503,7 @@
     });
     var pct = items.length ? Math.round((checked / items.length) * 100) : 0;
     fill.style.width = pct + '%';
+    fill.className = 'progress-fill' + (cfg.fillClass ? ' ' + cfg.fillClass : '');
     label.textContent = checked + ' / ' + items.length + ' checked';
   }
 
@@ -485,5 +551,4 @@
   switchTo(startTab);
 })();
 </script>
-
 </body></html>
