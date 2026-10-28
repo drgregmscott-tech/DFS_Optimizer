@@ -3925,12 +3925,18 @@ in this browser's localStorage.</p>
     }
     applyPresetValues(cachedPresets[name]);
     // 2026-10-10 (user request): on load, floor min-salary to near-full-cap
-    // by site -- $49,500 DK / $59,500 FD -- regardless of what the preset's
+    // by site -- $49,700 DK / $59,500 FD -- regardless of what the preset's
     // own stored ctrlMinSalary was (built-ins all store 0; see BUILTIN_PRESETS'
     // own 2026-10-01 comment for why they were zeroed). Site-dependent because
     // caps differ (DK $50,000 / FD $60,000) and the stored preset value is a
     // flat dollar figure, not a % of cap.
-    var floorVal = state.activeSite === "fd" ? "59500" : "49500";
+    // UPDATED 2026-10-28, WK7 postmortem Item 4 (classic_field.py simulation
+    // validation): DK value 49500 -> 49700 to match the real-field salary
+    // floor found against 134 real DK SE main-slate contests (p10 ~=$49,700;
+    // see scripts/classic_field.py's own MIN_SALARY, raised the same way same
+    // day). No equivalent FD real-field study exists yet, so the FD value is
+    // left unchanged -- don't read the DK evidence into it.
+    var floorVal = state.activeSite === "fd" ? "59500" : "49700";
     document.getElementById("ctrlMinSalary").value = floorVal;
     document.getElementById("ctrlMinSalarySlider").value = floorVal;
     updateMinSalaryBounds();
