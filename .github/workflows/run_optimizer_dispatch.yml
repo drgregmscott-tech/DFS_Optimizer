@@ -64,7 +64,26 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0
+          # Build-time investigation (2026-10-28): fetch-depth 0 (full
+          # history) was the real cause of this week's build-time blowup,
+          # NOT anything about se3max_pool's settings -- confirmed via
+          # GH's own per-step job timing, this step alone took 270 of a
+          # 367s run, vs. ~74s for the optimizer itself (actually faster
+          # than before, thanks to this same investigation's other fixes).
+          # The repo has grown to ~2GB / 3874 commits (40 added today
+          # alone from this week's postmortem activity) -- a full clone's
+          # time is highly variable and tied to repo SIZE, not anything
+          # this workflow does. 0 was deliberately chosen, not an
+          # oversight: the "Commit request result" step below does `git
+          # pull --rebase` with retries specifically to handle concurrent
+          # on-demand dispatches landing at the same time (see its own
+          # comment), and a rebase needs real history behind HEAD to work
+          # safely. 50 is a bounded middle ground -- comfortably more
+          # commits than could land between this job's checkout and its
+          # own push even under heavy concurrent dispatch load (today's
+          # worst case was a handful of overlapping runs), while avoiding
+          # a full-repo clone on every single request.
+          fetch-depth: 50
 
       - name: Set up Python
         uses: actions/setup-python@v5
