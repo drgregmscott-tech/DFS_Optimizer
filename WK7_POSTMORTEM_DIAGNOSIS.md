@@ -553,6 +553,29 @@ cause and no cheap fix found yet — not dropped, just not answerable today with
 investigation into what *does* distinguish winning-tail exposure from average-field exposure (stack shape,
 specific player-level calls, something not yet tested). Candidate for future work, not a closed loop.
 
+**Second cheap follow-up, 2026-10-28 (also not supported):** tested a different candidate tied to a recurring
+prior-postmortem theme (Wk4/Wk6: our model historically under-projects expensive "stud" players) — does the
+winning tail overweight high-salary players relative to the field average, in a way our pool doesn't track?
+Salary-tier split (top-2 QB/RB/TE, top-3 WR by salary that slate = "stud", via each slate's own salary export,
+`analysis/wk7_postmortem_item7/stud_tier_check.py`, not committed) of the same 14 slates:
+- Winning tail vs field average on studs: mean deviation **+0.002** (essentially flat).
+- **Our pool vs field average on studs: mean deviation +0.039** — about 20x the tail's lean, same-sign as the
+  tail's own lean in 11/14 slates (corr +0.61), i.e. same direction, much bigger magnitude. Value-tier (non-stud)
+  deviations are tiny on both sides.
+- **Not an explanation for the main Item 7 finding** — if anything this says we lean into studs *more* than even
+  the winning tail does, not that we're missing a stud-lean the tail has and we don't. Doesn't account for why
+  our full exposure vector correlates worse with the tail than with the field average; that gap sits somewhere
+  else in the ~50-player vector. No action item from this check. Flagging for whoever revisits Item 7: don't
+  re-try "stud salary tier" as a candidate without a new angle, this one's a dead end as tested.
+
+**Outcome check, 2026-10-28:** owner asked directly whether the ~20x stud-overweight magnitude above means
+construction should deliberately undervalue studs to reduce it. Tested before answering: does the per-slate
+size of our stud-overweight correlate with that slate's actual cash rate (reusing Item 5's already-computed
+`narrow_cash_rate` per slate, no new pull)? **No** — Pearson r=0.097 (p=0.74), Spearman r=0.119 (p=0.69) across
+the same 14 slates; the biggest-overweight slate (dk wk5, +0.135) cashed well (42%) and the one
+negative-overweight slate (fd wk6, -0.042) cashed even better (44%). No evidence the stud-overweight magnitude
+itself costs or helps. No action item — don't cap/undervalue studs on the strength of this finding alone.
+
 ---
 
 ## 8. Running ledger across all weeks — `[x]` built, 2026-10-27
