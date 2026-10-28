@@ -84,6 +84,26 @@ jobs:
           # worst case was a handful of overlapping runs), while avoiding
           # a full-repo clone on every single request.
           fetch-depth: 50
+          # Owner's own question (2026-10-28): "why does run_optimizer need
+          # to take on the entire repo?" Checked with `git ls-tree -r -l` --
+          # `archive/` alone is 1.75GB, 87% of everything this repo tracks
+          # (a one-time backup snapshot, never read by optimizer.py or
+          # anything else this job touches), and `analysis/` (not read by
+          # optimizer.py either -- confirmed via its own imports/path
+          # constants) is another 21MB. optimizer.py only ever reads from
+          # `scripts/` (itself + ingest_salaries.py) and `data/`
+          # (optimizer_presets.json, games.parquet), and reads/writes
+          # `output/` (final_projections input, its own lineup/ui_requests
+          # output). Sparse checkout limits materialization -- and real
+          # network transfer, confirmed by the timing drop below -- to
+          # exactly those three directories plus top-level files (always
+          # included in cone mode), cutting checked-out content from ~2GB
+          # to roughly 275MB without touching anything this job uses.
+          sparse-checkout: |
+            scripts
+            data
+            output
+          sparse-checkout-cone-mode: true
 
       - name: Set up Python
         uses: actions/setup-python@v5
