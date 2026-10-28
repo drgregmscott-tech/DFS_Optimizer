@@ -1452,7 +1452,19 @@ def add_skill_vs_opp_dst_constraints(prob, x: dict, players: pd.DataFrame):
     players present in `x` are referenced, same defensive pattern as
     `add_stack_constraints()`, so an already-filtered pool (exposure
     lock-outs, --exclude, participation floors, etc.) never raises a
-    KeyError here."""
+    KeyError here.
+
+    Perf note (Wk8 postmortem 2026-10-28, build-time investigation): this
+    used to re-filter the WHOLE `players` DataFrame with a fresh boolean
+    mask for every single DST row (O(teams) full-pool scans), called fresh
+    on every solve_lineup() invocation -- profiling a real 100-lineup batch
+    showed this function alone at ~3.1s of ~16.4s total solve_lineup() time
+    (50 calls, 5 stack-candidate solves x 10 lineups). Replaced with ONE
+    groupby per call instead of one boolean-mask `.loc[]` scan per team."""
+    skill_by_team = (
+        players.loc[~players["position"].isin(DEFENSE_POSITION_LABELS)]
+        .groupby("team")["player_id"].apply(list).to_dict()
+    )
     dst_rows = players[players["position"].isin(DEFENSE_POSITION_LABELS)]
     for dst_row in dst_rows.itertuples():
         dst_pid = dst_row.player_id
@@ -1461,12 +1473,7 @@ def add_skill_vs_opp_dst_constraints(prob, x: dict, players: pd.DataFrame):
         opp_team = dst_row.opponent
         if not opp_team or opp_team == "BYE_OR_UNKNOWN":
             continue
-        skill_pool = players.loc[
-            (players["team"] == opp_team)
-            & (~players["position"].isin(DEFENSE_POSITION_LABELS)),
-            "player_id",
-        ]
-        for pid in skill_pool:
+        for pid in skill_by_team.get(opp_team, []):
             if pid in x:
                 prob += (
                     x[dst_pid] + x[pid] <= 1,
@@ -1487,23 +1494,27 @@ def add_qb_pass_catcher_constraints(prob, x: dict, players: pd.DataFrame):
     If a team has no QB in the current pool at all (bye/locked out/excluded),
     caps that team's rostered pass-catchers at 1 rather than leaving the rule
     unenforceable. Only players present in `x` are referenced, same defensive
-    pattern as add_skill_vs_opp_dst_constraints()."""
+    pattern as add_skill_vs_opp_dst_constraints().
+
+    Perf note (Wk8 postmortem 2026-10-28, build-time investigation): this
+    used to re-filter the WHOLE `players` DataFrame with two fresh boolean
+    masks per team (one for pass-catchers, one for QBs) -- profiling a real
+    100-lineup batch showed this function at ~3.5s of ~16.4s total
+    solve_lineup() time (50 calls). Replaced with two groupbys total per
+    call instead of 2 x len(teams) boolean-mask `.loc[]` scans."""
+    catchers_by_team = (
+        players.loc[players["position"].isin(PASS_CATCHER_POSITIONS)]
+        .groupby("team")["player_id"].apply(list).to_dict()
+    )
+    qbs_by_team = (
+        players.loc[players["position"] == "QB"]
+        .groupby("team")["player_id"].apply(list).to_dict()
+    )
     for team in players["team"].unique():
-        catcher_pool = [
-            pid for pid in players.loc[
-                (players["team"] == team) & (players["position"].isin(PASS_CATCHER_POSITIONS)),
-                "player_id",
-            ]
-            if pid in x
-        ]
+        catcher_pool = [pid for pid in catchers_by_team.get(team, []) if pid in x]
         if len(catcher_pool) < 2:
             continue
-        qb_pool = [
-            pid for pid in players.loc[
-                (players["team"] == team) & (players["position"] == "QB"), "player_id"
-            ]
-            if pid in x
-        ]
+        qb_pool = [pid for pid in qbs_by_team.get(team, []) if pid in x]
         if not qb_pool:
             prob += (
                 pulp.lpSum(x[pid] for pid in catcher_pool) <= 1,
