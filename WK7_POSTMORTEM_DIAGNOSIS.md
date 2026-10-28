@@ -59,7 +59,7 @@ Decided now, before any data is seen, so this can't be rationalized after the fa
 
 ---
 
-## 1. Pipeline-stage attribution
+## 1. Pipeline-stage attribution — `[x]` analyzed, closed out 2026-10-27
 
 **Hypothesis:** every notable miss can be traced to exactly one stage (news/injury ingestion →
 projections → ownership model → portfolio optimizer/pool construction → final pick) with cited evidence.
@@ -71,7 +71,33 @@ pipeline's own output shows the stage was wrong), confidence (high/medium/low).
 **Failure / inconclusive:** evidence implicates multiple stages equally, or no stage — tag as `indeterminate`.
 Don't force a guess to hit the 80% bar.
 
-**Data:** *(pending)*
+**Data (already collected, `analysis/wk7_pipeline_attribution/`, 533 notable misses across weeks 1-7):**
+
+| stage | high/med confidence | indeterminate |
+|---|---|---|
+| engine (projection/volume) | 276 | — |
+| ingestion (news/injury) | 25 | — |
+| indeterminate | — | 232 |
+
+**Result: 301/533 = 56.5% — below the 80% success bar. FAILED on its own criterion.** Close to the figure already
+being cited elsewhere (54%, slightly different week-7 slate coverage) — this is the real number, not a
+paraphrase. Nearly every attributable miss (276 of 301, 92%) is `engine`, almost never `ingestion` — when we can
+tell what went wrong, it's overwhelmingly "our volume/role projection was wrong" (the single dominant sub-tag,
+276/276 engine rows), not a missed news item. 232 misses (43.5%) get no clean single-stage story at all
+(`indeterminate`) — this is the same population Item 2 uses to define `floor-break` (an under-miss with no known
+cause already logged).
+
+**Already produced two real outputs despite failing its own bar** (both tracked in
+`WK7_POSTMORTEM_ACTION_ITEMS.md`, not duplicated here):
+- **RB-vacancy decay** — shipped 2026-10-26, on an owner override of the hard ship bar (small, consistent,
+  low-blast-radius effect that never cleared CI on its own).
+- **ESPN injury-feed comment text as an early usage/role signal** — confirmed available, zero extra cost, not
+  yet scoped or built.
+
+**Closed.** The 80%-bar failure itself is the finding: most misses that CAN be explained are volume/role
+projection errors (a real, already-acted-on lever), but a large minority (43.5%) genuinely can't be pinned to
+one stage with current evidence — that ceiling is now known, not something to keep re-litigating under this
+item. Item 2's floor/ceiling split is the natural next cut of that `indeterminate` bucket.
 
 ---
 
@@ -139,8 +165,19 @@ The 8 floor-breaks: 5 DST/D (Titans x2, Dolphins, Panthers x2), 3 QB (Josh Allen
 wk7 FD) — all had real ownership/projection (not excluded), busted well below projection, and Item 1 found no
 pipeline-stage cause.
 
-**Not yet interpreted** — per this doc's own collect-then-analyze rule, held until the other items are populated
-and read together.
+**Interpreted with owner 2026-10-27:** this is a significant finding, and it already has a candidate action —
+just not an independently-built one. 85% ceiling-miss means the dominant failure mode is low/zero exposure to
+cheap, thinly-owned players who then outperform, not busted chalk. Item 9's ownership-floor, TE-band and QB-floor
+exclusion rules are exactly the mechanism that removes this population from the pool before construction ever
+sees it (own <2% excluded by design). Item 9 independently found that loosening or isolating each of those same
+three rules raises mean cash rate 5-8pp on 8-9/14 slates. **Read together: Item 2 explains *why* Item 9's result
+goes the direction it does** — this is one root cause surfacing in two independently-designed tests, not two
+separate findings. No separate fix is proposed under Item 2 itself; the actionable lever is the one already on
+the table from Item 9 (see that item's interpretation and the brainstorming discussion after Item 10).
+Position detail for the record: ceiling-miss dominates WR/TE/RB (84-87%); QB is more mixed; DST/D skews
+floor-break-or-ceiling-miss with almost no `neither` (21/24) — consistent with DST being intrinsically high-
+variance regardless of rules, not a rule-fixable gap on its own (matches Item 9's C_dst finding, which was
+near-neutral vs REAL).
 
 ---
 
@@ -385,8 +422,22 @@ slate's real contest player table (`Theo Wease Jr.` wk1 FD, `Tom Kennedy` wk3 FD
 plausibly have been the ILP's chosen player over a known-scoring alternative at a similar price, and a few
 missed points on a deep punt can't move a lineup already sitting at 85-100th percentile.
 
-**Not yet interpreted** — per this doc's own collect-then-analyze rule, held for discussion with owner before
-any conclusion or action item.
+**Interpreted with owner 2026-10-27, then retracted 2026-10-27 (same day — caught in discussion, not a later
+correction):** an initial read tried "play the top-N distinct lineups by projection instead of 1" as a candidate
+action (top-3 raised "at least 1 of N cashes" from 4/14 to 8/14 on the REAL pool). **Withdrawn, two real
+problems:**
+1. **Contest-type mismatch.** This only makes sense for a contest that allows multiple entries played as
+   multiple entries. The owner plays one lineup spread across many different contest types/sizes (single-entry,
+   triple-up, quintuple-up, 100-man, a few larger SE) — not 3 entries concentrated in one SE3max contest.
+2. **"Cash = top 25% of the field" was never validated as profitable.** It's a statistical proxy used for
+   measurement throughout this whole doc. The real DK/FD contest exports (`data/contest_results/*_full.csv`)
+   contain only `Rank` and `Points` — no payout/prize column — so there is no way with current data to confirm
+   that landing just inside the top-25% line is actually +EV once entry fees are netted out, especially across
+   multiple entries where 2 of 3 losing outright is a real cost. "Cash rate went up" is not the same claim as
+   "money went up," and this doc has been using the former as a stand-in for the latter without ever checking.
+
+No action item from Item 5. If real payout/prize data becomes available, the top-N-entries question could be
+re-tested properly against the owner's actual contest-type mix — not scoped now.
 
 ---
 
@@ -485,13 +536,22 @@ exposure vector (Q4) than with the full-field average exposure vector.
 - Per-slate numbers, including Spearman detail and the noise-floor comparison, in
   `analysis/wk7_postmortem_item7/item7_results.csv`.
 
-**Not yet interpreted** — per this doc's own collect-then-analyze rule, held for discussion with owner before any
-conclusion or action item. Flagging for that discussion: this reads as a fairly clean, consistent result in the
-*failure* direction defined above (we correlate measurably more with the median field entrant than with the
-winning tail, in 13/14 slates, and the noise control rules out the obvious "just noise" objection) — but per the
-"check direction before significance" protocol, worth triangulating against Items 1/5/6/9 before treating it as
-an independent new finding vs. a restatement of something already logged (e.g. Item 6's chalk-baseline result,
-or Item 1's ceiling-miss-dominant pipeline attribution) before any action item is drafted.
+**Interpreted with owner 2026-10-27:** a significant, real finding — confirmed-real by its own noise control,
+not explained by anything else logged so far. Triangulation check run directly (not delegated — quick reuse of
+Item 7's own loader functions): tested whether this is just a restatement of Items 2/9's cheap/low-owned-leverage
+story, i.e. whether the winning tail overweights low-field-ownership players relative to the average field more
+than we do. **That hypothesis is NOT supported.** Per-slate correlation between (tail-exposure − field-average)
+and (our-exposure − field-average) across all 14 slates averages **+0.002** (positive in only 8/14) —
+essentially zero, not the moderate positive relationship the ceiling-miss story would predict. Looking
+specifically at players under 5% full-field ownership: the winning tail is consistently *slightly below* the
+field average on this group in 13/14 slates (small, -0.001 to -0.003), while our pool's deviation from the field
+average on the same group is mixed (positive in 9/14, negative in 5/14) with no consistent match to the tail's
+direction. **This is not the same finding as Items 1/2/9 — it's independent, and currently unexplained.**
+Effect sizes on both sides of this check are small, so this doesn't rule out a real driver existing; it just
+means the obvious, already-on-the-table explanation isn't it. Logged as a real, open pattern with no identified
+cause and no cheap fix found yet — not dropped, just not answerable today without a deeper, dedicated
+investigation into what *does* distinguish winning-tail exposure from average-field exposure (stack shape,
+specific player-level calls, something not yet tested). Candidate for future work, not a closed loop.
 
 ---
 
@@ -548,4 +608,164 @@ variant across logged weeks — current process direction is sound.
 beats the real pool by a notable margin consistently across weeks — evidence the manual-exclusion philosophy
 itself needs rework, not just a threshold tweak.
 
-**Data:** *(pending)*
+**Data (2026-10-27, `analysis/wk7_postmortem_item9/RESULTS.md`, 14 slates, 210 builds):**
+
+| variant | mean cash | slates beating REAL |
+|---|---|---|
+| REAL (actual rules) | 22.5% | — |
+| A — no exclusions | 27.9% | 9/14 |
+| B2 — top-half by position | 28.9% | 9/14 |
+| C_own — ownership rule alone | 30.0% | 9/14 |
+| C_te — TE band alone | 29.5% | 8/14 |
+| C_qb — QB floor alone | 28.2% | 9/14 |
+| E — chalk-heavy | 26.0% | 7/14 |
+| C_dst — DST band alone | 24.6% | 7/14 |
+| D — contrarian/leverage | 24.1% | 7/14 |
+| B1 — ownership cut raised to 7% | 10.3% (contaminated by forced overrides, see file) | 3/14 |
+
+**Interpreted with owner 2026-10-27:** removing *any one* of the three rules (ownership <2%, TE band, QB floor)
+gets most of the gain (28-30%); removing *all three together* (A) scores about the same (27.9%) — the rules
+cost similarly and don't stack. DST band is not implicated (C_dst near-neutral). Deliberate leverage-chasing (D)
+and chalk-heavy (E) construction did not help either — ruling out "lean contrarian" as the fix. **None of this
+clears the strict 11+/14 significance bar at n=14**, but 5 independently-built variants converge on the same
+direction — real triangulation evidence per this doc's own protocol, test-bar not ship-bar on the statistics
+alone.
+
+**Decision (owner, 2026-10-27, same session as the optimizer-mechanics work in Item 11):** given no single rule
+stands out and "remove all" performs as well as removing any one, **the manual exclusion rules are dropped
+entirely for the current build going forward** — owner's explicit call to act on a directionally-consistent
+finding rather than wait for significance, same standing as the RB-vacancy-decay override. See
+`WK7_POSTMORTEM_ACTION_ITEMS.md`.
+
+---
+
+## 10. In-pool lineup selection signal
+
+**Origin:** emerged from discussing Item 9's results with the owner (2026-10-27), not a reframe of Item 9's
+null-ish result — a new question the data pointed at. Items 5-9 together establish: the pool almost always
+contains a cashing lineup (Item 5, 14/14 slates), picking by top pre-lock projection shows no edge over a random
+draw from the same pool (Item 5, cashes in only 4/14), our overall exposure tracks the field median more than
+the winning tail (Item 7), and changing *which* players are in the pool shifts the average cash rate some
+(Item 9) but doesn't address the real gap. Owner's own words: "our optimizer does make winning lineups but we
+have to be able to pick them out of a large group of lineups and what i want to know really is how to do that."
+He also named his own current (admittedly not-working) heuristic for the record: "the higher projection the
+better and then from there i'm kind of looking for guys I think will get a lot of usage or are extreme value so
+it wouldn't take much for them to pay off."
+
+**Hypothesis:** within a single already-built 100-lineup pool, some pre-lock, per-lineup signal (not the
+lineup's own point projection, which Item 5 already ruled out) predicts actual cash probability / actual-points
+rank better than chance, and better than projection does.
+
+**Explicit caveat, stated going in (owner, 2026-10-27):** this test is diagnostic against our *current* ownership
+model and projections — "we have to have accurate pre lock signals... [then] figure out which ones help predict
+better than projection does." A null result here could mean "no selection signal exists" or could mean "our
+pre-lock ownership/projection inputs aren't accurate enough yet to carry one" — the two are not yet separable
+with this test alone and should not be conflated in the write-up.
+
+**Data available already (no new optimizer builds needed):** every pool built for Items 5/6/9 — the real pool
+plus variants A/B1/B2/C_own/C_te/C_dst/C_qb/D/E — across all 14 main slates (DK+FD, weeks 1-7), each with every
+lineup's actual cash outcome and actual points already computed and on disk
+(`analysis/wk7_postmortem_item5/`, `analysis/wk7_postmortem_item6/`, `analysis/wk7_postmortem_item9/`). Pure
+analysis pass over existing CSVs.
+
+**Candidate signals to test, per lineup (all pre-lock, all already computable from existing data):**
+- Total lineup ownership / "leverage score" (sum of the 9 players' `estimated_ownership_pct`).
+- Team-stack concentration (max-team-count, 3+/4+ from one team — same stat Item 4 already computes).
+- Item 2's floor/ceiling player tags — share of the lineup's players tagged ceiling-miss-prone vs chalk/"neither".
+- Salary left on the table (cap minus lineup salary).
+- QB's game environment (implied team total / game total from the Vegas-derived column Item 6 already used for
+  its Vegas baseline) — a proxy for the owner's manual "best game total environment" QB tie-break.
+
+**Method:** primary test on the REAL pool only (14 slates, most ecologically valid — this is the pool actually
+played). Per slate: rank-correlate each candidate signal against actual points and against actual cash (binary)
+within that slate's 100 lineups (Spearman, since these are within-pool ranks, not pooled regression — lineups
+within one slate are not independent draws). Compare each signal's per-slate correlation to projection's own
+per-slate correlation (Item 5 already shows projection has ~no edge). Then sign-test the direction of
+signal-beats-projection across the 14 slates — same discipline as every other item (do not pool all ~1,400
+lineups into one regression and call it significant; 14 slates is 14 clusters, not 1,400 independent points).
+Variant-pool data (A/B1/B2/C/D/E, same 14 slates) may be used as a secondary, larger-sample robustness check
+only, clearly labeled separate from the primary real-pool test.
+
+**Success:** at least one candidate signal clears the same "6-of-7"-scaled-to-14 sign-test bar used elsewhere in
+this doc (consistently beats projection's near-zero edge, same direction most weeks) — gives a concrete, testable
+starting point for a selection rule.
+**Failure/inconclusive:** no candidate signal shows a consistent edge over projection — logged plainly as "no
+selection signal found with current inputs," with the pre-lock-accuracy caveat above stated explicitly, not
+silently dropped.
+
+**Data (2026-10-27, `analysis/wk7_postmortem_item10/RESULTS.md`, REAL pool, 14 slates):**
+
+| Signal | Target | Beats projection (of 14) | Best one-sided p |
+|---|---|---|---|
+| Leverage (ownership sum) | cash | 10/14 | 0.09 (closest, still short) |
+| Max team count | cash | 8/14 | 0.40 |
+| Salary left | cash | 6/14 | 0.21 |
+| QB game environment | cash | testable on only 9/14 (single-QB pools) | 0.50 |
+
+Item 2's ceiling/floor tags were **dropped as a candidate** — they're built from actual outcomes, so testing
+them would be leakage, not a real pre-lock signal.
+
+**No signal clears the 11+/14 bar.** Top 10% of the REAL pool by projection cashes at 29.3%, above the 22.5%
+pool average — projection does carry real aggregate signal; it just doesn't reliably survive down to picking
+one specific lineup (Item 5's 4/14). **Answer to the explicit caveat stated going in:** this test cannot
+separate "no selection signal exists" from "our ownership/projection inputs aren't accurate enough yet to carry
+one" — both remain live explanations.
+
+**What this fed into:** discussing this null result with the owner led directly to Item 11 (optimizer
+construction-mechanics fidelity) — the realization that the pool's problem might not be which players are *in*
+it (Items 9/10) but how the *optimizer itself* builds from whatever ranking it has. That turned out to be the
+larger, better-evidenced finding of the two. See Item 11.
+
+---
+
+## 11. Optimizer construction-mechanics fidelity — `[x]` analyzed, 2026-10-27
+
+**Origin:** emerged from Item 10's null result, discussed with the owner. Reframed question: does our
+optimizer's own construction logic (stacking, exposure caps, shape terms, diversification) build faithfully
+from whatever projection ranking it's given, or does it give up real value to its own soft rules independent of
+projection/ownership accuracy?
+
+**Hypothesis:** the optimizer's soft construction rules cost meaningful projected value relative to the best
+legally-buildable lineup, and that cost (not projection/selection accuracy) explains a material share of the
+pool's poor cash rate.
+
+**Chain of work (four linked studies, each file has full detail — this is the summary):**
+
+1. **`analysis/optimizer_fidelity_2026-10-27/`** — first pass. The real pool sacrifices 8.7 projected points
+   (6.6%) vs. the hard-legality-only optimum (`pure_best`), never containing it (0/14 slates). Initial split
+   attributed 63% of this to "stack/shape/team-cap/exposure mechanics" bundled together, 22% to the manual
+   exclusion rules. Hindsight: `pure_best` alone would have cashed 7/14 vs. the pool's 22.5%. Also ran the
+   equivalent check on FC's own historical data (131 contests): FC-era winning-tail entries sit ~21% off FC's
+   own pure optimum — real human play (even winning play) doesn't track raw projections tightly either.
+2. **`analysis/optimizer_fidelity_qb1_recheck_2026-10-27/`** — correction. The owner's actual stacking is QB+1,
+   no bring-back (preset default was QB+2 — a mismatch repeatedly stated and repeatedly lost, now logged in
+   memory `user_actual_stack_qb1_no_bringback.md`). **QB+1 costs ~0.04 points — essentially free.** The "stacking
+   costs points" framing from study 1 was wrong; it was specifically about QB+2, which isn't what's played.
+3. **`analysis/optimizer_ablation_2026-10-27/`** — the real decomposition, staged piece-by-piece. **The 50%
+   max-exposure cap is the dominant cost: 4.9-5.4 of the 8.7 points.** QB+2 (not QB+1) is second (~1.5 pts).
+   Building 100 distinct lineups at all costs 1.6-1.9 pts (unavoidable, grows with pool size). Shape terms
+   (DST bands, punt penalties) cost only ~0.3 pts. Cash rate: minimal construction cashes 35.8% (pool) / 7/14
+   (top lineup); the real pool's full mechanics cut that to 20.1% / 4/14 — a real drop (CI excludes 0). Separately
+   confirmed, by direct measurement (not assumption): our pool runs fewer "punt" plays than either FC's own engine
+   or the owner's real history (26% zero-punt share vs. his 50%) — the `cl-zero-punt-penalty` shape term is
+   pushing the wrong direction. Logged as its own action item.
+   Personal check: the owner's own real 2022-24 FC-era lineups sat 16.3% off FC's pure optimum — *more* deviation
+   than our current optimizer shows from its own optimum (6.6%) — yet he cashed 59% vs. FC's own pure-optimum
+   lineup's 30%. **Deviating from raw projection isn't inherently the problem; this specific deviation (the
+   exposure cap) is.**
+4. **`analysis/fc_era_rebuild_2026-10-27/`** — first live-parameter test, N=20 (the owner's old FC habit) with
+   his specified uniqueness=2/5-10% randomization. Roughly halved the real pool's sacrifice (8.7→4.5-6.4) and
+   lifted cash to 26-28%, but this wasn't a clean N test — it changed pool size AND diversification settings at
+   once. Owner caught this ("why wouldn't I just do 20 to avoid costing points") and clarified he currently
+   builds **N=100** with this optimizer (20 was FC-era only) — correcting an earlier mis-statement.
+5. **`analysis/pool_size_clean_test_2026-10-27/`** *(in progress)* — isolates N cleanly at N=20/50/100, holding
+   stage-3's minimal settings (QB+1, no cap, no shape terms, uniqueness=1, 0% randomization) fixed, to answer
+   the pool-size question properly.
+
+**Success/failure:** clearly succeeded as a diagnostic — found a real, quantified, converging cause (the
+exposure cap, secondarily QB+2 and shape terms) independent of projection/ownership accuracy, resolving a
+question the owner had long suspected but never had evidence for.
+
+**Decision (owner, 2026-10-27):** act now, not wait for more backtesting at n=14 (capped by available history) —
+remove/raise the exposure cap, turn off shape terms, confirm QB+1 (no change needed), keep N=100 pending the
+clean pool-size test. See `WK7_POSTMORTEM_ACTION_ITEMS.md`.

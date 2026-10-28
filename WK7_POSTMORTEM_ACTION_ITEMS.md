@@ -88,6 +88,74 @@ Every item below should say which track it's on.
 - Track: test-bar (worth investigating further) — real, data-driven finding; no code change built or tested.
 - Status: open, not yet scoped.
 
+## se3max_pool construction-mechanics rebuild (exposure cap, stack size, shape terms)
+- Source: optimizer-mechanics fidelity chain, 2026-10-27 — four linked studies, see WK7_POSTMORTEM_DIAGNOSIS.md
+  Item 11 for the full summary and links to each: `analysis/optimizer_fidelity_2026-10-27/`,
+  `analysis/optimizer_fidelity_qb1_recheck_2026-10-27/`, `analysis/optimizer_ablation_2026-10-27/`,
+  `analysis/fc_era_rebuild_2026-10-27/`, `analysis/pool_size_clean_test_2026-10-27/` (last one in progress at
+  time of writing).
+- Evidence: the real pool sacrifices 8.7 projected points (6.6%) vs. the best legally-buildable lineup, and
+  never contains that optimum (0/14 slates). Staged decomposition: **the 50% max-exposure cap is the dominant
+  cost (4.9-5.4 of 8.7 pts)**; the preset's QB+2 stack is second (~1.5 pts) — the owner's actual play is QB+1,
+  no bring-back, which costs ~0.04 pts (essentially free; preset default was a long-standing, repeatedly-stated
+  mismatch, see memory `user_actual_stack_qb1_no_bringback.md`); building 100 distinct lineups at all costs
+  1.6-1.9 pts (unavoidable, grows with pool size); shape terms (zero/3+-punt penalties, DST bands) cost only
+  ~0.3 pts but push the wrong direction — the real pool runs zero punt plays in only 26% of lineups vs. the
+  owner's real FC-era history (50%) and FC's own engine's apparent behavior. Cash impact: minimal construction
+  (QB+1, no cap, no shape terms) cashes 35.8% (pool) / 7 of 14 (top lineup) in hindsight on these 14 slates vs.
+  the full real pool's 20.1-22.5% / 4 of 14 — a real drop, CI excludes 0. The owner's own profitable 2022-24
+  FC-era lineups deviated from FC's own pure-projection optimum by 16.3% — *more* than our optimizer currently
+  deviates from its own (6.6%) — and still cashed 59% vs. FC's own pure-optimum lineup's 30%: deviating from
+  raw projection isn't inherently bad, this specific deviation (the exposure cap) is.
+- Proposed change: in `data/optimizer_presets.json`'s `se3max_pool` preset (or via explicit CLI flags, not
+  necessarily changing the live preset default): remove or substantially raise `max-exposure` above 50%;
+  zero out `cl-zero-punt-penalty` and `cl-three-plus-punt-penalty` (and the other `cl-*` shape terms, which cost
+  little either way); keep `stack-size: 1` (confirm the owner's actual CLI override matches, since the bare
+  preset default is still 2); **keep `n-lineups` at 100 — resolved by `pool_size_clean_test` (2026-10-27):** at
+  stage-3's minimal settings, N=20/50/100 are nested (deterministic at 0% randomization) and cost only
+  1.13/1.54/1.88 pts respectively — pool size barely matters once the cap/shape terms are gone. Top-lineup cash
+  is identical (7/14) at every N, but N=100 holds a casher in its pool on 13/14 slates vs. N=20's 12/14 (FD wk3's
+  only casher sits in lineups 21-50) — a small, real edge for staying at 100, not 20.
+- Track: **owner override of the hard ship bar, same standing as RB-vacancy decay** — converging evidence across
+  4 independent studies (the staged ablation, the personal FC-era comparison, the owner's own stated historical
+  method, and the punt-mix cross-check) was judged sufficient to act now rather than wait for more backtesting,
+  which is capped at the same 14 historical slates either way. Live cash-rate monitoring going forward is the
+  real next test, not more backtesting.
+- Status: **shipped 2026-10-28.** `data/optimizer_presets.json`'s `se3max_pool` preset updated: `max-exposure`
+  0.5 -> 1.0 (effectively uncapped at n-lineups=100, matching the validated "no cap" test config, not a partial
+  raise), `stack-size` 2 -> 1, every `cl-*` shape term -> 0.0 (dst-band-bonus, dst-expensive-penalty,
+  zero-punt-penalty, three-plus-punt-penalty, same-pos-punt-penalty, four-wr-no-stud-penalty). `n-lineups` held
+  at 100 per the resolved pool-size question. `stack-positions` deliberately left at its default (`WR,TE`), not
+  broadened to `RB,WR,TE` as the ablation study's isolated QB1 test used internally — that broadening was never
+  itself proposed or owner-approved, only `stack-size` was. Smoke-tested on the real Wk7 main slate
+  (post-change): builds successfully, 100 feasible lineups, salary $49,700-$50,000 (near the real-field floor),
+  `CL_stack_depth_lt2` lint now fires on 61% of lineups as expected (QB+1 is the new baseline, not a defect).
+  Live cash-rate monitoring from here, per the owner's override decision above.
+
+## Manual ownership/TE/DST/QB exclusion rules dropped for current build
+- Source: diagnosis item 9 (alternate-parameter pool comparison), 2026-10-27.
+- Evidence: isolating any one of the three rules (ownership <2% cutoff, TE salary band, QB floor >20 projected)
+  and removing it alone raised backtest mean cash rate from 22.5% to 28-30% on 8-9 of 14 slates; removing all
+  three together (27.9%) did not do meaningfully better than removing just one — the rules cost similarly and
+  don't stack, so no single rule is "the" culprit. DST band not implicated (near-neutral). Deliberate
+  leverage-chasing or chalk-heavy construction (explicit alternatives) did not help either. None of this cleared
+  the strict 11+/14 significance bar at n=14, but 5 independently-built variants converged on the same direction.
+- Proposed change: stop applying the manual ownership/TE/DST/QB exclusion rules when building the current pool.
+  Simplicity was chosen over cherry-picking a single rule to drop, since no rule was shown to be worse than the
+  others.
+- Track: **owner override of the hard ship bar** — same standing as RB-vacancy decay and the construction-
+  mechanics rebuild above: directionally consistent across 5 independent variants, judged sufficient to act on
+  this week rather than wait for significance that n=14 historical slates can't supply. Stacks with the
+  construction-mechanics change above, so if results move this week, the two changes can't be cleanly
+  separated without further live tracking.
+- Status: **actioned 2026-10-28 — no code change exists to make.** Checked: these three rules
+  (ownership <2%, TE salary band, QB floor >20 projected) are not enforced anywhere in the pipeline — there is
+  no hardcoded ownership/TE/QB threshold in `scripts/optimizer.py` or elsewhere (confirmed by search; the only
+  hardcoded band is the DST $2,800-3,100 preset term, already zeroed above). They are the owner's own manual
+  habit when hand-picking players to feed the optimizer's generic `--exclude` mechanism. The action is a process
+  change, not a software one: stop applying these three filters when building the pool going forward. Nothing
+  left to implement.
+
 ## classic_field.py simulator under-uses the salary cap vs real fields
 - Source: diagnosis item 4 (classic_field.py simulation validation), 2026-10-26.
 - Evidence: 134 real DK SE main-slate contests: total lineup salary mean $49,880 [IQR 49,870-49,900], p10
