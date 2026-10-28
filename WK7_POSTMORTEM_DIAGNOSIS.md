@@ -101,7 +101,7 @@ item. Item 2's floor/ceiling split is the natural next cut of that `indeterminat
 
 ---
 
-## 2. Floor/ceiling tagging
+## 2. Floor/ceiling tagging — `[x]` analyzed, 2026-10-27 (no separate action, folds into Item 9)
 
 **Hypothesis:** none yet — this item is pure categorization. No lever exists in the optimizer today that this
 plugs into (confirmed by reading `scripts/optimizer.py` — objective is point projection + optional sigma-mode
@@ -353,7 +353,7 @@ with OUT players zeroed.
 
 ---
 
-## 5. Pool-reachability check — `[~]` data collected, not yet analyzed (2026-10-26)
+## 5. Pool-reachability check — `[x]` analyzed, 2026-10-27 (no action item, see below)
 
 **Hypothesis:** the full 100-lineup pool (not the one lineup played) contains at least one lineup, built only
 from players/exposures already in the pool, that clears the reachability bar (Q2).
@@ -487,7 +487,7 @@ to close this item.
 
 ---
 
-## 7. Winners-vs-field positioning — `[~]` data collected, not yet interpreted (2026-10-27)
+## 7. Winners-vs-field positioning — `[~]` analyzed, real finding confirmed, cause still unknown (parked, last touched 2026-10-28)
 
 **Hypothesis:** our pool's player-exposure vector correlates more strongly with the field's winning-tail
 exposure vector (Q4) than with the full-field average exposure vector.
