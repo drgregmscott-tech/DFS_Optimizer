@@ -1,0 +1,555 @@
+Position,Name + ID,Name,ID,Roster Position,Salary,Game Info,TeamAbbrev,AvgPointsPerGame,Status,name,site,salary,normalized_name,normalized_team,position_upper,slate_format,player_id,match_method,match_confidence
+RB,Jahmyr Gibbs (44664465),Jahmyr Gibbs,44664465,RB/FLEX,9500,MIN@DET 11/01/2026 01:00PM ET,DET,30.3,,Jahmyr Gibbs,dk,9500,jahmyr gibbs,DET,RB,classic,00-0039139,auto_exact,high
+RB,Kenneth Walker III (44664467),Kenneth Walker III,44664467,RB/FLEX,8800,KC@DEN 11/01/2026 04:25PM ET,KC,26.6,,Kenneth Walker III,dk,8800,kenneth walker,KC,RB,classic,00-0038134,auto_exact,high
+WR,Puka Nacua (44664717),Puka Nacua,44664717,WR/FLEX,8600,LAC@LAR 11/01/2026 04:05PM ET,LAR,23.9,,Puka Nacua,dk,8600,puka nacua,LA,WR,classic,00-0039075,auto_exact,high
+RB,Bijan Robinson (44664469),Bijan Robinson,44664469,RB/FLEX,8500,ATL@TB 11/01/2026 01:00PM ET,ATL,21.7,,Bijan Robinson,dk,8500,bijan robinson,ATL,RB,classic,00-0038542,auto_exact,high
+WR,CeeDee Lamb (44664719),CeeDee Lamb,44664719,WR/FLEX,8100,ARI@DAL 11/01/2026 01:00PM ET,DAL,23.5,,CeeDee Lamb,dk,8100,ceedee lamb,DAL,WR,classic,00-0036358,auto_exact,high
+WR,Amon-Ra St. Brown (44664721),Amon-Ra St. Brown,44664721,WR/FLEX,8000,MIN@DET 11/01/2026 01:00PM ET,DET,22.4,Q,Amon-Ra St. Brown,dk,8000,amon ra st brown,DET,WR,classic,00-0036963,auto_exact,high
+RB,James Cook III (44664471),James Cook III,44664471,RB/FLEX,7900,BAL@BUF 11/01/2026 01:00PM ET,BUF,20.8,,James Cook III,dk,7900,james cook,BUF,RB,classic,00-0037248,auto_exact,high
+RB,Jonathan Taylor (44664473),Jonathan Taylor,44664473,RB/FLEX,7800,IND@JAX 11/01/2026 01:00PM ET,IND,19.9,,Jonathan Taylor,dk,7800,jonathan taylor,IND,RB,classic,00-0036223,auto_exact,high
+QB,Josh Allen (44664390),Josh Allen,44664390,QB,7700,BAL@BUF 11/01/2026 01:00PM ET,BUF,28.7,,Josh Allen,dk,7700,josh allen,BUF,QB,classic,00-0034857,auto_exact,high
+WR,Ja'Marr Chase (44664723),Ja'Marr Chase,44664723,WR/FLEX,7700,TEN@CIN 11/01/2026 01:00PM ET,CIN,16.2,,Ja'Marr Chase,dk,7700,jamarr chase,CIN,WR,classic,00-0036900,auto_exact,high
+TE,Brock Bowers (44665125),Brock Bowers,44665125,TE/FLEX,7600,LV@NYJ 11/01/2026 01:00PM ET,LV,20.5,,Brock Bowers,dk,7600,brock bowers,LV,TE,classic,00-0039338,auto_exact,high
+RB,Kyren Williams (44664475),Kyren Williams,44664475,RB/FLEX,7500,LAC@LAR 11/01/2026 04:05PM ET,LAR,19.9,,Kyren Williams,dk,7500,kyren williams,LA,RB,classic,00-0037840,auto_exact,high
+TE,Trey McBride (44665127),Trey McBride,44665127,TE/FLEX,7400,ARI@DAL 11/01/2026 01:00PM ET,ARI,19.0,,Trey McBride,dk,7400,trey mcbride,ARI,TE,classic,00-0037744,auto_exact,high
+RB,Javonte Williams (44664477),Javonte Williams,44664477,RB/FLEX,7300,ARI@DAL 11/01/2026 01:00PM ET,DAL,19.1,,Javonte Williams,dk,7300,javonte williams,DAL,RB,classic,00-0036997,auto_exact,high
+RB,Derrick Henry (44664479),Derrick Henry,44664479,RB/FLEX,7200,BAL@BUF 11/01/2026 01:00PM ET,BAL,18.5,,Derrick Henry,dk,7200,derrick henry,BAL,RB,classic,00-0032764,auto_exact,high
+WR,Zay Flowers (44664725),Zay Flowers,44664725,WR/FLEX,7200,BAL@BUF 11/01/2026 01:00PM ET,BAL,21.9,,Zay Flowers,dk,7200,zay flowers,BAL,WR,classic,00-0039064,auto_exact,high
+WR,Justin Jefferson (44664727),Justin Jefferson,44664727,WR/FLEX,7100,MIN@DET 11/01/2026 01:00PM ET,MIN,14.4,,Justin Jefferson,dk,7100,justin jefferson,MIN,WR,classic,00-0036322,auto_exact,high
+QB,Joe Burrow (44664391),Joe Burrow,44664391,QB,7000,TEN@CIN 11/01/2026 01:00PM ET,CIN,22.9,,Joe Burrow,dk,7000,joe burrow,CIN,QB,classic,00-0036442,auto_exact,high
+WR,Drake London (44664729),Drake London,44664729,WR/FLEX,7000,ATL@TB 11/01/2026 01:00PM ET,ATL,16.3,,Drake London,dk,7000,drake london,ATL,WR,classic,00-0037238,auto_exact,high
+QB,Lamar Jackson (44664392),Lamar Jackson,44664392,QB,6800,BAL@BUF 11/01/2026 01:00PM ET,BAL,21.0,Q,Lamar Jackson,dk,6800,lamar jackson,BAL,QB,classic,00-0034796,auto_exact,high
+RB,Ashton Jeanty (44664481),Ashton Jeanty,44664481,RB/FLEX,6700,LV@NYJ 11/01/2026 01:00PM ET,LV,17.9,,Ashton Jeanty,dk,6700,ashton jeanty,LV,RB,classic,00-0040122,auto_exact,high
+WR,Tee Higgins (44664731),Tee Higgins,44664731,WR/FLEX,6700,TEN@CIN 11/01/2026 01:00PM ET,CIN,18.0,,Tee Higgins,dk,6700,tee higgins,CIN,WR,classic,00-0036410,auto_exact,high
+QB,Jared Goff (44664393),Jared Goff,44664393,QB,6600,MIN@DET 11/01/2026 01:00PM ET,DET,23.8,,Jared Goff,dk,6600,jared goff,DET,QB,classic,00-0033106,auto_exact,high
+RB,Jaylen Warren (44664483),Jaylen Warren,44664483,RB/FLEX,6600,CLE@PIT 11/01/2026 01:00PM ET,PIT,18.5,,Jaylen Warren,dk,6600,jaylen warren,PIT,RB,classic,00-0037228,auto_exact,high
+WR,George Pickens (44664733),George Pickens,44664733,WR/FLEX,6600,ARI@DAL 11/01/2026 01:00PM ET,DAL,14.4,,George Pickens,dk,6600,george pickens,DAL,WR,classic,00-0037247,auto_exact,high
+QB,Drake Maye (44664394),Drake Maye,44664394,QB,6500,NE@MIA 11/01/2026 04:25PM ET,NE,22.1,,Drake Maye,dk,6500,drake maye,NE,QB,classic,00-0039851,auto_exact,high
+WR,Parker Washington (44664735),Parker Washington,44664735,WR/FLEX,6500,IND@JAX 11/01/2026 01:00PM ET,JAX,15.8,,Parker Washington,dk,6500,parker washington,JAX,WR,classic,00-0038606,auto_exact,high
+QB,Matthew Stafford (44664395),Matthew Stafford,44664395,QB,6400,LAC@LAR 11/01/2026 04:05PM ET,LAR,20.3,,Matthew Stafford,dk,6400,matthew stafford,LA,QB,classic,00-0026498,auto_exact,high
+RB,Bucky Irving (44664485),Bucky Irving,44664485,RB/FLEX,6400,ATL@TB 11/01/2026 01:00PM ET,TB,16.7,,Bucky Irving,dk,6400,bucky irving,TB,RB,classic,00-0039361,auto_exact,high
+WR,Rashee Rice (44664737),Rashee Rice,44664737,WR/FLEX,6400,KC@DEN 11/01/2026 04:25PM ET,KC,9.5,Q,Rashee Rice,dk,6400,rashee rice,KC,WR,classic,00-0039067,auto_exact,high
+QB,Dak Prescott (44664396),Dak Prescott,44664396,QB,6300,ARI@DAL 11/01/2026 01:00PM ET,DAL,19.9,,Dak Prescott,dk,6300,dak prescott,DAL,QB,classic,00-0033077,auto_exact,high
+RB,Chase Brown (44664487),Chase Brown,44664487,RB/FLEX,6300,TEN@CIN 11/01/2026 01:00PM ET,CIN,12.6,,Chase Brown,dk,6300,chase brown,CIN,RB,classic,00-0038597,auto_exact,high
+WR,Garrett Wilson (44664739),Garrett Wilson,44664739,WR/FLEX,6300,LV@NYJ 11/01/2026 01:00PM ET,NYJ,15.1,,Garrett Wilson,dk,6300,garrett wilson,NYJ,WR,classic,00-0037740,auto_exact,high
+QB,Trevor Lawrence (44664397),Trevor Lawrence,44664397,QB,6200,IND@JAX 11/01/2026 01:00PM ET,JAX,20.7,,Trevor Lawrence,dk,6200,trevor lawrence,JAX,QB,classic,00-0036971,auto_exact,high
+RB,Aaron Jones Sr. (44664489),Aaron Jones Sr.,44664489,RB/FLEX,6200,MIN@DET 11/01/2026 01:00PM ET,MIN,13.5,Q,Aaron Jones Sr.,dk,6200,aaron jones,MIN,RB,classic,00-0033293,auto_exact,high
+WR,Michael Wilson (44664741),Michael Wilson,44664741,WR/FLEX,6200,ARI@DAL 11/01/2026 01:00PM ET,ARI,11.7,,Michael Wilson,dk,6200,michael wilson,ARI,WR,classic,00-0038559,auto_exact,high
+RB,Braelon Allen (44664491),Braelon Allen,44664491,RB/FLEX,6100,LV@NYJ 11/01/2026 01:00PM ET,NYJ,11.8,,Braelon Allen,dk,6100,braelon allen,NYJ,RB,classic,00-0039794,auto_exact,high
+QB,Patrick Mahomes (44664398),Patrick Mahomes,44664398,QB,6000,KC@DEN 11/01/2026 04:25PM ET,KC,17.8,,Patrick Mahomes,dk,6000,patrick mahomes,KC,QB,classic,00-0033873,auto_exact,high
+RB,Breece Hall (44664493),Breece Hall,44664493,RB/FLEX,6000,LV@NYJ 11/01/2026 01:00PM ET,NYJ,15.2,Q,Breece Hall,dk,6000,breece hall,NYJ,RB,classic,00-0038120,auto_exact,high
+WR,Jameson Williams (44664743),Jameson Williams,44664743,WR/FLEX,6000,MIN@DET 11/01/2026 01:00PM ET,DET,14.5,,Jameson Williams,dk,6000,jameson williams,DET,WR,classic,00-0037240,auto_exact,high
+RB,Bhayshul Tuten (44664495),Bhayshul Tuten,44664495,RB/FLEX,5900,IND@JAX 11/01/2026 01:00PM ET,JAX,14.7,,Bhayshul Tuten,dk,5900,bhayshul tuten,JAX,RB,classic,00-0040719,auto_exact,high
+WR,A.J. Brown (44664745),A.J. Brown,44664745,WR/FLEX,5900,NE@MIA 11/01/2026 04:25PM ET,NE,6.4,,A.J. Brown,dk,5900,aj brown,NE,WR,classic,00-0035676,auto_exact,high
+RB,Tony Pollard (44664497),Tony Pollard,44664497,RB/FLEX,5800,TEN@CIN 11/01/2026 01:00PM ET,TEN,13.0,,Tony Pollard,dk,5800,tony pollard,TEN,RB,classic,00-0035261,auto_exact,high
+WR,Emeka Egbuka (44664747),Emeka Egbuka,44664747,WR/FLEX,5800,ATL@TB 11/01/2026 01:00PM ET,TB,11.9,Q,Emeka Egbuka,dk,5800,emeka egbuka,TB,WR,classic,00-0040129,auto_exact,high
+QB,Jacoby Brissett (44664399),Jacoby Brissett,44664399,QB,5700,ARI@DAL 11/01/2026 01:00PM ET,ARI,16.2,,Jacoby Brissett,dk,5700,jacoby brissett,ARI,QB,classic,00-0033119,auto_exact,high
+RB,Ollie Gordon II (44664499),Ollie Gordon II,44664499,RB/FLEX,5700,NE@MIA 11/01/2026 04:25PM ET,MIA,11.9,,Ollie Gordon II,dk,5700,ollie gordon,MIA,RB,classic,00-0040198,auto_exact,high
+RB,Jordan Mason (44664501),Jordan Mason,44664501,RB/FLEX,5700,MIN@DET 11/01/2026 01:00PM ET,MIN,9.4,,Jordan Mason,dk,5700,jordan mason,MIN,RB,classic,00-0037525,auto_exact,high
+WR,DJ Moore (44664749),DJ Moore,44664749,WR/FLEX,5700,BAL@BUF 11/01/2026 01:00PM ET,BUF,9.8,Q,DJ Moore,dk,5700,dj moore,BUF,WR,classic,00-0034827,auto_exact,high
+QB,Kyler Murray (44664400),Kyler Murray,44664400,QB,5600,MIN@DET 11/01/2026 01:00PM ET,MIN,11.1,,Kyler Murray,dk,5600,kyler murray,MIN,QB,classic,00-0035228,auto_exact,high
+RB,Rhamondre Stevenson (44664503),Rhamondre Stevenson,44664503,RB/FLEX,5600,NE@MIA 11/01/2026 04:25PM ET,NE,12.6,,Rhamondre Stevenson,dk,5600,rhamondre stevenson,NE,RB,classic,00-0036875,auto_exact,high
+WR,Khalil Shakir (44664751),Khalil Shakir,44664751,WR/FLEX,5600,BAL@BUF 11/01/2026 01:00PM ET,BUF,9.3,,Khalil Shakir,dk,5600,khalil shakir,BUF,WR,classic,00-0037261,auto_exact,high
+QB,Kirk Cousins (44664401),Kirk Cousins,44664401,QB,5500,LV@NYJ 11/01/2026 01:00PM ET,LV,20.4,,Kirk Cousins,dk,5500,kirk cousins,LV,QB,classic,00-0029604,auto_exact,high
+RB,Quinshon Judkins (44664505),Quinshon Judkins,44664505,RB/FLEX,5500,CLE@PIT 11/01/2026 01:00PM ET,CLE,13.3,,Quinshon Judkins,dk,5500,quinshon judkins,CLE,RB,classic,00-0040784,auto_exact,high
+WR,Tre Tucker (44664753),Tre Tucker,44664753,WR/FLEX,5500,LV@NYJ 11/01/2026 01:00PM ET,LV,15.1,,Tre Tucker,dk,5500,tre tucker,LV,WR,classic,00-0038563,auto_exact,high
+QB,Deshaun Watson (44664402),Deshaun Watson,44664402,QB,5400,CLE@PIT 11/01/2026 01:00PM ET,CLE,16.4,,Deshaun Watson,dk,5400,deshaun watson,CLE,QB,classic,00-0033537,auto_exact,high
+RB,Jeremiyah Love (44664507),Jeremiyah Love,44664507,RB/FLEX,5400,ARI@DAL 11/01/2026 01:00PM ET,ARI,10.2,Q,Jeremiyah Love,dk,5400,jeremiyah love,ARI,RB,classic,00-0041027,auto_exact,high
+WR,Jaylen Waddle (44664755),Jaylen Waddle,44664755,WR/FLEX,5400,KC@DEN 11/01/2026 04:25PM ET,DEN,9.6,Q,Jaylen Waddle,dk,5400,jaylen waddle,DEN,WR,classic,00-0036613,auto_exact,high
+WR,DK Metcalf (44664757),DK Metcalf,44664757,WR/FLEX,5400,CLE@PIT 11/01/2026 01:00PM ET,PIT,11.4,,DK Metcalf,dk,5400,dk metcalf,PIT,WR,classic,00-0035640,auto_exact,high
+QB,Michael Penix Jr. (44664403),Michael Penix Jr.,44664403,QB,5300,ATL@TB 11/01/2026 01:00PM ET,ATL,17.3,,Michael Penix Jr.,dk,5300,michael penix,ATL,QB,classic,00-0039917,auto_exact,high
+RB,J.K. Dobbins (44664509),J.K. Dobbins,44664509,RB/FLEX,5300,KC@DEN 11/01/2026 04:25PM ET,DEN,8.3,,J.K. Dobbins,dk,5300,jk dobbins,DEN,RB,classic,00-0036158,auto_exact,high
+WR,Josh Downs (44664759),Josh Downs,44664759,WR/FLEX,5300,IND@JAX 11/01/2026 01:00PM ET,IND,8.2,,Josh Downs,dk,5300,josh downs,IND,WR,classic,00-0038997,auto_exact,high
+WR,Ladd McConkey (44664761),Ladd McConkey,44664761,WR/FLEX,5300,LAC@LAR 11/01/2026 04:05PM ET,LAC,7.8,Q,Ladd McConkey,dk,5300,ladd mcconkey,LAC,WR,classic,00-0039915,auto_exact,high
+TE,Dalton Kincaid (44665129),Dalton Kincaid,44665129,TE/FLEX,5300,BAL@BUF 11/01/2026 01:00PM ET,BUF,10.8,,Dalton Kincaid,dk,5300,dalton kincaid,BUF,TE,classic,00-0038933,auto_exact,high
+QB,Geno Smith (44664404),Geno Smith,44664404,QB,5200,LV@NYJ 11/01/2026 01:00PM ET,NYJ,16.0,,Geno Smith,dk,5200,geno smith,NYJ,QB,classic,00-0030565,auto_exact,high
+QB,Baker Mayfield (44664405),Baker Mayfield,44664405,QB,5200,ATL@TB 11/01/2026 01:00PM ET,TB,11.7,,Baker Mayfield,dk,5200,baker mayfield,TB,QB,classic,00-0034855,auto_exact,high
+RB,RJ Harvey (44664511),RJ Harvey,44664511,RB/FLEX,5200,KC@DEN 11/01/2026 04:25PM ET,DEN,11.2,,RJ Harvey,dk,5200,rj harvey,DEN,RB,classic,00-0040730,auto_exact,high
+WR,Denzel Boston (44664763),Denzel Boston,44664763,WR/FLEX,5200,CLE@PIT 11/01/2026 01:00PM ET,CLE,11.0,,Denzel Boston,dk,5200,denzel boston,CLE,WR,classic,00-0041037,auto_exact,high
+WR,Carnell Tate (44664765),Carnell Tate,44664765,WR/FLEX,5200,TEN@CIN 11/01/2026 01:00PM ET,TEN,11.8,,Carnell Tate,dk,5200,carnell tate,TEN,WR,classic,00-0041438,auto_exact,high
+QB,Bo Nix (44664406),Bo Nix,44664406,QB,5100,KC@DEN 11/01/2026 04:25PM ET,DEN,14.4,,Bo Nix,dk,5100,bo nix,DEN,QB,classic,00-0039732,auto_exact,high
+QB,Aaron Rodgers (44664407),Aaron Rodgers,44664407,QB,5100,CLE@PIT 11/01/2026 01:00PM ET,PIT,16.9,,Aaron Rodgers,dk,5100,aaron rodgers,PIT,QB,classic,00-0023459,auto_exact,high
+RB,Rico Dowdle (44664513),Rico Dowdle,44664513,RB/FLEX,5100,CLE@PIT 11/01/2026 01:00PM ET,PIT,8.3,,Rico Dowdle,dk,5100,rico dowdle,PIT,RB,classic,00-0036139,auto_exact,high
+RB,Omarion Hampton (44664515),Omarion Hampton,44664515,RB/FLEX,5100,LAC@LAR 11/01/2026 04:05PM ET,LAC,9.9,,Omarion Hampton,dk,5100,omarion hampton,LAC,RB,classic,00-0040666,auto_exact,high
+WR,Keon Coleman (44664767),Keon Coleman,44664767,WR/FLEX,5100,BAL@BUF 11/01/2026 01:00PM ET,BUF,11.4,,Keon Coleman,dk,5100,keon coleman,BUF,WR,classic,00-0039901,auto_exact,high
+WR,Jordan Addison (44664769),Jordan Addison,44664769,WR/FLEX,5100,MIN@DET 11/01/2026 01:00PM ET,MIN,7.5,,Jordan Addison,dk,5100,jordan addison,MIN,WR,classic,00-0038994,auto_exact,high
+TE,Sam LaPorta (44665131),Sam LaPorta,44665131,TE/FLEX,5100,MIN@DET 11/01/2026 01:00PM ET,DET,13.2,,Sam LaPorta,dk,5100,sam laporta,DET,TE,classic,00-0039065,auto_exact,high
+QB,Justin Herbert (44664408),Justin Herbert,44664408,QB,5000,LAC@LAR 11/01/2026 04:05PM ET,LAC,12.1,,Justin Herbert,dk,5000,justin herbert,LAC,QB,classic,00-0036355,auto_exact,high
+RB,Dylan Sampson (44664517),Dylan Sampson,44664517,RB/FLEX,5000,CLE@PIT 11/01/2026 01:00PM ET,CLE,5.4,,Dylan Sampson,dk,5000,dylan sampson,CLE,RB,classic,00-0040162,auto_exact,high
+RB,Blake Corum (44664519),Blake Corum,44664519,RB/FLEX,5000,LAC@LAR 11/01/2026 04:05PM ET,LAR,9.9,,Blake Corum,dk,5000,blake corum,LA,RB,classic,00-0039738,auto_exact,high
+WR,Alec Pierce (44664771),Alec Pierce,44664771,WR/FLEX,5000,IND@JAX 11/01/2026 01:00PM ET,IND,6.1,IR,Alec Pierce,dk,5000,alec pierce,IND,WR,classic,00-0037664,auto_exact,high
+TE,Travis Kelce (44665133),Travis Kelce,44665133,TE/FLEX,5000,KC@DEN 11/01/2026 04:25PM ET,KC,12.2,,Travis Kelce,dk,5000,travis kelce,KC,TE,classic,00-0030506,auto_exact,high
+QB,Malik Willis (44664409),Malik Willis,44664409,QB,4900,NE@MIA 11/01/2026 04:25PM ET,MIA,15.6,,Malik Willis,dk,4900,malik willis,MIA,QB,classic,00-0038128,auto_exact,high
+RB,Ty Johnson (44664521),Ty Johnson,44664521,RB/FLEX,4900,BAL@BUF 11/01/2026 01:00PM ET,BUF,7.0,,Ty Johnson,dk,4900,ty johnson,BUF,RB,classic,00-0035537,auto_exact,high
+RB,Tyler Allgeier (44664523),Tyler Allgeier,44664523,RB/FLEX,4900,ARI@DAL 11/01/2026 01:00PM ET,ARI,6.9,,Tyler Allgeier,dk,4900,tyler allgeier,ARI,RB,classic,00-0037263,auto_exact,high
+WR,Xavier Worthy (44664773),Xavier Worthy,44664773,WR/FLEX,4900,KC@DEN 11/01/2026 04:25PM ET,KC,8.6,,Xavier Worthy,dk,4900,xavier worthy,KC,WR,classic,00-0039894,auto_exact,high
+WR,Germie Bernard (44664775),Germie Bernard,44664775,WR/FLEX,4900,CLE@PIT 11/01/2026 01:00PM ET,PIT,8.4,,Germie Bernard,dk,4900,germie bernard,PIT,WR,classic,00-0041489,auto_exact,high
+TE,Tyler Warren (44665135),Tyler Warren,44665135,TE/FLEX,4900,IND@JAX 11/01/2026 01:00PM ET,IND,14.0,Q,Tyler Warren,dk,4900,tyler warren,IND,TE,classic,00-0040128,auto_exact,high
+QB,Tyler Huntley (44664410),Tyler Huntley,44664410,QB,4800,BAL@BUF 11/01/2026 01:00PM ET,BAL,14.4,,Tyler Huntley,dk,4800,tyler huntley,BAL,QB,classic,00-0035993,auto_exact,high
+RB,Samaje Perine (44664525),Samaje Perine,44664525,RB/FLEX,4800,TEN@CIN 11/01/2026 01:00PM ET,CIN,6.3,,Samaje Perine,dk,4800,samaje perine,CIN,RB,classic,00-0033526,auto_exact,high
+RB,Tyjae Spears (44664527),Tyjae Spears,44664527,RB/FLEX,4800,TEN@CIN 11/01/2026 01:00PM ET,TEN,4.7,Q,Tyjae Spears,dk,4800,tyjae spears,TEN,RB,classic,00-0039032,auto_exact,high
+RB,Emmett Johnson (44664545),Emmett Johnson,44664545,RB/FLEX,4800,KC@DEN 11/01/2026 04:25PM ET,KC,4.4,,Emmett Johnson,dk,4800,emmett johnson,KC,RB,classic,00-0041013,auto_exact,high
+WR,Omar Cooper Jr. (44664777),Omar Cooper Jr.,44664777,WR/FLEX,4800,LV@NYJ 11/01/2026 01:00PM ET,NYJ,18.3,,Omar Cooper Jr.,dk,4800,omar cooper,NYJ,WR,classic,00-0041511,auto_exact,high
+WR,Chris Godwin Jr. (44664779),Chris Godwin Jr.,44664779,WR/FLEX,4800,ATL@TB 11/01/2026 01:00PM ET,TB,7.6,,Chris Godwin Jr.,dk,4800,chris godwin,TB,WR,classic,00-0033921,auto_exact,high
+QB,Daniel Jones (44664411),Daniel Jones,44664411,QB,4700,IND@JAX 11/01/2026 01:00PM ET,IND,10.7,,Daniel Jones,dk,4700,daniel jones,IND,QB,classic,00-0035710,auto_exact,high
+RB,Mike Washington Jr. (44664529),Mike Washington Jr.,44664529,RB/FLEX,4700,LV@NYJ 11/01/2026 01:00PM ET,LV,4.2,,Mike Washington Jr.,dk,4700,mike washington,LV,RB,classic,00-0040878,auto_exact,high
+RB,Bam Knight (44664531),Bam Knight,44664531,RB/FLEX,4700,ARI@DAL 11/01/2026 01:00PM ET,ARI,3.5,,Bam Knight,dk,4700,bam knight,ARI,RB,classic,00-0037157,auto_exact,high
+RB,James Conner (44664533),James Conner,44664533,RB/FLEX,4700,ARI@DAL 11/01/2026 01:00PM ET,ARI,0.0,IR,James Conner,dk,4700,james conner,ARI,RB,classic,00-0033553,auto_exact,high
+WR,KC Concepcion Jr. (44664781),KC Concepcion Jr.,44664781,WR/FLEX,4700,CLE@PIT 11/01/2026 01:00PM ET,CLE,9.6,,KC Concepcion Jr.,dk,4700,kc concepcion,CLE,WR,classic,00-0041547,auto_exact,high
+WR,Courtland Sutton (44664783),Courtland Sutton,44664783,WR/FLEX,4700,KC@DEN 11/01/2026 04:25PM ET,DEN,5.5,,Courtland Sutton,dk,4700,courtland sutton,DEN,WR,classic,00-0034348,auto_exact,high
+QB,Cam Ward (44664412),Cam Ward,44664412,QB,4600,TEN@CIN 11/01/2026 01:00PM ET,TEN,11.3,,Cam Ward,dk,4600,cam ward,TEN,QB,classic,00-0040676,auto_exact,high
+RB,Jaleel McLaughlin (44664535),Jaleel McLaughlin,44664535,RB/FLEX,4600,CLE@PIT 11/01/2026 01:00PM ET,CLE,3.1,,Jaleel McLaughlin,dk,4600,jaleel mclaughlin,CLE,RB,classic,00-0038794,auto_exact,high
+RB,TreVeyon Henderson (44664537),TreVeyon Henderson,44664537,RB/FLEX,4600,NE@MIA 11/01/2026 04:25PM ET,NE,5.8,,TreVeyon Henderson,dk,4600,treveyon henderson,NE,RB,classic,00-0040734,auto_exact,high
+RB,Kimani Vidal (44664539),Kimani Vidal,44664539,RB/FLEX,4600,LAC@LAR 11/01/2026 04:05PM ET,LAC,5.7,,Kimani Vidal,dk,4600,kimani vidal,LAC,RB,classic,00-0039391,auto_exact,high
+WR,Ryan Flournoy (44664785),Ryan Flournoy,44664785,WR/FLEX,4600,ARI@DAL 11/01/2026 01:00PM ET,DAL,9.1,,Ryan Flournoy,dk,4600,ryan flournoy,DAL,WR,classic,00-0039410,auto_exact,high
+WR,Quentin Johnston (44664787),Quentin Johnston,44664787,WR/FLEX,4600,LAC@LAR 11/01/2026 04:05PM ET,LAC,5.0,,Quentin Johnston,dk,4600,quentin johnston,LAC,WR,classic,00-0038544,auto_exact,high
+TE,T.J. Hockenson (44665137),T.J. Hockenson,44665137,TE/FLEX,4600,MIN@DET 11/01/2026 01:00PM ET,MIN,11.0,,T.J. Hockenson,dk,4600,tj hockenson,MIN,TE,classic,00-0035229,auto_exact,high
+QB,Fernando Mendoza (44664413),Fernando Mendoza,44664413,QB,4500,LV@NYJ 11/01/2026 01:00PM ET,LV,2.2,,Fernando Mendoza,dk,4500,fernando mendoza,LV,QB,classic,00-0041562,auto_exact,high
+RB,Brian Robinson Jr. (44664541),Brian Robinson Jr.,44664541,RB/FLEX,4500,ATL@TB 11/01/2026 01:00PM ET,ATL,8.9,Q,Brian Robinson Jr.,dk,4500,brian robinson,ATL,RB,classic,00-0037746,auto_exact,high
+RB,Tyler Goodson (44664543),Tyler Goodson,44664543,RB/FLEX,4500,ARI@DAL 11/01/2026 01:00PM ET,DAL,1.9,,Tyler Goodson,dk,4500,tyler goodson,DAL,RB,classic,00-0037120,auto_exact,high
+RB,Sione Vaki (44664607),Sione Vaki,44664607,RB/FLEX,4500,MIN@DET 11/01/2026 01:00PM ET,DET,2.5,,Sione Vaki,dk,4500,sione vaki,DET,RB,classic,00-0039364,auto_exact,high
+WR,Keenan Allen (44664789),Keenan Allen,44664789,WR/FLEX,4500,IND@JAX 11/01/2026 01:00PM ET,IND,10.1,,Keenan Allen,dk,4500,keenan allen,IND,WR,classic,00-0030279,auto_exact,high
+WR,Jakobi Meyers (44664791),Jakobi Meyers,44664791,WR/FLEX,4500,IND@JAX 11/01/2026 01:00PM ET,JAX,10.1,,Jakobi Meyers,dk,4500,jakobi meyers,JAX,WR,classic,00-0034960,auto_exact,high
+TE,Kyle Pitts Sr. (44665139),Kyle Pitts Sr.,44665139,TE/FLEX,4500,ATL@TB 11/01/2026 01:00PM ET,ATL,9.0,,Kyle Pitts Sr.,dk,4500,kyle pitts,ATL,TE,classic,00-0036970,auto_exact,high
+RB,Kenny Gainwell (44664549),Kenny Gainwell,44664549,RB/FLEX,4400,ATL@TB 11/01/2026 01:00PM ET,TB,5.6,,Kenny Gainwell,dk,4400,kenny gainwell,TB,RB,classic,00-0036919,auto_exact,high
+RB,Chris Rodriguez Jr. (44664551),Chris Rodriguez Jr.,44664551,RB/FLEX,4400,IND@JAX 11/01/2026 01:00PM ET,JAX,5.1,,Chris Rodriguez Jr.,dk,4400,chris rodriguez,JAX,RB,classic,00-0038611,auto_exact,high
+RB,Ray Davis (44664553),Ray Davis,44664553,RB/FLEX,4400,BAL@BUF 11/01/2026 01:00PM ET,BUF,1.4,,Ray Davis,dk,4400,ray davis,BUF,RB,classic,00-0039875,auto_exact,high
+WR,Malik Washington (44664793),Malik Washington,44664793,WR/FLEX,4400,NE@MIA 11/01/2026 04:25PM ET,MIA,9.6,,Malik Washington,dk,4400,malik washington,MIA,WR,classic,00-0039880,auto_exact,high
+WR,DeMario Douglas (44664795),DeMario Douglas,44664795,WR/FLEX,4400,NE@MIA 11/01/2026 04:25PM ET,NE,9.4,,DeMario Douglas,dk,4400,demario douglas,NE,WR,classic,00-0038621,auto_exact,high
+QB,Tua Tagovailoa (44664414),Tua Tagovailoa,44664414,QB,4300,ATL@TB 11/01/2026 01:00PM ET,ATL,0.4,,Tua Tagovailoa,dk,4300,tua tagovailoa,ATL,QB,classic,00-0036212,auto_exact,high
+RB,Jonah Coleman (44664547),Jonah Coleman,44664547,RB/FLEX,4300,KC@DEN 11/01/2026 04:25PM ET,DEN,7.9,,Jonah Coleman,dk,4300,jonah coleman,DEN,RB,classic,00-0041496,auto_exact,high
+RB,Seth McGowan (44664555),Seth McGowan,44664555,RB/FLEX,4300,IND@JAX 11/01/2026 01:00PM ET,IND,2.7,,Seth McGowan,dk,4300,seth mcgowan,IND,RB,classic,00-0041125,auto_exact,high
+RB,Jaylen Wright (44664557),Jaylen Wright,44664557,RB/FLEX,4300,NE@MIA 11/01/2026 04:25PM ET,MIA,0.7,Q,Jaylen Wright,dk,4300,jaylen wright,MIA,RB,classic,00-0039874,auto_exact,high
+WR,Tre' Harris (44664797),Tre' Harris,44664797,WR/FLEX,4300,LAC@LAR 11/01/2026 04:05PM ET,LAC,7.5,Q,Tre' Harris,dk,4300,tre harris,LAC,WR,classic,00-0040727,auto_exact,high
+TE,Hunter Henry (44665141),Hunter Henry,44665141,TE/FLEX,4300,NE@MIA 11/01/2026 04:25PM ET,NE,9.7,,Hunter Henry,dk,4300,hunter henry,NE,TE,classic,00-0033090,auto_exact,high
+RB,Kaytron Allen (44664559),Kaytron Allen,44664559,RB/FLEX,4200,NE@MIA 11/01/2026 04:25PM ET,MIA,0.8,,Kaytron Allen,dk,4200,kaytron allen,MIA,RB,classic,00-0041096,auto_exact,high
+RB,Sean Tucker (44664561),Sean Tucker,44664561,RB/FLEX,4200,ATL@TB 11/01/2026 01:00PM ET,TB,4.0,,Sean Tucker,dk,4200,sean tucker,TB,RB,classic,00-0038951,auto_exact,high
+RB,Justice Hill (44664563),Justice Hill,44664563,RB/FLEX,4200,BAL@BUF 11/01/2026 01:00PM ET,BAL,5.1,,Justice Hill,dk,4200,justice hill,BAL,RB,classic,00-0034975,auto_exact,high
+WR,Wan'Dale Robinson (44664799),Wan'Dale Robinson,44664799,WR/FLEX,4200,TEN@CIN 11/01/2026 01:00PM ET,TEN,8.8,,Wan'Dale Robinson,dk,4200,wandale robinson,TEN,WR,classic,00-0038117,auto_exact,high
+TE,Harold Fannin Jr. (44665143),Harold Fannin Jr.,44665143,TE/FLEX,4200,CLE@PIT 11/01/2026 01:00PM ET,CLE,9.7,,Harold Fannin Jr.,dk,4200,harold fannin,CLE,TE,classic,00-0040663,auto_exact,high
+RB,Emari Demercado (44664565),Emari Demercado,44664565,RB/FLEX,4100,ARI@DAL 11/01/2026 01:00PM ET,DAL,0.8,,Emari Demercado,dk,4100,emari demercado,DAL,RB,classic,00-0038705,auto_exact,high
+RB,Isaiah Davis (44664567),Isaiah Davis,44664567,RB/FLEX,4100,LV@NYJ 11/01/2026 01:00PM ET,NYJ,2.1,,Isaiah Davis,dk,4100,isaiah davis,NYJ,RB,classic,00-0039798,auto_exact,high
+RB,Keaton Mitchell (44664569),Keaton Mitchell,44664569,RB/FLEX,4100,LAC@LAR 11/01/2026 04:05PM ET,LAC,6.2,,Keaton Mitchell,dk,4100,keaton mitchell,LAC,RB,classic,00-0038454,auto_exact,high
+WR,Caleb Douglas (44664801),Caleb Douglas,44664801,WR/FLEX,4100,NE@MIA 11/01/2026 04:25PM ET,MIA,13.1,,Caleb Douglas,dk,4100,caleb douglas,MIA,WR,classic,00-0041523,auto_exact,high
+TE,Jake Ferguson (44665145),Jake Ferguson,44665145,TE/FLEX,4100,ARI@DAL 11/01/2026 01:00PM ET,DAL,6.5,,Jake Ferguson,dk,4100,jake ferguson,DAL,TE,classic,00-0038041,auto_exact,high
+QB,Andy Dalton (44664415),Andy Dalton,44664415,QB,4000,ATL@TB 11/01/2026 01:00PM ET,ATL,-1.0,,Andy Dalton,dk,4000,andy dalton,ATL,QB,classic,00-0027973,auto_exact,high
+QB,Jack Strand (44664416),Jack Strand,44664416,QB,4000,ATL@TB 11/01/2026 01:00PM ET,ATL,2.0,,Jack Strand,dk,4000,jack strand,ATL,QB,classic,00-0041194,auto_exact,high
+QB,Kyle Allen (44664417),Kyle Allen,44664417,QB,4000,BAL@BUF 11/01/2026 01:00PM ET,BUF,0.0,,Kyle Allen,dk,4000,kyle allen,BUF,QB,classic,00-0034577,auto_exact,high
+QB,Shane Buechele (44664418),Shane Buechele,44664418,QB,4000,BAL@BUF 11/01/2026 01:00PM ET,BUF,0.0,,Shane Buechele,dk,4000,shane buechele,BUF,QB,classic,00-0036679,auto_exact,high
+QB,Joe Flacco (44664419),Joe Flacco,44664419,QB,4000,TEN@CIN 11/01/2026 01:00PM ET,CIN,0.0,,Joe Flacco,dk,4000,joe flacco,CIN,QB,classic,00-0026158,auto_exact,high
+QB,Sean Clifford (44664420),Sean Clifford,44664420,QB,4000,TEN@CIN 11/01/2026 01:00PM ET,CIN,0.0,,Sean Clifford,dk,4000,sean clifford,CIN,QB,classic,00-0038391,auto_exact,high
+QB,Josh Johnson (44664421),Josh Johnson,44664421,QB,4000,TEN@CIN 11/01/2026 01:00PM ET,CIN,0.0,,Josh Johnson,dk,4000,josh johnson,CIN,QB,classic,00-0026300,auto_exact,high
+QB,Shedeur Sanders (44664422),Shedeur Sanders,44664422,QB,4000,CLE@PIT 11/01/2026 01:00PM ET,CLE,0.0,,Shedeur Sanders,dk,4000,shedeur sanders,CLE,QB,classic,00-0040668,auto_exact,high
+QB,Taylen Green (44664423),Taylen Green,44664423,QB,4000,CLE@PIT 11/01/2026 01:00PM ET,CLE,0.0,,Taylen Green,dk,4000,taylen green,CLE,QB,classic,00-0041092,auto_exact,high
+QB,Dillon Gabriel (44664424),Dillon Gabriel,44664424,QB,4000,CLE@PIT 11/01/2026 01:00PM ET,CLE,0.0,,Dillon Gabriel,dk,4000,dillon gabriel,CLE,QB,classic,00-0040704,auto_exact,high
+QB,Sam Howell (44664425),Sam Howell,44664425,QB,4000,ARI@DAL 11/01/2026 01:00PM ET,DAL,0.0,,Sam Howell,dk,4000,sam howell,DAL,QB,classic,00-0037077,auto_exact,high
+QB,Kyle Trask (44664426),Kyle Trask,44664426,QB,4000,ARI@DAL 11/01/2026 01:00PM ET,DAL,0.0,,Kyle Trask,dk,4000,kyle trask,DAL,QB,classic,00-0036928,auto_exact,high
+QB,Jarrett Stidham (44664427),Jarrett Stidham,44664427,QB,4000,KC@DEN 11/01/2026 04:25PM ET,DEN,0.0,,Jarrett Stidham,dk,4000,jarrett stidham,DEN,QB,classic,00-0035264,auto_exact,high
+QB,Sam Ehlinger (44664428),Sam Ehlinger,44664428,QB,4000,KC@DEN 11/01/2026 04:25PM ET,DEN,0.0,,Sam Ehlinger,dk,4000,sam ehlinger,DEN,QB,classic,00-0036879,auto_exact,high
+QB,Joshua Dobbs (44664429),Joshua Dobbs,44664429,QB,4000,MIN@DET 11/01/2026 01:00PM ET,DET,0.0,,Joshua Dobbs,dk,4000,joshua dobbs,DET,QB,classic,00-0033949,auto_exact,high
+QB,Luke Altmyer (44664430),Luke Altmyer,44664430,QB,4000,MIN@DET 11/01/2026 01:00PM ET,DET,0.0,,Luke Altmyer,dk,4000,luke altmyer,DET,QB,classic,00-0041453,auto_exact,high
+QB,Mitchell Trubisky (44664431),Mitchell Trubisky,44664431,QB,4000,TEN@CIN 11/01/2026 01:00PM ET,TEN,0.0,,Mitchell Trubisky,dk,4000,mitchell trubisky,TEN,QB,classic,00-0033869,auto_exact,high
+QB,Hendon Hooker (44664432),Hendon Hooker,44664432,QB,4000,TEN@CIN 11/01/2026 01:00PM ET,TEN,0.0,,Hendon Hooker,dk,4000,hendon hooker,TEN,QB,classic,00-0038550,auto_exact,high
+QB,Anthony Richardson Sr. (44664433),Anthony Richardson Sr.,44664433,QB,4000,IND@JAX 11/01/2026 01:00PM ET,IND,0.0,,Anthony Richardson Sr.,dk,4000,anthony richardson,IND,QB,classic,00-0039164,auto_exact,high
+QB,Riley Leonard (44664434),Riley Leonard,44664434,QB,4000,IND@JAX 11/01/2026 01:00PM ET,IND,0.0,,Riley Leonard,dk,4000,riley leonard,IND,QB,classic,00-0040206,auto_exact,high
+QB,Justin Fields (44664435),Justin Fields,44664435,QB,4000,KC@DEN 11/01/2026 04:25PM ET,KC,0.0,,Justin Fields,dk,4000,justin fields,KC,QB,classic,00-0036945,auto_exact,high
+QB,Garrett Nussmeier (44664436),Garrett Nussmeier,44664436,QB,4000,KC@DEN 11/01/2026 04:25PM ET,KC,0.0,,Garrett Nussmeier,dk,4000,garrett nussmeier,KC,QB,classic,00-0040906,auto_exact,high
+QB,Aidan O'Connell (44664437),Aidan O'Connell,44664437,QB,4000,LV@NYJ 11/01/2026 01:00PM ET,LV,0.0,,Aidan O'Connell,dk,4000,aidan oconnell,LV,QB,classic,00-0038579,auto_exact,high
+QB,Stetson Bennett IV (44664438),Stetson Bennett IV,44664438,QB,4000,LAC@LAR 11/01/2026 04:05PM ET,LAR,0.7,,Stetson Bennett IV,dk,4000,stetson bennett,LA,QB,classic,00-0039107,auto_exact,high
+QB,Ty Simpson (44664439),Ty Simpson,44664439,QB,4000,LAC@LAR 11/01/2026 04:05PM ET,LAR,0.0,,Ty Simpson,dk,4000,ty simpson,LA,QB,classic,00-0041568,auto_exact,high
+QB,Matthew Caldwell (44664440),Matthew Caldwell,44664440,QB,4000,LAC@LAR 11/01/2026 04:05PM ET,LAR,0.0,IR,Matthew Caldwell,dk,4000,matthew caldwell,LA,QB,classic,00-0041414,auto_exact,high
+QB,Kyle McCord (44664441),Kyle McCord,44664441,QB,4000,NE@MIA 11/01/2026 04:25PM ET,MIA,0.0,,Kyle McCord,dk,4000,kyle mccord,MIA,QB,classic,00-0040014,auto_exact,high
+QB,Brady Cook (44664442),Brady Cook,44664442,QB,4000,NE@MIA 11/01/2026 04:25PM ET,MIA,0.0,,Brady Cook,dk,4000,brady cook,MIA,QB,classic,00-0040398,auto_exact,high
+QB,Carson Wentz (44664443),Carson Wentz,44664443,QB,4000,MIN@DET 11/01/2026 01:00PM ET,MIN,12.8,,Carson Wentz,dk,4000,carson wentz,MIN,QB,classic,00-0032950,auto_exact,high
+QB,Max Brosmer (44664444),Max Brosmer,44664444,QB,4000,MIN@DET 11/01/2026 01:00PM ET,MIN,0.0,,Max Brosmer,dk,4000,max brosmer,MIN,QB,classic,00-0040494,auto_exact,high
+QB,Tommy DeVito (44664445),Tommy DeVito,44664445,QB,4000,NE@MIA 11/01/2026 04:25PM ET,NE,1.4,,Tommy DeVito,dk,4000,tommy devito,NE,QB,classic,00-0038476,auto_exact,high
+QB,Behren Morton (44664446),Behren Morton,44664446,QB,4000,NE@MIA 11/01/2026 04:25PM ET,NE,0.0,,Behren Morton,dk,4000,behren morton,NE,QB,classic,00-0041123,auto_exact,high
+QB,Cade Klubnik (44664447),Cade Klubnik,44664447,QB,4000,LV@NYJ 11/01/2026 01:00PM ET,NYJ,0.0,,Cade Klubnik,dk,4000,cade klubnik,NYJ,QB,classic,00-0041056,auto_exact,high
+QB,Will Levis (44664448),Will Levis,44664448,QB,4000,LV@NYJ 11/01/2026 01:00PM ET,NYJ,0.0,,Will Levis,dk,4000,will levis,NYJ,QB,classic,00-0039152,auto_exact,high
+QB,Gardner Minshew II (44664449),Gardner Minshew II,44664449,QB,4000,ARI@DAL 11/01/2026 01:00PM ET,ARI,0.0,,Gardner Minshew II,dk,4000,gardner minshew,ARI,QB,classic,00-0035289,auto_exact,high
+QB,Carson Beck (44664450),Carson Beck,44664450,QB,4000,ARI@DAL 11/01/2026 01:00PM ET,ARI,0.0,Q,Carson Beck,dk,4000,carson beck,ARI,QB,classic,00-0041561,auto_exact,high
+QB,Mason Rudolph (44664451),Mason Rudolph,44664451,QB,4000,CLE@PIT 11/01/2026 01:00PM ET,PIT,0.1,,Mason Rudolph,dk,4000,mason rudolph,PIT,QB,classic,00-0034771,auto_exact,high
+QB,Will Howard (44664452),Will Howard,44664452,QB,4000,CLE@PIT 11/01/2026 01:00PM ET,PIT,0.0,,Will Howard,dk,4000,will howard,PIT,QB,classic,00-0040203,auto_exact,high
+QB,Drew Allar (44664453),Drew Allar,44664453,QB,4000,CLE@PIT 11/01/2026 01:00PM ET,PIT,0.0,,Drew Allar,dk,4000,drew allar,PIT,QB,classic,00-0041565,auto_exact,high
+QB,DJ Uiagalelei (44664454),DJ Uiagalelei,44664454,QB,4000,LAC@LAR 11/01/2026 04:05PM ET,LAC,0.0,,DJ Uiagalelei,dk,4000,dj uiagalelei,LAC,QB,classic,00-0040464,auto_exact,high
+QB,Trey Lance (44664455),Trey Lance,44664455,QB,4000,LAC@LAR 11/01/2026 04:05PM ET,LAC,0.0,IR,Trey Lance,dk,4000,trey lance,LAC,QB,classic,00-0037012,auto_exact,high
+QB,Jake Browning (44664456),Jake Browning,44664456,QB,4000,LAC@LAR 11/01/2026 04:05PM ET,LAC,0.0,,Jake Browning,dk,4000,jake browning,LAC,QB,classic,00-0035100,auto_exact,high
+QB,Jalon Daniels (44664457),Jalon Daniels,44664457,QB,4000,ATL@TB 11/01/2026 01:00PM ET,TB,8.0,,Jalon Daniels,dk,4000,jalon daniels,TB,QB,classic,00-0041251,auto_exact,high
+QB,Brett Rypien (44664458),Brett Rypien,44664458,QB,4000,ATL@TB 11/01/2026 01:00PM ET,TB,0.0,,Brett Rypien,dk,4000,brett rypien,TB,QB,classic,00-0034955,auto_exact,high
+QB,Easton Stick (44664459),Easton Stick,44664459,QB,4000,ATL@TB 11/01/2026 01:00PM ET,TB,0.0,,Easton Stick,dk,4000,easton stick,TB,QB,classic,00-0035282,auto_exact,high
+QB,Quinn Ewers (44664460),Quinn Ewers,44664460,QB,4000,IND@JAX 11/01/2026 01:00PM ET,JAX,0.0,,Quinn Ewers,dk,4000,quinn ewers,JAX,QB,classic,00-0040234,auto_exact,high
+QB,Nick Mullens (44664461),Nick Mullens,44664461,QB,4000,IND@JAX 11/01/2026 01:00PM ET,JAX,-0.3,,Nick Mullens,dk,4000,nick mullens,JAX,QB,classic,00-0033319,auto_exact,high
+QB,Joey Aguilar (44664462),Joey Aguilar,44664462,QB,4000,IND@JAX 11/01/2026 01:00PM ET,JAX,0.0,,Joey Aguilar,dk,4000,joey aguilar,JAX,QB,classic,00-0041203,auto_exact,high
+QB,Joe Fagnano (44664463),Joe Fagnano,44664463,QB,4000,BAL@BUF 11/01/2026 01:00PM ET,BAL,0.0,,Joe Fagnano,dk,4000,joe fagnano,BAL,QB,classic,00-0040981,auto_exact,high
+QB,Skylar Thompson (44664464),Skylar Thompson,44664464,QB,4000,BAL@BUF 11/01/2026 01:00PM ET,BAL,0.0,IR,Skylar Thompson,dk,4000,skylar thompson,BAL,QB,classic,00-0037327,auto_exact,high
+RB,Khalil Herbert (44664571),Khalil Herbert,44664571,RB/FLEX,4000,ATL@TB 11/01/2026 01:00PM ET,ATL,3.8,,Khalil Herbert,dk,4000,khalil herbert,ATL,RB,classic,00-0036906,auto_exact,high
+RB,Trey Sermon (44664573),Trey Sermon,44664573,RB/FLEX,4000,ATL@TB 11/01/2026 01:00PM ET,ATL,0.0,IR,Trey Sermon,dk,4000,trey sermon,ATL,RB,classic,00-0036984,auto_exact,high
+RB,Jam Miller (44664575),Jam Miller,44664575,RB/FLEX,4000,ATL@TB 11/01/2026 01:00PM ET,ATL,0.0,,Jam Miller,dk,4000,jam miller,ATL,RB,classic,00-0041129,auto_exact,high
+RB,Brock Lampe (44664577),Brock Lampe,44664577,RB/FLEX,4000,BAL@BUF 11/01/2026 01:00PM ET,BUF,0.0,,Brock Lampe,dk,4000,brock lampe,BUF,RB,classic,00-0040567,auto_exact,high
+RB,Frank Gore Jr. (44664579),Frank Gore Jr.,44664579,RB/FLEX,4000,BAL@BUF 11/01/2026 01:00PM ET,BUF,0.2,,Frank Gore Jr.,dk,4000,frank gore,BUF,RB,classic,00-0039471,auto_exact,high
+RB,Tahj Brooks (44664581),Tahj Brooks,44664581,RB/FLEX,4000,TEN@CIN 11/01/2026 01:00PM ET,CIN,0.1,,Tahj Brooks,dk,4000,tahj brooks,CIN,RB,classic,00-0040208,auto_exact,high
+RB,Kendall Milton (44664583),Kendall Milton,44664583,RB/FLEX,4000,TEN@CIN 11/01/2026 01:00PM ET,CIN,0.0,,Kendall Milton,dk,4000,kendall milton,CIN,RB,classic,00-0039266,auto_exact,high
+RB,Kentrel Bullock (44664585),Kentrel Bullock,44664585,RB/FLEX,4000,TEN@CIN 11/01/2026 01:00PM ET,CIN,0.0,,Kentrel Bullock,dk,4000,kentrel bullock,CIN,RB,classic,00-0041241,auto_exact,high
+RB,Audric Estime (44664587),Audric Estime,44664587,RB/FLEX,4000,CLE@PIT 11/01/2026 01:00PM ET,CLE,7.9,,Audric Estime,dk,4000,audric estime,CLE,RB,classic,00-0039373,manual_override,high
+RB,Raheim Sanders (44664589),Raheim Sanders,44664589,RB/FLEX,4000,CLE@PIT 11/01/2026 01:00PM ET,CLE,4.5,IR,Raheim Sanders,dk,4000,raheim sanders,CLE,RB,classic,00-0040466,auto_exact,high
+RB,Michael Burton (44664591),Michael Burton,44664591,RB/FLEX,4000,CLE@PIT 11/01/2026 01:00PM ET,CLE,0.0,,Michael Burton,dk,4000,michael burton,CLE,RB,classic,00-0031595,auto_exact,high
+RB,Jaret Patterson (44664593),Jaret Patterson,44664593,RB/FLEX,4000,CLE@PIT 11/01/2026 01:00PM ET,CLE,0.0,,Jaret Patterson,dk,4000,jaret patterson,CLE,RB,classic,00-0036755,auto_exact,high
+RB,Malik Davis (44664595),Malik Davis,44664595,RB/FLEX,4000,ARI@DAL 11/01/2026 01:00PM ET,DAL,0.0,IR,Malik Davis,dk,4000,malik davis,DAL,RB,classic,00-0037563,auto_exact,high
+RB,Hunter Luepke (44664597),Hunter Luepke,44664597,RB/FLEX,4000,ARI@DAL 11/01/2026 01:00PM ET,DAL,1.0,,Hunter Luepke,dk,4000,hunter luepke,DAL,RB,classic,00-0038738,auto_exact,high
+RB,Israel Abanikanda (44664599),Israel Abanikanda,44664599,RB/FLEX,4000,ARI@DAL 11/01/2026 01:00PM ET,DAL,0.0,,Israel Abanikanda,dk,4000,israel abanikanda,DAL,RB,classic,00-0038389,auto_exact,high
+RB,Tyler Badie (44664601),Tyler Badie,44664601,RB/FLEX,4000,KC@DEN 11/01/2026 04:25PM ET,DEN,3.4,IR,Tyler Badie,dk,4000,tyler badie,DEN,RB,classic,00-0037085,auto_exact,high
+RB,Adam Prentice (44664603),Adam Prentice,44664603,RB/FLEX,4000,KC@DEN 11/01/2026 04:25PM ET,DEN,0.2,,Adam Prentice,dk,4000,adam prentice,DEN,RB,classic,00-0036727,auto_exact,high
+RB,Cody Schrader (44664605),Cody Schrader,44664605,RB/FLEX,4000,KC@DEN 11/01/2026 04:25PM ET,DEN,0.0,,Cody Schrader,dk,4000,cody schrader,DEN,RB,classic,00-0039703,auto_exact,high
+RB,Jacob Saylors (44664609),Jacob Saylors,44664609,RB/FLEX,4000,MIN@DET 11/01/2026 01:00PM ET,DET,0.0,,Jacob Saylors,dk,4000,jacob saylors,DET,RB,classic,00-0038896,auto_exact,high
+RB,Isiah Pacheco (44664611),Isiah Pacheco,44664611,RB/FLEX,4000,MIN@DET 11/01/2026 01:00PM ET,DET,0.0,IR,Isiah Pacheco,dk,4000,isiah pacheco,DET,RB,classic,00-0037197,auto_exact,high
+RB,Jabari Small (44664613),Jabari Small,44664613,RB/FLEX,4000,MIN@DET 11/01/2026 01:00PM ET,DET,0.0,,Jabari Small,dk,4000,jabari small,DET,RB,classic,00-0039652,auto_exact,high
+RB,Julius Chestnut (44664615),Julius Chestnut,44664615,RB/FLEX,4000,TEN@CIN 11/01/2026 01:00PM ET,TEN,0.0,,Julius Chestnut,dk,4000,julius chestnut,TEN,RB,classic,00-0037594,auto_exact,high
+RB,Nick Singleton (44664617),Nick Singleton,44664617,RB/FLEX,4000,TEN@CIN 11/01/2026 01:00PM ET,TEN,0.3,,Nick Singleton,dk,4000,nick singleton,TEN,RB,classic,00-0040886,manual_override,high
+RB,Michael Carter (44664619),Michael Carter,44664619,RB/FLEX,4000,TEN@CIN 11/01/2026 01:00PM ET,TEN,1.2,,Michael Carter,dk,4000,michael carter,TEN,RB,classic,00-0036924,auto_exact,high
+RB,Kalel Mullings (44664621),Kalel Mullings,44664621,RB/FLEX,4000,TEN@CIN 11/01/2026 01:00PM ET,TEN,0.2,,Kalel Mullings,dk,4000,kalel mullings,TEN,RB,classic,00-0040205,auto_exact,high
+RB,DJ Giddens (44664623),DJ Giddens,44664623,RB/FLEX,4000,IND@JAX 11/01/2026 01:00PM ET,IND,0.0,,DJ Giddens,dk,4000,dj giddens,IND,RB,classic,00-0040179,auto_exact,high
+RB,Davon Booth (44664625),Davon Booth,44664625,RB/FLEX,4000,IND@JAX 11/01/2026 01:00PM ET,IND,0.0,,Davon Booth,dk,4000,davon booth,IND,RB,classic,00-0041277,auto_exact,high
+RB,Jaydn Ott (44664627),Jaydn Ott,44664627,RB/FLEX,4000,KC@DEN 11/01/2026 04:25PM ET,KC,0.0,,Jaydn Ott,dk,4000,jaydn ott,KC,RB,classic,00-0040959,auto_exact,high
+RB,Brashard Smith (44664629),Brashard Smith,44664629,RB/FLEX,4000,KC@DEN 11/01/2026 04:25PM ET,KC,0.3,IR,Brashard Smith,dk,4000,brashard smith,KC,RB,classic,00-0040078,auto_exact,high
+RB,Ben VanSumeren (44664631),Ben VanSumeren,44664631,RB/FLEX,4000,KC@DEN 11/01/2026 04:25PM ET,KC,0.0,,Ben VanSumeren,dk,4000,ben vansumeren,KC,RB,classic,00-0038489,auto_exact,high
+RB,Nate Carter (44664633),Nate Carter,44664633,RB/FLEX,4000,KC@DEN 11/01/2026 04:25PM ET,KC,0.0,,Nate Carter,dk,4000,nate carter,KC,RB,classic,00-0040547,auto_exact,high
+RB,Dylan Laube (44664635),Dylan Laube,44664635,RB/FLEX,4000,LV@NYJ 11/01/2026 01:00PM ET,LV,1.6,,Dylan Laube,dk,4000,dylan laube,LV,RB,classic,00-0039407,auto_exact,high
+RB,Chris Collier (44664637),Chris Collier,44664637,RB/FLEX,4000,LV@NYJ 11/01/2026 01:00PM ET,LV,0.0,IR,Chris Collier,dk,4000,chris collier,LV,RB,classic,00-0039244,auto_exact,high
+RB,Roman Hemby (44664639),Roman Hemby,44664639,RB/FLEX,4000,LV@NYJ 11/01/2026 01:00PM ET,LV,0.0,,Roman Hemby,dk,4000,roman hemby,LV,RB,classic,00-0040998,auto_exact,high
+RB,Connor Heyward (44664641),Connor Heyward,44664641,RB/FLEX,4000,LV@NYJ 11/01/2026 01:00PM ET,LV,0.6,,Connor Heyward,dk,4000,connor heyward,LV,RB,classic,00-0037304,auto_exact,high
+RB,Owen Wright (44664643),Owen Wright,44664643,RB/FLEX,4000,LV@NYJ 11/01/2026 01:00PM ET,LV,0.0,,Owen Wright,dk,4000,owen wright,LV,RB,classic,00-0038458,auto_exact,high
+RB,Dean Connors (44664645),Dean Connors,44664645,RB/FLEX,4000,LAC@LAR 11/01/2026 04:05PM ET,LAR,0.0,,Dean Connors,dk,4000,dean connors,LA,RB,classic,00-0041415,auto_exact,high
+RB,Ronnie Rivers (44664647),Ronnie Rivers,44664647,RB/FLEX,4000,LAC@LAR 11/01/2026 04:05PM ET,LAR,1.7,IR,Ronnie Rivers,dk,4000,ronnie rivers,LA,RB,classic,00-0037557,auto_exact,high
+RB,Jordan Waters (44664649),Jordan Waters,44664649,RB/FLEX,4000,LAC@LAR 11/01/2026 04:05PM ET,LAR,0.0,,Jordan Waters,dk,4000,jordan waters,LA,RB,classic,00-0040601,auto_exact,high
+RB,De'Von Achane (44664651),De'Von Achane,44664651,RB/FLEX,4000,NE@MIA 11/01/2026 04:25PM ET,MIA,8.2,IR,De'Von Achane,dk,4000,devon achane,MIA,RB,classic,00-0039040,auto_exact,high
+RB,Carlos Washington Jr. (44664653),Carlos Washington Jr.,44664653,RB/FLEX,4000,NE@MIA 11/01/2026 04:25PM ET,MIA,0.0,,Carlos Washington Jr.,dk,4000,carlos washington,MIA,RB,classic,00-0038930,auto_exact,high
+RB,DJ Herman (44664655),DJ Herman,44664655,RB/FLEX,4000,NE@MIA 11/01/2026 04:25PM ET,MIA,0.5,,DJ Herman,dk,4000,dj herman,MIA,RB,classic,00-0041436,auto_exact,high
+RB,Demond Claiborne (44664657),Demond Claiborne,44664657,RB/FLEX,4000,MIN@DET 11/01/2026 01:00PM ET,MIN,1.0,,Demond Claiborne,dk,4000,demond claiborne,MIN,RB,classic,00-0041104,auto_exact,high
+RB,DeeJay Dallas (44664659),DeeJay Dallas,44664659,RB/FLEX,4000,MIN@DET 11/01/2026 01:00PM ET,MIN,1.4,,DeeJay Dallas,dk,4000,deejay dallas,MIN,RB,classic,00-0036425,auto_exact,high
+RB,Max Bredeson (44664661),Max Bredeson,44664661,RB/FLEX,4000,MIN@DET 11/01/2026 01:00PM ET,MIN,0.0,,Max Bredeson,dk,4000,max bredeson,MIN,RB,classic,00-0041081,auto_exact,high
+RB,Corey Kiner (44664663),Corey Kiner,44664663,RB/FLEX,4000,NE@MIA 11/01/2026 04:25PM ET,NE,2.5,,Corey Kiner,dk,4000,corey kiner,NE,RB,classic,00-0040556,auto_exact,high
+RB,Myles Montgomery (44664665),Myles Montgomery,44664665,RB/FLEX,4000,NE@MIA 11/01/2026 04:25PM ET,NE,0.0,IR,Myles Montgomery,dk,4000,myles montgomery,NE,RB,classic,00-0041323,auto_exact,high
+RB,Lan Larison (44664667),Lan Larison,44664667,RB/FLEX,4000,NE@MIA 11/01/2026 04:25PM ET,NE,2.9,,Lan Larison,dk,4000,lan larison,NE,RB,classic,00-0040568,auto_exact,high
+RB,Reggie Gilliam (44664669),Reggie Gilliam,44664669,RB/FLEX,4000,NE@MIA 11/01/2026 04:25PM ET,NE,0.4,IR,Reggie Gilliam,dk,4000,reggie gilliam,NE,RB,classic,00-0036187,auto_exact,high
+RB,Kene Nwangwu (44664671),Kene Nwangwu,44664671,RB/FLEX,4000,LV@NYJ 11/01/2026 01:00PM ET,NYJ,0.0,Q,Kene Nwangwu,dk,4000,kene nwangwu,NYJ,RB,classic,00-0036842,auto_exact,high
+RB,Chip Trayanum (44664673),Chip Trayanum,44664673,RB/FLEX,4000,LV@NYJ 11/01/2026 01:00PM ET,NYJ,0.0,IR,Chip Trayanum,dk,4000,chip trayanum,NYJ,RB,classic,00-0041239,auto_exact,high
+RB,Andrew Beck (44664675),Andrew Beck,44664675,RB/FLEX,4000,LV@NYJ 11/01/2026 01:00PM ET,NYJ,-0.0,,Andrew Beck,dk,4000,andrew beck,NYJ,RB,classic,00-0034959,manual_override,high
+RB,Al-Jay Henderson (44664677),Al-Jay Henderson,44664677,RB/FLEX,4000,LV@NYJ 11/01/2026 01:00PM ET,NYJ,0.0,,Al-Jay Henderson,dk,4000,al jay henderson,NYJ,RB,classic,,,
+RB,Evan Hull (44664679),Evan Hull,44664679,RB/FLEX,4000,ARI@DAL 11/01/2026 01:00PM ET,ARI,0.0,,Evan Hull,dk,4000,evan hull,ARI,RB,classic,00-0038397,auto_exact,high
+RB,Trey Benson (44664681),Trey Benson,44664681,RB/FLEX,4000,ARI@DAL 11/01/2026 01:00PM ET,ARI,0.0,IR,Trey Benson,dk,4000,trey benson,ARI,RB,classic,00-0039921,auto_exact,high
+RB,Jerome Ford (44664683),Jerome Ford,44664683,RB/FLEX,4000,ARI@DAL 11/01/2026 01:00PM ET,ARI,0.0,,Jerome Ford,dk,4000,jerome ford,ARI,RB,classic,00-0037267,auto_exact,high
+RB,Travis Homer (44664685),Travis Homer,44664685,RB/FLEX,4000,CLE@PIT 11/01/2026 01:00PM ET,PIT,0.3,,Travis Homer,dk,4000,travis homer,PIT,RB,classic,00-0035594,auto_exact,high
+RB,Lew Nichols (44664687),Lew Nichols,44664687,RB/FLEX,4000,CLE@PIT 11/01/2026 01:00PM ET,PIT,0.1,,Lew Nichols,dk,4000,lew nichols,PIT,RB,classic,00-0038409,auto_exact,high
+RB,Eli Heidenreich (44664689),Eli Heidenreich,44664689,RB/FLEX,4000,CLE@PIT 11/01/2026 01:00PM ET,PIT,0.0,,Eli Heidenreich,dk,4000,eli heidenreich,PIT,RB,classic,00-0041490,auto_exact,high
+RB,Riley Nowakowski (44664691),Riley Nowakowski,44664691,RB/FLEX,4000,CLE@PIT 11/01/2026 01:00PM ET,PIT,0.0,,Riley Nowakowski,dk,4000,riley nowakowski,PIT,RB,classic,00-0041398,auto_exact,high
+RB,Gregory Desrosiers (44664693),Gregory Desrosiers,44664693,RB/FLEX,4000,LAC@LAR 11/01/2026 04:05PM ET,LAC,0.0,,Gregory Desrosiers,dk,4000,gregory desrosiers,LAC,RB,classic,00-0041376,auto_exact,high
+RB,Scott Matlock (44664695),Scott Matlock,44664695,RB/FLEX,4000,LAC@LAR 11/01/2026 04:05PM ET,LAC,0.0,,Scott Matlock,dk,4000,scott matlock,LAC,RB,classic,00-0038614,auto_fallback_name_only_position_mismatch,low
+RB,Amar Johnson (44664697),Amar Johnson,44664697,RB/FLEX,4000,LAC@LAR 11/01/2026 04:05PM ET,LAC,0.0,,Amar Johnson,dk,4000,amar johnson,LAC,RB,classic,00-0040039,auto_exact,high
+RB,Alec Ingold (44664699),Alec Ingold,44664699,RB/FLEX,4000,LAC@LAR 11/01/2026 04:05PM ET,LAC,1.3,IR,Alec Ingold,dk,4000,alec ingold,LAC,RB,classic,00-0035125,auto_exact,high
+RB,Josh Williams (44664701),Josh Williams,44664701,RB/FLEX,4000,ATL@TB 11/01/2026 01:00PM ET,TB,0.0,,Josh Williams,dk,4000,josh williams,TB,RB,classic,00-0040429,auto_exact,high
+RB,LeQuint Allen Jr. (44664703),LeQuint Allen Jr.,44664703,RB/FLEX,4000,IND@JAX 11/01/2026 01:00PM ET,JAX,0.5,,LeQuint Allen Jr.,dk,4000,lequint allen,JAX,RB,classic,00-0040238,auto_exact,high
+RB,Ameer Abdullah (44664705),Ameer Abdullah,44664705,RB/FLEX,4000,IND@JAX 11/01/2026 01:00PM ET,JAX,1.1,,Ameer Abdullah,dk,4000,ameer abdullah,JAX,RB,classic,00-0032104,auto_exact,high
+RB,J'Mari Taylor (44664707),J'Mari Taylor,44664707,RB/FLEX,4000,IND@JAX 11/01/2026 01:00PM ET,JAX,0.0,,J'Mari Taylor,dk,4000,jmari taylor,JAX,RB,classic,00-0041217,auto_exact,high
+RB,Rasheen Ali (44664709),Rasheen Ali,44664709,RB/FLEX,4000,BAL@BUF 11/01/2026 01:00PM ET,BAL,0.3,,Rasheen Ali,dk,4000,rasheen ali,BAL,RB,classic,00-0039796,auto_exact,high
+RB,Adam Randall (44664711),Adam Randall,44664711,RB/FLEX,4000,BAL@BUF 11/01/2026 01:00PM ET,BAL,0.0,IR,Adam Randall,dk,4000,adam randall,BAL,RB,classic,00-0040888,auto_exact,high
+RB,Jonathan Ward (44664713),Jonathan Ward,44664713,RB/FLEX,4000,BAL@BUF 11/01/2026 01:00PM ET,BAL,0.0,,Jonathan Ward,dk,4000,jonathan ward,BAL,RB,classic,00-0035924,auto_exact,high
+RB,Lucas Scott (44664715),Lucas Scott,44664715,RB/FLEX,4000,BAL@BUF 11/01/2026 01:00PM ET,BAL,0.0,,Lucas Scott,dk,4000,lucas scott,BAL,RB,classic,00-0040637,auto_exact,high
+WR,Adonai Mitchell (44664803),Adonai Mitchell,44664803,WR/FLEX,4000,LV@NYJ 11/01/2026 01:00PM ET,NYJ,7.1,,Adonai Mitchell,dk,4000,adonai mitchell,NYJ,WR,classic,00-0039890,auto_exact,high
+TE,Brenton Strange (44665147),Brenton Strange,44665147,TE/FLEX,4000,IND@JAX 11/01/2026 01:00PM ET,JAX,10.0,,Brenton Strange,dk,4000,brenton strange,JAX,TE,classic,00-0038935,auto_exact,high
+WR,Kendrick Bourne (44664805),Kendrick Bourne,44664805,WR/FLEX,3900,ARI@DAL 11/01/2026 01:00PM ET,ARI,6.9,,Kendrick Bourne,dk,3900,kendrick bourne,ARI,WR,classic,00-0033307,auto_exact,high
+WR,Rashod Bateman (44664807),Rashod Bateman,44664807,WR/FLEX,3900,BAL@BUF 11/01/2026 01:00PM ET,BAL,7.2,,Rashod Bateman,dk,3900,rashod bateman,BAL,WR,classic,00-0036550,auto_exact,high
+TE,Pat Freiermuth (44665149),Pat Freiermuth,44665149,TE/FLEX,3900,CLE@PIT 11/01/2026 01:00PM ET,PIT,9.6,,Pat Freiermuth,dk,3900,pat freiermuth,PIT,TE,classic,00-0036894,auto_exact,high
+WR,Jauan Jennings (44664809),Jauan Jennings,44664809,WR/FLEX,3800,MIN@DET 11/01/2026 01:00PM ET,MIN,1.7,,Jauan Jennings,dk,3800,jauan jennings,MIN,WR,classic,00-0036259,auto_exact,high
+WR,Ted Hurst III (44664811),Ted Hurst III,44664811,WR/FLEX,3800,ATL@TB 11/01/2026 01:00PM ET,TB,4.8,,Ted Hurst III,dk,3800,ted hurst,TB,WR,classic,00-0041048,auto_exact,high
+TE,Tyler Higbee (44665151),Tyler Higbee,44665151,TE/FLEX,3800,LAC@LAR 11/01/2026 04:05PM ET,LAR,8.0,,Tyler Higbee,dk,3800,tyler higbee,LA,TE,classic,00-0033110,auto_exact,high
+DST,Bengals (44665379),Bengals,44665379,DST,3800,TEN@CIN 11/01/2026 01:00PM ET,CIN,9.2,,Bengals,dk,3800,bengals,CIN,DST,classic,DST_CIN,team_defense,high
+WR,Troy Franklin (44664813),Troy Franklin,44664813,WR/FLEX,3700,KC@DEN 11/01/2026 04:25PM ET,DEN,1.7,,Troy Franklin,dk,3700,troy franklin,DEN,WR,classic,00-0039868,auto_exact,high
+WR,Calvin Ridley (44664815),Calvin Ridley,44664815,WR/FLEX,3700,TEN@CIN 11/01/2026 01:00PM ET,TEN,2.2,Q,Calvin Ridley,dk,3700,calvin ridley,TEN,WR,classic,00-0034837,auto_exact,high
+TE,Mike Gesicki (44665153),Mike Gesicki,44665153,TE/FLEX,3700,TEN@CIN 11/01/2026 01:00PM ET,CIN,9.9,,Mike Gesicki,dk,3700,mike gesicki,CIN,TE,classic,00-0034829,auto_exact,high
+DST,Jaguars (44665380),Jaguars,44665380,DST,3700,IND@JAX 11/01/2026 01:00PM ET,JAX,7.0,,Jaguars,dk,3700,jaguars,JAX,DST,classic,DST_JAX,team_defense,high
+WR,Joshua Palmer (44664817),Joshua Palmer,44664817,WR/FLEX,3600,BAL@BUF 11/01/2026 01:00PM ET,BUF,5.5,,Joshua Palmer,dk,3600,joshua palmer,BUF,WR,classic,00-0036988,manual_override,high
+WR,Konata Mumpfield (44664819),Konata Mumpfield,44664819,WR/FLEX,3600,LAC@LAR 11/01/2026 04:05PM ET,LAR,4.2,,Konata Mumpfield,dk,3600,konata mumpfield,LA,WR,classic,00-0040590,auto_exact,high
+WR,Brian Thomas Jr. (44664821),Brian Thomas Jr.,44664821,WR/FLEX,3600,IND@JAX 11/01/2026 01:00PM ET,JAX,4.3,,Brian Thomas Jr.,dk,3600,brian thomas,JAX,WR,classic,00-0039893,auto_exact,high
+TE,Michael Mayer (44665155),Michael Mayer,44665155,TE/FLEX,3600,LV@NYJ 11/01/2026 01:00PM ET,LV,9.5,,Michael Mayer,dk,3600,michael mayer,LV,TE,classic,00-0039066,auto_exact,high
+DST,Patriots (44665381),Patriots,44665381,DST,3600,NE@MIA 11/01/2026 04:25PM ET,NE,6.4,,Patriots,dk,3600,patriots,NE,DST,classic,DST_NE,team_defense,high
+WR,Jahan Dotson (44664823),Jahan Dotson,44664823,WR/FLEX,3500,ATL@TB 11/01/2026 01:00PM ET,ATL,6.9,,Jahan Dotson,dk,3500,jahan dotson,ATL,WR,classic,00-0037741,auto_exact,high
+WR,Jalen Royals (44664825),Jalen Royals,44664825,WR/FLEX,3500,KC@DEN 11/01/2026 04:25PM ET,KC,2.5,,Jalen Royals,dk,3500,jalen royals,KC,WR,classic,00-0040646,auto_exact,high
+WR,Tez Johnson (44664827),Tez Johnson,44664827,WR/FLEX,3500,ATL@TB 11/01/2026 01:00PM ET,TB,5.0,,Tez Johnson,dk,3500,tez johnson,TB,WR,classic,00-0040237,auto_exact,high
+TE,Oronde Gadsden II (44665157),Oronde Gadsden II,44665157,TE/FLEX,3500,LAC@LAR 11/01/2026 04:05PM ET,LAC,4.8,,Oronde Gadsden II,dk,3500,oronde gadsden,LAC,TE,classic,00-0040189,auto_exact,high
+DST,Rams (44665382),Rams,44665382,DST,3500,LAC@LAR 11/01/2026 04:05PM ET,LAR,3.9,,Rams,dk,3500,rams,LA,DST,classic,DST_LA,team_defense,high
+WR,Marvin Mims Jr. (44664829),Marvin Mims Jr.,44664829,WR/FLEX,3400,KC@DEN 11/01/2026 04:25PM ET,DEN,3.0,,Marvin Mims Jr.,dk,3400,marvin mims,DEN,WR,classic,00-0038976,auto_exact,high
+WR,Cyrus Allen (44664831),Cyrus Allen,44664831,WR/FLEX,3400,KC@DEN 11/01/2026 04:25PM ET,KC,1.3,,Cyrus Allen,dk,3400,cyrus allen,KC,WR,classic,00-0040890,auto_exact,high
+WR,Efton Chism III (44664833),Efton Chism III,44664833,WR/FLEX,3400,NE@MIA 11/01/2026 04:25PM ET,NE,4.7,,Efton Chism III,dk,3400,efton chism,NE,WR,classic,00-0040563,auto_exact,high
+WR,Ja'Kobi Lane (44664835),Ja'Kobi Lane,44664835,WR/FLEX,3400,BAL@BUF 11/01/2026 01:00PM ET,BAL,5.2,,Ja'Kobi Lane,dk,3400,jakobi lane,BAL,WR,classic,00-0040870,auto_exact,high
+TE,Cade Otton (44665159),Cade Otton,44665159,TE/FLEX,3400,ATL@TB 11/01/2026 01:00PM ET,TB,5.4,,Cade Otton,dk,3400,cade otton,TB,TE,classic,00-0038129,auto_exact,high
+TE,Mark Andrews (44665161),Mark Andrews,44665161,TE/FLEX,3400,BAL@BUF 11/01/2026 01:00PM ET,BAL,7.3,,Mark Andrews,dk,3400,mark andrews,BAL,TE,classic,00-0034753,auto_exact,high
+DST,Chiefs (44665383),Chiefs,44665383,DST,3400,KC@DEN 11/01/2026 04:25PM ET,KC,7.2,,Chiefs,dk,3400,chiefs,KC,DST,classic,DST_KC,team_defense,high
+WR,Andrei Iosivas (44664837),Andrei Iosivas,44664837,WR/FLEX,3300,TEN@CIN 11/01/2026 01:00PM ET,CIN,2.5,IR,Andrei Iosivas,dk,3300,andrei iosivas,CIN,WR,classic,00-0038619,auto_exact,high
+WR,Isaac TeSlaa (44664839),Isaac TeSlaa,44664839,WR/FLEX,3300,MIN@DET 11/01/2026 01:00PM ET,DET,5.0,,Isaac TeSlaa,dk,3300,isaac teslaa,DET,WR,classic,00-0040669,auto_exact,high
+WR,Kyle Williams (44664841),Kyle Williams,44664841,WR/FLEX,3300,NE@MIA 11/01/2026 04:25PM ET,NE,3.8,,Kyle Williams,dk,3300,kyle williams,NE,WR,classic,00-0040131,auto_exact,high
+WR,Brenen Thompson (44664843),Brenen Thompson,44664843,WR/FLEX,3300,LAC@LAR 11/01/2026 04:05PM ET,LAC,1.2,Q,Brenen Thompson,dk,3300,brenen thompson,LAC,WR,classic,00-0041550,auto_exact,high
+TE,Eli Raridon (44665163),Eli Raridon,44665163,TE/FLEX,3300,NE@MIA 11/01/2026 04:25PM ET,NE,6.8,,Eli Raridon,dk,3300,eli raridon,NE,TE,classic,00-0041395,auto_exact,high
+TE,Mason Taylor (44665165),Mason Taylor,44665165,TE/FLEX,3300,LV@NYJ 11/01/2026 01:00PM ET,NYJ,7.9,,Mason Taylor,dk,3300,mason taylor,NYJ,TE,classic,00-0040736,auto_exact,high
+DST,Steelers (44665384),Steelers,44665384,DST,3300,CLE@PIT 11/01/2026 01:00PM ET,PIT,8.0,,Steelers,dk,3300,steelers,PIT,DST,classic,DST_PIT,team_defense,high
+WR,Jerry Jeudy (44664845),Jerry Jeudy,44664845,WR/FLEX,3200,CLE@PIT 11/01/2026 01:00PM ET,CLE,4.7,,Jerry Jeudy,dk,3200,jerry jeudy,CLE,WR,classic,00-0036407,auto_exact,high
+WR,Jalen Nailor (44664847),Jalen Nailor,44664847,WR/FLEX,3200,LV@NYJ 11/01/2026 01:00PM ET,LV,2.6,,Jalen Nailor,dk,3200,jalen nailor,LV,WR,classic,00-0037291,auto_exact,high
+WR,Chris Bell (44664849),Chris Bell,44664849,WR/FLEX,3200,NE@MIA 11/01/2026 04:25PM ET,MIA,3.7,,Chris Bell,dk,3200,chris bell,MIA,WR,classic,00-0041525,auto_exact,high
+WR,Jalen Brooks (44664851),Jalen Brooks,44664851,WR/FLEX,3200,ARI@DAL 11/01/2026 01:00PM ET,ARI,1.9,IR,Jalen Brooks,dk,3200,jalen brooks,ARI,WR,classic,00-0038640,auto_exact,high
+TE,Evan Engram (44665167),Evan Engram,44665167,TE/FLEX,3200,KC@DEN 11/01/2026 04:25PM ET,DEN,4.7,,Evan Engram,dk,3200,evan engram,DEN,TE,classic,00-0033881,auto_exact,high
+TE,Greg Dulcich (44665169),Greg Dulcich,44665169,TE/FLEX,3200,NE@MIA 11/01/2026 04:25PM ET,MIA,6.9,,Greg Dulcich,dk,3200,greg dulcich,MIA,TE,classic,00-0037252,auto_exact,high
+DST,Cowboys (44665385),Cowboys,44665385,DST,3200,ARI@DAL 11/01/2026 01:00PM ET,DAL,2.3,,Cowboys,dk,3200,cowboys,DAL,DST,classic,DST_DAL,team_defense,high
+WR,KaVontae Turpin (44664853),KaVontae Turpin,44664853,WR/FLEX,3100,ARI@DAL 11/01/2026 01:00PM ET,DAL,2.3,Q,KaVontae Turpin,dk,3100,kavontae turpin,DAL,WR,classic,00-0037801,auto_exact,high
+WR,Laquon Treadwell (44664855),Laquon Treadwell,44664855,WR/FLEX,3100,IND@JAX 11/01/2026 01:00PM ET,IND,5.0,,Laquon Treadwell,dk,3100,laquon treadwell,IND,WR,classic,00-0032951,auto_exact,high
+WR,KeAndre Lambert-Smith (44664857),KeAndre Lambert-Smith,44664857,WR/FLEX,3100,LAC@LAR 11/01/2026 04:05PM ET,LAC,3.6,,KeAndre Lambert-Smith,dk,3100,keandre lambert smith,LAC,WR,classic,00-0040184,auto_exact,high
+WR,Travis Hunter (44664859),Travis Hunter,44664859,WR/FLEX,3100,IND@JAX 11/01/2026 01:00PM ET,JAX,3.3,,Travis Hunter,dk,3100,travis hunter,JAX,WR,classic,00-0040718,auto_fallback_name_only_position_mismatch,low
+TE,Colby Parkinson (44665171),Colby Parkinson,44665171,TE/FLEX,3100,LAC@LAR 11/01/2026 04:05PM ET,LAR,5.1,,Colby Parkinson,dk,3100,colby parkinson,LA,TE,classic,00-0036244,auto_exact,high
+TE,Kenyon Sadiq (44665173),Kenyon Sadiq,44665173,TE/FLEX,3100,LV@NYJ 11/01/2026 01:00PM ET,NYJ,6.7,,Kenyon Sadiq,dk,3100,kenyon sadiq,NYJ,TE,classic,00-0041032,auto_exact,high
+DST,Bills (44665386),Bills,44665386,DST,3100,BAL@BUF 11/01/2026 01:00PM ET,BUF,3.5,,Bills,dk,3100,bills,BUF,DST,classic,DST_BUF,team_defense,high
+WR,Olamide Zaccheaus (44664861),Olamide Zaccheaus,44664861,WR/FLEX,3000,ATL@TB 11/01/2026 01:00PM ET,ATL,1.0,Q,Olamide Zaccheaus,dk,3000,olamide zaccheaus,ATL,WR,classic,00-0035208,auto_exact,high
+WR,Zachariah Branch (44664863),Zachariah Branch,44664863,WR/FLEX,3000,ATL@TB 11/01/2026 01:00PM ET,ATL,2.5,,Zachariah Branch,dk,3000,zachariah branch,ATL,WR,classic,00-0041044,auto_exact,high
+WR,Chris Blair (44664865),Chris Blair,44664865,WR/FLEX,3000,ATL@TB 11/01/2026 01:00PM ET,ATL,0.5,,Chris Blair,dk,3000,chris blair,ATL,WR,classic,00-0036463,auto_exact,high
+WR,Beaux Collins (44664867),Beaux Collins,44664867,WR/FLEX,3000,ATL@TB 11/01/2026 01:00PM ET,ATL,0.0,IR,Beaux Collins,dk,3000,beaux collins,ATL,WR,classic,00-0040432,auto_exact,high
+WR,Dylan Drummond (44664869),Dylan Drummond,44664869,WR/FLEX,3000,ATL@TB 11/01/2026 01:00PM ET,ATL,0.0,,Dylan Drummond,dk,3000,dylan drummond,ATL,WR,classic,00-0038953,auto_exact,high
+WR,Vinny Anthony II (44664871),Vinny Anthony II,44664871,WR/FLEX,3000,ATL@TB 11/01/2026 01:00PM ET,ATL,0.0,,Vinny Anthony II,dk,3000,vinny anthony,ATL,WR,classic,00-0041185,auto_exact,high
+WR,Antwane Wells Jr. (44664873),Antwane Wells Jr.,44664873,WR/FLEX,3000,ATL@TB 11/01/2026 01:00PM ET,ATL,0.0,,Antwane Wells Jr.,dk,3000,antwane wells,ATL,WR,classic,00-0040438,auto_exact,high
+WR,Greg Dortch (44664875),Greg Dortch,44664875,WR/FLEX,3000,BAL@BUF 11/01/2026 01:00PM ET,BUF,0.0,,Greg Dortch,dk,3000,greg dortch,BUF,WR,classic,00-0035500,auto_exact,high
+WR,Skyler Bell (44664877),Skyler Bell,44664877,WR/FLEX,3000,BAL@BUF 11/01/2026 01:00PM ET,BUF,0.0,,Skyler Bell,dk,3000,skyler bell,BUF,WR,classic,00-0041443,auto_exact,high
+WR,Tyrell Shavers (44664879),Tyrell Shavers,44664879,WR/FLEX,3000,BAL@BUF 11/01/2026 01:00PM ET,BUF,0.0,OUT,Tyrell Shavers,dk,3000,tyrell shavers,BUF,WR,classic,00-0038679,auto_exact,high
+WR,Ja'Mori Maclin (44664881),Ja'Mori Maclin,44664881,WR/FLEX,3000,BAL@BUF 11/01/2026 01:00PM ET,BUF,0.0,,Ja'Mori Maclin,dk,3000,jamori maclin,BUF,WR,classic,00-0041272,auto_exact,high
+WR,Stephen Gosnell (44664883),Stephen Gosnell,44664883,WR/FLEX,3000,BAL@BUF 11/01/2026 01:00PM ET,BUF,0.0,,Stephen Gosnell,dk,3000,stephen gosnell,BUF,WR,classic,00-0040361,auto_exact,high
+WR,Trent Sherfield Sr. (44664885),Trent Sherfield Sr.,44664885,WR/FLEX,3000,BAL@BUF 11/01/2026 01:00PM ET,BUF,0.0,,Trent Sherfield Sr.,dk,3000,trent sherfield,BUF,WR,classic,00-0034487,auto_exact,high
+WR,Dohnte Meyers (44664887),Dohnte Meyers,44664887,WR/FLEX,3000,TEN@CIN 11/01/2026 01:00PM ET,CIN,4.7,,Dohnte Meyers,dk,3000,dohnte meyers,CIN,WR,classic,00-0040785,auto_exact,high
+WR,Colbie Young (44664889),Colbie Young,44664889,WR/FLEX,3000,TEN@CIN 11/01/2026 01:00PM ET,CIN,0.7,,Colbie Young,dk,3000,colbie young,CIN,WR,classic,00-0041069,auto_exact,high
+WR,Mitch Tinsley (44664891),Mitch Tinsley,44664891,WR/FLEX,3000,TEN@CIN 11/01/2026 01:00PM ET,CIN,3.2,,Mitch Tinsley,dk,3000,mitch tinsley,CIN,WR,classic,00-0038839,manual_override,high
+WR,Jordan Moore (44664893),Jordan Moore,44664893,WR/FLEX,3000,TEN@CIN 11/01/2026 01:00PM ET,CIN,0.0,,Jordan Moore,dk,3000,jordan moore,CIN,WR,classic,00-0040375,auto_exact,high
+WR,Noah Thomas (44664895),Noah Thomas,44664895,WR/FLEX,3000,TEN@CIN 11/01/2026 01:00PM ET,CIN,0.0,,Noah Thomas,dk,3000,noah thomas,CIN,WR,classic,00-0041248,auto_exact,high
+WR,Ke'Shawn Williams (44664897),Ke'Shawn Williams,44664897,WR/FLEX,3000,TEN@CIN 11/01/2026 01:00PM ET,CIN,-1.0,,Ke'Shawn Williams,dk,3000,keshawn williams,CIN,WR,classic,00-0040534,auto_exact,high
+WR,Isaiah Bond (44664899),Isaiah Bond,44664899,WR/FLEX,3000,CLE@PIT 11/01/2026 01:00PM ET,CLE,1.9,,Isaiah Bond,dk,3000,isaiah bond,CLE,WR,classic,00-0040782,auto_exact,high
+WR,Tylan Wallace (44664901),Tylan Wallace,44664901,WR/FLEX,3000,CLE@PIT 11/01/2026 01:00PM ET,CLE,0.4,,Tylan Wallace,dk,3000,tylan wallace,CLE,WR,classic,00-0036630,auto_exact,high
+WR,Malachi Corley (44664903),Malachi Corley,44664903,WR/FLEX,3000,CLE@PIT 11/01/2026 01:00PM ET,CLE,-0.1,,Malachi Corley,dk,3000,malachi corley,CLE,WR,classic,00-0039920,auto_exact,high
+WR,Jimmy Horn Jr. (44664905),Jimmy Horn Jr.,44664905,WR/FLEX,3000,CLE@PIT 11/01/2026 01:00PM ET,CLE,-1.0,,Jimmy Horn Jr.,dk,3000,jimmy horn,CLE,WR,classic,00-0040218,auto_exact,high
+WR,Jonathan Mingo (44664907),Jonathan Mingo,44664907,WR/FLEX,3000,ARI@DAL 11/01/2026 01:00PM ET,DAL,0.9,,Jonathan Mingo,dk,3000,jonathan mingo,DAL,WR,classic,00-0039062,auto_exact,high
+WR,Camden Brown (44664909),Camden Brown,44664909,WR/FLEX,3000,ARI@DAL 11/01/2026 01:00PM ET,DAL,0.0,,Camden Brown,dk,3000,camden brown,DAL,WR,classic,00-0040930,auto_exact,high
+WR,Jordan Hudson (44664911),Jordan Hudson,44664911,WR/FLEX,3000,ARI@DAL 11/01/2026 01:00PM ET,DAL,0.0,,Jordan Hudson,dk,3000,jordan hudson,DAL,WR,classic,00-0040934,auto_exact,high
+WR,Anthony Smith (44664913),Anthony Smith,44664913,WR/FLEX,3000,ARI@DAL 11/01/2026 01:00PM ET,DAL,0.0,,Anthony Smith,dk,3000,anthony smith,DAL,WR,classic,00-0040900,auto_exact,high
+WR,Lil'Jordan Humphrey (44664915),Lil'Jordan Humphrey,44664915,WR/FLEX,3000,KC@DEN 11/01/2026 04:25PM ET,DEN,0.8,,Lil'Jordan Humphrey,dk,3000,liljordan humphrey,DEN,WR,classic,00-0035406,auto_exact,high
+WR,Pat Bryant (44664917),Pat Bryant,44664917,WR/FLEX,3000,KC@DEN 11/01/2026 04:25PM ET,DEN,8.0,IR,Pat Bryant,dk,3000,pat bryant,DEN,WR,classic,00-0040134,auto_exact,high
+WR,Cameron Ross (44664919),Cameron Ross,44664919,WR/FLEX,3000,KC@DEN 11/01/2026 04:25PM ET,DEN,0.0,,Cameron Ross,dk,3000,cameron ross,DEN,WR,classic,00-0041299,manual_override,high
+WR,Michael Bandy (44664921),Michael Bandy,44664921,WR/FLEX,3000,KC@DEN 11/01/2026 04:25PM ET,DEN,0.0,,Michael Bandy,dk,3000,michael bandy,DEN,WR,classic,00-0036959,auto_exact,high
+WR,Kolbe Katsis (44664923),Kolbe Katsis,44664923,WR/FLEX,3000,KC@DEN 11/01/2026 04:25PM ET,DEN,0.0,,Kolbe Katsis,dk,3000,kolbe katsis,DEN,WR,classic,00-0041292,auto_exact,high
+WR,Dane Key (44664925),Dane Key,44664925,WR/FLEX,3000,KC@DEN 11/01/2026 04:25PM ET,DEN,0.0,,Dane Key,dk,3000,dane key,DEN,WR,classic,00-0041293,auto_exact,high
+WR,Tay Martin (44664927),Tay Martin,44664927,WR/FLEX,3000,MIN@DET 11/01/2026 01:00PM ET,DET,0.0,,Tay Martin,dk,3000,tay martin,DET,WR,classic,00-0037524,auto_exact,high
+WR,DeAndre Carter (44664929),DeAndre Carter,44664929,WR/FLEX,3000,MIN@DET 11/01/2026 01:00PM ET,DET,0.0,,DeAndre Carter,dk,3000,deandre carter,DET,WR,classic,00-0031763,auto_exact,high
+WR,Tom Kennedy (44664931),Tom Kennedy,44664931,WR/FLEX,3000,MIN@DET 11/01/2026 01:00PM ET,DET,0.0,IR,Tom Kennedy,dk,3000,tom kennedy,DET,WR,classic,00-0035544,auto_exact,high
+WR,Kendrick Law (44664933),Kendrick Law,44664933,WR/FLEX,3000,MIN@DET 11/01/2026 01:00PM ET,DET,0.0,IR,Kendrick Law,dk,3000,kendrick law,DET,WR,classic,00-0041446,auto_exact,high
+WR,Lawrence Keys III (44664935),Lawrence Keys III,44664935,WR/FLEX,3000,MIN@DET 11/01/2026 01:00PM ET,DET,0.0,,Lawrence Keys III,dk,3000,lawrence keys,DET,WR,classic,00-0039474,auto_exact,high
+WR,Lucky Jackson (44664937),Lucky Jackson,44664937,WR/FLEX,3000,MIN@DET 11/01/2026 01:00PM ET,DET,0.0,,Lucky Jackson,dk,3000,lucky jackson,DET,WR,classic,00-0038181,auto_exact,high
+WR,Dominic Lovett (44664939),Dominic Lovett,44664939,WR/FLEX,3000,MIN@DET 11/01/2026 01:00PM ET,DET,0.0,,Dominic Lovett,dk,3000,dominic lovett,DET,WR,classic,00-0040241,auto_exact,high
+WR,Elic Ayomanor (44664941),Elic Ayomanor,44664941,WR/FLEX,3000,TEN@CIN 11/01/2026 01:00PM ET,TEN,4.8,,Elic Ayomanor,dk,3000,elic ayomanor,TEN,WR,classic,00-0040170,auto_exact,high
+WR,Chimere Dike (44664943),Chimere Dike,44664943,WR/FLEX,3000,TEN@CIN 11/01/2026 01:00PM ET,TEN,1.3,,Chimere Dike,dk,3000,chimere dike,TEN,WR,classic,00-0040705,auto_exact,high
+WR,K.J. Osborn (44664945),K.J. Osborn,44664945,WR/FLEX,3000,TEN@CIN 11/01/2026 01:00PM ET,TEN,0.0,,K.J. Osborn,dk,3000,kj osborn,TEN,WR,classic,00-0036345,auto_exact,high
+WR,Tyren Montgomery (44664947),Tyren Montgomery,44664947,WR/FLEX,3000,TEN@CIN 11/01/2026 01:00PM ET,TEN,0.0,,Tyren Montgomery,dk,3000,tyren montgomery,TEN,WR,classic,00-0040919,auto_exact,high
+WR,Xavier Restrepo (44664949),Xavier Restrepo,44664949,WR/FLEX,3000,TEN@CIN 11/01/2026 01:00PM ET,TEN,0.0,,Xavier Restrepo,dk,3000,xavier restrepo,TEN,WR,classic,00-0040522,auto_exact,high
+WR,Ashton Dulin (44664951),Ashton Dulin,44664951,WR/FLEX,3000,IND@JAX 11/01/2026 01:00PM ET,IND,2.0,,Ashton Dulin,dk,3000,ashton dulin,IND,WR,classic,00-0035021,auto_exact,high
+WR,Deion Burks (44664953),Deion Burks,44664953,WR/FLEX,3000,IND@JAX 11/01/2026 01:00PM ET,IND,1.7,,Deion Burks,dk,3000,deion burks,IND,WR,classic,00-0041132,auto_exact,high
+WR,Anthony Gould (44664955),Anthony Gould,44664955,WR/FLEX,3000,IND@JAX 11/01/2026 01:00PM ET,IND,0.0,Q,Anthony Gould,dk,3000,anthony gould,IND,WR,classic,00-0039816,auto_exact,high
+WR,D.J. Montgomery (44664957),D.J. Montgomery,44664957,WR/FLEX,3000,IND@JAX 11/01/2026 01:00PM ET,IND,0.0,IR,D.J. Montgomery,dk,3000,dj montgomery,IND,WR,classic,00-0035045,auto_exact,high
+WR,Mecole Hardman Jr. (44664959),Mecole Hardman Jr.,44664959,WR/FLEX,3000,IND@JAX 11/01/2026 01:00PM ET,IND,0.0,,Mecole Hardman Jr.,dk,3000,mecole hardman,IND,WR,classic,00-0035140,auto_exact,high
+WR,Quez Watkins (44664961),Quez Watkins,44664961,WR/FLEX,3000,IND@JAX 11/01/2026 01:00PM ET,IND,0.0,,Quez Watkins,dk,3000,quez watkins,IND,WR,classic,00-0036271,auto_exact,high
+WR,Nick Westbrook-Ikhine (44664963),Nick Westbrook-Ikhine,44664963,WR/FLEX,3000,IND@JAX 11/01/2026 01:00PM ET,IND,0.0,,Nick Westbrook-Ikhine,dk,3000,nick westbrook ikhine,IND,WR,classic,00-0036182,auto_exact,high
+WR,Nikko Remigio (44664965),Nikko Remigio,44664965,WR/FLEX,3000,KC@DEN 11/01/2026 04:25PM ET,KC,-0.2,,Nikko Remigio,dk,3000,nikko remigio,KC,WR,classic,00-0038519,auto_exact,high
+WR,Andrew Armstrong (44664967),Andrew Armstrong,44664967,WR/FLEX,3000,KC@DEN 11/01/2026 04:25PM ET,KC,1.8,,Andrew Armstrong,dk,3000,andrew armstrong,KC,WR,classic,00-0040298,auto_exact,high
+WR,Justin Watson (44664969),Justin Watson,44664969,WR/FLEX,3000,KC@DEN 11/01/2026 04:25PM ET,KC,0.9,,Justin Watson,dk,3000,justin watson,KC,WR,classic,00-0034386,auto_exact,high
+WR,Tyquan Thornton (44664971),Tyquan Thornton,44664971,WR/FLEX,3000,KC@DEN 11/01/2026 04:25PM ET,KC,12.0,IR,Tyquan Thornton,dk,3000,tyquan thornton,KC,WR,classic,00-0038104,auto_exact,high
+WR,Jeff Caldwell (44664973),Jeff Caldwell,44664973,WR/FLEX,3000,KC@DEN 11/01/2026 04:25PM ET,KC,0.0,IR,Jeff Caldwell,dk,3000,jeff caldwell,KC,WR,classic,00-0040953,auto_exact,high
+WR,Jimmy Holiday (44664975),Jimmy Holiday,44664975,WR/FLEX,3000,KC@DEN 11/01/2026 04:25PM ET,KC,0.0,IR,Jimmy Holiday,dk,3000,jimmy holiday,KC,WR,classic,00-0040120,auto_exact,high
+WR,Omari Evans (44664977),Omari Evans,44664977,WR/FLEX,3000,KC@DEN 11/01/2026 04:25PM ET,KC,0.0,,Omari Evans,dk,3000,omari evans,KC,WR,classic,00-0040954,auto_exact,high
+WR,Cody White (44664979),Cody White,44664979,WR/FLEX,3000,LV@NYJ 11/01/2026 01:00PM ET,LV,5.6,,Cody White,dk,3000,cody white,LV,WR,classic,00-0035891,auto_exact,high
+WR,Dareke Young (44664981),Dareke Young,44664981,WR/FLEX,3000,LV@NYJ 11/01/2026 01:00PM ET,LV,0.7,,Dareke Young,dk,3000,dareke young,LV,WR,classic,00-0037093,auto_exact,high
+WR,Malik Benson (44664983),Malik Benson,44664983,WR/FLEX,3000,LV@NYJ 11/01/2026 01:00PM ET,LV,0.3,,Malik Benson,dk,3000,malik benson,LV,WR,classic,00-0040894,auto_exact,high
+WR,Dont'e Thornton Jr. (44664985),Dont'e Thornton Jr.,44664985,WR/FLEX,3000,LV@NYJ 11/01/2026 01:00PM ET,LV,0.0,,Dont'e Thornton Jr.,dk,3000,donte thornton,LV,WR,classic,00-0040581,auto_exact,high
+WR,Jack Bech (44664987),Jack Bech,44664987,WR/FLEX,3000,LV@NYJ 11/01/2026 01:00PM ET,LV,5.3,IR,Jack Bech,dk,3000,jack bech,LV,WR,classic,00-0040729,auto_exact,high
+WR,Phillip Dorsett II (44664989),Phillip Dorsett II,44664989,WR/FLEX,3000,LV@NYJ 11/01/2026 01:00PM ET,LV,0.0,,Phillip Dorsett II,dk,3000,phillip dorsett,LV,WR,classic,00-0032208,auto_exact,high
+WR,Jamari Thrash (44664991),Jamari Thrash,44664991,WR/FLEX,3000,LV@NYJ 11/01/2026 01:00PM ET,LV,0.0,,Jamari Thrash,dk,3000,jamari thrash,LV,WR,classic,00-0039379,auto_exact,high
+WR,Deven Thompkins (44664993),Deven Thompkins,44664993,WR/FLEX,3000,LV@NYJ 11/01/2026 01:00PM ET,LV,1.8,,Deven Thompkins,dk,3000,deven thompkins,LV,WR,classic,00-0037487,auto_exact,high
+WR,Jordan Whittington (44664995),Jordan Whittington,44664995,WR/FLEX,3000,LAC@LAR 11/01/2026 04:05PM ET,LAR,0.5,,Jordan Whittington,dk,3000,jordan whittington,LA,WR,classic,00-0039751,auto_exact,high
+WR,Tutu Atwell (44664997),Tutu Atwell,44664997,WR/FLEX,3000,LAC@LAR 11/01/2026 04:05PM ET,LAR,1.5,,Tutu Atwell,dk,3000,tutu atwell,LA,WR,classic,00-0036849,auto_exact,high
+WR,CJ Daniels (44664999),CJ Daniels,44664999,WR/FLEX,3000,LAC@LAR 11/01/2026 04:05PM ET,LAR,0.0,,CJ Daniels,dk,3000,cj daniels,LA,WR,classic,00-0041399,auto_exact,high
+WR,Alex Bachman (44665001),Alex Bachman,44665001,WR/FLEX,3000,LAC@LAR 11/01/2026 04:05PM ET,LAR,0.0,,Alex Bachman,dk,3000,alex bachman,LA,WR,classic,00-0035602,auto_exact,high
+WR,Davante Adams (44665003),Davante Adams,44665003,WR/FLEX,3000,LAC@LAR 11/01/2026 04:05PM ET,LAR,18.0,IR,Davante Adams,dk,3000,davante adams,LA,WR,classic,00-0031381,auto_exact,high
+WR,Brennan Presley (44665005),Brennan Presley,44665005,WR/FLEX,3000,LAC@LAR 11/01/2026 04:05PM ET,LAR,0.0,,Brennan Presley,dk,3000,brennan presley,LA,WR,classic,00-0040597,auto_exact,high
+WR,Kevin Coleman Jr. (44665007),Kevin Coleman Jr.,44665007,WR/FLEX,3000,NE@MIA 11/01/2026 04:25PM ET,MIA,2.4,,Kevin Coleman Jr.,dk,3000,kevin coleman,MIA,WR,classic,00-0041529,auto_exact,high
+WR,Jalen Tolbert (44665009),Jalen Tolbert,44665009,WR/FLEX,3000,NE@MIA 11/01/2026 04:25PM ET,MIA,1.1,,Jalen Tolbert,dk,3000,jalen tolbert,MIA,WR,classic,00-0037666,auto_exact,high
+WR,Jared Wayne (44665011),Jared Wayne,44665011,WR/FLEX,3000,NE@MIA 11/01/2026 04:25PM ET,MIA,1.8,,Jared Wayne,dk,3000,jared wayne,MIA,WR,classic,00-0038728,auto_exact,high
+WR,AJ Henning (44665013),AJ Henning,44665013,WR/FLEX,3000,NE@MIA 11/01/2026 04:25PM ET,MIA,0.0,,AJ Henning,dk,3000,aj henning,MIA,WR,classic,00-0040302,auto_exact,high
+WR,Will Sheppard (44665015),Will Sheppard,44665015,WR/FLEX,3000,NE@MIA 11/01/2026 04:25PM ET,MIA,0.0,,Will Sheppard,dk,3000,will sheppard,MIA,WR,classic,00-0040753,auto_exact,high
+WR,Jalen Reagor (44665017),Jalen Reagor,44665017,WR/FLEX,3000,NE@MIA 11/01/2026 04:25PM ET,MIA,0.0,,Jalen Reagor,dk,3000,jalen reagor,MIA,WR,classic,00-0036387,auto_exact,high
+WR,Tai Felton (44665019),Tai Felton,44665019,WR/FLEX,3000,MIN@DET 11/01/2026 01:00PM ET,MIN,1.2,,Tai Felton,dk,3000,tai felton,MIN,WR,classic,00-0040154,auto_exact,high
+WR,Myles Price (44665021),Myles Price,44665021,WR/FLEX,3000,MIN@DET 11/01/2026 01:00PM ET,MIN,2.1,,Myles Price,dk,3000,myles price,MIN,WR,classic,00-0040506,auto_exact,high
+WR,Dillon Bell (44665023),Dillon Bell,44665023,WR/FLEX,3000,MIN@DET 11/01/2026 01:00PM ET,MIN,0.0,,Dillon Bell,dk,3000,dillon bell,MIN,WR,classic,00-0041342,auto_exact,high
+WR,Odell Beckham Jr. (44665025),Odell Beckham Jr.,44665025,WR/FLEX,3000,MIN@DET 11/01/2026 01:00PM ET,MIN,0.0,,Odell Beckham Jr.,dk,3000,odell beckham,MIN,WR,classic,00-0031235,auto_exact,high
+WR,Jeshaun Jones (44665027),Jeshaun Jones,44665027,WR/FLEX,3000,MIN@DET 11/01/2026 01:00PM ET,MIN,2.1,,Jeshaun Jones,dk,3000,jeshaun jones,MIN,WR,classic,00-0039710,auto_exact,high
+WR,Michael Briscoe (44665029),Michael Briscoe,44665029,WR/FLEX,3000,MIN@DET 11/01/2026 01:00PM ET,MIN,0.0,,Michael Briscoe,dk,3000,michael briscoe,MIN,WR,classic,00-0040970,auto_exact,high
+WR,Mack Hollins (44665031),Mack Hollins,44665031,WR/FLEX,3000,NE@MIA 11/01/2026 04:25PM ET,NE,9.0,IR,Mack Hollins,dk,3000,mack hollins,NE,WR,classic,00-0033555,auto_exact,high
+WR,Romeo Doubs (44665033),Romeo Doubs,44665033,WR/FLEX,3000,NE@MIA 11/01/2026 04:25PM ET,NE,9.7,IR,Romeo Doubs,dk,3000,romeo doubs,NE,WR,classic,00-0037816,auto_exact,high
+WR,Chandler Brayboy (44665035),Chandler Brayboy,44665035,WR/FLEX,3000,NE@MIA 11/01/2026 04:25PM ET,NE,0.0,,Chandler Brayboy,dk,3000,chandler brayboy,NE,WR,classic,00-0040323,auto_exact,high
+WR,Ryan Miller (44665037),Ryan Miller,44665037,WR/FLEX,3000,NE@MIA 11/01/2026 04:25PM ET,NE,3.6,,Ryan Miller,dk,3000,ryan miller,NE,WR,classic,00-0038824,auto_exact,high
+WR,Kyle Dixon (44665039),Kyle Dixon,44665039,WR/FLEX,3000,NE@MIA 11/01/2026 04:25PM ET,NE,0.0,,Kyle Dixon,dk,3000,kyle dixon,NE,WR,classic,00-0041318,auto_exact,high
+WR,Cameron Dorner (44665041),Cameron Dorner,44665041,WR/FLEX,3000,NE@MIA 11/01/2026 04:25PM ET,NE,0.0,,Cameron Dorner,dk,3000,cameron dorner,NE,WR,classic,00-0041319,auto_exact,high
+WR,Tim Patrick (44665043),Tim Patrick,44665043,WR/FLEX,3000,LV@NYJ 11/01/2026 01:00PM ET,NYJ,2.4,,Tim Patrick,dk,3000,tim patrick,NYJ,WR,classic,00-0033375,auto_exact,high
+WR,Isaiah Williams (44665045),Isaiah Williams,44665045,WR/FLEX,3000,LV@NYJ 11/01/2026 01:00PM ET,NYJ,4.9,,Isaiah Williams,dk,3000,isaiah williams,NYJ,WR,classic,00-0039451,auto_exact,high
+WR,Malik McClain (44665047),Malik McClain,44665047,WR/FLEX,3000,LV@NYJ 11/01/2026 01:00PM ET,NYJ,0.0,,Malik McClain,dk,3000,malik mcclain,NYJ,WR,classic,00-0041267,auto_exact,high
+WR,Arian Smith (44665049),Arian Smith,44665049,WR/FLEX,3000,LV@NYJ 11/01/2026 01:00PM ET,NYJ,0.0,IR,Arian Smith,dk,3000,arian smith,NYJ,WR,classic,00-0040582,auto_exact,high
+WR,Sterling Shepard (44665051),Sterling Shepard,44665051,WR/FLEX,3000,LV@NYJ 11/01/2026 01:00PM ET,NYJ,1.7,,Sterling Shepard,dk,3000,sterling shepard,NYJ,WR,classic,00-0032385,auto_exact,high
+WR,Jamaal Pritchett (44665053),Jamaal Pritchett,44665053,WR/FLEX,3000,LV@NYJ 11/01/2026 01:00PM ET,NYJ,0.0,,Jamaal Pritchett,dk,3000,jamaal pritchett,NYJ,WR,classic,00-0040405,auto_exact,high
+WR,Reggie Virgil (44665055),Reggie Virgil,44665055,WR/FLEX,3000,ARI@DAL 11/01/2026 01:00PM ET,ARI,1.6,,Reggie Virgil,dk,3000,reggie virgil,ARI,WR,classic,00-0041070,auto_exact,high
+WR,Simi Fehoko (44665057),Simi Fehoko,44665057,WR/FLEX,3000,ARI@DAL 11/01/2026 01:00PM ET,ARI,0.0,,Simi Fehoko,dk,3000,simi fehoko,ARI,WR,classic,00-0036646,auto_exact,high
+WR,Devin Duvernay (44665059),Devin Duvernay,44665059,WR/FLEX,3000,ARI@DAL 11/01/2026 01:00PM ET,ARI,0.0,,Devin Duvernay,dk,3000,devin duvernay,ARI,WR,classic,00-0036331,auto_exact,high
+WR,Harrison Wallace III (44665061),Harrison Wallace III,44665061,WR/FLEX,3000,ARI@DAL 11/01/2026 01:00PM ET,ARI,0.0,,Harrison Wallace III,dk,3000,harrison wallace,ARI,WR,classic,00-0041368,auto_exact,high
+WR,Shedrick Jackson (44665063),Shedrick Jackson,44665063,WR/FLEX,3000,ARI@DAL 11/01/2026 01:00PM ET,ARI,0.0,,Shedrick Jackson,dk,3000,shedrick jackson,ARI,WR,classic,00-0038891,auto_exact,high
+WR,Ben Skowronek (44665065),Ben Skowronek,44665065,WR/FLEX,3000,CLE@PIT 11/01/2026 01:00PM ET,PIT,2.4,Q,Ben Skowronek,dk,3000,ben skowronek,PIT,WR,classic,00-0036862,auto_exact,high
+WR,Kaden Wetjen (44665067),Kaden Wetjen,44665067,WR/FLEX,3000,CLE@PIT 11/01/2026 01:00PM ET,PIT,0.0,,Kaden Wetjen,dk,3000,kaden wetjen,PIT,WR,classic,00-0041397,auto_exact,high
+WR,Brandon Smith (44665069),Brandon Smith,44665069,WR/FLEX,3000,CLE@PIT 11/01/2026 01:00PM ET,PIT,1.5,,Brandon Smith,dk,3000,brandon smith,PIT,WR,classic,00-0036775,auto_exact,high
+WR,Brandon Johnson (44665071),Brandon Johnson,44665071,WR/FLEX,3000,CLE@PIT 11/01/2026 01:00PM ET,PIT,0.0,,Brandon Johnson,dk,3000,brandon johnson,PIT,WR,classic,00-0037382,auto_exact,high
+WR,Michael Pittman Jr. (44665073),Michael Pittman Jr.,44665073,WR/FLEX,3000,CLE@PIT 11/01/2026 01:00PM ET,PIT,5.3,IR,Michael Pittman Jr.,dk,3000,michael pittman,PIT,WR,classic,00-0036252,auto_exact,high
+WR,Roman Wilson (44665075),Roman Wilson,44665075,WR/FLEX,3000,CLE@PIT 11/01/2026 01:00PM ET,PIT,7.5,IR,Roman Wilson,dk,3000,roman wilson,PIT,WR,classic,00-0039739,auto_exact,high
+WR,Cole Burgess (44665077),Cole Burgess,44665077,WR/FLEX,3000,CLE@PIT 11/01/2026 01:00PM ET,PIT,0.0,IR,Cole Burgess,dk,3000,cole burgess,PIT,WR,classic,00-0039626,auto_exact,high
+WR,Marquez Valdes-Scantling (44665079),Marquez Valdes-Scantling,44665079,WR/FLEX,3000,CLE@PIT 11/01/2026 01:00PM ET,PIT,1.4,,Marquez Valdes-Scantling,dk,3000,marquez valdes scantling,PIT,WR,classic,00-0034272,auto_exact,high
+WR,Isaiah Hodgins (44665081),Isaiah Hodgins,44665081,WR/FLEX,3000,CLE@PIT 11/01/2026 01:00PM ET,PIT,0.0,,Isaiah Hodgins,dk,3000,isaiah hodgins,PIT,WR,classic,00-0036165,auto_exact,high
+WR,Theo Wease Jr. (44665083),Theo Wease Jr.,44665083,WR/FLEX,3000,LAC@LAR 11/01/2026 04:05PM ET,LAC,3.4,,Theo Wease Jr.,dk,3000,theo wease,LAC,WR,classic,00-0040311,auto_exact,high
+WR,Derius Davis (44665085),Derius Davis,44665085,WR/FLEX,3000,LAC@LAR 11/01/2026 04:05PM ET,LAC,0.2,,Derius Davis,dk,3000,derius davis,LAC,WR,classic,00-0038573,auto_exact,high
+WR,Gary Jennings (44665087),Gary Jennings,44665087,WR/FLEX,3000,LAC@LAR 11/01/2026 04:05PM ET,LAC,0.0,,Gary Jennings,dk,3000,gary jennings,LAC,WR,classic,00-0035589,auto_exact,high
+WR,Luke Grimm (44665089),Luke Grimm,44665089,WR/FLEX,3000,LAC@LAR 11/01/2026 04:05PM ET,LAC,0.0,,Luke Grimm,dk,3000,luke grimm,LAC,WR,classic,00-0040461,auto_exact,high
+WR,David Sills V (44665091),David Sills V,44665091,WR/FLEX,3000,ATL@TB 11/01/2026 01:00PM ET,TB,0.0,,David Sills V,dk,3000,david sills,TB,WR,classic,00-0035359,auto_exact,high
+WR,Kameron Johnson (44665093),Kameron Johnson,44665093,WR/FLEX,3000,ATL@TB 11/01/2026 01:00PM ET,TB,0.2,,Kameron Johnson,dk,3000,kameron johnson,TB,WR,classic,00-0039589,auto_exact,high
+WR,Jalen McMillan (44665095),Jalen McMillan,44665095,WR/FLEX,3000,ATL@TB 11/01/2026 01:00PM ET,TB,0.0,IR,Jalen McMillan,dk,3000,jalen mcmillan,TB,WR,classic,00-0039855,auto_exact,high
+WR,Eric Rivers Jr. (44665097),Eric Rivers Jr.,44665097,WR/FLEX,3000,ATL@TB 11/01/2026 01:00PM ET,TB,0.0,,Eric Rivers Jr.,dk,3000,eric rivers,TB,WR,classic,00-0041257,auto_exact,high
+WR,Garrett Greene (44665099),Garrett Greene,44665099,WR/FLEX,3000,ATL@TB 11/01/2026 01:00PM ET,TB,0.0,,Garrett Greene,dk,3000,garrett greene,TB,WR,classic,00-0040419,auto_exact,high
+WR,Dean Patterson IV (44665101),Dean Patterson IV,44665101,WR/FLEX,3000,ATL@TB 11/01/2026 01:00PM ET,TB,0.0,,Dean Patterson IV,dk,3000,dean patterson,TB,WR,classic,00-0041435,auto_exact,high
+WR,Josh Cameron (44665103),Josh Cameron,44665103,WR/FLEX,3000,IND@JAX 11/01/2026 01:00PM ET,JAX,5.3,,Josh Cameron,dk,3000,josh cameron,JAX,WR,classic,00-0041100,auto_exact,high
+WR,CJ Williams (44665105),CJ Williams,44665105,WR/FLEX,3000,IND@JAX 11/01/2026 01:00PM ET,JAX,0.0,,CJ Williams,dk,3000,cj williams,JAX,WR,classic,00-0041106,auto_exact,high
+WR,Tim Jones (44665107),Tim Jones,44665107,WR/FLEX,3000,IND@JAX 11/01/2026 01:00PM ET,JAX,0.0,,Tim Jones,dk,3000,tim jones,JAX,WR,classic,00-0036497,auto_exact,high
+WR,Austin Trammell (44665109),Austin Trammell,44665109,WR/FLEX,3000,IND@JAX 11/01/2026 01:00PM ET,JAX,0.0,,Austin Trammell,dk,3000,austin trammell,JAX,WR,classic,00-0036841,auto_exact,high
+WR,Michael Wortham (44665111),Michael Wortham,44665111,WR/FLEX,3000,IND@JAX 11/01/2026 01:00PM ET,JAX,0.0,,Michael Wortham,dk,3000,michael wortham,JAX,WR,classic,00-0041220,auto_exact,high
+WR,Trebor Pena (44665113),Trebor Pena,44665113,WR/FLEX,3000,IND@JAX 11/01/2026 01:00PM ET,JAX,0.0,,Trebor Pena,dk,3000,trebor pena,JAX,WR,classic,00-0041216,auto_exact,high
+WR,Devontez Walker (44665115),Devontez Walker,44665115,WR/FLEX,3000,BAL@BUF 11/01/2026 01:00PM ET,BAL,2.9,,Devontez Walker,dk,3000,devontez walker,BAL,WR,classic,00-0039792,auto_exact,high
+WR,LaJohntay Wester (44665117),LaJohntay Wester,44665117,WR/FLEX,3000,BAL@BUF 11/01/2026 01:00PM ET,BAL,1.2,,LaJohntay Wester,dk,3000,lajohntay wester,BAL,WR,classic,00-0040075,auto_exact,high
+WR,Elijah Sarratt (44665119),Elijah Sarratt,44665119,WR/FLEX,3000,BAL@BUF 11/01/2026 01:00PM ET,BAL,2.3,,Elijah Sarratt,dk,3000,elijah sarratt,BAL,WR,classic,00-0040876,auto_exact,high
+WR,Chris Moore (44665121),Chris Moore,44665121,WR/FLEX,3000,BAL@BUF 11/01/2026 01:00PM ET,BAL,3.8,,Chris Moore,dk,3000,chris moore,BAL,WR,classic,00-0032398,auto_exact,high
+WR,Gage Larvadain (44665123),Gage Larvadain,44665123,WR/FLEX,3000,BAL@BUF 11/01/2026 01:00PM ET,BAL,0.0,,Gage Larvadain,dk,3000,gage larvadain,BAL,WR,classic,00-0040259,auto_exact,high
+TE,Terrance Ferguson (44665175),Terrance Ferguson,44665175,TE/FLEX,3000,LAC@LAR 11/01/2026 04:05PM ET,LAR,6.4,IR,Terrance Ferguson,dk,3000,terrance ferguson,LA,TE,classic,00-0040737,auto_exact,high
+TE,David Njoku (44665177),David Njoku,44665177,TE/FLEX,3000,LAC@LAR 11/01/2026 04:05PM ET,LAC,6.4,IR,David Njoku,dk,3000,david njoku,LAC,TE,classic,00-0033885,auto_exact,high
+DST,Vikings (44665387),Vikings,44665387,DST,3000,MIN@DET 11/01/2026 01:00PM ET,MIN,11.8,,Vikings,dk,3000,vikings,MIN,DST,classic,DST_MIN,team_defense,high
+TE,Noah Gray (44665179),Noah Gray,44665179,TE/FLEX,2900,KC@DEN 11/01/2026 04:25PM ET,KC,4.6,,Noah Gray,dk,2900,noah gray,KC,TE,classic,00-0036637,auto_exact,high
+TE,Darnell Washington (44665181),Darnell Washington,44665181,TE/FLEX,2900,CLE@PIT 11/01/2026 01:00PM ET,PIT,7.1,,Darnell Washington,dk,2900,darnell washington,PIT,TE,classic,00-0038558,auto_exact,high
+DST,Buccaneers (44665388),Buccaneers,44665388,DST,2900,ATL@TB 11/01/2026 01:00PM ET,TB,8.9,,Buccaneers,dk,2900,buccaneers,TB,DST,classic,DST_TB,team_defense,high
+TE,Dawson Knox (44665183),Dawson Knox,44665183,TE/FLEX,2800,BAL@BUF 11/01/2026 01:00PM ET,BUF,2.9,,Dawson Knox,dk,2800,dawson knox,BUF,TE,classic,00-0035689,auto_exact,high
+TE,Davis Allen (44665185),Davis Allen,44665185,TE/FLEX,2800,LAC@LAR 11/01/2026 04:05PM ET,LAR,4.3,,Davis Allen,dk,2800,davis allen,LA,TE,classic,00-0039074,auto_exact,high
+DST,Jets (44665389),Jets,44665389,DST,2800,LV@NYJ 11/01/2026 01:00PM ET,NYJ,6.0,,Jets,dk,2800,jets,NYJ,DST,classic,DST_NYJ,team_defense,high
+TE,Drew Sample (44665187),Drew Sample,44665187,TE/FLEX,2700,TEN@CIN 11/01/2026 01:00PM ET,CIN,3.0,,Drew Sample,dk,2700,drew sample,CIN,TE,classic,00-0035631,auto_exact,high
+TE,Elijah Higgins (44665189),Elijah Higgins,44665189,TE/FLEX,2700,ARI@DAL 11/01/2026 01:00PM ET,ARI,4.9,,Elijah Higgins,dk,2700,elijah higgins,ARI,TE,classic,00-0039041,auto_exact,high
+DST,Lions (44665390),Lions,44665390,DST,2700,MIN@DET 11/01/2026 01:00PM ET,DET,5.0,,Lions,dk,2700,lions,DET,DST,classic,DST_DET,team_defense,high
+TE,Brevyn Spann-Ford (44665191),Brevyn Spann-Ford,44665191,TE/FLEX,2600,ARI@DAL 11/01/2026 01:00PM ET,DAL,2.4,,Brevyn Spann-Ford,dk,2600,brevyn spann ford,DAL,TE,classic,00-0039530,auto_exact,high
+TE,Will Mallory (44665193),Will Mallory,44665193,TE/FLEX,2600,IND@JAX 11/01/2026 01:00PM ET,IND,2.0,,Will Mallory,dk,2600,will mallory,IND,TE,classic,00-0038394,auto_exact,high
+DST,Browns (44665391),Browns,44665391,DST,2600,CLE@PIT 11/01/2026 01:00PM ET,CLE,6.3,,Browns,dk,2600,browns,CLE,DST,classic,DST_CLE,team_defense,high
+TE,Charlie Woerner (44665195),Charlie Woerner,44665195,TE/FLEX,2500,ATL@TB 11/01/2026 01:00PM ET,ATL,0.6,,Charlie Woerner,dk,2500,charlie woerner,ATL,TE,classic,00-0036429,auto_exact,high
+TE,Austin Hooper (44665197),Austin Hooper,44665197,TE/FLEX,2500,ATL@TB 11/01/2026 01:00PM ET,ATL,3.0,,Austin Hooper,dk,2500,austin hooper,ATL,TE,classic,00-0032392,auto_exact,high
+TE,Nick Muse (44665199),Nick Muse,44665199,TE/FLEX,2500,ATL@TB 11/01/2026 01:00PM ET,ATL,1.2,,Nick Muse,dk,2500,nick muse,ATL,TE,classic,00-0037317,auto_exact,high
+TE,Jack Velling (44665201),Jack Velling,44665201,TE/FLEX,2500,ATL@TB 11/01/2026 01:00PM ET,ATL,0.0,,Jack Velling,dk,2500,jack velling,ATL,TE,classic,00-0041195,auto_exact,high
+TE,Jackson Hawes (44665203),Jackson Hawes,44665203,TE/FLEX,2500,BAL@BUF 11/01/2026 01:00PM ET,BUF,0.0,,Jackson Hawes,dk,2500,jackson hawes,BUF,TE,classic,00-0040194,auto_exact,high
+TE,Keleki Latu (44665205),Keleki Latu,44665205,TE/FLEX,2500,BAL@BUF 11/01/2026 01:00PM ET,BUF,0.0,,Keleki Latu,dk,2500,keleki latu,BUF,TE,classic,00-0040363,auto_exact,high
+TE,Erick All Jr. (44665207),Erick All Jr.,44665207,TE/FLEX,2500,TEN@CIN 11/01/2026 01:00PM ET,CIN,2.3,IR,Erick All Jr.,dk,2500,erick all,CIN,TE,classic,00-0039814,auto_exact,high
+TE,Jack Endries (44665209),Jack Endries,44665209,TE/FLEX,2500,TEN@CIN 11/01/2026 01:00PM ET,CIN,0.0,,Jack Endries,dk,2500,jack endries,CIN,TE,classic,00-0041116,auto_exact,high
+TE,Tanner Hudson (44665211),Tanner Hudson,44665211,TE/FLEX,2500,TEN@CIN 11/01/2026 01:00PM ET,CIN,4.1,IR,Tanner Hudson,dk,2500,tanner hudson,CIN,TE,classic,00-0034613,auto_exact,high
+TE,Josh Kattus (44665213),Josh Kattus,44665213,TE/FLEX,2500,TEN@CIN 11/01/2026 01:00PM ET,CIN,0.0,OUT,Josh Kattus,dk,2500,josh kattus,CIN,TE,classic,00-0041246,auto_exact,high
+TE,William Wagner (44665215),William Wagner,44665215,TE/FLEX,2500,TEN@CIN 11/01/2026 01:00PM ET,CIN,0.0,,William Wagner,dk,2500,william wagner,CIN,TE,classic,00-0040379,auto_fallback_name_only_position_mismatch,low
+TE,Blake Whiteheart (44665217),Blake Whiteheart,44665217,TE/FLEX,2500,CLE@PIT 11/01/2026 01:00PM ET,CLE,1.8,,Blake Whiteheart,dk,2500,blake whiteheart,CLE,TE,classic,00-0038710,auto_exact,high
+TE,Carsen Ryan (44665219),Carsen Ryan,44665219,TE/FLEX,2500,CLE@PIT 11/01/2026 01:00PM ET,CLE,0.0,,Carsen Ryan,dk,2500,carsen ryan,CLE,TE,classic,00-0041131,auto_exact,high
+TE,Joe Royer (44665221),Joe Royer,44665221,TE/FLEX,2500,CLE@PIT 11/01/2026 01:00PM ET,CLE,0.0,OUT,Joe Royer,dk,2500,joe royer,CLE,TE,classic,00-0041087,auto_exact,high
+TE,John FitzPatrick (44665223),John FitzPatrick,44665223,TE/FLEX,2500,CLE@PIT 11/01/2026 01:00PM ET,CLE,0.0,,John FitzPatrick,dk,2500,john fitzpatrick,CLE,TE,classic,00-0037306,auto_exact,high
+TE,Luke Schoonmaker (44665225),Luke Schoonmaker,44665225,TE/FLEX,2500,ARI@DAL 11/01/2026 01:00PM ET,DAL,0.9,,Luke Schoonmaker,dk,2500,luke schoonmaker,DAL,TE,classic,00-0038547,auto_exact,high
+TE,Princeton Fant (44665227),Princeton Fant,44665227,TE/FLEX,2500,ARI@DAL 11/01/2026 01:00PM ET,DAL,0.0,IR,Princeton Fant,dk,2500,princeton fant,DAL,TE,classic,00-0038735,auto_exact,high
+TE,DJ Rogers (44665229),DJ Rogers,44665229,TE/FLEX,2500,ARI@DAL 11/01/2026 01:00PM ET,DAL,0.0,Q,DJ Rogers,dk,2500,dj rogers,DAL,TE,classic,00-0040938,auto_exact,high
+TE,Michael Trigg (44665231),Michael Trigg,44665231,TE/FLEX,2500,ARI@DAL 11/01/2026 01:00PM ET,DAL,0.0,,Michael Trigg,dk,2500,michael trigg,DAL,TE,classic,00-0040939,auto_exact,high
+TE,James Mitchell (44665233),James Mitchell,44665233,TE/FLEX,2500,ARI@DAL 11/01/2026 01:00PM ET,DAL,0.0,,James Mitchell,dk,2500,james mitchell,DAL,TE,classic,00-0037282,auto_exact,high
+TE,Adam Trautman (44665235),Adam Trautman,44665235,TE/FLEX,2500,KC@DEN 11/01/2026 04:25PM ET,DEN,0.4,,Adam Trautman,dk,2500,adam trautman,DEN,TE,classic,00-0036422,auto_exact,high
+TE,Nate Adkins (44665237),Nate Adkins,44665237,TE/FLEX,2500,KC@DEN 11/01/2026 04:25PM ET,DEN,2.9,,Nate Adkins,dk,2500,nate adkins,DEN,TE,classic,00-0038783,auto_exact,high
+TE,Dallen Bentley (44665239),Dallen Bentley,44665239,TE/FLEX,2500,KC@DEN 11/01/2026 04:25PM ET,DEN,0.0,,Dallen Bentley,dk,2500,dallen bentley,DEN,TE,classic,00-0041133,auto_exact,high
+TE,Caleb Lohner (44665241),Caleb Lohner,44665241,TE/FLEX,2500,KC@DEN 11/01/2026 04:25PM ET,DEN,0.0,IR,Caleb Lohner,dk,2500,caleb lohner,DEN,TE,classic,00-0040240,auto_exact,high
+TE,Lucas Krull (44665243),Lucas Krull,44665243,TE/FLEX,2500,KC@DEN 11/01/2026 04:25PM ET,DEN,0.0,,Lucas Krull,dk,2500,lucas krull,DEN,TE,classic,00-0037539,auto_exact,high
+TE,Mitchell Fraboni (44665245),Mitchell Fraboni,44665245,TE/FLEX,2500,KC@DEN 11/01/2026 04:25PM ET,DEN,0.0,,Mitchell Fraboni,dk,2500,mitchell fraboni,DEN,TE,classic,00-0036943,auto_fallback_name_only_position_mismatch,low
+TE,Brock Wright (44665247),Brock Wright,44665247,TE/FLEX,2500,MIN@DET 11/01/2026 01:00PM ET,DET,1.4,,Brock Wright,dk,2500,brock wright,DET,TE,classic,00-0036754,auto_exact,high
+TE,Tyler Conklin (44665249),Tyler Conklin,44665249,TE/FLEX,2500,MIN@DET 11/01/2026 01:00PM ET,DET,0.4,,Tyler Conklin,dk,2500,tyler conklin,DET,TE,classic,00-0034270,auto_exact,high
+TE,Jackson Meeks (44665251),Jackson Meeks,44665251,TE/FLEX,2500,MIN@DET 11/01/2026 01:00PM ET,DET,0.5,,Jackson Meeks,dk,2500,jackson meeks,DET,TE,classic,00-0040390,auto_exact,high
+TE,Miles Kitselman (44665253),Miles Kitselman,44665253,TE/FLEX,2500,MIN@DET 11/01/2026 01:00PM ET,DET,0.0,,Miles Kitselman,dk,2500,miles kitselman,DET,TE,classic,00-0041457,auto_exact,high
+TE,Thomas Gordon (44665255),Thomas Gordon,44665255,TE/FLEX,2500,MIN@DET 11/01/2026 01:00PM ET,DET,0.0,,Thomas Gordon,dk,2500,thomas gordon,DET,TE,classic,00-0040697,auto_exact,high
+TE,Gunnar Helm (44665257),Gunnar Helm,44665257,TE/FLEX,2500,TEN@CIN 11/01/2026 01:00PM ET,TEN,3.2,,Gunnar Helm,dk,2500,gunnar helm,TEN,TE,classic,00-0040584,auto_exact,high
+TE,Daniel Bellinger (44665259),Daniel Bellinger,44665259,TE/FLEX,2500,TEN@CIN 11/01/2026 01:00PM ET,TEN,1.3,,Daniel Bellinger,dk,2500,daniel bellinger,TEN,TE,classic,00-0038115,auto_exact,high
+TE,David Martin-Robinson (44665261),David Martin-Robinson,44665261,TE/FLEX,2500,TEN@CIN 11/01/2026 01:00PM ET,TEN,0.0,,David Martin-Robinson,dk,2500,david martin robinson,TEN,TE,classic,00-0039648,auto_exact,high
+TE,Kylen Granson (44665263),Kylen Granson,44665263,TE/FLEX,2500,TEN@CIN 11/01/2026 01:00PM ET,TEN,0.0,,Kylen Granson,dk,2500,kylen granson,TEN,TE,classic,00-0036876,auto_exact,high
+TE,Jaren Kanak (44665265),Jaren Kanak,44665265,TE/FLEX,2500,TEN@CIN 11/01/2026 01:00PM ET,TEN,0.0,IR,Jaren Kanak,dk,2500,jaren kanak,TEN,TE,classic,00-0040901,auto_exact,high
+TE,Joel Wilson (44665267),Joel Wilson,44665267,TE/FLEX,2500,TEN@CIN 11/01/2026 01:00PM ET,TEN,0.0,,Joel Wilson,dk,2500,joel wilson,TEN,TE,classic,00-0039023,auto_exact,high
+TE,Mo Alie-Cox (44665269),Mo Alie-Cox,44665269,TE/FLEX,2500,IND@JAX 11/01/2026 01:00PM ET,IND,1.9,,Mo Alie-Cox,dk,2500,mo alie cox,IND,TE,classic,00-0033217,auto_exact,high
+TE,Drew Ogletree (44665271),Drew Ogletree,44665271,TE/FLEX,2500,IND@JAX 11/01/2026 01:00PM ET,IND,0.7,,Drew Ogletree,dk,2500,drew ogletree,IND,TE,classic,00-0037292,manual_override,high
+TE,Pharaoh Brown (44665273),Pharaoh Brown,44665273,TE/FLEX,2500,IND@JAX 11/01/2026 01:00PM ET,IND,0.9,,Pharaoh Brown,dk,2500,pharaoh brown,IND,TE,classic,00-0033439,auto_exact,high
+TE,Carson Towt (44665275),Carson Towt,44665275,TE/FLEX,2500,IND@JAX 11/01/2026 01:00PM ET,IND,0.0,IR,Carson Towt,dk,2500,carson towt,IND,TE,classic,00-0040853,auto_exact,high
+TE,Jake Briningstool (44665277),Jake Briningstool,44665277,TE/FLEX,2500,KC@DEN 11/01/2026 04:25PM ET,KC,0.3,,Jake Briningstool,dk,2500,jake briningstool,KC,TE,classic,00-0040081,auto_exact,high
+TE,Jared Wiley (44665279),Jared Wiley,44665279,TE/FLEX,2500,KC@DEN 11/01/2026 04:25PM ET,KC,0.0,,Jared Wiley,dk,2500,jared wiley,KC,TE,classic,00-0039824,auto_exact,high
+TE,John Michael Gyllenborg (44665281),John Michael Gyllenborg,44665281,TE/FLEX,2500,KC@DEN 11/01/2026 04:25PM ET,KC,0.0,IR,John Michael Gyllenborg,dk,2500,john michael gyllenborg,KC,TE,classic,00-0040955,auto_exact,high
+TE,James Winchester (44665283),James Winchester,44665283,TE/FLEX,2500,KC@DEN 11/01/2026 04:25PM ET,KC,0.0,,James Winchester,dk,2500,james winchester,KC,TE,classic,00-0030615,auto_fallback_name_only_position_mismatch,low
+TE,Thomas Odukoya (44665285),Thomas Odukoya,44665285,TE/FLEX,2500,KC@DEN 11/01/2026 04:25PM ET,KC,0.0,,Thomas Odukoya,dk,2500,thomas odukoya,KC,TE,classic,00-0038145,auto_exact,high
+TE,Ian Thomas (44665287),Ian Thomas,44665287,TE/FLEX,2500,LV@NYJ 11/01/2026 01:00PM ET,LV,2.4,,Ian Thomas,dk,2500,ian thomas,LV,TE,classic,00-0034365,auto_exact,high
+TE,Carter Runyon (44665289),Carter Runyon,44665289,TE/FLEX,2500,LV@NYJ 11/01/2026 01:00PM ET,LV,0.0,IR,Carter Runyon,dk,2500,carter runyon,LV,TE,classic,00-0040488,auto_exact,high
+TE,Patrick Gurd (44665291),Patrick Gurd,44665291,TE/FLEX,2500,LV@NYJ 11/01/2026 01:00PM ET,LV,0.0,,Patrick Gurd,dk,2500,patrick gurd,LV,TE,classic,00-0041016,auto_exact,high
+TE,Max Klare (44665293),Max Klare,44665293,TE/FLEX,2500,LAC@LAR 11/01/2026 04:05PM ET,LAR,0.0,,Max Klare,dk,2500,max klare,LA,TE,classic,00-0041510,auto_exact,high
+TE,Dan Villari (44665295),Dan Villari,44665295,TE/FLEX,2500,LAC@LAR 11/01/2026 04:05PM ET,LAR,0.0,,Dan Villari,dk,2500,dan villari,LA,TE,classic,00-0041422,auto_exact,high
+TE,Will Kacmarek (44665297),Will Kacmarek,44665297,TE/FLEX,2500,NE@MIA 11/01/2026 04:25PM ET,MIA,0.9,,Will Kacmarek,dk,2500,will kacmarek,MIA,TE,classic,00-0041524,auto_exact,high
+TE,Seydou Traore (44665299),Seydou Traore,44665299,TE/FLEX,2500,NE@MIA 11/01/2026 04:25PM ET,MIA,0.0,,Seydou Traore,dk,2500,seydou traore,MIA,TE,classic,00-0041579,auto_exact,high
+TE,Justin Joly (44665301),Justin Joly,44665301,TE/FLEX,2500,NE@MIA 11/01/2026 04:25PM ET,MIA,0.0,,Justin Joly,dk,2500,justin joly,MIA,TE,classic,00-0041077,auto_exact,high
+TE,Cole Turner (44665303),Cole Turner,44665303,TE/FLEX,2500,NE@MIA 11/01/2026 04:25PM ET,MIA,0.0,IR,Cole Turner,dk,2500,cole turner,MIA,TE,classic,00-0037078,auto_exact,high
+TE,Tre Watson (44665305),Tre Watson,44665305,TE/FLEX,2500,NE@MIA 11/01/2026 04:25PM ET,MIA,0.0,,Tre Watson,dk,2500,tre watson,MIA,TE,classic,00-0040094,auto_exact,high
+TE,Gavin Bartholomew (44665307),Gavin Bartholomew,44665307,TE/FLEX,2500,MIN@DET 11/01/2026 01:00PM ET,MIN,2.1,,Gavin Bartholomew,dk,2500,gavin bartholomew,MIN,TE,classic,00-0040215,auto_exact,high
+TE,Ben Yurosek (44665309),Ben Yurosek,44665309,TE/FLEX,2500,MIN@DET 11/01/2026 01:00PM ET,MIN,1.0,,Ben Yurosek,dk,2500,ben yurosek,MIN,TE,classic,00-0040509,auto_exact,high
+TE,Josh Oliver (44665311),Josh Oliver,44665311,TE/FLEX,2500,MIN@DET 11/01/2026 01:00PM ET,MIN,2.5,IR,Josh Oliver,dk,2500,josh oliver,MIN,TE,classic,00-0035249,auto_exact,high
+TE,Cam Grandy (44665313),Cam Grandy,44665313,TE/FLEX,2500,TEN@CIN 11/01/2026 01:00PM ET,CIN,0.0,,Cam Grandy,dk,2500,cam grandy,CIN,TE,classic,00-0039631,auto_exact,high
+TE,Andrew DePaola (44665315),Andrew DePaola,44665315,TE/FLEX,2500,MIN@DET 11/01/2026 01:00PM ET,MIN,0.0,,Andrew DePaola,dk,2500,andrew depaola,MIN,TE,classic,00-0029714,auto_fallback_name_only_position_mismatch,low
+TE,Cameron Latu (44665317),Cameron Latu,44665317,TE/FLEX,2500,NE@MIA 11/01/2026 04:25PM ET,NE,0.0,,Cameron Latu,dk,2500,cameron latu,NE,TE,classic,00-0038564,auto_exact,high
+TE,Tanner Arkin (44665319),Tanner Arkin,44665319,TE/FLEX,2500,NE@MIA 11/01/2026 04:25PM ET,NE,0.0,,Tanner Arkin,dk,2500,tanner arkin,NE,TE,classic,00-0041314,auto_exact,high
+TE,Julian Hill (44665321),Julian Hill,44665321,TE/FLEX,2500,NE@MIA 11/01/2026 04:25PM ET,NE,0.0,IR,Julian Hill,dk,2500,julian hill,NE,TE,classic,00-0038720,auto_exact,high
+TE,Tanner Conner (44665323),Tanner Conner,44665323,TE/FLEX,2500,NE@MIA 11/01/2026 04:25PM ET,NE,0.0,,Tanner Conner,dk,2500,tanner conner,NE,TE,classic,00-0037348,auto_exact,high
+TE,Jeremy Ruckert (44665325),Jeremy Ruckert,44665325,TE/FLEX,2500,LV@NYJ 11/01/2026 01:00PM ET,NYJ,2.7,,Jeremy Ruckert,dk,2500,jeremy ruckert,NYJ,TE,classic,00-0037805,auto_exact,high
+TE,Jelani Woods (44665327),Jelani Woods,44665327,TE/FLEX,2500,LV@NYJ 11/01/2026 01:00PM ET,NYJ,1.1,,Jelani Woods,dk,2500,jelani woods,NYJ,TE,classic,00-0037755,auto_exact,high
+TE,Teagan Quitoriano (44665329),Teagan Quitoriano,44665329,TE/FLEX,2500,ARI@DAL 11/01/2026 01:00PM ET,ARI,5.2,,Teagan Quitoriano,dk,2500,teagan quitoriano,ARI,TE,classic,00-0037277,auto_exact,high
+TE,Tip Reiman (44665331),Tip Reiman,44665331,TE/FLEX,2500,ARI@DAL 11/01/2026 01:00PM ET,ARI,0.0,OUT,Tip Reiman,dk,2500,tip reiman,ARI,TE,classic,00-0039737,auto_exact,high
+TE,Hunter Long (44665333),Hunter Long,44665333,TE/FLEX,2500,ARI@DAL 11/01/2026 01:00PM ET,ARI,0.9,IR,Hunter Long,dk,2500,hunter long,ARI,TE,classic,00-0037004,auto_exact,high
+TE,Jameson Geers (44665335),Jameson Geers,44665335,TE/FLEX,2500,ARI@DAL 11/01/2026 01:00PM ET,ARI,0.0,Q,Jameson Geers,dk,2500,jameson geers,ARI,TE,classic,00-0041366,auto_exact,high
+TE,Kenny Yeboah (44665337),Kenny Yeboah,44665337,TE/FLEX,2500,ARI@DAL 11/01/2026 01:00PM ET,ARI,0.0,,Kenny Yeboah,dk,2500,kenny yeboah,ARI,TE,classic,00-0036510,auto_exact,high
+TE,Shawn Bowman (44665339),Shawn Bowman,44665339,TE/FLEX,2500,ARI@DAL 11/01/2026 01:00PM ET,ARI,0.0,,Shawn Bowman,dk,2500,shawn bowman,ARI,TE,classic,00-0039550,auto_exact,high
+TE,Robert Tonyan (44665341),Robert Tonyan,44665341,TE/FLEX,2500,CLE@PIT 11/01/2026 01:00PM ET,PIT,0.2,,Robert Tonyan,dk,2500,robert tonyan,PIT,TE,classic,00-0033757,auto_exact,high
+TE,Lake McRee (44665343),Lake McRee,44665343,TE/FLEX,2500,CLE@PIT 11/01/2026 01:00PM ET,PIT,0.0,,Lake McRee,dk,2500,lake mcree,PIT,TE,classic,00-0041263,auto_exact,high
+TE,Charlie Kolar (44665345),Charlie Kolar,44665345,TE/FLEX,2500,LAC@LAR 11/01/2026 04:05PM ET,LAC,4.0,,Charlie Kolar,dk,2500,charlie kolar,LAC,TE,classic,00-0038046,auto_exact,high
+TE,Hayden Rucci (44665347),Hayden Rucci,44665347,TE/FLEX,2500,LAC@LAR 11/01/2026 04:05PM ET,LAC,1.9,,Hayden Rucci,dk,2500,hayden rucci,LAC,TE,classic,00-0039489,auto_exact,high
+TE,Patrick Herbert (44665349),Patrick Herbert,44665349,TE/FLEX,2500,LAC@LAR 11/01/2026 04:05PM ET,LAC,0.0,,Patrick Herbert,dk,2500,patrick herbert,LAC,TE,classic,00-0040331,auto_exact,high
+TE,Payne Durham (44665351),Payne Durham,44665351,TE/FLEX,2500,ATL@TB 11/01/2026 01:00PM ET,TB,0.2,,Payne Durham,dk,2500,payne durham,TB,TE,classic,00-0039050,auto_exact,high
+TE,Ko Kieft (44665353),Ko Kieft,44665353,TE/FLEX,2500,ATL@TB 11/01/2026 01:00PM ET,TB,0.0,,Ko Kieft,dk,2500,ko kieft,TB,TE,classic,00-0037311,auto_exact,high
+TE,Bauer Sharp (44665355),Bauer Sharp,44665355,TE/FLEX,2500,ATL@TB 11/01/2026 01:00PM ET,TB,0.4,,Bauer Sharp,dk,2500,bauer sharp,TB,TE,classic,00-0041094,auto_exact,high
+TE,Evan Deckers (44665357),Evan Deckers,44665357,TE/FLEX,2500,ATL@TB 11/01/2026 01:00PM ET,TB,0.0,,Evan Deckers,dk,2500,evan deckers,TB,TE,classic,00-0038817,auto_fallback_name_only_position_mismatch,low
+TE,CJ Dippre (44665359),CJ Dippre,44665359,TE/FLEX,2500,ATL@TB 11/01/2026 01:00PM ET,TB,0.0,,CJ Dippre,dk,2500,cj dippre,TB,TE,classic,00-0040566,auto_exact,high
+TE,Nate Boerkircher (44665361),Nate Boerkircher,44665361,TE/FLEX,2500,IND@JAX 11/01/2026 01:00PM ET,JAX,2.9,,Nate Boerkircher,dk,2500,nate boerkircher,JAX,TE,classic,00-0041503,auto_exact,high
+TE,Tanner Koziol (44665363),Tanner Koziol,44665363,TE/FLEX,2500,IND@JAX 11/01/2026 01:00PM ET,JAX,0.0,,Tanner Koziol,dk,2500,tanner koziol,JAX,TE,classic,00-0041084,auto_exact,high
+TE,Quintin Morris (44665365),Quintin Morris,44665365,TE/FLEX,2500,IND@JAX 11/01/2026 01:00PM ET,JAX,0.3,,Quintin Morris,dk,2500,quintin morris,JAX,TE,classic,00-0036590,auto_exact,high
+TE,Brenden Bates (44665367),Brenden Bates,44665367,TE/FLEX,2500,IND@JAX 11/01/2026 01:00PM ET,JAX,0.0,,Brenden Bates,dk,2500,brenden bates,JAX,TE,classic,00-0039458,auto_exact,high
+TE,Matt Hibner (44665369),Matt Hibner,44665369,TE/FLEX,2500,BAL@BUF 11/01/2026 01:00PM ET,BAL,3.0,,Matt Hibner,dk,2500,matt hibner,BAL,TE,classic,00-0040879,manual_override,high
+TE,Josh Cuevas (44665371),Josh Cuevas,44665371,TE/FLEX,2500,BAL@BUF 11/01/2026 01:00PM ET,BAL,3.8,,Josh Cuevas,dk,2500,josh cuevas,BAL,TE,classic,00-0040887,auto_exact,high
+TE,Nick Vannett (44665373),Nick Vannett,44665373,TE/FLEX,2500,BAL@BUF 11/01/2026 01:00PM ET,BAL,0.0,,Nick Vannett,dk,2500,nick vannett,BAL,TE,classic,00-0032394,auto_exact,high
+TE,Durham Smythe (44665375),Durham Smythe,44665375,TE/FLEX,2500,BAL@BUF 11/01/2026 01:00PM ET,BAL,0.4,IR,Durham Smythe,dk,2500,durham smythe,BAL,TE,classic,00-0034798,auto_exact,high
+TE,Ty Pezza (44665377),Ty Pezza,44665377,TE/FLEX,2500,BAL@BUF 11/01/2026 01:00PM ET,BAL,0.0,,Ty Pezza,dk,2500,ty pezza,BAL,TE,classic,00-0040986,auto_fallback_name_only_position_mismatch,low
+DST,Falcons (44665392),Falcons,44665392,DST,2500,ATL@TB 11/01/2026 01:00PM ET,ATL,6.1,,Falcons,dk,2500,falcons,ATL,DST,classic,DST_ATL,team_defense,high
+DST,Raiders (44665393),Raiders,44665393,DST,2500,LV@NYJ 11/01/2026 01:00PM ET,LV,5.6,,Raiders,dk,2500,raiders,LV,DST,classic,DST_LV,team_defense,high
+DST,Colts (44665394),Colts,44665394,DST,2400,IND@JAX 11/01/2026 01:00PM ET,IND,3.0,,Colts,dk,2400,colts,IND,DST,classic,DST_IND,team_defense,high
+DST,Ravens (44665395),Ravens,44665395,DST,2400,BAL@BUF 11/01/2026 01:00PM ET,BAL,4.4,,Ravens,dk,2400,ravens,BAL,DST,classic,DST_BAL,team_defense,high
+DST,Broncos (44665396),Broncos,44665396,DST,2300,KC@DEN 11/01/2026 04:25PM ET,DEN,7.9,,Broncos,dk,2300,broncos,DEN,DST,classic,DST_DEN,team_defense,high
+DST,Dolphins (44665397),Dolphins,44665397,DST,2300,NE@MIA 11/01/2026 04:25PM ET,MIA,2.0,,Dolphins,dk,2300,dolphins,MIA,DST,classic,DST_MIA,team_defense,high
+DST,Cardinals (44665398),Cardinals,44665398,DST,2200,ARI@DAL 11/01/2026 01:00PM ET,ARI,3.4,,Cardinals,dk,2200,cardinals,ARI,DST,classic,DST_ARI,team_defense,high
+DST,Titans (44665399),Titans,44665399,DST,2100,TEN@CIN 11/01/2026 01:00PM ET,TEN,6.3,,Titans,dk,2100,titans,TEN,DST,classic,DST_TEN,team_defense,high
+DST,Chargers (44665400),Chargers,44665400,DST,2000,LAC@LAR 11/01/2026 04:05PM ET,LAC,5.0,,Chargers,dk,2000,chargers,LAC,DST,classic,DST_LAC,team_defense,high

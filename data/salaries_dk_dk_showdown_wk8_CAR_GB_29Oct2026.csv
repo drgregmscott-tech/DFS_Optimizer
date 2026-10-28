@@ -1,0 +1,107 @@
+Position,Name + ID,Name,ID,Roster Position,Salary,Game Info,TeamAbbrev,AvgPointsPerGame,Status,roster_role,name,site,salary,normalized_name,normalized_team,position_upper,slate_format,player_id,match_method,match_confidence
+QB,Jordan Love (44672131),Jordan Love,44672131,CPT,15000,CAR@GB 10/29/2026 08:15PM ET,GB,20.3,,CPT,Jordan Love,dk,15000,jordan love,GB,QB,showdown,00-0036264,auto_exact,high
+WR,Christian Watson (44672132),Christian Watson,44672132,CPT,14700,CAR@GB 10/29/2026 08:15PM ET,GB,19.4,,CPT,Christian Watson,dk,14700,christian watson,GB,WR,showdown,00-0038124,auto_exact,high
+QB,Bryce Young (44672133),Bryce Young,44672133,CPT,14400,CAR@GB 10/29/2026 08:15PM ET,CAR,21.1,,CPT,Bryce Young,dk,14400,bryce young,CAR,QB,showdown,00-0039150,auto_exact,high
+WR,Tetairoa McMillan (44672134),Tetairoa McMillan,44672134,CPT,14100,CAR@GB 10/29/2026 08:15PM ET,CAR,17.4,,CPT,Tetairoa McMillan,dk,14100,tetairoa mcmillan,CAR,WR,showdown,00-0040124,auto_exact,high
+RB,Chuba Hubbard (44672135),Chuba Hubbard,44672135,CPT,13500,CAR@GB 10/29/2026 08:15PM ET,CAR,19.0,,CPT,Chuba Hubbard,dk,13500,chuba hubbard,CAR,RB,showdown,00-0036555,auto_exact,high
+RB,Josh Jacobs (44672136),Josh Jacobs,44672136,CPT,13200,CAR@GB 10/29/2026 08:15PM ET,GB,20.1,,CPT,Josh Jacobs,dk,13200,josh jacobs,GB,RB,showdown,00-0035700,auto_exact,high
+WR,Matthew Golden (44672137),Matthew Golden,44672137,CPT,12600,CAR@GB 10/29/2026 08:15PM ET,GB,17.1,Q,CPT,Matthew Golden,dk,12600,matthew golden,GB,WR,showdown,00-0040667,auto_exact,high
+WR,Jalen Coker (44672138),Jalen Coker,44672138,CPT,11700,CAR@GB 10/29/2026 08:15PM ET,CAR,14.6,,CPT,Jalen Coker,dk,11700,jalen coker,CAR,WR,showdown,00-0039491,auto_exact,high
+TE,Tucker Kraft (44672139),Tucker Kraft,44672139,CPT,11100,CAR@GB 10/29/2026 08:15PM ET,GB,10.2,,CPT,Tucker Kraft,dk,11100,tucker kraft,GB,TE,showdown,00-0038996,auto_exact,high
+QB,Jordan Love (44672078),Jordan Love,44672078,FLEX,10000,CAR@GB 10/29/2026 08:15PM ET,GB,20.3,,FLEX,Jordan Love,dk,10000,jordan love,GB,QB,showdown,00-0036264,auto_exact,high
+WR,Christian Watson (44672079),Christian Watson,44672079,FLEX,9800,CAR@GB 10/29/2026 08:15PM ET,GB,19.4,,FLEX,Christian Watson,dk,9800,christian watson,GB,WR,showdown,00-0038124,auto_exact,high
+QB,Bryce Young (44672080),Bryce Young,44672080,FLEX,9600,CAR@GB 10/29/2026 08:15PM ET,CAR,21.1,,FLEX,Bryce Young,dk,9600,bryce young,CAR,QB,showdown,00-0039150,auto_exact,high
+WR,Tetairoa McMillan (44672081),Tetairoa McMillan,44672081,FLEX,9400,CAR@GB 10/29/2026 08:15PM ET,CAR,17.4,,FLEX,Tetairoa McMillan,dk,9400,tetairoa mcmillan,CAR,WR,showdown,00-0040124,auto_exact,high
+RB,Chuba Hubbard (44672082),Chuba Hubbard,44672082,FLEX,9000,CAR@GB 10/29/2026 08:15PM ET,CAR,19.0,,FLEX,Chuba Hubbard,dk,9000,chuba hubbard,CAR,RB,showdown,00-0036555,auto_exact,high
+QB,Haynes King (44672140),Haynes King,44672140,CPT,9000,CAR@GB 10/29/2026 08:15PM ET,CAR,0.0,,CPT,Haynes King,dk,9000,haynes king,CAR,QB,showdown,00-0041149,auto_exact,high
+QB,Kenny Pickett (44672141),Kenny Pickett,44672141,CPT,9000,CAR@GB 10/29/2026 08:15PM ET,CAR,1.8,,CPT,Kenny Pickett,dk,9000,kenny pickett,CAR,QB,showdown,00-0038102,auto_exact,high
+QB,Tyrod Taylor (44672142),Tyrod Taylor,44672142,CPT,9000,CAR@GB 10/29/2026 08:15PM ET,GB,-0.2,,CPT,Tyrod Taylor,dk,9000,tyrod taylor,GB,QB,showdown,00-0028118,auto_exact,high
+QB,Kedon Slovis (44672143),Kedon Slovis,44672143,CPT,9000,CAR@GB 10/29/2026 08:15PM ET,GB,0.0,,CPT,Kedon Slovis,dk,9000,kedon slovis,GB,QB,showdown,00-0039577,auto_exact,high
+RB,Josh Jacobs (44672083),Josh Jacobs,44672083,FLEX,8800,CAR@GB 10/29/2026 08:15PM ET,GB,20.1,,FLEX,Josh Jacobs,dk,8800,josh jacobs,GB,RB,showdown,00-0035700,auto_exact,high
+WR,Matthew Golden (44672084),Matthew Golden,44672084,FLEX,8400,CAR@GB 10/29/2026 08:15PM ET,GB,17.1,Q,FLEX,Matthew Golden,dk,8400,matthew golden,GB,WR,showdown,00-0040667,auto_exact,high
+TE,Darren Waller (44672144),Darren Waller,44672144,CPT,8100,CAR@GB 10/29/2026 08:15PM ET,CAR,8.6,,CPT,Darren Waller,dk,8100,darren waller,CAR,TE,showdown,00-0031610,auto_exact,high
+WR,Jalen Coker (44672085),Jalen Coker,44672085,FLEX,7800,CAR@GB 10/29/2026 08:15PM ET,CAR,14.6,,FLEX,Jalen Coker,dk,7800,jalen coker,CAR,WR,showdown,00-0039491,auto_exact,high
+K,Trey Smack (44672145),Trey Smack,44672145,CPT,7500,CAR@GB 10/29/2026 08:15PM ET,GB,7.6,,CPT,Trey Smack,dk,7500,trey smack,GB,K,showdown,00-0040899,auto_exact,high
+K,Lenny Krieg (44672146),Lenny Krieg,44672146,CPT,7500,CAR@GB 10/29/2026 08:15PM ET,GB,0.0,,CPT,Lenny Krieg,dk,7500,lenny krieg,GB,K,showdown,00-0040003,auto_exact,high
+TE,Tucker Kraft (44672086),Tucker Kraft,44672086,FLEX,7400,CAR@GB 10/29/2026 08:15PM ET,GB,10.2,,FLEX,Tucker Kraft,dk,7400,tucker kraft,GB,TE,showdown,00-0038996,auto_exact,high
+K,Ryan Fitzgerald (44672147),Ryan Fitzgerald,44672147,CPT,7200,CAR@GB 10/29/2026 08:15PM ET,CAR,8.8,,CPT,Ryan Fitzgerald,dk,7200,ryan fitzgerald,CAR,K,showdown,00-0040279,auto_exact,high
+WR,Savion Williams (44672148),Savion Williams,44672148,CPT,6600,CAR@GB 10/29/2026 08:15PM ET,GB,8.1,,CPT,Savion Williams,dk,6600,savion williams,GB,WR,showdown,00-0040009,auto_exact,high
+QB,Haynes King (44672087),Haynes King,44672087,FLEX,6000,CAR@GB 10/29/2026 08:15PM ET,CAR,0.0,,FLEX,Haynes King,dk,6000,haynes king,CAR,QB,showdown,00-0041149,auto_exact,high
+QB,Kenny Pickett (44672088),Kenny Pickett,44672088,FLEX,6000,CAR@GB 10/29/2026 08:15PM ET,CAR,1.8,,FLEX,Kenny Pickett,dk,6000,kenny pickett,CAR,QB,showdown,00-0038102,auto_exact,high
+QB,Tyrod Taylor (44672089),Tyrod Taylor,44672089,FLEX,6000,CAR@GB 10/29/2026 08:15PM ET,GB,-0.2,,FLEX,Tyrod Taylor,dk,6000,tyrod taylor,GB,QB,showdown,00-0028118,auto_exact,high
+QB,Kedon Slovis (44672090),Kedon Slovis,44672090,FLEX,6000,CAR@GB 10/29/2026 08:15PM ET,GB,0.0,,FLEX,Kedon Slovis,dk,6000,kedon slovis,GB,QB,showdown,00-0039577,auto_exact,high
+DST,Packers (44672149),Packers,44672149,CPT,6000,CAR@GB 10/29/2026 08:15PM ET,GB,6.4,,CPT,Packers,dk,6000,packers,GB,DST,showdown,DST_GB,team_defense,high
+RB,MarShawn Lloyd (44672150),MarShawn Lloyd,44672150,CPT,5700,CAR@GB 10/29/2026 08:15PM ET,GB,7.2,,CPT,MarShawn Lloyd,dk,5700,marshawn lloyd,GB,RB,showdown,00-0039811,auto_exact,high
+TE,Darren Waller (44672091),Darren Waller,44672091,FLEX,5400,CAR@GB 10/29/2026 08:15PM ET,CAR,8.6,,FLEX,Darren Waller,dk,5400,darren waller,CAR,TE,showdown,00-0031610,auto_exact,high
+DST,Panthers (44672151),Panthers,44672151,CPT,5400,CAR@GB 10/29/2026 08:15PM ET,CAR,5.2,,CPT,Panthers,dk,5400,panthers,CAR,DST,showdown,DST_CAR,team_defense,high
+WR,John Metchie III (44672152),John Metchie III,44672152,CPT,5100,CAR@GB 10/29/2026 08:15PM ET,CAR,5.0,,CPT,John Metchie III,dk,5100,john metchie,CAR,WR,showdown,00-0037614,auto_exact,high
+K,Trey Smack (44672092),Trey Smack,44672092,FLEX,5000,CAR@GB 10/29/2026 08:15PM ET,GB,7.6,,FLEX,Trey Smack,dk,5000,trey smack,GB,K,showdown,00-0040899,auto_exact,high
+K,Lenny Krieg (44672093),Lenny Krieg,44672093,FLEX,5000,CAR@GB 10/29/2026 08:15PM ET,GB,0.0,,FLEX,Lenny Krieg,dk,5000,lenny krieg,GB,K,showdown,00-0040003,auto_exact,high
+K,Ryan Fitzgerald (44672094),Ryan Fitzgerald,44672094,FLEX,4800,CAR@GB 10/29/2026 08:15PM ET,CAR,8.8,,FLEX,Ryan Fitzgerald,dk,4800,ryan fitzgerald,CAR,K,showdown,00-0040279,auto_exact,high
+RB,Trevor Etienne (44672153),Trevor Etienne,44672153,CPT,4800,CAR@GB 10/29/2026 08:15PM ET,CAR,2.2,,CPT,Trevor Etienne,dk,4800,trevor etienne,CAR,RB,showdown,00-0040644,auto_exact,high
+WR,Brycen Tremayne (44672154),Brycen Tremayne,44672154,CPT,4500,CAR@GB 10/29/2026 08:15PM ET,CAR,2.9,,CPT,Brycen Tremayne,dk,4500,brycen tremayne,CAR,WR,showdown,00-0038840,auto_exact,high
+WR,Savion Williams (44672095),Savion Williams,44672095,FLEX,4400,CAR@GB 10/29/2026 08:15PM ET,GB,8.1,,FLEX,Savion Williams,dk,4400,savion williams,GB,WR,showdown,00-0040009,auto_exact,high
+DST,Packers (44672096),Packers,44672096,FLEX,4000,CAR@GB 10/29/2026 08:15PM ET,GB,6.4,,FLEX,Packers,dk,4000,packers,GB,DST,showdown,DST_GB,team_defense,high
+TE,Tommy Tremble (44672155),Tommy Tremble,44672155,CPT,3900,CAR@GB 10/29/2026 08:15PM ET,CAR,6.9,,CPT,Tommy Tremble,dk,3900,tommy tremble,CAR,TE,showdown,00-0037005,auto_exact,high
+RB,MarShawn Lloyd (44672097),MarShawn Lloyd,44672097,FLEX,3800,CAR@GB 10/29/2026 08:15PM ET,GB,7.2,,FLEX,MarShawn Lloyd,dk,3800,marshawn lloyd,GB,RB,showdown,00-0039811,auto_exact,high
+DST,Panthers (44672098),Panthers,44672098,FLEX,3600,CAR@GB 10/29/2026 08:15PM ET,CAR,5.2,,FLEX,Panthers,dk,3600,panthers,CAR,DST,showdown,DST_CAR,team_defense,high
+RB,Pierre Strong Jr. (44672156),Pierre Strong Jr.,44672156,CPT,3600,CAR@GB 10/29/2026 08:15PM ET,GB,5.5,,CPT,Pierre Strong Jr.,dk,3600,pierre strong,GB,RB,showdown,00-0038098,auto_exact,high
+WR,John Metchie III (44672099),John Metchie III,44672099,FLEX,3400,CAR@GB 10/29/2026 08:15PM ET,CAR,5.0,,FLEX,John Metchie III,dk,3400,john metchie,CAR,WR,showdown,00-0037614,auto_exact,high
+RB,Trevor Etienne (44672100),Trevor Etienne,44672100,FLEX,3200,CAR@GB 10/29/2026 08:15PM ET,CAR,2.2,,FLEX,Trevor Etienne,dk,3200,trevor etienne,CAR,RB,showdown,00-0040644,auto_exact,high
+WR,Brycen Tremayne (44672101),Brycen Tremayne,44672101,FLEX,3000,CAR@GB 10/29/2026 08:15PM ET,CAR,2.9,,FLEX,Brycen Tremayne,dk,3000,brycen tremayne,CAR,WR,showdown,00-0038840,auto_exact,high
+RB,AJ Dillon (44672157),AJ Dillon,44672157,CPT,3000,CAR@GB 10/29/2026 08:15PM ET,CAR,1.7,,CPT,AJ Dillon,dk,3000,aj dillon,CAR,RB,showdown,00-0036265,auto_exact,high
+TE,Tommy Tremble (44672102),Tommy Tremble,44672102,FLEX,2600,CAR@GB 10/29/2026 08:15PM ET,CAR,6.9,,FLEX,Tommy Tremble,dk,2600,tommy tremble,CAR,TE,showdown,00-0037005,auto_exact,high
+RB,Pierre Strong Jr. (44672103),Pierre Strong Jr.,44672103,FLEX,2400,CAR@GB 10/29/2026 08:15PM ET,GB,5.5,,FLEX,Pierre Strong Jr.,dk,2400,pierre strong,GB,RB,showdown,00-0038098,auto_exact,high
+TE,Mitchell Evans (44672158),Mitchell Evans,44672158,CPT,2400,CAR@GB 10/29/2026 08:15PM ET,CAR,3.1,,CPT,Mitchell Evans,dk,2400,mitchell evans,CAR,TE,showdown,00-0040187,auto_exact,high
+RB,Kaleb Johnson (44672159),Kaleb Johnson,44672159,CPT,2100,CAR@GB 10/29/2026 08:15PM ET,GB,1.9,,CPT,Kaleb Johnson,dk,2100,kaleb johnson,GB,RB,showdown,00-0040142,auto_exact,high
+RB,AJ Dillon (44672104),AJ Dillon,44672104,FLEX,2000,CAR@GB 10/29/2026 08:15PM ET,CAR,1.7,,FLEX,AJ Dillon,dk,2000,aj dillon,CAR,RB,showdown,00-0036265,auto_exact,high
+TE,Jonnu Smith (44672160),Jonnu Smith,44672160,CPT,1800,CAR@GB 10/29/2026 08:15PM ET,GB,2.2,,CPT,Jonnu Smith,dk,1800,jonnu smith,GB,TE,showdown,00-0033858,auto_exact,high
+TE,Mitchell Evans (44672105),Mitchell Evans,44672105,FLEX,1600,CAR@GB 10/29/2026 08:15PM ET,CAR,3.1,,FLEX,Mitchell Evans,dk,1600,mitchell evans,CAR,TE,showdown,00-0040187,auto_exact,high
+WR,Bo Melton (44672161),Bo Melton,44672161,CPT,1500,CAR@GB 10/29/2026 08:15PM ET,GB,1.2,,CPT,Bo Melton,dk,1500,bo melton,GB,WR,showdown,00-0037091,auto_exact,high
+RB,Kaleb Johnson (44672106),Kaleb Johnson,44672106,FLEX,1400,CAR@GB 10/29/2026 08:15PM ET,GB,1.9,,FLEX,Kaleb Johnson,dk,1400,kaleb johnson,GB,RB,showdown,00-0040142,auto_exact,high
+TE,Jonnu Smith (44672107),Jonnu Smith,44672107,FLEX,1200,CAR@GB 10/29/2026 08:15PM ET,GB,2.2,,FLEX,Jonnu Smith,dk,1200,jonnu smith,GB,TE,showdown,00-0033858,auto_exact,high
+WR,J. Michael Sturdivant (44672162),J. Michael Sturdivant,44672162,CPT,1200,CAR@GB 10/29/2026 08:15PM ET,GB,0.9,,CPT,J. Michael Sturdivant,dk,1200,j michael sturdivant,GB,WR,showdown,00-0040948,auto_exact,high
+WR,Bo Melton (44672108),Bo Melton,44672108,FLEX,1000,CAR@GB 10/29/2026 08:15PM ET,GB,1.2,,FLEX,Bo Melton,dk,1000,bo melton,GB,WR,showdown,00-0037091,auto_exact,high
+WR,David Moore (44672163),David Moore,44672163,CPT,900,CAR@GB 10/29/2026 08:15PM ET,CAR,0.7,,CPT,David Moore,dk,900,david moore,CAR,WR,showdown,00-0033589,auto_exact,high
+WR,J. Michael Sturdivant (44672109),J. Michael Sturdivant,44672109,FLEX,800,CAR@GB 10/29/2026 08:15PM ET,GB,0.9,,FLEX,J. Michael Sturdivant,dk,800,j michael sturdivant,GB,WR,showdown,00-0040948,auto_exact,high
+WR,David Moore (44672110),David Moore,44672110,FLEX,600,CAR@GB 10/29/2026 08:15PM ET,CAR,0.7,,FLEX,David Moore,dk,600,david moore,CAR,WR,showdown,00-0033589,auto_exact,high
+RB,Anthony Tyus III (44672164),Anthony Tyus III,44672164,CPT,600,CAR@GB 10/29/2026 08:15PM ET,CAR,2.1,,CPT,Anthony Tyus III,dk,600,anthony tyus,CAR,RB,showdown,00-0040394,auto_exact,high
+RB,Anthony Tyus III (44672111),Anthony Tyus III,44672111,FLEX,400,CAR@GB 10/29/2026 08:15PM ET,CAR,2.1,,FLEX,Anthony Tyus III,dk,400,anthony tyus,CAR,RB,showdown,00-0040394,auto_exact,high
+TE,Ja'Tavion Sanders (44672165),Ja'Tavion Sanders,44672165,CPT,300,CAR@GB 10/29/2026 08:15PM ET,CAR,0.0,,CPT,Ja'Tavion Sanders,dk,300,jatavion sanders,CAR,TE,showdown,00-0039356,auto_exact,high
+RB,Ahmani Marshall (44672166),Ahmani Marshall,44672166,CPT,300,CAR@GB 10/29/2026 08:15PM ET,CAR,0.0,,CPT,Ahmani Marshall,dk,300,ahmani marshall,CAR,RB,showdown,00-0040260,auto_exact,high
+RB,Jonathon Brooks (44672167),Jonathon Brooks,44672167,CPT,300,CAR@GB 10/29/2026 08:15PM ET,CAR,4.7,IR,CPT,Jonathon Brooks,dk,300,jonathon brooks,CAR,RB,showdown,00-0039344,auto_exact,high
+RB,Chris Brooks (44672168),Chris Brooks,44672168,CPT,300,CAR@GB 10/29/2026 08:15PM ET,GB,3.1,IR,CPT,Chris Brooks,dk,300,chris brooks,GB,RB,showdown,00-0038685,auto_exact,high
+WR,Jayden Reed (44672169),Jayden Reed,44672169,CPT,300,CAR@GB 10/29/2026 08:15PM ET,GB,3.2,IR,CPT,Jayden Reed,dk,300,jayden reed,GB,WR,showdown,00-0039146,auto_exact,high
+WR,Skyy Moore (44672170),Skyy Moore,44672170,CPT,300,CAR@GB 10/29/2026 08:15PM ET,GB,2.1,IR,CPT,Skyy Moore,dk,300,skyy moore,GB,WR,showdown,00-0038090,auto_exact,high
+WR,Quincy Skinner Jr. (44672171),Quincy Skinner Jr.,44672171,CPT,300,CAR@GB 10/29/2026 08:15PM ET,GB,0.0,,CPT,Quincy Skinner Jr.,dk,300,quincy skinner,GB,WR,showdown,00-0040553,auto_exact,high
+WR,Chris Brazzell II (44672172),Chris Brazzell II,44672172,CPT,300,CAR@GB 10/29/2026 08:15PM ET,CAR,0.0,IR,CPT,Chris Brazzell II,dk,300,chris brazzell,CAR,WR,showdown,00-0041047,auto_exact,high
+WR,Xavier Legette (44672173),Xavier Legette,44672173,CPT,300,CAR@GB 10/29/2026 08:15PM ET,CAR,4.2,IR,CPT,Xavier Legette,dk,300,xavier legette,CAR,WR,showdown,00-0039342,auto_exact,high
+WR,Ja'seem Reed (44672174),Ja'seem Reed,44672174,CPT,300,CAR@GB 10/29/2026 08:15PM ET,CAR,0.0,,CPT,Ja'seem Reed,dk,300,jaseem reed,CAR,WR,showdown,00-0040265,auto_exact,high
+WR,Casey Washington (44672175),Casey Washington,44672175,CPT,300,CAR@GB 10/29/2026 08:15PM ET,CAR,0.0,,CPT,Casey Washington,dk,300,casey washington,CAR,WR,showdown,00-0039394,auto_exact,high
+WR,Isaiah Neyor (44672176),Isaiah Neyor,44672176,CPT,300,CAR@GB 10/29/2026 08:15PM ET,GB,0.0,,CPT,Isaiah Neyor,dk,300,isaiah neyor,GB,WR,showdown,00-0040558,auto_exact,high
+WR,Coleman Owen (44672177),Coleman Owen,44672177,CPT,300,CAR@GB 10/29/2026 08:15PM ET,GB,0.0,,CPT,Coleman Owen,dk,300,coleman owen,GB,WR,showdown,00-0040352,auto_exact,high
+TE,Thomas Yassmin (44672178),Thomas Yassmin,44672178,CPT,300,CAR@GB 10/29/2026 08:15PM ET,GB,0.0,IR,CPT,Thomas Yassmin,dk,300,thomas yassmin,GB,TE,showdown,00-0039936,auto_exact,high
+TE,Mark Redman (44672179),Mark Redman,44672179,CPT,300,CAR@GB 10/29/2026 08:15PM ET,GB,0.7,,CPT,Mark Redman,dk,300,mark redman,GB,TE,showdown,00-0040598,auto_exact,high
+TE,Drake Dabney (44672180),Drake Dabney,44672180,CPT,300,CAR@GB 10/29/2026 08:15PM ET,GB,0.0,,CPT,Drake Dabney,dk,300,drake dabney,GB,TE,showdown,00-0040628,auto_exact,high
+TE,Feleipe Franks (44672181),Feleipe Franks,44672181,CPT,300,CAR@GB 10/29/2026 08:15PM ET,CAR,0.0,,CPT,Feleipe Franks,dk,300,feleipe franks,CAR,TE,showdown,00-0036825,auto_exact,high
+TE,Josh Whyle (44672182),Josh Whyle,44672182,CPT,300,CAR@GB 10/29/2026 08:15PM ET,GB,0.0,,CPT,Josh Whyle,dk,300,josh whyle,GB,TE,showdown,00-0038589,auto_exact,high
+TE,Luke Musgrave (44672183),Luke Musgrave,44672183,CPT,300,CAR@GB 10/29/2026 08:15PM ET,GB,0.0,OUT,CPT,Luke Musgrave,dk,300,luke musgrave,GB,TE,showdown,00-0039144,auto_exact,high
+TE,Ja'Tavion Sanders (44672112),Ja'Tavion Sanders,44672112,FLEX,200,CAR@GB 10/29/2026 08:15PM ET,CAR,0.0,,FLEX,Ja'Tavion Sanders,dk,200,jatavion sanders,CAR,TE,showdown,00-0039356,auto_exact,high
+RB,Ahmani Marshall (44672113),Ahmani Marshall,44672113,FLEX,200,CAR@GB 10/29/2026 08:15PM ET,CAR,0.0,,FLEX,Ahmani Marshall,dk,200,ahmani marshall,CAR,RB,showdown,00-0040260,auto_exact,high
+RB,Jonathon Brooks (44672114),Jonathon Brooks,44672114,FLEX,200,CAR@GB 10/29/2026 08:15PM ET,CAR,4.7,IR,FLEX,Jonathon Brooks,dk,200,jonathon brooks,CAR,RB,showdown,00-0039344,auto_exact,high
+RB,Chris Brooks (44672115),Chris Brooks,44672115,FLEX,200,CAR@GB 10/29/2026 08:15PM ET,GB,3.1,IR,FLEX,Chris Brooks,dk,200,chris brooks,GB,RB,showdown,00-0038685,auto_exact,high
+WR,Jayden Reed (44672116),Jayden Reed,44672116,FLEX,200,CAR@GB 10/29/2026 08:15PM ET,GB,3.2,IR,FLEX,Jayden Reed,dk,200,jayden reed,GB,WR,showdown,00-0039146,auto_exact,high
+WR,Skyy Moore (44672117),Skyy Moore,44672117,FLEX,200,CAR@GB 10/29/2026 08:15PM ET,GB,2.1,IR,FLEX,Skyy Moore,dk,200,skyy moore,GB,WR,showdown,00-0038090,auto_exact,high
+WR,Quincy Skinner Jr. (44672118),Quincy Skinner Jr.,44672118,FLEX,200,CAR@GB 10/29/2026 08:15PM ET,GB,0.0,,FLEX,Quincy Skinner Jr.,dk,200,quincy skinner,GB,WR,showdown,00-0040553,auto_exact,high
+WR,Chris Brazzell II (44672119),Chris Brazzell II,44672119,FLEX,200,CAR@GB 10/29/2026 08:15PM ET,CAR,0.0,IR,FLEX,Chris Brazzell II,dk,200,chris brazzell,CAR,WR,showdown,00-0041047,auto_exact,high
+WR,Xavier Legette (44672120),Xavier Legette,44672120,FLEX,200,CAR@GB 10/29/2026 08:15PM ET,CAR,4.2,IR,FLEX,Xavier Legette,dk,200,xavier legette,CAR,WR,showdown,00-0039342,auto_exact,high
+WR,Ja'seem Reed (44672121),Ja'seem Reed,44672121,FLEX,200,CAR@GB 10/29/2026 08:15PM ET,CAR,0.0,,FLEX,Ja'seem Reed,dk,200,jaseem reed,CAR,WR,showdown,00-0040265,auto_exact,high
+WR,Casey Washington (44672122),Casey Washington,44672122,FLEX,200,CAR@GB 10/29/2026 08:15PM ET,CAR,0.0,,FLEX,Casey Washington,dk,200,casey washington,CAR,WR,showdown,00-0039394,auto_exact,high
+WR,Isaiah Neyor (44672123),Isaiah Neyor,44672123,FLEX,200,CAR@GB 10/29/2026 08:15PM ET,GB,0.0,,FLEX,Isaiah Neyor,dk,200,isaiah neyor,GB,WR,showdown,00-0040558,auto_exact,high
+WR,Coleman Owen (44672124),Coleman Owen,44672124,FLEX,200,CAR@GB 10/29/2026 08:15PM ET,GB,0.0,,FLEX,Coleman Owen,dk,200,coleman owen,GB,WR,showdown,00-0040352,auto_exact,high
+TE,Thomas Yassmin (44672125),Thomas Yassmin,44672125,FLEX,200,CAR@GB 10/29/2026 08:15PM ET,GB,0.0,IR,FLEX,Thomas Yassmin,dk,200,thomas yassmin,GB,TE,showdown,00-0039936,auto_exact,high
+TE,Mark Redman (44672126),Mark Redman,44672126,FLEX,200,CAR@GB 10/29/2026 08:15PM ET,GB,0.7,,FLEX,Mark Redman,dk,200,mark redman,GB,TE,showdown,00-0040598,auto_exact,high
+TE,Drake Dabney (44672127),Drake Dabney,44672127,FLEX,200,CAR@GB 10/29/2026 08:15PM ET,GB,0.0,,FLEX,Drake Dabney,dk,200,drake dabney,GB,TE,showdown,00-0040628,auto_exact,high
+TE,Feleipe Franks (44672128),Feleipe Franks,44672128,FLEX,200,CAR@GB 10/29/2026 08:15PM ET,CAR,0.0,,FLEX,Feleipe Franks,dk,200,feleipe franks,CAR,TE,showdown,00-0036825,auto_exact,high
+TE,Josh Whyle (44672129),Josh Whyle,44672129,FLEX,200,CAR@GB 10/29/2026 08:15PM ET,GB,0.0,,FLEX,Josh Whyle,dk,200,josh whyle,GB,TE,showdown,00-0038589,auto_exact,high
+TE,Luke Musgrave (44672130),Luke Musgrave,44672130,FLEX,200,CAR@GB 10/29/2026 08:15PM ET,GB,0.0,OUT,FLEX,Luke Musgrave,dk,200,luke musgrave,GB,TE,showdown,00-0039144,auto_exact,high

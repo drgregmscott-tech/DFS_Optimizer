@@ -200,6 +200,46 @@
       "season": 2026,
       "week": 7,
       "lock_time_utc": "2026-10-27T00:15:00Z"
+    },
+    {
+      "slate_id": "dk_showdown_wk8_CAR_GB_29Oct2026",
+      "site": "dk",
+      "format": "showdown",
+      "season": 2026,
+      "week": 8,
+      "lock_time_utc": "2026-10-30T00:15:00Z"
+    },
+    {
+      "slate_id": "dk_classic_wk8_main_01Nov2026",
+      "site": "dk",
+      "format": "classic",
+      "season": 2026,
+      "week": 8,
+      "lock_time_utc": "2026-11-01T18:00:00Z"
+    },
+    {
+      "slate_id": "dk_classic_wk8_early_01Nov2026",
+      "site": "dk",
+      "format": "classic",
+      "season": 2026,
+      "week": 8,
+      "lock_time_utc": "2026-11-01T18:00:00Z"
+    },
+    {
+      "slate_id": "fd_classic_wk8_main_01Nov2026",
+      "site": "fd",
+      "format": "classic",
+      "season": 2026,
+      "week": 8,
+      "lock_time_utc": "2026-11-01T18:00:00Z"
+    },
+    {
+      "slate_id": "fd_classic_wk8_early_01Nov2026",
+      "site": "fd",
+      "format": "classic",
+      "season": 2026,
+      "week": 8,
+      "lock_time_utc": "2026-11-01T18:00:00Z"
     }
   ]
 }
