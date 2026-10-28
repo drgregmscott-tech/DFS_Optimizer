@@ -146,6 +146,10 @@
   <!-- ============ SE3max tab ============ -->
   <div id="panelSe" data-panel="se">
     <div class="banner">
+      <span class="banner-icon">Your workflow, Sunday mornings</span>
+      <p>Load your slate → click <strong>"SE3Max Pool (100)"</strong> in the preset dropdown, same as always. As of 2026-10-28 it auto-fills: exposure uncapped (was capped at 50%), stack-size 1 / QB+1 (was defaulting to 2, which you were overriding by hand before), min-salary floor $49,700 (was $49,500), and the shape penalties (DST band, punt-count, etc.) zeroed out. Same click, corrected numbers. If your Load Preset button doesn't show these values, hard-refresh the page (Ctrl+Shift+R) — the fix lives in the page's own code, not in anything saved to the cloud, so a stale loaded tab is the most likely explanation.</p>
+    </div>
+    <div class="banner">
       <span class="banner-icon">Updated 2026-10-28</span>
       <p>WK7 postmortem Item 11 found the real cost in the 100-lineup pool was the <strong>50% exposure cap and the QB+2 stack default</strong> (≈6.6% of available points), not the shape terms below — so the preset was rebuilt: exposure uncapped, stack-size default dropped to <strong>1 (QB+1, no forced bring-back, matching how you actually play)</strong>, and every DST/punt/FLEX shape nudge zeroed. The <em>evidence</em> behind those shape rules hasn't changed — only the solver no longer applies them automatically, so they moved from "confirm" to "manual check" below. The same postmortem also found that pre-excluding low-ownership/TE/QB players at build time cost cash rate — see the dart-count item below, which is the same rule and is no longer something to actively enforce.</p>
     </div>
