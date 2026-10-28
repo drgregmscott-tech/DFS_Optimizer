@@ -3759,16 +3759,23 @@ in this browser's localStorage.</p>
       // UPDATED 2026-10-02: bring-back dropped (true -> false) -- see "SE / 3-Max
       // GPP" above's own comment for the evidence; it was a HARD constraint, not a
       // soft lean, so dropping it can only help or be neutral.
+      // UPDATED 2026-10-28, WK7 postmortem Item 11 action item (see
+      // data/optimizer_presets.json's se3max_pool bundle + WK7_POSTMORTEM_ACTION_ITEMS.md):
+      // ctrlMaxExposure 50 -> 100 (uncapped at n-lineups=100), ctrlStackSize 2 -> 1
+      // (matches owner's actual QB+1/no-bring-back play, costs ~0.04 pts vs the
+      // theoretical optimum), every cl-* shape term -> 0 (cost ~0.3 pts and pushed the
+      // wrong direction vs real-field punt-mix history). This UI copy had drifted stale
+      // vs the backend preset until now -- keep both in sync by hand going forward.
       ctrlMinSalary: "0",
-      ctrlNLineups: "100", ctrlMaxExposure: "50", ctrlUniqueness: "1",
-      ctrlRandomization: "5", ctrlStackMode: "qb", ctrlStackSize: "2",
+      ctrlNLineups: "100", ctrlMaxExposure: "100", ctrlUniqueness: "1",
+      ctrlRandomization: "5", ctrlStackMode: "qb", ctrlStackSize: "1",
       ctrlBringBack: false, ctrlAllowSkillVsOppDst: false, ctrlLambda: "0",
-      ctrlClDstBandBonus: "0.8", ctrlClDstExpensivePenalty: "2.0",
-      ctrlClZeroPuntPenalty: "1.5", ctrlClThreePlusPuntPenalty: "0.5",
-      ctrlClSamePosPuntPenalty: "1.0",
+      ctrlClDstBandBonus: "0", ctrlClDstExpensivePenalty: "0",
+      ctrlClZeroPuntPenalty: "0", ctrlClThreePlusPuntPenalty: "0",
+      ctrlClSamePosPuntPenalty: "0",
       ctrlClFlexRbBonus: "0", ctrlClFlexWrPenalty: "0",
       ctrlClFlexWrHighpriceBonus: "0", ctrlClFlexWrMidpricePenalty: "0",
-      ctrlClFourWrNoStudPenalty: "1.0"
+      ctrlClFourWrNoStudPenalty: "0"
     },
     "MME GPP (20-150)": {
       // ctrlMinSalary added 2026-10-01 -- see "Cash" preset's own comment above.
