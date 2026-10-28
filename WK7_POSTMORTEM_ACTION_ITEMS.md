@@ -51,21 +51,50 @@ Every item below should say which track it's on.
 - Source: follow-up from diagnosis item 1's "engine" bucket — 212 of 296 points-projection misses (Wk2+, where
   we had trailing data) were real-world volume shifts that surprised us *and* DFF by about the same margin.
   Owner's framing: the goal isn't just matching the field, it's getting ahead of exactly this kind of surprise.
-- Evidence: `site.api.espn.com/apis/site/v2/sports/football/nfl/injuries` — the exact endpoint
-  `scripts/status_check.py` already polls for the OUT/QUESTIONABLE/etc. `status` field — also returns
-  `shortComment`/`longComment` fields with free-text, beat-writer-sourced role/usage analysis (e.g., "...Knight
-  could begin to put himself in position for regular snaps moving forward," attributed to a named team-site
-  reporter). Confirmed live via direct fetch 2026-10-26. This text is currently fetched and discarded —
-  `status_check.py` only extracts `status`. Zero additional API cost or approval-gate exposure (plain HTTP,
-  already in the pipeline) — a clean alternative to X/beat-writer monitoring, which is blocked by the
-  Claude-in-Chrome unattended-approval wall (see [[project_x_injury_monitor_retired_2026-10-24]]).
-- Proposed change: not yet scoped. Candidate direction: extract/flag forward-looking role-change language from
-  these comment fields (e.g. phrases suggesting expanding/shrinking usage) as a new signal feeding the
-  projection or at minimum a manual-review flag — needs real design + testing before any model input, same
-  two-track discipline as every other lever here.
-- Track: test-bar (worth investigating further) — confirmed the data exists and is free/automatable; nothing
-  built or tested yet.
-- Status: open, not yet scoped.
+- Evidence: `site.api.espn.com/apis/site/v2/sports/football/nfl/injuries` returns `shortComment`/`longComment`
+  free-text, beat-writer-sourced role/usage analysis (e.g., "...Knight could begin to put himself in position
+  for regular snaps moving forward," attributed to a named team-site reporter). **Correction, 2026-10-28:** this
+  is NOT the endpoint `scripts/status_check.py` already polls (that's the per-team roster endpoint, confirmed
+  live to carry only `status`/`date`, no comment text) — it's the separate league-wide `/injuries` feed,
+  the exact endpoint `status_check.py`'s own decision #1 evaluated and REJECTED for status purposes (confirmed
+  still true live 2026-10-28: 8.5MB, 616/800 sampled entries `status: "Active"`, i.e. routine box-score recap,
+  not a game-day designation). So "zero additional cost, already in the pipeline" was wrong — it's a genuinely
+  new, large pull. Also confirmed live: this endpoint has NO historical lookback (`dates`/`week`/`season` query
+  params are silently ignored, always returns today's current snapshot) — there is no way to backfill what it
+  said in a past week.
+- Additional scoping (2026-10-28): a related, testable proxy — "did a skill-position teammate's snap share drop
+  notably the same week" as a stand-in for "team reacted to a healthy player's reduced role" — was checked
+  against 108 real zero-signal projection misses (Wk2-7 2026, the ones diagnosis item 1 couldn't explain) vs. a
+  300-row control sample. Result: **noise, not signal** — 67.6% of misses had such a teammate vs. 71.7% in the
+  unrelated control. Generic snap-share volatility doesn't distinguish our misses from an ordinary week; if a
+  signal exists here it would need to be something more specific (an intentional, stated role change) than raw
+  usage movement, which is consistent with the comment-text idea but doesn't itself validate it.
+- Proposed change / what was built: given no historical backfill is possible, the only way to ever get evidence
+  is to start accumulating dated snapshots now. Built `scripts/espn_comment_feed.py` (collection-only: pulls the
+  feed, keeps player/team/status/comment-text/date, best-effort matches to player_id via
+  `ingest_salaries.py`'s existing normalize/match helpers, writes a timestamped CSV — no classification/scoring
+  logic). Wired a weekly pull into `refresh_data.yml`'s `shared_pull` job (fail-safe, non-blocking). Deliberately
+  NOT wired into `final_projections` or any build step — extracting "is this forward-looking role language"
+  from "is this routine recap" is a real text-classification problem (most of the feed is recap), and any
+  point-value sizing would be unvalidated guesswork with no historical cases to check it against. The
+  classification/scoring step remains the explicit next decision, to be made only once enough real prospective
+  snapshots exist to test against.
+- Interim real-time answer (2026-10-28): for the case this item is actually trying to solve — "we know a player
+  is getting a real usage bump this week, the pipeline isn't reacting" — `scripts/statline_model.py`'s
+  `load_manual_role_overrides()`/`apply_manual_role_overrides()` already exists for exactly this
+  ("real breaking news... that no data feed can reflect yet") via
+  `data/manual_role_overrides_{season}_{week}.csv`, but had never been used (no such file existed). Verified
+  end-to-end on the real pipeline 2026-10-28: ran the actual production build command against the real Wk7 main
+  slate with a test override row, confirmed it correctly moved the targeted player's volume/`final_projection`
+  without affecting other players, confirmed downstream team-volume reconciliation absorbed it safely, then
+  fully reverted (file restored, git status clean). This is the recommended manual lever for a real in-week
+  conviction call, independent of the comment-feed work above.
+- Track: test-bar (worth investigating further) — collection now running; classification/scoring still
+  unbuilt and unvalidated, same two-track discipline as every other lever here.
+- Status: **scoped and partially actioned 2026-10-28.** Collection-only capture shipped and automated
+  (commit 49c1cf6d). Classification/scoring into projections remains open, deferred until enough prospective
+  snapshots accumulate to validate against. Manual role-override escape hatch verified working as the interim
+  answer for a real in-week usage call.
 
 ## classic_field.py simulator over-concentrates team stacking beyond ≥1 correlated piece
 - Source: diagnosis item 4 (classic_field.py simulation validation), 2026-10-26.
