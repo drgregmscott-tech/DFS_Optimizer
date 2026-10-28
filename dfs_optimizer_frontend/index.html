@@ -1827,6 +1827,10 @@ in this browser's localStorage.</p>
           <span class="field-label">Position Exposure<span class="field-label-hint" title="Wk8 postmortem (2026-10-28): every player at a named position shares a max-exposure ceiling across this batch instead of the shared Max Exposure default -- positions not named here are unaffected. Fixes a single cheap, high-value player at a thin position (e.g. the chalk TE) dominating the whole 100-lineup pool; an explicit per-player override above still wins. Format: POSITION:PCT comma-separated, 0.0-1.0 (e.g. TE:0.4). Classic only. Blank disables.">?</span></span>
           <input type="text" id="ctrlPositionExposure" value="" placeholder="e.g. TE:0.4 -- blank disables">
         </div>
+        <div id="wrapFlexPositionCapField">
+          <span class="field-label">FLEX Position Cap<span class="field-label-hint" title="Wk8 postmortem (2026-10-28), same-day follow-up to Position Exposure above: that field caps one PLAYER's own exposure -- it does nothing about the AGGREGATE share of the pool rostering ANY player of that position in FLEX. This caps that directly (e.g. &quot;TE:0.35&quot; -- at most 35% of this batch's lineups may have a TE in FLEX at all, regardless of which TE), to match real-field FLEX-position rates (WK3_ROOT_CAUSE_FINDINGS.md: 21-33% FLEX=TE). Positions not named are uncapped. Format: POSITION:PCT comma-separated, 0.0-1.0. Classic only. Blank disables.">?</span></span>
+          <input type="text" id="ctrlFlexPositionCap" value="" placeholder="e.g. TE:0.35 -- blank disables">
+        </div>
         <div id="wrapDartExposureField" style="grid-column:1/-1;">
           <span class="field-label">Dart Exposure Cap<span class="field-label-hint" title="Any non-DST player whose simulated 10th-percentile outcome (statline_p10) falls below the Floor Threshold is a &quot;dart&quot; -- capped at Cap % of this batch's lineups, unless he's on this batch's own stack team. DST is always exempt (every DST's floor simulates as a flat 0 regardless of matchup -- use the DST's own opponent implied total instead). Classic slates only; needs the same --sigma-recalibration build as Lambda.">?</span></span>
           <label class="checkbox-row" style="margin-top:0;cursor:pointer;">
@@ -3638,6 +3642,8 @@ in this browser's localStorage.</p>
     "ctrlLambda",
     // Wk8 postmortem (2026-10-28) -- Position Exposure.
     "ctrlPositionExposure",
+    // Wk8 postmortem (2026-10-28), same-day follow-up -- FLEX Position Cap.
+    "ctrlFlexPositionCap",
     // Ad Hoc Session A6 -- Dart Exposure Cap.
     "ctrlDartExposureEnabled", "ctrlDartExposureCap", "ctrlDartFloorThreshold",
     // WK3 postmortem §2 parking-lot #2 (2026-09-29) -- Showdown construction rules.
@@ -3711,6 +3717,7 @@ in this browser's localStorage.</p>
       // from "SE3Max Pool (100)" can't leak its TE:0.4 cap into this
       // preset (applyPresetValues only touches keys a preset defines).
       ctrlPositionExposure: "",
+      ctrlFlexPositionCap: "",
       // WK3 postmortem item 5 (2026-09-30) -- matches data/optimizer_presets.json's
       // own cl-* values exactly (kept in sync by hand, same convention as every
       // other field here). See CLASSIC_RULES.md for the evidence.
@@ -3747,6 +3754,7 @@ in this browser's localStorage.</p>
       ctrlBringBack: false, ctrlAllowSkillVsOppDst: false, ctrlLambda: "0",
       // Wk8 postmortem (2026-10-28) -- see "Cash" preset's own comment above.
       ctrlPositionExposure: "",
+      ctrlFlexPositionCap: "",
       ctrlClDstBandBonus: "0.8", ctrlClDstExpensivePenalty: "2.0",
       ctrlClZeroPuntPenalty: "1.5", ctrlClThreePlusPuntPenalty: "0.5",
       ctrlClSamePosPuntPenalty: "1.0",
@@ -3790,11 +3798,27 @@ in this browser's localStorage.</p>
       // monoculture (clamps top-TE exposure to exactly 40% everywhere tested, vs
       // 24-96% baseline). Combined real cost on lineup #1's own projection: -0.3% to
       // -0.8%, an order of magnitude smaller than Item 11's own 50%-cap cost (~5-6%).
+      // UPDATED 2026-10-28, same-day correction: position-exposure above fixes
+      // single-player monoculture but does NOT fix the owner's actual, stated concern --
+      // the AGGREGATE share of the pool running a TE in FLEX at all, regardless of which
+      // TE. Confirmed live: with position-exposure+uniqueness alone, FLEX=TE stayed at
+      // 74-75% of the pool (vs the real DK field's 21-33%, WK3_ROOT_CAUSE_FINDINGS.md
+      // line 632) because 14 different cheap TEs each stayed under the 40% per-player cap
+      // while collectively still filling most FLEX slots. ctrlFlexPositionCap TE:0.35
+      // added as the real fix: a hard ceiling on the AGGREGATE FLEX=TE share (owner's own
+      // framing -- "no cap for WR/RB, 35% for TE to match the field"), verified on a
+      // fixed-seed A/B against the real Wk8 slate to cost EXACTLY $0.00 pts on lineup #1
+      // (byte-identical roster with/without the cap -- lineup #1 is solved before any
+      // count is nonzero, so the cap can never bind on it) while bringing FLEX=TE to
+      // exactly 35%. Kept alongside position-exposure (TE:0.4), not a replacement for it
+      // -- that field still guards against single-player monoculture in the TE slot
+      // itself, a different question from FLEX composition.
       ctrlMinSalary: "0",
       ctrlNLineups: "100", ctrlMaxExposure: "100", ctrlUniqueness: "3",
       ctrlRandomization: "5", ctrlStackMode: "qb", ctrlStackSize: "1",
       ctrlBringBack: false, ctrlAllowSkillVsOppDst: false, ctrlLambda: "0",
       ctrlPositionExposure: "TE:0.4",
+      ctrlFlexPositionCap: "TE:0.35",
       ctrlClDstBandBonus: "0", ctrlClDstExpensivePenalty: "0",
       ctrlClZeroPuntPenalty: "0", ctrlClThreePlusPuntPenalty: "0",
       ctrlClSamePosPuntPenalty: "0",
@@ -3821,6 +3845,7 @@ in this browser's localStorage.</p>
       ctrlBringBack: true, ctrlAllowSkillVsOppDst: false, ctrlLambda: "-0.005",
       // Wk8 postmortem (2026-10-28) -- see "Cash" preset's own comment above.
       ctrlPositionExposure: "",
+      ctrlFlexPositionCap: "",
       // Ad Hoc Session A6 -- matches data/optimizer_presets.json's own
       // mme_gpp bundle (kept in sync by hand, same as this preset's other
       // fields). Not added to Cash/SE-3Max above -- see that file's own
@@ -3863,6 +3888,7 @@ in this browser's localStorage.</p>
       // Showdown regardless), cleared so the text field doesn't show a
       // stale value left over from "SE3Max Pool (100)".
       ctrlPositionExposure: "",
+      ctrlFlexPositionCap: "",
       ctrlSdRequireCptQb: true, ctrlSdCheapTierPenalty: "1.0", ctrlSdCheapTierRange: "600:1000",
       ctrlSdStackCap: "2", ctrlSdStackCapPenalty: "0", ctrlSdQbPartnerBonus: "0.75",
       ctrlSdExcludeCptPositions: "DST", ctrlSdKCptPenalty: "1.0", ctrlSdHeavySideCptPenalty: "1.25"
@@ -3875,6 +3901,7 @@ in this browser's localStorage.</p>
       ctrlRandomization: "18", ctrlLambda: "0",
       // Wk8 postmortem (2026-10-28) -- see "Showdown SE" preset's own comment above.
       ctrlPositionExposure: "",
+      ctrlFlexPositionCap: "",
       ctrlSdRequireCptQb: true, ctrlSdCheapTierPenalty: "2.0", ctrlSdCheapTierRange: "600:1000",
       ctrlSdStackCap: "2", ctrlSdStackCapPenalty: "0", ctrlSdQbPartnerBonus: "1.5",
       ctrlSdExcludeCptPositions: "DST", ctrlSdKCptPenalty: "1.5", ctrlSdHeavySideCptPenalty: "0.5"
@@ -5597,6 +5624,16 @@ in this browser's localStorage.</p>
       var posExposure = document.getElementById("ctrlPositionExposure").value.trim();
       if (posExposure) {
         params.position_exposure = posExposure;
+      }
+    }
+
+    // Wk8 postmortem (2026-10-28), same-day follow-up -- FLEX Position Cap.
+    // Same "blank omits the param" convention as Position Exposure above.
+    // Classic only (optimizer.py rejects it for Showdown).
+    if (!isShowdown) {
+      var flexPosCap = document.getElementById("ctrlFlexPositionCap").value.trim();
+      if (flexPosCap) {
+        params.flex_position_cap = flexPosCap;
       }
     }
 

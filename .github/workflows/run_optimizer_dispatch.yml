@@ -235,6 +235,13 @@ jobs:
           # on a Showdown-detected build).
           args += flag("--position-exposure", "position_exposure")
 
+          # Wk8 postmortem (2026-10-28), same-day follow-up. Same shape as
+          # --position-exposure above, but caps the AGGREGATE share of the
+          # pool rostering that position in FLEX, not one player's own
+          # exposure. optimizer.py's own parse_position_exposure_list()
+          # does the actual parsing/validation.
+          args += flag("--flex-position-cap", "flex_position_cap")
+
           # Session 8 (this session) -- decisions #34/#35. Same "omit means
           # optimizer.py's own default (0, no floor)" convention as every
           # other optional field above.

@@ -282,6 +282,14 @@ async function handleDispatch(url, env) {
     // the real parsing/validation. Classic slates only (no effect on
     // Showdown).
     "position_exposure",
+    // Wk8 postmortem (2026-10-28), same-day follow-up -- "flex_position_cap"
+    // is the same "POSITION:FRACTION" shape as position_exposure above, but
+    // caps the AGGREGATE share of the 100-lineup pool that may roster that
+    // position in FLEX at all (e.g. "TE:0.35"), not one player's own
+    // exposure. Passed through unchanged -- optimizer.py's own
+    // parse_position_exposure_list() does the real parsing/validation.
+    // Classic slates only (no effect on Showdown).
+    "flex_position_cap",
     // Session 17, decision #56 -- skill-vs-opposing-DST exclusion override.
     // "allow_skill_vs_opp_dst" is a boolean flag (present = override is on;
     // absent = optimizer.py's own default, which is the exclusion ON).

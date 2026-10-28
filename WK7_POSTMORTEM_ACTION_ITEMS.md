@@ -304,3 +304,57 @@ Every item below should say which track it's on.
   `position_exposure` to `cloudflare_worker/optimizer_api/optimizer_api.js`'s param allowlist and
   `.github/workflows/run_optimizer_dispatch.yml`'s flag-building logic so a live UI-dispatched build actually
   sends it through to `optimizer.py`. Live cash-rate monitoring from here, per the two-track note above.
+
+## Aggregate FLEX=TE rate correction (same-day follow-up to the item above)
+- Source: owner correction, same day (2026-10-28). The item above explicitly scoped itself away from the
+  owner's actual concern ("The FLEX=TE *rate* itself was deliberately left alone... this fix only targets
+  single-player/single-skeleton monoculture, not the TE-vs-RB-in-FLEX question") -- the owner's own words:
+  "if we're being honest you kind of took my concern and ran with it and turned it into something different
+  and fixed that instead of my concern." His actual, repeatedly-stated worry was the volume of TE-in-FLEX
+  builds overweighting the real field, not single-player concentration or top-of-pool duplication (which he
+  separately said he wasn't sure mattered).
+- Evidence: verified directly against the real Wk8 pool, rebuilt live with the shipped item-above fix in
+  place (`--preset se3max_pool`, no other changes): FLEX=TE held at 74-75% of the 100-lineup pool -- barely
+  down from the pre-fix 81%, still far above the real DK field's 21-33% (`WK3_ROOT_CAUSE_FINDINGS.md` line
+  632). Root cause of the gap: `--position-exposure TE:0.4` caps any ONE player's own exposure, not the
+  aggregate share of the pool running ANY TE in FLEX -- with 14 different cheap TEs each individually well
+  under the 40% cap, they collectively still filled 74-75% of FLEX slots. A fundamentally different lever was
+  needed, not a tuning tweak to the one already shipped.
+- Proposed change (owner's own framing, implemented directly): "for FLEX, put a cap on it by position. For WR
+  and RB, no cap, for TE, let's say 35% to match the field." Added a new `--flex-position-cap POS:PCT` flag to
+  `scripts/optimizer.py` (classic only) -- a hard ceiling on the COUNT of lineups whose FLEX slot may be
+  filled by a given position AT ALL, regardless of which specific player, implemented by progressively
+  narrowing the existing `--flex-positions` eligibility set once that position's quota is spent (same
+  all-or-nothing FLEX-restriction mechanism `--flex-positions` already provides, just applied lineup-by-lineup
+  instead of for the whole batch). This is a different mechanism from `--position-exposure` (which stays, at
+  `TE:0.4`, guarding the TE *slot* itself against single-player monoculture -- a separate question from FLEX
+  composition) and is still not a revival of the Item 11-zeroed `cl-*` shape terms: a lineup that happens to
+  get a TE in FLEX scores exactly the same as one that doesn't; this only throttles how many times that
+  outcome may repeat across the 100.
+- Validation: built the real Wk8 slate with `--flex-position-cap TE:0.35` and confirmed FLEX=TE came down to
+  exactly 35% (the cap value), RB/WR picked up the remaining 65/100 split roughly 55/10. Cost to lineup #1 was
+  checked properly this time -- an initial unseeded before/after comparison showed a ~0.3-0.4 pt gap, which
+  turned out to be pure `randomization-pct=5%` noise between separate CLI runs (no `--seed` was fixed), not a
+  real cost; re-ran as a controlled fixed-seed A/B (`--seed 42`, identical command otherwise, with vs without
+  the new flag) and lineup #1 came back **byte-identical** both times -- same 9 players, same 133.14
+  projection. Confirmed mechanically why: the cap can never bind on lineup #1 (every position's fill count
+  starts at 0 for the first lineup solved, same guarantee `--position-exposure` already relies on). Smoke-
+  tested the final preset end-to-end (`--preset se3max_pool`, no manual flags): FLEX composition 35% TE / 53%
+  RB / 12% WR on a clean run, matching the isolated test.
+- Track: **owner override of the hard ship bar, same standing as the item above** -- zero measured cost on a
+  controlled same-seed test, a direct implementation of the owner's own stated cap values, judged sufficient
+  to ship same-day. Cash-rate impact still unvalidated, same live-monitoring status as every other item here.
+- Status: **shipped 2026-10-28.** Added `--flex-position-cap` to `scripts/optimizer.py` (`parse_position_
+  exposure_list()` reused verbatim -- identical `POS:PCT` shape --  wired into `build_multi_lineup()`'s main
+  generation loop: a per-iteration `current_flex_positions` set, narrowed from the base FLEX-eligible
+  positions once `flex_fill_count_by_pos` reaches `flex_cap_count_by_pos` for that position, fed into each
+  lineup's `solve_lineup()` call in place of the static `flex_positions` argument; fill counts updated by
+  reading each finalized lineup's own FLEX-slot position after `assign_roster_slots()`). `data/
+  optimizer_presets.json`'s `se3max_pool`: `flex-position-cap` added ("TE:0.35"), alongside the existing
+  `position-exposure` ("TE:0.4"). Mirrored into `dfs_optimizer_frontend/index.html`'s
+  `BUILTIN_PRESETS["SE3Max Pool (100)"]` plus a new "FLEX Position Cap" UI control, `PRESET_FIELDS` entry, and
+  dispatch wiring (classic-only guard, same pattern as Position Exposure); every other built-in preset
+  explicitly sets `ctrlFlexPositionCap: ""` so it can't leak into a Cash/MME/Showdown build. Also added
+  `flex_position_cap` to the worker's param allowlist and the dispatch workflow's flag-building logic so a
+  live UI-dispatched build actually sends it through. Live cash-rate monitoring from here, same as every other
+  item on this list.

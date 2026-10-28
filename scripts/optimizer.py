@@ -2962,6 +2962,7 @@ def build_multi_lineup(site: str, slate_id: str, n_lineups: int = DEFAULT_N_LINE
                         thumbs_down_ids: set = None,
                         player_exposure: dict = None,
                         position_exposure: dict = None,
+                        flex_position_cap: dict = None,
                         exclude_skill_vs_opp_dst: bool = DEFAULT_EXCLUDE_SKILL_VS_OPP_DST,
                         classic_shape: dict = None,
                         pool_slack_share: float = 0.0,
@@ -3147,6 +3148,33 @@ def build_multi_lineup(site: str, slate_id: str, n_lineups: int = DEFAULT_N_LINE
         else:
             print(f"Stacking: every lineup uses {_stack_label(candidates[0])}.")
 
+    # Wk8 postmortem (2026-10-28) -- --flex-position-cap. --position-exposure
+    # above caps how often any ONE player at a position gets used; it does
+    # nothing about the AGGREGATE share of the pool that rosters ANY player
+    # of that position in FLEX specifically, which is what a real-field
+    # comparison (WK3_ROOT_CAUSE_FINDINGS.md line 632: 21-33% FLEX=TE) is
+    # actually measured against -- confirmed live on the real Wk8 pool: TE
+    # exposure spread across 14 different names (no single name near the
+    # --position-exposure cap) while FLEX=TE stayed at 75% of the pool, barely
+    # down from 81% before that fix. This is a genuinely different lever:
+    # a hard ceiling on the COUNT of lineups whose FLEX slot is filled by a
+    # given position at all, enforced by narrowing `flex_positions` for
+    # later lineups in the batch once that position's quota is spent (same
+    # mechanism --flex-positions already uses to exclude a position from
+    # FLEX entirely, just applied progressively instead of for the whole
+    # batch). Like --position-exposure, this can never affect lineup #1
+    # (solved before any count is nonzero) and is not a point penalty on a
+    # lineup's shape -- a lineup that gets TE in FLEX is scored exactly the
+    # same as one that doesn't; it only throttles how many times that
+    # outcome may repeat across the 100.
+    flex_position_cap = flex_position_cap or {}
+    flex_cap_count_by_pos = {
+        pos: max(1, math.floor(pct * n_lineups))
+        for pos, pct in flex_position_cap.items()
+    }
+    flex_fill_count_by_pos = {pos: 0 for pos in flex_cap_count_by_pos}
+    base_flex_positions = flex_positions if flex_positions is not None else set(FLEX_ELIGIBLE_POSITIONS)
+
     exposure_count = {pid: 0 for pid in players_all["player_id"]}
     previous_lineups = []
     all_lineup_frames = []
@@ -3174,6 +3202,22 @@ def build_multi_lineup(site: str, slate_id: str, n_lineups: int = DEFAULT_N_LINE
             if cnt >= exposure_cap_by_pid[pid] and pid not in locked_player_ids
         }
         pool = players_all[~players_all["player_id"].isin(locked_out)]
+
+        # Wk8 postmortem --flex-position-cap: narrow THIS lineup's FLEX
+        # eligibility once a position's aggregate quota is spent. Checked
+        # fresh every iteration (not just once) since fill counts change
+        # lineup to lineup.
+        current_flex_positions = {
+            pos for pos in base_flex_positions
+            if flex_fill_count_by_pos.get(pos, 0) < flex_cap_count_by_pos.get(pos, n_lineups + 1)
+        }
+        if not current_flex_positions:
+            raise RuntimeError(
+                "flex_position_cap excludes every FLEX-eligible position at "
+                f"lineup {n_generated + 1}/{n_lineups} -- the caps given "
+                f"({flex_position_cap}) leave no legal FLEX position once "
+                f"their quotas are spent. Loosen the caps."
+            )
 
         # Decision #12 -- independent draw per lineup, not one draw reused
         # for the whole batch.
@@ -3222,7 +3266,7 @@ def build_multi_lineup(site: str, slate_id: str, n_lineups: int = DEFAULT_N_LINE
                     mini_stack_type=mini_stack_type,
                     locked_player_ids=locked_player_ids,
                     min_salary=min_salary, min_total_ownership=min_total_ownership, own_penalty=own_penalty,
-                    flex_positions=flex_positions, lam=lam,
+                    flex_positions=current_flex_positions, lam=lam,
                     max_team_players=max_team_players, max_game_players=max_game_players,
                     group_player_ids=group_player_ids, group_min_count=group_min_count,
                     exclude_skill_vs_opp_dst=exclude_skill_vs_opp_dst,
@@ -3285,6 +3329,12 @@ def build_multi_lineup(site: str, slate_id: str, n_lineups: int = DEFAULT_N_LINE
                 f"locked but not present in lineup {n_generated + 1}"
             )
         lineup = assign_roster_slots(selected, fixed_counts, *_slate_sw)
+        if flex_cap_count_by_pos:
+            flex_rows = lineup[lineup["roster_slot"] == FLEX_SLOT_LABEL]
+            if not flex_rows.empty:
+                filled_pos = str(flex_rows["position"].iloc[0]).upper()
+                if filled_pos in flex_fill_count_by_pos:
+                    flex_fill_count_by_pos[filled_pos] += 1
         # Session 10.5 (decision #1): sigma_total on each lineup frame,
         # same as the single-lineup path.
         lineup.attrs["sigma_total"] = round(float(lineup["sigma"].sum()), 4)
@@ -5170,6 +5220,32 @@ def main():
              "--max-exposure. Only used with --n-lineups; classic slates "
              "only for now (no effect on Showdown).",
     )
+    # Wk8 postmortem (2026-10-28), same day follow-up to --position-exposure
+    # above: that flag caps any ONE player's exposure, but does nothing about
+    # the AGGREGATE share of the pool rostering ANY player of a position in
+    # FLEX specifically -- confirmed live on the real Wk8 pool, TE exposure
+    # spread across 14 names under --position-exposure TE:0.4 (no single name
+    # near the cap) while FLEX=TE stayed at 75% of the pool, barely down from
+    # 81% before that fix, vs the real DK field's 21-33% (WK3_ROOT_CAUSE_
+    # FINDINGS.md line 632). This flag is the aggregate counterpart: a hard
+    # ceiling on how many of the n_lineups may have the NAMED position fill
+    # FLEX at all, regardless of which player. Positions not named are
+    # uncapped (the owner's own framing: "no cap for WR and RB, TE capped at
+    # 35% to match the field"). Implemented by narrowing --flex-positions for
+    # later lineups in the batch once a position's quota is spent (same
+    # flex-restriction mechanism, applied progressively); like every other
+    # exposure-style cap here, lineup #1 is unaffected (solved before any
+    # count is nonzero) and this is NOT a point penalty on a lineup's shape.
+    parser.add_argument(
+        "--flex-position-cap", default=pdef("flex-position-cap", None),
+        help="Comma-separated POSITION:PCT caps (e.g. 'TE:0.35') on how many "
+             "of the n_lineups may have that position fill FLEX, regardless "
+             "of which specific player -- positions not named here are "
+             "uncapped. Different from --position-exposure, which caps one "
+             "player's own exposure, not the position's aggregate share of "
+             "FLEX. PCT is a 0.0-1.0 fraction. Only used with --n-lineups; "
+             "classic slates only for now (no effect on Showdown).",
+    )
     # Ad Hoc Session A6 (2026-09-13) -- Dart Exposure Cap. Grew out of a
     # user chat walking a real DK MME (20-lineup) build: a hand-inspection
     # of the exposure printout found Kevin Austin Jr. (a $3,000 WR3/bring-
@@ -5434,6 +5510,25 @@ def main():
         parser.error(
             "--position-exposure is not supported for Showdown slates yet "
             "(classic only, Wk8 postmortem 2026-10-28)."
+        )
+
+    # Wk8 postmortem (2026-10-28) -- --flex-position-cap. Same CLI-level
+    # parsing split as --position-exposure above.
+    flex_position_cap = (
+        parse_position_exposure_list(args.flex_position_cap, "--flex-position-cap")
+        if args.flex_position_cap else None
+    )
+    if flex_position_cap and not args.n_lineups:
+        print(
+            "NOTE: --flex-position-cap was set but --n-lineups was not -- "
+            "exposure has no meaning for a single lineup, ignored for "
+            "this build.", file=sys.stderr,
+        )
+    if flex_position_cap and showdown_mode:
+        parser.error(
+            "--flex-position-cap is not supported for Showdown slates "
+            "(classic only, Wk8 postmortem 2026-10-28 -- Showdown has no "
+            "FLEX slot concept the same way)."
         )
 
     # Session 7.3 -- decisions #28-29.
@@ -5740,6 +5835,7 @@ def main():
             thumbs_up_ids=thumbs_up_ids, thumbs_down_ids=thumbs_down_ids,
             player_exposure=player_exposure,
             position_exposure=position_exposure,
+            flex_position_cap=flex_position_cap,
             exclude_skill_vs_opp_dst=not args.allow_skill_vs_opp_dst,
             classic_shape=classic_shape,
             pool_slack_share=args.pool_slack_share,
