@@ -70,6 +70,13 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: ${{ env.PYTHON_VERSION }}
+          # Build-time investigation (2026-10-28): this had no cache, so
+          # every on-demand dispatch did a cold install of the full
+          # pandas/numpy/pulp stack from scratch. Caches on requirements.txt's
+          # hash (actions/setup-python's built-in pip cache) -- invalidates
+          # itself automatically if requirements.txt ever changes, no
+          # separate cache key to maintain.
+          cache: "pip"
 
       - name: Install dependencies
         run: pip install -r requirements.txt
