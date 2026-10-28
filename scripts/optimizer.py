@@ -784,6 +784,61 @@ def parse_player_exposure_list(raw: str, flag_name: str) -> dict:
 
 
 # ---------------------------------------------------------------------------
+# --position-exposure POS:PCT,POS:PCT -- Wk8 postmortem (2026-10-28): the
+# Item 11 rebuild removed --max-exposure's shared cap entirely (0.5 -> 1.0)
+# and left --player-exposure as the only remaining per-player override, but
+# that's a per-NAME override -- it has to be re-pointed at whichever player
+# is dominant each week, and capping just the current #1 pushes the #2
+# player at that position straight to the same ceiling (whack-a-mole,
+# confirmed by testing one TE at a time on real Wk3/6/8 slates). This flag
+# is a per-POSITION default instead: every player at that position falls
+# back to this cap unless --player-exposure names them individually (same
+# "explicit player override always wins" precedence --dart-exposure-cap
+# already uses). It's deliberately NOT a revival of the old cl-* shape
+# terms (those penalized a lineup's point total for a shape choice, which
+# is what pushed against real-field punt-mix history and got zeroed); this
+# only throttles how many of the 100 lineups may repeat the same player at
+# a position, and -- because exposure caps only bind lineups generated
+# AFTER a player's count already hits the cap -- lineup #1 (solved first,
+# every time) is unaffected by it: it always gets whichever player is
+# actually best. Classic only for now, matching --dart-exposure-cap's own
+# scope note.
+def parse_position_exposure_list(raw: str, flag_name: str) -> dict:
+    """Parses '--position-exposure TE:0.4,RB:0.6' into {'TE': 0.4, 'RB':
+    0.6}. Same comma-list shape and 0.0-1.0 fraction convention as
+    parse_player_exposure_list() above, keyed by position instead of
+    player_id."""
+    caps = {}
+    for entry in raw.split(","):
+        entry = entry.strip()
+        if not entry:
+            continue
+        if ":" not in entry:
+            raise SystemExit(
+                f"{flag_name} entries must be POSITION:PCT (e.g. "
+                f"TE:0.4), got: {entry!r}"
+            )
+        pos, _, pct_raw = entry.partition(":")
+        pos = pos.strip().upper()
+        try:
+            pct = float(pct_raw.strip())
+        except ValueError:
+            raise SystemExit(f"{flag_name} entry {entry!r} has a non-numeric percentage.")
+        if not (0.0 < pct <= 1.0):
+            raise SystemExit(
+                f"{flag_name} entry {entry!r} -- percentage must be greater "
+                f"than 0.0 and at most 1.0 (it's a fraction of lineups, e.g. "
+                f"0.4 for 40%%, not a 0-100 integer)."
+            )
+        if pos in caps:
+            raise SystemExit(f"{flag_name} lists position {pos} more than once.")
+        caps[pos] = pct
+    if not caps:
+        raise SystemExit(f"{flag_name} resolved to an empty list: {raw!r}")
+    return caps
+
+
+# ---------------------------------------------------------------------------
 # Require-N-From-Group -- generic "at least N of these specific players"
 # ---------------------------------------------------------------------------
 # A hard-minimum counterpart to --lock: --lock pins the SAME player(s) into
@@ -990,7 +1045,8 @@ def validate_lock_feasibility(players: pd.DataFrame, locked_player_ids: set,
 def validate_exposure_cap_feasibility(players: pd.DataFrame, locked_player_ids: set,
                                        max_team_players: dict = None,
                                        max_game_players: dict = None,
-                                       player_exposure: dict = None):
+                                       player_exposure: dict = None,
+                                       position_exposure: dict = None):
     """Decision #36's structural pre-check, same pattern and same scope
     limitation as validate_lock_feasibility's decision #24: only checks
     whether the LOCKED players themselves already violate a cap (in which
@@ -1030,6 +1086,31 @@ def validate_exposure_cap_feasibility(players: pd.DataFrame, locked_player_ids: 
     if not locked_player_ids:
         return
     locked = players[players["player_id"].isin(locked_player_ids)]
+
+    # Wk8 postmortem (2026-10-28) --position-exposure: a locked player
+    # whose position carries a default cap below 100% is the same
+    # unsatisfiable conflict as decision #54's player_exposure check above
+    # -- unless that player is named individually in player_exposure
+    # (which already wins over the position default, so a 100% player
+    # override alongside a lock is fine).
+    if position_exposure and locked_player_ids:
+        player_exposure = player_exposure or {}
+        for pid in sorted(locked_player_ids):
+            if pid in player_exposure:
+                continue
+            row = players.loc[players["player_id"] == pid]
+            if row.empty:
+                continue
+            pos = str(row.iloc[0]["position"]).upper()
+            cap = position_exposure.get(pos)
+            if cap is not None and cap < 1.0:
+                raise RuntimeError(
+                    f"player_id {pid} ({pos}) is --lock'd but --position-exposure "
+                    f"caps {pos} at {cap:.0%} -- a lock already means 100% of "
+                    f"lineups, so a lower position cap can never be satisfied. "
+                    f"Give this player_id an explicit --player-exposure override "
+                    f"of 1.0, or remove the lock."
+                )
 
     if max_team_players:
         for team, cap in max_team_players.items():
@@ -2880,6 +2961,7 @@ def build_multi_lineup(site: str, slate_id: str, n_lineups: int = DEFAULT_N_LINE
                         thumbs_up_ids: set = None,
                         thumbs_down_ids: set = None,
                         player_exposure: dict = None,
+                        position_exposure: dict = None,
                         exclude_skill_vs_opp_dst: bool = DEFAULT_EXCLUDE_SKILL_VS_OPP_DST,
                         classic_shape: dict = None,
                         pool_slack_share: float = 0.0,
@@ -3021,15 +3103,26 @@ def build_multi_lineup(site: str, slate_id: str, n_lineups: int = DEFAULT_N_LINE
     validate_exposure_cap_feasibility(
         players_all, locked_player_ids,
         max_team_players=max_team_players, max_game_players=max_game_players,
-        player_exposure=player_exposure,
+        player_exposure=player_exposure, position_exposure=position_exposure,
     )
 
     # Session 16 (decisions #52-55): a per-player cap dict instead of one
     # shared scalar. A player_id absent from `player_exposure` falls back
     # to `max_exposure_pct`, identical to every build before this session.
+    # Wk8 postmortem (2026-10-28) --position-exposure: a player absent from
+    # `player_exposure` but whose position is in `position_exposure` falls
+    # back to THAT instead of the shared `max_exposure_pct` -- an explicit
+    # --player-exposure entry still always wins, same precedence
+    # --dart-exposure-cap already uses.
     player_exposure = player_exposure or {}
+    position_exposure = position_exposure or {}
+    position_by_pid = dict(zip(players_all["player_id"], players_all["position"].astype(str).str.upper()))
     exposure_cap_by_pid = {
-        pid: max(1, math.floor(player_exposure.get(pid, max_exposure_pct) * n_lineups))
+        pid: max(1, math.floor(
+            player_exposure.get(
+                pid, position_exposure.get(position_by_pid.get(pid), max_exposure_pct)
+            ) * n_lineups
+        ))
         for pid in players_all["player_id"]
     }
 
@@ -5038,6 +5131,45 @@ def main():
              "player's Captain and FLEX rows (decision #53), matching how "
              "--max-exposure already behaves there.",
     )
+    # Wk8 postmortem (2026-10-28): --position-exposure. The Item 11 rebuild
+    # (2026-10-28) uncapped --max-exposure entirely (0.5 -> 1.0) and that
+    # was the right call for QB/RB/WR (validated: the cap was the dominant
+    # cost vs the best legally-buildable lineup) -- but a real side effect
+    # surfaced reviewing the first live Wk8 100-lineup pool built under it:
+    # a single cheap, high-value TE (real example: Brenton Strange, $4,000,
+    # our highest-owned TE that week) occupied the TE slot in 91/100
+    # lineups, and the first ~19 lineups (ranked by projection -- what the
+    # owner actually submits as #1) were near-duplicates of each other,
+    # differing only in DST and a cheap WR3. Rebuilding Wk1-7 with current
+    # code found this generalizes: the single most-used TE sat at
+    # 24%-96% exposure across all 8 weeks tested (median ~51%), vs. the
+    # real DK field's FLEX=TE rate of 21-33% (WK3_ROOT_CAUSE_FINDINGS.md
+    # line 632) -- TE is a structurally thin, low-variance position, so an
+    # uncapped exposure setting concentrates there hardest. Capping just
+    # the single dominant TE by name (--player-exposure) fixed that one
+    # name but promoted the #2 TE to the same ceiling (whack-a-mole,
+    # confirmed on real Wk3/6/8 data) -- this flag caps the whole position
+    # at once instead, so the cap holds regardless of which specific player
+    # is chalk that week. Unlike the old cl-* classic shape terms (zeroed
+    # in the same Item 11 rebuild), this is NOT a point penalty on a
+    # lineup's shape -- it only throttles how many of the 100 lineups may
+    # repeat the same player at a position. Because exposure caps only
+    # start binding once a player's count already reaches the cap, lineup
+    # #1 (solved first, every time) is unaffected: it always gets whichever
+    # player is actually best, at any position. Classic only for now,
+    # matching --dart-exposure-cap's own scope note below.
+    parser.add_argument(
+        "--position-exposure", default=pdef("position-exposure", None),
+        help="Comma-separated POSITION:PCT caps (e.g. 'TE:0.4') giving "
+             "every player at that position a shared max-exposure ceiling "
+             "instead of --max-exposure's default -- positions not named "
+             "here are unaffected. An explicit --player-exposure entry for "
+             "a given player_id always wins over this flag's position "
+             "default for that player (same precedence --dart-exposure-cap "
+             "uses). PCT is a 0.0-1.0 fraction, same convention as "
+             "--max-exposure. Only used with --n-lineups; classic slates "
+             "only for now (no effect on Showdown).",
+    )
     # Ad Hoc Session A6 (2026-09-13) -- Dart Exposure Cap. Grew out of a
     # user chat walking a real DK MME (20-lineup) build: a hand-inspection
     # of the exposure printout found Kevin Austin Jr. (a $3,000 WR3/bring-
@@ -5284,6 +5416,24 @@ def main():
             "NOTE: --player-exposure was set but --n-lineups was not -- "
             "exposure has no meaning for a single lineup, ignored for "
             "this build.", file=sys.stderr,
+        )
+
+    # Wk8 postmortem (2026-10-28) -- --position-exposure. Same CLI-level
+    # parsing split as --player-exposure above.
+    position_exposure = (
+        parse_position_exposure_list(args.position_exposure, "--position-exposure")
+        if args.position_exposure else None
+    )
+    if position_exposure and not args.n_lineups:
+        print(
+            "NOTE: --position-exposure was set but --n-lineups was not -- "
+            "exposure has no meaning for a single lineup, ignored for "
+            "this build.", file=sys.stderr,
+        )
+    if position_exposure and showdown_mode:
+        parser.error(
+            "--position-exposure is not supported for Showdown slates yet "
+            "(classic only, Wk8 postmortem 2026-10-28)."
         )
 
     # Session 7.3 -- decisions #28-29.
@@ -5589,6 +5739,7 @@ def main():
             participation_floors=participation_floors,
             thumbs_up_ids=thumbs_up_ids, thumbs_down_ids=thumbs_down_ids,
             player_exposure=player_exposure,
+            position_exposure=position_exposure,
             exclude_skill_vs_opp_dst=not args.allow_skill_vs_opp_dst,
             classic_shape=classic_shape,
             pool_slack_share=args.pool_slack_share,

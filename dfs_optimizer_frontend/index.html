@@ -1823,6 +1823,10 @@ in this browser's localStorage.</p>
           <span class="field-label">Lambda (variance penalty)</span>
           <input type="number" id="ctrlLambda" step="0.001" value="0" placeholder="0 = pure point-maximization">
         </div>
+        <div id="wrapPositionExposureField">
+          <span class="field-label">Position Exposure<span class="field-label-hint" title="Wk8 postmortem (2026-10-28): every player at a named position shares a max-exposure ceiling across this batch instead of the shared Max Exposure default -- positions not named here are unaffected. Fixes a single cheap, high-value player at a thin position (e.g. the chalk TE) dominating the whole 100-lineup pool; an explicit per-player override above still wins. Format: POSITION:PCT comma-separated, 0.0-1.0 (e.g. TE:0.4). Classic only. Blank disables.">?</span></span>
+          <input type="text" id="ctrlPositionExposure" value="" placeholder="e.g. TE:0.4 -- blank disables">
+        </div>
         <div id="wrapDartExposureField" style="grid-column:1/-1;">
           <span class="field-label">Dart Exposure Cap<span class="field-label-hint" title="Any non-DST player whose simulated 10th-percentile outcome (statline_p10) falls below the Floor Threshold is a &quot;dart&quot; -- capped at Cap % of this batch's lineups, unless he's on this batch's own stack team. DST is always exempt (every DST's floor simulates as a flat 0 regardless of matchup -- use the DST's own opponent implied total instead). Classic slates only; needs the same --sigma-recalibration build as Lambda.">?</span></span>
           <label class="checkbox-row" style="margin-top:0;cursor:pointer;">
@@ -3632,6 +3636,8 @@ in this browser's localStorage.</p>
     "ctrlAllowSkillVsOppDst",
     // Ad Hoc Session A3 -- mean-variance objective coefficient (--lambda).
     "ctrlLambda",
+    // Wk8 postmortem (2026-10-28) -- Position Exposure.
+    "ctrlPositionExposure",
     // Ad Hoc Session A6 -- Dart Exposure Cap.
     "ctrlDartExposureEnabled", "ctrlDartExposureCap", "ctrlDartFloorThreshold",
     // WK3 postmortem §2 parking-lot #2 (2026-09-29) -- Showdown construction rules.
@@ -3700,6 +3706,11 @@ in this browser's localStorage.</p>
       ctrlNLineups: "3", ctrlMaxExposure: "100", ctrlUniqueness: "0",
       ctrlRandomization: "0", ctrlStackMode: "none",
       ctrlAllowSkillVsOppDst: false, ctrlLambda: "0",
+      // Wk8 postmortem (2026-10-28) -- not set here or exposure has no
+      // meaning for a 1-3 lineup build anyway; explicit "" so switching
+      // from "SE3Max Pool (100)" can't leak its TE:0.4 cap into this
+      // preset (applyPresetValues only touches keys a preset defines).
+      ctrlPositionExposure: "",
       // WK3 postmortem item 5 (2026-09-30) -- matches data/optimizer_presets.json's
       // own cl-* values exactly (kept in sync by hand, same convention as every
       // other field here). See CLASSIC_RULES.md for the evidence.
@@ -3734,6 +3745,8 @@ in this browser's localStorage.</p>
       ctrlNLineups: "3", ctrlMaxExposure: "50", ctrlUniqueness: "1",
       ctrlRandomization: "5", ctrlStackMode: "qb", ctrlStackSize: "2",
       ctrlBringBack: false, ctrlAllowSkillVsOppDst: false, ctrlLambda: "0",
+      // Wk8 postmortem (2026-10-28) -- see "Cash" preset's own comment above.
+      ctrlPositionExposure: "",
       ctrlClDstBandBonus: "0.8", ctrlClDstExpensivePenalty: "2.0",
       ctrlClZeroPuntPenalty: "1.5", ctrlClThreePlusPuntPenalty: "0.5",
       ctrlClSamePosPuntPenalty: "1.0",
@@ -3766,10 +3779,22 @@ in this browser's localStorage.</p>
       // theoretical optimum), every cl-* shape term -> 0 (cost ~0.3 pts and pushed the
       // wrong direction vs real-field punt-mix history). This UI copy had drifted stale
       // vs the backend preset until now -- keep both in sync by hand going forward.
+      // UPDATED 2026-10-28, Wk8 postmortem (same-day follow-up -- see
+      // data/optimizer_presets.json's se3max_pool bundle + WK7_POSTMORTEM_ACTION_ITEMS.md
+      // for the full study): ctrlUniqueness 1 -> 3, ctrlPositionExposure "" -> "TE:0.4".
+      // The uncapped max-exposure above let a single cheap, high-value TE occupy FLEX/TE
+      // in 81-96% of a 100-lineup pool and made the first ~19 lineups (ranked by
+      // projection -- what the owner submits as #1) near-duplicates. uniqueness=3 fixes
+      // the near-top duplicate-skeleton problem (20/20 of the top 20 became distinct on
+      // real Wk3/6/8 tests); position-exposure fixes the whole-pool single-player
+      // monoculture (clamps top-TE exposure to exactly 40% everywhere tested, vs
+      // 24-96% baseline). Combined real cost on lineup #1's own projection: -0.3% to
+      // -0.8%, an order of magnitude smaller than Item 11's own 50%-cap cost (~5-6%).
       ctrlMinSalary: "0",
-      ctrlNLineups: "100", ctrlMaxExposure: "100", ctrlUniqueness: "1",
+      ctrlNLineups: "100", ctrlMaxExposure: "100", ctrlUniqueness: "3",
       ctrlRandomization: "5", ctrlStackMode: "qb", ctrlStackSize: "1",
       ctrlBringBack: false, ctrlAllowSkillVsOppDst: false, ctrlLambda: "0",
+      ctrlPositionExposure: "TE:0.4",
       ctrlClDstBandBonus: "0", ctrlClDstExpensivePenalty: "0",
       ctrlClZeroPuntPenalty: "0", ctrlClThreePlusPuntPenalty: "0",
       ctrlClSamePosPuntPenalty: "0",
@@ -3794,6 +3819,8 @@ in this browser's localStorage.</p>
       // stays true. See data/optimizer_presets.json's mme_gpp for the same note.
       ctrlRandomization: "10", ctrlStackMode: "qb", ctrlStackSize: "1",
       ctrlBringBack: true, ctrlAllowSkillVsOppDst: false, ctrlLambda: "-0.005",
+      // Wk8 postmortem (2026-10-28) -- see "Cash" preset's own comment above.
+      ctrlPositionExposure: "",
       // Ad Hoc Session A6 -- matches data/optimizer_presets.json's own
       // mme_gpp bundle (kept in sync by hand, same as this preset's other
       // fields). Not added to Cash/SE-3Max above -- see that file's own
@@ -3832,6 +3859,10 @@ in this browser's localStorage.</p>
       ctrlMinSalary: "0",
       ctrlNLineups: "3", ctrlMaxExposure: "100", ctrlUniqueness: "3",
       ctrlRandomization: "3", ctrlLambda: "0",
+      // Wk8 postmortem (2026-10-28) -- classic-only (never sent for
+      // Showdown regardless), cleared so the text field doesn't show a
+      // stale value left over from "SE3Max Pool (100)".
+      ctrlPositionExposure: "",
       ctrlSdRequireCptQb: true, ctrlSdCheapTierPenalty: "1.0", ctrlSdCheapTierRange: "600:1000",
       ctrlSdStackCap: "2", ctrlSdStackCapPenalty: "0", ctrlSdQbPartnerBonus: "0.75",
       ctrlSdExcludeCptPositions: "DST", ctrlSdKCptPenalty: "1.0", ctrlSdHeavySideCptPenalty: "1.25"
@@ -3842,6 +3873,8 @@ in this browser's localStorage.</p>
       ctrlMinSalary: "0",
       ctrlNLineups: "100", ctrlMaxExposure: "35", ctrlUniqueness: "1",
       ctrlRandomization: "18", ctrlLambda: "0",
+      // Wk8 postmortem (2026-10-28) -- see "Showdown SE" preset's own comment above.
+      ctrlPositionExposure: "",
       ctrlSdRequireCptQb: true, ctrlSdCheapTierPenalty: "2.0", ctrlSdCheapTierRange: "600:1000",
       ctrlSdStackCap: "2", ctrlSdStackCapPenalty: "0", ctrlSdQbPartnerBonus: "1.5",
       ctrlSdExcludeCptPositions: "DST", ctrlSdKCptPenalty: "1.5", ctrlSdHeavySideCptPenalty: "0.5"
@@ -5552,6 +5585,19 @@ in this browser's localStorage.</p>
     var lam = parseFloat(document.getElementById("ctrlLambda").value);
     if (!isNaN(lam) && lam !== 0) {
       params.lambda = String(lam);
+    }
+
+    // Wk8 postmortem (2026-10-28) -- Position Exposure. Blank (default)
+    // omits the param entirely, matching optimizer.py's own flag-off
+    // default. Already a raw "POS:PCT,POS:PCT" string, same convention as
+    // --max-exposure/--player-exposure -- no unit conversion needed here.
+    // Classic only (optimizer.py rejects it for Showdown), same guard as
+    // the other classic-only params above.
+    if (!isShowdown) {
+      var posExposure = document.getElementById("ctrlPositionExposure").value.trim();
+      if (posExposure) {
+        params.position_exposure = posExposure;
+      }
     }
 
     // Ad Hoc Session A6 -- Dart Exposure Cap. Unchecked (default) omits

@@ -275,6 +275,13 @@ async function handleDispatch(url, env) {
     // All three passed through unchanged, same convention as every other
     // field here -- optimizer.py's own parsing/validation does the rest.
     "player_exposure", "thumbs_up", "thumbs_down",
+    // Wk8 postmortem (2026-10-28) -- "position_exposure" is a comma-
+    // separated "POSITION:FRACTION" string (mirrors player_exposure's
+    // shape above, but keyed by position, e.g. "TE:0.4"), passed through
+    // unchanged -- optimizer.py's own parse_position_exposure_list() does
+    // the real parsing/validation. Classic slates only (no effect on
+    // Showdown).
+    "position_exposure",
     // Session 17, decision #56 -- skill-vs-opposing-DST exclusion override.
     // "allow_skill_vs_opp_dst" is a boolean flag (present = override is on;
     // absent = optimizer.py's own default, which is the exclusion ON).

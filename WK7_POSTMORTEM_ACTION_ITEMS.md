@@ -223,3 +223,84 @@ Every item below should say which track it's on.
   2026-10-28) rather than the stricter construction-mechanics-style multi-study bar — low complexity, easily
   reverted via the constant if live results disagree.
 - Status: **shipped 2026-10-28.** `MIN_SALARY` raised 49300 -> 49700 in `scripts/classic_field.py`.
+
+## se3max_pool pool collapsed to a single-player/single-skeleton monoculture after the Item 11 exposure-cap rebuild
+- Source: Wk8 postmortem (2026-10-28), a same-day follow-up to the Item 11 rebuild above -- surfaced reviewing
+  the owner's real Wk8 pool build (`output/lineups_multi_dk_dk_classic_wk8_main_01Nov2026_ea0c6653-...csv`,
+  100 lineups), two days after Item 11 shipped `max-exposure` 0.5 -> 1.0 (uncapped) and `uniqueness` stayed at
+  its pre-existing value of 1.
+- Evidence: the real Wk8 pool put a TE in FLEX in 81/100 lineups (real DK field: 21-33% depending on
+  cash/noncash and SE/MME, `WK3_ROOT_CAUSE_FINDINGS.md` line 632) and lineups #1-19 (ranked by projection --
+  what the owner actually submits as #1) were near-duplicates of each other, differing only in DST and a cheap
+  WR3 -- Brenton Strange ($4,000, our highest-owned TE that week, genuine value not a bug) sat at the TE slot
+  in 91/100 lineups overall. Root cause: `uniqueness=1` only requires ONE different player between consecutive
+  lineups, and `max-exposure=1.0` (correctly uncapped by Item 11 for QB/RB/WR) left nothing bounding a single
+  thin-position player's total exposure either. Rebuilt Wk1-7 with current code (no committed analysis
+  folder -- test rebuilds aren't committed per SUBAGENT_BRIEF.md hygiene; re-run via `scripts/optimizer.py
+  --preset se3max_pool --slate-id <wk> --request-id <x> --client-id <y>` against each week's existing
+  `final_projections_*_main_*.csv` to reproduce) and confirmed this generalizes: the single most-used TE sat
+  at 24%-96% total exposure (TE slot + FLEX) across all 8 weeks tested (median ~51%), well above the real
+  field's 21-33% FLEX=TE rate in every case but one (Wk2, where RB legitimately won FLEX at 0% TE -- the
+  problem is intermittent-but-common, not universal, and tracks which position has the week's best raw value,
+  consistent with `CLASSIC_RULES.md` rule 3's finding that RB-vs-TE in FLEX carries no real points penalty
+  either direction).
+  Two candidate mechanisms were tested and rejected/superseded before landing on the shipped fix: (1)
+  capping just the single dominant TE by player_id (`--player-exposure`) fixed that one name but promoted the
+  #2 TE to the identical ceiling (whack-a-mole, confirmed on real Wk3/Wk6/Wk8 data -- Wk3's Travis Kelce capped
+  at 40% simply handed the role to Dalton Schultz at 47%); (2) `uniqueness` alone (tested at 2/3/4) reduces the
+  dominant TE's exposure (Wk8: 91%->65% at uniqueness=4) but plateaus far short of the real-field rate and,
+  because the uniqueness constraint never binds until a SECOND lineup exists, only fixes duplication from
+  roughly lineup ~40 onward -- it does NOT fix the near-top (#1-19) duplicate-skeleton problem by itself at
+  low settings (uniqueness=1), though uniqueness=3 alone DID fully fix the top-20 skeleton-uniqueness metric
+  (20/20 distinct on Wk3/6/8) at a small real cost to lineup #1 (-0.3% to -0.8%, likely a solver tie-break
+  effect from the added constraint rather than a truly binding one, since lineup #1 always solves before any
+  previous-lineup or exposure-count constraint can bind).
+- Proposed change: a new generic mechanism, not a revival of the Item 11-zeroed `cl-*` shape terms (those
+  penalized a lineup's point total for a shape choice and pushed the wrong direction vs real punt-mix history
+  -- this is deliberately different: it never changes a lineup's score, it only throttles how many of the 100
+  lineups may repeat the same player or player-at-a-position). Added `--position-exposure POS:PCT,POS:PCT`
+  to `scripts/optimizer.py` (classic only, same scope restriction as the existing `--dart-exposure-cap`):
+  every player at a named position shares a max-exposure ceiling instead of `--max-exposure`'s uncapped
+  default, falling back to any more specific `--player-exposure` entry (same "explicit override always wins"
+  precedence `--dart-exposure-cap` already uses) -- so the cap holds regardless of which specific player is
+  chalk that week, closing the whack-a-mole gap found above. Combined with raising `se3max_pool`'s own
+  `uniqueness` 1 -> 3 to also fix the near-top duplication that `--position-exposure` alone leaves untouched
+  (its cap doesn't start binding until a player's count is already used up, which for the dominant TE is
+  usually well past lineup #20).
+- Validation: tested `--position-exposure TE:0.4` alone across all 8 rebuilt weeks (Wk1-8) -- top-TE exposure
+  clamped to exactly 40% in every week (vs 24-96% baseline), distinct-TE count rose in all 8, and lineup #1's
+  own projection was UNCHANGED in every single week (not approximately -- bit-identical, which is also
+  mathematically guaranteed by construction: every exposure-cap mechanism only locks a player out of lineups
+  generated AFTER their count reaches the cap, and lineup #1 is solved first with every count still at zero,
+  so it can never be constrained by any exposure cap, old or new). Tested the combined fix (uniqueness=3 +
+  `TE:0.4`) on Wk3/6/8: top-20 skeleton uniqueness hit 20/20 in all three (vs 15-20/20 baseline), whole-pool
+  skeleton uniqueness hit 100/100 in all three (vs 87-97/100 baseline), top-TE exposure held at 37-40% (no
+  whack-a-mole -- cap spread across 11-18 distinct TEs per week instead of concentrating on a #2 player), at
+  a combined lineup #1 cost of -0.3% to -0.8% (0.42-1.20 pts/lineup) -- an order of magnitude smaller than
+  Item 11's own 50%-cap cost (~5-6%). No infeasibility/feasibility warnings at any tested setting across 14
+  separate builds (8 weeks x baseline check + 3 weeks x 3 uniqueness levels + 3 weeks x position-exposure +
+  3 weeks x combined). Smoke-tested the final shipped preset end-to-end (`--preset se3max_pool`, no manual
+  flag overrides) against the real live Wk8 slate: matches the isolated test numbers exactly (top TE 93%->40%
+  exposure, distinct TE count 15->18, top-20 skeleton uniqueness 15->20, lineup #1 projection 133.56->133.14).
+  **Not yet validated for cash-rate impact** (time-boxed to a single session per the owner's Wk8 postmortem
+  instructions, favoring a same-day ship over exhaustive backtesting) -- flagged as the next live-monitoring
+  check, same standing as Item 11's own cash-rate follow-up above. The FLEX=TE *rate* itself was deliberately
+  left alone (still ~76-98% on these slates even after the fix) since rule 3 already found no real positional
+  penalty to correct for -- this fix only targets single-player/single-skeleton monoculture, not the
+  TE-vs-RB-in-FLEX question, which stays settled.
+- Track: **owner override of the hard ship bar, same standing as Item 11 above** -- the near-zero cost to
+  lineup #1 (mathematically guaranteed for the position-exposure half, empirically small for the uniqueness
+  half) and the generalization across 8 real weeks were judged sufficient to ship same-day rather than wait
+  for a cash-rate backtest, consistent with the two-track philosophy's low bar to keep testing further.
+- Status: **shipped 2026-10-28.** Added `--position-exposure` flag to `scripts/optimizer.py` (new
+  `parse_position_exposure_list()`, wired into `build_multi_lineup()`'s per-player exposure-cap computation
+  with position-level fallback, plus a feasibility check for a locked player whose position cap would be
+  unsatisfiable). `data/optimizer_presets.json`'s `se3max_pool`: `uniqueness` 1 -> 3, `position-exposure`
+  added ("TE:0.4"). Mirrored into `dfs_optimizer_frontend/index.html`'s `BUILTIN_PRESETS["SE3Max Pool (100)"]`
+  (`ctrlUniqueness` 1 -> 3, new `ctrlPositionExposure` "TE:0.4") plus a new `ctrlPositionExposure` UI control,
+  `PRESET_FIELDS` entry, and dispatch wiring (classic-only, guarded the same way other classic-only params
+  are); every other built-in preset explicitly sets `ctrlPositionExposure: ""` so switching away from
+  "SE3Max Pool (100)" can't leak a stale `TE:0.4` into a Cash/MME/Showdown build. Also added
+  `position_exposure` to `cloudflare_worker/optimizer_api/optimizer_api.js`'s param allowlist and
+  `.github/workflows/run_optimizer_dispatch.yml`'s flag-building logic so a live UI-dispatched build actually
+  sends it through to `optimizer.py`. Live cash-rate monitoring from here, per the two-track note above.

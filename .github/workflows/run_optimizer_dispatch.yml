@@ -226,6 +226,15 @@ jobs:
           args += flag("--thumbs-up", "thumbs_up")
           args += flag("--thumbs-down", "thumbs_down")
 
+          # Wk8 postmortem (2026-10-28). "--position-exposure" arrives as a
+          # comma-separated "POSITION:FRACTION" string already built by the
+          # frontend (mirrors --player-exposure above, but keyed by
+          # position, e.g. "TE:0.4"). optimizer.py's own
+          # parse_position_exposure_list() does the actual parsing/
+          # validation. Classic slates only (optimizer.py itself rejects it
+          # on a Showdown-detected build).
+          args += flag("--position-exposure", "position_exposure")
+
           # Session 8 (this session) -- decisions #34/#35. Same "omit means
           # optimizer.py's own default (0, no floor)" convention as every
           # other optional field above.
