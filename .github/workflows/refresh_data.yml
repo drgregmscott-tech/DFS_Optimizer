@@ -449,6 +449,26 @@ jobs:
             exit 1
           fi
 
+      # ESPN comment-feed capture (scripts/espn_comment_feed.py) -- WK7
+      # postmortem item, scoped 2026-10-28: collection-only, NOT wired into
+      # final_projections or any build step. Pulls the league-wide
+      # shortComment/longComment text once per distinct season/week (reuses
+      # status_pull's own /tmp/pairs.txt) so a future session has real
+      # prospective snapshots to check against -- this endpoint has no
+      # historical lookback, so snapshots not taken now can never be
+      # recovered later. Fail-safe: a failed pull here must never fail this
+      # job or block anything downstream, since nothing yet depends on it.
+      - name: Pull ESPN comment-feed snapshot (collection only, once per distinct season/week)
+        id: espn_comment_feed
+        if: needs.prepare.outputs.mode == 'full' || needs.prepare.outputs.mode == 'injury_only'
+        continue-on-error: true
+        run: |
+          while read season week; do
+            echo "Pulling ESPN comment feed for season=$season week=$week"
+            python3 scripts/espn_comment_feed.py pull --season "$season" --week "$week" || \
+              echo "::warning::espn_comment_feed pull failed for season=$season week=$week -- collection-only, non-blocking"
+          done < /tmp/pairs.txt
+
       # Game-day inactives overlay (scripts/inactives_pull.py) -- DISABLED.
       # Opt-in: ESPN's per-game roster (didNotPlay) is verified only on
       # POST-game data; whether it is populated at the ~90-min inactive
