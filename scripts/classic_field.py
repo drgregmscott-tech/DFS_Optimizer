@@ -48,7 +48,16 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 from optimizer import DEFENSE_POSITION_LABELS  # noqa: E402
 
 CAP_SALARY = 50000
-MIN_SALARY = 49300  # real entries: 5th pct ~49.3-49.5k, 10th pct ~49.6k across 6 logged classic slates
+# WK7 postmortem (2026-10-26/28, "classic_field.py simulator under-uses the salary cap"): 134 real
+# DK SE main-slate contests put the real-field salary floor at mean $49,880 [IQR 49,870-49,900], p10
+# ~$49,700. The previous $49,300 floor left the sim $200-260 light on the mean with p10 pinned to the
+# floor itself. Tested $49,500 and $49,700 against the same real-contest baseline (analysis/
+# wk7_postmortem_item4/min_salary_test.py, not committed): $49,700 closes the mean gap to +$11/-$36
+# (both 2026 wk1/wk2 pools) vs $49,500's -$90/-$144, at a modest ~9-10% relative cost to IPF
+# ownership-convergence accuracy (own_MAE_vs_target). p50 gap narrows from ~$350 to ~$150 but isn't
+# fully closed -- real fields concentrate even more tightly near the cap than this single floor bump
+# captures.
+MIN_SALARY = 49700
 N_RB, N_WR = 2, 3
 # Per-lineup count of the QB's 7 skill slots (RB,RB,WR,WR,WR,TE,FLEX) held by his own
 # teammate, k=0..4+ (4+ lumped into one bucket -- real share beyond 4 is ~0.05%).

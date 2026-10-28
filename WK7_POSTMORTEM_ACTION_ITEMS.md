@@ -210,6 +210,16 @@ Every item below should say which track it's on.
   dominant real-field floor, possibly with a configurable lower option (~$49,500) for the smaller real
   contingent that uses it as a diversification choice. Check how raising the floor interacts with the IPF
   ownership-correction step before just changing the constant — a tighter salary-legal pool per batch could
-  change how well IPF converges to target ownership. Not yet designed/built.
-- Track: test-bar (worth investigating further) — real, data-driven finding; no code change built or tested.
-- Status: open, not yet scoped.
+  change how well IPF converges to target ownership.
+- Test (2026-10-28): reran `simulate_field()` on the same 2026 wk1/wk2 pools at $49,500 and $49,700 against
+  the same 134-contest real baseline (`analysis/wk7_postmortem_item4/min_salary_test.py` + `.csv`, not
+  committed, FC-derived). $49,700 closes the mean-salary gap almost entirely (wk1 +$11, wk2 -$36, vs -$204/
+  -$258 at the old $49,300) and roughly halves the p50 gap (-$140/-$160 vs -$340/-$360); $49,500 only
+  partially closes it (-$90/-$144 mean, -$240/-$260 p50). Cost: `own_MAE_vs_target` (IPF ownership-match
+  error) rises ~9-10% relative at $49,700 vs $49,300 (wk1 0.360->0.393, wk2 0.684->0.735) — real but modest,
+  judged acceptable. p50 still sits ~$150 under real (real fields concentrate even tighter near the cap than
+  one floor bump captures) — a known residual, not claimed as fully closed.
+- Track: test-bar finding, shipped on the strength of the single-parameter test above (owner approved
+  2026-10-28) rather than the stricter construction-mechanics-style multi-study bar — low complexity, easily
+  reverted via the constant if live results disagree.
+- Status: **shipped 2026-10-28.** `MIN_SALARY` raised 49300 -> 49700 in `scripts/classic_field.py`.
