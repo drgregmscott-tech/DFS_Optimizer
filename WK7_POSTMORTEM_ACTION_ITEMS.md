@@ -107,15 +107,26 @@ Every item below should say which track it's on.
   matches real-world SE play: single-entry fields deliberately spread correlation risk (one correlated piece
   for a small edge) rather than stacking hard the way large-field MME GPPs do — the real data's low ≥2/3+/4+
   rates are expected field behavior, not noise.
-- Proposed change: `scripts/classic_field.py`'s `stack_boost` multiplier applies independently to every
-  skill-slot draw (RB, RB, WR, WR, WR, TE, FLEX) when filling a lineup around a boosted QB, and was calibrated
-  only against the stack≥1 rate (per the function's own doc comment) — nothing checked the higher-order stats.
-  That single-parameter boost compounds across slots, correctly hitting ≥1 while overshooting ≥2/3+/4+.
-  Needs recalibration against stack≥2 / 3+-from-one-team directly, likely via capping how much the boost
-  compounds per additional correlated slot rather than just rescaling the one multiplier. Not yet
-  designed/built.
-- Track: test-bar (worth investigating further) — real, data-driven finding; no code change built or tested.
-- Status: open, not yet scoped.
+- Proposed change (superseded, see Status): `scripts/classic_field.py`'s `stack_boost` multiplier applied
+  independently to every skill-slot draw (RB, RB, WR, WR, WR, TE, FLEX) when filling a lineup around a boosted
+  QB, and was calibrated only against the stack≥1 rate (per the function's own doc comment) — nothing checked
+  the higher-order stats. That single-parameter boost compounds across slots, correctly hitting ≥1 while
+  overshooting ≥2/3+/4+.
+- Track: test-bar (worth investigating further) — real, data-driven finding.
+- Status: **shipped 2026-10-28.** Extracted the real per-lineup exact-k teammate-count distribution (k=0..4+
+  of the QB's 7 skill slots held by his own teammate) from the same 134 real contests already on disk
+  (`analysis/wk7_postmortem_item4/exact_k_stack*.csv`, no new data pull) — k=0:15.8%, k=1:46.3%, k=2:33.4%,
+  k=3:4.1%, k=4+:0.4%. Replaced the independent-per-slot `stack_boost` multiplier in `scripts/classic_field.py`
+  with: sample k directly from this distribution per lineup, randomly choose which k of the 7 skill slots are
+  "hot," hot slots draw only from the QB's own teammates, cold slots draw only from non-teammates (the first
+  attempt left cold slots unboosted, which still incidentally picked the QB's own above-average-owned teammates
+  and overshot stack≥2 to ~52% — the cold-slot exclusion fixed that double-counting). Revalidated against the
+  same 134-contest real stats: stack≥1 82.7-85.0% (real 83.8% [80.2-88.9], IN), stack≥2 33.9-36.7% (real 36.3%
+  [32.4-42.3], IN), max-team mean 2.48-2.54 (real 2.44 [2.40-2.52], IN), share 3+ one team 43.5-48.4% (real
+  41.7% [38.6-47.3], borderline — one run slightly above the real upper IQR), share 4+ one team 5.9-7.6% (real
+  5.8% [4.9-6.9], borderline, same pattern). All five stats moved from +34-39pt overshoots to in-band or
+  near-in-band. Committed in `scripts/classic_field.py`; the derivation script and real-data outputs stay
+  uncommitted (FC-derived, per repo convention).
 
 ## se3max_pool construction-mechanics rebuild (exposure cap, stack size, shape terms)
 - Source: optimizer-mechanics fidelity chain, 2026-10-27 — four linked studies, see WK7_POSTMORTEM_DIAGNOSIS.md

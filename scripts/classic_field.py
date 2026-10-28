@@ -16,11 +16,21 @@ Showdown's 2-team, 6-slot field didn't need that classic does:
 2. Stack correlation. Classic's cash-line diagnostic (2026-09-22,
    WK2_POSTMORTEM.md) found real fields QB-stack 81-95% of the time -- far
    above what an independent per-slot draw from marginal ownership would
-   produce by chance. A `stack_boost` multiplies a QB's own teammates'
-   draw weight when filling the RB/WR/TE/FLEX slots for that same simulated
-   entry, then IPF still corrects the final marginal ownership back to
-   target -- the boost only changes which players get grouped together
-   within a lineup, not who gets rostered overall.
+   produce by chance. WK7 postmortem (2026-10-26/28, `WK7_POSTMORTEM_ACTION_ITEMS.md`
+   "classic_field.py simulator over-concentrates team stacking") found the
+   original fix -- a single `stack_boost` multiplier applied independently to
+   every skill slot -- correctly hit the real stack>=1 rate but overshot
+   stack>=2/3+/4+ by 34-39 points, because independent per-slot boosts compound
+   across slots in a way no single multiplier can match a real joint
+   distribution. Replaced with: sample each lineup's exact teammate count k
+   (0-4+) directly from the real per-lineup distribution computed from 134 real
+   DK SE main-slate contests (`analysis/wk7_postmortem_item4/`), then randomly
+   choose which k of the lineup's 7 skill slots (RB,RB,WR,WR,WR,TE,FLEX) are
+   "hot" -- a hot slot draws only from the QB's own teammates (falling back to
+   the unboosted pool if none remain available), every other slot draws
+   unboosted. IPF still corrects final marginal ownership back to target
+   regardless -- this only changes which players get grouped together within
+   a lineup, not who gets rostered overall.
 
 Usage: build a pool DataFrame with columns player_id, position (QB/RB/WR/TE/
 DST), team, salary, own (target ownership %), call simulate_field(), then
@@ -40,7 +50,11 @@ from optimizer import DEFENSE_POSITION_LABELS  # noqa: E402
 CAP_SALARY = 50000
 MIN_SALARY = 49300  # real entries: 5th pct ~49.3-49.5k, 10th pct ~49.6k across 6 logged classic slates
 N_RB, N_WR = 2, 3
-DEFAULT_STACK_BOOST = 3.0  # calibrated in validate_classic_field.py to hit real ~85-90% stack>=1 rate
+# Per-lineup count of the QB's 7 skill slots (RB,RB,WR,WR,WR,TE,FLEX) held by his own
+# teammate, k=0..4+ (4+ lumped into one bucket -- real share beyond 4 is ~0.05%).
+# Derived from the same 134 real DK SE main-slate contests (2022-2026) as the
+# WK7 postmortem's stack-rate diagnostic; see analysis/wk7_postmortem_item4/exact_k_stack*.csv.
+STACK_K_PROBS = np.array([0.157784, 0.462955, 0.334041, 0.041263, 0.003957])
 
 
 def _topk_distinct(w, k, rng, exclude=None):
@@ -53,20 +67,15 @@ def _topk_distinct(w, k, rng, exclude=None):
 
 
 def simulate_field(pool: pd.DataFrame, n=20000, seed=0, iters=15, batch=200000,
-                   min_salary=MIN_SALARY, stack_boost=None):
+                   min_salary=MIN_SALARY):
     """pool needs columns: position, team, salary, own (target ownership %).
     Returns a dict of index arrays {qb, rb[n,2], wr[n,3], te, flex, dst} into
     `pool`'s row order, for n accepted lineups.
 
-    stack_boost: multiplier applied to a QB's own teammates' draw weight when
-    filling skill slots. None (default) auto-scales with the number of teams
-    in the pool -- a fixed boost dilutes on big multi-game slates (e.g. a DK
-    main slate, ~26-32 teams) because the boosted team is competing against
-    far more other teams than on a 2-4 game early/afternoon-only slate.
-    Calibrated against real per-slate QB-stack rates (2026-09-22, classic
-    field validation): boost=3 reproduces the real ~81-95% stack>=1 rate on
-    small slates but only ~65% on a 26-team main slate; boost=6 there hits
-    ~83% (real target 84%) with a negligible effect on score quantiles."""
+    Each lineup's QB-teammate count is drawn directly from STACK_K_PROBS (the
+    real per-lineup distribution), then that many of the lineup's 7 skill
+    slots are randomly chosen to draw from the QB's own teammates only; the
+    rest draw unboosted. See module docstring point 2."""
     rng = np.random.default_rng(seed)
     pos = pool.position.to_numpy(dtype=object)
     team = pool.team.to_numpy(dtype=object)
@@ -84,9 +93,6 @@ def simulate_field(pool: pd.DataFrame, n=20000, seed=0, iters=15, batch=200000,
     idx = {p: np.where(pos == p)[0] for p in ("QB", "RB", "WR", "TE")}
     idx["DST"] = np.where(np.isin(pos, list(DEFENSE_POSITION_LABELS)))[0]
     skill_idx = np.where(np.isin(pos, ("RB", "WR", "TE")))[0]
-    if stack_boost is None:
-        n_teams = len(set(team.tolist()))
-        stack_boost = float(np.clip(DEFAULT_STACK_BOOST * n_teams / 8.0, DEFAULT_STACK_BOOST, 12.0))
 
     wQB = own[idx["QB"]].copy()
     wRB = own[idx["RB"]].copy()
@@ -96,24 +102,61 @@ def simulate_field(pool: pd.DataFrame, n=20000, seed=0, iters=15, batch=200000,
     wDST = own[idx["DST"]].copy()
     best = (np.inf, wRB.copy(), wWR.copy(), wTE.copy(), wFLEX.copy())
 
+    def _slot_weight(is_hot, cand_idx, base_w, qb_team):
+        """base_w broadcast to [batch, len(cand_idx)]. A hot slot draws only from the QB's
+        own teammates among cand_idx; a cold slot draws only from NON-teammates -- each with
+        a fallback to the unrestricted pool if that row has none available (e.g. already
+        picked, or the pool here has only/none of the QB's team). Without the cold-slot
+        exclusion, non-hot slots still incidentally pick the QB's (often above-average-owned)
+        teammates at their natural rate, double-counting correlation on top of the hot slots
+        and overshooting the target k -- confirmed 2026-10-28 (stack>=2 landed at ~52% vs the
+        ~38% STACK_K_PROBS implies, before this exclusion was added)."""
+        team_match = team[cand_idx][None, :] == qb_team[:, None]
+        base = np.broadcast_to(base_w[None, :], team_match.shape)
+        teammate_only = np.where(team_match, base, 0.0)
+        non_teammate_only = np.where(team_match, 0.0, base)
+        hot_weight = np.where(teammate_only.sum(axis=1, keepdims=True) > 0, teammate_only, base)
+        cold_weight = np.where(non_teammate_only.sum(axis=1, keepdims=True) > 0, non_teammate_only, base)
+        return np.where(is_hot[:, None], hot_weight, cold_weight)
+
     def _draw_batch(wQB, wRB, wWR, wTE, wFLEX, wDST):
         qb_local = rng.choice(len(idx["QB"]), size=batch, p=wQB / wQB.sum())
         qb = idx["QB"][qb_local]
         qb_team = team[qb]
 
-        rb_boost = np.where(team[idx["RB"]][None, :] == qb_team[:, None], stack_boost, 1.0) * wRB[None, :]
-        rb = idx["RB"][_topk_distinct(rb_boost, N_RB, rng)]
+        # draw this lineup's teammate count k, then pick which k of the 7 skill slots
+        # (RB,RB,WR,WR,WR,TE,FLEX) are "hot" (uniformly at random among the 7)
+        k = rng.choice(len(STACK_K_PROBS), size=batch, p=STACK_K_PROBS)
+        hot_noise = rng.standard_normal((batch, 7))
+        order = np.argsort(-hot_noise, axis=1)
+        rank = np.empty_like(order)
+        rows = np.arange(batch)[:, None]
+        rank[rows, order] = np.arange(7)[None, :]
+        hot = rank < k[:, None]
 
-        wr_boost = np.where(team[idx["WR"]][None, :] == qb_team[:, None], stack_boost, 1.0) * wWR[None, :]
-        wr = idx["WR"][_topk_distinct(wr_boost, N_WR, rng)]
+        rb_picks, excl_rb = [], np.zeros((batch, len(idx["RB"])), dtype=bool)
+        for s in range(N_RB):
+            w = _slot_weight(hot[:, s], idx["RB"], wRB, qb_team)
+            pick_local = _topk_distinct(w, 1, rng, exclude=excl_rb)[:, 0]
+            rb_picks.append(idx["RB"][pick_local])
+            excl_rb[np.arange(batch), pick_local] = True
+        rb = np.stack(rb_picks, axis=1)
 
-        te_boost = np.where(team[idx["TE"]][None, :] == qb_team[:, None], stack_boost, 1.0) * wTE[None, :]
-        te = idx["TE"][_topk_distinct(te_boost, 1, rng)[:, 0]]
+        wr_picks, excl_wr = [], np.zeros((batch, len(idx["WR"])), dtype=bool)
+        for s in range(N_WR):
+            w = _slot_weight(hot[:, N_RB + s], idx["WR"], wWR, qb_team)
+            pick_local = _topk_distinct(w, 1, rng, exclude=excl_wr)[:, 0]
+            wr_picks.append(idx["WR"][pick_local])
+            excl_wr[np.arange(batch), pick_local] = True
+        wr = np.stack(wr_picks, axis=1)
+
+        w = _slot_weight(hot[:, N_RB + N_WR], idx["TE"], wTE, qb_team)
+        te = idx["TE"][_topk_distinct(w, 1, rng)[:, 0]]
 
         picked = np.concatenate([rb, wr, te[:, None]], axis=1)  # [batch, 6] global indices
-        flex_boost = np.where(team[skill_idx][None, :] == qb_team[:, None], stack_boost, 1.0) * wFLEX[None, :]
-        excl = (skill_idx[None, :] == picked[:, :, None]).any(axis=1)
-        flex = skill_idx[_topk_distinct(flex_boost, 1, rng, exclude=excl)[:, 0]]
+        excl_flex = (skill_idx[None, :] == picked[:, :, None]).any(axis=1)
+        w = _slot_weight(hot[:, N_RB + N_WR + 1], skill_idx, wFLEX, qb_team)
+        flex = skill_idx[_topk_distinct(w, 1, rng, exclude=excl_flex)[:, 0]]
 
         dst_local = rng.choice(len(idx["DST"]), size=batch, p=wDST / wDST.sum())
         dst = idx["DST"][dst_local]
