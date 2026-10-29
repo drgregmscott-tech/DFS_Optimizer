@@ -3922,3 +3922,8 @@ timestamp_utc,trigger_type,site,step,status
 2026-10-28T16:05:43.966071+00:00,light_vegas_refresh,dk,dk_showdown_wk8_CAR_GB_29Oct2026,cheat_sheet,skipped
 2026-10-28T16:05:10.834665+00:00,light_vegas_refresh,fd,fd_classic_wk8_early_01Nov2026,cheat_sheet,skipped
 2026-10-28T16:05:16.035906+00:00,light_vegas_refresh,fd,fd_classic_wk8_main_01Nov2026,cheat_sheet,success
+2026-10-29T16:04:41.370936+00:00,light_vegas_refresh,dk,dk_classic_wk8_early_01Nov2026,cheat_sheet,skipped
+2026-10-29T16:04:58.288611+00:00,light_vegas_refresh,dk,dk_classic_wk8_main_01Nov2026,cheat_sheet,success
+2026-10-29T16:03:53.054070+00:00,light_vegas_refresh,dk,dk_showdown_wk8_CAR_GB_29Oct2026,cheat_sheet,skipped
+2026-10-29T16:03:06.882107+00:00,light_vegas_refresh,fd,fd_classic_wk8_early_01Nov2026,cheat_sheet,skipped
+2026-10-29T16:03:11.775365+00:00,light_vegas_refresh,fd,fd_classic_wk8_main_01Nov2026,cheat_sheet,success
