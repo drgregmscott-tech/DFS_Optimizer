@@ -156,17 +156,21 @@
 
     <div class="banner">
       <span class="banner-icon">AI probe · Sunday-morning process, updated 2026-10-30</span>
-      <p>Applies to SE3max and MME alike — not format-specific. Six steps, split between what you do and what Claude does with the answers:</p>
-      <p style="margin-top:8px;"><strong>1.</strong> You run <code>probe_ai_chat_weekly_questions.py</code> → paste the output into a <strong>fresh</strong> Claude.ai chat (no project context) → bring the answers back to Claude here.</p>
-      <p style="margin-top:6px;"><strong>2.</strong> Claude triages each answer into one of four buckets: usable in this week's build now; a real system/mechanism gap (logged for postmortem); an ownership-calibration signal (logged, pattern-tracked over several weeks); or discard (unreliable/stale).</p>
-      <p style="margin-top:6px;"><strong>3.</strong> For any "if X sits, who benefits" claim, Claude runs <code>probe_team_usage_rank.py TEAM --week N</code> — the tiebreaker: does our own real trailing usage data agree with the probe's specific name, or point elsewhere. Agreement → <code>--thumbs-up</code> that player_id; disagreement → trust our own data, thumbs-up whoever it actually points to.</p>
-      <p style="margin-top:6px;"><strong>4.</strong> Separately, independent of the chat probe entirely, Claude runs <code>probe_cheap_value_finder.py</code> — pulls this week's cheap-value candidates (by pts/$1000 efficiency, not just raw usage) straight from our own data. No chat needed for this step at all.</p>
-      <p style="margin-top:6px;"><strong>5.</strong> Claude cross-checks both lists against real exposure in whatever lineup pools already exist that week — did a player the math likes actually show up in builds, or is he being squeezed out (this is what caught Bourne/Robinson/Douglas/Gordon II/Stevenson being underexposed despite good value on 2026-10-30, and separately surfaced the cheap-filler-cap item above).</p>
-      <p style="margin-top:6px;"><strong>6.</strong> Claude gives you a final consolidated thumbs-up/down list with the reasoning for each (agreement with our own data, contingent on Friday news, or correctly left alone).</p>
-      <p style="margin-top:8px;">See <code>AI_PROBE_QUESTION_TEMPLATES.md</code> for the full question-design/relevance-filter writeup.</p>
-      <p style="font-family:var(--font-mono);font-size:12.5px;line-height:1.75;margin-top:10px;white-space:pre-wrap;background:var(--bg);border:1px solid var(--border);border-radius:7px;padding:10px 12px;">python3 scripts/probe_ai_chat_weekly_questions.py
+      <div class="item-body">
+        <p style="margin:0;">Applies to SE3max and MME alike — not format-specific. Six steps, split between what you do and what Claude does with the answers:</p>
+        <ol style="margin:10px 0 0; padding-left:20px; display:flex; flex-direction:column; gap:8px;">
+          <li>You run <code>probe_ai_chat_weekly_questions.py</code> → paste the output into a <strong>fresh</strong> Claude.ai chat (no project context) → bring the answers back to Claude here.</li>
+          <li>Claude triages each answer into one of four buckets: usable in this week's build now; a real system/mechanism gap (logged for postmortem); an ownership-calibration signal (logged, pattern-tracked over several weeks); or discard (unreliable/stale).</li>
+          <li>For any "if X sits, who benefits" claim, Claude runs <code>probe_team_usage_rank.py TEAM --week N</code> — the tiebreaker: does our own real trailing usage data agree with the probe's specific name, or point elsewhere. Agreement → <code>--thumbs-up</code> that player_id; disagreement → trust our own data, thumbs-up whoever it actually points to.</li>
+          <li>Separately, independent of the chat probe entirely, Claude runs <code>probe_cheap_value_finder.py</code> — pulls this week's cheap-value candidates (by pts/$1000 efficiency, not just raw usage) straight from our own data. No chat needed for this step at all.</li>
+          <li>Claude cross-checks both lists against real exposure in whatever lineup pools already exist that week — did a player the math likes actually show up in builds, or is he being squeezed out (this is what caught Bourne/Robinson/Douglas/Gordon II/Stevenson being underexposed despite good value on 2026-10-30, and separately surfaced the cheap-filler-cap item above).</li>
+          <li>Claude gives you a final consolidated thumbs-up/down list with the reasoning for each (agreement with our own data, contingent on Friday news, or correctly left alone).</li>
+        </ol>
+        <p style="margin:10px 0 0;">See <code>AI_PROBE_QUESTION_TEMPLATES.md</code> for the full question-design/relevance-filter writeup.</p>
+        <p style="font-family:var(--font-mono);font-size:12.5px;line-height:1.75;margin:10px 0 0;white-space:pre-wrap;background:var(--bg);border:1px solid var(--border);border-radius:7px;padding:10px 12px;">python3 scripts/probe_ai_chat_weekly_questions.py
 python3 scripts/probe_team_usage_rank.py TEAM --week N
 python3 scripts/probe_cheap_value_finder.py --week N</p>
+      </div>
     </div>
 
     <div class="group">
