@@ -154,6 +154,13 @@
       <p>WK7 postmortem Item 11 found the real cost in the 100-lineup pool was the <strong>50% exposure cap and the QB+2 stack default</strong> (≈6.6% of available points), not the shape terms below — so the preset was rebuilt: exposure uncapped, stack-size default dropped to <strong>1 (QB+1, no forced bring-back, matching how you actually play)</strong>, and every DST/punt/FLEX shape nudge zeroed. The <em>evidence</em> behind those shape rules hasn't changed — only the solver no longer applies them automatically, so they moved from "confirm" to "manual check" below. The same postmortem also found that pre-excluding low-ownership/TE/QB players at build time cost cash rate — see the dart-count item below, which is the same rule and is no longer something to actively enforce.</p>
     </div>
 
+    <div class="banner">
+      <span class="banner-icon">AI probe · added 2026-10-29</span>
+      <p>Run both from the project root (applies to SE3max and MME alike — not format-specific). Script 1 generates this week's resolved question list, dropped into a fresh Claude.ai chat (no project context). Script 2 is the Sunday-morning tiebreaker: when a probe answer names a specific beneficiary, this confirms whether our own real usage data agrees before you act on it. Agreement from both → <code>--thumbs-up</code> that player_id this week; disagreement → trust our own data, thumbs-up whoever it actually points to instead. See <code>AI_PROBE_QUESTION_TEMPLATES.md</code> for the full design/relevance-filter writeup.</p>
+      <p style="font-family:var(--font-mono);font-size:12.5px;line-height:1.75;margin-top:10px;white-space:pre-wrap;background:var(--bg);border:1px solid var(--border);border-radius:7px;padding:10px 12px;">python3 scripts/probe_ai_chat_weekly_questions.py
+python3 scripts/probe_team_usage_rank.py TEAM --week N</p>
+    </div>
+
     <div class="group">
       <div class="group-head">
         <h2 class="group-title">Hard-enforced, always on</h2>
