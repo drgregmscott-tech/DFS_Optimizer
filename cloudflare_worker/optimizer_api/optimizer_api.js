@@ -310,6 +310,12 @@ async function handleDispatch(url, env) {
     // frontend should not send these on a Showdown-loaded pool the same
     // way it already omits stack_mode/etc. there.
     "dart_exposure_cap", "dart_floor_threshold",
+    // Cheap-filler-pattern item (2026-10-30) -- Cheap Filler Exposure Cap
+    // (optimizer.py's --cheap-filler-exposure-cap/--cheap-filler-salary-max).
+    // Same "0.0-1.0 fraction" / "plain number" shapes and same absent =
+    // unchanged-prior-behavior convention as Dart Exposure Cap above.
+    // Classic slates only.
+    "cheap_filler_exposure_cap", "cheap_filler_salary_max",
     // WK3 postmortem §2 parking-lot #2 (2026-09-29) -- Showdown construction
     // rules (optimizer.py's --sd-* flags). Before this the UI never sent
     // them, so UI Showdown builds ran with zero rules. "sd_require_cpt_qb"

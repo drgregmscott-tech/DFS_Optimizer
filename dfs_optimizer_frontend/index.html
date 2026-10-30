@@ -1848,6 +1848,23 @@ in this browser's localStorage.</p>
             </div>
           </div>
         </div>
+        <div id="wrapCheapFillerExposureField" style="grid-column:1/-1;">
+          <span class="field-label">Cheap Filler Exposure Cap<span class="field-label-hint" title="Cheap-filler-pattern item (2026-10-30): a non-DST player priced at or below Salary Max is capped at Cap % of this batch's lineups, unless he's on this batch's own stack team. Different failure mode from Dart Exposure Cap above -- that guards a player whose own projection is genuinely bad; this guards a player whose projection may be perfectly reasonable for his price but who still dominates exposure purely because being cheap frees up salary cap elsewhere (confirmed recurring across 5 real weeks' pools, e.g. Wk7's Ted Hurst III at 50-59/100 exposure, a real pre-existing miss). Classic slates only.">?</span></span>
+          <label class="checkbox-row" style="margin-top:0;cursor:pointer;">
+            <input type="checkbox" id="ctrlCheapFillerExposureEnabled">
+            Cap cheap salary-filler plays across this batch
+          </label>
+          <div id="cheapFillerExposureFields" style="display:none; margin-top:8px; grid-template-columns:1fr 1fr; gap:12px;">
+            <div>
+              <span class="field-label">Cap %</span>
+              <input type="number" id="ctrlCheapFillerExposureCap" min="1" max="100" step="1" value="25">
+            </div>
+            <div>
+              <span class="field-label">Salary Max</span>
+              <input type="number" id="ctrlCheapFillerSalaryMax" min="0" step="100" value="3600">
+            </div>
+          </div>
+        </div>
         <!-- WK3 postmortem §2 parking-lot #2 (2026-09-29) -- Showdown construction rules. Defaults below = data/optimizer_presets.json's showdown_se bundle; always sent on a Showdown pool. -->
         <div id="wrapSdRulesField" style="grid-column:1/-1; display:none;">
           <details>
@@ -3646,6 +3663,8 @@ in this browser's localStorage.</p>
     "ctrlFlexPositionCap",
     // Ad Hoc Session A6 -- Dart Exposure Cap.
     "ctrlDartExposureEnabled", "ctrlDartExposureCap", "ctrlDartFloorThreshold",
+    // Cheap-filler-pattern item (2026-10-30) -- Cheap Filler Exposure Cap.
+    "ctrlCheapFillerExposureEnabled", "ctrlCheapFillerExposureCap", "ctrlCheapFillerSalaryMax",
     // WK3 postmortem §2 parking-lot #2 (2026-09-29) -- Showdown construction rules.
     "ctrlSdRequireCptQb", "ctrlSdCheapTierPenalty", "ctrlSdCheapTierRange",
     "ctrlSdStackCap", "ctrlSdStackCapPenalty", "ctrlSdQbPartnerBonus",
@@ -3718,6 +3737,9 @@ in this browser's localStorage.</p>
       // preset (applyPresetValues only touches keys a preset defines).
       ctrlPositionExposure: "",
       ctrlFlexPositionCap: "",
+      // Cheap-filler-pattern item (2026-10-30) -- not set here, same reason as Dart
+      // Exposure Cap's own comment below: exposure has no meaning for a 1-3 lineup build.
+      ctrlCheapFillerExposureEnabled: false, ctrlCheapFillerExposureCap: "25", ctrlCheapFillerSalaryMax: "3600",
       // WK3 postmortem item 5 (2026-09-30) -- matches data/optimizer_presets.json's
       // own cl-* values exactly (kept in sync by hand, same convention as every
       // other field here). See CLASSIC_RULES.md for the evidence.
@@ -3755,6 +3777,7 @@ in this browser's localStorage.</p>
       // Wk8 postmortem (2026-10-28) -- see "Cash" preset's own comment above.
       ctrlPositionExposure: "",
       ctrlFlexPositionCap: "",
+      ctrlCheapFillerExposureEnabled: false, ctrlCheapFillerExposureCap: "25", ctrlCheapFillerSalaryMax: "3600",
       ctrlClDstBandBonus: "0.8", ctrlClDstExpensivePenalty: "2.0",
       ctrlClZeroPuntPenalty: "1.5", ctrlClThreePlusPuntPenalty: "0.5",
       ctrlClSamePosPuntPenalty: "1.0",
@@ -3813,12 +3836,26 @@ in this browser's localStorage.</p>
       // exactly 35%. Kept alongside position-exposure (TE:0.4), not a replacement for it
       // -- that field still guards against single-player monoculture in the TE slot
       // itself, a different question from FLEX composition.
+      // UPDATED 2026-10-30, cheap-filler-pattern item (project_cheap_filler_pattern_recurring.md
+      // memory + WK7_POSTMORTEM_ACTION_ITEMS.md dated entry): ctrlCheapFillerExposureEnabled
+      // true, cap 25%, salary max $3,600. A cheap (<=$3,600) WR/RB/TE clears the
+      // points-per-$1000 bar as a pure salary-cap filler almost independent of his own real
+      // quality, recurring across Wk2/4/6/7/8 real pools -- Wk7's Ted Hurst III ($3,000 WR,
+      // correctly-discounted projection, not a projection bug) a confirmed real miss at
+      // 50-59/100 exposure. New --cheap-filler-exposure-cap mechanism (parallel to
+      // --dart-exposure-cap but keyed on salary, since the pattern recurs even when the
+      // discount is already correct). Fixed-seed (42) real-slate A/B: Wk7 main, Ted Hurst III
+      // 59->25/100 exposure, pool avg cost 0.55 pts/lineup (0.42%), lineup #1 cost 0.18 pts;
+      // Wk8 main (a week where the pattern wasn't live) showed lineup #1 byte-identical and
+      // pool avg basically unchanged (-0.14 pts). See data/optimizer_presets.json's se3max_pool
+      // bundle for the full write-up.
       ctrlMinSalary: "0",
       ctrlNLineups: "100", ctrlMaxExposure: "100", ctrlUniqueness: "3",
       ctrlRandomization: "5", ctrlStackMode: "qb", ctrlStackSize: "1",
       ctrlBringBack: false, ctrlAllowSkillVsOppDst: false, ctrlLambda: "0",
       ctrlPositionExposure: "TE:0.4",
       ctrlFlexPositionCap: "TE:0.35",
+      ctrlCheapFillerExposureEnabled: true, ctrlCheapFillerExposureCap: "25", ctrlCheapFillerSalaryMax: "3600",
       ctrlClDstBandBonus: "0", ctrlClDstExpensivePenalty: "0",
       ctrlClZeroPuntPenalty: "0", ctrlClThreePlusPuntPenalty: "0",
       ctrlClSamePosPuntPenalty: "0",
@@ -3852,6 +3889,10 @@ in this browser's localStorage.</p>
       // comment: 1-3 lineups don't have meaningful "exposure" to spread a
       // dart across in the first place.
       ctrlDartExposureEnabled: true, ctrlDartExposureCap: "10", ctrlDartFloorThreshold: "1.0",
+      // Cheap-filler-pattern item (2026-10-30) -- not validated on this preset's own
+      // settings (max-exposure 0.35/stack-size 1/bring-back true differ from se3max_pool);
+      // left off here rather than guessed. See "SE3Max Pool (100)" preset's own comment.
+      ctrlCheapFillerExposureEnabled: false, ctrlCheapFillerExposureCap: "25", ctrlCheapFillerSalaryMax: "3600",
       ctrlClDstBandBonus: "0.8", ctrlClDstExpensivePenalty: "2.0",
       ctrlClZeroPuntPenalty: "1.5", ctrlClThreePlusPuntPenalty: "0.5",
       ctrlClSamePosPuntPenalty: "1.0",
@@ -3889,6 +3930,7 @@ in this browser's localStorage.</p>
       // stale value left over from "SE3Max Pool (100)".
       ctrlPositionExposure: "",
       ctrlFlexPositionCap: "",
+      ctrlCheapFillerExposureEnabled: false, ctrlCheapFillerExposureCap: "25", ctrlCheapFillerSalaryMax: "3600",
       ctrlSdRequireCptQb: true, ctrlSdCheapTierPenalty: "1.0", ctrlSdCheapTierRange: "600:1000",
       ctrlSdStackCap: "2", ctrlSdStackCapPenalty: "0", ctrlSdQbPartnerBonus: "0.75",
       ctrlSdExcludeCptPositions: "DST", ctrlSdKCptPenalty: "1.0", ctrlSdHeavySideCptPenalty: "1.25"
@@ -3902,6 +3944,7 @@ in this browser's localStorage.</p>
       // Wk8 postmortem (2026-10-28) -- see "Showdown SE" preset's own comment above.
       ctrlPositionExposure: "",
       ctrlFlexPositionCap: "",
+      ctrlCheapFillerExposureEnabled: false, ctrlCheapFillerExposureCap: "25", ctrlCheapFillerSalaryMax: "3600",
       ctrlSdRequireCptQb: true, ctrlSdCheapTierPenalty: "2.0", ctrlSdCheapTierRange: "600:1000",
       ctrlSdStackCap: "2", ctrlSdStackCapPenalty: "0", ctrlSdQbPartnerBonus: "1.5",
       ctrlSdExcludeCptPositions: "DST", ctrlSdKCptPenalty: "1.5", ctrlSdHeavySideCptPenalty: "0.5"
@@ -4911,6 +4954,9 @@ in this browser's localStorage.</p>
      // Ad Hoc Session A6 -- optimizer.py rejects --dart-exposure-cap on
      // Showdown slates the same way (classic only for now).
      "wrapDartExposureField",
+     // Cheap-filler-pattern item (2026-10-30) -- optimizer.py rejects
+     // --cheap-filler-exposure-cap on Showdown slates too (classic only for now).
+     "wrapCheapFillerExposureField",
      // Require-N-From-Group -- classic only for now, same reasoning as
      // Showdown's own dropped chalk/ownership levers.
      "wrapGroupMinField"].forEach(function (id) {
@@ -4945,11 +4991,18 @@ in this browser's localStorage.</p>
     // them is on.
     var dartOn = document.getElementById("ctrlDartExposureEnabled").checked;
     document.getElementById("dartExposureFields").style.display = dartOn ? "grid" : "none";
+
+    // Cheap-filler-pattern item (2026-10-30) -- same pattern as Dart
+    // Exposure Cap above: sub-fields (Cap %/Salary Max) only shown when
+    // the checkbox above them is on.
+    var cheapFillerOn = document.getElementById("ctrlCheapFillerExposureEnabled").checked;
+    document.getElementById("cheapFillerExposureFields").style.display = cheapFillerOn ? "grid" : "none";
   }
 
   document.getElementById("ctrlStackMode").addEventListener("change", updateControlsVisibility);
   document.getElementById("ctrlRandomization").addEventListener("input", updateControlsVisibility);
   document.getElementById("ctrlDartExposureEnabled").addEventListener("change", updateControlsVisibility);
+  document.getElementById("ctrlCheapFillerExposureEnabled").addEventListener("change", updateControlsVisibility);
   ["ctrlStackSize", "ctrlStackPositions", "ctrlBringBack", "ctrlGameStackMin", "ctrlMiniType"].forEach(function (id) {
     document.getElementById(id).addEventListener("input", updateStackExplain);
     document.getElementById(id).addEventListener("change", updateStackExplain);
@@ -5647,6 +5700,16 @@ in this browser's localStorage.</p>
       var dartFloor = parseFloat(document.getElementById("ctrlDartFloorThreshold").value);
       if (!isNaN(dartCapPct)) params.dart_exposure_cap = String(dartCapPct / 100);
       if (!isNaN(dartFloor)) params.dart_floor_threshold = String(dartFloor);
+    }
+
+    // Cheap-filler-pattern item (2026-10-30) -- Cheap Filler Exposure Cap.
+    // Same unchecked-omits-both-params convention as Dart Exposure Cap above.
+    // Classic slates only, already hidden on a Showdown-loaded pool.
+    if (document.getElementById("ctrlCheapFillerExposureEnabled").checked) {
+      var cheapFillerCapPct = parseFloat(document.getElementById("ctrlCheapFillerExposureCap").value);
+      var cheapFillerSalaryMax = parseFloat(document.getElementById("ctrlCheapFillerSalaryMax").value);
+      if (!isNaN(cheapFillerCapPct)) params.cheap_filler_exposure_cap = String(cheapFillerCapPct / 100);
+      if (!isNaN(cheapFillerSalaryMax)) params.cheap_filler_salary_max = String(cheapFillerSalaryMax);
     }
 
     // WK3 postmortem §2 parking-lot #2 (2026-09-29) -- Showdown construction

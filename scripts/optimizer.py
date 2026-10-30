@@ -2722,6 +2722,33 @@ def compute_dart_exposure_overrides(players_all: pd.DataFrame, dart_floor_thresh
             "--sigma-recalibration (no statline_p10 column in this pool)."
         )
 
+    protected_teams = _resolve_protected_stack_teams(
+        players_all, stack_mode, stack_positions, stack_teams, stack_games,
+        mini_stack_type, candidate_pool_size, diversify_requested, bring_back,
+    )
+
+    is_dst = players_all["position"].astype(str).str.upper().isin(DEFENSE_POSITION_LABELS)
+    p10 = pd.to_numeric(players_all["statline_p10"], errors="coerce")
+    dart_mask = (
+        (~is_dst)
+        & (p10 < dart_floor_threshold)
+        & (~players_all["team"].isin(protected_teams))
+    )
+    dart_ids = set(players_all.loc[dart_mask, "player_id"])
+    return {pid: dart_exposure_cap for pid in dart_ids}
+
+
+def _resolve_protected_stack_teams(players_all: pd.DataFrame, stack_mode: str,
+                                    stack_positions: set, stack_teams: list, stack_games: list,
+                                    mini_stack_type: str, candidate_pool_size: int,
+                                    diversify_requested: str, bring_back: bool) -> set:
+    """Shared by --dart-exposure-cap and --cheap-filler-exposure-cap: the
+    set of teams this batch's own stacking will treat as a stack
+    candidate, resolved the same way build_multi_lineup() resolves them
+    (decision #33's team-level candidate pool, not a per-lineup dynamic
+    check). Deliberately NOT extended to each team's real opponent (the
+    bring-back side) -- see compute_dart_exposure_overrides()'s docstring
+    for why that exemption turned out to be the wrong one to make."""
     protected_teams = set()
     if stack_mode != "none":
         candidates, _, _ = resolve_stack_candidates(
@@ -2734,19 +2761,55 @@ def compute_dart_exposure_overrides(players_all: pd.DataFrame, dart_floor_thresh
                 protected_teams.add(cand["target_team"])
             if cand.get("target_game"):
                 protected_teams.update(cand["target_game"])
-        # Deliberately NOT extended to each protected team's real
-        # opponent (the bring-back side) -- see this function's own
-        # docstring for why that turned out to be the wrong exemption.
+    return protected_teams
+
+
+def compute_cheap_filler_exposure_overrides(players_all: pd.DataFrame, cheap_filler_salary_max: int,
+                                             cheap_filler_exposure_cap: float, stack_mode: str,
+                                             stack_positions: set, stack_teams: list, stack_games: list,
+                                             mini_stack_type: str, candidate_pool_size: int,
+                                             diversify_requested: str, bring_back: bool) -> dict:
+    """Wk8 postmortem cheap-filler-pattern item (2026-10-30) --
+    --cheap-filler-exposure-cap's implementation. Returns
+    {player_id: cheap_filler_exposure_cap} for every non-DST player whose
+    salary falls at or below cheap_filler_salary_max and whose team is not
+    this batch's own stack-candidate team(s) (same resolution and same
+    deliberate non-exemption of the bring-back side as
+    compute_dart_exposure_overrides() -- see that function's docstring).
+
+    Different root cause from --dart-exposure-cap, so a different key:
+    --dart-exposure-cap guards against a player whose own projection is
+    genuinely bad (low statline_p10), independent of price.
+    --cheap-filler-exposure-cap guards against the opposite failure mode --
+    a player whose projection may be perfectly reasonable for his price
+    (correctly discounted, not a projection bug) but who still gets
+    rostered at very high exposure purely because being cheap frees up
+    salary cap for studs elsewhere, almost independent of how good he
+    actually is. Confirmed recurring across 5 real weeks' built pools
+    (project_cheap_filler_pattern_recurring.md memory): Wk7's Ted Hurst
+    III ($3,000 WR) sat at 50-59/100 exposure in real/rebuilt se3max_pool
+    builds, a real pre-existing miss ("we were on him and he flopped"),
+    not a hypothetical. Keying on salary (not floor/value) because the
+    pattern recurs even when the player's own discount is already
+    correct -- raising his floor or lowering his projection further would
+    misdiagnose a construction problem as a projection problem."""
+    if cheap_filler_salary_max <= 0:
+        return {}
+
+    protected_teams = _resolve_protected_stack_teams(
+        players_all, stack_mode, stack_positions, stack_teams, stack_games,
+        mini_stack_type, candidate_pool_size, diversify_requested, bring_back,
+    )
 
     is_dst = players_all["position"].astype(str).str.upper().isin(DEFENSE_POSITION_LABELS)
-    p10 = pd.to_numeric(players_all["statline_p10"], errors="coerce")
-    dart_mask = (
+    salary = pd.to_numeric(players_all["salary"], errors="coerce")
+    filler_mask = (
         (~is_dst)
-        & (p10 < dart_floor_threshold)
+        & (salary <= cheap_filler_salary_max)
         & (~players_all["team"].isin(protected_teams))
     )
-    dart_ids = set(players_all.loc[dart_mask, "player_id"])
-    return {pid: dart_exposure_cap for pid in dart_ids}
+    filler_ids = set(players_all.loc[filler_mask, "player_id"])
+    return {pid: cheap_filler_exposure_cap for pid in filler_ids}
 
 
 def _print_control_summary(locked_player_ids: set, excluded_player_ids: set,
@@ -5344,6 +5407,38 @@ def main():
              "exposure entry, same as before this flag existed.",
     )
     parser.add_argument(
+        "--cheap-filler-salary-max", type=int, default=pdef("cheap-filler-salary-max", 0),
+        help="A non-DST player priced at or below this salary is "
+             "considered a 'cheap filler' candidate for "
+             "--cheap-filler-exposure-cap (default 0 -- off, unchanged "
+             "prior behavior). Different failure mode from "
+             "--dart-floor-threshold/--dart-exposure-cap: this guards "
+             "against a player whose own projection may be perfectly "
+             "reasonable for his price (correctly discounted, not a "
+             "projection bug) but who still gets rostered at very high "
+             "exposure purely because being cheap frees up salary cap "
+             "for studs elsewhere -- confirmed recurring across 5 real "
+             "weeks' built pools (Wk7's Ted Hurst III, $3,000 WR, a real "
+             "pre-existing miss, not hypothetical). Has no effect unless "
+             "--cheap-filler-exposure-cap is also set.",
+    )
+    parser.add_argument(
+        "--cheap-filler-exposure-cap", type=float, default=pdef("cheap-filler-exposure-cap", None),
+        help="Caps every 'cheap filler' player (see "
+             "--cheap-filler-salary-max) at this fraction of your "
+             "--n-lineups batch (same 0.0-1.0 convention as "
+             "--max-exposure/--player-exposure/--dart-exposure-cap), "
+             "UNLESS that player is on this batch's own stack-candidate "
+             "team(s) -- same exemption logic as --dart-exposure-cap, "
+             "including the deliberate non-exemption of the bring-back/"
+             "opponent side (see --dart-exposure-cap's own help text for "
+             "why). An explicit --player-exposure entry for a given "
+             "player_id always wins over this flag's computed cap for "
+             "that player. Only used with --n-lineups; classic slates "
+             "only for now (no effect on Showdown). Omit (default) for "
+             "unchanged prior behavior.",
+    )
+    parser.add_argument(
         "--thumbs-up", default=None,
         help=f"Comma-separated player_id(s) whose final_projection is "
              f"boosted to {THUMBS_UP_MULTIPLIER:.0%}% of its real value for "
@@ -5623,6 +5718,59 @@ def main():
                     f"Dart exposure cap: {len(newly_capped)} player(s) with "
                     f"statline_p10 < {args.dart_floor_threshold} capped at "
                     f"{args.dart_exposure_cap:.0%} (DST and this batch's own "
+                    f"stack team(s) exempt, bring-back side NOT exempt){detail}"
+                )
+
+    # Wk8 postmortem cheap-filler-pattern item (2026-10-30) --
+    # --cheap-filler-exposure-cap. See that flag's own help text and
+    # compute_cheap_filler_exposure_overrides()'s docstring for the full
+    # rationale. Same precedence as --dart-exposure-cap: an explicit
+    # --player-exposure entry always wins; checked against player_exposure
+    # as it stands after the dart-cap block above, so a player already
+    # dart-capped keeps that cap instead of being overwritten here.
+    if args.cheap_filler_exposure_cap is not None:
+        if showdown_mode:
+            parser.error(
+                "--cheap-filler-exposure-cap is not supported for Showdown "
+                "slates yet (classic only)."
+            )
+        if not 0.0 <= args.cheap_filler_exposure_cap <= 1.0:
+            parser.error("--cheap-filler-exposure-cap must be between 0.0 and 1.0.")
+        if args.cheap_filler_salary_max <= 0:
+            parser.error(
+                "--cheap-filler-exposure-cap requires --cheap-filler-"
+                "salary-max > 0 to say which players it applies to."
+            )
+        if not args.n_lineups:
+            print(
+                "NOTE: --cheap-filler-exposure-cap was set but --n-lineups "
+                "was not -- exposure has no meaning for a single lineup, "
+                "ignored for this build.", file=sys.stderr,
+            )
+        else:
+            filler_overrides = compute_cheap_filler_exposure_overrides(
+                _format_probe, args.cheap_filler_salary_max, args.cheap_filler_exposure_cap,
+                args.stack_mode, stack_positions, stack_teams, stack_games,
+                args.mini_stack_type, args.stack_candidate_pool,
+                args.stack_diversify, args.bring_back,
+            )
+            player_exposure = player_exposure or {}
+            newly_capped = {
+                pid: pct for pid, pct in filler_overrides.items()
+                if pid not in player_exposure
+            }
+            player_exposure.update(newly_capped)
+            if newly_capped:
+                if len(newly_capped) <= 15:
+                    name_lookup = _format_probe.set_index("player_id")["player_name"]
+                    capped_names = sorted(name_lookup.get(pid, pid) for pid in newly_capped)
+                    detail = ": " + ", ".join(capped_names)
+                else:
+                    detail = " (see per-player exposure in the run's own output for who it actually affected)"
+                print(
+                    f"Cheap filler exposure cap: {len(newly_capped)} player(s) "
+                    f"<= ${args.cheap_filler_salary_max} capped at "
+                    f"{args.cheap_filler_exposure_cap:.0%} (this batch's own "
                     f"stack team(s) exempt, bring-back side NOT exempt){detail}"
                 )
 

@@ -358,3 +358,60 @@ Every item below should say which track it's on.
   `flex_position_cap` to the worker's param allowlist and the dispatch workflow's flag-building logic so a
   live UI-dispatched build actually sends it through. Live cash-rate monitoring from here, same as every other
   item on this list.
+
+## Cheap-filler exposure cap (2026-10-30)
+- Source: a side investigation into Laquon Treadwell's (IND WR, $3,100, Wk8) 27/100 exposure turned up a
+  separate, more important pattern. Full evidence trail saved to memory as
+  `project_cheap_filler_pattern_recurring.md`.
+- Root cause, confirmed NOT a projection-accuracy bug: at the bottom of the salary curve, even a
+  correctly-discounted, below-average WR/RB/TE projection still clears the points-per-$1000 "value" bar as a
+  pure salary-cap filler -- being very cheap frees up salary for studs elsewhere almost independent of how
+  good his real projection is. Sampled lineups holding the offending player left very little cap room, i.e.
+  he's being used as filler, not for his own value. Confirmed recurring across real built pools for Wk2
+  (Kalif Raymond), Wk4 (Kalif Raymond), Wk6 (Mack Hollins), Wk7 (Ted Hurst III, 50-59/100 exposure in
+  real/rebuilt se3max_pool builds), and Wk8 (Treadwell). Wk7's Ted Hurst III is a confirmed real miss ("we
+  were on him and he flopped"), not hypothetical -- already-costly, not a theoretical concern.
+- Two candidate directions were investigated (per the owner's own framing): (1) a `construction_lint.py`-
+  style flag surfacing the pattern for manual review, matching the DST-band/punt-count pattern already in the
+  checklist, or (2) an actual constraint/penalty in `optimizer.py`'s exposure logic. Went with (2): the
+  existing `--dart-exposure-cap` mechanism (Ad Hoc Session A6, Kevin Austin Jr.) already solves almost exactly
+  this shape of problem (a cheap player rostered at high exposure as disguised filler) by capping exposure for
+  players below a quality floor, with a stack-team exemption. The only reason it didn't already catch Hurst
+  is that it's keyed on `statline_p10` (a genuinely bad floor) -- Hurst's/Treadwell's floors are already
+  correctly discounted, so a floor-based cap can't see them. The new `--cheap-filler-exposure-cap` /
+  `--cheap-filler-salary-max` flags are the same mechanism keyed on salary instead: a non-DST player priced at
+  or below the salary threshold gets capped at the given exposure fraction, with the identical stack-team
+  exemption logic (bring-back side deliberately NOT exempt, same rationale as dart-cap) -- refactored the
+  shared "which teams are this batch's stack candidates" logic into `_resolve_protected_stack_teams()` so both
+  flags call the same code. New `compute_cheap_filler_exposure_overrides()` in `scripts/optimizer.py`.
+- Validation (`feedback_validate_exposure_not_just_accuracy`): rebuilt the real Wk7 main 100-lineup
+  `se3max_pool` pool with a fixed seed (42), before/after the new flag at salary-max $3,600 / cap 25%:
+  Ted Hurst III exposure 59 -> 25/100 (the cap value); pool avg projection cost 0.55 pts/lineup (130.52 ->
+  129.97, 0.42%); lineup #1 (what the owner actually reviews) cost only 0.18 pts (132.98 -> 132.80); distinct
+  players in the pool rose 62 -> 70 (more diverse, not less). The cap generalizes across the whole cheap-filler
+  class rather than whack-a-moling one name: 185 players <=$3,600 were eligible, and Laquon Treadwell
+  separately picked up the same 25% cap in the same build (24 -> 25, basically unchanged since he was already
+  near the new ceiling); some promotion of the next-cheapest filler (e.g. Konata Mumpfield 36 -> 43, on his own
+  stack-exempt team in several of those lineups) is expected and accepted, same precedent as the TE
+  position-exposure item above. Generalization check: rebuilt the real Wk8 main pool (Treadwell's own week,
+  current code) the same way -- baseline Treadwell exposure was already only 15/100 (below the 25% cap, so no
+  effect), and the cap cost nothing measurable (avg proj 130.05 -> 129.91, lineup #1 byte-identical at 133.29
+  both times) -- confirms the fix is a no-op, not a tax, on a week where the pattern isn't live.
+- Track: owner override of the hard ship bar, same standing as the TE items above
+  (`feedback_ship_consistent_small_effect_despite_inconclusive`) -- a real, already-costly recurring pattern
+  (Wk7) plus a real before/after exposure-pool test on two different weeks, not theory alone.
+- Status: **shipped 2026-10-30.** `scripts/optimizer.py`: `compute_cheap_filler_exposure_overrides()` +
+  `_resolve_protected_stack_teams()` helper (refactored out of `compute_dart_exposure_overrides()`), new
+  `--cheap-filler-salary-max`/`--cheap-filler-exposure-cap` CLI flags wired into `main()` the same precedence
+  as `--dart-exposure-cap` (explicit `--player-exposure` always wins; classic slates only). `data/
+  optimizer_presets.json`'s `se3max_pool`: added `cheap-filler-salary-max: 3600` / `cheap-filler-exposure-cap:
+  0.25`. Mirrored into `dfs_optimizer_frontend/index.html`'s `BUILTIN_PRESETS["SE3Max Pool (100)"]` plus a new
+  "Cheap Filler Exposure Cap" UI control (same checkbox + Cap%/Salary-Max sub-fields pattern as Dart Exposure
+  Cap), `PRESET_FIELDS` entry, and dispatch wiring (classic-only guard); every other built-in preset
+  explicitly disables it so it can't leak into a Cash/MME/Showdown build. Also added
+  `cheap_filler_exposure_cap`/`cheap_filler_salary_max` to the worker's param allowlist
+  (`cloudflare_worker/optimizer_api/optimizer_api.js`) and the dispatch workflow's flag-building logic
+  (`.github/workflows/run_optimizer_dispatch.yml`) so a live UI-dispatched build actually sends it through.
+  Added a manual-check item to the pinned `CLASSIC_LINEUP_CHECKLIST` artifact noting the cap and what to watch
+  for if a single cheap player still dominates a pool despite it. Live cash-rate monitoring from here, same as
+  every other item on this list.

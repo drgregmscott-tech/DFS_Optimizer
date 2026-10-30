@@ -331,6 +331,13 @@ jobs:
           args += flag("--dart-exposure-cap", "dart_exposure_cap", float)
           args += flag("--dart-floor-threshold", "dart_floor_threshold", float)
 
+          # Cheap-filler-pattern item (2026-10-30) -- Cheap Filler Exposure
+          # Cap (optimizer.py's --cheap-filler-exposure-cap/--cheap-filler-
+          # salary-max). Same omit-means-off convention as Dart Exposure
+          # Cap above.
+          args += flag("--cheap-filler-exposure-cap", "cheap_filler_exposure_cap", float)
+          args += flag("--cheap-filler-salary-max", "cheap_filler_salary_max", float)
+
           print(f"args={shlex.join(args)}")
           PYEOF
         env:
