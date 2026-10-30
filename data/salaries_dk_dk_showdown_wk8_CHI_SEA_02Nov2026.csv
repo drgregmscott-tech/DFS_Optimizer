@@ -1,0 +1,111 @@
+Position,Name + ID,Name,ID,Roster Position,Salary,Game Info,TeamAbbrev,AvgPointsPerGame,Status,roster_role,name,site,salary,normalized_name,normalized_team,position_upper,slate_format,player_id,match_method,match_confidence
+WR,Jaxon Smith-Njigba (44716870),Jaxon Smith-Njigba,44716870,CPT,18000,CHI@SEA 11/02/2026 08:15PM ET,SEA,30.6,,CPT,Jaxon Smith-Njigba,dk,18000,jaxon smith njigba,SEA,WR,showdown,00-0038543,auto_exact,high
+QB,Caleb Williams (44716871),Caleb Williams,44716871,CPT,15300,CHI@SEA 11/02/2026 08:15PM ET,CHI,22.7,,CPT,Caleb Williams,dk,15300,caleb williams,CHI,QB,showdown,00-0039918,auto_exact,high
+RB,D'Andre Swift (44716872),D'Andre Swift,44716872,CPT,14700,CHI@SEA 11/02/2026 08:15PM ET,CHI,18.3,,CPT,D'Andre Swift,dk,14700,dandre swift,CHI,RB,showdown,00-0036275,auto_exact,high
+QB,Sam Darnold (44716873),Sam Darnold,44716873,CPT,14100,CHI@SEA 11/02/2026 08:15PM ET,SEA,14.3,,CPT,Sam Darnold,dk,14100,sam darnold,SEA,QB,showdown,00-0034869,auto_exact,high
+WR,Luther Burden III (44716874),Luther Burden III,44716874,CPT,13500,CHI@SEA 11/02/2026 08:15PM ET,CHI,14.4,,CPT,Luther Burden III,dk,13500,luther burden,CHI,WR,showdown,00-0040735,auto_exact,high
+WR,Jaxon Smith-Njigba (44716815),Jaxon Smith-Njigba,44716815,FLEX,12000,CHI@SEA 11/02/2026 08:15PM ET,SEA,30.6,,FLEX,Jaxon Smith-Njigba,dk,12000,jaxon smith njigba,SEA,WR,showdown,00-0038543,auto_exact,high
+TE,Colston Loveland (44716875),Colston Loveland,44716875,CPT,11700,CHI@SEA 11/02/2026 08:15PM ET,CHI,8.9,,CPT,Colston Loveland,dk,11700,colston loveland,CHI,TE,showdown,00-0040126,auto_exact,high
+WR,Rome Odunze (44716876),Rome Odunze,44716876,CPT,11400,CHI@SEA 11/02/2026 08:15PM ET,CHI,8.7,,CPT,Rome Odunze,dk,11400,rome odunze,CHI,WR,showdown,00-0039919,auto_exact,high
+RB,Emanuel Wilson (44716877),Emanuel Wilson,44716877,CPT,11100,CHI@SEA 11/02/2026 08:15PM ET,SEA,11.3,,CPT,Emanuel Wilson,dk,11100,emanuel wilson,SEA,RB,showdown,00-0038797,auto_exact,high
+RB,Zach Charbonnet (44716878),Zach Charbonnet,44716878,CPT,10500,CHI@SEA 11/02/2026 08:15PM ET,SEA,0.0,Q,CPT,Zach Charbonnet,dk,10500,zach charbonnet,SEA,RB,showdown,00-0039165,auto_exact,high
+QB,Caleb Williams (44716816),Caleb Williams,44716816,FLEX,10200,CHI@SEA 11/02/2026 08:15PM ET,CHI,22.7,,FLEX,Caleb Williams,dk,10200,caleb williams,CHI,QB,showdown,00-0039918,auto_exact,high
+RB,Kyle Monangai (44716879),Kyle Monangai,44716879,CPT,10200,CHI@SEA 11/02/2026 08:15PM ET,CHI,16.3,Q,CPT,Kyle Monangai,dk,10200,kyle monangai,CHI,RB,showdown,00-0040236,auto_exact,high
+RB,D'Andre Swift (44716817),D'Andre Swift,44716817,FLEX,9800,CHI@SEA 11/02/2026 08:15PM ET,CHI,18.3,,FLEX,D'Andre Swift,dk,9800,dandre swift,CHI,RB,showdown,00-0036275,auto_exact,high
+RB,Jadarian Price (44716880),Jadarian Price,44716880,CPT,9600,CHI@SEA 11/02/2026 08:15PM ET,SEA,5.3,IR,CPT,Jadarian Price,dk,9600,jadarian price,SEA,RB,showdown,00-0041512,auto_exact,high
+QB,Sam Darnold (44716818),Sam Darnold,44716818,FLEX,9400,CHI@SEA 11/02/2026 08:15PM ET,SEA,14.3,,FLEX,Sam Darnold,dk,9400,sam darnold,SEA,QB,showdown,00-0034869,auto_exact,high
+WR,Luther Burden III (44716819),Luther Burden III,44716819,FLEX,9000,CHI@SEA 11/02/2026 08:15PM ET,CHI,14.4,,FLEX,Luther Burden III,dk,9000,luther burden,CHI,WR,showdown,00-0040735,auto_exact,high
+QB,Drew Lock (44716881),Drew Lock,44716881,CPT,9000,CHI@SEA 11/02/2026 08:15PM ET,SEA,17.1,Q,CPT,Drew Lock,dk,9000,drew lock,SEA,QB,showdown,00-0035704,auto_exact,high
+QB,Tyson Bagent (44716882),Tyson Bagent,44716882,CPT,9000,CHI@SEA 11/02/2026 08:15PM ET,CHI,5.1,,CPT,Tyson Bagent,dk,9000,tyson bagent,CHI,QB,showdown,00-0038416,auto_exact,high
+QB,Jalen Milroe (44716883),Jalen Milroe,44716883,CPT,9000,CHI@SEA 11/02/2026 08:15PM ET,SEA,0.0,,CPT,Jalen Milroe,dk,9000,jalen milroe,SEA,QB,showdown,00-0040673,auto_exact,high
+QB,Case Keenum (44716884),Case Keenum,44716884,CPT,9000,CHI@SEA 11/02/2026 08:15PM ET,CHI,9.1,,CPT,Case Keenum,dk,9000,case keenum,CHI,QB,showdown,00-0028986,auto_exact,high
+QB,Miller Moss (44716885),Miller Moss,44716885,CPT,9000,CHI@SEA 11/02/2026 08:15PM ET,CHI,0.0,,CPT,Miller Moss,dk,9000,miller moss,CHI,QB,showdown,00-0041172,auto_exact,high
+K,Jason Myers (44716886),Jason Myers,44716886,CPT,8100,CHI@SEA 11/02/2026 08:15PM ET,SEA,9.7,,CPT,Jason Myers,dk,8100,jason myers,SEA,K,showdown,00-0031492,auto_exact,high
+TE,Colston Loveland (44716820),Colston Loveland,44716820,FLEX,7800,CHI@SEA 11/02/2026 08:15PM ET,CHI,8.9,,FLEX,Colston Loveland,dk,7800,colston loveland,CHI,TE,showdown,00-0040126,auto_exact,high
+WR,Rashid Shaheed (44716887),Rashid Shaheed,44716887,CPT,7800,CHI@SEA 11/02/2026 08:15PM ET,SEA,6.2,Q,CPT,Rashid Shaheed,dk,7800,rashid shaheed,SEA,WR,showdown,00-0037545,auto_exact,high
+WR,Rome Odunze (44716821),Rome Odunze,44716821,FLEX,7600,CHI@SEA 11/02/2026 08:15PM ET,CHI,8.7,,FLEX,Rome Odunze,dk,7600,rome odunze,CHI,WR,showdown,00-0039919,auto_exact,high
+K,Cairo Santos (44716888),Cairo Santos,44716888,CPT,7500,CHI@SEA 11/02/2026 08:15PM ET,CHI,9.0,,CPT,Cairo Santos,dk,7500,cairo santos,CHI,K,showdown,00-0031203,auto_exact,high
+RB,Emanuel Wilson (44716822),Emanuel Wilson,44716822,FLEX,7400,CHI@SEA 11/02/2026 08:15PM ET,SEA,11.3,,FLEX,Emanuel Wilson,dk,7400,emanuel wilson,SEA,RB,showdown,00-0038797,auto_exact,high
+WR,Cooper Kupp (44716889),Cooper Kupp,44716889,CPT,7200,CHI@SEA 11/02/2026 08:15PM ET,SEA,6.3,,CPT,Cooper Kupp,dk,7200,cooper kupp,SEA,WR,showdown,00-0033908,auto_exact,high
+RB,Zach Charbonnet (44716823),Zach Charbonnet,44716823,FLEX,7000,CHI@SEA 11/02/2026 08:15PM ET,SEA,0.0,Q,FLEX,Zach Charbonnet,dk,7000,zach charbonnet,SEA,RB,showdown,00-0039165,auto_exact,high
+TE,AJ Barner (44716890),AJ Barner,44716890,CPT,6900,CHI@SEA 11/02/2026 08:15PM ET,SEA,6.2,,CPT,AJ Barner,dk,6900,aj barner,SEA,TE,showdown,00-0039793,auto_exact,high
+RB,Kyle Monangai (44716824),Kyle Monangai,44716824,FLEX,6800,CHI@SEA 11/02/2026 08:15PM ET,CHI,16.3,Q,FLEX,Kyle Monangai,dk,6800,kyle monangai,CHI,RB,showdown,00-0040236,auto_exact,high
+RB,Jadarian Price (44716825),Jadarian Price,44716825,FLEX,6400,CHI@SEA 11/02/2026 08:15PM ET,SEA,5.3,IR,FLEX,Jadarian Price,dk,6400,jadarian price,SEA,RB,showdown,00-0041512,auto_exact,high
+DST,Seahawks (44716891),Seahawks,44716891,CPT,6300,CHI@SEA 11/02/2026 08:15PM ET,SEA,8.1,,CPT,Seahawks,dk,6300,seahawks,SEA,DST,showdown,DST_SEA,team_defense,high
+QB,Drew Lock (44716826),Drew Lock,44716826,FLEX,6000,CHI@SEA 11/02/2026 08:15PM ET,SEA,17.1,Q,FLEX,Drew Lock,dk,6000,drew lock,SEA,QB,showdown,00-0035704,auto_exact,high
+QB,Tyson Bagent (44716827),Tyson Bagent,44716827,FLEX,6000,CHI@SEA 11/02/2026 08:15PM ET,CHI,5.1,,FLEX,Tyson Bagent,dk,6000,tyson bagent,CHI,QB,showdown,00-0038416,auto_exact,high
+QB,Jalen Milroe (44716828),Jalen Milroe,44716828,FLEX,6000,CHI@SEA 11/02/2026 08:15PM ET,SEA,0.0,,FLEX,Jalen Milroe,dk,6000,jalen milroe,SEA,QB,showdown,00-0040673,auto_exact,high
+QB,Case Keenum (44716829),Case Keenum,44716829,FLEX,6000,CHI@SEA 11/02/2026 08:15PM ET,CHI,9.1,,FLEX,Case Keenum,dk,6000,case keenum,CHI,QB,showdown,00-0028986,auto_exact,high
+QB,Miller Moss (44716830),Miller Moss,44716830,FLEX,6000,CHI@SEA 11/02/2026 08:15PM ET,CHI,0.0,,FLEX,Miller Moss,dk,6000,miller moss,CHI,QB,showdown,00-0041172,auto_exact,high
+DST,Bears (44716892),Bears,44716892,CPT,5700,CHI@SEA 11/02/2026 08:15PM ET,CHI,6.9,,CPT,Bears,dk,5700,bears,CHI,DST,showdown,DST_CHI,team_defense,high
+K,Jason Myers (44716831),Jason Myers,44716831,FLEX,5400,CHI@SEA 11/02/2026 08:15PM ET,SEA,9.7,,FLEX,Jason Myers,dk,5400,jason myers,SEA,K,showdown,00-0031492,auto_exact,high
+WR,Kalif Raymond (44716893),Kalif Raymond,44716893,CPT,5400,CHI@SEA 11/02/2026 08:15PM ET,CHI,8.0,,CPT,Kalif Raymond,dk,5400,kalif raymond,CHI,WR,showdown,00-0032464,auto_exact,high
+WR,Rashid Shaheed (44716832),Rashid Shaheed,44716832,FLEX,5200,CHI@SEA 11/02/2026 08:15PM ET,SEA,6.2,Q,FLEX,Rashid Shaheed,dk,5200,rashid shaheed,SEA,WR,showdown,00-0037545,auto_exact,high
+RB,Roschon Johnson (44716894),Roschon Johnson,44716894,CPT,5100,CHI@SEA 11/02/2026 08:15PM ET,CHI,4.2,,CPT,Roschon Johnson,dk,5100,roschon johnson,CHI,RB,showdown,00-0039021,auto_exact,high
+K,Cairo Santos (44716833),Cairo Santos,44716833,FLEX,5000,CHI@SEA 11/02/2026 08:15PM ET,CHI,9.0,,FLEX,Cairo Santos,dk,5000,cairo santos,CHI,K,showdown,00-0031203,auto_exact,high
+WR,Cooper Kupp (44716834),Cooper Kupp,44716834,FLEX,4800,CHI@SEA 11/02/2026 08:15PM ET,SEA,6.3,,FLEX,Cooper Kupp,dk,4800,cooper kupp,SEA,WR,showdown,00-0033908,auto_exact,high
+TE,AJ Barner (44716835),AJ Barner,44716835,FLEX,4600,CHI@SEA 11/02/2026 08:15PM ET,SEA,6.2,,FLEX,AJ Barner,dk,4600,aj barner,SEA,TE,showdown,00-0039793,auto_exact,high
+RB,George Holani (44716895),George Holani,44716895,CPT,4500,CHI@SEA 11/02/2026 08:15PM ET,SEA,5.2,,CPT,George Holani,dk,4500,george holani,SEA,RB,showdown,00-0039299,auto_exact,high
+DST,Seahawks (44716836),Seahawks,44716836,FLEX,4200,CHI@SEA 11/02/2026 08:15PM ET,SEA,8.1,,FLEX,Seahawks,dk,4200,seahawks,SEA,DST,showdown,DST_SEA,team_defense,high
+WR,Tory Horton (44716896),Tory Horton,44716896,CPT,4200,CHI@SEA 11/02/2026 08:15PM ET,SEA,3.0,,CPT,Tory Horton,dk,4200,tory horton,SEA,WR,showdown,00-0040648,auto_exact,high
+DST,Bears (44716837),Bears,44716837,FLEX,3800,CHI@SEA 11/02/2026 08:15PM ET,CHI,6.9,,FLEX,Bears,dk,3800,bears,CHI,DST,showdown,DST_CHI,team_defense,high
+WR,Kalif Raymond (44716838),Kalif Raymond,44716838,FLEX,3600,CHI@SEA 11/02/2026 08:15PM ET,CHI,8.0,,FLEX,Kalif Raymond,dk,3600,kalif raymond,CHI,WR,showdown,00-0032464,auto_exact,high
+RB,Velus Jones Jr. (44716897),Velus Jones Jr.,44716897,CPT,3600,CHI@SEA 11/02/2026 08:15PM ET,SEA,0.6,Q,CPT,Velus Jones Jr.,dk,3600,velus jones,SEA,RB,showdown,00-0037745,auto_fallback_name_only_position_mismatch,low
+RB,Roschon Johnson (44716839),Roschon Johnson,44716839,FLEX,3400,CHI@SEA 11/02/2026 08:15PM ET,CHI,4.2,,FLEX,Roschon Johnson,dk,3400,roschon johnson,CHI,RB,showdown,00-0039021,auto_exact,high
+RB,George Holani (44716840),George Holani,44716840,FLEX,3000,CHI@SEA 11/02/2026 08:15PM ET,SEA,5.2,,FLEX,George Holani,dk,3000,george holani,SEA,RB,showdown,00-0039299,auto_exact,high
+WR,Zavion Thomas (44716898),Zavion Thomas,44716898,CPT,3000,CHI@SEA 11/02/2026 08:15PM ET,CHI,1.4,,CPT,Zavion Thomas,dk,3000,zavion thomas,CHI,WR,showdown,00-0041051,auto_exact,high
+WR,Tory Horton (44716841),Tory Horton,44716841,FLEX,2800,CHI@SEA 11/02/2026 08:15PM ET,SEA,3.0,,FLEX,Tory Horton,dk,2800,tory horton,SEA,WR,showdown,00-0040648,auto_exact,high
+RB,Velus Jones Jr. (44716842),Velus Jones Jr.,44716842,FLEX,2400,CHI@SEA 11/02/2026 08:15PM ET,SEA,0.6,Q,FLEX,Velus Jones Jr.,dk,2400,velus jones,SEA,RB,showdown,00-0037745,auto_fallback_name_only_position_mismatch,low
+TE,Eric Saubert (44716899),Eric Saubert,44716899,CPT,2400,CHI@SEA 11/02/2026 08:15PM ET,SEA,1.6,,CPT,Eric Saubert,dk,2400,eric saubert,SEA,TE,showdown,00-0033576,auto_exact,high
+WR,Zavion Thomas (44716843),Zavion Thomas,44716843,FLEX,2000,CHI@SEA 11/02/2026 08:15PM ET,CHI,1.4,,FLEX,Zavion Thomas,dk,2000,zavion thomas,CHI,WR,showdown,00-0041051,auto_exact,high
+TE,Sam Roush (44716900),Sam Roush,44716900,CPT,1800,CHI@SEA 11/02/2026 08:15PM ET,CHI,0.9,,CPT,Sam Roush,dk,1800,sam roush,CHI,TE,showdown,00-0041558,auto_exact,high
+TE,Eric Saubert (44716844),Eric Saubert,44716844,FLEX,1600,CHI@SEA 11/02/2026 08:15PM ET,SEA,1.6,,FLEX,Eric Saubert,dk,1600,eric saubert,SEA,TE,showdown,00-0033576,auto_exact,high
+WR,Irvin Charles (44716901),Irvin Charles,44716901,CPT,1500,CHI@SEA 11/02/2026 08:15PM ET,SEA,0.0,,CPT,Irvin Charles,dk,1500,irvin charles,SEA,WR,showdown,00-0037156,auto_exact,high
+TE,Sam Roush (44716845),Sam Roush,44716845,FLEX,1200,CHI@SEA 11/02/2026 08:15PM ET,CHI,0.9,,FLEX,Sam Roush,dk,1200,sam roush,CHI,TE,showdown,00-0041558,auto_exact,high
+WR,Jahdae Walker (44716902),Jahdae Walker,44716902,CPT,1200,CHI@SEA 11/02/2026 08:15PM ET,CHI,1.0,,CPT,Jahdae Walker,dk,1200,jahdae walker,CHI,WR,showdown,00-0040277,auto_exact,high
+WR,Irvin Charles (44716846),Irvin Charles,44716846,FLEX,1000,CHI@SEA 11/02/2026 08:15PM ET,SEA,0.0,,FLEX,Irvin Charles,dk,1000,irvin charles,SEA,WR,showdown,00-0037156,auto_exact,high
+TE,Nick Kallerup (44716903),Nick Kallerup,44716903,CPT,900,CHI@SEA 11/02/2026 08:15PM ET,SEA,0.0,,CPT,Nick Kallerup,dk,900,nick kallerup,SEA,TE,showdown,00-0040058,auto_exact,high
+WR,Jahdae Walker (44716847),Jahdae Walker,44716847,FLEX,800,CHI@SEA 11/02/2026 08:15PM ET,CHI,1.0,,FLEX,Jahdae Walker,dk,800,jahdae walker,CHI,WR,showdown,00-0040277,auto_exact,high
+TE,Nick Kallerup (44716848),Nick Kallerup,44716848,FLEX,600,CHI@SEA 11/02/2026 08:15PM ET,SEA,0.0,,FLEX,Nick Kallerup,dk,600,nick kallerup,SEA,TE,showdown,00-0040058,auto_exact,high
+RB,Zavier Scott (44716904),Zavier Scott,44716904,CPT,600,CHI@SEA 11/02/2026 08:15PM ET,CHI,0.0,,CPT,Zavier Scott,dk,600,zavier scott,CHI,RB,showdown,00-0038440,auto_exact,high
+RB,Zavier Scott (44716849),Zavier Scott,44716849,FLEX,400,CHI@SEA 11/02/2026 08:15PM ET,CHI,0.0,,FLEX,Zavier Scott,dk,400,zavier scott,CHI,RB,showdown,00-0038440,auto_exact,high
+RB,Robbie Ouzts (44716905),Robbie Ouzts,44716905,CPT,300,CHI@SEA 11/02/2026 08:15PM ET,SEA,0.0,IR,CPT,Robbie Ouzts,dk,300,robbie ouzts,SEA,RB,showdown,00-0040649,auto_exact,high
+RB,Brittain Brown (44716906),Brittain Brown,44716906,CPT,300,CHI@SEA 11/02/2026 08:15PM ET,CHI,0.0,IR,CPT,Brittain Brown,dk,300,brittain brown,CHI,RB,showdown,00-0037329,auto_exact,high
+RB,Salvon Ahmed (44716907),Salvon Ahmed,44716907,CPT,300,CHI@SEA 11/02/2026 08:15PM ET,CHI,0.0,,CPT,Salvon Ahmed,dk,300,salvon ahmed,CHI,RB,showdown,00-0036020,auto_exact,high
+RB,Brady Russell (44716908),Brady Russell,44716908,CPT,300,CHI@SEA 11/02/2026 08:15PM ET,SEA,1.0,,CPT,Brady Russell,dk,300,brady russell,SEA,RB,showdown,00-0038488,auto_exact,high
+RB,Robert Henry Jr. (44716909),Robert Henry Jr.,44716909,CPT,300,CHI@SEA 11/02/2026 08:15PM ET,SEA,0.0,,CPT,Robert Henry Jr.,dk,300,robert henry,SEA,RB,showdown,00-0041178,auto_exact,high
+WR,Jake Bobo (44716910),Jake Bobo,44716910,CPT,300,CHI@SEA 11/02/2026 08:15PM ET,SEA,0.0,IR,CPT,Jake Bobo,dk,300,jake bobo,SEA,WR,showdown,00-0038752,auto_exact,high
+WR,Ricky White III (44716911),Ricky White III,44716911,CPT,300,CHI@SEA 11/02/2026 08:15PM ET,SEA,0.0,,CPT,Ricky White III,dk,300,ricky white,SEA,WR,showdown,00-0040653,auto_exact,high
+WR,Scotty Miller (44716912),Scotty Miller,44716912,CPT,300,CHI@SEA 11/02/2026 08:15PM ET,CHI,0.0,,CPT,Scotty Miller,dk,300,scotty miller,CHI,WR,showdown,00-0035298,manual_override,high
+WR,Malick Meiga (44716913),Malick Meiga,44716913,CPT,300,CHI@SEA 11/02/2026 08:15PM ET,SEA,0.0,,CPT,Malick Meiga,dk,300,malick meiga,SEA,WR,showdown,00-0041542,auto_exact,high
+WR,Montorie Foster Jr. (44716914),Montorie Foster Jr.,44716914,CPT,300,CHI@SEA 11/02/2026 08:15PM ET,SEA,0.0,,CPT,Montorie Foster Jr.,dk,300,montorie foster,SEA,WR,showdown,00-0040621,auto_exact,high
+WR,Emmanuel Henderson Jr. (44716915),Emmanuel Henderson Jr.,44716915,CPT,300,CHI@SEA 11/02/2026 08:15PM ET,SEA,0.0,,CPT,Emmanuel Henderson Jr.,dk,300,emmanuel henderson,SEA,WR,showdown,00-0040895,auto_exact,high
+WR,JP Richardson (44716916),JP Richardson,44716916,CPT,300,CHI@SEA 11/02/2026 08:15PM ET,CHI,0.0,,CPT,JP Richardson,dk,300,jp richardson,CHI,WR,showdown,00-0040275,auto_exact,high
+WR,Kaden Davis (44716917),Kaden Davis,44716917,CPT,300,CHI@SEA 11/02/2026 08:15PM ET,CHI,0.0,,CPT,Kaden Davis,dk,300,kaden davis,CHI,WR,showdown,00-0037380,auto_exact,high
+TE,Hayden Large (44716918),Hayden Large,44716918,CPT,300,CHI@SEA 11/02/2026 08:15PM ET,CHI,0.0,IR,CPT,Hayden Large,dk,300,hayden large,CHI,TE,showdown,00-0041170,auto_exact,high
+TE,Nikola Kalinic (44716919),Nikola Kalinic,44716919,CPT,300,CHI@SEA 11/02/2026 08:15PM ET,CHI,0.0,IR,CPT,Nikola Kalinic,dk,300,nikola kalinic,CHI,TE,showdown,00-0037031,auto_exact,high
+TE,Cole Kmet (44716920),Cole Kmet,44716920,CPT,300,CHI@SEA 11/02/2026 08:15PM ET,CHI,3.5,IR,CPT,Cole Kmet,dk,300,cole kmet,CHI,TE,showdown,00-0036290,auto_exact,high
+TE,Stephen Carlson (44716921),Stephen Carlson,44716921,CPT,300,CHI@SEA 11/02/2026 08:15PM ET,CHI,0.0,,CPT,Stephen Carlson,dk,300,stephen carlson,CHI,TE,showdown,00-0035039,auto_exact,high
+TE,Elijah Arroyo (44716922),Elijah Arroyo,44716922,CPT,300,CHI@SEA 11/02/2026 08:15PM ET,SEA,0.5,IR,CPT,Elijah Arroyo,dk,300,elijah arroyo,SEA,TE,showdown,00-0040739,auto_exact,high
+TE,Ben Sims (44716923),Ben Sims,44716923,CPT,300,CHI@SEA 11/02/2026 08:15PM ET,SEA,0.0,,CPT,Ben Sims,dk,300,ben sims,SEA,TE,showdown,00-0038809,auto_exact,high
+TE,Qadir Ismail (44716924),Qadir Ismail,44716924,CPT,300,CHI@SEA 11/02/2026 08:15PM ET,CHI,0.0,,CPT,Qadir Ismail,dk,300,qadir ismail,CHI,TE,showdown,00-0039843,auto_exact,high
+RB,Robbie Ouzts (44716850),Robbie Ouzts,44716850,FLEX,200,CHI@SEA 11/02/2026 08:15PM ET,SEA,0.0,IR,FLEX,Robbie Ouzts,dk,200,robbie ouzts,SEA,RB,showdown,00-0040649,auto_exact,high
+RB,Brittain Brown (44716851),Brittain Brown,44716851,FLEX,200,CHI@SEA 11/02/2026 08:15PM ET,CHI,0.0,IR,FLEX,Brittain Brown,dk,200,brittain brown,CHI,RB,showdown,00-0037329,auto_exact,high
+RB,Salvon Ahmed (44716852),Salvon Ahmed,44716852,FLEX,200,CHI@SEA 11/02/2026 08:15PM ET,CHI,0.0,,FLEX,Salvon Ahmed,dk,200,salvon ahmed,CHI,RB,showdown,00-0036020,auto_exact,high
+RB,Brady Russell (44716853),Brady Russell,44716853,FLEX,200,CHI@SEA 11/02/2026 08:15PM ET,SEA,1.0,,FLEX,Brady Russell,dk,200,brady russell,SEA,RB,showdown,00-0038488,auto_exact,high
+RB,Robert Henry Jr. (44716854),Robert Henry Jr.,44716854,FLEX,200,CHI@SEA 11/02/2026 08:15PM ET,SEA,0.0,,FLEX,Robert Henry Jr.,dk,200,robert henry,SEA,RB,showdown,00-0041178,auto_exact,high
+WR,Jake Bobo (44716855),Jake Bobo,44716855,FLEX,200,CHI@SEA 11/02/2026 08:15PM ET,SEA,0.0,IR,FLEX,Jake Bobo,dk,200,jake bobo,SEA,WR,showdown,00-0038752,auto_exact,high
+WR,Ricky White III (44716856),Ricky White III,44716856,FLEX,200,CHI@SEA 11/02/2026 08:15PM ET,SEA,0.0,,FLEX,Ricky White III,dk,200,ricky white,SEA,WR,showdown,00-0040653,auto_exact,high
+WR,Scotty Miller (44716857),Scotty Miller,44716857,FLEX,200,CHI@SEA 11/02/2026 08:15PM ET,CHI,0.0,,FLEX,Scotty Miller,dk,200,scotty miller,CHI,WR,showdown,00-0035298,manual_override,high
+WR,Malick Meiga (44716858),Malick Meiga,44716858,FLEX,200,CHI@SEA 11/02/2026 08:15PM ET,SEA,0.0,,FLEX,Malick Meiga,dk,200,malick meiga,SEA,WR,showdown,00-0041542,auto_exact,high
+WR,Montorie Foster Jr. (44716859),Montorie Foster Jr.,44716859,FLEX,200,CHI@SEA 11/02/2026 08:15PM ET,SEA,0.0,,FLEX,Montorie Foster Jr.,dk,200,montorie foster,SEA,WR,showdown,00-0040621,auto_exact,high
+WR,Emmanuel Henderson Jr. (44716860),Emmanuel Henderson Jr.,44716860,FLEX,200,CHI@SEA 11/02/2026 08:15PM ET,SEA,0.0,,FLEX,Emmanuel Henderson Jr.,dk,200,emmanuel henderson,SEA,WR,showdown,00-0040895,auto_exact,high
+WR,JP Richardson (44716861),JP Richardson,44716861,FLEX,200,CHI@SEA 11/02/2026 08:15PM ET,CHI,0.0,,FLEX,JP Richardson,dk,200,jp richardson,CHI,WR,showdown,00-0040275,auto_exact,high
+WR,Kaden Davis (44716862),Kaden Davis,44716862,FLEX,200,CHI@SEA 11/02/2026 08:15PM ET,CHI,0.0,,FLEX,Kaden Davis,dk,200,kaden davis,CHI,WR,showdown,00-0037380,auto_exact,high
+TE,Hayden Large (44716863),Hayden Large,44716863,FLEX,200,CHI@SEA 11/02/2026 08:15PM ET,CHI,0.0,IR,FLEX,Hayden Large,dk,200,hayden large,CHI,TE,showdown,00-0041170,auto_exact,high
+TE,Nikola Kalinic (44716864),Nikola Kalinic,44716864,FLEX,200,CHI@SEA 11/02/2026 08:15PM ET,CHI,0.0,IR,FLEX,Nikola Kalinic,dk,200,nikola kalinic,CHI,TE,showdown,00-0037031,auto_exact,high
+TE,Cole Kmet (44716865),Cole Kmet,44716865,FLEX,200,CHI@SEA 11/02/2026 08:15PM ET,CHI,3.5,IR,FLEX,Cole Kmet,dk,200,cole kmet,CHI,TE,showdown,00-0036290,auto_exact,high
+TE,Stephen Carlson (44716866),Stephen Carlson,44716866,FLEX,200,CHI@SEA 11/02/2026 08:15PM ET,CHI,0.0,,FLEX,Stephen Carlson,dk,200,stephen carlson,CHI,TE,showdown,00-0035039,auto_exact,high
+TE,Elijah Arroyo (44716867),Elijah Arroyo,44716867,FLEX,200,CHI@SEA 11/02/2026 08:15PM ET,SEA,0.5,IR,FLEX,Elijah Arroyo,dk,200,elijah arroyo,SEA,TE,showdown,00-0040739,auto_exact,high
+TE,Ben Sims (44716868),Ben Sims,44716868,FLEX,200,CHI@SEA 11/02/2026 08:15PM ET,SEA,0.0,,FLEX,Ben Sims,dk,200,ben sims,SEA,TE,showdown,00-0038809,auto_exact,high
+TE,Qadir Ismail (44716869),Qadir Ismail,44716869,FLEX,200,CHI@SEA 11/02/2026 08:15PM ET,CHI,0.0,,FLEX,Qadir Ismail,dk,200,qadir ismail,CHI,TE,showdown,00-0039843,auto_exact,high

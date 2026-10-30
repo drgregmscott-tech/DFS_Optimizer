@@ -240,6 +240,22 @@
       "season": 2026,
       "week": 8,
       "lock_time_utc": "2026-11-01T18:00:00Z"
+    },
+    {
+      "slate_id": "dk_showdown_wk8_PHI_WAS_01Nov2026",
+      "site": "dk",
+      "format": "showdown",
+      "season": 2026,
+      "week": 8,
+      "lock_time_utc": "2026-11-02T01:20:00Z"
+    },
+    {
+      "slate_id": "dk_showdown_wk8_CHI_SEA_02Nov2026",
+      "site": "dk",
+      "format": "showdown",
+      "season": 2026,
+      "week": 8,
+      "lock_time_utc": "2026-11-03T01:15:00Z"
     }
   ]
 }
