@@ -155,10 +155,18 @@
     </div>
 
     <div class="banner">
-      <span class="banner-icon">AI probe · added 2026-10-29</span>
-      <p>Run both from the project root (applies to SE3max and MME alike — not format-specific). Script 1 generates this week's resolved question list, dropped into a fresh Claude.ai chat (no project context). Script 2 is the Sunday-morning tiebreaker: when a probe answer names a specific beneficiary, this confirms whether our own real usage data agrees before you act on it. Agreement from both → <code>--thumbs-up</code> that player_id this week; disagreement → trust our own data, thumbs-up whoever it actually points to instead. See <code>AI_PROBE_QUESTION_TEMPLATES.md</code> for the full design/relevance-filter writeup.</p>
+      <span class="banner-icon">AI probe · Sunday-morning process, updated 2026-10-30</span>
+      <p>Applies to SE3max and MME alike — not format-specific. Six steps, split between what you do and what Claude does with the answers:</p>
+      <p style="margin-top:8px;"><strong>1.</strong> You run <code>probe_ai_chat_weekly_questions.py</code> → paste the output into a <strong>fresh</strong> Claude.ai chat (no project context) → bring the answers back to Claude here.</p>
+      <p style="margin-top:6px;"><strong>2.</strong> Claude triages each answer into one of four buckets: usable in this week's build now; a real system/mechanism gap (logged for postmortem); an ownership-calibration signal (logged, pattern-tracked over several weeks); or discard (unreliable/stale).</p>
+      <p style="margin-top:6px;"><strong>3.</strong> For any "if X sits, who benefits" claim, Claude runs <code>probe_team_usage_rank.py TEAM --week N</code> — the tiebreaker: does our own real trailing usage data agree with the probe's specific name, or point elsewhere. Agreement → <code>--thumbs-up</code> that player_id; disagreement → trust our own data, thumbs-up whoever it actually points to.</p>
+      <p style="margin-top:6px;"><strong>4.</strong> Separately, independent of the chat probe entirely, Claude runs <code>probe_cheap_value_finder.py</code> — pulls this week's cheap-value candidates (by pts/$1000 efficiency, not just raw usage) straight from our own data. No chat needed for this step at all.</p>
+      <p style="margin-top:6px;"><strong>5.</strong> Claude cross-checks both lists against real exposure in whatever lineup pools already exist that week — did a player the math likes actually show up in builds, or is he being squeezed out (this is what caught Bourne/Robinson/Douglas/Gordon II/Stevenson being underexposed despite good value on 2026-10-30, and separately surfaced the cheap-filler-cap item above).</p>
+      <p style="margin-top:6px;"><strong>6.</strong> Claude gives you a final consolidated thumbs-up/down list with the reasoning for each (agreement with our own data, contingent on Friday news, or correctly left alone).</p>
+      <p style="margin-top:8px;">See <code>AI_PROBE_QUESTION_TEMPLATES.md</code> for the full question-design/relevance-filter writeup.</p>
       <p style="font-family:var(--font-mono);font-size:12.5px;line-height:1.75;margin-top:10px;white-space:pre-wrap;background:var(--bg);border:1px solid var(--border);border-radius:7px;padding:10px 12px;">python3 scripts/probe_ai_chat_weekly_questions.py
-python3 scripts/probe_team_usage_rank.py TEAM --week N</p>
+python3 scripts/probe_team_usage_rank.py TEAM --week N
+python3 scripts/probe_cheap_value_finder.py --week N</p>
     </div>
 
     <div class="group">
@@ -210,6 +218,14 @@ python3 scripts/probe_team_usage_rank.py TEAM --week N</p>
         <div class="item-body">
           <div class="item-title">Salary left is <span class="thresh">≤$500</span></div>
           <div class="item-why">Supported, 4/4 seasons — the single cleanest shape finding in the whole study. $500–1k left already costs −2.2 to −2.7 pts. Never solver-enforced directly; still worth a glance.</div>
+        </div>
+      </label>
+
+      <label class="item" data-id="cheap-filler-cap">
+        <input type="checkbox">
+        <div class="item-body">
+          <div class="item-title">No single cheap (<span class="thresh">&le;$3,600</span>) WR/RB/TE is dominating the pool</div>
+          <div class="item-why">Cheap-filler-pattern item (2026-10-30): a cheap, correctly-discounted player can still clear the points-per-$1000 bar as a pure salary-cap filler, almost independent of his own real quality (he frees up cap for studs elsewhere) -- confirmed recurring across real Wk2/4/6/7/8 pools, with Wk7's Ted Hurst III a real, already-costly miss at 50-59/100 exposure. The preset now auto-caps this (<code>--cheap-filler-exposure-cap 0.25</code> at <code>--cheap-filler-salary-max $3,600</code>, SE3Max Pool only) -- same enforced-vs-eyeball split as the dart-exposure-cap item on the MME tab. If a single cheap name still dominates despite the cap, or a different cheap name quietly took his place at the same ceiling, that's worth a second look, not a surprise (some promotion of the next-cheapest filler is expected).</div>
         </div>
       </label>
 
