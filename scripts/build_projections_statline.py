@@ -718,6 +718,25 @@ def _ownership_on_pre_snap(out, own_fn):
 # engine delta (1.0) overshoots to bias -1.6. Held-out (LOSO s): bias +2.34 -> +0.11, RMSE 9.55 -> 9.23 (4/5 seasons).
 Q_RETURN_POST_SCALE = 0.6
 
+# The floor itself (Q_RETURN_PE, statline_model.py) restores mu to mu_raw regardless of how low
+# pe_old (the player's pre-floor participation_effective) was, so the engine delta this add is 0.6x
+# of grows roughly with mu_raw*(1-pe_old) -- unbounded, and never checked at the extreme low end,
+# because no historical case has ever BEEN at the extreme low end: a direct re-check against real DK
+# outcomes (2026-10-31, analysis/q_return_backup/rebuild_postcap.py + postcap_analysis.py, current
+# code, 42 historical active Q-return RB cases, 2021-25) found the LOWEST pe_old ever observed is
+# 0.32 (Gus Edwards, 2022wk8) -- and the add clearly helps at every observed level from there up
+# (RMSE and bias both improve in all three buckets, (.3,.5]/(.5,.7]/(.7,1.0]). It has NEVER fired on
+# a case anywhere near as low as Breece Hall's NYJ Wk8 2026 pe_old=0.27 -- that is genuine
+# out-of-sample extrapolation, not the low end of a validated range, and the 0.6 scale carries no
+# evidence either way there. Independent real-world checks on that live case (not a backtest: his
+# own 2026 wk1-3 average 15.17 DK/g, matching his real 2024-25 season averages of ~14-15; DK's own
+# $6,000 mid-tier RB2 price; a below-average 23.3 implied team total) all point to the engine value
+# ALONE (12.97, no add) being close to right, while the add (+5.6) would push him ~25% over his real
+# rate. Given zero track record below this point either way, the conservative default is to not
+# extrapolate the add into never-tested territory rather than assume it still holds; everything at or
+# above every historical case stays exactly as validated.
+Q_RETURN_POST_MIN_PE_OLD = 0.3
+
 
 def _apply_qb_out_teammates(df, week):
     """Same-team WR/TE down-adjustment the first week a team's starting QB is ruled OUT/DOUBTFUL
@@ -804,7 +823,10 @@ def _apply_q_return_post(df, engine_input, site, variance, n_sims, seed):
     after the stack -- the same pattern as the WRW RB/TE points (_apply_wrw_rb / _apply_wrw_te).
     Engine delta = simulate(flagged rows as built) - simulate(same rows with each {comp}_mu scaled back by
     q_return_cf_ratio_{comp}), same seed (common random numbers). Backups are NOT touched (a post-stack add
-    hurt them in testing). Off: DFS_Q_RETURN=0 (no flags) or DFS_Q_RETURN_POST=0. Audit: q_return_engine_delta,
+    hurt them in testing). Gated off below Q_RETURN_POST_MIN_PE_OLD (see its own comment) -- genuine
+    out-of-sample territory (no 2021-25 case has ever had a pre-floor participation this low), not the
+    low end of a validated range, so this stays conservative there rather than extrapolate.
+    Off: DFS_Q_RETURN=0 (no flags) or DFS_Q_RETURN_POST=0. Audit: q_return_engine_delta,
     q_return_post_pts. Any failure = projections unchanged (loud warning)."""
     df["q_return_engine_delta"] = 0.0
     df["q_return_post_pts"] = 0.0
@@ -817,6 +839,9 @@ def _apply_q_return_post(df, engine_input, site, variance, n_sims, seed):
         flag = engine_input["q_return_flag"].fillna(False).astype(bool)
         if "no_real_game_this_week" in engine_input.columns:
             flag &= ~engine_input["no_real_game_this_week"].fillna(False).astype(bool)
+        if "q_return_pe_old" in engine_input.columns:
+            pe_old = pd.to_numeric(engine_input["q_return_pe_old"], errors="coerce").fillna(1.0)
+            flag &= pe_old >= Q_RETURN_POST_MIN_PE_OLD
         if not flag.any() or not ratio_cols:
             return df
         rows = engine_input[flag].copy()

@@ -2076,11 +2076,16 @@ def _apply_q_return_and_backup_discount(df, confirmed_starter, established_role,
     extra cut -- build_projections_statline._apply_backup_reconcile_post re-simulates that
     counterfactual and subtracts part of the engine-level delta after the stack, the same pattern as
     q_return_post_pts below but signed the other way since this fix only ever lowers volume), 1.0
-    elsewhere. q_return_cf_ratio_{comp} (pre-fix / post-fix {comp}_mu on Q-return rows, 1.0 elsewhere --
-    build_projections_statline._apply_q_return_post re-simulates that counterfactual and adds part of
+    elsewhere. q_return_pe_old (the participation_effective a Q-return row had BEFORE the floor --
+    build_projections_statline._apply_q_return_post gates its post-stack add off below
+    Q_RETURN_POST_MIN_PE_OLD, since the floor itself already restores mu_raw and the add only needs
+    to make up what the stack separately shrinks). q_return_cf_ratio_{comp} (pre-fix / post-fix
+    {comp}_mu on Q-return rows, 1.0 elsewhere -- build_projections_statline._apply_q_return_post
+    re-simulates that counterfactual and adds part of
     the engine-level delta after the stack). Any error -> df unchanged (loud warning)."""
     import os
     df["q_return_flag"] = False
+    df["q_return_pe_old"] = 1.0
     df["backup_discount_ratio"] = 1.0
     df["q_return_backup_reconciled"] = False
     df["q_return_backup_reconcile_cf_ratio"] = 1.0
@@ -2104,6 +2109,7 @@ def _apply_q_return_and_backup_discount(df, confirmed_starter, established_role,
                 pe_new = np.maximum(pe_old.to_numpy(float), floor[q_return].to_numpy(float))
                 df.loc[q_return, "participation_effective"] = pe_new
                 df.loc[q_return, "q_return_flag"] = True
+                df.loc[q_return, "q_return_pe_old"] = pe_old.to_numpy(float)
                 for pos, cs in components.items():
                     pm = q_return & (pos_s == pos)
                     if not pm.any():
