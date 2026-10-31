@@ -38,10 +38,10 @@ DEN,rush,0.9923,recent,32.68,28.23,0.8638,4.45
 LA,rush,0.9922,recent,32.74,28.42,0.868,4.32
 PIT,pass,1.0,exclusive,36.47,31.78,0.8714,4.69
 NYJ,pass,1.0,exclusive,28.76,32.38,1.1259,3.62
-NE,recv,1.0,recent,35.81,31.51,0.8798,4.3
 BUF,recv,0.9924,recent,30.59,34.14,1.1162,3.55
 LV,pass,1.0,exclusive,40.42,35.8,0.8857,4.62
 LA,pass,1.0,exclusive,39.72,35.26,0.8877,4.46
+NE,recv,1.0,recent,35.23,31.51,0.8944,3.72
 ARI,pass,1.0,exclusive,43.34,39.79,0.918,3.55
 TEN,pass,1.0,exclusive,30.15,32.47,1.077,2.32
 NYJ,rush,0.9912,recent,29.12,27.06,0.9295,2.05
