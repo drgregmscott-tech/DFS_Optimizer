@@ -848,6 +848,69 @@ def _apply_q_return_post(df, engine_input, site, variance, n_sims, seed):
     return df
 
 
+# Full (not LOSO-fit) engine delta, unlike Q_RETURN_POST_SCALE above: this isn't correcting an
+# empirically-measured bias, it's making the joint-reconciliation share cap (statline_model.
+# RECONCILE_SHARE_CAP) actually land in final_projection instead of being re-absorbed by
+# reconcile_team_shares' team-total rescale (2026-10-31, owner-approved follow-up to commit
+# 7e131649 -- see analysis/q_return_backup for the live Hall/Allen Wk8 case this was built from).
+RECONCILE_POST_SCALE = 1.0
+
+
+def _apply_backup_reconcile_post(df, engine_input, site, variance, n_sims, seed):
+    """Joint-reconciliation backup cut (statline_model._apply_q_return_and_backup_discount,
+    q_return_backup_reconciled): subtract RECONCILE_POST_SCALE x the engine-level points delta the
+    extra joint-cap cut made, after the stack -- the mirror image of _apply_q_return_post above
+    (that one only ever raises a returning #1's points; this one only ever lowers a backup's,
+    since the joint cap only ever cuts the backup further, never the #1).
+    Engine delta = simulate(flagged rows as built, i.e. with the FULL joint-cap cut already in mu)
+    - simulate(same rows with each {comp}_mu scaled UP by q_return_backup_reconcile_cf_ratio, i.e.
+    with only the ordinary backup-discount ratio, no joint cap) -- same seed (common random
+    numbers), so the delta isolates just the extra cut. Off: DFS_BACKUP_DISCOUNT=0, DFS_Q_RETURN=0,
+    or DFS_Q_RETURN_BACKUP_RECONCILE_POST=0. Audit: backup_reconcile_engine_delta,
+    backup_reconcile_post_pts. Any failure = projections unchanged (loud warning)."""
+    df["backup_reconcile_engine_delta"] = 0.0
+    df["backup_reconcile_post_pts"] = 0.0
+    if (os.environ.get("DFS_Q_RETURN_BACKUP_RECONCILE_POST", "1") == "0"
+            or os.environ.get("DFS_BACKUP_DISCOUNT", "1") == "0"
+            or os.environ.get("DFS_Q_RETURN", "1") == "0"):
+        return df
+    try:
+        if "q_return_backup_reconciled" not in engine_input.columns:
+            return df
+        flag = engine_input["q_return_backup_reconciled"].fillna(False).astype(bool)
+        if "no_real_game_this_week" in engine_input.columns:
+            flag &= ~engine_input["no_real_game_this_week"].fillna(False).astype(bool)
+        if not flag.any() or "q_return_backup_reconcile_cf_ratio" not in engine_input.columns:
+            return df
+        rows = engine_input[flag].copy()
+        cf = rows.copy()
+        r = pd.to_numeric(cf["q_return_backup_reconcile_cf_ratio"], errors="coerce").fillna(1.0).clip(lower=1.0)
+        for comp in ("recv", "rush", "pass"):
+            mu_col = f"{comp}_mu"
+            if mu_col in cf.columns:
+                cf[mu_col] = pd.to_numeric(cf[mu_col], errors="coerce").fillna(0.0) * r
+        a = statline_model.simulate(rows, site, variance, n_sims=n_sims, seed=seed).set_index("player_id")
+        b = statline_model.simulate(cf, site, variance, n_sims=n_sims, seed=seed).set_index("player_id")
+        delta = (a["statline_mean"] - b["statline_mean"]).clip(upper=0.0)   # the fix only ever cuts volume
+        d = df["player_id"].map(delta).fillna(0.0)
+        d = d.where(pd.to_numeric(df["statline_sigma"], errors="coerce").fillna(0.0) > 0, 0.0)
+        add = RECONCILE_POST_SCALE * d
+        df["backup_reconcile_engine_delta"] = d
+        df["backup_reconcile_post_pts"] = add
+        m = add < 0
+        if m.any():
+            for c in ("final_projection", "statline_p10", "statline_p90"):
+                df.loc[m, c] = (pd.to_numeric(df.loc[m, c], errors="coerce").fillna(0.0) + add[m]).clip(lower=0.0)
+            print(f"Backup-reconcile post-stack: {int(m.sum())} backup(s) {RECONCILE_POST_SCALE} x engine delta "
+                  f"(mean {add[m].mean():.2f} pts; " + ", ".join(
+                      f"{n} {v:.1f}" for n, v in zip(df.loc[m, "player_name"], add[m])) + ").")
+    except Exception as exc:  # noqa: BLE001 -- must never break a build
+        _loud(f"Backup-reconcile post-stack add skipped ({type(exc).__name__}: {exc}); projections unchanged.")
+        df["backup_reconcile_engine_delta"] = 0.0
+        df["backup_reconcile_post_pts"] = 0.0
+    return df
+
+
 def _apply_ecr_blend(df, slate_id, w_rb, w_te):
     """Opt-in FantasyPros ECR blend for RB/TE (scripts/ecr_blend.py). Failure = projections unchanged."""
     try:
@@ -1365,9 +1428,12 @@ def build_statline_projections(site: str, season: int, week: int, slate_id: str,
     # Off: DFS_Q_RETURN=0 or DFS_Q_RETURN_POST=0.
     if stack_active:
         df = _apply_q_return_post(df, df_engine_only, site, variance, n_sims, seed)
+        df = _apply_backup_reconcile_post(df, df_engine_only, site, variance, n_sims, seed)
     else:
         df["q_return_engine_delta"] = 0.0
         df["q_return_post_pts"] = 0.0
+        df["backup_reconcile_engine_delta"] = 0.0
+        df["backup_reconcile_post_pts"] = 0.0
     # Audit: the depth-chart backup boost for a real in-week OUT starter (apply_confirmed_starter_override),
     # previously dropped before the CSV. False when that step did not run.
     df["role_change_injury_flag"] = (df["role_change_injury_flag"].fillna(False).astype(bool)

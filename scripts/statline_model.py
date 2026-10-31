@@ -2070,14 +2070,20 @@ def _apply_q_return_and_backup_discount(df, confirmed_starter, established_role,
     3. Joint reconciliation (always on when both of the above fire; see RECONCILE_SHARE_CAP): caps the #1's
        restored share plus the backup's still-elevated share at one backfield's combined share, taking any
        overage out of the backup's ratio alone.
-    Audit columns: q_return_flag, backup_discount_ratio, q_return_backup_reconciled, q_return_cf_ratio_{comp}
-    (pre-fix / post-fix {comp}_mu on Q-return rows, 1.0 elsewhere -- build_projections_statline._apply_q_return_post
-    re-simulates that counterfactual and adds part of the engine-level delta after the stack). Any error -> df
-    unchanged (loud warning)."""
+    Audit columns: q_return_flag, backup_discount_ratio, q_return_backup_reconciled,
+    q_return_backup_reconcile_cf_ratio (reconciled rows: current {comp}_mu x this ratio = the
+    counterfactual {comp}_mu the backup-discount-only ratio would have given, before the joint cap's
+    extra cut -- build_projections_statline._apply_backup_reconcile_post re-simulates that
+    counterfactual and subtracts part of the engine-level delta after the stack, the same pattern as
+    q_return_post_pts below but signed the other way since this fix only ever lowers volume), 1.0
+    elsewhere. q_return_cf_ratio_{comp} (pre-fix / post-fix {comp}_mu on Q-return rows, 1.0 elsewhere --
+    build_projections_statline._apply_q_return_post re-simulates that counterfactual and adds part of
+    the engine-level delta after the stack). Any error -> df unchanged (loud warning)."""
     import os
     df["q_return_flag"] = False
     df["backup_discount_ratio"] = 1.0
     df["q_return_backup_reconciled"] = False
+    df["q_return_backup_reconcile_cf_ratio"] = 1.0
     for _name in {n for cs in components.values() for n, _v, _y, _t in cs}:
         df[f"q_return_cf_ratio_{_name}"] = 1.0
     orig = df.copy()
@@ -2170,10 +2176,14 @@ def _apply_q_return_and_backup_discount(df, confirmed_starter, established_role,
                     if overage <= 0:
                         continue
                     new_backup_share = max(0.0, b_share * ratio - overage)
-                    new_ratio = float(np.clip(new_backup_share / b_share, 0.0, ratio))
+                    # Floor at a tiny epsilon, not 0.0, so cf_ratio below (ratio/new_ratio) stays finite --
+                    # the post-stack re-simulation (build_projections_statline._apply_backup_reconcile_post)
+                    # needs to multiply the final mu back up to the pre-joint-cap counterfactual.
+                    new_ratio = float(np.clip(new_backup_share / b_share, 1e-6, ratio))
                     if new_ratio < ratio:
                         df.at[bi, "backup_discount_ratio"] = new_ratio
                         df.at[bi, "q_return_backup_reconciled"] = True
+                        df.at[bi, "q_return_backup_reconcile_cf_ratio"] = ratio / new_ratio
 
             hit = df["backup_discount_ratio"] < 1.0
             if hit.any():
