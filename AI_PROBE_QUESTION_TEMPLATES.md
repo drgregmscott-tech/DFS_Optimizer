@@ -31,9 +31,18 @@ ONE directly against that exact player's own data in
 - Beneficiary/usage claims → `probe_team_usage_rank.py` (real trailing
   target/carry share).
 - Production/over-under claims → `season_avg` / `recent_form`.
-- Matchup-trap claims → `matchup_factor` — confirmed 2026-10-31 this is a
-  real, varying signal (0.57–1.39 range on a live slate check), not a
-  disabled placeholder, so this comparison is meaningful.
+- Matchup-trap claims → **correction, 2026-10-31, check this per
+  POSITION, not slate-wide**: `matchup_factor` is exactly 1.0 for every
+  QB/RB/WR/TE (deliberate, tested — `build_projections_statline.py:1155`
+  hard-overrides it; see `project_role_step_up_bias_and_matchup_revisit`
+  memory for the Oct 26 re-test that kept it off). It only varies for
+  DST. A slate-wide check without filtering by position wrongly looks
+  like it varies everywhere, because DST's real variation gets mixed in.
+  **For a skill-position trap-matchup claim, there is no live
+  matchup-specific signal to check it against at all** — `vegas_factor`
+  is the only thing available, and it's game script/total only, not real
+  matchup specificity. Say that plainly rather than treating vegas_factor
+  as equivalent.
 - Game-environment claims → `vegas_factor` / `implied_total`.
 
 Verdict per claim: **agree** / **disagree-overprojected** /
@@ -158,8 +167,12 @@ is actually a trap — e.g. the defense is weak against a different
 position, the team's pace/script works against the player, or the
 matchup stat is driven by garbage time, not real volume? Conversely, is
 there a matchup that looks bad but is actually fine for a specific
-player?" Check the named player's own `matchup_factor` directly against
-this claim — that's the whole point of asking it.
+player?" **Correction, 2026-10-31:** for a skill-position player this
+can NOT be checked against `matchup_factor` — it's pinned to 1.0 for
+QB/RB/WR/TE by design (see the relevance-filtering note above). The only
+thing to check it against is `vegas_factor`/`implied_total` (game script,
+not real matchup specificity), and that limit should be stated plainly
+in the verdict, not glossed over.
 
 ## F. Field chalk / overlooked value (Feeds: O — direct field-attention signal, not just triage)
 _Relevance: open/discovery — append the qualifier; this one's slate-wide by design._
