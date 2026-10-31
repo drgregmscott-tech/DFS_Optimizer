@@ -2028,6 +2028,23 @@ BACKUP_ABSORB_FRAC = {"RB": {2: 0.376, 3: 0.245}, "WR": {2: 0.08, 3: 0.145}, "TE
 BACKUP_DISCOUNT_POSITIONS = {"RB"}
 BACKUP_DISCOUNT_MIN_RATIO = 0.5
 
+# Joint reconciliation when Q-return (above) and the backup discount (above) both fire on the
+# same team/week: a #1 with the Q-return floor is restored to his hist_share_raw (his full,
+# pre-injury share of the team's historical primary-component volume -- see hist_share_raw calc
+# in apply_confirmed_starter_override). The backup's own hist_share_raw is still his share from
+# the games he filled in, only partly given back (floored at BACKUP_DISCOUNT_MIN_RATIO). Since
+# both shares are fractions of the SAME team denominator, the two summing above 1.0 is not a new
+# empirical bias to fit -- it is a feasibility constraint (one backfield cannot combine for more
+# than 100% of the team's own historical share of itself). RECONCILE_SHARE_CAP=1.0 enforces that
+# ceiling; any overage is taken from the backup alone (never the returning #1, whose Q_RETURN_PE
+# floor is independently backtested and untouched here). The backup's own 50%-retention premise
+# was built for the case where the #1 is still out; it weakens, not strengthens, once the #1's
+# return is also added back in -- so the overage here is allowed to push the backup's ratio
+# BELOW BACKUP_DISCOUNT_MIN_RATIO (that floor
+# governs the backup-discount mechanism alone, not this joint case). No-op unless both mechanisms
+# fire on the same team/week (2026-10-31, live case: NYJ Hall/Allen Wk8, see analysis/q_return_backup).
+RECONCILE_SHARE_CAP = 1.0
+
 
 def _weeks_list(v) -> list:
     if v is None or (isinstance(v, float) and np.isnan(v)):
@@ -2050,12 +2067,17 @@ def _apply_q_return_and_backup_discount(df, confirmed_starter, established_role,
        established role, missed some of the team's recent games (partial participation) and is NOT OUT/DOUBTFUL today,
        remove the share the backup absorbed in the games the #1 missed (see BACKUP_DISCOUNT_LAMBDA). Scales the
        backup's {comp}_mu (never mu_raw) by the same ratio for every component; floor BACKUP_DISCOUNT_MIN_RATIO.
-    Audit columns: q_return_flag, backup_discount_ratio, q_return_cf_ratio_{comp} (pre-fix / post-fix {comp}_mu on
-    Q-return rows, 1.0 elsewhere -- build_projections_statline._apply_q_return_post re-simulates that counterfactual
-    and adds part of the engine-level delta after the stack). Any error -> df unchanged (loud warning)."""
+    3. Joint reconciliation (always on when both of the above fire; see RECONCILE_SHARE_CAP): caps the #1's
+       restored share plus the backup's still-elevated share at one backfield's combined share, taking any
+       overage out of the backup's ratio alone.
+    Audit columns: q_return_flag, backup_discount_ratio, q_return_backup_reconciled, q_return_cf_ratio_{comp}
+    (pre-fix / post-fix {comp}_mu on Q-return rows, 1.0 elsewhere -- build_projections_statline._apply_q_return_post
+    re-simulates that counterfactual and adds part of the engine-level delta after the stack). Any error -> df
+    unchanged (loud warning)."""
     import os
     df["q_return_flag"] = False
     df["backup_discount_ratio"] = 1.0
+    df["q_return_backup_reconciled"] = False
     for _name in {n for cs in components.values() for n, _v, _y, _t in cs}:
         df[f"q_return_cf_ratio_{_name}"] = 1.0
     orig = df.copy()
@@ -2120,6 +2142,39 @@ def _apply_q_return_and_backup_discount(df, confirmed_starter, established_role,
                     if ratio >= 1.0:
                         continue
                     df.at[bi, "backup_discount_ratio"] = min(ratio, float(df.at[bi, "backup_discount_ratio"]))
+
+            # Joint reconciliation (see RECONCILE_SHARE_CAP above): only touches a backup whose
+            # #1 ALSO got the Q-return floor this week. The #1's post-Q-return share is exactly
+            # his hist_share_raw (Q_RETURN_PE floors participation_effective to 1.0, so his mu is
+            # restored to mu_raw -- hist_share_raw's own definition). The backup's post-discount
+            # share is his hist_share_raw * backup_discount_ratio. If those two shares of the same
+            # team denominator sum past RECONCILE_SHARE_CAP, pull the overage out of the backup's
+            # ratio alone (can go below BACKUP_DISCOUNT_MIN_RATIO -- see comment above).
+            for si, s in starters.iterrows():
+                if not bool(df.at[si, "q_return_flag"]):
+                    continue
+                s_share = float(s["hist_share_raw"])
+                if not np.isfinite(s_share) or s_share <= 0:
+                    continue
+                bm = ((df["team"] == s["team"]) & (pos_s == s["position"])
+                      & df["depth_rank"].isin([2, 3]) & (df.index != si))
+                for bi in df.index[bm]:
+                    ratio = float(df.at[bi, "backup_discount_ratio"])
+                    if ratio >= 1.0:
+                        continue
+                    b_share = float(df.at[bi, "hist_share_raw"])
+                    if not np.isfinite(b_share) or b_share <= 0:
+                        continue
+                    combined = s_share + b_share * ratio
+                    overage = combined - RECONCILE_SHARE_CAP
+                    if overage <= 0:
+                        continue
+                    new_backup_share = max(0.0, b_share * ratio - overage)
+                    new_ratio = float(np.clip(new_backup_share / b_share, 0.0, ratio))
+                    if new_ratio < ratio:
+                        df.at[bi, "backup_discount_ratio"] = new_ratio
+                        df.at[bi, "q_return_backup_reconciled"] = True
+
             hit = df["backup_discount_ratio"] < 1.0
             if hit.any():
                 for pos, cs in components.items():
@@ -2132,9 +2187,11 @@ def _apply_q_return_and_backup_discount(df, confirmed_starter, established_role,
                             df.loc[pm, mu_col] = (pd.to_numeric(df.loc[pm, mu_col], errors="coerce").fillna(0.0)
                                                   * df.loc[pm, "backup_discount_ratio"])
         n_q, n_b = int(df["q_return_flag"].sum()), int((df["backup_discount_ratio"] < 1.0).sum())
+        n_r = int(df["q_return_backup_reconciled"].sum())
         if n_q or n_b:
             print(f"Q-return / backup discount: {n_q} Questionable #1(s) floored to pe {Q_RETURN_PE}, "
-                  f"{n_b} backup(s) discounted.")
+                  f"{n_b} backup(s) discounted"
+                  + (f", {n_r} joint-reconciled (share cap {RECONCILE_SHARE_CAP})." if n_r else "."))
     except Exception as exc:  # noqa: BLE001 -- must never break a build
         msg = f"Q-return / backup discount skipped ({type(exc).__name__}: {exc}); volumes unchanged."
         print(f"WARNING: {msg}", file=sys.stderr)
