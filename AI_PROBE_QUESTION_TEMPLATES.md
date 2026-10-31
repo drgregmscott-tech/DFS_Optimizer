@@ -40,10 +40,20 @@ Verdict per claim: **agree** / **disagree-overprojected** /
 **disagree-underprojected** / **trap-confirmed** / **trap-not-confirmed**.
 The thumbs-up/down list comes from these verdicts, not from exposure.
 
-**Going forward, lean question rounds further into fringe/cheap-value and
-matchup-trap framing specifically** (see E3 and the sharpened F2 below) —
-per the same 2026-10-31 feedback, that's the highest-value area and where
-this process has been weakest so far.
+**Follow-up correction, same day:** the fringe-value/matchup-trap
+questions below (E3, sharpened F2) were first drafted as open,
+unnamed questions. That's the wrong shape — open "what's good value"
+questions have been the *weakest*-performing category all session
+(generic, hard to verify, prone to stale/pattern-matched answers); named
+questions about a specific player have been the *strongest* (same
+pattern as B/C). Fixed in `probe_ai_chat_weekly_questions.py`: it now
+runs `probe_cheap_value_finder.py`'s `candidates_by_position()` first and
+fans the usage-trend and matchup-trap questions out onto those exact
+names (top 3 per position, DK, by pts/$1000 efficiency) instead of
+asking an open question. Our own data picks the candidates; the chat
+verifies usage trend + trap risk on exactly those names. The templates
+below (E3, F2) describe the underlying idea; the generator script is the
+actual source of truth for how they're asked now.
 
 **Relevance filtering — two different mechanisms, used where each fits:**
 

@@ -21,6 +21,10 @@ import csv
 import glob
 import os
 import sys
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).parent))
+from probe_cheap_value_finder import candidates_by_position  # noqa: E402
 
 SALARY_FLOOR = {"QB": 5000, "RB": 4500, "WR": 4500, "TE": 4500}
 FRESHNESS_CHECK = (
@@ -133,26 +137,42 @@ def main() -> None:
         "TE, and DST, and why?\n"
     )
     n += 1
-    print(
-        f"{n}. Specifically, which cheap/fringe players (low salary, low "
-        "rostered ownership) do analysts think are undervalued or "
-        "overvalued this week, and why? Flag any that are getting "
-        "attention mainly because of a matchup call rather than a role "
-        "change.\n"
-    )
-    n += 1
 
-    print("## Matchup traps\n")
-    print(
-        f"{n}. Is there a matchup this week that LOOKS good on paper (a "
-        "weak defense, a high implied total) but is actually a trap -- "
-        "e.g. the defense is weak against a different position, the "
-        "team's pace/script works against the player, or the matchup stat "
-        "is driven by garbage time, not real volume? Conversely, is there "
-        "a matchup that looks bad but is actually fine for a specific "
-        "player?\n"
-    )
-    n += 1
+    # Fringe-value / matchup-trap questions, 2026-10-31: fanned out onto
+    # OUR OWN cheap-value candidates (probe_cheap_value_finder.py) instead
+    # of asked as an open question. Open "what's good value" questions
+    # have been the weakest-performing category all session (generic,
+    # hard to verify, prone to stale/pattern-matched answers); named
+    # questions about a specific player have been the strongest. This
+    # closes that loop: our data picks the candidates, the chat verifies
+    # usage trend + matchup-trap risk on exactly those names.
+    import re
+    m = re.search(r"wk(\d+)", path)
+    week_num = int(m.group(1)) if m else 8
+    by_pos = candidates_by_position(2026, week_num, "dk", top_n=3)
+    fringe_names = [x["name"] for pos in ("WR", "RB", "TE") for x in by_pos.get(pos, [])]
+    if fringe_names:
+        names_str = ", ".join(fringe_names)
+        print("## Fringe-value verification (named, from our own data)\n")
+        print(
+            f"{n}. For each of these specific players -- {names_str} -- "
+            "has his usage (snap share, target/carry share, red-zone role) "
+            "specifically trended up, down, or stayed steady over his last "
+            "2-3 games? Note anything a beat reporter or coach has said "
+            "about why.\n"
+        )
+        n += 1
+        print(
+            f"{n}. For each of those same players, is this week's matchup "
+            "a trap -- does it LOOK favorable (weak defense, high implied "
+            "total) but actually work against him (wrong position the "
+            "defense is weak against, a game script/pace issue, a stat "
+            "driven by garbage time not real volume) -- or conversely, "
+            "does a bad-looking matchup actually not matter for him "
+            "specifically? Answer only for players where you have a real "
+            "basis, skip the rest rather than guessing.\n"
+        )
+        n += 1
 
     print("## Game script / blowout risk\n")
     print(
