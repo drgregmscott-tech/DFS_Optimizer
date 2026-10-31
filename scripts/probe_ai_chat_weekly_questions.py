@@ -130,8 +130,27 @@ def main() -> None:
     print(
         f"{n}. Heading into this week's DraftKings main slate, which "
         "players are shaping up to be chalk (high-owned) at QB, RB, WR, "
-        "TE, and DST, and why? Are there any players being talked about as "
-        "clear value or overlooked plays that aren't on the chalk list?\n"
+        "TE, and DST, and why?\n"
+    )
+    n += 1
+    print(
+        f"{n}. Specifically, which cheap/fringe players (low salary, low "
+        "rostered ownership) do analysts think are undervalued or "
+        "overvalued this week, and why? Flag any that are getting "
+        "attention mainly because of a matchup call rather than a role "
+        "change.\n"
+    )
+    n += 1
+
+    print("## Matchup traps\n")
+    print(
+        f"{n}. Is there a matchup this week that LOOKS good on paper (a "
+        "weak defense, a high implied total) but is actually a trap -- "
+        "e.g. the defense is weak against a different position, the "
+        "team's pace/script works against the player, or the matchup stat "
+        "is driven by garbage time, not real volume? Conversely, is there "
+        "a matchup that looks bad but is actually fine for a specific "
+        "player?\n"
     )
     n += 1
 

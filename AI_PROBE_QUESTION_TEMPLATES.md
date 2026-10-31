@@ -13,6 +13,38 @@ Etienne-to-Saints miss): **always append** "Please confirm this reflects
 news from the current week, and name your source/date — if you're not
 confident it's current, say so rather than guessing."
 
+**Correction, 2026-10-31 — how a probe answer actually gets cross-checked.**
+A separate probe session caught the cross-check step drifting into the
+wrong thing: real lineup-pool exposure (how many of 100 built lineups
+include a player) was being used as a reason to thumbs-up/down him. That's
+wrong — exposure is an emergent property of the solver's salary-cap
+combinatorics across the WHOLE pool, not a read on whether a single
+player's projection is accurate. It's a different question, and
+conflating the two is how the Bourne/Treadwell investigations almost
+reached the wrong conclusion before being reframed.
+
+The actual loop: pull every specific claim out of a probe answer (who
+benefits if X sits, a usage/role-trend call, an explicit over/under-
+projection opinion, a "good matchup"/"trap matchup" read) and check EACH
+ONE directly against that exact player's own data in
+`output/final_projections_*.csv` — never against exposure:
+- Beneficiary/usage claims → `probe_team_usage_rank.py` (real trailing
+  target/carry share).
+- Production/over-under claims → `season_avg` / `recent_form`.
+- Matchup-trap claims → `matchup_factor` — confirmed 2026-10-31 this is a
+  real, varying signal (0.57–1.39 range on a live slate check), not a
+  disabled placeholder, so this comparison is meaningful.
+- Game-environment claims → `vegas_factor` / `implied_total`.
+
+Verdict per claim: **agree** / **disagree-overprojected** /
+**disagree-underprojected** / **trap-confirmed** / **trap-not-confirmed**.
+The thumbs-up/down list comes from these verdicts, not from exposure.
+
+**Going forward, lean question rounds further into fringe/cheap-value and
+matchup-trap framing specifically** (see E3 and the sharpened F2 below) —
+per the same 2026-10-31 feedback, that's the highest-value area and where
+this process has been weakest so far.
+
 **Relevance filtering — two different mechanisms, used where each fits:**
 
 1. **Open/discovery templates** (we don't hand the model a pre-picked name
@@ -110,6 +142,15 @@ E2. "Is there a specific [TEAM] player expected to see a notably favorable
 or unfavorable matchup this week because of [OPPONENT]'s defensive
 tendencies or injuries?"
 
+E3. (Added 2026-10-31, explicit trap framing) "Is there a matchup this
+week that LOOKS good on paper (a weak defense, a high implied total) but
+is actually a trap — e.g. the defense is weak against a different
+position, the team's pace/script works against the player, or the
+matchup stat is driven by garbage time, not real volume? Conversely, is
+there a matchup that looks bad but is actually fine for a specific
+player?" Check the named player's own `matchup_factor` directly against
+this claim — that's the whole point of asking it.
+
 ## F. Field chalk / overlooked value (Feeds: O — direct field-attention signal, not just triage)
 _Relevance: open/discovery — append the qualifier; this one's slate-wide by design._
 
@@ -126,7 +167,15 @@ F1. "Heading into this week's DraftKings main slate, which players are
 shaping up to be chalk (high-owned) at QB, RB, WR, TE, and DST, and why?"
 
 F2. "Are there any players being talked about as clear value or overlooked
-plays this week that aren't already on the chalk list above?"
+plays this week that aren't already on the chalk list above?" (Sharpened
+2026-10-31 — ask explicitly, not just as a fallback to F1: "Specifically,
+which cheap/fringe players (low salary, low rostered ownership) do
+analysts think are undervalued or overvalued this week, and why? Flag any
+that are getting attention mainly because of a matchup call, not a role
+change.") This is the question that should route most directly into an
+over/underprojection or trap-matchup verdict — it's the probe's own
+fringe-value read, checked against our data, not our own
+`probe_cheap_value_finder.py` output re-asked back to it.
 
 F3. (Follow-up, used to decide if F1/F2 should route into A-E) "What's the
 specific reason the field is high on [PLAYER] — is it a role/usage fact, a
