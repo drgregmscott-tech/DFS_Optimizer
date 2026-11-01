@@ -4337,3 +4337,9 @@ timestamp_utc,trigger_type,site,step,status
 2026-11-01T17:01:58.853068+00:00,manual_workflow_dispatch,fd,fd_classic_wk8_main_01Nov2026,status_apply,success
 2026-11-01T17:01:58.853068+00:00,manual_workflow_dispatch,fd,fd_classic_wk8_main_01Nov2026,pivot_finder,success
 2026-11-01T17:01:58.853068+00:00,manual_workflow_dispatch,fd,fd_classic_wk8_main_01Nov2026,cheat_sheet,success
+2026-11-01T18:03:04.580788+00:00,light_vegas_refresh,dk,dk_classic_wk8_early_01Nov2026,cheat_sheet,skipped
+2026-11-01T18:02:29.932153+00:00,light_vegas_refresh,dk,dk_classic_wk8_main_01Nov2026,cheat_sheet,success
+2026-11-01T18:02:14.773178+00:00,light_vegas_refresh,dk,dk_showdown_wk8_CHI_SEA_02Nov2026,cheat_sheet,skipped
+2026-11-01T18:02:12.874243+00:00,light_vegas_refresh,dk,dk_showdown_wk8_PHI_WAS_01Nov2026,cheat_sheet,skipped
+2026-11-01T18:01:35.262249+00:00,light_vegas_refresh,fd,fd_classic_wk8_early_01Nov2026,cheat_sheet,skipped
+2026-11-01T18:01:36.531403+00:00,light_vegas_refresh,fd,fd_classic_wk8_main_01Nov2026,cheat_sheet,success
