@@ -90,13 +90,84 @@ correlation pooled across all projected players** — consistent with the standi
 projection to compare against for week 8 itself specifically — this is the best available evidence (mostly
 historical + a small 2026 sample), not a week-8-specific number.
 
-## Item B. Both showdown slates missed cash — confirmed by the user as a real miss, not previously tracked
+## Item B. Both showdown slates missed cash — ✅ INVESTIGATED (2026-11-02, dedicated session), real recurring
+pattern confirmed, but root cause NOT found — no fix to ship, test-bar status only, see
+[[project_wk8_item_b_showdown_recurring_miss]]
 PHI/WAS (RB-captain build, QB in FLEX) finished top 44.2%; CAR/GB (QB-captain, RB/RB in FLEX) finished top
-68.9%. `grade_construction_week.py --week 8` ran the standard construction-rule drift check against both real
-fields — nothing jumps out as a single dominant rule violation (sample is 2 slates, most `ctl_sign` columns are
-0/2 or 1/2, i.e. not consistent). This needs its own dedicated session if the user wants to chase it — on 2
-slates there isn't enough here yet to diagnose, just to flag that it happened two weeks in a row now worth a
-look (Wk6 also had a non-cashing Thursday showdown per `WK6_POSTMORTEM_CHECKLIST.md`'s parking lot).
+68.9%. The original pass on just these 2 slates found nothing (`ctl_sign` columns 0/2 or 1/2, not consistent) —
+too thin to conclude anything. Broadened to every real DK showdown contest the user entered this season
+(matched by `gmscott81` in `data/contest_results/2026/Week_*/dk_showdown_*_full.csv` + the two Wk8 files,
+15 entries total across 14 unique slates, Wk1-8) to settle whether this is a recurring showdown weakness or
+2-slate noise.
+
+**Finding 1 — real pattern, but it's a Week 5 split, not a steady decline.** Matching the user's own entry in
+every slate (rank/field-size from the raw export) and using the project's standard top-25% cash line:
+
+| Week | Slate | Rank/field | Top % | Result |
+|---|---|---|---|---|
+| 1 | DEN/KC | 1,745/8,845 | 19.7% | Cash |
+| 2 | IND/KC | 1,317/4,734 | 27.8% | Miss |
+| 2 | NYG/LAR | 1,421/8,869 | 16.0% | Cash |
+| 3 | ATL/GB | 215/8,870 | 2.4% | Cash |
+| 4 | ATL/NO | 208/8,837 | 2.4% | Cash |
+| 4 | DET/CAR | 2,567/4,730 | 54.3% | Miss |
+| 4 | PIT/CLE | 697/5,911 | 11.8% | Cash |
+| 5 | BAL/ATL | 3,534/4,727 | 74.8% | Miss |
+| 5 | BUF/LAR | 3,285/8,867 | 37.0% | Miss |
+| 5 | TB/DAL | 5,729/8,874 | 64.5% | Miss |
+| 6 | SEA/DEN | 2,545/8,879 | 28.7% | Miss |
+| 7 | KC/SEA | 43,954/47,308 | 92.9% | Miss |
+| 7 | NE/CHI | 11/5,921 | 0.2% | Cash (huge) |
+| 8 | CAR/GB | 4,066/5,906 | 68.9% | Miss |
+| 8 | PHI/WAS | 1,048/2,369 | 44.2% | Miss |
+
+Weeks 1-4: **5/7 cashed (71%)**. Weeks 5-8: **1/8 cashed (12.5%)**, that one cash being a blowout 0.2%-percentile
+week (NE/CHI). The split lands exactly at Week 5 — not a gradual decline, a step change. Fisher's exact test on
+the 7-vs-8 split: one-sided p≈0.035 (two-sided ≈0.06-0.07) — suggestive of a real regime change, but n=15 total
+is thin ([[feedback_verify_full_history_and_power_before_concluding]]): this is a real, worth-tracking pattern,
+not proof. Also resolves the WK6 parking-lot note (SEA/DEN's miss) and confirms it's part of the same Wk5+
+pattern, not a one-off.
+
+**Finding 2 — ruled out, projection accuracy.** `grade_accuracy_week.py` showdown edge by week: Wk1 0.056, Wk2
+0.133, Wk3 0.259, Wk4 0.132, Wk5 **0.067**, Wk6 0.118, Wk7 0.185, Wk8 **0.187 (best of season)**. If accuracy
+were the driver, Wk6-8 (good-to-best edge) should have cashed fine. They didn't — Wk6-8 combined 0/6. Only Wk5
+(0.067, worst of season) lines up with an accuracy story, and even there only partially (3/3 missed that week).
+Confirms the postmortem's original framing for Wk8 specifically, and extends it: **accuracy is not the Wk5-8
+story.**
+
+**Finding 3 — ruled out, construction-rule violations.** Ran `grade_construction_week.py --week 1-8
+--skip-classic` (all 14 real slates together) and inspected both the pooled `mine_share` column and the
+per-contest breakdown. The entered lineups show **no excess rule violations in Wk5-8 vs Wk1-4** — if anything
+cleaner: `heavy_cpt` (CPT's team is the 4+ "heavy" side) only ever triggered in Wk2 (both of which cashed);
+`stack_over3` (3+ same-team FLEX, the rule whose penalty was changed 2026-10-05, see below) only triggered once
+all season, also Wk2, also cashed. Every Wk5-8 miss was a plain 3-3 split or a QB-captain-with-partner build —
+exactly the shapes the rules call best-practice. The hard rule (`wrte_cpt_noqb`) was never violated in any
+week. This is not a construction-rule-drift story either.
+
+**Finding 4 — the one real candidate (timing of the 2026-10-05 stack-cap change) checked and rejected.** The
+Wk4 construction review (`976f3350`, Mon 2026-10-05, right before Wk5's slates) changed
+`sd-stack-cap-penalty` 0.75→0 and `sd-heavy-side-cpt-penalty` 0.5→1.25 in `showdown_se`, which lines up
+suspiciously well with the Week 5 step-change timing. But Finding 3 already shows `stack_over3` never
+triggered in any Wk5-8 slate, so this lever couldn't have driven those misses — the lineups it would affect
+simply didn't occur. Independently, `analysis/wk8_showdown_altparam/RESULTS_firstpass_wrong_baseline.md`
+(an earlier session, Wk8-only) already reran both Wk8 slates with the pre-10/5 stack-cap-penalty restored
+(Alt4) and found it produced an **identical #1 lineup** on both slates — no effect. Two independent checks
+agree: this specific change is not the cause.
+
+**Finding 5 — entered-lineup team-split shows no pattern either.** Pulled each entered lineup's actual
+CPT-side player count (0-6) from the real DK salary files (`TeamAbbrev` column) for every slate with a salary
+file available (Wk8's two slates weren't matchable this way). Splits ranged 2/6 to 5/6 across both cashes and
+misses with no consistent direction — e.g. Wk2 NYG/LAR went 5/6 (heavy stack) and cashed at 16%; Wk5-7's misses
+were mostly plain 3-3. Stacking shape doesn't separate the cashes from the misses.
+
+**Verdict — test-bar/parked, no fix to ship.** The Week 5 step-change in showdown cash rate is real and worth
+continued tracking, but every candidate mechanism checked (accuracy, construction-rule drift, the Oct-5
+stack-cap change specifically, team-split shape) comes back clean for Wk6-8, and only partially explains Wk5.
+With n=15 and no identified lever, there's nothing to ship — this is consistent with ordinary high-variance
+streakiness in a contest format where one captain pick (at 1.5x) can swing the whole lineup, not a diagnosable
+pipeline defect. Recommend: no action now; re-run this same 15-slate (soon 17+) comparison after a few more
+weeks to see if Wk5-8's 12.5% cash rate persists as more real data accumulates, or reverts toward Wk1-4's 71%
+— that would be the next real signal either way.
 
 ## Item C. AI-probe process — ✅ SHIPPED (2026-11-02): reporting-format fix applied
 Fixed: added a "Closing report format" section to `AI_PROBE_QUESTION_TEMPLATES.md` right after the per-claim
@@ -191,6 +262,58 @@ Two gaps, same root cause (a required-every-week manual logging step silently st
     pre-existing, the shipped path runs on the untouched FFC artifact).
   - Not traced: why cheap fillers' points-per-dollar rose in Wk7-8 specifically — that's the cheap-filler
     pattern's own open root cause, not new to this thread.
+  - **Candidate (d) tested 2026-11-02 (dedicated session), RULED OUT — tail-floor fix (shipped 2026-10-23,
+    commit `29fb8e5d`), the one code change that lines up with the exact Wk6→Wk7 boundary.** Confirmed via
+    `git log` that `apply_tail_floor` is the *only* ownership-pipeline change between the Wk6 build (games
+    2026-10-18) and the Wk7 build (games 2026-10-25) — verified two ways: (1) no other `ownership_v2.py` /
+    `ownership_model.py` commit falls in that window (full chronological list checked), and (2) the Wk6
+    `output/final_projections_dk_dk_classic_wk6_main_*.csv` has no `own_tail_floor` column at all, while Wk7/8's
+    do — direct proof the feature was absent from Wk6's build and present in Wk7/8's. Tested the counterfactual
+    directly from each week's own audit column (`estimated_ownership_pct − own_tail_floor` = what Wk7/8 would
+    have shipped without it) against real logged ownership (`data/ownership_actual_log.csv`), chalk = real
+    ownership ≥20% (same threshold `fit_ownership_model.py` uses): **removing tail-floor makes Wk7/8 chalk bias
+    slightly WORSE, not better** (Wk7 main −10.60 → −10.99, Wk7 early −8.29 → −8.63, Wk8 main −11.15 → −11.40,
+    Wk8 early −6.15 → −6.48; correlation essentially unchanged). Tail-floor is reallocating mass *toward* chalk,
+    the opposite direction of the problem, so it cannot be the cause — and its own validation (7/7 real slates
+    MAE-better) stands unchallenged. This closes off the only code-level lead the previous two sessions hadn't
+    checked.
+  - **Re-examined the "Wk7-8 degraded vs Wk2-6" premise itself, RULED OUT as the wrong frame —
+    [[feedback_dont_jump_to_conclusions_on_results]].** The original flag came from `fit_ownership_model.py`'s
+    LOWO script, already shown (prior session) to score the wrong, non-FFC-blended path. Re-scored properly:
+    pulled every DK classic slate's *actual shipped* `estimated_ownership_pct` from its
+    `output/final_projections_*.csv` and matched it to the real per-slate log in `ownership_actual_log.csv`
+    (same chalk ≥20% definition), one bias/corr number per real slate, all 20 real DK classic slates Wk1-8:
+
+    | Week | Slate | n chalk | Chalk bias |
+    |---|---|---|---|
+    | 1 | main/early/afternoon | 6/7/14 | −16.7 / −6.9 / −16.4 |
+    | 2 | main/early/afternoon | 7/11/17 | −19.0 / −18.4 / −14.4 |
+    | 3 | main/early/afternoon | 5/11/17 | −6.3 / −3.5 / −4.0 |
+    | 4 | main/early/afternoon | 7/10/15 | −8.5 / −5.2 / −3.8 |
+    | 5 | main/early/afternoon | 9/10/19 | −9.4 / −5.8 / −0.2 |
+    | 6 | main | 10 | −1.0 |
+    | 7 | main/early | 9/11 | −10.6 / −8.3 |
+    | 8 | main/early | 9/8 | −11.2 / −6.2 |
+
+    Per-slate bias: **Wk2-6 mean −7.65 (sd 6.12, 13 slates) vs Wk7-8 mean −9.05 (sd 2.30, 4 slates) — Welch
+    t=0.68, p=0.51, not remotely significant**, and Wk7-8 sits well inside Wk2-6's own spread (which ranges
+    −0.2 to −19.0). **Wk1-2 is actually the worst stretch of the season** (mean −15.3), well beyond Wk7-8 — the
+    opposite of "Wk2-6 tight, Wk7-8 broke." Correlation shows the same mild, not-dramatic pattern (pooled by
+    week: wk1 .70, wk2 .65, wk3 .85, wk4 .90, wk5 .90, wk6 .86, wk7 .82, wk8 .80 — Wk7-8 a little below the
+    Wk3-6 plateau, comfortably above Wk1-2). Caveat: this is still n=4 slates for Wk7-8 and 9-20 chalk players
+    per slate ([[feedback_verify_full_history_and_power_before_concluding]]) — too thin to prove a null, only
+    to say there's no positive evidence of a Wk7-8-specific break, and the one code change in that window
+    (tail-floor, above) pushes the wrong direction to explain it anyway.
+  - **Verdict — parked, not a diagnosable regression.** Every traced lead across two sessions (stale FFC fit,
+    blend weight, dropping `l_exp`, the FFC-variant refit, and now tail-floor) comes back clean, and the
+    underlying "Wk7-8 regressed" premise itself doesn't survive being measured on the real shipped path with
+    real per-slate ownership. Most likely explanation: Wk3-6 was an unusually tight stretch (for reasons not
+    pinned down — possibly the chalk-seg/QB-cut/RB-cut fixes landing in quick succession Oct 5-12, each
+    validated on exactly that window), and Wk7-8 is reverting toward ordinary variance (same ballpark as Wk1-2,
+    before most of this season's ownership fixes existed), not degrading from a new defect. No further action;
+    re-run this same per-slate check after a few more weeks if the user wants another data point, but nothing
+    here clears the ship bar or needs a dedicated session on its own.
+
   - **Candidate (b) tested in sandbox 2026-11-02, RULED OUT — don't ship.** Refit the FFC-variant artifact
     on all 8 weeks (feats = `FEATURES + FFC_FEATURES`, the path `fit_ownership_model.py`'s own comment already
     documented), validated through the real shipped blended path (`ownership_v2.predict_v2`, not the simpler
@@ -207,15 +330,34 @@ Two gaps, same root cause (a required-every-week manual logging step silently st
     and (c) above are effectively folded into "look at shared inputs / post-blend steps" now — the three were
     never fully independent.** No fix shipped; this needs a fresh dedicated session if pursued further, given
     today's pattern of each traced lead opening a narrower one rather than landing on a shippable fix.
-  - **Data-quality side note, unresolved:** Stevenson's Wk8 main raw ownership log shows 37.99% but the
-    contest-results export shows 28.03% — a possible mismatch, not yet checked.
-
 ## Parking Lot (add here, don't chase inline)
 - `recent_form` equals `season_avg` exactly for every row, every week, all season, in the ownership-model
   training frame — found as a side note during the Item E Wk7-8 investigation (2026-11-02). Season-wide, not
   specific to Wk7-8; may be by design. Worth a one-line check in a later session.
+- **Stevenson Wk8 ownership "mismatch" — ✅ RESOLVED (2026-11-02), not a bug.** The raw contest export
+  (`data/contest_results/dk_classic_wk8_main_01Nov2026_full.csv`) lists Stevenson on two rows because DK's
+  export breaks a flex-eligible player's ownership out by roster slot: 28.03% drafted at dedicated RB,
+  9.96% drafted at FLEX. The real total ownership (any lineup that rostered him in either slot) is the sum,
+  37.99% — which is exactly what `scripts/_backfill_ownership_wk5_8.py`'s `groupby("Player").sum()` computes,
+  correctly. Checked for a week-to-week methodology inconsistency (the worry that the sum-across-slots
+  approach might be new/only applied to the Wk5-8 backfill): pulled the `actual_ownership_pct` totals from
+  `data/ownership_raw_dk_2026_wk{3,5,8}_*.csv` — all three sum to ~899-900% (the classic slate's 9-roster-slot
+  budget), confirming every week, early and late, has always summed flex-slot ownership the same way. No
+  broader logging bug; closed.
 
 ## Next step
-Status as of 2026-11-02: A resolved, B/D reviewed (no decision recorded yet on whether either becomes a
-dedicated session), C shipped, E newly added (surfaced from a parallel session, not yet reviewed). Pick which
-open items become dedicated sessions, same one-topic-per-session discipline as every prior postmortem.
+Status as of 2026-11-02, session complete: A resolved (user fixed the file label). B confirmed as a real
+2-slate miss, reviewed, not yet diagnosed — candidate for a dedicated session, not enough data on 2 slates
+alone. C shipped (AI-probe reporting-format fix). D reviewed (2 carried-over parked items, no new action). E:
+process gap found and fixed (Stage 8 + `check_weekly_logging_gap.py` now codified so this can't silently
+recur); the Wk7-8 ownership weak-spot was investigated across two dedicated sessions (3 subagents, then a
+follow-up) — every traced lead (FFC-variant refit, blend weight, dropping `l_exp`, and finally tail-floor, the
+one real code candidate) came back clean, and a direct re-test on the actual shipped path showed the
+"Wk7-8 regressed vs Wk2-6" premise itself doesn't hold up (p=0.51, within Wk2-6's own noise, nowhere near as
+bad as Wk1-2) — parked as ordinary variance, not a diagnosable defect. Stevenson ownership "mismatch" resolved
+(correct flex-slot summation, not a bug). One loose end remains on the Parking Lot (`recent_form` duplication).
+
+**This closes the checklist's content** — every item from the original scope (results, accuracy assessment,
+AI-probe revisit, parked-item scan, "anything else") has been reviewed or shipped. What's left is entirely the
+user's call: whether to open dedicated sessions for B (showdown misses) or E's unresolved ownership root cause,
+or to leave both as known, tracked, not-yet-actioned weak spots and move on to Week 9.
