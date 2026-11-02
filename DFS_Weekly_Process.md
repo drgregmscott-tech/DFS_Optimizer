@@ -14,8 +14,10 @@
 | 4 | Build & preview lineups | **You**, via the deployed UI | Anytime before lock |
 | 5 | Export & re-upload | **You**, back into DK/FD | Near lock |
 | 6 | Log actual ownership | **You** | After DK/FD post contest results |
+| 7 | Log actual results | **You** | After box scores are final |
+| 8 | Weekly postmortem | **You**, with Claude | After Stage 7, every week, win or lose |
 
-Stages 1, 2, 4, 5, and 6 are things you do. Stage 3 runs unattended once Stage 2 is complete and pushed.
+Stages 1, 2, 4, 5, 6, 7, and 8 are things you do. Stage 3 runs unattended once Stage 2 is complete and pushed.
 
 ---
 
@@ -527,6 +529,30 @@ git push
 ```
 
 Run `python scripts/log_results.py summary` any time to see logged error by site/position without adding anything.
+
+---
+
+## Stage 8 — Weekly postmortem (every week, win or lose)
+
+**Required every week, not just on a bad week.** A win still has misses worth checking (did a lineup that
+cashed get there despite a wrong call, or because of a right one?), and the only way a silent process gap
+like Stage 6/7 (see WK8_POSTMORTEM_CHECKLIST.md Item E, 2026-11-02 — the ownership/results logging steps
+above stopped running for 5-6 weeks and nobody noticed) gets caught early is a standing habit of checking,
+not waiting for a dedicated audit session.
+
+**First step of every postmortem, before any accuracy/construction analysis:**
+
+```
+python scripts/check_weekly_logging_gap.py
+```
+
+If it reports a gap, fix it (re-run Stage 6/7 for the missing slate(s)) before doing anything else in the
+postmortem — don't let a stale log quietly bias that week's or a future week's "learning" refit the way it
+did for 5-6 weeks running into Week 8.
+
+Then proceed with the normal postmortem: results vs. real contests, `grade_accuracy_week.py`,
+`grade_construction_week.py`, any flagged items — same one-topic-per-session discipline as every prior
+postmortem (see `WK*_POSTMORTEM_CHECKLIST.md` for the established format).
 
 ---
 
