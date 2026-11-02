@@ -49,6 +49,28 @@ Verdict per claim: **agree** / **disagree-overprojected** /
 **disagree-underprojected** / **trap-confirmed** / **trap-not-confirmed**.
 The thumbs-up/down list comes from these verdicts, not from exposure.
 
+**Closing report format, correction 2026-11-02 (WK8 postmortem Item C).**
+The cross-check's final answer is a frontend action list, not a narrative
+verdict-by-verdict writeup. A report that reads as "I agree with the chat's
+read, here's why our numbers support it" leaves the user re-reading prose
+to infer what to click — that's the gap this fixes. Every cross-check
+session must end with exactly these three lists (empty lists are fine —
+write "none" rather than omitting the heading):
+
+**Thumbs up:** [player — one-line reason, e.g. "disagree-underprojected:
+recent_form trending up, probe's usage-trend claim checks out"]
+**Thumbs down:** [player — one-line reason, e.g.
+"disagree-overprojected: season_avg running well below our projection"]
+**Exclude (high-risk trap):** [player — one-line reason, e.g.
+"trap-confirmed: vegas_factor shows game script works against him"]
+
+Map from verdict to action: **agree** → no action (already reflected in
+our numbers, don't touch). **disagree-underprojected** → thumbs up.
+**disagree-overprojected** → thumbs down. **trap-confirmed** → exclude.
+**trap-not-confirmed** → no action. The narrative verdict-by-verdict
+writeup can still precede the lists for context, but the lists are
+mandatory and must be the last thing in the report.
+
 **Follow-up correction, same day:** the fringe-value/matchup-trap
 questions below (E3, sharpened F2) were first drafted as open,
 unnamed questions. That's the wrong shape — open "what's good value"
