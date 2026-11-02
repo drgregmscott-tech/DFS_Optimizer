@@ -4937,14 +4937,15 @@ in this browser's localStorage.</p>
 
   function updateControlsVisibility() {
     // Session 13.5 -- optimizer.py's main() hard-rejects --stack-mode,
-    // --max-game-players, --flex-positions, --min-total-ownership, and
-    // --min-projection for a Showdown pool (decision #45), and
-    // --min-team-players ONLY applies to Showdown (decision #47). Hide the
-    // former (rather than let a build fail with a parser.error the UI
-    // never explained) and show the latter, based on whichever pool is
-    // currently loaded for the active site.
+    // --max-game-players, --flex-positions, and --min-total-ownership for
+    // a Showdown pool (decision #45), and --min-team-players ONLY applies
+    // to Showdown (decision #47). Hide the former (rather than let a
+    // build fail with a parser.error the UI never explained) and show the
+    // latter, based on whichever pool is currently loaded for the active
+    // site. --min-projection was wired through for Showdown too (WK8
+    // postmortem Item B, 2026-11-02) so it's no longer in this hide list.
     var isShowdown = poolIsShowdown(state.activeSite);
-    ["wrapStackModeField", "wrapMinProjectionField", "wrapMinTotalOwnershipField",
+    ["wrapStackModeField", "wrapMinTotalOwnershipField",
      "wrapGameCapsField", "wrapFlexPositionsField",
      // Session 15 -- optimizer.py scopes --participation-floors to classic
      // slates only (see that file's showdown_mode guard); same "hide

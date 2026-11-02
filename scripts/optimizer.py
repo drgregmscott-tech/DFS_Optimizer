@@ -4249,6 +4249,7 @@ def build_single_showdown_lineup(site: str, slate_id: str,
                                   locked_role_map: dict = None,
                                   excluded_player_ids: set = None,
                                   min_salary: int = 0,
+                                  min_projection: float = 0.0,
                                   max_team_players: dict = None,
                                   min_team_players: dict = None,
                                   participation_floors: dict = None,
@@ -4279,6 +4280,28 @@ def build_single_showdown_lineup(site: str, slate_id: str,
             )
         players = players[~players["player_id"].isin(excluded_player_ids)].copy()
     players = drop_excluded_rows(players, excluded_row_roles)
+
+    # WK8 postmortem Item B (2026-11-02) -- --min-projection was rejected
+    # outright for Showdown pools (decision #45 scoped the Session 13.4
+    # work to the core ILP only); it's wired through here the same way
+    # classic's build_single_lineup() does it (decision #34), applied per
+    # row (CPT/FLEX) since a Showdown pool carries two rows per player.
+    if min_projection > 0:
+        below_floor = players[
+            (players["final_projection"] < min_projection)
+            & (~players["player_id"].isin(locked_player_ids))
+        ]
+        if len(below_floor):
+            print(
+                f"Pool filter: excluding {len(below_floor)} row(s) below "
+                f"--min-projection {min_projection}: "
+                f"{sorted(below_floor['player_name'].tolist())}",
+                file=sys.stderr,
+            )
+        players = players[
+            (players["final_projection"] >= min_projection)
+            | (players["player_id"].isin(locked_player_ids))
+        ].copy()
 
     # Bug fix (found live, Sep 2026) -- see main()'s participation_floors
     # comment above. Same filter, same lock exemption, classic already
@@ -4352,6 +4375,7 @@ def build_multi_showdown_lineup(site: str, slate_id: str,
                                  locked_role_map: dict = None,
                                  excluded_player_ids: set = None,
                                  min_salary: int = 0,
+                                 min_projection: float = 0.0,
                                  max_team_players: dict = None,
                                  min_team_players: dict = None,
                                  participation_floors: dict = None,
@@ -4390,6 +4414,27 @@ def build_multi_showdown_lineup(site: str, slate_id: str,
             )
         players_all = players_all[~players_all["player_id"].isin(excluded_player_ids)].copy()
     players_all = drop_excluded_rows(players_all, excluded_row_roles)
+
+    # WK8 postmortem Item B (2026-11-02) -- see build_single_showdown_
+    # lineup()'s matching comment: --min-projection is now wired through
+    # for Showdown, applied per row (CPT/FLEX), same as classic (decision
+    # #34).
+    if min_projection > 0:
+        below_floor = players_all[
+            (players_all["final_projection"] < min_projection)
+            & (~players_all["player_id"].isin(locked_player_ids))
+        ]
+        if len(below_floor):
+            print(
+                f"Pool filter: excluding {len(below_floor)} row(s) below "
+                f"--min-projection {min_projection}: "
+                f"{sorted(below_floor['player_name'].tolist())}",
+                file=sys.stderr,
+            )
+        players_all = players_all[
+            (players_all["final_projection"] >= min_projection)
+            | (players_all["player_id"].isin(locked_player_ids))
+        ].copy()
 
     # Bug fix (found live, Sep 2026) -- see main()'s participation_floors
     # comment above. Same filter, same lock exemption, classic already
@@ -5521,12 +5566,6 @@ def main():
                 "slates yet (Session 13.4 scope is the core ILP only -- "
                 "see ROADMAP.md/SESSION_LOG.md)."
             )
-        if args.min_projection:
-            parser.error(
-                "--min-projection is not supported for Showdown slates yet "
-                "(Session 13.4 scope is the core ILP only -- see "
-                "ROADMAP.md/SESSION_LOG.md)."
-            )
     elif args.min_team_players:
         parser.error(
             "--min-team-players only applies to Showdown slates -- classic "
@@ -5878,7 +5917,8 @@ def main():
                 locked_player_ids=locked_player_ids,
                 locked_role_map=locked_role_map,
                 excluded_player_ids=excluded_player_ids,
-                min_salary=min_salary, max_team_players=max_team_players,
+                min_salary=min_salary, min_projection=args.min_projection,
+                max_team_players=max_team_players,
                 min_team_players=min_team_players,
                 participation_floors=participation_floors,
                 thumbs_up_ids=thumbs_up_ids, thumbs_down_ids=thumbs_down_ids,
@@ -5934,7 +5974,7 @@ def main():
                 locked_player_ids=locked_player_ids,
                 locked_role_map=locked_role_map,
                 excluded_player_ids=excluded_player_ids,
-                min_salary=min_salary, lam=args.lam,
+                min_salary=min_salary, min_projection=args.min_projection, lam=args.lam,
                 max_team_players=max_team_players,
                 min_team_players=min_team_players,
                 participation_floors=participation_floors,
