@@ -1,14 +1,14 @@
 {
   "coefs": {
-    "intercept": -2.5904220248550147,
-    "l_est": 0.26507067097954584,
-    "l_exp": 0.3886141328292139,
-    "sal": 0.1983445752833572,
-    "top1sal": 0.5020923483410862,
-    "cv": 0.010973076786802363,
-    "dart": -0.17256152301192973,
-    "lo_proj": -0.17894724773448617,
-    "pub_val": 0.26580424830731464
+    "intercept": -2.0918006885782794,
+    "l_est": 0.1683643450427767,
+    "l_exp": 0.49641156395398195,
+    "sal": 0.09889534240105304,
+    "top1sal": 0.18861707262154856,
+    "cv": -0.007986633512404015,
+    "dart": -0.25940456712818266,
+    "lo_proj": -0.0061229982108086676,
+    "pub_val": 0.30343955410549556
   },
   "cap": 75.0,
   "features": [
@@ -21,12 +21,18 @@
     "lo_proj",
     "pub_val"
   ],
-  "version": 3,
+  "version": 1,
   "site": "dk",
-  "fit_at": "2026-09-23T23:42:18+00:00",
+  "fit_at": "2026-11-02T11:39:09+00:00",
   "weeks": [
     1,
-    2
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8
   ],
   "slates": [
     "dk_classic_wk1_afternoon_13Sep2026",
@@ -34,19 +40,32 @@
     "dk_classic_wk1_main_13Sep2026",
     "dk_classic_wk2_afternoon_20Sep2026",
     "dk_classic_wk2_early_20Sep2026",
-    "dk_classic_wk2_main_20Sep2026"
+    "dk_classic_wk2_main_20Sep2026",
+    "dk_classic_wk3_afternoon_27Sep2026",
+    "dk_classic_wk3_early_27Sep2026",
+    "dk_classic_wk3_main_27Sep2026",
+    "dk_classic_wk4_afternoon_04Oct2026",
+    "dk_classic_wk4_early_04Oct2026",
+    "dk_classic_wk4_main_04Oct2026",
+    "dk_classic_wk5_afternoon_11Oct2026",
+    "dk_classic_wk5_early_11Oct2026",
+    "dk_classic_wk5_main_11Oct2026",
+    "dk_classic_wk6_main_18Oct2026",
+    "dk_classic_wk7_early_25Oct2026",
+    "dk_classic_wk7_main_25Oct2026",
+    "dk_classic_wk8_early_01Nov2026",
+    "dk_classic_wk8_main_01Nov2026"
   ],
-  "n_rows": 2222,
+  "n_rows": 7061,
   "ridge": 1.0,
-  "exposure_lineups": 60,
+  "exposure_lineups": 300,
   "exposure_randomization_pct": 25.0,
   "in_sample": {
     "label": "in-sample, all weeks",
-    "corr": 0.835,
+    "corr": 0.84,
     "mae": 1.46,
-    "chalk_n": 62,
-    "chalk_mae": 11.8,
+    "chalk_n": 212,
+    "chalk_mae": 12.7,
     "chalk_bias": -6.5
-  },
-  "note": "2026-09-23 refit incl. pub_val (DK AvgPointsPerGame per $K) on leak-free fixed-projection rebuilds, corrected FLEX-inclusive ownership, DK FLEX split 49/34/17."
+  }
 }
