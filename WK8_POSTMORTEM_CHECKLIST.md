@@ -191,10 +191,22 @@ Two gaps, same root cause (a required-every-week manual logging step silently st
     pre-existing, the shipped path runs on the untouched FFC artifact).
   - Not traced: why cheap fillers' points-per-dollar rose in Wk7-8 specifically — that's the cheap-filler
     pattern's own open root cause, not new to this thread.
-  - **No fix implemented.** Three untested candidates: (a) the 0.45/0.55 blend weight on `est_own_live_old`,
-    (b) refit the stale FFC artifact on all 8 weeks, (c) fix the cheap-filler skew in exposure computation at
-    its source. Needs a decision on which to pursue, in a dedicated session, with LOWO validation against the
-    correct (FFC-blended) shipped path before shipping anything.
+  - **Candidate (b) tested in sandbox 2026-11-02, RULED OUT — don't ship.** Refit the FFC-variant artifact
+    on all 8 weeks (feats = `FEATURES + FFC_FEATURES`, the path `fit_ownership_model.py`'s own comment already
+    documented), validated through the real shipped blended path (`ownership_v2.predict_v2`, not the simpler
+    LOWO `fit_ownership_model.py` itself scores). Result: no measurable benefit — Wk7 chalk bias -9.3→-10.2,
+    Wk8 -8.8→-8.9, correlation essentially flat (Wk8 +0.012, everything else flat or worse). **Wk6 was never
+    actually broken** (bias ~-0.6 to -1.4, n=10 chalk players, i.e. the earlier "worst 2 weeks" framing was
+    partly a small-n artifact for Wk6). Decisively: **both halves of the blend miss Wk7-8 chalk the same
+    way** — v2-alone -12.0/-8.4, old-model-alone -8.4→-10.2/-11.2→-11.4 (stale→refit) — so neither the stale
+    fit nor the 0.45/0.55 blend weight (tested 0.30/0.60 too, no fix) is the cause. Points at a **shared
+    input or a post-blend step** (chalk/allocation layers, or `l_exp`/`l_est` directly feeding both v2 and the
+    old model) as the real locus — not yet found. The refit also leans harder into `l_exp` (standardized
+    weight 0.51→0.64, same concerning direction as today's non-FFC refit), and dropping `l_exp` entirely gave
+    a mixed result (helps Wk7, hurts Wk8) — exposure stays a suspect, not a confirmed cause. **Candidates (a)
+    and (c) above are effectively folded into "look at shared inputs / post-blend steps" now — the three were
+    never fully independent.** No fix shipped; this needs a fresh dedicated session if pursued further, given
+    today's pattern of each traced lead opening a narrower one rather than landing on a shippable fix.
   - **Data-quality side note, unresolved:** Stevenson's Wk8 main raw ownership log shows 37.99% but the
     contest-results export shows 28.03% — a possible mismatch, not yet checked.
 
