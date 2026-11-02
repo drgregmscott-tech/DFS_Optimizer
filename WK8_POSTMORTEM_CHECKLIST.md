@@ -143,10 +143,67 @@ tracks instead)
   from the last ~10 days not surfaced by this search; happy to dig further on a specific memory/keyword if the
   user has one.
 
+## Item E. Ownership/projection "learning" pipelines had silently stopped logging — found and partly fixed in
+a parallel session today (2026-11-02), explicitly flagged for this postmortem
+Two gaps, same root cause (a required-every-week manual logging step silently stopped running):
+- **Ownership refit (`fit_ownership_model.py`), commit `a1404cc7`:** `data/ownership_actual_log.csv` stopped
+  being updated after Week 2 even though real contest results kept landing — the live
+  `data/ownership_model_dk.json` ran on a Wk1-2-only fit through all of Week 8. Backfilled Wk5-8 (98-100%
+  match rate) and refit; LOWO validation shows the refit beats the stale model on correlation and chalk-bias
+  in all 8/8 weeks — shipped. **Directly relevant here: the refit's own LOWO report flags Weeks 7-8 as the
+  two worst-performing weeks (corr ~0.76-0.77 vs 0.82-0.88 for weeks 2-6, chalk bias -13 to -15), and says
+  explicitly "logged for the next postmortem to check."** That's this one. Ties to the ownership flags already
+  in section 2 above (DK `RB $7k+` weak ownership corr 0.364, TE ownership under-called -6.3/-10.4) — not yet
+  connected to a root cause, just two independent signals pointing at the same two weeks being ownership-model
+  weak points. Worth a dedicated session if the user wants to dig into why Wk7-8 specifically fit worse.
+- **Projection-stack log (`log_results.py`/`fit_projection_stack.py`):** separately found `projection_error_log.csv`
+  missing Weeks 4-7 (DK classic/showdown, FD classic). Backfilled and logged (commit `95949263`), but the refit
+  itself was correctly **not shipped** — tested in a sandbox first, moved R² by only +0.001 to +0.006, no
+  material gain. No action needed here; already resolved today, included for completeness.
+- **Process gap — ✅ FIXED (2026-11-02):** both sessions note this happened because Stage 6/7 of
+  `DFS_Weekly_Process.md` (the manual weekly logging steps) stopped being run and nobody noticed for 5-6
+  weeks. Fixed in this session: added `scripts/check_weekly_logging_gap.py` (compares real contest-results
+  slates against both logs, flags any gap), ran it and backfilled 4 more pre-existing gaps it caught
+  (`dk_showdown_wk2_Ind_KC`, `dk_showdown_wk8_CAR_GB`, `fd_classic_wk2_main`, `fd_classic_wk3_main`), and
+  codified a new **Stage 8 — Weekly postmortem** in `DFS_Weekly_Process.md` that opens every week's
+  postmortem with that check. Added `CLAUDE.md` so any new session auto-loads the SOP and the Stage 8
+  requirement without it needing to be pasted in each week.
+
+- **Wk7-8 ownership weak-spot — investigated this session (3 bounded Opus subagents, read-only), root
+  mechanism traced:**
+  - The "Wk7-8 worst LOWO weeks" flag above was measuring the wrong code path. Most real DK slates have an
+    FFC public-ownership table and ship via a *different* path than `fit_ownership_model.py`'s LOWO script
+    scores: a blend of `est_own_v2_only` with an older layered model (`est_own_live_old`) that runs on a
+    **separate FFC-variant artifact** (`data/ownership_model_dk_ffc.json`), which is still fit on Week 1-2
+    data from September — untouched by today's `a1404cc7` refit (that refit only updated the non-FFC
+    artifact). Any future LOWO validation should score the actual shipped FFC-blended estimate, not the
+    non-FFC path.
+  - **Root driver (medium-high confidence):** that older model leans on our own optimizer-exposure feature
+    (`l_exp`), and its correlation with real ownership degraded in Wk6-8 (0.87-0.91 in Wk3-5 → 0.70-0.79 in
+    Wk6-8). On mid-priced ($4.5k-7.5k) chalk specifically, optimizer exposure collapsed (32%→24%→13%→17%,
+    Wk5-8) as exposure shifted toward **sub-$4k cheap fillers** whose points-per-dollar rose in those weeks —
+    this is the same already-flagged [[project_cheap_filler_pattern_recurring]] cheap-filler pattern, now
+    shown to have a second-order effect on ownership prediction, not just roster construction. Confirmed not
+    a feedback loop (exposure doesn't read ownership output).
+  - Ruled out: our own point projections (track FantasyPros consensus closely all season, actually slightly
+    *more* accurate than consensus on the specific miss players); the field "knowing something" (only 6/14
+    big-miss players actually beat our projection — close to a coin flip); today's refit itself (confirmed
+    pre-existing, the shipped path runs on the untouched FFC artifact).
+  - Not traced: why cheap fillers' points-per-dollar rose in Wk7-8 specifically — that's the cheap-filler
+    pattern's own open root cause, not new to this thread.
+  - **No fix implemented.** Three untested candidates: (a) the 0.45/0.55 blend weight on `est_own_live_old`,
+    (b) refit the stale FFC artifact on all 8 weeks, (c) fix the cheap-filler skew in exposure computation at
+    its source. Needs a decision on which to pursue, in a dedicated session, with LOWO validation against the
+    correct (FFC-blended) shipped path before shipping anything.
+  - **Data-quality side note, unresolved:** Stevenson's Wk8 main raw ownership log shows 37.99% but the
+    contest-results export shows 28.03% — a possible mismatch, not yet checked.
+
 ## Parking Lot (add here, don't chase inline)
-- (none yet)
+- `recent_form` equals `season_avg` exactly for every row, every week, all season, in the ownership-model
+  training frame — found as a side note during the Item E Wk7-8 investigation (2026-11-02). Season-wide, not
+  specific to Wk7-8; may be by design. Worth a one-line check in a later session.
 
 ## Next step
-Nothing above has been shipped or changed — this is the list to review. Pick which items (A–D, plus anything
-else the user wants added) become dedicated sessions, same one-topic-per-session discipline as every prior
-postmortem.
+Status as of 2026-11-02: A resolved, B/D reviewed (no decision recorded yet on whether either becomes a
+dedicated session), C shipped, E newly added (surfaced from a parallel session, not yet reviewed). Pick which
+open items become dedicated sessions, same one-topic-per-session discipline as every prior postmortem.
