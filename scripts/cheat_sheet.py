@@ -44,20 +44,51 @@ and retune later -- not fitted to anything, just a reasonable starting
 split where ceiling/floor get a little less weight than value/matchup/
 game_env/usage since they're already correlated with value.
 
-Confidence (1-10): the composite score is re-standardized (z-scored a
-second time) against the FULL eligible pool for that position -- not just
-the players who made the top-N cut -- so a "best available" player on a
-genuinely flat/weak slate lands in the middle of the 1-10 scale instead of
-being inflated to a 9-10 purely for being #1 that week. This is the
-mechanism that makes a weak slate actually read as weak in the output,
-without any separate slate-strength heuristic:
+Confidence (1-10): v1 re-standardized the composite score against the FULL
+eligible position pool. That correctly keeps a weak slate's best player out
+of the 9-10 band, but it also meant every row actually shown (already the
+composite top-N by definition) clustered at 8-9 regardless of position --
+real-data check on the Wk8 classic slate: mean 7.85, 90% of rows at 6-10,
+nothing below 5. A confidence score that reads the same for almost every
+play isn't telling the user anything, and -- the specific complaint that
+drove this rework -- it reads as equally confident in a min-salary, no-floor
+punt as it does in a $8K stud.
 
-    confidence = clip(round(5 + composite_z * 1.5), 1, 10)
+v2 re-standardizes within the cohort actually displayed for that position
+(the composite top-N plus any Value/Leverage bonus rows), so the 1-10 scale
+spreads across what the user is actually looking at instead of a nearly-flat
+upper band. It also folds in a bust-risk penalty -- a player's own
+(statline_p90 - statline_p10) / final_projection, z-scored the same way --
+so a boom-or-bust cheap play no longer carries the same number as an
+equally-ranked high-floor play; that's the direct fix for "false confidence"
+on scrubby Value Pick rows (see the Value Pick comment in build_cheat_sheet()
+below). A small slate-strength term (the #1 player's full-pool composite_z)
+is kept so a stacked slate's best play can still outrank a thin slate's best
+play, without letting that collapse the within-cohort spread back down:
 
-Rationale text is built deterministically from the same per-factor
-z-scores -- no model call, just templated sentences picking the
-2-3 highest-magnitude contributing factors for that player and filling in
-the real numbers.
+    within_z = zscore(composite_z within displayed cohort)
+    bust_z   = zscore(bust_raw within displayed cohort)
+    combined = within_z * 1.5 - bust_z * 0.8 + slate_shift * 0.3
+    confidence = clip(round(5.5 + combined), 1, 10)
+
+See compute_confidence() for the real code; CONF_* constants below for the
+weights (validated against the Wk8 classic slate -- see commit history, not
+fitted to anything, same "reasonable starting split, easy to retune" spirit
+as FACTOR_WEIGHTS).
+
+Rationale text is built deterministically -- no model call -- but as of v2
+it is a fixed, longer, multi-sentence template rather than "top 2-3 factors
+by z-score," and it deliberately leaves value out of the prose (user
+feedback, 2026-11-03: the Value Pick badge already says "this is the cheap
+play," repeating per-dollar value in the sentence too was redundant and
+distracted from judging whether the player is actually good). Every row now
+gets: (1) a matchup + game-environment sentence, stated honestly whether
+favorable or tough rather than only when it's a top factor, (2) a real
+history sentence from dk_avg_ppg/games_played -- NOT season_avg/recent_form,
+which build_projections_statline.py documents as the projection with the
+market factor divided back out, i.e. circular with final_projection, not an
+honest history signal -- and (3) an explicit bust-potential sentence stating
+the real floor/ceiling spread in plain terms. See build_rationale() below.
 
 Only players with final_projection > 0 are eligible (status_check.py's
 `apply` step zeroes OUT players in final_projections before this script
@@ -103,8 +134,12 @@ FACTOR_WEIGHTS = {
     "leverage": 1.0,
 }
 
-CONFIDENCE_CENTER = 5.0
-CONFIDENCE_SCALE = 1.5
+# Confidence weights -- see module docstring "Confidence" section for the
+# real-data reasoning (Wk8 classic slate clustering at 8-9 under v1).
+CONF_CENTER = 5.5
+CONF_WITHIN_WEIGHT = 1.5   # spread relative to the cohort actually shown
+CONF_BUST_WEIGHT = 0.8     # penalty for a wide floor/ceiling spread
+CONF_SLATE_WEIGHT = 0.3    # muted "weak slate reads weak" signal
 
 
 def canonical_position(pos: str) -> str:
@@ -176,6 +211,12 @@ def score_position_group(group: pd.DataFrame, team_implied_total: dict) -> pd.Da
         g["_game_env_raw"] = g["implied_total"]
     g["_usage_raw"] = g.apply(usage_value, axis=1)
     g["_leverage_raw"] = zscore(g["final_projection"]) - zscore(g["estimated_ownership_pct"])
+    # Bust-risk proxy for confidence/rationale (not part of the ranking
+    # composite): floor-to-ceiling spread relative to the player's own
+    # projection, so a boom-or-bust cheap punt and a steady stud are
+    # compared on the same relative scale rather than raw point spread.
+    g["_bust_raw"] = (g["_ceiling_raw"] - g["_floor_raw"]) / g["final_projection"]
+    g["_bust_z_full"] = zscore(g["_bust_raw"])
 
     factor_cols = {
         "value": "_value_raw", "ceiling": "_ceiling_raw", "floor": "_floor_raw",
@@ -208,61 +249,137 @@ def score_position_group(group: pd.DataFrame, team_implied_total: dict) -> pd.Da
 
     g["composite_score"] = composite / weight_sum
     g["composite_z"] = zscore(g["composite_score"])
-    g["confidence"] = (
-        (CONFIDENCE_CENTER + g["composite_z"] * CONFIDENCE_SCALE)
-        .round().clip(1, 10).astype(int)
-    )
+    # Confidence itself is computed later in build_cheat_sheet(), once the
+    # displayed cohort (top-N + bonus rows) for this position is known --
+    # see module docstring "Confidence" section for why.
     return g
 
 
-FACTOR_LABELS = {
-    "value": "value",
-    "ceiling": "ceiling",
-    "floor": "floor",
-    "matchup": "matchup",
-    "game_env": "game environment",
-    "usage": "usage",
-    "leverage": "ownership leverage",
-}
-
-
-def factor_phrase(factor: str, row: pd.Series) -> str:
-    pos = row["position"]
-    if factor == "value":
-        return f"strong value at {row['_value_raw']:.2f} pts per $1K"
-    if factor == "ceiling":
-        return f"real ceiling upside ({row['statline_p90']:.1f}-pt 90th-percentile outcome)"
-    if factor == "floor":
-        return f"a stable floor ({row['statline_p10']:.1f}-pt 10th-percentile outcome)"
-    if factor == "matchup":
-        return f"a favorable matchup ({row['matchup_factor']:.2f}x matchup factor)"
-    if factor == "game_env":
-        if pos == "DST":
-            return f"a weak-scoring opposing offense ({row['opponent']}, {-row['_game_env_raw']:.1f}-pt implied total)"
-        return f"a strong game environment ({row['implied_total']:.1f}-pt implied team total)"
-    if factor == "usage":
-        if pos == "QB":
-            return f"heavy passing volume ({row['proj_pass_att']:.1f} projected attempts)"
-        if pos == "RB":
-            return f"a heavy workload ({row['_usage_raw']:.1f} projected touches)"
-        return f"a strong target share ({row['proj_targets']:.1f} projected targets)"
-    if factor == "leverage":
-        direction = "underowned relative to projection" if row["_leverage_raw"] > 0 else "efficiently owned for the projection"
-        return f"{direction} ({row['estimated_ownership_pct']:.1f}% projected ownership)"
-    return factor
-
-
-def build_rationale(row: pd.Series) -> tuple:
-    z_cols = [c for c in row.index if str(c).startswith("_z_")]
-    contributions = sorted(
-        ((c[len("_z_"):], row[c] * FACTOR_WEIGHTS[c[len("_z_"):]]) for c in z_cols),
-        key=lambda t: -t[1],
+def compute_confidence(displayed: pd.DataFrame, slate_shift: float) -> pd.Series:
+    """1-10 confidence, re-standardized within the cohort actually shown
+    for this position (not the full eligible pool -- see module docstring),
+    with a bust-risk penalty and a muted slate-strength shift."""
+    within_z = zscore(displayed["composite_z"])
+    bust_z = zscore(displayed["_bust_raw"])
+    combined = (
+        within_z * CONF_WITHIN_WEIGHT
+        - bust_z * CONF_BUST_WEIGHT
+        + slate_shift * CONF_SLATE_WEIGHT
     )
-    top = contributions[:3]
-    phrases = [factor_phrase(factor, row) for factor, _ in top]
-    rationale = ("; ".join(phrases) + ".")
-    rationale = rationale[0].upper() + rationale[1:]
-    top_factors = ", ".join(FACTOR_LABELS[f] for f, _ in top)
+    return (CONF_CENTER + combined).round().clip(1, 10).astype(int)
+
+
+# Game-environment framing is relative to the slate's own average implied
+# team total (passed in as avg_implied_total), not a fixed league-wide
+# number -- a 24-pt implied total reads differently on a low-scoring slate
+# than a shootout-heavy one.
+GAME_ENV_MARGIN = 2.0
+MATCHUP_FAVORABLE = 1.05
+MATCHUP_TOUGH = 0.95
+HISTORY_DIFF_MARGIN = 3.0
+BUST_Z_HIGH = 0.75
+BUST_Z_LOW = -0.75
+
+
+def matchup_env_sentence(row: pd.Series, avg_implied_total: float) -> str:
+    pos = row["position"]
+    mf = row["matchup_factor"]
+    if mf >= MATCHUP_FAVORABLE:
+        matchup_clause = f"a favorable matchup ({mf:.2f}x matchup factor)"
+    elif mf <= MATCHUP_TOUGH:
+        matchup_clause = f"a tougher matchup on paper ({mf:.2f}x matchup factor)"
+    else:
+        matchup_clause = "a roughly average matchup on paper"
+
+    if pos == "DST":
+        opp_total = -row["_game_env_raw"]  # negated back to a real implied total
+        if opp_total <= avg_implied_total - GAME_ENV_MARGIN:
+            env_clause = f"a plus defensive environment (opponent implied for just {opp_total:.1f})"
+        elif opp_total >= avg_implied_total + GAME_ENV_MARGIN:
+            env_clause = f"a tough defensive spot (opponent implied for {opp_total:.1f})"
+        else:
+            env_clause = f"a middle-of-the-road defensive environment (opponent implied for {opp_total:.1f})"
+    else:
+        team_total = row["implied_total"]
+        if team_total >= avg_implied_total + GAME_ENV_MARGIN:
+            env_clause = f"a plus game environment (team implied for {team_total:.1f})"
+        elif team_total <= avg_implied_total - GAME_ENV_MARGIN:
+            env_clause = f"a lower-scoring game environment (team implied for only {team_total:.1f})"
+        else:
+            env_clause = f"a middling game environment (team implied for {team_total:.1f})"
+
+    sentence = f"{matchup_clause} paired with {env_clause}."
+    return sentence[0].upper() + sentence[1:]
+
+
+def history_sentence(row: pd.Series) -> str:
+    """Real season-to-date history (DK's/FD's own displayed avg pts/game),
+    NOT season_avg/recent_form -- see module docstring for why those are
+    circular with final_projection rather than an honest history signal.
+    games_played isn't tracked for DST (offense-only stat upstream), so a
+    DST with a valid dk_avg_ppg still gets a history sentence, just without
+    a game count attached to it."""
+    pos = row["position"]
+    avg_ppg = row.get("dk_avg_ppg")
+    games_played = row.get("games_played")
+    games_played = 0 if pd.isna(games_played) else int(games_played)
+    if pos != "DST" and games_played <= 0:
+        return "No DK scoring history yet this season to compare against."
+    if pos == "DST" and pd.isna(avg_ppg):
+        return "No DK scoring history yet this season to compare against."
+    diff = row["final_projection"] - avg_ppg
+    if pos == "DST":
+        season_clause = f"its {avg_ppg:.1f}-pt season average"
+    else:
+        game_word = "game" if games_played == 1 else "games"
+        season_clause = f"his {avg_ppg:.1f}-pt season average across {games_played} {game_word}"
+    if diff >= HISTORY_DIFF_MARGIN:
+        trend = f"running well above {season_clause}"
+    elif diff <= -HISTORY_DIFF_MARGIN:
+        trend = f"running below {season_clause}"
+    else:
+        trend = f"in line with {season_clause}"
+    return f"Tonight's projection is {trend}."
+
+
+def bust_sentence(row: pd.Series) -> str:
+    """Floor/ceiling spread in plain terms -- the direct fix for a cheap,
+    boom-or-bust play reading as a safe one (user feedback, 2026-11-03)."""
+    p10, p90 = row["statline_p10"], row["statline_p90"]
+    if row["position"] == "DST" and p10 == 0 and p90 == 0:
+        # DST has no Monte Carlo floor/ceiling model upstream (statline_p10/
+        # p90 are both a flat 0.0) -- printing "0.0 to 0.0 pts" would read as
+        # "no variance," the opposite of the truth, so say so honestly
+        # instead of a fabricated range.
+        return ("Defensive scoring isn't modeled with the same floor/ceiling "
+                "precision as offense -- a single pick-six or safety can still "
+                "swing the result well outside the base projection.")
+    bust_z = row["_bust_z_full"]
+    if bust_z <= BUST_Z_LOW:
+        return (f"Bust risk is low for the position -- even a poor game should "
+                f"land near {p10:.1f} pts, with a ceiling near {p90:.1f}.")
+    if bust_z >= BUST_Z_HIGH:
+        return (f"Carries real bust risk -- a quiet game could be worth only "
+                f"{p10:.1f} pts against a spike as high as {p90:.1f}.")
+    return (f"Normal week-to-week swing for the position -- a down game is "
+            f"closer to {p10:.1f} pts, a good one near {p90:.1f}.")
+
+
+def build_rationale(row: pd.Series, avg_implied_total: float) -> tuple:
+    games_played = row.get("games_played")
+    if row["position"] == "DST":
+        has_history = not pd.isna(row.get("dk_avg_ppg"))
+    else:
+        has_history = not pd.isna(games_played) and int(games_played) > 0
+    rationale = " ".join([
+        matchup_env_sentence(row, avg_implied_total),
+        history_sentence(row),
+        bust_sentence(row),
+    ])
+    top_factors = "matchup, game environment"
+    if has_history:
+        top_factors += ", history"
+    top_factors += ", bust potential"
     return top_factors, rationale
 
 
@@ -273,8 +390,9 @@ OUTPUT_COLUMNS = [
 ]
 
 
-def _build_row(pos: str, row: pd.Series, rank, is_bonus: bool, badge: str) -> dict:
-    top_factors, rationale = build_rationale(row)
+def _build_row(pos: str, row: pd.Series, rank, is_bonus: bool, badge: str,
+                confidence: int, avg_implied_total: float) -> dict:
+    top_factors, rationale = build_rationale(row, avg_implied_total)
     return {
         "position": pos,
         "rank": rank,
@@ -285,7 +403,7 @@ def _build_row(pos: str, row: pd.Series, rank, is_bonus: bool, badge: str) -> di
         "salary": row["salary"],
         "final_projection": row["final_projection"],
         "estimated_ownership_pct": row["estimated_ownership_pct"],
-        "confidence": row["confidence"],
+        "confidence": confidence,
         "composite_score": row["composite_score"],
         "top_factors": top_factors,
         "rationale": rationale,
@@ -297,6 +415,7 @@ def _build_row(pos: str, row: pd.Series, rank, is_bonus: bool, badge: str) -> di
 def build_cheat_sheet(site: str, slate_id: str) -> pd.DataFrame:
     df = load_final_projections(site, slate_id)
     team_implied_total = df.drop_duplicates("team").set_index("team")["implied_total"].to_dict()
+    avg_implied_total = float(np.mean(list(team_implied_total.values())))
 
     scored = []
     for pos, group in df.groupby("position"):
@@ -356,6 +475,18 @@ def build_cheat_sheet(site: str, slate_id: str) -> pd.DataFrame:
         # a legitimate value play here this week -- no bonus row is forced
         # (same "an empty result is real information" philosophy
         # pivot_finder.py already uses for thin pivot pools).
+        #
+        # Even with that filter, the single best cheap-and-real-role play
+        # left is still often a thin-margin, boom-or-bust punt (user
+        # feedback, 2026-11-03) -- that's real and shouldn't be hidden, but
+        # it shouldn't be graded like a safe play either. Rather than
+        # tightening this selection further (a hard floor filter zeroes out
+        # the QB Value Pick almost every week -- backup QBs' 10th-percentile
+        # outcome is below 0 nearly across the board, checked on the Wk8
+        # slate), the honesty fix is in compute_confidence()'s bust-risk
+        # penalty: a scrubby Value Pick now reads with a genuinely low
+        # confidence number instead of inheriting whatever the composite
+        # rank implies.
         cheap_half = pool[pool["salary"] <= pool["salary"].median()]
         if pos != "DST":
             cheap_half = cheap_half[cheap_half["_usage_raw"] > 0]
@@ -368,21 +499,35 @@ def build_cheat_sheet(site: str, slate_id: str) -> pd.DataFrame:
             badges_by_id.setdefault(best_value_row["player_id"], []).append("Value Pick")
         badges_by_id.setdefault(best_leverage_row["player_id"], []).append("Leverage Pick")
 
+        # Confidence is re-standardized within the cohort actually displayed
+        # for this position (top-N + any bonus rows below), not the full
+        # eligible pool -- see module docstring "Confidence" section.
+        displayed_ids = set(top_ids)
+        if best_value_row is not None:
+            displayed_ids.add(best_value_row["player_id"])
+        displayed_ids.add(best_leverage_row["player_id"])
+        displayed = pool[pool["player_id"].isin(displayed_ids)].copy()
+        slate_shift = float(top["composite_z"].iloc[0]) if not top.empty else 0.0
+        conf_by_id = dict(zip(displayed["player_id"], compute_confidence(displayed, slate_shift)))
+
         for rank, (_, row) in enumerate(top.iterrows(), start=1):
             badge = ", ".join(badges_by_id.get(row["player_id"], []))
-            rows.append(_build_row(pos, row, rank, False, badge))
+            rows.append(_build_row(pos, row, rank, False, badge,
+                                    conf_by_id[row["player_id"]], avg_implied_total))
 
         bonus_rank = top_n + 1
         if best_value_row is None:
             print(f"NOTE: no eligible cheap/real-role value play found for {pos} "
                   f"on {site}/{slate_id} -- no Value Pick bonus row added.", file=sys.stderr)
         elif best_value_row["player_id"] not in top_ids:
-            rows.append(_build_row(pos, best_value_row, bonus_rank, True, "Value Pick"))
+            rows.append(_build_row(pos, best_value_row, bonus_rank, True, "Value Pick",
+                                    conf_by_id[best_value_row["player_id"]], avg_implied_total))
             bonus_rank += 1
         best_value_id = best_value_row["player_id"] if best_value_row is not None else None
         if (best_leverage_row["player_id"] not in top_ids
                 and best_leverage_row["player_id"] != best_value_id):
-            rows.append(_build_row(pos, best_leverage_row, bonus_rank, True, "Leverage Pick"))
+            rows.append(_build_row(pos, best_leverage_row, bonus_rank, True, "Leverage Pick",
+                                    conf_by_id[best_leverage_row["player_id"]], avg_implied_total))
 
     return pd.DataFrame(rows, columns=OUTPUT_COLUMNS)
 
