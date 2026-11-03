@@ -17,8 +17,19 @@ composite score:
   - value       final_projection / (salary/1000)
   - ceiling     statline_p90 (Monte Carlo 90th-percentile outcome)
   - floor       statline_p10 (Monte Carlo 10th-percentile outcome)
-  - matchup     matchup_factor (already directionally correct per position
-                -- see build_projections_statline.py's load_matchup_factors())
+  - matchup     matchup_factor. NOTE (2026-11-03): build_projections_statline.py
+                neutralizes this to a flat 1.0 for QB/RB/WR/TE project-wide
+                (neutral_skill_matchup=True, since 2026-09-24 -- it measurably
+                hurt projection accuracy; see that file's own comment). DST's
+                factor is real and untouched. So for skill positions this
+                composite factor currently contributes nothing to ranking --
+                left in rather than removed since a dedicated session is
+                expected to revisit neutral_skill_matchup (the "revisit ~Week
+                6" note in that file is already overdue at Week 8), and
+                nothing else here needs to change if/when that flips back on.
+                Rationale text's matchup clause is DELIBERATELY a different,
+                separate signal from this one -- see matchup_env_sentence()
+                and load_display_matchup_factors() below.
   - game_env    own team's implied_total for QB/RB/WR/TE; for DST, the
                 OPPONENT's implied_total, inverted (a low-scoring spot for
                 the opponent is the good environment for a defense) --
@@ -90,14 +101,40 @@ market factor divided back out, i.e. circular with final_projection, not an
 honest history signal -- and (3) an explicit bust-potential sentence stating
 the real floor/ceiling spread in plain terms. See build_rationale() below.
 
+Matchup clause, display-only (user decision, 2026-11-03): matchup_factor is
+neutralized for QB/RB/WR/TE in the ranking composite (see above), but the
+user still wants the rationale to state the real defense-vs-position signal
+("does this defense actually give up a lot of points to this position") even
+though it isn't currently trusted enough to rank on. load_display_matchup_
+factors() reads the SAME output/matchup_factors_{site}_{season}_{week}.csv
+build_projections.py's load_matchup_factors() reads -- the raw, un-
+neutralized per-team/position ratio -- for text only. This is why cheat_
+sheet.py now also takes --season/--week (previously derived nothing from
+them): the file is keyed by season+week, not slate_id. DST is excluded from
+this lookup (that file only covers QB/RB/WR/TE -- DST's own matchup_factor
+column was never neutralized, so DST rows keep reading straight from
+final_projections like before 2026-11-03).
+
+Value Pick eligibility (user decision, 2026-11-03): previously "cheap half
+of the position's salary pool + a nonzero projected role." Real-world
+complaint: Corey Kiner (RB3 on his own team, 4.6 of his team's RB carries
+vs. the actual lead back's 9.6) cleared that bar most weeks purely because
+SOME volume was projected, not because he's a play anyone would realistically
+trust. Now requires the single TOP usage-earner at this position on their
+OWN team (by projected touches/targets among teammates who are actually
+active this week) -- Gunnar Helm (clear TE1 on a thin-depth team) clears
+this; Corey Kiner (clearly behind his own team's lead back) does not. See
+the Value Pick block in build_cheat_sheet() for the real code and the
+Carson Wentz/Amon-Ra lessons this replaces, not removes.
+
 Only players with final_projection > 0 are eligible (status_check.py's
 `apply` step zeroes OUT players in final_projections before this script
 runs -- a zeroed/bye player is never a usable top play regardless of any
 other signal, same filter pivot_finder.py already uses).
 
 Usage:
-    python3 scripts/cheat_sheet.py --site dk --slate-id dk_classic_wk7_main_25Oct2026
-    python3 scripts/cheat_sheet.py --site fd --slate-id fd_classic_wk7_main_25Oct2026
+    python3 scripts/cheat_sheet.py --site dk --season 2026 --week 8 --slate-id dk_classic_wk7_main_25Oct2026
+    python3 scripts/cheat_sheet.py --site fd --season 2026 --week 8 --slate-id fd_classic_wk7_main_25Oct2026
 
 Output:
     output/cheat_sheet_{site}_{slate_id}.csv
@@ -172,6 +209,21 @@ def load_final_projections(site: str, slate_id: str) -> pd.DataFrame:
     return df[df["final_projection"] > 0].copy()
 
 
+def load_display_matchup_factors(site: str, season: int, week: int) -> dict:
+    """The REAL (un-neutralized) per-team/position defense-vs-position ratio,
+    for the rationale text only -- see module docstring "Matchup clause,
+    display-only." Missing file degrades to "no real signal, show neutral"
+    (same spirit as build_projections.py's own fillna(1.0)) rather than
+    crashing the whole cheat sheet build over a display-only lookup."""
+    path = OUTPUT_DIR / f"matchup_factors_{site}_{season}_{week}.csv"
+    if not path.exists():
+        print(f"NOTE: {path} not found -- rationale matchup clause will read "
+              f"neutral (1.0) for every skill-position player.", file=sys.stderr)
+        return {}
+    mf = pd.read_csv(path)
+    return {(r["team"], r["position"]): r["matchup_factor"] for _, r in mf.iterrows()}
+
+
 def zscore(series: pd.Series) -> pd.Series:
     """Mean-0/std-1 within whatever subset is passed in. A zero-variance
     pool (e.g. only one eligible player at a position) maps to all zeros
@@ -217,6 +269,13 @@ def score_position_group(group: pd.DataFrame, team_implied_total: dict) -> pd.Da
     # compared on the same relative scale rather than raw point spread.
     g["_bust_raw"] = (g["_ceiling_raw"] - g["_floor_raw"]) / g["final_projection"]
     g["_bust_z_full"] = zscore(g["_bust_raw"])
+    # Rank 1 = the single leading usage-earner at this position on their OWN
+    # team (among teammates active this week, since final_projection>0 is
+    # already the whole pool here) -- used by the Value Pick selection below
+    # to mean "a real role," not just "some nonzero projected touches." NaN
+    # for DST (no usage_raw) is harmless -- DST's Value Pick logic doesn't
+    # use this column.
+    g["_team_pos_rank"] = g.groupby("team")["_usage_raw"].rank(ascending=False, method="first")
 
     factor_cols = {
         "value": "_value_raw", "ceiling": "_ceiling_raw", "floor": "_floor_raw",
@@ -274,22 +333,52 @@ def compute_confidence(displayed: pd.DataFrame, slate_shift: float) -> pd.Series
 # number -- a 24-pt implied total reads differently on a low-scoring slate
 # than a shootout-heavy one.
 GAME_ENV_MARGIN = 2.0
-MATCHUP_FAVORABLE = 1.05
-MATCHUP_TOUGH = 0.95
+# Calibrated against the REAL (un-neutralized) matchup_factors_{site}_
+# {season}_{week}.csv distribution, not the ranking composite's neutralized
+# column -- that file's QB/RB/WR/TE spread is roughly std 0.10-0.20 (checked
+# on the Wk8 file), wide enough that the 25th/75th percentile lands close to
+# 0.90/1.10 across positions. The original 0.95/1.05 thresholds were
+# calibrated against the composite column's much tighter pre-neutralization
+# shape and flagged near-average performers (e.g. 0.95x) as "tough."
+MATCHUP_FAVORABLE = 1.10
+MATCHUP_TOUGH = 0.90
 HISTORY_DIFF_MARGIN = 3.0
 BUST_Z_HIGH = 0.75
 BUST_Z_LOW = -0.75
+# Absolute (not relative-to-pool) floor bars -- see bust_sentence() for why
+# relative-only framing was wrong. A sub-3-pt floor is a real lineup killer
+# for any offensive skill position regardless of how it compares to peers;
+# "low risk" requires clearing a real double-digit cushion, not just being
+# less bad than other scrubs.
+ABS_FLOOR_HIGH_RISK = 3.0
+ABS_FLOOR_LOW_RISK = 10.0
 
 
 def matchup_env_sentence(row: pd.Series, avg_implied_total: float) -> str:
     pos = row["position"]
-    mf = row["matchup_factor"]
-    if mf >= MATCHUP_FAVORABLE:
-        matchup_clause = f"a favorable matchup ({mf:.2f}x matchup factor)"
-    elif mf <= MATCHUP_TOUGH:
-        matchup_clause = f"a tougher matchup on paper ({mf:.2f}x matchup factor)"
+    # _display_matchup is the REAL defense-vs-position signal (how many
+    # fantasy points the opponent has actually allowed to this position this
+    # season, vs. league average) -- NOT the same column the ranking
+    # composite uses, which is neutralized to 1.0 for QB/RB/WR/TE. See
+    # module docstring "Matchup clause, display-only."
+    mf = row["_display_matchup"]
+    if pos == "DST":
+        if mf >= MATCHUP_FAVORABLE:
+            matchup_clause = f"a favorable matchup ({mf:.2f}x matchup factor)"
+        elif mf <= MATCHUP_TOUGH:
+            matchup_clause = f"a tougher matchup on paper ({mf:.2f}x matchup factor)"
+        else:
+            matchup_clause = "a roughly average matchup on paper"
     else:
-        matchup_clause = "a roughly average matchup on paper"
+        opp = row["opponent"]
+        if mf >= MATCHUP_FAVORABLE:
+            matchup_clause = (f"a favorable matchup -- {opp} has allowed "
+                               f"{mf:.2f}x the league-average fantasy points to {pos}s this season")
+        elif mf <= MATCHUP_TOUGH:
+            matchup_clause = (f"a tough matchup -- {opp} has allowed only "
+                               f"{mf:.2f}x the league-average fantasy points to {pos}s this season")
+        else:
+            matchup_clause = f"a roughly average matchup -- {opp} has allowed about league-average fantasy points to {pos}s this season"
 
     if pos == "DST":
         opp_total = -row["_game_env_raw"]  # negated back to a real implied total
@@ -308,8 +397,10 @@ def matchup_env_sentence(row: pd.Series, avg_implied_total: float) -> str:
         else:
             env_clause = f"a middling game environment (team implied for {team_total:.1f})"
 
-    sentence = f"{matchup_clause} paired with {env_clause}."
-    return sentence[0].upper() + sentence[1:]
+    matchup_sentence = matchup_clause[0].upper() + matchup_clause[1:] + "."
+    subject = "it's" if pos == "DST" else "he's"
+    env_sentence = f"On top of that, {subject} in {env_clause}."
+    return matchup_sentence + " " + env_sentence
 
 
 def history_sentence(row: pd.Series) -> str:
@@ -344,7 +435,17 @@ def history_sentence(row: pd.Series) -> str:
 
 def bust_sentence(row: pd.Series) -> str:
     """Floor/ceiling spread in plain terms -- the direct fix for a cheap,
-    boom-or-bust play reading as a safe one (user feedback, 2026-11-03)."""
+    boom-or-bust play reading as a safe one (user feedback, 2026-11-03).
+
+    v1 of this sentence judged risk PURELY relative to the position pool
+    (bust_z), which produced real nonsense: Elic Ayomanor's 2.0-pt floor got
+    called "low risk" because most of the pool's floors were even worse in
+    relative terms -- but a 2.0-pt floor is a lineup killer in absolute
+    terms no matter how it compares to other scrubs (user feedback,
+    2026-11-03: "2 points is high risk not low"). "Low risk" now also
+    requires the floor to clear an absolute cushion (ABS_FLOOR_LOW_RISK),
+    and a floor below ABS_FLOOR_HIGH_RISK is ALWAYS called real bust risk
+    regardless of how it compares to position peers."""
     p10, p90 = row["statline_p10"], row["statline_p90"]
     if row["position"] == "DST" and p10 == 0 and p90 == 0:
         # DST has no Monte Carlo floor/ceiling model upstream (statline_p10/
@@ -355,12 +456,12 @@ def bust_sentence(row: pd.Series) -> str:
                 "precision as offense -- a single pick-six or safety can still "
                 "swing the result well outside the base projection.")
     bust_z = row["_bust_z_full"]
-    if bust_z <= BUST_Z_LOW:
-        return (f"Bust risk is low for the position -- even a poor game should "
-                f"land near {p10:.1f} pts, with a ceiling near {p90:.1f}.")
-    if bust_z >= BUST_Z_HIGH:
+    if p10 < ABS_FLOOR_HIGH_RISK or bust_z >= BUST_Z_HIGH:
         return (f"Carries real bust risk -- a quiet game could be worth only "
                 f"{p10:.1f} pts against a spike as high as {p90:.1f}.")
+    if p10 >= ABS_FLOOR_LOW_RISK and bust_z <= BUST_Z_LOW:
+        return (f"Bust risk is low -- even a poor game should "
+                f"land near {p10:.1f} pts, with a ceiling near {p90:.1f}.")
     return (f"Normal week-to-week swing for the position -- a down game is "
             f"closer to {p10:.1f} pts, a good one near {p90:.1f}.")
 
@@ -412,7 +513,7 @@ def _build_row(pos: str, row: pd.Series, rank, is_bonus: bool, badge: str,
     }
 
 
-def build_cheat_sheet(site: str, slate_id: str) -> pd.DataFrame:
+def build_cheat_sheet(site: str, slate_id: str, season: int, week: int) -> pd.DataFrame:
     df = load_final_projections(site, slate_id)
     team_implied_total = df.drop_duplicates("team").set_index("team")["implied_total"].to_dict()
     avg_implied_total = float(np.mean(list(team_implied_total.values())))
@@ -425,6 +526,16 @@ def build_cheat_sheet(site: str, slate_id: str) -> pd.DataFrame:
     if not scored:
         return pd.DataFrame(columns=OUTPUT_COLUMNS)
     scored_df = pd.concat(scored, ignore_index=True)
+
+    # Display-only real DVP signal for the rationale text (see module
+    # docstring) -- DST keeps reading its own (already real) matchup_factor
+    # column since that file only covers QB/RB/WR/TE.
+    display_matchup = load_display_matchup_factors(site, season, week)
+    scored_df["_display_matchup"] = scored_df.apply(
+        lambda r: r["matchup_factor"] if r["position"] == "DST"
+        else display_matchup.get((r["opponent"], r["position"]), 1.0),
+        axis=1,
+    )
 
     rows = []
     for pos, top_n in TOP_N_BY_POSITION.items():
@@ -459,39 +570,41 @@ def build_cheat_sheet(site: str, slate_id: str) -> pd.DataFrame:
         # stud can win that ratio outright in a top-heavy week (confirmed
         # on real data: Amon-Ra St. Brown, $7800, had the single best WR
         # value ratio this slate), which isn't what anyone means by "value
-        # play." Restricted to the cheaper half of this position's own
-        # salary pool (median split, self-adjusting per slate/position --
-        # no hardcoded salary threshold) so this surfaces genuine punts.
+        # play."
         #
-        # Cheap alone isn't enough, though -- found via real-data
-        # validation: a min-salary QB pool is mostly third-string/emergency
-        # arms with a near-zero (but nonzero) garbage-time projection, and
-        # the "best value" among pure scrubs is still a scrub, not a real
-        # play (Carson Wentz, $4000, 1.1 projected points, projected for
-        # literally zero pass attempts, briefly "won" this slot). Also
-        # requires a real projected role (_usage_raw > 0) wherever usage
-        # applies (not DST, which has none -- see usage_value()). If NO
-        # cheap player at this position has a real role, there just isn't
-        # a legitimate value play here this week -- no bonus row is forced
+        # v1 restricted to the cheaper half of the position's salary pool
+        # with a nonzero projected role (_usage_raw > 0). That bar is too
+        # low -- real-data complaint (user, 2026-11-03): Corey Kiner
+        # ($4000 RB) cleared it most weeks purely because the model gave
+        # him SOME volume, even though he was clearly his own team's RB3
+        # (4.6 of the team's rush attempts vs. the actual lead back's 9.6)
+        # -- "nobody is playing him," not a real value play no matter how
+        # cheap. v1's bust-risk confidence penalty (compute_confidence())
+        # correctly flagged the RISK, but didn't fix WHO got picked.
+        #
+        # v2: Value Pick now requires being the single TOP usage-earner at
+        # this position on their OWN team (_team_pos_rank == 1, among
+        # teammates active this week) -- a real lead role, not merely some
+        # projected touches. Gunnar Helm ($2500 TE) still clears this: he's
+        # his team's clear TE1 by target share despite the min salary,
+        # exactly the "saves salary, realistic path to a decent score" case
+        # the user described. No explicit salary cap is applied on top of
+        # this -- in practice the best-$/$1K team-lead already skews cheap
+        # (checked on the Wk8 slate: $4.2-5.9K across QB/RB/WR/TE with no
+        # cap at all), so a hardcoded salary ceiling would just add a
+        # second, redundant way to accidentally exclude a real find. DST
+        # keeps the old cheap-half-of-the-position-pool rule (depth chart/
+        # usage-rank has no DST equivalent). If NO team-lead at this
+        # position is also cheap-and-efficient, there just isn't a
+        # legitimate value play here this week -- no bonus row is forced
         # (same "an empty result is real information" philosophy
         # pivot_finder.py already uses for thin pivot pools).
-        #
-        # Even with that filter, the single best cheap-and-real-role play
-        # left is still often a thin-margin, boom-or-bust punt (user
-        # feedback, 2026-11-03) -- that's real and shouldn't be hidden, but
-        # it shouldn't be graded like a safe play either. Rather than
-        # tightening this selection further (a hard floor filter zeroes out
-        # the QB Value Pick almost every week -- backup QBs' 10th-percentile
-        # outcome is below 0 nearly across the board, checked on the Wk8
-        # slate), the honesty fix is in compute_confidence()'s bust-risk
-        # penalty: a scrubby Value Pick now reads with a genuinely low
-        # confidence number instead of inheriting whatever the composite
-        # rank implies.
-        cheap_half = pool[pool["salary"] <= pool["salary"].median()]
-        if pos != "DST":
-            cheap_half = cheap_half[cheap_half["_usage_raw"] > 0]
+        if pos == "DST":
+            value_pool = pool[pool["salary"] <= pool["salary"].median()]
+        else:
+            value_pool = pool[(pool["_team_pos_rank"] == 1) & (pool["_usage_raw"] > 0)]
         best_value_row = (
-            cheap_half.loc[cheap_half["_z_value"].idxmax()] if not cheap_half.empty else None
+            value_pool.loc[value_pool["_z_value"].idxmax()] if not value_pool.empty else None
         )
         best_leverage_row = pool.loc[pool["_z_leverage"].idxmax()]
         badges_by_id = {}
@@ -535,10 +648,12 @@ def build_cheat_sheet(site: str, slate_id: str) -> pd.DataFrame:
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--site", choices=["dk", "fd"], required=True)
+    parser.add_argument("--season", type=int, required=True)
+    parser.add_argument("--week", type=int, required=True)
     parser.add_argument("--slate-id", type=str, required=True)
     args = parser.parse_args()
 
-    sheet = build_cheat_sheet(args.site, args.slate_id)
+    sheet = build_cheat_sheet(args.site, args.slate_id, args.season, args.week)
 
     OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
     out_path = OUTPUT_DIR / f"cheat_sheet_{args.site}_{args.slate_id}.csv"

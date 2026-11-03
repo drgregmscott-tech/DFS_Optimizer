@@ -663,7 +663,7 @@ jobs:
         id: cheat_sheet
         if: contains(matrix.slate_id, '_main_') && !contains(matrix.slate_id, 'showdown')
         continue-on-error: true
-        run: python3 scripts/cheat_sheet.py --site ${{ matrix.site }} --slate-id ${{ matrix.slate_id }}
+        run: python3 scripts/cheat_sheet.py --site ${{ matrix.site }} --season ${{ matrix.season }} --week ${{ matrix.week }} --slate-id ${{ matrix.slate_id }}
 
       # Session 15 decision #B1 (unchanged): checks lineups_multi first,
       # falls back to lineup_single. Missing lineup file is a normal
