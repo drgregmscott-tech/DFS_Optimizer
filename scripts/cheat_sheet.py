@@ -87,19 +87,28 @@ weights (validated against the Wk8 classic slate -- see commit history, not
 fitted to anything, same "reasonable starting split, easy to retune" spirit
 as FACTOR_WEIGHTS).
 
-Rationale text is built deterministically -- no model call -- but as of v2
-it is a fixed, longer, multi-sentence template rather than "top 2-3 factors
-by z-score," and it deliberately leaves value out of the prose (user
-feedback, 2026-11-03: the Value Pick badge already says "this is the cheap
-play," repeating per-dollar value in the sentence too was redundant and
-distracted from judging whether the player is actually good). Every row now
-gets: (1) a matchup + game-environment sentence, stated honestly whether
-favorable or tough rather than only when it's a top factor, (2) a real
-history sentence from dk_avg_ppg/games_played -- NOT season_avg/recent_form,
-which build_projections_statline.py documents as the projection with the
-market factor divided back out, i.e. circular with final_projection, not an
-honest history signal -- and (3) an explicit bust-potential sentence stating
-the real floor/ceiling spread in plain terms. See build_rationale() below.
+Rationale text is built deterministically -- no model call. v2 (2026-11-03)
+tried a fixed multi-sentence prose template; the user's reaction (2026-11-04)
+was that it still read as "robotic... only minor differences in numbers"
+even after a rewrite that varied sentence structure and wording per player
+(see commit history for that attempt). Rather than keep tuning prose, v3
+switched to the user's other offered option: plain bullet points of the raw
+data, newline-separated (the frontend's .cheat-rationale CSS uses
+white-space:pre-line so each bullet renders on its own line; the CSV field
+itself just contains literal \n characters inside a quoted field, which both
+pandas' writer and the frontend's parseCSV() handle correctly -- verified
+before shipping). Every row gets exactly 4 bullets, same honest signals as
+before: (1) matchup -- the real, un-neutralized defense-vs-position number
+(see below), (2) game environment -- the team's (or for DST, the opponent's)
+implied total, (3) history from dk_avg_ppg/games_played -- NOT season_avg/
+recent_form, which build_projections_statline.py documents as the
+projection with the market factor divided back out, i.e. circular with
+final_projection, not an honest history signal, and (4) range -- the real
+floor/ceiling spread, judged with an ABSOLUTE floor bar so a thin floor
+never reads as "low risk" just because peers are worse (see ABS_FLOOR_*).
+Value is still deliberately left out of the bullets (user feedback,
+2026-11-03: the Value Pick badge already says "this is the cheap play").
+See build_rationale() below.
 
 Matchup clause, display-only (user decision, 2026-11-03): matchup_factor is
 neutralized for QB/RB/WR/TE in the ranking composite (see above), but the
@@ -141,7 +150,6 @@ Output:
 """
 
 import argparse
-import hashlib
 import sys
 from pathlib import Path
 
@@ -355,199 +363,107 @@ ABS_FLOOR_HIGH_RISK = 3.0
 ABS_FLOOR_LOW_RISK = 10.0
 
 
-def _variant(player_id, salt: str, n: int) -> int:
-    """Stable (not run-to-run-random) 0..n-1 index per player+salt, so the
-    SAME player always reads the same way on a re-run (no model call, this
-    project's deterministic-output convention) but DIFFERENT players draw
-    different phrasings for the same signal -- the actual fix for "robotic,
-    only the numbers differ" (user feedback, 2026-11-04). A different salt
-    per sentence-slot means one player's phrasing choices are independent
-    across slots, so the combinations don't repeat in lockstep."""
-    h = hashlib.md5(f"{player_id}:{salt}".encode()).hexdigest()
-    return int(h, 16) % n
+def _matchup_tier(mf: float) -> str:
+    if mf >= MATCHUP_FAVORABLE:
+        return "favorable"
+    if mf <= MATCHUP_TOUGH:
+        return "tough"
+    return "average"
 
 
-def matchup_env_sentence(row: pd.Series, avg_implied_total: float) -> str:
-    """Matchup + game environment as ONE piece of natural prose, not two
-    fixed-order fixed-wording sentences. Two things vary per player: (1)
-    which of matchup/environment leads -- whichever deviates further from
-    neutral relative to its own threshold, i.e. the more notable fact leads,
-    content-driven rather than random -- and (2) the actual wording for each
-    clause and how they're joined, drawn from a small set of natural
-    phrasings via _variant() so two players with the same tier don't read
-    identically."""
-    pos = row["position"]
+def matchup_bullet(row: pd.Series) -> str:
     # _display_matchup is the REAL defense-vs-position signal (how many
     # fantasy points the opponent has actually allowed to this position this
     # season, vs. league average) -- NOT the same column the ranking
     # composite uses, which is neutralized to 1.0 for QB/RB/WR/TE. See
     # module docstring "Matchup clause, display-only."
     mf = row["_display_matchup"]
-    pid = row["player_id"]
+    tier = _matchup_tier(mf)
+    if row["position"] == "DST":
+        return f"Matchup: {mf:.2f}x matchup factor ({tier})"
+    return f"Matchup: {row['opponent']} allows {mf:.2f}x league-avg to {row['position']}s ({tier})"
 
-    if pos == "DST":
-        if mf >= MATCHUP_FAVORABLE:
-            matchup_clause = f"a favorable matchup ({mf:.2f}x matchup factor)"
-        elif mf <= MATCHUP_TOUGH:
-            matchup_clause = f"a tougher matchup on paper ({mf:.2f}x matchup factor)"
-        else:
-            matchup_clause = "a roughly average matchup on paper"
+
+def env_bullet(row: pd.Series, avg_implied_total: float) -> str:
+    if row["position"] == "DST":
         opp_total = -row["_game_env_raw"]  # negated back to a real implied total
         if opp_total <= avg_implied_total - GAME_ENV_MARGIN:
-            env_clause = f"a plus defensive environment (opponent implied for just {opp_total:.1f})"
+            tier = "plus"
         elif opp_total >= avg_implied_total + GAME_ENV_MARGIN:
-            env_clause = f"a tough defensive spot (opponent implied for {opp_total:.1f})"
+            tier = "tough"
         else:
-            env_clause = f"a middle-of-the-road defensive environment (opponent implied for {opp_total:.1f})"
-        if _variant(pid, "dst_join", 2) == 0:
-            return f"{matchup_clause[0].upper()}{matchup_clause[1:]}, and it's in {env_clause}."
-        return f"It's in {env_clause}, with {matchup_clause}."
-
-    opp = row["opponent"]
+            tier = "middling"
+        return f"Game environment: opponent implied {opp_total:.1f} ({tier})"
     team_total = row["implied_total"]
-    team = row["team"]
-
-    mf_variant = _variant(pid, "mf_phrase", 2)
-    if mf >= MATCHUP_FAVORABLE:
-        matchup_clause = (
-            f"{opp} has allowed {mf:.2f}x the league-average fantasy points to {pos}s this season"
-            if mf_variant == 0 else
-            f"{opp} has been generous to {pos}s this season, giving up {mf:.2f}x the league rate"
-        )
-    elif mf <= MATCHUP_TOUGH:
-        matchup_clause = (
-            f"{opp} has allowed only {mf:.2f}x the league-average fantasy points to {pos}s this season"
-            if mf_variant == 0 else
-            f"{opp} has been tough on {pos}s this season, giving up just {mf:.2f}x the league rate"
-        )
-    else:
-        matchup_clause = (
-            f"{opp} plays about average against {pos}s"
-            if mf_variant == 0 else
-            f"{opp} grades out as a fairly ordinary matchup for {pos}s this season"
-        )
-
-    env_variant = _variant(pid, "env_phrase", 2)
     if team_total >= avg_implied_total + GAME_ENV_MARGIN:
-        env_clause = (
-            f"{team} is implied for a plus total of {team_total:.1f}"
-            if env_variant == 0 else
-            f"{team}'s own total ({team_total:.1f}) is one of the better ones on the slate"
-        )
+        tier = "plus"
     elif team_total <= avg_implied_total - GAME_ENV_MARGIN:
-        env_clause = (
-            f"{team}'s own total is light at just {team_total:.1f}"
-            if env_variant == 0 else
-            f"the scoring environment is a concern, with {team} implied for only {team_total:.1f}"
-        )
+        tier = "low-scoring"
     else:
-        env_clause = (
-            f"{team}'s own total ({team_total:.1f}) is middle-of-the-pack"
-            if env_variant == 0 else
-            f"the game environment is unremarkable, with {team} implied for {team_total:.1f}"
-        )
-
-    # Lead with whichever fact is further from neutral relative to its own
-    # threshold, so the ordering reflects what's actually notable about this
-    # player rather than a fixed matchup-always-first structure.
-    mf_ratio = abs(mf - 1.0) / (MATCHUP_FAVORABLE - 1.0)
-    env_ratio = abs(team_total - avg_implied_total) / GAME_ENV_MARGIN
-    matchup_leads = mf_ratio >= env_ratio
-    lead, other = (matchup_clause, env_clause) if matchup_leads else (env_clause, matchup_clause)
-    lead_cap = lead[0].upper() + lead[1:]
-
-    join_variant = _variant(pid, "join_style", 3)
-    if join_variant == 0:
-        return f"{lead_cap}, and {other}."
-    if join_variant == 1:
-        return f"{lead_cap}. {other[0].upper()}{other[1:]}."
-    return f"{lead_cap} -- {other}."
+        tier = "middling"
+    return f"Game environment: {row['team']} implied {team_total:.1f} ({tier})"
 
 
-def _history_clause(row: pd.Series):
-    """A lowercase mid-sentence fragment like 'is running well above his
-    19.9-pt season average across 7 games' -- NOT season_avg/recent_form,
+def history_bullet(row: pd.Series):
+    """Returns (bullet_text, has_history). Real season-to-date history
+    (DK's/FD's own displayed avg pts/game) -- NOT season_avg/recent_form,
     which build_projections_statline.py documents as circular with
-    final_projection, see module docstring. Returns (clause, has_history);
-    has_history=False when there's nothing real to compare against
-    (games_played==0 for skill positions, or no dk_avg_ppg for DST, which
-    doesn't track games_played upstream at all)."""
+    final_projection, see module docstring. games_played isn't tracked for
+    DST (offense-only stat upstream), so a DST with a valid dk_avg_ppg still
+    gets a history bullet, just without a game count attached."""
     pos = row["position"]
     avg_ppg = row.get("dk_avg_ppg")
     games_played = row.get("games_played")
     games_played = 0 if pd.isna(games_played) else int(games_played)
     if pos != "DST" and games_played <= 0:
-        return None, False
+        return "History: no games logged yet this season", False
     if pos == "DST" and pd.isna(avg_ppg):
-        return None, False
+        return "History: no games logged yet this season", False
     diff = row["final_projection"] - avg_ppg
-    poss = "its" if pos == "DST" else "his"
-    if pos == "DST":
-        season_clause = f"{avg_ppg:.1f}-pt season average"
-    else:
-        game_word = "game" if games_played == 1 else "games"
-        season_clause = f"{avg_ppg:.1f}-pt season average across {games_played} {game_word}"
-    v = _variant(row["player_id"], "history_phrase", 2)
     if diff >= HISTORY_DIFF_MARGIN:
-        clause = (f"is running well above {poss} {season_clause}" if v == 0 else
-                  f"has outpaced {poss} own {season_clause} lately")
+        trend = "projection running above average"
     elif diff <= -HISTORY_DIFF_MARGIN:
-        clause = (f"is running below {poss} {season_clause}" if v == 0 else
-                  f"sits under {poss} own {season_clause}")
+        trend = "projection running below average"
     else:
-        clause = (f"sits right in line with {poss} {season_clause}" if v == 0 else
-                  f"matches {poss} own {season_clause} closely")
-    return clause, True
+        trend = "in line with average"
+    if pos == "DST":
+        return f"History: {avg_ppg:.1f} pts/game season avg ({trend})", True
+    game_word = "game" if games_played == 1 else "games"
+    return f"History: {avg_ppg:.1f} pts/game season avg, {games_played} {game_word} ({trend})", True
 
 
-def history_bust_sentence(row: pd.Series) -> str:
-    """History + bust-potential merged into one natural passage instead of
-    two mechanically separate sentences (user feedback, 2026-11-04 -- wanted
-    more human-sounding prose, not a fixed template with numbers swapped
-    in). Still built from the same honest signals as before: real
-    season-to-date history (dk_avg_ppg/games_played), and the floor/ceiling
-    spread judged with an ABSOLUTE floor bar, not just relative-to-pool (see
-    ABS_FLOOR_* above for why -- a 2.0-pt floor is real bust risk no matter
-    how it compares to other scrubs)."""
-    pos = row["position"]
-    pid = row["player_id"]
-    history_clause, has_history = _history_clause(row)
-    history_part = f"Tonight's projection {history_clause}" if has_history else "No DK scoring history yet this season"
-
+def range_bullet(row: pd.Series) -> str:
+    """Floor/ceiling spread, judged with an ABSOLUTE floor bar, not just
+    relative-to-pool -- the direct fix for a cheap, boom-or-bust play
+    reading as a safe one (user feedback, 2026-11-03: a 2.0-pt floor got
+    called "low risk" purely because other scrubs were even worse). See
+    ABS_FLOOR_* above."""
     p10, p90 = row["statline_p10"], row["statline_p90"]
-    if pos == "DST" and p10 == 0 and p90 == 0:
+    if row["position"] == "DST" and p10 == 0 and p90 == 0:
         # DST has no Monte Carlo floor/ceiling model upstream (statline_p10/
         # p90 are both a flat 0.0) -- printing "0.0 to 0.0 pts" would read as
         # "no variance," the opposite of the truth, so say so honestly
         # instead of a fabricated range.
-        return (f"{history_part}. Defensive scoring isn't modeled with the same "
-                f"floor/ceiling precision as offense -- a single pick-six or safety "
-                f"can still swing the result well outside the base projection.")
-
+        return "Range: not modeled for defense (a pick-six/safety can swing it well outside the base projection)"
     bust_z = row["_bust_z_full"]
-    v = _variant(pid, "bust_phrase", 2)
     if p10 < ABS_FLOOR_HIGH_RISK or bust_z >= BUST_Z_HIGH:
-        if v == 0:
-            return (f"{history_part}, but the range is wide -- a quiet night can be worth "
-                     f"barely {p10:.1f} pts, so this is eyes-open territory, not a safe floor play.")
-        return (f"{history_part}. Real bust risk here -- a poor game could be worth only "
-                 f"{p10:.1f} pts against a ceiling near {p90:.1f}.")
-    if p10 >= ABS_FLOOR_LOW_RISK and bust_z <= BUST_Z_LOW:
-        if v == 0:
-            return (f"{history_part}, with real cushion underneath -- worst case is still "
-                     f"around {p10:.1f} pts, and the ceiling runs past {p90:.0f}.")
-        return (f"{history_part}, and the range backs it up: even a poor game lands near "
-                 f"{p10:.1f} pts, with {p90:.1f} up top.")
-    if v == 0:
-        return (f"{history_part}. Normal week-to-week range for the position -- "
-                 f"{p10:.1f} pts on a down night, {p90:.1f} on a good one.")
-    return (f"{p10:.1f} pts on a quiet night, {p90:.1f} on a good one -- normal swing for "
-             f"the position, and {history_part[0].lower()}{history_part[1:]}.")
+        tier = "high bust risk"
+    elif p10 >= ABS_FLOOR_LOW_RISK and bust_z <= BUST_Z_LOW:
+        tier = "low bust risk"
+    else:
+        tier = "normal swing"
+    return f"Range: {p10:.1f}–{p90:.1f} pts ({tier})"
 
 
 def build_rationale(row: pd.Series, avg_implied_total: float) -> tuple:
-    _, has_history = _history_clause(row)
-    rationale = matchup_env_sentence(row, avg_implied_total) + " " + history_bust_sentence(row)
+    history_line, has_history = history_bullet(row)
+    bullets = [
+        matchup_bullet(row),
+        env_bullet(row, avg_implied_total),
+        history_line,
+        range_bullet(row),
+    ]
+    rationale = "\n".join(f"• {b}" for b in bullets)
     top_factors = "matchup, game environment"
     if has_history:
         top_factors += ", history"
