@@ -1,0 +1,109 @@
+Position,Name + ID,Name,ID,Roster Position,Salary,Game Info,TeamAbbrev,AvgPointsPerGame,Status,roster_role,name,site,salary,normalized_name,normalized_team,position_upper,slate_format,player_id,match_method,match_confidence
+QB,Trevor Lawrence (44763320),Trevor Lawrence,44763320,CPT,15900,JAX@BAL 11/05/2026 08:15PM ET,JAX,20.7,,CPT,Trevor Lawrence,dk,15900,trevor lawrence,JAX,QB,showdown,00-0036971,auto_exact,high
+WR,Zay Flowers (44763321),Zay Flowers,44763321,CPT,15600,JAX@BAL 11/05/2026 08:15PM ET,BAL,18.7,,CPT,Zay Flowers,dk,15600,zay flowers,BAL,WR,showdown,00-0039064,auto_exact,high
+RB,Derrick Henry (44763322),Derrick Henry,44763322,CPT,15300,JAX@BAL 11/05/2026 08:15PM ET,BAL,18.0,,CPT,Derrick Henry,dk,15300,derrick henry,BAL,RB,showdown,00-0032764,auto_exact,high
+RB,Bhayshul Tuten (44763323),Bhayshul Tuten,44763323,CPT,14700,JAX@BAL 11/05/2026 08:15PM ET,JAX,17.3,Q,CPT,Bhayshul Tuten,dk,14700,bhayshul tuten,JAX,RB,showdown,00-0040719,auto_exact,high
+WR,Parker Washington (44763324),Parker Washington,44763324,CPT,14100,JAX@BAL 11/05/2026 08:15PM ET,JAX,14.1,,CPT,Parker Washington,dk,14100,parker washington,JAX,WR,showdown,00-0038606,auto_exact,high
+QB,Tyler Huntley (44763325),Tyler Huntley,44763325,CPT,13200,JAX@BAL 11/05/2026 08:15PM ET,BAL,11.3,D,CPT,Tyler Huntley,dk,13200,tyler huntley,BAL,QB,showdown,00-0035993,auto_exact,high
+QB,Joe Fagnano (44763326),Joe Fagnano,44763326,CPT,12600,JAX@BAL 11/05/2026 08:15PM ET,BAL,1.9,,CPT,Joe Fagnano,dk,12600,joe fagnano,BAL,QB,showdown,00-0040981,auto_exact,high
+QB,Austin Reed (44788287),Austin Reed,44788287,CPT,12000,JAX@BAL 11/05/2026 08:15PM ET,BAL,0.0,,CPT,Austin Reed,dk,12000,austin reed,BAL,QB,showdown,00-0039464,auto_exact,high
+QB,Kedon Slovis (44788288),Kedon Slovis,44788288,CPT,12000,JAX@BAL 11/05/2026 08:15PM ET,BAL,0.0,,CPT,Kedon Slovis,dk,12000,kedon slovis,BAL,QB,showdown,00-0039577,auto_fallback_team_mismatch,medium
+TE,Brenton Strange (44763327),Brenton Strange,44763327,CPT,11100,JAX@BAL 11/05/2026 08:15PM ET,JAX,9.6,,CPT,Brenton Strange,dk,11100,brenton strange,JAX,TE,showdown,00-0038935,auto_exact,high
+QB,Trevor Lawrence (44763268),Trevor Lawrence,44763268,FLEX,10600,JAX@BAL 11/05/2026 08:15PM ET,JAX,20.7,,FLEX,Trevor Lawrence,dk,10600,trevor lawrence,JAX,QB,showdown,00-0036971,auto_exact,high
+WR,Jakobi Meyers (44763328),Jakobi Meyers,44763328,CPT,10500,JAX@BAL 11/05/2026 08:15PM ET,JAX,9.3,Q,CPT,Jakobi Meyers,dk,10500,jakobi meyers,JAX,WR,showdown,00-0034960,auto_exact,high
+WR,Zay Flowers (44763269),Zay Flowers,44763269,FLEX,10400,JAX@BAL 11/05/2026 08:15PM ET,BAL,18.7,,FLEX,Zay Flowers,dk,10400,zay flowers,BAL,WR,showdown,00-0039064,auto_exact,high
+RB,Derrick Henry (44763270),Derrick Henry,44763270,FLEX,10200,JAX@BAL 11/05/2026 08:15PM ET,BAL,18.0,,FLEX,Derrick Henry,dk,10200,derrick henry,BAL,RB,showdown,00-0032764,auto_exact,high
+RB,Bhayshul Tuten (44763271),Bhayshul Tuten,44763271,FLEX,9800,JAX@BAL 11/05/2026 08:15PM ET,JAX,17.3,Q,FLEX,Bhayshul Tuten,dk,9800,bhayshul tuten,JAX,RB,showdown,00-0040719,auto_exact,high
+WR,Brian Thomas Jr. (44763329),Brian Thomas Jr.,44763329,CPT,9600,JAX@BAL 11/05/2026 08:15PM ET,JAX,4.8,,CPT,Brian Thomas Jr.,dk,9600,brian thomas,JAX,WR,showdown,00-0039893,auto_exact,high
+WR,Parker Washington (44763272),Parker Washington,44763272,FLEX,9400,JAX@BAL 11/05/2026 08:15PM ET,JAX,14.1,,FLEX,Parker Washington,dk,9400,parker washington,JAX,WR,showdown,00-0038606,auto_exact,high
+QB,Skylar Thompson (44763330),Skylar Thompson,44763330,CPT,9000,JAX@BAL 11/05/2026 08:15PM ET,BAL,0.0,IR,CPT,Skylar Thompson,dk,9000,skylar thompson,BAL,QB,showdown,00-0037327,auto_exact,high
+QB,Quinn Ewers (44763331),Quinn Ewers,44763331,CPT,9000,JAX@BAL 11/05/2026 08:15PM ET,JAX,0.2,,CPT,Quinn Ewers,dk,9000,quinn ewers,JAX,QB,showdown,00-0040234,auto_exact,high
+QB,Lamar Jackson (44763332),Lamar Jackson,44763332,CPT,9000,JAX@BAL 11/05/2026 08:15PM ET,BAL,16.8,OUT,CPT,Lamar Jackson,dk,9000,lamar jackson,BAL,QB,showdown,00-0034796,auto_exact,high
+QB,Nick Mullens (44763333),Nick Mullens,44763333,CPT,9000,JAX@BAL 11/05/2026 08:15PM ET,JAX,-0.3,,CPT,Nick Mullens,dk,9000,nick mullens,JAX,QB,showdown,00-0033319,auto_exact,high
+QB,Joey Aguilar (44763334),Joey Aguilar,44763334,CPT,9000,JAX@BAL 11/05/2026 08:15PM ET,JAX,0.0,,CPT,Joey Aguilar,dk,9000,joey aguilar,JAX,QB,showdown,00-0041203,auto_exact,high
+QB,Tyler Huntley (44763273),Tyler Huntley,44763273,FLEX,8800,JAX@BAL 11/05/2026 08:15PM ET,BAL,11.3,D,FLEX,Tyler Huntley,dk,8800,tyler huntley,BAL,QB,showdown,00-0035993,auto_exact,high
+DST,Jaguars (44763335),Jaguars,44763335,CPT,8700,JAX@BAL 11/05/2026 08:15PM ET,JAX,8.9,,CPT,Jaguars,dk,8700,jaguars,JAX,DST,showdown,DST_JAX,team_defense,high
+QB,Joe Fagnano (44763274),Joe Fagnano,44763274,FLEX,8400,JAX@BAL 11/05/2026 08:15PM ET,BAL,1.9,,FLEX,Joe Fagnano,dk,8400,joe fagnano,BAL,QB,showdown,00-0040981,auto_exact,high
+K,Cam Little (44763336),Cam Little,44763336,CPT,8100,JAX@BAL 11/05/2026 08:15PM ET,JAX,9.0,,CPT,Cam Little,dk,8100,cam little,JAX,K,showdown,00-0039409,auto_exact,high
+QB,Austin Reed (44788285),Austin Reed,44788285,FLEX,8000,JAX@BAL 11/05/2026 08:15PM ET,BAL,0.0,,FLEX,Austin Reed,dk,8000,austin reed,BAL,QB,showdown,00-0039464,auto_exact,high
+QB,Kedon Slovis (44788286),Kedon Slovis,44788286,FLEX,8000,JAX@BAL 11/05/2026 08:15PM ET,BAL,0.0,,FLEX,Kedon Slovis,dk,8000,kedon slovis,BAL,QB,showdown,00-0039577,auto_fallback_team_mismatch,medium
+TE,Brenton Strange (44763275),Brenton Strange,44763275,FLEX,7400,JAX@BAL 11/05/2026 08:15PM ET,JAX,9.6,,FLEX,Brenton Strange,dk,7400,brenton strange,JAX,TE,showdown,00-0038935,auto_exact,high
+K,Tyler Loop (44763337),Tyler Loop,44763337,CPT,7200,JAX@BAL 11/05/2026 08:15PM ET,BAL,8.6,IR,CPT,Tyler Loop,dk,7200,tyler loop,BAL,K,showdown,00-0040074,auto_exact,high
+K,Jake Moody (44763338),Jake Moody,44763338,CPT,7200,JAX@BAL 11/05/2026 08:15PM ET,BAL,0.0,,CPT,Jake Moody,dk,7200,jake moody,BAL,K,showdown,00-0038562,auto_exact,high
+WR,Jakobi Meyers (44763276),Jakobi Meyers,44763276,FLEX,7000,JAX@BAL 11/05/2026 08:15PM ET,JAX,9.3,Q,FLEX,Jakobi Meyers,dk,7000,jakobi meyers,JAX,WR,showdown,00-0034960,auto_exact,high
+TE,Mark Andrews (44763339),Mark Andrews,44763339,CPT,6600,JAX@BAL 11/05/2026 08:15PM ET,BAL,7.0,,CPT,Mark Andrews,dk,6600,mark andrews,BAL,TE,showdown,00-0034753,auto_exact,high
+WR,Brian Thomas Jr. (44763277),Brian Thomas Jr.,44763277,FLEX,6400,JAX@BAL 11/05/2026 08:15PM ET,JAX,4.8,,FLEX,Brian Thomas Jr.,dk,6400,brian thomas,JAX,WR,showdown,00-0039893,auto_exact,high
+QB,Skylar Thompson (44763278),Skylar Thompson,44763278,FLEX,6000,JAX@BAL 11/05/2026 08:15PM ET,BAL,0.0,IR,FLEX,Skylar Thompson,dk,6000,skylar thompson,BAL,QB,showdown,00-0037327,auto_exact,high
+QB,Quinn Ewers (44763279),Quinn Ewers,44763279,FLEX,6000,JAX@BAL 11/05/2026 08:15PM ET,JAX,0.2,,FLEX,Quinn Ewers,dk,6000,quinn ewers,JAX,QB,showdown,00-0040234,auto_exact,high
+QB,Lamar Jackson (44763280),Lamar Jackson,44763280,FLEX,6000,JAX@BAL 11/05/2026 08:15PM ET,BAL,16.8,OUT,FLEX,Lamar Jackson,dk,6000,lamar jackson,BAL,QB,showdown,00-0034796,auto_exact,high
+QB,Nick Mullens (44763281),Nick Mullens,44763281,FLEX,6000,JAX@BAL 11/05/2026 08:15PM ET,JAX,-0.3,,FLEX,Nick Mullens,dk,6000,nick mullens,JAX,QB,showdown,00-0033319,auto_exact,high
+QB,Joey Aguilar (44763282),Joey Aguilar,44763282,FLEX,6000,JAX@BAL 11/05/2026 08:15PM ET,JAX,0.0,,FLEX,Joey Aguilar,dk,6000,joey aguilar,JAX,QB,showdown,00-0041203,auto_exact,high
+WR,Ja'Kobi Lane (44763340),Ja'Kobi Lane,44763340,CPT,6000,JAX@BAL 11/05/2026 08:15PM ET,BAL,4.5,,CPT,Ja'Kobi Lane,dk,6000,jakobi lane,BAL,WR,showdown,00-0040870,auto_exact,high
+DST,Jaguars (44763283),Jaguars,44763283,FLEX,5800,JAX@BAL 11/05/2026 08:15PM ET,JAX,8.9,,FLEX,Jaguars,dk,5800,jaguars,JAX,DST,showdown,DST_JAX,team_defense,high
+WR,Rashod Bateman (44763341),Rashod Bateman,44763341,CPT,5700,JAX@BAL 11/05/2026 08:15PM ET,BAL,6.7,,CPT,Rashod Bateman,dk,5700,rashod bateman,BAL,WR,showdown,00-0036550,auto_exact,high
+K,Cam Little (44763284),Cam Little,44763284,FLEX,5400,JAX@BAL 11/05/2026 08:15PM ET,JAX,9.0,,FLEX,Cam Little,dk,5400,cam little,JAX,K,showdown,00-0039409,auto_exact,high
+RB,Chris Rodriguez Jr. (44763342),Chris Rodriguez Jr.,44763342,CPT,5100,JAX@BAL 11/05/2026 08:15PM ET,JAX,6.2,Q,CPT,Chris Rodriguez Jr.,dk,5100,chris rodriguez,JAX,RB,showdown,00-0038611,auto_exact,high
+K,Tyler Loop (44763285),Tyler Loop,44763285,FLEX,4800,JAX@BAL 11/05/2026 08:15PM ET,BAL,8.6,IR,FLEX,Tyler Loop,dk,4800,tyler loop,BAL,K,showdown,00-0040074,auto_exact,high
+K,Jake Moody (44763286),Jake Moody,44763286,FLEX,4800,JAX@BAL 11/05/2026 08:15PM ET,BAL,0.0,,FLEX,Jake Moody,dk,4800,jake moody,BAL,K,showdown,00-0038562,auto_exact,high
+RB,Justice Hill (44763343),Justice Hill,44763343,CPT,4800,JAX@BAL 11/05/2026 08:15PM ET,BAL,5.4,,CPT,Justice Hill,dk,4800,justice hill,BAL,RB,showdown,00-0034975,auto_exact,high
+DST,Ravens (44763344),Ravens,44763344,CPT,4500,JAX@BAL 11/05/2026 08:15PM ET,BAL,4.0,,CPT,Ravens,dk,4500,ravens,BAL,DST,showdown,DST_BAL,team_defense,high
+TE,Mark Andrews (44763287),Mark Andrews,44763287,FLEX,4400,JAX@BAL 11/05/2026 08:15PM ET,BAL,7.0,,FLEX,Mark Andrews,dk,4400,mark andrews,BAL,TE,showdown,00-0034753,auto_exact,high
+WR,Josh Cameron (44763345),Josh Cameron,44763345,CPT,4200,JAX@BAL 11/05/2026 08:15PM ET,JAX,4.5,,CPT,Josh Cameron,dk,4200,josh cameron,JAX,WR,showdown,00-0041100,auto_exact,high
+WR,Ja'Kobi Lane (44763288),Ja'Kobi Lane,44763288,FLEX,4000,JAX@BAL 11/05/2026 08:15PM ET,BAL,4.5,,FLEX,Ja'Kobi Lane,dk,4000,jakobi lane,BAL,WR,showdown,00-0040870,auto_exact,high
+WR,Rashod Bateman (44763289),Rashod Bateman,44763289,FLEX,3800,JAX@BAL 11/05/2026 08:15PM ET,BAL,6.7,,FLEX,Rashod Bateman,dk,3800,rashod bateman,BAL,WR,showdown,00-0036550,auto_exact,high
+WR,Travis Hunter (44763346),Travis Hunter,44763346,CPT,3600,JAX@BAL 11/05/2026 08:15PM ET,JAX,2.9,,CPT,Travis Hunter,dk,3600,travis hunter,JAX,WR,showdown,00-0040718,auto_fallback_name_only_position_mismatch,low
+RB,Chris Rodriguez Jr. (44763290),Chris Rodriguez Jr.,44763290,FLEX,3400,JAX@BAL 11/05/2026 08:15PM ET,JAX,6.2,Q,FLEX,Chris Rodriguez Jr.,dk,3400,chris rodriguez,JAX,RB,showdown,00-0038611,auto_exact,high
+RB,Justice Hill (44763291),Justice Hill,44763291,FLEX,3200,JAX@BAL 11/05/2026 08:15PM ET,BAL,5.4,,FLEX,Justice Hill,dk,3200,justice hill,BAL,RB,showdown,00-0034975,auto_exact,high
+DST,Ravens (44763292),Ravens,44763292,FLEX,3000,JAX@BAL 11/05/2026 08:15PM ET,BAL,4.0,,FLEX,Ravens,dk,3000,ravens,BAL,DST,showdown,DST_BAL,team_defense,high
+WR,Devontez Walker (44763347),Devontez Walker,44763347,CPT,3000,JAX@BAL 11/05/2026 08:15PM ET,BAL,2.5,,CPT,Devontez Walker,dk,3000,devontez walker,BAL,WR,showdown,00-0039792,auto_exact,high
+WR,Josh Cameron (44763293),Josh Cameron,44763293,FLEX,2800,JAX@BAL 11/05/2026 08:15PM ET,JAX,4.5,,FLEX,Josh Cameron,dk,2800,josh cameron,JAX,WR,showdown,00-0041100,auto_exact,high
+WR,Travis Hunter (44763294),Travis Hunter,44763294,FLEX,2400,JAX@BAL 11/05/2026 08:15PM ET,JAX,2.9,,FLEX,Travis Hunter,dk,2400,travis hunter,JAX,WR,showdown,00-0040718,auto_fallback_name_only_position_mismatch,low
+TE,Nate Boerkircher (44763348),Nate Boerkircher,44763348,CPT,2400,JAX@BAL 11/05/2026 08:15PM ET,JAX,3.9,,CPT,Nate Boerkircher,dk,2400,nate boerkircher,JAX,TE,showdown,00-0041503,auto_exact,high
+RB,LeQuint Allen Jr. (44763349),LeQuint Allen Jr.,44763349,CPT,2100,JAX@BAL 11/05/2026 08:15PM ET,JAX,0.4,,CPT,LeQuint Allen Jr.,dk,2100,lequint allen,JAX,RB,showdown,00-0040238,auto_exact,high
+WR,Devontez Walker (44763295),Devontez Walker,44763295,FLEX,2000,JAX@BAL 11/05/2026 08:15PM ET,BAL,2.5,,FLEX,Devontez Walker,dk,2000,devontez walker,BAL,WR,showdown,00-0039792,auto_exact,high
+TE,Josh Cuevas (44763350),Josh Cuevas,44763350,CPT,1800,JAX@BAL 11/05/2026 08:15PM ET,BAL,3.7,,CPT,Josh Cuevas,dk,1800,josh cuevas,BAL,TE,showdown,00-0040887,auto_exact,high
+TE,Nate Boerkircher (44763296),Nate Boerkircher,44763296,FLEX,1600,JAX@BAL 11/05/2026 08:15PM ET,JAX,3.9,,FLEX,Nate Boerkircher,dk,1600,nate boerkircher,JAX,TE,showdown,00-0041503,auto_exact,high
+RB,Ameer Abdullah (44763351),Ameer Abdullah,44763351,CPT,1500,JAX@BAL 11/05/2026 08:15PM ET,JAX,1.1,,CPT,Ameer Abdullah,dk,1500,ameer abdullah,JAX,RB,showdown,00-0032104,auto_exact,high
+RB,LeQuint Allen Jr. (44763297),LeQuint Allen Jr.,44763297,FLEX,1400,JAX@BAL 11/05/2026 08:15PM ET,JAX,0.4,,FLEX,LeQuint Allen Jr.,dk,1400,lequint allen,JAX,RB,showdown,00-0040238,auto_exact,high
+TE,Josh Cuevas (44763298),Josh Cuevas,44763298,FLEX,1200,JAX@BAL 11/05/2026 08:15PM ET,BAL,3.7,,FLEX,Josh Cuevas,dk,1200,josh cuevas,BAL,TE,showdown,00-0040887,auto_exact,high
+WR,LaJohntay Wester (44763352),LaJohntay Wester,44763352,CPT,1200,JAX@BAL 11/05/2026 08:15PM ET,BAL,1.1,,CPT,LaJohntay Wester,dk,1200,lajohntay wester,BAL,WR,showdown,00-0040075,auto_exact,high
+RB,Ameer Abdullah (44763299),Ameer Abdullah,44763299,FLEX,1000,JAX@BAL 11/05/2026 08:15PM ET,JAX,1.1,,FLEX,Ameer Abdullah,dk,1000,ameer abdullah,JAX,RB,showdown,00-0032104,auto_exact,high
+TE,Matt Hibner (44763353),Matt Hibner,44763353,CPT,900,JAX@BAL 11/05/2026 08:15PM ET,BAL,2.6,,CPT,Matt Hibner,dk,900,matt hibner,BAL,TE,showdown,00-0040879,manual_override,high
+WR,LaJohntay Wester (44763300),LaJohntay Wester,44763300,FLEX,800,JAX@BAL 11/05/2026 08:15PM ET,BAL,1.1,,FLEX,LaJohntay Wester,dk,800,lajohntay wester,BAL,WR,showdown,00-0040075,auto_exact,high
+TE,Matt Hibner (44763301),Matt Hibner,44763301,FLEX,600,JAX@BAL 11/05/2026 08:15PM ET,BAL,2.6,,FLEX,Matt Hibner,dk,600,matt hibner,BAL,TE,showdown,00-0040879,manual_override,high
+RB,Rasheen Ali (44763354),Rasheen Ali,44763354,CPT,600,JAX@BAL 11/05/2026 08:15PM ET,BAL,0.3,,CPT,Rasheen Ali,dk,600,rasheen ali,BAL,RB,showdown,00-0039796,auto_exact,high
+RB,Rasheen Ali (44763302),Rasheen Ali,44763302,FLEX,400,JAX@BAL 11/05/2026 08:15PM ET,BAL,0.3,,FLEX,Rasheen Ali,dk,400,rasheen ali,BAL,RB,showdown,00-0039796,auto_exact,high
+RB,Lucas Scott (44763355),Lucas Scott,44763355,CPT,300,JAX@BAL 11/05/2026 08:15PM ET,BAL,0.0,,CPT,Lucas Scott,dk,300,lucas scott,BAL,RB,showdown,00-0040637,auto_exact,high
+RB,Adam Randall (44763356),Adam Randall,44763356,CPT,300,JAX@BAL 11/05/2026 08:15PM ET,BAL,0.0,IR,CPT,Adam Randall,dk,300,adam randall,BAL,RB,showdown,00-0040888,auto_exact,high
+RB,J'Mari Taylor (44763357),J'Mari Taylor,44763357,CPT,300,JAX@BAL 11/05/2026 08:15PM ET,JAX,0.0,,CPT,J'Mari Taylor,dk,300,jmari taylor,JAX,RB,showdown,00-0041217,auto_exact,high
+WR,CJ Williams (44763358),CJ Williams,44763358,CPT,300,JAX@BAL 11/05/2026 08:15PM ET,JAX,0.0,,CPT,CJ Williams,dk,300,cj williams,JAX,WR,showdown,00-0041106,auto_exact,high
+WR,Elijah Sarratt (44763359),Elijah Sarratt,44763359,CPT,300,JAX@BAL 11/05/2026 08:15PM ET,BAL,2.3,,CPT,Elijah Sarratt,dk,300,elijah sarratt,BAL,WR,showdown,00-0040876,auto_exact,high
+WR,Austin Trammell (44763360),Austin Trammell,44763360,CPT,300,JAX@BAL 11/05/2026 08:15PM ET,JAX,0.0,,CPT,Austin Trammell,dk,300,austin trammell,JAX,WR,showdown,00-0036841,auto_exact,high
+WR,Chris Moore (44763361),Chris Moore,44763361,CPT,300,JAX@BAL 11/05/2026 08:15PM ET,BAL,3.8,,CPT,Chris Moore,dk,300,chris moore,BAL,WR,showdown,00-0032398,auto_exact,high
+WR,Gage Larvadain (44763362),Gage Larvadain,44763362,CPT,300,JAX@BAL 11/05/2026 08:15PM ET,BAL,0.0,,CPT,Gage Larvadain,dk,300,gage larvadain,BAL,WR,showdown,00-0040259,auto_exact,high
+WR,Trebor Pena (44763363),Trebor Pena,44763363,CPT,300,JAX@BAL 11/05/2026 08:15PM ET,JAX,0.0,,CPT,Trebor Pena,dk,300,trebor pena,JAX,WR,showdown,00-0041216,auto_exact,high
+WR,Tim Jones (44763364),Tim Jones,44763364,CPT,300,JAX@BAL 11/05/2026 08:15PM ET,JAX,0.0,,CPT,Tim Jones,dk,300,tim jones,JAX,WR,showdown,00-0036497,auto_exact,high
+WR,Michael Wortham (44763365),Michael Wortham,44763365,CPT,300,JAX@BAL 11/05/2026 08:15PM ET,JAX,0.0,,CPT,Michael Wortham,dk,300,michael wortham,JAX,WR,showdown,00-0041220,auto_exact,high
+TE,Durham Smythe (44763366),Durham Smythe,44763366,CPT,300,JAX@BAL 11/05/2026 08:15PM ET,BAL,0.4,IR,CPT,Durham Smythe,dk,300,durham smythe,BAL,TE,showdown,00-0034798,auto_exact,high
+TE,Ty Pezza (44763367),Ty Pezza,44763367,CPT,300,JAX@BAL 11/05/2026 08:15PM ET,BAL,0.0,,CPT,Ty Pezza,dk,300,ty pezza,BAL,TE,showdown,00-0040986,auto_fallback_name_only_position_mismatch,low
+TE,Nick Vannett (44763368),Nick Vannett,44763368,CPT,300,JAX@BAL 11/05/2026 08:15PM ET,BAL,0.0,,CPT,Nick Vannett,dk,300,nick vannett,BAL,TE,showdown,00-0032394,auto_exact,high
+TE,Tanner Koziol (44763369),Tanner Koziol,44763369,CPT,300,JAX@BAL 11/05/2026 08:15PM ET,JAX,0.4,,CPT,Tanner Koziol,dk,300,tanner koziol,JAX,TE,showdown,00-0041084,auto_exact,high
+TE,Quintin Morris (44763370),Quintin Morris,44763370,CPT,300,JAX@BAL 11/05/2026 08:15PM ET,JAX,0.2,,CPT,Quintin Morris,dk,300,quintin morris,JAX,TE,showdown,00-0036590,auto_exact,high
+TE,Brenden Bates (44763371),Brenden Bates,44763371,CPT,300,JAX@BAL 11/05/2026 08:15PM ET,JAX,0.0,,CPT,Brenden Bates,dk,300,brenden bates,JAX,TE,showdown,00-0039458,auto_exact,high
+RB,Lucas Scott (44763303),Lucas Scott,44763303,FLEX,200,JAX@BAL 11/05/2026 08:15PM ET,BAL,0.0,,FLEX,Lucas Scott,dk,200,lucas scott,BAL,RB,showdown,00-0040637,auto_exact,high
+RB,Adam Randall (44763304),Adam Randall,44763304,FLEX,200,JAX@BAL 11/05/2026 08:15PM ET,BAL,0.0,IR,FLEX,Adam Randall,dk,200,adam randall,BAL,RB,showdown,00-0040888,auto_exact,high
+RB,J'Mari Taylor (44763305),J'Mari Taylor,44763305,FLEX,200,JAX@BAL 11/05/2026 08:15PM ET,JAX,0.0,,FLEX,J'Mari Taylor,dk,200,jmari taylor,JAX,RB,showdown,00-0041217,auto_exact,high
+WR,CJ Williams (44763306),CJ Williams,44763306,FLEX,200,JAX@BAL 11/05/2026 08:15PM ET,JAX,0.0,,FLEX,CJ Williams,dk,200,cj williams,JAX,WR,showdown,00-0041106,auto_exact,high
+WR,Elijah Sarratt (44763307),Elijah Sarratt,44763307,FLEX,200,JAX@BAL 11/05/2026 08:15PM ET,BAL,2.3,,FLEX,Elijah Sarratt,dk,200,elijah sarratt,BAL,WR,showdown,00-0040876,auto_exact,high
+WR,Austin Trammell (44763308),Austin Trammell,44763308,FLEX,200,JAX@BAL 11/05/2026 08:15PM ET,JAX,0.0,,FLEX,Austin Trammell,dk,200,austin trammell,JAX,WR,showdown,00-0036841,auto_exact,high
+WR,Chris Moore (44763309),Chris Moore,44763309,FLEX,200,JAX@BAL 11/05/2026 08:15PM ET,BAL,3.8,,FLEX,Chris Moore,dk,200,chris moore,BAL,WR,showdown,00-0032398,auto_exact,high
+WR,Gage Larvadain (44763310),Gage Larvadain,44763310,FLEX,200,JAX@BAL 11/05/2026 08:15PM ET,BAL,0.0,,FLEX,Gage Larvadain,dk,200,gage larvadain,BAL,WR,showdown,00-0040259,auto_exact,high
+WR,Trebor Pena (44763311),Trebor Pena,44763311,FLEX,200,JAX@BAL 11/05/2026 08:15PM ET,JAX,0.0,,FLEX,Trebor Pena,dk,200,trebor pena,JAX,WR,showdown,00-0041216,auto_exact,high
+WR,Tim Jones (44763312),Tim Jones,44763312,FLEX,200,JAX@BAL 11/05/2026 08:15PM ET,JAX,0.0,,FLEX,Tim Jones,dk,200,tim jones,JAX,WR,showdown,00-0036497,auto_exact,high
+WR,Michael Wortham (44763313),Michael Wortham,44763313,FLEX,200,JAX@BAL 11/05/2026 08:15PM ET,JAX,0.0,,FLEX,Michael Wortham,dk,200,michael wortham,JAX,WR,showdown,00-0041220,auto_exact,high
+TE,Durham Smythe (44763314),Durham Smythe,44763314,FLEX,200,JAX@BAL 11/05/2026 08:15PM ET,BAL,0.4,IR,FLEX,Durham Smythe,dk,200,durham smythe,BAL,TE,showdown,00-0034798,auto_exact,high
+TE,Ty Pezza (44763315),Ty Pezza,44763315,FLEX,200,JAX@BAL 11/05/2026 08:15PM ET,BAL,0.0,,FLEX,Ty Pezza,dk,200,ty pezza,BAL,TE,showdown,00-0040986,auto_fallback_name_only_position_mismatch,low
+TE,Nick Vannett (44763316),Nick Vannett,44763316,FLEX,200,JAX@BAL 11/05/2026 08:15PM ET,BAL,0.0,,FLEX,Nick Vannett,dk,200,nick vannett,BAL,TE,showdown,00-0032394,auto_exact,high
+TE,Tanner Koziol (44763317),Tanner Koziol,44763317,FLEX,200,JAX@BAL 11/05/2026 08:15PM ET,JAX,0.4,,FLEX,Tanner Koziol,dk,200,tanner koziol,JAX,TE,showdown,00-0041084,auto_exact,high
+TE,Quintin Morris (44763318),Quintin Morris,44763318,FLEX,200,JAX@BAL 11/05/2026 08:15PM ET,JAX,0.2,,FLEX,Quintin Morris,dk,200,quintin morris,JAX,TE,showdown,00-0036590,auto_exact,high
+TE,Brenden Bates (44763319),Brenden Bates,44763319,FLEX,200,JAX@BAL 11/05/2026 08:15PM ET,JAX,0.0,,FLEX,Brenden Bates,dk,200,brenden bates,JAX,TE,showdown,00-0039458,auto_exact,high

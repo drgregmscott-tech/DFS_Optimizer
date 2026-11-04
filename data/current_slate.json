@@ -256,6 +256,38 @@
       "season": 2026,
       "week": 8,
       "lock_time_utc": "2026-11-03T01:15:00Z"
+    },
+    {
+      "slate_id": "dk_showdown_wk9_JAX_BAL_05Nov2026",
+      "site": "dk",
+      "format": "showdown",
+      "season": 2026,
+      "week": 9,
+      "lock_time_utc": "2026-11-06T01:15:00Z"
+    },
+    {
+      "slate_id": "dk_classic_wk9_main_08Nov2026",
+      "site": "dk",
+      "format": "classic",
+      "season": 2026,
+      "week": 9,
+      "lock_time_utc": "2026-11-08T18:00:00Z"
+    },
+    {
+      "slate_id": "dk_classic_wk9_early_08Nov2026",
+      "site": "dk",
+      "format": "classic",
+      "season": 2026,
+      "week": 9,
+      "lock_time_utc": "2026-11-08T18:00:00Z"
+    },
+    {
+      "slate_id": "fd_classic_wk9_main_08Nov2026",
+      "site": "fd",
+      "format": "classic",
+      "season": 2026,
+      "week": 9,
+      "lock_time_utc": "2026-11-08T18:00:00Z"
     }
   ]
 }
