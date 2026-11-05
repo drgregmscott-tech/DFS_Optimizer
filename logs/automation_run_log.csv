@@ -4379,3 +4379,7 @@ timestamp_utc,trigger_type,site,step,status
 2026-11-04T17:04:17.431453+00:00,light_vegas_refresh,dk,dk_classic_wk9_main_08Nov2026,cheat_sheet,success
 2026-11-04T17:02:36.992687+00:00,light_vegas_refresh,dk,dk_showdown_wk9_JAX_BAL_05Nov2026,cheat_sheet,skipped
 2026-11-04T17:02:02.949590+00:00,light_vegas_refresh,fd,fd_classic_wk9_main_08Nov2026,cheat_sheet,success
+2026-11-05T17:03:34.596028+00:00,light_vegas_refresh,dk,dk_classic_wk9_early_08Nov2026,cheat_sheet,skipped
+2026-11-05T17:03:24.825827+00:00,light_vegas_refresh,dk,dk_classic_wk9_main_08Nov2026,cheat_sheet,success
+2026-11-05T17:02:50.256230+00:00,light_vegas_refresh,dk,dk_showdown_wk9_JAX_BAL_05Nov2026,cheat_sheet,skipped
+2026-11-05T17:02:00.805729+00:00,light_vegas_refresh,fd,fd_classic_wk9_main_08Nov2026,cheat_sheet,success
