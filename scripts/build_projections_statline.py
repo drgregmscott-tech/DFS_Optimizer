@@ -1148,10 +1148,15 @@ def build_statline_projections(site: str, season: int, week: int, slate_id: str,
         # 2026-09-24 (Step B1, analysis/proj_b1/b1_report.md): on the guarded,
         # leak-free wk1/wk2 rebuilds the matchup factor HURT skill positions
         # (Pearson .438 -> .484, MAE 6.56 -> 6.30 with it off; residual slope
-        # -0.8, i.e. it points the wrong way). Neutralised for QB/RB/WR/TE
-        # until a version that doesn't overlap the vegas factor is validated
-        # (revisit ~Week 6). DST's factor is display-only and left as-is.
-        # Revert with --restore-matchup.
+        # -0.8, i.e. it points the wrong way). Neutralised for QB/RB/WR/TE.
+        # REVISITED 2026-10-26 and re-checked 2026-11-03 with full 2021-25
+        # history (12,363 player-weeks) + 8 weeks of 2026
+        # (analysis/proj_b1_revisit/RESULTS.md, local-only): full strength
+        # still hurts everywhere, a "vegas-orthogonal" rebuild only closes
+        # ~40% of the damage and still isn't better than off, RB is still
+        # wrong-way (CI excludes zero). Verdict stands: keep neutralised.
+        # DST's factor is display-only and left as-is. Revert with
+        # --restore-matchup.
         df.loc[df["position"].isin(["QB", "RB", "WR", "TE"]), "matchup_factor"] = 1.0
 
     merge_cols = ["team", "vegas_factor", "implied_total"]

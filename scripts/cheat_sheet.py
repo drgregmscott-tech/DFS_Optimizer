@@ -23,13 +23,17 @@ composite score:
                 hurt projection accuracy; see that file's own comment). DST's
                 factor is real and untouched. So for skill positions this
                 composite factor currently contributes nothing to ranking --
-                left in rather than removed since a dedicated session is
-                expected to revisit neutral_skill_matchup (the "revisit ~Week
-                6" note in that file is already overdue at Week 8), and
-                nothing else here needs to change if/when that flips back on.
-                Rationale text's matchup clause is DELIBERATELY a different,
-                separate signal from this one -- see matchup_env_sentence()
-                and load_display_matchup_factors() below.
+                left in rather than removed because the decision is RESOLVED,
+                not pending: re-checked 2026-10-26 and again 2026-11-03 with
+                full 2021-25 history + 8 weeks of 2026 (analysis/
+                proj_b1_revisit/RESULTS.md, local-only), verdict is still
+                "keep neutralised" (full strength still hurts, best partial
+                weight isn't worth the complexity, RB is still wrong-way).
+                Nothing here needs to change unless a future re-check flips
+                that call. Rationale text's matchup clause is DELIBERATELY a
+                different, separate signal from this one -- see
+                matchup_env_sentence() and load_display_matchup_factors()
+                below.
   - game_env    own team's implied_total for QB/RB/WR/TE; for DST, the
                 OPPONENT's implied_total, inverted (a low-scoring spot for
                 the opponent is the good environment for a defense) --
