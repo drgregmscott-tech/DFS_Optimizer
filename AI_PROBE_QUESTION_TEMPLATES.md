@@ -243,6 +243,49 @@ kicking game?"
 
 ---
 
+## Showdown slates (separate script, 2026-11-05)
+
+Classic's templates above don't transfer directly to showdown -- it's one
+game, not a slate, so the risk shape is different: game script decides
+who's even relevant (CPT survival, not just volume), captain selection is
+its own decision with its own ownership dynamics, and cheap pieces matter
+more per-lineup (a top showdown lineup needs ~2 cheap hits, not 1 bonus
+dart). `scripts/probe_ai_chat_weekly_questions_showdown.py` is a separate
+script, not a flag on the classic one, built around 4 categories instead
+of A-H above:
+
+- **Injury-tag + next-man-up** (reused from B/C) -- run on CPT/FLEX-deduped
+  rows (`probe_cheap_value_finder.dedup_cpt_flex()`: showdown rows every
+  player twice, CPT salary = 1.5x FLEX, same `player_id` -- keep the FLEX
+  row as the real salary, don't double-count or double-ask).
+- **Game script / blowout risk** -- first-class here, framed around CPT
+  survival specifically (whose role depends on the game staying
+  competitive vs. who benefits/survives a blowout).
+- **Captain selection** -- an open "chalk captain tonight" discovery
+  question, plus a named confirm/challenge question for every CPT row
+  with `estimated_ownership_pct > 7` (threshold in `CPT_OWNERSHIP_THRESHOLD`).
+  Framed as "tonight" not "this week" -- showdown slates are single
+  primetime games (TNF/SNF/MNF), run close to kickoff.
+- **Cheap-piece viability** -- `candidates_by_position()` fanned out onto
+  named players same as classic's fringe-value fix, but top 5 per
+  position (not 3) and with showdown-specific salary floors ($3000
+  RB/WR/TE vs. classic's $4500, since showdown's whole pool is cheaper --
+  checked against a real wk9 file, classic's floor would've dropped real
+  rotational pieces like a $3200 RB2). Needed a second fix beyond the
+  floor: pts/$1000 efficiency blows up for a $200 practice-squad/UDFA
+  name with a ~1pt projection (a literal game-day-inactive-adjacent
+  scrub can out-rank a real $2800 WR on pure ratio). Added `min_proj`
+  (3.0, `MIN_PROJ` in the showdown script) to `candidates_by_position()`
+  as a second filter alongside the salary floor -- classic's floors never
+  go low enough to need it, so it defaults to 0 there (no behavior
+  change).
+
+`candidates_by_position()` also gained `slate_path` (pass the exact file
+the caller already resolved instead of this function re-globbing --
+showdown filenames don't match classic's `_classic_wk*_main_*` glob
+shape) and `team_filter` (scope the candidate pool to just the showdown
+slate's 2 teams).
+
 ## Open design questions (not yet decided)
 
 - ~~How placeholders get filled automatically~~ — decided above: open

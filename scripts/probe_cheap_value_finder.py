@@ -37,19 +37,41 @@ def latest(pattern: str) -> str | None:
     return max(c, key=os.path.getmtime) if c else None
 
 
-def load_salary_and_teams(site: str) -> tuple[dict[str, dict], list[str]]:
-    path = latest(f"output/final_projections_{site}_{site}_classic_wk*_main_*.csv")
+def dedup_cpt_flex(rows: list[dict]) -> list[dict]:
+    """Showdown slates carry each player as two rows (roster_role CPT and
+    FLEX, CPT salary = 1.5x FLEX, same player_id). Collapse to one row per
+    player, preferring the FLEX row since it carries the real/base salary
+    -- CPT's inflated price isn't a second distinct player or a floor
+    worth checking separately. Classic rows have no roster_role duplicate
+    and pass through unchanged."""
+    by_id: dict[str, dict] = {}
+    for r in rows:
+        pid = r.get("player_id")
+        role = r.get("roster_role")
+        if pid not in by_id or role == "FLEX":
+            by_id[pid] = r
+    return list(by_id.values())
+
+
+def load_salary_and_teams(site: str, slate_path: str | None = None
+                           ) -> tuple[dict[str, dict], list[str]]:
+    path = slate_path or latest(f"output/final_projections_{site}_{site}_classic_wk*_main_*.csv")
     if not path:
         return {}, []
     with open(path, encoding="utf-8") as f:
         rows = list(csv.DictReader(f))
+    rows = dedup_cpt_flex(rows)
     info = {r["player_id"]: r for r in rows}
     teams = sorted({r["team"] for r in rows if r.get("team")})
     return info, teams
 
 
 def candidates_by_position(season: int, week: int, site: str,
-                            top_n: int = 5) -> dict[str, list[dict]]:
+                            top_n: int = 5, slate_path: str | None = None,
+                            team_filter: list[str] | None = None,
+                            thresholds: dict[str, float] | None = None,
+                            min_proj: float = 0.0
+                            ) -> dict[str, list[dict]]:
     """Returns {pos: [top_n candidate dicts]} for one site, ranked by
     pts/$1000 efficiency. Factored out 2026-10-31 so
     probe_ai_chat_weekly_questions.py can fan out NAMED questions onto
@@ -57,11 +79,28 @@ def candidates_by_position(season: int, week: int, site: str,
     cheap value" question -- per 2026-10-31 feedback, open fringe-value
     questions have been the weakest-performing category all session;
     named ones (same pattern as the B/C injury questions) have been the
-    strongest."""
+    strongest.
+
+    slate_path, added for showdown (2026-11-05): classic auto-glob can't
+    find a showdown file (different filename shape, no "_main_"), so the
+    caller passes the exact file it already resolved instead of this
+    function guessing a second time. team_filter scopes the candidate
+    pool to a showdown slate's 2 teams instead of every team on the slate.
+    thresholds overrides the default classic THRESHOLDS per position
+    (showdown's smaller, cheaper pool needs its own floors). min_proj
+    drops players below an absolute projection floor before ranking by
+    pts/$1000 efficiency -- needed for showdown (2026-11-05): that ratio
+    blows up for a $200 scrub with a ~1pt projection, so an efficiency-only
+    rank can put real noise ahead of real candidates when the pool is
+    this cheap. Classic's floors never go low enough to need this, so it
+    defaults to 0 (no-op) there.
+    """
     p = json.loads(WRW_TE_PARAMS.read_text(encoding="utf-8"))
-    salary_info, teams = load_salary_and_teams(site)
+    salary_info, teams = load_salary_and_teams(site, slate_path=slate_path)
     if not teams:
         return {}
+    if team_filter:
+        teams = [t for t in teams if t in team_filter]
     ag, tvr = _wrw_trailing_usage(season, week, teams, p)
     if ag is None or ag.empty:
         return {}
@@ -99,8 +138,8 @@ def candidates_by_position(season: int, week: int, site: str,
 
     out: dict[str, list[dict]] = {}
     for pos in ("WR", "RB", "TE"):
-        floor = THRESHOLDS[(site, pos)]
-        pool = [x for x in rows if x["pos"] == pos and x["sal"] < floor]
+        floor = thresholds[pos] if thresholds else THRESHOLDS[(site, pos)]
+        pool = [x for x in rows if x["pos"] == pos and x["sal"] < floor and x["proj"] >= min_proj]
         # Ranked by points-per-$1000 efficiency -- what the optimizer
         # actually uses -- not raw usage. Caught live 2026-10-30: a
         # usage-only ranking missed real plays (Flournoy) that score
