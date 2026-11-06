@@ -4479,3 +4479,6 @@ timestamp_utc,trigger_type,site,step,status
 2026-11-06T00:32:50.290996+00:00,injury_refresh_scheduled,fd,fd_classic_wk9_main_08Nov2026,status_apply,success
 2026-11-06T00:32:50.290996+00:00,injury_refresh_scheduled,fd,fd_classic_wk9_main_08Nov2026,pivot_finder,success
 2026-11-06T00:32:50.290996+00:00,injury_refresh_scheduled,fd,fd_classic_wk9_main_08Nov2026,cheat_sheet,success
+2026-11-06T17:02:37.735487+00:00,light_vegas_refresh,dk,dk_classic_wk9_early_08Nov2026,cheat_sheet,skipped
+2026-11-06T17:02:52.757695+00:00,light_vegas_refresh,dk,dk_classic_wk9_main_08Nov2026,cheat_sheet,success
+2026-11-06T17:01:25.044231+00:00,light_vegas_refresh,fd,fd_classic_wk9_main_08Nov2026,cheat_sheet,success
