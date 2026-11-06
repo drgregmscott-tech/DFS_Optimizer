@@ -1,15 +1,15 @@
 team,component,pool_share,share_basis,raw_sum,target,scale,abs_delta
 PHI,pass,1.0,exclusive,17.19,31.14,1.8113,13.95
-MIA,rush,1.0,recent,37.84,24.6,0.6502,13.24
+MIA,rush,1.0,recent,37.84,24.61,0.6504,13.23
 ARI,recv,0.975,recent,46.17,30.97,0.6709,15.2
 NYJ,rush,0.9917,recent,36.27,24.91,0.6867,11.37
 WAS,rush,0.9764,recent,34.66,24.71,0.7129,9.95
 NYG,recv,1.0,recent,42.98,30.78,0.7162,12.2
-MIA,pass,1.0,exclusive,26.77,33.57,1.2539,6.8
+MIA,pass,1.0,exclusive,26.77,33.57,1.254,6.8
 SEA,recv,1.0,recent,40.55,30.67,0.7562,9.89
 NE,rush,1.0,recent,36.98,28.01,0.7573,8.98
 PHI,recv,1.0,recent,39.38,30.06,0.7633,9.32
-DET,rush,0.9933,recent,37.44,28.59,0.7636,8.85
+DET,rush,0.9933,recent,37.44,28.58,0.7633,8.86
 NO,recv,1.0,recent,41.96,32.04,0.7636,9.92
 LAC,rush,0.9929,recent,35.5,27.16,0.7651,8.34
 GB,recv,1.0,recent,43.82,33.64,0.7678,10.17
@@ -37,7 +37,7 @@ CAR,rush,0.992,recent,30.29,26.14,0.8629,4.15
 NE,pass,1.0,exclusive,28.19,31.98,1.1345,3.79
 GB,pass,1.0,exclusive,39.92,34.8,0.8717,5.12
 CLE,rush,0.9839,recent,30.06,26.3,0.8751,3.75
-DET,pass,1.0,exclusive,31.55,35.48,1.1246,3.93
+DET,pass,1.0,exclusive,31.55,35.49,1.1248,3.94
 SF,rush,1.0,recent,31.47,27.65,0.8787,3.82
 IND,pass,1.0,exclusive,31.8,35.62,1.12,3.82
 SF,recv,0.94,recent,37.83,33.31,0.8805,4.52
@@ -48,7 +48,7 @@ DEN,recv,0.9928,recent,33.98,30.13,0.8869,3.84
 WAS,pass,1.0,exclusive,30.86,34.23,1.1093,3.37
 NYG,pass,1.0,exclusive,28.7,31.69,1.1042,2.99
 SEA,pass,1.0,exclusive,28.67,31.54,1.1,2.87
-DET,recv,1.0,recent,38.13,34.36,0.9013,3.76
+DET,recv,1.0,recent,38.13,34.37,0.9014,3.76
 CAR,pass,1.0,exclusive,37.81,34.15,0.9032,3.66
 HOU,rush,0.9744,recent,30.48,27.74,0.9102,2.74
 NE,recv,1.0,recent,32.94,30.66,0.9308,2.28
@@ -63,5 +63,5 @@ KC,pass,1.0,exclusive,34.12,35.06,1.0276,0.94
 DAL,pass,1.0,exclusive,36.34,37.16,1.0225,0.82
 LV,pass,1.0,exclusive,36.0,36.8,1.0222,0.8
 KC,rush,0.9831,recent,27.72,28.19,1.0171,0.48
-MIA,recv,1.0,recent,31.87,31.92,1.0014,0.05
+MIA,recv,1.0,recent,31.87,31.92,1.0015,0.05
 HOU,pass,1.0,exclusive,30.98,30.94,0.9987,0.04
