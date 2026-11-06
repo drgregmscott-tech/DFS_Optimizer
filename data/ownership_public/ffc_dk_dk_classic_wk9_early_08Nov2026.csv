@@ -1,51 +1,51 @@
 player,salary,proj_own,lo,hi
-Greg Dulcich,3100,77.9,63.2,94.7
-Puka Nacua,8800,70.5,52.6,89.5
-Jonah Coleman,5300,57.5,31.6,89.5
-Jonathan Taylor,7500,42.5,15.8,57.9
-New Orleans Defense,2900,36.8,21.1,57.9
-Tyler Warren,4600,36.5,15.8,52.6
-Chuba Hubbard,6500,35.8,15.8,52.6
-Jahmyr Gibbs,10000,29.8,15.8,42.1
-Amon-Ra St. Brown,8100,27.4,5.3,36.8
-Malik Washington,4700,26.0,10.5,47.4
-Rashee Rice,6400,25.6,10.5,52.6
-Patrick Mahomes,6100,25.3,10.5,36.8
-Denver Defense,3000,24.2,5.3,42.1
-Cleveland Defense,2700,23.2,5.3,42.1
-Ollie Gordon II,5600,22.8,0.0,47.4
-Quinshon Judkins,5400,22.8,5.3,42.1
-Caleb Douglas,4200,22.1,5.3,36.8
-Xavier Worthy,4400,21.8,15.8,31.6
-Keenan Allen,4900,20.4,0.0,36.8
-Jared Goff,6600,18.2,0.0,36.8
-Denzel Boston,5000,15.1,0.0,31.6
-Harold Fannin Jr.,4700,14.7,0.0,36.8
-CeeDee Lamb,8300,14.4,0.0,31.6
-Malik Nabers,7300,10.9,0.0,26.3
-Dak Prescott,6500,10.5,5.3,21.1
+Puka Nacua,8800,71.9,52.6,84.2
+Greg Dulcich,3100,69.5,57.9,84.2
+Jonah Coleman,5300,67.7,52.6,84.2
+Tyler Warren,4600,47.7,31.6,63.2
+New Orleans Defense,2900,36.5,10.5,52.6
+Chuba Hubbard,6500,35.4,21.1,52.6
+Jahmyr Gibbs,10000,34.7,15.8,47.4
+Jonathan Taylor,7500,34.4,10.5,57.9
+Denver Defense,3000,25.6,5.3,42.1
+Patrick Mahomes,6100,24.9,10.5,36.8
+Caleb Douglas,4200,24.9,10.5,42.1
+Amon-Ra St. Brown,8100,23.9,5.3,36.8
+Malik Washington,4700,22.8,5.3,42.1
+Cleveland Defense,2700,22.8,5.3,36.8
+Xavier Worthy,4400,21.4,0.0,47.4
+Ollie Gordon II,5600,20.7,10.5,31.6
+Jared Goff,6600,20.0,5.3,42.1
+Malik Nabers,7300,19.6,5.3,42.1
+CeeDee Lamb,8300,17.9,5.3,31.6
+Quinshon Judkins,5400,15.4,5.3,31.6
+Harold Fannin Jr.,4700,15.1,0.0,47.4
+Rashee Rice,6400,14.0,5.3,36.8
+Keenan Allen,4900,13.3,0.0,26.3
+Mason Taylor,3100,13.0,0.0,31.6
+Denzel Boston,5000,11.9,5.3,26.3
+KC Concepcion Jr.,4600,11.6,0.0,31.6
+Matthew Stafford,6200,11.2,0.0,26.3
+Jameson Williams,6100,11.2,0.0,26.3
 Malik Willis,5100,10.5,0.0,26.3
-Sam LaPorta,5100,9.8,0.0,21.1
-Travis Kelce,4900,9.8,0.0,31.6
-Mason Taylor,3100,9.1,0.0,15.8
-Matthew Stafford,6200,9.1,0.0,26.3
-Javonte Williams,7300,8.4,0.0,26.3
-J.J. McCarthy,4800,8.1,0.0,15.8
-KC Concepcion Jr.,4600,7.4,0.0,15.8
-Jayden Daniels,6000,6.3,0.0,21.1
-Jameson Williams,6100,5.6,0.0,15.8
-Philadelphia Defense,2500,5.3,0.0,15.8
-Cam Skattebo,5600,4.6,0.0,10.5
-Kyren Williams,7600,4.6,0.0,10.5
-Chris Bell,3300,3.9,0.0,10.5
-Stefon Diggs,5600,3.9,0.0,10.5
-George Pickens,6300,3.9,0.0,15.8
-Daniel Jones,4700,3.5,0.0,15.8
+Sam LaPorta,5100,9.8,0.0,15.8
+J.J. McCarthy,4800,9.1,0.0,26.3
+Cam Skattebo,5600,8.4,0.0,21.1
+Dak Prescott,6500,8.1,0.0,21.1
+Jayden Daniels,6000,7.0,0.0,15.8
+Chris Bell,3300,5.3,0.0,21.1
+Travis Kelce,4900,5.3,0.0,15.8
+Philadelphia Defense,2500,4.9,0.0,15.8
+Stefon Diggs,5600,4.9,0.0,15.8
+Malachi Fields,3700,4.6,0.0,15.8
+Javonte Williams,7300,4.6,0.0,15.8
+Josh Downs,5100,3.9,0.0,15.8
+Antonio Williams,4100,3.9,0.0,10.5
+NY Giants Defense,2800,3.9,0.0,15.8
+Washington Defense,2300,3.5,0.0,10.5
+Bryce Young,5500,3.5,0.0,10.5
 Isaiah Likely,5000,3.5,0.0,10.5
-Josh Downs,5100,3.2,0.0,10.5
-Washington Defense,2300,3.2,0.0,21.1
-NY Giants Defense,2800,3.2,0.0,15.8
-Detroit Defense,3400,2.8,0.0,10.5
-Garrett Wilson,6600,2.8,0.0,10.5
-Jaylen Waddle,5700,2.5,0.0,5.3
-Antonio Williams,4100,2.5,0.0,10.5
+Daniel Jones,4700,3.2,0.0,5.3
+Treylon Burks,3600,2.8,0.0,10.5
+Chig Okonkwo,3600,2.8,0.0,5.3
+Kyren Williams,7600,2.8,0.0,10.5
