@@ -2271,7 +2271,7 @@ in this browser's localStorage.</p>
     excluded: { dk: {}, fd: {} },               // player_id -> true
     // ---- Session 16 additions ----
     playerExposure: { dk: {}, fd: {} },        // player_id -> 1-100 integer (own exposure cap override)
-    thumbs: { dk: {}, fd: {} },                // player_id -> "up" | "down"
+    thumbs: { dk: {}, fd: {} },                // exKey(p) ("player_id" or Showdown's "player_id:ROLE") -> "up" | "down"
     playerSearch: "",
     activeRequestId: null,
     pollTimer: null,
@@ -4636,7 +4636,14 @@ in this browser's localStorage.</p>
         ? state.locked[site][p.player_id] === p.roster_role
         : !!state.locked[site][p.player_id];
       var isExcluded = !!state.excluded[site][exKey(p)];
-      var thumbState = state.thumbs[site][p.player_id]; // "up" | "down" | undefined
+      // Bug fix (found live, Nov 2026): thumbs used to be keyed by bare
+      // player_id, same mistake lock/exclude already had fixed above (see
+      // the "Bug fix (found live, Sep 2026)" comment a few lines up) --
+      // thumbing a player up/down on either his Captain or FLEX row
+      // silently did the same to BOTH rows, with no way to like him at
+      // FLEX but not at Captain (Greg, Nov 2026). exKey(p) gives the same
+      // "player_id:ROLE" row-specific key lock/exclude already use.
+      var thumbState = state.thumbs[site][exKey(p)]; // "up" | "down" | undefined
       var isThumbUp = thumbState === "up";
       var isThumbDown = thumbState === "down";
       var expOverride = state.playerExposure[site][p.player_id]; // 1-100 | undefined
@@ -4665,8 +4672,8 @@ in this browser's localStorage.</p>
         '<div class="pactions">' +
         '<button class="icon-btn lock-btn' + (isLocked ? ' active' : '') + '" data-action="lock" title="' + lockTitle + '">' + lockIcon + '</button>' +
         '<button class="icon-btn exclude-btn' + (isExcluded ? ' active' : '') + '" data-action="exclude" title="' + (isExcluded ? 'Un-exclude' : (p.roster_role ? 'Exclude as ' + p.roster_role + ' only' : 'Exclude')) + '">&#x2715;</button>' +
-        '<button class="icon-btn thumb-btn thumb-up-btn' + (isThumbUp ? ' active' : '') + '" data-action="thumb-up" title="' + (isThumbUp ? 'Remove thumbs up' : 'Thumbs up (boosts this build\u2019s projection)') + '">&#128077;</button>' +
-        '<button class="icon-btn thumb-btn thumb-down-btn' + (isThumbDown ? ' active' : '') + '" data-action="thumb-down" title="' + (isThumbDown ? 'Remove thumbs down' : 'Thumbs down (reduces this build\u2019s projection)') + '">&#128078;</button>' +
+        '<button class="icon-btn thumb-btn thumb-up-btn' + (isThumbUp ? ' active' : '') + '" data-action="thumb-up" title="' + (isThumbUp ? 'Remove thumbs up' : 'Thumbs up' + (p.roster_role ? ' as ' + p.roster_role + ' only' : '') + ' (boosts this build\u2019s projection)') + '">&#128077;</button>' +
+        '<button class="icon-btn thumb-btn thumb-down-btn' + (isThumbDown ? ' active' : '') + '" data-action="thumb-down" title="' + (isThumbDown ? 'Remove thumbs down' : 'Thumbs down' + (p.roster_role ? ' as ' + p.roster_role + ' only' : '') + ' (reduces this build\u2019s projection)') + '">&#128078;</button>' +
         '</div>' +
         '<div><div class="pname">' + escapeHtml(p.player_name) + injuryFlagHtml(p.injury_status, p.injury_raw_status) +
         (p.roster_role ? ' <span style="color:var(--amber);font-size:11px;">(' + escapeHtml(p.roster_role) + ')</span>' : '') + '</div>' +
@@ -4855,11 +4862,25 @@ in this browser's localStorage.</p>
       // Session 16 (decisions #48-51) -- mutually exclusive with thumb-
       // down, same "not a silent precedence rule" pattern lock/exclude
       // already use; a second click on the same button clears it.
-      state.thumbs[site][pid] = (state.thumbs[site][pid] === "up") ? undefined : "up";
-      if (!state.thumbs[site][pid]) delete state.thumbs[site][pid];
+      //
+      // Bug fix (found live, Nov 2026): keyed by bare pid, same mistake
+      // lock/exclude already had fixed (see "Showdown: lock/switch to
+      // exactly this row's role" and "Showdown: exclude/un-exclude
+      // exactly THIS row" above) -- thumbing a Showdown player up/down on
+      // his Captain row silently did the same to his FLEX row too, with
+      // no way to like him at FLEX but not at Captain (Greg, Nov 2026).
+      // tk mirrors exclude's exk: "pid:ROLE" on a Showdown row, bare pid
+      // on a classic row (rowRole is null there, so this is a no-op
+      // behavior change for classic). The backend's --thumbs-up/
+      // --thumbs-down already accept this same "pid:ROLE" shape (see
+      // parse_thumbs_spec() in optimizer.py).
+      var tk = rowRole ? (pid + ":" + rowRole) : pid;
+      state.thumbs[site][tk] = (state.thumbs[site][tk] === "up") ? undefined : "up";
+      if (!state.thumbs[site][tk]) delete state.thumbs[site][tk];
     } else if (action === "thumb-down") {
-      state.thumbs[site][pid] = (state.thumbs[site][pid] === "down") ? undefined : "down";
-      if (!state.thumbs[site][pid]) delete state.thumbs[site][pid];
+      var tk2 = rowRole ? (pid + ":" + rowRole) : pid;
+      state.thumbs[site][tk2] = (state.thumbs[site][tk2] === "down") ? undefined : "down";
+      if (!state.thumbs[site][tk2]) delete state.thumbs[site][tk2];
     }
     renderPlayerList();
   });
@@ -5546,7 +5567,11 @@ in this browser's localStorage.</p>
         .join(",");
     }
 
-    // Session 16 (decisions #48-51) -- thumbs up/down.
+    // Session 16 (decisions #48-51) -- thumbs up/down. Keys are already
+    // exKey(p)-shaped ("player_id" or Showdown's "player_id:ROLE", Nov
+    // 2026 fix above) -- sent through unchanged, same "pid:ROLE" row-
+    // specific token --exclude already uses, parsed server-side by
+    // parse_thumbs_spec() in optimizer.py.
     var thumbsState = state.thumbs[site];
     var thumbsUpIds = Object.keys(thumbsState).filter(function (pid) { return thumbsState[pid] === "up"; });
     var thumbsDownIds = Object.keys(thumbsState).filter(function (pid) { return thumbsState[pid] === "down"; });

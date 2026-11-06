@@ -953,6 +953,33 @@ def parse_exclude_spec(raw: str) -> tuple:
     return ids, row_roles
 
 
+def parse_thumbs_spec(raw: str) -> tuple:
+    """--thumbs-up/--thumbs-down counterpart to parse_exclude_spec() (bug
+    fix, found live Nov 2026): a Showdown pool lists each player twice
+    (Captain/MVP row + FLEX row, same player_id), and a bare 'player_id'
+    thumbs BOTH rows -- same pre-existing convention as a bare --exclude
+    token. Append ':ROLE' ('00-0012345:CPT', ':MVP' or ':FLEX') to thumb
+    only that one row, e.g. like a guy at FLEX but not at Captain (Greg,
+    Nov 2026 -- this was previously impossible: the UI's thumb buttons
+    were keyed by bare player_id, so thumbing either row silently did the
+    same to both). Returns (player_ids: set, row_roles: dict {player_id:
+    {ROLE, ...}}); ids holds only the bare (whole-player) tokens.
+    Classic slates have no roles: main() folds role-specific tokens back
+    into whole-player thumbs there, same as --exclude."""
+    ids = set()
+    row_roles = {}
+    for token in (raw.split(",") if raw else []):
+        token = token.strip()
+        if not token:
+            continue
+        if ":" in token:
+            pid, role = token.split(":", 1)
+            row_roles.setdefault(pid.strip(), set()).add(role.strip().upper())
+        else:
+            ids.add(token)
+    return ids, row_roles
+
+
 def parse_lock_spec(raw: str) -> tuple:
     """Bug fix (found live, Sep 2026): --lock previously only accepted a
     bare player_id, which on a Showdown pool locks that player into EITHER
@@ -2814,15 +2841,22 @@ def compute_cheap_filler_exposure_overrides(players_all: pd.DataFrame, cheap_fil
 
 def _print_control_summary(locked_player_ids: set, excluded_player_ids: set,
                             thumbs_up_ids: set = None, thumbs_down_ids: set = None,
-                            player_exposure: dict = None):
+                            player_exposure: dict = None,
+                            thumbs_up_row_roles: dict = None, thumbs_down_row_roles: dict = None):
     """Session 16 -- one shared printer for main()'s per-player-control
     summary line(s), used at all four build call sites (classic/Showdown x
     single/multi) so the four don't drift out of sync with each other the
-    way four hand-duplicated print statements could."""
+    way four hand-duplicated print statements could. thumbs_up_row_roles/
+    thumbs_down_row_roles (Nov 2026 bug fix) are display-only here -- shown
+    as 'pid:ROLE' tokens alongside the bare (whole-player) ids."""
     if locked_player_ids or excluded_player_ids:
         print(f"Locked: {sorted(locked_player_ids) or 'none'} | Excluded: {sorted(excluded_player_ids) or 'none'}")
-    if thumbs_up_ids or thumbs_down_ids:
-        print(f"Thumbs up: {sorted(thumbs_up_ids or []) or 'none'} | Thumbs down: {sorted(thumbs_down_ids or []) or 'none'}")
+    if thumbs_up_ids or thumbs_down_ids or thumbs_up_row_roles or thumbs_down_row_roles:
+        up_display = sorted(thumbs_up_ids or []) + sorted(
+            f"{pid}:{role}" for pid, roles in (thumbs_up_row_roles or {}).items() for role in roles)
+        down_display = sorted(thumbs_down_ids or []) + sorted(
+            f"{pid}:{role}" for pid, roles in (thumbs_down_row_roles or {}).items() for role in roles)
+        print(f"Thumbs up: {up_display or 'none'} | Thumbs down: {down_display or 'none'}")
     if player_exposure:
         overrides = ", ".join(f"{pid}:{pct:.0%}" for pid, pct in sorted(player_exposure.items()))
         print(f"Player exposure overrides: {overrides}")
@@ -3608,20 +3642,29 @@ def load_showdown_pool(site: str, slate_id: str) -> pd.DataFrame:
 
 
 def compute_thumbs_projection_showdown(players: pd.DataFrame, thumbs_up_ids: set,
-                                        thumbs_down_ids: set):
+                                        thumbs_down_ids: set,
+                                        thumbs_up_row_roles: dict = None,
+                                        thumbs_down_row_roles: dict = None):
     """Row-keyed counterpart to compute_thumbs_projection() (decisions
     #48-51) -- player_id collides across a Showdown pool's CPT/FLEX rows,
-    so this indexes by ROW_KEY_COL instead. thumbs_up_ids/thumbs_down_ids
-    are still real player_id values (decision #53): a flagged player's
-    multiplier applies to BOTH his CPT and FLEX row -- same existing
-    convention the per-player exposure cap already follows. Returns None
-    if no player is flagged, same convention as the classic version."""
+    so this indexes by ROW_KEY_COL instead. A bare id in thumbs_up_ids/
+    thumbs_down_ids still applies to BOTH a player's CPT and FLEX row
+    (decision #53, unchanged pre-existing convention). thumbs_up_row_roles/
+    thumbs_down_row_roles (bug fix, found live Nov 2026 -- see
+    parse_thumbs_spec()) let a 'player_id:ROLE' token thumb only that one
+    row, e.g. up at FLEX but down at Captain for the same guy -- the same
+    row-level override --exclude's excluded_row_roles already has (see
+    drop_excluded_rows()). Returns None if no player is flagged, same
+    convention as the classic version."""
     thumbs_up_ids = thumbs_up_ids or set()
     thumbs_down_ids = thumbs_down_ids or set()
-    if not thumbs_up_ids and not thumbs_down_ids:
+    thumbs_up_row_roles = thumbs_up_row_roles or {}
+    thumbs_down_row_roles = thumbs_down_row_roles or {}
+    if not thumbs_up_ids and not thumbs_down_ids and not thumbs_up_row_roles and not thumbs_down_row_roles:
         return None
 
-    missing = (thumbs_up_ids | thumbs_down_ids) - set(players["player_id"])
+    all_ids = thumbs_up_ids | thumbs_down_ids | set(thumbs_up_row_roles) | set(thumbs_down_row_roles)
+    missing = all_ids - set(players["player_id"])
     if missing:
         print(
             f"NOTE: --thumbs-up/--thumbs-down player_id(s) {sorted(missing)} "
@@ -3630,16 +3673,29 @@ def compute_thumbs_projection_showdown(players: pd.DataFrame, thumbs_up_ids: set
 
     indexed = players.set_index(ROW_KEY_COL)
     adjusted = indexed["final_projection"].copy()
-    up_rks = indexed.index[indexed["player_id"].isin(thumbs_up_ids)]
-    down_rks = indexed.index[indexed["player_id"].isin(thumbs_down_ids)]
-    if len(up_rks):
+    up_rks = set(indexed.index[indexed["player_id"].isin(thumbs_up_ids)])
+    down_rks = set(indexed.index[indexed["player_id"].isin(thumbs_down_ids)])
+
+    # CPT and MVP are the same slot on DK/FD -- same alias set
+    # drop_excluded_rows() uses for --exclude's row-role tokens.
+    alias = {"CPT": {"CPT", "MVP"}, "MVP": {"CPT", "MVP"}, "FLEX": {"FLEX"}}
+    for pid, roles in thumbs_up_row_roles.items():
+        wanted = set().union(*(alias.get(r, {r}) for r in roles))
+        up_rks |= set(indexed.index[(indexed["player_id"] == pid) & (indexed["roster_role"].isin(wanted))])
+    for pid, roles in thumbs_down_row_roles.items():
+        wanted = set().union(*(alias.get(r, {r}) for r in roles))
+        down_rks |= set(indexed.index[(indexed["player_id"] == pid) & (indexed["roster_role"].isin(wanted))])
+
+    up_rks = list(up_rks)
+    down_rks = list(down_rks)
+    if up_rks:
         adjusted.loc[up_rks] = adjusted.loc[up_rks] * THUMBS_UP_MULTIPLIER
-    if len(down_rks):
+    if down_rks:
         adjusted.loc[down_rks] = adjusted.loc[down_rks] * THUMBS_DOWN_MULTIPLIER
     print(
         f"Projection adjustment for THIS SOLVE only (decisions #48-49, "
         f"#53) -- the output still reports each player's real projection: "
-        f"{len(up_rks)} row(s) (CPT+FLEX combined) boosted "
+        f"{len(up_rks)} row(s) boosted "
         f"{THUMBS_UP_MULTIPLIER:.0%}, {len(down_rks)} row(s) reduced to "
         f"{THUMBS_DOWN_MULTIPLIER:.0%} of real projection for solving "
         f"purposes."
@@ -4255,6 +4311,8 @@ def build_single_showdown_lineup(site: str, slate_id: str,
                                   participation_floors: dict = None,
                                   thumbs_up_ids: set = None,
                                   thumbs_down_ids: set = None,
+                                  thumbs_up_row_roles: dict = None,
+                                  thumbs_down_row_roles: dict = None,
                                   excluded_row_roles: dict = None,
                                   require_cpt_qb: bool = False,
                                   cheap_tier_penalty: float = 0.0,
@@ -4308,8 +4366,9 @@ def build_single_showdown_lineup(site: str, slate_id: str,
     # applies at this exact point (after --exclude, before the solve).
     players = apply_participation_floor(players, participation_floors or {}, locked_player_ids)
 
-    # Session 16 (decisions #48-49, #53).
-    thumbs_projection = compute_thumbs_projection_showdown(players, thumbs_up_ids, thumbs_down_ids)
+    # Session 16 (decisions #48-49, #53); row-role args added Nov 2026 bug fix.
+    thumbs_projection = compute_thumbs_projection_showdown(
+        players, thumbs_up_ids, thumbs_down_ids, thumbs_up_row_roles, thumbs_down_row_roles)
 
     optimization_projection = None
     if randomization_pct > 0:
@@ -4381,6 +4440,8 @@ def build_multi_showdown_lineup(site: str, slate_id: str,
                                  participation_floors: dict = None,
                                  thumbs_up_ids: set = None,
                                  thumbs_down_ids: set = None,
+                                 thumbs_up_row_roles: dict = None,
+                                 thumbs_down_row_roles: dict = None,
                                  player_exposure: dict = None,
                                  excluded_row_roles: dict = None,
                                  require_cpt_qb: bool = False,
@@ -4472,8 +4533,9 @@ def build_multi_showdown_lineup(site: str, slate_id: str,
     current_uniqueness = uniqueness
     n_generated = 0
 
-    # Session 16 (decisions #48-49, #53).
-    thumbs_projection = compute_thumbs_projection_showdown(players_all, thumbs_up_ids, thumbs_down_ids)
+    # Session 16 (decisions #48-49, #53); row-role args added Nov 2026 bug fix.
+    thumbs_projection = compute_thumbs_projection_showdown(
+        players_all, thumbs_up_ids, thumbs_down_ids, thumbs_up_row_roles, thumbs_down_row_roles)
 
     while n_generated < n_lineups:
         locked_out = {
@@ -5488,14 +5550,20 @@ def main():
         help=f"Comma-separated player_id(s) whose final_projection is "
              f"boosted to {THUMBS_UP_MULTIPLIER:.0%}% of its real value for "
              f"this build (decision #48). Works in single- or multi-"
-             f"lineup mode, classic or Showdown.",
+             f"lineup mode, classic or Showdown. On a Showdown slate, a "
+             f"bare player_id thumbs up BOTH his Captain/MVP and FLEX "
+             f"rows -- append ':CPT', ':MVP', or ':FLEX' to a given id "
+             f"(e.g. '00-0012345:FLEX') to thumb up only that one row "
+             f"(bug fix, Nov 2026 -- same 'pid:ROLE' shape --lock/"
+             f"--exclude already use).",
     )
     parser.add_argument(
         "--thumbs-down", default=None,
         help=f"Comma-separated player_id(s) whose final_projection is "
              f"reduced to {THUMBS_DOWN_MULTIPLIER:.0%}% of its real value "
              f"for this build (decision #48). Works in single- or multi-"
-             f"lineup mode, classic or Showdown.",
+             f"lineup mode, classic or Showdown. Same ':CPT'/':MVP'/"
+             f"':FLEX' row-specific suffix as --thumbs-up (Nov 2026).",
     )
     # Session 17 -- Skill-vs-Opposing-DST Exclusion (decision #56).
     parser.add_argument(
@@ -5614,14 +5682,45 @@ def main():
 
     # Session 16 -- decisions #48-51. Same "hard CLI error, not a silent
     # precedence rule" pattern as the --lock/--exclude overlap check above.
-    thumbs_up_ids = parse_id_list(args.thumbs_up)
-    thumbs_down_ids = parse_id_list(args.thumbs_down)
+    # Bug fix (found live, Nov 2026) -- parse_thumbs_spec() extends the
+    # --thumbs-up/--thumbs-down strings with the same 'pid:ROLE' row-
+    # specific token --exclude/--lock already support, so a Showdown
+    # player can be thumbed up at FLEX without also thumbing him up at
+    # Captain (Greg: liked a guy in FLEX but not in Captain, and found the
+    # UI's thumb buttons silently linked the two rows).
+    thumbs_up_ids, thumbs_up_row_roles = parse_thumbs_spec(args.thumbs_up)
+    thumbs_down_ids, thumbs_down_row_roles = parse_thumbs_spec(args.thumbs_down)
+    if not showdown_mode:
+        # Classic has no roles: a 'pid:ROLE' token is just a thumb on pid.
+        thumbs_up_ids |= set(thumbs_up_row_roles)
+        thumbs_down_ids |= set(thumbs_down_row_roles)
+        thumbs_up_row_roles = {}
+        thumbs_down_row_roles = {}
     thumbs_overlap = thumbs_up_ids & thumbs_down_ids
     if thumbs_overlap:
         parser.error(
             f"player_id(s) {sorted(thumbs_overlap)} cannot be both "
             f"--thumbs-up and --thumbs-down (decision #51)."
         )
+    # Row-level overlap: a bare id on either side always conflicts with
+    # anything on the other side for that same player_id; two role-only
+    # tokens conflict only if their (CPT/MVP-aliased) rows actually
+    # intersect -- same alias set drop_excluded_rows() uses.
+    _thumbs_cap = {"CPT", "MVP"}
+    for pid in (thumbs_up_ids | set(thumbs_up_row_roles)) & (thumbs_down_ids | set(thumbs_down_row_roles)):
+        if pid in thumbs_up_ids or pid in thumbs_down_ids:
+            parser.error(
+                f"player_id {pid} cannot be both --thumbs-up and "
+                f"--thumbs-down (decision #51)."
+            )
+        up_roles = set().union(*(_thumbs_cap if r in _thumbs_cap else {r} for r in thumbs_up_row_roles.get(pid, set())))
+        down_roles = set().union(*(_thumbs_cap if r in _thumbs_cap else {r} for r in thumbs_down_row_roles.get(pid, set())))
+        row_overlap = up_roles & down_roles
+        if row_overlap:
+            parser.error(
+                f"player_id {pid} cannot be --thumbs-up and --thumbs-down "
+                f"on the same row ({sorted(row_overlap)}) (decision #51)."
+            )
 
     # Session 16 -- decisions #52-55. Unknown-id and lock-conflict checks
     # happen inside validate_exposure_cap_feasibility() below (both build
@@ -5922,6 +6021,7 @@ def main():
                 min_team_players=min_team_players,
                 participation_floors=participation_floors,
                 thumbs_up_ids=thumbs_up_ids, thumbs_down_ids=thumbs_down_ids,
+                thumbs_up_row_roles=thumbs_up_row_roles, thumbs_down_row_roles=thumbs_down_row_roles,
                 player_exposure=player_exposure,
                 excluded_row_roles=excluded_row_roles,
                 require_cpt_qb=args.sd_require_cpt_qb,
@@ -5949,7 +6049,8 @@ def main():
                   f"lineup(s) for slate {args.slate_id} (exposure cap: "
                   f"{exposure_cap}/{args.n_lineups} lineups = {args.max_exposure:.0%}{override_note})")
             _print_control_summary(locked_player_ids, excluded_player_ids,
-                                    thumbs_up_ids, thumbs_down_ids, player_exposure)
+                                    thumbs_up_ids, thumbs_down_ids, player_exposure,
+                                    thumbs_up_row_roles, thumbs_down_row_roles)
             print("Top exposure (player_id: times used):")
             for pid, cnt in top_exposure:
                 if cnt > 0:
@@ -5979,6 +6080,7 @@ def main():
                 min_team_players=min_team_players,
                 participation_floors=participation_floors,
                 thumbs_up_ids=thumbs_up_ids, thumbs_down_ids=thumbs_down_ids,
+                thumbs_up_row_roles=thumbs_up_row_roles, thumbs_down_row_roles=thumbs_down_row_roles,
                 excluded_row_roles=excluded_row_roles,
                 require_cpt_qb=args.sd_require_cpt_qb,
                 cheap_tier_penalty=args.sd_cheap_tier_penalty,
@@ -6003,7 +6105,8 @@ def main():
             total_points = lineup["projection"].sum()
             lineup_value = round(total_points / (total_salary / 1000), 2) if total_salary else 0.0
             print(f"[{config['label']}] Optimal single Showdown lineup for slate {args.slate_id}:")
-            _print_control_summary(locked_player_ids, excluded_player_ids, thumbs_up_ids, thumbs_down_ids)
+            _print_control_summary(locked_player_ids, excluded_player_ids, thumbs_up_ids, thumbs_down_ids,
+                                    None, thumbs_up_row_roles, thumbs_down_row_roles)
             print(lineup.to_string(index=False))
             print(f"Total salary: {total_salary} / {showdown_cap} ({showdown_cap - total_salary} remaining)")
             print(f"Total projected points: {total_points:.2f}")
