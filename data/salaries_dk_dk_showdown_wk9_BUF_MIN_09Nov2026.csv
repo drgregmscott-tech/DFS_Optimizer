@@ -1,0 +1,97 @@
+Position,Name + ID,Name,ID,Roster Position,Salary,Game Info,TeamAbbrev,AvgPointsPerGame,Status,roster_role,name,site,salary,normalized_name,normalized_team,position_upper,slate_format,player_id,match_method,match_confidence
+QB,Josh Allen (44817589),Josh Allen,44817589,CPT,17100,BUF@MIN 11/09/2026 08:15PM ET,BUF,28.5,,CPT,Josh Allen,dk,17100,josh allen,BUF,QB,showdown,00-0034857,auto_exact,high
+RB,James Cook III (44817590),James Cook III,44817590,CPT,15600,BUF@MIN 11/09/2026 08:15PM ET,BUF,20.4,,CPT,James Cook III,dk,15600,james cook,BUF,RB,showdown,00-0037248,auto_exact,high
+WR,Justin Jefferson (44817591),Justin Jefferson,44817591,CPT,14700,BUF@MIN 11/09/2026 08:15PM ET,MIN,14.4,,CPT,Justin Jefferson,dk,14700,justin jefferson,MIN,WR,showdown,00-0036322,auto_exact,high
+QB,Kyler Murray (44817592),Kyler Murray,44817592,CPT,14100,BUF@MIN 11/09/2026 08:15PM ET,MIN,12.8,Q,CPT,Kyler Murray,dk,14100,kyler murray,MIN,QB,showdown,00-0035228,auto_exact,high
+QB,Carson Wentz (44817593),Carson Wentz,44817593,CPT,13500,BUF@MIN 11/09/2026 08:15PM ET,MIN,12.8,,CPT,Carson Wentz,dk,13500,carson wentz,MIN,QB,showdown,00-0032950,auto_exact,high
+QB,Kyle Allen (44817594),Kyle Allen,44817594,CPT,12600,BUF@MIN 11/09/2026 08:15PM ET,BUF,-0.2,,CPT,Kyle Allen,dk,12600,kyle allen,BUF,QB,showdown,00-0034577,auto_exact,high
+WR,DJ Moore (44817595),DJ Moore,44817595,CPT,11700,BUF@MIN 11/09/2026 08:15PM ET,BUF,11.4,Q,CPT,DJ Moore,dk,11700,dj moore,BUF,WR,showdown,00-0034827,auto_exact,high
+QB,Josh Allen (44817541),Josh Allen,44817541,FLEX,11400,BUF@MIN 11/09/2026 08:15PM ET,BUF,28.5,,FLEX,Josh Allen,dk,11400,josh allen,BUF,QB,showdown,00-0034857,auto_exact,high
+TE,Dalton Kincaid (44817596),Dalton Kincaid,44817596,CPT,11100,BUF@MIN 11/09/2026 08:15PM ET,BUF,11.9,,CPT,Dalton Kincaid,dk,11100,dalton kincaid,BUF,TE,showdown,00-0038933,auto_exact,high
+WR,Khalil Shakir (44817597),Khalil Shakir,44817597,CPT,10800,BUF@MIN 11/09/2026 08:15PM ET,BUF,9.6,,CPT,Khalil Shakir,dk,10800,khalil shakir,BUF,WR,showdown,00-0037261,auto_exact,high
+RB,Aaron Jones Sr. (44817598),Aaron Jones Sr.,44817598,CPT,10500,BUF@MIN 11/09/2026 08:15PM ET,MIN,12.4,,CPT,Aaron Jones Sr.,dk,10500,aaron jones,MIN,RB,showdown,00-0033293,auto_exact,high
+RB,James Cook III (44817542),James Cook III,44817542,FLEX,10400,BUF@MIN 11/09/2026 08:15PM ET,BUF,20.4,,FLEX,James Cook III,dk,10400,james cook,BUF,RB,showdown,00-0037248,auto_exact,high
+WR,Jordan Addison (44817599),Jordan Addison,44817599,CPT,10200,BUF@MIN 11/09/2026 08:15PM ET,MIN,8.2,,CPT,Jordan Addison,dk,10200,jordan addison,MIN,WR,showdown,00-0038994,auto_exact,high
+WR,Justin Jefferson (44817543),Justin Jefferson,44817543,FLEX,9800,BUF@MIN 11/09/2026 08:15PM ET,MIN,14.4,,FLEX,Justin Jefferson,dk,9800,justin jefferson,MIN,WR,showdown,00-0036322,auto_exact,high
+RB,Jordan Mason (44817600),Jordan Mason,44817600,CPT,9600,BUF@MIN 11/09/2026 08:15PM ET,MIN,6.9,,CPT,Jordan Mason,dk,9600,jordan mason,MIN,RB,showdown,00-0037525,auto_exact,high
+QB,Kyler Murray (44817544),Kyler Murray,44817544,FLEX,9400,BUF@MIN 11/09/2026 08:15PM ET,MIN,12.8,Q,FLEX,Kyler Murray,dk,9400,kyler murray,MIN,QB,showdown,00-0035228,auto_exact,high
+QB,Carson Wentz (44817545),Carson Wentz,44817545,FLEX,9000,BUF@MIN 11/09/2026 08:15PM ET,MIN,12.8,,FLEX,Carson Wentz,dk,9000,carson wentz,MIN,QB,showdown,00-0032950,auto_exact,high
+QB,Max Brosmer (44817601),Max Brosmer,44817601,CPT,9000,BUF@MIN 11/09/2026 08:15PM ET,MIN,0.0,,CPT,Max Brosmer,dk,9000,max brosmer,MIN,QB,showdown,00-0040494,auto_exact,high
+QB,Shane Buechele (44817602),Shane Buechele,44817602,CPT,9000,BUF@MIN 11/09/2026 08:15PM ET,BUF,0.0,,CPT,Shane Buechele,dk,9000,shane buechele,BUF,QB,showdown,00-0036679,auto_exact,high
+WR,Keon Coleman (44817603),Keon Coleman,44817603,CPT,8700,BUF@MIN 11/09/2026 08:15PM ET,BUF,10.0,Q,CPT,Keon Coleman,dk,8700,keon coleman,BUF,WR,showdown,00-0039901,auto_exact,high
+QB,Kyle Allen (44817546),Kyle Allen,44817546,FLEX,8400,BUF@MIN 11/09/2026 08:15PM ET,BUF,-0.2,,FLEX,Kyle Allen,dk,8400,kyle allen,BUF,QB,showdown,00-0034577,auto_exact,high
+TE,T.J. Hockenson (44817604),T.J. Hockenson,44817604,CPT,8100,BUF@MIN 11/09/2026 08:15PM ET,MIN,11.6,,CPT,T.J. Hockenson,dk,8100,tj hockenson,MIN,TE,showdown,00-0035229,auto_exact,high
+WR,DJ Moore (44817547),DJ Moore,44817547,FLEX,7800,BUF@MIN 11/09/2026 08:15PM ET,BUF,11.4,Q,FLEX,DJ Moore,dk,7800,dj moore,BUF,WR,showdown,00-0034827,auto_exact,high
+K,Will Reichard (44817605),Will Reichard,44817605,CPT,7500,BUF@MIN 11/09/2026 08:15PM ET,MIN,11.7,,CPT,Will Reichard,dk,7500,will reichard,MIN,K,showdown,00-0039404,auto_exact,high
+TE,Dalton Kincaid (44817548),Dalton Kincaid,44817548,FLEX,7400,BUF@MIN 11/09/2026 08:15PM ET,BUF,11.9,,FLEX,Dalton Kincaid,dk,7400,dalton kincaid,BUF,TE,showdown,00-0038933,auto_exact,high
+WR,Khalil Shakir (44817549),Khalil Shakir,44817549,FLEX,7200,BUF@MIN 11/09/2026 08:15PM ET,BUF,9.6,,FLEX,Khalil Shakir,dk,7200,khalil shakir,BUF,WR,showdown,00-0037261,auto_exact,high
+RB,Aaron Jones Sr. (44817550),Aaron Jones Sr.,44817550,FLEX,7000,BUF@MIN 11/09/2026 08:15PM ET,MIN,12.4,,FLEX,Aaron Jones Sr.,dk,7000,aaron jones,MIN,RB,showdown,00-0033293,auto_exact,high
+K,Tyler Bass (44817606),Tyler Bass,44817606,CPT,6900,BUF@MIN 11/09/2026 08:15PM ET,BUF,11.1,,CPT,Tyler Bass,dk,6900,tyler bass,BUF,K,showdown,00-0036162,auto_exact,high
+WR,Jordan Addison (44817551),Jordan Addison,44817551,FLEX,6800,BUF@MIN 11/09/2026 08:15PM ET,MIN,8.2,,FLEX,Jordan Addison,dk,6800,jordan addison,MIN,WR,showdown,00-0038994,auto_exact,high
+RB,Jordan Mason (44817552),Jordan Mason,44817552,FLEX,6400,BUF@MIN 11/09/2026 08:15PM ET,MIN,6.9,,FLEX,Jordan Mason,dk,6400,jordan mason,MIN,RB,showdown,00-0037525,auto_exact,high
+QB,Max Brosmer (44817553),Max Brosmer,44817553,FLEX,6000,BUF@MIN 11/09/2026 08:15PM ET,MIN,0.0,,FLEX,Max Brosmer,dk,6000,max brosmer,MIN,QB,showdown,00-0040494,auto_exact,high
+QB,Shane Buechele (44817554),Shane Buechele,44817554,FLEX,6000,BUF@MIN 11/09/2026 08:15PM ET,BUF,0.0,,FLEX,Shane Buechele,dk,6000,shane buechele,BUF,QB,showdown,00-0036679,auto_exact,high
+DST,Bills (44817607),Bills,44817607,CPT,6000,BUF@MIN 11/09/2026 08:15PM ET,BUF,5.0,,CPT,Bills,dk,6000,bills,BUF,DST,showdown,DST_BUF,team_defense,high
+WR,Keon Coleman (44817555),Keon Coleman,44817555,FLEX,5800,BUF@MIN 11/09/2026 08:15PM ET,BUF,10.0,Q,FLEX,Keon Coleman,dk,5800,keon coleman,BUF,WR,showdown,00-0039901,auto_exact,high
+TE,T.J. Hockenson (44817556),T.J. Hockenson,44817556,FLEX,5400,BUF@MIN 11/09/2026 08:15PM ET,MIN,11.6,,FLEX,T.J. Hockenson,dk,5400,tj hockenson,MIN,TE,showdown,00-0035229,auto_exact,high
+DST,Vikings (44817608),Vikings,44817608,CPT,5400,BUF@MIN 11/09/2026 08:15PM ET,MIN,11.1,,CPT,Vikings,dk,5400,vikings,MIN,DST,showdown,DST_MIN,team_defense,high
+RB,Ty Johnson (44817609),Ty Johnson,44817609,CPT,5100,BUF@MIN 11/09/2026 08:15PM ET,BUF,6.7,,CPT,Ty Johnson,dk,5100,ty johnson,BUF,RB,showdown,00-0035537,auto_exact,high
+K,Will Reichard (44817557),Will Reichard,44817557,FLEX,5000,BUF@MIN 11/09/2026 08:15PM ET,MIN,11.7,,FLEX,Will Reichard,dk,5000,will reichard,MIN,K,showdown,00-0039404,auto_exact,high
+K,Tyler Bass (44817558),Tyler Bass,44817558,FLEX,4600,BUF@MIN 11/09/2026 08:15PM ET,BUF,11.1,,FLEX,Tyler Bass,dk,4600,tyler bass,BUF,K,showdown,00-0036162,auto_exact,high
+WR,Joshua Palmer (44817610),Joshua Palmer,44817610,CPT,4500,BUF@MIN 11/09/2026 08:15PM ET,BUF,4.6,Q,CPT,Joshua Palmer,dk,4500,joshua palmer,BUF,WR,showdown,00-0036988,manual_override,high
+WR,Jauan Jennings (44817611),Jauan Jennings,44817611,CPT,4200,BUF@MIN 11/09/2026 08:15PM ET,MIN,1.9,Q,CPT,Jauan Jennings,dk,4200,jauan jennings,MIN,WR,showdown,00-0036259,auto_exact,high
+DST,Bills (44817559),Bills,44817559,FLEX,4000,BUF@MIN 11/09/2026 08:15PM ET,BUF,5.0,,FLEX,Bills,dk,4000,bills,BUF,DST,showdown,DST_BUF,team_defense,high
+DST,Vikings (44817560),Vikings,44817560,FLEX,3600,BUF@MIN 11/09/2026 08:15PM ET,MIN,11.1,,FLEX,Vikings,dk,3600,vikings,MIN,DST,showdown,DST_MIN,team_defense,high
+TE,Dawson Knox (44817612),Dawson Knox,44817612,CPT,3600,BUF@MIN 11/09/2026 08:15PM ET,BUF,2.7,,CPT,Dawson Knox,dk,3600,dawson knox,BUF,TE,showdown,00-0035689,auto_exact,high
+RB,Ty Johnson (44817561),Ty Johnson,44817561,FLEX,3400,BUF@MIN 11/09/2026 08:15PM ET,BUF,6.7,,FLEX,Ty Johnson,dk,3400,ty johnson,BUF,RB,showdown,00-0035537,auto_exact,high
+WR,Joshua Palmer (44817562),Joshua Palmer,44817562,FLEX,3000,BUF@MIN 11/09/2026 08:15PM ET,BUF,4.6,Q,FLEX,Joshua Palmer,dk,3000,joshua palmer,BUF,WR,showdown,00-0036988,manual_override,high
+RB,Ray Davis (44817613),Ray Davis,44817613,CPT,3000,BUF@MIN 11/09/2026 08:15PM ET,BUF,1.6,,CPT,Ray Davis,dk,3000,ray davis,BUF,RB,showdown,00-0039875,auto_exact,high
+WR,Jauan Jennings (44817563),Jauan Jennings,44817563,FLEX,2800,BUF@MIN 11/09/2026 08:15PM ET,MIN,1.9,Q,FLEX,Jauan Jennings,dk,2800,jauan jennings,MIN,WR,showdown,00-0036259,auto_exact,high
+WR,Greg Dortch (44817614),Greg Dortch,44817614,CPT,2700,BUF@MIN 11/09/2026 08:15PM ET,BUF,0.0,,CPT,Greg Dortch,dk,2700,greg dortch,BUF,WR,showdown,00-0035500,auto_exact,high
+TE,Dawson Knox (44817564),Dawson Knox,44817564,FLEX,2400,BUF@MIN 11/09/2026 08:15PM ET,BUF,2.7,,FLEX,Dawson Knox,dk,2400,dawson knox,BUF,TE,showdown,00-0035689,auto_exact,high
+TE,Ben Yurosek (44817615),Ben Yurosek,44817615,CPT,2400,BUF@MIN 11/09/2026 08:15PM ET,MIN,1.8,,CPT,Ben Yurosek,dk,2400,ben yurosek,MIN,TE,showdown,00-0040509,auto_exact,high
+RB,DeeJay Dallas (44817616),DeeJay Dallas,44817616,CPT,2100,BUF@MIN 11/09/2026 08:15PM ET,MIN,1.3,,CPT,DeeJay Dallas,dk,2100,deejay dallas,MIN,RB,showdown,00-0036425,auto_exact,high
+RB,Ray Davis (44817565),Ray Davis,44817565,FLEX,2000,BUF@MIN 11/09/2026 08:15PM ET,BUF,1.6,,FLEX,Ray Davis,dk,2000,ray davis,BUF,RB,showdown,00-0039875,auto_exact,high
+WR,Greg Dortch (44817566),Greg Dortch,44817566,FLEX,1800,BUF@MIN 11/09/2026 08:15PM ET,BUF,0.0,,FLEX,Greg Dortch,dk,1800,greg dortch,BUF,WR,showdown,00-0035500,auto_exact,high
+WR,Myles Price (44817617),Myles Price,44817617,CPT,1800,BUF@MIN 11/09/2026 08:15PM ET,MIN,1.8,,CPT,Myles Price,dk,1800,myles price,MIN,WR,showdown,00-0040506,auto_exact,high
+TE,Ben Yurosek (44817567),Ben Yurosek,44817567,FLEX,1600,BUF@MIN 11/09/2026 08:15PM ET,MIN,1.8,,FLEX,Ben Yurosek,dk,1600,ben yurosek,MIN,TE,showdown,00-0040509,auto_exact,high
+WR,Tai Felton (44817618),Tai Felton,44817618,CPT,1500,BUF@MIN 11/09/2026 08:15PM ET,MIN,1.0,,CPT,Tai Felton,dk,1500,tai felton,MIN,WR,showdown,00-0040154,auto_exact,high
+RB,DeeJay Dallas (44817568),DeeJay Dallas,44817568,FLEX,1400,BUF@MIN 11/09/2026 08:15PM ET,MIN,1.3,,FLEX,DeeJay Dallas,dk,1400,deejay dallas,MIN,RB,showdown,00-0036425,auto_exact,high
+WR,Myles Price (44817569),Myles Price,44817569,FLEX,1200,BUF@MIN 11/09/2026 08:15PM ET,MIN,1.8,,FLEX,Myles Price,dk,1200,myles price,MIN,WR,showdown,00-0040506,auto_exact,high
+TE,Gavin Bartholomew (44817619),Gavin Bartholomew,44817619,CPT,1200,BUF@MIN 11/09/2026 08:15PM ET,MIN,1.8,,CPT,Gavin Bartholomew,dk,1200,gavin bartholomew,MIN,TE,showdown,00-0040215,auto_exact,high
+WR,Tai Felton (44817570),Tai Felton,44817570,FLEX,1000,BUF@MIN 11/09/2026 08:15PM ET,MIN,1.0,,FLEX,Tai Felton,dk,1000,tai felton,MIN,WR,showdown,00-0040154,auto_exact,high
+TE,Jackson Hawes (44817620),Jackson Hawes,44817620,CPT,900,BUF@MIN 11/09/2026 08:15PM ET,BUF,0.2,,CPT,Jackson Hawes,dk,900,jackson hawes,BUF,TE,showdown,00-0040194,auto_exact,high
+TE,Gavin Bartholomew (44817571),Gavin Bartholomew,44817571,FLEX,800,BUF@MIN 11/09/2026 08:15PM ET,MIN,1.8,,FLEX,Gavin Bartholomew,dk,800,gavin bartholomew,MIN,TE,showdown,00-0040215,auto_exact,high
+TE,Jackson Hawes (44817572),Jackson Hawes,44817572,FLEX,600,BUF@MIN 11/09/2026 08:15PM ET,BUF,0.2,,FLEX,Jackson Hawes,dk,600,jackson hawes,BUF,TE,showdown,00-0040194,auto_exact,high
+RB,Demond Claiborne (44817621),Demond Claiborne,44817621,CPT,600,BUF@MIN 11/09/2026 08:15PM ET,MIN,1.0,Q,CPT,Demond Claiborne,dk,600,demond claiborne,MIN,RB,showdown,00-0041104,auto_exact,high
+RB,Demond Claiborne (44817573),Demond Claiborne,44817573,FLEX,400,BUF@MIN 11/09/2026 08:15PM ET,MIN,1.0,Q,FLEX,Demond Claiborne,dk,400,demond claiborne,MIN,RB,showdown,00-0041104,auto_exact,high
+RB,Frank Gore Jr. (44817622),Frank Gore Jr.,44817622,CPT,300,BUF@MIN 11/09/2026 08:15PM ET,BUF,0.2,,CPT,Frank Gore Jr.,dk,300,frank gore,BUF,RB,showdown,00-0039471,auto_exact,high
+RB,Max Bredeson (44817623),Max Bredeson,44817623,CPT,300,BUF@MIN 11/09/2026 08:15PM ET,MIN,0.0,,CPT,Max Bredeson,dk,300,max bredeson,MIN,RB,showdown,00-0041081,auto_exact,high
+RB,Brock Lampe (44817624),Brock Lampe,44817624,CPT,300,BUF@MIN 11/09/2026 08:15PM ET,BUF,0.0,,CPT,Brock Lampe,dk,300,brock lampe,BUF,RB,showdown,00-0040567,auto_exact,high
+WR,Dillon Bell (44817625),Dillon Bell,44817625,CPT,300,BUF@MIN 11/09/2026 08:15PM ET,MIN,0.0,,CPT,Dillon Bell,dk,300,dillon bell,MIN,WR,showdown,00-0041342,auto_exact,high
+WR,Odell Beckham Jr. (44817626),Odell Beckham Jr.,44817626,CPT,300,BUF@MIN 11/09/2026 08:15PM ET,MIN,0.0,,CPT,Odell Beckham Jr.,dk,300,odell beckham,MIN,WR,showdown,00-0031235,auto_exact,high
+WR,Trent Sherfield Sr. (44817627),Trent Sherfield Sr.,44817627,CPT,300,BUF@MIN 11/09/2026 08:15PM ET,BUF,0.0,,CPT,Trent Sherfield Sr.,dk,300,trent sherfield,BUF,WR,showdown,00-0034487,auto_exact,high
+WR,Jeshaun Jones (44817628),Jeshaun Jones,44817628,CPT,300,BUF@MIN 11/09/2026 08:15PM ET,MIN,2.1,,CPT,Jeshaun Jones,dk,300,jeshaun jones,MIN,WR,showdown,00-0039710,auto_exact,high
+WR,Ja'Mori Maclin (44817629),Ja'Mori Maclin,44817629,CPT,300,BUF@MIN 11/09/2026 08:15PM ET,BUF,0.0,,CPT,Ja'Mori Maclin,dk,300,jamori maclin,BUF,WR,showdown,00-0041272,auto_exact,high
+WR,Stephen Gosnell (44817630),Stephen Gosnell,44817630,CPT,300,BUF@MIN 11/09/2026 08:15PM ET,BUF,0.0,,CPT,Stephen Gosnell,dk,300,stephen gosnell,BUF,WR,showdown,00-0040361,auto_exact,high
+WR,Skyler Bell (44817631),Skyler Bell,44817631,CPT,300,BUF@MIN 11/09/2026 08:15PM ET,BUF,0.0,,CPT,Skyler Bell,dk,300,skyler bell,BUF,WR,showdown,00-0041443,auto_exact,high
+TE,Keleki Latu (44817632),Keleki Latu,44817632,CPT,300,BUF@MIN 11/09/2026 08:15PM ET,BUF,0.0,,CPT,Keleki Latu,dk,300,keleki latu,BUF,TE,showdown,00-0040363,auto_exact,high
+TE,Josh Oliver (44817633),Josh Oliver,44817633,CPT,300,BUF@MIN 11/09/2026 08:15PM ET,MIN,2.5,IR,CPT,Josh Oliver,dk,300,josh oliver,MIN,TE,showdown,00-0035249,auto_exact,high
+TE,Andrew DePaola (44817634),Andrew DePaola,44817634,CPT,300,BUF@MIN 11/09/2026 08:15PM ET,MIN,0.0,,CPT,Andrew DePaola,dk,300,andrew depaola,MIN,TE,showdown,00-0029714,auto_fallback_name_only_position_mismatch,low
+TE,Devin Culp (44817635),Devin Culp,44817635,CPT,300,BUF@MIN 11/09/2026 08:15PM ET,MIN,0.0,,CPT,Devin Culp,dk,300,devin culp,MIN,TE,showdown,00-0039754,auto_exact,high
+WR,Tyrell Shavers (44817636),Tyrell Shavers,44817636,CPT,300,BUF@MIN 11/09/2026 08:15PM ET,BUF,0.0,OUT,CPT,Tyrell Shavers,dk,300,tyrell shavers,BUF,WR,showdown,00-0038679,auto_exact,high
+RB,Frank Gore Jr. (44817574),Frank Gore Jr.,44817574,FLEX,200,BUF@MIN 11/09/2026 08:15PM ET,BUF,0.2,,FLEX,Frank Gore Jr.,dk,200,frank gore,BUF,RB,showdown,00-0039471,auto_exact,high
+RB,Max Bredeson (44817575),Max Bredeson,44817575,FLEX,200,BUF@MIN 11/09/2026 08:15PM ET,MIN,0.0,,FLEX,Max Bredeson,dk,200,max bredeson,MIN,RB,showdown,00-0041081,auto_exact,high
+RB,Brock Lampe (44817576),Brock Lampe,44817576,FLEX,200,BUF@MIN 11/09/2026 08:15PM ET,BUF,0.0,,FLEX,Brock Lampe,dk,200,brock lampe,BUF,RB,showdown,00-0040567,auto_exact,high
+WR,Dillon Bell (44817577),Dillon Bell,44817577,FLEX,200,BUF@MIN 11/09/2026 08:15PM ET,MIN,0.0,,FLEX,Dillon Bell,dk,200,dillon bell,MIN,WR,showdown,00-0041342,auto_exact,high
+WR,Odell Beckham Jr. (44817578),Odell Beckham Jr.,44817578,FLEX,200,BUF@MIN 11/09/2026 08:15PM ET,MIN,0.0,,FLEX,Odell Beckham Jr.,dk,200,odell beckham,MIN,WR,showdown,00-0031235,auto_exact,high
+WR,Trent Sherfield Sr. (44817579),Trent Sherfield Sr.,44817579,FLEX,200,BUF@MIN 11/09/2026 08:15PM ET,BUF,0.0,,FLEX,Trent Sherfield Sr.,dk,200,trent sherfield,BUF,WR,showdown,00-0034487,auto_exact,high
+WR,Jeshaun Jones (44817580),Jeshaun Jones,44817580,FLEX,200,BUF@MIN 11/09/2026 08:15PM ET,MIN,2.1,,FLEX,Jeshaun Jones,dk,200,jeshaun jones,MIN,WR,showdown,00-0039710,auto_exact,high
+WR,Ja'Mori Maclin (44817581),Ja'Mori Maclin,44817581,FLEX,200,BUF@MIN 11/09/2026 08:15PM ET,BUF,0.0,,FLEX,Ja'Mori Maclin,dk,200,jamori maclin,BUF,WR,showdown,00-0041272,auto_exact,high
+WR,Stephen Gosnell (44817582),Stephen Gosnell,44817582,FLEX,200,BUF@MIN 11/09/2026 08:15PM ET,BUF,0.0,,FLEX,Stephen Gosnell,dk,200,stephen gosnell,BUF,WR,showdown,00-0040361,auto_exact,high
+WR,Skyler Bell (44817583),Skyler Bell,44817583,FLEX,200,BUF@MIN 11/09/2026 08:15PM ET,BUF,0.0,,FLEX,Skyler Bell,dk,200,skyler bell,BUF,WR,showdown,00-0041443,auto_exact,high
+TE,Keleki Latu (44817584),Keleki Latu,44817584,FLEX,200,BUF@MIN 11/09/2026 08:15PM ET,BUF,0.0,,FLEX,Keleki Latu,dk,200,keleki latu,BUF,TE,showdown,00-0040363,auto_exact,high
+TE,Josh Oliver (44817585),Josh Oliver,44817585,FLEX,200,BUF@MIN 11/09/2026 08:15PM ET,MIN,2.5,IR,FLEX,Josh Oliver,dk,200,josh oliver,MIN,TE,showdown,00-0035249,auto_exact,high
+TE,Andrew DePaola (44817586),Andrew DePaola,44817586,FLEX,200,BUF@MIN 11/09/2026 08:15PM ET,MIN,0.0,,FLEX,Andrew DePaola,dk,200,andrew depaola,MIN,TE,showdown,00-0029714,auto_fallback_name_only_position_mismatch,low
+TE,Devin Culp (44817587),Devin Culp,44817587,FLEX,200,BUF@MIN 11/09/2026 08:15PM ET,MIN,0.0,,FLEX,Devin Culp,dk,200,devin culp,MIN,TE,showdown,00-0039754,auto_exact,high
+WR,Tyrell Shavers (44817588),Tyrell Shavers,44817588,FLEX,200,BUF@MIN 11/09/2026 08:15PM ET,BUF,0.0,OUT,FLEX,Tyrell Shavers,dk,200,tyrell shavers,BUF,WR,showdown,00-0038679,auto_exact,high

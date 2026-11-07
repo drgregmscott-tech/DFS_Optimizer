@@ -288,6 +288,22 @@
       "season": 2026,
       "week": 9,
       "lock_time_utc": "2026-11-08T18:00:00Z"
+    },
+    {
+      "slate_id": "dk_showdown_wk9_TB_CHI_08Nov2026",
+      "site": "dk",
+      "format": "showdown",
+      "season": 2026,
+      "week": 9,
+      "lock_time_utc": "2026-11-09T01:20:00Z"
+    },
+    {
+      "slate_id": "dk_showdown_wk9_BUF_MIN_09Nov2026",
+      "site": "dk",
+      "format": "showdown",
+      "season": 2026,
+      "week": 9,
+      "lock_time_utc": "2026-11-10T01:15:00Z"
     }
   ]
 }

@@ -1,0 +1,10 @@
+Construction lint (informational only -- never blocks a build; see WK3_CONSTRUCTION_RULE_AUDIT.md):
+[construction_lint] showdown: 20 lineups, pool=final_projections_dk_dk_showdown_wk9_TB_CHI_08Nov2026.csv
+               rule severity                                    evidence  lineups share
+    SD12_cheap_tier backstop    Weak-to-Supported (SE) / Supported (GPP)        1    5%
+SD13_cpt_wrte_no_qb backstop                                   Supported        4   20%
+      SD3_cpt_k_dst     warn                  Supported (DST) / Weak (K)        2   10%
+    SD5_two_kickers     info                           Weak (CI spans 0)        2   10%
+SD7_split_cpt_heavy backstop         Supported (mild, -1.2 to -1.6 cash)       15   75%
+  SD8_low_owned_cpt     info Supported on realized own; modeled own weak        5   25%
+     SD_stack_depth backstop                           Weak-to-Supported       13   65%
