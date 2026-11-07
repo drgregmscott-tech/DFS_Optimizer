@@ -8,3 +8,4 @@ week,player_name,team,status,note
 5,Jordan Addison,MIN,OUT,"X monitor 2026-10-11 ~15:50Z - AdamSchefter inactives list for Wk5 vs NO; file still Questionable"
 5,Rico Dowdle,PIT,OUT,"X monitor 2026-10-11 ~15:50Z - UnderdogNFL reports inactive (toe) for Wk5; file still Questionable"
 5,Ashton Jeanty,LV,ACTIVE,"X monitor 2026-10-11 ~15:50Z - UnderdogNFL + AdamSchefter actives list + RapSheet (a go) all confirm active for Wk5; file still Questionable"
+9,Deshaun Watson,CLE,OUT,"AI-probe chat (claude.ai live search) 2026-11-07 - CLE OC Monken named Shedeur Sanders the Wk9 starter vs NO with Watson still in concussion protocol; official feed still Questionable. Single secondhand source (not independently re-verified) -- re-check status before lock and revert this row if wrong."
