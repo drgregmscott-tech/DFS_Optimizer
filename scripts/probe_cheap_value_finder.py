@@ -151,6 +151,73 @@ def candidates_by_position(season: int, week: int, site: str,
     return out
 
 
+def latest_lineup_pool(slate_token: str) -> str | None:
+    """slate_token is a final_projections filename with the
+    'final_projections_' prefix and '.csv' suffix stripped (e.g.
+    'dk_dk_classic_wk9_main_08Nov2026') -- finds the matching
+    lineups_multi_<token>_*.csv from the real 100-lineup build, if one
+    exists yet. Added 2026-11-07."""
+    return latest(f"output/lineups_multi_{slate_token}_*.csv")
+
+
+def build_pool_candidates(lineup_csv_path: str, site: str,
+                           exclude_names: set[str] | None = None,
+                           thresholds: dict[str, float] | None = None
+                           ) -> dict[str, list[dict]]:
+    """Distinct cheap WR/RB/TE actually rostered somewhere in the real
+    built lineup pool, grouped by position. Added 2026-11-07 per user
+    feedback: `candidates_by_position()`'s top-N-by-efficiency list is a
+    *proxy* for what the solver will pick -- a real salary-saver can rank
+    outside that cutoff and never get asked about, which is exactly the
+    gap between the probe's output and the actual 100-lineup build the
+    user was describing. This reads what the solver ACTUALLY picked
+    instead of re-guessing it, so nothing real can fall outside a top-N
+    window. It's additive to candidates_by_position, not a replacement --
+    the user explicitly wants to keep the existing fringe-value question
+    category as-is and just stop missing names that don't make that list.
+
+    Deliberately membership-only: no count of how many of the 100
+    lineups include a player, no percentage. That's the lineup-pool
+    exposure metric that was already ruled out as a cross-check signal
+    (see feedback_ai_probe_crosscheck_not_exposure memory, 2026-10-31) --
+    exposure is a read on the solver's combinatorics across the whole
+    pool, not on whether one player's own projection is right, so it must
+    never decide a verdict. But "did the solver actually use him anywhere
+    in a real build" is a different question -- it only decides who gets
+    ASKED about, never whether the answer is correct. That's still judged
+    purely from season_avg/recent_form/matchup_factor/vegas_factor, same
+    as every other candidate.
+    """
+    with open(lineup_csv_path, encoding="utf-8") as f:
+        rows = list(csv.DictReader(f))
+    exclude_names = exclude_names or set()
+    seen: dict[str, dict] = {}
+    for r in rows:
+        pos = r.get("position")
+        if pos not in ("WR", "RB", "TE"):
+            continue
+        name = r.get("player_name")
+        if not name or name in exclude_names or name in seen:
+            continue
+        try:
+            sal = float(r.get("salary") or 0)
+        except ValueError:
+            continue
+        floor = (thresholds or THRESHOLDS).get((site, pos), 0)
+        if sal <= 0 or sal >= floor:
+            continue
+        seen[name] = {
+            "name": name, "pos": pos, "team": r.get("team"), "sal": sal,
+            "proj": float(r.get("projection") or 0.0),
+        }
+    out: dict[str, list[dict]] = {"WR": [], "RB": [], "TE": []}
+    for v in seen.values():
+        out[v["pos"]].append(v)
+    for pos in out:
+        out[pos].sort(key=lambda x: x["sal"])
+    return out
+
+
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--season", type=int, default=2026)

@@ -24,7 +24,9 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent))
-from probe_cheap_value_finder import candidates_by_position  # noqa: E402
+from probe_cheap_value_finder import (  # noqa: E402
+    candidates_by_position, latest_lineup_pool, build_pool_candidates,
+)
 
 SALARY_FLOOR = {"QB": 5000, "RB": 4500, "WR": 4500, "TE": 4500}
 FRESHNESS_CHECK = (
@@ -66,6 +68,33 @@ def salary_filtered_questionable(rows: list[dict]) -> list[dict]:
     return out
 
 
+def print_usage_and_trap_questions(n: int, names_str: str) -> int:
+    """Shared usage-trend + matchup-trap question pair, factored out
+    2026-11-07 so the build-derived section (below) can reuse the exact
+    same question wording as the existing fringe-value section instead of
+    duplicating it."""
+    print(
+        f"{n}. For each of these specific players -- {names_str} -- "
+        "has his usage (snap share, target/carry share, red-zone role) "
+        "specifically trended up, down, or stayed steady over his last "
+        "2-3 games? Note anything a beat reporter or coach has said "
+        "about why.\n"
+    )
+    n += 1
+    print(
+        f"{n}. For each of those same players, is this week's matchup "
+        "a trap -- does it LOOK favorable (weak defense, high implied "
+        "total) but actually work against him (wrong position the "
+        "defense is weak against, a game script/pace issue, a stat "
+        "driven by garbage time not real volume) -- or conversely, "
+        "does a bad-looking matchup actually not matter for him "
+        "specifically? Answer only for players where you have a real "
+        "basis, skip the rest rather than guessing.\n"
+    )
+    n += 1
+    return n
+
+
 # NOTE: C used to fan out over OUT players (filtered by own_vac_bump).
 # Dropped 2026-10-29 live test: 4 of 5 named OUT players turned out to be
 # long-settled, multi-week-old situations (season-ending IR etc.) -- old
@@ -73,6 +102,39 @@ def salary_filtered_questionable(rows: list[dict]) -> list[dict]:
 # stats probe_team_usage_rank.py reads directly, making a chat guess about
 # it redundant. The genuinely live, forward-looking uncertainty is
 # QUESTIONABLE/DOUBTFUL players -- C now reuses B's filtered list instead.
+
+
+def named_candidates(path: str) -> list[str]:
+    """Every player named individually in the fringe-value and
+    build-derived sections -- i.e. everyone the probe explicitly asked
+    about by name, across both sections. Factored out 2026-11-07 for
+    probe_report_coverage_check.py: a real run showed most of the
+    build-derived list (and a couple of fringe-value names, including
+    the one the user caught -- Xavier Worthy, 66/100 real exposure)
+    silently missing from the final cross-check report with no warning.
+    The question generator was asking about them correctly; the report
+    write-up just dropped them. This lets a separate script verify every
+    name asked about actually got an answer, instead of trusting the
+    report author caught every drop by eye.
+    """
+    import re
+    m = re.search(r"wk(\d+)", path)
+    week_num = int(m.group(1)) if m else 8
+    by_pos = candidates_by_position(2026, week_num, "dk", top_n=3)
+    fringe_names = [x["name"] for pos in ("WR", "RB", "TE") for x in by_pos.get(pos, [])]
+
+    slate_token = os.path.basename(path)
+    if slate_token.startswith("final_projections_"):
+        slate_token = slate_token[len("final_projections_"):]
+    slate_token = slate_token[:-4] if slate_token.endswith(".csv") else slate_token
+    pool_path = latest_lineup_pool(slate_token)
+    if pool_path and os.path.getmtime(pool_path) < os.path.getmtime(path):
+        pool_path = None  # stale -- same rule as main(), not used either way
+    build_names: list[str] = []
+    if pool_path:
+        pool_by_pos = build_pool_candidates(pool_path, "dk", exclude_names=set(fringe_names))
+        build_names = [x["name"] for pos in ("WR", "RB", "TE") for x in pool_by_pos.get(pos, [])]
+    return fringe_names + build_names
 
 
 def main() -> None:
@@ -154,25 +216,61 @@ def main() -> None:
     if fringe_names:
         names_str = ", ".join(fringe_names)
         print("## Fringe-value verification (named, from our own data)\n")
+        n = print_usage_and_trap_questions(n, names_str)
+
+    # Build-derived section, added 2026-11-07. Additive, not a replacement
+    # for the fringe-value section above (explicit user instruction) --
+    # closes the gap where a real salary-saver the solver actually
+    # rostered falls outside candidates_by_position's top-3-by-efficiency
+    # cutoff and never gets asked about. Needs an actual 100-lineup build
+    # to already exist for this slate (run the build first, then the
+    # probe); silently skipped if it doesn't, since there's nothing yet
+    # to read.
+    slate_token = os.path.basename(path)
+    if slate_token.startswith("final_projections_"):
+        slate_token = slate_token[len("final_projections_"):]
+    slate_token = slate_token[:-4] if slate_token.endswith(".csv") else slate_token
+    pool_path = latest_lineup_pool(slate_token)
+    stale_pool = False
+    if pool_path and os.path.getmtime(pool_path) < os.path.getmtime(path):
+        # Build predates the projections file it's supposedly built from
+        # -- e.g. data got refreshed again after the last 100-lineup build
+        # ran, so this pool reflects stale injury/role data. Added
+        # 2026-11-07: silently using it anyway would hand back real
+        # player names that look current but aren't, with no sign
+        # anything's wrong.
+        stale_pool = True
+        pool_path = None
+    build_names: list[str] = []
+    if pool_path:
+        pool_by_pos = build_pool_candidates(pool_path, "dk", exclude_names=set(fringe_names))
+        build_names = [x["name"] for pos in ("WR", "RB", "TE") for x in pool_by_pos.get(pos, [])]
+    if build_names:
+        names_str = ", ".join(build_names)
         print(
-            f"{n}. For each of these specific players -- {names_str} -- "
-            "has his usage (snap share, target/carry share, red-zone role) "
-            "specifically trended up, down, or stayed steady over his last "
-            "2-3 games? Note anything a beat reporter or coach has said "
-            "about why.\n"
+            "## Build-derived value check (actually rostered in this "
+            "week's lineup pool, not already covered above)\n"
         )
-        n += 1
+        n = print_usage_and_trap_questions(n, names_str)
+    elif pool_path:
         print(
-            f"{n}. For each of those same players, is this week's matchup "
-            "a trap -- does it LOOK favorable (weak defense, high implied "
-            "total) but actually work against him (wrong position the "
-            "defense is weak against, a game script/pace issue, a stat "
-            "driven by garbage time not real volume) -- or conversely, "
-            "does a bad-looking matchup actually not matter for him "
-            "specifically? Answer only for players where you have a real "
-            "basis, skip the rest rather than guessing.\n"
+            "<!-- build-derived check: lineup pool found at "
+            f"{pool_path} but every cheap WR/RB/TE in it was already "
+            "covered by the fringe-value section above. -->\n"
         )
-        n += 1
+    elif stale_pool:
+        print(
+            "<!-- build-derived check skipped: found a lineups_multi_"
+            f"{slate_token}_*.csv but it's OLDER than {path} -- the "
+            "lineup build predates this projections refresh. Re-run the "
+            "100-lineup build, then regenerate this probe. -->\n"
+        )
+    else:
+        print(
+            "<!-- build-derived check skipped: no lineups_multi_"
+            f"{slate_token}_*.csv found yet. Run the 100-lineup build "
+            "first, then regenerate this probe, to get it. -->\n"
+        )
 
     print("## Game script / blowout risk\n")
     print(

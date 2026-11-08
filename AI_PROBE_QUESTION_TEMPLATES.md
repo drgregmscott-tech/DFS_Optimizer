@@ -71,6 +71,17 @@ our numbers, don't touch). **disagree-underprojected** → thumbs up.
 writeup can still precede the lists for context, but the lists are
 mandatory and must be the last thing in the report.
 
+**Fourth list, added 2026-11-07 — "Checked, no bust-risk flag."** Every
+player who was specifically named in the Fringe-value or Build-derived
+sections below (i.e. a real candidate we deliberately asked about, not
+every player on the slate) and resolved to **agree** or
+**trap-not-confirmed** goes here instead of being silently dropped. This
+is NOT a "safe" or "low risk" claim — it means exactly one thing: nothing
+in the probe's own claims about him, checked against our data, raised a
+red flag this week. Without this list, a salary-saver that was actually
+vetted and came back clean looks identical to one that was never checked
+at all, which defeats the point of asking about him in the first place.
+
 **Follow-up correction, same day:** the fringe-value/matchup-trap
 questions below (E3, sharpened F2) were first drafted as open,
 unnamed questions. That's the wrong shape — open "what's good value"
@@ -285,6 +296,45 @@ the caller already resolved instead of this function re-globbing --
 showdown filenames don't match classic's `_classic_wk*_main_*` glob
 shape) and `team_filter` (scope the candidate pool to just the showdown
 slate's 2 teams).
+
+## Build-derived value check, added 2026-11-07
+
+Separate problem the fringe-value section (candidates_by_position's
+top-3-per-position-by-efficiency list) doesn't fully solve: that list is
+a *proxy* for which cheap players the solver will actually roster, and a
+real salary-saver can rank outside the top-3 cutoff and never get asked
+about. The user's actual complaint was concrete: "yeah, the optimizer
+likes this WR2 for $4100 this week but I don't really trust that guy" --
+and the probe wasn't reliably covering that exact player.
+
+Fix, in `probe_cheap_value_finder.build_pool_candidates()`: run the real
+100-lineup build first (the user already does this as part of the weekly
+cadence -- confirmed it doesn't disrupt his Fri/Sat/Sun build schedule to
+build before probing), then read the distinct cheap WR/RB/TE that
+actually show up anywhere in `output/lineups_multi_<slate>_*.csv`,
+excluding anyone already covered by the fringe-value section.
+`probe_ai_chat_weekly_questions.py` fans the same usage-trend +
+matchup-trap question pair onto this list under its own "Build-derived
+value check" heading -- additive to the fringe-value section, never a
+replacement (explicit user instruction, 2026-11-07: "I don't want the
+probe to be narrowed down to only these players... this is more of an
+add on").
+
+**Why this doesn't re-trigger the exposure problem:** selection (who do
+we ask about) and verdict (is the answer right) are different questions.
+Exposure was ruled out as a way to answer the second one -- how often a
+player shows up across 100 lineups says nothing about whether his own
+projection is accurate, it's an emergent property of the whole pool's
+combinatorics (see the exposure correction above). But "did the solver
+actually roster him anywhere in a real build" is a legitimate way to
+answer the first question, and it's membership-only (yes/no), never a
+count or percentage. The verdict itself still comes only from
+season_avg/recent_form/matchup_factor/vegas_factor, exactly as before.
+
+Requires the 100-lineup build to already exist for this slate -- if
+`lineups_multi_<slate>_*.csv` isn't there yet, this section is skipped
+(logged as an HTML comment in the output, not a silent gap) rather than
+guessing at who the solver would pick.
 
 ## Open design questions (not yet decided)
 
