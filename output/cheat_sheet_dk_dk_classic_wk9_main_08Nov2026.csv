@@ -1,189 +1,185 @@
 position,rank,player_id,player_name,team,opponent,salary,final_projection,estimated_ownership_pct,confidence,composite_score,top_factors,rationale,badge,is_bonus
-QB,1,00-0037834,Brock Purdy,SF,LV,6800,23.38088776967066,14.559068244856428,10,1.4944304963404476,"matchup, game environment, history, bust potential","• Matchup: LV allows 1.13x league-avg to QBs (favorable)
+QB,1,00-0037834,Brock Purdy,SF,LV,6800,23.45833499995316,14.321944545930554,9,1.4970591381245804,"matchup, game environment, history, bust potential","• Matchup: LV allows 1.13x league-avg to QBs (favorable)
 • Game environment: SF implied 30.7 (plus)
 • History: 21.4 pts/game season avg, 7 games (in line with average)
-• Range: 11.8–41.5 pts (low bust risk)",,False
-QB,2,00-0033077,Dak Prescott,DAL,IND,6500,21.24053460013228,7.532087303566462,8,1.2487680815733073,"matchup, game environment, history, bust potential","• Matchup: IND allows 1.06x league-avg to QBs (average)
+• Range: 11.9–41.7 pts (low bust risk)",,False
+QB,2,00-0033077,Dak Prescott,DAL,IND,6500,21.21505128766926,7.863644294698357,8,1.24497455699599,"matchup, game environment, history, bust potential","• Matchup: IND allows 1.06x league-avg to QBs (average)
 • Game environment: DAL implied 27.7 (plus)
 • History: 19.9 pts/game season avg, 8 games (in line with average)
-• Range: 10.3–37.6 pts (low bust risk)",,False
-QB,3,00-0033873,Patrick Mahomes,KC,NYJ,6100,20.43611936451736,10.528910198044978,7,1.2298692009903247,"matchup, game environment, history, bust potential","• Matchup: NYJ allows 1.05x league-avg to QBs (average)
+• Range: 10.2–37.6 pts (low bust risk)",,False
+QB,3,00-0033873,Patrick Mahomes,KC,NYJ,6100,20.444457917786387,10.272888052574531,7,1.2330588245238163,"matchup, game environment, history, bust potential","• Matchup: NYJ allows 1.05x league-avg to QBs (average)
 • Game environment: KC implied 28.3 (plus)
 • History: 19.4 pts/game season avg, 7 games (in line with average)
-• Range: 9.7–36.1 pts (normal swing)",,False
-QB,4,00-0033106,Jared Goff,DET,MIA,6600,20.65327459634304,7.036789113365516,7,1.2115029718229104,"matchup, game environment, history, bust potential","• Matchup: MIA allows 1.13x league-avg to QBs (favorable)
+• Range: 9.7–36.4 pts (normal swing)",,False
+QB,4,00-0033106,Jared Goff,DET,MIA,6600,20.65916872563976,7.348321209735419,7,1.2078732055274395,"matchup, game environment, history, bust potential","• Matchup: MIA allows 1.13x league-avg to QBs (favorable)
 • Game environment: DET implied 28.2 (plus)
 • History: 21.9 pts/game season avg, 7 games (in line with average)
-• Range: 9.8–36.8 pts (normal swing)",,False
-QB,5,00-0026498,Matthew Stafford,LA,WAS,6200,18.691844485988817,4.400438332076923,5,1.0121681888053293,"matchup, game environment, history, bust potential","• Matchup: WAS allows 1.13x league-avg to QBs (favorable)
+• Range: 9.8–36.5 pts (normal swing)",,False
+QB,5,00-0026498,Matthew Stafford,LA,WAS,6200,18.74653216788671,4.143944174924838,6,1.018757966107742,"matchup, game environment, history, bust potential","• Matchup: WAS allows 1.13x league-avg to QBs (favorable)
 • Game environment: LA implied 26.2 (plus)
 • History: 19.0 pts/game season avg, 8 games (in line with average)
-• Range: 8.4–33.0 pts (normal swing)",,False
-QB,6,00-0035704,Drew Lock,SEA,ARI,4000,15.784974264924491,19.466249122400857,3,0.8912259846907292,"matchup, game environment, history, bust potential","• Matchup: ARI allows 1.21x league-avg to QBs (favorable)
+• Range: 8.4–33.3 pts (normal swing)",,False
+QB,6,00-0035704,Drew Lock,SEA,ARI,4000,15.935142944956583,19.494823872253665,4,0.902917248284946,"matchup, game environment, history, bust potential","• Matchup: ARI allows 1.21x league-avg to QBs (favorable)
 • Game environment: SEA implied 24.0 (middling)
 • History: 17.1 pts/game season avg, 2 games (in line with average)
-• Range: 6.2–28.7 pts (normal swing)",Value Pick,True
-QB,7,00-0039851,Drake Maye,NE,GB,7000,19.23610142663869,2.5229305043897066,4,0.8797408572208436,"matchup, game environment, history, bust potential","• Matchup: GB allows 0.84x league-avg to QBs (tough)
-• Game environment: NE implied 23.8 (middling)
-• History: 22.1 pts/game season avg, 8 games (in line with average)
-• Range: 8.8–34.8 pts (normal swing)",Leverage Pick,True
-RB,1,00-0039139,Jahmyr Gibbs,DET,MIA,10000,27.051936432546736,26.80300550826416,10,2.1922494719145593,"matchup, game environment, history, bust potential","• Matchup: MIA allows 1.08x league-avg to RBs (average)
+• Range: 6.3–29.2 pts (normal swing)",Value Pick,True
+QB,7,00-0036264,Jordan Love,GB,NE,6300,16.560230471284147,1.320006901620571,2,0.642352262293614,"matchup, game environment, history, bust potential","• Matchup: NE allows 0.94x league-avg to QBs (average)
+• Game environment: GB implied 20.8 (middling)
+• History: 20.6 pts/game season avg, 8 games (projection running below average)
+• Range: 6.8–30.1 pts (normal swing)",Leverage Pick,True
+RB,1,00-0039139,Jahmyr Gibbs,DET,MIA,10000,27.05193643254674,26.427095416332826,10,2.190750765703867,"matchup, game environment, history, bust potential","• Matchup: MIA allows 1.08x league-avg to RBs (average)
 • Game environment: DET implied 28.2 (plus)
 • History: 30.0 pts/game season avg, 7 games (in line with average)
 • Range: 8.3–55.1 pts (normal swing)",,False
-RB,2,00-0033280,Christian McCaffrey,SF,LV,8000,22.35000499305441,31.999128482703945,8,1.9100399824540573,"matchup, game environment, history, bust potential","• Matchup: LV allows 1.10x league-avg to RBs (average)
+RB,2,00-0033280,Christian McCaffrey,SF,LV,8000,22.35367695279008,33.4181195376888,8,1.909022250053455,"matchup, game environment, history, bust potential","• Matchup: LV allows 1.10x league-avg to RBs (average)
 • Game environment: SF implied 30.7 (plus)
 • History: 20.7 pts/game season avg, 7 games (in line with average)
 • Range: 6.7–47.1 pts (normal swing)",,False
-RB,3,00-0038134,Kenneth Walker III,KC,NYJ,9000,22.366089151933284,8.402789054539932,8,1.8481683219732048,"matchup, game environment, history, bust potential","• Matchup: NYJ allows 0.99x league-avg to RBs (average)
+RB,3,00-0038134,Kenneth Walker III,KC,NYJ,9000,22.469241734015352,8.96251040604164,8,1.8532930116888018,"matchup, game environment, history, bust potential","• Matchup: NYJ allows 0.99x league-avg to RBs (average)
 • Game environment: KC implied 28.3 (plus)
 • History: 24.6 pts/game season avg, 7 games (in line with average)
-• Range: 6.7–46.3 pts (normal swing)",Leverage Pick,False
-RB,4,00-0036997,Javonte Williams,DAL,IND,7300,17.531484919358512,5.056131350489564,6,1.5182452220919698,"matchup, game environment, history, bust potential","• Matchup: IND allows 1.08x league-avg to RBs (average)
+• Range: 6.8–46.3 pts (normal swing)",Leverage Pick,False
+RB,4,00-0036997,Javonte Williams,DAL,IND,7300,17.3594130302645,5.202854076625707,6,1.5022265544182063,"matchup, game environment, history, bust potential","• Matchup: IND allows 1.08x league-avg to RBs (average)
 • Game environment: DAL implied 27.7 (plus)
 • History: 17.5 pts/game season avg, 8 games (in line with average)
-• Range: 5.1–38.8 pts (normal swing)",,False
-RB,5,00-0037840,Kyren Williams,LA,WAS,7600,17.37030269526895,4.34591326290635,6,1.30702961038323,"matchup, game environment, history, bust potential","• Matchup: WAS allows 0.93x league-avg to RBs (average)
+• Range: 5.1–38.3 pts (normal swing)",,False
+RB,5,00-0037840,Kyren Williams,LA,WAS,7600,17.165625137395967,4.155118522186902,6,1.2922262842207088,"matchup, game environment, history, bust potential","• Matchup: WAS allows 0.93x league-avg to RBs (average)
 • Game environment: LA implied 26.2 (plus)
 • History: 19.0 pts/game season avg, 8 games (in line with average)
-• Range: 5.1–35.9 pts (normal swing)",,False
-RB,6,00-0036555,Chuba Hubbard,CAR,DEN,6500,16.85500658789046,17.81590465304417,6,1.206119579548573,"matchup, game environment, history, bust potential","• Matchup: DEN allows 1.08x league-avg to RBs (average)
+• Range: 5.0–35.8 pts (normal swing)",,False
+RB,6,00-0036555,Chuba Hubbard,CAR,DEN,6500,16.99791008062861,17.966527244629766,6,1.2135854378566366,"matchup, game environment, history, bust potential","• Matchup: DEN allows 1.08x league-avg to RBs (average)
 • Game environment: CAR implied 20.9 (middling)
-• History: 19.9 pts/game season avg, 7 games (projection running below average)
-• Range: 4.9–35.3 pts (normal swing)",,False
-RB,7,00-0036223,Jonathan Taylor,IND,DAL,7500,17.313453238430903,7.312270807729901,6,1.1716151977869003,"matchup, game environment, history, bust potential","• Matchup: DAL allows 1.13x league-avg to RBs (favorable)
+• History: 19.9 pts/game season avg, 7 games (in line with average)
+• Range: 4.9–35.4 pts (normal swing)",,False
+RB,7,00-0036223,Jonathan Taylor,IND,DAL,7500,17.269912580098776,7.286849529320688,6,1.1722846661397837,"matchup, game environment, history, bust potential","• Matchup: DAL allows 1.13x league-avg to RBs (favorable)
 • Game environment: IND implied 23.7 (middling)
 • History: 18.4 pts/game season avg, 8 games (in line with average)
-• Range: 5.0–35.6 pts (normal swing)",,False
-RB,8,00-0040583,Woody Marks,HOU,LAC,5700,15.063672600603228,7.451821775170523,6,1.1040444228536486,"matchup, game environment, history, bust potential","• Matchup: LAC allows 1.05x league-avg to RBs (average)
-• Game environment: HOU implied 22.9 (middling)
-• History: 8.9 pts/game season avg, 7 games (projection running above average)
-• Range: 4.3–31.0 pts (normal swing)",,False
-RB,9,00-0036875,Rhamondre Stevenson,NE,GB,6100,15.266287572021405,8.573364200837025,6,1.0798228917647756,"matchup, game environment, history, bust potential","• Matchup: GB allows 1.10x league-avg to RBs (favorable)
+• Range: 5.0–35.4 pts (normal swing)",,False
+RB,8,00-0036875,Rhamondre Stevenson,NE,GB,6100,15.370935784904368,8.964675876156498,6,1.0913870805415373,"matchup, game environment, history, bust potential","• Matchup: GB allows 1.10x league-avg to RBs (favorable)
 • Game environment: NE implied 23.8 (middling)
 • History: 12.5 pts/game season avg, 8 games (in line with average)
-• Range: 4.4–30.9 pts (normal swing)",,False
-RB,10,00-0041496,Jonah Coleman,DEN,CAR,5300,13.852990240424464,34.54256530349553,5,0.9479833095147988,"matchup, game environment, history, bust potential","• Matchup: CAR allows 1.18x league-avg to RBs (favorable)
-• Game environment: DEN implied 23.7 (middling)
-• History: 11.0 pts/game season avg, 4 games (in line with average)
-• Range: 3.9–28.9 pts (normal swing)",,False
-RB,11,00-0037263,Tyler Allgeier,ARI,SEA,5400,15.721088077539603,17.29991371566913,6,0.6774732855534573,"matchup, game environment, history, bust potential","• Matchup: SEA allows 1.00x league-avg to RBs (average)
+• Range: 4.4–31.5 pts (normal swing)",,False
+RB,9,00-0040583,Woody Marks,HOU,LAC,5700,14.86026765631531,6.664986133514488,6,1.0742624344554534,"matchup, game environment, history, bust potential","• Matchup: LAC allows 1.05x league-avg to RBs (average)
+• Game environment: HOU implied 22.9 (middling)
+• History: 8.9 pts/game season avg, 7 games (projection running above average)
+• Range: 4.2–29.8 pts (normal swing)",,False
+RB,10,00-0040198,Ollie Gordon II,MIA,DET,5600,13.987250465775684,8.352973515514519,4,0.9462420773030528,"matchup, game environment, history, bust potential","• Matchup: DET allows 0.89x league-avg to RBs (tough)
+• Game environment: MIA implied 21.8 (middling)
+• History: 11.2 pts/game season avg, 6 games (in line with average)
+• Range: 3.9–29.9 pts (normal swing)",,False
+RB,11,00-0037263,Tyler Allgeier,ARI,SEA,5400,15.51072408012782,15.52384901070154,6,0.6637164120693371,"matchup, game environment, history, bust potential","• Matchup: SEA allows 1.00x league-avg to RBs (average)
 • Game environment: ARI implied 15.5 (low-scoring)
 • History: 10.9 pts/game season avg, 8 games (projection running above average)
-• Range: 4.5–27.4 pts (normal swing)",Value Pick,True
-WR,1,00-0039075,Puka Nacua,LA,WAS,8800,22.391797342153623,28.138878414491217,10,2.1603994480518454,"matchup, game environment, history, bust potential","• Matchup: WAS allows 1.04x league-avg to WRs (average)
+• Range: 4.4–27.6 pts (normal swing)",Value Pick,True
+WR,1,00-0039075,Puka Nacua,LA,WAS,8800,22.376615430167146,26.907490292428644,10,2.1479026184669716,"matchup, game environment, history, bust potential","• Matchup: WAS allows 1.04x league-avg to WRs (average)
 • Game environment: LA implied 26.2 (plus)
 • History: 24.1 pts/game season avg, 6 games (in line with average)
 • Range: 6.7–45.7 pts (normal swing)",,False
-WR,2,00-0036358,CeeDee Lamb,DAL,IND,8300,19.61086367400824,28.26475374643868,8,2.0340897132254017,"matchup, game environment, history, bust potential","• Matchup: IND allows 0.91x league-avg to WRs (average)
+WR,2,00-0036358,CeeDee Lamb,DAL,IND,8300,19.6786825217087,27.96710135649083,8,2.027982828167451,"matchup, game environment, history, bust potential","• Matchup: IND allows 0.91x league-avg to WRs (average)
 • Game environment: DAL implied 27.7 (plus)
 • History: 22.2 pts/game season avg, 8 games (in line with average)
 • Range: 5.7–42.5 pts (normal swing)",,False
-WR,3,00-0036963,Amon-Ra St. Brown,DET,MIA,8100,19.251786319820827,19.277312749138733,8,1.941842292351594,"matchup, game environment, history, bust potential","• Matchup: MIA allows 0.87x league-avg to WRs (tough)
+WR,3,00-0036963,Amon-Ra St. Brown,DET,MIA,8100,19.210408056797373,19.24510900160627,8,1.927997606586225,"matchup, game environment, history, bust potential","• Matchup: MIA allows 0.87x league-avg to WRs (tough)
 • Game environment: DET implied 28.2 (plus)
 • History: 21.0 pts/game season avg, 7 games (in line with average)
-• Range: 5.6–41.0 pts (normal swing)",,False
-WR,4,00-0038543,Jaxon Smith-Njigba,SEA,ARI,9300,22.1592610408375,33.99738988849572,9,1.9285712102853942,"matchup, game environment, history, bust potential","• Matchup: ARI allows 1.04x league-avg to WRs (average)
+• Range: 5.6–40.9 pts (normal swing)",,False
+WR,4,00-0038543,Jaxon Smith-Njigba,SEA,ARI,9300,21.99191079718084,31.198512406679853,9,1.926058374131461,"matchup, game environment, history, bust potential","• Matchup: ARI allows 1.04x league-avg to WRs (average)
 • Game environment: SEA implied 24.0 (middling)
 • History: 30.1 pts/game season avg, 8 games (projection running below average)
-• Range: 6.6–45.4 pts (normal swing)",,False
-WR,5,00-0039067,Rashee Rice,KC,NYJ,6400,14.184554509143355,10.326632659442836,6,1.3928965183816118,"matchup, game environment, history, bust potential","• Matchup: NYJ allows 0.94x league-avg to WRs (average)
+• Range: 6.6–46.6 pts (normal swing)",,False
+WR,5,00-0039067,Rashee Rice,KC,NYJ,6400,14.16859039888927,9.846206854719249,6,1.3832015612411845,"matchup, game environment, history, bust potential","• Matchup: NYJ allows 0.94x league-avg to WRs (average)
 • Game environment: KC implied 28.3 (plus)
 • History: 11.3 pts/game season avg, 4 games (in line with average)
 • Range: 3.8–30.4 pts (normal swing)",,False
-WR,6,00-0037239,Chris Olave,NO,CLE,7400,16.605177908024867,5.420940333565319,7,1.3834836196151443,"matchup, game environment, history, bust potential","• Matchup: CLE allows 0.95x league-avg to WRs (average)
+WR,6,00-0037239,Chris Olave,NO,CLE,7400,16.66328262569146,4.992118991515479,7,1.3771717092538411,"matchup, game environment, history, bust potential","• Matchup: CLE allows 0.95x league-avg to WRs (average)
 • Game environment: NO implied 23.1 (middling)
 • History: 19.1 pts/game season avg, 7 games (in line with average)
-• Range: 4.6–33.7 pts (normal swing)",Leverage Pick,False
-WR,7,00-0039410,Ryan Flournoy,DAL,IND,4800,13.793586729071114,11.543061173455484,7,1.3813480165096985,"matchup, game environment, history, bust potential","• Matchup: IND allows 0.91x league-avg to WRs (average)
+• Range: 4.7–33.7 pts (normal swing)",Leverage Pick,False
+WR,7,00-0039410,Ryan Flournoy,DAL,IND,4800,13.496570820556398,10.551586329451313,8,1.334702665723865,"matchup, game environment, history, bust potential","• Matchup: IND allows 0.91x league-avg to WRs (average)
 • Game environment: DAL implied 27.7 (plus)
 • History: 9.6 pts/game season avg, 8 games (projection running above average)
-• Range: 3.6–27.2 pts (normal swing)",,False
-WR,8,00-0037240,Jameson Williams,DET,MIA,6100,13.544729429793096,11.63110262974019,5,1.3439364905204054,"matchup, game environment, history, bust potential","• Matchup: MIA allows 0.87x league-avg to WRs (tough)
+• Range: 3.5–26.1 pts (normal swing)",,False
+WR,8,00-0037240,Jameson Williams,DET,MIA,6100,13.10123729597882,10.072194788891323,4,1.292060567761521,"matchup, game environment, history, bust potential","• Matchup: MIA allows 0.87x league-avg to WRs (tough)
 • Game environment: DET implied 28.2 (plus)
 • History: 14.8 pts/game season avg, 7 games (in line with average)
-• Range: 3.5–30.4 pts (normal swing)",,False
-WR,9,00-0040667,Matthew Golden,GB,NE,7000,15.33668517180794,6.42571533893103,6,1.2344447273916392,"matchup, game environment, history, bust potential","• Matchup: NE allows 1.05x league-avg to WRs (average)
+• Range: 3.4–29.8 pts (normal swing)",,False
+WR,9,00-0039337,Malik Nabers,NYG,PHI,7300,16.11644899031881,5.904439927232311,6,1.270677689253484,"matchup, game environment, history, bust potential","• Matchup: PHI allows 1.16x league-avg to WRs (favorable)
+• Game environment: NYG implied 20.3 (low-scoring)
+• History: 18.9 pts/game season avg, 7 games (in line with average)
+• Range: 4.5–34.1 pts (normal swing)",,False
+WR,10,00-0040667,Matthew Golden,GB,NE,7000,15.419163275269224,6.417070773344949,6,1.233298216549828,"matchup, game environment, history, bust potential","• Matchup: NE allows 1.05x league-avg to WRs (average)
 • Game environment: GB implied 20.8 (middling)
 • History: 17.6 pts/game season avg, 8 games (in line with average)
-• Range: 4.2–31.9 pts (normal swing)",,False
-WR,10,00-0039337,Malik Nabers,NYG,PHI,7300,15.661909388948391,4.998264814558996,6,1.226048450922786,"matchup, game environment, history, bust potential","• Matchup: PHI allows 1.16x league-avg to WRs (favorable)
-• Game environment: NYG implied 20.3 (low-scoring)
-• History: 18.9 pts/game season avg, 7 games (projection running below average)
-• Range: 4.3–32.7 pts (normal swing)",,False
-WR,11,00-0040124,Tetairoa McMillan,CAR,DEN,6900,15.27744030698583,4.766390441221546,6,1.2004342418124727,"matchup, game environment, history, bust potential","• Matchup: DEN allows 0.91x league-avg to WRs (average)
+• Range: 4.2–31.8 pts (normal swing)",,False
+WR,11,00-0040124,Tetairoa McMillan,CAR,DEN,6900,15.013642735870166,4.433425689610722,6,1.1608391046099689,"matchup, game environment, history, bust potential","• Matchup: DEN allows 0.91x league-avg to WRs (average)
 • Game environment: CAR implied 20.9 (middling)
 • History: 16.6 pts/game season avg, 7 games (in line with average)
-• Range: 4.2–31.7 pts (normal swing)",,False
-WR,12,00-0036554,Nico Collins,HOU,LAC,7200,15.38816420708354,4.460497889377541,7,1.1527334729156726,"matchup, game environment, history, bust potential","• Matchup: LAC allows 0.98x league-avg to WRs (average)
+• Range: 4.1–30.7 pts (normal swing)",,False
+WR,12,00-0036554,Nico Collins,HOU,LAC,7200,15.432624710760834,4.339514768541683,7,1.1458842375806648,"matchup, game environment, history, bust potential","• Matchup: LAC allows 0.98x league-avg to WRs (average)
 • Game environment: HOU implied 22.9 (middling)
 • History: 15.8 pts/game season avg, 5 games (in line with average)
 • Range: 4.2–30.6 pts (normal swing)",,False
-WR,13,00-0038124,Christian Watson,GB,NE,7500,14.765259454547644,4.330753479547596,5,1.0632837923951324,"matchup, game environment, history, bust potential","• Matchup: NE allows 1.05x league-avg to WRs (average)
+WR,13,00-0038124,Christian Watson,GB,NE,7500,14.717819289674734,4.011626655843531,5,1.054524964397543,"matchup, game environment, history, bust potential","• Matchup: NE allows 1.05x league-avg to WRs (average)
 • Game environment: GB implied 20.8 (middling)
 • History: 19.6 pts/game season avg, 8 games (projection running below average)
-• Range: 4.0–31.9 pts (normal swing)",,False
-WR,14,00-0039894,Xavier Worthy,KC,NYJ,4400,9.733280307344415,4.589570528237229,4,1.0108119082890688,"matchup, game environment, history, bust potential","• Matchup: NYJ allows 0.94x league-avg to WRs (average)
+• Range: 4.0–31.7 pts (normal swing)",,False
+WR,14,00-0039894,Xavier Worthy,KC,NYJ,4400,9.847465213875704,4.501308739362556,4,1.0179807557882057,"matchup, game environment, history, bust potential","• Matchup: NYJ allows 0.94x league-avg to WRs (average)
 • Game environment: KC implied 28.3 (plus)
 • History: 8.0 pts/game season avg, 7 games (in line with average)
-• Range: 2.2–20.7 pts (high bust risk)",,False
-WR,15,00-0036613,Jaylen Waddle,DEN,CAR,5700,11.31247358102638,3.068101189312828,4,0.976263308176163,"matchup, game environment, history, bust potential","• Matchup: CAR allows 0.97x league-avg to WRs (average)
-• Game environment: DEN implied 23.7 (middling)
-• History: 10.2 pts/game season avg, 8 games (in line with average)
-• Range: 2.8–24.5 pts (high bust risk)",,False
-WR,16,00-0041511,Omar Cooper Jr.,NYJ,KC,4900,12.662519576701232,19.27286034951853,5,0.8034510548912649,"matchup, game environment, history, bust potential","• Matchup: KC allows 0.87x league-avg to WRs (tough)
+• Range: 2.2–20.9 pts (high bust risk)",,False
+WR,15,00-0041040,Antonio Williams,WAS,LA,4100,11.604397605763278,12.719783862153776,5,0.9953730822588608,"matchup, game environment, history, bust potential","• Matchup: LA allows 0.90x league-avg to WRs (tough)
+• Game environment: WAS implied 21.8 (middling)
+• History: 7.8 pts/game season avg, 7 games (projection running above average)
+• Range: 2.9–24.4 pts (high bust risk)",,False
+WR,16,00-0041511,Omar Cooper Jr.,NYJ,KC,4900,12.792470450016534,19.974627539369703,5,0.818735896458604,"matchup, game environment, history, bust potential","• Matchup: KC allows 0.87x league-avg to WRs (tough)
 • Game environment: NYJ implied 19.0 (low-scoring)
 • History: 13.7 pts/game season avg, 3 games (in line with average)
-• Range: 3.2–24.6 pts (normal swing)",Value Pick,True
-TE,1,00-0033288,George Kittle,SF,LV,6000,17.505659882812054,26.019899797277564,9,2.335036558130079,"matchup, game environment, history, bust potential","• Matchup: LV allows 1.20x league-avg to TEs (favorable)
+• Range: 3.3–25.2 pts (normal swing)",Value Pick,True
+TE,1,00-0033288,George Kittle,SF,LV,6000,17.329216717512512,20.76070943760985,9,2.283595679722144,"matchup, game environment, history, bust potential","• Matchup: LV allows 1.20x league-avg to TEs (favorable)
 • Game environment: SF implied 30.7 (plus)
 • History: 15.1 pts/game season avg, 7 games (in line with average)
-• Range: 3.9–37.0 pts (normal swing)",,False
-TE,2,00-0039338,Brock Bowers,LV,SF,7900,17.78300322020334,4.33142023751177,8,1.7915233835985738,"matchup, game environment, history, bust potential","• Matchup: SF allows 0.90x league-avg to TEs (average)
+• Range: 3.9–36.9 pts (normal swing)",,False
+TE,2,00-0039338,Brock Bowers,LV,SF,7900,17.816068718685013,4.624417710179869,8,1.7615554925919208,"matchup, game environment, history, bust potential","• Matchup: SF allows 0.90x league-avg to TEs (average)
 • Game environment: LV implied 21.2 (middling)
 • History: 21.8 pts/game season avg, 6 games (projection running below average)
-• Range: 4.0–34.9 pts (normal swing)",,False
-TE,3,00-0039065,Sam LaPorta,DET,MIA,5100,12.68538083328443,5.230009902175183,6,1.5471599310362125,"matchup, game environment, history, bust potential","• Matchup: MIA allows 1.24x league-avg to TEs (favorable)
+• Range: 4.0–35.0 pts (normal swing)",,False
+TE,3,00-0039065,Sam LaPorta,DET,MIA,5100,12.638310858317762,5.1882593110031845,6,1.5074277272090109,"matchup, game environment, history, bust potential","• Matchup: MIA allows 1.24x league-avg to TEs (favorable)
 • Game environment: DET implied 28.2 (plus)
 • History: 12.3 pts/game season avg, 7 games (in line with average)
-• Range: 2.6–26.2 pts (high bust risk)",,False
-TE,4,00-0030506,Travis Kelce,KC,NYJ,4900,12.007041300441562,2.826586561156761,6,1.5164937047425162,"matchup, game environment, history, bust potential","• Matchup: NYJ allows 1.00x league-avg to TEs (average)
+• Range: 2.6–25.8 pts (high bust risk)",,False
+TE,4,00-0030506,Travis Kelce,KC,NYJ,4900,11.890118745316592,2.7814568073820234,6,1.4770051072360602,"matchup, game environment, history, bust potential","• Matchup: NYJ allows 1.00x league-avg to TEs (average)
 • Game environment: KC implied 28.3 (plus)
 • History: 12.1 pts/game season avg, 7 games (in line with average)
 • Range: 2.4–25.3 pts (high bust risk)",,False
-TE,5,00-0040128,Tyler Warren,IND,DAL,4600,11.134872554076892,10.749658601146171,5,1.3053862101177989,"matchup, game environment, history, bust potential","• Matchup: DAL allows 0.99x league-avg to TEs (average)
-• Game environment: IND implied 23.7 (middling)
-• History: 12.6 pts/game season avg, 6 games (in line with average)
-• Range: 2.2–22.7 pts (high bust risk)",,False
-TE,6,00-0037252,Greg Dulcich,MIA,DET,3100,9.490434592423131,18.416091179044276,4,1.111813221322638,"matchup, game environment, history, bust potential","• Matchup: DET allows 1.63x league-avg to TEs (favorable)
-• Game environment: MIA implied 21.8 (middling)
-• History: 7.1 pts/game season avg, 6 games (in line with average)
-• Range: 1.7–20.7 pts (high bust risk)",Value Pick,True
-TE,7,00-0037744,Trey McBride,ARI,SEA,7700,16.461531081949637,2.949829780170245,7,1.2884789277200672,"matchup, game environment, history, bust potential","• Matchup: SEA allows 0.82x league-avg to TEs (tough)
+TE,5,00-0037744,Trey McBride,ARI,SEA,7700,16.571642776460376,3.18653789683864,7,1.2710183455352557,"matchup, game environment, history, bust potential","• Matchup: SEA allows 0.82x league-avg to TEs (tough)
 • Game environment: ARI implied 15.5 (low-scoring)
 • History: 19.2 pts/game season avg, 8 games (in line with average)
-• Range: 3.6–29.4 pts (normal swing)",Leverage Pick,True
-DST,1,DST_NYG,Giants,NYG,PHI,2800,8.640895524999998,16.858753770142908,8,1.0548533383940237,"matchup, game environment, history, bust potential","• Matchup: 1.38x matchup factor (favorable)
+• Range: 3.7–29.5 pts (normal swing)",Leverage Pick,False
+TE,6,00-0037252,Greg Dulcich,MIA,DET,3100,9.285354728473989,19.76321650867008,4,1.0472697987218023,"matchup, game environment, history, bust potential","• Matchup: DET allows 1.63x league-avg to TEs (favorable)
+• Game environment: MIA implied 21.8 (middling)
+• History: 7.1 pts/game season avg, 6 games (in line with average)
+• Range: 1.7–19.7 pts (high bust risk)",Value Pick,True
+DST,1,DST_NYG,Giants,NYG,PHI,2800,8.640895524999998,16.753077707685833,8,1.0548533383940237,"matchup, game environment, history, bust potential","• Matchup: 1.38x matchup factor (favorable)
 • Game environment: opponent implied 17.3 (plus)
 • History: 5.1 pts/game season avg (projection running above average)
 • Range: not modeled for defense (a pick-six/safety can swing it well outside the base projection)",,False
-DST,2,DST_NO,Saints,NO,CLE,2900,9.069090253000002,10.53074566546571,7,0.9970125016390899,"matchup, game environment, history, bust potential","• Matchup: 1.45x matchup factor (favorable)
+DST,2,DST_NO,Saints,NO,CLE,2900,9.069090253000002,10.175995427615456,7,0.9970125016390899,"matchup, game environment, history, bust potential","• Matchup: 1.45x matchup factor (favorable)
 • Game environment: opponent implied 19.6 (plus)
 • History: 5.3 pts/game season avg (projection running above average)
 • Range: not modeled for defense (a pick-six/safety can swing it well outside the base projection)",,False
-DST,3,DST_SEA,Seahawks,SEA,ARI,3800,9.344896108,9.730078030537644,7,0.9398982981395988,"matchup, game environment, history, bust potential","• Matchup: 1.49x matchup factor (favorable)
+DST,3,DST_SEA,Seahawks,SEA,ARI,3800,9.344896108,9.613541103819555,7,0.9398982981395988,"matchup, game environment, history, bust potential","• Matchup: 1.49x matchup factor (favorable)
 • Game environment: opponent implied 15.5 (plus)
 • History: 7.4 pts/game season avg (in line with average)
 • Range: not modeled for defense (a pick-six/safety can swing it well outside the base projection)",,False
-DST,4,DST_HOU,Texans,HOU,LAC,3500,8.839934053,8.27773050032891,6,0.7854650649264654,"matchup, game environment, history, bust potential","• Matchup: 1.41x matchup factor (favorable)
+DST,4,DST_HOU,Texans,HOU,LAC,3500,8.839934053,8.787755192676936,6,0.7854650649264654,"matchup, game environment, history, bust potential","• Matchup: 1.41x matchup factor (favorable)
 • Game environment: opponent implied 17.6 (plus)
 • History: 5.4 pts/game season avg (projection running above average)
 • Range: not modeled for defense (a pick-six/safety can swing it well outside the base projection)",,False
-DST,5,DST_PHI,Eagles,PHI,NYG,2500,7.668209297500002,9.77551434887826,6,0.7467231662605898,"matchup, game environment, history, bust potential","• Matchup: 1.22x matchup factor (favorable)
+DST,5,DST_PHI,Eagles,PHI,NYG,2500,7.668209297500002,9.525949873457968,6,0.7467231662605898,"matchup, game environment, history, bust potential","• Matchup: 1.22x matchup factor (favorable)
 • Game environment: opponent implied 20.3 (plus)
 • History: 2.3 pts/game season avg (projection running above average)
 • Range: not modeled for defense (a pick-six/safety can swing it well outside the base projection)",Value Pick,False
-DST,6,DST_KC,Chiefs,KC,NYJ,3700,7.923636618999999,4.268172649945063,3,0.38961805244013487,"matchup, game environment, history, bust potential","• Matchup: 1.27x matchup factor (favorable)
+DST,6,DST_KC,Chiefs,KC,NYJ,3700,7.923636618999999,4.250103483642554,3,0.38961805244013487,"matchup, game environment, history, bust potential","• Matchup: 1.27x matchup factor (favorable)
 • Game environment: opponent implied 19.0 (plus)
 • History: 6.1 pts/game season avg (in line with average)
 • Range: not modeled for defense (a pick-six/safety can swing it well outside the base projection)",Leverage Pick,True
