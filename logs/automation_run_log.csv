@@ -4717,3 +4717,11 @@ timestamp_utc,trigger_type,site,step,status
 2026-11-09T00:13:12.797732+00:00,injury_refresh_scheduled,dk,dk_showdown_wk9_TB_CHI_08Nov2026,status_apply,success
 2026-11-09T00:13:12.797732+00:00,injury_refresh_scheduled,dk,dk_showdown_wk9_TB_CHI_08Nov2026,pivot_finder,success
 2026-11-09T00:13:12.797732+00:00,injury_refresh_scheduled,dk,dk_showdown_wk9_TB_CHI_08Nov2026,cheat_sheet,skipped
+2026-11-09T00:22:59.692953+00:00,full_refresh_dispatch,dk,dk_showdown_wk9_BUF_MIN_09Nov2026,build_projections,success
+2026-11-09T00:22:59.692953+00:00,full_refresh_dispatch,dk,dk_showdown_wk9_BUF_MIN_09Nov2026,status_apply,success
+2026-11-09T00:22:59.692953+00:00,full_refresh_dispatch,dk,dk_showdown_wk9_BUF_MIN_09Nov2026,pivot_finder,success
+2026-11-09T00:22:59.692953+00:00,full_refresh_dispatch,dk,dk_showdown_wk9_BUF_MIN_09Nov2026,cheat_sheet,skipped
+2026-11-09T00:23:09.734664+00:00,full_refresh_dispatch,dk,dk_showdown_wk9_TB_CHI_08Nov2026,build_projections,success
+2026-11-09T00:23:09.734664+00:00,full_refresh_dispatch,dk,dk_showdown_wk9_TB_CHI_08Nov2026,status_apply,success
+2026-11-09T00:23:09.734664+00:00,full_refresh_dispatch,dk,dk_showdown_wk9_TB_CHI_08Nov2026,pivot_finder,success
+2026-11-09T00:23:09.734664+00:00,full_refresh_dispatch,dk,dk_showdown_wk9_TB_CHI_08Nov2026,cheat_sheet,skipped
