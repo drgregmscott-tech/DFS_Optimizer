@@ -57,16 +57,26 @@ Marks, Ollie Gordon II, and Tyler Allgeier all got **"normal swing"** and all th
 cheat sheet — it just under-reads RB bust risk specifically this week (n=5 RBs, one week — not yet a
 confirmed persistent gap, but a clear miss worth watching).**
 
-**Cheat-sheet expansion recommendation (this session's actual deliverable):** right now a player can carry
-**both** a positive badge ("Value Pick") **and** a "high bust risk" Range line at the same time (this
-happened to Dulcich on both sites and Washington on FD) with no reconciliation between the two — the reader
-has to notice the contradiction themselves. Recommend the cheat sheet explicitly flag that combination as its
-own distinct state (e.g. a "Risky Value" badge, or suppressing "Value Pick" entirely when Range already reads
-"high bust risk") so a value-but-volatile play is visibly different from a clean value play, rather than
-requiring the reader to cross-reference two separate lines every time. Also worth noting for the record: the
-rationale's "Matchup" sentence (e.g. `DET allows 1.63x league-avg to TEs`) is display-only — the composite's
-real `matchup_factor` is hard-coded to a flat 1.0 project-wide, so that sentence currently carries zero weight
-in ranking or badging despite reading as if it does.
+**Cheat-sheet expansion recommendation — first pass, user pushback incorporated, NOT ship-ready:** first
+draft of this recommendation was "flag the Value-Pick-vs-high-bust-risk contradiction explicitly." User's
+correction, important: **most of the original 18 weren't on the cheat sheet at all** (only Dulcich/Washington
+carried the Value-Pick+high-bust-risk combo) — a badge-reconciliation tweak only touches the subset that was
+already visible and does nothing for the bigger miss (Coleman, Watkins, Singletary, Kupp, Tucker, Chris Bell,
+Lemon, none of which appeared on either cheat sheet). User's actual design instinct: **this needs to be aware
+of what the optimizer's own lineup-building is doing** — the optimizer, working the full salary-cap
+combinatorial problem, finds and locks in specific cheap plays at specific salary slots as high-floor
+pay-up pieces; a per-position, optimizer-blind composite ranking (what `cheat_sheet.py` does today) is a
+different and narrower lens than that. Also flagged: this can't be judged on the text description alone —
+**user wants to see an actual mockup/output before concluding whether any specific redesign works.** Not
+resolved this session — needs its own scoped follow-up that (a) looks at what pivot_finder.py/the optimizer's
+lineup output already surfaces about which cheap plays get locked in and why (per CLAUDE.md's standing
+guidance to extend existing lineup-system code, not rebuild it), (b) produces a real mockup against a past
+week's data before any ship decision, and (c) likely incorporates whatever Item D's recent-trend fix adds,
+since a usage-trend signal is exactly the kind of thing that separates a Coleman from a Marks/Gordon/Allgeier
+in a way the current composite can't. Also noted for the record: the rationale's "Matchup" sentence (e.g.
+`DET allows 1.63x league-avg to TEs`) is display-only — the composite's real `matchup_factor` is hard-coded
+to a flat 1.0 project-wide, so that sentence currently carries zero weight in ranking or badging despite
+reading as if it does.
 
 **Three real gaps surfaced while working through specific names, confirmed against data, NOT fixed in this
 session (one topic per session) — split into Items D, E, F below:**
@@ -177,17 +187,29 @@ yet. Sequence: fix/confirm D and E (and resolve F) first; only then revisit the 
 
 ## Next step
 **Item 0 (Stage 8 logging gap) is fully closed.** Results (section 1) confirmed for every completed slate;
-only BUF/MIN (Mon) remains pending. **Item A is closed** — verdict: yes, a real cheat-sheet bust-risk signal
-exists (works for WR/TE, under-reads RB this week), with a concrete expansion direction identified (flag the
-Value-Pick-vs-high-bust-risk contradiction explicitly). Three real gaps it surfaced are split into their own
-items rather than fixed inline, per session-focus discipline:
-- **Item D (`recent_form` bug + recent-trend signal)** — user wants this fixed, not just diagnosed. Highest
-  priority of the new items; likely connects to the Sanders autopromote gap.
-- **Item E (game-script/spread-direction RB usage feature)** — a real, currently-missing feature candidate.
-- **Item F (target-competition/role-clarity check)** — lower urgency, not yet confirmed as its own gap vs.
-  the same thing as Item D.
-- **Item G (AI-probe retooling)** — explicitly last, only after D/E/F; projections feed the probe, not
-  the reverse.
-- **Item B (showdown misses)** — still its own separate dedicated session: refresh the 15-slate comparison
-  table with Wk9's data (2 misses confirmed, 1 pending) and look closer at TB/CHI's 92.7% finish.
-- Item C (accuracy) is reviewed, needs no further session.
+only BUF/MIN (Mon) remains pending. **Item A is closed on the diagnosis side** — verdict: yes, a real
+cheat-sheet bust-risk signal exists (works for WR/TE, under-reads RB this week) — but the *expansion
+recommendation* is explicitly NOT ship-ready: the user correctly pushed back that most of the original 18
+weren't on the cheat sheet at all, so a badge-reconciliation tweak alone doesn't address the bigger miss, and
+any redesign needs to be optimizer/lineup-aware (not just a per-position composite tweak) and needs a real
+mockup before judging it, not just a text description. That redesign work is deferred, not abandoned — see
+the recommended sequence below.
+
+**Recommended working order across D/E/F/G/A-redesign/B** (asked for explicitly 2026-11-09): these aren't
+independent — F's answer depends on what D's fix actually captures, and the Item A redesign should incorporate
+whatever Item D produces, so alphabetical-by-letter isn't the right order. Suggested sequence:
+1. **Item D first** — most concrete, user explicitly wants it fixed (not just diagnosed), and it's the
+   biggest likely unlock for the other items (a working recent-trend signal plus the Sanders-autopromote
+   connection could resolve part of F and feed directly into the Item A redesign).
+2. **Item F right after D** — quick to check once D's fix exists: does the Coleman-style trend/role fix also
+   resolve the Watkins-style target-starved case, or is it genuinely separate? Cheap to answer once D lands,
+   expensive to guess at blind.
+3. **Item E** — independent research/feature-build track (game-script/spread), can run before or after
+   D/F; doesn't block or get blocked by them.
+4. **Item A redesign (cheat sheet ↔ optimizer-aware, mockup-first)** — after D (and ideally E) exist, since
+   the redesign should use whatever new signals they produce and should be judged against real output, not
+   described in the abstract.
+5. **Item B (showdown misses)** — fully independent of all of the above; slot in whenever, no dependency
+   either direction.
+6. **Item G (AI-probe retooling)** — explicitly last, only after D/E/F/the Item A redesign are in place.
+Item C (accuracy) is reviewed, needs no further session.
