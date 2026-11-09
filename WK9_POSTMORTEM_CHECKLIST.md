@@ -208,10 +208,24 @@ Marks and Gordon). Not re-investigated or duplicated here; tracked under Item A.
 is working as designed (a documented 2026-11-03 decision: flags cheap/efficient plays, deliberately never
 penalizes for bust risk on the main ranking — that's the Range line's job).
 
+**User correction, same session — the real ask was never about projection accuracy.** Even with the discount
+correctly applied, Allgeier's point estimate was still good enough ($5400/15.5 proj) to clear the optimizer's
+value bar and get built into real lineups — **the optimizer works off the point estimate alone and never sees
+bust risk**, so a well-calibrated mean doesn't stop a boom-or-bust play from being selected. That's a
+flagging/lineup-pool-curation gap, not a projection-accuracy gap, and the user correctly expected the LOSO
+test above to fail at capturing it (that methodology finds systematic statistical patterns, not the
+context-specific judgment-call nuance this is actually about — a null result doesn't contradict the user's
+read, it confirms this isn't a model-level fix). **This need is already scoped under Item A, not a new gap**
+— Item A's redesign direction already requires the flagging layer to be "aware of what the optimizer's own
+lineup-building is doing," and already names Allgeier as a case the current composite can't separate from a
+real sleeper like Coleman. Parked there pending a mockup, not duplicated here.
+
 **Bottom line:** Allgeier's real outcome (15.5 projected, 6.6 actual) is consistent with ordinary in-game
-variance beyond what any pregame signal — spread included — can predict. The team-level underdog discount was
-already applied correctly; the game just broke worse than that number implied. No fixable gap found. No code
-changed, nothing to roll back.
+variance beyond what any pregame signal — spread included — can predict, on the narrow projection-accuracy
+question this session tested. The team-level underdog discount was already applied correctly; the game just
+broke worse than that number implied. No fixable gap found on accuracy. No code changed, nothing to roll
+back. The user's real underlying concern (bust-risk plays still getting built by the optimizer) is tracked
+under Item A, not resolved here.
 
 ## Item F. Target-competition / role-clarity check for Jordan Watkins-type cases — ✅ INVESTIGATED this session
 (2026-11-09), own dedicated session (local_95a7901f-6ed4-4051-8a88-f03347f47108, spun off from the main
