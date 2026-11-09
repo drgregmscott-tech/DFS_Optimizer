@@ -34,7 +34,7 @@ RB,1,00-0039139,Jahmyr Gibbs,DET,MIA,10200,23.957123066165742,29.52781076875142,
 • History: 27.3 pts/game season avg, 7 games (projection running below average)
 • Range: 4.9–51.6 pts (normal swing)
 • Builds: 35% of your built lineups",,False
-RB,2,00-0038134,Kenneth Walker III,KC,NYJ,8900,21.64956630389708,19.890879099564124,8,2.0085801988772585,"matchup, game environment, history, bust potential, build exposure","• Matchup: NYJ allows 1.01x league-avg to RBs (average)
+RB,2,00-0038134,Kenneth Walker III,KC,NYJ,8900,21.64956630389708,19.890879099564124,9,2.0085801988772585,"matchup, game environment, history, bust potential, build exposure","• Matchup: NYJ allows 1.01x league-avg to RBs (average)
 • Game environment: KC implied 28.5 (plus)
 • History: 23.0 pts/game season avg, 7 games (in line with average)
 • Range: 3.7–46.7 pts (normal swing)
@@ -49,7 +49,7 @@ RB,4,00-0036997,Javonte Williams,DAL,IND,7700,15.750040319114795,22.448035975232
 • History: 16.3 pts/game season avg, 8 games (in line with average)
 • Range: 2.2–34.7 pts (high bust risk)
 • Builds: 35% of your built lineups",,False
-RB,5,00-0037840,Kyren Williams,LA,WAS,7500,14.98448763784316,15.408702390007608,6,1.3094331997306894,"matchup, game environment, history, bust potential, build exposure","• Matchup: WAS allows 0.91x league-avg to RBs (average)
+RB,5,00-0037840,Kyren Williams,LA,WAS,7500,14.98448763784316,15.408702390007608,7,1.3094331997306894,"matchup, game environment, history, bust potential, build exposure","• Matchup: WAS allows 0.91x league-avg to RBs (average)
 • Game environment: LA implied 26.2 (plus)
 • History: 16.7 pts/game season avg, 8 games (in line with average)
 • Range: 2.7–31.8 pts (high bust risk)
@@ -59,7 +59,7 @@ RB,6,00-0036555,Chuba Hubbard,CAR,DEN,7400,14.642445308908542,4.108387148869873,
 • History: 18.3 pts/game season avg, 7 games (projection running below average)
 • Range: 2.8–30.9 pts (high bust risk)
 • Builds: 20% of your built lineups",Leverage Pick,False
-RB,7,00-0036223,Jonathan Taylor,IND,DAL,8300,13.748042313811675,14.680463906638808,5,1.078535536370886,"matchup, game environment, history, bust potential, build exposure","• Matchup: DAL allows 1.15x league-avg to RBs (favorable)
+RB,7,00-0036223,Jonathan Taylor,IND,DAL,8300,13.748042313811675,14.680463906638808,6,1.078535536370886,"matchup, game environment, history, bust potential, build exposure","• Matchup: DAL allows 1.15x league-avg to RBs (favorable)
 • Game environment: IND implied 23.8 (middling)
 • History: 16.7 pts/game season avg, 8 games (in line with average)
 • Range: 2.5–29.8 pts (high bust risk)
@@ -79,11 +79,31 @@ RB,10,00-0040583,Woody Marks,HOU,LAC,6500,10.688369531646249,3.1697742006418976,
 • History: 7.9 pts/game season avg, 7 games (in line with average)
 • Range: 2.5–23.1 pts (high bust risk)
 • Builds: 5% of your built lineups",,False
-RB,11,00-0040198,Ollie Gordon II,MIA,DET,6200,10.226774389947582,5.72621003583486,4,0.7309149682813729,"matchup, game environment, history, bust potential, build exposure","• Matchup: DET allows 0.88x league-avg to RBs (tough)
+RB,11,00-0037263,Tyler Allgeier,ARI,SEA,5800,10.217146960313112,0.9513830607562376,8,0.693007258486007,"matchup, game environment, history, bust potential, build exposure","• Matchup: SEA allows 0.99x league-avg to RBs (average)
+• Game environment: ARI implied 15.5 (low-scoring)
+• History: 9.6 pts/game season avg, 8 games (in line with average)
+• Range: 4.8–18.2 pts (normal swing)
+• Builds: 5% of your built lineups",Value Candidate,True
+RB,12,00-0040198,Ollie Gordon II,MIA,DET,6200,10.226774389947582,5.72621003583486,5,0.7309149682813729,"matchup, game environment, history, bust potential, build exposure","• Matchup: DET allows 0.88x league-avg to RBs (tough)
 • Game environment: MIA implied 22.1 (middling)
 • History: 12.5 pts/game season avg, 6 games (in line with average)
 • Range: 1.5–21.9 pts (high bust risk)
-• Builds: 15% of your built lineups",Build Pick,True
+• Builds: 15% of your built lineups",Value Candidate,True
+RB,13,00-0035700,Josh Jacobs,GB,NE,7100,11.556701584803548,3.647037019250272,5,0.891576774529453,"matchup, game environment, history, bust potential, build exposure","• Matchup: NE allows 0.90x league-avg to RBs (average)
+• Game environment: GB implied 20.8 (middling)
+• History: 12.6 pts/game season avg, 2 games (in line with average)
+• Range: 2.4–24.8 pts (high bust risk)
+• Builds: 5% of your built lineups",Value Candidate,True
+RB,14,00-0041496,Jonah Coleman,DEN,CAR,6300,9.513816700728569,3.791006212716336,5,0.6799455196490642,"matchup, game environment, history, bust potential, build exposure","• Matchup: CAR allows 1.20x league-avg to RBs (favorable)
+• Game environment: DEN implied 23.8 (middling)
+• History: 9.9 pts/game season avg, 4 games (in line with average)
+• Range: 1.8–20.4 pts (high bust risk)
+• Builds: not in your current build",Value Candidate,True
+RB,15,00-0040122,Ashton Jeanty,LV,SF,6800,10.160278174564736,6.315728243323883,5,0.7185993263201236,"matchup, game environment, history, bust potential, build exposure","• Matchup: SF allows 0.99x league-avg to RBs (average)
+• Game environment: LV implied 21.2 (middling)
+• History: 14.6 pts/game season avg, 8 games (projection running below average)
+• Range: 2.4–21.4 pts (high bust risk)
+• Builds: not in your current build",Value Candidate,True
 WR,1,00-0036358,CeeDee Lamb,DAL,IND,8800,18.83188376587003,17.245776603314255,10,2.5583621393069165,"matchup, game environment, history, bust potential, build exposure","• Matchup: IND allows 0.92x league-avg to WRs (average)
 • Game environment: DAL implied 27.6 (plus)
 • History: 18.4 pts/game season avg, 8 games (in line with average)
@@ -94,7 +114,7 @@ WR,2,00-0036963,Amon-Ra St. Brown,DET,MIA,8600,16.430868674115576,17.77101102720
 • History: 17.2 pts/game season avg, 7 games (in line with average)
 • Range: 3.3–36.0 pts (normal swing)
 • Builds: 30% of your built lineups",,False
-WR,3,00-0039075,Puka Nacua,LA,WAS,9200,16.48877834475272,13.514254025161346,9,2.202550772615462,"matchup, game environment, history, bust potential, build exposure","• Matchup: WAS allows 1.03x league-avg to WRs (average)
+WR,3,00-0039075,Puka Nacua,LA,WAS,9200,16.48877834475272,13.514254025161346,10,2.202550772615462,"matchup, game environment, history, bust potential, build exposure","• Matchup: WAS allows 1.03x league-avg to WRs (average)
 • Game environment: LA implied 26.2 (plus)
 • History: 16.7 pts/game season avg, 6 games (in line with average)
 • Range: 3.5–35.3 pts (normal swing)
@@ -104,7 +124,7 @@ WR,4,00-0038543,Jaxon Smith-Njigba,SEA,ARI,9500,17.175225567348686,7.69257475897
 • History: 26.1 pts/game season avg, 8 games (projection running below average)
 • Range: 3.1–38.4 pts (normal swing)
 • Builds: 10% of your built lineups",Leverage Pick,False
-WR,5,00-0039410,Ryan Flournoy,DAL,IND,5400,9.978598946682183,11.645902714356906,9,1.598621960846499,"matchup, game environment, history, bust potential, build exposure","• Matchup: IND allows 0.92x league-avg to WRs (average)
+WR,5,00-0039410,Ryan Flournoy,DAL,IND,5400,9.978598946682183,11.645902714356906,10,1.598621960846499,"matchup, game environment, history, bust potential, build exposure","• Matchup: IND allows 0.92x league-avg to WRs (average)
 • Game environment: DAL implied 27.6 (plus)
 • History: 7.7 pts/game season avg, 8 games (in line with average)
 • Range: 3.5–20.0 pts (normal swing)
@@ -114,7 +134,7 @@ WR,6,00-0037240,Jameson Williams,DET,MIA,6700,11.879014363403662,14.944891263004
 • History: 12.9 pts/game season avg, 7 games (in line with average)
 • Range: 1.7–27.7 pts (high bust risk)
 • Builds: 35% of your built lineups",,False
-WR,7,00-0037239,Chris Olave,NO,CLE,8000,11.599714128644084,8.400014536702596,6,1.3950402049620905,"matchup, game environment, history, bust potential, build exposure","• Matchup: CLE allows 0.95x league-avg to WRs (average)
+WR,7,00-0037239,Chris Olave,NO,CLE,8000,11.599714128644084,8.400014536702596,7,1.3950402049620905,"matchup, game environment, history, bust potential, build exposure","• Matchup: CLE allows 0.95x league-avg to WRs (average)
 • Game environment: NO implied 24.2 (middling)
 • History: 15.6 pts/game season avg, 7 games (projection running below average)
 • Range: 2.2–25.6 pts (high bust risk)
@@ -124,12 +144,12 @@ WR,8,00-0039337,Malik Nabers,NYG,PHI,7800,11.589515880498826,3.59117772629501,7,
 • History: 15.5 pts/game season avg, 7 games (projection running below average)
 • Range: 2.5–25.3 pts (high bust risk)
 • Builds: not in your current build",,False
-WR,9,00-0039067,Rashee Rice,KC,NYJ,7200,10.416670346491925,11.32803284339037,5,1.3461906607060976,"matchup, game environment, history, bust potential, build exposure","• Matchup: NYJ allows 0.94x league-avg to WRs (average)
+WR,9,00-0039067,Rashee Rice,KC,NYJ,7200,10.416670346491925,11.32803284339037,6,1.3461906607060976,"matchup, game environment, history, bust potential, build exposure","• Matchup: NYJ allows 0.94x league-avg to WRs (average)
 • Game environment: KC implied 28.5 (plus)
 • History: 11.6 pts/game season avg, 4 games (in line with average)
 • Range: 1.6–23.8 pts (high bust risk)
 • Builds: 5% of your built lineups",,False
-WR,10,00-0040124,Tetairoa McMillan,CAR,DEN,7000,10.701410152437075,5.12689681340094,6,1.2806650518645073,"matchup, game environment, history, bust potential, build exposure","• Matchup: DEN allows 0.90x league-avg to WRs (average)
+WR,10,00-0040124,Tetairoa McMillan,CAR,DEN,7000,10.701410152437075,5.12689681340094,7,1.2806650518645073,"matchup, game environment, history, bust potential, build exposure","• Matchup: DEN allows 0.90x league-avg to WRs (average)
 • Game environment: CAR implied 20.8 (middling)
 • History: 13.4 pts/game season avg, 7 games (in line with average)
 • Range: 2.3–23.4 pts (high bust risk)
@@ -139,7 +159,7 @@ WR,11,00-0039880,Malik Washington,MIA,DET,5700,9.751233887230374,7.3850223595392
 • History: 8.0 pts/game season avg, 7 games (in line with average)
 • Range: 2.0–21.5 pts (high bust risk)
 • Builds: 35% of your built lineups",Value Pick,False
-WR,12,00-0038124,Christian Watson,GB,NE,7500,11.342568213463146,5.710668259962561,5,1.200105475768761,"matchup, game environment, history, bust potential, build exposure","• Matchup: NE allows 1.05x league-avg to WRs (average)
+WR,12,00-0038124,Christian Watson,GB,NE,7500,11.342568213463146,5.710668259962561,6,1.200105475768761,"matchup, game environment, history, bust potential, build exposure","• Matchup: NE allows 1.05x league-avg to WRs (average)
 • Game environment: GB implied 20.8 (middling)
 • History: 16.9 pts/game season avg, 8 games (projection running below average)
 • Range: 2.0–25.5 pts (high bust risk)
@@ -149,7 +169,7 @@ WR,13,00-0039894,Xavier Worthy,KC,NYJ,5600,7.921381316065603,8.94073972950282,5,
 • History: 6.1 pts/game season avg, 7 games (in line with average)
 • Range: 1.3–18.3 pts (high bust risk)
 • Builds: 20% of your built lineups",,False
-WR,14,00-0036613,Jaylen Waddle,DEN,CAR,6000,8.699421173022394,6.011187681105991,5,1.1053659271807124,"matchup, game environment, history, bust potential, build exposure","• Matchup: CAR allows 0.95x league-avg to WRs (average)
+WR,14,00-0036613,Jaylen Waddle,DEN,CAR,6000,8.699421173022394,6.011187681105991,6,1.1053659271807124,"matchup, game environment, history, bust potential, build exposure","• Matchup: CAR allows 0.95x league-avg to WRs (average)
 • Game environment: DEN implied 23.8 (middling)
 • History: 8.4 pts/game season avg, 8 games (in line with average)
 • Range: 1.6–19.1 pts (high bust risk)
@@ -159,83 +179,118 @@ WR,15,00-0040667,Matthew Golden,GB,NE,6800,9.615850729949113,4.980534150791092,5
 • History: 14.9 pts/game season avg, 8 games (projection running below average)
 • Range: 1.8–21.5 pts (high bust risk)
 • Builds: not in your current build",,False
-WR,16,00-0038563,Tre Tucker,LV,SF,5700,8.69297130172673,7.481397663463989,4,0.9422933155645687,"matchup, game environment, history, bust potential, build exposure","• Matchup: SF allows 0.95x league-avg to WRs (average)
+WR,16,00-0038563,Tre Tucker,LV,SF,5700,8.69297130172673,7.481397663463989,5,0.9422933155645687,"matchup, game environment, history, bust potential, build exposure","• Matchup: SF allows 0.95x league-avg to WRs (average)
 • Game environment: LV implied 21.2 (middling)
 • History: 11.4 pts/game season avg, 8 games (in line with average)
 • Range: 1.5–19.8 pts (high bust risk)
-• Builds: 35% of your built lineups",Build Pick,True
+• Builds: 35% of your built lineups",Value Candidate,True
+WR,17,00-0041037,Denzel Boston,CLE,NO,5500,7.897464270537311,3.044613848722346,5,0.8793774200421555,"matchup, game environment, history, bust potential, build exposure","• Matchup: NO allows 0.97x league-avg to WRs (average)
+• Game environment: CLE implied 19.3 (low-scoring)
+• History: 9.2 pts/game season avg, 8 games (in line with average)
+• Range: 1.5–17.5 pts (high bust risk)
+• Builds: 5% of your built lineups",Value Candidate,True
+WR,18,00-0041511,Omar Cooper Jr.,NYJ,KC,5500,7.712656682373208,3.560871077982374,6,0.7422009137702105,"matchup, game environment, history, bust potential, build exposure","• Matchup: KC allows 0.85x league-avg to WRs (tough)
+• Game environment: NYJ implied 19.0 (low-scoring)
+• History: 16.3 pts/game season avg, 3 games (projection running below average)
+• Range: 2.4–16.4 pts (high bust risk)
+• Builds: 5% of your built lineups",Value Candidate,True
+WR,19,00-0038997,Josh Downs,IND,DAL,5800,7.763372982015547,8.690570601681797,5,0.9359339924028934,"matchup, game environment, history, bust potential, build exposure","• Matchup: DAL allows 1.10x league-avg to WRs (average)
+• Game environment: IND implied 23.8 (middling)
+• History: 6.8 pts/game season avg, 8 games (in line with average)
+• Range: 1.4–16.8 pts (high bust risk)
+• Builds: not in your current build",Value Candidate,True
+WR,20,00-0041040,Antonio Williams,WAS,LA,5500,7.268718318554082,5.096393522811593,6,0.8393720227725144,"matchup, game environment, history, bust potential, build exposure","• Matchup: LA allows 0.91x league-avg to WRs (average)
+• Game environment: WAS implied 21.9 (middling)
+• History: 6.2 pts/game season avg, 7 games (in line with average)
+• Range: 2.0–15.6 pts (high bust risk)
+• Builds: 10% of your built lineups",Value Candidate,True
 TE,1,00-0033288,George Kittle,SF,LV,6700,15.053678886693916,12.448649354727587,10,2.6707195955932765,"matchup, game environment, history, bust potential, build exposure","• Matchup: LV allows 1.21x league-avg to TEs (favorable)
 • Game environment: SF implied 30.7 (plus)
 • History: 12.5 pts/game season avg, 7 games (in line with average)
 • Range: 2.8–31.8 pts (high bust risk)
 • Builds: 35% of your built lineups",,False
-TE,2,00-0039338,Brock Bowers,LV,SF,8000,11.968174207468524,5.8119103309363,8,1.8426843201541097,"matchup, game environment, history, bust potential, build exposure","• Matchup: SF allows 0.86x league-avg to TEs (tough)
+TE,2,00-0039338,Brock Bowers,LV,SF,8000,11.968174207468524,5.8119103309363,9,1.8426843201541097,"matchup, game environment, history, bust potential, build exposure","• Matchup: SF allows 0.86x league-avg to TEs (tough)
 • Game environment: LV implied 21.2 (middling)
 • History: 18.2 pts/game season avg, 6 games (projection running below average)
 • Range: 2.6–24.9 pts (high bust risk)
 • Builds: 5% of your built lineups",,False
-TE,3,00-0030506,Travis Kelce,KC,NYJ,5200,10.040570688717976,6.997124251265274,6,1.8292002790937176,"matchup, game environment, history, bust potential, build exposure","• Matchup: NYJ allows 0.99x league-avg to TEs (average)
+TE,3,00-0030506,Travis Kelce,KC,NYJ,5200,10.040570688717976,6.997124251265274,8,1.8292002790937176,"matchup, game environment, history, bust potential, build exposure","• Matchup: NYJ allows 0.99x league-avg to TEs (average)
 • Game environment: KC implied 28.5 (plus)
 • History: 10.1 pts/game season avg, 7 games (in line with average)
 • Range: 1.7–21.7 pts (high bust risk)
 • Builds: 35% of your built lineups",,False
-TE,4,00-0040128,Tyler Warren,IND,DAL,5400,9.063958714198256,6.888195453484387,7,1.6647309900720353,"matchup, game environment, history, bust potential, build exposure","• Matchup: DAL allows 0.98x league-avg to TEs (average)
+TE,4,00-0040128,Tyler Warren,IND,DAL,5400,9.063958714198256,6.888195453484387,8,1.6647309900720353,"matchup, game environment, history, bust potential, build exposure","• Matchup: DAL allows 0.98x league-avg to TEs (average)
 • Game environment: IND implied 23.8 (middling)
 • History: 9.8 pts/game season avg, 6 games (in line with average)
 • Range: 2.1–19.3 pts (high bust risk)
 • Builds: 20% of your built lineups",,False
-TE,5,00-0039065,Sam LaPorta,DET,MIA,5700,9.285796539357744,9.327058642100216,5,1.6605891226939207,"matchup, game environment, history, bust potential, build exposure","• Matchup: MIA allows 1.26x league-avg to TEs (favorable)
+TE,5,00-0039065,Sam LaPorta,DET,MIA,5700,9.285796539357744,9.327058642100216,7,1.6605891226939207,"matchup, game environment, history, bust potential, build exposure","• Matchup: MIA allows 1.26x league-avg to TEs (favorable)
 • Game environment: DET implied 28.5 (plus)
 • History: 10.1 pts/game season avg, 7 games (in line with average)
 • Range: 1.7–20.5 pts (high bust risk)
 • Builds: 10% of your built lineups",,False
-TE,6,00-0037252,Greg Dulcich,MIA,DET,4900,7.395397653273117,4.197678710816228,5,1.1865418395328626,"matchup, game environment, history, bust potential, build exposure","• Matchup: DET allows 1.70x league-avg to TEs (favorable)
+TE,6,00-0037252,Greg Dulcich,MIA,DET,4900,7.395397653273117,4.197678710816228,6,1.1865418395328626,"matchup, game environment, history, bust potential, build exposure","• Matchup: DET allows 1.70x league-avg to TEs (favorable)
 • Game environment: MIA implied 22.1 (middling)
 • History: 6.4 pts/game season avg, 6 games (in line with average)
 • Range: 1.5–16.0 pts (high bust risk)
 • Builds: 5% of your built lineups",Value Pick,True
-TE,7,00-0037838,Isaiah Likely,NYG,PHI,5400,8.04278437233043,1.965374920206136,5,1.2478456286305326,"matchup, game environment, history, bust potential, build exposure","• Matchup: PHI allows 0.78x league-avg to TEs (tough)
+TE,7,00-0037838,Isaiah Likely,NYG,PHI,5400,8.04278437233043,1.965374920206136,6,1.2478456286305326,"matchup, game environment, history, bust potential, build exposure","• Matchup: PHI allows 0.78x league-avg to TEs (tough)
 • Game environment: NYG implied 20.2 (low-scoring)
 • History: 13.1 pts/game season avg, 7 games (projection running below average)
 • Range: 1.7–17.4 pts (high bust risk)
 • Builds: 10% of your built lineups",Leverage Pick,True
-DST,1,DST_NO,New Orleans Saints,NO,CLE,3600,9.29317228,12.59871962046692,8,1.2935530368572592,"matchup, game environment, history, bust potential, build exposure","• Matchup: 1.49x matchup factor (favorable)
+TE,8,00-0033090,Hunter Henry,NE,GB,5300,7.555980347093405,4.409879248054269,5,1.165910527427918,"matchup, game environment, history, bust potential, build exposure","• Matchup: GB allows 0.75x league-avg to TEs (tough)
+• Game environment: NE implied 23.8 (middling)
+• History: 7.4 pts/game season avg, 8 games (in line with average)
+• Range: 1.3–16.8 pts (high bust risk)
+• Builds: not in your current build",Value Candidate,True
+TE,9,00-0040663,Harold Fannin Jr.,CLE,NO,5600,7.762859468656412,2.374056784798138,7,1.1620622505948728,"matchup, game environment, history, bust potential, build exposure","• Matchup: NO allows 1.14x league-avg to TEs (favorable)
+• Game environment: CLE implied 19.3 (low-scoring)
+• History: 9.4 pts/game season avg, 8 games (in line with average)
+• Range: 1.6–16.5 pts (high bust risk)
+• Builds: not in your current build",Value Candidate,True
+TE,10,00-0039066,Michael Mayer,LV,SF,4900,6.403071254113948,3.9843937725922265,5,0.920063584290386,"matchup, game environment, history, bust potential, build exposure","• Matchup: SF allows 0.86x league-avg to TEs (tough)
+• Game environment: LV implied 21.2 (middling)
+• History: 7.4 pts/game season avg, 8 games (in line with average)
+• Range: 1.2–14.3 pts (high bust risk)
+• Builds: not in your current build",Value Candidate,True
+TE,11,00-0038996,Tucker Kraft,GB,NE,5500,7.033994708279391,2.9566706392237734,5,0.9950096310435573,"matchup, game environment, history, bust potential, build exposure","• Matchup: NE allows 0.88x league-avg to TEs (tough)
+• Game environment: GB implied 20.8 (middling)
+• History: 8.9 pts/game season avg, 8 games (in line with average)
+• Range: 1.3–15.8 pts (high bust risk)
+• Builds: not in your current build",Value Candidate,True
+TE,12,00-0033110,Tyler Higbee,LA,WAS,4700,5.835447018076311,4.517419304987012,4,0.9327766337964707,"matchup, game environment, history, bust potential, build exposure","• Matchup: WAS allows 1.36x league-avg to TEs (favorable)
+• Game environment: LA implied 26.2 (plus)
+• History: 6.1 pts/game season avg, 7 games (in line with average)
+• Range: 0.8–13.3 pts (high bust risk)
+• Builds: not in your current build",Value Candidate,True
+DST,1,DST_NO,New Orleans Saints,NO,CLE,3600,9.29317228,12.59871962046692,9,1.2935530368572592,"matchup, game environment, history, bust potential, build exposure","• Matchup: 1.49x matchup factor (favorable)
 • Game environment: opponent implied 19.3 (plus)
 • History: 5.3 pts/game season avg (projection running above average)
 • Range: not modeled for defense (a pick-six/safety can swing it well outside the base projection)
 • Builds: 20% of your built lineups",Value Pick,False
-DST,2,DST_SEA,Seattle Seahawks,SEA,ARI,4700,9.286052069499998,13.386966178553855,8,1.0907720712993343,"matchup, game environment, history, bust potential, build exposure","• Matchup: 1.49x matchup factor (favorable)
+DST,2,DST_SEA,Seattle Seahawks,SEA,ARI,4700,9.286052069499998,13.386966178553855,7,1.0907720712993343,"matchup, game environment, history, bust potential, build exposure","• Matchup: 1.49x matchup factor (favorable)
 • Game environment: opponent implied 15.5 (plus)
 • History: 7.4 pts/game season avg (in line with average)
 • Range: not modeled for defense (a pick-six/safety can swing it well outside the base projection)
 • Builds: 10% of your built lineups",,False
-DST,3,DST_HOU,Houston Texans,HOU,LAC,5000,8.929141288,10.3867799175854,7,0.7888587094722306,"matchup, game environment, history, bust potential, build exposure","• Matchup: 1.43x matchup factor (favorable)
+DST,3,DST_HOU,Houston Texans,HOU,LAC,5000,8.929141288,10.3867799175854,6,0.7888587094722306,"matchup, game environment, history, bust potential, build exposure","• Matchup: 1.43x matchup factor (favorable)
 • Game environment: opponent implied 17.6 (plus)
 • History: 5.4 pts/game season avg (projection running above average)
 • Range: not modeled for defense (a pick-six/safety can swing it well outside the base projection)
 • Builds: not in your current build",,False
-DST,4,DST_NYG,New York Giants,NYG,PHI,4800,8.533028428000001,4.27348726835125,7,0.7440282986141262,"matchup, game environment, history, bust potential, build exposure","• Matchup: 1.37x matchup factor (favorable)
+DST,4,DST_NYG,New York Giants,NYG,PHI,4800,8.533028428000001,4.27348726835125,6,0.7440282986141262,"matchup, game environment, history, bust potential, build exposure","• Matchup: 1.37x matchup factor (favorable)
 • Game environment: opponent implied 17.4 (plus)
 • History: 5.1 pts/game season avg (projection running above average)
 • Range: not modeled for defense (a pick-six/safety can swing it well outside the base projection)
 • Builds: 10% of your built lineups",,False
-DST,5,DST_KC,Kansas City Chiefs,KC,NYJ,4200,7.96897681,13.250060085597534,6,0.666214642701054,"matchup, game environment, history, bust potential, build exposure","• Matchup: 1.28x matchup factor (favorable)
+DST,5,DST_KC,Kansas City Chiefs,KC,NYJ,4200,7.96897681,13.250060085597534,5,0.666214642701054,"matchup, game environment, history, bust potential, build exposure","• Matchup: 1.28x matchup factor (favorable)
 • Game environment: opponent implied 19.0 (plus)
 • History: 6.1 pts/game season avg (in line with average)
 • Range: not modeled for defense (a pick-six/safety can swing it well outside the base projection)
 • Builds: not in your current build",,False
-DST,6,DST_PHI,Philadelphia Eagles,PHI,NYG,4400,7.755779702500001,1.9389413824836652,6,0.47441844072338246,"matchup, game environment, history, bust potential, build exposure","• Matchup: 1.24x matchup factor (favorable)
+DST,6,DST_PHI,Philadelphia Eagles,PHI,NYG,4400,7.755779702500001,1.9389413824836652,4,0.47441844072338246,"matchup, game environment, history, bust potential, build exposure","• Matchup: 1.24x matchup factor (favorable)
 • Game environment: opponent implied 20.2 (plus)
 • History: 2.2 pts/game season avg (projection running above average)
 • Range: not modeled for defense (a pick-six/safety can swing it well outside the base projection)
 • Builds: not in your current build",Leverage Pick,True
-DST,7,DST_ARI,Arizona Cardinals,ARI,SEA,3000,5.463562970499999,3.010637294242915,5,0.002164957860423231,"matchup, game environment, history, bust potential, build exposure","• Matchup: 0.87x matchup factor (tough)
-• Game environment: opponent implied 24.0 (middling)
-• History: 3.4 pts/game season avg (in line with average)
-• Range: not modeled for defense (a pick-six/safety can swing it well outside the base projection)
-• Builds: 35% of your built lineups",Build Pick,True
-DST,8,DST_WAS,Washington Commanders,WAS,LA,3100,4.556759150499999,2.635944089790513,3,-0.4820474705775974,"matchup, game environment, history, bust potential, build exposure","• Matchup: 0.73x matchup factor (tough)
-• Game environment: opponent implied 26.2 (tough)
-• History: 5.7 pts/game season avg (in line with average)
-• Range: not modeled for defense (a pick-six/safety can swing it well outside the base projection)
-• Builds: 15% of your built lineups",Build Pick,True

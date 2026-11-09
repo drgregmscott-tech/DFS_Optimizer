@@ -146,29 +146,36 @@ runs -- a zeroed/bye player is never a usable top play regardless of any
 other signal, same filter pivot_finder.py already uses).
 
 Build-exposure awareness (Wk9 Item A redesign, 2026-11-09): a per-position composite ranking is "optimizer
--blind" -- it never looks at what the optimizer's own lineup-building actually does. Earlier this same
-session a separate "optimizer exposure x thin floor = RISK flag" mechanism was tried in the frontend's
-Exposure panel and shipped, then explicitly walked back by the user on real feedback: "when I told you what
-directed me towards or away from a player, it was a multitude of factors and this isn't really capturing
-that." A 2-variable pass/fail flag can't represent that -- what the user actually wants is INFORMATION, not
-a verdict: visibility into which players the optimizer is leaning on heavily to make full lineups work, so
-he can bring his own multi-factor read (matchup, game script, the existing Range bust-risk line, his own
-NFL-news memory) to them the same way he already does for the composite top-N. So this is additive, not a
-new judgment layer:
-  1. Every displayed row (core AND bonus) gets a 5th rationale bullet, "Builds: X% of your lineups," read
-     straight off `lineups_multi_{site}_{slate_id}_*.csv` (same newest-by-mtime file `pivot_finder.py`
-     already reads) -- passive context, not a flag, exactly like the existing Matchup/Game environment/
-     History/Range bullets.
-  2. Any player who shows up at meaningful exposure in the real build (>= BUILD_PICK_MIN_EXPOSURE_PCT) but
-     ISN'T already shown (missed the composite top-N and isn't the Value/Leverage pick either) is added as
-     an extra "Build Pick" bonus row, capped at BUILD_PICK_MAX_EXTRA per position, sorted by exposure --
-     these are "the guys that make the rest of the lineup work" (user's own framing): real lock-in pieces
-     the per-position composite alone wouldn't have surfaced. Gracefully degrades (skips this whole feature,
-     no crash) when no lineups_multi file exists yet for the slate -- same "flag, don't silently assume"
-     pattern as the rest of this script; see load_build_exposure().
-See `analysis/wk9_item_a_lineup_aware_flagging/RESULTS.md` for the original mockup and the user's real
-feedback (RISK flag removed from the frontend the same day it shipped, per explicit instruction) -- this
-build-exposure bullet replaces it, it isn't a second copy of it.
+-blind" -- it never looks at what the optimizer's own lineup-building actually does. Went through two prior
+attempts before landing here, both on real user feedback the same day:
+  attempt 1 -- an "optimizer exposure x thin floor = RISK flag" mechanism, shipped in the frontend's Exposure
+    panel, then walked back: "when I told you what directed me towards or away from a player, it was a
+    multitude of factors and this isn't really capturing that." A 2-variable pass/fail flag can't represent
+    that judgment call.
+  attempt 2 -- surfacing players by their ACTUAL exposure in a real `lineups_multi_*.csv` build ("Build Pick"
+    rows). Closer, but the user flagged a real gap: it only ever sees players from whatever one specific
+    build happens to be loaded -- noisy, zero-coverage before "Build Lineups" has even been run once, and
+    dependent on that run's own exposure-cap settings. User's own fix: "we do for the skill positions (RB,
+    WR, TE) the top 5 players when ranked by value (projected points per dollar). Those are the guys that
+    are most likely to show up in the lineups and the ones we need data on." Value-per-dollar is a direct,
+    deterministic proxy for "likely to get optimizer exposure" -- available the moment projections exist,
+    with no dependency on any one build having already run.
+Landed design (additive, not a replacement for the existing top-N/Value Pick/Leverage Pick -- "keep our top
+plays as the core... and also keep value and leverage picks," same session):
+  1. Every displayed row still gets the passive "Builds: X% of your lineups" rationale bullet when a real
+     build exists (`lineups_multi_{site}_{slate_id}_*.csv`, same newest-by-mtime file `pivot_finder.py`
+     already reads) -- this part of attempt 2 was never the complaint, kept as-is. Degrades to "no lineups
+     built yet" when none exists, same "flag, don't silently assume" pattern as the rest of this script.
+  2. For RB/WR/TE only (not QB -- one real starter a week, this question barely applies; not DST, no
+     per-dollar value concept the same way), the top VALUE_CANDIDATE_TOP_N players by raw `_value_raw`
+     (final_projection / (salary/1000)) who AREN'T already shown (missed the composite top-N and aren't
+     already the Value/Leverage pick) are added as "Value Candidate" bonus rows. Deliberately NOT the same
+     test as the existing single Value Pick (team-lead-only, capped at the leads' own median salary) -- this
+     is unrestricted top-5-by-ratio, so it also surfaces non-lead cheap pieces a true value play restricted
+     to leads would correctly exclude.
+See `analysis/wk9_item_a_lineup_aware_flagging/RESULTS.md` for attempt 1's mockup and
+`WK9_POSTMORTEM_CHECKLIST.md` Item A for the full back-and-forth -- the walk-backs are real history, not
+dead code left for no reason.
 
 Usage:
     python3 scripts/cheat_sheet.py --site dk --season 2026 --week 8 --slate-id dk_classic_wk7_main_25Oct2026
@@ -216,15 +223,11 @@ CONF_WITHIN_WEIGHT = 1.5   # spread relative to the cohort actually shown
 CONF_BUST_WEIGHT = 0.8     # penalty for a wide floor/ceiling spread
 CONF_SLATE_WEIGHT = 0.3    # muted "weak slate reads weak" signal
 
-# Build-exposure awareness -- see module docstring. A single lineup landing
-# a player (e.g. 1/100) is noise, not a real "the optimizer leans on this
-# player" signal -- 15% (15+ of 100 real lineups, or 3+ of a 20-lineup
-# batch) is the floor for "worth surfacing," not fitted to anything, same
-# "reasonable starting point, easy to retune" spirit as FACTOR_WEIGHTS.
-# The extra-row cap keeps a deep WR pool's build from flooding the sheet
-# with every rostered player -- only the heaviest-exposure misses.
-BUILD_PICK_MIN_EXPOSURE_PCT = 15.0
-BUILD_PICK_MAX_EXTRA = 6
+# Value Candidate rows -- see module docstring "Build-exposure awareness,"
+# landed design point 2. RB/WR/TE only (user's explicit scope -- QB/DST
+# excluded). 5 is the user's own number, not fitted to anything.
+VALUE_CANDIDATE_POSITIONS = {"RB", "WR", "TE"}
+VALUE_CANDIDATE_TOP_N = 5
 
 
 def load_build_exposure(site: str, slate_id: str) -> dict:
@@ -244,8 +247,9 @@ def load_build_exposure(site: str, slate_id: str) -> dict:
     path = candidates[0] if candidates else legacy_path
     if not path.exists():
         print(f"NOTE: no built lineups found for {site}/{slate_id} -- cheat "
-              f"sheet will omit build-exposure info and Build Pick rows.",
-              file=sys.stderr)
+              f"sheet's Builds bullet will read 'no lineups built yet' for "
+              f"every row (Value Candidate rows are unaffected -- they don't "
+              f"depend on a build existing).", file=sys.stderr)
         return {}
     df = pd.read_csv(path, dtype={"player_id": str})
     if "player_id" not in df.columns or "lineup_id" not in df.columns:
@@ -714,30 +718,29 @@ def build_cheat_sheet(site: str, slate_id: str, season: int, week: int) -> pd.Da
             displayed_ids.add(best_value_row["player_id"])
         displayed_ids.add(best_leverage_row["player_id"])
 
-        # Build Pick rows -- see module docstring "Build-exposure
-        # awareness," point 2. Anyone NOT already displayed who shows up
-        # at real exposure in the actual build ("the guys that make the
-        # rest of the lineup work," user's own framing, 2026-11-09) gets
-        # surfaced too, sorted by exposure, capped so a deep WR pool's
-        # build doesn't flood the sheet. Computed before the confidence
-        # re-standardization below so these rows are included in it, same
-        # as every other displayed row -- see module docstring
+        # Value Candidate rows -- see module docstring "Build-exposure
+        # awareness," landed design point 2. RB/WR/TE only, top 5 by raw
+        # value ratio, unrestricted by team-lead-role (unlike the single
+        # Value Pick above) -- "the guys that are most likely to show up in
+        # the lineups and the ones we need data on" (user's own framing,
+        # 2026-11-09). Deterministic from final_projections alone, no
+        # dependency on any lineup build having run. Computed before the
+        # confidence re-standardization below so these rows are included in
+        # it, same as every other displayed row -- see module docstring
         # "Confidence" section, "the cohort actually displayed."
-        build_pick_rows = []
-        if build_exists:
-            pool_exposure = pool["player_id"].map(build_exposure).fillna(0.0)
-            candidates = pool[(~pool["player_id"].isin(displayed_ids)) & (pool_exposure >= BUILD_PICK_MIN_EXPOSURE_PCT)].copy()
-            candidates["_exposure_sort"] = pool_exposure.loc[candidates.index]
-            candidates = candidates.sort_values("_exposure_sort", ascending=False).head(BUILD_PICK_MAX_EXTRA)
-            build_pick_rows = [row for _, row in candidates.iterrows()]
-            for row in build_pick_rows:
+        value_candidate_rows = []
+        if pos in VALUE_CANDIDATE_POSITIONS:
+            candidates = pool[~pool["player_id"].isin(displayed_ids)].sort_values(
+                "_value_raw", ascending=False).head(VALUE_CANDIDATE_TOP_N)
+            value_candidate_rows = [row for _, row in candidates.iterrows()]
+            for row in value_candidate_rows:
                 displayed_ids.add(row["player_id"])
-                badges_by_id.setdefault(row["player_id"], []).append("Build Pick")
+                badges_by_id.setdefault(row["player_id"], []).append("Value Candidate")
 
         # Confidence is re-standardized within the cohort actually displayed
-        # for this position (top-N + any bonus rows, Build Picks included),
-        # not the full eligible pool -- see module docstring "Confidence"
-        # section.
+        # for this position (top-N + any bonus rows, Value Candidates
+        # included), not the full eligible pool -- see module docstring
+        # "Confidence" section.
         displayed = pool[pool["player_id"].isin(displayed_ids)].copy()
         slate_shift = float(top["composite_z"].iloc[0]) if not top.empty else 0.0
         conf_by_id = dict(zip(displayed["player_id"], compute_confidence(displayed, slate_shift)))
@@ -763,7 +766,7 @@ def build_cheat_sheet(site: str, slate_id: str, season: int, week: int) -> pd.Da
                                     conf_by_id[best_leverage_row["player_id"]], avg_implied_total,
                                     exposure_for(best_leverage_row["player_id"])))
             bonus_rank += 1
-        for row in build_pick_rows:
+        for row in value_candidate_rows:
             badge = ", ".join(badges_by_id.get(row["player_id"], []))
             rows.append(_build_row(pos, row, bonus_rank, True, badge,
                                     conf_by_id[row["player_id"]], avg_implied_total,

@@ -127,6 +127,25 @@ with no build yet (bullet reads "no lineups built yet for this slate" instead of
 build"). This is additive, not a replacement for the existing composite ranking — "the main players we
 already have" are untouched, this only adds visibility the composite alone was missing.
 
+**Redesign attempt #3 — value-ranked candidates replace build-exposure as the enumeration rule. Shipped
+(2026-11-09), same day, same session.** User tried attempt #2 against his real build and reported it still
+wasn't quite there: "I'm not seeing anyone in the exposure section show up as risky" was actually about the
+now-removed RISK tag, but the deeper point carried into attempt #2 as well — the Build Pick mechanism only
+ever sees whichever ONE build happens to be loaded, noisy and zero-coverage before "Build Lineups" has even
+run once. User's own fix: *"we keep our top plays as the core of the cheat sheet, and also keep value and
+leverage picks, but then for the skill positions (RB, WR, TE) we do the top 5 players when ranked by value
+(projected points per dollar). Those are the guys that are most likely to show up in the lineups and the
+ones we need data on."* Replaced the exposure-gated Build Pick rows with a deterministic **"Value
+Candidate"** bonus row set: for RB/WR/TE only, the top 5 players by raw `final_projection / (salary/1000)`
+who aren't already shown — unrestricted by the existing Value Pick's team-lead-only rule, so it also
+surfaces real non-lead cheap value the strict Value Pick correctly excludes. No dependency on any lineup
+build existing; the passive "Builds: X%" bullet from attempt #2 is kept on every row as supplementary
+context when a build does exist. Verified on the real Wk9 main slate: surfaces Devin Singletary, Jonah
+Coleman, Ollie Gordon II, Ashton Jeanty, Rachaad White (RB), Antonio Williams, Makai Lemon, Malik Washington,
+KC Concepcion Jr., Ladd McConkey (WR), Dalton Schultz, Chig Okonkwo, Brevyn Spann-Ford, Harold Fannin Jr.,
+Michael Mayer (TE) — a near-exact match to the original 18-name list from this session's opening diagnosis.
+Regenerated all three Wk9 cheat sheets (DK main/early, FD main) under the new logic.
+
 ## Item B. Showdown misses continue — Wk9 confirms 2 more losses in the Wk5+ pattern, 1 still pending
 From [[project_wk8_item_b_showdown_recurring_miss]] (Wk5-8: 1/8 cashed, 12.5%, vs Wk1-4's 71%, step-change at
 Wk5, p≈0.035 one-sided, n=15, parked — every traced mechanism came back clean). This week, both completed
@@ -315,11 +334,13 @@ yet. Sequence: fix/confirm D and E (and resolve F) first; only then revisit the 
 ## Next step
 **Item 0 (Stage 8 logging gap) is fully closed.** Results (section 1) confirmed for every completed slate;
 only BUF/MIN (Mon) remains pending. **Item A is now fully closed** — diagnosis (yes, a real cheat-sheet
-bust-risk signal exists, works for WR/TE, under-reads RB), a first redesign attempt (RISK flag) shipped then
-removed the same day on real user feedback (a pass/fail flag can't represent "a multitude of factors"), and
-a second redesign (build-exposure bullet + Build Pick rows in `cheat_sheet.py`, information not a verdict)
-shipped and verified — it surfaced Jordan Watkins, the exact miss from this session's original diagnosis,
-that the composite ranking alone never caught.
+bust-risk signal exists, works for WR/TE, under-reads RB), three redesign attempts, the first two shipped
+then walked back same-day on real user feedback (a pass/fail RISK flag couldn't represent "a multitude of
+factors"; a build-exposure-gated Build Pick mechanism was too dependent on whichever one build happened to
+be loaded), landing on attempt #3 — a deterministic top-5-by-value "Value Candidate" row set for RB/WR/TE,
+the user's own design, plus the passive "Builds: X%" bullet kept from attempt #2 — shipped and verified: it
+surfaces most of this session's original 18-name list (Singletary, Coleman, Gordon, Jeanty, A. Williams,
+Washington, Schultz, and more) that the composite ranking alone never caught.
 
 **Recommended working order across D/E/F/G/A-redesign/B** (asked for explicitly 2026-11-09): these aren't
 independent — F's answer depends on what D's fix actually captures, and the Item A redesign should incorporate
@@ -337,13 +358,12 @@ whatever Item D produces, so alphabetical-by-letter isn't the right order. Sugge
    Allgeier before he busted. The specific extension tested (spread shrinking the lead RB's own share of team
    carries, a "committee split" effect) failed the same LOSO bar Item D's blend cleared — coin-flip stability,
    near-zero effect. No fix shipped; the propagation question folded into Item A's already-documented finding.
-4. **Item A redesign — ✅ done and shipped (2026-11-09), two attempts.** First attempt (exposure × absolute
-   floor RISK tag in the frontend Exposure panel) shipped, then removed the same day — real user feedback
-   was that a 2-variable flag can't represent the "multitude of factors" judgment call this is actually
-   about. Second attempt — build-exposure as a passive rationale bullet + new "Build Pick" bonus rows in
-   `scripts/cheat_sheet.py` itself, additive to the existing composite ranking, no verdict attached — shipped
-   and verified: on the real Wk9 build it surfaced Jordan Watkins (this session's own hindsight-miss example)
-   as a WR Build Pick, something the composite ranking never caught. See Item A above for full detail.
+4. **Item A redesign — ✅ done and shipped (2026-11-09), three attempts.** #1 (RISK tag, frontend) and #2
+   (build-exposure-gated Build Pick rows) were both shipped then walked back same-day on real user feedback
+   — see Item A above for the full back-and-forth. Landed on #3, the user's own design: a deterministic
+   top-5-by-value "Value Candidate" row set for RB/WR/TE in `scripts/cheat_sheet.py`, additive to the
+   existing composite/Value Pick/Leverage Pick rows, no build dependency. Verified on real Wk9 data: surfaces
+   most of this session's original 18-name list that the composite ranking alone never caught.
 5. **Item B (showdown misses)** — fully independent of all of the above; slot in whenever, no dependency
    either direction.
 6. **Item G (AI-probe retooling)** — explicitly last, only after D/E/F/the Item A redesign are in place.
