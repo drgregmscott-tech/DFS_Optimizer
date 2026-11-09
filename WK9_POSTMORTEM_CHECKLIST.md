@@ -90,41 +90,42 @@ session (one topic per session) — split into Items D, E, F below:**
 AI-probe retooling is explicitly **not** prioritized here per the user: projections feed the probe, not the
 other way around, so probe-sharpening is the last item in this family, after D/E/F are addressed — see Item G.
 
-**Redesign mockup — done this session (2026-11-09), real data, not yet shipped.** Full writeup:
-`analysis/wk9_item_a_lineup_aware_flagging/RESULTS.md`. Per the user's own design instinct (and explicit
-request to see real output, not a description), built a cross-reference of `pivot_finder.py`'s exact existing
-input (`lineups_multi_dk_dk_classic_wk9_main_08Nov2026_shared.csv`, 20 real built lineups) against each
-player's real exposure % and `final_projections`' `statline_p10` floor, using `cheat_sheet.py`'s own existing
-"high bust risk" absolute floor bar (`ABS_FLOOR_HIGH_RISK=3.0`) — no new model or data source, pure
-cross-reference of two things the pipeline already produces. **Flag = top-tier optimizer exposure (≥30% this
-week, the same tier as true studs McCaffrey/Lamb/Kittle/Purdy/Gibbs) AND a thin absolute floor.**
+**Redesign attempt #1 — RISK flag (exposure × thin floor), shipped then REMOVED same day on real user
+feedback.** Mockup (`analysis/wk9_item_a_lineup_aware_flagging/RESULTS.md`): cross-referenced
+`pivot_finder.py`'s real build-exposure data against `cheat_sheet.py`'s existing absolute floor bar
+(`ABS_FLOOR_HIGH_RISK=3.0`) to flag top-tier-exposure + thin-floor plays. On the real 20-lineup Wk9 build: 7
+flagged, 2 clean busts (Dulcich, Washington) + 1 bad (Schultz), zero false flags on a true stud, missed the
+already-known Gordon RB gap. Shipped as a `RISK` tag in the frontend's Exposure panel, verified against real
+data. **Then walked back the same day:** tried live, user reported zero flags fired on his real build and,
+more importantly, pushed back on the mechanism itself — *"when I told you what directed me towards or away
+from a player, it was a multitude of factors and this isn't really capturing that."* A 2-variable pass/fail
+flag can't represent that kind of judgment call. User's own redirect: *"this makes me want to lean towards
+doing an expanded cheat sheet somehow — keeping the main players we already have but expanding out on
+players that show up in lineups during the builds because they are the guys that make the rest of the
+lineup work."* RISK flag code fully removed from `dfs_optimizer_frontend/index.html` per explicit
+instruction — not left in as a secondary signal.
 
-Result on the real 20-lineup build: 7 flagged (Worthy, Sutton, Schultz, Dulcich, Washington, Boston,
-Raridon) — 2 clean DK busts (Dulcich, Washington), 1 more "bad" (Schultz), 4 false positives that were all
-fine-to-good, not disasters. **Correctly flagged zero true studs** at the same exposure tier (McCaffrey/Lamb/
-Kittle/Walker/Purdy/Mahomes/Gibbs/Nacua all correctly skipped) — the real design win, since a naive
-cheap-and-thin-floor rule risks exactly that false positive (an early draft using a relative bust-ratio instead
-of the absolute bar incorrectly flagged George Kittle, a $6K elite TE, before switching to the absolute bar
-fixed it). Missed Ollie Gordon II (busted, p10=3.94 just above the 3.0 bar) — the SAME RB-blind-spot gap
-already documented above, not newly introduced or newly solved by this exercise. 9 of the original 18 named
-players never appeared in this 20-lineup build at all — this flag only ever sees players the optimizer
-actually rostered, a real but partial answer (doesn't address "never considered this player," a separate
-question).
+**Redesign attempt #2 — build-exposure as INFORMATION, not a verdict. Shipped (2026-11-09).** Extended
+`scripts/cheat_sheet.py` (not the frontend this time — the cheat sheet's own generator) to read the same
+`lineups_multi_{site}_{slate_id}_*.csv` `pivot_finder.py` already reads (`load_build_exposure()`,
+degrades gracefully to no-op if no build exists yet for the slate) and:
+1. Every displayed row (core top-N AND existing Value/Leverage bonus rows) gets a 5th rationale bullet —
+   "Builds: X% of your built lineups" — alongside the existing Matchup/Game environment/History/Range
+   bullets. Passive context, not a flag, same as everything else in the rationale.
+2. Any player who shows up at real exposure (≥15% of the build) but ISN'T already shown (missed the
+   composite top-N and isn't the Value/Leverage pick) is added as a new **"Build Pick"** bonus row, capped
+   at 6 extra per position, sorted by exposure — these are the "guys that make the rest of the lineup work"
+   the user described, surfaced regardless of whether the per-position composite liked them.
 
-**Shipped (2026-11-09).** Wired into `dfs_optimizer_frontend/index.html`'s existing Exposure Summary panel
-(the frontend's own client-side `renderExposureSummary()`, which already tallies real built-lineup exposure
-from `lineups_multi_*.csv` — no new upload, no new file, no backend change). A player gets a `RISK` tag next
-to his name when his exposure is in this batch's own top tier (`>= max(20%, 75% of the batch's highest
-exposure)` — relative per-batch, not a fixed number, per the mockup's recommendation) AND his
-`statline_p10` (already in the uploaded final_projections pool CSV) is under 3.0, the exact same
-`ABS_FLOOR_HIGH_RISK` constant `cheat_sheet.py`'s Range line already uses — reused literally, not
-re-derived. DST is exempt (no floor/ceiling model, same as `cheat_sheet.py`). Verified with a standalone
-Node reproduction of the exact frontend logic against the real Wk9 20-lineup build: reproduces the mockup's
-7 flagged players exactly (Worthy, Sutton, Schultz, Dulcich, Washington, Boston, Raridon) with the threshold
-computed dynamically (30% on this batch) rather than hand-picked. Hint text in the Exposure panel explains
-the tag inline. Not yet validated live in the browser UI (no file-upload automation available this session)
-or across additional weeks — watch it in real use; revisit once Item D's RB usage-trend signal matures to
-see if it narrows the Gordon-type RB miss this flag still doesn't catch.
+**Verified on the real Wk9 main 20-lineup build — and it caught the exact case the user flagged in this
+session's original diagnosis:** Jordan Watkins (SF's target-starved WR, the user's own hindsight-miss
+example, "no WRs basically at all for the 49ers" — see the session's earlier reply) never appeared on either
+cheat sheet by composite rank, but shows up in the real build at 20% exposure — now surfaced as a WR Build
+Pick row with full rationale (Matchup/Game env/History/Range/Builds), rank 18/18. Also surfaced Ashton
+Jeanty (RB), Antonio Williams (WR), Brevyn Spann-Ford (TE) the same way. Confirmed graceful no-op on a slate
+with no build yet (bullet reads "no lineups built yet for this slate" instead of a false "not in your
+build"). This is additive, not a replacement for the existing composite ranking — "the main players we
+already have" are untouched, this only adds visibility the composite alone was missing.
 
 ## Item B. Showdown misses continue — Wk9 confirms 2 more losses in the Wk5+ pattern, 1 still pending
 From [[project_wk8_item_b_showdown_recurring_miss]] (Wk5-8: 1/8 cashed, 12.5%, vs Wk1-4's 71%, step-change at
@@ -314,11 +315,11 @@ yet. Sequence: fix/confirm D and E (and resolve F) first; only then revisit the 
 ## Next step
 **Item 0 (Stage 8 logging gap) is fully closed.** Results (section 1) confirmed for every completed slate;
 only BUF/MIN (Mon) remains pending. **Item A is now fully closed** — diagnosis (yes, a real cheat-sheet
-bust-risk signal exists, works for WR/TE, under-reads RB) plus a real, validated redesign mockup (optimizer
-exposure × absolute floor bar, see above): correctly flags zero true studs, catches 2-3 real risky plays,
-misses the already-documented Gordon-type RB gap. Not wired into the live pipeline yet — that's a short,
-well-scoped follow-up (per-slate-relative exposure threshold instead of a fixed 30%, pick a surface in the
-frontend), not a new open question.
+bust-risk signal exists, works for WR/TE, under-reads RB), a first redesign attempt (RISK flag) shipped then
+removed the same day on real user feedback (a pass/fail flag can't represent "a multitude of factors"), and
+a second redesign (build-exposure bullet + Build Pick rows in `cheat_sheet.py`, information not a verdict)
+shipped and verified — it surfaced Jordan Watkins, the exact miss from this session's original diagnosis,
+that the composite ranking alone never caught.
 
 **Recommended working order across D/E/F/G/A-redesign/B** (asked for explicitly 2026-11-09): these aren't
 independent — F's answer depends on what D's fix actually captures, and the Item A redesign should incorporate
@@ -336,12 +337,13 @@ whatever Item D produces, so alphabetical-by-letter isn't the right order. Sugge
    Allgeier before he busted. The specific extension tested (spread shrinking the lead RB's own share of team
    carries, a "committee split" effect) failed the same LOSO bar Item D's blend cleared — coin-flip stability,
    near-zero effect. No fix shipped; the propagation question folded into Item A's already-documented finding.
-4. **Item A redesign — ✅ done and shipped (2026-11-09).** Mockup built and validated on the real Wk9
-   20-lineup build (exposure × absolute floor bar cross-reference, see Item A above): correctly flags zero
-   true studs, catches 2-3 real risky plays, misses the already-known Gordon-type RB gap. Shipped as a
-   `RISK` tag in the frontend's existing Exposure Summary panel (`dfs_optimizer_frontend/index.html`) —
-   client-side only, no backend/pipeline change, verified against real data via a standalone JS logic
-   reproduction. Not yet seen live in the browser; watch it in real weekly use.
+4. **Item A redesign — ✅ done and shipped (2026-11-09), two attempts.** First attempt (exposure × absolute
+   floor RISK tag in the frontend Exposure panel) shipped, then removed the same day — real user feedback
+   was that a 2-variable flag can't represent the "multitude of factors" judgment call this is actually
+   about. Second attempt — build-exposure as a passive rationale bullet + new "Build Pick" bonus rows in
+   `scripts/cheat_sheet.py` itself, additive to the existing composite ranking, no verdict attached — shipped
+   and verified: on the real Wk9 build it surfaced Jordan Watkins (this session's own hindsight-miss example)
+   as a WR Build Pick, something the composite ranking never caught. See Item A above for full detail.
 5. **Item B (showdown misses)** — fully independent of all of the above; slot in whenever, no dependency
    either direction.
 6. **Item G (AI-probe retooling)** — explicitly last, only after D/E/F/the Item A redesign are in place.
