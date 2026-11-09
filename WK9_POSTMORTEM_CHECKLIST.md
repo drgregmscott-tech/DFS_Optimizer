@@ -188,13 +188,36 @@ which captures "this team is more likely to be trailing and therefore pass-heavy
 spread-direction as an RB-usage discount. Own session — test against historical data before shipping, same as
 any other candidate lever.
 
-## Item F. Target-competition / role-clarity check for Jordan Watkins-type cases — 🟡 WORTH CHECKING, lower
-urgency, own session
-Watkins (SF) was a clean miss on both sides — `proj_targets` was only 2.5, but in reality he, McCaffrey, and
-Kittle are the *entire* real receiving corps for that team right now, no competition for volume. Possibly the
-same mechanism as Item D (role/usage signal lagging real depth-chart reality), possibly a distinct "target
-competition" gap specific to receiving volume rather than a recency-trend issue. Not yet confirmed either way
-— scope a session to check whether this is Item D in different clothing or a separate thing worth its own fix.
+## Item F. Target-competition / role-clarity check for Jordan Watkins-type cases — ✅ INVESTIGATED this session
+(2026-11-09), own dedicated session (local_95a7901f-6ed4-4051-8a88-f03347f47108, spun off from the main
+postmortem session), verdict: real, distinct gap confirmed; no fix clears the validation bar
+Full writeup: `analysis/wk9_item_f_wr_te_decay/RESULTS.md`.
+
+**Not Item D in different clothing — confirmed.** Item D's shipped fix is scoped to RB carry-share ranking
+only; its own writeup states target share "showed no reliable signal... and was left untouched." Watkins'
+problem is 100% a target-share question, so Item D's fix cannot touch it.
+
+**Root cause, confirmed live:** by Wk9, SF's top 4 WRs (Evans, Deebo Samuel, Kirk, Pearsall) were all
+OUT/IR — but none of them was a *fresh* (first-week) OUT: Evans last played wk6, Deebo wk5, Kirk/Pearsall
+long-term IR. The shipped `apply_wr_replacement`/`apply_te_replacement` only fire on fresh (k=1) OUT/IR
+events — a real, confirmed asymmetry with RB, which got a k≥2 "decay" extension
+(`analysis/rb_replacement_decay`, shipped 2026-10-26) that WR/TE never received. Verified live:
+`wrw_wr_delta_pts = 0.0` for Watkins in the real Wk9 rebuild despite the mechanism's intended trigger
+condition being squarely met (just outside its k=1 window).
+
+**Tested the obvious fix (clone the RB decay extension for WR/TE), it does NOT clear the bar:** built the
+analogous 2016-25 event frame (1,009 WR + 396 TE team-week events) and fit bucket×rank fractions the same
+way Item D's RB blend was fit. Per-season LOSO stability (the decisive check Item D's RB fix cleared 10/10):
+**WR decay-better in only 5 of 10 seasons, TE in only 3 of 10** — a coin flip, not a signal. A simpler variant
+(just extend the existing shipped k=1 fractions to also fire on k≥2) is actively worse on every metric, 0 of
+10 seasons improved — it over-credits because vacated share compounds unrealistically across long-stale
+absences. Consistent with this project's standing WR-redistribution findings (`role_bump_chalk_gap`: several
+other WR-bleed variants also rejected as wrong-direction).
+
+**Not abandoned, not chased further this session (time-boxed, lower-urgency item):** a different candidate —
+recency-weighting the REMAINING candidate's own trailing target share (Watkins' own sh_tgt is diluted by a
+thin 3-game sample including a near-zero-role early game), rather than crediting vacated share from the OUT
+players — is flagged as a plausible next avenue for a future dedicated session if the user wants to pursue it.
 
 ## Item G. AI-probe question-template retooling — explicitly LAST in this family, after D/E/F, not before
 User's correction, important to get right: **projections feed the probe, not the other way around.**
@@ -229,8 +252,11 @@ whatever Item D produces, so alphabetical-by-letter isn't the right order. Sugge
 1. **Item D — ✅ done (2026-11-09).** Both halves fixed and shipped (see Item D above): the duplicate-field
    bug, and the validated RB-vacancy carry-share trend blend that actually fixes the Coleman-type miss. The
    Sanders connection checked out as a separate, already-fixed mechanism, not the same gap.
-2. **Item F next** — now that D's fix exists: does the Coleman-style trend/role fix also resolve the
-   Watkins-style target-starved case, or is it genuinely separate? Cheap to answer with D landed.
+2. **Item F — ✅ done (2026-11-09).** Confirmed genuinely separate from Item D (target-share, not
+   carry-share). Root cause confirmed (WR/TE vacancy mechanism only fires on fresh k=1 OUT, not sustained
+   multi-week absences like SF's). The natural fix (clone the RB decay extension) was tested and rejected —
+   coin-flip per-season stability, not the clean signal Item D's RB blend found. No fix shipped; a different
+   candidate (recency-blend on the candidate's own share) flagged for a possible future session.
 3. **Item E** — independent research/feature-build track (game-script/spread), can run before or after
    D/F; doesn't block or get blocked by them.
 4. **Item A redesign (cheat sheet ↔ optimizer-aware, mockup-first)** — after D (and ideally E) exist, since
