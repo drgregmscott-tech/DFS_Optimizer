@@ -441,11 +441,36 @@ still carries the D1/G1 documentation notes (accurate, just not code). The funct
   gap found there.
 Full diff across all 3 files (`AI_PROBE_QUESTION_TEMPLATES.md`, both generator scripts).
 
+**Item G addendum, same session — snap-role feature re-grade (🔴 flagged for owner decision, not
+resolved).** Flagging the showdown-probe gap surfaced a second open item from the earlier reply:
+`statline_model.snap_role_adjust_pts` (shipped default ON since 2026-10-22) carries its own code
+comment — "2026 wk2-6 did not confirm the history effect; re-grade after wk9" — and that re-grade was
+due. Ran it against REAL production wk7-9 `final_projections_*.csv` files (snap_adj_pts as actually
+shipped) joined to real logged `actual_fpts` (`data/projection_error_log.csv`) — the live pipeline's
+own output, not a reconstruction. Full writeup:
+`analysis/snap_role_projection_confirm/RESULTS.md`'s new "Wk7-9 re-grade" section;
+script `analysis/snap_role_projection_confirm/regrade_wk7_9.py` (gitignored, not committed, same as
+the rest of `analysis/`).
+
+**Result: the gate this feature's own wiring spec set before shipping ("need dMSE > 0 pooled over
+wk2-9") is not met, and the trend got worse, not better, with wk7-9 added.** wk7-9 pooled dMSE
+**-0.196** [-0.605, +0.220] (n=1,179, CI crosses 0, MDE80 0.59 — underpowered alone, same as wk2-6
+alone was). By week: w7 -0.20, w8 +0.14, **w9 -0.53** (the worst week, and the one this check was
+prompted by). **Pooled wk2-9: dMSE -0.053** — negative, where the original wiring spec required
+positive before ever turning this on by default. Not a confirmed "the feature hurts" result on its
+own (still underpowered), but no longer a confirmed "it helps" result either, and the specific
+numeric gate that was supposed to be checked before shipping has now failed.
+
+**Not resolved unilaterally — this is a live production toggle (`DFS_PROJ_SNAP`), not a research
+finding.** Flagged for the owner: keep it ON and gather more weeks (3 weeks is still thin against a
+5-season fit), or flip `DFS_PROJ_SNAP=0` now since the stated gate has failed. No code changed.
+
 **Full Wk9 postmortem cycle (Items 0, A-G) is now closed.** Open watch items carried forward, not closed
 questions: Item A's optimizer-aware redesign is shipped-and-accepted but flagged for incremental
 refinement only; Item B's QB-captain-rate lead is an open, falsifiable action item (track over the next
 several weeks); Item F's WR/TE vacancy gap is confirmed real but unfixed (candidate fix failed
-validation); BUF/MIN (Mon) result still needs folding into Item B's tally once final.
+validation); **the snap-role feature's re-grade above is a new open action item, awaiting the owner's
+keep-on/turn-off decision**; BUF/MIN (Mon) result still needs folding into Item B's tally once final.
 
 ## Parking Lot — carried over from Week 8, status unchanged unless noted
 - **Wk8 Item B / this week's Item B** — showdown recurring miss, now tracked together above.
