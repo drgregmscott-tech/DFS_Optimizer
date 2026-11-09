@@ -461,9 +461,10 @@ positive before ever turning this on by default. Not a confirmed "the feature hu
 own (still underpowered), but no longer a confirmed "it helps" result either, and the specific
 numeric gate that was supposed to be checked before shipping has now failed.
 
-**Not resolved unilaterally — this is a live production toggle (`DFS_PROJ_SNAP`), not a research
-finding.** Flagged for the owner: keep it ON and gather more weeks (3 weeks is still thin against a
-5-season fit), or flip `DFS_PROJ_SNAP=0` now since the stated gate has failed. No code changed.
+**Owner decision (2026-11-09): leave `DFS_PROJ_SNAP=1` on for now, revisit later.** Keeps accumulating
+real weeks against the failed gate rather than flipping off on a still-underpowered 3-week sample. No
+code changed. Re-run `analysis/snap_role_projection_confirm/regrade_wk7_9.py` (extend its week range)
+next time this comes up rather than re-deriving from scratch.
 
 **Full Wk9 postmortem cycle (Items 0, A-G) is now closed.** Open watch items carried forward, not closed
 questions: Item A's optimizer-aware redesign is shipped-and-accepted but flagged for incremental
