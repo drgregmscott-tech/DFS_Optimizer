@@ -111,12 +111,20 @@ players never appeared in this 20-lineup build at all — this flag only ever se
 actually rostered, a real but partial answer (doesn't address "never considered this player," a separate
 question).
 
-**Verdict: works well enough on real data to be worth building for real** — a genuinely optimizer-aware
-extension of the existing pipeline (reads `pivot_finder.py`'s exact input, no rebuild), as a per-slate-relative
-exposure threshold (not a fixed 30%) plus the existing `ABS_FLOOR_HIGH_RISK` constant, surfaced as a tag next
-to whatever view already shows built-lineup exposure. Not built yet — needs its own short follow-up to wire
-in and validate across a few more weeks before shipping; flagged as a candidate to revisit once Item D's
-RB usage-trend signal has more weeks on it, to see if it narrows the Gordon-type RB miss.
+**Shipped (2026-11-09).** Wired into `dfs_optimizer_frontend/index.html`'s existing Exposure Summary panel
+(the frontend's own client-side `renderExposureSummary()`, which already tallies real built-lineup exposure
+from `lineups_multi_*.csv` — no new upload, no new file, no backend change). A player gets a `RISK` tag next
+to his name when his exposure is in this batch's own top tier (`>= max(20%, 75% of the batch's highest
+exposure)` — relative per-batch, not a fixed number, per the mockup's recommendation) AND his
+`statline_p10` (already in the uploaded final_projections pool CSV) is under 3.0, the exact same
+`ABS_FLOOR_HIGH_RISK` constant `cheat_sheet.py`'s Range line already uses — reused literally, not
+re-derived. DST is exempt (no floor/ceiling model, same as `cheat_sheet.py`). Verified with a standalone
+Node reproduction of the exact frontend logic against the real Wk9 20-lineup build: reproduces the mockup's
+7 flagged players exactly (Worthy, Sutton, Schultz, Dulcich, Washington, Boston, Raridon) with the threshold
+computed dynamically (30% on this batch) rather than hand-picked. Hint text in the Exposure panel explains
+the tag inline. Not yet validated live in the browser UI (no file-upload automation available this session)
+or across additional weeks — watch it in real use; revisit once Item D's RB usage-trend signal matures to
+see if it narrows the Gordon-type RB miss this flag still doesn't catch.
 
 ## Item B. Showdown misses continue — Wk9 confirms 2 more losses in the Wk5+ pattern, 1 still pending
 From [[project_wk8_item_b_showdown_recurring_miss]] (Wk5-8: 1/8 cashed, 12.5%, vs Wk1-4's 71%, step-change at
@@ -328,10 +336,12 @@ whatever Item D produces, so alphabetical-by-letter isn't the right order. Sugge
    Allgeier before he busted. The specific extension tested (spread shrinking the lead RB's own share of team
    carries, a "committee split" effect) failed the same LOSO bar Item D's blend cleared — coin-flip stability,
    near-zero effect. No fix shipped; the propagation question folded into Item A's already-documented finding.
-4. **Item A redesign — ✅ done (2026-11-09).** Mockup built and validated on the real Wk9 20-lineup build
-   (exposure × absolute floor bar cross-reference, see Item A above): correctly flags zero true studs, catches
-   2-3 real risky plays, misses the already-known Gordon-type RB gap. Direction confirmed worth building for
-   real; wiring it into the live pipeline is a short separate follow-up whenever the user wants it.
+4. **Item A redesign — ✅ done and shipped (2026-11-09).** Mockup built and validated on the real Wk9
+   20-lineup build (exposure × absolute floor bar cross-reference, see Item A above): correctly flags zero
+   true studs, catches 2-3 real risky plays, misses the already-known Gordon-type RB gap. Shipped as a
+   `RISK` tag in the frontend's existing Exposure Summary panel (`dfs_optimizer_frontend/index.html`) —
+   client-side only, no backend/pipeline change, verified against real data via a standalone JS logic
+   reproduction. Not yet seen live in the browser; watch it in real weekly use.
 5. **Item B (showdown misses)** — fully independent of all of the above; slot in whenever, no dependency
    either direction.
 6. **Item G (AI-probe retooling)** — explicitly last, only after D/E/F/the Item A redesign are in place.
