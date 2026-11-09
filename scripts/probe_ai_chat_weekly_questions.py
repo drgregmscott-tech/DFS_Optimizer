@@ -44,10 +44,33 @@ RELEVANCE_QUALIFIER = (
 )
 
 
+def _slate_date(path: str):
+    """Parse the DDMonYYYY date encoded in the filename. Returns None if unparseable."""
+    import datetime
+    import re
+    m = re.search(r"_(\d{2}[A-Za-z]{3}\d{4})\.csv$", path)
+    if not m:
+        return None
+    try:
+        return datetime.datetime.strptime(m.group(1), "%d%b%Y")
+    except ValueError:
+        return None
+
+
 def pick_latest_slate() -> str:
+    """2026-11-09 fix (parity with the showdown script's identical bug, found live): picking by
+    file mtime (`max(candidates, key=os.path.getmtime)`) picks the WRONG slate if an automated
+    rebuild touches two different weeks' main files within the same batch job -- mtime reflects
+    when a file was last WRITTEN, not which week's slate is actually current. The filename's own
+    encoded date is the real signal. Falls back to mtime only for files whose date can't be
+    parsed."""
     candidates = glob.glob("output/final_projections_dk_dk_classic_wk*_main_*.csv")
     if not candidates:
         raise SystemExit("No output/final_projections_dk_dk_classic_wk*_main_*.csv found.")
+    dated = [(c, _slate_date(c)) for c in candidates]
+    with_date = [(c, d) for c, d in dated if d is not None]
+    if with_date:
+        return max(with_date, key=lambda cd: cd[1])[0]
     return max(candidates, key=os.path.getmtime)
 
 

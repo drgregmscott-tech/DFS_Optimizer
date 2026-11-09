@@ -23,6 +23,7 @@ Output goes to stdout -- copy it straight into a new Claude.ai chat.
 import csv
 import glob
 import os
+import re
 import sys
 from pathlib import Path
 
@@ -56,10 +57,35 @@ RELEVANCE_QUALIFIER = (
 )
 
 
+def _slate_date(path: str):
+    """Parse the DDMonYYYY date encoded in the filename (e.g. ..._TB_CHI_08Nov2026.csv -> Nov 8,
+    2026). Returns None if the filename doesn't end in that pattern."""
+    import datetime
+    m = re.search(r"_(\d{2}[A-Za-z]{3}\d{4})\.csv$", path)
+    if not m:
+        return None
+    try:
+        return datetime.datetime.strptime(m.group(1), "%d%b%Y")
+    except ValueError:
+        return None
+
+
 def pick_latest_showdown_slate() -> str:
+    """2026-11-09 fix: this used to pick by file mtime (`max(candidates, key=os.path.getmtime)`),
+    which picked the WRONG slate when two showdown files got rewritten in the same batch job --
+    confirmed live: Wk9 BUF_MIN (tonight's real slate) and TB_CHI (already played, the previous
+    night) were both touched by an automated refresh within 2ms of each other, and TB_CHI's mtime
+    happened to land 1.8ms later, so the probe generated questions about a slate that already
+    happened. The filename's own encoded date (DDMonYYYY) is the real signal for "which slate is
+    actually upcoming" -- mtime reflects when a file was last WRITTEN, not which game is next.
+    Falls back to mtime only for files whose date can't be parsed."""
     candidates = glob.glob("output/final_projections_dk_dk_showdown_wk*_*.csv")
     if not candidates:
         raise SystemExit("No output/final_projections_dk_dk_showdown_wk*_*.csv found.")
+    dated = [(c, _slate_date(c)) for c in candidates]
+    with_date = [(c, d) for c, d in dated if d is not None]
+    if with_date:
+        return max(with_date, key=lambda cd: cd[1])[0]
     return max(candidates, key=os.path.getmtime)
 
 
@@ -246,7 +272,6 @@ def main() -> None:
             )
             n += 1
 
-    import re
     m = re.search(r"wk(\d+)", path)
     week_num = int(m.group(1)) if m else 9
     by_pos = candidates_by_position(
