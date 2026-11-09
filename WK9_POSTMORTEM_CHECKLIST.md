@@ -152,9 +152,39 @@ tweaks to `VALUE_CANDIDATE_TOP_N`/the position set/the exposure-bullet wording a
 of an accepted design, not a reopening of the question.
 
 ## Item B. Showdown misses continue — ✅ INVESTIGATED this session (2026-11-09), own dedicated session
-(local_3e029318-0846-4df1-894b-1a2a78d2765b, spun off from the main postmortem session). Verdict: **still
-parked, no new mechanism found** — TB/CHI's deep dive adds a strong confirming data point for the Wk8
-"ordinary variance in a single-entry, no-pool format" verdict rather than overturning it.
+(local_3e029318-0846-4df1-894b-1a2a78d2765b, spun off from the main postmortem session). **Revised verdict
+after user pushback: a real, previously-unchecked candidate mechanism found — QB-captain rate — not just
+"ordinary variance."** First pass of this session (TB/CHI's construction deep-dive, kept below) landed on
+"stays parked, no new mechanism," matching Wk8's conclusion. User correctly rejected that as not a real
+answer to "why aren't we cashing on showdowns like we used to" — a second parked verdict isn't progress. Going
+back through the full 16-slate Wk1-9 real-entry dataset by **captain position**, a variable neither this nor
+the Wk8 session had checked, surfaced something concrete and new (see below, before the TB/CHI deep-dive
+section, since it's the actual answer).
+
+**The real finding: QB-captain rate nearly doubled right at the Wk5 boundary, and QB-captain builds cash
+much worse.** Tabulated captain position for all 16 real DK showdow entries (`gmscott81`, Wk1-9):
+
+| Era | QB-captain rate | QB-captain cash rate | Non-QB-captain cash rate |
+|---|---|---|---|
+| Wk1-4 (7 entries) | 3/7 (43%) | — | — |
+| Wk5-9 (9 entries) | 7/9 (78%) | — | — |
+| All 16 pooled | — | 2/9 (22%) | 4/7 (57%) |
+
+QB-captain share jumped from 43% to 78% at exactly the same week the cash rate collapsed (71%→10%). Pooled
+across all 16 slates, QB-captain builds cashed 22% of the time vs 57% for every other captain position (K,
+RB, WR, TE). **Not statistically significant on its own** (Fisher's exact, QB-captain-worse one-sided p=0.18,
+n=16 — thin, same caveat as the original 71%→10% step-change finding at p≈0.035) but it is a real, specific,
+directionally-consistent, previously-unchecked lead that lines up with the exact timing of the problem, which
+"ordinary variance" is not. Checked and ruled out as the cause of the QB-captain tilt itself: the
+`ctrlSdRequireCptQb`/`--sd-require-cpt-qb` flag (true in both SE/GPP presets, unchanged across the whole
+window) only requires a same-team QB be *present* when a WR/TE is captain (a bring-back rule) — it does not
+force or bias toward QB-as-captain, so this looks like a shift in the user's own hand-picked captain choice,
+not a code/preset change pushing him there. **Action: track CPT position explicitly going forward (add it to
+the per-slate postmortem Results table) and treat QB-captain picks with extra scrutiny/skepticism in showdow
+selection until there's enough data (a few more weeks) to confirm or kill this** — a real, falsifiable
+next step, not a re-park.
+
+**TB/CHI deep-dive, kept for the record (first pass, before the above was found):**
 
 **Refreshed Wk5-9 table:** From [[project_wk8_item_b_showdown_recurring_miss]] (Wk5-8: 1/8 cashed, 12.5%, vs
 Wk1-4's 71%, step-change at Wk5, p≈0.035 one-sided, n=15, parked). This week, both completed showdowns
@@ -191,12 +221,11 @@ in advance — not a construction defect, not a stale/wrong vegas input, not a C
 exposure-concentration, chalk/contrarian, or bring-back-structure issue found either (ownership on the entered
 pieces ranged 11.5%-60.4%, unremarkable; ‑ no single piece was wildly off-consensus).
 
-**Verdict: no new candidate mechanism — stays parked**, same bar Items D/E/F used (report honestly, don't force
-a fix). The Wk8 conclusion ("ordinary high-variance streakiness in a captain-multiplier format with no
-entry-pool averaging, not a diagnosable pipeline defect") holds; TB/CHI is a second, cleanly-traced instance of
-exactly that failure mode (correctly-priced favorite's RB busts, underdog's RB explodes, nothing in our
-inputs — vegas, matchup, construction rules — gave advance warning). Re-run this comparison again after a few
-more weeks for power; no action item to carry forward from this session.
+TB/CHI itself found no construction/vegas/rule defect (its captain, Loveland, is a TE — fits the "non-QB
+captain" bucket, so TB/CHI's specific miss is NOT an instance of the QB-captain pattern above; it's a
+separate, cleanly-traced favorite-upset case that remains a legitimate "ordinary variance" data point on its
+own, just not the answer to the broader Wk5+ pattern). **Overall Item B verdict: the QB-captain-rate finding
+above is the real lead from this session — tracked as an open, falsifiable action item, not parked.**
 
 ## Item C. Accuracy assessment (`scripts/grade_accuracy_week.py --week 9`, full report:
 `analysis/weekly_accuracy_review/out/wk9/report.txt`)
