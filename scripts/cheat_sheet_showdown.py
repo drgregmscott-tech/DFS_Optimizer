@@ -14,6 +14,21 @@ v2 (2026-11-09, user feedback on the v1 build): three real changes from
 the first cut, plus the three real differences from the classic sheet
 that motivated this script in the first place.
 
+v3 (2026-11-09, same day, user follow-up): asked for the real DK
+Showdown cash line instead of a guess, then "not just value, but also
+... fpts range and risk for busting, not just bad value = bust play."
+See analysis/showdown_cash_line_2026-11-09/ for the research (16 real DK
+Showdown contests -> empirical cash line ~102 pts / 2.04x pts-per-$1K,
+confirming VALUE_BUST/BAD/FIRE's breakpoints; also checked whether the
+model's own projections are plausible at all against that real number --
+they are, see RESULTS.md's alignment section) and BUST_Z_HIGH/LOW's own
+comment for why range_bullet() stays pool-relative rather than measured
+directly against the cash line (tried that first; it's statistically
+unsound -- a team TOTAL's bad-outcome percentile and an individual
+player's bad-outcome percentile aren't the same kind of number, so the
+comparison flagged nearly everyone regardless of real relative risk,
+recreating the exact v1 problem this whole recalibration started from).
+
 FRONTEND INTEGRATION (new in v2): the user expected this on the live
 cheat-sheet panel the same way the classic sheet already is -- that panel
 (dfs_optimizer_frontend/index.html's renderCheatSheet()) reads
@@ -114,33 +129,60 @@ GAME_ENV_MARGIN = 2.0
 MATCHUP_FAVORABLE = 1.10
 MATCHUP_TOUGH = 0.90
 
-# Value-per-dollar tiers (added 2026-11-09, user's own benchmarks) --
-# pts per $1000 salary against DK Showdown's fixed $50,000 total cap.
-# User's framing: a 6-man roster averaging ~2.0x nets ~100 total pts
-# (roughly a cash line), ~2.25-2.5x is "fire" (~112-125 total, deep into
-# GPP territory), ~1.75x reads bad, <=1.5x is a bust. Deliberately an
-# ABSOLUTE bar, not pool-relative like the swing tiers below -- it's
-# anchored to the cap structure itself (fixed $50k, not this slate's own
-# shape), same reasoning as why slate-relative z-scoring is right for
-# bust/floor (that's about THIS slate's own variance) but wrong here
-# (value-for-money means the same thing on every showdown slate).
+# Value-per-dollar tiers (added 2026-11-09, originally the user's own
+# guess, now confirmed against real data -- see analysis/
+# showdown_cash_line_2026-11-09/RESULTS.md). Pts per $1000 salary against
+# DK Showdown's fixed $50,000 total cap. 16 real DK Showdown contests
+# (2026 Wk1-9) show a flat pts/$1K ratio of 1.5x beats only ~28% of the
+# field on average (bust territory), 1.75x ~47% (below the real cash
+# line), 2.0x ~66% (just under -- the empirical cash-line ratio itself is
+# 2.04x), 2.25x ~80% (solidly past cash, "fire"), 2.5x ~90%. Deliberately
+# an ABSOLUTE bar -- pts-per-dollar-of-salary means the same thing on
+# every showdown slate, unlike a player's own realistic point range
+# (see range_bullet()), which is genuinely slate- and matchup-dependent
+# and stays pool-relative instead (see BUST_Z_HIGH/LOW below).
 VALUE_BUST = 1.5
 VALUE_BAD = 1.75
 VALUE_FIRE = 2.25
 
-# Recalibrated bust-risk thresholds (v2) -- z-scored WITHIN this slate's
-# own eligible pool, not an absolute bar borrowed from classic's 300-
-# player pool. Same numeric cutoffs classic's own CONF_* machinery uses
-# for the identical "high/low relative to cohort" judgment, just applied
-# here to BOTH the bust ratio and the floor (classic only z-scores bust;
-# it can afford absolute floor bars because its pool is big and stable
-# enough for "a sub-3pt floor" to mean the same thing every week -- a
-# 12-16 player showdown pool isn't, so floor gets the same relative
-# treatment as bust here).
+# Real empirical cash line, NOT a guess -- mean score at the top-25% cut
+# across 16 real 2026 DK Showdown contests (field sizes 2,378-47,562; see
+# analysis/showdown_cash_line_2026-11-09/compute_cash_line.py). Checked
+# whether the slate's own game total or field size predicts this before
+# accepting one flat number -- neither does (correlation ~0.05-0.09 with
+# game total, ~-0.25 with field size), so a flat historical average is
+# the right anchor. Surfaced in the __main__ summary print as a slate-
+# level reference point, NOT used per-player -- see BUST_Z_HIGH/LOW's
+# comment for why a per-player floor-vs-cash-line comparison doesn't
+# actually work (team-total percentiles and individual percentiles
+# aren't comparable).
+CASH_LINE_PTS = 102.0
+
+# Bust-risk (ceiling/floor spread), z-scored WITHIN this slate's own
+# eligible pool -- same numeric cutoffs classic's own CONF_* machinery
+# uses for the identical "high/low relative to cohort" judgment. Used
+# for compute_confidence() AND range_bullet() below.
+#
+# v3 note (2026-11-09, user feedback: "not just value, but also ...
+# fpts range and risk for busting, not just bad value = bust play"):
+# tried comparing each player's own floor (statline_p10, his bad-10th-
+# percentile outcome) against his salary-implied pro-rata share of the
+# real $102 empirical cash line (CASH_LINE_PTS -- see that constant and
+# analysis/showdown_cash_line_2026-11-09/). That recreated the EXACT
+# problem this whole recalibration started from: it flagged nearly every
+# player as "risky," for a structural statistical reason, not a scoring
+# bug -- a 6-player TEAM TOTAL's 10th percentile sits much closer to its
+# own median than any ONE player's individual 10th percentile does
+# (summing several roughly-independent variables compresses the relative
+# spread of the total, basic variance-of-a-sum behavior), so comparing
+# one player's bad-tail outcome against a team-level MEDIAN-ish target
+# was never a fair comparison -- it would flag almost everyone regardless
+# of their real relative risk. Kept the pool-relative z-score instead
+# (BUST_Z_HIGH/LOW below) -- a genuinely different signal from value
+# (variance/swing shape, not cost-per-point), and the one that actually
+# discriminates between players rather than flagging the whole pool.
 BUST_Z_HIGH = 0.75
 BUST_Z_LOW = -0.75
-FLOOR_Z_HIGH = 0.75
-FLOOR_Z_LOW = -0.75
 
 # Confidence weights -- same shape as classic's CONF_WITHIN_WEIGHT/
 # CONF_BUST_WEIGHT (see that script's module docstring), no slate-
@@ -312,38 +354,48 @@ def env_bullet(row: pd.Series, avg_implied_total: float) -> str:
 
 
 def range_bullet(row: pd.Series) -> str:
-    """Recalibrated for v2 -- see module docstring 'RECALIBRATED BUST-RISK'.
-    bust_z/floor_z are pre-computed pool-relative z-scores (see
-    build_cheat_sheet_showdown()), NOT absolute bars. Tier wording is
-    "wide/tight/normal swing", not "bust risk" -- that word is now
-    reserved for the separate value_bullet() tier below, a different
-    concept (cost-adjusted expectation, not raw ceiling/floor spread)."""
-    p10, p90 = row["statline_p10"], row["statline_p90"]
+    """v3 (2026-11-09) -- see the BUST_Z_HIGH/LOW comment above for why
+    this stays pool-relative rather than measured against the real
+    empirical cash line directly. Reports the floor's real point/percent
+    shortfall off this player's own projection (concrete numbers, not a
+    bare z-score) and tiers it by where that shortfall ranks against the
+    rest of tonight's eligible pool -- a genuinely different question
+    from value_bullet()'s cost-efficiency tier ("is he underpriced"),
+    answering "how much does his own bad outcome cost him specifically,"
+    not "did I pay too much."""
+    p10, p90, proj = row["statline_p10"], row["statline_p90"], row["final_projection"]
     if row["position"] in ("DST", "K") and p10 == 0 and p90 == 0:
         return "Range: not modeled for this position"
-    bust_z, floor_z = row["_bust_z"], row["_floor_z"]
-    if floor_z <= FLOOR_Z_LOW or bust_z >= BUST_Z_HIGH:
+    bust_z = row["_bust_z"]
+    floor_shortfall_pct = (proj - p10) / proj if proj else 0.0
+    if bust_z >= BUST_Z_HIGH:
         tier = "wide swing for this slate"
-    elif floor_z >= FLOOR_Z_HIGH and bust_z <= BUST_Z_LOW:
+    elif bust_z <= BUST_Z_LOW:
         tier = "tight swing for this slate"
     else:
         tier = "normal swing for this slate"
-    return f"Range: {p10:.1f}–{p90:.1f} pts ({tier})"
+    return (f"Range: {p10:.1f}–{p90:.1f} pts — floor is "
+            f"{floor_shortfall_pct:.0%} below his own projection ({tier})")
+
+
+def value_tier(ratio: float) -> str:
+    """Shared by value_bullet() and captain_bullet() so the two never
+    disagree on where a given ratio falls -- see VALUE_* constants
+    above."""
+    if ratio <= VALUE_BUST:
+        return "bust"
+    if ratio <= VALUE_BAD:
+        return "bad"
+    if ratio < VALUE_FIRE:
+        return "on expectation"
+    return "fire"
 
 
 def value_bullet(row: pd.Series) -> str:
     """Pts-per-$1000-salary vs. the user's own $50k-cap benchmarks -- see
     VALUE_* constants above."""
     ratio = row["final_projection"] / (row["salary"] / 1000.0)
-    if ratio <= VALUE_BUST:
-        tier = "bust"
-    elif ratio <= VALUE_BAD:
-        tier = "bad"
-    elif ratio < VALUE_FIRE:
-        tier = "on expectation"
-    else:
-        tier = "fire"
-    return f"Value: {ratio:.2f} pts/$1K ({tier})"
+    return f"Value: {ratio:.2f} pts/$1K ({value_tier(ratio)})"
 
 
 def captain_bullet(cpt_row) -> str:
@@ -354,11 +406,10 @@ def captain_bullet(cpt_row) -> str:
     if cpt_row is None:
         return "Captain: no captain-slot data found for this player"
     cpt_ratio = cpt_row["final_projection"] / (cpt_row["salary"] / 1000.0)
-    cpt_tier = "fire" if cpt_ratio >= VALUE_FIRE else "bust" if cpt_ratio <= VALUE_BUST else "on expectation"
     return (f"Captain: ${cpt_row['salary']:.0f} salary, "
             f"{cpt_row['final_projection']:.1f} pts, "
             f"{cpt_row['estimated_ownership_pct']:.1f}% owned as CPT "
-            f"({cpt_ratio:.2f} pts/$1K, {cpt_tier})")
+            f"({cpt_ratio:.2f} pts/$1K, {value_tier(cpt_ratio)})")
 
 
 def build_rationale(row, cpt_row, avg_implied_total, display_matchup, depth_matchup,
@@ -412,16 +463,16 @@ def build_cheat_sheet_showdown(site: str, slate_id: str, season: int, week: int)
     ranks = depth_pool.groupby(["team", "position"])["proj_targets"].rank(ascending=False, method="first")
     team_pos_rank = dict(zip(depth_pool["player_id"], ranks))
 
-    # Pool-relative bust/floor z-scores (v2 recalibration) -- computed
-    # once across the whole eligible pool (DST excluded -- its p10/p90
-    # are a flat 0/0, not a real spread to z-score).
+    # Pool-relative bust z-score (ceiling/floor spread, for confidence +
+    # range_bullet's swing tier) computed once across the whole eligible
+    # pool (DST excluded -- its p10/p90 are a flat 0/0, not a real spread
+    # to z-score). See BUST_Z_HIGH/LOW's comment for why this stays
+    # pool-relative instead of measured against the real cash line.
     scorable = flex[~((flex["position"] == "DST") & (flex["statline_p10"] == 0) & (flex["statline_p90"] == 0))].copy()
     scorable["_bust_raw"] = (scorable["statline_p90"] - scorable["statline_p10"]) / scorable["final_projection"]
     scorable["_bust_z"] = zscore(scorable["_bust_raw"])
-    scorable["_floor_z"] = zscore(scorable["statline_p10"])
-    flex = flex.merge(scorable[["player_id", "_bust_raw", "_bust_z", "_floor_z"]], on="player_id", how="left")
+    flex = flex.merge(scorable[["player_id", "_bust_raw", "_bust_z"]], on="player_id", how="left")
     flex["_bust_z"] = flex["_bust_z"].fillna(0.0)
-    flex["_floor_z"] = flex["_floor_z"].fillna(0.0)
 
     flex = flex.sort_values("final_projection", ascending=False).reset_index(drop=True)
     flex["overall_rank"] = range(1, len(flex) + 1)
@@ -470,6 +521,9 @@ if __name__ == "__main__":
     sheet.to_csv(out_path, index=False)
 
     print(f"Wrote {len(sheet)} cheat sheet row(s) to {out_path}")
+    print(f"Reference: real empirical DK Showdown cash line (top 25%) averages "
+          f"{CASH_LINE_PTS:.0f} total roster pts across 16 real 2026 contests -- "
+          f"see analysis/showdown_cash_line_2026-11-09/RESULTS.md")
     if not sheet.empty:
         for pos in sheet["position"].unique():
             pos_rows = sheet[sheet["position"] == pos]
