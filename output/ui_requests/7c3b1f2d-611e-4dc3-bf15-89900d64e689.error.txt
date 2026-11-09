@@ -1,0 +1,5 @@
+optimizer.py failed for this request. Last lines of its output:
+
+Pool filter: excluding 16 player(s) below their position's --participation-floors threshold (decision #A2): Frank Gore Jr. (RB, participation 0.00 < 0.40), Shane Buechele (QB, participation 0.00 < 0.60), Frank Gore Jr. (RB, participation 0.00 < 0.40), Kyle Allen (QB, participation 0.20 < 0.60), Josh Oliver (TE, participation 0.20 < 0.40), Shane Buechele (QB, participation 0.00 < 0.60), Max Brosmer (QB, participation 0.00 < 0.60), Kyle Allen (QB, participation 0.20 < 0.60), Josh Oliver (TE, participation 0.20 < 0.40), Andrew DePaola (TE, participation 0.00 < 0.40), Max Brosmer (QB, participation 0.00 < 0.60), Devin Culp (TE, participation 0.00 < 0.40), Brock Lampe (RB, participation 0.00 < 0.40), Andrew DePaola (TE, participation 0.00 < 0.40), Devin Culp (TE, participation 0.00 < 0.40), Brock Lampe (RB, participation 0.00 < 0.40)
+
+Could not generate a lineup with the current settings: Cannot satisfy --max-team-players MIN:3 -- 4 locked player(s) are already on MIN, exceeding that cap by itself.
