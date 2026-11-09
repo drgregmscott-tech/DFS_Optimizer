@@ -151,25 +151,52 @@ adjustments as we proceed forward." Item A is closed as shipped-and-accepted, no
 tweaks to `VALUE_CANDIDATE_TOP_N`/the position set/the exposure-bullet wording are incremental refinement
 of an accepted design, not a reopening of the question.
 
-## Item B. Showdown misses continue — Wk9 confirms 2 more losses in the Wk5+ pattern, 1 still pending
-From [[project_wk8_item_b_showdown_recurring_miss]] (Wk5-8: 1/8 cashed, 12.5%, vs Wk1-4's 71%, step-change at
-Wk5, p≈0.035 one-sided, n=15, parked — every traced mechanism came back clean). This week, both completed
-showdowns missed: JAX/BAL (Thu) at top 37.9%, TB/CHI (Sun night) at top 92.7% (the worst single showdown
-result logged all season) — BUF/MIN (Mon) still live. That's **Wk5-9 now 1/10 cashed (10%)**, going to 1/11
-(9%) if Monday also misses — the pattern is holding, not reverting.
+## Item B. Showdown misses continue — ✅ INVESTIGATED this session (2026-11-09), own dedicated session
+(local_3e029318-0846-4df1-894b-1a2a78d2765b, spun off from the main postmortem session). Verdict: **still
+parked, no new mechanism found** — TB/CHI's deep dive adds a strong confirming data point for the Wk8
+"ordinary variance in a single-entry, no-pool format" verdict rather than overturning it.
 
-`grade_accuracy_week.py --week 9`'s showdown edge, now with both Wk9 slates pooled, is **0.179** (corr_ours
-0.738 vs corr_salary 0.559) — third-best of the season (Wk3 0.259, Wk8 0.187, Wk9 0.179), not the best as the
-single-slate JAX/BAL-only number suggested earlier. Still a good-accuracy week overall, and TB/CHI's 92.7%
-finish is as bad as this pattern gets — another clean data point that good projection edge does NOT translate
-to showdown cash, reinforcing Wk8's Finding 2 (accuracy is not the Wk5+ showdown story) rather than reopening
-it.
+**Refreshed Wk5-9 table:** From [[project_wk8_item_b_showdown_recurring_miss]] (Wk5-8: 1/8 cashed, 12.5%, vs
+Wk1-4's 71%, step-change at Wk5, p≈0.035 one-sided, n=15, parked). This week, both completed showdowns
+missed: JAX/BAL (Thu) at top 37.9%, TB/CHI (Sun night) at top 92.7% (the worst single showdown result logged
+all season). **Wk5-9 is now 1/10 cashed (10%).** BUF/MIN (Mon night, kickoff 2026-11-09 7:15pm CT) is **still
+not final** — no contest-results export exists yet (`data/contest_results/` has no `BUF_MIN` file for Wk9) —
+excluded from the tally, would make it 1/11 (9%) if it also misses.
 
-**No new action yet** — this stays parked per the Wk8 verdict until there's either a new candidate mechanism or
-enough additional weeks to re-run the full comparison with better power. This is its own dedicated session
-(per the user's sequencing), not continued inline here — refresh the 15-slate table with Wk9's 2-3 new entries
-and take another look at TB/CHI specifically (worst showdown result of the season is worth a closer look even
-if the broader pattern stays parked).
+`grade_accuracy_week.py --week 9`'s showdown edge, both Wk9 slates pooled, is **0.179** (corr_ours 0.738 vs
+corr_salary 0.559) — third-best of the season (Wk3 0.259, Wk8 0.187, Wk9 0.179), not the best as the
+single-slate JAX/BAL-only number suggested earlier. Reinforces Wk8's Finding 2 (accuracy is not the Wk5+
+showdown story) — already established, not re-derived here.
+
+**TB/CHI closer look — single real DK entry, not a pool** (confirmed: `gmscott81` entered exactly 1 lineup in
+every one of the 15 Wk1-9 DK showdows except Wk8 PHI/WAS, which had 2 — this is the standing pattern across
+BOTH the 71%-cash era and the 10%-cash era, so it doesn't explain the step-change, but it does explain why
+any one miss is a total miss with nothing to average against).
+
+Entered lineup: CPT Colston Loveland (CHI TE) / FLEX Caleb Williams (CHI QB) / FLEX D'Andre Swift (CHI RB) /
+FLEX Emeka Egbuka (TB WR) / FLEX Chase McLaughlin (TB K) / FLEX Cade Otton (TB TE). $49,900 of $50,000 cap
+used (near-max, normal), a plain 3-3 team split (3 CHI / 3 TB) — **the exact "plain 3-3 split, no rule
+violations" shape Wk8 already found in every prior miss**, not a new construction pattern.
+
+**The actual swing, checked against our pregame inputs:** CHI was correctly favored pregame (`vegas_factor`
+1.052 CHI vs 0.813 TB, implied total 26.75 vs 20.69 — the market and our read of it agreed). At that price
+tier, our model projected Swift (CHI RB, $10,000 FLEX) at **17.8 pts**, meaningfully above Irving (TB RB,
+$9,800 FLEX, nearly identical salary) at **11.3 pts** — a deliberate, price-consistent call that the favored
+team's back would outproduce the underdog's. Real result: Swift scored **3.1**, Irving scored **28.5** — a
+complete inversion, with Irving going for a captain-worthy 42.75 at 1.5x. Meanwhile CHI's passing game (Burden
+21.7 actual vs 13.9 proj, Odunze 16 vs 12, Williams roughly in line) *beat* projections — consistent with CHI
+abandoning the run after falling behind, which the pregame spread (CHI favored by 6) did not predict. This is
+a textbook favorite-upset / game-script flip that our correctly-priced pregame market read gave no signal of
+in advance — not a construction defect, not a stale/wrong vegas input, not a CPT-selection rule gap. No
+exposure-concentration, chalk/contrarian, or bring-back-structure issue found either (ownership on the entered
+pieces ranged 11.5%-60.4%, unremarkable; ‑ no single piece was wildly off-consensus).
+
+**Verdict: no new candidate mechanism — stays parked**, same bar Items D/E/F used (report honestly, don't force
+a fix). The Wk8 conclusion ("ordinary high-variance streakiness in a captain-multiplier format with no
+entry-pool averaging, not a diagnosable pipeline defect") holds; TB/CHI is a second, cleanly-traced instance of
+exactly that failure mode (correctly-priced favorite's RB busts, underdog's RB explodes, nothing in our
+inputs — vegas, matchup, construction rules — gave advance warning). Re-run this comparison again after a few
+more weeks for power; no action item to carry forward from this session.
 
 ## Item C. Accuracy assessment (`scripts/grade_accuracy_week.py --week 9`, full report:
 `analysis/weekly_accuracy_review/out/wk9/report.txt`)
