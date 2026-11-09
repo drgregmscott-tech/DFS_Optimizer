@@ -175,18 +175,43 @@ This is a single noisy week, not independent proof the fix helps broadly — the
 above are the real evidence basis — but it's directionally consistent (less RB over-projection) and not
 alarming. Item C's own investigation is not reopened.
 
-## Item E. Missing game-script/spread-direction feature for RB usage — 🟡 NEW GAP, candidate feature, own
-dedicated session
-Allgeier and Gordon both busted on bad matchups against top-tier defenses where the user's read was that game
-script (team expected to trail) would shift volume toward passing and away from rushing, independent of the
-team's own implied scoring total. Checked: Allgeier's `implied_total` (15.47) was in fact the worst of any RB
-on this list, and the model did register "low-scoring" in his game-environment read — but it still badged him
-Value Pick and read his Range as "normal swing" anyway, so even the signal that does exist isn't propagating
-into the composite/badge correctly. More importantly, there's no spread/win-probability/favorite-vs-underdog
-feature at all in the projection file — only `implied_total` and a `vegas_factor` built from it, neither of
-which captures "this team is more likely to be trailing and therefore pass-heavy." Real, testable gap:
-spread-direction as an RB-usage discount. Own session — test against historical data before shipping, same as
-any other candidate lever.
+## Item E. Missing game-script/spread-direction feature for RB usage — ✅ INVESTIGATED this session
+(2026-11-09), own dedicated session (local_844c9dd7-c8a0-4b06-9eed-bd110d60b6e8, spun off from the main
+postmortem session), verdict: premise was wrong (feature already exists and already fired), the specific
+extension tested does not clear the bar, no fix shipped
+Full writeup: `analysis/wk9_item_e_spread_direction/RESULTS.md`.
+
+**Premise correction — the checklist's framing was wrong about the underlying model (though an honest read of
+the exposed CSV columns).** `volume_prior.py`'s `vegas_anchored_team_volume()` (Session 10.3b, decision #7,
+shipped long before this postmortem) already fits BOTH `implied_total` AND `spread` into predicted team-level
+rush/pass/recv volume — "SPREAD drives carries ... more negative spread = more favoured = more carries ...
+BOTH TERMS ARE REQUIRED TOGETHER." This is live in production (`--volume-prior` is always passed by
+`DFS_Weekly_Process.md`'s SOP command and by the real `.github/workflows/refresh_data.yml` automated build,
+not opt-in-and-forgotten). Confirmed on the real Wk9 rebuild: Allgeier's team (ARI, `team_spread` = +8.56, a
+big underdog) got `proj_rush_att` 9.76 and `vegas_factor` 0.66 — a real, substantial discount already applied
+before he busted, not a missing signal.
+
+**What was actually new to test: does spread predict a "committee split" — the LEAD back's own share of the
+team's (already-reduced) carries shrinking further under negative script, independent of the team-volume
+effect already modeled?** Built a 2021-2025 team-week panel (`data/games.parquet` +
+`data/weekly_stats_{season}.parquet`, n=2,319) and ran the same leave-one-season-out test Item D's RB blend
+was held to. Result: **3 of 5 seasons marginally better, 2 worse — a coin flip**, mean MAE improvement
+negligible (0.1161→0.1159), and the spread coefficient runs the *opposite* direction from the hypothesis
+(bigger underdog → very slightly MORE lead-back share, not less). Big-underdog tail (`team_spread`>7, n=267,
+matching Allgeier's actual game): mean lead-RB share 0.712 vs 0.716 overall — no detectable shift. **Does not
+clear the validation bar — not shipped.**
+
+**The propagation half (Value Pick badge + "normal swing" Range despite a "low-scoring" env note) is not a
+new bug — it's the same mechanism Item A already documented** (the cheat sheet's bust-risk signal "under-reads
+RB bust risk specifically this week," Allgeier is literally one of the three RBs in that exact finding, with
+Marks and Gordon). Not re-investigated or duplicated here; tracked under Item A. The Value Pick badge itself
+is working as designed (a documented 2026-11-03 decision: flags cheap/efficient plays, deliberately never
+penalizes for bust risk on the main ranking — that's the Range line's job).
+
+**Bottom line:** Allgeier's real outcome (15.5 projected, 6.6 actual) is consistent with ordinary in-game
+variance beyond what any pregame signal — spread included — can predict. The team-level underdog discount was
+already applied correctly; the game just broke worse than that number implied. No fixable gap found. No code
+changed, nothing to roll back.
 
 ## Item F. Target-competition / role-clarity check for Jordan Watkins-type cases — ✅ INVESTIGATED this session
 (2026-11-09), own dedicated session (local_95a7901f-6ed4-4051-8a88-f03347f47108, spun off from the main
@@ -257,9 +282,12 @@ whatever Item D produces, so alphabetical-by-letter isn't the right order. Sugge
    multi-week absences like SF's). The natural fix (clone the RB decay extension) was tested and rejected —
    coin-flip per-season stability, not the clean signal Item D's RB blend found. No fix shipped; a different
    candidate (recency-blend on the candidate's own share) flagged for a possible future session.
-3. **Item E** — independent research/feature-build track (game-script/spread), can run before or after
-   D/F; doesn't block or get blocked by them.
-4. **Item A redesign (cheat sheet ↔ optimizer-aware, mockup-first)** — after D (and ideally E) exist, since
+3. **Item E — ✅ done (2026-11-09).** Premise was wrong: the spread-anchored team-volume discount already
+   existed and was already live in production (`volume_prior.py` decision #7), and had already fired on
+   Allgeier before he busted. The specific extension tested (spread shrinking the lead RB's own share of team
+   carries, a "committee split" effect) failed the same LOSO bar Item D's blend cleared — coin-flip stability,
+   near-zero effect. No fix shipped; the propagation question folded into Item A's already-documented finding.
+4. **Item A redesign (cheat sheet ↔ optimizer-aware, mockup-first)** — after D (now also E) exist, since
    the redesign should use whatever new signals they produce and should be judged against real output, not
    described in the abstract.
 5. **Item B (showdown misses)** — fully independent of all of the above; slot in whenever, no dependency
