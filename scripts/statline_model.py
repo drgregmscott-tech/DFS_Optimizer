@@ -656,6 +656,12 @@ def build_usage(season: int, week: int, variance: dict) -> pd.DataFrame:
             rec[f"{name}_mu_raw"] = mu_raw
             rec[f"{name}_mu"] = mu
             rec[f"{name}_hist_vol"] = den
+            # WK9 Item D (recent_form == season_avg bug): a short (last-2-game) recency-weighted
+            # version of the same raw mu, used only to build a genuine recent_form distinct from
+            # season_avg (build_projections_statline.py). Not wired into mu/mu_raw itself -- see
+            # that file's docstring for why this is scoped to a display/trend signal rather than
+            # the ranking-relevant RB-vacancy fix (that one is in _wrw_trailing_usage).
+            rec[f"{name}_mu_raw_short"] = _recency_weighted(g[vol_stat].to_numpy()[-2:])
             recent_wks = team_wks.get(hist_team, [])[-lookback:]
             rec[f"{name}_recent_vol"] = float(
                 g[g["week"].isin(recent_wks)][vol_stat].sum())
@@ -705,7 +711,7 @@ def build_usage(season: int, week: int, variance: dict) -> pd.DataFrame:
         num = ["games_played", "participation", "catch_rate", "int_rate"]
         for _pos, _cs in COMPONENTS.items():
             for _n, _v, _y, _t in _cs:
-                num += [f"{_n}_mu_raw", f"{_n}_mu", f"{_n}_hist_vol",
+                num += [f"{_n}_mu_raw", f"{_n}_mu_raw_short", f"{_n}_mu", f"{_n}_hist_vol",
                         f"{_n}_recent_vol", f"{_n}_yd_rate", f"{_n}_td_rate"]
         usage = pd.DataFrame({c: pd.Series(dtype=t) for c, t in cols.items()})
         for c in dict.fromkeys(num):
@@ -2582,11 +2588,43 @@ def reconcile_team_shares(pool: pd.DataFrame, team_vol: pd.DataFrame,
 WRW_RB_PARAMS = DATA_DIR / "wrw_rb_params.json"
 
 
+def _wrw_recency_blend_weight() -> float:
+    """WK9 Item D fix (analysis/wk9_item_d_usage_trend/RESULTS.md, 2026-11-09): how much of
+    _wrw_trailing_usage's CARRY share to take from a short (last-2-appearance) window instead of
+    the full trail_player_apps (4-appearance) window, before who-replaces-whom ranks candidates by
+    it. This is the concrete fix for the Jonah Coleman miss -- the shipped rank (trailing share
+    over 4 apps) picked J.K. Dobbins over Coleman purely on cumulative games played, even though
+    Dobbins' own role was fading (17/6/7 carries) and Coleman's was rising (10/9/11) in their most
+    recent games. Validated on the SAME 2016-25 event population _rb_decay_addon/apply_rb_replacement
+    already use (865 team-week events, 686 clean), held out leave-one-season-out: blending in a 0.7
+    weight on the last-2-appearance share beats the full-window-only share on MAE against real carry
+    share in 10 of 10 held-out seasons (delta -0.004 to -0.008 MAE, ~5-7% relative, consistent
+    direction and magnitude every season -- see analyze_out.txt). The rank-1-pick disagreement subset
+    (n=40, the literal "who gets promoted" cases) is underpowered and leans the OTHER way (point est
+    -3.28 pts, CI [-6.9, +0.12]) -- that's a DIFFERENT, noisier question (discrete pick vs continuous
+    share-size) and the shipped rank order is left alone; this only sharpens the SIZE of each
+    candidate's share once ranked, which is what feeds wrw_delta_pts/wrw_decay_pts's magnitude.
+    Target share showed no reliable signal either direction (point est ~0, CI crosses zero both
+    ways) and is NOT touched. Off / rollback: DFS_WRW_RECENCY_BLEND=0 (full-window-only, prior
+    behavior). Weight override: DFS_WRW_RECENCY_BLEND_W (default 0.7, the validated value)."""
+    import os
+    if os.environ.get("DFS_WRW_RECENCY_BLEND", "1") in ("0", "false", "False"):
+        return 0.0
+    try:
+        return float(os.environ.get("DFS_WRW_RECENCY_BLEND_W", "0.7"))
+    except Exception:  # noqa: BLE001 -- a bad override must not take the shipped rank down with it
+        return 0.7
+
+
 def _wrw_trailing_usage(season: int, week: int, teams, p: dict):
     """Per (team, player) trailing usage strictly before (season, week): the player's last
     <= trail_player_apps appearances within the team's last trail_team_games games (prior season
     included), plus team trailing carries/targets (mean of last team_vol_games games) and the
-    team's last game index. Same definition the params were fit on (build_frame.py)."""
+    team's last game index. Same definition the params were fit on (build_frame.py).
+
+    `sh_car` is now a blend of this full window and a short (last-2-appearance) window -- see
+    _wrw_recency_blend_weight()'s docstring. `sh_car_full` keeps the pre-blend value for audit/
+    rollback. `sh_tgt` is unchanged (not validated)."""
     frames = []
     for s in (season - 1, season):
         path = DATA_DIR / f"weekly_stats_{s}.parquet"
@@ -2613,8 +2651,18 @@ def _wrw_trailing_usage(season: int, week: int, teams, p: dict):
     ag = S.groupby(["team", "player_id"]).agg(car=("carries", "sum"), tgt=("targets", "sum"),
                                               tcar=("tcar", "sum"), ttgt=("ttgt", "sum"),
                                               last_g=("g", "max"), pos=("position", "last"))
-    ag["sh_car"] = ag["car"] / ag["tcar"].clip(lower=1)
+    ag["sh_car_full"] = ag["car"] / ag["tcar"].clip(lower=1)
     ag["sh_tgt"] = ag["tgt"] / ag["ttgt"].clip(lower=1)
+    # Short window: each player's own last-2 appearances (a subset of the same `S` rows, already
+    # tail(trail_player_apps)'d above), against the matching team-total denominator for those same
+    # 2 games -- a true short-window share, not a rescale of the long one.
+    S2 = S.groupby(["team", "player_id"]).tail(2)
+    ag2 = S2.groupby(["team", "player_id"]).agg(car2=("carries", "sum"), tcar2=("tcar", "sum"))
+    ag = ag.join(ag2, how="left")
+    ag["car2"] = ag["car2"].fillna(0.0)
+    ag["sh_car_short"] = ag["car2"] / ag["tcar2"].clip(lower=1)
+    w = _wrw_recency_blend_weight()
+    ag["sh_car"] = w * ag["sh_car_short"] + (1 - w) * ag["sh_car_full"]
     tvr = tv.groupby("team").tail(p["team_vol_games"]).groupby("team")[["tcar", "ttgt"]].mean()
     tvr["last_g"] = last_g
     return ag, tvr

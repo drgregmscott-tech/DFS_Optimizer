@@ -133,19 +133,47 @@ third-best of the season (see Item B).
 gap and the record chalk count both corroborate the user's framing of this as a structurally unusual week, not
 just a subjective impression — useful context for Item A, not a standalone action item.
 
-## Item D. `recent_form` == `season_avg` bug + missing recent-usage-trend signal — 🔴 TO FIX, user priority,
-own dedicated session
-Promoted from the Week 8 parking lot (found as an unconnected side note during the Wk8 Item E investigation)
-now that it's tied to a concrete miss: re-checked this session, `recent_form` is still mathematically
-identical to `season_avg` for 100% of rows, Week 9 included — the model has no way to see a player's role
-trending up (or down) recently. This is exactly the signal the user used to correctly pick Jonah Coleman over
-Marks/Gordon/Allgeier (usage increasing in recent weeks, on top of the Harvey-out/Dobbins-not-every-down depth
-chart read). Separately, Coleman's `proj_rush_att` (7.9) was the *lowest* of the five RBs in that cluster —
-the model's usage input was moving the wrong direction while the real situation moved in his favor. Likely the
-same underlying mechanism as [[project_wk9_sanders_autopromote_gap_and_jsn_ownership]] (a confirmed-starter
-role not flowing into the projection) — worth checking both together rather than assuming they're separate.
-**User wants both halves fixed: the duplicate-field bug itself, and giving the model real ability to see a
-rising/falling recent-usage trend** — not just diagnosed. Own session.
+## Item D. `recent_form` == `season_avg` bug + missing recent-usage-trend signal — ✅ FIXED and shipped
+this session (2026-11-09), own dedicated session (local_95a7901f-6ed4-4051-8a88-f03347f47108, spun off from
+the main postmortem session)
+Full writeup: `analysis/wk9_item_d_usage_trend/RESULTS.md`. Two separate fixes, both shipped, both committed:
+
+1. **Duplicate-field bug: fixed, unconditional (no flag).** `recent_form` is now `season_avg * trend_ratio`,
+   where `trend_ratio` compares each player's own short (last-2-game) vs longer (~5-game) recency-weighted
+   usage on his position's primary volume component — falling back to `trend_ratio=1.0` (old behavior)
+   whenever there's no honest basis to differ (games_played<2, missing/near-zero history). Verified on the
+   real Wk9 rebuild: duplicate rate 100% → 53% overall (18.7% among players with ≥2 games, the honest
+   remainder). Not wired into ranking — `cheat_sheet.py` already correctly doesn't trust this column, and
+   that stays true; it's an honest, non-circular display/future-use signal, not a validated lever.
+2. **The actual usage-trend fix for the Coleman-type miss: validated and shipped, flagged for rollback.**
+   Investigating Coleman's real DEN backfield (Harvey OUT 2nd week, Dobbins fading 17/6/7 carries, Coleman
+   rising 10/9/11) found the real mechanism: the shipped who-replaces-whom reallocation ranks RB-vacancy
+   candidates by trailing carry share over each player's last 4 appearances — which favors whoever's played
+   more games recently (Dobbins) over whoever's role is genuinely trending the right way with fewer games on
+   record (Coleman). Tested on the same 2016-25 event population `rb_replacement_decay` was itself validated
+   on (865 events, 686 clean): blending in a 70%-weighted short (last-2-appearance) window beats the
+   long-window-only share at predicting real carry share in **10 of 10 leave-one-season-out folds** (n=1,770,
+   ~5-7% relative MAE improvement, consistent direction/magnitude every season). The noisier "who gets ranked
+   #1" question (n=40 disagreement cases) is underpowered and was correctly left alone — the rank order is
+   unchanged; only the share SIZE once ranked is blended, which is what feeds `wrw_delta_pts`'s magnitude.
+   Shipped in `statline_model._wrw_trailing_usage` (`sh_car` blend), default ON, `DFS_WRW_RECENCY_BLEND=0`
+   rolls back to the exact prior math (verified byte-identical with the flag off). Target share showed no
+   signal and was left untouched. Verified zero spillover on the trusted 86-slate real-pipeline harness: 0
+   k=1 rows changed, 0 WR/TE rows changed, aggregate RB MAE/RMSE statistically unchanged (same scale as the
+   original decay mechanism's own documented impact).
+   **Confirmed live on the real Wk9 rebuild:** Coleman's decay add-on +0.19 → +0.64 pts (final_projection
+   13.73 → 14.18); Dobbins' +0.47 → +0.00 (6.54 → 6.06) — exactly the direction the real outcome called for.
+3. **Checked against [[project_wk9_sanders_autopromote_gap_and_jsn_ownership]] per the original ask:**
+   different mechanism, already fixed separately (commit `bb4b0004`, 2026-11-07 — a stale Questionable-vs-OUT
+   status tag, not a usage-trend gap). Unaffected by, and not regressed by, this session's fix.
+
+**Side effect, noted for consistency, not a re-investigation:** rebuilding Wk9's slates with this fix changed
+`final_projection` for the RB-vacancy-affected subset, which shifts Item C's exact numbers slightly — DK
+classic edge **0.073 → 0.052** (re-run `grade_accuracy_week.py --week 9` after this fix), RB-mid bias
+improving +1.86 → +1.26 (z 3.2 → 1.4). Showdown edge (Item B) is unchanged within rounding (0.179 → 0.181).
+This is a single noisy week, not independent proof the fix helps broadly — the LOSO/pipeline-harness tests
+above are the real evidence basis — but it's directionally consistent (less RB over-projection) and not
+alarming. Item C's own investigation is not reopened.
 
 ## Item E. Missing game-script/spread-direction feature for RB usage — 🟡 NEW GAP, candidate feature, own
 dedicated session
@@ -198,12 +226,11 @@ the recommended sequence below.
 **Recommended working order across D/E/F/G/A-redesign/B** (asked for explicitly 2026-11-09): these aren't
 independent — F's answer depends on what D's fix actually captures, and the Item A redesign should incorporate
 whatever Item D produces, so alphabetical-by-letter isn't the right order. Suggested sequence:
-1. **Item D first** — most concrete, user explicitly wants it fixed (not just diagnosed), and it's the
-   biggest likely unlock for the other items (a working recent-trend signal plus the Sanders-autopromote
-   connection could resolve part of F and feed directly into the Item A redesign).
-2. **Item F right after D** — quick to check once D's fix exists: does the Coleman-style trend/role fix also
-   resolve the Watkins-style target-starved case, or is it genuinely separate? Cheap to answer once D lands,
-   expensive to guess at blind.
+1. **Item D — ✅ done (2026-11-09).** Both halves fixed and shipped (see Item D above): the duplicate-field
+   bug, and the validated RB-vacancy carry-share trend blend that actually fixes the Coleman-type miss. The
+   Sanders connection checked out as a separate, already-fixed mechanism, not the same gap.
+2. **Item F next** — now that D's fix exists: does the Coleman-style trend/role fix also resolve the
+   Watkins-style target-starved case, or is it genuinely separate? Cheap to answer with D landed.
 3. **Item E** — independent research/feature-build track (game-script/spread), can run before or after
    D/F; doesn't block or get blocked by them.
 4. **Item A redesign (cheat sheet ↔ optimizer-aware, mockup-first)** — after D (and ideally E) exist, since

@@ -1484,7 +1484,40 @@ def build_statline_projections(site: str, season: int, week: int, slate_id: str,
     # Decision #1: honest legacy-column mappings.
     safe_factor = df["market_factor"].replace(0, np.nan)
     df["season_avg"] = (df["final_projection"] / safe_factor).fillna(0.0).round(4)
-    df["recent_form"] = df["season_avg"]
+
+    # WK9 Item D fix (2026-11-09, WK9_POSTMORTEM_CHECKLIST.md): recent_form used to be set to
+    # df["season_avg"] unconditionally -- byte-identical for 100% of rows, confirmed live on Wk9
+    # data, because this engine had no second recency scheme. It now uses each player's own
+    # PRIMARY-component mu_raw_short (last-2-game recency weight, build_usage()) against his
+    # mu_raw (the longer ~5-game window season_avg is built from) to scale season_avg by his real
+    # recent-vs-longer-run usage trend. Falls back to trend_ratio=1.0 (recent_form == season_avg,
+    # the prior behavior) whenever there's no reliable basis to differ -- games_played < 2, a
+    # missing/empty mu_raw, or a near-zero mu_raw denominator -- so a cold-start/low-history
+    # player is unaffected. Clipped to [0.5, 1.5]: a genuine recency swing, not a single-game
+    # outlier blown up into a 10x number. This is an honest, non-circular recency signal (distinct
+    # from season_avg, built from real recency-weighted usage, not re-derived from
+    # final_projection) but it is NOT validated as a ranking input -- cheat_sheet.py already
+    # documents why it doesn't trust this column for ranking/badging, and that stays true. The
+    # actual validated fix for the Coleman-type miss this column was named after is in
+    # statline_model._wrw_trailing_usage's carry-share blend (RB-vacancy reallocation only,
+    # analysis/wk9_item_d_usage_trend/RESULTS.md), which already changed final_projection upstream
+    # of this line.
+    _PRIMARY_COMPONENT = {"QB": "pass", "RB": "rush", "WR": "recv", "TE": "recv"}
+    _mu_raw = pd.Series(np.nan, index=df.index)
+    _mu_raw_short = pd.Series(np.nan, index=df.index)
+    for _pos, _comp in _PRIMARY_COMPONENT.items():
+        _m = df["position"] == _pos
+        _col_raw, _col_short = f"{_comp}_mu_raw", f"{_comp}_mu_raw_short"
+        if _col_raw in df.columns:
+            _mu_raw.loc[_m] = pd.to_numeric(df.loc[_m, _col_raw], errors="coerce")
+        if _col_short in df.columns:
+            _mu_raw_short.loc[_m] = pd.to_numeric(df.loc[_m, _col_short], errors="coerce")
+    _games_ok = pd.to_numeric(df.get("games_played"), errors="coerce").fillna(0) >= 2
+    _trend_ratio = pd.Series(1.0, index=df.index)
+    _valid = _games_ok & _mu_raw.notna() & _mu_raw_short.notna() & (_mu_raw > 0.01)
+    _trend_ratio.loc[_valid] = (_mu_raw_short[_valid] / _mu_raw[_valid]).clip(0.5, 1.5)
+    df["usage_trend_ratio"] = _trend_ratio.round(4)
+    df["recent_form"] = (df["season_avg"] * _trend_ratio).round(4)
 
     # Decision #7: confirmed-no-game rows are zeroed outright.
     no_game = df["no_real_game_this_week"]
@@ -1509,7 +1542,7 @@ def build_statline_projections(site: str, season: int, week: int, slate_id: str,
 
     skill_out = df[LEGACY_COLUMNS + AUDIT_COLUMNS +
                    ["sigma", "sigma_source", "statline_p10",
-                    "statline_p90"] + PROJ_STAT_COLUMNS + ["engine_projection", "stack_delta",
+                    "statline_p90", "usage_trend_ratio"] + PROJ_STAT_COLUMNS + ["engine_projection", "stack_delta",
                                                                "early_blend_delta", "qb_recal_delta",
                                                                "qb_autopromote_delta", "qb_autopromoted",
                                                                "wrw_delta_pts", "wrw_vacated_car",
@@ -1607,6 +1640,10 @@ def build_statline_projections(site: str, season: int, week: int, slate_id: str,
     dst_out["q_return_flag"] = False
     dst_out["q_return_post_pts"] = 0.0
     dst_out["role_change_injury_flag"] = False
+    # DST never goes through build_usage()'s recency windows (no mu_raw/mu_raw_short), so there's
+    # no basis for a trend ratio -- 1.0 keeps recent_form == season_avg for defenses, same as the
+    # pre-Item-D-fix behavior everywhere, rather than a fabricated number.
+    dst_out["usage_trend_ratio"] = 1.0
     dst_out = dst_out[skill_out.columns]
 
     # --- Kicker (Session 13.1 -- this engine never had it wired in at all)
@@ -1657,6 +1694,8 @@ def build_statline_projections(site: str, season: int, week: int, slate_id: str,
         kicker_out["q_return_flag"] = False
         kicker_out["q_return_post_pts"] = 0.0
         kicker_out["role_change_injury_flag"] = False
+        # Same reasoning as DST's usage_trend_ratio above: kickers never go through build_usage().
+        kicker_out["usage_trend_ratio"] = 1.0
     kicker_out = kicker_out[skill_out.columns] if len(kicker_out) else \
         pd.DataFrame(columns=skill_out.columns)
 
