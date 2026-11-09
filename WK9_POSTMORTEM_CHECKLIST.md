@@ -146,6 +146,11 @@ KC Concepcion Jr., Ladd McConkey (WR), Dalton Schultz, Chig Okonkwo, Brevyn Span
 Michael Mayer (TE) — a near-exact match to the original 18-name list from this session's opening diagnosis.
 Regenerated all three Wk9 cheat sheets (DK main/early, FD main) under the new logic.
 
+**User-accepted (2026-11-09):** "I think this is close now and we can roll with it and just make minor
+adjustments as we proceed forward." Item A is closed as shipped-and-accepted, not provisional — future
+tweaks to `VALUE_CANDIDATE_TOP_N`/the position set/the exposure-bullet wording are incremental refinement
+of an accepted design, not a reopening of the question.
+
 ## Item B. Showdown misses continue — Wk9 confirms 2 more losses in the Wk5+ pattern, 1 still pending
 From [[project_wk8_item_b_showdown_recurring_miss]] (Wk5-8: 1/8 cashed, 12.5%, vs Wk1-4's 71%, step-change at
 Wk5, p≈0.035 one-sided, n=15, parked — every traced mechanism came back clean). This week, both completed
