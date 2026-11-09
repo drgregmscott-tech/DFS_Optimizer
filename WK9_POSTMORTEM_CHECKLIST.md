@@ -35,9 +35,9 @@ convention used in `grade_construction_week.py`; not verified against the exact 
 missed — TB/CHI particularly badly (bottom 8% of the field) — Monday's showdown still live. Matches the
 user's own read exactly.
 
-## Item A. Next-man-up / cheap-filler traps — ✅ INVESTIGATED this session (2026-11-09), verdict: YES, a real
-cheat-sheet signal exists; expansion direction identified; three real gaps found along the way, split into
-their own items (D/E/F) rather than chased here
+## Item A. Next-man-up / cheap-filler traps — ✅ CLOSED (2026-11-09), diagnosis + redesign mockup both done;
+real cheat-sheet signal confirmed, three gaps split off (D/E/F, all now also closed), optimizer-aware
+flagging mockup built and validated on real Wk9 data, not yet wired into the live pipeline
 User's framing: an unusually injury-heavy week created a lot of cheap next-man-up plays, many of which were
 traps the raw optimizer output couldn't distinguish from the real sleepers. The user named 18 specific players
 he was unsure about: Tyler Allgeier, Alvin Kamara, Woody Marks, Jonah Coleman, Devin Singletary, Rhamondre
@@ -89,6 +89,34 @@ session (one topic per session) — split into Items D, E, F below:**
 
 AI-probe retooling is explicitly **not** prioritized here per the user: projections feed the probe, not the
 other way around, so probe-sharpening is the last item in this family, after D/E/F are addressed — see Item G.
+
+**Redesign mockup — done this session (2026-11-09), real data, not yet shipped.** Full writeup:
+`analysis/wk9_item_a_lineup_aware_flagging/RESULTS.md`. Per the user's own design instinct (and explicit
+request to see real output, not a description), built a cross-reference of `pivot_finder.py`'s exact existing
+input (`lineups_multi_dk_dk_classic_wk9_main_08Nov2026_shared.csv`, 20 real built lineups) against each
+player's real exposure % and `final_projections`' `statline_p10` floor, using `cheat_sheet.py`'s own existing
+"high bust risk" absolute floor bar (`ABS_FLOOR_HIGH_RISK=3.0`) — no new model or data source, pure
+cross-reference of two things the pipeline already produces. **Flag = top-tier optimizer exposure (≥30% this
+week, the same tier as true studs McCaffrey/Lamb/Kittle/Purdy/Gibbs) AND a thin absolute floor.**
+
+Result on the real 20-lineup build: 7 flagged (Worthy, Sutton, Schultz, Dulcich, Washington, Boston,
+Raridon) — 2 clean DK busts (Dulcich, Washington), 1 more "bad" (Schultz), 4 false positives that were all
+fine-to-good, not disasters. **Correctly flagged zero true studs** at the same exposure tier (McCaffrey/Lamb/
+Kittle/Walker/Purdy/Mahomes/Gibbs/Nacua all correctly skipped) — the real design win, since a naive
+cheap-and-thin-floor rule risks exactly that false positive (an early draft using a relative bust-ratio instead
+of the absolute bar incorrectly flagged George Kittle, a $6K elite TE, before switching to the absolute bar
+fixed it). Missed Ollie Gordon II (busted, p10=3.94 just above the 3.0 bar) — the SAME RB-blind-spot gap
+already documented above, not newly introduced or newly solved by this exercise. 9 of the original 18 named
+players never appeared in this 20-lineup build at all — this flag only ever sees players the optimizer
+actually rostered, a real but partial answer (doesn't address "never considered this player," a separate
+question).
+
+**Verdict: works well enough on real data to be worth building for real** — a genuinely optimizer-aware
+extension of the existing pipeline (reads `pivot_finder.py`'s exact input, no rebuild), as a per-slate-relative
+exposure threshold (not a fixed 30%) plus the existing `ABS_FLOOR_HIGH_RISK` constant, surfaced as a tag next
+to whatever view already shows built-lineup exposure. Not built yet — needs its own short follow-up to wire
+in and validate across a few more weeks before shipping; flagged as a candidate to revisit once Item D's
+RB usage-trend signal has more weeks on it, to see if it narrows the Gordon-type RB miss.
 
 ## Item B. Showdown misses continue — Wk9 confirms 2 more losses in the Wk5+ pattern, 1 still pending
 From [[project_wk8_item_b_showdown_recurring_miss]] (Wk5-8: 1/8 cashed, 12.5%, vs Wk1-4's 71%, step-change at
@@ -277,13 +305,12 @@ yet. Sequence: fix/confirm D and E (and resolve F) first; only then revisit the 
 
 ## Next step
 **Item 0 (Stage 8 logging gap) is fully closed.** Results (section 1) confirmed for every completed slate;
-only BUF/MIN (Mon) remains pending. **Item A is closed on the diagnosis side** — verdict: yes, a real
-cheat-sheet bust-risk signal exists (works for WR/TE, under-reads RB this week) — but the *expansion
-recommendation* is explicitly NOT ship-ready: the user correctly pushed back that most of the original 18
-weren't on the cheat sheet at all, so a badge-reconciliation tweak alone doesn't address the bigger miss, and
-any redesign needs to be optimizer/lineup-aware (not just a per-position composite tweak) and needs a real
-mockup before judging it, not just a text description. That redesign work is deferred, not abandoned — see
-the recommended sequence below.
+only BUF/MIN (Mon) remains pending. **Item A is now fully closed** — diagnosis (yes, a real cheat-sheet
+bust-risk signal exists, works for WR/TE, under-reads RB) plus a real, validated redesign mockup (optimizer
+exposure × absolute floor bar, see above): correctly flags zero true studs, catches 2-3 real risky plays,
+misses the already-documented Gordon-type RB gap. Not wired into the live pipeline yet — that's a short,
+well-scoped follow-up (per-slate-relative exposure threshold instead of a fixed 30%, pick a surface in the
+frontend), not a new open question.
 
 **Recommended working order across D/E/F/G/A-redesign/B** (asked for explicitly 2026-11-09): these aren't
 independent — F's answer depends on what D's fix actually captures, and the Item A redesign should incorporate
@@ -301,9 +328,10 @@ whatever Item D produces, so alphabetical-by-letter isn't the right order. Sugge
    Allgeier before he busted. The specific extension tested (spread shrinking the lead RB's own share of team
    carries, a "committee split" effect) failed the same LOSO bar Item D's blend cleared — coin-flip stability,
    near-zero effect. No fix shipped; the propagation question folded into Item A's already-documented finding.
-4. **Item A redesign (cheat sheet ↔ optimizer-aware, mockup-first)** — after D (now also E) exist, since
-   the redesign should use whatever new signals they produce and should be judged against real output, not
-   described in the abstract.
+4. **Item A redesign — ✅ done (2026-11-09).** Mockup built and validated on the real Wk9 20-lineup build
+   (exposure × absolute floor bar cross-reference, see Item A above): correctly flags zero true studs, catches
+   2-3 real risky plays, misses the already-known Gordon-type RB gap. Direction confirmed worth building for
+   real; wiring it into the live pipeline is a short separate follow-up whenever the user wants it.
 5. **Item B (showdown misses)** — fully independent of all of the above; slot in whenever, no dependency
    either direction.
 6. **Item G (AI-probe retooling)** — explicitly last, only after D/E/F/the Item A redesign are in place.
