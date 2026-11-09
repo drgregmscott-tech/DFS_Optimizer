@@ -403,23 +403,43 @@ yet. Sequence: fix/confirm D and E (and resolve F) first; only then revisit the 
 (`AI_PROBE_QUESTION_TEMPLATES.md`).
 
 **Gate satisfied — D/E/F all closed, so the templates were updated to match what's actually real,
-checked directly against the code (not assumed from the checklist summaries) before writing each change:**
-- **D1 (usage trajectory):** now notes real signal exists for RB carry-share trend specifically
-  (`statline_model._wrw_trailing_usage`, Item D's 10/10-LOSO blend) — but stays fully manual for every
-  other position, and clarifies `recent_form` itself is still display-only, not a trend mechanism.
-- **G1 / game script:** notes a spread-anchored RB-usage discount already exists live
-  (`volume_prior.py` decision #7, confirmed by Item E) — the probe's job there shifts from "does the
-  model know this" to "is this specific player's cheat-sheet badge/Range actually reflecting it,"
-  citing Item A's Allgeier case where the signal existed but still didn't propagate to the badge.
-- **C's relevance filter (next-man-up):** added the most consequential fix — `own_vac_bump` has a
-  confirmed blind spot (Item F) for sustained multi-week WR/TE absences, since the vacancy mechanism
-  only credits a *fresh* (k=1) OUT. Added a second filter (any team with 2+ WR/TE OUT/IR regardless of
-  bump value) so a Watkins-type sustained-absence case can't be silently dropped from C1/C2 the way the
-  pipeline's own vacancy credit drops it — this is exactly the gap Item F found real but couldn't fix
-  in the data, so the probe is the only defense here for now, same as the checklist's original framing
-  anticipated.
-Full diff in `AI_PROBE_QUESTION_TEMPLATES.md`. No code/model changes — this is a question-template
-update only, consistent with "projections feed the probe."
+checked directly against the code (not assumed from the checklist summaries) before writing each change.**
+
+**First pass (markdown doc only) and the correction that followed, same session:** the first pass
+edited `AI_PROBE_QUESTION_TEMPLATES.md` (D1's usage-trend note, G1's game-script note, and a C-filter
+extension) and was reported as done. **That was wrong** — the markdown file is design documentation,
+not what the probe actually runs; `scripts/probe_ai_chat_weekly_questions.py` is the real source of
+truth (its own header comment says so). Worse, that script had already **dropped `own_vac_bump`-based
+filtering entirely on 2026-10-29** (a live test found 4 of 5 OUT-players-filtered-this-way were stale,
+already-settled situations) — so the C-filter extension I'd written didn't touch anything the probe
+actually generates. Caught when the user asked a direct follow-up question ("did we update the showdown
+probe too?") that forced a check of the real script instead of the doc.
+
+**Second pass — the real fix, in the actual generator scripts, both classic and showdown (user's
+explicit instruction: "whatever we do for one we should do to both").** `AI_PROBE_QUESTION_TEMPLATES.md`
+still carries the D1/G1 documentation notes (accurate, just not code). The functional fix:
+- **New function in both `scripts/probe_ai_chat_weekly_questions.py` and
+  `scripts/probe_ai_chat_weekly_questions_showdown.py`: `sustained_wrte_vacancy_candidates()`.**
+  Flags any team with 2+ real (salary-floor-filtered, so bench/practice-squad OUT names don't count —
+  checked live, an unfiltered count flagged 17/32 teams, pure noise) WR/TE OUT, regardless of how long
+  they've been out — the exact case the shipped vacancy mechanism misses per Item F (fresh-OUT-only
+  credit). Lists that team's remaining WR/TE with NO salary floor (a floor would exclude the Watkins
+  case itself — he was $3300, under the $4500 WR floor used to decide a team qualifies) but a
+  `MIN_PROJ` floor (3.0, matching the showdown script's existing cheap-piece filter) to drop literal
+  inactive-adjacent noise. New question section "Sustained WR/TE vacancy role clarity" added to both
+  scripts' output. Verified end-to-end against all 6 real Wk9 output files (both classic slates, both
+  FD, all 3 showdowns) — no crashes; the classic Wk9 main slate correctly surfaces PHI (Goedert/
+  Lemon/Brown/Cooper) and SF (Kittle/Watkins/Cooks/Cowing/Robinson) as the only 2 qualifying teams,
+  Watkins included by name.
+- **G1 / game script note:** confirmed accurate as a documentation note (the live `vegas_factor`/
+  `volume_prior.py` signal genuinely exists) but doesn't change question wording in either script —
+  no code action needed here, it's advisory to whoever reads the probe's answers.
+- **D1 / usage trajectory note:** same — accurate documentation, no code change, since the live
+  script's per-player usage question (`print_usage_and_trap_questions`, both scripts via
+  `probe_cheap_value_finder`) already explicitly asks about "snap share, target/carry share, red-zone
+  role" together — confirmed this already covers snap-share trend the same way it covers usage, no
+  gap found there.
+Full diff across all 3 files (`AI_PROBE_QUESTION_TEMPLATES.md`, both generator scripts).
 
 **Full Wk9 postmortem cycle (Items 0, A-G) is now closed.** Open watch items carried forward, not closed
 questions: Item A's optimizer-aware redesign is shipped-and-accepted but flagged for incremental

@@ -29,6 +29,9 @@ from probe_cheap_value_finder import (  # noqa: E402
 )
 
 SALARY_FLOOR = {"QB": 5000, "RB": 4500, "WR": 4500, "TE": 4500}
+# Used only by sustained_wrte_vacancy_candidates' remaining-pass-catcher list (2026-11-09, WK9
+# Item F/G parity) -- same value/reasoning as the showdown script's MIN_PROJ.
+MIN_PROJ = 3.0
 FRESHNESS_CHECK = (
     "Please confirm this reflects news from the current week, and name "
     "your source/date -- if you're not confident it's current, say so "
@@ -65,6 +68,53 @@ def salary_filtered_questionable(rows: list[dict]) -> list[dict]:
         if float(r.get("salary") or 0) >= floor:
             out.append(r)
     out.sort(key=lambda r: -float(r.get("salary") or 0))
+    return out
+
+
+def sustained_wrte_vacancy_candidates(rows: list[dict]) -> list[dict]:
+    """WK9 Item F (Jordan Watkins/SF, 2026-11-09): the shipped WR/TE next-man-up mechanism
+    (apply_wr_replacement/apply_te_replacement) only credits a vacancy when the OUT player's own
+    last appearance is the team's immediately-preceding game (a fresh, k=1 OUT) -- a team that's
+    lost multiple WR/TE over SEVERAL different weeks (none individually "fresh") gets zero credit
+    even though the real-world vacancy is obvious. This is deliberately NOT the same thing as the
+    OUT-player-filtered-by-own_vac_bump question dropped 2026-10-29 (see the note above) -- that
+    was a single stale OUT player whose redistribution was already settled in trailing-usage
+    stats; this is a standing structural situation (2+ WR or 2+ TE out on one team, any duration)
+    that our own pipeline has a confirmed, specific blind spot for. Surfaces the team's remaining
+    rosterable WR/TE so the probe explicitly checks whether their role has actually settled,
+    since the pipeline's own vacancy signal can't be trusted for this case."""
+    from collections import defaultdict
+    out_by_team_pos: dict[tuple[str, str], list[dict]] = defaultdict(list)
+    for r in rows:
+        pos = r.get("position")
+        if r.get("injury_status") != "OUT" or pos not in ("WR", "TE"):
+            continue
+        # Same salary floor as B/D1/the "who's OUT" filter elsewhere in this file -- without it,
+        # this counts every inactive-adjacent $2500/$3000 bench/practice-squad name DK lists as
+        # OUT (checked live Wk9 main: 17 of 32 teams "qualified" on raw OUT count alone, pure
+        # noise). Only a real rosterable player being out for multiple weeks is the signal.
+        floor = SALARY_FLOOR.get(pos)
+        if floor is not None and float(r.get("salary") or 0) >= floor:
+            out_by_team_pos[(r.get("team"), pos)].append(r)
+    affected_teams = {team for (team, _pos), lst in out_by_team_pos.items() if len(lst) >= 2}
+    if not affected_teams:
+        return []
+    # Deliberately NO salary floor on this side: the whole point is to catch cheap/overlooked
+    # remaining players (Watkins was $3300, well under the $4500 WR floor used above to decide
+    # a team even qualifies) -- a salary floor here would exclude the exact case this was built
+    # for. A bare final_projection > 0 check still let every inactive-adjacent bench name through
+    # (checked live Wk9 main: 24 names across PHI/SF alone) -- MIN_PROJ (same value/reasoning as
+    # the showdown script's cheap-piece filter) keeps real complementary pieces while dropping
+    # practice-squad-depth noise.
+    out = []
+    for r in rows:
+        if r.get("team") not in affected_teams or r.get("position") not in ("WR", "TE"):
+            continue
+        if r.get("injury_status") == "OUT":
+            continue  # the OUT players themselves, not who's left to ask about
+        if float(r.get("final_projection") or 0) >= MIN_PROJ:
+            out.append(r)
+    out.sort(key=lambda r: (r.get("team"), -float(r.get("final_projection") or 0)))
     return out
 
 
@@ -174,6 +224,21 @@ def main() -> None:
             "bulk of his vacated snaps/touches/targets, based on beat "
             "reporter or coaching staff reporting? Skip anyone where "
             "there's no clear single beneficiary.\n"
+        )
+        n += 1
+
+    sv = sustained_wrte_vacancy_candidates(rows)
+    if sv:
+        teams_affected = sorted({r["team"] for r in sv})
+        names = ", ".join(f"{r['player_name']} ({r['position']}, {r['team']})" for r in sv)
+        print("## Sustained WR/TE vacancy role clarity\n")
+        print(
+            f"{n}. {' and '.join(teams_affected)} each have multiple WR/TE out for multiple "
+            "weeks now, not just on this week's injury report. For each of these remaining "
+            f"pass-catchers on that team -- {names} -- has his role/target share genuinely "
+            "settled into a bigger piece of the offense now, or is it still unclear who the "
+            "real beneficiary of the missing volume is? Note any specific target competition "
+            "still left on the roster that would cap his role.\n"
         )
         n += 1
 

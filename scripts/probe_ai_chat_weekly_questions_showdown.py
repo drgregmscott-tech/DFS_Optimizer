@@ -83,6 +83,45 @@ def salary_filtered_questionable(dedup_rows: list[dict]) -> list[dict]:
     return out
 
 
+def sustained_wrte_vacancy_candidates(dedup_rows: list[dict]) -> list[dict]:
+    """Same mechanism/fix as probe_ai_chat_weekly_questions.py's sustained_wrte_vacancy_candidates
+    (WK9 Item F/Item G parity, 2026-11-09) -- the shipped WR/TE next-man-up mechanism only credits
+    a vacancy on a fresh (k=1) OUT, so a team that's lost 2+ WR/TE over several different weeks
+    gets no credit even though the real vacancy is obvious. Showdown's own next-man-up question
+    only covers QUESTIONABLE/DOUBTFUL players sitting TONIGHT -- it has no equivalent question at
+    all for an already-established, multi-week-OUT situation, so this is a pure addition, not a
+    filter fix, for this script."""
+    from collections import defaultdict
+    out_by_team_pos: dict[tuple[str, str], list[dict]] = defaultdict(list)
+    for r in dedup_rows:
+        pos = r.get("position")
+        if r.get("injury_status") != "OUT" or pos not in ("WR", "TE"):
+            continue
+        # Same salary floor as this script's own injury-nuance filter -- without it this counts
+        # every inactive-adjacent bench/practice-squad OUT name as a real absence (same noise
+        # problem found and fixed in the classic script's parallel function).
+        floor = SALARY_FLOOR.get(pos)
+        if floor is not None and float(r.get("salary") or 0) >= floor:
+            out_by_team_pos[(r.get("team"), pos)].append(r)
+    affected_teams = {team for (team, _pos), lst in out_by_team_pos.items() if len(lst) >= 2}
+    if not affected_teams:
+        return []
+    # Deliberately NO salary floor on the remaining-candidate side -- the whole point is to catch
+    # cheap/overlooked remaining pass-catchers (classic script's parallel fix: Watkins was $3300,
+    # under its $4500 WR floor). MIN_PROJ (already used by this script's cheap-piece section)
+    # keeps real complementary pieces while dropping practice-squad-depth noise.
+    out = []
+    for r in dedup_rows:
+        if r.get("team") not in affected_teams or r.get("position") not in ("WR", "TE"):
+            continue
+        if r.get("injury_status") == "OUT":
+            continue
+        if float(r.get("final_projection") or 0) >= MIN_PROJ:
+            out.append(r)
+    out.sort(key=lambda r: (r.get("team"), -float(r.get("final_projection") or 0)))
+    return out
+
+
 def chalk_captains(rows: list[dict]) -> list[dict]:
     """CPT rows (not deduped -- ownership is specifically a CPT-slot
     number, the FLEX row's ownership is a different number for the same
@@ -153,6 +192,22 @@ def main() -> None:
             "pool that player could be CPT/FLEX-relevant even at a low "
             "salary, so name him even if he looks like a deep-bench piece "
             "today. Skip anyone where there's no clear single beneficiary.\n"
+        )
+        n += 1
+
+    sv = sustained_wrte_vacancy_candidates(dedup_rows)
+    if sv:
+        teams_affected = sorted({r["team"] for r in sv})
+        names = ", ".join(f"{r['player_name']} ({r['position']}, {r['team']})" for r in sv)
+        print("## Sustained WR/TE vacancy role clarity\n")
+        print(
+            f"{n}. {' and '.join(teams_affected)} each have multiple WR/TE out for multiple "
+            "weeks now, not just tonight's injury report. For each of these remaining "
+            f"pass-catchers on that team -- {names} -- has his role/target share genuinely "
+            "settled into a bigger piece of the offense now, or is it still unclear who the "
+            "real beneficiary of the missing volume is? In a showdown pool that player could be "
+            "CPT/FLEX-relevant even at a low salary, so answer even if he looks like a deep-bench "
+            "piece. Note any specific target competition still left on the roster.\n"
         )
         n += 1
 
