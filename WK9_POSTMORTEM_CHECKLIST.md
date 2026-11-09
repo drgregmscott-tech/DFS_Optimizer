@@ -393,13 +393,39 @@ recency-weighting the REMAINING candidate's own trailing target share (Watkins' 
 thin 3-game sample including a near-zero-role early game), rather than crediting vacated share from the OUT
 players — is flagged as a plausible next avenue for a future dedicated session if the user wants to pursue it.
 
-## Item G. AI-probe question-template retooling — explicitly LAST in this family, after D/E/F, not before
+## Item G. AI-probe question-template retooling — ✅ DONE (2026-11-09), own dedicated session
+(local_4d46c1dd-5957-4768-9f4a-a17b145e2a8e, spun off from the main postmortem session)
 User's correction, important to get right: **projections feed the probe, not the other way around.**
 Probe-sharpening (tighter questions on role certainty, game script, recency — the "field knowledge" the user
 described combining in his head) is real and worth doing eventually, but it's pointless to retool probe
 questions around signals (`recent_form`, game script) that don't exist or are broken in the underlying data
 yet. Sequence: fix/confirm D and E (and resolve F) first; only then revisit the probe's own templates
-(`AI_PROBE_QUESTION_TEMPLATES.md`). Not scoped further than that ordering note for now.
+(`AI_PROBE_QUESTION_TEMPLATES.md`).
+
+**Gate satisfied — D/E/F all closed, so the templates were updated to match what's actually real,
+checked directly against the code (not assumed from the checklist summaries) before writing each change:**
+- **D1 (usage trajectory):** now notes real signal exists for RB carry-share trend specifically
+  (`statline_model._wrw_trailing_usage`, Item D's 10/10-LOSO blend) — but stays fully manual for every
+  other position, and clarifies `recent_form` itself is still display-only, not a trend mechanism.
+- **G1 / game script:** notes a spread-anchored RB-usage discount already exists live
+  (`volume_prior.py` decision #7, confirmed by Item E) — the probe's job there shifts from "does the
+  model know this" to "is this specific player's cheat-sheet badge/Range actually reflecting it,"
+  citing Item A's Allgeier case where the signal existed but still didn't propagate to the badge.
+- **C's relevance filter (next-man-up):** added the most consequential fix — `own_vac_bump` has a
+  confirmed blind spot (Item F) for sustained multi-week WR/TE absences, since the vacancy mechanism
+  only credits a *fresh* (k=1) OUT. Added a second filter (any team with 2+ WR/TE OUT/IR regardless of
+  bump value) so a Watkins-type sustained-absence case can't be silently dropped from C1/C2 the way the
+  pipeline's own vacancy credit drops it — this is exactly the gap Item F found real but couldn't fix
+  in the data, so the probe is the only defense here for now, same as the checklist's original framing
+  anticipated.
+Full diff in `AI_PROBE_QUESTION_TEMPLATES.md`. No code/model changes — this is a question-template
+update only, consistent with "projections feed the probe."
+
+**Full Wk9 postmortem cycle (Items 0, A-G) is now closed.** Open watch items carried forward, not closed
+questions: Item A's optimizer-aware redesign is shipped-and-accepted but flagged for incremental
+refinement only; Item B's QB-captain-rate lead is an open, falsifiable action item (track over the next
+several weeks); Item F's WR/TE vacancy gap is confirmed real but unfixed (candidate fix failed
+validation); BUF/MIN (Mon) result still needs folding into Item B's tally once final.
 
 ## Parking Lot — carried over from Week 8, status unchanged unless noted
 - **Wk8 Item B / this week's Item B** — showdown recurring miss, now tracked together above.

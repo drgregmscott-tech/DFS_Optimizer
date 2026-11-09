@@ -116,6 +116,19 @@ actual source of truth for how they're asked now.
      distinct teams had a real `own_vac_bump` consequence (and the chain
      checks out — Davante Adams `OUT` is the actual driver behind Puka
      Nacua's bump). That's the list C1/C2 get built from, not all 58.
+     **Correction, 2026-11-09 (WK9 Item F):** this filter has a confirmed
+     blind spot for WR/TE — `own_vac_bump` only fires on a *fresh* (k=1)
+     OUT, so a sustained multi-week absence (a player OUT for several
+     weeks running, never "freshly" OUT) shows zero bump even when the
+     real-world vacancy is obvious (SF's Wk9 Jordan Watkins case: Evans/
+     Samuel/Kirk/Pearsall all out by different weeks, zero bump, zero
+     `wrw_wr_delta_pts`, but Watkins was literally SF's only real WR
+     volume). **Add a second, separate check alongside the `own_vac_bump`
+     filter for WR/TE**: any team where 2+ WR/TE are OUT/IR regardless of
+     bump value, so a sustained-absence case isn't silently dropped from
+     C1/C2 the way the pipeline's own vacancy credit drops it. RB doesn't
+     need this — it already has the k≥2 decay extension and real
+     `own_vac_bump` signal to filter on.
    - **B / D1**: filter by a salary floor (~$4500 RB/WR/TE, ~$5000 QB, DST
      excluded) applied to `QUESTIONABLE`/`DOUBTFUL` players (B) or the
      active pool (D1). On the live Wk8 file this trimmed `QUESTIONABLE`
@@ -125,6 +138,55 @@ actual source of truth for how they're asked now.
 
 Feeds: **P** = projection track (production inputs), **O** = ownership
 track (field-perception inputs), **P+O** = both.
+
+**Correction, 2026-11-09 (WK9 Item G, gated on D/E/F) — what's now real
+signal vs. still fully manual.** Per the user's own correction, projections
+feed the probe, not the other way around — this update only reflects what
+D/E/F actually confirmed exists or doesn't, checked directly against the
+code, not assumed from the postmortem summary:
+
+- **D1 (usage trajectory) partially has real backing now, RB-only.** Item D
+  shipped a genuine recency-weighted usage signal
+  (`statline_model._wrw_trailing_usage`'s short/long carry-share blend,
+  `build_projections_statline.py` line ~1502) — but it's scoped to RB
+  carry-share reallocation specifically (the who-replaces-whom mechanism),
+  validated 10/10 LOSO. `recent_form` itself is also no longer a duplicate
+  of `season_avg` (same commit), but it's explicitly NOT wired into ranking
+  anywhere — display/future-use only, not something to cite as "the model
+  already knows this." For RB role-trend questions, D1's answer can now be
+  checked against real signal; for QB/WR/TE, there is still no equivalent
+  trend mechanism — stay fully manual/skeptical there, same as before.
+- **Game-script/spread-driven usage (E1/E2/G1) already has real signal —
+  the question shifts from "does the model know this" to "is this case
+  handled."** Item E's investigation found the checklist's "missing
+  feature" premise was wrong: a spread-anchored usage discount already
+  fires live in `volume_prior.py` (decision #7 — both Vegas terms, implied
+  total AND spread direction, always carried together for RB volume). A
+  follow-on "committee split" extension was tested and failed validation
+  (3/5 seasons), so nothing new shipped — the existing mechanism is what's
+  live. Since the signal exists but can still misfire in a specific case
+  (Item A's Wk9 diagnosis: Allgeier's bad-matchup read correctly registered
+  "low-scoring" game environment but still got badged "normal swing" — a
+  propagation gap, not a missing-input gap), a probe answer that surfaces a
+  game-script concern should be checked against `vegas_factor`/
+  `implied_total` as a real signal first, with the open question being
+  whether this specific player's badge/rationale is actually reflecting it
+  correctly — not whether the signal exists at all.
+- **Target-starved / no-competition-for-volume roles (Watkins-type cases)
+  are a confirmed real gap — stay fully manual, this is the probe's actual
+  job.** Item F confirmed the next-man-up vacancy mechanism
+  (`apply_wr_replacement`/`apply_te_replacement` in `statline_model.py`)
+  only credits a vacancy when the OUT player's own last appearance is the
+  team's immediately-preceding game (a "fresh" k=1 OUT) — RB got a k≥2
+  decay extension for sustained absences (2026-10-26), WR/TE never did, and
+  the obvious clone-the-RB-fix attempt failed validation (5/10 and 3/10
+  LOSO, rejected, not shipped). Concretely: **`own_vac_bump` being zero for
+  a sustained multi-week-OUT situation (like SF's Evans/Samuel/Kirk/
+  Pearsall all out by different weeks, none "fresh") does NOT mean there's
+  no real vacancy** — it means the pipeline's vacancy credit only sees
+  fresh OUTs. See the correction to the C section's relevance-filtering
+  note below: don't let a zero `own_vac_bump` silently exclude a real
+  sustained-absence case from C1/C2's candidate list.
 
 ---
 
@@ -174,7 +236,18 @@ open/discovery (append the qualifier instead)._
 D1. "Over [PLAYER]'s last 2-3 games, has his role (snap share, target
 share, red-zone usage) been trending up, down, or steady? Is there a
 reported reason — scheme change, coach's comments, a competing player
-losing/gaining role?"
+losing/gaining role?" **Correction, 2026-11-09 (WK9 Item D):** for an RB,
+this can now be partially checked against real signal — a short (last-2)
+vs. longer (~5-game) carry-share blend is shipped and live
+(`statline_model._wrw_trailing_usage`, validated 10/10 LOSO) inside the
+RB-vacancy reallocation mechanism specifically. It is NOT general-purpose
+usage-trend tracking for every RB, and it is NOT wired in for QB/WR/TE at
+all — for any player/position outside that one RB-vacancy mechanism, this
+question is still fully probe-driven with nothing in our own data to check
+it against beyond the bare `season_avg` vs. `recent_form` gap (and
+`recent_form` is now a genuine signal, not a duplicate — see the
+2026-11-09 correction note above — but it's display-only, not a trend
+mechanism in its own right).
 
 D2. "Has [TEAM]'s offensive game plan or play-calling tendency shifted
 recently (more pass-heavy, more up-tempo, new OC influence, etc.) in a way
@@ -243,7 +316,19 @@ _Relevance: open/discovery — append the qualifier; slate-wide by design._
 G1. "Which games this week project as potential blowouts based on current
 lines, and which specific players benefit (garbage-time volume, bellcow
 role protecting a lead) or get hurt (abandoned game plan, early exit) by
-that kind of script?"
+that kind of script?" **Correction, 2026-11-09 (WK9 Item E/A):** a
+spread-anchored game-script discount for RB volume already exists and is
+live (`volume_prior.py` decision #7) — check a G1 claim against
+`vegas_factor`/`implied_total` as real signal, not an acknowledged gap.
+But a real signal existing doesn't guarantee it propagates correctly to
+the cheat sheet's badge/Range read — Item A's Wk9 diagnosis found a case
+(Allgeier) where the game-environment read correctly flagged "low-scoring"
+but the badge/Range still said "normal swing" anyway. So when a G1 answer
+and `vegas_factor` agree on a real game-script concern, the useful
+follow-up isn't "does the model know this" (yes) but "is this specific
+player's cheat-sheet read actually reflecting it" — check the player's
+own rationale/badge directly, don't assume agreement with `vegas_factor`
+means the concern is already captured everywhere downstream.
 
 ## H. Weather (Feeds: P via pass volume/scoring environment)
 _Relevance: open/discovery, run once per outdoor game on the slate — no name filter needed._
@@ -341,6 +426,13 @@ guessing at who the solver would pick.
 - ~~How placeholders get filled automatically~~ — decided above: open
   templates get a relevance qualifier instead of a name list; name-supplying
   templates filter by `own_vac_bump` (C) or a salary floor (B/D1).
+- ~~Whether to retool these templates around recent_form/game-script before
+  the underlying signals were confirmed real~~ — decided 2026-11-09 (WK9
+  Item G, gated on D/E/F per the user's own correction): see the
+  2026-11-09 correction block right after the relevance-filtering notes
+  above, plus the inline corrections on D1, C's filter, and G1. Each claim
+  in those corrections was checked directly against the code before being
+  written, not assumed from the postmortem summary.
 - Cadence: once per week (e.g. Tue/Wed) vs. a closer-to-lock re-check for
   B/C given status changes right up to kickoff.
 - Which API/tool actually runs these (Claude API web_search tool vs.
