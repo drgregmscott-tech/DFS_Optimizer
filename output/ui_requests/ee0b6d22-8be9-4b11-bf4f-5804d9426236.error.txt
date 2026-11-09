@@ -1,0 +1,9 @@
+optimizer.py failed for this request. Last lines of its output:
+
+NOTE: --exclude player_id(s) ['00-0030506', '00-0033906', '00-0034383', '00-0037263', '00-0037809', '00-0039065', '00-0039066', '00-0039530', '00-0039880', '00-0040128', '00-0040563', '00-0040663', '00-0040867', '00-0041040', '00-0041523', '00-0041547'] not found in this pool -- ignored.
+WARNING: Showdown lineup 1/10 infeasible with uniqueness=3 (pool too thin -- last reason: Cannot lock player_id(s) ['00-0039410', '00-0041496', '00-0041511'] -- not present in this solve's candidate pool.). Relaxing to 2 and retrying.
+WARNING: Showdown lineup 1/10 infeasible with uniqueness=2 (pool too thin -- last reason: Cannot lock player_id(s) ['00-0039410', '00-0041496', '00-0041511'] -- not present in this solve's candidate pool.). Relaxing to 1 and retrying.
+WARNING: Showdown lineup 1/10 infeasible with uniqueness=1 (pool too thin -- last reason: Cannot lock player_id(s) ['00-0039410', '00-0041496', '00-0041511'] -- not present in this solve's candidate pool.). Relaxing to 0 and retrying.
+WARNING: stopping early at 0 of 10 requested Showdown lineups -- no further legal lineup exists even with uniqueness fully relaxed to 0. Last reason: Cannot lock player_id(s) ['00-0039410', '00-0041496', '00-0041511'] -- not present in this solve's candidate pool.
+
+Could not generate a lineup with the current settings: No Showdown lineups could be generated at all -- check pool size vs. the 6/5-slot roster + min-1-per-team requirement, exposure_cap, and lock settings.
