@@ -35,44 +35,50 @@ convention used in `grade_construction_week.py`; not verified against the exact 
 missed — TB/CHI particularly badly (bottom 8% of the field) — Monday's showdown still live. Matches the
 user's own read exactly.
 
-## Item A. Next-man-up / cheap-filler traps — this week's #1 topic, open for a dedicated session
+## Item A. Next-man-up / cheap-filler traps — ✅ INVESTIGATED this session (2026-11-09), verdict: YES, a real
+cheat-sheet signal exists; expansion direction identified; three real gaps found along the way, split into
+their own items (D/E/F) rather than chased here
 User's framing: an unusually injury-heavy week created a lot of cheap next-man-up plays, many of which were
-traps the raw optimizer output couldn't distinguish from the real sleepers. The user leaned on manual AI-probe
-analysis (sharp/consistent/low-bust-probability filtering) rather than trusting raw projections, and wants to
-(a) keep doing that every week, not just this one, and (b) look at folding more of it into the **cheat sheet**
-(`scripts/cheat_sheet.py`, frontend-facing weekly top-plays list) so it's less of a manual one-off each time.
+traps the raw optimizer output couldn't distinguish from the real sleepers. The user named 18 specific players
+he was unsure about: Tyler Allgeier, Alvin Kamara, Woody Marks, Jonah Coleman, Devin Singletary, Rhamondre
+Stevenson, Ollie Gordon II, Antonio Williams, Malik Washington, Xavier Worthy, Jordan Watkins, Rashee Rice,
+Cooper Kupp, Greg Dulcich, Chris Bell, Tre Tucker, Jaylen Waddle, Makai Lemon.
 
-Relevant standing context already in memory, not yet fully connected to this:
-- [[project_cheap_filler_pattern_recurring]] — confirmed across Wk2/4/6/7/8: cheapest-viable-WR clears the
-  $/pt bar regardless of real quality, maxes salary room. This week's injury-driven cheap pool is the same
-  shape at larger scale.
-- [[feedback_ai_probe_crosscheck_not_exposure]] — AI-probe claims get checked against
-  `season_avg`/`recent_form`/`matchup_factor`/`vegas_factor`, never lineup-pool exposure; lean probe questions
-  into fringe-value + matchup-trap. This is exactly the muscle the user used manually this week.
-- [[feedback_manual_judgment_on_borderline_backups]] — user already excludes/thumbs-downs suspect backups in
-  small builds and rides them in MME; this week's volume of suspect backups was unusually high.
-- `cheat_sheet.py` already computes `floor` (statline_p10) and `ceiling` (statline_p90) per player as composite
-  factors — the raw bust-risk signal may already partly exist in the engine; worth checking whether it's
-  currently legible enough on the frontend for a cheap next-man-up call, or whether the AI-probe is doing work
-  the engine's own numbers could partially surface on their own.
+**Bust definition used (user's own scale, DK: <1.5x salary = BUST, 1.5-2x = bad, 2-3x = ok, 3-4x = good, 4x+ =
+fire; FD compressed: <1x BUST, 1-2x bad, 2-3x ok/baseline, 3-4x fire, 4x+ elite).** Result on DK: **9 of 18
+clean busts, 4 "bad," 3 "ok," 1 "good" (Jonah Coleman), 1 "fire" (Jordan Watkins)** — a real, unusually
+trap-heavy cast, confirming the user's read with actual numbers rather than just intuition.
 
-**One concrete data point from this week's own accuracy run (below, Item C):** the Wk9 classic ownership
-budget check shows RB ownership under-called by **-35.3 points of ownership share** (model said 233.3%, real
-was 268.7%) — the single biggest ownership-budget miss of any position this week, consistent with a chaotic
-injury week where the field piled into next-man-up RBs more than the model expected. Worth checking whether
-this ties to specific named players from this week's real injury news before generalizing.
+**Cheat-sheet signal check — the "Range" bust-risk line works, but only for WR/TE this week:**
+Antonio Williams, Greg Dulcich, Malik Washington, Jaylen Waddle, and Rashee Rice/Xavier Worthy (FD) all got
+**"high bust risk"** in their rationale's Range line — every one of them busted. For RB, the opposite: Woody
+Marks, Ollie Gordon II, and Tyler Allgeier all got **"normal swing"** and all three busted; only Stevenson got
+"normal swing" and did NOT bust (correctly). **Verdict: the underlying signal is real and already live on the
+cheat sheet — it just under-reads RB bust risk specifically this week (n=5 RBs, one week — not yet a
+confirmed persistent gap, but a clear miss worth watching).**
 
-**Not yet investigated — scope for a dedicated session:**
-1. Pull this week's actual next-man-up cast (the specific cheap plays the user manually screened) and check
-   each one's real outcome vs. the AI-probe's thumbs-up/down/exclude verdict — did the manual screening
-   actually add edge over raw projection rank this week specifically?
-2. If yes, look at what signal the probe used that the engine doesn't already expose on the cheat sheet (floor/
-   ceiling, recent-games participation share, a fresh-injury recency flag) and whether a lightweight version of
-   that signal could be surfaced automatically — e.g. a "fresh-role, thin-track-record" badge distinct from the
-   existing Value/Leverage Pick badges — rather than requiring a fresh manual AI-probe pass every week.
-3. Decide, with real evidence, whether "run the AI-probe every week" is the right standing habit regardless of
-   injury volume, or whether it should be reserved for weeks like this one with an unusually large next-man-up
-   population.
+**Cheat-sheet expansion recommendation (this session's actual deliverable):** right now a player can carry
+**both** a positive badge ("Value Pick") **and** a "high bust risk" Range line at the same time (this
+happened to Dulcich on both sites and Washington on FD) with no reconciliation between the two — the reader
+has to notice the contradiction themselves. Recommend the cheat sheet explicitly flag that combination as its
+own distinct state (e.g. a "Risky Value" badge, or suppressing "Value Pick" entirely when Range already reads
+"high bust risk") so a value-but-volatile play is visibly different from a clean value play, rather than
+requiring the reader to cross-reference two separate lines every time. Also worth noting for the record: the
+rationale's "Matchup" sentence (e.g. `DET allows 1.63x league-avg to TEs`) is display-only — the composite's
+real `matchup_factor` is hard-coded to a flat 1.0 project-wide, so that sentence currently carries zero weight
+in ranking or badging despite reading as if it does.
+
+**Three real gaps surfaced while working through specific names, confirmed against data, NOT fixed in this
+session (one topic per session) — split into Items D, E, F below:**
+- Why Jonah Coleman (the week's best play, Harvey out / Dobbins not every-down, usage trending up) wasn't
+  flagged anywhere → **Item D**, and the user wants this fixed, not just investigated.
+- Why Allgeier/Gordon (bad matchups + unfavorable game script) busted despite a "normal swing" read →
+  **Item E**, a real missing feature candidate.
+- Jordan Watkins (SF's only real receiving option with McCaffrey/Kittle, target-starved role) — **Item F**,
+  worth checking, not yet confirmed as the same mechanism as D.
+
+AI-probe retooling is explicitly **not** prioritized here per the user: projections feed the probe, not the
+other way around, so probe-sharpening is the last item in this family, after D/E/F are addressed — see Item G.
 
 ## Item B. Showdown misses continue — Wk9 confirms 2 more losses in the Wk5+ pattern, 1 still pending
 From [[project_wk8_item_b_showdown_recurring_miss]] (Wk5-8: 1/8 cashed, 12.5%, vs Wk1-4's 71%, step-change at
@@ -117,25 +123,71 @@ third-best of the season (see Item B).
 gap and the record chalk count both corroborate the user's framing of this as a structurally unusual week, not
 just a subjective impression — useful context for Item A, not a standalone action item.
 
+## Item D. `recent_form` == `season_avg` bug + missing recent-usage-trend signal — 🔴 TO FIX, user priority,
+own dedicated session
+Promoted from the Week 8 parking lot (found as an unconnected side note during the Wk8 Item E investigation)
+now that it's tied to a concrete miss: re-checked this session, `recent_form` is still mathematically
+identical to `season_avg` for 100% of rows, Week 9 included — the model has no way to see a player's role
+trending up (or down) recently. This is exactly the signal the user used to correctly pick Jonah Coleman over
+Marks/Gordon/Allgeier (usage increasing in recent weeks, on top of the Harvey-out/Dobbins-not-every-down depth
+chart read). Separately, Coleman's `proj_rush_att` (7.9) was the *lowest* of the five RBs in that cluster —
+the model's usage input was moving the wrong direction while the real situation moved in his favor. Likely the
+same underlying mechanism as [[project_wk9_sanders_autopromote_gap_and_jsn_ownership]] (a confirmed-starter
+role not flowing into the projection) — worth checking both together rather than assuming they're separate.
+**User wants both halves fixed: the duplicate-field bug itself, and giving the model real ability to see a
+rising/falling recent-usage trend** — not just diagnosed. Own session.
+
+## Item E. Missing game-script/spread-direction feature for RB usage — 🟡 NEW GAP, candidate feature, own
+dedicated session
+Allgeier and Gordon both busted on bad matchups against top-tier defenses where the user's read was that game
+script (team expected to trail) would shift volume toward passing and away from rushing, independent of the
+team's own implied scoring total. Checked: Allgeier's `implied_total` (15.47) was in fact the worst of any RB
+on this list, and the model did register "low-scoring" in his game-environment read — but it still badged him
+Value Pick and read his Range as "normal swing" anyway, so even the signal that does exist isn't propagating
+into the composite/badge correctly. More importantly, there's no spread/win-probability/favorite-vs-underdog
+feature at all in the projection file — only `implied_total` and a `vegas_factor` built from it, neither of
+which captures "this team is more likely to be trailing and therefore pass-heavy." Real, testable gap:
+spread-direction as an RB-usage discount. Own session — test against historical data before shipping, same as
+any other candidate lever.
+
+## Item F. Target-competition / role-clarity check for Jordan Watkins-type cases — 🟡 WORTH CHECKING, lower
+urgency, own session
+Watkins (SF) was a clean miss on both sides — `proj_targets` was only 2.5, but in reality he, McCaffrey, and
+Kittle are the *entire* real receiving corps for that team right now, no competition for volume. Possibly the
+same mechanism as Item D (role/usage signal lagging real depth-chart reality), possibly a distinct "target
+competition" gap specific to receiving volume rather than a recency-trend issue. Not yet confirmed either way
+— scope a session to check whether this is Item D in different clothing or a separate thing worth its own fix.
+
+## Item G. AI-probe question-template retooling — explicitly LAST in this family, after D/E/F, not before
+User's correction, important to get right: **projections feed the probe, not the other way around.**
+Probe-sharpening (tighter questions on role certainty, game script, recency — the "field knowledge" the user
+described combining in his head) is real and worth doing eventually, but it's pointless to retool probe
+questions around signals (`recent_form`, game script) that don't exist or are broken in the underlying data
+yet. Sequence: fix/confirm D and E (and resolve F) first; only then revisit the probe's own templates
+(`AI_PROBE_QUESTION_TEMPLATES.md`). Not scoped further than that ordering note for now.
+
 ## Parking Lot — carried over from Week 8, status unchanged unless noted
 - **Wk8 Item B / this week's Item B** — showdown recurring miss, now tracked together above.
 - **Wk8 Item E — ownership weak-spot root cause** — parked as ordinary variance after two dedicated sessions
   (every traced lead came back clean, premise itself didn't survive re-test at p=0.51). No new evidence this
   week; not reopened.
-- **`recent_form` equals `season_avg` exactly, every row, every week, all season** — found as a side note during
-  the Wk8 Item E investigation, still an open one-line check, not yet looked at.
 - **ESPN injury-feed comment text as a role/usage signal** — still test-bar, still just accumulating snapshots.
+  Possibly relevant to Item D/F's role-clarity gap once those are scoped — worth a cross-reference then.
 - **Winners-vs-field positioning (Wk7 diagnosis item 7)** — still parked, "Item 9 Variant D" never opened.
 
 ## Next step
-**Item 0 (Stage 8 logging gap) is fully closed this session** — both the original 5-slate backfill and the
-TB/CHI relabel/backfill are done, nothing outstanding. Results (section 1) are confirmed for every completed
-slate; only BUF/MIN (Mon) remains pending. Items A and B get their own dedicated sessions, per the user's
-request, rather than being chased further in this one:
-- **Item A (next-man-up/cheat-sheet)** — the week's named #1 priority. Needs a session that pulls the actual
-  next-man-up cast and grades the AI-probe's calls against real outcomes before deciding anything about the
-  cheat sheet.
-- **Item B (showdown misses)** — refresh the 15-slate comparison table with Wk9's data (now confirmed: 2
-  misses, 1 pending) and take a closer look at TB/CHI's 92.7%-finish specifically, the worst showdown result
-  logged all season.
-- Item C (accuracy) is reviewed and needs no further session — no multi-week trend, logged for awareness only.
+**Item 0 (Stage 8 logging gap) is fully closed.** Results (section 1) confirmed for every completed slate;
+only BUF/MIN (Mon) remains pending. **Item A is closed** — verdict: yes, a real cheat-sheet bust-risk signal
+exists (works for WR/TE, under-reads RB this week), with a concrete expansion direction identified (flag the
+Value-Pick-vs-high-bust-risk contradiction explicitly). Three real gaps it surfaced are split into their own
+items rather than fixed inline, per session-focus discipline:
+- **Item D (`recent_form` bug + recent-trend signal)** — user wants this fixed, not just diagnosed. Highest
+  priority of the new items; likely connects to the Sanders autopromote gap.
+- **Item E (game-script/spread-direction RB usage feature)** — a real, currently-missing feature candidate.
+- **Item F (target-competition/role-clarity check)** — lower urgency, not yet confirmed as its own gap vs.
+  the same thing as Item D.
+- **Item G (AI-probe retooling)** — explicitly last, only after D/E/F; projections feed the probe, not
+  the reverse.
+- **Item B (showdown misses)** — still its own separate dedicated session: refresh the 15-slate comparison
+  table with Wk9's data (2 misses confirmed, 1 pending) and look closer at TB/CHI's 92.7% finish.
+- Item C (accuracy) is reviewed, needs no further session.
