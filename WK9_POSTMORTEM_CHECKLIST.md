@@ -227,6 +227,24 @@ separate, cleanly-traced favorite-upset case that remains a legitimate "ordinary
 own, just not the answer to the broader Wk5+ pattern). **Overall Item B verdict: the QB-captain-rate finding
 above is the real lead from this session — tracked as an open, falsifiable action item, not parked.**
 
+**Follow-up build (2026-11-09, own dedicated session, local_34bc7a5d-1dd0-4254-8519-c71744e00896): showdown
+cheat sheet shipped.** To act on the QB-captain lead (and showdown decision-making generally) with sharper,
+more showdown-specific information than the classic cheat sheet provides, built two new sibling scripts —
+[scripts/projections_matchup_showdown.py](scripts/projections_matchup_showdown.py) (DVP splits: WR1/WR2_3,
+TE1/TE2_3, RB_rush/RB_rec, reusing `projections_matchup.py`'s lookahead-bias guard and empirical-Bayes
+shrinkage) and [scripts/cheat_sheet_showdown.py](scripts/cheat_sheet_showdown.py) (threshold-based priority
+list — every player above ~2 fpts instead of fixed top-N, overall rank + position rank, real last-3-game
+usage from `weekly_stats`, depth-tier-aware matchup bullets). Tested end-to-end on the real Wk9 TB@CHI slate.
+A real bug was caught and fixed in the same session (commit `01e7e084`): the value-tier bullet was applying a
+flat roster-average bar per individual player, mislabeling priced-up studs as "bust" just for costing a
+premium; fixed to be slate-relative (cheap/fair/pricey) with bust risk given its own explicit High/Medium/Low
+label.
+
+**Current status — no pending actions on Item B beyond playing and collecting data.** The cheat sheet is
+ready to use on upcoming showdown slates. The QB-captain lead itself (p=0.18, n=16) is not resolved and can't
+be resolved analytically — it needs CPT position tracked in the per-slate Results table over the next several
+weeks to either confirm or kill the pattern. Nothing else is open or scheduled for this item right now.
+
 ## Item C. Accuracy assessment (`scripts/grade_accuracy_week.py --week 9`, full report:
 `analysis/weekly_accuracy_review/out/wk9/report.txt`)
 
