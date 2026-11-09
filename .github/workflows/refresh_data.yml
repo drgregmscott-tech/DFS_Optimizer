@@ -665,6 +665,23 @@ jobs:
         continue-on-error: true
         run: python3 scripts/cheat_sheet.py --site ${{ matrix.site }} --season ${{ matrix.season }} --week ${{ matrix.week }} --slate-id ${{ matrix.slate_id }}
 
+      # Showdown sibling (2026-11-09) -- runs for every showdown slate (no
+      # "_main_" restriction; a showdown slate IS the whole slate, there's
+      # no main/early/afternoon split the way classic has). Two scripts:
+      # the depth-tier DVP file first (cheat_sheet_showdown.py reads it),
+      # then the cheat sheet itself. Both write into the SAME
+      # output/cheat_sheet_{site}_{slate_id}.csv filename classic uses --
+      # see cheat_sheet_showdown.py's module docstring for why (it's what
+      # lets the existing frontend panel pick this up with no frontend
+      # change).
+      - name: Rebuild showdown DVP + cheat sheet
+        id: cheat_sheet_showdown
+        if: contains(matrix.slate_id, 'showdown')
+        continue-on-error: true
+        run: |
+          python3 scripts/projections_matchup_showdown.py --site ${{ matrix.site }} --season ${{ matrix.season }} --week ${{ matrix.week }}
+          python3 scripts/cheat_sheet_showdown.py --site ${{ matrix.site }} --season ${{ matrix.season }} --week ${{ matrix.week }} --slate-id ${{ matrix.slate_id }}
+
       # Session 15 decision #B1 (unchanged): checks lineups_multi first,
       # falls back to lineup_single. Missing lineup file is a normal
       # not_run outcome, not a failure -- nothing to pivot on yet.
@@ -741,7 +758,7 @@ jobs:
           BUILD_OUTCOME: ${{ steps.build_proj.outcome }}
           APPLY_OUTCOME: ${{ steps.apply_status.outcome }}
           PIVOT_OUTCOME: ${{ steps.pivot.outcome }}
-          CHEAT_SHEET_OUTCOME: ${{ steps.cheat_sheet.outcome }}
+          CHEAT_SHEET_OUTCOME: ${{ steps.cheat_sheet.outcome || steps.cheat_sheet_showdown.outcome }}
 
       # Session (2026-10-05): replaces the old per-leg `git commit`+`push`.
       # Packages only the files THIS leg actually changed (via `git add` +

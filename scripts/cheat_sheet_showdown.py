@@ -10,76 +10,87 @@ showdown-specific pipeline pieces (ownership_model_showdown.py vs
 ownership_v2.py is the model for that -- a fully separate file, not a
 branch inside the classic one).
 
-Three real differences from the classic cheat sheet, each driven by how
-showdown is actually played, not a stylistic choice:
+v2 (2026-11-09, user feedback on the v1 build): three real changes from
+the first cut, plus the three real differences from the classic sheet
+that motivated this script in the first place.
 
-1. THRESHOLD, NOT FIXED TOP-N PER POSITION.
-   A showdown slate is ~12-16 skill players total across both teams, and
-   CPT/FLEX decisions are inherently about ONE player's role, not "the WR
-   position" as a bucket the way a 300-player classic slate supports a
-   top-15-WRs cut. Position matters far less than it does in classic --
-   this is really ONE unified priority list of every viable player on the
-   slate (final_projection > PROJECTION_THRESHOLD, same "zeroed/bye player
-   is never a usable play" filter classic's load_final_projections()
-   uses), with both an overall priority rank and a per-position rank so
-   it's still sortable/groupable by position for scanning.
+FRONTEND INTEGRATION (new in v2): the user expected this on the live
+cheat-sheet panel the same way the classic sheet already is -- that panel
+(dfs_optimizer_frontend/index.html's renderCheatSheet()) reads
+output/cheat_sheet_{site}_{slate_id}.csv through a generic worker
+endpoint keyed only on site+slate_id, with NO awareness of classic vs
+showdown; it was never gated to classic, it just never had a showdown
+file to find (classic's own automation step explicitly excludes
+showdown slates -- "see .github/workflows/refresh_data.yml's own
+"Rebuild cheat sheet" step comment). So v2 writes to that SAME filename
+(no "_showdown" infix) and matches that renderer's exact expected column
+set (rank, position, player_id, player_name, team, opponent, salary,
+final_projection, estimated_ownership_pct, confidence, badge, is_bonus,
+rationale) instead of inventing a showdown-specific schema -- this is
+what makes the existing frontend render it with zero frontend changes.
+The refresh_data.yml workflow gets a parallel "Rebuild showdown cheat
+sheet" step (mirroring the classic one, gated the opposite way) so this
+actually runs automatically each refresh, same as classic.
 
-   A showdown slate's final_projections file has TWO rows per physical
-   player -- one `roster_role=CPT` (1.5x salary/scoring) and one
-   `roster_role=FLEX` -- because they're genuinely different roster
-   decisions with different salaries and point ceilings, not the same
-   row twice. Ranking is done SEPARATELY within each roster_role (overall
-   rank 1 among CPT candidates is a different question from overall rank 1
-   among FLEX candidates), which is also why this script doesn't attempt
-   the classic sheet's full value/leverage composite-score machinery --
-   "priority rank" here is real `final_projection` (the number that
-   already reflects CPT's 1.5x), the single most decision-relevant number
-   for a captain/FLEX call, not a multi-factor z-scored blend the 1-2
-   roster slots this covers don't need.
+ONE ROW PER PLAYER, NOT PER ROSTER-SLOT (v2, user feedback: "I don't
+necessarily need a captain vs flex difference"). A showdown final_
+projections file has two rows per physical player (roster_role=CPT at
+1.5x salary/scoring, roster_role=FLEX at 1x) -- v1 ranked these as two
+separate lists. Real-data check: CPT's final_projection is EXACTLY 1.5x
+FLEX's for every player (verified on the Wk9 BUF/MIN slate), so ranking
+by either produces the identical order -- there was never a case where
+CPT vs FLEX disagreed on priority, just two copies of the same ranking
+with different-looking numbers. v2 builds the list once off each
+player's FLEX row (the "base" per-player numbers this sheet's salary/
+projection/ownership columns show), and folds the player's CPT-specific
+numbers (own salary, own projection, own ownership -- captain ownership
+in particular is NOT just 1.5x FLEX ownership; it's a separate rate
+real-DFS-players choose independently, e.g. Josh Allen reads 24.4% CPT
+owned vs 52.7% FLEX owned on the Wk9 slate) into a dedicated rationale
+bullet instead of a second ranked list.
 
-2. A REAL recent-usage bullet, not projection-derived.
-   cheat_sheet.py's own docstring documents why `recent_form` (and by
-   extension `season_avg`) in final_projections_*.csv is circular for this
-   purpose -- build_projections_statline.py builds it FROM
-   final_projection with the market factor divided back out, so quoting it
-   back as "recent usage" is quoting the model's own output as if it were
-   independent evidence. This script instead pulls ACTUAL last-N-game
-   touches/targets straight from data/weekly_stats_{season}.parquet --
-   the same raw source projections_matchup.py reads -- with the identical
-   lookahead-bias guard (week N only uses weeks 1..N-1 of that season).
+RECALIBRATED BUST-RISK (v2, user feedback: "literally every player is
+marked high bust risk"). v1's range_bullet() reused the ABSOLUTE floor/
+bust bars classic cheat_sheet.py calibrated against its OWN 300-player
+classic pool (ABS_FLOOR_HIGH_RISK=3.0, bust ratio >= 1.0 reads "high").
+Checked against the real Wk9 BUF/MIN showdown pool: EVERY eligible
+player's bust ratio ((p90-p10)/final_projection) was >= 0.88, median
+1.93 -- nearly double classic's "high risk" cutoff, for literally the
+average play on the slate, not just the risky ones. This isn't a scoring
+bug -- showdown's Monte Carlo model genuinely produces much wider
+relative spread for every player (one game's variance concentrated onto
+6 roster spots instead of spread across a 9-player classic lineup pulling
+from the whole slate), so an absolute bar tuned to classic's shape
+necessarily reads "high risk" for the entire showdown pool and
+discriminates nothing. The fix is the same one classic ALREADY uses for
+its own bust_z (see that script's compute_confidence()) -- z-score the
+bust ratio and the floor WITHIN the showdown slate's own eligible pool
+instead of against a borrowed absolute number, so "normal" and "low
+risk" become reachable tiers again, judged against what showdown
+actually looks like rather than classic. See BUST_Z_HIGH/LOW below.
 
-3. Depth-tier DVP detail for WR/TE, rush/rec split for RB.
-   See projections_matchup_showdown.py (new sibling to
-   projections_matchup.py) for how matchup_factors_showdown_{site}_
-   {season}_{week}.csv is built -- WR1 vs WR2_3, TE1 vs TE2_3 (ranked by
-   that GAME's own targets, not a season-long label), and RB rushing-
-   points-allowed vs receiving-points-allowed (a stat-type split, not a
-   depth split -- most teams only have one real every-down back most
-   weeks, so RB1/RB2 would mostly be noise; rush-funnel vs pass-funnel-at-
-   -the-RB is the real distinction a CPT/FLEX call on a receiving back
-   needs). This slate's own CURRENT depth tier for each WR/TE is assigned
-   by THIS WEEK's proj_targets rank among that player's active teammates
-   at the same position (same "team_pos_rank" pattern cheat_sheet.py's
-   Value Pick logic already uses) -- not last season's label, which can be
-   stale the moment an injury or gameplan shift changes a team's target
-   distribution. QB/DST/K fall back to the existing aggregate
-   matchup_factors_{site}_{season}_{week}.csv / DST's own matchup_factor
-   column, same as the classic sheet -- the depth-tier question doesn't
-   apply to single-player-per-team positions, and showdown rosters commonly
-   include a kicker, which has no DVP concept in this pipeline at all (that
-   bullet is simply omitted for K).
+Three real differences from the classic cheat sheet carried over from v1
+(these were never the issue; see that version's design for the full
+reasoning, condensed here):
 
-Everything else carried over unchanged from the classic sheet's own
-conventions: only final_projection > 0 (effectively > PROJECTION_THRESHOLD
-here) players are eligible; floor/ceiling range bullet off statline_p10/
-p90; game-environment bullet off implied_total relative to the slate's own
-average.
+1. THRESHOLD, NOT FIXED TOP-N PER POSITION (final_projection > 2.0) --
+   one unified priority list (both an "overall_rank" column across the
+   whole slate and a per-position "rank" column the frontend already
+   knows how to group/sort on, same name as classic's own column).
+2. A REAL recent-usage bullet off data/weekly_stats_{season}.parquet --
+   NOT final_projections' circular recent_form/season_avg.
+3. Depth-tier DVP detail for WR/TE (WR1 vs WR2_3, TE1 vs TE2_3, assigned
+   by THIS slate's own proj_targets rank among teammates) and a rushing-
+   vs-receiving split for RB, off projections_matchup_showdown.py.
+   QB/DST/K fall back to the aggregate matchup_factors file / DST's own
+   column; K gets no DVP bullet at all (no concept in this pipeline).
 
 Usage:
-    python3 scripts/cheat_sheet_showdown.py --site dk --season 2026 --week 9 --slate-id dk_showdown_wk9_TB_CHI_08Nov2026
+    python3 scripts/cheat_sheet_showdown.py --site dk --season 2026 --week 9 --slate-id dk_showdown_wk9_BUF_MIN_09Nov2026
 
 Output:
-    output/cheat_sheet_showdown_{site}_{slate_id}.csv
+    output/cheat_sheet_{site}_{slate_id}.csv  (same filename classic uses --
+    slate_id already encodes showdown vs classic, so there's no collision)
 """
 
 import argparse
@@ -96,22 +107,58 @@ OUTPUT_DIR = REPO_ROOT / "output"
 DEFENSE_POSITION_LABELS = {"DST", "D", "DEF"}
 
 # See module docstring point 1 -- threshold inclusion, not fixed top-N.
-# A thin showdown slate shows up as a short list, which is real
-# information, not padded out to a fixed size.
 PROJECTION_THRESHOLD = 2.0
-
-# Real recent-usage lookback -- last N games with box-score data strictly
-# before the target week (same lookahead guard as projections_matchup.py).
 RECENT_USAGE_LOOKBACK = 3
 
 GAME_ENV_MARGIN = 2.0
 MATCHUP_FAVORABLE = 1.10
 MATCHUP_TOUGH = 0.90
-ABS_FLOOR_HIGH_RISK = 3.0
-ABS_FLOOR_LOW_RISK = 10.0
+
+# Value-per-dollar tiers (added 2026-11-09, user's own benchmarks) --
+# pts per $1000 salary against DK Showdown's fixed $50,000 total cap.
+# User's framing: a 6-man roster averaging ~2.0x nets ~100 total pts
+# (roughly a cash line), ~2.25-2.5x is "fire" (~112-125 total, deep into
+# GPP territory), ~1.75x reads bad, <=1.5x is a bust. Deliberately an
+# ABSOLUTE bar, not pool-relative like the swing tiers below -- it's
+# anchored to the cap structure itself (fixed $50k, not this slate's own
+# shape), same reasoning as why slate-relative z-scoring is right for
+# bust/floor (that's about THIS slate's own variance) but wrong here
+# (value-for-money means the same thing on every showdown slate).
+VALUE_BUST = 1.5
+VALUE_BAD = 1.75
+VALUE_FIRE = 2.25
+
+# Recalibrated bust-risk thresholds (v2) -- z-scored WITHIN this slate's
+# own eligible pool, not an absolute bar borrowed from classic's 300-
+# player pool. Same numeric cutoffs classic's own CONF_* machinery uses
+# for the identical "high/low relative to cohort" judgment, just applied
+# here to BOTH the bust ratio and the floor (classic only z-scores bust;
+# it can afford absolute floor bars because its pool is big and stable
+# enough for "a sub-3pt floor" to mean the same thing every week -- a
+# 12-16 player showdown pool isn't, so floor gets the same relative
+# treatment as bust here).
+BUST_Z_HIGH = 0.75
+BUST_Z_LOW = -0.75
+FLOOR_Z_HIGH = 0.75
+FLOOR_Z_LOW = -0.75
+
+# Confidence weights -- same shape as classic's CONF_WITHIN_WEIGHT/
+# CONF_BUST_WEIGHT (see that script's module docstring), no slate-
+# strength term here (there's only one slate to compare against, so a
+# cross-slate shift term has nothing to anchor to).
+CONF_CENTER = 5.5
+CONF_WITHIN_WEIGHT = 1.5
+CONF_BUST_WEIGHT = 0.8
 
 DEPTH_TIER_POSITIONS = {"WR", "TE"}
 RB_SPLIT_POSITION = "RB"
+
+OUTPUT_COLUMNS = [
+    "position", "rank", "overall_rank", "player_id", "player_name", "team",
+    "opponent", "salary", "final_projection", "estimated_ownership_pct",
+    "confidence", "composite_score", "top_factors", "rationale", "badge",
+    "is_bonus",
+]
 
 
 def canonical_position(pos: str) -> str:
@@ -141,13 +188,10 @@ def load_final_projections_showdown(site: str, slate_id: str) -> pd.DataFrame:
             f"(roster_role column with CPT/FLEX rows)."
         )
     df["position"] = df["position"].apply(canonical_position)
-    return df[df["final_projection"] > PROJECTION_THRESHOLD].copy()
+    return df
 
 
 def load_display_matchup_factors(site: str, season: int, week: int) -> dict:
-    """Aggregate (not depth-tier) DVP, for QB only here -- see module
-    docstring point 3. Same file/lookup classic cheat_sheet.py's
-    load_display_matchup_factors() uses."""
     path = OUTPUT_DIR / f"matchup_factors_{site}_{season}_{week}.csv"
     if not path.exists():
         print(f"NOTE: {path} not found -- QB matchup bullets will read "
@@ -158,9 +202,6 @@ def load_display_matchup_factors(site: str, season: int, week: int) -> dict:
 
 
 def load_depth_tier_matchup_factors(site: str, season: int, week: int) -> dict:
-    """Depth-tier/split DVP for WR/TE/RB -- see projections_matchup_
-    showdown.py. Keyed by (team, tier) where tier is one of WR1, WR2_3,
-    TE1, TE2_3, RB_rush, RB_rec."""
     path = OUTPUT_DIR / f"matchup_factors_showdown_{site}_{season}_{week}.csv"
     if not path.exists():
         print(f"NOTE: {path} not found -- run projections_matchup_showdown.py "
@@ -172,15 +213,8 @@ def load_depth_tier_matchup_factors(site: str, season: int, week: int) -> dict:
 
 
 def load_recent_usage(season: int, week: int) -> dict:
-    """Real last-N-game touches/targets straight off weekly_stats_
-    {season}.parquet -- see module docstring point 2 for why this is NOT
-    final_projections' own recent_form/season_avg. Same lookahead-bias
-    guard as projections_matchup.py (week N uses weeks 1..N-1 of THIS
-    season only -- no cross-season blending, matching that script's own
-    scope). Returns {player_id: (avg_touches_per_game, n_games_used)};
-    missing entirely (no games logged yet this season, or file absent)
-    degrades to the caller's own "no usage history yet" bullet, same
-    "flag, don't silently assume" pattern as the rest of this pipeline."""
+    """See module docstring point 2 / v1's identical function for the full
+    reasoning (unchanged in v2)."""
     path = DATA_DIR / f"weekly_stats_{season}.parquet"
     if not path.exists():
         print(f"NOTE: {path} not found -- recent-usage bullets will read "
@@ -219,7 +253,7 @@ def usage_word(pos: str) -> str:
     return "targets/game"  # WR/TE
 
 
-def recent_usage_bullet(row: pd.Series, usage_lookup: dict) -> str:
+def recent_usage_bullet(row: pd.Series, usage_lookup: dict):
     entry = usage_lookup.get(row["player_id"])
     pos = row["position"]
     if pos not in ("QB", "RB", "WR", "TE"):
@@ -231,9 +265,7 @@ def recent_usage_bullet(row: pd.Series, usage_lookup: dict) -> str:
     return f"Recent usage: {avg:.1f} {usage_word(pos)}, last {n} {game_word} (actual box score)"
 
 
-def _tier_label(row: pd.Series, team_pos_rank: dict) -> str:
-    """This SLATE's own depth tier for a WR/TE, by proj_targets rank among
-    teammates at the same position -- see module docstring point 3."""
+def _tier_label(row: pd.Series, team_pos_rank: dict):
     pos = row["position"]
     if pos not in DEPTH_TIER_POSITIONS:
         return None
@@ -241,32 +273,30 @@ def _tier_label(row: pd.Series, team_pos_rank: dict) -> str:
     return f"{pos}1" if rank == 1 else f"{pos}2_3"
 
 
-def matchup_bullet(row: pd.Series, display_matchup: dict, depth_matchup: dict,
-                    team_pos_rank: dict) -> str:
+def _tier_word(mf: float) -> str:
+    return "favorable" if mf >= MATCHUP_FAVORABLE else "tough" if mf <= MATCHUP_TOUGH else "average"
+
+
+def matchup_bullet(row: pd.Series, display_matchup: dict, depth_matchup: dict, team_pos_rank: dict):
     pos = row["position"]
     if pos == "DST":
         mf = row["matchup_factor"]
-        tier = "favorable" if mf >= MATCHUP_FAVORABLE else "tough" if mf <= MATCHUP_TOUGH else "average"
-        return f"Matchup: {mf:.2f}x matchup factor ({tier})"
+        return f"Matchup: {mf:.2f}x matchup factor ({_tier_word(mf)})"
     if pos == "K":
-        return None  # no DVP concept for kickers in this pipeline
+        return None
     if pos == "QB":
         mf = display_matchup.get((row["opponent"], "QB"), 1.0)
-        tier = "favorable" if mf >= MATCHUP_FAVORABLE else "tough" if mf <= MATCHUP_TOUGH else "average"
-        return f"Matchup: {row['opponent']} allows {mf:.2f}x league-avg to QBs ({tier})"
+        return f"Matchup: {row['opponent']} allows {mf:.2f}x league-avg to QBs ({_tier_word(mf)})"
     if pos in DEPTH_TIER_POSITIONS:
         depth_tier = _tier_label(row, team_pos_rank)
         mf = depth_matchup.get((row["opponent"], depth_tier), 1.0)
-        tier = "favorable" if mf >= MATCHUP_FAVORABLE else "tough" if mf <= MATCHUP_TOUGH else "average"
         tier_display = depth_tier.replace("2_3", "2/3")
-        return f"Matchup ({tier_display}): {row['opponent']} allows {mf:.2f}x league-avg ({tier})"
+        return f"Matchup ({tier_display}): {row['opponent']} allows {mf:.2f}x league-avg ({_tier_word(mf)})"
     if pos == RB_SPLIT_POSITION:
         mf_rush = depth_matchup.get((row["opponent"], "RB_rush"), 1.0)
         mf_rec = depth_matchup.get((row["opponent"], "RB_rec"), 1.0)
-        rush_tier = "favorable" if mf_rush >= MATCHUP_FAVORABLE else "tough" if mf_rush <= MATCHUP_TOUGH else "average"
-        rec_tier = "favorable" if mf_rec >= MATCHUP_FAVORABLE else "tough" if mf_rec <= MATCHUP_TOUGH else "average"
         return (f"Matchup: {row['opponent']} allows {mf_rush:.2f}x league-avg rushing pts "
-                f"({rush_tier}), {mf_rec:.2f}x receiving pts ({rec_tier}) to RBs")
+                f"({_tier_word(mf_rush)}), {mf_rec:.2f}x receiving pts ({_tier_word(mf_rec)}) to RBs")
     return None
 
 
@@ -282,20 +312,56 @@ def env_bullet(row: pd.Series, avg_implied_total: float) -> str:
 
 
 def range_bullet(row: pd.Series) -> str:
+    """Recalibrated for v2 -- see module docstring 'RECALIBRATED BUST-RISK'.
+    bust_z/floor_z are pre-computed pool-relative z-scores (see
+    build_cheat_sheet_showdown()), NOT absolute bars. Tier wording is
+    "wide/tight/normal swing", not "bust risk" -- that word is now
+    reserved for the separate value_bullet() tier below, a different
+    concept (cost-adjusted expectation, not raw ceiling/floor spread)."""
     p10, p90 = row["statline_p10"], row["statline_p90"]
     if row["position"] in ("DST", "K") and p10 == 0 and p90 == 0:
         return "Range: not modeled for this position"
-    bust = (p90 - p10) / row["final_projection"] if row["final_projection"] else 0.0
-    if p10 < ABS_FLOOR_HIGH_RISK or bust >= 1.0:
-        tier = "high bust risk"
-    elif p10 >= ABS_FLOOR_LOW_RISK and bust <= 0.4:
-        tier = "low bust risk"
+    bust_z, floor_z = row["_bust_z"], row["_floor_z"]
+    if floor_z <= FLOOR_Z_LOW or bust_z >= BUST_Z_HIGH:
+        tier = "wide swing for this slate"
+    elif floor_z >= FLOOR_Z_HIGH and bust_z <= BUST_Z_LOW:
+        tier = "tight swing for this slate"
     else:
-        tier = "normal swing"
+        tier = "normal swing for this slate"
     return f"Range: {p10:.1f}–{p90:.1f} pts ({tier})"
 
 
-def build_rationale(row, avg_implied_total, display_matchup, depth_matchup,
+def value_bullet(row: pd.Series) -> str:
+    """Pts-per-$1000-salary vs. the user's own $50k-cap benchmarks -- see
+    VALUE_* constants above."""
+    ratio = row["final_projection"] / (row["salary"] / 1000.0)
+    if ratio <= VALUE_BUST:
+        tier = "bust"
+    elif ratio <= VALUE_BAD:
+        tier = "bad"
+    elif ratio < VALUE_FIRE:
+        tier = "on expectation"
+    else:
+        tier = "fire"
+    return f"Value: {ratio:.2f} pts/$1K ({tier})"
+
+
+def captain_bullet(cpt_row) -> str:
+    """See module docstring 'ONE ROW PER PLAYER' -- captain-specific
+    numbers folded in here instead of a second ranked list. cpt_row is
+    None when a player has no matching CPT row (shouldn't normally
+    happen, but degrades to a plain statement rather than a crash)."""
+    if cpt_row is None:
+        return "Captain: no captain-slot data found for this player"
+    cpt_ratio = cpt_row["final_projection"] / (cpt_row["salary"] / 1000.0)
+    cpt_tier = "fire" if cpt_ratio >= VALUE_FIRE else "bust" if cpt_ratio <= VALUE_BUST else "on expectation"
+    return (f"Captain: ${cpt_row['salary']:.0f} salary, "
+            f"{cpt_row['final_projection']:.1f} pts, "
+            f"{cpt_row['estimated_ownership_pct']:.1f}% owned as CPT "
+            f"({cpt_ratio:.2f} pts/$1K, {cpt_tier})")
+
+
+def build_rationale(row, cpt_row, avg_implied_total, display_matchup, depth_matchup,
                      team_pos_rank, usage_lookup) -> str:
     bullets = []
     mu = matchup_bullet(row, display_matchup, depth_matchup, team_pos_rank)
@@ -305,71 +371,86 @@ def build_rationale(row, avg_implied_total, display_matchup, depth_matchup,
     usage = recent_usage_bullet(row, usage_lookup)
     if usage:
         bullets.append(usage)
+    bullets.append(value_bullet(row))
     bullets.append(range_bullet(row))
+    bullets.append(captain_bullet(cpt_row))
     return "\n".join(f"• {b}" for b in bullets)
 
 
-OUTPUT_COLUMNS = [
-    "roster_role", "position", "overall_rank", "position_rank",
-    "player_id", "player_name", "team", "opponent", "salary",
-    "final_projection", "estimated_ownership_pct", "rationale",
-]
+def zscore(series: pd.Series) -> pd.Series:
+    std = series.std(ddof=0)
+    if not std or np.isnan(std):
+        return pd.Series(0.0, index=series.index)
+    return (series - series.mean()) / std
+
+
+def compute_confidence(pool: pd.DataFrame) -> pd.Series:
+    """Re-standardized within the slate's own eligible pool -- same
+    within-cohort spirit as classic's compute_confidence(), no cross-
+    slate shift term (see module docstring)."""
+    within_z = zscore(pool["final_projection"])
+    bust_z = pool["_bust_z"]
+    combined = within_z * CONF_WITHIN_WEIGHT - bust_z * CONF_BUST_WEIGHT
+    return (CONF_CENTER + combined).round().clip(1, 10).astype(int)
 
 
 def build_cheat_sheet_showdown(site: str, slate_id: str, season: int, week: int) -> pd.DataFrame:
     df = load_final_projections_showdown(site, slate_id)
-    if df.empty:
+    flex = df[(df["roster_role"] == "FLEX") & (df["final_projection"] > PROJECTION_THRESHOLD)].copy()
+    cpt_by_pid = {r["player_id"]: r for _, r in df[df["roster_role"] == "CPT"].iterrows()}
+    if flex.empty:
         return pd.DataFrame(columns=OUTPUT_COLUMNS)
 
-    team_implied_total = df.drop_duplicates("team").set_index("team")["implied_total"].to_dict()
+    team_implied_total = flex.drop_duplicates("team").set_index("team")["implied_total"].to_dict()
     avg_implied_total = float(np.mean(list(team_implied_total.values())))
 
     display_matchup = load_display_matchup_factors(site, season, week)
     depth_matchup = load_depth_tier_matchup_factors(site, season, week)
     usage_lookup = load_recent_usage(season, week)
 
-    # This slate's own current depth tier (WR1 vs WR2_3, TE1 vs TE2_3) by
-    # proj_targets rank among teammates at the same position -- computed
-    # once off the FLEX rows only (CPT rows are the same player at 1.5x,
-    # which would double-count each player in the groupby otherwise).
-    flex = df[df["roster_role"] == "FLEX"]
     depth_pool = flex[flex["position"].isin(DEPTH_TIER_POSITIONS)]
-    team_pos_rank = (
-        depth_pool.groupby(["team", "position"])["proj_targets"]
-        .rank(ascending=False, method="first")
-        .to_dict()
-    )
-    # .to_dict() above keys by the original index, not player_id -- rebuild
-    # keyed by player_id instead.
-    team_pos_rank = dict(zip(depth_pool["player_id"], team_pos_rank.values()))
+    ranks = depth_pool.groupby(["team", "position"])["proj_targets"].rank(ascending=False, method="first")
+    team_pos_rank = dict(zip(depth_pool["player_id"], ranks))
+
+    # Pool-relative bust/floor z-scores (v2 recalibration) -- computed
+    # once across the whole eligible pool (DST excluded -- its p10/p90
+    # are a flat 0/0, not a real spread to z-score).
+    scorable = flex[~((flex["position"] == "DST") & (flex["statline_p10"] == 0) & (flex["statline_p90"] == 0))].copy()
+    scorable["_bust_raw"] = (scorable["statline_p90"] - scorable["statline_p10"]) / scorable["final_projection"]
+    scorable["_bust_z"] = zscore(scorable["_bust_raw"])
+    scorable["_floor_z"] = zscore(scorable["statline_p10"])
+    flex = flex.merge(scorable[["player_id", "_bust_raw", "_bust_z", "_floor_z"]], on="player_id", how="left")
+    flex["_bust_z"] = flex["_bust_z"].fillna(0.0)
+    flex["_floor_z"] = flex["_floor_z"].fillna(0.0)
+
+    flex = flex.sort_values("final_projection", ascending=False).reset_index(drop=True)
+    flex["overall_rank"] = range(1, len(flex) + 1)
+    flex["rank"] = flex.groupby("position")["final_projection"].rank(ascending=False, method="first").astype(int)
+    conf = compute_confidence(flex)
 
     rows = []
-    for role in ("CPT", "FLEX"):
-        pool = df[df["roster_role"] == role].copy()
-        if pool.empty:
-            continue
-        pool = pool.sort_values("final_projection", ascending=False).reset_index(drop=True)
-        pool["overall_rank"] = range(1, len(pool) + 1)
-        pool["position_rank"] = pool.groupby("position")["final_projection"] \
-            .rank(ascending=False, method="first").astype(int)
-
-        for _, row in pool.iterrows():
-            rationale = build_rationale(row, avg_implied_total, display_matchup,
-                                         depth_matchup, team_pos_rank, usage_lookup)
-            rows.append({
-                "roster_role": role,
-                "position": row["position"],
-                "overall_rank": int(row["overall_rank"]),
-                "position_rank": int(row["position_rank"]),
-                "player_id": row["player_id"],
-                "player_name": row["player_name"],
-                "team": row["team"],
-                "opponent": row["opponent"],
-                "salary": row["salary"],
-                "final_projection": row["final_projection"],
-                "estimated_ownership_pct": row["estimated_ownership_pct"],
-                "rationale": rationale,
-            })
+    for idx, row in flex.iterrows():
+        cpt_row = cpt_by_pid.get(row["player_id"])
+        rationale = build_rationale(row, cpt_row, avg_implied_total, display_matchup,
+                                     depth_matchup, team_pos_rank, usage_lookup)
+        rows.append({
+            "position": row["position"],
+            "rank": int(row["rank"]),
+            "overall_rank": int(row["overall_rank"]),
+            "player_id": row["player_id"],
+            "player_name": row["player_name"],
+            "team": row["team"],
+            "opponent": row["opponent"],
+            "salary": row["salary"],
+            "final_projection": row["final_projection"],
+            "estimated_ownership_pct": row["estimated_ownership_pct"],
+            "confidence": int(conf.loc[idx]),
+            "composite_score": row["final_projection"],
+            "top_factors": "matchup, game environment, recent usage, value, bust potential",
+            "rationale": rationale,
+            "badge": "",
+            "is_bonus": False,
+        })
 
     return pd.DataFrame(rows, columns=OUTPUT_COLUMNS)
 
@@ -385,13 +466,12 @@ if __name__ == "__main__":
     sheet = build_cheat_sheet_showdown(args.site, args.slate_id, args.season, args.week)
 
     OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
-    out_path = OUTPUT_DIR / f"cheat_sheet_showdown_{args.site}_{args.slate_id}.csv"
+    out_path = OUTPUT_DIR / f"cheat_sheet_{args.site}_{args.slate_id}.csv"
     sheet.to_csv(out_path, index=False)
 
     print(f"Wrote {len(sheet)} cheat sheet row(s) to {out_path}")
     if not sheet.empty:
-        for role in ("CPT", "FLEX"):
-            role_rows = sheet[sheet["roster_role"] == role]
-            if not role_rows.empty:
-                print(f"  {role}: {len(role_rows)} rows across "
-                      f"{role_rows['position'].nunique()} position(s)")
+        for pos in sheet["position"].unique():
+            pos_rows = sheet[sheet["position"] == pos]
+            print(f"  {pos}: {len(pos_rows)} rows, confidence range "
+                  f"{pos_rows['confidence'].min()}-{pos_rows['confidence'].max()}")
