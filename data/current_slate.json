@@ -304,6 +304,22 @@
       "season": 2026,
       "week": 9,
       "lock_time_utc": "2026-11-10T01:15:00Z"
+    },
+    {
+      "slate_id": "dk_classic_wk10_main_15Nov2026",
+      "site": "dk",
+      "format": "classic",
+      "season": 2026,
+      "week": 10,
+      "lock_time_utc": "2026-11-15T18:00:00Z"
+    },
+    {
+      "slate_id": "fd_classic_wk10_main_15Nov2026",
+      "site": "fd",
+      "format": "classic",
+      "season": 2026,
+      "week": 10,
+      "lock_time_utc": "2026-11-15T18:00:00Z"
     }
   ]
 }
