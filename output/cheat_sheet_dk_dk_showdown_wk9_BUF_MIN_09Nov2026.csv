@@ -1,103 +1,103 @@
 position,rank,overall_rank,player_id,player_name,team,opponent,salary,final_projection,estimated_ownership_pct,confidence,composite_score,top_factors,rationale,badge,is_bonus
-QB,1,1,00-0034857,Josh Allen,BUF,MIN,11400,20.617987637312343,52.71181478159569,10,20.617987637312343,"matchup, game environment, recent usage, value, bust potential","• Matchup: MIN allows 0.66x league-avg to QBs (tough)
-• Game environment: BUF implied 23.5 (middling)
+QB,1,1,00-0034857,Josh Allen,BUF,MIN,11400,23.1431631948237,51.9483891873344,10,23.1431631948237,"matchup, game environment, recent usage, value, bust potential","• Matchup: MIN allows 0.66x league-avg to QBs (tough)
+• Game environment: BUF implied 24.5 (middling)
 • Recent usage: 28.7 pass att/game, last 3 games (actual box score)
-• Value: 1.81 pts/$1K (cheap for this slate)
-• Range: 7.9–35.4 pts — floor is 62% below his own projection (Bust risk: Low)
-• Captain: $17100 salary, 30.9 pts, 24.4% owned as CPT (1.81 pts/$1K, cheap for this slate)",,False
-RB,1,2,00-0037248,James Cook III,BUF,MIN,10400,15.243641038575872,36.88169589071421,7,15.243641038575872,"matchup, game environment, recent usage, value, bust potential","• Matchup: MIN allows 1.00x league-avg rushing pts (average), 0.74x receiving pts (tough) to RBs
-• Game environment: BUF implied 23.5 (middling)
-• Recent usage: 25.0 touches/game, last 3 games (actual box score)
-• Value: 1.47 pts/$1K (fair for this slate)
-• Range: 2.3–34.3 pts — floor is 85% below his own projection (Bust risk: High)
-• Captain: $15600 salary, 22.9 pts, 10.8% owned as CPT (1.47 pts/$1K, fair for this slate)",,False
-QB,2,3,00-0032950,Carson Wentz,MIN,BUF,9000,14.764098469037767,50.13933093208495,9,14.764098469037767,"matchup, game environment, recent usage, value, bust potential","• Matchup: BUF allows 1.07x league-avg to QBs (average)
-• Game environment: MIN implied 20.5 (middling)
+• Value: 2.03 pts/$1K (cheap for this slate)
+• Range: 9.2–39.3 pts — floor is 60% below his own projection (Bust risk: Low)
+• Captain: $17100 salary, 34.7 pts, 26.7% owned as CPT (2.03 pts/$1K, cheap for this slate)",,False
+QB,2,2,00-0032950,Carson Wentz,MIN,BUF,9000,16.618017945026704,47.0058364642442,9,16.618017945026704,"matchup, game environment, recent usage, value, bust potential","• Matchup: BUF allows 1.07x league-avg to QBs (average)
+• Game environment: MIN implied 21.2 (middling)
 • Recent usage: 19.5 pass att/game, last 2 games (actual box score)
-• Value: 1.64 pts/$1K (fair for this slate)
-• Range: 5.2–26.4 pts — floor is 65% below his own projection (Bust risk: Low)
-• Captain: $13500 salary, 22.1 pts, 11.5% owned as CPT (1.64 pts/$1K, fair for this slate)",,False
-WR,1,4,00-0036322,Justin Jefferson,MIN,BUF,9800,14.679421238236204,42.902216372974586,7,14.679421238236204,"matchup, game environment, recent usage, value, bust potential","• Matchup (WR1): BUF allows 1.29x league-avg (favorable)
-• Game environment: MIN implied 20.5 (middling)
+• Value: 1.85 pts/$1K (cheap for this slate)
+• Range: 6.4–29.2 pts — floor is 61% below his own projection (Bust risk: Low)
+• Captain: $13500 salary, 24.9 pts, 17.1% owned as CPT (1.85 pts/$1K, cheap for this slate)",,False
+RB,1,3,00-0037248,James Cook III,BUF,MIN,10400,16.040196474726876,34.4910563975356,7,16.040196474726876,"matchup, game environment, recent usage, value, bust potential","• Matchup: MIN allows 1.00x league-avg rushing pts (average), 0.74x receiving pts (tough) to RBs
+• Game environment: BUF implied 24.5 (middling)
+• Recent usage: 25.0 touches/game, last 3 games (actual box score)
+• Value: 1.54 pts/$1K (fair for this slate)
+• Range: 2.3–36.0 pts — floor is 86% below his own projection (Bust risk: Medium)
+• Captain: $15600 salary, 24.1 pts, 13.7% owned as CPT (1.54 pts/$1K, fair for this slate)",,False
+WR,1,4,00-0036322,Justin Jefferson,MIN,BUF,9800,15.72696801764839,37.884856049441936,7,15.72696801764839,"matchup, game environment, recent usage, value, bust potential","• Matchup (WR1): BUF allows 1.29x league-avg (favorable)
+• Game environment: MIN implied 21.2 (middling)
 • Recent usage: 7.7 targets/game, last 3 games (actual box score)
-• Value: 1.50 pts/$1K (fair for this slate)
-• Range: 4.0–30.5 pts — floor is 73% below his own projection (Bust risk: Medium)
-• Captain: $14700 salary, 22.0 pts, 10.4% owned as CPT (1.50 pts/$1K, fair for this slate)",,False
-TE,1,5,00-0035229,T.J. Hockenson,MIN,BUF,5400,10.804993509357937,49.161848877447326,6,10.804993509357937,"matchup, game environment, recent usage, value, bust potential","• Matchup (TE1): BUF allows 1.00x league-avg (average)
-• Game environment: MIN implied 20.5 (middling)
+• Value: 1.60 pts/$1K (fair for this slate)
+• Range: 3.9–33.4 pts — floor is 75% below his own projection (Bust risk: Medium)
+• Captain: $14700 salary, 23.6 pts, 11.8% owned as CPT (1.60 pts/$1K, fair for this slate)",,False
+TE,1,5,00-0035229,T.J. Hockenson,MIN,BUF,5400,11.106108574131747,45.65119301032542,6,11.106108574131747,"matchup, game environment, recent usage, value, bust potential","• Matchup (TE1): BUF allows 1.00x league-avg (average)
+• Game environment: MIN implied 21.2 (middling)
 • Recent usage: 3.7 targets/game, last 3 games (actual box score)
-• Value: 2.00 pts/$1K (cheap for this slate)
-• Range: 3.2–21.5 pts — floor is 71% below his own projection (Bust risk: Medium)
-• Captain: $8100 salary, 16.2 pts, 10.4% owned as CPT (2.00 pts/$1K, cheap for this slate)",,False
-WR,2,6,00-0037261,Khalil Shakir,BUF,MIN,7200,10.064469664721454,24.84617729989509,5,10.064469664721454,"matchup, game environment, recent usage, value, bust potential","• Matchup (WR1): MIN allows 0.77x league-avg (tough)
-• Game environment: BUF implied 23.5 (middling)
-• Recent usage: 5.0 targets/game, last 3 games (actual box score)
-• Value: 1.40 pts/$1K (fair for this slate)
-• Range: 2.1–21.9 pts — floor is 79% below his own projection (Bust risk: Medium)
-• Captain: $10800 salary, 15.1 pts, 5.7% owned as CPT (1.40 pts/$1K, fair for this slate)",,False
-TE,2,7,00-0038933,Dalton Kincaid,BUF,MIN,7400,9.908646061563056,24.02419515104021,5,9.908646061563056,"matchup, game environment, recent usage, value, bust potential","• Matchup (TE1): MIN allows 0.67x league-avg (tough)
-• Game environment: BUF implied 23.5 (middling)
-• Recent usage: 5.3 targets/game, last 3 games (actual box score)
-• Value: 1.34 pts/$1K (fair for this slate)
-• Range: 1.8–22.4 pts — floor is 81% below his own projection (Bust risk: Medium)
-• Captain: $11100 salary, 14.9 pts, 7.8% owned as CPT (1.34 pts/$1K, fair for this slate)",,False
-WR,3,8,00-0034827,DJ Moore,BUF,MIN,7800,9.829631028986595,18.736127396167497,5,9.829631028986595,"matchup, game environment, recent usage, value, bust potential","• Matchup (WR2/3): MIN allows 1.01x league-avg (average)
-• Game environment: BUF implied 23.5 (middling)
+• Value: 2.06 pts/$1K (cheap for this slate)
+• Range: 3.0–22.5 pts — floor is 73% below his own projection (Bust risk: Medium)
+• Captain: $8100 salary, 16.7 pts, 8.5% owned as CPT (2.06 pts/$1K, cheap for this slate)",,False
+WR,2,6,00-0034827,DJ Moore,BUF,MIN,7800,10.532258642325104,18.090776215888276,5,10.532258642325104,"matchup, game environment, recent usage, value, bust potential","• Matchup (WR1): MIN allows 0.77x league-avg (tough)
+• Game environment: BUF implied 24.5 (middling)
 • Recent usage: 6.3 targets/game, last 3 games (actual box score)
-• Value: 1.26 pts/$1K (pricey for this slate)
-• Range: 1.9–21.7 pts — floor is 80% below his own projection (Bust risk: Medium)
-• Captain: $11700 salary, 14.7 pts, 0.7% owned as CPT (1.26 pts/$1K, pricey for this slate)",,False
-WR,4,9,00-0038994,Jordan Addison,MIN,BUF,6800,9.694424562896632,28.03470233536444,6,9.694424562896632,"matchup, game environment, recent usage, value, bust potential","• Matchup (WR2/3): BUF allows 0.95x league-avg (average)
-• Game environment: MIN implied 20.5 (middling)
+• Value: 1.35 pts/$1K (pricey for this slate)
+• Range: 2.1–23.7 pts — floor is 80% below his own projection (Bust risk: Medium)
+• Captain: $11700 salary, 15.8 pts, 0.8% owned as CPT (1.35 pts/$1K, pricey for this slate)",,False
+WR,3,7,00-0038994,Jordan Addison,MIN,BUF,6800,10.344443921732289,21.569344074456787,5,10.344443921732289,"matchup, game environment, recent usage, value, bust potential","• Matchup (WR2/3): BUF allows 0.95x league-avg (average)
+• Game environment: MIN implied 21.2 (middling)
 • Recent usage: 5.7 targets/game, last 3 games (actual box score)
+• Value: 1.52 pts/$1K (fair for this slate)
+• Range: 2.5–22.5 pts — floor is 76% below his own projection (Bust risk: Medium)
+• Captain: $10200 salary, 15.5 pts, 0.8% owned as CPT (1.52 pts/$1K, fair for this slate)",,False
+WR,4,8,00-0037261,Khalil Shakir,BUF,MIN,7200,10.324762352843385,30.4234637762549,5,10.324762352843385,"matchup, game environment, recent usage, value, bust potential","• Matchup (WR2/3): MIN allows 1.01x league-avg (average)
+• Game environment: BUF implied 24.5 (middling)
+• Recent usage: 5.0 targets/game, last 3 games (actual box score)
 • Value: 1.43 pts/$1K (fair for this slate)
-• Range: 2.5–20.4 pts — floor is 75% below his own projection (Bust risk: Medium)
-• Captain: $10200 salary, 14.5 pts, 0.7% owned as CPT (1.43 pts/$1K, fair for this slate)",,False
-K,1,10,00-0039404,Will Reichard,MIN,BUF,5000,8.06875,19.43418453831471,6,8.06875,"matchup, game environment, recent usage, value, bust potential","• Game environment: MIN implied 0.0 (low-scoring)
+• Range: 2.1–22.7 pts — floor is 80% below his own projection (Bust risk: Medium)
+• Captain: $10800 salary, 15.5 pts, 0.8% owned as CPT (1.43 pts/$1K, fair for this slate)",,False
+TE,2,9,00-0038933,Dalton Kincaid,BUF,MIN,7400,9.84426851670968,25.160665293897896,5,9.84426851670968,"matchup, game environment, recent usage, value, bust potential","• Matchup (TE1): MIN allows 0.67x league-avg (tough)
+• Game environment: BUF implied 24.5 (middling)
+• Recent usage: 5.3 targets/game, last 3 games (actual box score)
+• Value: 1.33 pts/$1K (pricey for this slate)
+• Range: 1.8–21.8 pts — floor is 82% below his own projection (Bust risk: Medium)
+• Captain: $11100 salary, 14.8 pts, 0.8% owned as CPT (1.33 pts/$1K, pricey for this slate)",,False
+RB,2,10,00-0033293,Aaron Jones Sr.,MIN,BUF,7000,8.57942618722055,18.09077621588828,5,8.57942618722055,"matchup, game environment, recent usage, value, bust potential","• Matchup: BUF allows 1.03x league-avg rushing pts (average), 1.28x receiving pts (favorable) to RBs
+• Game environment: MIN implied 21.2 (middling)
+• Recent usage: 14.7 touches/game, last 3 games (actual box score)
+• Value: 1.23 pts/$1K (pricey for this slate)
+• Range: 1.9–17.9 pts — floor is 78% below his own projection (Bust risk: Medium)
+• Captain: $10500 salary, 12.9 pts, 0.8% owned as CPT (1.23 pts/$1K, pricey for this slate)",,False
+K,1,11,00-0039404,Will Reichard,MIN,BUF,5000,8.06875,18.76478932849504,6,8.06875,"matchup, game environment, recent usage, value, bust potential","• Game environment: MIN implied 0.0 (low-scoring)
 • Value: 1.61 pts/$1K (fair for this slate)
 • Range: 2.0–15.0 pts — floor is 75% below his own projection (Bust risk: Low)
 • Captain: $7500 salary, 12.1 pts, 0.3% owned as CPT (1.61 pts/$1K, fair for this slate)",,False
-K,2,11,00-0036162,Tyler Bass,BUF,MIN,4600,7.9982,27.53176142927917,6,7.9982,"matchup, game environment, recent usage, value, bust potential","• Game environment: BUF implied 0.0 (low-scoring)
-• Value: 1.74 pts/$1K (cheap for this slate)
-• Range: 2.0–15.0 pts — floor is 75% below his own projection (Bust risk: Low)
-• Captain: $6900 salary, 12.0 pts, 1.5% owned as CPT (1.74 pts/$1K, cheap for this slate)",,False
-RB,2,12,00-0033293,Aaron Jones Sr.,MIN,BUF,7000,7.858978352234623,10.163199346155412,5,7.858978352234623,"matchup, game environment, recent usage, value, bust potential","• Matchup: BUF allows 1.03x league-avg rushing pts (average), 1.28x receiving pts (favorable) to RBs
-• Game environment: MIN implied 20.5 (middling)
-• Recent usage: 14.7 touches/game, last 3 games (actual box score)
-• Value: 1.12 pts/$1K (pricey for this slate)
-• Range: 1.7–16.9 pts — floor is 79% below his own projection (Bust risk: Medium)
-• Captain: $10500 salary, 11.8 pts, 0.7% owned as CPT (1.12 pts/$1K, pricey for this slate)",,False
-WR,5,13,00-0039901,Keon Coleman,BUF,MIN,5800,7.845655866420055,26.85450952318176,5,7.845655866420055,"matchup, game environment, recent usage, value, bust potential","• Matchup (WR2/3): MIN allows 1.01x league-avg (average)
-• Game environment: BUF implied 23.5 (middling)
+WR,5,12,00-0039901,Keon Coleman,BUF,MIN,5800,8.04679704256912,22.795212649999527,5,8.04679704256912,"matchup, game environment, recent usage, value, bust potential","• Matchup (WR2/3): MIN allows 1.01x league-avg (average)
+• Game environment: BUF implied 24.5 (middling)
 • Recent usage: 3.7 targets/game, last 3 games (actual box score)
-• Value: 1.35 pts/$1K (fair for this slate)
-• Range: 1.8–16.5 pts — floor is 77% below his own projection (Bust risk: Medium)
-• Captain: $8700 salary, 11.8 pts, 0.7% owned as CPT (1.35 pts/$1K, fair for this slate)",,False
-DST,1,14,DST_BUF,Bills,BUF,MIN,4000,7.177242139,21.109967225600304,5,7.177242139,"matchup, game environment, recent usage, value, bust potential","• Matchup: 1.15x matchup factor (favorable)
-• Game environment: BUF implied 23.5 (middling)
-• Value: 1.79 pts/$1K (cheap for this slate)
+• Value: 1.39 pts/$1K (fair for this slate)
+• Range: 1.8–17.6 pts — floor is 78% below his own projection (Bust risk: Medium)
+• Captain: $8700 salary, 12.1 pts, 0.8% owned as CPT (1.39 pts/$1K, fair for this slate)",,False
+K,2,13,00-0036162,Tyler Bass,BUF,MIN,4600,7.9982,26.583451548701305,5,7.9982,"matchup, game environment, recent usage, value, bust potential","• Game environment: BUF implied 0.0 (low-scoring)
+• Value: 1.74 pts/$1K (fair for this slate)
+• Range: 2.0–15.0 pts — floor is 75% below his own projection (Bust risk: Low)
+• Captain: $6900 salary, 12.0 pts, 1.9% owned as CPT (1.74 pts/$1K, fair for this slate)",,False
+DST,1,14,DST_BUF,Bills,BUF,MIN,4000,6.894561598,17.695484536369317,4,6.894561598,"matchup, game environment, recent usage, value, bust potential","• Matchup: 1.15x matchup factor (favorable)
+• Game environment: BUF implied 24.5 (middling)
+• Value: 1.72 pts/$1K (fair for this slate)
 • Range: not modeled for this position
-• Captain: $6000 salary, 10.8 pts, 1.1% owned as CPT (1.79 pts/$1K, cheap for this slate)",,False
-RB,3,15,00-0037525,Jordan Mason,MIN,BUF,6400,6.30227199639453,1.7221537956657522,2,6.30227199639453,"matchup, game environment, recent usage, value, bust potential","• Matchup: BUF allows 1.03x league-avg rushing pts (average), 1.28x receiving pts (favorable) to RBs
-• Game environment: MIN implied 20.5 (middling)
+• Captain: $6000 salary, 10.3 pts, 1.3% owned as CPT (1.72 pts/$1K, fair for this slate)",,False
+RB,3,15,00-0037525,Jordan Mason,MIN,BUF,6400,6.209742349737899,1.6628355619050992,2,6.209742349737899,"matchup, game environment, recent usage, value, bust potential","• Matchup: BUF allows 1.03x league-avg rushing pts (average), 1.28x receiving pts (favorable) to RBs
+• Game environment: MIN implied 21.2 (middling)
 • Recent usage: 13.3 touches/game, last 3 games (actual box score)
-• Value: 0.98 pts/$1K (pricey for this slate)
-• Range: 0.0–16.2 pts — floor is 99% below his own projection (Bust risk: High)
-• Captain: $9600 salary, 9.5 pts, 0.7% owned as CPT (0.98 pts/$1K, pricey for this slate)",,False
-DST,2,16,DST_MIN,Vikings,MIN,BUF,3600,5.337936268000001,8.97775778113412,4,5.337936268000001,"matchup, game environment, recent usage, value, bust potential","• Matchup: 0.85x matchup factor (tough)
-• Game environment: MIN implied 20.5 (middling)
-• Value: 1.48 pts/$1K (fair for this slate)
-• Range: not modeled for this position
-• Captain: $5400 salary, 8.0 pts, 1.1% owned as CPT (1.48 pts/$1K, fair for this slate)",,False
-RB,4,17,00-0035537,Ty Johnson,BUF,MIN,3400,5.329975301979992,22.765940885246533,4,5.329975301979992,"matchup, game environment, recent usage, value, bust potential","• Matchup: MIN allows 1.00x league-avg rushing pts (average), 0.74x receiving pts (tough) to RBs
-• Game environment: BUF implied 23.5 (middling)
+• Value: 0.97 pts/$1K (pricey for this slate)
+• Range: 0.0–16.6 pts — floor is 100% below his own projection (Bust risk: High)
+• Captain: $9600 salary, 9.3 pts, 0.8% owned as CPT (0.97 pts/$1K, pricey for this slate)",,False
+RB,4,16,00-0035537,Ty Johnson,BUF,MIN,3400,5.604071985204398,24.77300793744265,4,5.604071985204398,"matchup, game environment, recent usage, value, bust potential","• Matchup: MIN allows 1.00x league-avg rushing pts (average), 0.74x receiving pts (tough) to RBs
+• Game environment: BUF implied 24.5 (middling)
 • Recent usage: 4.7 touches/game, last 3 games (actual box score)
-• Value: 1.57 pts/$1K (fair for this slate)
-• Range: 0.9–11.2 pts — floor is 83% below his own projection (Bust risk: Medium)
-• Captain: $5100 salary, 8.0 pts, 0.7% owned as CPT (1.57 pts/$1K, fair for this slate)",,False
-TE,3,18,00-0035689,Dawson Knox,BUF,MIN,2400,3.717453510686733,10.163199346155412,3,3.717453510686733,"matchup, game environment, recent usage, value, bust potential","• Matchup (TE2/3): MIN allows 0.77x league-avg (tough)
-• Game environment: BUF implied 23.5 (middling)
+• Value: 1.65 pts/$1K (fair for this slate)
+• Range: 0.8–11.5 pts — floor is 85% below his own projection (Bust risk: Medium)
+• Captain: $5100 salary, 8.4 pts, 0.8% owned as CPT (1.65 pts/$1K, fair for this slate)",,False
+DST,2,17,DST_MIN,Vikings,MIN,BUF,3600,5.056728874,9.046868255027103,4,5.056728874,"matchup, game environment, recent usage, value, bust potential","• Matchup: 0.85x matchup factor (tough)
+• Game environment: MIN implied 21.2 (middling)
+• Value: 1.40 pts/$1K (fair for this slate)
+• Range: not modeled for this position
+• Captain: $5400 salary, 7.6 pts, 1.3% owned as CPT (1.40 pts/$1K, fair for this slate)",,False
+TE,3,18,00-0035689,Dawson Knox,BUF,MIN,2400,4.097025716382926,20.30569770845321,3,4.097025716382926,"matchup, game environment, recent usage, value, bust potential","• Matchup (TE2/3): MIN allows 0.77x league-avg (tough)
+• Game environment: BUF implied 24.5 (middling)
 • Recent usage: 2.0 targets/game, last 3 games (actual box score)
-• Value: 1.55 pts/$1K (fair for this slate)
-• Range: 0.8–8.4 pts — floor is 79% below his own projection (Bust risk: Medium)
-• Captain: $3600 salary, 5.6 pts, 0.7% owned as CPT (1.55 pts/$1K, fair for this slate)",,False
+• Value: 1.71 pts/$1K (fair for this slate)
+• Range: 0.8–9.5 pts — floor is 81% below his own projection (Bust risk: High)
+• Captain: $3600 salary, 6.1 pts, 0.8% owned as CPT (1.71 pts/$1K, fair for this slate)",,False
