@@ -4729,3 +4729,7 @@ timestamp_utc,trigger_type,site,step,status
 2026-11-10T00:04:01.025780+00:00,full_refresh_dispatch,dk,dk_showdown_wk9_BUF_MIN_09Nov2026,status_apply,success
 2026-11-10T00:04:01.025780+00:00,full_refresh_dispatch,dk,dk_showdown_wk9_BUF_MIN_09Nov2026,pivot_finder,success
 2026-11-10T00:04:01.025780+00:00,full_refresh_dispatch,dk,dk_showdown_wk9_BUF_MIN_09Nov2026,cheat_sheet,skipped
+2026-11-10T00:12:58.109292+00:00,full_refresh_dispatch,dk,dk_showdown_wk9_BUF_MIN_09Nov2026,build_projections,success
+2026-11-10T00:12:58.109292+00:00,full_refresh_dispatch,dk,dk_showdown_wk9_BUF_MIN_09Nov2026,status_apply,success
+2026-11-10T00:12:58.109292+00:00,full_refresh_dispatch,dk,dk_showdown_wk9_BUF_MIN_09Nov2026,pivot_finder,success
+2026-11-10T00:12:58.109292+00:00,full_refresh_dispatch,dk,dk_showdown_wk9_BUF_MIN_09Nov2026,cheat_sheet,skipped
