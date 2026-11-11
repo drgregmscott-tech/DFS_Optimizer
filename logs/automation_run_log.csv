@@ -4735,3 +4735,5 @@ timestamp_utc,trigger_type,site,step,status
 2026-11-10T00:12:58.109292+00:00,full_refresh_dispatch,dk,dk_showdown_wk9_BUF_MIN_09Nov2026,cheat_sheet,skipped
 2026-11-10T17:02:32.016050+00:00,light_vegas_refresh,dk,dk_classic_wk10_main_15Nov2026,cheat_sheet,success
 2026-11-10T17:01:55.971359+00:00,light_vegas_refresh,fd,fd_classic_wk10_main_15Nov2026,cheat_sheet,success
+2026-11-11T17:02:01.469422+00:00,light_vegas_refresh,dk,dk_classic_wk10_main_15Nov2026,cheat_sheet,success
+2026-11-11T17:01:31.040866+00:00,light_vegas_refresh,fd,fd_classic_wk10_main_15Nov2026,cheat_sheet,success
