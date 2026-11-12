@@ -1,0 +1,119 @@
+Position,Name + ID,Name,ID,Roster Position,Salary,Game Info,TeamAbbrev,AvgPointsPerGame,Status,roster_role,name,site,salary,normalized_name,normalized_team,position_upper,slate_format,player_id,match_method,match_confidence
+WR,Malik Nabers (44853091),Malik Nabers,44853091,CPT,16500,WAS@NYG 11/12/2026 08:15PM ET,NYG,17.7,,CPT,Malik Nabers,dk,16500,malik nabers,NYG,WR,showdown,00-0039337,auto_exact,high
+QB,Jayden Daniels (44853092),Jayden Daniels,44853092,CPT,15000,WAS@NYG 11/12/2026 08:15PM ET,WAS,20.4,,CPT,Jayden Daniels,dk,15000,jayden daniels,WAS,QB,showdown,00-0039910,auto_exact,high
+WR,Stefon Diggs (44853093),Stefon Diggs,44853093,CPT,13800,WAS@NYG 11/12/2026 08:15PM ET,WAS,12.9,,CPT,Stefon Diggs,dk,13800,stefon diggs,WAS,WR,showdown,00-0031588,auto_exact,high
+RB,Cam Skattebo (44853094),Cam Skattebo,44853094,CPT,13500,WAS@NYG 11/12/2026 08:15PM ET,NYG,10.6,,CPT,Cam Skattebo,dk,13500,cam skattebo,NYG,RB,showdown,00-0040715,auto_exact,high
+QB,J.J. McCarthy (44853095),J.J. McCarthy,44853095,CPT,13200,WAS@NYG 11/12/2026 08:15PM ET,NYG,8.7,,CPT,J.J. McCarthy,dk,13200,jj mccarthy,NYG,QB,showdown,00-0039923,auto_exact,high
+QB,Jameis Winston (44853096),Jameis Winston,44853096,CPT,12600,WAS@NYG 11/12/2026 08:15PM ET,NYG,11.7,,CPT,Jameis Winston,dk,12600,jameis winston,NYG,QB,showdown,00-0031503,auto_exact,high
+TE,Isaiah Likely (44853097),Isaiah Likely,44853097,CPT,12300,WAS@NYG 11/12/2026 08:15PM ET,NYG,16.1,,CPT,Isaiah Likely,dk,12300,isaiah likely,NYG,TE,showdown,00-0037838,auto_exact,high
+RB,Devin Singletary (44853098),Devin Singletary,44853098,CPT,12000,WAS@NYG 11/12/2026 08:15PM ET,NYG,7.9,,CPT,Devin Singletary,dk,12000,devin singletary,NYG,RB,showdown,00-0035250,auto_exact,high
+RB,Rachaad White (44853099),Rachaad White,44853099,CPT,11400,WAS@NYG 11/12/2026 08:15PM ET,WAS,10.1,,CPT,Rachaad White,dk,11400,rachaad white,WAS,RB,showdown,00-0037256,auto_exact,high
+WR,Malik Nabers (44853032),Malik Nabers,44853032,FLEX,11000,WAS@NYG 11/12/2026 08:15PM ET,NYG,17.7,,FLEX,Malik Nabers,dk,11000,malik nabers,NYG,WR,showdown,00-0039337,auto_exact,high
+WR,Antonio Williams (44853100),Antonio Williams,44853100,CPT,10800,WAS@NYG 11/12/2026 08:15PM ET,WAS,7.6,,CPT,Antonio Williams,dk,10800,antonio williams,WAS,WR,showdown,00-0041040,auto_exact,high
+QB,Jayden Daniels (44853033),Jayden Daniels,44853033,FLEX,10000,WAS@NYG 11/12/2026 08:15PM ET,WAS,20.4,,FLEX,Jayden Daniels,dk,10000,jayden daniels,WAS,QB,showdown,00-0039910,auto_exact,high
+WR,Stefon Diggs (44853034),Stefon Diggs,44853034,FLEX,9200,WAS@NYG 11/12/2026 08:15PM ET,WAS,12.9,,FLEX,Stefon Diggs,dk,9200,stefon diggs,WAS,WR,showdown,00-0031588,auto_exact,high
+RB,Cam Skattebo (44853035),Cam Skattebo,44853035,FLEX,9000,WAS@NYG 11/12/2026 08:15PM ET,NYG,10.6,,FLEX,Cam Skattebo,dk,9000,cam skattebo,NYG,RB,showdown,00-0040715,auto_exact,high
+QB,Marcus Mariota (44853101),Marcus Mariota,44853101,CPT,9000,WAS@NYG 11/12/2026 08:15PM ET,WAS,11.5,,CPT,Marcus Mariota,dk,9000,marcus mariota,WAS,QB,showdown,00-0032268,auto_exact,high
+QB,Jake Haener (44853102),Jake Haener,44853102,CPT,9000,WAS@NYG 11/12/2026 08:15PM ET,NYG,0.0,,CPT,Jake Haener,dk,9000,jake haener,NYG,QB,showdown,00-0038998,auto_exact,high
+QB,Athan Kaliakmanis (44853103),Athan Kaliakmanis,44853103,CPT,9000,WAS@NYG 11/12/2026 08:15PM ET,WAS,12.0,,CPT,Athan Kaliakmanis,dk,9000,athan kaliakmanis,WAS,QB,showdown,00-0041117,auto_exact,high
+QB,Jaxson Dart (44853104),Jaxson Dart,44853104,CPT,9000,WAS@NYG 11/12/2026 08:15PM ET,NYG,13.7,IR,CPT,Jaxson Dart,dk,9000,jaxson dart,NYG,QB,showdown,00-0040691,auto_exact,high
+QB,Sam Hartman (44853105),Sam Hartman,44853105,CPT,9000,WAS@NYG 11/12/2026 08:15PM ET,WAS,0.0,,CPT,Sam Hartman,dk,9000,sam hartman,WAS,QB,showdown,00-0039677,auto_exact,high
+QB,J.J. McCarthy (44853036),J.J. McCarthy,44853036,FLEX,8800,WAS@NYG 11/12/2026 08:15PM ET,NYG,8.7,,FLEX,J.J. McCarthy,dk,8800,jj mccarthy,NYG,QB,showdown,00-0039923,auto_exact,high
+TE,Chig Okonkwo (44853106),Chig Okonkwo,44853106,CPT,8700,WAS@NYG 11/12/2026 08:15PM ET,WAS,7.7,,CPT,Chig Okonkwo,dk,8700,chig okonkwo,WAS,TE,showdown,00-0037809,auto_exact,high
+QB,Jameis Winston (44853037),Jameis Winston,44853037,FLEX,8400,WAS@NYG 11/12/2026 08:15PM ET,NYG,11.7,,FLEX,Jameis Winston,dk,8400,jameis winston,NYG,QB,showdown,00-0031503,auto_exact,high
+TE,Isaiah Likely (44853038),Isaiah Likely,44853038,FLEX,8200,WAS@NYG 11/12/2026 08:15PM ET,NYG,16.1,,FLEX,Isaiah Likely,dk,8200,isaiah likely,NYG,TE,showdown,00-0037838,auto_exact,high
+K,Dominic Zvada (44853107),Dominic Zvada,44853107,CPT,8100,WAS@NYG 11/12/2026 08:15PM ET,NYG,9.9,,CPT,Dominic Zvada,dk,8100,dominic zvada,NYG,K,showdown,00-0041145,auto_exact,high
+RB,Devin Singletary (44853039),Devin Singletary,44853039,FLEX,8000,WAS@NYG 11/12/2026 08:15PM ET,NYG,7.9,,FLEX,Devin Singletary,dk,8000,devin singletary,NYG,RB,showdown,00-0035250,auto_exact,high
+K,Drew Stevens (44853108),Drew Stevens,44853108,CPT,7800,WAS@NYG 11/12/2026 08:15PM ET,WAS,9.0,,CPT,Drew Stevens,dk,7800,drew stevens,WAS,K,showdown,00-0041182,auto_exact,high
+RB,Rachaad White (44853040),Rachaad White,44853040,FLEX,7600,WAS@NYG 11/12/2026 08:15PM ET,WAS,10.1,,FLEX,Rachaad White,dk,7600,rachaad white,WAS,RB,showdown,00-0037256,auto_exact,high
+WR,Malachi Fields (44853109),Malachi Fields,44853109,CPT,7500,WAS@NYG 11/12/2026 08:15PM ET,NYG,6.7,,CPT,Malachi Fields,dk,7500,malachi fields,NYG,WR,showdown,00-0041042,auto_exact,high
+WR,Antonio Williams (44853041),Antonio Williams,44853041,FLEX,7200,WAS@NYG 11/12/2026 08:15PM ET,WAS,7.6,,FLEX,Antonio Williams,dk,7200,antonio williams,WAS,WR,showdown,00-0041040,auto_exact,high
+DST,Giants (44853110),Giants,44853110,CPT,7200,WAS@NYG 11/12/2026 08:15PM ET,NYG,6.1,,CPT,Giants,dk,7200,giants,NYG,DST,showdown,DST_NYG,team_defense,high
+RB,Austin Ekeler (44853111),Austin Ekeler,44853111,CPT,6900,WAS@NYG 11/12/2026 08:15PM ET,WAS,4.2,,CPT,Austin Ekeler,dk,6900,austin ekeler,WAS,RB,showdown,00-0033699,auto_exact,high
+DST,Commanders (44853112),Commanders,44853112,CPT,6600,WAS@NYG 11/12/2026 08:15PM ET,WAS,5.8,,CPT,Commanders,dk,6600,commanders,WAS,DST,showdown,DST_WAS,team_defense,high
+QB,Marcus Mariota (44853042),Marcus Mariota,44853042,FLEX,6000,WAS@NYG 11/12/2026 08:15PM ET,WAS,11.5,,FLEX,Marcus Mariota,dk,6000,marcus mariota,WAS,QB,showdown,00-0032268,auto_exact,high
+QB,Jake Haener (44853043),Jake Haener,44853043,FLEX,6000,WAS@NYG 11/12/2026 08:15PM ET,NYG,0.0,,FLEX,Jake Haener,dk,6000,jake haener,NYG,QB,showdown,00-0038998,auto_exact,high
+QB,Athan Kaliakmanis (44853044),Athan Kaliakmanis,44853044,FLEX,6000,WAS@NYG 11/12/2026 08:15PM ET,WAS,12.0,,FLEX,Athan Kaliakmanis,dk,6000,athan kaliakmanis,WAS,QB,showdown,00-0041117,auto_exact,high
+QB,Jaxson Dart (44853045),Jaxson Dart,44853045,FLEX,6000,WAS@NYG 11/12/2026 08:15PM ET,NYG,13.7,IR,FLEX,Jaxson Dart,dk,6000,jaxson dart,NYG,QB,showdown,00-0040691,auto_exact,high
+QB,Sam Hartman (44853046),Sam Hartman,44853046,FLEX,6000,WAS@NYG 11/12/2026 08:15PM ET,WAS,0.0,,FLEX,Sam Hartman,dk,6000,sam hartman,WAS,QB,showdown,00-0039677,auto_exact,high
+WR,Darnell Mooney (44853113),Darnell Mooney,44853113,CPT,6000,WAS@NYG 11/12/2026 08:15PM ET,NYG,3.9,,CPT,Darnell Mooney,dk,6000,darnell mooney,NYG,WR,showdown,00-0036309,auto_exact,high
+TE,Chig Okonkwo (44853047),Chig Okonkwo,44853047,FLEX,5800,WAS@NYG 11/12/2026 08:15PM ET,WAS,7.7,,FLEX,Chig Okonkwo,dk,5800,chig okonkwo,WAS,TE,showdown,00-0037809,auto_exact,high
+K,Dominic Zvada (44853048),Dominic Zvada,44853048,FLEX,5400,WAS@NYG 11/12/2026 08:15PM ET,NYG,9.9,,FLEX,Dominic Zvada,dk,5400,dominic zvada,NYG,K,showdown,00-0041145,auto_exact,high
+WR,Treylon Burks (44853114),Treylon Burks,44853114,CPT,5400,WAS@NYG 11/12/2026 08:15PM ET,WAS,7.9,,CPT,Treylon Burks,dk,5400,treylon burks,WAS,WR,showdown,00-0037742,auto_exact,high
+K,Drew Stevens (44853049),Drew Stevens,44853049,FLEX,5200,WAS@NYG 11/12/2026 08:15PM ET,WAS,9.0,,FLEX,Drew Stevens,dk,5200,drew stevens,WAS,K,showdown,00-0041182,auto_exact,high
+WR,Malachi Fields (44853050),Malachi Fields,44853050,FLEX,5000,WAS@NYG 11/12/2026 08:15PM ET,NYG,6.7,,FLEX,Malachi Fields,dk,5000,malachi fields,NYG,WR,showdown,00-0041042,auto_exact,high
+DST,Giants (44853051),Giants,44853051,FLEX,4800,WAS@NYG 11/12/2026 08:15PM ET,NYG,6.1,,FLEX,Giants,dk,4800,giants,NYG,DST,showdown,DST_NYG,team_defense,high
+WR,Van Jefferson (44853115),Van Jefferson,44853115,CPT,4800,WAS@NYG 11/12/2026 08:15PM ET,WAS,5.6,,CPT,Van Jefferson,dk,4800,van jefferson,WAS,WR,showdown,00-0036415,auto_exact,high
+RB,Austin Ekeler (44853052),Austin Ekeler,44853052,FLEX,4600,WAS@NYG 11/12/2026 08:15PM ET,WAS,4.2,,FLEX,Austin Ekeler,dk,4600,austin ekeler,WAS,RB,showdown,00-0033699,auto_exact,high
+RB,Gregory Desrosiers (44853116),Gregory Desrosiers,44853116,CPT,4500,WAS@NYG 11/12/2026 08:15PM ET,NYG,2.0,,CPT,Gregory Desrosiers,dk,4500,gregory desrosiers,NYG,RB,showdown,00-0041376,auto_exact,high
+DST,Commanders (44853053),Commanders,44853053,FLEX,4400,WAS@NYG 11/12/2026 08:15PM ET,WAS,5.8,,FLEX,Commanders,dk,4400,commanders,WAS,DST,showdown,DST_WAS,team_defense,high
+WR,Darnell Mooney (44853054),Darnell Mooney,44853054,FLEX,4000,WAS@NYG 11/12/2026 08:15PM ET,NYG,3.9,,FLEX,Darnell Mooney,dk,4000,darnell mooney,NYG,WR,showdown,00-0036309,auto_exact,high
+TE,Theo Johnson (44853117),Theo Johnson,44853117,CPT,3900,WAS@NYG 11/12/2026 08:15PM ET,NYG,2.6,,CPT,Theo Johnson,dk,3900,theo johnson,NYG,TE,showdown,00-0039847,auto_exact,high
+WR,Treylon Burks (44853055),Treylon Burks,44853055,FLEX,3600,WAS@NYG 11/12/2026 08:15PM ET,WAS,7.9,,FLEX,Treylon Burks,dk,3600,treylon burks,WAS,WR,showdown,00-0037742,auto_exact,high
+RB,Phil Mafah (44853118),Phil Mafah,44853118,CPT,3600,WAS@NYG 11/12/2026 08:15PM ET,NYG,0.0,,CPT,Phil Mafah,dk,3600,phil mafah,NYG,RB,showdown,00-0040021,auto_exact,high
+WR,Van Jefferson (44853056),Van Jefferson,44853056,FLEX,3200,WAS@NYG 11/12/2026 08:15PM ET,WAS,5.6,,FLEX,Van Jefferson,dk,3200,van jefferson,WAS,WR,showdown,00-0036415,auto_exact,high
+RB,Gregory Desrosiers (44853057),Gregory Desrosiers,44853057,FLEX,3000,WAS@NYG 11/12/2026 08:15PM ET,NYG,2.0,,FLEX,Gregory Desrosiers,dk,3000,gregory desrosiers,NYG,RB,showdown,00-0041376,auto_exact,high
+WR,Luke McCaffrey (44853119),Luke McCaffrey,44853119,CPT,3000,WAS@NYG 11/12/2026 08:15PM ET,WAS,0.3,,CPT,Luke McCaffrey,dk,3000,luke mccaffrey,WAS,WR,showdown,00-0039355,auto_exact,high
+WR,Charlie Jones (44853120),Charlie Jones,44853120,CPT,2700,WAS@NYG 11/12/2026 08:15PM ET,NYG,1.3,,CPT,Charlie Jones,dk,2700,charlie jones,NYG,WR,showdown,00-0038576,auto_exact,high
+TE,Theo Johnson (44853058),Theo Johnson,44853058,FLEX,2600,WAS@NYG 11/12/2026 08:15PM ET,NYG,2.6,,FLEX,Theo Johnson,dk,2600,theo johnson,NYG,TE,showdown,00-0039847,auto_exact,high
+RB,Phil Mafah (44853059),Phil Mafah,44853059,FLEX,2400,WAS@NYG 11/12/2026 08:15PM ET,NYG,0.0,,FLEX,Phil Mafah,dk,2400,phil mafah,NYG,RB,showdown,00-0040021,auto_exact,high
+TE,Ben Sinnott (44853121),Ben Sinnott,44853121,CPT,2400,WAS@NYG 11/12/2026 08:15PM ET,WAS,0.2,,CPT,Ben Sinnott,dk,2400,ben sinnott,WAS,TE,showdown,00-0039912,auto_exact,high
+RB,Robert Henry Jr. (44853122),Robert Henry Jr.,44853122,CPT,2100,WAS@NYG 11/12/2026 08:15PM ET,WAS,0.0,,CPT,Robert Henry Jr.,dk,2100,robert henry,WAS,RB,showdown,00-0041178,auto_exact,high
+WR,Luke McCaffrey (44853060),Luke McCaffrey,44853060,FLEX,2000,WAS@NYG 11/12/2026 08:15PM ET,WAS,0.3,,FLEX,Luke McCaffrey,dk,2000,luke mccaffrey,WAS,WR,showdown,00-0039355,auto_exact,high
+WR,Charlie Jones (44853061),Charlie Jones,44853061,FLEX,1800,WAS@NYG 11/12/2026 08:15PM ET,NYG,1.3,,FLEX,Charlie Jones,dk,1800,charlie jones,NYG,WR,showdown,00-0038576,auto_exact,high
+TE,John Bates (44853123),John Bates,44853123,CPT,1800,WAS@NYG 11/12/2026 08:15PM ET,WAS,1.0,,CPT,John Bates,dk,1800,john bates,WAS,TE,showdown,00-0036628,auto_exact,high
+TE,Ben Sinnott (44853062),Ben Sinnott,44853062,FLEX,1600,WAS@NYG 11/12/2026 08:15PM ET,WAS,0.2,,FLEX,Ben Sinnott,dk,1600,ben sinnott,WAS,TE,showdown,00-0039912,auto_exact,high
+WR,Jaden Bradley (44853124),Jaden Bradley,44853124,CPT,1500,WAS@NYG 11/12/2026 08:15PM ET,WAS,2.2,,CPT,Jaden Bradley,dk,1500,jaden bradley,WAS,WR,showdown,00-0041176,auto_exact,high
+RB,Robert Henry Jr. (44853063),Robert Henry Jr.,44853063,FLEX,1400,WAS@NYG 11/12/2026 08:15PM ET,WAS,0.0,,FLEX,Robert Henry Jr.,dk,1400,robert henry,WAS,RB,showdown,00-0041178,auto_exact,high
+TE,John Bates (44853064),John Bates,44853064,FLEX,1200,WAS@NYG 11/12/2026 08:15PM ET,WAS,1.0,,FLEX,John Bates,dk,1200,john bates,WAS,TE,showdown,00-0036628,auto_exact,high
+WR,Jalin Hyatt (44853125),Jalin Hyatt,44853125,CPT,1200,WAS@NYG 11/12/2026 08:15PM ET,NYG,0.0,,CPT,Jalin Hyatt,dk,1200,jalin hyatt,NYG,WR,showdown,00-0038938,auto_exact,high
+WR,Jaden Bradley (44853065),Jaden Bradley,44853065,FLEX,1000,WAS@NYG 11/12/2026 08:15PM ET,WAS,2.2,,FLEX,Jaden Bradley,dk,1000,jaden bradley,WAS,WR,showdown,00-0041176,auto_exact,high
+TE,Chris Manhertz (44853126),Chris Manhertz,44853126,CPT,900,WAS@NYG 11/12/2026 08:15PM ET,NYG,0.0,,CPT,Chris Manhertz,dk,900,chris manhertz,NYG,TE,showdown,00-0031484,auto_exact,high
+WR,Jalin Hyatt (44853066),Jalin Hyatt,44853066,FLEX,800,WAS@NYG 11/12/2026 08:15PM ET,NYG,0.0,,FLEX,Jalin Hyatt,dk,800,jalin hyatt,NYG,WR,showdown,00-0038938,auto_exact,high
+TE,Chris Manhertz (44853067),Chris Manhertz,44853067,FLEX,600,WAS@NYG 11/12/2026 08:15PM ET,NYG,0.0,,FLEX,Chris Manhertz,dk,600,chris manhertz,NYG,TE,showdown,00-0031484,auto_exact,high
+RB,Patrick Ricard (44853127),Patrick Ricard,44853127,CPT,600,WAS@NYG 11/12/2026 08:15PM ET,NYG,0.1,,CPT,Patrick Ricard,dk,600,patrick ricard,NYG,RB,showdown,00-0033376,auto_exact,high
+RB,Patrick Ricard (44853068),Patrick Ricard,44853068,FLEX,400,WAS@NYG 11/12/2026 08:15PM ET,NYG,0.1,,FLEX,Patrick Ricard,dk,400,patrick ricard,NYG,RB,showdown,00-0033376,auto_exact,high
+RB,Devin Neal (44853128),Devin Neal,44853128,CPT,300,WAS@NYG 11/12/2026 08:15PM ET,WAS,0.0,,CPT,Devin Neal,dk,300,devin neal,WAS,RB,showdown,00-0040202,auto_exact,high
+RB,Craig Reynolds (44853129),Craig Reynolds,44853129,CPT,300,WAS@NYG 11/12/2026 08:15PM ET,WAS,0.4,,CPT,Craig Reynolds,dk,300,craig reynolds,WAS,RB,showdown,00-0035567,auto_exact,high
+RB,Jacory Croskey-Merritt (44853130),Jacory Croskey-Merritt,44853130,CPT,300,WAS@NYG 11/12/2026 08:15PM ET,WAS,9.0,IR,CPT,Jacory Croskey-Merritt,dk,300,jacory croskey merritt,WAS,RB,showdown,00-0040242,auto_exact,high
+RB,Jeremy McNichols (44853131),Jeremy McNichols,44853131,CPT,300,WAS@NYG 11/12/2026 08:15PM ET,WAS,2.6,IR,CPT,Jeremy McNichols,dk,300,jeremy mcnichols,WAS,RB,showdown,00-0033955,auto_exact,high
+RB,Tyrone Tracy Jr. (44853132),Tyrone Tracy Jr.,44853132,CPT,300,WAS@NYG 11/12/2026 08:15PM ET,NYG,4.7,IR,CPT,Tyrone Tracy Jr.,dk,300,tyrone tracy,NYG,RB,showdown,00-0039384,auto_exact,high
+RB,Grant Finley (44853133),Grant Finley,44853133,CPT,300,WAS@NYG 11/12/2026 08:15PM ET,NYG,0.0,,CPT,Grant Finley,dk,300,grant finley,NYG,RB,showdown,00-0041585,auto_exact,high
+RB,Eric Gray (44853134),Eric Gray,44853134,CPT,300,WAS@NYG 11/12/2026 08:15PM ET,NYG,0.0,,CPT,Eric Gray,dk,300,eric gray,NYG,RB,showdown,00-0038396,auto_exact,high
+WR,Braxton Berrios (44853135),Braxton Berrios,44853135,CPT,300,WAS@NYG 11/12/2026 08:15PM ET,NYG,0.0,IR,CPT,Braxton Berrios,dk,300,braxton berrios,NYG,WR,showdown,00-0034419,auto_exact,high
+WR,Gunner Olszewski (44853136),Gunner Olszewski,44853136,CPT,300,WAS@NYG 11/12/2026 08:15PM ET,NYG,0.0,IR,CPT,Gunner Olszewski,dk,300,gunner olszewski,NYG,WR,showdown,00-0035645,auto_exact,high
+WR,Calvin Austin III (44853137),Calvin Austin III,44853137,CPT,300,WAS@NYG 11/12/2026 08:15PM ET,NYG,0.0,IR,CPT,Calvin Austin III,dk,300,calvin austin,NYG,WR,showdown,00-0037837,auto_exact,high
+WR,Terry McLaurin (44853138),Terry McLaurin,44853138,CPT,300,WAS@NYG 11/12/2026 08:15PM ET,WAS,9.2,IR,CPT,Terry McLaurin,dk,300,terry mclaurin,WAS,WR,showdown,00-0035659,auto_exact,high
+WR,Dyami Brown (44853139),Dyami Brown,44853139,CPT,300,WAS@NYG 11/12/2026 08:15PM ET,WAS,2.5,IR,CPT,Dyami Brown,dk,300,dyami brown,WAS,WR,showdown,00-0036626,auto_exact,high
+WR,Nick DeGennaro (44853140),Nick DeGennaro,44853140,CPT,300,WAS@NYG 11/12/2026 08:15PM ET,WAS,0.0,,CPT,Nick DeGennaro,dk,300,nick degennaro,WAS,WR,showdown,00-0041317,auto_exact,high
+WR,Jaylin Lane (44853141),Jaylin Lane,44853141,CPT,300,WAS@NYG 11/12/2026 08:15PM ET,WAS,1.1,IR,CPT,Jaylin Lane,dk,300,jaylin lane,WAS,WR,showdown,00-0040164,auto_exact,high
+WR,Dontae Fleming (44853142),Dontae Fleming,44853142,CPT,300,WAS@NYG 11/12/2026 08:15PM ET,NYG,0.0,,CPT,Dontae Fleming,dk,300,dontae fleming,NYG,WR,showdown,00-0040498,auto_exact,high
+WR,Dalen Cambre (44853143),Dalen Cambre,44853143,CPT,300,WAS@NYG 11/12/2026 08:15PM ET,NYG,0.0,,CPT,Dalen Cambre,dk,300,dalen cambre,NYG,WR,showdown,00-0040431,auto_exact,high
+TE,Tyler Ott (44853144),Tyler Ott,44853144,CPT,300,WAS@NYG 11/12/2026 08:15PM ET,WAS,0.0,,CPT,Tyler Ott,dk,300,tyler ott,WAS,TE,showdown,00-0031156,auto_fallback_name_only_position_mismatch,low
+TE,Thomas Fidone II (44853145),Thomas Fidone II,44853145,CPT,300,WAS@NYG 11/12/2026 08:15PM ET,NYG,1.3,,CPT,Thomas Fidone II,dk,300,thomas fidone,NYG,TE,showdown,00-0040225,auto_exact,high
+TE,Quentin Moore (44853146),Quentin Moore,44853146,CPT,300,WAS@NYG 11/12/2026 08:15PM ET,WAS,0.0,,CPT,Quentin Moore,dk,300,quentin moore,WAS,TE,showdown,00-0041180,auto_exact,high
+TE,Ben Mann (44853147),Ben Mann,44853147,CPT,300,WAS@NYG 11/12/2026 08:15PM ET,NYG,0.0,,CPT,Ben Mann,dk,300,ben mann,NYG,TE,showdown,00-0041143,auto_fallback_name_only_position_mismatch,low
+TE,Jack Westover (44853148),Jack Westover,44853148,CPT,300,WAS@NYG 11/12/2026 08:15PM ET,WAS,0.0,,CPT,Jack Westover,dk,300,jack westover,WAS,TE,showdown,00-0039305,auto_exact,high
+TE,Colson Yankoff (44853149),Colson Yankoff,44853149,CPT,300,WAS@NYG 11/12/2026 08:15PM ET,WAS,0.7,OUT,CPT,Colson Yankoff,dk,300,colson yankoff,WAS,TE,showdown,00-0039686,auto_exact,high
+RB,Devin Neal (44853069),Devin Neal,44853069,FLEX,200,WAS@NYG 11/12/2026 08:15PM ET,WAS,0.0,,FLEX,Devin Neal,dk,200,devin neal,WAS,RB,showdown,00-0040202,auto_exact,high
+RB,Craig Reynolds (44853070),Craig Reynolds,44853070,FLEX,200,WAS@NYG 11/12/2026 08:15PM ET,WAS,0.4,,FLEX,Craig Reynolds,dk,200,craig reynolds,WAS,RB,showdown,00-0035567,auto_exact,high
+RB,Jacory Croskey-Merritt (44853071),Jacory Croskey-Merritt,44853071,FLEX,200,WAS@NYG 11/12/2026 08:15PM ET,WAS,9.0,IR,FLEX,Jacory Croskey-Merritt,dk,200,jacory croskey merritt,WAS,RB,showdown,00-0040242,auto_exact,high
+RB,Jeremy McNichols (44853072),Jeremy McNichols,44853072,FLEX,200,WAS@NYG 11/12/2026 08:15PM ET,WAS,2.6,IR,FLEX,Jeremy McNichols,dk,200,jeremy mcnichols,WAS,RB,showdown,00-0033955,auto_exact,high
+RB,Tyrone Tracy Jr. (44853073),Tyrone Tracy Jr.,44853073,FLEX,200,WAS@NYG 11/12/2026 08:15PM ET,NYG,4.7,IR,FLEX,Tyrone Tracy Jr.,dk,200,tyrone tracy,NYG,RB,showdown,00-0039384,auto_exact,high
+RB,Grant Finley (44853074),Grant Finley,44853074,FLEX,200,WAS@NYG 11/12/2026 08:15PM ET,NYG,0.0,,FLEX,Grant Finley,dk,200,grant finley,NYG,RB,showdown,00-0041585,auto_exact,high
+RB,Eric Gray (44853075),Eric Gray,44853075,FLEX,200,WAS@NYG 11/12/2026 08:15PM ET,NYG,0.0,,FLEX,Eric Gray,dk,200,eric gray,NYG,RB,showdown,00-0038396,auto_exact,high
+WR,Braxton Berrios (44853076),Braxton Berrios,44853076,FLEX,200,WAS@NYG 11/12/2026 08:15PM ET,NYG,0.0,IR,FLEX,Braxton Berrios,dk,200,braxton berrios,NYG,WR,showdown,00-0034419,auto_exact,high
+WR,Gunner Olszewski (44853077),Gunner Olszewski,44853077,FLEX,200,WAS@NYG 11/12/2026 08:15PM ET,NYG,0.0,IR,FLEX,Gunner Olszewski,dk,200,gunner olszewski,NYG,WR,showdown,00-0035645,auto_exact,high
+WR,Calvin Austin III (44853078),Calvin Austin III,44853078,FLEX,200,WAS@NYG 11/12/2026 08:15PM ET,NYG,0.0,IR,FLEX,Calvin Austin III,dk,200,calvin austin,NYG,WR,showdown,00-0037837,auto_exact,high
+WR,Terry McLaurin (44853079),Terry McLaurin,44853079,FLEX,200,WAS@NYG 11/12/2026 08:15PM ET,WAS,9.2,IR,FLEX,Terry McLaurin,dk,200,terry mclaurin,WAS,WR,showdown,00-0035659,auto_exact,high
+WR,Dyami Brown (44853080),Dyami Brown,44853080,FLEX,200,WAS@NYG 11/12/2026 08:15PM ET,WAS,2.5,IR,FLEX,Dyami Brown,dk,200,dyami brown,WAS,WR,showdown,00-0036626,auto_exact,high
+WR,Nick DeGennaro (44853081),Nick DeGennaro,44853081,FLEX,200,WAS@NYG 11/12/2026 08:15PM ET,WAS,0.0,,FLEX,Nick DeGennaro,dk,200,nick degennaro,WAS,WR,showdown,00-0041317,auto_exact,high
+WR,Jaylin Lane (44853082),Jaylin Lane,44853082,FLEX,200,WAS@NYG 11/12/2026 08:15PM ET,WAS,1.1,IR,FLEX,Jaylin Lane,dk,200,jaylin lane,WAS,WR,showdown,00-0040164,auto_exact,high
+WR,Dontae Fleming (44853083),Dontae Fleming,44853083,FLEX,200,WAS@NYG 11/12/2026 08:15PM ET,NYG,0.0,,FLEX,Dontae Fleming,dk,200,dontae fleming,NYG,WR,showdown,00-0040498,auto_exact,high
+WR,Dalen Cambre (44853084),Dalen Cambre,44853084,FLEX,200,WAS@NYG 11/12/2026 08:15PM ET,NYG,0.0,,FLEX,Dalen Cambre,dk,200,dalen cambre,NYG,WR,showdown,00-0040431,auto_exact,high
+TE,Tyler Ott (44853085),Tyler Ott,44853085,FLEX,200,WAS@NYG 11/12/2026 08:15PM ET,WAS,0.0,,FLEX,Tyler Ott,dk,200,tyler ott,WAS,TE,showdown,00-0031156,auto_fallback_name_only_position_mismatch,low
+TE,Thomas Fidone II (44853086),Thomas Fidone II,44853086,FLEX,200,WAS@NYG 11/12/2026 08:15PM ET,NYG,1.3,,FLEX,Thomas Fidone II,dk,200,thomas fidone,NYG,TE,showdown,00-0040225,auto_exact,high
+TE,Quentin Moore (44853087),Quentin Moore,44853087,FLEX,200,WAS@NYG 11/12/2026 08:15PM ET,WAS,0.0,,FLEX,Quentin Moore,dk,200,quentin moore,WAS,TE,showdown,00-0041180,auto_exact,high
+TE,Ben Mann (44853088),Ben Mann,44853088,FLEX,200,WAS@NYG 11/12/2026 08:15PM ET,NYG,0.0,,FLEX,Ben Mann,dk,200,ben mann,NYG,TE,showdown,00-0041143,auto_fallback_name_only_position_mismatch,low
+TE,Jack Westover (44853089),Jack Westover,44853089,FLEX,200,WAS@NYG 11/12/2026 08:15PM ET,WAS,0.0,,FLEX,Jack Westover,dk,200,jack westover,WAS,TE,showdown,00-0039305,auto_exact,high
+TE,Colson Yankoff (44853090),Colson Yankoff,44853090,FLEX,200,WAS@NYG 11/12/2026 08:15PM ET,WAS,0.7,OUT,FLEX,Colson Yankoff,dk,200,colson yankoff,WAS,TE,showdown,00-0039686,auto_exact,high
