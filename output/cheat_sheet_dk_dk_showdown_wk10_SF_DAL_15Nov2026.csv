@@ -1,59 +1,59 @@
 position,rank,overall_rank,player_id,player_name,team,opponent,salary,final_projection,estimated_ownership_pct,confidence,composite_score,top_factors,rationale,badge,is_bonus
-QB,1,1,00-0037834,Brock Purdy,SF,DAL,11000,32.56638549311869,38.50715253246926,10,32.56638549311869,"matchup, game environment, recent usage, value, bust potential","• Matchup: DAL allows 1.11x league-avg to QBs (favorable)
+QB,1,1,00-0037834,Brock Purdy,SF,DAL,11000,32.558935043132,38.50715253246927,10,32.558935043132,"matchup, game environment, recent usage, value, bust potential","• Matchup: DAL allows 1.11x league-avg to QBs (favorable)
 • Game environment: SF implied 29.8 (plus)
 • Recent usage: 31.3 pass att/game, last 3 games (actual box score)
 • Value: 2.96 pts/$1K (cheap for this slate)
-• Range: 14.5–53.6 pts — floor is 55% below his own projection (Bust risk: Low)
+• Range: 14.5–53.5 pts — floor is 55% below his own projection (Bust risk: Low)
 • Captain: $16500 salary, 48.8 pts, 33.3% owned as CPT (2.96 pts/$1K, cheap for this slate)",,False
-WR,1,2,00-0036358,CeeDee Lamb,DAL,SF,11800,24.03489461564377,34.72954289974025,8,24.03489461564377,"matchup, game environment, recent usage, value, bust potential","• Matchup (WR1): SF allows 0.96x league-avg (average)
+WR,1,2,00-0036358,CeeDee Lamb,DAL,SF,11800,24.03253825575933,34.72954289974025,8,24.03253825575933,"matchup, game environment, recent usage, value, bust potential","• Matchup (WR1): SF allows 0.96x league-avg (average)
 • Game environment: DAL implied 25.8 (low-scoring)
 • Recent usage: 13.0 targets/game, last 3 games (actual box score)
 • Value: 2.04 pts/$1K (fair for this slate)
 • Range: 5.8–50.4 pts — floor is 76% below his own projection (Bust risk: Medium)
-• Captain: $17700 salary, 36.1 pts, 8.4% owned as CPT (2.04 pts/$1K, fair for this slate)",,False
-RB,1,3,00-0033280,Christian McCaffrey,SF,DAL,11400,22.60201687187605,39.283138037309214,8,22.60201687187605,"matchup, game environment, recent usage, value, bust potential","• Matchup: DAL allows 1.18x league-avg rushing pts (favorable), 1.06x receiving pts (average) to RBs
+• Captain: $17700 salary, 36.0 pts, 8.4% owned as CPT (2.04 pts/$1K, fair for this slate)",,False
+RB,1,3,00-0033280,Christian McCaffrey,SF,DAL,11400,22.597528792776146,39.28313803730922,8,22.597528792776146,"matchup, game environment, recent usage, value, bust potential","• Matchup: DAL allows 1.18x league-avg rushing pts (favorable), 1.06x receiving pts (average) to RBs
 • Game environment: SF implied 29.8 (plus)
 • Recent usage: 20.3 touches/game, last 3 games (actual box score)
 • Value: 1.98 pts/$1K (fair for this slate)
 • Range: 5.9–45.1 pts — floor is 74% below his own projection (Bust risk: Medium)
 • Captain: $17100 salary, 33.9 pts, 9.4% owned as CPT (1.98 pts/$1K, fair for this slate)",,False
-QB,2,4,00-0033077,Dak Prescott,DAL,SF,10000,22.010924002645744,45.03610087991397,9,22.010924002645744,"matchup, game environment, recent usage, value, bust potential","• Matchup: SF allows 0.94x league-avg to QBs (average)
+QB,2,4,00-0033077,Dak Prescott,DAL,SF,10000,22.00826996375272,45.03610087991398,9,22.00826996375272,"matchup, game environment, recent usage, value, bust potential","• Matchup: SF allows 0.94x league-avg to QBs (average)
 • Game environment: DAL implied 25.8 (low-scoring)
 • Recent usage: 30.0 pass att/game, last 3 games (actual box score)
 • Value: 2.20 pts/$1K (cheap for this slate)
 • Range: 8.8–37.7 pts — floor is 60% below his own projection (Bust risk: Low)
 • Captain: $15000 salary, 33.0 pts, 10.8% owned as CPT (2.20 pts/$1K, cheap for this slate)",,False
-TE,1,5,00-0033288,George Kittle,SF,DAL,9000,19.738882167383693,40.863463306950194,7,19.738882167383693,"matchup, game environment, recent usage, value, bust potential","• Matchup (TE1): DAL allows 1.03x league-avg (average)
+TE,1,5,00-0033288,George Kittle,SF,DAL,9000,19.73694404815852,40.863463306950194,7,19.73694404815852,"matchup, game environment, recent usage, value, bust potential","• Matchup (TE1): DAL allows 1.03x league-avg (average)
 • Game environment: SF implied 29.8 (plus)
 • Recent usage: 8.3 targets/game, last 3 games (actual box score)
 • Value: 2.19 pts/$1K (cheap for this slate)
 • Range: 4.5–40.3 pts — floor is 77% below his own projection (Bust risk: Medium)
 • Captain: $13500 salary, 29.6 pts, 2.8% owned as CPT (2.19 pts/$1K, cheap for this slate)",,False
-RB,2,6,00-0036997,Javonte Williams,DAL,SF,10400,18.24826564177933,24.67778810839105,7,18.24826564177933,"matchup, game environment, recent usage, value, bust potential","• Matchup: SF allows 0.74x league-avg rushing pts (tough), 1.35x receiving pts (favorable) to RBs
+RB,2,6,00-0036997,Javonte Williams,DAL,SF,10400,18.24499844463248,24.67778810839106,7,18.24499844463248,"matchup, game environment, recent usage, value, bust potential","• Matchup: SF allows 0.74x league-avg rushing pts (tough), 1.35x receiving pts (favorable) to RBs
 • Game environment: DAL implied 25.8 (low-scoring)
 • Recent usage: 25.3 touches/game, last 3 games (actual box score)
 • Value: 1.75 pts/$1K (fair for this slate)
 • Range: 4.5–38.0 pts — floor is 75% below his own projection (Bust risk: Medium)
 • Captain: $15600 salary, 27.4 pts, 5.8% owned as CPT (1.75 pts/$1K, fair for this slate)",,False
-WR,2,7,00-0030279,Keenan Allen,SF,DAL,5800,14.48524843326488,51.219981497975766,6,14.48524843326488,"matchup, game environment, recent usage, value, bust potential","• Matchup (WR1): DAL allows 1.05x league-avg (average)
+WR,2,7,00-0030279,Keenan Allen,SF,DAL,5800,14.481536719472215,51.219981497975766,6,14.481536719472215,"matchup, game environment, recent usage, value, bust potential","• Matchup (WR1): DAL allows 1.05x league-avg (average)
 • Game environment: SF implied 29.8 (plus)
 • Recent usage: 6.0 targets/game, last 3 games (actual box score)
 • Value: 2.50 pts/$1K (cheap for this slate)
 • Range: 3.1–31.0 pts — floor is 79% below his own projection (Bust risk: Medium)
 • Captain: $8700 salary, 21.7 pts, 9.8% owned as CPT (2.50 pts/$1K, cheap for this slate)",,False
-WR,3,8,00-0031408,Mike Evans,SF,DAL,8000,9.672425945942171,1.6564441330424695,4,9.672425945942171,"matchup, game environment, recent usage, value, bust potential","• Matchup (WR2/3): DAL allows 1.05x league-avg (average)
+WR,3,8,00-0031408,Mike Evans,SF,DAL,8000,9.671268185812083,1.6564441330424686,4,9.671268185812083,"matchup, game environment, recent usage, value, bust potential","• Matchup (WR2/3): DAL allows 1.05x league-avg (average)
 • Game environment: SF implied 29.8 (plus)
 • Recent usage: 7.7 targets/game, last 3 games (actual box score)
 • Value: 1.21 pts/$1K (pricey for this slate)
 • Range: 0.4–24.9 pts — floor is 96% below his own projection (Bust risk: High)
 • Captain: $12000 salary, 14.5 pts, 0.7% owned as CPT (1.21 pts/$1K, pricey for this slate)",,False
-WR,4,9,00-0037247,George Pickens,DAL,SF,8800,9.631901458445808,1.6564441330424695,5,9.631901458445808,"matchup, game environment, recent usage, value, bust potential","• Matchup (WR2/3): SF allows 0.87x league-avg (tough)
+WR,4,9,00-0037247,George Pickens,DAL,SF,8800,9.630168698141134,1.6564441330424686,5,9.630168698141134,"matchup, game environment, recent usage, value, bust potential","• Matchup (WR2/3): SF allows 0.87x league-avg (tough)
 • Game environment: DAL implied 25.8 (low-scoring)
 • Recent usage: 7.0 targets/game, last 3 games (actual box score)
 • Value: 1.09 pts/$1K (pricey for this slate)
 • Range: 1.8–22.2 pts — floor is 81% below his own projection (Bust risk: Medium)
 • Captain: $13200 salary, 14.4 pts, 0.7% owned as CPT (1.09 pts/$1K, pricey for this slate)",,False
-WR,5,10,00-0039410,Ryan Flournoy,DAL,SF,6800,9.457739343361036,11.124157980294704,6,9.457739343361036,"matchup, game environment, recent usage, value, bust potential","• Matchup (WR2/3): SF allows 0.87x league-avg (tough)
+WR,5,10,00-0039410,Ryan Flournoy,DAL,SF,6800,9.456945667438957,11.124157980294704,6,9.456945667438957,"matchup, game environment, recent usage, value, bust potential","• Matchup (WR2/3): SF allows 0.87x league-avg (tough)
 • Game environment: DAL implied 25.8 (low-scoring)
 • Recent usage: 3.7 targets/game, last 3 games (actual box score)
 • Value: 1.39 pts/$1K (fair for this slate)
@@ -67,25 +67,25 @@ K,2,12,00-0034173,Eddy Pineiro,SF,DAL,4800,8.12095,26.48127293080957,6,8.12095,"
 • Value: 1.69 pts/$1K (fair for this slate)
 • Range: 2.0–15.0 pts — floor is 75% below his own projection (Bust risk: Low)
 • Captain: $7200 salary, 12.2 pts, 0.2% owned as CPT (1.69 pts/$1K, fair for this slate)",,False
-RB,3,13,00-0041052,Kaelon Black,SF,DAL,4400,7.278317592503868,18.47529362162463,4,7.278317592503868,"matchup, game environment, recent usage, value, bust potential","• Matchup: DAL allows 1.18x league-avg rushing pts (favorable), 1.06x receiving pts (average) to RBs
+RB,3,13,00-0041052,Kaelon Black,SF,DAL,4400,7.277276363380804,18.47529362162463,4,7.277276363380804,"matchup, game environment, recent usage, value, bust potential","• Matchup: DAL allows 1.18x league-avg rushing pts (favorable), 1.06x receiving pts (average) to RBs
 • Game environment: SF implied 29.8 (plus)
 • Recent usage: 11.7 touches/game, last 3 games (actual box score)
 • Value: 1.65 pts/$1K (fair for this slate)
 • Range: 0.5–17.6 pts — floor is 93% below his own projection (Bust risk: High)
 • Captain: $6600 salary, 10.9 pts, 0.7% owned as CPT (1.65 pts/$1K, fair for this slate)",,False
-WR,6,14,00-0040172,Jordan Watkins,SF,DAL,3800,6.629098577473194,22.304260687533358,4,6.629098577473194,"matchup, game environment, recent usage, value, bust potential","• Matchup (WR2/3): DAL allows 1.05x league-avg (average)
+WR,6,14,00-0040172,Jordan Watkins,SF,DAL,3800,6.626934895366235,22.304260687533358,4,6.626934895366235,"matchup, game environment, recent usage, value, bust potential","• Matchup (WR2/3): DAL allows 1.05x league-avg (average)
 • Game environment: SF implied 29.8 (plus)
 • Recent usage: 3.7 targets/game, last 3 games (actual box score)
 • Value: 1.74 pts/$1K (fair for this slate)
 • Range: 0.6–15.4 pts — floor is 91% below his own projection (Bust risk: Medium)
 • Captain: $5700 salary, 9.9 pts, 0.7% owned as CPT (1.74 pts/$1K, fair for this slate)",,False
-TE,2,15,00-0039530,Brevyn Spann-Ford,DAL,SF,3200,6.145030615750055,27.71436624395956,5,6.145030615750055,"matchup, game environment, recent usage, value, bust potential","• Matchup (TE1): SF allows 0.99x league-avg (average)
+TE,2,15,00-0039530,Brevyn Spann-Ford,DAL,SF,3200,6.143789490469514,27.71436624395956,5,6.143789490469514,"matchup, game environment, recent usage, value, bust potential","• Matchup (TE1): SF allows 0.99x league-avg (average)
 • Game environment: DAL implied 25.8 (low-scoring)
 • Recent usage: 3.3 targets/game, last 3 games (actual box score)
 • Value: 1.92 pts/$1K (fair for this slate)
 • Range: 1.3–13.1 pts — floor is 79% below his own projection (Bust risk: Medium)
 • Captain: $4800 salary, 9.2 pts, 0.7% owned as CPT (1.92 pts/$1K, fair for this slate)",,False
-WR,7,16,00-0031236,Brandin Cooks,SF,DAL,3000,4.9192826336159925,17.559792490600287,4,4.9192826336159925,"matchup, game environment, recent usage, value, bust potential","• Matchup (WR2/3): DAL allows 1.05x league-avg (average)
+WR,7,16,00-0031236,Brandin Cooks,SF,DAL,3000,4.91879765722364,17.559792490600287,4,4.91879765722364,"matchup, game environment, recent usage, value, bust potential","• Matchup (WR2/3): DAL allows 1.05x league-avg (average)
 • Game environment: SF implied 29.8 (plus)
 • Recent usage: 2.3 targets/game, last 3 games (actual box score)
 • Value: 1.64 pts/$1K (fair for this slate)
@@ -96,13 +96,13 @@ DST,1,17,DST_SF,49ers,SF,DAL,4600,4.6413014200000005,0.997535533930533,4,4.64130
 • Value: 1.01 pts/$1K (pricey for this slate)
 • Range: not modeled for this position
 • Captain: $6900 salary, 7.0 pts, 1.1% owned as CPT (1.01 pts/$1K, pricey for this slate)",,False
-WR,8,18,00-0035719,Deebo Samuel Sr.,SF,DAL,7000,4.391618431125544,1.6564441330424695,3,4.391618431125544,"matchup, game environment, recent usage, value, bust potential","• Matchup (WR2/3): DAL allows 1.05x league-avg (average)
+WR,8,18,00-0035719,Deebo Samuel Sr.,SF,DAL,7000,4.391133415771997,1.6564441330424686,3,4.391133415771997,"matchup, game environment, recent usage, value, bust potential","• Matchup (WR2/3): DAL allows 1.05x league-avg (average)
 • Game environment: SF implied 29.8 (plus)
 • Recent usage: 3.0 targets/game, last 3 games (actual box score)
 • Value: 0.63 pts/$1K (pricey for this slate)
 • Range: 0.0–11.2 pts — floor is 100% below his own projection (Bust risk: High)
 • Captain: $10500 salary, 6.6 pts, 0.7% owned as CPT (0.63 pts/$1K, pricey for this slate)",,False
-WR,9,19,00-0039365,Jacob Cowing,SF,DAL,2800,4.064500857993647,13.51230208434798,3,4.064500857993647,"matchup, game environment, recent usage, value, bust potential","• Matchup (WR2/3): DAL allows 1.05x league-avg (average)
+WR,9,19,00-0039365,Jacob Cowing,SF,DAL,2800,4.065562912453232,13.51230208434798,3,4.065562912453232,"matchup, game environment, recent usage, value, bust potential","• Matchup (WR2/3): DAL allows 1.05x league-avg (average)
 • Game environment: SF implied 29.8 (plus)
 • Recent usage: 2.0 targets/game, last 3 games (actual box score)
 • Value: 1.45 pts/$1K (fair for this slate)
@@ -113,19 +113,19 @@ DST,2,20,DST_DAL,Cowboys,DAL,SF,3400,3.767970773500001,0.997535533930533,4,3.767
 • Value: 1.11 pts/$1K (pricey for this slate)
 • Range: not modeled for this position
 • Captain: $5100 salary, 5.7 pts, 1.1% owned as CPT (1.11 pts/$1K, pricey for this slate)",,False
-WR,10,21,00-0032775,Demarcus Robinson,SF,DAL,5400,3.507054816840101,1.6564441330424695,3,3.507054816840101,"matchup, game environment, recent usage, value, bust potential","• Matchup (WR2/3): DAL allows 1.05x league-avg (average)
+WR,10,21,00-0032775,Demarcus Robinson,SF,DAL,5400,3.505173774203855,1.6564441330424686,3,3.505173774203855,"matchup, game environment, recent usage, value, bust potential","• Matchup (WR2/3): DAL allows 1.05x league-avg (average)
 • Game environment: SF implied 29.8 (plus)
 • Recent usage: 3.3 targets/game, last 3 games (actual box score)
 • Value: 0.65 pts/$1K (pricey for this slate)
 • Range: 0.0–9.2 pts — floor is 100% below his own projection (Bust risk: High)
 • Captain: $8100 salary, 5.3 pts, 0.7% owned as CPT (0.65 pts/$1K, pricey for this slate)",,False
-WR,11,22,00-0039062,Jonathan Mingo,DAL,SF,1800,2.6275617845824226,12.360755246912202,3,2.6275617845824226,"matchup, game environment, recent usage, value, bust potential","• Matchup (WR2/3): SF allows 0.87x league-avg (tough)
+WR,11,22,00-0039062,Jonathan Mingo,DAL,SF,1800,2.627312137980752,12.360755246912202,3,2.627312137980752,"matchup, game environment, recent usage, value, bust potential","• Matchup (WR2/3): SF allows 0.87x league-avg (tough)
 • Game environment: DAL implied 25.8 (low-scoring)
 • Recent usage: 1.3 targets/game, last 3 games (actual box score)
 • Value: 1.46 pts/$1K (fair for this slate)
 • Range: 0.1–6.8 pts — floor is 96% below his own projection (Bust risk: High)
 • Captain: $2700 salary, 3.9 pts, 0.7% owned as CPT (1.46 pts/$1K, fair for this slate)",,False
-RB,4,23,00-0038738,Hunter Luepke,DAL,SF,1400,2.176545354518625,15.118035706198691,5,2.176545354518625,"matchup, game environment, recent usage, value, bust potential","• Matchup: SF allows 0.74x league-avg rushing pts (tough), 1.35x receiving pts (favorable) to RBs
+RB,4,23,00-0038738,Hunter Luepke,DAL,SF,1400,2.1764538730069485,15.118035706198691,5,2.1764538730069485,"matchup, game environment, recent usage, value, bust potential","• Matchup: SF allows 0.74x league-avg rushing pts (tough), 1.35x receiving pts (favorable) to RBs
 • Game environment: DAL implied 25.8 (low-scoring)
 • Recent usage: 1.3 touches/game, last 3 games (actual box score)
 • Value: 1.55 pts/$1K (fair for this slate)
