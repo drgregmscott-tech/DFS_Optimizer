@@ -1,11 +1,11 @@
 position,rank,overall_rank,player_id,player_name,team,opponent,salary,final_projection,estimated_ownership_pct,confidence,composite_score,top_factors,rationale,badge,is_bonus
-QB,1,1,00-0039910,Jayden Daniels,WAS,NYG,10000,16.058924897254514,42.51247417479108,10,16.058924897254514,"matchup, game environment, recent usage, value, bust potential","• Matchup: NYG allows 1.10x league-avg to QBs (average)
+QB,1,1,00-0039910,Jayden Daniels,WAS,NYG,10000,16.058924897254514,42.512474174791066,10,16.058924897254514,"matchup, game environment, recent usage, value, bust potential","• Matchup: NYG allows 1.10x league-avg to QBs (average)
 • Game environment: WAS implied 19.7 (middling)
 • Recent usage: 34.7 pass att/game, last 3 games (actual box score)
 • Value: 1.61 pts/$1K (fair for this slate)
 • Range: 6.0–28.6 pts — floor is 62% below his own projection (Bust risk: Low)
 • Captain: $15000 salary, 24.1 pts, 22.3% owned as CPT (1.61 pts/$1K, fair for this slate)",,False
-WR,1,2,00-0039337,Malik Nabers,NYG,WAS,11000,15.285865998251555,40.07731670480138,8,15.285865998251555,"matchup, game environment, recent usage, value, bust potential","• Matchup (WR1): WAS allows 1.28x league-avg (favorable)
+WR,1,2,00-0039337,Malik Nabers,NYG,WAS,11000,15.285865998251555,40.077316704801376,8,15.285865998251555,"matchup, game environment, recent usage, value, bust potential","• Matchup (WR1): WAS allows 1.28x league-avg (favorable)
 • Game environment: NYG implied 21.2 (middling)
 • Recent usage: 10.7 targets/game, last 3 games (actual box score)
 • Value: 1.39 pts/$1K (fair for this slate)
@@ -23,7 +23,7 @@ TE,1,4,00-0037838,Isaiah Likely,NYG,WAS,8200,11.620908239141045,41.6895910670951
 • Value: 1.42 pts/$1K (fair for this slate)
 • Range: 2.8–24.2 pts — floor is 76% below his own projection (Bust risk: Medium)
 • Captain: $12300 salary, 17.4 pts, 4.8% owned as CPT (1.42 pts/$1K, fair for this slate)",,False
-RB,1,5,00-0040715,Cam Skattebo,NYG,WAS,9000,11.488253286886811,30.16715239285324,6,11.488253286886811,"matchup, game environment, recent usage, value, bust potential","• Matchup: WAS allows 0.93x league-avg rushing pts (average), 0.96x receiving pts (average) to RBs
+RB,1,5,00-0040715,Cam Skattebo,NYG,WAS,9000,11.488253286886811,30.167152392853247,6,11.488253286886811,"matchup, game environment, recent usage, value, bust potential","• Matchup: WAS allows 0.93x league-avg rushing pts (average), 0.96x receiving pts (average) to RBs
 • Game environment: NYG implied 21.2 (middling)
 • Recent usage: 17.7 touches/game, last 3 games (actual box score)
 • Value: 1.28 pts/$1K (fair for this slate)
@@ -89,19 +89,19 @@ WR,5,16,00-0037742,Treylon Burks,WAS,NYG,3600,6.489964226667685,24.3813025247272
 • Value: 1.80 pts/$1K (cheap for this slate)
 • Range: 0.8–15.1 pts — floor is 87% below his own projection (Bust risk: High)
 • Captain: $5400 salary, 9.7 pts, 0.7% owned as CPT (1.80 pts/$1K, cheap for this slate)",,False
-RB,4,17,00-0035250,Devin Singletary,NYG,WAS,8000,5.925338810413196,1.6899321042199615,4,5.925338810413196,"matchup, game environment, recent usage, value, bust potential","• Matchup: WAS allows 0.93x league-avg rushing pts (average), 0.96x receiving pts (average) to RBs
+RB,4,17,00-0035250,Devin Singletary,NYG,WAS,8000,5.925338810413196,1.6899321042199624,4,5.925338810413196,"matchup, game environment, recent usage, value, bust potential","• Matchup: WAS allows 0.93x league-avg rushing pts (average), 0.96x receiving pts (average) to RBs
 • Game environment: NYG implied 21.2 (middling)
 • Recent usage: 12.3 touches/game, last 3 games (actual box score)
 • Value: 0.74 pts/$1K (pricey for this slate)
 • Range: 1.5–12.1 pts — floor is 74% below his own projection (Bust risk: Medium)
 • Captain: $12000 salary, 8.9 pts, 0.7% owned as CPT (0.74 pts/$1K, pricey for this slate)",,False
-WR,6,18,00-0036309,Darnell Mooney,NYG,WAS,4000,4.893184948296441,1.6899321042199615,3,4.893184948296441,"matchup, game environment, recent usage, value, bust potential","• Matchup (WR2/3): WAS allows 0.86x league-avg (tough)
+WR,6,18,00-0036309,Darnell Mooney,NYG,WAS,4000,4.893184948296441,1.6899321042199624,3,4.893184948296441,"matchup, game environment, recent usage, value, bust potential","• Matchup (WR2/3): WAS allows 0.86x league-avg (tough)
 • Game environment: NYG implied 21.2 (middling)
 • Recent usage: 3.0 targets/game, last 3 games (actual box score)
 • Value: 1.22 pts/$1K (fair for this slate)
 • Range: 0.6–11.0 pts — floor is 88% below his own projection (Bust risk: High)
 • Captain: $6000 salary, 7.3 pts, 0.7% owned as CPT (1.22 pts/$1K, fair for this slate)",,False
-WR,7,19,00-0036415,Van Jefferson,WAS,NYG,3200,2.695374571986409,1.6899321042199615,1,2.695374571986409,"matchup, game environment, recent usage, value, bust potential","• Matchup (WR2/3): NYG allows 0.89x league-avg (tough)
+WR,7,19,00-0036415,Van Jefferson,WAS,NYG,3200,2.695374571986409,1.6899321042199624,1,2.695374571986409,"matchup, game environment, recent usage, value, bust potential","• Matchup (WR2/3): NYG allows 0.89x league-avg (tough)
 • Game environment: WAS implied 19.7 (middling)
 • Recent usage: 4.0 targets/game, last 2 games (actual box score)
 • Value: 0.84 pts/$1K (pricey for this slate)
