@@ -1,7 +1,7 @@
 team,component,pool_share,share_basis,raw_sum,target,scale,abs_delta
-NYG,pass,1.0,exclusive,19.4,33.53,1.7279,14.12
-NYG,recv,1.0,recent,41.32,32.58,0.7884,8.74
-NYG,rush,1.0,recent,35.15,28.35,0.8067,6.79
-WAS,rush,0.9737,recent,30.56,25.28,0.8273,5.28
-WAS,recv,0.9935,recent,38.03,31.7,0.8336,6.33
-WAS,pass,1.0,exclusive,31.86,33.19,1.0419,1.33
+NYG,pass,1.0,exclusive,19.4,33.5,1.7267,14.1
+NYG,recv,1.0,recent,41.32,32.56,0.7879,8.76
+NYG,rush,1.0,recent,35.13,28.29,0.8052,6.85
+WAS,rush,0.9737,recent,30.58,25.37,0.8297,5.21
+WAS,recv,0.9935,recent,38.02,31.67,0.833,6.35
+WAS,pass,1.0,exclusive,31.86,33.16,1.0409,1.3
