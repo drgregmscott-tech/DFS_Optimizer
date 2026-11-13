@@ -1089,6 +1089,26 @@ def build_statline_projections(site: str, season: int, week: int, slate_id: str,
               f"no no-game zero-out).")
         week_was_played = False
     players["no_real_game_this_week"] = False
+    # ROOT-CAUSE FIX (2026-11-13, Wk10 deadline: Cousins LV->MIN, Allen IND->SF, Downs IND->KC).
+    # Team came ONLY from the DK/FD slate file, which keeps the old team after a trade, while
+    # our own ESPN roster pull (status_check.py -> player_status_*.csv) already had the new one.
+    # Nothing ever compared the two, so movers kept their old team's opponent, implied total,
+    # target share and stack. Now: the ESPN roster team wins when it differs and is a team with
+    # a game on this slate; every change is printed and written to output/team_mismatch_wk{N}.csv.
+    try:
+        _st = statline_model.load_injury_status(week)
+        _st = _st[_st["team"].notna()].drop_duplicates("player_id").set_index("player_id")["team"]
+        _esp = players["player_id"].map(_st)
+        _diff = _esp.notna() & (_esp != players["team"]) & _esp.isin(set(opponent_map.keys()))
+        if _diff.any():
+            _rep = players.loc[_diff, ["player_id", "player_name", "position", "team", "salary"]].copy()
+            _rep["espn_team"] = _esp[_diff]
+            for _r in _rep.itertuples():
+                print(f"TEAM RECONCILE: {_r.player_name} ({_r.position}) slate file {_r.team} -> ESPN roster {_r.espn_team}")
+            _rep.to_csv(Path(__file__).resolve().parent.parent / "output" / f"team_mismatch_wk{week}_{slate_id}.csv", index=False)
+            players.loc[_diff, "team"] = _esp[_diff]
+    except Exception as _e:  # non-fatal, same stance as load_injury_status
+        print(f"NOTE: team reconcile vs ESPN roster skipped ({_e})", file=sys.stderr)
     if week_was_played:
         corrected = players["player_id"].map(real_team_this_week)
         played = corrected.notna()

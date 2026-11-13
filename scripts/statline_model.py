@@ -637,6 +637,14 @@ def build_usage(season: int, week: int, variance: dict) -> pd.DataFrame:
         # Decision #9: convert conditional volume into EXPECTED volume.
         part = _participation(g["week"].tolist(),
                              team_wks.get(hist_team, []), lookback)
+        # 2026-11-13 (Wk10 Estime): a mid-season arrival (earlier rows for another team) was
+        # scored as if he'd MISSED his new team's pre-arrival games (Estime 0.4 -> 5.0 carries
+        # instead of 12.5). Midpoint of old and "count only games since first appearance for
+        # this team"; backtest 2021-25 on 302 mover cases: MSE 10.08 -> 9.30, 4/5 seasons better.
+        if g["team"].nunique() > 1:
+            _first = g.loc[g["team"] == hist_team, "week"].min()
+            _since = [x for x in team_wks.get(hist_team, []) if x >= _first]
+            part = round((part + _participation(g["week"].tolist(), _since, lookback)) / 2, 4)
         rec = {"player_id": pid, "position": pos, "games_played": int(len(g)),
                "hist_team": hist_team, "participation": round(part, 4),
                # this-season weeks played (string), for the returning-#1 backup discount
