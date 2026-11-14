@@ -4930,3 +4930,7 @@ timestamp_utc,trigger_type,site,step,status
 2026-11-14T22:01:42.646661+00:00,injury_refresh_scheduled,fd,fd_classic_wk10_main_15Nov2026,status_apply,success
 2026-11-14T22:01:42.646661+00:00,injury_refresh_scheduled,fd,fd_classic_wk10_main_15Nov2026,pivot_finder,success
 2026-11-14T22:01:42.646661+00:00,injury_refresh_scheduled,fd,fd_classic_wk10_main_15Nov2026,cheat_sheet,success
+2026-11-14T22:11:58.024588+00:00,light_vegas_refresh,dk,dk_classic_wk10_early_15Nov2026,cheat_sheet,skipped
+2026-11-14T22:13:03.345387+00:00,light_vegas_refresh,dk,dk_classic_wk10_main_15Nov2026,cheat_sheet,success
+2026-11-14T22:11:49.116494+00:00,light_vegas_refresh,dk,dk_showdown_wk10_SF_DAL_15Nov2026,cheat_sheet,skipped
+2026-11-14T22:11:23.175558+00:00,light_vegas_refresh,fd,fd_classic_wk10_main_15Nov2026,cheat_sheet,success
