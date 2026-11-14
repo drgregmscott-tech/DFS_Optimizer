@@ -1,7 +1,7 @@
 team,component,pool_share,share_basis,raw_sum,target,scale,abs_delta
 DAL,rush,1.0,recent,38.12,25.31,0.6638,12.82
-SF,rush,0.9935,recent,37.96,27.07,0.7131,10.89
+SF,rush,0.9935,recent,39.12,27.07,0.6921,12.05
 SF,pass,1.0,exclusive,30.43,36.01,1.1835,5.58
 DAL,recv,1.0,recent,41.81,36.24,0.8669,5.57
-SF,recv,0.9524,recent,36.02,33.06,0.9179,2.96
+SF,recv,0.9524,recent,37.91,33.06,0.872,4.85
 DAL,pass,1.0,exclusive,34.39,37.2,1.0817,2.81
