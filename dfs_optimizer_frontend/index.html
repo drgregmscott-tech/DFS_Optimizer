@@ -4394,7 +4394,7 @@ in this browser's localStorage.</p>
 
   // ---------------- Cheat Sheet panel ----------------
   var CHEAT_SHEET_TABS = POOL_TABS;
-  var CHEAT_SHEET_POSITION_ORDER = ["QB", "RB", "WR", "TE", "DST"];
+  var CHEAT_SHEET_POSITION_ORDER = ["QB", "RB", "WR", "TE", "DST", "K"];
 
   function confidenceBadgeClass(conf) {
     if (conf >= 8) return "high";
@@ -4417,7 +4417,7 @@ in this browser's localStorage.</p>
     var tableEl = document.getElementById("cheatSheetTable");
     var sheet = state.cheatSheet[site];
     if (!sheet || !sheet.rows || sheet.rows.length === 0) {
-      tableEl.innerHTML = '<div class="cheat-empty">No cheat sheet generated yet for this slate -- built automatically for the main classic slate by the Sat/Sun refresh pipeline (scripts/cheat_sheet.py).</div>';
+      tableEl.innerHTML = '<div class="cheat-empty">No cheat sheet generated yet for this slate -- built automatically for the main classic slate and each showdown slate by the refresh pipeline (scripts/cheat_sheet.py, scripts/cheat_sheet_showdown.py).</div>';
       return;
     }
     var allActive = state.cheatSheetTabs.ALL || Object.keys(state.cheatSheetTabs).length === 0;
@@ -4426,7 +4426,9 @@ in this browser's localStorage.</p>
       if (state.cheatSheetTabs.DST && isDefensePosition(r.position)) return true;
       return !!state.cheatSheetTabs[r.position];
     });
+    var hasOverall = allActive && rows.length > 0 && rows.every(function (r) { return parseInt(r.overall_rank, 10) > 0; });
     rows = rows.slice().sort(function (a, b) {
+      if (hasOverall) return parseInt(a.overall_rank, 10) - parseInt(b.overall_rank, 10);
       var pa = CHEAT_SHEET_POSITION_ORDER.indexOf(a.position);
       var pb = CHEAT_SHEET_POSITION_ORDER.indexOf(b.position);
       return pa - pb || (parseInt(a.rank, 10) || 0) - (parseInt(b.rank, 10) || 0);
@@ -4448,7 +4450,7 @@ in this browser's localStorage.</p>
         : "";
       return '<div class="cheat-row' + (isBonus ? " bonus" : "") + '">' +
         '<div class="cheat-row-stats">' +
-        '<div class="cheat-rank">' + (isBonus ? "+" : escapeHtml(r.rank)) + '</div>' +
+        '<div class="cheat-rank">' + (isBonus ? "+" : escapeHtml(hasOverall ? r.overall_rank : r.rank)) + '</div>' +
         '<div class="slot-badge" style="width:40px;">' + escapeHtml(r.position) + '</div>' +
         '<div class="player-cell"><div class="player-name">' + escapeHtml(String(r.player_name).trim()) + (injuryByPid[r.player_id] || "") + tagHtml + '</div>' +
         '<div class="player-meta">' + escapeHtml(r.team) + ' vs ' + escapeHtml(r.opponent) + '</div></div>' +
