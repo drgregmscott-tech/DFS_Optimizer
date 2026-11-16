@@ -1,51 +1,51 @@
 player,salary,proj_own,lo,hi
-James Cook III,7400,58.9,42.1,84.2
-Chuba Hubbard,7200,57.9,36.8,84.2
-Tyler Warren,4400,55.8,31.6,68.4
-Laquon Treadwell,3000,52.6,26.3,78.9
-Parker Washington,6200,40.4,26.3,52.6
-Justin Jefferson,6800,39.3,26.3,52.6
-Josh Allen,7500,38.6,21.1,57.9
-Jakobi Meyers,4200,38.6,26.3,57.9
-Bijan Robinson,8200,37.9,26.3,52.6
-Ollie Gordon II,5800,31.9,21.1,42.1
-Travis Kelce,4700,27.7,10.5,52.6
-Chris Olave,7000,27.0,10.5,42.1
-New Orleans Defense,2700,27.0,5.3,36.8
-Houston Defense,3400,26.0,0.0,47.4
-Trevor Lawrence,6600,24.2,15.8,42.1
-Green Bay Defense,2900,22.1,5.3,42.1
-Rashee Rice,6100,21.4,5.3,36.8
-Carnell Tate,5200,19.6,10.5,31.6
-Drake London,6600,18.9,5.3,31.6
-Tetairoa McMillan,6700,18.2,5.3,31.6
-Kenneth Walker,9200,16.1,0.0,31.6
-Bryce Young,5800,16.1,5.3,47.4
-Darren Waller,3600,13.7,5.3,26.3
-Bhayshul Tuten,6600,12.6,0.0,26.3
-Jonathan Taylor,7800,11.9,0.0,21.1
-Tyler Shough,5600,11.2,0.0,21.1
-T.J. Hockenson,4300,10.9,0.0,26.3
-Kyle Pitts Sr.,3800,10.5,0.0,26.3
-Minnesota Defense,2800,10.2,0.0,21.1
-Dalton Schultz,3400,9.5,0.0,21.1
-Greg Dulcich,3300,9.5,0.0,26.3
-KC Concepcion Jr.,4800,6.3,0.0,15.8
-Brenton Strange,4100,6.3,0.0,15.8
-Caleb Douglas,4400,5.3,0.0,15.8
-Wan'Dale Robinson,4500,5.3,0.0,15.8
-Mason Taylor,2900,5.3,0.0,21.1
-Patrick Mahomes,6000,4.9,0.0,15.8
-Miami Defense,2600,4.2,0.0,10.5
-Denzel Boston,5200,3.9,0.0,10.5
-DJ Moore,5800,3.9,0.0,10.5
-C.J. Stroud,5900,3.5,0.0,10.5
-Tony Pollard,6000,3.5,0.0,10.5
-Tommy Tremble,2900,3.5,0.0,10.5
-Indianapolis Defense,3000,3.2,0.0,10.5
-NY Jets Defense,2100,2.8,0.0,21.1
-Matthew Golden,7300,2.5,0.0,5.3
-Jalen Coker,5700,2.1,0.0,10.5
-Jordan Addison,4800,2.1,0.0,10.5
-Tennessee Defense,2000,2.1,0.0,10.5
-Breece Hall,5900,1.8,0.0,10.5
+Emmett Johnson,4700,98.6,89.5,100.0
+Chuba Hubbard,7200,60.4,42.1,84.2
+James Cook III,7400,58.9,42.1,73.7
+Justin Jefferson,6800,51.2,31.6,68.4
+Tyler Warren,4400,49.8,31.6,73.7
+Parker Washington,6200,43.2,21.1,68.4
+Josh Allen,7500,38.2,26.3,52.6
+Wan'Dale Robinson,4500,34.0,15.8,47.4
+Rashee Rice,6100,29.5,10.5,52.6
+Chris Olave,7000,27.4,10.5,42.1
+Houston Defense,3400,27.0,10.5,52.6
+Bijan Robinson,8200,26.3,21.1,36.8
+Travis Kelce,4700,26.0,5.3,36.8
+Green Bay Defense,2900,25.3,5.3,47.4
+Jakobi Meyers,4200,24.6,15.8,31.6
+New Orleans Defense,2700,23.5,0.0,36.8
+Trevor Lawrence,6600,22.1,10.5,52.6
+Drake London,6600,21.4,5.3,31.6
+Tetairoa McMillan,6700,20.0,5.3,42.1
+Laquon Treadwell,3000,17.2,0.0,26.3
+Ollie Gordon II,5800,16.1,5.3,26.3
+Bryce Young,5800,13.0,5.3,26.3
+Patrick Mahomes,6000,10.9,0.0,21.1
+Tyler Shough,5600,8.8,0.0,21.1
+Minnesota Defense,2800,8.4,0.0,21.1
+Kyle Pitts Sr.,3800,7.7,0.0,21.1
+Denzel Boston,5200,7.4,0.0,15.8
+Darren Waller,3600,7.4,0.0,21.1
+Jonathan Taylor,7800,7.0,0.0,21.1
+Elic Ayomanor,3200,6.3,0.0,15.8
+Bhayshul Tuten,6600,6.0,0.0,15.8
+Dalton Schultz,3400,6.0,0.0,15.8
+Matthew Golden,7300,5.3,0.0,15.8
+Garrett Wilson,6500,5.3,0.0,15.8
+C.J. Stroud,5900,4.9,0.0,15.8
+Woody Marks,5700,4.9,0.0,10.5
+Miami Defense,2600,4.2,0.0,15.8
+Indianapolis Defense,3000,3.9,0.0,15.8
+DJ Moore,5800,3.5,0.0,10.5
+Greg Dulcich,3300,3.5,0.0,10.5
+Brenton Strange,4100,2.8,0.0,10.5
+Tennessee Defense,2000,2.8,0.0,10.5
+KC Concepcion Jr.,4800,2.5,0.0,10.5
+Chimere Dike,3000,2.5,0.0,10.5
+Christian Watson,7700,2.1,0.0,10.5
+Jalen Coker,5700,2.1,0.0,5.3
+Caleb Douglas,4400,2.1,0.0,5.3
+Cleveland Defense,2500,2.1,0.0,10.5
+NY Jets Defense,2100,2.1,0.0,5.3
+Mason Taylor,2900,1.8,0.0,5.3

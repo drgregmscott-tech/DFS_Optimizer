@@ -1,0 +1,10 @@
+event_id,home_abbr,away_abbr,home,away,commence_time
+3c71d515b726f1096aabb435badb83fd,ATL,KC,Atlanta Falcons,Kansas City Chiefs,2026-11-15T18:00:00Z
+1057d50949844ddf483da9c8c20354be,NYJ,BUF,New York Jets,Buffalo Bills,2026-11-15T18:00:00Z
+e5aa20e1364dd639f042af1c2281bbe2,NO,CAR,New Orleans Saints,Carolina Panthers,2026-11-15T18:00:00Z
+be0e03cc42fbc9b6962467b22c7bf9dd,CLE,HOU,Cleveland Browns,Houston Texans,2026-11-15T18:00:00Z
+5d8d85473b87f772a979ecf294acab94,GB,MIN,Green Bay Packers,Minnesota Vikings,2026-11-15T18:00:00Z
+b5700b4d938fd94429f60d4622cc9c0a,IND,MIA,Indianapolis Colts,Miami Dolphins,2026-11-15T18:00:00Z
+28800df7e768ecec14f116454d560f9b,TEN,JAX,Tennessee Titans,Jacksonville Jaguars,2026-11-15T18:00:00Z
+66f9e83cf025d58acee12bce18661fb3,HOU,IND,Houston Texans,Indianapolis Colts,2026-11-20T01:15:00Z
+4c5b1c0843a260278e95eb93e7787576,BUF,MIA,Buffalo Bills,Miami Dolphins,2026-11-22T18:00:00Z
