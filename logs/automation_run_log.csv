@@ -5026,3 +5026,7 @@ timestamp_utc,trigger_type,site,step,status
 2026-11-16T23:37:16.396465+00:00,injury_refresh_scheduled,dk,dk_showdown_wk10_LAC_BAL_16Nov2026,status_apply,success
 2026-11-16T23:37:16.396465+00:00,injury_refresh_scheduled,dk,dk_showdown_wk10_LAC_BAL_16Nov2026,pivot_finder,success
 2026-11-16T23:37:16.396465+00:00,injury_refresh_scheduled,dk,dk_showdown_wk10_LAC_BAL_16Nov2026,cheat_sheet,skipped
+2026-11-16T23:57:19.444367+00:00,injury_refresh_scheduled,dk,dk_showdown_wk10_LAC_BAL_16Nov2026,build_projections,success
+2026-11-16T23:57:19.444367+00:00,injury_refresh_scheduled,dk,dk_showdown_wk10_LAC_BAL_16Nov2026,status_apply,success
+2026-11-16T23:57:19.444367+00:00,injury_refresh_scheduled,dk,dk_showdown_wk10_LAC_BAL_16Nov2026,pivot_finder,success
+2026-11-16T23:57:19.444367+00:00,injury_refresh_scheduled,dk,dk_showdown_wk10_LAC_BAL_16Nov2026,cheat_sheet,skipped
