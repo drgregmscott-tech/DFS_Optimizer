@@ -1,181 +1,76 @@
 """
-cheat_sheet.py
-==============
+cheat_sheet.py  (v3, 2026-11-16)
+================================
 
 Weekly "top plays" cheat sheet -- a ranked, fixed-size list per position
-(QB 5 / RB 10 / WR 15 / TE 5 / DST 5) for the main classic slate, each row
-carrying a 1-10 confidence score, salary/projection/ownership for reference,
-and a short plain-English rationale. This is a new artifact, not a rework
-of anything existing -- see pivot_finder.py for the project's established
-"same input file, different purpose" sibling script.
+(QB 5 / RB 10 / WR 15 / TE 5 / DST 5) for the main classic slate, plus
+Value / Leverage / Value Candidate bonus rows, each row carrying a 1-10
+confidence score, salary/projection/ownership for reference, and a short
+plain-English rationale (newline-separated bullets). It is a data-grounded
+GUIDE, not a validation or a prediction: every word in a bullet is meant to
+match the number behind it. Design: analysis/cheat_sheet_v3/SPEC.md.
 
-Ranking is NOT raw projection order. For each position group, every player
-is z-scored (within that position's own pool, not across positions) on the
-DFS game-theory factors that apply to it, then combined into one weighted
-composite score:
+Composite score (unchanged from v2). For each position group every player is
+z-scored within that position's own pool on the DFS game-theory factors that
+apply to it and combined with FACTOR_WEIGHTS:
 
   - value       final_projection / (salary/1000)
   - ceiling     statline_p90 (Monte Carlo 90th-percentile outcome)
   - floor       statline_p10 (Monte Carlo 10th-percentile outcome)
   - matchup     matchup_factor. NOTE (2026-11-03): build_projections_statline.py
                 neutralizes this to a flat 1.0 for QB/RB/WR/TE project-wide
-                (neutral_skill_matchup=True, since 2026-09-24 -- it measurably
-                hurt projection accuracy; see that file's own comment). DST's
-                factor is real and untouched. So for skill positions this
-                composite factor currently contributes nothing to ranking --
-                left in rather than removed because the decision is RESOLVED,
-                not pending: re-checked 2026-10-26 and again 2026-11-03 with
-                full 2021-25 history + 8 weeks of 2026 (analysis/
-                proj_b1_revisit/RESULTS.md, local-only), verdict is still
-                "keep neutralised" (full strength still hurts, best partial
-                weight isn't worth the complexity, RB is still wrong-way).
-                Nothing here needs to change unless a future re-check flips
-                that call. Rationale text's matchup clause is DELIBERATELY a
-                different, separate signal from this one -- see
-                matchup_env_sentence() and load_display_matchup_factors()
-                below.
+                (neutral_skill_matchup=True; it measurably hurt projection
+                accuracy; re-checked 2026-10-26 and 2026-11-03, verdict "keep
+                neutralised"). DST's factor is real. So for skill positions
+                this contributes nothing to the composite. The rationale's
+                matchup bullet is a DIFFERENT, display-only signal -- see
+                load_display_matchup_factors().
   - game_env    own team's implied_total for QB/RB/WR/TE; for DST, the
-                OPPONENT's implied_total, inverted (a low-scoring spot for
-                the opponent is the good environment for a defense) --
-                looked up via a team -> implied_total map built from the
-                full pool, since implied_total is constant per team
+                OPPONENT's implied_total, inverted
   - usage       QB: proj_pass_att. RB: proj_rush_att + proj_targets.
-                WR/TE: proj_targets. DST: not applicable (omitted from
-                DST's composite, weights renormalized accordingly).
+                WR/TE: proj_targets. DST: not applicable (weights renormalized)
 
-Ownership leverage (zscore(final_projection) - zscore(estimated_ownership_pct)
-within the position pool) is deliberately EXCLUDED from the composite/
-ranking -- see score_position_group()'s comment for the real-data finding
-(Jordan Love, 2026-10-24) that drove this: leverage answers "is this
-underowned?", not "is this good?", and blending the two penalizes a player
-for being correctly popular, which buried an obviously-elite, deservedly-
-chalky QB at rank 20/63. It's still computed and surfaced as its own
-"Leverage Pick" badge in build_cheat_sheet() (the single best true
-leverage play per position gets guaranteed visibility, same treatment as
-Value Pick below) -- just never as a penalty on the main ranking.
+Ownership leverage (zscore(projection) - zscore(ownership)) is deliberately
+EXCLUDED from the composite (real-data finding 2026-10-24, Jordan Love: it
+answers "is this underowned?", not "is this good?"). It still drives the
+"Leverage Pick" badge.
 
-Weights are named constants below (FACTOR_WEIGHTS) so they're easy to see
-and retune later -- not fitted to anything, just a reasonable starting
-split where ceiling/floor get a little less weight than value/matchup/
-game_env/usage since they're already correlated with value.
+v3 changes (owner request, 2026-11-16)
+--------------------------------------
+1. Matchup words: 5 tiers on fixed cutoffs (smash spot / favorable / neutral /
+   below average / tough), separate cutoffs for DST's own matchup_factor.
+2. Game environment: 5 tiers (elite / plus / middling / low-scoring /
+   bottom-tier; DST on the opponent's total: elite / plus / middling / tough /
+   brutal), with game total and spread printed next to the implied total.
+3. Range / bust risk no longer comes from the simulated floor (which is a
+   fixed fraction of the projection, so it just encodes price/projection
+   level). Skill positions get a Role Security score (0-100) from projected
+   volume, team share, recent snap %, and stability flags (games played,
+   missed time, usage trend, injury step-up dependence, questionable tag),
+   and a bust-risk tier from that plus how often the player has actually
+   dudded this season (a game under half his own season average). No salary
+   term anywhere. Two bullets: "Usage" and "Range".
+4. DST gets an "Upside setup" bullet (game environment, spread, game total,
+   opposing sack rate and QB INT rate, rookie/low-sample QB, opposing skill
+   injuries, weather) and a basic range of projection +/- the DST model's
+   held-out typical miss, with the pick-six/safety caveat kept.
+5. The "Builds" bullet (share of the user's built lineups) was removed
+   2026-11-16 at the owner's request. (Value Candidate rows from the Wk9 Item
+   A redesign are kept: top-5 raw $/pt RB/WR/TE not already shown.)
+6. Confidence is an absolute quality score Q (see compute_quality()):
+   composite strength percentile within the startable pool, role security
+   (or DST setup), game environment, matchup, history -- fixed anchors, not
+   re-standardized per slate. The main list is ranked by Q and gated on role
+   security so a fragile role cannot hold a "top play" slot, and bonus rows
+   use the same Q, so confidence never rises as you read down the list.
+7. New badges appended to the existing badge string: Solid Value, Boom/Bust
+   Dart, Fragile Chalk.
 
-Confidence (1-10): v1 re-standardized the composite score against the FULL
-eligible position pool. That correctly keeps a weak slate's best player out
-of the 9-10 band, but it also meant every row actually shown (already the
-composite top-N by definition) clustered at 8-9 regardless of position --
-real-data check on the Wk8 classic slate: mean 7.85, 90% of rows at 6-10,
-nothing below 5. A confidence score that reads the same for almost every
-play isn't telling the user anything, and -- the specific complaint that
-drove this rework -- it reads as equally confident in a min-salary, no-floor
-punt as it does in a $8K stud.
-
-v2 re-standardizes within the cohort actually displayed for that position
-(the composite top-N plus any Value/Leverage bonus rows), so the 1-10 scale
-spreads across what the user is actually looking at instead of a nearly-flat
-upper band. It also folds in a bust-risk penalty -- a player's own
-(statline_p90 - statline_p10) / final_projection, z-scored the same way --
-so a boom-or-bust cheap play no longer carries the same number as an
-equally-ranked high-floor play; that's the direct fix for "false confidence"
-on scrubby Value Pick rows (see the Value Pick comment in build_cheat_sheet()
-below). A small slate-strength term (the #1 player's full-pool composite_z)
-is kept so a stacked slate's best play can still outrank a thin slate's best
-play, without letting that collapse the within-cohort spread back down:
-
-    within_z = zscore(composite_z within displayed cohort)
-    bust_z   = zscore(bust_raw within displayed cohort)
-    combined = within_z * 1.5 - bust_z * 0.8 + slate_shift * 0.3
-    confidence = clip(round(5.5 + combined), 1, 10)
-
-See compute_confidence() for the real code; CONF_* constants below for the
-weights (validated against the Wk8 classic slate -- see commit history, not
-fitted to anything, same "reasonable starting split, easy to retune" spirit
-as FACTOR_WEIGHTS).
-
-Rationale text is built deterministically -- no model call. v2 (2026-11-03)
-tried a fixed multi-sentence prose template; the user's reaction (2026-11-04)
-was that it still read as "robotic... only minor differences in numbers"
-even after a rewrite that varied sentence structure and wording per player
-(see commit history for that attempt). Rather than keep tuning prose, v3
-switched to the user's other offered option: plain bullet points of the raw
-data, newline-separated (the frontend's .cheat-rationale CSS uses
-white-space:pre-line so each bullet renders on its own line; the CSV field
-itself just contains literal \n characters inside a quoted field, which both
-pandas' writer and the frontend's parseCSV() handle correctly -- verified
-before shipping). Every row gets exactly 4 bullets, same honest signals as
-before: (1) matchup -- the real, un-neutralized defense-vs-position number
-(see below), (2) game environment -- the team's (or for DST, the opponent's)
-implied total, (3) history from dk_avg_ppg/games_played -- NOT season_avg/
-recent_form, which build_projections_statline.py documents as the
-projection with the market factor divided back out, i.e. circular with
-final_projection, not an honest history signal, and (4) range -- the real
-floor/ceiling spread, judged with an ABSOLUTE floor bar so a thin floor
-never reads as "low risk" just because peers are worse (see ABS_FLOOR_*).
-Value is still deliberately left out of the bullets (user feedback,
-2026-11-03: the Value Pick badge already says "this is the cheap play").
-See build_rationale() below.
-
-Matchup clause, display-only (user decision, 2026-11-03): matchup_factor is
-neutralized for QB/RB/WR/TE in the ranking composite (see above), but the
-user still wants the rationale to state the real defense-vs-position signal
-("does this defense actually give up a lot of points to this position") even
-though it isn't currently trusted enough to rank on. load_display_matchup_
-factors() reads the SAME output/matchup_factors_{site}_{season}_{week}.csv
-build_projections.py's load_matchup_factors() reads -- the raw, un-
-neutralized per-team/position ratio -- for text only. This is why cheat_
-sheet.py now also takes --season/--week (previously derived nothing from
-them): the file is keyed by season+week, not slate_id. DST is excluded from
-this lookup (that file only covers QB/RB/WR/TE -- DST's own matchup_factor
-column was never neutralized, so DST rows keep reading straight from
-final_projections like before 2026-11-03).
-
-Value Pick eligibility (user decision, 2026-11-03): previously "cheap half
-of the position's salary pool + a nonzero projected role." Real-world
-complaint: Corey Kiner (RB3 on his own team, 4.6 of his team's RB carries
-vs. the actual lead back's 9.6) cleared that bar most weeks purely because
-SOME volume was projected, not because he's a play anyone would realistically
-trust. Now requires the single TOP usage-earner at this position on their
-OWN team (by projected touches/targets among teammates who are actually
-active this week) -- Gunnar Helm (clear TE1 on a thin-depth team) clears
-this; Corey Kiner (clearly behind his own team's lead back) does not. See
-the Value Pick block in build_cheat_sheet() for the real code and the
-Carson Wentz/Amon-Ra lessons this replaces, not removes.
-
-Only players with final_projection > 0 are eligible (status_check.py's
-`apply` step zeroes OUT players in final_projections before this script
-runs -- a zeroed/bye player is never a usable top play regardless of any
-other signal, same filter pivot_finder.py already uses).
-
-Build-exposure awareness (Wk9 Item A redesign, 2026-11-09): a per-position composite ranking is "optimizer
--blind" -- it never looks at what the optimizer's own lineup-building actually does. Went through two prior
-attempts before landing here, both on real user feedback the same day:
-  attempt 1 -- an "optimizer exposure x thin floor = RISK flag" mechanism, shipped in the frontend's Exposure
-    panel, then walked back: "when I told you what directed me towards or away from a player, it was a
-    multitude of factors and this isn't really capturing that." A 2-variable pass/fail flag can't represent
-    that judgment call.
-  attempt 2 -- surfacing players by their ACTUAL exposure in a real `lineups_multi_*.csv` build ("Build Pick"
-    rows). Closer, but the user flagged a real gap: it only ever sees players from whatever one specific
-    build happens to be loaded -- noisy, zero-coverage before "Build Lineups" has even been run once, and
-    dependent on that run's own exposure-cap settings. User's own fix: "we do for the skill positions (RB,
-    WR, TE) the top 5 players when ranked by value (projected points per dollar). Those are the guys that
-    are most likely to show up in the lineups and the ones we need data on." Value-per-dollar is a direct,
-    deterministic proxy for "likely to get optimizer exposure" -- available the moment projections exist,
-    with no dependency on any one build having already run.
-Landed design (additive, not a replacement for the existing top-N/Value Pick/Leverage Pick -- "keep our top
-plays as the core... and also keep value and leverage picks," same session):
-  1. Every displayed row still gets the passive "Builds: X% of your lineups" rationale bullet when a real
-     build exists (`lineups_multi_{site}_{slate_id}_*.csv`, same newest-by-mtime file `pivot_finder.py`
-     already reads) -- this part of attempt 2 was never the complaint, kept as-is. Degrades to "no lineups
-     built yet" when none exists, same "flag, don't silently assume" pattern as the rest of this script.
-  2. For RB/WR/TE only (not QB -- one real starter a week, this question barely applies; not DST, no
-     per-dollar value concept the same way), the top VALUE_CANDIDATE_TOP_N players by raw `_value_raw`
-     (final_projection / (salary/1000)) who AREN'T already shown (missed the composite top-N and aren't
-     already the Value/Leverage pick) are added as "Value Candidate" bonus rows. Deliberately NOT the same
-     test as the existing single Value Pick (team-lead-only, capped at the leads' own median salary) -- this
-     is unrestricted top-5-by-ratio, so it also surfaces non-lead cheap pieces a true value play restricted
-     to leads would correctly exclude.
-See `analysis/wk9_item_a_lineup_aware_flagging/RESULTS.md` for attempt 1's mockup and
-`WK9_POSTMORTEM_CHECKLIST.md` Item A for the full back-and-forth -- the walk-backs are real history, not
-dead code left for no reason.
+Value Pick eligibility (user decision, 2026-11-03, unchanged): the single top
+usage-earner at the position on their OWN team, cheaper than the median
+team-lead salary (Corey Kiner / Zay Flowers lessons). DST keeps the
+cheap-half-of-the-position-pool rule. Only players with final_projection > 0
+are eligible (status_check.py zeroes OUT players).
 
 Usage:
     python3 scripts/cheat_sheet.py --site dk --season 2026 --week 8 --slate-id dk_classic_wk7_main_25Oct2026
@@ -186,6 +81,7 @@ Output:
 """
 
 import argparse
+import json
 import sys
 from pathlib import Path
 
@@ -194,18 +90,14 @@ import pandas as pd
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 OUTPUT_DIR = REPO_ROOT / "output"
+DATA_DIR = REPO_ROOT / "data"
 
 DEFENSE_POSITION_LABELS = {"DST", "D", "DEF"}
 
 # Fixed per-position list sizes -- user-specified, held constant regardless
-# of slate strength (a weak slate shows up as low confidence numbers
-# throughout the list, not a shorter list).
+# of slate strength.
 TOP_N_BY_POSITION = {"QB": 5, "RB": 10, "WR": 15, "TE": 5, "DST": 5}
 
-# Starting weights -- see module docstring. ceiling/floor intentionally
-# lighter since they're correlated with value; DST has no usage factor so
-# its weights are renormalized (see composite_score()) rather than listed
-# separately here.
 FACTOR_WEIGHTS = {
     "value": 1.0,
     "ceiling": 0.75,
@@ -216,49 +108,70 @@ FACTOR_WEIGHTS = {
     "leverage": 1.0,
 }
 
-# Confidence weights -- see module docstring "Confidence" section for the
-# real-data reasoning (Wk8 classic slate clustering at 8-9 under v1).
-CONF_CENTER = 5.5
-CONF_WITHIN_WEIGHT = 1.5   # spread relative to the cohort actually shown
-CONF_BUST_WEIGHT = 0.8     # penalty for a wide floor/ceiling spread
-CONF_SLATE_WEIGHT = 0.3    # muted "weak slate reads weak" signal
-
-# Value Candidate rows -- see module docstring "Build-exposure awareness,"
-# landed design point 2. RB/WR/TE only (user's explicit scope -- QB/DST
-# excluded). 5 is the user's own number, not fitted to anything.
+# Value Candidate rows (Wk9 Item A): RB/WR/TE only, top 5 by raw $/pt not
+# already displayed.
 VALUE_CANDIDATE_POSITIONS = {"RB", "WR", "TE"}
 VALUE_CANDIDATE_TOP_N = 5
 
+# ---- matchup tiers (SPEC A) -------------------------------------------------
+MATCHUP_CUTS = [(1.15, "smash spot"), (1.05, "favorable"), (0.95, "neutral"), (0.85, "below average")]
+DST_MATCHUP_CUTS = [(1.30, "smash spot"), (1.10, "favorable"), (0.90, "neutral"), (0.75, "below average")]
 
-def load_build_exposure(site: str, slate_id: str) -> dict:
-    """Real per-player exposure (% of built lineups a player landed in),
-    straight off the same lineups_multi_{site}_{slate_id}_*.csv file
-    pivot_finder.py's load_lineup_players() already reads -- "newest build
-    for this slate, whoever ran it" (glob by mtime, legacy exact filename
-    as a fallback). Returns {} if no build exists yet for this slate (a
-    cheat sheet is often generated before any lineups are built) -- this
-    whole feature degrades to "no build-exposure info," not a crash, same
-    spirit as load_display_matchup_factors() above."""
-    candidates = sorted(
-        OUTPUT_DIR.glob(f"lineups_multi_{site}_{slate_id}_*.csv"),
-        key=lambda p: p.stat().st_mtime, reverse=True,
-    )
-    legacy_path = OUTPUT_DIR / f"lineups_multi_{site}_{slate_id}.csv"
-    path = candidates[0] if candidates else legacy_path
-    if not path.exists():
-        print(f"NOTE: no built lineups found for {site}/{slate_id} -- cheat "
-              f"sheet's Builds bullet will read 'no lineups built yet' for "
-              f"every row (Value Candidate rows are unaffected -- they don't "
-              f"depend on a build existing).", file=sys.stderr)
-        return {}
-    df = pd.read_csv(path, dtype={"player_id": str})
-    if "player_id" not in df.columns or "lineup_id" not in df.columns:
-        return {}
-    n_lineups = df["lineup_id"].nunique()
-    if n_lineups == 0:
-        return {}
-    counts = df.groupby("player_id")["lineup_id"].nunique()
-    return (counts / n_lineups * 100.0).to_dict()
+# ---- game environment tiers (SPEC B) ----------------------------------------
+# Relative to the slate's own mean implied team total.
+GAME_ENV_MARGIN = 2.0
+GAME_ENV_STRONG = 5.0
+ENV_NAMES_SKILL = ["elite", "plus", "middling", "low-scoring", "bottom-tier"]
+ENV_NAMES_DST = ["elite", "plus", "middling", "tough", "brutal"]
+SPREAD_PICKEM = 0.5
+
+HISTORY_DIFF_MARGIN = 3.0
+
+# ---- role security (SPEC C3) ------------------------------------------------
+VOL_BARS = {"QB": (28.0, 36.0), "RB": (8.0, 18.0), "WR": (4.0, 8.5), "TE": (3.8, 7.8)}
+SHARE_BARS = {"RB": (0.30, 0.75), "WR": (0.12, 0.26), "TE": (0.12, 0.24)}
+SNAP_BARS = {"QB": (0.50, 0.95), "RB": (0.35, 0.75), "WR": (0.55, 0.85), "TE": (0.55, 0.85)}
+W_VOL, W_SHARE, W_SNAP, W_STAB = 0.30, 0.20, 0.20, 0.30
+RS_TIERS = [(85.0, "locked-in role"), (65.0, "solid role"), (45.0, "partial role")]  # else fragile
+STEPUP_UNPROVEN_FRAC = 0.25
+STEPUP_COUNT_FRAC = 0.10
+
+# ---- bust-risk tier (SPEC C4) -----------------------------------------------
+W_RS_IN_RISK, W_CONS_IN_RISK = 0.65, 0.35
+DUD_FRAC = 0.5          # a "dud" is a game under half the player's own season average
+DUD_SHRINK_K = 4
+DUD_RATE_FLOOR_CAP = 0.5
+RISK_TIERS = [(30.0, "low bust risk"), (42.0, "moderate bust risk"), (55.0, "elevated bust risk")]  # else high
+DEFAULT_POS_DUD_RATE = {"QB": 0.066, "RB": 0.206, "WR": 0.225, "TE": 0.277}
+
+# ---- confidence / membership (SPEC F, G) ------------------------------------
+STARTABLE_MIN_PROJ = {"QB": 12.0, "RB": 5.0, "WR": 5.0, "TE": 4.0, "DST": 0.0}
+CONF_W_STRENGTH = 0.45
+CONF_W_ROLE = 0.35
+CONF_W_ENV = 0.08
+CONF_W_MATCHUP = 0.05    # display matchup is deliberately not trusted for ranking; 0 removes it
+CONF_W_HISTORY = 0.07
+CONF_Q_LO, CONF_Q_HI = 0.40, 1.00
+RS_MAIN_LIST_MIN = 45.0  # 0 disables the role gate on the main list
+ENV_SCORE = {"elite": 1.0, "plus": 0.75, "middling": 0.5, "low-scoring": 0.25, "tough": 0.25,
+             "bottom-tier": 0.0, "brutal": 0.0}
+MATCHUP_SCORE = {"smash spot": 1.0, "favorable": 0.75, "neutral": 0.5, "below average": 0.25, "tough": 0.0}
+
+# ---- risk badges (SPEC G3) --------------------------------------------------
+SOLID_VALUE_MIN_RS = 65.0
+DART_MAX_RS = 45.0
+FRAGILE_CHALK_OWN = 15.0
+FRAGILE_CHALK_RS = 65.0
+
+# ---- DST setup (SPEC D) -----------------------------------------------------
+DST_TYPICAL_MISS = 4.3   # fallback; real value read from data/dst_recal_v2.json
+DST_SETUP_TIERS = [(4, "strong"), (2, "good"), (0, "neutral")]  # else poor
+SACK_HIGH_MULT, SACK_LOW_MULT = 1.12, 0.87
+INT_HIGH_MULT, INT_LOW_MULT = 0.97, 0.77
+DROPBACKS_HIGH = 38.4
+LOW_TOTAL, HIGH_TOTAL = 41.0, 49.0
+SPREAD_BIG = 6.0
+OPP_OUT_MIN_PPG, OPP_OUT_MIN_GAMES = 10.0, 3
 
 
 def canonical_position(pos: str) -> str:
@@ -266,7 +179,30 @@ def canonical_position(pos: str) -> str:
     return "DST" if p in DEFENSE_POSITION_LABELS else p
 
 
-def load_final_projections(site: str, slate_id: str) -> pd.DataFrame:
+def _is_num(x) -> bool:
+    try:
+        return x is not None and not pd.isna(x)
+    except (TypeError, ValueError):
+        return False
+
+
+def _num(row, col, default=np.nan):
+    v = row.get(col, default) if hasattr(row, "get") else default
+    return float(v) if _is_num(v) else default
+
+
+def lin(x, lo, hi) -> float:
+    if not _is_num(x):
+        return 0.0
+    return float(np.clip((x - lo) / (hi - lo), 0.0, 1.0))
+
+
+# =============================================================================
+# Loaders (each degrades to empty + a NOTE on stderr, never crashes)
+# =============================================================================
+
+def read_final_projections(site: str, slate_id: str) -> pd.DataFrame:
+    """Unfiltered final_projections (includes zeroed/OUT rows)."""
     path = OUTPUT_DIR / f"final_projections_{site}_{slate_id}.csv"
     if not path.exists():
         raise FileNotFoundError(
@@ -285,18 +221,20 @@ def load_final_projections(site: str, slate_id: str) -> pd.DataFrame:
         raise SystemExit(
             f"{path} is missing expected columns: {sorted(missing)}. "
             f"build_projections_statline.py's output schema may have "
-            f"changed -- update this script's load_final_projections()."
+            f"changed -- update this script's read_final_projections()."
         )
     df["position"] = df["position"].apply(canonical_position)
+    return df
+
+
+def load_final_projections(site: str, slate_id: str) -> pd.DataFrame:
+    df = read_final_projections(site, slate_id)
     return df[df["final_projection"] > 0].copy()
 
 
 def load_display_matchup_factors(site: str, season: int, week: int) -> dict:
     """The REAL (un-neutralized) per-team/position defense-vs-position ratio,
-    for the rationale text only -- see module docstring "Matchup clause,
-    display-only." Missing file degrades to "no real signal, show neutral"
-    (same spirit as build_projections.py's own fillna(1.0)) rather than
-    crashing the whole cheat sheet build over a display-only lookup."""
+    for the rationale text only. Missing file degrades to neutral (1.0)."""
     path = OUTPUT_DIR / f"matchup_factors_{site}_{season}_{week}.csv"
     if not path.exists():
         print(f"NOTE: {path} not found -- rationale matchup clause will read "
@@ -306,11 +244,123 @@ def load_display_matchup_factors(site: str, season: int, week: int) -> dict:
     return {(r["team"], r["position"]): r["matchup_factor"] for _, r in mf.iterrows()}
 
 
+def load_snap_recent(season: int, week: int) -> pd.DataFrame:
+    """Offense snap rows from weeks BEFORE `week` with offense_snaps > 0, sorted
+    by player/week. Empty frame (and a NOTE) if the file is missing."""
+    path = DATA_DIR / f"snap_counts_{season}.parquet"
+    cols = ["player_id", "week", "offense_snaps", "offense_pct"]
+    try:
+        s = pd.read_parquet(path)
+        s = s[(s["week"] < week) & (s["offense_snaps"] > 0)]
+        return s[cols].sort_values(["player_id", "week"]).reset_index(drop=True)
+    except Exception as exc:  # noqa: BLE001 -- degrade, never crash
+        print(f"NOTE: snap counts unavailable ({path.name}: {type(exc).__name__}) -- "
+              f"usage bullets will read 'no snap data yet'.", file=sys.stderr)
+        return pd.DataFrame(columns=cols)
+
+
+def load_game_log(season: int, week: int, snaps: pd.DataFrame) -> dict:
+    """{player_id: (n_games, n_duds)} for this season's weeks < `week`. A game
+    counts when the player had offense snaps (falls back to any
+    attempts/carries/targets when snap data is missing). A dud is a game under
+    DUD_FRAC of the player's own season-average PPR points."""
+    path = DATA_DIR / f"weekly_stats_{season}.parquet"
+    try:
+        ws = pd.read_parquet(path)
+        if "season_type" in ws.columns:
+            ws = ws[ws["season_type"] == "REG"]
+        ws = ws[ws["week"] < week]
+        if not snaps.empty:
+            # Left-join from snaps: a snap-game with no stat line is a real
+            # zero-point game (counts toward n and as a dud).
+            ws = ws[["player_id", "week", "fantasy_points_ppr"]]
+            ws = snaps[["player_id", "week"]].merge(ws, on=["player_id", "week"], how="left")
+            ws["fantasy_points_ppr"] = ws["fantasy_points_ppr"].fillna(0.0)
+        else:
+            vol = ws[["attempts", "carries", "targets"]].fillna(0).sum(axis=1)
+            ws = ws[vol > 0]
+        ws = ws.copy()
+        ws["_pts"] = ws["fantasy_points_ppr"].astype(float)
+        mean = ws.groupby("player_id")["_pts"].transform("mean")
+        ws["_dud"] = (ws["_pts"] < DUD_FRAC * mean).astype(int)
+        agg = ws.groupby("player_id").agg(n=("_pts", "count"), duds=("_dud", "sum"))
+        return {pid: (int(r.n), int(r.duds)) for pid, r in agg.iterrows()}
+    except Exception as exc:  # noqa: BLE001
+        print(f"NOTE: weekly game log unavailable ({path.name}: {type(exc).__name__}) -- "
+              f"dud-rate falls back to the position rate.", file=sys.stderr)
+        return {}
+
+
+def load_rookie_ids(season: int) -> set:
+    path = DATA_DIR / f"weekly_rosters_{season}.parquet"
+    try:
+        r = pd.read_parquet(path, columns=["gsis_id", "years_exp", "week"])
+        last = r.sort_values("week").drop_duplicates("gsis_id", keep="last")
+        return set(last.loc[last["years_exp"] == 0, "gsis_id"].dropna().astype(str))
+    except Exception as exc:  # noqa: BLE001
+        print(f"NOTE: rosters unavailable ({path.name}: {type(exc).__name__}) -- "
+              f"rookie-QB clause skipped.", file=sys.stderr)
+        return set()
+
+
+def load_weather(season: int, week: int) -> dict:
+    path = DATA_DIR / f"weather_{season}_wk{week}.csv"
+    try:
+        w = pd.read_csv(path)
+        return {r["team"]: r for _, r in w.drop_duplicates("team").iterrows()}
+    except Exception as exc:  # noqa: BLE001
+        print(f"NOTE: weather unavailable ({path.name}: {type(exc).__name__}) -- "
+              f"weather clause skipped.", file=sys.stderr)
+        return {}
+
+
+def load_dst_typical_miss() -> float:
+    try:
+        with open(DATA_DIR / "dst_recal_v2.json") as fh:
+            d = json.load(fh)
+        return float(d["heldout_loso_2021_25"]["v2"]["MAE"])
+    except Exception:  # noqa: BLE001
+        return DST_TYPICAL_MISS
+
+
+def load_dst_features(season: int, week: int, dst_rows: pd.DataFrame, team_implied_total: dict,
+                      team_ou: dict) -> dict:
+    """Sack-rate / opposing-QB INT-rate / dropback features from dst_model, or
+    {} if anything fails (the sack/INT/dropback clauses are then dropped)."""
+    try:
+        _here = str(Path(__file__).resolve().parent)
+        if _here not in sys.path:
+            sys.path.insert(0, _here)
+        import dst_model
+        veg = pd.DataFrame({
+            "team": dst_rows["team"], "opponent": dst_rows["opponent"],
+            "implied_total": dst_rows["team"].map(team_implied_total),
+            "over_under": dst_rows["team"].map(team_ou),
+        })
+        model = dst_model.load_model()
+        feat = dst_model.build_features(
+            season, week, list(dst_rows["team"]), veg, model,
+            games=pd.read_parquet(DATA_DIR / "games.parquet"),
+            opponent_map=dict(zip(dst_rows["team"], dst_rows["opponent"])),
+        ).set_index("team")
+        return {
+            "feat": feat,
+            "lg_sack": model["league_means"]["sacks"] / model["league_means"]["dropbacks"],
+            "lg_int": model["int_rate"]["league_int_rate"],
+        }
+    except Exception as exc:  # noqa: BLE001
+        print(f"NOTE: dst_model features unavailable ({type(exc).__name__}: {exc}) -- "
+              f"DST sack/INT/dropback clauses skipped.", file=sys.stderr)
+        return {}
+
+
+# =============================================================================
+# Scoring (composite unchanged from v2)
+# =============================================================================
+
 def zscore(series: pd.Series) -> pd.Series:
     """Mean-0/std-1 within whatever subset is passed in. A zero-variance
-    pool (e.g. only one eligible player at a position) maps to all zeros
-    rather than NaN/inf -- "no information to rank on" is a real, valid
-    state, not a crash."""
+    pool maps to all zeros rather than NaN/inf."""
     std = series.std(ddof=0)
     if not std or np.isnan(std):
         return pd.Series(0.0, index=series.index)
@@ -325,7 +375,7 @@ def usage_value(row: pd.Series) -> float:
         return row["proj_rush_att"] + row["proj_targets"]
     if pos in ("WR", "TE"):
         return row["proj_targets"]
-    return np.nan  # DST -- no usage factor, see module docstring
+    return np.nan  # DST -- no usage factor
 
 
 def score_position_group(group: pd.DataFrame, team_implied_total: dict) -> pd.DataFrame:
@@ -337,26 +387,13 @@ def score_position_group(group: pd.DataFrame, team_implied_total: dict) -> pd.Da
     g["_floor_raw"] = g["statline_p10"]
     g["_matchup_raw"] = g["matchup_factor"]
     if pos == "DST":
-        # Lower opponent implied total = better defensive environment --
-        # negate so "higher z = better" holds the same direction as every
-        # other factor.
         g["_game_env_raw"] = -g["opponent"].map(team_implied_total)
     else:
         g["_game_env_raw"] = g["implied_total"]
     g["_usage_raw"] = g.apply(usage_value, axis=1)
     g["_leverage_raw"] = zscore(g["final_projection"]) - zscore(g["estimated_ownership_pct"])
-    # Bust-risk proxy for confidence/rationale (not part of the ranking
-    # composite): floor-to-ceiling spread relative to the player's own
-    # projection, so a boom-or-bust cheap punt and a steady stud are
-    # compared on the same relative scale rather than raw point spread.
-    g["_bust_raw"] = (g["_ceiling_raw"] - g["_floor_raw"]) / g["final_projection"]
-    g["_bust_z_full"] = zscore(g["_bust_raw"])
     # Rank 1 = the single leading usage-earner at this position on their OWN
-    # team (among teammates active this week, since final_projection>0 is
-    # already the whole pool here) -- used by the Value Pick selection below
-    # to mean "a real role," not just "some nonzero projected touches." NaN
-    # for DST (no usage_raw) is harmless -- DST's Value Pick logic doesn't
-    # use this column.
+    # team (among teammates active this week).
     g["_team_pos_rank"] = g.groupby("team")["_usage_raw"].rank(ascending=False, method="first")
 
     factor_cols = {
@@ -373,124 +410,421 @@ def score_position_group(group: pd.DataFrame, team_implied_total: dict) -> pd.Da
         composite += w * z
         weight_sum += w
         g[f"_z_{factor}"] = z
-    # Leverage is deliberately EXCLUDED from the composite/ranking itself
-    # (real-data finding, 2026-10-24): it answers "is this underowned?",
-    # not "is this good?" -- those are different questions, and blending
-    # them penalizes a player for being correctly popular. Confirmed on
-    # real data: Jordan Love (top-3 or better on value/ceiling/floor/usage,
-    # a 20.0-pt QB at 17.4% ownership -- the highest-owned QB on the slate,
-    # i.e. deservedly chalky) had a _leverage_raw z of -4.1, the most
-    # extreme value in the whole QB pool, which alone dragged him from a
-    # clear top play down to rank 20/63 when leverage was still weighted
-    # into the composite. Still computed and reported (_z_leverage,
-    # rationale text) for its ONE real purpose -- surfacing the single
-    # best true leverage play per position as a separate badge in
-    # build_cheat_sheet(), never as a penalty on an otherwise-great play.
+    # Leverage deliberately excluded from the composite (see module docstring).
     g["_z_leverage"] = zscore(g["_leverage_raw"])
 
     g["composite_score"] = composite / weight_sum
     g["composite_z"] = zscore(g["composite_score"])
-    # Confidence itself is computed later in build_cheat_sheet(), once the
-    # displayed cohort (top-N + bonus rows) for this position is known --
-    # see module docstring "Confidence" section for why.
     return g
 
 
-def compute_confidence(displayed: pd.DataFrame, slate_shift: float) -> pd.Series:
-    """1-10 confidence, re-standardized within the cohort actually shown
-    for this position (not the full eligible pool -- see module docstring),
-    with a bust-risk penalty and a muted slate-strength shift."""
-    within_z = zscore(displayed["composite_z"])
-    bust_z = zscore(displayed["_bust_raw"])
-    combined = (
-        within_z * CONF_WITHIN_WEIGHT
-        - bust_z * CONF_BUST_WEIGHT
-        + slate_shift * CONF_SLATE_WEIGHT
+# =============================================================================
+# Tiers
+# =============================================================================
+
+def _tier_from_cuts(x: float, cuts: list, last: str) -> str:
+    for cut, name in cuts:
+        if x >= cut:
+            return name
+    return last
+
+
+def _matchup_tier(mf: float, is_dst: bool = False) -> str:
+    return _tier_from_cuts(mf, DST_MATCHUP_CUTS if is_dst else MATCHUP_CUTS, "tough")
+
+
+def env_tier(row: pd.Series, avg_implied_total: float, team_implied_total: dict) -> str:
+    """Slate-relative tier on the team's implied total (skill) or, inverted, the
+    opponent's (DST)."""
+    if row["position"] == "DST":
+        opp = team_implied_total.get(row["opponent"])
+        d = (avg_implied_total - opp) if _is_num(opp) else 0.0
+        names = ENV_NAMES_DST
+    else:
+        d = row["implied_total"] - avg_implied_total
+        names = ENV_NAMES_SKILL
+    if d >= GAME_ENV_STRONG:
+        return names[0]
+    if d >= GAME_ENV_MARGIN:
+        return names[1]
+    if d > -GAME_ENV_MARGIN:
+        return names[2]
+    if d > -GAME_ENV_STRONG:
+        return names[3]
+    return names[4]
+
+
+# =============================================================================
+# Role security + bust risk (skill positions)
+# =============================================================================
+
+def compute_role_security(scored: pd.DataFrame, df_pool: pd.DataFrame, snaps: pd.DataFrame,
+                          game_log: dict) -> pd.DataFrame:
+    """Adds _rs, _role_tier, _risk, _risk_tier, _flags, _snap3, _snap_n, _share,
+    _stepup_pts, _stepup_frac, _dud_n, _dud_games for QB/RB/WR/TE rows (NaN/''
+    for DST). No salary term anywhere."""
+    s = scored.copy()
+    # snap % over the player's last <= 3 games (weeks already < target week)
+    if not snaps.empty:
+        last3 = snaps.groupby("player_id").tail(3).groupby("player_id")["offense_pct"].agg(["mean", "count"])
+        s["_snap3"] = s["player_id"].map(last3["mean"])
+        s["_snap_n"] = s["player_id"].map(last3["count"])
+    else:
+        s["_snap3"] = np.nan
+        s["_snap_n"] = np.nan
+
+    team_tgt = df_pool.groupby("team")["proj_targets"].sum()
+    team_rb_rush = df_pool[df_pool["position"] == "RB"].groupby("team")["proj_rush_att"].sum()
+    tgt_den = s["team"].map(team_tgt).replace(0, np.nan)
+    rush_den = s["team"].map(team_rb_rush).replace(0, np.nan)
+    tgt_share = s["proj_targets"] / tgt_den
+    rush_share = s["proj_rush_att"] / rush_den
+    s["_share"] = np.where(s["position"] == "RB", rush_share, tgt_share)  # QB: unused
+
+    for col in ("wrw_delta_pts", "wrw_wr_delta_pts", "wrw_te_delta_pts"):
+        if col not in s.columns:
+            s[col] = np.nan
+    s["_stepup_pts"] = s[["wrw_delta_pts", "wrw_wr_delta_pts", "wrw_te_delta_pts"]].fillna(0).clip(lower=0).sum(axis=1)
+    s["_stepup_frac"] = s["_stepup_pts"] / s["final_projection"]
+
+    s["_dud_n"] = s["player_id"].map(lambda p: game_log.get(p, (0, 0))[0])
+    s["_dud_games"] = s["player_id"].map(lambda p: game_log.get(p, (0, 0))[1])
+
+    # pooled position dud rate over the startable pool
+    pos_dud = dict(DEFAULT_POS_DUD_RATE)
+    for p in ("QB", "RB", "WR", "TE"):
+        q = s[(s["position"] == p) & (s["final_projection"] >= STARTABLE_MIN_PROJ[p]) & (s["_dud_n"] > 0)]
+        if q["_dud_n"].sum() > 0:
+            pos_dud[p] = float(q["_dud_games"].sum() / q["_dud_n"].sum())
+
+    out = {k: [] for k in ("_rs", "_risk", "_flags", "_dud_rate")}
+    for _, r in s.iterrows():
+        p = r["position"]
+        if p == "DST":
+            for k in out:
+                out[k].append(np.nan if k != "_flags" else "")
+            continue
+        fp = r["final_projection"]
+        stepup, frac = r["_stepup_pts"], r["_stepup_frac"]
+        opp = r["_usage_raw"]
+        opp_eff = opp * fp / max(fp - stepup, 1.0) if frac >= STEPUP_COUNT_FRAC else opp
+        V = lin(opp_eff, *VOL_BARS[p])
+        if p == "QB":
+            S = 1.0 if r["_team_pos_rank"] == 1 else 0.0
+        else:
+            S = lin(r["_share"], *SHARE_BARS[p]) if _is_num(r["_share"]) else 0.0
+        if p != "QB" and frac >= STEPUP_COUNT_FRAC:
+            S = 0.5  # share is inflated by the injury step-up; use neutral
+        N = lin(r["_snap3"], *SNAP_BARS[p]) if _is_num(r["_snap3"]) else np.nan
+
+        T, flags = 1.0, []
+        gp = _num(r, "games_played", 0.0)
+        gp = int(gp)
+        if gp <= 2:
+            T -= 0.40
+            flags.append("no games yet this season" if gp == 0
+                         else f"only {gp} {'game' if gp == 1 else 'games'} this season")
+        elif gp <= 4:
+            T -= 0.20
+            flags.append(f"only {gp} games this season")
+        pe = _num(r, "participation_effective")
+        if _is_num(pe) and pe < 1:
+            T -= 0.5 * (1 - pe)
+            flags.append("missed recent time")
+        ut = _num(r, "usage_trend_ratio")
+        if _is_num(ut):
+            if ut <= 0.80:
+                T -= 0.25
+                flags.append("usage trending down")
+            elif ut <= 0.90:
+                T -= 0.10
+                flags.append("usage dipping")
+            elif ut >= 1.15:
+                flags.append("usage trending up")
+        if frac >= STEPUP_UNPROVEN_FRAC:
+            T -= 0.35
+        elif frac >= STEPUP_COUNT_FRAC:
+            T -= 0.15
+        if str(r.get("injury_status", "")).upper() == "QUESTIONABLE":
+            T -= 0.30
+            flags.append("questionable")
+        avg = _num(r, "dk_avg_ppg")
+        if _is_num(avg) and fp - avg >= 3.0:
+            T -= 0.10
+        T = float(np.clip(T, 0.0, 1.0))
+
+        parts = [(W_VOL, V), (W_SHARE, S), (W_STAB, T)] + ([(W_SNAP, N)] if _is_num(N) else [])
+        RS = 100.0 * sum(w * v for w, v in parts) / sum(w for w, _ in parts)
+
+        n, duds = r["_dud_n"], r["_dud_games"]
+        dud_rate = (duds + DUD_SHRINK_K * pos_dud[p]) / (n + DUD_SHRINK_K)
+        consistency = 100.0 * (1.0 - float(np.clip(dud_rate / DUD_RATE_FLOOR_CAP, 0, 1)))
+        risk = 100.0 - (W_RS_IN_RISK * RS + W_CONS_IN_RISK * consistency)
+        out["_rs"].append(RS)
+        out["_risk"].append(risk)
+        out["_flags"].append("; ".join(flags))
+        out["_dud_rate"].append(dud_rate)
+    for k, v in out.items():
+        s[k] = v
+
+    def role_tier(r):
+        if r["position"] == "DST" or pd.isna(r["_rs"]):
+            return ""
+        if r["_rs"] < RS_TIERS[-1][0] and r["_stepup_frac"] >= STEPUP_UNPROVEN_FRAC:
+            return "unproven new role"
+        return _tier_from_cuts(r["_rs"], RS_TIERS, "fragile role")
+
+    def risk_tier(r):
+        if r["position"] == "DST" or pd.isna(r["_risk"]):
+            return ""
+        for cut, name in RISK_TIERS:
+            if r["_risk"] < cut:
+                return name
+        return "high bust risk"
+
+    s["_role_tier"] = s.apply(role_tier, axis=1)
+    s["_risk_tier"] = s.apply(risk_tier, axis=1)
+    return s
+
+
+# =============================================================================
+# DST upside setup
+# =============================================================================
+
+def compute_dst_setup(scored: pd.DataFrame, df_pool: pd.DataFrame, df_full: pd.DataFrame,
+                      team_implied_total: dict, avg_implied_total: float, team_ou: dict,
+                      dst_feat: dict, rookie_ids: set, weather: dict,
+                      snaps: pd.DataFrame = None, week: int = 0) -> pd.DataFrame:
+    """Adds _setup_score, _setup_tier, _setup_rank, _setup_facts for DST rows.
+    Every clause below traces to a source listed in SPEC D1; clauses whose data
+    is unavailable are skipped (never guessed)."""
+    s = scored.copy()
+    for c in ("_setup_score", "_setup_rank"):
+        s[c] = np.nan
+    s["_setup_tier"] = ""
+    s["_setup_facts"] = ""
+    dst = s[s["position"] == "DST"]
+    if dst.empty:
+        return s
+
+    feat = dst_feat.get("feat")
+    lg_sack, lg_int = dst_feat.get("lg_sack"), dst_feat.get("lg_int")
+    qbs = (df_pool[df_pool["position"] == "QB"].sort_values("proj_pass_att", ascending=False)
+           .drop_duplicates("team").set_index("team"))
+    outs = df_full[(df_full.get("injury_status") == "OUT") & df_full["position"].isin(["RB", "WR", "TE"])] \
+        if "injury_status" in df_full.columns else df_full.iloc[0:0]
+
+    last_snap_wk = (snaps.groupby("player_id")["week"].max().to_dict()
+                    if snaps is not None and not snaps.empty else {})
+    scores, facts_out = {}, {}
+    for idx, r in dst.iterrows():
+        team, opp = r["team"], r["opponent"]
+        pos_f, neg_f, sc = [], [], 0
+        opp_it = team_implied_total.get(opp)
+        own_it = team_implied_total.get(team)
+        if _is_num(opp_it):
+            d = round(opp_it, 1) - round(avg_implied_total, 1)
+            d = round(d, 1)
+            if d <= -GAME_ENV_STRONG:
+                sc += 2
+                pos_f.append(f"{opp} implied only {opp_it:.1f}, {-d:.1f} below the slate average")
+            elif d <= -GAME_ENV_MARGIN:
+                sc += 1
+                pos_f.append(f"{opp} implied only {opp_it:.1f}, {-d:.1f} below the slate average")
+            elif d >= GAME_ENV_STRONG:
+                sc -= 2
+                neg_f.append(f"{opp} implied {opp_it:.1f}, {d:.1f} above the slate average, works against")
+            elif d >= GAME_ENV_MARGIN:
+                sc -= 1
+                neg_f.append(f"{opp} implied {opp_it:.1f}, {d:.1f} above the slate average, works against")
+        if _is_num(opp_it) and _is_num(own_it):
+            fav = own_it - opp_it
+            if fav >= SPREAD_BIG:
+                sc += 1
+                pos_f.append(f"favored by {fav:.1f}")
+            elif fav <= -SPREAD_BIG:
+                sc -= 1
+                neg_f.append(f"underdog by {-fav:.1f}, works against")
+        tot = team_ou.get(team)
+        if _is_num(tot):
+            if tot <= LOW_TOTAL:
+                sc += 1
+                pos_f.append(f"low game total {tot:.1f}")
+            elif tot >= HIGH_TOTAL:
+                sc -= 1
+                neg_f.append(f"shootout-level game total {tot:.1f}, works against")
+        if feat is not None and team in feat.index and lg_sack:
+            f = feat.loc[team]
+            sk = f.get("opp_sack_allowed_rate")
+            if _is_num(sk):
+                if sk >= SACK_HIGH_MULT * lg_sack:
+                    sc += 1
+                    pos_f.append(f"{opp} allows sacks on {sk:.1%} of dropbacks")
+                elif sk <= SACK_LOW_MULT * lg_sack:
+                    sc -= 1
+                    neg_f.append(f"{opp} rarely sacked ({sk:.1%} of dropbacks, works against)")
+            qi = f.get("qb_int_rate")
+            if _is_num(qi) and lg_int and not str(f.get("qb_source", "")).startswith("league_mean"):
+                if qi >= INT_HIGH_MULT * lg_int:
+                    sc += 1
+                    pos_f.append(f"{opp} QB throws interceptions on {qi:.1%} of attempts")
+                elif qi <= INT_LOW_MULT * lg_int:
+                    sc -= 1
+                    neg_f.append(f"{opp} QB protects the ball ({qi:.1%} INT rate, works against)")
+            db = f.get("opp_dropbacks")
+            if _is_num(db) and db >= DROPBACKS_HIGH:
+                pos_f.append(f"high dropback volume for {opp} ({db:.1f} per game)")
+        if opp in qbs.index:
+            q = qbs.loc[opp]
+            gp = _num(q, "games_played", 0.0)
+            gp = int(gp)
+            gtxt = f"{gp} {'game' if gp == 1 else 'games'} this season"
+            if str(q["player_id"]) in rookie_ids:
+                sc += 1
+                pos_f.append(f"rookie QB {q['player_name']} ({'no games yet this season' if gp == 0 else gtxt})")
+                if gp <= 3:
+                    sc += 1
+            elif gp <= 3:
+                sc += 1
+                pos_f.append(f"{opp} QB {q['player_name']} has " +
+                             ("no games yet this season" if gp == 0 else f"only {gtxt}"))
+        if "dk_avg_ppg" in outs.columns and "games_played" in outs.columns:
+            ko = outs[(outs["team"] == opp) & (outs["dk_avg_ppg"] >= OPP_OUT_MIN_PPG)
+                      & (outs["games_played"] >= OPP_OUT_MIN_GAMES)]
+            if len(ko):
+                ko = ko.sort_values("dk_avg_ppg", ascending=False)
+                recent, stale = [], []
+                for _, k in ko.iterrows():
+                    lw = last_snap_wk.get(k["player_id"])
+                    if lw is not None and lw >= week - 2:
+                        recent.append(k["player_name"])
+                    elif lw is not None:
+                        stale.append((k["player_name"], int(lw)))
+                if recent:
+                    sc += 1
+                    pos_f.append(f"{opp} missing {', '.join(recent[:2])}")
+                elif stale:
+                    nm, lw = stale[0]
+                    pos_f.append(f"{opp} without {nm} since wk {lw}")
+        w = weather.get(team)
+        if w is not None and not bool(w.get("indoor", False)):
+            wind, gust, rain, temp = (_num(w, "wind_mph"), _num(w, "gust_mph"),
+                                      _num(w, "precip_mm_hr"), _num(w, "temp_f"))
+            bits = []
+            if _is_num(wind) and wind >= 15:
+                bits.append(f"wind {wind:.0f} mph")
+            if _is_num(gust) and gust >= 30:
+                bits.append(f"gusts {gust:.0f} mph")
+            if _is_num(rain) and rain >= 0.5:
+                bits.append(f"rain {rain:.1f} mm/hr")
+            if _is_num(temp) and temp <= 25:
+                bits.append(f"{temp:.0f}F")
+            if bits:
+                sc += 1
+                pos_f.append("weather: " + ", ".join(bits))
+        scores[idx] = sc
+        facts_out[idx] = "; ".join(pos_f + neg_f)
+
+    sc_series = pd.Series(scores)
+    for idx, sc in scores.items():
+        s.at[idx, "_setup_score"] = sc
+        s.at[idx, "_setup_rank"] = int((sc_series > sc).sum()) + 1
+        s.at[idx, "_setup_tier"] = _tier_from_cuts(sc, DST_SETUP_TIERS, "poor")
+        s.at[idx, "_setup_facts"] = facts_out[idx]
+    s["_setup_n"] = len(scores)
+    return s
+
+
+# =============================================================================
+# Quality / confidence
+# =============================================================================
+
+def _history_score(r: pd.Series) -> float:
+    gp = _num(r, "games_played", 0.0)
+    avg = _num(r, "dk_avg_ppg")
+    if r["position"] != "DST" and gp <= 0:
+        return 0.3
+    if not _is_num(avg):
+        return 0.3
+    d = r["final_projection"] - avg
+    if d >= HISTORY_DIFF_MARGIN:
+        return 0.5
+    if d <= -HISTORY_DIFF_MARGIN:
+        return 0.7
+    return 1.0
+
+
+def compute_quality(scored: pd.DataFrame) -> pd.DataFrame:
+    """Adds _startable, _strength, _q (absolute quality, 0-1) and confidence
+    (1-10, fixed anchors CONF_Q_LO / CONF_Q_HI)."""
+    s = scored.copy()
+    s["_startable"] = s.apply(lambda r: r["final_projection"] >= STARTABLE_MIN_PROJ[r["position"]], axis=1)
+    s["_strength"] = 0.0
+    for _, g in s[s["_startable"]].groupby("position"):
+        s.loc[g.index, "_strength"] = (g["composite_score"].rank(method="average") - 0.5) / len(g)
+    hist = s.apply(_history_score, axis=1)
+    env = s["_env_tier"].map(ENV_SCORE).fillna(0.5)
+    mat = s["_m_tier"].map(MATCHUP_SCORE).fillna(0.5)
+    role = np.where(
+        s["position"] == "DST",
+        np.clip((s["_setup_score"].fillna(0) + 2) / 8, 0, 1),
+        s["_rs"].fillna(0) / 100.0,
     )
-    return (CONF_CENTER + combined).round().clip(1, 10).astype(int)
+    s["_q"] = (CONF_W_STRENGTH * s["_strength"] + CONF_W_ROLE * role + CONF_W_ENV * env
+               + CONF_W_MATCHUP * mat + CONF_W_HISTORY * hist)
+    conf = 1 + 9 * ((s["_q"] - CONF_Q_LO) / (CONF_Q_HI - CONF_Q_LO)).clip(0, 1)
+    s["confidence"] = conf.round().astype(int)
+    return s
 
 
-# Game-environment framing is relative to the slate's own average implied
-# team total (passed in as avg_implied_total), not a fixed league-wide
-# number -- a 24-pt implied total reads differently on a low-scoring slate
-# than a shootout-heavy one.
-GAME_ENV_MARGIN = 2.0
-# Calibrated against the REAL (un-neutralized) matchup_factors_{site}_
-# {season}_{week}.csv distribution, not the ranking composite's neutralized
-# column -- that file's QB/RB/WR/TE spread is roughly std 0.10-0.20 (checked
-# on the Wk8 file), wide enough that the 25th/75th percentile lands close to
-# 0.90/1.10 across positions. The original 0.95/1.05 thresholds were
-# calibrated against the composite column's much tighter pre-neutralization
-# shape and flagged near-average performers (e.g. 0.95x) as "tough."
-MATCHUP_FAVORABLE = 1.10
-MATCHUP_TOUGH = 0.90
-HISTORY_DIFF_MARGIN = 3.0
-BUST_Z_HIGH = 0.75
-BUST_Z_LOW = -0.75
-# Absolute (not relative-to-pool) floor bars -- see bust_sentence() for why
-# relative-only framing was wrong. A sub-3-pt floor is a real lineup killer
-# for any offensive skill position regardless of how it compares to peers;
-# "low risk" requires clearing a real double-digit cushion, not just being
-# less bad than other scrubs.
-ABS_FLOOR_HIGH_RISK = 3.0
-ABS_FLOOR_LOW_RISK = 10.0
-
-
-def _matchup_tier(mf: float) -> str:
-    if mf >= MATCHUP_FAVORABLE:
-        return "favorable"
-    if mf <= MATCHUP_TOUGH:
-        return "tough"
-    return "average"
-
+# =============================================================================
+# Bullets
+# =============================================================================
 
 def matchup_bullet(row: pd.Series) -> str:
-    # _display_matchup is the REAL defense-vs-position signal (how many
-    # fantasy points the opponent has actually allowed to this position this
-    # season, vs. league average) -- NOT the same column the ranking
-    # composite uses, which is neutralized to 1.0 for QB/RB/WR/TE. See
-    # module docstring "Matchup clause, display-only."
+    # _display_matchup is the REAL defense-vs-position signal, NOT the
+    # neutralized ranking column -- see module docstring.
     mf = row["_display_matchup"]
-    tier = _matchup_tier(mf)
+    tier = row["_m_tier"]
     if row["position"] == "DST":
         return f"Matchup: {mf:.2f}x matchup factor ({tier})"
     return f"Matchup: {row['opponent']} allows {mf:.2f}x league-avg to {row['position']}s ({tier})"
 
 
-def env_bullet(row: pd.Series, avg_implied_total: float) -> str:
+def env_bullet(row: pd.Series, avg_implied_total: float, team_implied_total: dict) -> str:
+    tier = row["_env_tier"]
+    ou = _num(row, "over_under")
+    total_txt = f" of a {ou:.1f} total" if _is_num(ou) else ""
     if row["position"] == "DST":
-        opp_total = -row["_game_env_raw"]  # negated back to a real implied total
-        if opp_total <= avg_implied_total - GAME_ENV_MARGIN:
-            tier = "plus"
-        elif opp_total >= avg_implied_total + GAME_ENV_MARGIN:
-            tier = "tough"
-        else:
-            tier = "middling"
-        return f"Game environment: opponent implied {opp_total:.1f} ({tier})"
+        opp_total = team_implied_total.get(row["opponent"])
+        if not _is_num(opp_total):
+            return f"Game environment: opponent {row['opponent']} implied total unavailable ({tier})"
+        return f"Game environment: opponent {row['opponent']} implied {opp_total:.1f}{total_txt} ({tier})"
     team_total = row["implied_total"]
-    if team_total >= avg_implied_total + GAME_ENV_MARGIN:
-        tier = "plus"
-    elif team_total <= avg_implied_total - GAME_ENV_MARGIN:
-        tier = "low-scoring"
-    else:
-        tier = "middling"
-    return f"Game environment: {row['team']} implied {team_total:.1f} ({tier})"
+    spread_txt = ""
+    opp_total = team_implied_total.get(row["opponent"])
+    if _is_num(opp_total):
+        diff = team_total - opp_total
+        if diff >= SPREAD_PICKEM:
+            spread_txt = f", favored by {diff:.1f}"
+        elif diff <= -SPREAD_PICKEM:
+            spread_txt = f", underdog by {-diff:.1f}"
+        else:
+            spread_txt = ", pick'em"
+    return f"Game environment: {row['team']} implied {team_total:.1f}{total_txt}{spread_txt} ({tier})"
 
 
 def history_bullet(row: pd.Series):
-    """Returns (bullet_text, has_history). Real season-to-date history
-    (DK's/FD's own displayed avg pts/game) -- NOT season_avg/recent_form,
-    which build_projections_statline.py documents as circular with
-    final_projection, see module docstring. games_played isn't tracked for
-    DST (offense-only stat upstream), so a DST with a valid dk_avg_ppg still
-    gets a history bullet, just without a game count attached."""
+    """Returns (bullet_text, has_history). Real season-to-date history (DK's/FD's
+    own displayed avg pts/game) -- NOT season_avg/recent_form, which are circular
+    with final_projection. games_played isn't tracked for DST."""
     pos = row["position"]
     avg_ppg = row.get("dk_avg_ppg")
     games_played = row.get("games_played")
     games_played = 0 if pd.isna(games_played) else int(games_played)
     if pos != "DST" and games_played <= 0:
         return "History: no games logged yet this season", False
-    if pos == "DST" and pd.isna(avg_ppg):
+    if pd.isna(avg_ppg):
         return "History: no games logged yet this season", False
     diff = row["final_projection"] - avg_ppg
     if diff >= HISTORY_DIFF_MARGIN:
@@ -505,58 +839,71 @@ def history_bullet(row: pd.Series):
     return f"History: {avg_ppg:.1f} pts/game season avg, {games_played} {game_word} ({trend})", True
 
 
-def range_bullet(row: pd.Series) -> str:
-    """Floor/ceiling spread, judged with an ABSOLUTE floor bar, not just
-    relative-to-pool -- the direct fix for a cheap, boom-or-bust play
-    reading as a safe one (user feedback, 2026-11-03: a 2.0-pt floor got
-    called "low risk" purely because other scrubs were even worse). See
-    ABS_FLOOR_* above."""
-    p10, p90 = row["statline_p10"], row["statline_p90"]
-    if row["position"] == "DST" and p10 == 0 and p90 == 0:
-        # DST has no Monte Carlo floor/ceiling model upstream (statline_p10/
-        # p90 are both a flat 0.0) -- printing "0.0 to 0.0 pts" would read as
-        # "no variance," the opposite of the truth, so say so honestly
-        # instead of a fabricated range.
-        return "Range: not modeled for defense (a pick-six/safety can swing it well outside the base projection)"
-    bust_z = row["_bust_z_full"]
-    if p10 < ABS_FLOOR_HIGH_RISK or bust_z >= BUST_Z_HIGH:
-        tier = "high bust risk"
-    elif p10 >= ABS_FLOOR_LOW_RISK and bust_z <= BUST_Z_LOW:
-        tier = "low bust risk"
+def usage_bullet(row: pd.Series) -> str:
+    pos = row["position"]
+    if pos == "QB":
+        text = f"{row['proj_pass_att']:.1f} pass att + {row['proj_rush_att']:.1f} rush att projected"
+    elif pos == "RB":
+        touches = row["proj_rush_att"] + row["proj_targets"]
+        share = (f", {row['_share']:.0%} of RB carries"
+                 if _is_num(row["_share"]) and not row["_stepup_frac"] >= STEPUP_COUNT_FRAC else "")
+        text = (f"{touches:.1f} touches projected ({row['proj_rush_att']:.1f} carries + "
+                f"{row['proj_targets']:.1f} targets{share})")
     else:
-        tier = "normal swing"
-    return f"Range: {p10:.1f}–{p90:.1f} pts ({tier})"
+        share = (f" ({row['_share']:.0%} of team targets)"
+                 if _is_num(row["_share"]) and not row["_stepup_frac"] >= STEPUP_COUNT_FRAC else "")
+        text = f"{row['proj_targets']:.1f} targets projected{share}"
+    if row["_stepup_frac"] >= STEPUP_COUNT_FRAC:
+        text += f" + injury step-up worth {row['_stepup_pts']:.1f} pts"
+    if _is_num(row["_snap3"]):
+        n = int(row["_snap_n"])
+        span = "last game" if n == 1 else f"last {n} games"
+        snap = f"{row['_snap3']:.0%} of snaps {span}"
+    else:
+        snap = "no snap data yet"
+    flags = f"; {row['_flags']}" if row["_flags"] else ""
+    return f"Usage: {text}, {snap} ({row['_role_tier']}{flags})"
 
 
-def build_bullet(exposure_pct) -> str:
-    """Passive context, not a flag -- see module docstring "Build-exposure
-    awareness." None means no build exists yet for this slate (common --
-    the cheat sheet is often generated before "Build Lineups" is run);
-    said plainly rather than omitted, so its absence reads as "no build
-    yet," not "zero exposure.\""""
-    if exposure_pct is None:
-        return "Builds: no lineups built yet for this slate"
-    if exposure_pct <= 0:
-        return "Builds: not in your current build"
-    return f"Builds: {exposure_pct:.0f}% of your built lineups"
+def range_bullet(row: pd.Series, dst_miss: float) -> str:
+    if row["position"] == "DST":
+        lo = max(0.0, row["final_projection"] - dst_miss)
+        hi = row["final_projection"] + dst_miss
+        return (f"Range: about {lo:.0f}–{hi:.0f} pts in a typical game (DST projections miss by "
+                f"{dst_miss:.1f} pts on average, 2021-25); a defensive or return TD or a safety is "
+                f"what pushes it higher, and those aren't modeled")
+    n, d = int(row["_dud_n"]), int(row["_dud_games"])
+    if n > 0:
+        dud = f"under half his average in {d} of {n} games"
+    else:
+        dud = "no games logged yet" if row.get("_log_ok", True) else "game log unavailable"
+    return f"Range: {row['statline_p10']:.1f}–{row['statline_p90']:.1f} pts ({row['_risk_tier']}; {dud})"
 
 
-def build_rationale(row: pd.Series, avg_implied_total: float, exposure_pct=None) -> tuple:
+def setup_bullet(row: pd.Series) -> str:
+    rank = int(row["_setup_rank"])
+    n = int(row["_setup_n"])
+    facts = row["_setup_facts"] or "no standout factors either way"
+    return f"Upside setup: {row['_setup_tier']}, #{rank} of {n} on the slate: {facts}"
+
+
+def build_rationale(row: pd.Series, avg_implied_total: float, team_implied_total: dict,
+                    dst_miss: float) -> tuple:
     history_line, has_history = history_bullet(row)
+    is_dst = row["position"] == "DST"
     bullets = [
         matchup_bullet(row),
-        env_bullet(row, avg_implied_total),
+        env_bullet(row, avg_implied_total, team_implied_total),
         history_line,
-        range_bullet(row),
-        build_bullet(exposure_pct),
+        setup_bullet(row) if is_dst else usage_bullet(row),
+        range_bullet(row, dst_miss),
     ]
     rationale = "\n".join(f"• {b}" for b in bullets)
     top_factors = "matchup, game environment"
     if has_history:
         top_factors += ", history"
-    top_factors += ", bust potential"
-    if exposure_pct is not None:
-        top_factors += ", build exposure"
+    top_factors += ", upside setup" if is_dst else ", usage"
+    top_factors += ", range"
     return top_factors, rationale
 
 
@@ -564,12 +911,33 @@ OUTPUT_COLUMNS = [
     "position", "rank", "player_id", "player_name", "team", "opponent",
     "salary", "final_projection", "estimated_ownership_pct", "confidence",
     "composite_score", "top_factors", "rationale", "badge", "is_bonus",
+    "role_security", "role_tier", "risk_tier", "setup_score", "conf_basis",
 ]
 
 
-def _build_row(pos: str, row: pd.Series, rank, is_bonus: bool, badge: str,
-                confidence: int, avg_implied_total: float, exposure_pct=None) -> dict:
-    top_factors, rationale = build_rationale(row, avg_implied_total, exposure_pct)
+def _risk_badges(row: pd.Series, base_badges: list) -> list:
+    """Solid Value / Boom/Bust Dart / Fragile Chalk (skill positions only)."""
+    if row["position"] == "DST":
+        return []
+    tags = []
+    is_val = any(b in ("Value Pick", "Value Candidate") for b in base_badges)
+    rs, tier = row["_rs"], row["_risk_tier"]
+    if is_val and rs >= SOLID_VALUE_MIN_RS and tier in ("low bust risk", "moderate bust risk"):
+        tags.append("Solid Value")
+    if is_val and (rs < DART_MAX_RS or tier == "high bust risk"):
+        tags.append("Boom/Bust Dart")
+    if row["estimated_ownership_pct"] >= FRAGILE_CHALK_OWN and (
+            rs < FRAGILE_CHALK_RS or tier in ("elevated bust risk", "high bust risk")):
+        tags.append("Fragile Chalk")
+    return tags
+
+
+def _build_row(pos: str, row: pd.Series, rank, is_bonus: bool, base_badges: list,
+               avg_implied_total: float, team_implied_total: dict, dst_miss: float,
+               conf_cap: int = None) -> dict:
+    top_factors, rationale = build_rationale(row, avg_implied_total, team_implied_total, dst_miss)
+    badge = ", ".join(list(base_badges) + _risk_badges(row, base_badges))
+    is_dst = pos == "DST"
     return {
         "position": pos,
         "rank": rank,
@@ -580,19 +948,27 @@ def _build_row(pos: str, row: pd.Series, rank, is_bonus: bool, badge: str,
         "salary": row["salary"],
         "final_projection": row["final_projection"],
         "estimated_ownership_pct": row["estimated_ownership_pct"],
-        "confidence": confidence,
+        "confidence": int(row["confidence"]) if conf_cap is None else int(min(row["confidence"], conf_cap)),
         "composite_score": row["composite_score"],
         "top_factors": top_factors,
         "rationale": rationale,
         "badge": badge,
         "is_bonus": is_bonus,
+        "role_security": np.nan if is_dst else round(float(row["_rs"]), 1),
+        "role_tier": "" if is_dst else row["_role_tier"],
+        "risk_tier": "" if is_dst else row["_risk_tier"],
+        "setup_score": row["_setup_score"] if is_dst else np.nan,
+        "conf_basis": round(float(row["_q"]), 3),
     }
 
 
 def build_cheat_sheet(site: str, slate_id: str, season: int, week: int) -> pd.DataFrame:
-    df = load_final_projections(site, slate_id)
+    df_full = read_final_projections(site, slate_id)
+    df = df_full[df_full["final_projection"] > 0].copy()
     team_implied_total = df.drop_duplicates("team").set_index("team")["implied_total"].to_dict()
-    avg_implied_total = float(np.mean(list(team_implied_total.values())))
+    avg_implied_total = float(np.mean(list(team_implied_total.values()))) if team_implied_total else 0.0
+    team_ou = (df.drop_duplicates("team").set_index("team")["over_under"].to_dict()
+               if "over_under" in df.columns else {})
 
     scored = []
     for pos, group in df.groupby("position"):
@@ -603,29 +979,32 @@ def build_cheat_sheet(site: str, slate_id: str, season: int, week: int) -> pd.Da
         return pd.DataFrame(columns=OUTPUT_COLUMNS)
     scored_df = pd.concat(scored, ignore_index=True)
 
-    # Display-only real DVP signal for the rationale text (see module
-    # docstring) -- DST keeps reading its own (already real) matchup_factor
-    # column since that file only covers QB/RB/WR/TE.
+    # Display-only real DVP signal for the matchup bullet (see docstring).
     display_matchup = load_display_matchup_factors(site, season, week)
     scored_df["_display_matchup"] = scored_df.apply(
         lambda r: r["matchup_factor"] if r["position"] == "DST"
         else display_matchup.get((r["opponent"], r["position"]), 1.0),
         axis=1,
     )
+    scored_df["_m_tier"] = scored_df.apply(
+        lambda r: _matchup_tier(round(float(r["_display_matchup"]), 2), r["position"] == "DST"), axis=1)
+    scored_df["_env_tier"] = scored_df.apply(
+        lambda r: env_tier(r, avg_implied_total, team_implied_total), axis=1)
 
-    # Real per-player build exposure (see module docstring "Build-exposure
-    # awareness" + load_build_exposure()). build_exists distinguishes "no
-    # build yet" (every row's bullet reads "no lineups built yet") from "a
-    # build exists and this specific player just isn't in it" (reads "not
-    # in your current build") -- those are different facts, not the same
-    # thing represented as 0.
-    build_exposure = load_build_exposure(site, slate_id)
-    build_exists = bool(build_exposure)
+    # Role security / bust risk (skill) and upside setup (DST)
+    snaps = load_snap_recent(season, week)
+    game_log = load_game_log(season, week, snaps)
+    scored_df = compute_role_security(scored_df, df, snaps, game_log)
+    scored_df["_log_ok"] = bool(game_log)
 
-    def exposure_for(pid):
-        if not build_exists:
-            return None
-        return build_exposure.get(pid, 0.0)
+    dst_rows = scored_df[scored_df["position"] == "DST"]
+    dst_feat = load_dst_features(season, week, dst_rows, team_implied_total, team_ou) if not dst_rows.empty else {}
+    rookie_ids = load_rookie_ids(season) if not dst_rows.empty else set()
+    weather = load_weather(season, week) if not dst_rows.empty else {}
+    scored_df = compute_dst_setup(scored_df, df, df_full, team_implied_total, avg_implied_total,
+                                  team_ou, dst_feat, rookie_ids, weather, snaps, week)
+    scored_df = compute_quality(scored_df)
+    dst_miss = load_dst_typical_miss()
 
     rows = []
     for pos, top_n in TOP_N_BY_POSITION.items():
@@ -634,71 +1013,25 @@ def build_cheat_sheet(site: str, slate_id: str, season: int, week: int) -> pd.Da
             print(f"WARNING: no eligible {pos} players found for {site}/{slate_id} "
                   f"-- skipping (thin/empty slate for this position).", file=sys.stderr)
             continue
-        if len(pool) < top_n:
-            print(f"NOTE: only {len(pool)}/{top_n} eligible {pos} players found "
-                  f"for {site}/{slate_id}.", file=sys.stderr)
-        top = pool.sort_values("composite_score", ascending=False).head(top_n).reset_index(drop=True)
-        top_ids = set(top["player_id"])
 
-        # Guaranteed Value/Leverage slots (user decision, 2026-10-24): a
-        # single global composite blend structurally favors players who
-        # are strong across every factor at once -- a min-priced "best
-        # bang-for-buck" play can almost never out-rank a $7-8K stud on
-        # raw ceiling/floor/usage (absolute point totals, not per-dollar),
-        # even when its pts-per-$1K value is the best on the slate. Rather
-        # than reweighting the whole composite (which the user explicitly
-        # didn't want -- it would distort every other pick too), the
-        # single best Value play and single best Leverage play per
-        # position are identified directly and guaranteed visibility: if
-        # either already made the composite top-N, that row is just
-        # badged; if not, it's appended as an extra "bonus" row (is_bonus
-        # =True) past the normal top_n count, same pattern for both so a
-        # thin/non-existent leverage standout doesn't silently mean a
-        # thin/non-existent value standout either.
-        # "Value Pick" means cheap-and-efficient in normal DFS usage, not
-        # literally the single best pts-per-$1K in the pool -- an expensive
-        # stud can win that ratio outright in a top-heavy week (confirmed
-        # on real data: Amon-Ra St. Brown, $7800, had the single best WR
-        # value ratio this slate), which isn't what anyone means by "value
-        # play."
-        #
-        # v1 restricted to the cheaper half of the position's salary pool
-        # with a nonzero projected role (_usage_raw > 0). That bar is too
-        # low -- real-data complaint (user, 2026-11-03): Corey Kiner
-        # ($4000 RB) cleared it most weeks purely because the model gave
-        # him SOME volume, even though he was clearly his own team's RB3
-        # (4.6 of the team's rush attempts vs. the actual lead back's 9.6)
-        # -- "nobody is playing him," not a real value play no matter how
-        # cheap. v1's bust-risk confidence penalty (compute_confidence())
-        # correctly flagged the RISK, but didn't fix WHO got picked.
-        #
-        # v2 (first cut): Value Pick required being the single TOP
-        # usage-earner at this position on their OWN team (_team_pos_rank
-        # == 1, among teammates active this week) -- a real lead role, not
-        # merely some projected touches -- with NO salary cap, on the
-        # (wrong) assumption that the best-$/$1K team-lead would naturally
-        # skew cheap. Real-data complaint (user, 2026-11-03): Zay Flowers
-        # ($7200 WR) won that way -- he genuinely has the single best WR
-        # $/$1K ratio among team-leads this slate (2.55, beating $4200
-        # Wan'Dale Robinson's 2.39), but $7200 is a spend-up price, not a
-        # value price. A stud with elite volume can out-value a cheap lead
-        # on pure ratio in a top-heavy week -- same root pattern as the
-        # original Amon-Ra lesson above, just one level deeper (restricting
-        # to team-leads doesn't by itself restrict to cheap team-leads).
-        #
-        # v2 (fixed): adds a salary cap back, but against the team-leads'
-        # OWN median salary, not the whole position pool's (checked: the
-        # whole-pool median is usually below every real lead's salary,
-        # since backups/committee pieces drag it down -- that's what made
-        # v1's cheap-half-of-the-whole-pool rule zero out real finds like
-        # Gunnar Helm's position). "Value" among leads means cheaper than a
-        # TYPICAL lead, not cheaper than a typical player including bench
-        # pieces. DST keeps the old cheap-half-of-the-position-pool rule
-        # (depth chart/usage-rank has no DST equivalent). If NO team-lead
-        # at this position is also cheap relative to other leads, there
-        # just isn't a legitimate value play here this week -- no bonus row
-        # is forced (same "an empty result is real information" philosophy
-        # pivot_finder.py already uses for thin pivot pools).
+        # Main list: startable players (and, for skill positions, a real
+        # enough role) ranked by absolute quality Q.
+        elig = pool[pool["_startable"]]
+        if pos != "DST":
+            elig = elig[elig["_rs"] >= RS_MAIN_LIST_MIN]
+        if len(elig) < top_n:
+            print(f"NOTE: only {len(elig)}/{top_n} eligible {pos} players found "
+                  f"for {site}/{slate_id}.", file=sys.stderr)
+        top = elig.sort_values(["_q", "composite_score"], ascending=False).head(top_n).reset_index(drop=True)
+        top_ids = set(top["player_id"])
+        floor_conf = int(top["confidence"].min()) if len(top) else None
+
+        # Guaranteed Value/Leverage slots (user decision, 2026-10-24) and the
+        # Value Pick eligibility rule (user decision, 2026-11-03) are
+        # unchanged from v2, drawn from the full position pool: Value Pick =
+        # best $/pt among the team-lead players cheaper than the median lead
+        # salary (DST: cheap half of the pool); Leverage Pick = best
+        # projection-minus-ownership z.
         if pos == "DST":
             value_pool = pool[pool["salary"] <= pool["salary"].median()]
         else:
@@ -718,16 +1051,8 @@ def build_cheat_sheet(site: str, slate_id: str, season: int, week: int) -> pd.Da
             displayed_ids.add(best_value_row["player_id"])
         displayed_ids.add(best_leverage_row["player_id"])
 
-        # Value Candidate rows -- see module docstring "Build-exposure
-        # awareness," landed design point 2. RB/WR/TE only, top 5 by raw
-        # value ratio, unrestricted by team-lead-role (unlike the single
-        # Value Pick above) -- "the guys that are most likely to show up in
-        # the lineups and the ones we need data on" (user's own framing,
-        # 2026-11-09). Deterministic from final_projections alone, no
-        # dependency on any lineup build having run. Computed before the
-        # confidence re-standardization below so these rows are included in
-        # it, same as every other displayed row -- see module docstring
-        # "Confidence" section, "the cohort actually displayed."
+        # Value Candidate rows (Wk9 Item A): RB/WR/TE, top 5 by raw $/pt not
+        # already displayed.
         value_candidate_rows = []
         if pos in VALUE_CANDIDATE_POSITIONS:
             candidates = pool[~pool["player_id"].isin(displayed_ids)].sort_values(
@@ -737,40 +1062,28 @@ def build_cheat_sheet(site: str, slate_id: str, season: int, week: int) -> pd.Da
                 displayed_ids.add(row["player_id"])
                 badges_by_id.setdefault(row["player_id"], []).append("Value Candidate")
 
-        # Confidence is re-standardized within the cohort actually displayed
-        # for this position (top-N + any bonus rows, Value Candidates
-        # included), not the full eligible pool -- see module docstring
-        # "Confidence" section.
-        displayed = pool[pool["player_id"].isin(displayed_ids)].copy()
-        slate_shift = float(top["composite_z"].iloc[0]) if not top.empty else 0.0
-        conf_by_id = dict(zip(displayed["player_id"], compute_confidence(displayed, slate_shift)))
+        def mk(row, rank, is_bonus):
+            return _build_row(pos, row, rank, is_bonus, badges_by_id.get(row["player_id"], []),
+                              avg_implied_total, team_implied_total, dst_miss,
+                              conf_cap=floor_conf if is_bonus else None)
 
         for rank, (_, row) in enumerate(top.iterrows(), start=1):
-            badge = ", ".join(badges_by_id.get(row["player_id"], []))
-            rows.append(_build_row(pos, row, rank, False, badge, conf_by_id[row["player_id"]],
-                                    avg_implied_total, exposure_for(row["player_id"])))
+            rows.append(mk(row, rank, False))
 
         bonus_rank = top_n + 1
         if best_value_row is None:
             print(f"NOTE: no eligible cheap/real-role value play found for {pos} "
                   f"on {site}/{slate_id} -- no Value Pick bonus row added.", file=sys.stderr)
         elif best_value_row["player_id"] not in top_ids:
-            rows.append(_build_row(pos, best_value_row, bonus_rank, True, "Value Pick",
-                                    conf_by_id[best_value_row["player_id"]], avg_implied_total,
-                                    exposure_for(best_value_row["player_id"])))
+            rows.append(mk(best_value_row, bonus_rank, True))
             bonus_rank += 1
         best_value_id = best_value_row["player_id"] if best_value_row is not None else None
         if (best_leverage_row["player_id"] not in top_ids
                 and best_leverage_row["player_id"] != best_value_id):
-            rows.append(_build_row(pos, best_leverage_row, bonus_rank, True, "Leverage Pick",
-                                    conf_by_id[best_leverage_row["player_id"]], avg_implied_total,
-                                    exposure_for(best_leverage_row["player_id"])))
+            rows.append(mk(best_leverage_row, bonus_rank, True))
             bonus_rank += 1
         for row in value_candidate_rows:
-            badge = ", ".join(badges_by_id.get(row["player_id"], []))
-            rows.append(_build_row(pos, row, bonus_rank, True, badge,
-                                    conf_by_id[row["player_id"]], avg_implied_total,
-                                    exposure_for(row["player_id"])))
+            rows.append(mk(row, bonus_rank, True))
             bonus_rank += 1
 
     return pd.DataFrame(rows, columns=OUTPUT_COLUMNS)
