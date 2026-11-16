@@ -135,6 +135,13 @@ W_VOL, W_SHARE, W_SNAP, W_STAB = 0.30, 0.20, 0.20, 0.30
 RS_TIERS = [(85.0, "locked-in role"), (65.0, "solid role"), (45.0, "partial role")]  # else fragile
 STEPUP_UNPROVEN_FRAC = 0.25
 STEPUP_COUNT_FRAC = 0.10
+# Confirmed-vacancy inheritor (2026-11-16 reassessment, analysis/cheat_sheet_stepup/RESULTS.md): the step-up
+# player's usage inputs are the BASE engine's (e.g. 2.8 carries), not the vacated work, so volume is rescaled by
+# final_projection/engine_projection, and a "sole healthy option" (no teammate at the position with a startable
+# final projection) gets a lighter stability penalty. 0 / False switches restore v3 behavior.
+STEPUP_USAGE_FROM_ENGINE = True
+SOLE_TEAMMATE_MIN_PROJ = 5.0
+STEPUP_UNPROVEN_T_SOLE = 0.15   # replaces the 0.35 "unproven" stability penalty when sole
 
 # ---- bust-risk tier (SPEC C4) -----------------------------------------------
 W_RS_IN_RISK, W_CONS_IN_RISK = 0.65, 0.35
@@ -486,6 +493,13 @@ def compute_role_security(scored: pd.DataFrame, df_pool: pd.DataFrame, snaps: pd
             s[col] = np.nan
     s["_stepup_pts"] = s[["wrw_delta_pts", "wrw_wr_delta_pts", "wrw_te_delta_pts"]].fillna(0).clip(lower=0).sum(axis=1)
     s["_stepup_frac"] = s["_stepup_pts"] / s["final_projection"]
+    # sole healthy option: no OTHER player at the position on his team with a startable final projection
+    startable = s[s["final_projection"] >= SOLE_TEAMMATE_MIN_PROJ].groupby(["team", "position"]).size()
+    s["_n_mates"] = [max(int(startable.get((t, p), 0)) - (1 if fp >= SOLE_TEAMMATE_MIN_PROJ else 0), 0)
+                     for t, p, fp in zip(s["team"], s["position"], s["final_projection"])]
+    s["_sole"] = (s["_n_mates"] == 0) & (s["position"] == "RB")  # RB only: the only position the backtest supports
+    if "engine_projection" not in s.columns:
+        s["engine_projection"] = np.nan
 
     s["_dud_n"] = s["player_id"].map(lambda p: game_log.get(p, (0, 0))[0])
     s["_dud_games"] = s["player_id"].map(lambda p: game_log.get(p, (0, 0))[1])
@@ -497,7 +511,7 @@ def compute_role_security(scored: pd.DataFrame, df_pool: pd.DataFrame, snaps: pd
         if q["_dud_n"].sum() > 0:
             pos_dud[p] = float(q["_dud_games"].sum() / q["_dud_n"].sum())
 
-    out = {k: [] for k in ("_rs", "_risk", "_flags", "_dud_rate")}
+    out = {k: [] for k in ("_rs", "_risk", "_flags", "_dud_rate", "_usage_eff")}
     for _, r in s.iterrows():
         p = r["position"]
         if p == "DST":
@@ -508,6 +522,11 @@ def compute_role_security(scored: pd.DataFrame, df_pool: pd.DataFrame, snaps: pd
         stepup, frac = r["_stepup_pts"], r["_stepup_frac"]
         opp = r["_usage_raw"]
         opp_eff = opp * fp / max(fp - stepup, 1.0) if frac >= STEPUP_COUNT_FRAC else opp
+        eng = r["engine_projection"]
+        if STEPUP_USAGE_FROM_ENGINE and p == "RB" and frac >= STEPUP_COUNT_FRAC and _is_num(eng) and eng > 1.0 and fp > eng:
+            opp_eff = max(opp_eff, opp * fp / eng)   # base-engine usage -> usage consistent with the final projection
+        r_usage_eff = opp_eff
+        out["_usage_eff"].append(r_usage_eff)
         V = lin(opp_eff, *VOL_BARS[p])
         if p == "QB":
             S = 1.0 if r["_team_pos_rank"] == 1 else 0.0
@@ -542,7 +561,7 @@ def compute_role_security(scored: pd.DataFrame, df_pool: pd.DataFrame, snaps: pd
             elif ut >= 1.15:
                 flags.append("usage trending up")
         if frac >= STEPUP_UNPROVEN_FRAC:
-            T -= 0.35
+            T -= STEPUP_UNPROVEN_T_SOLE if (STEPUP_USAGE_FROM_ENGINE and r["_sole"]) else 0.35
         elif frac >= STEPUP_COUNT_FRAC:
             T -= 0.15
         if str(r.get("injury_status", "")).upper() == "QUESTIONABLE":
@@ -855,6 +874,9 @@ def usage_bullet(row: pd.Series) -> str:
         text = f"{row['proj_targets']:.1f} targets projected{share}"
     if row["_stepup_frac"] >= STEPUP_COUNT_FRAC:
         text += f" + injury step-up worth {row['_stepup_pts']:.1f} pts"
+        if STEPUP_USAGE_FROM_ENGINE and pos == "RB" and _is_num(row.get("_usage_eff")):
+            text += (f"; inheriting vacated work puts him near {row['_usage_eff']:.0f} touches"
+                     + (", with no other startable RB on the team" if row.get("_sole") else ""))
     if _is_num(row["_snap3"]):
         n = int(row["_snap_n"])
         span = "last game" if n == 1 else f"last {n} games"
@@ -926,7 +948,8 @@ def _risk_badges(row: pd.Series, base_badges: list) -> list:
         tags.append("Solid Value")
     if is_val and (rs < DART_MAX_RS or tier == "high bust risk"):
         tags.append("Boom/Bust Dart")
-    if row["estimated_ownership_pct"] >= FRAGILE_CHALK_OWN and (
+    sole_inheritor = STEPUP_USAGE_FROM_ENGINE and bool(row.get("_sole")) and row["_stepup_frac"] >= STEPUP_COUNT_FRAC
+    if (not sole_inheritor) and row["estimated_ownership_pct"] >= FRAGILE_CHALK_OWN and (
             rs < FRAGILE_CHALK_RS or tier in ("elevated bust risk", "high bust risk")):
         tags.append("Fragile Chalk")
     return tags

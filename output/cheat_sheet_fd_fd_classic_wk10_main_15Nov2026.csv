@@ -47,7 +47,7 @@ RB,3,00-0033280,Christian McCaffrey,SF,DAL,9000,19.62921350060956,40.67366976490
 RB,4,00-0036997,Javonte Williams,DAL,SF,7700,16.710720521696818,26.56292936497423,7,1.5840822827035916,"matchup, game environment, history, usage, range","• Matchup: SF allows 0.93x league-avg to RBs (below average)
 • Game environment: DAL implied 25.9 of a 55.9 total, underdog by 4.1 (plus)
 • History: 17.1 pts/game season avg, 9 games (in line with average)
-• Usage: 17.5 touches projected (14.7 carries + 2.8 targets) + injury step-up worth 1.7 pts, 70% of snaps last 3 games (solid role)
+• Usage: 17.5 touches projected (14.7 carries + 2.8 targets) + injury step-up worth 1.7 pts; inheriting vacated work puts him near 19 touches, with no other startable RB on the team, 70% of snaps last 3 games (solid role)
 • Range: 4.0–35.3 pts (low bust risk; under half his average in 2 of 9 games)",,False,83.2,solid role,low bust risk,,0.827
 RB,5,00-0038542,Bijan Robinson,ATL,KC,8800,15.115111326803628,7.7021036798982045,7,1.2247543598572488,"matchup, game environment, history, usage, range","• Matchup: KC allows 0.92x league-avg to RBs (below average)
 • Game environment: ATL implied 22.0 of a 47.3 total, underdog by 3.3 (middling)
@@ -82,8 +82,8 @@ RB,10,00-0035261,Tony Pollard,TEN,JAX,6500,10.068522865598162,2.884180170119233,
 RB,11,00-0041013,Emmett Johnson,KC,ATL,5100,9.460033661856958,6.12730833178648,4,1.0006580790401012,"matchup, game environment, history, usage, range","• Matchup: ATL allows 1.09x league-avg to RBs (favorable)
 • Game environment: KC implied 25.3 of a 47.3 total, favored by 3.3 (plus)
 • History: 7.1 pts/game season avg, 8 games (in line with average)
-• Usage: 4.9 touches projected (3.0 carries + 1.9 targets) + injury step-up worth 4.6 pts, 25% of snaps last 3 games (unproven new role; usage trending up)
-• Range: 5.1–16.0 pts (high bust risk; under half his average in 3 of 8 games)","Value Pick, Boom/Bust Dart",True,34.0,unproven new role,high bust risk,,0.6
+• Usage: 4.9 touches projected (3.0 carries + 1.9 targets) + injury step-up worth 4.6 pts; inheriting vacated work puts him near 10 touches, with no other startable RB on the team, 25% of snaps last 3 games (unproven new role; usage trending up)
+• Range: 5.1–16.0 pts (high bust risk; under half his average in 3 of 8 games)","Value Pick, Boom/Bust Dart",True,40.0,unproven new role,high bust risk,,0.621
 RB,12,00-0039738,Blake Corum,LA,ARI,5900,9.242074206993433,3.0304283936882954,3,0.6671338057722713,"matchup, game environment, history, usage, range","• Matchup: ARI allows 0.99x league-avg to RBs (neutral)
 • Game environment: LA implied 24.0 of a 38.2 total, favored by 9.8 (middling)
 • History: 10.0 pts/game season avg, 9 games (in line with average)
