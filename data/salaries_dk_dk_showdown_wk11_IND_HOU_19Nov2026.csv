@@ -1,0 +1,103 @@
+Position,Name + ID,Name,ID,Roster Position,Salary,Game Info,TeamAbbrev,AvgPointsPerGame,Status,roster_role,name,site,salary,normalized_name,normalized_team,position_upper,slate_format,player_id,match_method,match_confidence
+RB,Jonathan Taylor (44945833),Jonathan Taylor,44945833,CPT,15900,IND@HOU 11/19/2026 08:15PM ET,IND,17.0,,CPT,Jonathan Taylor,dk,15900,jonathan taylor,IND,RB,showdown,00-0036223,auto_exact,high
+WR,Nico Collins (44945834),Nico Collins,44945834,CPT,15300,IND@HOU 11/19/2026 08:15PM ET,HOU,17.0,,CPT,Nico Collins,dk,15300,nico collins,HOU,WR,showdown,00-0036554,auto_exact,high
+QB,C.J. Stroud (44945835),C.J. Stroud,44945835,CPT,15000,IND@HOU 11/19/2026 08:15PM ET,HOU,22.4,,CPT,C.J. Stroud,dk,15000,cj stroud,HOU,QB,showdown,00-0039163,auto_exact,high
+QB,Daniel Jones (44945836),Daniel Jones,44945836,CPT,13200,IND@HOU 11/19/2026 08:15PM ET,IND,10.2,,CPT,Daniel Jones,dk,13200,daniel jones,IND,QB,showdown,00-0035710,auto_exact,high
+RB,Woody Marks (44945837),Woody Marks,44945837,CPT,12900,IND@HOU 11/19/2026 08:15PM ET,HOU,8.7,D,CPT,Woody Marks,dk,12900,woody marks,HOU,RB,showdown,00-0040583,auto_exact,high
+TE,Tyler Warren (44945838),Tyler Warren,44945838,CPT,12600,IND@HOU 11/19/2026 08:15PM ET,IND,10.8,,CPT,Tyler Warren,dk,12600,tyler warren,IND,TE,showdown,00-0040128,auto_exact,high
+RB,David Montgomery (44945839),David Montgomery,44945839,CPT,12300,IND@HOU 11/19/2026 08:15PM ET,HOU,9.1,,CPT,David Montgomery,dk,12300,david montgomery,HOU,RB,showdown,00-0035685,auto_exact,high
+WR,Alec Pierce (44945840),Alec Pierce,44945840,CPT,12000,IND@HOU 11/19/2026 08:15PM ET,IND,6.1,IR,CPT,Alec Pierce,dk,12000,alec pierce,IND,WR,showdown,00-0037664,auto_exact,high
+RB,Emari Demercado (44945841),Emari Demercado,44945841,CPT,11100,IND@HOU 11/19/2026 08:15PM ET,HOU,1.9,,CPT,Emari Demercado,dk,11100,emari demercado,HOU,RB,showdown,00-0038705,auto_exact,high
+RB,Jonathan Taylor (44945782),Jonathan Taylor,44945782,FLEX,10600,IND@HOU 11/19/2026 08:15PM ET,IND,17.0,,FLEX,Jonathan Taylor,dk,10600,jonathan taylor,IND,RB,showdown,00-0036223,auto_exact,high
+WR,Marvin Harrison Jr. (44945842),Marvin Harrison Jr.,44945842,CPT,10500,IND@HOU 11/19/2026 08:15PM ET,HOU,5.4,Q,CPT,Marvin Harrison Jr.,dk,10500,marvin harrison,HOU,WR,showdown,00-0039849,auto_exact,high
+WR,Nico Collins (44945783),Nico Collins,44945783,FLEX,10200,IND@HOU 11/19/2026 08:15PM ET,HOU,17.0,,FLEX,Nico Collins,dk,10200,nico collins,HOU,WR,showdown,00-0036554,auto_exact,high
+QB,C.J. Stroud (44945784),C.J. Stroud,44945784,FLEX,10000,IND@HOU 11/19/2026 08:15PM ET,HOU,22.4,,FLEX,C.J. Stroud,dk,10000,cj stroud,HOU,QB,showdown,00-0039163,auto_exact,high
+WR,Tank Dell (44945843),Tank Dell,44945843,CPT,9600,IND@HOU 11/19/2026 08:15PM ET,HOU,11.4,,CPT,Tank Dell,dk,9600,tank dell,HOU,WR,showdown,00-0038977,auto_exact,high
+WR,Xavier Hutchinson (44945844),Xavier Hutchinson,44945844,CPT,9300,IND@HOU 11/19/2026 08:15PM ET,HOU,9.1,,CPT,Xavier Hutchinson,dk,9300,xavier hutchinson,HOU,WR,showdown,00-0038618,auto_exact,high
+QB,Riley Leonard (44945845),Riley Leonard,44945845,CPT,9000,IND@HOU 11/19/2026 08:15PM ET,IND,0.0,,CPT,Riley Leonard,dk,9000,riley leonard,IND,QB,showdown,00-0040206,auto_exact,high
+QB,Anthony Richardson Sr. (44945846),Anthony Richardson Sr.,44945846,CPT,9000,IND@HOU 11/19/2026 08:15PM ET,IND,0.7,,CPT,Anthony Richardson Sr.,dk,9000,anthony richardson,IND,QB,showdown,00-0039164,auto_exact,high
+QB,Graham Mertz (44945847),Graham Mertz,44945847,CPT,9000,IND@HOU 11/19/2026 08:15PM ET,HOU,0.0,IR,CPT,Graham Mertz,dk,9000,graham mertz,HOU,QB,showdown,00-0040211,auto_exact,high
+QB,Davis Mills (44945848),Davis Mills,44945848,CPT,9000,IND@HOU 11/19/2026 08:15PM ET,HOU,0.1,,CPT,Davis Mills,dk,9000,davis mills,HOU,QB,showdown,00-0036898,auto_exact,high
+QB,Daniel Jones (44945785),Daniel Jones,44945785,FLEX,8800,IND@HOU 11/19/2026 08:15PM ET,IND,10.2,,FLEX,Daniel Jones,dk,8800,daniel jones,IND,QB,showdown,00-0035710,auto_exact,high
+DST,Texans (44945849),Texans,44945849,CPT,8700,IND@HOU 11/19/2026 08:15PM ET,HOU,6.2,,CPT,Texans,dk,8700,texans,HOU,DST,showdown,DST_HOU,team_defense,high
+RB,Woody Marks (44945786),Woody Marks,44945786,FLEX,8600,IND@HOU 11/19/2026 08:15PM ET,HOU,8.7,D,FLEX,Woody Marks,dk,8600,woody marks,HOU,RB,showdown,00-0040583,auto_exact,high
+TE,Tyler Warren (44945787),Tyler Warren,44945787,FLEX,8400,IND@HOU 11/19/2026 08:15PM ET,IND,10.8,,FLEX,Tyler Warren,dk,8400,tyler warren,IND,TE,showdown,00-0040128,auto_exact,high
+RB,David Montgomery (44945788),David Montgomery,44945788,FLEX,8200,IND@HOU 11/19/2026 08:15PM ET,HOU,9.1,,FLEX,David Montgomery,dk,8200,david montgomery,HOU,RB,showdown,00-0035685,auto_exact,high
+K,Ka'imi Fairbairn (44945850),Ka'imi Fairbairn,44945850,CPT,8100,IND@HOU 11/19/2026 08:15PM ET,HOU,11.1,,CPT,Ka'imi Fairbairn,dk,8100,kaimi fairbairn,HOU,K,showdown,00-0032726,auto_exact,high
+WR,Alec Pierce (44945789),Alec Pierce,44945789,FLEX,8000,IND@HOU 11/19/2026 08:15PM ET,IND,6.1,IR,FLEX,Alec Pierce,dk,8000,alec pierce,IND,WR,showdown,00-0037664,auto_exact,high
+K,Spencer Shrader (44945851),Spencer Shrader,44945851,CPT,7800,IND@HOU 11/19/2026 08:15PM ET,IND,11.4,,CPT,Spencer Shrader,dk,7800,spencer shrader,IND,K,showdown,00-0039576,auto_exact,high
+WR,Kayshon Boutte (44945852),Kayshon Boutte,44945852,CPT,7500,IND@HOU 11/19/2026 08:15PM ET,HOU,7.3,,CPT,Kayshon Boutte,dk,7500,kayshon boutte,HOU,WR,showdown,00-0038608,auto_exact,high
+RB,Emari Demercado (44945790),Emari Demercado,44945790,FLEX,7400,IND@HOU 11/19/2026 08:15PM ET,HOU,1.9,,FLEX,Emari Demercado,dk,7400,emari demercado,HOU,RB,showdown,00-0038705,auto_exact,high
+TE,Dalton Schultz (44945853),Dalton Schultz,44945853,CPT,7200,IND@HOU 11/19/2026 08:15PM ET,HOU,9.2,,CPT,Dalton Schultz,dk,7200,dalton schultz,HOU,TE,showdown,00-0034383,auto_exact,high
+WR,Marvin Harrison Jr. (44945791),Marvin Harrison Jr.,44945791,FLEX,7000,IND@HOU 11/19/2026 08:15PM ET,HOU,5.4,Q,FLEX,Marvin Harrison Jr.,dk,7000,marvin harrison,HOU,WR,showdown,00-0039849,auto_exact,high
+RB,Seth McGowan (44945854),Seth McGowan,44945854,CPT,6900,IND@HOU 11/19/2026 08:15PM ET,IND,4.6,,CPT,Seth McGowan,dk,6900,seth mcgowan,IND,RB,showdown,00-0041125,auto_exact,high
+RB,Dare Ogunbowale (44945855),Dare Ogunbowale,44945855,CPT,6600,IND@HOU 11/19/2026 08:15PM ET,HOU,0.6,,CPT,Dare Ogunbowale,dk,6600,dare ogunbowale,HOU,RB,showdown,00-0033854,auto_exact,high
+WR,Tank Dell (44945792),Tank Dell,44945792,FLEX,6400,IND@HOU 11/19/2026 08:15PM ET,HOU,11.4,,FLEX,Tank Dell,dk,6400,tank dell,HOU,WR,showdown,00-0038977,auto_exact,high
+WR,Xavier Hutchinson (44945793),Xavier Hutchinson,44945793,FLEX,6200,IND@HOU 11/19/2026 08:15PM ET,HOU,9.1,,FLEX,Xavier Hutchinson,dk,6200,xavier hutchinson,HOU,WR,showdown,00-0038618,auto_exact,high
+QB,Riley Leonard (44945794),Riley Leonard,44945794,FLEX,6000,IND@HOU 11/19/2026 08:15PM ET,IND,0.0,,FLEX,Riley Leonard,dk,6000,riley leonard,IND,QB,showdown,00-0040206,auto_exact,high
+QB,Anthony Richardson Sr. (44945795),Anthony Richardson Sr.,44945795,FLEX,6000,IND@HOU 11/19/2026 08:15PM ET,IND,0.7,,FLEX,Anthony Richardson Sr.,dk,6000,anthony richardson,IND,QB,showdown,00-0039164,auto_exact,high
+QB,Graham Mertz (44945796),Graham Mertz,44945796,FLEX,6000,IND@HOU 11/19/2026 08:15PM ET,HOU,0.0,IR,FLEX,Graham Mertz,dk,6000,graham mertz,HOU,QB,showdown,00-0040211,auto_exact,high
+QB,Davis Mills (44945797),Davis Mills,44945797,FLEX,6000,IND@HOU 11/19/2026 08:15PM ET,HOU,0.1,,FLEX,Davis Mills,dk,6000,davis mills,HOU,QB,showdown,00-0036898,auto_exact,high
+WR,Laquon Treadwell (44945856),Laquon Treadwell,44945856,CPT,6000,IND@HOU 11/19/2026 08:15PM ET,IND,4.9,,CPT,Laquon Treadwell,dk,6000,laquon treadwell,IND,WR,showdown,00-0032951,auto_exact,high
+DST,Texans (44945798),Texans,44945798,FLEX,5800,IND@HOU 11/19/2026 08:15PM ET,HOU,6.2,,FLEX,Texans,dk,5800,texans,HOU,DST,showdown,DST_HOU,team_defense,high
+K,Ka'imi Fairbairn (44945799),Ka'imi Fairbairn,44945799,FLEX,5400,IND@HOU 11/19/2026 08:15PM ET,HOU,11.1,,FLEX,Ka'imi Fairbairn,dk,5400,kaimi fairbairn,HOU,K,showdown,00-0032726,auto_exact,high
+WR,Ashton Dulin (44945857),Ashton Dulin,44945857,CPT,5400,IND@HOU 11/19/2026 08:15PM ET,IND,3.8,,CPT,Ashton Dulin,dk,5400,ashton dulin,IND,WR,showdown,00-0035021,auto_exact,high
+K,Spencer Shrader (44945800),Spencer Shrader,44945800,FLEX,5200,IND@HOU 11/19/2026 08:15PM ET,IND,11.4,,FLEX,Spencer Shrader,dk,5200,spencer shrader,IND,K,showdown,00-0039576,auto_exact,high
+DST,Colts (44945858),Colts,44945858,CPT,5100,IND@HOU 11/19/2026 08:15PM ET,IND,4.1,,CPT,Colts,dk,5100,colts,IND,DST,showdown,DST_IND,team_defense,high
+WR,Kayshon Boutte (44945801),Kayshon Boutte,44945801,FLEX,5000,IND@HOU 11/19/2026 08:15PM ET,HOU,7.3,,FLEX,Kayshon Boutte,dk,5000,kayshon boutte,HOU,WR,showdown,00-0038608,auto_exact,high
+TE,Dalton Schultz (44945802),Dalton Schultz,44945802,FLEX,4800,IND@HOU 11/19/2026 08:15PM ET,HOU,9.2,,FLEX,Dalton Schultz,dk,4800,dalton schultz,HOU,TE,showdown,00-0034383,auto_exact,high
+RB,Seth McGowan (44945803),Seth McGowan,44945803,FLEX,4600,IND@HOU 11/19/2026 08:15PM ET,IND,4.6,,FLEX,Seth McGowan,dk,4600,seth mcgowan,IND,RB,showdown,00-0041125,auto_exact,high
+WR,Anthony Gould (44945859),Anthony Gould,44945859,CPT,4500,IND@HOU 11/19/2026 08:15PM ET,IND,1.1,Q,CPT,Anthony Gould,dk,4500,anthony gould,IND,WR,showdown,00-0039816,auto_exact,high
+RB,Dare Ogunbowale (44945804),Dare Ogunbowale,44945804,FLEX,4400,IND@HOU 11/19/2026 08:15PM ET,HOU,0.6,,FLEX,Dare Ogunbowale,dk,4400,dare ogunbowale,HOU,RB,showdown,00-0033854,auto_exact,high
+WR,Deion Burks (44945860),Deion Burks,44945860,CPT,4200,IND@HOU 11/19/2026 08:15PM ET,IND,1.4,,CPT,Deion Burks,dk,4200,deion burks,IND,WR,showdown,00-0041132,auto_exact,high
+WR,Laquon Treadwell (44945805),Laquon Treadwell,44945805,FLEX,4000,IND@HOU 11/19/2026 08:15PM ET,IND,4.9,,FLEX,Laquon Treadwell,dk,4000,laquon treadwell,IND,WR,showdown,00-0032951,auto_exact,high
+WR,Ashton Dulin (44945806),Ashton Dulin,44945806,FLEX,3600,IND@HOU 11/19/2026 08:15PM ET,IND,3.8,,FLEX,Ashton Dulin,dk,3600,ashton dulin,IND,WR,showdown,00-0035021,auto_exact,high
+RB,British Brooks (44945861),British Brooks,44945861,CPT,3600,IND@HOU 11/19/2026 08:15PM ET,HOU,0.0,IR,CPT,British Brooks,dk,3600,british brooks,HOU,RB,showdown,00-0039603,auto_exact,high
+DST,Colts (44945807),Colts,44945807,FLEX,3400,IND@HOU 11/19/2026 08:15PM ET,IND,4.1,,FLEX,Colts,dk,3400,colts,IND,DST,showdown,DST_IND,team_defense,high
+WR,Anthony Gould (44945808),Anthony Gould,44945808,FLEX,3000,IND@HOU 11/19/2026 08:15PM ET,IND,1.1,Q,FLEX,Anthony Gould,dk,3000,anthony gould,IND,WR,showdown,00-0039816,auto_exact,high
+WR,Nick Westbrook-Ikhine (44945862),Nick Westbrook-Ikhine,44945862,CPT,3000,IND@HOU 11/19/2026 08:15PM ET,IND,0.0,,CPT,Nick Westbrook-Ikhine,dk,3000,nick westbrook ikhine,IND,WR,showdown,00-0036182,auto_exact,high
+WR,Deion Burks (44945809),Deion Burks,44945809,FLEX,2800,IND@HOU 11/19/2026 08:15PM ET,IND,1.4,,FLEX,Deion Burks,dk,2800,deion burks,IND,WR,showdown,00-0041132,auto_exact,high
+RB,British Brooks (44945810),British Brooks,44945810,FLEX,2400,IND@HOU 11/19/2026 08:15PM ET,HOU,0.0,IR,FLEX,British Brooks,dk,2400,british brooks,HOU,RB,showdown,00-0039603,auto_exact,high
+TE,Foster Moreau (44945863),Foster Moreau,44945863,CPT,2400,IND@HOU 11/19/2026 08:15PM ET,HOU,4.0,,CPT,Foster Moreau,dk,2400,foster moreau,HOU,TE,showdown,00-0034981,auto_exact,high
+RB,DJ Giddens (44945864),DJ Giddens,44945864,CPT,2100,IND@HOU 11/19/2026 08:15PM ET,IND,2.2,,CPT,DJ Giddens,dk,2100,dj giddens,IND,RB,showdown,00-0040179,auto_exact,high
+WR,Nick Westbrook-Ikhine (44945811),Nick Westbrook-Ikhine,44945811,FLEX,2000,IND@HOU 11/19/2026 08:15PM ET,IND,0.0,,FLEX,Nick Westbrook-Ikhine,dk,2000,nick westbrook ikhine,IND,WR,showdown,00-0036182,auto_exact,high
+TE,Will Mallory (44945865),Will Mallory,44945865,CPT,1800,IND@HOU 11/19/2026 08:15PM ET,IND,1.3,Q,CPT,Will Mallory,dk,1800,will mallory,IND,TE,showdown,00-0038394,auto_exact,high
+TE,Foster Moreau (44945812),Foster Moreau,44945812,FLEX,1600,IND@HOU 11/19/2026 08:15PM ET,HOU,4.0,,FLEX,Foster Moreau,dk,1600,foster moreau,HOU,TE,showdown,00-0034981,auto_exact,high
+WR,Quez Watkins (44945866),Quez Watkins,44945866,CPT,1500,IND@HOU 11/19/2026 08:15PM ET,IND,0.0,,CPT,Quez Watkins,dk,1500,quez watkins,IND,WR,showdown,00-0036271,auto_exact,high
+RB,DJ Giddens (44945813),DJ Giddens,44945813,FLEX,1400,IND@HOU 11/19/2026 08:15PM ET,IND,2.2,,FLEX,DJ Giddens,dk,1400,dj giddens,IND,RB,showdown,00-0040179,auto_exact,high
+TE,Will Mallory (44945814),Will Mallory,44945814,FLEX,1200,IND@HOU 11/19/2026 08:15PM ET,IND,1.3,Q,FLEX,Will Mallory,dk,1200,will mallory,IND,TE,showdown,00-0038394,auto_exact,high
+WR,Mecole Hardman Jr. (44945867),Mecole Hardman Jr.,44945867,CPT,1200,IND@HOU 11/19/2026 08:15PM ET,IND,0.0,,CPT,Mecole Hardman Jr.,dk,1200,mecole hardman,IND,WR,showdown,00-0035140,auto_exact,high
+WR,Quez Watkins (44945815),Quez Watkins,44945815,FLEX,1000,IND@HOU 11/19/2026 08:15PM ET,IND,0.0,,FLEX,Quez Watkins,dk,1000,quez watkins,IND,WR,showdown,00-0036271,auto_exact,high
+TE,Drew Ogletree (44945868),Drew Ogletree,44945868,CPT,900,IND@HOU 11/19/2026 08:15PM ET,IND,0.6,,CPT,Drew Ogletree,dk,900,drew ogletree,IND,TE,showdown,00-0037292,manual_override,high
+WR,Mecole Hardman Jr. (44945816),Mecole Hardman Jr.,44945816,FLEX,800,IND@HOU 11/19/2026 08:15PM ET,IND,0.0,,FLEX,Mecole Hardman Jr.,dk,800,mecole hardman,IND,WR,showdown,00-0035140,auto_exact,high
+TE,Drew Ogletree (44945817),Drew Ogletree,44945817,FLEX,600,IND@HOU 11/19/2026 08:15PM ET,IND,0.6,,FLEX,Drew Ogletree,dk,600,drew ogletree,IND,TE,showdown,00-0037292,manual_override,high
+TE,Pharaoh Brown (44945869),Pharaoh Brown,44945869,CPT,600,IND@HOU 11/19/2026 08:15PM ET,IND,0.6,,CPT,Pharaoh Brown,dk,600,pharaoh brown,IND,TE,showdown,00-0033439,auto_exact,high
+TE,Pharaoh Brown (44945818),Pharaoh Brown,44945818,FLEX,400,IND@HOU 11/19/2026 08:15PM ET,IND,0.6,,FLEX,Pharaoh Brown,dk,400,pharaoh brown,IND,TE,showdown,00-0033439,auto_exact,high
+RB,Davon Booth (44945870),Davon Booth,44945870,CPT,300,IND@HOU 11/19/2026 08:15PM ET,IND,0.0,,CPT,Davon Booth,dk,300,davon booth,IND,RB,showdown,00-0041277,auto_exact,high
+RB,Joshua Pitsenberger (44945871),Joshua Pitsenberger,44945871,CPT,300,IND@HOU 11/19/2026 08:15PM ET,HOU,0.0,,CPT,Joshua Pitsenberger,dk,300,joshua pitsenberger,HOU,RB,showdown,00-0041307,auto_exact,high
+WR,Jayden Higgins (44945872),Jayden Higgins,44945872,CPT,300,IND@HOU 11/19/2026 08:15PM ET,HOU,0.0,IR,CPT,Jayden Higgins,dk,300,jayden higgins,HOU,WR,showdown,00-0040130,auto_exact,high
+WR,Jaylin Noel (44945873),Jaylin Noel,44945873,CPT,300,IND@HOU 11/19/2026 08:15PM ET,HOU,10.0,IR,CPT,Jaylin Noel,dk,300,jaylin noel,HOU,WR,showdown,00-0040138,auto_exact,high
+WR,D.J. Montgomery (44945874),D.J. Montgomery,44945874,CPT,300,IND@HOU 11/19/2026 08:15PM ET,IND,0.0,IR,CPT,D.J. Montgomery,dk,300,dj montgomery,IND,WR,showdown,00-0035045,auto_exact,high
+WR,Bryce Oliver (44945875),Bryce Oliver,44945875,CPT,300,IND@HOU 11/19/2026 08:15PM ET,HOU,0.0,,CPT,Bryce Oliver,dk,300,bryce oliver,HOU,WR,showdown,00-0039650,auto_exact,high
+WR,Josh Kelly (44945876),Josh Kelly,44945876,CPT,300,IND@HOU 11/19/2026 08:15PM ET,HOU,0.0,,CPT,Josh Kelly,dk,300,josh kelly,HOU,WR,showdown,00-0040049,auto_exact,high
+WR,Lewis Bond (44945877),Lewis Bond,44945877,CPT,300,IND@HOU 11/19/2026 08:15PM ET,HOU,0.0,,CPT,Lewis Bond,dk,300,lewis bond,HOU,WR,showdown,00-0041467,auto_exact,high
+WR,Nikko Remigio (44945878),Nikko Remigio,44945878,CPT,300,IND@HOU 11/19/2026 08:15PM ET,HOU,-0.1,,CPT,Nikko Remigio,dk,300,nikko remigio,HOU,WR,showdown,00-0038519,auto_exact,high
+TE,Brevin Jordan (44945879),Brevin Jordan,44945879,CPT,300,IND@HOU 11/19/2026 08:15PM ET,HOU,0.5,Q,CPT,Brevin Jordan,dk,300,brevin jordan,HOU,TE,showdown,00-0036556,auto_exact,high
+TE,Cade Stover (44945880),Cade Stover,44945880,CPT,300,IND@HOU 11/19/2026 08:15PM ET,HOU,0.9,,CPT,Cade Stover,dk,300,cade stover,HOU,TE,showdown,00-0039359,auto_exact,high
+TE,Carson Towt (44945881),Carson Towt,44945881,CPT,300,IND@HOU 11/19/2026 08:15PM ET,IND,0.0,IR,CPT,Carson Towt,dk,300,carson towt,IND,TE,showdown,00-0040853,auto_exact,high
+TE,Marlin Klein (44945882),Marlin Klein,44945882,CPT,300,IND@HOU 11/19/2026 08:15PM ET,HOU,0.5,,CPT,Marlin Klein,dk,300,marlin klein,HOU,TE,showdown,00-0041472,auto_exact,high
+TE,Mo Alie-Cox (44945883),Mo Alie-Cox,44945883,CPT,300,IND@HOU 11/19/2026 08:15PM ET,IND,1.5,IR,CPT,Mo Alie-Cox,dk,300,mo alie cox,IND,TE,showdown,00-0033217,auto_exact,high
+RB,Davon Booth (44945819),Davon Booth,44945819,FLEX,200,IND@HOU 11/19/2026 08:15PM ET,IND,0.0,,FLEX,Davon Booth,dk,200,davon booth,IND,RB,showdown,00-0041277,auto_exact,high
+RB,Joshua Pitsenberger (44945820),Joshua Pitsenberger,44945820,FLEX,200,IND@HOU 11/19/2026 08:15PM ET,HOU,0.0,,FLEX,Joshua Pitsenberger,dk,200,joshua pitsenberger,HOU,RB,showdown,00-0041307,auto_exact,high
+WR,Jayden Higgins (44945821),Jayden Higgins,44945821,FLEX,200,IND@HOU 11/19/2026 08:15PM ET,HOU,0.0,IR,FLEX,Jayden Higgins,dk,200,jayden higgins,HOU,WR,showdown,00-0040130,auto_exact,high
+WR,Jaylin Noel (44945822),Jaylin Noel,44945822,FLEX,200,IND@HOU 11/19/2026 08:15PM ET,HOU,10.0,IR,FLEX,Jaylin Noel,dk,200,jaylin noel,HOU,WR,showdown,00-0040138,auto_exact,high
+WR,D.J. Montgomery (44945823),D.J. Montgomery,44945823,FLEX,200,IND@HOU 11/19/2026 08:15PM ET,IND,0.0,IR,FLEX,D.J. Montgomery,dk,200,dj montgomery,IND,WR,showdown,00-0035045,auto_exact,high
+WR,Bryce Oliver (44945824),Bryce Oliver,44945824,FLEX,200,IND@HOU 11/19/2026 08:15PM ET,HOU,0.0,,FLEX,Bryce Oliver,dk,200,bryce oliver,HOU,WR,showdown,00-0039650,auto_exact,high
+WR,Josh Kelly (44945825),Josh Kelly,44945825,FLEX,200,IND@HOU 11/19/2026 08:15PM ET,HOU,0.0,,FLEX,Josh Kelly,dk,200,josh kelly,HOU,WR,showdown,00-0040049,auto_exact,high
+WR,Lewis Bond (44945826),Lewis Bond,44945826,FLEX,200,IND@HOU 11/19/2026 08:15PM ET,HOU,0.0,,FLEX,Lewis Bond,dk,200,lewis bond,HOU,WR,showdown,00-0041467,auto_exact,high
+WR,Nikko Remigio (44945827),Nikko Remigio,44945827,FLEX,200,IND@HOU 11/19/2026 08:15PM ET,HOU,-0.1,,FLEX,Nikko Remigio,dk,200,nikko remigio,HOU,WR,showdown,00-0038519,auto_exact,high
+TE,Brevin Jordan (44945828),Brevin Jordan,44945828,FLEX,200,IND@HOU 11/19/2026 08:15PM ET,HOU,0.5,Q,FLEX,Brevin Jordan,dk,200,brevin jordan,HOU,TE,showdown,00-0036556,auto_exact,high
+TE,Cade Stover (44945829),Cade Stover,44945829,FLEX,200,IND@HOU 11/19/2026 08:15PM ET,HOU,0.9,,FLEX,Cade Stover,dk,200,cade stover,HOU,TE,showdown,00-0039359,auto_exact,high
+TE,Carson Towt (44945830),Carson Towt,44945830,FLEX,200,IND@HOU 11/19/2026 08:15PM ET,IND,0.0,IR,FLEX,Carson Towt,dk,200,carson towt,IND,TE,showdown,00-0040853,auto_exact,high
+TE,Marlin Klein (44945831),Marlin Klein,44945831,FLEX,200,IND@HOU 11/19/2026 08:15PM ET,HOU,0.5,,FLEX,Marlin Klein,dk,200,marlin klein,HOU,TE,showdown,00-0041472,auto_exact,high
+TE,Mo Alie-Cox (44945832),Mo Alie-Cox,44945832,FLEX,200,IND@HOU 11/19/2026 08:15PM ET,IND,1.5,IR,FLEX,Mo Alie-Cox,dk,200,mo alie cox,IND,TE,showdown,00-0033217,auto_exact,high
