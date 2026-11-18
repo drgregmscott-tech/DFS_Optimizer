@@ -242,7 +242,7 @@ async function handleDispatch(url, env) {
   // client_payload.params accordingly.
   const passthroughKeys = [
     "mode", "n_lineups", "max_exposure", "uniqueness", "randomization_pct",
-    "seed", "stack_mode", "stack_size", "stack_positions", "bring_back",
+    "seed", "stack_mode", "stack_size", "stack_positions", "bring_back", "bring_back_top_games",
     "stack_team", "stack_game", "game_stack_min_players", "mini_stack_type",
     "stack_candidate_pool", "stack_diversify", "lock", "exclude",
     "min_salary_pct", "flex_positions",

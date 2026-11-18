@@ -183,6 +183,7 @@ jobs:
           args += flag("--stack-size", "stack_size", int)
           args += flag("--stack-positions", "stack_positions")
           args += bool_flag("--bring-back", "bring_back")
+          args += flag("--bring-back-top-games", "bring_back_top_games", int)
           args += flag("--stack-team", "stack_team")
           args += flag("--stack-game", "stack_game")
           args += flag("--game-stack-min-players", "game_stack_min_players", int)

@@ -527,16 +527,28 @@ def parse_participation_floors(raw: str, flag_name: str) -> dict:
     return floors
 
 
+PARTICIPATION_FLOOR_QB_STARTER_ATT = 20.0
+# F1 review (2026-11-18): a 0-game row is only exempt when the projection
+# model already gives it a real role. On wk10 main every 0-game non-QB row
+# projected <= 1.5 (min-salary depth), so a blanket 0-game exemption just
+# re-admitted ~59 dead rows; 3.0 keeps debut starters, drops depth.
+PARTICIPATION_FLOOR_NO_HISTORY_MIN_PROJ = 3.0
+
+
 def apply_participation_floor(players: pd.DataFrame, participation_floors: dict,
                               locked_player_ids: set) -> pd.DataFrame:
     """Session 15, decision #A2. Shared by build_single_lineup() and
     build_multi_lineup() -- same filter, same exemptions, one place to
     fix it. Excludes any player whose position has a configured floor AND
     whose participation_effective is below it, UNLESS locked (decision
-    #22/#23's existing override) or exempt (no games-played history at
-    all, or a confirmed no-game week this slate -- see
-    build_projections_statline.py's AUDIT_COLUMNS comment for why those
-    read as NaN rather than 0.0). A position absent from
+    #22/#23's existing override) or exempt. Exempt (F1, 2026-11-18): any QB
+    projected for >= PARTICIPATION_FLOOR_QB_STARTER_ATT pass attempts, and
+    rows with games_played NaN or <= 0 whose final_projection is >=
+    PARTICIPATION_FLOOR_NO_HISTORY_MIN_PROJ (a 0-game player reads
+    participation 0.0, NOT NaN, so the old "no history = NaN = exempt"
+    wording never fired and real starters such as a debut-week starting QB
+    -- Kyle McCord, wk10 -- were dropped; 0-game depth rows projecting near
+    zero stay filtered). A position absent from
     participation_floors, or an empty participation_floors dict entirely
     (e.g. --participation-floors ''), is a no-op -- identical behavior to
     today, same convention as --min-projection at 0.0."""
@@ -556,10 +568,26 @@ def apply_participation_floor(players: pd.DataFrame, participation_floors: dict,
     pos = players["position"].astype(str)
     floor = pos.map(participation_floors).fillna(0.0)
     part = pd.to_numeric(players["participation_effective"], errors="coerce")
-    below_floor = players[
-        part.notna() & (part < floor) & (floor > 0.0)
-        & (~players["player_id"].isin(locked_player_ids))
-    ]
+    # F1 (2026-11-18): one exempt mask shared by the print and the return.
+    # 0-game / NaN-game rows have no history to judge (they read 0.0, not
+    # NaN): exempt only if the projection gives them a real role. A QB
+    # projected for >= PARTICIPATION_FLOOR_QB_STARTER_ATT pass attempts is a
+    # real starter. If the columns are absent the corresponding exemption is
+    # simply off (pre-fix behavior).
+    if "games_played" in players.columns and "final_projection" in players.columns:
+        gp = pd.to_numeric(players["games_played"], errors="coerce")
+        fp = pd.to_numeric(players["final_projection"], errors="coerce").fillna(0)
+        no_history = (gp.isna() | (gp <= 0)) & (fp >= PARTICIPATION_FLOOR_NO_HISTORY_MIN_PROJ)
+    else:
+        no_history = pd.Series(False, index=players.index)
+    if "proj_pass_att" in players.columns:
+        ppa = pd.to_numeric(players["proj_pass_att"], errors="coerce").fillna(0)
+        qb_starter = (pos == "QB") & (ppa >= PARTICIPATION_FLOOR_QB_STARTER_ATT)
+    else:
+        qb_starter = pd.Series(False, index=players.index)
+    exempt = no_history | qb_starter | players["player_id"].isin(locked_player_ids)
+    drop = part.notna() & (part < floor) & (floor > 0.0) & ~exempt
+    below_floor = players[drop]
     if len(below_floor):
         print(
             f"Pool filter: excluding {len(below_floor)} player(s) below "
@@ -571,10 +599,7 @@ def apply_participation_floor(players: pd.DataFrame, participation_floors: dict,
             ),
             file=sys.stderr,
         )
-    return players[
-        ~(part.notna() & (part < floor) & (floor > 0.0))
-        | players["player_id"].isin(locked_player_ids)
-    ].copy()
+    return players[~drop].copy()
 
 
 # ---------------------------------------------------------------------------
@@ -1256,12 +1281,35 @@ def rank_candidate_games(players: pd.DataFrame, require_qb_viable: bool = False)
 # Constraint builder (decision #15) + post-solve validator (decision #20)
 # ---------------------------------------------------------------------------
 
+def top_bring_back_games(players: pd.DataFrame, top_n: int):
+    """F5 (2026-11-18): the frozenset of the top-`top_n` games by over_under
+    (rank_candidate_games order), each stored as a frozenset({team_a,
+    team_b}). Returns None when top_n <= 0, meaning "bring-back applies to
+    every game" (the unchanged, pre-F5 behavior)."""
+    if not top_n or top_n <= 0:
+        return None
+    games = rank_candidate_games(players)
+    if not games:
+        # No over_under / no real games to rank: fall back to the old
+        # every-game behavior rather than silently disabling bring-back.
+        return None
+    return frozenset(frozenset(g) for g in games[:top_n])
+
+
+def bring_back_applies(bring_back_games, team: str, opp_team: str) -> bool:
+    """True if the bring-back rule is in force for the game team vs opp_team:
+    always when `bring_back_games` is None, else only if that game is among
+    the top-N totals."""
+    return bring_back_games is None or frozenset((team, opp_team)) in bring_back_games
+
+
 def add_stack_constraints(prob, x: dict, players: pd.DataFrame, stack_mode: str,
                            stack_size: int = DEFAULT_STACK_SIZE,
                            stack_positions: set = None, bring_back: bool = False,
                            target_team: str = None, target_game: tuple = None,
                            game_stack_min_players: int = DEFAULT_GAME_STACK_MIN_PLAYERS,
-                           mini_stack_type: str = None):
+                           mini_stack_type: str = None,
+                           bring_back_games: frozenset = None):
     """Adds hard ILP constraints (decision #15) for the requested stack.
     Only players present in `x` are referenced -- if the caller has already
     filtered the pool (e.g. exposure lock-outs, Session 3.2), a locked-out
@@ -1299,13 +1347,15 @@ def add_stack_constraints(prob, x: dict, players: pd.DataFrame, stack_mode: str,
                     f"--bring-back requested but {target_team} has no real "
                     f"opponent this week (bye/unknown) -- decision #21."
                 )
-            bringback_pool = team_pool(opp_team, {"QB", "RB", "WR", "TE"})  # decision #19 -- no DST
-            if not bringback_pool:
-                raise RuntimeError(
-                    f"--bring-back requested but {opp_team} has no viable "
-                    f"skill-position players in the current candidate pool."
-                )
-            prob += pulp.lpSum(x[pid] for pid in bringback_pool) >= 1, f"bring_back_{opp_team}"
+            # F5: outside the top-N totals the bring-back is simply not forced.
+            if bring_back_applies(bring_back_games, target_team, opp_team):
+                bringback_pool = team_pool(opp_team, {"QB", "RB", "WR", "TE"})  # decision #19 -- no DST
+                if not bringback_pool:
+                    raise RuntimeError(
+                        f"--bring-back requested but {opp_team} has no viable "
+                        f"skill-position players in the current candidate pool."
+                    )
+                prob += pulp.lpSum(x[pid] for pid in bringback_pool) >= 1, f"bring_back_{opp_team}"
 
     elif stack_mode == "game":
         team_a, team_b = target_game
@@ -1560,7 +1610,8 @@ def validate_stack(lineup: pd.DataFrame, stack_mode: str,
                     bring_back: bool = False, target_team: str = None,
                     target_game: tuple = None,
                     game_stack_min_players: int = DEFAULT_GAME_STACK_MIN_PLAYERS,
-                    mini_stack_type: str = None):
+                    mini_stack_type: str = None,
+                    bring_back_games: frozenset = None):
     """Decision #20 -- mirrors validate_lineup()'s pattern: an automated,
     structural re-check that the requested stack actually landed in the
     final lineup. `lineup` must include the `opponent` column (assign_
@@ -1578,8 +1629,8 @@ def validate_stack(lineup: pd.DataFrame, stack_mode: str,
             f"STACK VALIDATION FAILED: expected >= {stack_size} {target_team} "
             f"partner(s) at {sorted(stack_positions)}, found {len(partner_rows)}"
         )
-        if bring_back:
-            opp_team = lineup.loc[lineup["team"] == target_team, "opponent"].iloc[0]
+        opp_team = lineup.loc[lineup["team"] == target_team, "opponent"].iloc[0] if bring_back else None
+        if bring_back and bring_back_applies(bring_back_games, target_team, opp_team):
             bringback_rows = lineup[lineup["team"] == opp_team]
             assert len(bringback_rows) >= 1, (
                 f"STACK VALIDATION FAILED: --bring-back requested but no "
@@ -2069,6 +2120,7 @@ def solve_lineup(players: pd.DataFrame, salary_cap: int, fixed_counts: dict,
                   target_team: str = None, target_game: tuple = None,
                   game_stack_min_players: int = DEFAULT_GAME_STACK_MIN_PLAYERS,
                   mini_stack_type: str = None,
+                  bring_back_games: frozenset = None,
                   locked_player_ids: set = None,
                   min_salary: int = 0,
                   min_total_ownership: float = 0.0,
@@ -2343,6 +2395,7 @@ def solve_lineup(players: pd.DataFrame, salary_cap: int, fixed_counts: dict,
         target_team=target_team, target_game=target_game,
         game_stack_min_players=game_stack_min_players,
         mini_stack_type=mini_stack_type,
+        bring_back_games=bring_back_games,
     )
 
     # Session 12 -- team/game exposure caps (decision #36). No-op unless
@@ -2375,7 +2428,7 @@ def solve_lineup(players: pd.DataFrame, salary_cap: int, fixed_counts: dict,
             f"at every required position within the salary cap."
         )
 
-    selected_ids = [pid for pid in x if x[pid].value() == 1]
+    selected_ids = [pid for pid in x if x[pid].value() is not None and x[pid].value() > 0.5]
     return players[players["player_id"].isin(selected_ids)].copy()
 
 
@@ -2887,7 +2940,8 @@ def build_single_lineup(site: str, slate_id: str, randomization_pct: float = DEF
                          thumbs_up_ids: set = None,
                          thumbs_down_ids: set = None,
                          exclude_skill_vs_opp_dst: bool = DEFAULT_EXCLUDE_SKILL_VS_OPP_DST,
-                         classic_shape: dict = None) -> pd.DataFrame:
+                         classic_shape: dict = None,
+                         bring_back_top_games: int = 0) -> pd.DataFrame:
     config = SITE_CONFIGS[site]
     players = load_final_projections(site, slate_id)
     _slate_sw = infer_season_week_from_slate_id(slate_id)  # FLEX late-swap labeling only
@@ -2938,6 +2992,9 @@ def build_single_lineup(site: str, slate_id: str, randomization_pct: float = DEF
     # docstring for the full rationale. Applied after --min-projection/
     # --exclude, same "narrow the pool down in independent passes" pattern.
     players = apply_participation_floor(players, participation_floors or {}, locked_player_ids)
+    # F5: with bring_back_top_games = N > 0, --bring-back is only forced for
+    # QB teams whose game is among the top-N totals of this pool.
+    bring_back_games = top_bring_back_games(players, bring_back_top_games) if bring_back else None
 
     # Decision #35 -- validated once, upfront, here -- NOT left to
     # solve_lineup()'s own check. solve_lineup() is called inside a
@@ -2996,6 +3053,7 @@ def build_single_lineup(site: str, slate_id: str, randomization_pct: float = DEF
         stack_mode=stack_mode, stack_size=stack_size, stack_positions=stack_positions,
         bring_back=bring_back, target_team=target_team, target_game=target_game,
         game_stack_min_players=game_stack_min_players, mini_stack_type=mini_stack_type,
+        bring_back_games=bring_back_games,
         locked_player_ids=locked_player_ids,
         min_salary=min_salary, min_total_ownership=min_total_ownership, own_penalty=own_penalty,
         flex_positions=flex_positions, lam=lam,
@@ -3021,6 +3079,7 @@ def build_single_lineup(site: str, slate_id: str, randomization_pct: float = DEF
         lineup, stack_mode, stack_size=stack_size, stack_positions=stack_positions,
         bring_back=bring_back, target_team=target_team, target_game=target_game,
         game_stack_min_players=game_stack_min_players, mini_stack_type=mini_stack_type,
+        bring_back_games=bring_back_games,
     )
 
     zero_proj_selected = lineup[lineup["projection"] == 0.0]
@@ -3074,7 +3133,9 @@ def build_multi_lineup(site: str, slate_id: str, n_lineups: int = DEFAULT_N_LINE
                         exclude_skill_vs_opp_dst: bool = DEFAULT_EXCLUDE_SKILL_VS_OPP_DST,
                         classic_shape: dict = None,
                         pool_slack_share: float = 0.0,
-                        pool_slack_amount: int = 0) -> tuple:
+                        pool_slack_amount: int = 0,
+                        anchor_first_lineup: bool = True,
+                        bring_back_top_games: int = 0) -> tuple:
     """Generates up to `n_lineups` distinct, salary-cap-legal lineups, none
     of which use any single player in more than `max_exposure_pct` of the
     total requested lineups (decisions #5/#6 above). Returns
@@ -3192,6 +3253,9 @@ def build_multi_lineup(site: str, slate_id: str, n_lineups: int = DEFAULT_N_LINE
     # thin-participation player would otherwise have been filtered out
     # still gets validated against the REAL final pool.
     players_all = apply_participation_floor(players_all, participation_floors or {}, locked_player_ids)
+    # F5: with bring_back_top_games = N > 0, --bring-back is only forced for
+    # QB teams whose game is among the top-N totals of this pool.
+    bring_back_games = top_bring_back_games(players_all, bring_back_top_games) if bring_back else None
 
     # Decision #35 -- validated once, upfront, here -- NOT left to
     # solve_lineup()'s own check, which sits inside a try/except
@@ -3329,8 +3393,11 @@ def build_multi_lineup(site: str, slate_id: str, n_lineups: int = DEFAULT_N_LINE
 
         # Decision #12 -- independent draw per lineup, not one draw reused
         # for the whole batch.
+        # F2 (2026-11-18): lineup #1 is anchored on the unperturbed objective
+        # (thumbs projection if set) so the top lineup is the true optimum;
+        # randomization applies from lineup #2 on.
         optimization_projection = None
-        if randomization_pct > 0:
+        if randomization_pct > 0 and not (anchor_first_lineup and n_generated == 0):
             optimization_projection = randomize_projections(
                 pool, randomization_pct, rng, mode=randomization_mode, n_lineups=n_lineups,
                 base_override=thumbs_projection,
@@ -3372,6 +3439,7 @@ def build_multi_lineup(site: str, slate_id: str, n_lineups: int = DEFAULT_N_LINE
                     target_team=cand["target_team"], target_game=cand["target_game"],
                     game_stack_min_players=game_stack_min_players,
                     mini_stack_type=mini_stack_type,
+                    bring_back_games=bring_back_games,
                     locked_player_ids=locked_player_ids,
                     min_salary=min_salary, min_total_ownership=min_total_ownership, own_penalty=own_penalty,
                     flex_positions=current_flex_positions, lam=lam,
@@ -3452,6 +3520,7 @@ def build_multi_lineup(site: str, slate_id: str, n_lineups: int = DEFAULT_N_LINE
             bring_back=bring_back, target_team=chosen_cand["target_team"],
             target_game=chosen_cand["target_game"],
             game_stack_min_players=game_stack_min_players, mini_stack_type=mini_stack_type,
+            bring_back_games=bring_back_games,
         )
         lineup.insert(0, "lineup_id", n_generated + 1)
         lineup["stack_target"] = _stack_label(chosen_cand) if stack_mode != "none" else ""
@@ -4149,7 +4218,7 @@ def solve_showdown_lineup(players: pd.DataFrame, site: str,
             f"the min-1-per-team requirement, and lock/exposure settings."
         )
 
-    selected_keys = [rk for rk in x if x[rk].value() == 1]
+    selected_keys = [rk for rk in x if x[rk].value() is not None and x[rk].value() > 0.5]
     return players[players[ROW_KEY_COL].isin(selected_keys)].copy()
 
 
@@ -4453,7 +4522,8 @@ def build_multi_showdown_lineup(site: str, slate_id: str,
                                  exclude_cpt_positions: set = None,
                                  k_cpt_penalty: float = 0.0,
                                  heavy_side_cpt_penalty: float = 0.0,
-                                 exclude_skill_vs_opp_dst: bool = DEFAULT_EXCLUDE_SKILL_VS_OPP_DST) -> tuple:
+                                 exclude_skill_vs_opp_dst: bool = DEFAULT_EXCLUDE_SKILL_VS_OPP_DST,
+                                 anchor_first_lineup: bool = True) -> tuple:
     """Showdown counterpart to build_multi_lineup() -- same exposure-cap /
     uniqueness-relaxation loop (decisions #5-7), no stacking rotation
     (decision #45 -- not supported for Showdown this session). Session 16
@@ -4544,8 +4614,9 @@ def build_multi_showdown_lineup(site: str, slate_id: str,
         }
         pool = players_all[~players_all["player_id"].isin(locked_out)]
 
+        # F2 (2026-11-18): anchor lineup #1 on the unperturbed objective.
         optimization_projection = None
-        if randomization_pct > 0:
+        if randomization_pct > 0 and not (anchor_first_lineup and n_generated == 0):
             optimization_projection = randomize_showdown_projections(
                 pool, randomization_pct, rng, mode=randomization_mode, n_lineups=n_lineups,
                 base_override=thumbs_projection,
@@ -4851,6 +4922,15 @@ def main():
              "own independent draw.",
     )
     parser.add_argument(
+        "--anchor-first-lineup", dest="anchor_first_lineup",
+        action=argparse.BooleanOptionalAction,
+        default=pdef("anchor-first-lineup", True),
+        help="F2 (2026-11-18): by default lineup #1 of a multi-lineup build is "
+             "solved on the unperturbed projections (randomization applies "
+             "from lineup #2). Pass --no-anchor-first-lineup to randomize "
+             "lineup #1 too (old behavior).",
+    )
+    parser.add_argument(
         "--randomization-mode", dest="randomization_mode",
         choices=["pct", "sigma"], default="pct",
         help="Session 10.5 (decision #14): randomization std_dev scale. "
@@ -4882,6 +4962,14 @@ def main():
         help=f"Number of QB-stack partners required (default {DEFAULT_STACK_SIZE} "
              f"= Standard stack; 2 = Double; 3 = Triple). Only used with "
              f"--stack-mode qb.",
+    )
+    parser.add_argument(
+        "--bring-back-top-games", type=int, default=pdef("bring-back-top-games", 0),
+        help="F5 (2026-11-18): with --bring-back, only force the bring-back "
+             "when the QB team's game is among the top N games by over_under "
+             "(0 = every game, the old behavior). Bring-back correlation is "
+             "~0.16 in the top-total tercile vs ~0.02 in the low tercile "
+             "(2021-25).",
     )
     parser.add_argument(
         "--stack-positions", default=DEFAULT_STACK_POSITIONS,
@@ -5784,6 +5872,7 @@ def main():
     stack_kwargs = dict(
         stack_mode=args.stack_mode, stack_size=args.stack_size,
         stack_positions=stack_positions, bring_back=args.bring_back,
+        bring_back_top_games=args.bring_back_top_games,
         stack_teams=stack_teams, stack_games=stack_games,
         game_stack_min_players=args.game_stack_min_players,
         mini_stack_type=args.mini_stack_type,
@@ -6012,6 +6101,7 @@ def main():
                 max_exposure_pct=args.max_exposure, uniqueness=args.uniqueness,
                 randomization_pct=args.randomization_pct,
                 randomization_mode=args.randomization_mode,
+                anchor_first_lineup=args.anchor_first_lineup,
                 seed=args.seed, lam=args.lam,
                 locked_player_ids=locked_player_ids,
                 locked_role_map=locked_role_map,
@@ -6122,6 +6212,7 @@ def main():
             uniqueness=args.uniqueness,
             randomization_pct=args.randomization_pct,
             randomization_mode=args.randomization_mode,
+            anchor_first_lineup=args.anchor_first_lineup,
             seed=args.seed,
             stack_diversify=args.stack_diversify,
             locked_player_ids=locked_player_ids,

@@ -17,6 +17,7 @@ for the established format.
 - **User's real stack is QB+1, no bring-back.** He overrides the optimizer preset's default stack size via
   the CLI on every real build. Don't assume whatever a preset or script default says about stacking —
   verify against the actual CLI invocation before drawing conclusions from a stacking-related analysis.
+  As of 2026-11-18 all GPP presets default to QB+1; the CLI default is also 1 (`DEFAULT_STACK_SIZE`, optimizer.py:400).
 - **"History" means all 5 real NFL seasons (2021-2025), not just 2026.** 2026 alone is thin and should be
   treated as a secondary check, not the primary dataset, for any accuracy/backtest claim.
 - **Never commit Fantasy Cruncher (FC) data.** `data/fc_history/` and similar FC-derived files are local-only,
