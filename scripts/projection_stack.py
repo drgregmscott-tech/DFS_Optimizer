@@ -2,7 +2,7 @@
 projection_stack.py
 ====================
 
-Calibrated "stack" layer on top of the stat-line engine (DK classic only).
+Calibrated "stack" layer on top of the stat-line engine (DK classic; FD behind DFS_D2_FD_STACK).
 
 WHY (Week 2 2026 post-mortem, WK2_POSTMORTEM.md). Rebuilt 32 historical weeks
 (2020-21, pre-game information only) and found: at skill positions the engine
@@ -29,12 +29,19 @@ of E. Players with no player-prop market get final = E + delta. Players whose
 stat means were blended toward the market get final = E_props + PROPS_DELTA_SHARE
 * delta (the market already carries part of the recent-usage information the
 stack adds, so only half the correction is layered on top -- an assumption to
-re-test with real props data). DK classic only: Showdown salaries are on a
-different scale and FD has no fit, so both are left untouched.
+re-test with real props data). DK classic only (FD only behind the flag above): Showdown salaries are on a
+different scale, so they are left untouched.
 
-The fit lives in data/projection_stack_dk.json, made by fit_projection_stack.py
-from data/projection_stack_training_dk.csv. Refit as clean training weeks are
+The DK fit lives in data/projection_stack_dk.json, made by fit_projection_stack.py
+from data/projection_stack_training_dk.csv (the current artifact was refit 2026-10-07 on
+2021-25; the 2020-21 above is the original WK2 study). Refit as clean training weeks are
 added. Any failure returns the engine points unchanged.
+
+FD (D2 item c, analysis/d2_projection_inputs/FD_STACK_DESIGN.md): off unless
+DFS_D2_FD_STACK=1 ("nosal" = salary-free block only). data/projection_stack_fd.json has
+`positions` (salary term = the same-week DK price, since FD price history 2022-25 does not
+exist) and `positions_nosal` (engine + usage only). A row without a DK price uses the
+no-salary block. Missing artifact or any failure = engine points unchanged.
 """
 
 import json
@@ -138,3 +145,49 @@ def combine(engine_pts: pd.Series, engine_with_props_pts: pd.Series, stacked: pd
     delta = (s - e).where(ok, 0.0)
     ep = engine_with_props_pts.astype(float)
     return (ep + np.where(props_matched, PROPS_DELTA_SHARE, 1.0) * delta).clip(lower=0.0)
+
+
+# ---------------------------------------------------------------- FD (D2 item c; DFS_D2_FD_STACK)
+def dk_salary_for_fd(df: pd.DataFrame, season: int, week: int, slate_id: str = None) -> pd.Series:
+    """Same-week DK salary for each FD row (index-aligned, NaN = no DK price). Looks for the DK twin of
+    the FD slate file (fd_ -> dk_ in the slate id), else the DK main-slate file of that week. The DK
+    price stands in for the FD price in the FD stack's salary term (no FD price history exists 2022-25)."""
+    import glob
+    cand = []
+    if slate_id:
+        # FD file salaries_fd_fd_classic_wk10_main_15Nov2026 -> DK twin salaries_dk_dk_classic_wk10_main_15Nov2026
+        cand.append(DATA_DIR / ("salaries_dk_" + str(slate_id).replace("fd_", "dk_", 1) + ".csv"))
+    # Same-week DK main slate of the SAME season (file names end in the year; never borrow another season's prices).
+    cand += [Path(p) for p in sorted(glob.glob(str(DATA_DIR / f"salaries_dk_dk_classic_wk{int(week)}_main_*{int(season)}.csv")))]
+    sal = None
+    for p in cand:
+        if p.exists():
+            d = pd.read_csv(p, dtype={"player_id": str}, usecols=["player_id", "salary"])
+            d = d[d["player_id"].notna()].drop_duplicates("player_id")
+            s = pd.to_numeric(d.set_index("player_id")["salary"], errors="coerce")
+            sal = s if sal is None else sal.combine_first(s)   # twin first, main slate fills players not on it
+    if sal is None:
+        raise FileNotFoundError(f"no DK salary file for FD slate {slate_id!r} week {week}")
+    return df["player_id"].map(sal).astype(float)
+
+
+def apply_stack_fd(df: pd.DataFrame, engine_col: str, season: int, week: int, artifact: dict,
+                   dk_salary: pd.Series = None):
+    """FD stacked points S and the block used per row ('dksal' / 'nosal' / '' for rows not stacked).
+    dksal block = artifact['positions'] with the DK price as `salary`; rows with no DK price (or dk_salary
+    None) use artifact['positions_nosal']. NaN S where the engine is not positive (same as apply_stack)."""
+    nosal_art = {"usage_fill": artifact.get("usage_fill", {}), "positions": artifact.get("positions_nosal", {})}
+    S_no = apply_stack(df, engine_col, "fd", season, week, nosal_art)
+    block = pd.Series(np.where(S_no.notna(), "nosal", ""), index=df.index, dtype=object)
+    S = S_no.copy()
+    if dk_salary is not None and artifact.get("positions"):
+        d2 = df.copy()
+        d2["salary"] = pd.to_numeric(dk_salary, errors="coerce")
+        has = d2["salary"].notna() & (d2["salary"] > 0)
+        if has.any():
+            S_dk = apply_stack(d2.loc[has], engine_col, "fd", season, week,
+                               {"usage_fill": artifact.get("usage_fill", {}), "positions": artifact["positions"]})
+            ok = S_dk.notna()
+            S.loc[S_dk.index[ok]] = S_dk[ok]
+            block.loc[S_dk.index[ok]] = "dksal"
+    return S, block

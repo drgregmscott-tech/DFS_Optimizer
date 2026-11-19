@@ -304,15 +304,27 @@ def _apply_props_anchor(df, variance, slate_id, props_weight, props_file):
         return df
 
 
-def _apply_projection_stack(df, site, season, week):
-    """Calibrated stack (projection_stack.py). Failure = engine points unchanged."""
+def _apply_projection_stack(df, site, season, week, slate_id=None, fd_mode="1"):
+    """Calibrated stack (projection_stack.py). Failure = engine points unchanged.
+    site == "fd" (DFS_D2_FD_STACK, D2 item c): dksal block with a same-week DK price, nosal block for rows
+    without one (fd_mode "nosal" = no-salary block only); audit columns fd_stack_*."""
     try:
         import projection_stack
         artifact = projection_stack.load_artifact(site)
         if artifact is None:
             return df
         engine = df["engine_projection"]
-        stacked = projection_stack.apply_stack(df, "engine_projection", site, season, week, artifact)
+        if site == "fd":
+            dk_sal = None
+            if fd_mode != "nosal":
+                try:
+                    dk_sal = projection_stack.dk_salary_for_fd(df, season, week, slate_id)
+                except FileNotFoundError as exc:   # no DK file at all -> every row on the no-salary block
+                    print(f"FD stack: {exc}; using the no-salary block for all rows.")
+            stacked, block = projection_stack.apply_stack_fd(df, "engine_projection", season, week, artifact, dk_sal)
+            df["fd_stack_dk_salary"] = dk_sal if dk_sal is not None else np.nan
+        else:
+            stacked = projection_stack.apply_stack(df, "engine_projection", site, season, week, artifact)
         matched = (df["props_matched"].fillna(False).astype(bool)
                    if "props_matched" in df.columns else pd.Series(False, index=df.index))
         final = projection_stack.combine(engine, df["statline_mean"], stacked, matched)
@@ -321,6 +333,9 @@ def _apply_projection_stack(df, site, season, week):
         df["stack_delta"] = shift
         for c in ("statline_p10", "statline_p90"):
             df[c] = (df[c] + shift).clip(lower=0.0)
+        if site == "fd":
+            df["fd_stack_on"] = stacked.notna().astype(int)
+            df["fd_stack_block"] = block.where(stacked.notna(), "")
         n = int(stacked.notna().sum())
         print(f"Projection stack: adjusted {n} player(s); mean delta {shift[stacked.notna()].mean():+.2f} pts "
               f"(range {shift.min():+.1f} to {shift.max():+.1f}).")
@@ -1418,7 +1433,11 @@ def build_statline_projections(site: str, season: int, week: int, slate_id: str,
     # Engine-only points E (no props), needed by the projection stack below
     # whenever props changed some players' inputs; otherwise E == the sim above.
     stack_active = bool(use_stack and site == "dk" and not showdown)
-    if stack_active and props_matched_any:
+    # D2 item (c): FD projection stack, default OFF (DFS_D2_FD_STACK=1 dksal+nosal fallback, "nosal" = no-salary only).
+    # Does NOT switch on the DK-validated Q-return/backup-reconcile post steps (those stay keyed on stack_active).
+    fd_mode = os.environ.get("DFS_D2_FD_STACK", "0")
+    fd_stack_active = bool(use_stack and site == "fd" and not showdown and fd_mode in ("1", "nosal"))
+    if (stack_active or fd_stack_active) and props_matched_any:
         sim_e = statline_model.simulate(df_engine_only[~df_engine_only["no_real_game_this_week"]].copy(),
                                         site, variance, n_sims=n_sims, seed=seed)
     else:
@@ -1438,6 +1457,11 @@ def build_statline_projections(site: str, season: int, week: int, slate_id: str,
     df["stack_delta"] = 0.0
     if stack_active:
         df = _apply_projection_stack(df, site, season, week)
+    elif fd_stack_active:
+        df["fd_stack_on"] = 0
+        df["fd_stack_block"] = ""
+        df["fd_stack_dk_salary"] = np.nan
+        df = _apply_projection_stack(df, site, season, week, slate_id=slate_id, fd_mode=fd_mode)
     # Opt-in FantasyPros ECR blend (RB/TE), AFTER the stack and BEFORE the no-game
     # zeroing below so confirmed-no-game rows still end at 0. OFF by default; live DK
     # classic builds only (needs the current week's ECR file). See scripts/ecr_blend.py.
@@ -1573,7 +1597,8 @@ def build_statline_projections(site: str, season: int, week: int, slate_id: str,
                                                                "wrw_wr_stepup_pts",
                                                                "snap_adj_pts",
                                                                "role_change_injury_flag",
-                                                               "q_return_flag", "q_return_post_pts"]]
+                                                               "q_return_flag", "q_return_post_pts"]
+                   + (["fd_stack_on", "fd_stack_block", "fd_stack_dk_salary"] if fd_stack_active else [])]
 
     # --- DST (decisions #2, #3; Session 10.4) ------------------------------
     # Session 14.0 FIX: was build_dst_projections(salaries, ...). Now takes
@@ -1642,6 +1667,8 @@ def build_statline_projections(site: str, season: int, week: int, slate_id: str,
     # Projection-stack audit columns: DST/kickers are not stacked.
     dst_out["engine_projection"] = dst_out["final_projection"]
     dst_out["stack_delta"] = 0.0
+    if fd_stack_active:
+        dst_out["fd_stack_on"], dst_out["fd_stack_block"], dst_out["fd_stack_dk_salary"] = 0, "", np.nan
     dst_out["early_blend_delta"] = 0.0
     dst_out["qb_recal_delta"] = 0.0
     dst_out["qb_autopromote_delta"] = 0.0
@@ -1696,6 +1723,8 @@ def build_statline_projections(site: str, season: int, week: int, slate_id: str,
             kicker_out[c] = np.nan
         kicker_out["engine_projection"] = kicker_out["final_projection"]
         kicker_out["stack_delta"] = 0.0
+        if fd_stack_active:
+            kicker_out["fd_stack_on"], kicker_out["fd_stack_block"], kicker_out["fd_stack_dk_salary"] = 0, "", np.nan
         kicker_out["early_blend_delta"] = 0.0
         kicker_out["qb_recal_delta"] = 0.0
         kicker_out["qb_autopromote_delta"] = 0.0
