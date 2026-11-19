@@ -5041,3 +5041,6 @@ timestamp_utc,trigger_type,site,step,status
 2026-11-18T17:02:27.253549+00:00,light_vegas_refresh,dk,dk_classic_wk11_main_17Nov2026,cheat_sheet,success
 2026-11-18T17:01:50.076776+00:00,light_vegas_refresh,dk,dk_showdown_wk11_IND_HOU_19Nov2026,cheat_sheet,skipped
 2026-11-18T17:01:58.202557+00:00,light_vegas_refresh,fd,fd_classic_wk11_main_17Nov2026,cheat_sheet,success
+2026-11-19T17:03:21.015167+00:00,light_vegas_refresh,dk,dk_classic_wk11_main_17Nov2026,cheat_sheet,success
+2026-11-19T17:02:52.276764+00:00,light_vegas_refresh,dk,dk_showdown_wk11_IND_HOU_19Nov2026,cheat_sheet,skipped
+2026-11-19T17:02:41.398079+00:00,light_vegas_refresh,fd,fd_classic_wk11_main_17Nov2026,cheat_sheet,success
