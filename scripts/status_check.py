@@ -188,6 +188,7 @@ import sys
 from datetime import datetime, timezone
 from pathlib import Path
 
+import numpy as np
 import pandas as pd
 import requests
 
@@ -588,8 +589,12 @@ def run_apply(site: str, week: int, status_file: str, projections_file: str | No
     merged["injury_status"] = merged["status"].fillna("ACTIVE")
     merged = merged.drop(columns=["status"])
 
+    _status_pre_override = merged["injury_status"].copy()
     merged = apply_manual_status_overrides(merged, week)
+    _manual_resolved = (merged["injury_status"] != _status_pre_override) & merged["injury_status"].isin(["OUT", "ACTIVE"])
     merged = promote_backup_kickers(merged)
+    # D2 item (d): drop any discount a previous run applied (idempotence); no-op unless qdisc columns exist.
+    merged, n_qdisc_restored = qdisc_restore(merged)
 
     out_mask = merged["injury_status"] == "OUT"
     n_out = out_mask.sum()
@@ -606,6 +611,19 @@ def run_apply(site: str, week: int, status_file: str, projections_file: str | No
         if c in merged.columns:
             merged.loc[doubtful_mask, c] = 0.0
 
+    # D2 item (d): pre-inactives Questionable discount, per-game gated. A game is "resolved" (gate closed,
+    # discount off) once its inactives are known to this step: a game-day-inactive row from inactives_pull.py
+    # (raw_status "Inactive (gameday)") or a manual OUT/ACTIVE override for any player in the game.
+    n_qdisc = 0
+    if qdisc_enabled():
+        gk_all = _qdisc_game_key(merged)
+        res_m = _manual_resolved.copy()
+        if "injury_raw_status" in merged.columns:
+            res_m = res_m | (merged["injury_raw_status"].astype(str) == QDISC_GATE_RESOLVED_RAW)
+        merged, n_qdisc = qdisc_apply(merged, set(gk_all[res_m]))
+        _r = merged["qdisc_gate_reason"].value_counts().to_dict() if "qdisc_gate_reason" in merged.columns else {}
+        print(f"  QDISC(pre): {n_qdisc} QUESTIONABLE row(s) discounted x{QDISC_K_PRE}; gate reasons: {_r}")
+
     # Week 2 post-mortem finding: ownership is computed inside the projection
     # build, BEFORE this step zeroes OUT players, so OUT players kept their
     # estimated_ownership_pct (e.g. Flowers 9.7% and Collins 6.5% on the wk2
@@ -613,7 +631,7 @@ def run_apply(site: str, week: int, status_file: str, projections_file: str | No
     # each slate's 900-point ownership budget on players who cannot play and
     # deflated every real player's estimate. Recompute ownership from the
     # post-zeroing projections whenever this apply step changed anything.
-    if (n_out or n_doubtful_zeroed) and "estimated_ownership_pct" in merged.columns:
+    if (n_out or n_doubtful_zeroed or n_qdisc or n_qdisc_restored) and "estimated_ownership_pct" in merged.columns:
         merged = refresh_ownership(merged, site, week=week)
 
     n_doubtful = (merged["injury_status"] == "DOUBTFUL").sum()
@@ -638,6 +656,77 @@ def run_apply(site: str, week: int, status_file: str, projections_file: str | No
           f"QUESTIONABLE flagged via `injury_status`, final_projection left unchanged.")
     print(f"  Wrote {out_path}" + (" (overwrote the file optimizer.py reads)" if out_path == proj_path else ""))
     print("  Validation: PASS -- every OUT player's final_projection confirmed 0.0 on reload.")
+
+
+# --- D2 item (d): pre-inactives questionable discount (DFS_D2_QDISC_MODE=pre, default OFF) ----------
+# k = least-squares multiplier of nflverse DK actual points on projection over Questionable rows (played or not,
+# non-players score 0). Refit on nflverse DK actuals (not the FC score column) on the flag-on history frame, 2021-25,
+# second variant (analysis/d2_projection_inputs/qdisc_eval.py logic): full-fit value 0.7604; LOSO fold range 0.737-0.797;
+# held-out dRMSE -0.360 [-0.516,-0.190], dMAE -0.491, 4/5 seasons.
+QDISC_K_PRE = 0.760
+QDISC_GATE_RESOLVED_RAW = "Inactive (gameday)"  # raw_status inactives_pull.py stamps on a game-day inactive
+_QDISC_PRE_COLS = {"final_projection": "qdisc_pre_pts", "engine_projection": "qdisc_pre_engine",
+                   "statline_p10": "qdisc_pre_p10", "statline_p90": "qdisc_pre_p90"}
+
+
+def qdisc_enabled() -> bool:
+    """Only DFS_D2_QDISC_MODE=pre turns the discount on; unset / "0" / anything else = off."""
+    import os
+    return os.environ.get("DFS_D2_QDISC_MODE", "0").strip().lower() == "pre"
+
+
+def _qdisc_game_key(df: pd.DataFrame) -> pd.Series:
+    team = df["team"].astype(str)
+    if "opponent" in df.columns:
+        return pd.Series([ "|".join(sorted(t)) for t in zip(team, df["opponent"].astype(str))], index=df.index)
+    return team  # no opponent column: gate per team
+
+
+def qdisc_restore(merged: pd.DataFrame) -> tuple[pd.DataFrame, int]:
+    """Undo a previous run's discount from the stored undiscounted values, so repeated `apply` runs
+    never stack it. No-op (0 rows) when the file carries no qdisc columns, i.e. any flag-off history."""
+    if "qdisc_applied" not in merged.columns:
+        return merged, 0
+    prev = pd.to_numeric(merged["qdisc_applied"], errors="coerce").fillna(0).astype(int) == 1
+    n = 0
+    for col, pre in _QDISC_PRE_COLS.items():
+        if col in merged.columns and pre in merged.columns:
+            m = prev & merged[pre].notna()
+            merged.loc[m, col] = merged.loc[m, pre]
+            n = max(n, int(m.sum()))
+    merged.loc[prev, "qdisc_applied"] = 0
+    return merged, n
+
+
+def qdisc_apply(merged: pd.DataFrame, resolved_games: set) -> tuple[pd.DataFrame, int]:
+    """Discount QUESTIONABLE rows by QDISC_K_PRE in games whose inactives are not yet resolved.
+    Always computed from the stored undiscounted value (qdisc_restore ran first). Fail-safe: any
+    problem -> warning, no discount, rows unchanged."""
+    k = QDISC_K_PRE
+    try:
+        if not (0.4 <= k <= 1.0):
+            raise ValueError(f"k={k} outside [0.4, 1.0]")
+        gk = _qdisc_game_key(merged)
+        isq = merged["injury_status"] == "QUESTIONABLE"
+        closed = gk.isin(resolved_games)
+        live = merged["final_projection"] > 0  # a zero projection (bye / OUT-zeroed) has nothing to discount
+        apply_m = isq & ~closed & live
+        reason = pd.Series("not_q", index=merged.index)
+        reason[isq & ~live] = "no_projection"
+        reason[isq & closed & live] = "inactives_resolved"
+        reason[apply_m] = "inactives_pending"
+        for col, pre in _QDISC_PRE_COLS.items():
+            if col in merged.columns:
+                merged[pre] = np.nan
+                merged.loc[apply_m, pre] = merged.loc[apply_m, col]
+                merged.loc[apply_m, col] = merged.loc[apply_m, col] * k
+        merged["qdisc_applied"] = apply_m.astype(int)
+        merged["qdisc_factor"] = np.where(apply_m, k, 1.0)
+        merged["qdisc_gate_reason"] = reason
+        return merged, int(apply_m.sum())
+    except Exception as e:  # fail-safe
+        print(f"QDISC WARNING: discount skipped ({e!r}); projections unchanged.", file=sys.stderr)
+        return merged, 0
 
 
 MANUAL_OVERRIDE_FILE = Path(__file__).resolve().parent.parent / "config" / "manual_status_overrides.csv"
