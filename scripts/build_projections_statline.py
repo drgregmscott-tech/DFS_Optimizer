@@ -312,6 +312,10 @@ def _apply_projection_stack(df, site, season, week, slate_id=None, fd_mode="1"):
         import projection_stack
         artifact = projection_stack.load_artifact(site)
         if artifact is None:
+            if site == "fd" and fd_mode in ("1", "nosal") and not globals().get("_FD_STACK_WARNED"):
+                globals()["_FD_STACK_WARNED"] = True   # once per process
+                print("::warning title=FD stack skipped::data/projection_stack_fd.json missing; FD projections built without stack")
+                print("WARNING: data/projection_stack_fd.json missing; FD projections built without the stack.")
             return df
         engine = df["engine_projection"]
         if site == "fd":

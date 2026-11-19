@@ -65,3 +65,6 @@ data/fc_history/
 # owner's request -- that's a backup, not a reason to start tracking this
 # folder live; new scratch work still doesn't need to ride along in git.)
 analysis/
+
+# FC-derived FD stack coefficients: local only, never commit
+data/projection_stack_fd.json
