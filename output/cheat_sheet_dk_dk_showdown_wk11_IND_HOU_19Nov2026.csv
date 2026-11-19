@@ -1,167 +1,153 @@
 position,rank,overall_rank,player_id,player_name,team,opponent,salary,final_projection,estimated_ownership_pct,confidence,composite_score,top_factors,rationale,badge,is_bonus,role_security,role_tier,risk_tier,setup_score,conf_basis,cpt_salary,cpt_projection,cpt_ownership_pct,value_per_k
-QB,1,1,00-0039163,C.J. Stroud,HOU,IND,10000,23.878652348842937,49.162485771191086,10,23.878652348842937,"matchup, game environment, history, usage, value, range, captain","• Matchup: IND allows 1.05x league-avg to QBs (favorable)
-• Game environment: HOU implied 28.2 (elite; league average is 22.3), game total 43.9 (average), favored by 12.5
+QB,1,1,00-0039163,C.J. Stroud,HOU,IND,10000,23.823831496995023,47.96852598039143,10,23.823831496995023,"matchup, game environment, history, usage, value, range, captain","• Matchup: IND allows 1.05x league-avg to QBs (favorable)
+• Game environment: HOU implied 28.2 (elite; league average is 22.3), game total 44.0 (average), favored by 12.4
 • History: 22.4 pts/game season avg, 9 games (in line with average)
-• Usage: 34.3 pass att + 2.3 rush att projected; 33.7 pass att/game last 3 (actual), 96% of snaps last 3 games (locked-in role)
-• Value: 2.39 pts/$1K (fair for this slate)
-• Range: 9.6–40.6 pts (low bust risk; under half his average in 0 of 9 games)
-• Captain: $15,000, 35.8 pts, 33.1% owned as CPT — most-owned captain tonight; QB captain is a sound build; his RB or TE has been the better first partner than his WR1",,False,93.7,locked-in role,low bust risk,,0.965,15000,35.81797852326441,33.11845514704259,2.39
-WR,1,2,00-0036554,Nico Collins,HOU,IND,10200,17.136249188513897,67.22229605830337,8,17.136249188513897,"matchup, game environment, history, usage, value, range, captain","• Matchup (WR1): IND allows 0.90x league-avg (below average)
-• Game environment: HOU implied 28.2 (elite; league average is 22.3), game total 43.9 (average), favored by 12.5
+• Usage: 34.2 pass att + 2.3 rush att projected; 33.7 pass att/game last 3 (actual), 96% of snaps last 3 games (locked-in role)
+• Value: 2.38 pts/$1K (cheap for this slate)
+• Range: 9.6–41.2 pts (low bust risk; under half his average in 0 of 9 games)
+• Captain: $15,000, 35.7 pts, 33.1% owned as CPT — most-owned captain tonight; QB captain is a sound build; his RB or TE has been the better first partner than his WR1",,False,93.3,locked-in role,low bust risk,,0.964,15000,35.73574724549253,33.079975656323384,2.38
+WR,1,2,00-0036554,Nico Collins,HOU,IND,10200,17.365609927642303,64.32480274365804,8,17.365609927642303,"matchup, game environment, history, usage, value, range, captain","• Matchup (WR1): IND allows 0.90x league-avg (below average)
+• Game environment: HOU implied 28.2 (elite; league average is 22.3), game total 44.0 (average), favored by 12.4
 • History: 17.0 pts/game season avg, 7 games (in line with average)
-• Usage: 8.0 targets projected (23% of team targets); 8.3 targets/game last 3 (actual), 75% of snaps last 3 games (solid role; usage trending up)
-• Value: 1.68 pts/$1K (fair for this slate)
-• Range: 3.6–38.1 pts (low bust risk; under half his average in 1 of 7 games)
-• Captain: $15,300, 25.7 pts, 15.2% owned as CPT; fine as captain, but needs C.J. Stroud in the FLEX (the builds enforce it)",,False,84.8,solid role,low bust risk,,0.8,15300,25.704373782770844,15.218412586837152,1.68
-RB,1,3,00-0040583,Woody Marks,HOU,IND,8600,9.87777862019055,29.55685554583979,6,9.87777862019055,"matchup, game environment, history, usage, value, range, captain","• Matchup: IND allows 1.12x league-avg rushing pts (favorable), 1.07x receiving pts (favorable) to RBs
-• Game environment: HOU implied 28.2 (elite; league average is 22.3), game total 43.9 (average), favored by 12.5
-• History: 8.7 pts/game season avg, 9 games (in line with average)
-• Usage: 12.8 touches projected (11.2 carries + 1.6 targets, 49% of RB carries); 18.3 touches/game last 3 (actual), 67% of snaps last 3 games (solid role)
-• Value: 1.15 pts/$1K (fair for this slate)
-• Range: 1.3–22.8 pts (low bust risk; under half his average in 0 of 9 games)
-• Captain: $12,900, 14.8 pts, 0.7% owned as CPT; RB captain is fine; the builds don't require a partner",,False,68.7,solid role,low bust risk,,0.605,12900,14.816667930285826,0.6890174723693189,1.15
-RB,2,4,00-0036223,Jonathan Taylor,IND,HOU,10600,12.087042333402003,38.35040506632292,6,12.087042333402003,"matchup, game environment, history, usage, value, range, captain","• Matchup: HOU allows 0.99x league-avg rushing pts (neutral), 1.03x receiving pts (neutral) to RBs
-• Game environment: IND implied 15.7 (bottom-tier; league average is 22.3), game total 43.9 (average), underdog by 12.5
+• Usage: 8.1 targets projected (27% of team targets); 8.3 targets/game last 3 (actual), 75% of snaps last 3 games (locked-in role; usage trending up)
+• Value: 1.70 pts/$1K (cheap for this slate)
+• Range: 3.9–37.2 pts (low bust risk; under half his average in 1 of 7 games)
+• Captain: $15,300, 26.0 pts, 13.3% owned as CPT; fine as captain, but needs C.J. Stroud in the FLEX (the builds enforce it)",,False,90.5,locked-in role,low bust risk,,0.825,15300,26.04841489146345,13.336062340345316,1.7
+RB,1,3,00-0036223,Jonathan Taylor,IND,HOU,10600,12.6542048454543,37.86213688192738,6,12.6542048454543,"matchup, game environment, history, usage, value, range, captain","• Matchup: HOU allows 0.99x league-avg rushing pts (neutral), 1.03x receiving pts (neutral) to RBs
+• Game environment: IND implied 15.8 (bottom-tier; league average is 22.3), game total 44.0 (average), underdog by 12.4
 • History: 17.0 pts/game season avg, 10 games (projection running below average)
-• Usage: 15.4 touches projected (11.3 carries + 4.1 targets, 59% of RB carries); 17.0 touches/game last 3 (actual), 66% of snaps last 3 games (solid role)
-• Value: 1.14 pts/$1K (fair for this slate)
-• Range: 3.0–25.3 pts (low bust risk; under half his average in 1 of 10 games)
-• Captain: $15,900, 18.1 pts, 0.7% owned as CPT; RB captain is fine; the builds don't require a partner",,False,80.5,solid role,low bust risk,,0.583,15900,18.13056350010301,0.6890174723693189,1.14
-QB,2,5,00-0035710,Daniel Jones,IND,HOU,8800,9.764290200272743,31.56723741534862,6,9.764290200272743,"matchup, game environment, history, usage, value, range, captain","• Matchup: HOU allows 1.07x league-avg to QBs (favorable)
-• Game environment: IND implied 15.7 (bottom-tier; league average is 22.3), game total 43.9 (average), underdog by 12.5
-• History: 10.2 pts/game season avg, 10 games (in line with average)
-• Usage: 32.4 pass att + 3.2 rush att projected; 28.0 pass att/game last 3 (actual), 93% of snaps last 3 games (locked-in role)
-• Value: 1.11 pts/$1K (fair for this slate)
-• Range: 2.9–18.3 pts (low bust risk; under half his average in 1 of 10 games)
-• Captain: $13,200, 14.6 pts, 0.7% owned as CPT; QB captain is a sound build; his RB or TE has been the better first partner than his WR1",,False,85.6,locked-in role,low bust risk,,0.582,13200,14.646435300409117,0.6890174723693189,1.11
-DST,1,6,DST_HOU,Texans,HOU,IND,5800,9.6376431535,32.47264409736472,5,9.6376431535,"matchup, game environment, history, upside setup, value, range, captain","• Matchup: model rates this the better defensive spot of the two (1.44x vs 0.56x; relative to tonight's other defense only)
-• Game environment: opponent IND implied 15.7 (elite; league average is 22.3), game total 43.9 (average)
-• History: 6.2 pts/game season avg (projection running above average)
-• Upside setup: strong — IND implied only 15.7, 6.6 below the league average; favored by 12.5; IND QB throws interceptions on 2.7% of attempts
-• Value: 1.66 pts/$1K (fair for this slate)
-• Range: about 5–14 pts in a typical game (DST projections miss by about 4.3 pts on average); a defensive or return TD or a safety is what pushes it higher, and those aren't modeled
-• Captain: $8,700, 14.5 pts, 10.8% owned as CPT; not a captain option (best captain in 0 of 49 games; the builds exclude it). As a FLEX it only fits lineups with no IND skill players, so it rarely makes a build",,False,,,,4.0,0.574,8700,14.45646473025,10.790665037635913,1.66
-WR,2,7,00-0038618,Xavier Hutchinson,HOU,IND,6200,10.190897453646963,44.61067574066875,5,10.190897453646963,"matchup, game environment, history, usage, value, range, captain","• Matchup (WR2/3): IND allows 1.00x league-avg (neutral)
-• Game environment: HOU implied 28.2 (elite; league average is 22.3), game total 43.9 (average), favored by 12.5
+• Usage: 15.6 touches projected (11.3 carries + 4.3 targets, 59% of RB carries); 17.0 touches/game last 3 (actual), 66% of snaps last 3 games (solid role)
+• Value: 1.19 pts/$1K (fair for this slate)
+• Range: 3.1–26.1 pts (low bust risk; under half his average in 1 of 10 games)
+• Captain: $15,900, 19.0 pts, 0.7% owned as CPT; RB captain is fine; the builds don't require a partner",,False,81.2,solid role,low bust risk,,0.598,15900,18.98130726818145,0.7257392339286269,1.19
+WR,2,4,00-0038618,Xavier Hutchinson,HOU,IND,6200,10.578116395952698,35.15990641540996,6,10.578116395952698,"matchup, game environment, history, usage, value, range, captain","• Matchup (WR2/3): IND allows 1.00x league-avg (neutral)
+• Game environment: HOU implied 28.2 (elite; league average is 22.3), game total 44.0 (average), favored by 12.4
 • History: 9.1 pts/game season avg, 9 games (in line with average)
-• Usage: 5.8 targets projected (17% of team targets); 6.7 targets/game last 3 (actual), 71% of snaps last 3 games (partial role; usage trending up)
-• Value: 1.64 pts/$1K (fair for this slate)
-• Range: 2.1–22.4 pts (moderate bust risk; under half his average in 1 of 9 games)
-• Captain: $9,300, 15.3 pts, 11.4% owned as CPT; fine as captain, but needs C.J. Stroud in the FLEX (the builds enforce it)",,False,59.5,partial role,moderate bust risk,,0.568,9300,15.286346180470446,11.37638089962188,1.64
-K,1,8,00-0032726,Ka'imi Fairbairn,HOU,IND,5400,8.1894,28.62813592224365,5,8.1894,"game environment, history, kicker usage, value, range, captain","• Game environment: HOU implied 28.2 (elite; league average is 22.3), game total 43.9 (average), favored by 12.5
+• Usage: 5.8 targets projected (20% of team targets); 6.7 targets/game last 3 (actual), 71% of snaps last 3 games (partial role; usage trending up)
+• Value: 1.71 pts/$1K (cheap for this slate)
+• Range: 2.2–23.9 pts (moderate bust risk; under half his average in 1 of 9 games)
+• Captain: $9,300, 15.9 pts, 5.1% owned as CPT; fine as captain, but needs C.J. Stroud in the FLEX (the builds enforce it)",,False,63.7,partial role,moderate bust risk,,0.591,9300,15.867174593929048,5.1335093117900845,1.71
+QB,2,5,00-0035710,Daniel Jones,IND,HOU,8800,9.656350392657172,18.16513849498041,6,9.656350392657172,"matchup, game environment, history, usage, value, range, captain","• Matchup: HOU allows 1.07x league-avg to QBs (favorable)
+• Game environment: IND implied 15.8 (bottom-tier; league average is 22.3), game total 44.0 (average), underdog by 12.4
+• History: 10.2 pts/game season avg, 10 games (in line with average)
+• Usage: 32.5 pass att + 3.2 rush att projected; 28.0 pass att/game last 3 (actual), 93% of snaps last 3 games (locked-in role)
+• Value: 1.10 pts/$1K (fair for this slate)
+• Range: 3.0–18.1 pts (low bust risk; under half his average in 1 of 10 games)
+• Captain: $13,200, 14.5 pts, 0.7% owned as CPT; QB captain is a sound build; his RB or TE has been the better first partner than his WR1",,False,86.1,locked-in role,low bust risk,,0.581,13200,14.484525588985758,0.7257392339286269,1.1
+RB,2,6,00-0035685,David Montgomery,HOU,IND,8200,14.209284419556504,52.98570914884756,6,14.209284419556504,"matchup, game environment, history, usage, value, range, captain","• Matchup: IND allows 1.12x league-avg rushing pts (favorable), 1.07x receiving pts (favorable) to RBs
+• Game environment: HOU implied 28.2 (elite; league average is 22.3), game total 44.0 (average), favored by 12.4
+• History: 9.1 pts/game season avg, 5 games (projection running above average)
+• Usage: 9.0 touches projected (7.6 carries + 1.4 targets) + injury step-up worth 4.5 pts; inheriting vacated work puts him near 13 touches; 9.3 touches/game last 3 (actual), 44% of snaps last 3 games (unproven new role; usage dipping)
+• Value: 1.73 pts/$1K (cheap for this slate)
+• Range: 5.3–27.4 pts (high bust risk; under half his average in 3 of 5 games)
+• Captain: $12,300, 21.3 pts, 11.3% owned as CPT; RB captain is fine; the builds don't require a partner",Fragile Chalk,False,43.7,unproven new role,high bust risk,,0.58,12300,21.313926629334755,11.29785025810032,1.73
+DST,1,7,DST_HOU,Texans,HOU,IND,5800,9.601223686,27.814719670988463,5,9.601223686,"matchup, game environment, history, upside setup, value, range, captain","• Matchup: model rates this the better defensive spot of the two (1.45x vs 0.55x; relative to tonight's other defense only)
+• Game environment: opponent IND implied 15.8 (elite; league average is 22.3), game total 44.0 (average)
+• History: 6.2 pts/game season avg (projection running above average)
+• Upside setup: strong — IND implied only 15.8, 6.5 below the league average; favored by 12.4; IND QB throws interceptions on 2.7% of attempts
+• Value: 1.66 pts/$1K (cheap for this slate)
+• Range: about 5–14 pts in a typical game (DST projections miss by about 4.3 pts on average); a defensive or return TD or a safety is what pushes it higher, and those aren't modeled
+• Captain: $8,700, 14.4 pts, 7.0% owned as CPT; not a captain option (best captain in 0 of 49 games; the builds exclude it). As a FLEX it only fits lineups with no IND skill players, so it rarely makes a build",,False,,,,4.0,0.574,8700,14.401835529,7.026068189035252,1.66
+K,1,8,00-0032726,Ka'imi Fairbairn,HOU,IND,5400,8.1894,27.39417282801201,5,8.1894,"game environment, history, kicker usage, value, range, captain","• Game environment: HOU implied 28.2 (elite; league average is 22.3), game total 44.0 (average), favored by 12.4
 • History: 11.1 pts/game season avg (in line with average)
 • Kicker usage: 2.0 FG attempts + 3.0 extra-point attempts per game, last 3 games; indoors
 • Value: 1.52 pts/$1K (fair for this slate)
 • Range: 2.0–15.0 pts (the model gives every kicker the same band; kicker scoring follows game flow, not a player-specific role)
-• Captain: $8,100, 12.3 pts, 1.0% owned as CPT; not a recommended captain (a kicker was the best captain in 1 of 49 games studied; the builds penalize it)",,False,,kicker,,,0.524,8100,12.2841,1.0154964602328438,1.52
-TE,1,9,00-0040128,Tyler Warren,IND,HOU,8400,9.04295330336512,29.15110502675409,5,9.04295330336512,"matchup, game environment, history, usage, value, range, captain","• Matchup (TE1): HOU allows 0.91x league-avg (below average)
-• Game environment: IND implied 15.7 (bottom-tier; league average is 22.3), game total 43.9 (average), underdog by 12.5
+• Captain: $8,100, 12.3 pts, 2.0% owned as CPT; not a recommended captain (a kicker was the best captain in 1 of 49 games studied; the builds penalize it)",,False,,kicker,,,0.524,8100,12.2841,2.045650712591701,1.52
+TE,1,9,00-0040128,Tyler Warren,IND,HOU,8400,8.8910392870173,16.165700676167774,5,8.8910392870173,"matchup, game environment, history, usage, value, range, captain","• Matchup (TE1): HOU allows 0.91x league-avg (below average)
+• Game environment: IND implied 15.8 (bottom-tier; league average is 22.3), game total 44.0 (average), underdog by 12.4
 • History: 10.8 pts/game season avg, 8 games (in line with average)
-• Usage: 6.1 targets projected (24% of team targets); 6.7 targets/game last 3 (actual), 80% of snaps last 3 games (solid role; usage trending down)
-• Value: 1.08 pts/$1K (fair for this slate)
-• Range: 2.7–17.4 pts (low bust risk; under half his average in 1 of 8 games)
-• Captain: $12,600, 13.6 pts, 0.7% owned as CPT; fine as captain, but needs Daniel Jones in the FLEX (the builds enforce it)",,False,76.7,solid role,low bust risk,,0.509,12600,13.56442995504768,0.6890174723693189,1.08
-TE,2,10,00-0034383,Dalton Schultz,HOU,IND,4800,8.739926070386481,36.34413563844525,4,8.739926070386481,"matchup, game environment, history, usage, value, range, captain","• Matchup (TE1): IND allows 0.97x league-avg (neutral)
-• Game environment: HOU implied 28.2 (elite; league average is 22.3), game total 43.9 (average), favored by 12.5
+• Usage: 5.9 targets projected (27% of team targets); 6.7 targets/game last 3 (actual), 80% of snaps last 3 games (solid role; usage trending down)
+• Value: 1.06 pts/$1K (fair for this slate)
+• Range: 2.6–17.3 pts (low bust risk; under half his average in 1 of 8 games)
+• Captain: $12,600, 13.3 pts, 0.7% owned as CPT; fine as captain, but needs Daniel Jones in the FLEX (the builds enforce it)",,False,75.2,solid role,low bust risk,,0.501,12600,13.33655893052595,0.7257392339286269,1.06
+TE,2,10,00-0034383,Dalton Schultz,HOU,IND,4800,8.892831686142937,37.8621368819274,4,8.892831686142937,"matchup, game environment, history, usage, value, range, captain","• Matchup (TE1): IND allows 0.97x league-avg (neutral)
+• Game environment: HOU implied 28.2 (elite; league average is 22.3), game total 44.0 (average), favored by 12.4
 • History: 9.2 pts/game season avg, 9 games (in line with average)
-• Usage: 4.3 targets projected (12% of team targets); 4.0 targets/game last 3 (actual), 56% of snaps last 3 games (part-time role; usage trending down)
-• Value: 1.82 pts/$1K (fair for this slate)
-• Range: 2.0–17.9 pts (high bust risk; under half his average in 1 of 9 games)
-• Captain: $7,200, 13.1 pts, 3.9% owned as CPT; fine as captain, but needs C.J. Stroud in the FLEX (the builds enforce it)",Fragile Chalk,False,26.7,part-time role,high bust risk,,0.42,7200,13.109889105579722,3.929269552990358,1.82
-K,2,11,00-0039576,Spencer Shrader,IND,HOU,5200,7.9954,20.208095945113165,4,7.9954,"game environment, history, kicker usage, value, range, captain","• Game environment: IND implied 15.7 (bottom-tier; league average is 22.3), game total 43.9 (average), underdog by 12.5
+• Usage: 4.2 targets projected (14% of team targets); 4.0 targets/game last 3 (actual), 56% of snaps last 3 games (part-time role; usage trending down)
+• Value: 1.85 pts/$1K (cheap for this slate)
+• Range: 2.1–19.0 pts (elevated bust risk; under half his average in 1 of 9 games)
+• Captain: $7,200, 13.3 pts, 7.3% owned as CPT; fine as captain, but needs C.J. Stroud in the FLEX (the builds enforce it)",Fragile Chalk,False,29.3,part-time role,elevated bust risk,,0.433,7200,13.339247529214406,7.2817826279758355,1.85
+K,2,11,00-0039576,Spencer Shrader,IND,HOU,5200,7.9954,19.33706317271436,4,7.9954,"game environment, history, kicker usage, value, range, captain","• Game environment: IND implied 15.8 (bottom-tier; league average is 22.3), game total 44.0 (average), underdog by 12.4
 • History: 11.4 pts/game season avg (projection running below average)
 • Kicker usage: 1.3 FG attempts + 2.0 extra-point attempts per game, last 3 games; indoors
 • Value: 1.54 pts/$1K (fair for this slate)
 • Range: 2.0–15.0 pts (the model gives every kicker the same band; kicker scoring follows game flow, not a player-specific role)
-• Captain: $7,800, 12.0 pts, 2.3% owned as CPT; not a recommended captain (a kicker was the best captain in 1 of 49 games studied; the builds penalize it)",,False,,kicker,,,0.419,7800,11.9931,2.2607088170881124,1.54
-RB,3,12,00-0035685,David Montgomery,HOU,IND,8200,6.609513937585971,1.790733697441376,4,6.609513937585971,"matchup, game environment, history, usage, value, range, captain","• Matchup: IND allows 1.12x league-avg rushing pts (favorable), 1.07x receiving pts (favorable) to RBs
-• Game environment: HOU implied 28.2 (elite; league average is 22.3), game total 43.9 (average), favored by 12.5
-• History: 9.1 pts/game season avg, 5 games (in line with average)
-• Usage: 8.4 touches projected (7.6 carries + 0.8 targets, 33% of RB carries); 9.3 touches/game last 3 (actual), 44% of snaps last 3 games (part-time role; usage dipping)
-• Value: 0.81 pts/$1K (fair for this slate)
-• Range: 0.0–17.1 pts (very high bust risk; under half his average in 3 of 5 games)
-• Captain: $12,300, 9.9 pts, 0.7% owned as CPT; RB captain is fine; the builds don't require a partner",,False,34.1,part-time role,very high bust risk,,0.411,12300,9.914270906378956,0.6890174723693189,0.81
-WR,3,13,00-0038608,Kayshon Boutte,HOU,IND,5000,7.49086742346942,20.933128805088565,3,7.49086742346942,"matchup, game environment, history, usage, value, range, captain","• Matchup (WR2/3): IND allows 1.00x league-avg (neutral)
-• Game environment: HOU implied 28.2 (elite; league average is 22.3), game total 43.9 (average), favored by 12.5
+• Captain: $7,800, 12.0 pts, 1.9% owned as CPT; not a recommended captain (a kicker was the best captain in 1 of 49 games studied; the builds penalize it)",,False,,kicker,,,0.419,7800,11.9931,1.869874912478199,1.54
+WR,3,12,00-0038608,Kayshon Boutte,HOU,IND,5000,7.081130899346318,23.490403187161743,3,7.081130899346318,"matchup, game environment, history, usage, value, range, captain","• Matchup (WR2/3): IND allows 1.00x league-avg (neutral)
+• Game environment: HOU implied 28.2 (elite; league average is 22.3), game total 44.0 (average), favored by 12.4
 • History: 7.3 pts/game season avg, 9 games (in line with average)
-• Usage: 3.2 targets projected (9% of team targets); 2.7 targets/game last 3 (actual), 45% of snaps last 3 games (punt-level role)
-• Value: 1.50 pts/$1K (fair for this slate)
-• Range: 1.5–16.2 pts (high bust risk; under half his average in 2 of 9 games)
-• Captain: $7,500, 11.2 pts, 0.7% owned as CPT; fine as captain, but needs C.J. Stroud in the FLEX (the builds enforce it)",,False,30.0,punt-level role,high bust risk,,0.404,7500,11.23630113520413,0.6890174723693189,1.5
-WR,4,14,00-0032951,Laquon Treadwell,IND,HOU,4000,5.862925040909275,8.037973092521344,3,5.862925040909275,"matchup, game environment, history, usage, value, range, captain","• Matchup (WR1): HOU allows 1.01x league-avg (neutral)
-• Game environment: IND implied 15.7 (bottom-tier; league average is 22.3), game total 43.9 (average), underdog by 12.5
+• Usage: 3.0 targets projected (10% of team targets); 2.7 targets/game last 3 (actual), 45% of snaps last 3 games (punt-level role)
+• Value: 1.42 pts/$1K (fair for this slate)
+• Range: 1.4–14.8 pts (high bust risk; under half his average in 2 of 9 games)
+• Captain: $7,500, 10.6 pts, 0.7% owned as CPT; fine as captain, but needs C.J. Stroud in the FLEX (the builds enforce it)",Boom/Bust Dart,False,30.0,punt-level role,high bust risk,,0.394,7500,10.621696349019476,0.7257392339286269,1.42
+WR,4,13,00-0032951,Laquon Treadwell,IND,HOU,4000,5.784442459869035,24.31459701237992,3,5.784442459869035,"matchup, game environment, history, usage, value, range, captain","• Matchup (WR1): HOU allows 1.01x league-avg (neutral)
+• Game environment: IND implied 15.8 (bottom-tier; league average is 22.3), game total 44.0 (average), underdog by 12.4
 • History: 4.9 pts/game season avg, 10 games (in line with average)
-• Usage: 3.3 targets projected (13% of team targets); 2.0 targets/game last 3 (actual), 80% of snaps last 3 games (partial role)
-• Value: 1.47 pts/$1K (fair for this slate)
-• Range: 1.6–11.4 pts (elevated bust risk; under half his average in 2 of 10 games)
-• Captain: $6,000, 8.8 pts, 0.7% owned as CPT; fine as captain, but needs Daniel Jones in the FLEX (the builds enforce it)",,False,48.1,partial role,elevated bust risk,,0.35,6000,8.794387561363912,0.6890174723693189,1.47
-WR,5,15,00-0038977,Tank Dell,HOU,IND,6400,7.242876069440136,16.89388028399987,3,7.242876069440136,"matchup, game environment, history, usage, value, range, captain","• Matchup (WR2/3): IND allows 1.00x league-avg (neutral)
-• Game environment: HOU implied 28.2 (elite; league average is 22.3), game total 43.9 (average), favored by 12.5
+• Usage: 3.1 targets projected (14% of team targets); 2.0 targets/game last 3 (actual), 80% of snaps last 3 games (partial role)
+• Value: 1.45 pts/$1K (fair for this slate)
+• Range: 1.6–11.2 pts (elevated bust risk; under half his average in 2 of 10 games)
+• Captain: $6,000, 8.7 pts, 3.0% owned as CPT; fine as captain, but needs Daniel Jones in the FLEX (the builds enforce it)",Solid Value,False,49.6,partial role,elevated bust risk,,0.354,6000,8.676663689803553,2.989588971296905,1.45
+WR,5,14,00-0038977,Tank Dell,HOU,IND,6400,7.666244081867774,22.2271490321727,3,7.666244081867774,"matchup, game environment, history, usage, value, range, captain","• Matchup (WR2/3): IND allows 1.00x league-avg (neutral)
+• Game environment: HOU implied 28.2 (elite; league average is 22.3), game total 44.0 (average), favored by 12.4
 • History: 11.4 pts/game season avg, 3 games (projection running below average)
-• Usage: 3.6 targets projected (10% of team targets); 4.7 targets/game last 3 (actual), 40% of snaps last 3 games (punt-level role; only 3 games this season; missed recent time; usage trending up)
-• Value: 1.13 pts/$1K (fair for this slate)
-• Range: 0.9–17.2 pts (very high bust risk; under half his average in 1 of 3 games)
-• Captain: $9,600, 10.9 pts, 0.7% owned as CPT; fine as captain, but needs C.J. Stroud in the FLEX (the builds enforce it)",,False,18.0,punt-level role,very high bust risk,,0.335,9600,10.864314104160204,0.6890174723693189,1.13
-WR,6,16,00-0039849,Marvin Harrison Jr.,HOU,IND,7000,4.375414372403287,1.790733697441376,2,4.375414372403287,"matchup, game environment, history, usage, value, range, captain","• Matchup (WR2/3): IND allows 1.00x league-avg (neutral)
-• Game environment: HOU implied 28.2 (elite; league average is 22.3), game total 43.9 (average), favored by 12.5
-• History: 5.4 pts/game season avg, 7 games (in line with average)
-• Usage: 2.3 targets projected (6% of team targets); 3.7 targets/game last 3 (actual), 29% of snaps last 3 games (punt-level role; missed recent time)
-• Value: 0.63 pts/$1K (fair for this slate)
-• Range: 0.1–10.6 pts (high bust risk; under half his average in 1 of 7 games)
-• Captain: $10,500, 6.6 pts, 0.7% owned as CPT; fine as captain, but needs C.J. Stroud in the FLEX (the builds enforce it)",,False,25.1,punt-level role,high bust risk,,0.316,10500,6.56312155860493,0.6890174723693189,0.63
-RB,4,17,00-0038705,Emari Demercado,HOU,IND,7400,3.813001576311841,1.790733697441376,2,3.813001576311841,"matchup, game environment, history, usage, value, range, captain","• Matchup: IND allows 1.12x league-avg rushing pts (favorable), 1.07x receiving pts (favorable) to RBs
-• Game environment: HOU implied 28.2 (elite; league average is 22.3), game total 43.9 (average), favored by 12.5
-• History: 1.9 pts/game season avg, 4 games (in line with average)
-• Usage: 3.6 touches projected (2.9 carries + 0.7 targets, 13% of RB carries); 6.7 touches/game last 3 (actual), 24% of snaps last 3 games (punt-level role; only 4 games this season; missed recent time; usage trending up)
-• Value: 0.52 pts/$1K (fair for this slate)
-• Range: 0.3–9.5 pts (very high bust risk; under half his average in 2 of 4 games)
-• Captain: $11,100, 5.7 pts, 0.7% owned as CPT; RB captain is fine; the builds don't require a partner",,False,21.7,punt-level role,very high bust risk,,0.304,11100,5.719502364467762,0.6890174723693189,0.52
-WR,7,18,00-0040138,Jaylin Noel,HOU,IND,200,4.204698603901215,8.344032715913158,2,4.204698603901215,"matchup, game environment, history, usage, value, range, captain","• Matchup (WR2/3): IND allows 1.00x league-avg (neutral)
-• Game environment: HOU implied 28.2 (elite; league average is 22.3), game total 43.9 (average), favored by 12.5
-• History: 10.0 pts/game season avg, 7 games (projection running below average)
-• Usage: 1.8 targets projected (5% of team targets); 3.7 targets/game last 3 (actual), 42% of snaps last 3 games (punt-level role; missed recent time; usage dipping)
-• Value: 21.02 pts/$1K (cheap for this slate)
-• Range: 0.0–10.5 pts (high bust risk; under half his average in 2 of 7 games)
-• Captain: $300, 6.3 pts, 0.2% owned as CPT; fine as captain, but needs C.J. Stroud in the FLEX (the builds enforce it)",Boom/Bust Dart,False,21.0,punt-level role,high bust risk,,0.277,300,6.307047905851823,0.2350523136370927,21.02
-WR,8,19,00-0041132,Deion Burks,IND,HOU,2800,3.3210420047172704,1.790733697441376,2,3.3210420047172704,"matchup, game environment, history, usage, value, range, captain","• Matchup (WR2/3): HOU allows 1.18x league-avg (smash spot)
-• Game environment: IND implied 15.7 (bottom-tier; league average is 22.3), game total 43.9 (average), underdog by 12.5
+• Usage: 3.7 targets projected (12% of team targets); 4.7 targets/game last 3 (actual), 40% of snaps last 3 games (punt-level role; only 3 games this season; missed recent time; usage trending up)
+• Value: 1.20 pts/$1K (fair for this slate)
+• Range: 1.0–17.9 pts (very high bust risk; under half his average in 1 of 3 games)
+• Captain: $9,600, 11.5 pts, 0.7% owned as CPT; fine as captain, but needs C.J. Stroud in the FLEX (the builds enforce it)",,False,18.6,punt-level role,very high bust risk,,0.347,9600,11.49936612280166,0.7257392339286269,1.2
+RB,3,15,00-0038705,Emari Demercado,HOU,IND,7400,6.336864884884813,7.69151106036047,2,6.336864884884813,"matchup, game environment, history, usage, value, range, captain","• Matchup: IND allows 1.12x league-avg rushing pts (favorable), 1.07x receiving pts (favorable) to RBs
+• Game environment: HOU implied 28.2 (elite; league average is 22.3), game total 44.0 (average), favored by 12.4
+• History: 1.9 pts/game season avg, 4 games (projection running above average)
+• Usage: 3.6 touches projected (2.9 carries + 0.8 targets) + injury step-up worth 2.1 pts; inheriting vacated work puts him near 6 touches; 6.7 touches/game last 3 (actual), 24% of snaps last 3 games (unproven new role; only 4 games this season; missed recent time; usage trending up)
+• Value: 0.86 pts/$1K (pricey for this slate)
+• Range: 2.5–12.5 pts (very high bust risk; under half his average in 2 of 4 games)
+• Captain: $11,100, 9.5 pts, 0.7% owned as CPT; RB captain is fine; the builds don't require a partner",,False,18.2,unproven new role,very high bust risk,,0.314,11100,9.50529732732722,0.7257392339286269,0.86
+RB,4,16,00-0033854,Dare Ogunbowale,HOU,IND,4400,2.874013288097952,1.7135474181725712,2,2.874013288097952,"matchup, game environment, history, usage, value, range, captain","• Matchup: IND allows 1.12x league-avg rushing pts (favorable), 1.07x receiving pts (favorable) to RBs
+• Game environment: HOU implied 28.2 (elite; league average is 22.3), game total 44.0 (average), favored by 12.4
+• History: 0.6 pts/game season avg, 3 games (in line with average)
+• Usage: 1.1 touches projected (0.6 carries + 0.5 targets) + injury step-up worth 1.1 pts; 1.0 touches/game last 3 (actual), 15% of snaps last 3 games (punt-level role; only 3 games this season; missed recent time; usage trending up)
+• Value: 0.65 pts/$1K (pricey for this slate)
+• Range: 1.6–4.9 pts (very high bust risk; under half his average in 2 of 4 games)
+• Captain: $6,600, 4.3 pts, 0.7% owned as CPT; RB captain is fine; the builds don't require a partner",,False,17.5,punt-level role,very high bust risk,,0.268,6600,4.311019932146928,0.7257392339286269,0.65
+WR,6,17,00-0041132,Deion Burks,IND,HOU,2800,3.3464965967157365,1.7135474181725712,2,3.3464965967157365,"matchup, game environment, history, usage, value, range, captain","• Matchup (WR2/3): HOU allows 1.18x league-avg (smash spot)
+• Game environment: IND implied 15.8 (bottom-tier; league average is 22.3), game total 44.0 (average), underdog by 12.4
 • History: 1.4 pts/game season avg, 8 games (in line with average)
-• Usage: 2.2 targets projected (9% of team targets); 1.3 targets/game last 3 (actual), 39% of snaps last 3 games (punt-level role)
-• Value: 1.19 pts/$1K (fair for this slate)
-• Range: 0.4–7.4 pts (high bust risk; under half his average in 3 of 9 games)
-• Captain: $4,200, 5.0 pts, 0.7% owned as CPT; fine as captain, but needs Daniel Jones in the FLEX (the builds enforce it)",,False,30.0,punt-level role,high bust risk,,0.255,4200,4.981563007075906,0.6890174723693189,1.19
-TE,3,20,00-0034981,Foster Moreau,HOU,IND,1600,2.1966581241555128,1.790733697441376,2,2.1966581241555128,"matchup, game environment, history, usage, value, range, captain","• Matchup (TE2/3): IND allows 1.04x league-avg (neutral; small numbers, swings a lot)
-• Game environment: HOU implied 28.2 (elite; league average is 22.3), game total 43.9 (average), favored by 12.5
+• Usage: 2.2 targets projected (10% of team targets); 1.3 targets/game last 3 (actual), 39% of snaps last 3 games (punt-level role)
+• Value: 1.20 pts/$1K (fair for this slate)
+• Range: 0.4–7.6 pts (high bust risk; under half his average in 3 of 9 games)
+• Captain: $4,200, 5.0 pts, 0.7% owned as CPT; fine as captain, but needs Daniel Jones in the FLEX (the builds enforce it)",,False,30.0,punt-level role,high bust risk,,0.255,4200,5.019744895073605,0.7257392339286269,1.2
+TE,3,18,00-0034981,Foster Moreau,HOU,IND,1600,2.2799960392165763,10.82682746023388,2,2.2799960392165763,"matchup, game environment, history, usage, value, range, captain","• Matchup (TE2/3): IND allows 1.04x league-avg (neutral; small numbers, swings a lot)
+• Game environment: HOU implied 28.2 (elite; league average is 22.3), game total 44.0 (average), favored by 12.4
 • History: 4.0 pts/game season avg, 6 games (in line with average)
-• Usage: 0.8 targets projected (2% of team targets); 2.0 targets/game last 3 (actual), 31% of snaps last 3 games (punt-level role; missed recent time)
-• Value: 1.37 pts/$1K (fair for this slate)
+• Usage: 1.1 targets projected (4% of team targets); 2.0 targets/game last 3 (actual), 31% of snaps last 3 games (punt-level role; missed recent time)
+• Value: 1.42 pts/$1K (fair for this slate)
 • Range: 0.2–7.4 pts (very high bust risk; under half his average in 4 of 9 games)
-• Captain: $2,400, 3.3 pts, 0.7% owned as CPT; fine as captain, but needs C.J. Stroud in the FLEX (the builds enforce it)",,False,21.0,punt-level role,very high bust risk,,0.253,2400,3.294987186233269,0.6890174723693189,1.37
-RB,5,21,00-0041125,Seth McGowan,IND,HOU,4600,3.6021603506937985,1.790733697441376,2,3.6021603506937985,"matchup, game environment, history, usage, value, range, captain","• Matchup: HOU allows 0.99x league-avg rushing pts (neutral), 1.03x receiving pts (neutral) to RBs
-• Game environment: IND implied 15.7 (bottom-tier; league average is 22.3), game total 43.9 (average), underdog by 12.5
+• Captain: $2,400, 3.4 pts, 0.7% owned as CPT; fine as captain, but needs C.J. Stroud in the FLEX (the builds enforce it)",Boom/Bust Dart,False,21.0,punt-level role,very high bust risk,,0.255,2400,3.4199940588248645,0.7257392339286269,1.42
+RB,5,19,00-0041125,Seth McGowan,IND,HOU,4600,3.69856968099712,1.7135474181725712,2,3.69856968099712,"matchup, game environment, history, usage, value, range, captain","• Matchup: HOU allows 0.99x league-avg rushing pts (neutral), 1.03x receiving pts (neutral) to RBs
+• Game environment: IND implied 15.8 (bottom-tier; league average is 22.3), game total 44.0 (average), underdog by 12.4
 • History: 4.6 pts/game season avg, 10 games (in line with average)
 • Usage: 7.0 touches projected (6.7 carries + 0.3 targets, 35% of RB carries); 8.0 touches/game last 3 (actual), 28% of snaps last 3 games (part-time role)
-• Value: 0.78 pts/$1K (fair for this slate)
-• Range: 0.0–9.7 pts (high bust risk; under half his average in 3 of 10 games)
-• Captain: $6,900, 5.4 pts, 0.7% owned as CPT; RB captain is fine; the builds don't require a partner",,False,32.1,part-time role,high bust risk,,0.244,6900,5.4032405260406975,0.6890174723693189,0.78
-WR,9,22,00-0035021,Ashton Dulin,IND,HOU,3600,2.277217891649202,1.790733697441376,1,2.277217891649202,"matchup, game environment, history, usage, value, range, captain","• Matchup (WR2/3): HOU allows 1.18x league-avg (smash spot)
-• Game environment: IND implied 15.7 (bottom-tier; league average is 22.3), game total 43.9 (average), underdog by 12.5
+• Value: 0.80 pts/$1K (pricey for this slate)
+• Range: 0.0–9.6 pts (high bust risk; under half his average in 3 of 10 games)
+• Captain: $6,900, 5.5 pts, 0.7% owned as CPT; RB captain is fine; the builds don't require a partner",,False,32.0,part-time role,high bust risk,,0.245,6900,5.54785452149568,0.7257392339286269,0.8
+WR,7,20,00-0035021,Ashton Dulin,IND,HOU,3600,2.366789337689334,1.7135474181725712,1,2.366789337689334,"matchup, game environment, history, usage, value, range, captain","• Matchup (WR2/3): HOU allows 1.18x league-avg (smash spot)
+• Game environment: IND implied 15.8 (bottom-tier; league average is 22.3), game total 44.0 (average), underdog by 12.4
 • History: 3.8 pts/game season avg, 6 games (in line with average)
-• Usage: 1.8 targets projected (7% of team targets); 1.3 targets/game last 3 (actual), 25% of snaps last 3 games (punt-level role; missed recent time; usage trending up)
-• Value: 0.63 pts/$1K (fair for this slate)
-• Range: 0.0–6.5 pts (very high bust risk; under half his average in 3 of 6 games)
-• Captain: $5,400, 3.4 pts, 0.7% owned as CPT; fine as captain, but needs Daniel Jones in the FLEX (the builds enforce it)",,False,27.0,punt-level role,very high bust risk,,0.221,5400,3.415826837473803,0.6890174723693189,0.63
-WR,10,23,00-0039816,Anthony Gould,IND,HOU,3000,2.0324687813656217,1.790733697441376,1,2.0324687813656217,"matchup, game environment, history, usage, value, range, captain","• Matchup (WR2/3): HOU allows 1.18x league-avg (smash spot)
-• Game environment: IND implied 15.7 (bottom-tier; league average is 22.3), game total 43.9 (average), underdog by 12.5
+• Usage: 1.9 targets projected (9% of team targets); 1.3 targets/game last 3 (actual), 25% of snaps last 3 games (punt-level role; missed recent time; usage trending up)
+• Value: 0.66 pts/$1K (pricey for this slate)
+• Range: 0.0–6.6 pts (very high bust risk; under half his average in 3 of 6 games)
+• Captain: $5,400, 3.6 pts, 0.7% owned as CPT; fine as captain, but needs Daniel Jones in the FLEX (the builds enforce it)",,False,27.0,punt-level role,very high bust risk,,0.223,5400,3.550184006534001,0.7257392339286269,0.66
+WR,8,21,00-0039816,Anthony Gould,IND,HOU,3000,2.0216076489202104,1.7135474181725712,1,2.0216076489202104,"matchup, game environment, history, usage, value, range, captain","• Matchup (WR2/3): HOU allows 1.18x league-avg (smash spot)
+• Game environment: IND implied 15.8 (bottom-tier; league average is 22.3), game total 44.0 (average), underdog by 12.4
 • History: 1.1 pts/game season avg, 7 games (in line with average)
-• Usage: 1.5 targets projected (6% of team targets); 1.7 targets/game last 3 (actual), 19% of snaps last 3 games (punt-level role; missed recent time; usage trending up)
-• Value: 0.68 pts/$1K (fair for this slate)
-• Range: 0.0–4.8 pts (high bust risk; under half his average in 1 of 3 games)
-• Captain: $4,500, 3.0 pts, 0.7% owned as CPT; fine as captain, but needs Daniel Jones in the FLEX (the builds enforce it)",,False,24.0,punt-level role,high bust risk,,0.205,4500,3.048703172048433,0.6890174723693189,0.68
-DST,2,24,DST_IND,Colts,IND,HOU,3400,3.718784032,1.0784067264155546,1,3.718784032,"matchup, game environment, history, upside setup, value, range, captain","• Matchup: model rates this the weaker defensive spot of the two (0.56x vs 1.44x; relative to tonight's other defense only)
-• Game environment: opponent HOU implied 28.2 (brutal; league average is 22.3), game total 43.9 (average)
+• Usage: 1.5 targets projected (7% of team targets); 1.7 targets/game last 3 (actual), 19% of snaps last 3 games (punt-level role; missed recent time; usage trending up; questionable)
+• Value: 0.67 pts/$1K (pricey for this slate)
+• Range: 0.0–5.0 pts (very high bust risk; under half his average in 1 of 3 games)
+• Captain: $4,500, 3.0 pts, 0.7% owned as CPT; fine as captain, but needs Daniel Jones in the FLEX (the builds enforce it)",,False,15.0,punt-level role,very high bust risk,,0.173,4500,3.032411473380316,0.7257392339286269,0.67
+DST,2,22,DST_IND,Colts,IND,HOU,3400,3.679909319500001,4.162846460608814,1,3.679909319500001,"matchup, game environment, history, upside setup, value, range, captain","• Matchup: model rates this the weaker defensive spot of the two (0.55x vs 1.45x; relative to tonight's other defense only)
+• Game environment: opponent HOU implied 28.2 (brutal; league average is 22.3), game total 44.0 (average)
 • History: 4.1 pts/game season avg (in line with average)
-• Upside setup: poor — HOU implied 28.2, 5.9 above the league average, works against; underdog by 12.5, works against; HOU QB protects the ball (1.7% INT rate, works against)
-• Value: 1.09 pts/$1K (fair for this slate)
+• Upside setup: poor — HOU without Jaylin Noel since wk 7; HOU implied 28.2, 5.9 above the league average, works against; underdog by 12.4, works against; HOU QB protects the ball (1.7% INT rate, works against)
+• Value: 1.08 pts/$1K (fair for this slate)
 • Range: about 0–8 pts in a typical game (DST projections miss by about 4.3 pts on average); a defensive or return TD or a safety is what pushes it higher, and those aren't modeled
-• Captain: $5,100, 5.6 pts, 1.1% owned as CPT; not a captain option (best captain in 0 of 49 games; the builds exclude it). As a FLEX it only fits lineups with no HOU skill players, so it rarely makes a build",,False,,,,-4.0,0.134,5100,5.578176048,1.0692853574876064,1.09
+• Captain: $5,100, 5.5 pts, 1.1% owned as CPT; not a captain option (best captain in 0 of 49 games; the builds exclude it). As a FLEX it only fits lineups with no HOU skill players, so it rarely makes a build",,False,,,,-4.0,0.133,5100,5.519863979250001,1.1262738135299413,1.08
