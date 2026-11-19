@@ -5038,3 +5038,6 @@ timestamp_utc,trigger_type,site,step,status
 2026-11-17T00:17:26.145202+00:00,full_refresh_dispatch,dk,dk_showdown_wk10_LAC_BAL_16Nov2026,status_apply,success
 2026-11-17T00:17:26.145202+00:00,full_refresh_dispatch,dk,dk_showdown_wk10_LAC_BAL_16Nov2026,pivot_finder,success
 2026-11-17T00:17:26.145202+00:00,full_refresh_dispatch,dk,dk_showdown_wk10_LAC_BAL_16Nov2026,cheat_sheet,skipped
+2026-11-18T17:02:27.253549+00:00,light_vegas_refresh,dk,dk_classic_wk11_main_17Nov2026,cheat_sheet,success
+2026-11-18T17:01:50.076776+00:00,light_vegas_refresh,dk,dk_showdown_wk11_IND_HOU_19Nov2026,cheat_sheet,skipped
+2026-11-18T17:01:58.202557+00:00,light_vegas_refresh,fd,fd_classic_wk11_main_17Nov2026,cheat_sheet,success
