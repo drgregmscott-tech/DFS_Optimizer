@@ -1433,9 +1433,11 @@ def build_statline_projections(site: str, season: int, week: int, slate_id: str,
     # Engine-only points E (no props), needed by the projection stack below
     # whenever props changed some players' inputs; otherwise E == the sim above.
     stack_active = bool(use_stack and site == "dk" and not showdown)
-    # D2 item (c): FD projection stack, default OFF (DFS_D2_FD_STACK=1 dksal+nosal fallback, "nosal" = no-salary only).
+    # D2 item (c): FD projection stack, default ON as of 2026-11-18 owner approval
+    # ("1" = dksal block with no-salary fallback; "nosal" = no-salary only; "0" = off).
+    # Requires data/projection_stack_fd.json (local, FC-derived, not committed).
     # Does NOT switch on the DK-validated Q-return/backup-reconcile post steps (those stay keyed on stack_active).
-    fd_mode = os.environ.get("DFS_D2_FD_STACK", "0")
+    fd_mode = os.environ.get("DFS_D2_FD_STACK", "1")
     fd_stack_active = bool(use_stack and site == "fd" and not showdown and fd_mode in ("1", "nosal"))
     if (stack_active or fd_stack_active) and props_matched_any:
         sim_e = statline_model.simulate(df_engine_only[~df_engine_only["no_real_game_this_week"]].copy(),
