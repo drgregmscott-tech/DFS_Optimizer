@@ -705,11 +705,74 @@ def _apply_snap_role(df, site, season, week):
     return df
 
 
+RC_CLIP_PTS = 3.0
+_RC_WARNED: set = set()
+
+
+def _rc_warn_once(msg):
+    """Role-change warnings print once per process (a history rebuild would otherwise repeat them per slate)."""
+    if msg not in _RC_WARNED:
+        _RC_WARNED.add(msg)
+        _loud(msg)
+
+
+def _apply_role_change(df, site, season, week):
+    """D2 step 8 role-change adjustment (analysis/d2_projection_inputs/DESIGN_role_change.md incl. review R1-R5).
+    RB/WR/TE whose same-position, same-team teammate is OUT/DOUBTFUL on the final injury report after >= 50% snaps in
+    one of the team's last 2 games get points added (ridge fit on the LOSO residual of the pool-fixed frame, per
+    position: b_snap*vac_snap + b_use*vac_use + b_int*vac_snap*(1-own_p4_snap)), clipped +/-RC_CLIP_PTS, added AFTER
+    the stack/blends/WRW/snap-role to final_projection and p10/p90. QB is excluded (R5). Zero on rows with
+    role_change_injury_flag or qb_autopromoted (the depth-chart layers already moved them), zero-sigma rows, rows
+    projected 0 and no-real-game rows; never below 0. Ownership is computed on the pre-RC projection.
+    Flag DFS_D2_ROLE_CHANGE, default "0": with it off this returns df untouched and adds NO columns. DK only.
+    Audit columns (flag on): d2_rc_on, d2_rc_vac_snap, d2_rc_vac_use, d2_rc_pts. Coefficients: local JSON
+    (DFS_D2_RC_PARAMS or data/role_change_adjust_dk.json, never committed). Missing data / any error = projections
+    unchanged, one warning."""
+    if os.environ.get("DFS_D2_ROLE_CHANGE", "0") not in ("1", "true", "True") or site != "dk":
+        return df
+    for c in ("d2_rc_on", "d2_rc_vac_snap", "d2_rc_vac_use", "d2_rc_pts"):
+        df[c] = 0 if c == "d2_rc_on" else 0.0
+    try:
+        inj = statline_model.load_injury_status(week)
+        if inj is None or inj.empty:
+            _rc_warn_once(f"Role-change ON but no injury status for {season} week {week}; projections unchanged.")
+            return df
+        d, F = statline_model.role_change_adjust_pts(df, season, week, inj)
+        if F is None:
+            _rc_warn_once(f"Role-change ON but no snap/stat history for {season} week {week}; projections unchanged.")
+            return df
+        ok = (pd.to_numeric(df["statline_sigma"], errors="coerce").fillna(0.0) > 0) \
+            & (pd.to_numeric(df["final_projection"], errors="coerce").fillna(0.0) > 0)
+        if "no_real_game_this_week" in df.columns:
+            ok &= ~df["no_real_game_this_week"].fillna(False).astype(bool)
+        if "role_change_injury_flag" in df.columns:
+            ok &= ~df["role_change_injury_flag"].fillna(False).astype(bool)
+        if "qb_autopromoted" in df.columns:
+            ok &= ~df["qb_autopromoted"].fillna(False).astype(bool)
+        d = d.where(ok, 0.0).fillna(0.0).clip(lower=-pd.to_numeric(df["final_projection"], errors="coerce").fillna(0.0))
+    except Exception as exc:  # noqa: BLE001 -- must never break a build
+        _rc_warn_once(f"Role-change adjustment skipped ({type(exc).__name__}: {exc}); projections unchanged.")
+        return df
+    n = int(d.ne(0).sum())
+    if n:
+        for c in ("final_projection", "statline_p10", "statline_p90"):
+            df[c] = (pd.to_numeric(df[c], errors="coerce").fillna(0.0) + d).clip(lower=0.0)
+        df["d2_rc_pts"] = d
+        df["d2_rc_on"] = d.ne(0).astype(int)
+        df["d2_rc_vac_snap"] = F["d2_rc_vac_snap"]
+        df["d2_rc_vac_use"] = F["d2_rc_vac_use"]
+        print(f"Role-change adjustment (week {week}): {n} RB/WR/TE row(s) adjusted, net {d.sum():+.1f} pts. "
+              f"Off: DFS_D2_ROLE_CHANGE=0.")
+    return df
+
+
 def _ownership_on_pre_snap(out, own_fn):
     """Run an ownership function on the PRE-snap projection (final_projection - snap_adj_pts; CPT rows carry the
     FLEX adj, so x CAPTAIN_MULTIPLIER there), then restore the snap-adjusted final_projection. Ownership measured
     slightly worse when it saw the snap adj (analysis/snap_role_projection_confirm §2/§5). No adj -> plain call."""
     adj = pd.to_numeric(out["snap_adj_pts"], errors="coerce").fillna(0.0) if "snap_adj_pts" in out.columns else None
+    if adj is not None and "d2_rc_pts" in out.columns:   # D2 role-change points are also hidden from ownership
+        adj = adj + pd.to_numeric(out["d2_rc_pts"], errors="coerce").fillna(0.0)
     if adj is None or not adj.ne(0).any():
         return own_fn(out)
     try:
@@ -1500,6 +1563,9 @@ def build_statline_projections(site: str, season: int, week: int, slate_id: str,
     # Snap-role adjustment (analysis/snap_role_projection_confirm): PFR snap share vs usage share, points added
     # post-stack, clipped +/-1.5; ownership sees the pre-snap projection. DK only. Off: DFS_PROJ_SNAP=0.
     df = _apply_snap_role(df, site, season, week)
+    # D2 step 8 role-change (fresh same-position vacancy, RB/WR/TE, DK): default OFF, adds nothing when off.
+    # On: DFS_D2_ROLE_CHANGE=1. Ownership sees the pre-RC projection.
+    df = _apply_role_change(df, site, season, week)
     # Same-team WR/TE down-adjustment when a starting QB is newly OUT/DOUBTFUL
     # (analysis/qb_out_teammate_adjustment). Off: DFS_QB_OUT_TEAMMATES=0.
     df = _apply_qb_out_teammates(df, week)
@@ -1604,7 +1670,8 @@ def build_statline_projections(site: str, season: int, week: int, slate_id: str,
                                                                "snap_adj_pts",
                                                                "role_change_injury_flag",
                                                                "q_return_flag", "q_return_post_pts"]
-                   + (["fd_stack_on", "fd_stack_block", "fd_stack_dk_salary"] if fd_stack_active else [])]
+                   + (["fd_stack_on", "fd_stack_block", "fd_stack_dk_salary"] if fd_stack_active else [])
+                   + (["d2_rc_on", "d2_rc_vac_snap", "d2_rc_vac_use", "d2_rc_pts"] if "d2_rc_pts" in df.columns else [])]
 
     # --- DST (decisions #2, #3; Session 10.4) ------------------------------
     # Session 14.0 FIX: was build_dst_projections(salaries, ...). Now takes
@@ -1690,6 +1757,8 @@ def build_statline_projections(site: str, season: int, week: int, slate_id: str,
     dst_out["wrw_wr_vacated_tgt"] = 0.0
     dst_out["wrw_wr_stepup_pts"] = 0.0
     dst_out["snap_adj_pts"] = 0.0
+    if "d2_rc_pts" in skill_out.columns:
+        dst_out["d2_rc_on"], dst_out["d2_rc_vac_snap"], dst_out["d2_rc_vac_use"], dst_out["d2_rc_pts"] = 0, 0.0, 0.0, 0.0
     dst_out["q_return_flag"] = False
     dst_out["q_return_post_pts"] = 0.0
     dst_out["role_change_injury_flag"] = False
@@ -1746,6 +1815,9 @@ def build_statline_projections(site: str, season: int, week: int, slate_id: str,
         kicker_out["wrw_wr_vacated_tgt"] = 0.0
         kicker_out["wrw_wr_stepup_pts"] = 0.0
         kicker_out["snap_adj_pts"] = 0.0
+        if "d2_rc_pts" in skill_out.columns:
+            (kicker_out["d2_rc_on"], kicker_out["d2_rc_vac_snap"], kicker_out["d2_rc_vac_use"],
+             kicker_out["d2_rc_pts"]) = 0, 0.0, 0.0, 0.0
         kicker_out["q_return_flag"] = False
         kicker_out["q_return_post_pts"] = 0.0
         kicker_out["role_change_injury_flag"] = False

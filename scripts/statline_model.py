@@ -3228,6 +3228,140 @@ def snap_role_adjust_pts(pool: pd.DataFrame, season: int, week: int, params: dic
     return adj
 
 
+# ---------------------------------------------------------------------------
+# D2 step 8: role-change (fresh same-position vacancy) adjustment, DK, RB/WR/TE only. Flag DFS_D2_ROLE_CHANGE
+# (default off, see build_projections_statline._apply_role_change). Design: analysis/d2_projection_inputs/
+# DESIGN_role_change.md (incl. the review R1-R5). Every feature is pre-lock: the final injury-report status
+# (OUT/DOUBTFUL) plus snap/usage rows of weeks < target in the same season. Nothing from the target week.
+# ---------------------------------------------------------------------------
+RC_POS = ["RB", "WR", "TE"]
+RC_OUT_STATUS = ("OUT", "DOUBTFUL")
+RC_MIN_SNAP = 0.50      # an OUT teammate counts only if he had >= 50% offense snaps in one of the team's last 2 games
+RC_PARAMS_DEFAULT = DATA_DIR / "role_change_adjust_dk.json"   # local fit artifact, gitignored, never committed
+
+
+def rc_params_path() -> Path:
+    import os
+    return Path(os.environ.get("DFS_D2_RC_PARAMS") or RC_PARAMS_DEFAULT)
+
+
+def _rc_game_table(season: int, week: int):
+    """(G, SN, team_weeks) from rows with week < target, same season, REG; None when there is no snap/stat data.
+    G = one row per player-game [week, player_id, team, snap, use] (RB/WR/TE; same snap/usage definitions as
+    build_snap_role_features), SN = [week, player_id, snap] (PFR offense_pct), team_weeks = {team: sorted weeks}."""
+    if season < _SNAP_FIRST_SEASON or week <= 1:
+        return None
+    sc = _load_snap_counts(season, week)
+    stats_path = DATA_DIR / f"weekly_stats_{season}.parquet"
+    if sc is None or sc.empty or not stats_path.exists():
+        return None
+    S = pd.read_parquet(stats_path)
+    stc = "season_type" if "season_type" in S.columns else "game_type"
+    S = S[(S[stc] == "REG") & (S["week"] < week)].copy()
+    if S.empty:
+        return None
+    for c in ("carries", "targets"):
+        S[c] = pd.to_numeric(S[c], errors="coerce").fillna(0.0)
+    S["team"] = S["team"].replace(_SNAP_TEAMFIX)
+    tv = S.groupby(["week", "team"])[["carries", "targets"]].sum().rename(
+        columns={"carries": "tcar", "targets": "ttgt"}).reset_index()
+    S = S.merge(tv, on=["week", "team"])
+    S = S[S["position"].isin(RC_POS)].copy()
+    S["player_id"] = S["player_id"].astype(str)
+    S["use"] = np.where(S["position"] == "RB", (S["carries"] + S["targets"]) / (S["tcar"] + S["ttgt"]).clip(lower=1),
+                        S["targets"] / S["ttgt"].clip(lower=1))
+    sc = sc[(sc["game_type"] == "REG") & (sc["week"] < week)].copy()
+    sc["player_id"] = sc["player_id"].astype(str)
+    sc["team"] = sc["team"].replace(_SNAP_TEAMFIX)
+    tw = {t: sorted(set(g["week"].astype(int))) for t, g in sc.groupby("team")}   # the team's own games (any position)
+    sk = sc[sc["position"].isin(["RB", "WR", "TE", "FB"])]
+    SN = sk.groupby(["week", "player_id"], as_index=False).agg(snap=("offense_pct", "max"), steam=("team", "last"))
+    G = S[["week", "player_id", "team", "use"]].merge(SN[["week", "player_id", "snap"]], on=["week", "player_id"],
+                                                      how="left")
+    extra = SN.merge(G[["week", "player_id"]], how="left", indicator=True)
+    extra = extra[extra["_merge"] == "left_only"].drop(columns="_merge")
+    G = pd.concat([G, extra.rename(columns={"steam": "team"}).assign(use=0.0)], ignore_index=True)
+    G["snap"] = G["snap"].fillna(0.0)
+    G = G.sort_values(["player_id", "week"]).reset_index(drop=True)
+    return G, SN, tw
+
+
+def role_change_vacancy_features(pool: pd.DataFrame, season: int, week: int,
+                                 injury_status: pd.DataFrame) -> pd.DataFrame | None:
+    """Pre-lock vacancy features per pool row (RB/WR/TE; every other row is 0), indexed like `pool`:
+      d2_rc_vac_snap = summed prior-4 mean snap share of the row's same-team, same-position teammates who are
+                       OUT/DOUBTFUL on the final injury report AND had offense_pct >= 0.50 in at least one of the
+                       team's previous 2 games (same season, weeks < target);
+      d2_rc_vac_use  = their summed prior-4 mean usage share (RB: carries+targets share, WR/TE: target share);
+      rc_own_p4_snap = the row player's own prior-4 mean snap share (0 with no same-season history).
+    'Prior-4' = the last 4 same-season appearances with week < target. A row that is itself OUT/DOUBTFUL gets 0.
+    Returns None when there is no snap/stat history (week 1, missing files); the caller treats that as a no-op."""
+    T = _rc_game_table(season, week)
+    if T is None:
+        return None
+    G, SN, tw = T
+    out = pd.DataFrame({"d2_rc_vac_snap": 0.0, "d2_rc_vac_use": 0.0, "rc_own_p4_snap": 0.0}, index=pool.index)
+    p4 = G.groupby("player_id").tail(4).groupby("player_id")[["snap", "use"]].mean()
+    last_team = G.groupby("player_id")["team"].last()
+    out["rc_own_p4_snap"] = pool["player_id"].astype(str).map(p4["snap"]).fillna(0.0).to_numpy()
+    inj = injury_status
+    if inj is None or inj.empty:
+        return out
+    inj = inj[inj["status"].astype(str).str.upper().isin(RC_OUT_STATUS) & inj["position"].isin(RC_POS)].copy()
+    if inj.empty:
+        return out
+    inj["player_id"] = inj["player_id"].astype(str)
+    inj = inj.drop_duplicates("player_id")
+    snap_by = {k: v for k, v in SN.groupby("player_id")}
+    acc: dict = {}
+    for r in inj.itertuples():
+        team = r.team if isinstance(r.team, str) and r.team else last_team.get(r.player_id)
+        team = _SNAP_TEAMFIX.get(team, team)
+        if not isinstance(team, str) or r.player_id not in p4.index or team not in tw:
+            continue
+        sn = snap_by.get(r.player_id)
+        if sn is None:
+            continue
+        recent = sn.loc[sn["week"].isin(tw[team][-2:]), "snap"]
+        if recent.empty or float(recent.max()) < RC_MIN_SNAP:
+            continue
+        a = acc.setdefault((team, r.position), [0.0, 0.0])
+        a[0] += float(p4.loc[r.player_id, "snap"])
+        a[1] += float(p4.loc[r.player_id, "use"])
+    if not acc:
+        return out
+    pid = pool["player_id"].astype(str)
+    team = pool["team"].astype(str).replace(_SNAP_TEAMFIX)
+    pos = pool["position"].astype(str)
+    own_out = pid.isin(set(inj["player_id"]))
+    for i, (t, q, o) in enumerate(zip(team, pos, own_out)):
+        a = acc.get((t, q))
+        if a is not None and not o:
+            out.iloc[i, 0] = a[0]
+            out.iloc[i, 1] = a[1]
+    return out
+
+
+def role_change_adjust_pts(pool: pd.DataFrame, season: int, week: int, injury_status: pd.DataFrame,
+                           params: dict | None = None):
+    """(adj, features): DK points per pool row (before the caller's guards) and the feature frame.
+       adj = b_snap*vac_snap + b_use*vac_use + b_int*vac_snap*(1-own_p4_snap)   per position RB/WR/TE, no intercept,
+    0 on rows with no fresh vacancy, clipped to +/- params['clip_pts'] (3.0). features None when there is no
+    snap/stat history. Raises on missing/invalid params -- the caller turns that into a loud no-op."""
+    p = params if params is not None else json.loads(rc_params_path().read_text(encoding="utf-8"))
+    clip = float(p.get("clip_pts", 3.0))
+    F = role_change_vacancy_features(pool, season, week, injury_status)
+    if F is None:
+        return pd.Series(0.0, index=pool.index), None
+    adj = pd.Series(0.0, index=pool.index)
+    vs, vu, own = F["d2_rc_vac_snap"], F["d2_rc_vac_use"], F["rc_own_p4_snap"]
+    for q in RC_POS:
+        b = p["positions"][q]
+        m = (pool["position"].astype(str) == q) & (vs > 0)
+        adj[m] = b["b_snap"] * vs[m] + b["b_use"] * vu[m] + b["b_int"] * vs[m] * (1.0 - own[m])
+    return adj.clip(-clip, clip), F
+
+
 def simulate(pool: pd.DataFrame, site: str, variance: dict,
              n_sims: int = DEFAULT_SIMS, seed: int = DEFAULT_SEED) -> pd.DataFrame:
     """Simulate every player's stat line, score each draw with `site`'s exact
