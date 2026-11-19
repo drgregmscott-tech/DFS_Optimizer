@@ -3,13 +3,14 @@ MIN,recv,1.0,recent,0.29,31.5,108.313,31.2
 TB,pass,1.0,exclusive,17.63,29.97,1.7002,12.34
 TB,rush,1.0,recent,44.52,27.87,0.6261,16.65
 MIA,rush,1.0,recent,34.95,23.59,0.6749,11.37
+PHI,recv,1.0,recent,40.91,29.5,0.721,11.41
 NYG,rush,1.0,recent,35.97,25.94,0.7211,10.03
 NYG,pass,1.0,exclusive,26.81,34.09,1.2716,7.28
 KC,recv,1.0,recent,43.4,31.66,0.7294,11.74
+ARI,rush,0.8957,recent,28.79,21.23,0.7375,7.55
 DET,rush,0.994,recent,37.24,28.34,0.7611,8.9
 ARI,recv,0.994,recent,37.27,28.53,0.7654,8.74
 DAL,rush,1.0,recent,35.97,27.54,0.7657,8.43
-ARI,rush,0.8957,recent,27.56,21.23,0.7702,6.33
 BUF,rush,1.0,recent,41.41,32.27,0.7792,9.15
 LV,pass,1.0,exclusive,25.14,30.5,1.2132,5.36
 LAC,rush,0.9931,recent,37.54,29.6,0.7886,7.94
@@ -25,11 +26,9 @@ CHI,recv,1.0,recent,41.43,34.78,0.8395,6.65
 LV,rush,0.8807,recent,26.17,22.06,0.843,4.11
 CAR,recv,1.0,recent,37.57,31.86,0.8479,5.71
 DET,pass,1.0,exclusive,28.36,32.58,1.1486,4.22
-PHI,recv,1.0,recent,34.58,29.5,0.853,5.08
 BAL,rush,1.0,recent,30.56,26.1,0.8542,4.45
 BAL,recv,1.0,recent,36.65,31.34,0.8552,5.31
 NO,rush,1.0,recent,27.61,23.7,0.8584,3.91
-ARI,pass,1.0,exclusive,26.63,30.26,1.1363,3.63
 PIT,recv,0.9935,recent,32.64,28.31,0.8675,4.32
 PHI,pass,1.0,exclusive,35.11,30.5,0.8689,4.6
 JAX,recv,0.9423,recent,35.1,30.56,0.8709,4.53
@@ -59,4 +58,5 @@ DEN,pass,1.0,exclusive,32.08,31.48,0.9814,0.6
 PIT,rush,0.9846,recent,29.71,29.29,0.986,0.42
 NO,pass,1.0,exclusive,34.12,34.47,1.0101,0.34
 BUF,recv,1.0,recent,31.13,31.37,1.0077,0.24
+ARI,pass,1.0,exclusive,30.04,30.26,1.0075,0.22
 DAL,pass,1.0,exclusive,39.62,39.69,1.0018,0.07

@@ -5056,3 +5056,15 @@ timestamp_utc,trigger_type,site,step,status
 2026-11-19T19:09:55.492131+00:00,manual_workflow_dispatch,fd,fd_classic_wk11_main_17Nov2026,status_apply,success
 2026-11-19T19:09:55.492131+00:00,manual_workflow_dispatch,fd,fd_classic_wk11_main_17Nov2026,pivot_finder,skipped
 2026-11-19T19:09:55.492131+00:00,manual_workflow_dispatch,fd,fd_classic_wk11_main_17Nov2026,cheat_sheet,success
+2026-11-19T23:34:19.669141+00:00,injury_refresh_scheduled,dk,dk_classic_wk11_main_17Nov2026,build_projections,success
+2026-11-19T23:34:19.669141+00:00,injury_refresh_scheduled,dk,dk_classic_wk11_main_17Nov2026,status_apply,success
+2026-11-19T23:34:19.669141+00:00,injury_refresh_scheduled,dk,dk_classic_wk11_main_17Nov2026,pivot_finder,skipped
+2026-11-19T23:34:19.669141+00:00,injury_refresh_scheduled,dk,dk_classic_wk11_main_17Nov2026,cheat_sheet,success
+2026-11-19T23:32:56.779106+00:00,injury_refresh_scheduled,dk,dk_showdown_wk11_IND_HOU_19Nov2026,build_projections,success
+2026-11-19T23:32:56.779106+00:00,injury_refresh_scheduled,dk,dk_showdown_wk11_IND_HOU_19Nov2026,status_apply,success
+2026-11-19T23:32:56.779106+00:00,injury_refresh_scheduled,dk,dk_showdown_wk11_IND_HOU_19Nov2026,pivot_finder,skipped
+2026-11-19T23:32:56.779106+00:00,injury_refresh_scheduled,dk,dk_showdown_wk11_IND_HOU_19Nov2026,cheat_sheet,skipped
+2026-11-19T23:32:47.894316+00:00,injury_refresh_scheduled,fd,fd_classic_wk11_main_17Nov2026,build_projections,success
+2026-11-19T23:32:47.894316+00:00,injury_refresh_scheduled,fd,fd_classic_wk11_main_17Nov2026,status_apply,success
+2026-11-19T23:32:47.894316+00:00,injury_refresh_scheduled,fd,fd_classic_wk11_main_17Nov2026,pivot_finder,skipped
+2026-11-19T23:32:47.894316+00:00,injury_refresh_scheduled,fd,fd_classic_wk11_main_17Nov2026,cheat_sheet,success
