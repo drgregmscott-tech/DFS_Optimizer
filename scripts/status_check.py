@@ -616,11 +616,12 @@ def run_apply(site: str, week: int, status_file: str, projections_file: str | No
     # (raw_status "Inactive (gameday)") or a manual OUT/ACTIVE override for any player in the game.
     n_qdisc = 0
     if qdisc_enabled():
-        gk_all = _qdisc_game_key(merged)
+        sched = _qdisc_schedule_map(proj_path, site)
+        gk_all = _qdisc_game_key(merged, sched)
         res_m = _manual_resolved.copy()
         if "injury_raw_status" in merged.columns:
             res_m = res_m | (merged["injury_raw_status"].astype(str) == QDISC_GATE_RESOLVED_RAW)
-        merged, n_qdisc = qdisc_apply(merged, set(gk_all[res_m]))
+        merged, n_qdisc = qdisc_apply(merged, set(gk_all[res_m].dropna()), sched)
         _r = merged["qdisc_gate_reason"].value_counts().to_dict() if "qdisc_gate_reason" in merged.columns else {}
         print(f"  QDISC(pre): {n_qdisc} QUESTIONABLE row(s) discounted x{QDISC_K_PRE}; gate reasons: {_r}")
 
@@ -675,11 +676,45 @@ def qdisc_enabled() -> bool:
     return os.environ.get("DFS_D2_QDISC_MODE", "0").strip().lower() == "pre"
 
 
-def _qdisc_game_key(df: pd.DataFrame) -> pd.Series:
-    team = df["team"].astype(str)
-    if "opponent" in df.columns:
-        return pd.Series([ "|".join(sorted(t)) for t in zip(team, df["opponent"].astype(str))], index=df.index)
-    return team  # no opponent column: gate per team
+def _qdisc_schedule_map(proj_path, site: str) -> dict:
+    """team -> game key (sorted 'A|B') from the slate's OWN schedule: the salary file's 'Game Info' (DK) /
+    'Game' (FD) column, found as data/salaries_<slate>.csv for output/final_projections_<slate>.csv. The stamped
+    `opponent` column is NOT used: zero-projection rows carry BYE_OR_UNKNOWN there. Empty dict when the
+    salary file is missing (every row then fails safe to resolved / no discount)."""
+    try:
+        name = Path(proj_path).name
+        if not name.startswith("final_projections_"):
+            return {}
+        sal = DATA_DIR / ("salaries_" + name[len("final_projections_"):])
+        if not sal.exists():
+            return {}
+        df = pd.read_csv(sal, usecols=lambda c: c in ("Game Info", "Game"))
+        col = "Game Info" if "Game Info" in df.columns else ("Game" if "Game" in df.columns else None)
+        if col is None:
+            return {}
+        return _qdisc_schedule_from_games(df[col].dropna().unique(), site)
+    except Exception as e:
+        print(f"QDISC WARNING: schedule unavailable ({e!r}); no discount applied.", file=sys.stderr)
+        return {}
+
+
+def _qdisc_schedule_from_games(game_strings, site: str) -> dict:
+    """Parse 'AWAY@HOME [date time]' strings into {team: 'A|B'} (teams normalized like the build)."""
+    sched = {}
+    for g in game_strings:
+        part = str(g).split(" ")[0]
+        if "@" not in part:
+            continue
+        away, home = (normalize_team(x.strip(), site) for x in part.split("@", 1))
+        key = "|".join(sorted([away, home]))
+        sched[away] = key
+        sched[home] = key
+    return sched
+
+
+def _qdisc_game_key(df: pd.DataFrame, sched: dict) -> pd.Series:
+    """Per-row game key from the slate schedule; None when the row's team is not in the schedule."""
+    return df["team"].astype(str).map(sched).where(lambda s: s.notna(), None)
 
 
 def qdisc_restore(merged: pd.DataFrame) -> tuple[pd.DataFrame, int]:
@@ -698,7 +733,7 @@ def qdisc_restore(merged: pd.DataFrame) -> tuple[pd.DataFrame, int]:
     return merged, n
 
 
-def qdisc_apply(merged: pd.DataFrame, resolved_games: set) -> tuple[pd.DataFrame, int]:
+def qdisc_apply(merged: pd.DataFrame, resolved_games: set, sched: dict) -> tuple[pd.DataFrame, int]:
     """Discount QUESTIONABLE rows by QDISC_K_PRE in games whose inactives are not yet resolved.
     Always computed from the stored undiscounted value (qdisc_restore ran first). Fail-safe: any
     problem -> warning, no discount, rows unchanged."""
@@ -706,14 +741,16 @@ def qdisc_apply(merged: pd.DataFrame, resolved_games: set) -> tuple[pd.DataFrame
     try:
         if not (0.4 <= k <= 1.0):
             raise ValueError(f"k={k} outside [0.4, 1.0]")
-        gk = _qdisc_game_key(merged)
+        gk = _qdisc_game_key(merged, sched)
+        unkeyed = gk.isna()  # fail-safe: a row that cannot be keyed is treated as resolved
         isq = merged["injury_status"] == "QUESTIONABLE"
-        closed = gk.isin(resolved_games)
+        closed = gk.isin(resolved_games) | unkeyed
         live = merged["final_projection"] > 0  # a zero projection (bye / OUT-zeroed) has nothing to discount
         apply_m = isq & ~closed & live
         reason = pd.Series("not_q", index=merged.index)
         reason[isq & ~live] = "no_projection"
         reason[isq & closed & live] = "inactives_resolved"
+        reason[isq & unkeyed & live] = "unkeyed_resolved"
         reason[apply_m] = "inactives_pending"
         for col, pre in _QDISC_PRE_COLS.items():
             if col in merged.columns:
