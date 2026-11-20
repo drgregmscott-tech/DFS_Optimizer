@@ -68,4 +68,5 @@ analysis/
 
 # FC-derived FD stack coefficients: local only, never commit
 data/projection_stack_fd.json
+data/qb_cheap_restack_coef.json
 data/role_change_adjust_dk.json

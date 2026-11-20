@@ -451,6 +451,63 @@ def _apply_qb_shift(df, mask, shift, delta, label):
     return df, delta
 
 
+QB_CHEAP_RESTACK_COEF = Path(__file__).resolve().parents[1] / "data" / "qb_cheap_restack_coef.json"
+
+
+def _apply_qb_cheap_restack(df, site, showdown):
+    """qb_cheap_restack (analysis/qb_candidate): DK classic QBs under $5,500 get a cheap-tier refit of the
+    stack: new = max(0, b0 + b1*engine + b2*salary/1000 + b3*implied_total + b4*proj_rush_yd + downstream),
+    downstream = final_projection - engine_projection - stack_delta (includes qb_recal_delta). The delta
+    shifts final_projection and statline_p10/p90 (clipped at 0). Coefficients live in the local-only
+    data/qb_cheap_restack_coef.json (gitignored, FC-derived fit); missing/unreadable file or any error =
+    loud warning, delta 0, projections unchanged. Off: DFS_QB_CHEAP_RESTACK=0."""
+    df["qb_cheap_restack_delta"] = 0.0
+    if os.environ.get("DFS_QB_CHEAP_RESTACK", "1") == "0":
+        return df
+    if site != "dk" or showdown:
+        return df
+    try:
+        with open(QB_CHEAP_RESTACK_COEF, "r", encoding="utf-8") as fh:
+            cfg = json.load(fh)
+        c = cfg["coef"]
+        sal_max = float(cfg.get("salary_max", 5500))
+        pos = df["position"].astype(str)
+        sal = pd.to_numeric(df["salary"], errors="coerce")
+        eng = pd.to_numeric(df["engine_projection"], errors="coerce")
+        imp = pd.to_numeric(df["implied_total"], errors="coerce")
+        rush = pd.to_numeric(df["proj_rush_yd"], errors="coerce") if "proj_rush_yd" in df.columns             else pd.Series(np.nan, index=df.index)
+        no_game = df["no_real_game_this_week"].fillna(False).astype(bool)             if "no_real_game_this_week" in df.columns else pd.Series(False, index=df.index)
+        m = ((pos == "QB") & (sal < sal_max) & (eng > 0) & (imp > 0) & rush.notna() & ~no_game).fillna(False)
+        if not m.any():
+            print("qb_cheap_restack: 0 target rows")
+            return df
+        before = df["final_projection"].copy()
+        others_before = before[~m].copy()
+        f = pd.to_numeric(df["final_projection"], errors="coerce")
+        downstream = f - eng - pd.to_numeric(df["stack_delta"], errors="coerce").fillna(0.0)
+        raw = (float(c["b0"]) + float(c["engine_projection"]) * eng + float(c["sal_k"]) * (sal / 1000.0)
+               + float(c["implied_total"]) * imp + float(c["proj_rush_yd"]) * rush + downstream)
+        new = raw.clip(lower=0.0)
+        d = (new - f).where(m, 0.0).fillna(0.0)
+        df["final_projection"] = f + d
+        for col in ("statline_p10", "statline_p90"):
+            if col in df.columns:
+                df[col] = (pd.to_numeric(df[col], errors="coerce") + d).clip(lower=0.0).where(m, df[col])
+        df["qb_cheap_restack_delta"] = d
+        assert (df.loc[~m, "final_projection"].to_numpy() == others_before.to_numpy()).all(),             "qb_cheap_restack changed a non-target row"
+        assert (d[~m] == 0).all()
+        dm = d[m]
+        print(f"qb_cheap_restack: {int((dm != 0).sum())} of {int(m.sum())} target QB rows changed; "
+              f"mean delta {dm.mean():+.3f}, range [{dm.min():+.3f}, {dm.max():+.3f}]")
+    except Exception as exc:  # noqa: BLE001
+        _loud(f"qb_cheap_restack skipped ({type(exc).__name__}: {exc}); projections unchanged. "
+              f"Needs local data/qb_cheap_restack_coef.json (not in git); off: DFS_QB_CHEAP_RESTACK=0.")
+        if "before" in locals():
+            df["final_projection"] = before
+        df["qb_cheap_restack_delta"] = 0.0
+    return df
+
+
 def _apply_qb_recal(df, week, cfg_path=QB_RECAL_CONFIG):
     """QB wk3+ linear recal (analysis/qb_depth/RESULTS.md, "Candidate"), plus
     two additive low-sample shifts (analysis/qb_gap_vs_fc, 2026-10-01).
@@ -1589,6 +1646,9 @@ def build_statline_projections(site: str, season: int, week: int, slate_id: str,
         df["q_return_post_pts"] = 0.0
         df["backup_reconcile_engine_delta"] = 0.0
         df["backup_reconcile_post_pts"] = 0.0
+    # qb_cheap_restack (analysis/qb_candidate): cheap-tier QB (<$5,500, DK) stack refit, after the stack/recal and
+    # every post-stack layer, before no-game zeroing. Local coef file; off: DFS_QB_CHEAP_RESTACK=0.
+    df = _apply_qb_cheap_restack(df, site, showdown)
     # Audit: the depth-chart backup boost for a real in-week OUT starter (apply_confirmed_starter_override),
     # previously dropped before the CSV. False when that step did not run.
     df["role_change_injury_flag"] = (df["role_change_injury_flag"].fillna(False).astype(bool)
@@ -1669,6 +1729,7 @@ def build_statline_projections(site: str, season: int, week: int, slate_id: str,
                    ["sigma", "sigma_source", "statline_p10",
                     "statline_p90", "usage_trend_ratio"] + PROJ_STAT_COLUMNS + ["engine_projection", "stack_delta",
                                                                "early_blend_delta", "qb_recal_delta",
+                                                               "qb_cheap_restack_delta",
                                                                "qb_autopromote_delta", "qb_autopromoted",
                                                                "wrw_delta_pts", "wrw_vacated_car",
                                                                "wrw_decay_pts", "wrw_stepup_pts",
@@ -1753,6 +1814,7 @@ def build_statline_projections(site: str, season: int, week: int, slate_id: str,
         dst_out["fd_stack_on"], dst_out["fd_stack_block"], dst_out["fd_stack_dk_salary"] = 0, "", np.nan
     dst_out["early_blend_delta"] = 0.0
     dst_out["qb_recal_delta"] = 0.0
+    dst_out["qb_cheap_restack_delta"] = 0.0
     dst_out["qb_autopromote_delta"] = 0.0
     dst_out["qb_autopromoted"] = False
     dst_out["wrw_delta_pts"] = 0.0
@@ -1811,6 +1873,7 @@ def build_statline_projections(site: str, season: int, week: int, slate_id: str,
             kicker_out["fd_stack_on"], kicker_out["fd_stack_block"], kicker_out["fd_stack_dk_salary"] = 0, "", np.nan
         kicker_out["early_blend_delta"] = 0.0
         kicker_out["qb_recal_delta"] = 0.0
+        kicker_out["qb_cheap_restack_delta"] = 0.0
         kicker_out["qb_autopromote_delta"] = 0.0
         kicker_out["qb_autopromoted"] = False
         kicker_out["wrw_delta_pts"] = 0.0
