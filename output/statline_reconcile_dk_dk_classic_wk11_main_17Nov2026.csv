@@ -1,5 +1,4 @@
 team,component,pool_share,share_basis,raw_sum,target,scale,abs_delta
-MIN,recv,1.0,recent,0.43,32.41,75.5002,31.98
 TB,pass,1.0,exclusive,15.81,30.77,1.9461,14.96
 ARI,pass,1.0,exclusive,21.91,32.66,1.4905,10.75
 TB,rush,1.0,recent,45.36,28.07,0.6188,17.29
@@ -45,9 +44,9 @@ MIA,pass,1.0,exclusive,29.81,32.91,1.1039,3.1
 MIA,recv,1.0,recent,34.69,31.37,0.9043,3.32
 DET,recv,1.0,recent,35.36,32.04,0.906,3.32
 PIT,rush,0.9846,recent,31.2,28.36,0.909,2.84
+NO,recv,1.0,recent,37.26,34.11,0.9153,3.16
 TB,recv,0.9909,recent,31.55,29.12,0.9232,2.42
 PIT,recv,0.9935,recent,32.73,30.26,0.9245,2.47
-NO,recv,1.0,recent,36.63,34.11,0.931,2.53
 BUF,recv,1.0,recent,33.23,31.16,0.9377,2.07
 TEN,pass,1.0,exclusive,35.29,37.3,1.057,2.01
 PHI,rush,0.9909,recent,23.75,25.06,1.0551,1.31
