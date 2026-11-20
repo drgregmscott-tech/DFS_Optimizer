@@ -1,0 +1,117 @@
+Position,Name + ID,Name,ID,Roster Position,Salary,Game Info,TeamAbbrev,AvgPointsPerGame,Status,roster_role,name,site,salary,normalized_name,normalized_team,position_upper,slate_format,player_id,match_method,match_confidence
+RB,Christian McCaffrey (45019530),Christian McCaffrey,45019530,CPT,17700,MIN@SF 11/22/2026 08:20PM ET,SF,24.1,,CPT,Christian McCaffrey,dk,17700,christian mccaffrey,SF,RB,showdown,00-0033280,auto_exact,high
+QB,Brock Purdy (45019531),Brock Purdy,45019531,CPT,16200,MIN@SF 11/22/2026 08:20PM ET,SF,23.4,,CPT,Brock Purdy,dk,16200,brock purdy,SF,QB,showdown,00-0037834,auto_exact,high
+WR,Justin Jefferson (45019532),Justin Jefferson,45019532,CPT,15600,MIN@SF 11/22/2026 08:20PM ET,MIN,14.0,,CPT,Justin Jefferson,dk,15600,justin jefferson,MIN,WR,showdown,00-0036322,auto_exact,high
+QB,Kirk Cousins (45019533),Kirk Cousins,45019533,CPT,14100,MIN@SF 11/22/2026 08:20PM ET,MIN,20.3,,CPT,Kirk Cousins,dk,14100,kirk cousins,MIN,QB,showdown,00-0029604,auto_exact,high
+TE,George Kittle (45019534),George Kittle,45019534,CPT,12600,MIN@SF 11/22/2026 08:20PM ET,SF,14.3,,CPT,George Kittle,dk,12600,george kittle,SF,TE,showdown,00-0033288,auto_exact,high
+WR,Mike Evans (45019535),Mike Evans,45019535,CPT,12000,MIN@SF 11/22/2026 08:20PM ET,SF,15.3,Q,CPT,Mike Evans,dk,12000,mike evans,SF,WR,showdown,00-0031408,auto_exact,high
+RB,Christian McCaffrey (45019472),Christian McCaffrey,45019472,FLEX,11800,MIN@SF 11/22/2026 08:20PM ET,SF,24.1,,FLEX,Christian McCaffrey,dk,11800,christian mccaffrey,SF,RB,showdown,00-0033280,auto_exact,high
+WR,Deebo Samuel Sr. (45019536),Deebo Samuel Sr.,45019536,CPT,11400,MIN@SF 11/22/2026 08:20PM ET,SF,14.6,,CPT,Deebo Samuel Sr.,dk,11400,deebo samuel,SF,WR,showdown,00-0035719,auto_exact,high
+QB,Brock Purdy (45019473),Brock Purdy,45019473,FLEX,10800,MIN@SF 11/22/2026 08:20PM ET,SF,23.4,,FLEX,Brock Purdy,dk,10800,brock purdy,SF,QB,showdown,00-0037834,auto_exact,high
+RB,Aaron Jones Sr. (45019537),Aaron Jones Sr.,45019537,CPT,10800,MIN@SF 11/22/2026 08:20PM ET,MIN,11.4,,CPT,Aaron Jones Sr.,dk,10800,aaron jones,MIN,RB,showdown,00-0033293,auto_exact,high
+RB,Jordan Mason (45019538),Jordan Mason,45019538,CPT,10500,MIN@SF 11/22/2026 08:20PM ET,MIN,6.6,,CPT,Jordan Mason,dk,10500,jordan mason,MIN,RB,showdown,00-0037525,auto_exact,high
+WR,Justin Jefferson (45019474),Justin Jefferson,45019474,FLEX,10400,MIN@SF 11/22/2026 08:20PM ET,MIN,14.0,,FLEX,Justin Jefferson,dk,10400,justin jefferson,MIN,WR,showdown,00-0036322,auto_exact,high
+WR,Keenan Allen (45019539),Keenan Allen,45019539,CPT,9900,MIN@SF 11/22/2026 08:20PM ET,SF,10.2,,CPT,Keenan Allen,dk,9900,keenan allen,SF,WR,showdown,00-0030279,auto_exact,high
+QB,Kirk Cousins (45019475),Kirk Cousins,45019475,FLEX,9400,MIN@SF 11/22/2026 08:20PM ET,MIN,20.3,,FLEX,Kirk Cousins,dk,9400,kirk cousins,MIN,QB,showdown,00-0029604,auto_exact,high
+WR,Jordan Addison (45019540),Jordan Addison,45019540,CPT,9300,MIN@SF 11/22/2026 08:20PM ET,MIN,7.7,OUT,CPT,Jordan Addison,dk,9300,jordan addison,MIN,WR,showdown,00-0038994,auto_exact,high
+QB,Kyler Murray (45019541),Kyler Murray,45019541,CPT,9000,MIN@SF 11/22/2026 08:20PM ET,MIN,12.8,OUT,CPT,Kyler Murray,dk,9000,kyler murray,MIN,QB,showdown,00-0035228,auto_exact,high
+QB,Carson Wentz (45019542),Carson Wentz,45019542,CPT,9000,MIN@SF 11/22/2026 08:20PM ET,MIN,8.6,,CPT,Carson Wentz,dk,9000,carson wentz,MIN,QB,showdown,00-0032950,auto_exact,high
+QB,Max Brosmer (45019543),Max Brosmer,45019543,CPT,9000,MIN@SF 11/22/2026 08:20PM ET,MIN,2.3,,CPT,Max Brosmer,dk,9000,max brosmer,MIN,QB,showdown,00-0040494,auto_exact,high
+QB,Mac Jones (45019544),Mac Jones,45019544,CPT,9000,MIN@SF 11/22/2026 08:20PM ET,SF,-0.3,Q,CPT,Mac Jones,dk,9000,mac jones,SF,QB,showdown,00-0036972,auto_exact,high
+QB,Kurtis Rourke (45019545),Kurtis Rourke,45019545,CPT,9000,MIN@SF 11/22/2026 08:20PM ET,SF,0.0,,CPT,Kurtis Rourke,dk,9000,kurtis rourke,SF,QB,showdown,00-0040589,auto_exact,high
+TE,George Kittle (45019476),George Kittle,45019476,FLEX,8400,MIN@SF 11/22/2026 08:20PM ET,SF,14.3,,FLEX,George Kittle,dk,8400,george kittle,SF,TE,showdown,00-0033288,auto_exact,high
+TE,T.J. Hockenson (45019546),T.J. Hockenson,45019546,CPT,8100,MIN@SF 11/22/2026 08:20PM ET,MIN,11.1,Q,CPT,T.J. Hockenson,dk,8100,tj hockenson,MIN,TE,showdown,00-0035229,auto_exact,high
+WR,Mike Evans (45019477),Mike Evans,45019477,FLEX,8000,MIN@SF 11/22/2026 08:20PM ET,SF,15.3,Q,FLEX,Mike Evans,dk,8000,mike evans,SF,WR,showdown,00-0031408,auto_exact,high
+WR,Deebo Samuel Sr. (45019478),Deebo Samuel Sr.,45019478,FLEX,7600,MIN@SF 11/22/2026 08:20PM ET,SF,14.6,,FLEX,Deebo Samuel Sr.,dk,7600,deebo samuel,SF,WR,showdown,00-0035719,auto_exact,high
+K,Will Reichard (45019547),Will Reichard,45019547,CPT,7500,MIN@SF 11/22/2026 08:20PM ET,MIN,11.4,,CPT,Will Reichard,dk,7500,will reichard,MIN,K,showdown,00-0039404,auto_exact,high
+RB,Aaron Jones Sr. (45019479),Aaron Jones Sr.,45019479,FLEX,7200,MIN@SF 11/22/2026 08:20PM ET,MIN,11.4,,FLEX,Aaron Jones Sr.,dk,7200,aaron jones,MIN,RB,showdown,00-0033293,auto_exact,high
+RB,Kaelon Black (45019548),Kaelon Black,45019548,CPT,7200,MIN@SF 11/22/2026 08:20PM ET,SF,5.9,,CPT,Kaelon Black,dk,7200,kaelon black,SF,RB,showdown,00-0041052,auto_exact,high
+RB,Jordan Mason (45019480),Jordan Mason,45019480,FLEX,7000,MIN@SF 11/22/2026 08:20PM ET,MIN,6.6,,FLEX,Jordan Mason,dk,7000,jordan mason,MIN,RB,showdown,00-0037525,auto_exact,high
+K,Eddy Pineiro (45019549),Eddy Pineiro,45019549,CPT,6900,MIN@SF 11/22/2026 08:20PM ET,SF,6.7,,CPT,Eddy Pineiro,dk,6900,eddy pineiro,SF,K,showdown,00-0034173,auto_exact,high
+WR,Keenan Allen (45019481),Keenan Allen,45019481,FLEX,6600,MIN@SF 11/22/2026 08:20PM ET,SF,10.2,,FLEX,Keenan Allen,dk,6600,keenan allen,SF,WR,showdown,00-0030279,auto_exact,high
+WR,Jordan Addison (45019482),Jordan Addison,45019482,FLEX,6200,MIN@SF 11/22/2026 08:20PM ET,MIN,7.7,OUT,FLEX,Jordan Addison,dk,6200,jordan addison,MIN,WR,showdown,00-0038994,auto_exact,high
+QB,Kyler Murray (45019483),Kyler Murray,45019483,FLEX,6000,MIN@SF 11/22/2026 08:20PM ET,MIN,12.8,OUT,FLEX,Kyler Murray,dk,6000,kyler murray,MIN,QB,showdown,00-0035228,auto_exact,high
+QB,Carson Wentz (45019484),Carson Wentz,45019484,FLEX,6000,MIN@SF 11/22/2026 08:20PM ET,MIN,8.6,,FLEX,Carson Wentz,dk,6000,carson wentz,MIN,QB,showdown,00-0032950,auto_exact,high
+QB,Max Brosmer (45019485),Max Brosmer,45019485,FLEX,6000,MIN@SF 11/22/2026 08:20PM ET,MIN,2.3,,FLEX,Max Brosmer,dk,6000,max brosmer,MIN,QB,showdown,00-0040494,auto_exact,high
+QB,Mac Jones (45019486),Mac Jones,45019486,FLEX,6000,MIN@SF 11/22/2026 08:20PM ET,SF,-0.3,Q,FLEX,Mac Jones,dk,6000,mac jones,SF,QB,showdown,00-0036972,auto_exact,high
+QB,Kurtis Rourke (45019487),Kurtis Rourke,45019487,FLEX,6000,MIN@SF 11/22/2026 08:20PM ET,SF,0.0,,FLEX,Kurtis Rourke,dk,6000,kurtis rourke,SF,QB,showdown,00-0040589,auto_exact,high
+DST,49ers (45019550),49ers,45019550,CPT,6000,MIN@SF 11/22/2026 08:20PM ET,SF,6.7,,CPT,49ers,dk,6000,49ers,SF,DST,showdown,DST_SF,team_defense,high
+TE,T.J. Hockenson (45019488),T.J. Hockenson,45019488,FLEX,5400,MIN@SF 11/22/2026 08:20PM ET,MIN,11.1,Q,FLEX,T.J. Hockenson,dk,5400,tj hockenson,MIN,TE,showdown,00-0035229,auto_exact,high
+DST,Vikings (45019551),Vikings,45019551,CPT,5400,MIN@SF 11/22/2026 08:20PM ET,MIN,11.6,,CPT,Vikings,dk,5400,vikings,MIN,DST,showdown,DST_MIN,team_defense,high
+WR,Jordan Watkins (45019552),Jordan Watkins,45019552,CPT,5100,MIN@SF 11/22/2026 08:20PM ET,SF,6.5,,CPT,Jordan Watkins,dk,5100,jordan watkins,SF,WR,showdown,00-0040172,auto_exact,high
+K,Will Reichard (45019489),Will Reichard,45019489,FLEX,5000,MIN@SF 11/22/2026 08:20PM ET,MIN,11.4,,FLEX,Will Reichard,dk,5000,will reichard,MIN,K,showdown,00-0039404,auto_exact,high
+RB,Kaelon Black (45019490),Kaelon Black,45019490,FLEX,4800,MIN@SF 11/22/2026 08:20PM ET,SF,5.9,,FLEX,Kaelon Black,dk,4800,kaelon black,SF,RB,showdown,00-0041052,auto_exact,high
+WR,Jauan Jennings (45019553),Jauan Jennings,45019553,CPT,4800,MIN@SF 11/22/2026 08:20PM ET,MIN,1.9,,CPT,Jauan Jennings,dk,4800,jauan jennings,MIN,WR,showdown,00-0036259,auto_exact,high
+K,Eddy Pineiro (45019491),Eddy Pineiro,45019491,FLEX,4600,MIN@SF 11/22/2026 08:20PM ET,SF,6.7,,FLEX,Eddy Pineiro,dk,4600,eddy pineiro,SF,K,showdown,00-0034173,auto_exact,high
+WR,Myles Price (45019554),Myles Price,45019554,CPT,4500,MIN@SF 11/22/2026 08:20PM ET,MIN,3.4,,CPT,Myles Price,dk,4500,myles price,MIN,WR,showdown,00-0040506,auto_exact,high
+WR,Tai Felton (45019555),Tai Felton,45019555,CPT,4200,MIN@SF 11/22/2026 08:20PM ET,MIN,1.5,,CPT,Tai Felton,dk,4200,tai felton,MIN,WR,showdown,00-0040154,auto_exact,high
+DST,49ers (45019492),49ers,45019492,FLEX,4000,MIN@SF 11/22/2026 08:20PM ET,SF,6.7,,FLEX,49ers,dk,4000,49ers,SF,DST,showdown,DST_SF,team_defense,high
+DST,Vikings (45019493),Vikings,45019493,FLEX,3600,MIN@SF 11/22/2026 08:20PM ET,MIN,11.6,,FLEX,Vikings,dk,3600,vikings,MIN,DST,showdown,DST_MIN,team_defense,high
+TE,Gavin Bartholomew (45019556),Gavin Bartholomew,45019556,CPT,3600,MIN@SF 11/22/2026 08:20PM ET,MIN,2.8,,CPT,Gavin Bartholomew,dk,3600,gavin bartholomew,MIN,TE,showdown,00-0040215,auto_exact,high
+WR,Jordan Watkins (45019494),Jordan Watkins,45019494,FLEX,3400,MIN@SF 11/22/2026 08:20PM ET,SF,6.5,,FLEX,Jordan Watkins,dk,3400,jordan watkins,SF,WR,showdown,00-0040172,auto_exact,high
+WR,Jauan Jennings (45019495),Jauan Jennings,45019495,FLEX,3200,MIN@SF 11/22/2026 08:20PM ET,MIN,1.9,,FLEX,Jauan Jennings,dk,3200,jauan jennings,MIN,WR,showdown,00-0036259,auto_exact,high
+WR,Myles Price (45019496),Myles Price,45019496,FLEX,3000,MIN@SF 11/22/2026 08:20PM ET,MIN,3.4,,FLEX,Myles Price,dk,3000,myles price,MIN,WR,showdown,00-0040506,auto_exact,high
+WR,Demarcus Robinson (45019557),Demarcus Robinson,45019557,CPT,3000,MIN@SF 11/22/2026 08:20PM ET,SF,6.2,,CPT,Demarcus Robinson,dk,3000,demarcus robinson,SF,WR,showdown,00-0032775,auto_exact,high
+WR,Tai Felton (45019497),Tai Felton,45019497,FLEX,2800,MIN@SF 11/22/2026 08:20PM ET,MIN,1.5,,FLEX,Tai Felton,dk,2800,tai felton,MIN,WR,showdown,00-0040154,auto_exact,high
+WR,Brandin Cooks (45019558),Brandin Cooks,45019558,CPT,2700,MIN@SF 11/22/2026 08:20PM ET,SF,3.4,,CPT,Brandin Cooks,dk,2700,brandin cooks,SF,WR,showdown,00-0031236,auto_exact,high
+TE,Gavin Bartholomew (45019498),Gavin Bartholomew,45019498,FLEX,2400,MIN@SF 11/22/2026 08:20PM ET,MIN,2.8,,FLEX,Gavin Bartholomew,dk,2400,gavin bartholomew,MIN,TE,showdown,00-0040215,auto_exact,high
+TE,Ben Yurosek (45019559),Ben Yurosek,45019559,CPT,2400,MIN@SF 11/22/2026 08:20PM ET,MIN,1.4,,CPT,Ben Yurosek,dk,2400,ben yurosek,MIN,TE,showdown,00-0040509,auto_exact,high
+RB,Kyle Juszczyk (45019560),Kyle Juszczyk,45019560,CPT,2100,MIN@SF 11/22/2026 08:20PM ET,SF,3.5,,CPT,Kyle Juszczyk,dk,2100,kyle juszczyk,SF,RB,showdown,00-0029892,auto_exact,high
+WR,Demarcus Robinson (45019499),Demarcus Robinson,45019499,FLEX,2000,MIN@SF 11/22/2026 08:20PM ET,SF,6.2,,FLEX,Demarcus Robinson,dk,2000,demarcus robinson,SF,WR,showdown,00-0032775,auto_exact,high
+WR,Brandin Cooks (45019500),Brandin Cooks,45019500,FLEX,1800,MIN@SF 11/22/2026 08:20PM ET,SF,3.4,,FLEX,Brandin Cooks,dk,1800,brandin cooks,SF,WR,showdown,00-0031236,auto_exact,high
+TE,Ben Yurosek (45019501),Ben Yurosek,45019501,FLEX,1600,MIN@SF 11/22/2026 08:20PM ET,MIN,1.4,,FLEX,Ben Yurosek,dk,1600,ben yurosek,MIN,TE,showdown,00-0040509,auto_exact,high
+RB,DeeJay Dallas (45019561),DeeJay Dallas,45019561,CPT,1500,MIN@SF 11/22/2026 08:20PM ET,MIN,1.1,,CPT,DeeJay Dallas,dk,1500,deejay dallas,MIN,RB,showdown,00-0036425,auto_exact,high
+RB,Kyle Juszczyk (45019502),Kyle Juszczyk,45019502,FLEX,1400,MIN@SF 11/22/2026 08:20PM ET,SF,3.5,,FLEX,Kyle Juszczyk,dk,1400,kyle juszczyk,SF,RB,showdown,00-0029892,auto_exact,high
+WR,Jacob Cowing (45019562),Jacob Cowing,45019562,CPT,1200,MIN@SF 11/22/2026 08:20PM ET,SF,1.2,,CPT,Jacob Cowing,dk,1200,jacob cowing,SF,WR,showdown,00-0039365,auto_exact,high
+RB,DeeJay Dallas (45019503),DeeJay Dallas,45019503,FLEX,1000,MIN@SF 11/22/2026 08:20PM ET,MIN,1.1,,FLEX,DeeJay Dallas,dk,1000,deejay dallas,MIN,RB,showdown,00-0036425,auto_exact,high
+TE,Luke Farrell (45019563),Luke Farrell,45019563,CPT,900,MIN@SF 11/22/2026 08:20PM ET,SF,0.7,,CPT,Luke Farrell,dk,900,luke farrell,SF,TE,showdown,00-0036887,auto_exact,high
+WR,Jacob Cowing (45019504),Jacob Cowing,45019504,FLEX,800,MIN@SF 11/22/2026 08:20PM ET,SF,1.2,,FLEX,Jacob Cowing,dk,800,jacob cowing,SF,WR,showdown,00-0039365,auto_exact,high
+TE,Luke Farrell (45019505),Luke Farrell,45019505,FLEX,600,MIN@SF 11/22/2026 08:20PM ET,SF,0.7,,FLEX,Luke Farrell,dk,600,luke farrell,SF,TE,showdown,00-0036887,auto_exact,high
+RB,Jordan James (45019564),Jordan James,45019564,CPT,600,MIN@SF 11/22/2026 08:20PM ET,SF,0.8,Q,CPT,Jordan James,dk,600,jordan james,SF,RB,showdown,00-0040177,auto_exact,high
+RB,Jordan James (45019506),Jordan James,45019506,FLEX,400,MIN@SF 11/22/2026 08:20PM ET,SF,0.8,Q,FLEX,Jordan James,dk,400,jordan james,SF,RB,showdown,00-0040177,auto_exact,high
+RB,Demond Claiborne (45019565),Demond Claiborne,45019565,CPT,300,MIN@SF 11/22/2026 08:20PM ET,MIN,1.0,IR,CPT,Demond Claiborne,dk,300,demond claiborne,MIN,RB,showdown,00-0041104,auto_exact,high
+RB,Sincere McCormick (45019566),Sincere McCormick,45019566,CPT,300,MIN@SF 11/22/2026 08:20PM ET,SF,0.0,,CPT,Sincere McCormick,dk,300,sincere mccormick,SF,RB,showdown,00-0037509,auto_exact,high
+RB,Max Bredeson (45019567),Max Bredeson,45019567,CPT,300,MIN@SF 11/22/2026 08:20PM ET,MIN,0.0,,CPT,Max Bredeson,dk,300,max bredeson,MIN,RB,showdown,00-0041081,auto_exact,high
+RB,Damon Bankston (45019568),Damon Bankston,45019568,CPT,300,MIN@SF 11/22/2026 08:20PM ET,MIN,0.0,,CPT,Damon Bankston,dk,300,damon bankston,MIN,RB,showdown,00-0041139,auto_exact,high
+WR,Ricky Pearsall (45019569),Ricky Pearsall,45019569,CPT,300,MIN@SF 11/22/2026 08:20PM ET,SF,0.0,IR,CPT,Ricky Pearsall,dk,300,ricky pearsall,SF,WR,showdown,00-0039916,auto_exact,high
+WR,Odell Beckham Jr. (45019570),Odell Beckham Jr.,45019570,CPT,300,MIN@SF 11/22/2026 08:20PM ET,MIN,0.0,,CPT,Odell Beckham Jr.,dk,300,odell beckham,MIN,WR,showdown,00-0031235,auto_exact,high
+WR,Dillon Bell (45019571),Dillon Bell,45019571,CPT,300,MIN@SF 11/22/2026 08:20PM ET,MIN,0.0,,CPT,Dillon Bell,dk,300,dillon bell,MIN,WR,showdown,00-0041342,auto_exact,high
+WR,KhaDarel Hodge (45019572),KhaDarel Hodge,45019572,CPT,300,MIN@SF 11/22/2026 08:20PM ET,SF,1.4,,CPT,KhaDarel Hodge,dk,300,khadarel hodge,SF,WR,showdown,00-0034854,auto_exact,high
+WR,Jeshaun Jones (45019573),Jeshaun Jones,45019573,CPT,300,MIN@SF 11/22/2026 08:20PM ET,MIN,1.4,Q,CPT,Jeshaun Jones,dk,300,jeshaun jones,MIN,WR,showdown,00-0039710,auto_exact,high
+WR,Will Pauling (45019574),Will Pauling,45019574,CPT,300,MIN@SF 11/22/2026 08:20PM ET,SF,0.0,,CPT,Will Pauling,dk,300,will pauling,SF,WR,showdown,00-0041361,auto_exact,high
+WR,Wesley Grimes (45019575),Wesley Grimes,45019575,CPT,300,MIN@SF 11/22/2026 08:20PM ET,SF,0.0,,CPT,Wesley Grimes,dk,300,wesley grimes,SF,WR,showdown,00-0041359,auto_exact,high
+WR,D'Wayne Eskridge (45019576),D'Wayne Eskridge,45019576,CPT,300,MIN@SF 11/22/2026 08:20PM ET,MIN,0.0,,CPT,D'Wayne Eskridge,dk,300,dwayne eskridge,MIN,WR,showdown,00-0036620,manual_override,high
+WR,Christian Kirk (45019577),Christian Kirk,45019577,CPT,300,MIN@SF 11/22/2026 08:20PM ET,SF,0.0,IR,CPT,Christian Kirk,dk,300,christian kirk,SF,WR,showdown,00-0034775,auto_exact,high
+WR,De'Zhaun Stribling (45019578),De'Zhaun Stribling,45019578,CPT,300,MIN@SF 11/22/2026 08:20PM ET,SF,0.0,IR,CPT,De'Zhaun Stribling,dk,300,dezhaun stribling,SF,WR,showdown,00-0041035,auto_exact,high
+WR,Brandon Aiyuk (45019579),Brandon Aiyuk,45019579,CPT,300,MIN@SF 11/22/2026 08:20PM ET,SF,0.0,OUT,CPT,Brandon Aiyuk,dk,300,brandon aiyuk,SF,WR,showdown,00-0036261,manual_override,high
+TE,Jake Tonges (45019580),Jake Tonges,45019580,CPT,300,MIN@SF 11/22/2026 08:20PM ET,SF,0.0,IR,CPT,Jake Tonges,dk,300,jake tonges,SF,TE,showdown,00-0037112,auto_exact,high
+TE,Andrew DePaola (45019581),Andrew DePaola,45019581,CPT,300,MIN@SF 11/22/2026 08:20PM ET,MIN,0.0,,CPT,Andrew DePaola,dk,300,andrew depaola,MIN,TE,showdown,00-0029714,auto_fallback_name_only_position_mismatch,low
+TE,Josh Oliver (45019582),Josh Oliver,45019582,CPT,300,MIN@SF 11/22/2026 08:20PM ET,MIN,2.5,IR,CPT,Josh Oliver,dk,300,josh oliver,MIN,TE,showdown,00-0035249,auto_exact,high
+TE,Devin Culp (45019583),Devin Culp,45019583,CPT,300,MIN@SF 11/22/2026 08:20PM ET,MIN,0.0,,CPT,Devin Culp,dk,300,devin culp,MIN,TE,showdown,00-0039754,auto_exact,high
+TE,Khalil Dinkins (45019584),Khalil Dinkins,45019584,CPT,300,MIN@SF 11/22/2026 08:20PM ET,SF,0.0,,CPT,Khalil Dinkins,dk,300,khalil dinkins,SF,TE,showdown,00-0041357,auto_exact,high
+TE,Jack Stoll (45019585),Jack Stoll,45019585,CPT,300,MIN@SF 11/22/2026 08:20PM ET,SF,0.0,,CPT,Jack Stoll,dk,300,jack stoll,SF,TE,showdown,00-0036741,auto_exact,high
+TE,Brayden Willis (45019586),Brayden Willis,45019586,CPT,300,MIN@SF 11/22/2026 08:20PM ET,SF,0.0,,CPT,Brayden Willis,dk,300,brayden willis,SF,TE,showdown,00-0038643,auto_exact,high
+RB,Isaac Guerendo (45019587),Isaac Guerendo,45019587,CPT,300,MIN@SF 11/22/2026 08:20PM ET,SF,0.0,OUT,CPT,Isaac Guerendo,dk,300,isaac guerendo,SF,RB,showdown,00-0039363,auto_exact,high
+RB,Demond Claiborne (45019507),Demond Claiborne,45019507,FLEX,200,MIN@SF 11/22/2026 08:20PM ET,MIN,1.0,IR,FLEX,Demond Claiborne,dk,200,demond claiborne,MIN,RB,showdown,00-0041104,auto_exact,high
+RB,Sincere McCormick (45019508),Sincere McCormick,45019508,FLEX,200,MIN@SF 11/22/2026 08:20PM ET,SF,0.0,,FLEX,Sincere McCormick,dk,200,sincere mccormick,SF,RB,showdown,00-0037509,auto_exact,high
+RB,Max Bredeson (45019509),Max Bredeson,45019509,FLEX,200,MIN@SF 11/22/2026 08:20PM ET,MIN,0.0,,FLEX,Max Bredeson,dk,200,max bredeson,MIN,RB,showdown,00-0041081,auto_exact,high
+RB,Damon Bankston (45019510),Damon Bankston,45019510,FLEX,200,MIN@SF 11/22/2026 08:20PM ET,MIN,0.0,,FLEX,Damon Bankston,dk,200,damon bankston,MIN,RB,showdown,00-0041139,auto_exact,high
+WR,Ricky Pearsall (45019511),Ricky Pearsall,45019511,FLEX,200,MIN@SF 11/22/2026 08:20PM ET,SF,0.0,IR,FLEX,Ricky Pearsall,dk,200,ricky pearsall,SF,WR,showdown,00-0039916,auto_exact,high
+WR,Odell Beckham Jr. (45019512),Odell Beckham Jr.,45019512,FLEX,200,MIN@SF 11/22/2026 08:20PM ET,MIN,0.0,,FLEX,Odell Beckham Jr.,dk,200,odell beckham,MIN,WR,showdown,00-0031235,auto_exact,high
+WR,Dillon Bell (45019513),Dillon Bell,45019513,FLEX,200,MIN@SF 11/22/2026 08:20PM ET,MIN,0.0,,FLEX,Dillon Bell,dk,200,dillon bell,MIN,WR,showdown,00-0041342,auto_exact,high
+WR,KhaDarel Hodge (45019514),KhaDarel Hodge,45019514,FLEX,200,MIN@SF 11/22/2026 08:20PM ET,SF,1.4,,FLEX,KhaDarel Hodge,dk,200,khadarel hodge,SF,WR,showdown,00-0034854,auto_exact,high
+WR,Jeshaun Jones (45019515),Jeshaun Jones,45019515,FLEX,200,MIN@SF 11/22/2026 08:20PM ET,MIN,1.4,Q,FLEX,Jeshaun Jones,dk,200,jeshaun jones,MIN,WR,showdown,00-0039710,auto_exact,high
+WR,Will Pauling (45019516),Will Pauling,45019516,FLEX,200,MIN@SF 11/22/2026 08:20PM ET,SF,0.0,,FLEX,Will Pauling,dk,200,will pauling,SF,WR,showdown,00-0041361,auto_exact,high
+WR,Wesley Grimes (45019517),Wesley Grimes,45019517,FLEX,200,MIN@SF 11/22/2026 08:20PM ET,SF,0.0,,FLEX,Wesley Grimes,dk,200,wesley grimes,SF,WR,showdown,00-0041359,auto_exact,high
+WR,D'Wayne Eskridge (45019518),D'Wayne Eskridge,45019518,FLEX,200,MIN@SF 11/22/2026 08:20PM ET,MIN,0.0,,FLEX,D'Wayne Eskridge,dk,200,dwayne eskridge,MIN,WR,showdown,00-0036620,manual_override,high
+WR,Christian Kirk (45019519),Christian Kirk,45019519,FLEX,200,MIN@SF 11/22/2026 08:20PM ET,SF,0.0,IR,FLEX,Christian Kirk,dk,200,christian kirk,SF,WR,showdown,00-0034775,auto_exact,high
+WR,De'Zhaun Stribling (45019520),De'Zhaun Stribling,45019520,FLEX,200,MIN@SF 11/22/2026 08:20PM ET,SF,0.0,IR,FLEX,De'Zhaun Stribling,dk,200,dezhaun stribling,SF,WR,showdown,00-0041035,auto_exact,high
+WR,Brandon Aiyuk (45019521),Brandon Aiyuk,45019521,FLEX,200,MIN@SF 11/22/2026 08:20PM ET,SF,0.0,OUT,FLEX,Brandon Aiyuk,dk,200,brandon aiyuk,SF,WR,showdown,00-0036261,manual_override,high
+TE,Jake Tonges (45019522),Jake Tonges,45019522,FLEX,200,MIN@SF 11/22/2026 08:20PM ET,SF,0.0,IR,FLEX,Jake Tonges,dk,200,jake tonges,SF,TE,showdown,00-0037112,auto_exact,high
+TE,Andrew DePaola (45019523),Andrew DePaola,45019523,FLEX,200,MIN@SF 11/22/2026 08:20PM ET,MIN,0.0,,FLEX,Andrew DePaola,dk,200,andrew depaola,MIN,TE,showdown,00-0029714,auto_fallback_name_only_position_mismatch,low
+TE,Josh Oliver (45019524),Josh Oliver,45019524,FLEX,200,MIN@SF 11/22/2026 08:20PM ET,MIN,2.5,IR,FLEX,Josh Oliver,dk,200,josh oliver,MIN,TE,showdown,00-0035249,auto_exact,high
+TE,Devin Culp (45019525),Devin Culp,45019525,FLEX,200,MIN@SF 11/22/2026 08:20PM ET,MIN,0.0,,FLEX,Devin Culp,dk,200,devin culp,MIN,TE,showdown,00-0039754,auto_exact,high
+TE,Khalil Dinkins (45019526),Khalil Dinkins,45019526,FLEX,200,MIN@SF 11/22/2026 08:20PM ET,SF,0.0,,FLEX,Khalil Dinkins,dk,200,khalil dinkins,SF,TE,showdown,00-0041357,auto_exact,high
+TE,Jack Stoll (45019527),Jack Stoll,45019527,FLEX,200,MIN@SF 11/22/2026 08:20PM ET,SF,0.0,,FLEX,Jack Stoll,dk,200,jack stoll,SF,TE,showdown,00-0036741,auto_exact,high
+TE,Brayden Willis (45019528),Brayden Willis,45019528,FLEX,200,MIN@SF 11/22/2026 08:20PM ET,SF,0.0,,FLEX,Brayden Willis,dk,200,brayden willis,SF,TE,showdown,00-0038643,auto_exact,high
+RB,Isaac Guerendo (45019529),Isaac Guerendo,45019529,FLEX,200,MIN@SF 11/22/2026 08:20PM ET,SF,0.0,OUT,FLEX,Isaac Guerendo,dk,200,isaac guerendo,SF,RB,showdown,00-0039363,auto_exact,high

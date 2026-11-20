@@ -376,6 +376,30 @@
       "season": 2026,
       "week": 11,
       "lock_time_utc": "2026-11-20T01:15:00Z"
+    },
+    {
+      "slate_id": "dk_classic_wk11_early_22Nov2026",
+      "site": "dk",
+      "format": "classic",
+      "season": 2026,
+      "week": 11,
+      "lock_time_utc": "2026-11-22T18:00:00Z"
+    },
+    {
+      "slate_id": "dk_showdown_wk11_MIN_SF_22Nov2026",
+      "site": "dk",
+      "format": "showdown",
+      "season": 2026,
+      "week": 11,
+      "lock_time_utc": "2026-11-23T01:20:00Z"
+    },
+    {
+      "slate_id": "dk_showdown_wk11_CIN_WAS_23Nov2026",
+      "site": "dk",
+      "format": "showdown",
+      "season": 2026,
+      "week": 11,
+      "lock_time_utc": "2026-11-24T01:15:00Z"
     }
   ]
 }

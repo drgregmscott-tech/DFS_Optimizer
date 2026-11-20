@@ -1181,12 +1181,21 @@ def build_statline_projections(site: str, season: int, week: int, slate_id: str,
         _st = statline_model.load_injury_status(week)
         _st = _st[_st["team"].notna()].drop_duplicates("player_id").set_index("player_id")["team"]
         _esp = players["player_id"].map(_st)
-        _diff = _esp.notna() & (_esp != players["team"]) & _esp.isin(set(opponent_map.keys()))
-        if _diff.any():
-            _rep = players.loc[_diff, ["player_id", "player_name", "position", "team", "salary"]].copy()
-            _rep["espn_team"] = _esp[_diff]
+        _mism = _esp.notna() & (_esp != players["team"]) & _esp.isin(set(opponent_map.keys()))
+        # Gate on SLATE teams, not every team playing this week (2026-11-19, Lauter NO->MIN: MIN
+        # plays SF but is off the main slate; the move made him the only MIN player and
+        # reconcile_team_shares gave him all of MIN's targets). Off-slate mismatches are kept
+        # in the CSV with applied=False and the player keeps the slate-file team.
+        _diff = _mism & _esp.isin(slate_teams)
+        if _mism.any():
+            _rep = players.loc[_mism, ["player_id", "player_name", "position", "team", "salary"]].copy()
+            _rep["espn_team"] = _esp[_mism]
+            _rep["applied"] = _diff[_mism]
             for _r in _rep.itertuples():
-                print(f"TEAM RECONCILE: {_r.player_name} ({_r.position}) slate file {_r.team} -> ESPN roster {_r.espn_team}")
+                if _r.applied:
+                    print(f"TEAM RECONCILE: {_r.player_name} ({_r.position}) slate file {_r.team} -> ESPN roster {_r.espn_team}")
+                else:
+                    print(f"TEAM RECONCILE skipped (team not on slate): {_r.player_name} ({_r.position}) slate file {_r.team}, ESPN roster {_r.espn_team}")
             _rep.to_csv(Path(__file__).resolve().parent.parent / "output" / f"team_mismatch_wk{week}_{slate_id}.csv", index=False)
             players.loc[_diff, "team"] = _esp[_diff]
     except Exception as _e:  # non-fatal, same stance as load_injury_status
