@@ -5116,3 +5116,11 @@ timestamp_utc,trigger_type,site,step,status
 2026-11-20T00:12:47.682223+00:00,full_refresh_dispatch,fd,fd_classic_wk11_main_17Nov2026,status_apply,success
 2026-11-20T00:12:47.682223+00:00,full_refresh_dispatch,fd,fd_classic_wk11_main_17Nov2026,pivot_finder,skipped
 2026-11-20T00:12:47.682223+00:00,full_refresh_dispatch,fd,fd_classic_wk11_main_17Nov2026,cheat_sheet,success
+2026-11-20T10:43:12.070468+00:00,manual_workflow_dispatch,dk,dk_classic_wk11_main_17Nov2026,build_projections,success
+2026-11-20T10:43:12.070468+00:00,manual_workflow_dispatch,dk,dk_classic_wk11_main_17Nov2026,status_apply,success
+2026-11-20T10:43:12.070468+00:00,manual_workflow_dispatch,dk,dk_classic_wk11_main_17Nov2026,pivot_finder,skipped
+2026-11-20T10:43:12.070468+00:00,manual_workflow_dispatch,dk,dk_classic_wk11_main_17Nov2026,cheat_sheet,success
+2026-11-20T10:42:00.633078+00:00,manual_workflow_dispatch,fd,fd_classic_wk11_main_17Nov2026,build_projections,success
+2026-11-20T10:42:00.633078+00:00,manual_workflow_dispatch,fd,fd_classic_wk11_main_17Nov2026,status_apply,success
+2026-11-20T10:42:00.633078+00:00,manual_workflow_dispatch,fd,fd_classic_wk11_main_17Nov2026,pivot_finder,skipped
+2026-11-20T10:42:00.633078+00:00,manual_workflow_dispatch,fd,fd_classic_wk11_main_17Nov2026,cheat_sheet,success
