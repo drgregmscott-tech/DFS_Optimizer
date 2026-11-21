@@ -1,139 +1,139 @@
 position,rank,overall_rank,player_id,player_name,team,opponent,salary,final_projection,estimated_ownership_pct,confidence,composite_score,top_factors,rationale,badge,is_bonus,role_security,role_tier,risk_tier,setup_score,conf_basis,cpt_salary,cpt_projection,cpt_ownership_pct,value_per_k
-QB,1,1,00-0036442,Joe Burrow,CIN,WAS,11000,29.44262712233142,40.1341378774209,10,29.44262712233142,"matchup, game environment, history, usage, value, range, captain","• Matchup: WAS allows 1.09x league-avg to QBs (favorable)
+WR,1,1,00-0036900,Ja'Marr Chase,CIN,WAS,11600,25.21397681480272,51.83604369003413,10,25.21397681480272,"matchup, game environment, history, usage, value, range, captain","• Matchup (WR1): WAS allows 1.22x league-avg (smash spot)
+• Game environment: CIN implied 29.9 (elite; league average is 22.3), game total 53.8 (shootout-level), favored by 6.0
+• History: 22.5 pts/game season avg, 9 games (in line with average)
+• Usage: 11.5 targets projected (32% of team targets); 14.0 targets/game last 3 (actual), 90% of snaps last 3 games (locked-in role)
+• Value: 2.17 pts/$1K (cheap for this slate)
+• Range: 6.5–52.6 pts (low bust risk; under half his average in 2 of 9 games)
+• Captain: $17,400, 37.8 pts, 11.4% owned as CPT; fine as captain, but needs Joe Burrow in the FLEX (the builds enforce it)",,False,100.0,locked-in role,low bust risk,,1.0,17400,37.82096522220408,11.379907077041954,2.17
+QB,1,2,00-0036442,Joe Burrow,CIN,WAS,11000,29.57349336635133,37.244609600375554,10,29.57349336635133,"matchup, game environment, history, usage, value, range, captain","• Matchup: WAS allows 1.09x league-avg to QBs (favorable)
 • Game environment: CIN implied 29.9 (elite; league average is 22.3), game total 53.8 (shootout-level), favored by 6.0
 • History: 27.6 pts/game season avg, 9 games (in line with average)
-• Usage: 37.7 pass att + 2.2 rush att projected; 40.3 pass att/game last 3 (actual), 98% of snaps last 3 games (locked-in role)
-• Value: 2.68 pts/$1K (cheap for this slate)
-• Range: 12.3–49.3 pts (low bust risk; under half his average in 0 of 9 games)
-• Captain: $16,500, 44.2 pts, 34.8% owned as CPT — most-owned captain tonight; QB captain is a sound build; his RB or TE has been the better first partner than his WR1",,False,100.0,locked-in role,low bust risk,,0.988,16500,44.16394068349713,34.82468922941603,2.68
-WR,1,2,00-0036900,Ja'Marr Chase,CIN,WAS,11600,25.60734779751948,48.85383628800743,10,25.60734779751948,"matchup, game environment, history, usage, value, range, captain","• Matchup (WR1): WAS allows 1.22x league-avg (smash spot)
-• Game environment: CIN implied 29.9 (elite; league average is 22.3), game total 53.8 (shootout-level), favored by 6.0
-• History: 22.5 pts/game season avg, 9 games (projection running above average)
-• Usage: 11.6 targets projected (32% of team targets); 14.0 targets/game last 3 (actual), 90% of snaps last 3 games (locked-in role)
-• Value: 2.21 pts/$1K (cheap for this slate)
-• Range: 6.2–52.1 pts (low bust risk; under half his average in 2 of 9 games)
-• Captain: $17,400, 38.4 pts, 11.5% owned as CPT; fine as captain, but needs Joe Burrow in the FLEX (the builds enforce it)",,False,97.0,locked-in role,low bust risk,,0.955,17400,38.41102169627922,11.535474809192698,2.21
-QB,2,3,00-0039910,Jayden Daniels,WAS,CIN,10000,21.69902478619476,48.35841787869678,10,21.69902478619476,"matchup, game environment, history, usage, value, range, captain","• Matchup: CIN allows 1.03x league-avg to QBs (neutral)
+• Usage: 37.8 pass att + 2.2 rush att projected; 40.3 pass att/game last 3 (actual), 98% of snaps last 3 games (locked-in role)
+• Value: 2.69 pts/$1K (cheap for this slate)
+• Range: 12.9–48.4 pts (low bust risk; under half his average in 0 of 9 games)
+• Captain: $16,500, 44.4 pts, 36.7% owned as CPT — most-owned captain tonight; QB captain is a sound build; his RB or TE has been the better first partner than his WR1",,False,100.0,locked-in role,low bust risk,,0.988,16500,44.36024004952699,36.70697252059696,2.69
+QB,2,3,00-0039910,Jayden Daniels,WAS,CIN,10000,21.778166121627645,45.7265558345946,10,21.778166121627645,"matchup, game environment, history, usage, value, range, captain","• Matchup: CIN allows 1.03x league-avg to QBs (neutral)
 • Game environment: WAS implied 23.9 (middling; league average is 22.3), game total 53.8 (shootout-level), underdog by 6.0
 • History: 20.7 pts/game season avg, 7 games (in line with average)
 • Usage: 36.2 pass att + 4.9 rush att projected; 32.3 pass att/game last 3 (actual), 100% of snaps last 3 games (locked-in role)
-• Value: 2.17 pts/$1K (cheap for this slate)
+• Value: 2.18 pts/$1K (cheap for this slate)
 • Range: 8.7–37.8 pts (low bust risk; under half his average in 0 of 7 games)
-• Captain: $15,000, 32.5 pts, 12.5% owned as CPT; QB captain is a sound build; his RB or TE has been the better first partner than his WR1",,False,100.0,locked-in role,low bust risk,,0.928,15000,32.54853717929214,12.513955326721634,2.17
-RB,1,4,00-0038597,Chase Brown,CIN,WAS,9400,16.152845059229804,32.065601203681446,8,16.152845059229804,"matchup, game environment, history, usage, value, range, captain","• Matchup: WAS allows 0.97x league-avg rushing pts (neutral), 0.93x receiving pts (below average) to RBs
+• Captain: $15,000, 32.7 pts, 12.4% owned as CPT; QB captain is a sound build; his RB or TE has been the better first partner than his WR1",,False,100.0,locked-in role,low bust risk,,0.93,15000,32.667249182441466,12.377218617138906,2.18
+RB,1,4,00-0038597,Chase Brown,CIN,WAS,9400,16.826941054272226,36.514857531327856,8,16.826941054272226,"matchup, game environment, history, usage, value, range, captain","• Matchup: WAS allows 0.97x league-avg rushing pts (neutral), 0.93x receiving pts (below average) to RBs
 • Game environment: CIN implied 29.9 (elite; league average is 22.3), game total 53.8 (shootout-level), favored by 6.0
 • History: 14.6 pts/game season avg, 9 games (in line with average)
 • Usage: 16.0 touches projected (10.2 carries + 5.8 targets, 53% of RB carries); 17.3 touches/game last 3 (actual), 68% of snaps last 3 games (solid role)
-• Value: 1.72 pts/$1K (fair for this slate)
-• Range: 3.4–33.8 pts (low bust risk; under half his average in 1 of 9 games)
-• Captain: $14,100, 24.2 pts, 4.0% owned as CPT; RB captain is fine; the builds don't require a partner",,False,80.7,solid role,low bust risk,,0.776,14100,24.229267588844703,3.984218737661521,1.72
-WR,2,5,00-0036410,Tee Higgins,CIN,WAS,10600,17.51130735612337,26.789703608283105,8,17.51130735612337,"matchup, game environment, history, usage, value, range, captain","• Matchup (WR2/3): WAS allows 0.85x league-avg (below average)
+• Value: 1.79 pts/$1K (fair for this slate)
+• Range: 3.2–35.7 pts (low bust risk; under half his average in 1 of 9 games)
+• Captain: $14,100, 25.2 pts, 0.7% owned as CPT; RB captain is fine; the builds don't require a partner",,False,80.8,solid role,low bust risk,,0.791,14100,25.24041158140834,0.7094505835669713,1.79
+WR,2,5,00-0036410,Tee Higgins,CIN,WAS,10600,17.247639192520513,23.297699913793835,8,17.247639192520513,"matchup, game environment, history, usage, value, range, captain","• Matchup (WR2/3): WAS allows 0.85x league-avg (below average)
 • Game environment: CIN implied 29.9 (elite; league average is 22.3), game total 53.8 (shootout-level), favored by 6.0
 • History: 20.0 pts/game season avg, 9 games (in line with average)
-• Usage: 7.1 targets projected (20% of team targets); 7.7 targets/game last 3 (actual), 78% of snaps last 3 games (solid role; usage dipping)
-• Value: 1.65 pts/$1K (fair for this slate)
-• Range: 4.0–37.8 pts (moderate bust risk; under half his average in 2 of 9 games)
-• Captain: $15,900, 26.3 pts, 5.8% owned as CPT; fine as captain, but needs Joe Burrow in the FLEX (the builds enforce it)",,False,73.7,solid role,moderate bust risk,,0.77,15900,26.26696103418506,5.811402753096778,1.65
-TE,1,6,00-0037809,Chig Okonkwo,WAS,CIN,4000,10.189516638393169,47.39228665072543,6,10.189516638393169,"matchup, game environment, history, usage, value, range, captain","• Matchup (TE1): CIN allows 1.07x league-avg (favorable)
-• Game environment: WAS implied 23.9 (middling; league average is 22.3), game total 53.8 (shootout-level), underdog by 6.0
-• History: 7.5 pts/game season avg, 7 games (in line with average)
-• Usage: 6.4 targets projected (20% of team targets); 6.3 targets/game last 3 (actual), 70% of snaps last 3 games (solid role)
-• Value: 2.55 pts/$1K (cheap for this slate)
-• Range: 2.2–21.5 pts (elevated bust risk; under half his average in 3 of 7 games)
-• Captain: $6,000, 15.3 pts, 9.9% owned as CPT; fine as captain, but needs Jayden Daniels in the FLEX (the builds enforce it)",Solid Value,False,72.4,solid role,elevated bust risk,,0.585,6000,15.284274957589751,9.870913171353603,2.55
-WR,3,7,00-0031588,Stefon Diggs,WAS,CIN,8400,11.727780041483388,15.379844340565905,6,11.727780041483388,"matchup, game environment, history, usage, value, range, captain","• Matchup (WR1): CIN allows 0.90x league-avg (below average)
+• Usage: 7.2 targets projected (20% of team targets); 7.7 targets/game last 3 (actual), 78% of snaps last 3 games (solid role; usage dipping)
+• Value: 1.63 pts/$1K (fair for this slate)
+• Range: 3.9–35.9 pts (moderate bust risk; under half his average in 2 of 9 games)
+• Captain: $15,900, 25.9 pts, 5.5% owned as CPT; fine as captain, but needs Joe Burrow in the FLEX (the builds enforce it)",,False,73.9,solid role,moderate bust risk,,0.764,15900,25.87145878878077,5.468702185171841,1.63
+WR,3,6,00-0031588,Stefon Diggs,WAS,CIN,8400,11.99020224350267,18.802207581787872,6,11.99020224350267,"matchup, game environment, history, usage, value, range, captain","• Matchup (WR1): CIN allows 0.90x league-avg (below average)
 • Game environment: WAS implied 23.9 (middling; league average is 22.3), game total 53.8 (shootout-level), underdog by 6.0
 • History: 13.8 pts/game season avg, 8 games (in line with average)
-• Usage: 7.0 targets projected (21% of team targets); 7.0 targets/game last 3 (actual), 63% of snaps last 3 games (solid role)
-• Value: 1.40 pts/$1K (fair for this slate)
-• Range: 2.2–26.7 pts (low bust risk; under half his average in 0 of 8 games)
-• Captain: $12,600, 17.6 pts, 0.7% owned as CPT; fine as captain, but needs Jayden Daniels in the FLEX (the builds enforce it)",,False,69.1,solid role,low bust risk,,0.583,12600,17.59167006222508,0.6986530923796755,1.4
-K,1,8,00-0036854,Evan McPherson,CIN,WAS,5400,8.11519705,25.25795079623255,5,8.11519705,"game environment, history, kicker usage, value, range, captain","• Game environment: CIN implied 29.9 (elite; league average is 22.3), game total 53.8 (shootout-level), favored by 6.0
+• Usage: 7.1 targets projected (22% of team targets); 7.0 targets/game last 3 (actual), 63% of snaps last 3 games (solid role)
+• Value: 1.43 pts/$1K (fair for this slate)
+• Range: 2.2–26.5 pts (low bust risk; under half his average in 0 of 8 games)
+• Captain: $12,600, 18.0 pts, 0.7% owned as CPT; fine as captain, but needs Jayden Daniels in the FLEX (the builds enforce it)",,False,70.2,solid role,low bust risk,,0.593,12600,17.985303365254005,0.7094505835669713,1.43
+TE,1,7,00-0037809,Chig Okonkwo,WAS,CIN,4000,10.504327613940026,43.95380779383275,5,10.504327613940026,"matchup, game environment, history, usage, value, range, captain","• Matchup (TE1): CIN allows 1.07x league-avg (favorable)
+• Game environment: WAS implied 23.9 (middling; league average is 22.3), game total 53.8 (shootout-level), underdog by 6.0
+• History: 7.5 pts/game season avg, 7 games (projection running above average)
+• Usage: 6.5 targets projected (20% of team targets); 6.3 targets/game last 3 (actual), 70% of snaps last 3 games (solid role)
+• Value: 2.63 pts/$1K (cheap for this slate)
+• Range: 2.2–22.0 pts (elevated bust risk; under half his average in 3 of 7 games)
+• Captain: $6,000, 15.8 pts, 10.4% owned as CPT; fine as captain, but needs Jayden Daniels in the FLEX (the builds enforce it)",Solid Value,False,69.8,solid role,elevated bust risk,,0.548,6000,15.756491420910038,10.366410060167071,2.63
+K,1,8,00-0036854,Evan McPherson,CIN,WAS,5400,8.12008327,24.61513913166378,5,8.12008327,"game environment, history, kicker usage, value, range, captain","• Game environment: CIN implied 29.9 (elite; league average is 22.3), game total 53.8 (shootout-level), favored by 6.0
 • History: 9.4 pts/game season avg (in line with average)
-• Kicker usage: 1.3 FG attempts + 4.7 extra-point attempts per game, last 3 games; wind 9 mph
+• Kicker usage: 1.3 FG attempts + 4.7 extra-point attempts per game, last 3 games; wind 8 mph
 • Value: 1.50 pts/$1K (fair for this slate)
 • Range: 2.0–15.0 pts (the model gives every kicker the same band; kicker scoring follows game flow, not a player-specific role)
-• Captain: $8,100, 12.2 pts, 0.2% owned as CPT; not a recommended captain (a kicker was the best captain in 1 of 49 games studied; the builds penalize it)",,False,,kicker,,,0.523,8100,12.172795575000002,0.2453642501485564,1.5
-WR,4,9,00-0041040,Antonio Williams,WAS,CIN,6800,9.83776201703895,18.468821679699765,5,9.83776201703895,"matchup, game environment, history, usage, value, range, captain","• Matchup (WR2/3): CIN allows 0.98x league-avg (neutral)
+• Captain: $8,100, 12.2 pts, 0.2% owned as CPT; not a recommended captain (a kicker was the best captain in 1 of 49 games studied; the builds penalize it)",,False,,kicker,,,0.523,8100,12.180124905,0.2491562870801223,1.5
+WR,4,9,00-0041040,Antonio Williams,WAS,CIN,6800,9.91240067339167,19.19658436807373,5,9.91240067339167,"matchup, game environment, history, usage, value, range, captain","• Matchup (WR2/3): CIN allows 0.98x league-avg (neutral)
 • Game environment: WAS implied 23.9 (middling; league average is 22.3), game total 53.8 (shootout-level), underdog by 6.0
 • History: 8.1 pts/game season avg, 9 games (in line with average)
 • Usage: 4.9 targets projected (15% of team targets); 5.0 targets/game last 3 (actual), 84% of snaps last 3 games (partial role; usage dipping)
-• Value: 1.45 pts/$1K (fair for this slate)
-• Range: 2.7–20.2 pts (moderate bust risk; under half his average in 1 of 9 games)
-• Captain: $10,200, 14.8 pts, 0.7% owned as CPT; fine as captain, but needs Jayden Daniels in the FLEX (the builds enforce it)",,False,57.2,partial role,moderate bust risk,,0.512,10200,14.756643025558423,0.6986530923796755,1.45
-K,2,10,00-0041182,Drew Stevens,WAS,CIN,5000,7.9674161,17.829141738517094,4,7.9674161,"game environment, history, kicker usage, value, range, captain","• Game environment: WAS implied 23.9 (middling; league average is 22.3), game total 53.8 (shootout-level), underdog by 6.0
+• Value: 1.46 pts/$1K (fair for this slate)
+• Range: 2.7–19.9 pts (moderate bust risk; under half his average in 1 of 9 games)
+• Captain: $10,200, 14.9 pts, 0.7% owned as CPT; fine as captain, but needs Jayden Daniels in the FLEX (the builds enforce it)",,False,57.3,partial role,moderate bust risk,,0.513,10200,14.868601010087504,0.7094505835669713,1.46
+K,2,10,00-0041182,Drew Stevens,WAS,CIN,5000,7.97221334,17.37539232823326,4,7.97221334,"game environment, history, kicker usage, value, range, captain","• Game environment: WAS implied 23.9 (middling; league average is 22.3), game total 53.8 (shootout-level), underdog by 6.0
 • History: 8.8 pts/game season avg (in line with average)
-• Kicker usage: 2.7 FG attempts + 1.7 extra-point attempts per game, last 3 games; wind 9 mph
+• Kicker usage: 2.7 FG attempts + 1.7 extra-point attempts per game, last 3 games; wind 8 mph
 • Value: 1.59 pts/$1K (fair for this slate)
 • Range: 2.0–15.0 pts (the model gives every kicker the same band; kicker scoring follows game flow, not a player-specific role)
-• Captain: $7,500, 12.0 pts, 1.2% owned as CPT; not a recommended captain (a kicker was the best captain in 1 of 49 games studied; the builds penalize it)",,False,,kicker,,,0.479,7500,11.95112415,1.2426462296187344,1.59
-RB,2,11,00-0037256,Rachaad White,WAS,CIN,6200,9.95231076287084,25.359998408456967,4,9.95231076287084,"matchup, game environment, history, usage, value, range, captain","• Matchup: CIN allows 0.97x league-avg rushing pts (neutral), 0.94x receiving pts (below average) to RBs
+• Captain: $7,500, 12.0 pts, 0.2% owned as CPT; not a recommended captain (a kicker was the best captain in 1 of 49 games studied; the builds penalize it)",,False,,kicker,,,0.479,7500,11.95832001,0.2491562870801223,1.59
+RB,2,11,00-0037256,Rachaad White,WAS,CIN,6200,9.82105792885852,22.21405676123921,4,9.82105792885852,"matchup, game environment, history, usage, value, range, captain","• Matchup: CIN allows 0.97x league-avg rushing pts (neutral), 0.94x receiving pts (below average) to RBs
 • Game environment: WAS implied 23.9 (middling; league average is 22.3), game total 53.8 (shootout-level), underdog by 6.0
 • History: 9.6 pts/game season avg, 8 games (in line with average)
-• Usage: 9.6 touches projected (7.0 carries + 2.7 targets, 51% of RB carries); 12.3 touches/game last 3 (actual), 52% of snaps last 3 games (part-time role; questionable)
-• Value: 1.61 pts/$1K (fair for this slate)
-• Range: 2.1–21.2 pts (elevated bust risk; under half his average in 2 of 8 games)
-• Captain: $9,300, 14.9 pts, 0.7% owned as CPT; RB captain is fine; the builds don't require a partner",Fragile Chalk,False,43.7,part-time role,elevated bust risk,,0.467,9300,14.92846614430626,0.6986530923796755,1.61
-RB,3,12,00-0033526,Samaje Perine,CIN,WAS,4400,6.19583060445558,7.887990188088029,3,6.19583060445558,"matchup, game environment, history, usage, value, range, captain","• Matchup: WAS allows 0.97x league-avg rushing pts (neutral), 0.93x receiving pts (below average) to RBs
-• Game environment: CIN implied 29.9 (elite; league average is 22.3), game total 53.8 (shootout-level), favored by 6.0
-• History: 6.5 pts/game season avg, 9 games (in line with average)
-• Usage: 8.7 touches projected (7.1 carries + 1.6 targets, 37% of RB carries); 8.7 touches/game last 3 (actual), 35% of snaps last 3 games (part-time role)
-• Value: 1.41 pts/$1K (fair for this slate)
-• Range: 0.0–15.7 pts (high bust risk; under half his average in 4 of 9 games)
-• Captain: $6,600, 9.3 pts, 0.7% owned as CPT; RB captain is fine; the builds don't require a partner",,False,35.2,part-time role,high bust risk,,0.392,6600,9.29374590668337,0.6986530923796755,1.41
-TE,2,13,00-0034829,Mike Gesicki,CIN,WAS,4600,6.992918003309497,22.41852304957816,3,6.992918003309497,"matchup, game environment, history, usage, value, range, captain","• Matchup (TE1): WAS allows 1.53x league-avg (smash spot)
+• Usage: 9.6 touches projected (7.0 carries + 2.6 targets, 52% of RB carries); 12.3 touches/game last 3 (actual), 52% of snaps last 3 games (part-time role; questionable)
+• Value: 1.58 pts/$1K (fair for this slate)
+• Range: 2.2–21.1 pts (elevated bust risk; under half his average in 2 of 8 games)
+• Captain: $9,300, 14.7 pts, 0.7% owned as CPT; RB captain is fine; the builds don't require a partner",,False,43.8,part-time role,elevated bust risk,,0.464,9300,14.731586893287778,0.7094505835669713,1.58
+TE,2,12,00-0034829,Mike Gesicki,CIN,WAS,4600,7.105183643511208,13.56816889599498,3,7.105183643511208,"matchup, game environment, history, usage, value, range, captain","• Matchup (TE1): WAS allows 1.53x league-avg (smash spot)
 • Game environment: CIN implied 29.9 (elite; league average is 22.3), game total 53.8 (shootout-level), favored by 6.0
 • History: 9.1 pts/game season avg, 8 games (in line with average)
-• Usage: 3.1 targets projected (8% of team targets); 3.3 targets/game last 3 (actual), 52% of snaps last 3 games (part-time role; usage trending down)
-• Value: 1.52 pts/$1K (fair for this slate)
-• Range: 1.0–15.8 pts (very high bust risk; under half his average in 3 of 9 games)
-• Captain: $6,900, 10.5 pts, 0.7% owned as CPT; fine as captain, but needs Joe Burrow in the FLEX (the builds enforce it)",,False,22.5,part-time role,very high bust risk,,0.391,6900,10.489377004964243,0.6986530923796755,1.52
-RB,4,14,00-0033699,Austin Ekeler,WAS,CIN,5200,8.389411600928257,20.885732872070395,3,8.389411600928257,"matchup, game environment, history, usage, value, range, captain","• Matchup: CIN allows 0.97x league-avg rushing pts (neutral), 0.94x receiving pts (below average) to RBs
+• Usage: 3.0 targets projected (8% of team targets); 3.3 targets/game last 3 (actual), 52% of snaps last 3 games (part-time role; usage trending down)
+• Value: 1.54 pts/$1K (fair for this slate)
+• Range: 1.0–16.1 pts (very high bust risk; under half his average in 3 of 9 games)
+• Captain: $6,900, 10.7 pts, 0.7% owned as CPT; fine as captain, but needs Joe Burrow in the FLEX (the builds enforce it)",,False,22.5,part-time role,very high bust risk,,0.394,6900,10.657775465266813,0.7094505835669713,1.54
+RB,3,13,00-0033526,Samaje Perine,CIN,WAS,4400,6.191738548903201,6.911236782806091,3,6.191738548903201,"matchup, game environment, history, usage, value, range, captain","• Matchup: WAS allows 0.97x league-avg rushing pts (neutral), 0.93x receiving pts (below average) to RBs
+• Game environment: CIN implied 29.9 (elite; league average is 22.3), game total 53.8 (shootout-level), favored by 6.0
+• History: 6.5 pts/game season avg, 9 games (in line with average)
+• Usage: 8.6 touches projected (7.1 carries + 1.6 targets, 37% of RB carries); 8.7 touches/game last 3 (actual), 35% of snaps last 3 games (part-time role)
+• Value: 1.41 pts/$1K (fair for this slate)
+• Range: 0.0–16.2 pts (high bust risk; under half his average in 4 of 9 games)
+• Captain: $6,600, 9.3 pts, 0.7% owned as CPT; RB captain is fine; the builds don't require a partner",,False,34.9,part-time role,high bust risk,,0.391,6600,9.2876078233548,0.7094505835669713,1.41
+RB,4,14,00-0033699,Austin Ekeler,WAS,CIN,5200,8.507040403127325,19.972290069211105,3,8.507040403127325,"matchup, game environment, history, usage, value, range, captain","• Matchup: CIN allows 0.97x league-avg rushing pts (neutral), 0.94x receiving pts (below average) to RBs
 • Game environment: WAS implied 23.9 (middling; league average is 22.3), game total 53.8 (shootout-level), underdog by 6.0
 • History: 5.1 pts/game season avg, 6 games (projection running above average)
-• Usage: 7.9 touches projected (5.4 carries + 2.4 targets) + injury step-up worth 1.1 pts; inheriting vacated work puts him near 9 touches; 10.7 touches/game last 3 (actual), 40% of snaps last 3 games (part-time role; usage trending up)
-• Value: 1.61 pts/$1K (fair for this slate)
-• Range: 2.5–16.6 pts (elevated bust risk; under half his average in 1 of 6 games)
-• Captain: $7,800, 12.6 pts, 0.7% owned as CPT; RB captain is fine; the builds don't require a partner",,False,39.0,part-time role,elevated bust risk,,0.38,7800,12.584117401392389,0.6986530923796755,1.61
-WR,5,15,00-0040785,Dohnte Meyers,CIN,WAS,3600,5.346519009124856,18.04835287276948,3,5.346519009124856,"matchup, game environment, history, usage, value, range, captain","• Matchup (WR2/3): WAS allows 0.85x league-avg (below average)
+• Usage: 7.8 touches projected (5.4 carries + 2.4 targets) + injury step-up worth 1.1 pts; inheriting vacated work puts him near 9 touches; 10.7 touches/game last 3 (actual), 40% of snaps last 3 games (part-time role; usage trending up)
+• Value: 1.64 pts/$1K (fair for this slate)
+• Range: 2.6–17.0 pts (elevated bust risk; under half his average in 1 of 6 games)
+• Captain: $7,800, 12.8 pts, 0.7% owned as CPT; RB captain is fine; the builds don't require a partner",,False,38.9,part-time role,elevated bust risk,,0.382,7800,12.760560604690989,0.7094505835669713,1.64
+WR,5,15,00-0040785,Dohnte Meyers,CIN,WAS,3600,5.5973881718082605,15.441583096376144,3,5.5973881718082605,"matchup, game environment, history, usage, value, range, captain","• Matchup (WR2/3): WAS allows 0.85x league-avg (below average)
 • Game environment: CIN implied 29.9 (elite; league average is 22.3), game total 53.8 (shootout-level), favored by 6.0
 • History: 5.9 pts/game season avg, 9 games (in line with average)
 • Usage: 2.2 targets projected (6% of team targets); 2.7 targets/game last 3 (actual), 48% of snaps last 3 games (punt-level role)
-• Value: 1.49 pts/$1K (fair for this slate)
-• Range: 0.1–12.3 pts (high bust risk; under half his average in 2 of 9 games)
-• Captain: $5,400, 8.0 pts, 0.7% owned as CPT; fine as captain, but needs Joe Burrow in the FLEX (the builds enforce it)",,False,30.0,punt-level role,high bust risk,,0.343,5400,8.019778513687285,0.6986530923796755,1.49
-WR,6,16,00-0037742,Treylon Burks,WAS,CIN,4800,7.110778603047585,11.789740948122809,2,7.110778603047585,"matchup, game environment, history, usage, value, range, captain","• Matchup (WR2/3): CIN allows 0.98x league-avg (neutral)
+• Value: 1.55 pts/$1K (fair for this slate)
+• Range: 0.1–13.0 pts (high bust risk; under half his average in 2 of 9 games)
+• Captain: $5,400, 8.4 pts, 0.7% owned as CPT; fine as captain, but needs Joe Burrow in the FLEX (the builds enforce it)",,False,30.0,punt-level role,high bust risk,,0.348,5400,8.39608225771239,0.7094505835669713,1.55
+WR,6,16,00-0037742,Treylon Burks,WAS,CIN,4800,7.104573972159179,19.19658436807373,2,7.104573972159179,"matchup, game environment, history, usage, value, range, captain","• Matchup (WR2/3): CIN allows 0.98x league-avg (neutral)
 • Game environment: WAS implied 23.9 (middling; league average is 22.3), game total 53.8 (shootout-level), underdog by 6.0
 • History: 7.4 pts/game season avg, 7 games (in line with average)
 • Usage: 3.6 targets projected (11% of team targets); 4.7 targets/game last 3 (actual), 61% of snaps last 3 games (part-time role; missed recent time; usage dipping; questionable)
 • Value: 1.48 pts/$1K (fair for this slate)
-• Range: 1.2–16.5 pts (high bust risk; under half his average in 1 of 7 games)
-• Captain: $7,200, 10.7 pts, 0.7% owned as CPT; fine as captain, but needs Jayden Daniels in the FLEX (the builds enforce it)",,False,19.0,part-time role,high bust risk,,0.316,7200,10.666167904571378,0.6986530923796755,1.48
-TE,3,17,00-0035631,Drew Sample,CIN,WAS,1600,3.6043521416366886,33.12518578805605,2,3.6043521416366886,"matchup, game environment, history, usage, value, range, captain","• Matchup (TE2/3): WAS allows 0.93x league-avg (below average; small numbers, swings a lot)
+• Range: 1.2–16.4 pts (high bust risk; under half his average in 1 of 7 games)
+• Captain: $7,200, 10.7 pts, 0.7% owned as CPT; fine as captain, but needs Jayden Daniels in the FLEX (the builds enforce it)",,False,19.0,part-time role,high bust risk,,0.316,7200,10.656860958238768,0.7094505835669713,1.48
+TE,3,17,00-0035631,Drew Sample,CIN,WAS,1600,3.557945092601684,32.62789822339475,2,3.557945092601684,"matchup, game environment, history, usage, value, range, captain","• Matchup (TE2/3): WAS allows 0.93x league-avg (below average; small numbers, swings a lot)
 • Game environment: CIN implied 29.9 (elite; league average is 22.3), game total 53.8 (shootout-level), favored by 6.0
 • History: 3.1 pts/game season avg, 5 games (in line with average)
 • Usage: 1.5 targets projected (4% of team targets); 2.0 targets/game last 3 (actual), 57% of snaps last 3 games (punt-level role; missed recent time; usage trending up)
-• Value: 2.25 pts/$1K (cheap for this slate)
-• Range: 0.8–8.5 pts (very high bust risk; under half his average in 6 of 9 games)
-• Captain: $2,400, 5.4 pts, 0.7% owned as CPT; fine as captain, but needs Joe Burrow in the FLEX (the builds enforce it)","Boom/Bust Dart, Fragile Chalk",False,25.1,punt-level role,very high bust risk,,0.286,2400,5.406528212455033,0.6986530923796755,2.25
-DST,1,18,DST_CIN,Bengals,CIN,WAS,4200,5.8285760605000005,3.8382239804960223,2,5.8285760605000005,"matchup, game environment, history, upside setup, value, range, captain","• Matchup: model rates this the better defensive spot of the two (1.18x vs 0.82x; relative to tonight's other defense only)
+• Value: 2.22 pts/$1K (cheap for this slate)
+• Range: 0.8–8.7 pts (very high bust risk; under half his average in 6 of 9 games)
+• Captain: $2,400, 5.3 pts, 2.9% owned as CPT; fine as captain, but needs Joe Burrow in the FLEX (the builds enforce it)","Boom/Bust Dart, Fragile Chalk",False,25.1,punt-level role,very high bust risk,,0.285,2400,5.336917638902525,2.9224899814642766,2.22
+DST,1,18,DST_CIN,Bengals,CIN,WAS,4200,5.8285760605000005,4.282402771483334,2,5.8285760605000005,"matchup, game environment, history, upside setup, value, range, captain","• Matchup: model rates this the better defensive spot of the two (1.18x vs 0.82x; relative to tonight's other defense only)
 • Game environment: opponent WAS implied 23.9 (middling; league average is 22.3), game total 53.8 (shootout-level)
 • History: 7.3 pts/game season avg (in line with average)
 • Upside setup: poor — favored by 6.0; shootout-level game total 53.8, works against; WAS QB protects the ball (1.6% INT rate, works against)
 • Value: 1.39 pts/$1K (fair for this slate)
 • Range: about 2–10 pts in a typical game (DST projections miss by about 4.3 pts on average); a defensive or return TD or a safety is what pushes it higher, and those aren't modeled
-• Captain: $6,300, 8.7 pts, 1.1% owned as CPT; not a captain option (best captain in 0 of 49 games; the builds exclude it). As a FLEX it only fits lineups with no WAS skill players, so it rarely makes a build",,False,,,,-1.0,0.265,6300,8.74286409075,1.0842388641845546,1.39
-WR,7,19,00-0036415,Van Jefferson,WAS,CIN,2800,2.7140177141434703,1.5799234620786675,1,2.7140177141434703,"matchup, game environment, history, usage, value, range, captain","• Matchup (WR2/3): CIN allows 0.98x league-avg (neutral)
+• Captain: $6,300, 8.7 pts, 1.1% owned as CPT; not a captain option (best captain in 0 of 49 games; the builds exclude it). As a FLEX it only fits lineups with no WAS skill players, so it rarely makes a build",,False,,,,-1.0,0.265,6300,8.74286409075,1.1009954773143713,1.39
+WR,7,19,00-0036415,Van Jefferson,WAS,CIN,2800,2.8293049063213536,8.40870285424624,1,2.8293049063213536,"matchup, game environment, history, usage, value, range, captain","• Matchup (WR2/3): CIN allows 0.98x league-avg (neutral)
 • Game environment: WAS implied 23.9 (middling; league average is 22.3), game total 53.8 (shootout-level), underdog by 6.0
 • History: 4.2 pts/game season avg, 2 games (in line with average)
-• Usage: 1.5 targets projected (5% of team targets); 4.0 targets/game last 2 (actual), 35% of snaps last 3 games (punt-level role; only 2 games this season; missed recent time)
-• Value: 0.97 pts/$1K (pricey for this slate)
-• Range: 0.0–7.4 pts (very high bust risk; under half his average in 3 of 4 games)
-• Captain: $4,200, 4.1 pts, 0.7% owned as CPT; fine as captain, but needs Jayden Daniels in the FLEX (the builds enforce it)",,False,9.0,punt-level role,very high bust risk,,0.183,4200,4.071026571215206,0.6986530923796755,0.97
-DST,2,20,DST_WAS,Commanders,WAS,CIN,3400,4.033137233500001,5.845774404706101,1,4.033137233500001,"matchup, game environment, history, upside setup, value, range, captain","• Matchup: model rates this the weaker defensive spot of the two (0.82x vs 1.18x; relative to tonight's other defense only)
+• Usage: 1.6 targets projected (5% of team targets); 4.0 targets/game last 2 (actual), 35% of snaps last 3 games (punt-level role; only 2 games this season; missed recent time)
+• Value: 1.01 pts/$1K (pricey for this slate)
+• Range: 0.0–7.8 pts (very high bust risk; under half his average in 3 of 4 games)
+• Captain: $4,200, 4.2 pts, 0.7% owned as CPT; fine as captain, but needs Jayden Daniels in the FLEX (the builds enforce it)",,False,9.0,punt-level role,very high bust risk,,0.185,4200,4.24395735948203,0.7094505835669713,1.01
+DST,2,20,DST_WAS,Commanders,WAS,CIN,3400,4.033137233500001,5.252619236207,1,4.033137233500001,"matchup, game environment, history, upside setup, value, range, captain","• Matchup: model rates this the weaker defensive spot of the two (0.82x vs 1.18x; relative to tonight's other defense only)
 • Game environment: opponent CIN implied 29.9 (brutal; league average is 22.3), game total 53.8 (shootout-level)
 • History: 5.7 pts/game season avg (in line with average)
 • Upside setup: poor — high dropback volume for CIN (38.7 per game); CIN implied 29.9, 7.6 above the league average, works against; underdog by 6.0, works against; shootout-level game total 53.8, works against; CIN rarely sacked (5.2% of dropbacks, works against)
 • Value: 1.19 pts/$1K (pricey for this slate)
 • Range: about 0–8 pts in a typical game (DST projections miss by about 4.3 pts on average); a defensive or return TD or a safety is what pushes it higher, and those aren't modeled
-• Captain: $5,100, 6.0 pts, 1.1% owned as CPT; not a captain option (best captain in 0 of 49 games; the builds exclude it). As a FLEX it only fits lineups with no CIN skill players, so it rarely makes a build",,False,,,,-5.0,0.141,5100,6.049705850250001,1.0842388641845546,1.19
+• Captain: $5,100, 6.0 pts, 1.1% owned as CPT; not a captain option (best captain in 0 of 49 games; the builds exclude it). As a FLEX it only fits lineups with no CIN skill players, so it rarely makes a build",,False,,,,-5.0,0.141,5100,6.049705850250001,1.1009954773143713,1.19
