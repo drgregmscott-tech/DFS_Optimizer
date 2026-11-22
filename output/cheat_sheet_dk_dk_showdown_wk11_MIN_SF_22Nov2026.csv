@@ -1,160 +1,160 @@
 position,rank,overall_rank,player_id,player_name,team,opponent,salary,final_projection,estimated_ownership_pct,confidence,composite_score,top_factors,rationale,badge,is_bonus,role_security,role_tier,risk_tier,setup_score,conf_basis,cpt_salary,cpt_projection,cpt_ownership_pct,value_per_k
-QB,1,1,00-0037834,Brock Purdy,SF,MIN,10800,22.721529961687114,50.514818739334906,9,22.721529961687114,"matchup, game environment, history, usage, value, range, captain","• Matchup: MIN allows 0.67x league-avg to QBs (tough)
+QB,1,1,00-0037834,Brock Purdy,SF,MIN,10800,22.70838505414393,49.08181038127937,9,22.70838505414393,"matchup, game environment, history, usage, value, range, captain","• Matchup: MIN allows 0.67x league-avg to QBs (tough)
 • Game environment: SF implied 24.6 (plus; league average is 22.3), game total 45.8 (average), favored by 3.5
 • History: 23.4 pts/game season avg, 9 games (in line with average)
 • Usage: 33.4 pass att + 3.2 rush att projected; 31.0 pass att/game last 3 (actual), 97% of snaps last 3 games (locked-in role; usage dipping)
 • Value: 2.10 pts/$1K (cheap for this slate)
 • Range: 9.3–38.7 pts (low bust risk; under half his average in 0 of 9 games)
-• Captain: $16,200, 34.1 pts, 24.6% owned as CPT — most-owned captain tonight; QB captain is a sound build; his RB or TE has been the better first partner than his WR1",,False,87.2,locked-in role,low bust risk,,0.885,16200,34.08229494253067,24.64260245750028,2.1
-WR,1,2,00-0036322,Justin Jefferson,MIN,SF,10400,17.966799136675732,49.5333452773704,8,17.966799136675732,"matchup, game environment, history, usage, value, range, captain","• Matchup (WR1): SF allows 1.11x league-avg (favorable)
+• Captain: $16,200, 34.1 pts, 25.1% owned as CPT — most-owned captain tonight; QB captain is a sound build; his RB or TE has been the better first partner than his WR1",,False,87.2,locked-in role,low bust risk,,0.885,16200,34.0625775812159,25.07277337831165,2.1
+WR,1,2,00-0036322,Justin Jefferson,MIN,SF,10400,17.959685986047973,48.60341449477656,8,17.959685986047973,"matchup, game environment, history, usage, value, range, captain","• Matchup (WR1): SF allows 1.11x league-avg (favorable)
 • Game environment: MIN implied 21.1 (middling; league average is 22.3), game total 45.8 (average), underdog by 3.5
 • History: 14.0 pts/game season avg, 8 games (projection running above average)
 • Usage: 11.2 targets projected (35% of team targets); 11.0 targets/game last 3 (actual), 95% of snaps last 3 games (locked-in role; usage trending up)
 • Value: 1.73 pts/$1K (fair for this slate)
 • Range: 4.7–36.9 pts (low bust risk; under half his average in 1 of 8 games)
-• Captain: $15,600, 27.0 pts, 11.2% owned as CPT; fine as captain, but needs Kirk Cousins in the FLEX (the builds enforce it)",,False,97.0,locked-in role,low bust risk,,0.811,15600,26.9501987050136,11.202596176020297,1.73
-QB,2,3,00-0029604,Kirk Cousins,MIN,SF,9400,16.92367730131282,39.92192877809807,8,16.92367730131282,"matchup, game environment, history, usage, value, range, captain","• Matchup: SF allows 1.02x league-avg to QBs (neutral)
+• Captain: $15,600, 26.9 pts, 11.4% owned as CPT; fine as captain, but needs Kirk Cousins in the FLEX (the builds enforce it)",,False,97.0,locked-in role,low bust risk,,0.811,15600,26.93952897907196,11.398153082837576,1.73
+QB,2,3,00-0029604,Kirk Cousins,MIN,SF,9400,16.916286200038193,38.776728685071454,8,16.916286200038193,"matchup, game environment, history, usage, value, range, captain","• Matchup: SF allows 1.02x league-avg to QBs (neutral)
 • Game environment: MIN implied 21.1 (middling; league average is 22.3), game total 45.8 (average), underdog by 3.5
 • History: 20.3 pts/game season avg, 10 games (projection running below average)
 • Usage: 33.3 pass att + 2.4 rush att projected; 29.7 pass att/game last 3 (actual), 100% of snaps last 3 games (locked-in role)
 • Value: 1.80 pts/$1K (cheap for this slate)
 • Range: 6.0–30.1 pts (low bust risk; under half his average in 0 of 10 games)
-• Captain: $14,100, 25.4 pts, 14.6% owned as CPT; QB captain is a sound build; his RB or TE has been the better first partner than his WR1",,False,90.0,locked-in role,low bust risk,,0.765,14100,25.385515951969232,14.556847004985707,1.8
-RB,1,4,00-0033280,Christian McCaffrey,SF,MIN,11800,18.31534713766057,50.02089432864053,8,18.31534713766057,"matchup, game environment, history, usage, value, range, captain","• Matchup: MIN allows 0.98x league-avg rushing pts (neutral), 0.73x receiving pts (tough) to RBs
+• Captain: $14,100, 25.4 pts, 15.5% owned as CPT; QB captain is a sound build; his RB or TE has been the better first partner than his WR1",,False,90.0,locked-in role,low bust risk,,0.765,14100,25.37442930005729,15.490082220093576,1.8
+RB,1,4,00-0033280,Christian McCaffrey,SF,MIN,11800,18.308373860296484,49.08181038127937,8,18.308373860296484,"matchup, game environment, history, usage, value, range, captain","• Matchup: MIN allows 0.98x league-avg rushing pts (neutral), 0.73x receiving pts (tough) to RBs
 • Game environment: SF implied 24.6 (plus; league average is 22.3), game total 45.8 (average), favored by 3.5
 • History: 24.1 pts/game season avg, 9 games (projection running below average)
 • Usage: 15.8 touches projected (11.1 carries + 4.7 targets, 53% of RB carries); 17.3 touches/game last 3 (actual), 60% of snaps last 3 games (solid role)
 • Value: 1.55 pts/$1K (fair for this slate)
 • Range: 4.4–38.6 pts (low bust risk; under half his average in 0 of 9 games)
-• Captain: $17,700, 27.5 pts, 10.2% owned as CPT; RB captain is fine; the builds don't require a partner",,False,76.0,solid role,low bust risk,,0.755,17700,27.473020706490857,10.167149621837252,1.55
-TE,1,5,00-0033288,George Kittle,SF,MIN,8400,13.33384256513439,36.34564415888979,7,13.33384256513439,"matchup, game environment, history, usage, value, range, captain","• Matchup (TE1): MIN allows 0.66x league-avg (tough)
+• Captain: $17,700, 27.5 pts, 10.3% owned as CPT; RB captain is fine; the builds don't require a partner",,False,76.0,solid role,low bust risk,,0.754,17700,27.462560790444726,10.344631368028454,1.55
+TE,1,5,00-0033288,George Kittle,SF,MIN,8400,13.326455616082844,35.66329708284858,7,13.326455616082844,"matchup, game environment, history, usage, value, range, captain","• Matchup (TE1): MIN allows 0.66x league-avg (tough)
 • Game environment: SF implied 24.6 (plus; league average is 22.3), game total 45.8 (average), favored by 3.5
 • History: 14.3 pts/game season avg, 9 games (in line with average)
 • Usage: 6.9 targets projected (22% of team targets); 8.7 targets/game last 3 (actual), 88% of snaps last 3 games (locked-in role)
 • Value: 1.59 pts/$1K (fair for this slate)
 • Range: 3.1–28.3 pts (low bust risk; under half his average in 1 of 9 games)
-• Captain: $12,600, 20.0 pts, 8.0% owned as CPT; fine as captain, but needs Brock Purdy in the FLEX (the builds enforce it)",,False,90.0,locked-in role,low bust risk,,0.7,12600,20.000763847701585,7.993632865271024,1.59
-TE,2,6,00-0035229,T.J. Hockenson,MIN,SF,5400,9.592763025061265,35.56301037922096,5,9.592763025061265,"matchup, game environment, history, usage, value, range, captain","• Matchup (TE1): SF allows 0.96x league-avg (neutral)
+• Captain: $12,600, 20.0 pts, 8.1% owned as CPT; fine as captain, but needs Brock Purdy in the FLEX (the builds enforce it)",,False,90.0,locked-in role,low bust risk,,0.7,12600,19.989683424124262,8.133172851610215,1.59
+TE,2,6,00-0035229,T.J. Hockenson,MIN,SF,5400,9.589532975841736,34.89535633954013,5,9.589532975841736,"matchup, game environment, history, usage, value, range, captain","• Matchup (TE1): SF allows 0.96x league-avg (neutral)
 • Game environment: MIN implied 21.1 (middling; league average is 22.3), game total 45.8 (average), underdog by 3.5
 • History: 11.1 pts/game season avg, 8 games (in line with average)
 • Usage: 5.3 targets projected (17% of team targets); 5.7 targets/game last 3 (actual), 80% of snaps last 3 games (solid role)
 • Value: 1.78 pts/$1K (fair for this slate)
 • Range: 2.6–19.1 pts (moderate bust risk; under half his average in 2 of 8 games)
-• Captain: $8,100, 14.4 pts, 5.1% owned as CPT; fine as captain, but needs Kirk Cousins in the FLEX (the builds enforce it)",Solid Value,False,66.3,solid role,moderate bust risk,,0.538,8100,14.389144537591896,5.090227828483717,1.78
-WR,2,7,00-0030279,Keenan Allen,SF,MIN,6600,9.80834870564192,26.51355693582877,5,9.80834870564192,"matchup, game environment, history, usage, value, range, captain","• Matchup (WR1): MIN allows 0.74x league-avg (tough)
+• Captain: $8,100, 14.4 pts, 5.6% owned as CPT; fine as captain, but needs Kirk Cousins in the FLEX (the builds enforce it)",Solid Value,False,66.3,solid role,moderate bust risk,,0.538,8100,14.384299463762602,5.643927106561288,1.78
+WR,2,7,00-0030279,Keenan Allen,SF,MIN,6600,9.801158104522315,25.61496323933728,5,9.801158104522315,"matchup, game environment, history, usage, value, range, captain","• Matchup (WR1): MIN allows 0.74x league-avg (tough)
 • Game environment: SF implied 24.6 (plus; league average is 22.3), game total 45.8 (average), favored by 3.5
 • History: 10.2 pts/game season avg, 9 games (in line with average)
 • Usage: 6.4 targets projected (21% of team targets); 7.3 targets/game last 3 (actual), 52% of snaps last 3 games (partial role)
 • Value: 1.49 pts/$1K (fair for this slate)
 • Range: 1.6–22.4 pts (moderate bust risk; under half his average in 1 of 9 games)
-• Captain: $9,900, 14.7 pts, 0.7% owned as CPT; fine as captain, but needs Brock Purdy in the FLEX (the builds enforce it)",,False,58.9,partial role,moderate bust risk,,0.512,9900,14.712523058462878,0.7196204039761972,1.49
-K,1,8,00-0034173,Eddy Pineiro,SF,MIN,4600,8.12095,28.01284655848408,5,8.12095,"game environment, history, kicker usage, value, range, captain","• Game environment: SF implied 24.6 (plus; league average is 22.3), game total 45.8 (average), favored by 3.5
+• Captain: $9,900, 14.7 pts, 0.7% owned as CPT; fine as captain, but needs Brock Purdy in the FLEX (the builds enforce it)",,False,58.9,partial role,moderate bust risk,,0.512,9900,14.701737156783476,0.7321823796176488,1.49
+K,1,8,00-0034173,Eddy Pineiro,SF,MIN,4600,8.12095,27.486938038133985,5,8.12095,"game environment, history, kicker usage, value, range, captain","• Game environment: SF implied 24.6 (plus; league average is 22.3), game total 45.8 (average), favored by 3.5
 • History: 6.7 pts/game season avg (in line with average)
 • Kicker usage: 0.7 FG attempts + 4.3 extra-point attempts per game, last 3 games; wind 4 mph
 • Value: 1.77 pts/$1K (fair for this slate)
 • Range: 2.0–15.0 pts (the model gives every kicker the same band; kicker scoring follows game flow, not a player-specific role)
-• Captain: $6,900, 12.2 pts, 0.3% owned as CPT; not a recommended captain (a kicker was the best captain in 1 of 49 games studied; the builds penalize it)",,False,,kicker,,,0.503,6900,12.181425,0.2527278884743936,1.77
-K,2,9,00-0039404,Will Reichard,MIN,SF,5000,8.06875,19.77377404128288,4,8.06875,"game environment, history, kicker usage, value, range, captain","• Game environment: MIN implied 21.1 (middling; league average is 22.3), game total 45.8 (average), underdog by 3.5
+• Captain: $6,900, 12.2 pts, 0.3% owned as CPT; not a recommended captain (a kicker was the best captain in 1 of 49 games studied; the builds penalize it)",,False,,kicker,,,0.503,6900,12.181425,0.2571396054871255,1.77
+K,2,9,00-0039404,Will Reichard,MIN,SF,5000,8.06875,19.40254449750634,4,8.06875,"game environment, history, kicker usage, value, range, captain","• Game environment: MIN implied 21.1 (middling; league average is 22.3), game total 45.8 (average), underdog by 3.5
 • History: 11.4 pts/game season avg (projection running below average)
 • Kicker usage: 2.0 FG attempts + 1.3 extra-point attempts per game, last 3 games; wind 4 mph
 • Value: 1.61 pts/$1K (fair for this slate)
 • Range: 2.0–15.0 pts (the model gives every kicker the same band; kicker scoring follows game flow, not a player-specific role)
-• Captain: $7,500, 12.1 pts, 0.3% owned as CPT; not a recommended captain (a kicker was the best captain in 1 of 49 games studied; the builds penalize it)",,False,,kicker,,,0.461,7500,12.103125,0.2527278884743936,1.61
-RB,2,10,00-0037525,Jordan Mason,MIN,SF,7000,7.829813342724887,1.7522464064646202,4,7.829813342724887,"matchup, game environment, history, usage, value, range, captain","• Matchup: SF allows 0.73x league-avg rushing pts (tough), 1.25x receiving pts (smash spot) to RBs
+• Captain: $7,500, 12.1 pts, 0.3% owned as CPT; not a recommended captain (a kicker was the best captain in 1 of 49 games studied; the builds penalize it)",,False,,kicker,,,0.461,7500,12.103125,0.2571396054871255,1.61
+RB,2,10,00-0037525,Jordan Mason,MIN,SF,7000,7.827144502507918,1.7193500239785109,4,7.827144502507918,"matchup, game environment, history, usage, value, range, captain","• Matchup: SF allows 0.73x league-avg rushing pts (tough), 1.25x receiving pts (smash spot) to RBs
 • Game environment: MIN implied 21.1 (middling; league average is 22.3), game total 45.8 (average), underdog by 3.5
 • History: 6.6 pts/game season avg, 5 games (in line with average)
 • Usage: 10.9 touches projected (9.5 carries + 1.4 targets, 55% of RB carries); 11.3 touches/game last 3 (actual), 43% of snaps last 3 games (partial role)
 • Value: 1.12 pts/$1K (pricey for this slate)
 • Range: 1.1–18.0 pts (elevated bust risk; under half his average in 1 of 5 games)
-• Captain: $10,500, 11.7 pts, 0.7% owned as CPT; RB captain is fine; the builds don't require a partner",,False,54.0,partial role,elevated bust risk,,0.43,10500,11.744720014087331,0.7196204039761972,1.12
-RB,3,11,00-0041052,Kaelon Black,SF,MIN,4800,7.014637596218547,17.573034854084476,4,7.014637596218547,"matchup, game environment, history, usage, value, range, captain","• Matchup: MIN allows 0.98x league-avg rushing pts (neutral), 0.73x receiving pts (tough) to RBs
+• Captain: $10,500, 11.7 pts, 0.7% owned as CPT; RB captain is fine; the builds don't require a partner",,False,54.0,partial role,elevated bust risk,,0.43,10500,11.740716753761877,0.7321823796176488,1.12
+RB,3,11,00-0041052,Kaelon Black,SF,MIN,4800,7.012075521347132,17.24312162163673,4,7.012075521347132,"matchup, game environment, history, usage, value, range, captain","• Matchup: MIN allows 0.98x league-avg rushing pts (neutral), 0.73x receiving pts (tough) to RBs
 • Game environment: SF implied 24.6 (plus; league average is 22.3), game total 45.8 (average), favored by 3.5
 • History: 5.9 pts/game season avg, 9 games (in line with average)
 • Usage: 10.0 touches projected (8.8 carries + 1.2 targets, 41% of RB carries); 13.0 touches/game last 3 (actual), 37% of snaps last 3 games (part-time role)
 • Value: 1.46 pts/$1K (fair for this slate)
 • Range: 0.7–16.7 pts (high bust risk; under half his average in 4 of 9 games)
-• Captain: $7,200, 10.5 pts, 0.7% owned as CPT; RB captain is fine; the builds don't require a partner",,False,42.2,part-time role,high bust risk,,0.416,7200,10.52195639432782,0.7196204039761972,1.46
-WR,3,12,00-0040172,Jordan Watkins,SF,MIN,3400,6.281544694866875,27.725804035136377,3,6.281544694866875,"matchup, game environment, history, usage, value, range, captain","• Matchup (WR2/3): MIN allows 1.03x league-avg (neutral)
+• Captain: $7,200, 10.5 pts, 0.7% owned as CPT; RB captain is fine; the builds don't require a partner",,False,42.2,part-time role,high bust risk,,0.415,7200,10.518113282020698,0.7321823796176488,1.46
+WR,3,12,00-0040172,Jordan Watkins,SF,MIN,3400,6.2789788815495164,26.015795829393955,3,6.2789788815495164,"matchup, game environment, history, usage, value, range, captain","• Matchup (WR2/3): MIN allows 1.03x league-avg (neutral)
 • Game environment: SF implied 24.6 (plus; league average is 22.3), game total 45.8 (average), favored by 3.5
 • History: 6.5 pts/game season avg, 5 games (in line with average)
 • Usage: 2.6 targets projected (8% of team targets); 4.3 targets/game last 3 (actual), 74% of snaps last 3 games (punt-level role; missed recent time)
 • Value: 1.85 pts/$1K (cheap for this slate)
 • Range: 0.7–13.7 pts (high bust risk; under half his average in 3 of 7 games)
-• Captain: $5,100, 9.4 pts, 0.7% owned as CPT; fine as captain, but needs Brock Purdy in the FLEX (the builds enforce it)","Boom/Bust Dart, Fragile Chalk",False,39.4,punt-level role,high bust risk,,0.389,5100,9.422317042300314,0.7196204039761972,1.85
-DST,1,13,DST_SF,49ers,SF,MIN,4000,6.954878783500001,19.58901507298332,3,6.954878783500001,"matchup, game environment, history, upside setup, value, range, captain","• Matchup: model rates this the better defensive spot of the two (1.14x vs 0.86x; relative to tonight's other defense only)
+• Captain: $5,100, 9.4 pts, 0.7% owned as CPT; fine as captain, but needs Brock Purdy in the FLEX (the builds enforce it)","Boom/Bust Dart, Fragile Chalk",False,39.4,punt-level role,high bust risk,,0.389,5100,9.418468322324276,0.7321823796176488,1.85
+DST,1,13,DST_SF,49ers,SF,MIN,4000,6.954878783500001,18.913171995198823,3,6.954878783500001,"matchup, game environment, history, upside setup, value, range, captain","• Matchup: model rates this the better defensive spot of the two (1.14x vs 0.86x; relative to tonight's other defense only)
 • Game environment: opponent MIN implied 21.1 (middling; league average is 22.3), game total 45.8 (average)
 • History: 6.7 pts/game season avg (in line with average)
 • Upside setup: neutral — MIN allows sacks on 7.6% of dropbacks
 • Value: 1.74 pts/$1K (fair for this slate)
 • Range: about 3–11 pts in a typical game (DST projections miss by about 4.3 pts on average); a defensive or return TD or a safety is what pushes it higher, and those aren't modeled
-• Captain: $6,000, 10.4 pts, 4.5% owned as CPT; not a captain option (best captain in 0 of 49 games; the builds exclude it). As a FLEX it only fits lineups with no MIN skill players, so it rarely makes a build",,False,,,,1.0,0.378,6000,10.432318175250002,4.5295090703401,1.74
-RB,4,14,00-0033293,Aaron Jones Sr.,MIN,SF,7200,7.635275172828562,1.7522464064646202,3,7.635275172828562,"matchup, game environment, history, usage, value, range, captain","• Matchup: SF allows 0.73x league-avg rushing pts (tough), 1.25x receiving pts (smash spot) to RBs
+• Captain: $6,000, 10.4 pts, 4.6% owned as CPT; not a captain option (best captain in 0 of 49 games; the builds exclude it). As a FLEX it only fits lineups with no MIN skill players, so it rarely makes a build",,False,,,,1.0,0.378,6000,10.432318175250002,4.608577954844977,1.74
+RB,4,14,00-0033293,Aaron Jones Sr.,MIN,SF,7200,7.632975441962968,1.7193500239785109,3,7.632975441962968,"matchup, game environment, history, usage, value, range, captain","• Matchup: SF allows 0.73x league-avg rushing pts (tough), 1.25x receiving pts (smash spot) to RBs
 • Game environment: MIN implied 21.1 (middling; league average is 22.3), game total 45.8 (average), underdog by 3.5
 • History: 11.4 pts/game season avg, 9 games (projection running below average)
 • Usage: 9.4 touches projected (7.4 carries + 2.0 targets, 43% of RB carries); 8.3 touches/game last 3 (actual), 39% of snaps last 3 games (part-time role)
 • Value: 1.06 pts/$1K (pricey for this slate)
 • Range: 1.5–16.4 pts (elevated bust risk; under half his average in 2 of 9 games)
-• Captain: $10,800, 11.5 pts, 0.7% owned as CPT; RB captain is fine; the builds don't require a partner",,False,41.9,part-time role,elevated bust risk,,0.362,10800,11.452912759242842,0.7196204039761972,1.06
-WR,4,15,00-0035719,Deebo Samuel Sr.,SF,MIN,7600,6.423423446844782,1.7522464064646202,3,6.423423446844782,"matchup, game environment, history, usage, value, range, captain","• Matchup (WR2/3): MIN allows 1.03x league-avg (neutral)
+• Captain: $10,800, 11.4 pts, 0.7% owned as CPT; RB captain is fine; the builds don't require a partner",,False,41.9,part-time role,elevated bust risk,,0.362,10800,11.449463162944452,0.7321823796176488,1.06
+WR,4,15,00-0035719,Deebo Samuel Sr.,SF,MIN,7600,6.419859874610384,1.7193500239785109,3,6.419859874610384,"matchup, game environment, history, usage, value, range, captain","• Matchup (WR2/3): MIN allows 1.03x league-avg (neutral)
 • Game environment: SF implied 24.6 (plus; league average is 22.3), game total 45.8 (average), favored by 3.5
 • History: 14.6 pts/game season avg, 6 games (projection running below average)
 • Usage: 1.9 targets projected (6% of team targets); 4.0 targets/game last 3 (actual), 59% of snaps last 3 games (punt-level role; missed recent time)
-• Value: 0.85 pts/$1K (pricey for this slate)
+• Value: 0.84 pts/$1K (pricey for this slate)
 • Range: 0.8–14.3 pts (high bust risk; under half his average in 2 of 6 games)
-• Captain: $11,400, 9.6 pts, 0.7% owned as CPT; fine as captain, but needs Brock Purdy in the FLEX (the builds enforce it)",,False,27.4,punt-level role,high bust risk,,0.329,11400,9.635135170267173,0.7196204039761972,0.85
-WR,5,16,00-0040506,Myles Price,MIN,SF,3000,4.34447748217495,8.748336734692543,2,4.34447748217495,"matchup, game environment, history, usage, value, range, captain","• Matchup (WR2/3): SF allows 1.00x league-avg (neutral)
+• Captain: $11,400, 9.6 pts, 0.7% owned as CPT; fine as captain, but needs Brock Purdy in the FLEX (the builds enforce it)",,False,27.4,punt-level role,high bust risk,,0.329,11400,9.629789811915575,0.7321823796176488,0.84
+WR,5,16,00-0040506,Myles Price,MIN,SF,3000,4.342759525140923,8.584096916434119,2,4.342759525140923,"matchup, game environment, history, usage, value, range, captain","• Matchup (WR2/3): SF allows 1.00x league-avg (neutral)
 • Game environment: MIN implied 21.1 (middling; league average is 22.3), game total 45.8 (average), underdog by 3.5
 • History: 3.4 pts/game season avg, 9 games (in line with average)
 • Usage: 2.7 targets projected (9% of team targets); 2.7 targets/game last 3 (actual), 37% of snaps last 3 games (punt-level role; usage trending up)
 • Value: 1.45 pts/$1K (fair for this slate)
 • Range: 0.1–10.2 pts (very high bust risk; under half his average in 5 of 9 games)
-• Captain: $4,500, 6.5 pts, 0.7% owned as CPT; fine as captain, but needs Kirk Cousins in the FLEX (the builds enforce it)",,False,30.0,punt-level role,very high bust risk,,0.293,4500,6.516716223262425,0.7196204039761972,1.45
-WR,6,17,00-0036259,Jauan Jennings,MIN,SF,3200,4.34410564345694,1.7522464064646202,2,4.34410564345694,"matchup, game environment, history, usage, value, range, captain","• Matchup (WR2/3): SF allows 1.00x league-avg (neutral)
+• Captain: $4,500, 6.5 pts, 0.7% owned as CPT; fine as captain, but needs Kirk Cousins in the FLEX (the builds enforce it)",,False,30.0,punt-level role,very high bust risk,,0.293,4500,6.514139287711384,0.7321823796176488,1.45
+WR,6,17,00-0036259,Jauan Jennings,MIN,SF,3200,4.341230699949213,12.200898079753047,2,4.341230699949213,"matchup, game environment, history, usage, value, range, captain","• Matchup (WR2/3): SF allows 1.00x league-avg (neutral)
 • Game environment: MIN implied 21.1 (middling; league average is 22.3), game total 45.8 (average), underdog by 3.5
 • History: 1.9 pts/game season avg, 6 games (in line with average)
 • Usage: 2.1 targets projected (7% of team targets); 2.0 targets/game last 3 (actual), 60% of snaps last 3 games (punt-level role; missed recent time; usage trending up)
 • Value: 1.36 pts/$1K (fair for this slate)
 • Range: 0.9–9.4 pts (high bust risk; under half his average in 2 of 6 games)
-• Captain: $4,800, 6.5 pts, 0.7% owned as CPT; fine as captain, but needs Kirk Cousins in the FLEX (the builds enforce it)",,False,27.3,punt-level role,high bust risk,,0.283,4800,6.51615846518541,0.7196204039761972,1.36
-WR,7,18,00-0031236,Brandin Cooks,SF,MIN,1800,2.895382241590113,11.767535926559592,2,2.895382241590113,"matchup, game environment, history, usage, value, range, captain","• Matchup (WR2/3): MIN allows 1.03x league-avg (neutral)
+• Captain: $4,800, 6.5 pts, 0.7% owned as CPT; fine as captain, but needs Kirk Cousins in the FLEX (the builds enforce it)",,False,27.3,punt-level role,high bust risk,,0.283,4800,6.511846049923819,0.7321823796176488,1.36
+WR,7,18,00-0031236,Brandin Cooks,SF,MIN,1800,2.8942287594299487,12.83017302318285,2,2.8942287594299487,"matchup, game environment, history, usage, value, range, captain","• Matchup (WR2/3): MIN allows 1.03x league-avg (neutral)
 • Game environment: SF implied 24.6 (plus; league average is 22.3), game total 45.8 (average), favored by 3.5
 • History: 3.4 pts/game season avg, 5 games (in line with average)
 • Usage: 1.6 targets projected (5% of team targets); 2.3 targets/game last 3 (actual), 55% of snaps last 3 games (punt-level role; missed recent time)
 • Value: 1.61 pts/$1K (fair for this slate)
 • Range: 0.1–7.6 pts (high bust risk; under half his average in 1 of 5 games)
-• Captain: $2,700, 4.3 pts, 0.7% owned as CPT; fine as captain, but needs Brock Purdy in the FLEX (the builds enforce it)",Boom/Bust Dart,False,27.0,punt-level role,high bust risk,,0.27,2700,4.343073362385169,0.7196204039761972,1.61
-WR,8,19,00-0040154,Tai Felton,MIN,SF,2800,3.8206743399109313,1.7522464064646202,2,3.8206743399109313,"matchup, game environment, history, usage, value, range, captain","• Matchup (WR2/3): SF allows 1.00x league-avg (neutral)
+• Captain: $2,700, 4.3 pts, 0.7% owned as CPT; fine as captain, but needs Brock Purdy in the FLEX (the builds enforce it)",Boom/Bust Dart,False,27.0,punt-level role,high bust risk,,0.27,2700,4.341343139144923,0.7321823796176488,1.61
+WR,8,19,00-0040154,Tai Felton,MIN,SF,2800,3.819550970616469,1.7193500239785109,2,3.819550970616469,"matchup, game environment, history, usage, value, range, captain","• Matchup (WR2/3): SF allows 1.00x league-avg (neutral)
 • Game environment: MIN implied 21.1 (middling; league average is 22.3), game total 45.8 (average), underdog by 3.5
 • History: 1.5 pts/game season avg, 5 games (in line with average)
 • Usage: 1.7 targets projected (6% of team targets); 3.0 targets/game last 3 (actual), 34% of snaps last 3 games (punt-level role; missed recent time; usage trending up)
 • Value: 1.36 pts/$1K (fair for this slate)
 • Range: 0.9–8.8 pts (very high bust risk; under half his average in 5 of 8 games)
-• Captain: $4,200, 5.7 pts, 0.7% owned as CPT; fine as captain, but needs Kirk Cousins in the FLEX (the builds enforce it)",,False,24.0,punt-level role,very high bust risk,,0.26,4200,5.731011509866397,0.7196204039761972,1.36
-TE,3,20,00-0040215,Gavin Bartholomew,MIN,SF,2400,5.0659667024669135,27.323760472376563,2,5.0659667024669135,"matchup, game environment, history, usage, value, range, captain","• Matchup (TE2/3): SF allows 0.95x league-avg (neutral; small numbers, swings a lot)
+• Captain: $4,200, 5.7 pts, 0.7% owned as CPT; fine as captain, but needs Kirk Cousins in the FLEX (the builds enforce it)",,False,24.0,punt-level role,very high bust risk,,0.26,4200,5.729326455924703,0.7321823796176488,1.36
+TE,3,20,00-0040215,Gavin Bartholomew,MIN,SF,2400,5.06476648066947,27.20528440335981,2,5.06476648066947,"matchup, game environment, history, usage, value, range, captain","• Matchup (TE2/3): SF allows 0.95x league-avg (neutral; small numbers, swings a lot)
 • Game environment: MIN implied 21.1 (middling; league average is 22.3), game total 45.8 (average), underdog by 3.5
 • History: 2.8 pts/game season avg, 4 games (in line with average)
 • Usage: 2.0 targets projected (6% of team targets); 3.7 targets/game last 3 (actual), 31% of snaps last 3 games (punt-level role; only 4 games this season; missed recent time; usage dipping)
 • Value: 2.11 pts/$1K (cheap for this slate)
 • Range: 1.2–11.0 pts (very high bust risk; under half his average in 4 of 7 games)
-• Captain: $3,600, 7.6 pts, 3.6% owned as CPT; fine as captain, but needs Kirk Cousins in the FLEX (the builds enforce it)","Boom/Bust Dart, Fragile Chalk",False,15.0,punt-level role,very high bust risk,,0.256,3600,7.598950053700371,3.559650357195621,2.11
-DST,2,21,DST_MIN,Vikings,MIN,SF,3600,5.262642088000001,9.923323718864005,2,5.262642088000001,"matchup, game environment, history, upside setup, value, range, captain","• Matchup: model rates this the weaker defensive spot of the two (0.86x vs 1.14x; relative to tonight's other defense only)
+• Captain: $3,600, 7.6 pts, 0.7% owned as CPT; fine as captain, but needs Kirk Cousins in the FLEX (the builds enforce it)","Boom/Bust Dart, Fragile Chalk",False,15.0,punt-level role,very high bust risk,,0.256,3600,7.597149721004206,0.7321823796176488,2.11
+DST,2,21,DST_MIN,Vikings,MIN,SF,3600,5.262642088000001,9.73702489046585,2,5.262642088000001,"matchup, game environment, history, upside setup, value, range, captain","• Matchup: model rates this the weaker defensive spot of the two (0.86x vs 1.14x; relative to tonight's other defense only)
 • Game environment: opponent SF implied 24.6 (tough; league average is 22.3), game total 45.8 (average)
 • History: 11.6 pts/game season avg (projection running below average)
 • Upside setup: neutral — SF QB throws interceptions on 2.7% of attempts; SF implied 24.6, 2.3 above the league average, works against
 • Value: 1.46 pts/$1K (fair for this slate)
 • Range: about 1–10 pts in a typical game (DST projections miss by about 4.3 pts on average); a defensive or return TD or a safety is what pushes it higher, and those aren't modeled
-• Captain: $5,400, 7.9 pts, 1.1% owned as CPT; not a captain option (best captain in 0 of 49 games; the builds exclude it). As a FLEX it only fits lineups with no SF skill players, so it rarely makes a build",,False,,,,0.0,0.255,5400,7.893963132000001,1.1167780089452024,1.46
-WR,9,22,00-0031408,Mike Evans,SF,MIN,8000,4.409661149736357,1.7522464064646202,1,4.409661149736357,"matchup, game environment, history, usage, value, range, captain","• Matchup (WR2/3): MIN allows 1.03x league-avg (neutral)
+• Captain: $5,400, 7.9 pts, 1.1% owned as CPT; not a captain option (best captain in 0 of 49 games; the builds exclude it). As a FLEX it only fits lineups with no SF skill players, so it rarely makes a build",,False,,,,0.0,0.255,5400,7.893963132000001,1.136272923302498,1.46
+WR,9,22,00-0031408,Mike Evans,SF,MIN,8000,4.40445443710109,1.7193500239785109,1,4.40445443710109,"matchup, game environment, history, usage, value, range, captain","• Matchup (WR2/3): MIN allows 1.03x league-avg (neutral)
 • Game environment: SF implied 24.6 (plus; league average is 22.3), game total 45.8 (average), favored by 3.5
 • History: 15.3 pts/game season avg, 6 games (projection running below average)
 • Usage: 2.5 targets projected (8% of team targets); 7.7 targets/game last 3 (actual), 54% of snaps last 3 games (punt-level role; missed recent time; questionable)
 • Value: 0.55 pts/$1K (pricey for this slate)
 • Range: 0.0–13.0 pts (high bust risk; under half his average in 0 of 6 games)
-• Captain: $12,000, 6.6 pts, 0.7% owned as CPT; fine as captain, but needs Brock Purdy in the FLEX (the builds enforce it)",,False,12.0,punt-level role,high bust risk,,0.23,12000,6.614491724604536,0.7196204039761972,0.55
-TE,4,23,00-0040509,Ben Yurosek,MIN,SF,1600,2.349145199761713,8.748336734692543,1,2.349145199761713,"matchup, game environment, history, usage, value, range, captain","• Matchup (TE2/3): SF allows 0.95x league-avg (neutral; small numbers, swings a lot)
+• Captain: $12,000, 6.6 pts, 0.7% owned as CPT; fine as captain, but needs Brock Purdy in the FLEX (the builds enforce it)",,False,12.0,punt-level role,high bust risk,,0.23,12000,6.606681655651634,0.7321823796176488,0.55
+TE,4,23,00-0040509,Ben Yurosek,MIN,SF,1600,2.348654321330204,8.584096916434119,1,2.348654321330204,"matchup, game environment, history, usage, value, range, captain","• Matchup (TE2/3): SF allows 0.95x league-avg (neutral; small numbers, swings a lot)
 • Game environment: MIN implied 21.1 (middling; league average is 22.3), game total 45.8 (average), underdog by 3.5
 • History: 1.4 pts/game season avg, 4 games (in line with average)
 • Usage: 0.8 targets projected (2% of team targets); 1.0 targets/game last 3 (actual), 41% of snaps last 3 games (punt-level role; only 4 games this season; missed recent time; usage trending down)
 • Value: 1.47 pts/$1K (fair for this slate)
-• Range: 0.8–4.9 pts (very high bust risk; under half his average in 2 of 5 games)
-• Captain: $2,400, 3.5 pts, 0.7% owned as CPT; fine as captain, but needs Kirk Cousins in the FLEX (the builds enforce it)",,False,13.5,punt-level role,very high bust risk,,0.19,2400,3.5237177996425704,0.7196204039761972,1.47
+• Range: 0.8–4.8 pts (very high bust risk; under half his average in 2 of 5 games)
+• Captain: $2,400, 3.5 pts, 0.7% owned as CPT; fine as captain, but needs Kirk Cousins in the FLEX (the builds enforce it)",,False,13.5,punt-level role,very high bust risk,,0.19,2400,3.5229814819953056,0.7321823796176488,1.47
