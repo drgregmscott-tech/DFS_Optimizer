@@ -1,51 +1,51 @@
 player,salary,proj_own,lo,hi
-Emmett Johnson,6000,92.3,84.2,100.0
-Jonah Coleman,6300,52.6,31.6,84.2
-NY Jets Defense,2600,50.2,26.3,73.7
-Travis Kelce,4700,45.6,31.6,68.4
-CeeDee Lamb,8800,43.5,31.6,68.4
-Elic Ayomanor,3700,42.8,26.3,68.4
-New Orleans Defense,2200,38.6,21.1,57.9
-Tony Pollard,6500,34.7,21.1,47.4
-Dak Prescott,6700,34.0,26.3,42.1
-Carnell Tate,5500,31.2,10.5,52.6
-Patrick Mahomes,6500,30.2,10.5,52.6
-George Pickens,6800,29.1,15.8,57.9
-Rome Odunze,4600,23.9,15.8,47.4
-Jordyn Tyson,5200,18.9,10.5,36.8
-Luther Burden III,6300,17.5,10.5,31.6
-Bo Nix,5600,14.0,5.3,31.6
-Ollie Gordon II,5600,13.0,0.0,31.6
-D'Andre Swift,6900,12.6,5.3,26.3
-Garrett Wilson,6400,12.6,0.0,26.3
-Trey McBride,6600,11.9,5.3,31.6
-Omarion Hampton,5200,11.2,0.0,26.3
-Rashee Rice,6100,10.9,0.0,26.3
-James Cook III,7900,10.5,0.0,26.3
-Parker Washington,6700,10.5,0.0,31.6
-Sam LaPorta,4400,10.5,0.0,26.3
-Javonte Williams,7300,10.2,0.0,21.1
-Courtland Sutton,4700,9.8,0.0,26.3
-DJ Moore,6000,9.5,0.0,26.3
-Amon-Ra St. Brown,8200,9.1,0.0,26.3
-Caleb Douglas,4400,8.4,0.0,15.8
-Derrick Henry,6700,8.1,0.0,15.8
-Ashton Jeanty,5500,8.1,0.0,21.1
-Cam Skattebo,5800,7.7,0.0,21.1
-Pittsburgh Defense,3300,7.4,0.0,15.8
-Isaiah Likely,5600,6.7,0.0,15.8
-Colston Loveland,5100,6.3,0.0,15.8
-Simi Fehoko,3200,6.3,0.0,15.8
-Darren Waller,3400,6.0,0.0,26.3
-Tommy Tremble,2900,6.0,0.0,15.8
-Mason Taylor,3100,6.0,0.0,15.8
+Emmett Johnson,6000,94.7,84.2,100.0
+NY Jets Defense,2600,53.3,42.1,73.7
+Jonah Coleman,6300,49.5,31.6,63.2
+Travis Kelce,4700,46.3,21.1,63.2
+Elic Ayomanor,3700,43.2,21.1,57.9
+CeeDee Lamb,8800,40.4,21.1,52.6
+Tony Pollard,6500,40.4,15.8,57.9
+New Orleans Defense,2200,36.1,15.8,47.4
+George Pickens,6800,32.6,10.5,52.6
+Dak Prescott,6700,27.0,5.3,52.6
+Patrick Mahomes,6500,26.3,10.5,42.1
+Rome Odunze,4600,25.3,10.5,31.6
+Carnell Tate,5500,21.1,5.3,36.8
+Luther Burden III,6300,19.6,0.0,31.6
+Bo Nix,5600,18.6,5.3,31.6
+Omarion Hampton,5200,13.0,0.0,26.3
+Garrett Wilson,6400,13.0,0.0,31.6
+D'Andre Swift,6900,12.6,5.3,21.1
+Trey McBride,6600,12.3,0.0,31.6
+Jordyn Tyson,5200,11.9,0.0,26.3
+Parker Washington,6700,11.6,0.0,26.3
+Courtland Sutton,4700,11.2,0.0,21.1
+Ollie Gordon II,5600,10.9,0.0,26.3
+Josh Allen,7700,10.2,0.0,31.6
+Amon-Ra St. Brown,8200,10.2,0.0,21.1
+DJ Moore,6000,9.8,0.0,15.8
+Simi Fehoko,3200,9.1,5.3,26.3
+Colston Loveland,5100,8.8,0.0,15.8
+James Cook III,7900,8.8,0.0,21.1
+Cam Skattebo,5800,8.8,0.0,21.1
+Caleb Douglas,4400,8.1,0.0,15.8
+Javonte Williams,7300,7.7,0.0,26.3
+Rashee Rice,6100,7.7,0.0,15.8
+Sam LaPorta,4400,7.7,0.0,26.3
+Chuba Hubbard,7500,7.4,0.0,15.8
+Ashton Jeanty,5500,7.4,0.0,21.1
+Jaylen Warren,6600,7.0,0.0,15.8
+Isaiah Likely,5600,7.0,0.0,21.1
+Mason Taylor,3100,6.3,0.0,26.3
+Bucky Irving,7000,6.0,0.0,15.8
 Bhayshul Tuten,6800,6.0,0.0,15.8
-Chuba Hubbard,7500,5.6,0.0,10.5
-Josh Allen,7700,5.3,0.0,15.8
-Cade Otton,3300,4.6,0.0,10.5
-Trevor Lawrence,6600,4.6,0.0,15.8
-Jaylen Warren,6600,4.6,0.0,15.8
-Jaylen Waddle,5700,3.9,0.0,10.5
-Caleb Williams,6300,3.5,0.0,15.8
-Jared Goff,6100,3.2,0.0,10.5
-Malik Nabers,7100,3.2,0.0,10.5
+Trevor Lawrence,6600,5.6,0.0,15.8
+Bryce Young,5700,5.6,0.0,15.8
+Tommy Tremble,2900,5.3,0.0,15.8
+Pittsburgh Defense,3300,4.6,0.0,10.5
+Jaylen Waddle,5700,4.2,0.0,15.8
+Darren Waller,3400,4.2,0.0,10.5
+Jakobi Meyers,4500,3.9,0.0,15.8
+Mark Andrews,3500,3.2,0.0,10.5
+Jahmyr Gibbs,10000,3.2,0.0,10.5
