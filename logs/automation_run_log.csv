@@ -5344,3 +5344,11 @@ timestamp_utc,trigger_type,site,step,status
 2026-11-22T18:01:58.261799+00:00,light_vegas_refresh,dk,dk_showdown_wk11_CIN_WAS_23Nov2026,cheat_sheet,skipped
 2026-11-22T18:02:20.845943+00:00,light_vegas_refresh,dk,dk_showdown_wk11_MIN_SF_22Nov2026,cheat_sheet,skipped
 2026-11-22T18:01:36.501494+00:00,light_vegas_refresh,fd,fd_classic_wk11_main_17Nov2026,cheat_sheet,success
+2026-11-23T00:08:12.331958+00:00,full_refresh_dispatch,dk,dk_showdown_wk11_CIN_WAS_23Nov2026,build_projections,success
+2026-11-23T00:08:12.331958+00:00,full_refresh_dispatch,dk,dk_showdown_wk11_CIN_WAS_23Nov2026,status_apply,success
+2026-11-23T00:08:12.331958+00:00,full_refresh_dispatch,dk,dk_showdown_wk11_CIN_WAS_23Nov2026,pivot_finder,skipped
+2026-11-23T00:08:12.331958+00:00,full_refresh_dispatch,dk,dk_showdown_wk11_CIN_WAS_23Nov2026,cheat_sheet,skipped
+2026-11-23T00:08:33.532775+00:00,full_refresh_dispatch,dk,dk_showdown_wk11_MIN_SF_22Nov2026,build_projections,success
+2026-11-23T00:08:33.532775+00:00,full_refresh_dispatch,dk,dk_showdown_wk11_MIN_SF_22Nov2026,status_apply,success
+2026-11-23T00:08:33.532775+00:00,full_refresh_dispatch,dk,dk_showdown_wk11_MIN_SF_22Nov2026,pivot_finder,skipped
+2026-11-23T00:08:33.532775+00:00,full_refresh_dispatch,dk,dk_showdown_wk11_MIN_SF_22Nov2026,cheat_sheet,skipped
