@@ -5352,3 +5352,11 @@ timestamp_utc,trigger_type,site,step,status
 2026-11-23T00:08:33.532775+00:00,full_refresh_dispatch,dk,dk_showdown_wk11_MIN_SF_22Nov2026,status_apply,success
 2026-11-23T00:08:33.532775+00:00,full_refresh_dispatch,dk,dk_showdown_wk11_MIN_SF_22Nov2026,pivot_finder,skipped
 2026-11-23T00:08:33.532775+00:00,full_refresh_dispatch,dk,dk_showdown_wk11_MIN_SF_22Nov2026,cheat_sheet,skipped
+2026-11-23T00:12:53.274157+00:00,injury_refresh_scheduled,dk,dk_showdown_wk11_CIN_WAS_23Nov2026,build_projections,success
+2026-11-23T00:12:53.274157+00:00,injury_refresh_scheduled,dk,dk_showdown_wk11_CIN_WAS_23Nov2026,status_apply,success
+2026-11-23T00:12:53.274157+00:00,injury_refresh_scheduled,dk,dk_showdown_wk11_CIN_WAS_23Nov2026,pivot_finder,skipped
+2026-11-23T00:12:53.274157+00:00,injury_refresh_scheduled,dk,dk_showdown_wk11_CIN_WAS_23Nov2026,cheat_sheet,skipped
+2026-11-23T00:12:37.724086+00:00,injury_refresh_scheduled,dk,dk_showdown_wk11_MIN_SF_22Nov2026,build_projections,success
+2026-11-23T00:12:37.724086+00:00,injury_refresh_scheduled,dk,dk_showdown_wk11_MIN_SF_22Nov2026,status_apply,success
+2026-11-23T00:12:37.724086+00:00,injury_refresh_scheduled,dk,dk_showdown_wk11_MIN_SF_22Nov2026,pivot_finder,skipped
+2026-11-23T00:12:37.724086+00:00,injury_refresh_scheduled,dk,dk_showdown_wk11_MIN_SF_22Nov2026,cheat_sheet,skipped
