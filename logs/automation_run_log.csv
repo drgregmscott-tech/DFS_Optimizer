@@ -5372,3 +5372,7 @@ timestamp_utc,trigger_type,site,step,status
 2026-11-23T23:37:01.007642+00:00,injury_refresh_scheduled,dk,dk_showdown_wk11_CIN_WAS_23Nov2026,status_apply,success
 2026-11-23T23:37:01.007642+00:00,injury_refresh_scheduled,dk,dk_showdown_wk11_CIN_WAS_23Nov2026,pivot_finder,skipped
 2026-11-23T23:37:01.007642+00:00,injury_refresh_scheduled,dk,dk_showdown_wk11_CIN_WAS_23Nov2026,cheat_sheet,skipped
+2026-11-23T23:56:27.459059+00:00,injury_refresh_scheduled,dk,dk_showdown_wk11_CIN_WAS_23Nov2026,build_projections,success
+2026-11-23T23:56:27.459059+00:00,injury_refresh_scheduled,dk,dk_showdown_wk11_CIN_WAS_23Nov2026,status_apply,success
+2026-11-23T23:56:27.459059+00:00,injury_refresh_scheduled,dk,dk_showdown_wk11_CIN_WAS_23Nov2026,pivot_finder,skipped
+2026-11-23T23:56:27.459059+00:00,injury_refresh_scheduled,dk,dk_showdown_wk11_CIN_WAS_23Nov2026,cheat_sheet,skipped
