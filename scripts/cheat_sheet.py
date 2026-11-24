@@ -11,9 +11,9 @@ minimums replace them). Fixed list sizes: QB 6 / RB 15 / WR 20 / TE 10 / DST 6. 
 are unchanged; new columns are appended. Ownership never enters ranking. Tier cutoffs are
 fixed dollars, "reasoned, not fitted" (analysis/nfl_cheat_sheet_v4/PLAN.md section 2d).
 
-Weekly "top plays" cheat sheet -- a ranked, fixed-size list per position
-(QB 5 / RB 10 / WR 15 / TE 5 / DST 5) for the main classic slate, plus
-Value / Leverage / Value Candidate bonus rows, each row carrying a 1-10
+Weekly "top plays" cheat sheet -- a ranked list per position (v4 sizes QB 6 / RB 15 /
+WR 20 / TE 10 / DST 6; v3 --no-tiers sizes QB 5 / RB 10 / WR 15 / TE 5 / DST 5) for the
+main classic slate, plus Value / Leverage bonus rows (Value Candidate rows only in v3), each row carrying a 1-10
 confidence score, salary/projection/ownership for reference, and a short
 plain-English rationale (newline-separated bullets). It is a data-grounded
 GUIDE, not a validation or a prediction: every word in a bullet is meant to
@@ -1097,7 +1097,10 @@ def _tag_bar(row: pd.Series, tier: str, ptsk_p75: float, team_implied_total: dic
                           f"Setup {st} (#{int(row['_setup_rank'])}/{int(row['_setup_n'])})"))
     else:
         rt = row["_role_tier"]
-        items.append((TAG_ROLE_TONE.get(rt, "neu"), f"{_cap(rt)} ({row['_rs']:.0f})"))
+        role_tone = TAG_ROLE_TONE.get(rt, "neu")
+        if rt == "unproven new role" and row["_rs"] < 45:
+            role_tone = "neg"
+        items.append((role_tone, f"{_cap(rt)} ({row['_rs']:.0f})"))
         if row["_stepup_frac"] >= STEPUP_COUNT_FRAC:
             items.append(("warn", "Step-up role"))
         k = row["_risk_tier"]
@@ -1110,16 +1113,25 @@ def _tag_bar(row: pd.Series, tier: str, ptsk_p75: float, team_implied_total: dic
     return ";".join(f"{tone}:{text}" for tone, text in items)
 
 
-def _risk_badges(row: pd.Series, base_badges: list, value_tier_row: bool = False) -> list:
-    """Solid Value / Boom/Bust Dart / Fragile Chalk (skill positions only)."""
+def _risk_badges(row: pd.Series, base_badges: list, value_tier_row: bool = False,
+                 fragile_fill: bool = False, ptsk_p75: float = np.inf) -> list:
+    """Solid Value / Boom/Bust Dart / Fragile Chalk (skill positions only).
+    A Value-tier row (tiered lists only) must
+    clear the green pts/$1K chip bar (>= ptsk_p75) to earn Solid Value. A fragile fill in any
+    tier is a warning row, so it always gets Boom/Bust Dart."""
     if row["position"] == "DST":
         return []
     tags = []
-    is_val = value_tier_row or any(b in ("Value Pick", "Value Candidate") for b in base_badges)
+    badge_val = any(b in ("Value Pick", "Value Candidate") for b in base_badges)
+    is_val = value_tier_row or badge_val
     rs, tier = row["_rs"], row["_risk_tier"]
-    if is_val and rs >= SOLID_VALUE_MIN_RS and tier in ("low bust risk", "moderate bust risk"):
+    ptsk = row["final_projection"] / (row["salary"] / 1000.0)
+    # v4 tiered lists only (v3 / --no-tiers behavior is unchanged): bar = the green pts/$1K chip. An OR
+    # confidence>=4 clause was tried and let ~all rows through, so it is not used.
+    good_value = (not value_tier_row) or ptsk >= ptsk_p75
+    if is_val and good_value and rs >= SOLID_VALUE_MIN_RS and tier in ("low bust risk", "moderate bust risk"):
         tags.append("Solid Value")
-    if is_val and (rs < DART_MAX_RS or tier == "high bust risk"):
+    if (is_val or fragile_fill) and (rs < DART_MAX_RS or tier == "high bust risk" or fragile_fill):
         tags.append("Boom/Bust Dart")
     sole_inheritor = STEPUP_USAGE_FROM_ENGINE and bool(row.get("_sole")) and row["_stepup_frac"] >= STEPUP_COUNT_FRAC
     if (not sole_inheritor) and row["estimated_ownership_pct"] >= FRAGILE_CHALK_OWN and (
@@ -1131,10 +1143,11 @@ def _risk_badges(row: pd.Series, base_badges: list, value_tier_row: bool = False
 def _build_row(pos: str, row: pd.Series, rank, is_bonus: bool, base_badges: list,
                avg_implied_total: float, team_implied_total: dict, dst_miss: float,
                conf_cap: int = None, site: str = "dk", tiered: bool = False,
-               tier_rank=None, ptsk_p75: float = np.inf) -> dict:
+               tier_rank=None, ptsk_p75: float = np.inf, fragile_fill: bool = False) -> dict:
     top_factors, rationale = build_rationale(row, avg_implied_total, team_implied_total, dst_miss)
     tier = price_tier(site, pos, row["salary"])
-    badge = ", ".join(list(base_badges) + _risk_badges(row, base_badges, value_tier_row=tiered and tier == "Value"))
+    badge = ", ".join(list(base_badges) + _risk_badges(row, base_badges, value_tier_row=tiered and tier == "Value",
+                                                                fragile_fill=fragile_fill, ptsk_p75=ptsk_p75))
     is_dst = pos == "DST"
     return {
         "price_tier": tier,
@@ -1146,7 +1159,7 @@ def _build_row(pos: str, row: pd.Series, rank, is_bonus: bool, base_badges: list
         "value_per_k": round(float(row["final_projection"] / (row["salary"] / 1000.0)), 2),
         "history_trend": _history_trend(row),
         "setup_tier": row["_setup_tier"] if is_dst else "",
-        "tag_bar": _tag_bar(row, tier, ptsk_p75, team_implied_total),
+        "tag_bar": _tag_bar(row, tier, ptsk_p75, team_implied_total) if tiered else "",
         "position": pos,
         "rank": rank,
         "player_id": row["player_id"],
@@ -1292,7 +1305,8 @@ def build_cheat_sheet(site: str, slate_id: str, season: int, week: int,
             return _build_row(pos, row, rank, is_bonus, badges_by_id.get(row["player_id"], []),
                               avg_implied_total, team_implied_total, dst_miss,
                               conf_cap=floor_conf if is_bonus else None,
-                              site=site, tiered=tiered, tier_rank=tr, ptsk_p75=ptsk_p75[pos])
+                              site=site, tiered=tiered, tier_rank=tr, ptsk_p75=ptsk_p75[pos],
+                              fragile_fill=tiered and row["player_id"] in fragile_fill)
 
         for rank, (_, row) in enumerate(top.iterrows(), start=1):
             rows.append(mk(row, rank, False))

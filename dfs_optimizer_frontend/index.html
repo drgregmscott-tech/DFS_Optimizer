@@ -4486,7 +4486,7 @@ in this browser's localStorage.</p>
           var k = it.indexOf(":");
           var tone = k > 0 ? it.slice(0, k) : "neu";
           var text = k > 0 ? it.slice(k + 1) : it;
-          return '<span class="cheat-chip ' + escapeHtml(tone) + '">' + escapeHtml(text) + '</span>';
+          return '<span class="cheat-chip ' + (/^(prem|mid|val|pos|neg|warn|neu)$/.test(tone) ? tone : "neu") + '">' + escapeHtml(text) + '</span>';
         }).join("") + '</div>';
       }
       return '<div class="cheat-row' + (isBonus ? " bonus" : "") + '">' +
