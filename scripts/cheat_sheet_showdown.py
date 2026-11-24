@@ -248,6 +248,8 @@ OUTPUT_COLUMNS = [
     "role_security", "role_tier", "risk_tier", "setup_score", "conf_basis",
     "cpt_salary", "cpt_projection", "cpt_ownership_pct", "value_per_k",
 ]
+# v4 (2026-11-24): appended after the 25 original columns. Showdown gets the tag bar only (no price tiers).
+V4_EXTRA_COLUMNS = ["matchup_tier", "env_tier", "history_trend", "setup_tier", "tag_bar"]
 
 
 def canonical_position(pos: str) -> str:
@@ -1179,6 +1181,69 @@ def build_rationale(row, cpt_row, ctx: dict) -> tuple:
     return factors, "\n".join(f"• {b}" for b in bullets)
 
 
+_TAG_ROLE_TONE = {"locked-in role": "pos", "solid role": "neu", "partial role": "warn",
+                  "part-time role": "warn", "punt-level role": "neg", "unproven new role": "warn",
+                  "backup QB": "neg"}
+_TAG_RISK_TONE = {"low bust risk": "pos", "moderate bust risk": "neu", "elevated bust risk": "warn",
+                  "high bust risk": "neg", "very high bust risk": "neg"}
+_TAG_MATCHUP_TONE = {"smash spot": "pos", "favorable": "pos", "neutral": "neu",
+                     "below average": "neg", "tough": "neg"}
+_TAG_ENV_TONE = {"elite": "pos", "plus": "pos", "middling": "neu", "low-scoring": "neg",
+                 "bottom-tier": "neg", "tough": "neg", "brutal": "neg"}
+_TAG_SETUP_TONE = {"strong": "pos", "good": "pos", "neutral": "neu", "poor": "neg"}
+
+
+def _cap(text: str) -> str:
+    return text[:1].upper() + text[1:]
+
+
+def _history_trend(row: pd.Series) -> str:
+    """'Proj above avg (+4.1)' / 'Proj below avg (-3.5)' only when the gap clears HISTORY_DIFF_MARGIN."""
+    avg = row.get("dk_avg_ppg")
+    gp = row.get("games_played")
+    gp = 0 if not _is_num(gp) else int(gp)
+    if (row["position"] not in ("DST", "K") and gp <= 0) or not _is_num(avg):
+        return ""
+    d = row["final_projection"] - avg
+    if d >= HISTORY_DIFF_MARGIN:
+        return f"Proj above avg (+{d:.1f})"
+    if d <= -HISTORY_DIFF_MARGIN:
+        return f"Proj below avg ({d:.1f})"
+    return ""
+
+
+def _tag_bar(row: pd.Series, tim: dict) -> str:
+    """'tone:text' items joined by ';' (the frontend colors them). Numbers match the CSV columns."""
+    pos = row["position"]
+    items = []
+    if pos not in ("K", "DST"):
+        mt = row["_m_tier_q"]
+        items.append((_TAG_MATCHUP_TONE.get(mt, "neu"), f"{_cap(mt)} matchup"))
+    et = row["_env_tier"]
+    tot = tim.get(row["opponent"]) if pos == "DST" else tim.get(row["team"])
+    pre = "opp " if pos == "DST" else ""
+    items.append((_TAG_ENV_TONE.get(et, "neu"),
+                  f"{_cap(et)} env ({pre}{tot:.1f})" if _is_num(tot) else f"{_cap(et)} env"))
+    if pos in SKILL_POSITIONS:
+        rt = row["_role_tier"]
+        items.append((_TAG_ROLE_TONE.get(rt, "neu"), f"{_cap(rt)} ({row['_rs']:.0f})"))
+        if row["_stepup_frac"] >= STEPUP_COUNT_FRAC:
+            items.append(("warn", "Step-up role"))
+        k = row["_risk_tier"]
+        items.append((_TAG_RISK_TONE.get(k, "neu"), _cap(k)))
+    elif pos == "DST" and row["_setup_tier"]:
+        st = row["_setup_tier"]
+        items.append((_TAG_SETUP_TONE.get(st, "neu"), f"Setup {st}"))
+    ptsk = row["final_projection"] / (row["salary"] / 1000.0)
+    vt = value_tier(row["_value_z"])
+    tone = "pos" if vt.startswith("cheap") else ("neg" if vt.startswith("pricey") else "neu")
+    items.append((tone, f"{ptsk:.1f} pts/$1K ({vt})"))
+    trend = _history_trend(row)
+    if trend:
+        items.append(("neu", trend))
+    return ";".join(f"{t}:{x}" for t, x in items)
+
+
 def _risk_badges(row: pd.Series) -> list:
     """Solid Value / Boom/Bust Dart / Fragile Chalk (skill positions only; v5 SPEC H).
     Open call 3 default: Fragile Chalk replaces Solid Value on the same row."""
@@ -1221,7 +1286,7 @@ def build_cheat_sheet_showdown(site: str, slate_id: str, season: int, week: int)
                   & df["position"].isin(SKILL_POSITIONS + ("K", "DST"))].copy()
     cpt_by_pid = {r["player_id"]: r for _, r in df[df["roster_role"] == "CPT"].iterrows()}
     if flex_all.empty or (flex_all["final_projection"] > PROJECTION_THRESHOLD).sum() == 0:
-        return pd.DataFrame(columns=OUTPUT_COLUMNS)
+        return pd.DataFrame(columns=OUTPUT_COLUMNS + V4_EXTRA_COLUMNS)
 
     tim, tou = build_team_maps(flex_all)
     display_matchup = load_display_matchup_factors(site, season, week)
@@ -1327,8 +1392,13 @@ def build_cheat_sheet_showdown(site: str, slate_id: str, season: int, week: int)
             "cpt_projection": cpt_row["final_projection"] if cpt_row is not None else np.nan,
             "cpt_ownership_pct": _num(cpt_row, "estimated_ownership_pct") if cpt_row is not None else np.nan,
             "value_per_k": round(float(row["_value_raw"]), 2),
+            "matchup_tier": row["_m_tier_q"] if pos not in ("K", "DST") else "",
+            "env_tier": row["_env_tier"],
+            "history_trend": _history_trend(row),
+            "setup_tier": row["_setup_tier"] if pos == "DST" else "",
+            "tag_bar": _tag_bar(row, tim),
         })
-    return pd.DataFrame(rows, columns=OUTPUT_COLUMNS)
+    return pd.DataFrame(rows, columns=OUTPUT_COLUMNS + V4_EXTRA_COLUMNS)
 
 
 if __name__ == "__main__":

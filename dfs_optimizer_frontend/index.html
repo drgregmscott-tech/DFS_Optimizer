@@ -607,6 +607,29 @@
     vertical-align: middle;
   }
   .cheat-tag.bonus { color: var(--amber); background: var(--amber-dim); }
+  /* v4 tag bar + per-badge colors (only rendered when the CSV has a tag_bar column) */
+  .cheat-tag.t-lev { color: #5aa9ff; background: rgba(90,169,255,0.14); }
+  .cheat-tag.t-val { color: var(--good); background: rgba(63,191,127,0.14); }
+  .cheat-tag.t-dart { color: var(--amber); background: var(--amber-dim); }
+  .cheat-tag.t-chalk { color: var(--bad); background: rgba(239,68,68,0.12); }
+  .cheat-chips { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 6px; }
+  .cheat-chip {
+    font-size: 11px;
+    line-height: 1.3;
+    color: var(--dim);
+    background: rgba(255,255,255,0.05);
+    border-radius: 4px;
+    padding: 2px 7px;
+    max-width: 100%;
+  }
+  .cheat-chip.pos { color: var(--good); background: rgba(63,191,127,0.14); }
+  .cheat-chip.neg { color: var(--bad); background: rgba(239,68,68,0.12); }
+  .cheat-chip.warn { color: var(--amber); background: var(--amber-dim); }
+  .cheat-chip.prem, .cheat-chip.mid, .cheat-chip.val { font-weight: 700; text-transform: uppercase; letter-spacing: 0.03em; font-size: 10px; }
+  .cheat-chip.prem { color: var(--amber); background: var(--amber-dim); }
+  .cheat-chip.mid { color: #5aa9ff; background: rgba(90,169,255,0.14); }
+  .cheat-chip.val { color: var(--good); background: rgba(63,191,127,0.14); }
+  .cheat-tiercount { font-size: 12px; color: var(--dim); padding: 8px 14px 2px; }
 
   /* ---------------- Integrity strip ---------------- */
 
@@ -4448,6 +4471,24 @@ in this browser's localStorage.</p>
       var tagHtml = r.badge
         ? '<span class="cheat-tag' + (isBonus ? " bonus" : "") + '">' + (isBonus ? "Bonus — " : "") + escapeHtml(r.badge) + '</span>'
         : "";
+      var chipsHtml = "";
+      if (r.tag_bar) {
+        // v4 CSV: per-badge colors + color-coded tag bar ("tone:text" items joined by ";"). Old CSVs skip this branch.
+        if (r.badge) {
+          tagHtml = String(r.badge).split(",").map(function (b, i) {
+            b = b.trim();
+            var cls = /Leverage/.test(b) ? " t-lev" : /Fragile Chalk/.test(b) ? " t-chalk"
+              : /Dart/.test(b) ? " t-dart" : /Value/.test(b) ? " t-val" : "";
+            return '<span class="cheat-tag' + cls + '">' + (isBonus && i === 0 ? "Bonus — " : "") + escapeHtml(b) + '</span>';
+          }).join("");
+        }
+        chipsHtml = '<div class="cheat-chips">' + String(r.tag_bar).split(";").map(function (it) {
+          var k = it.indexOf(":");
+          var tone = k > 0 ? it.slice(0, k) : "neu";
+          var text = k > 0 ? it.slice(k + 1) : it;
+          return '<span class="cheat-chip ' + escapeHtml(tone) + '">' + escapeHtml(text) + '</span>';
+        }).join("") + '</div>';
+      }
       return '<div class="cheat-row' + (isBonus ? " bonus" : "") + '">' +
         '<div class="cheat-row-stats">' +
         '<div class="cheat-rank">' + (isBonus ? "+" : escapeHtml(hasOverall ? r.overall_rank : r.rank)) + '</div>' +
@@ -4459,10 +4500,23 @@ in this browser's localStorage.</p>
         '<div class="cheat-stat">' + (parseFloat(r.estimated_ownership_pct) || 0).toFixed(1) + '% own</div>' +
         '<div class="cheat-conf-badge ' + confidenceBadgeClass(conf) + '" title="Confidence out of 10">' + conf + '/10</div>' +
         '</div>' +
+        chipsHtml +
         '<div class="cheat-rationale">' + escapeHtml(r.rationale) + '</div>' +
         '</div>';
     }).join("");
-    tableEl.innerHTML = rowsHtml;
+    // v4: tier count line on a single-position tab ("Premium 4 · Mid 6 · Value 5"), from the rows themselves.
+    var countHtml = "";
+    var selTabs = allActive ? [] : Object.keys(state.cheatSheetTabs);
+    if (selTabs.length === 1 && rows.some(function (r) { return r.price_tier; })) {
+      var tc = {};
+      rows.forEach(function (r) {
+        if (String(r.is_bonus) !== "True" && r.price_tier) tc[r.price_tier] = (tc[r.price_tier] || 0) + 1;
+      });
+      var parts = ["Premium", "Mid", "Value"].filter(function (t) { return t !== "Mid" || selTabs[0] !== "DST"; })
+        .map(function (t) { return t + " " + (tc[t] || 0); });
+      countHtml = '<div class="cheat-tiercount">' + parts.join(" · ") + '</div>';
+    }
+    tableEl.innerHTML = countHtml + rowsHtml;
   }
 
   document.getElementById("cheatSheetTabs").addEventListener("click", function (e) {

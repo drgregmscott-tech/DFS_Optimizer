@@ -1,6 +1,15 @@
 """
-cheat_sheet.py  (v3, 2026-11-16)
+cheat_sheet.py  (v4, 2026-11-24; v3 behavior preserved behind TIERED_LISTS=False / --no-tiers)
 ================================
+
+v4 (owner request, 2026-11-24): (1) every row gets a color-coded tag bar (`tag_bar` column,
+"tone:text" items joined by ";") -- a quick look at why the player made the list; (2) the list
+per position is built by PRICE TIER (Premium / Mid / Value; DST Premium / Value) with per-tier
+minimums, ranked by the unchanged quality score Q, so the sheet shows top plays at every price
+point and is not just a re-sort of the projections. Value Candidate rows retire (Value-tier
+minimums replace them). Fixed list sizes: QB 6 / RB 15 / WR 20 / TE 10 / DST 6. Columns 1-20
+are unchanged; new columns are appended. Ownership never enters ranking. Tier cutoffs are
+fixed dollars, "reasoned, not fitted" (analysis/nfl_cheat_sheet_v4/PLAN.md section 2d).
 
 Weekly "top plays" cheat sheet -- a ranked, fixed-size list per position
 (QB 5 / RB 10 / WR 15 / TE 5 / DST 5) for the main classic slate, plus
@@ -97,6 +106,31 @@ DEFENSE_POSITION_LABELS = {"DST", "D", "DEF"}
 # Fixed per-position list sizes -- user-specified, held constant regardless
 # of slate strength.
 TOP_N_BY_POSITION = {"QB": 5, "RB": 10, "WR": 15, "TE": 5, "DST": 5}
+
+# ---- v4: price tiers / tiered lists (PLAN.md sections 2d, 3a) ----------------
+TIERED_LISTS = True      # False restores v3 selection and the 20-column CSV exactly
+LIST_SIZE = {"QB": 6, "RB": 15, "WR": 20, "TE": 10, "DST": 6}
+# (premium_floor, mid_floor); mid_floor None = two-tier position (DST). Under the lowest floor = Value.
+PRICE_TIERS = {
+    "dk": {"QB": (6800, 5800), "RB": (7000, 5800), "WR": (7000, 5500), "TE": (5500, 4000), "DST": (3300, None)},
+    "fd": {"QB": (8400, 7600), "RB": (8100, 6800), "WR": (7900, 6700), "TE": (6700, 5300), "DST": (4500, None)},
+}
+TIER_ORDER = ("Premium", "Mid", "Value")
+TIER_MIN = {
+    "QB": {"Premium": 0, "Mid": 0, "Value": 1},
+    "RB": {"Premium": 3, "Mid": 3, "Value": 3},
+    "WR": {"Premium": 4, "Mid": 4, "Value": 4},
+    "TE": {"Premium": 1, "Mid": 2, "Value": 2},
+    "DST": {"Premium": 1, "Value": 2},
+}
+TIER_MAX = {
+    "QB": {"Premium": 6, "Mid": 6, "Value": 6},
+    "RB": {"Premium": 7, "Mid": 7, "Value": 6},
+    "WR": {"Premium": 9, "Mid": 9, "Value": 8},
+    "TE": {"Premium": 3, "Mid": 5, "Value": 5},
+    "DST": {"Premium": 4, "Value": 5},
+}
+VALUE_TIER_PTSK_PCTILE = 0.75   # "x.x pts/$1K" chip is green at/above this percentile of the position's startable pool
 
 FACTOR_WEIGHTS = {
     "value": 1.0,
@@ -935,14 +969,153 @@ OUTPUT_COLUMNS = [
     "composite_score", "top_factors", "rationale", "badge", "is_bonus",
     "role_security", "role_tier", "risk_tier", "setup_score", "conf_basis",
 ]
+V4_EXTRA_COLUMNS = [
+    "price_tier", "tier_rank", "tier_band", "matchup_tier", "matchup_factor_display",
+    "env_tier", "value_per_k", "history_trend", "setup_tier", "tag_bar",
+]
 
 
-def _risk_badges(row: pd.Series, base_badges: list) -> list:
+# =============================================================================
+# v4: price tiers, tiered selection, tag bar
+# =============================================================================
+
+def price_tier(site: str, pos: str, salary) -> str:
+    prem, mid = PRICE_TIERS[site][pos]
+    if salary >= prem:
+        return "Premium"
+    if mid is not None and salary >= mid:
+        return "Mid"
+    return "Value"
+
+
+def tier_band(site: str, pos: str, tier: str) -> str:
+    prem, mid = PRICE_TIERS[site][pos]
+    if tier == "Premium":
+        return f"${prem:,}+"
+    if tier == "Mid":
+        return f"${mid:,}-{prem - 100:,}"
+    return f"under ${(mid if mid is not None else prem):,}"
+
+
+def select_tiered(gated: pd.DataFrame, startable: pd.DataFrame, pos: str, site: str,
+                  slate_id: str = "") -> tuple:
+    """Pick LIST_SIZE[pos] rows by quality Q with per-tier minimums/maximums.
+    Returns (rows_df sorted by Q, set of fragile-fill player_ids).
+    1) top `min` per tier from the role-gated pool; a short tier is filled from startable-but-fragile
+       players (they keep their red role/risk chip); 2) remaining slots by Q across tiers within `max`.
+    Tiers whose pool is short get a NOTE on stderr."""
+    size = LIST_SIZE[pos]
+    tiers = [t for t in TIER_ORDER if t in TIER_MIN[pos]]
+    key = ["_q", "composite_score"]
+    g = gated.copy()
+    g["_tier"] = g["salary"].map(lambda x: price_tier(site, pos, x))
+    st = startable.copy()
+    st["_tier"] = st["salary"].map(lambda x: price_tier(site, pos, x))
+    g = g.sort_values(key, ascending=False)
+    chosen, fragile = [], set()
+    count = {t: 0 for t in tiers}
+    for t in tiers:
+        need = TIER_MIN[pos][t]
+        if need <= 0:
+            continue
+        pick = g[g["_tier"] == t].head(need)
+        chosen.extend(pick.index.tolist())
+        count[t] += len(pick)
+        if len(pick) < need:
+            extra = st[(st["_tier"] == t) & (~st.index.isin(g.index))].sort_values(key, ascending=False)
+            extra = extra.head(need - len(pick))
+            chosen.extend(extra.index.tolist())
+            fragile.update(extra["player_id"].tolist())
+            count[t] += len(extra)
+            if count[t] < need:
+                print(f"NOTE: {pos} {t} tier has only {count[t]}/{need} startable players on "
+                      f"{site}/{slate_id}.", file=sys.stderr)
+    for idx, r in g.iterrows():
+        if len(chosen) >= size:
+            break
+        if idx in chosen:
+            continue
+        if count[r["_tier"]] >= TIER_MAX[pos][r["_tier"]]:
+            continue
+        chosen.append(idx)
+        count[r["_tier"]] += 1
+    if len(chosen) < size:
+        print(f"NOTE: only {len(chosen)}/{size} eligible {pos} players found for {site}/{slate_id}.",
+              file=sys.stderr)
+    allp = pd.concat([g, st[st.index.isin(chosen) & ~st.index.isin(g.index)]])
+    out = allp.loc[chosen].sort_values(key, ascending=False)
+    return out, fragile
+
+
+TAG_ROLE_TONE = {"locked-in role": "pos", "solid role": "neu", "partial role": "warn",
+                 "fragile role": "neg", "unproven new role": "warn"}
+TAG_RISK_TONE = {"low bust risk": "pos", "moderate bust risk": "neu", "elevated bust risk": "warn",
+                 "high bust risk": "neg"}
+TAG_MATCHUP_TONE = {"smash spot": "pos", "favorable": "pos", "neutral": "neu",
+                    "below average": "neg", "tough": "neg"}
+TAG_ENV_TONE = {"elite": "pos", "plus": "pos", "middling": "neu", "low-scoring": "neg",
+                "bottom-tier": "neg", "tough": "neg", "brutal": "neg"}
+TAG_SETUP_TONE = {"strong": "pos", "good": "pos", "neutral": "neu", "poor": "neg"}
+TAG_TIER_TONE = {"Premium": "prem", "Mid": "mid", "Value": "val"}
+
+
+def _cap(text: str) -> str:
+    return text[:1].upper() + text[1:]
+
+
+def _history_trend(row: pd.Series) -> str:
+    """'Proj above avg (+4.1)' / 'Proj below avg (-3.5)' only when the gap clears HISTORY_DIFF_MARGIN
+    and real history exists; else ''."""
+    pos = row["position"]
+    avg = row.get("dk_avg_ppg")
+    gp = row.get("games_played")
+    gp = 0 if not _is_num(gp) else int(gp)
+    if (pos != "DST" and gp <= 0) or not _is_num(avg):
+        return ""
+    d = row["final_projection"] - avg
+    if d >= HISTORY_DIFF_MARGIN:
+        return f"Proj above avg (+{d:.1f})"
+    if d <= -HISTORY_DIFF_MARGIN:
+        return f"Proj below avg ({d:.1f})"
+    return ""
+
+
+def _tag_bar(row: pd.Series, tier: str, ptsk_p75: float, team_implied_total: dict) -> str:
+    """'tone:text' items joined by ';'. Every number comes from the same field the rationale uses."""
+    pos = row["position"]
+    items = [(TAG_TIER_TONE[tier], tier)]
+    mt = row["_m_tier"]
+    items.append((TAG_MATCHUP_TONE.get(mt, "neu"), f"{_cap(mt)} matchup ({float(row['_display_matchup']):.2f}x)"))
+    et = row["_env_tier"]
+    tot = team_implied_total.get(row["opponent"]) if pos == "DST" else row["implied_total"]
+    items.append((TAG_ENV_TONE.get(et, "neu"),
+                  f"{_cap(et)} env ({'opp ' if pos == 'DST' else ''}{tot:.1f})" if _is_num(tot) else f"{_cap(et)} env"))
+    if pos == "DST":
+        st = row["_setup_tier"]
+        if st:
+            items.append((TAG_SETUP_TONE.get(st, "neu"),
+                          f"Setup {st} (#{int(row['_setup_rank'])}/{int(row['_setup_n'])})"))
+    else:
+        rt = row["_role_tier"]
+        items.append((TAG_ROLE_TONE.get(rt, "neu"), f"{_cap(rt)} ({row['_rs']:.0f})"))
+        if row["_stepup_frac"] >= STEPUP_COUNT_FRAC:
+            items.append(("warn", "Step-up role"))
+        k = row["_risk_tier"]
+        items.append((TAG_RISK_TONE.get(k, "neu"), _cap(k)))
+    ptsk = row["final_projection"] / (row["salary"] / 1000.0)
+    items.append(("pos" if ptsk >= ptsk_p75 else "neu", f"{ptsk:.1f} pts/$1K"))
+    trend = _history_trend(row)
+    if trend:
+        items.append(("neu", trend))
+    return ";".join(f"{tone}:{text}" for tone, text in items)
+
+
+def _risk_badges(row: pd.Series, base_badges: list, value_tier_row: bool = False) -> list:
     """Solid Value / Boom/Bust Dart / Fragile Chalk (skill positions only)."""
     if row["position"] == "DST":
         return []
     tags = []
-    is_val = any(b in ("Value Pick", "Value Candidate") for b in base_badges)
+    is_val = value_tier_row or any(b in ("Value Pick", "Value Candidate") for b in base_badges)
     rs, tier = row["_rs"], row["_risk_tier"]
     if is_val and rs >= SOLID_VALUE_MIN_RS and tier in ("low bust risk", "moderate bust risk"):
         tags.append("Solid Value")
@@ -957,11 +1130,23 @@ def _risk_badges(row: pd.Series, base_badges: list) -> list:
 
 def _build_row(pos: str, row: pd.Series, rank, is_bonus: bool, base_badges: list,
                avg_implied_total: float, team_implied_total: dict, dst_miss: float,
-               conf_cap: int = None) -> dict:
+               conf_cap: int = None, site: str = "dk", tiered: bool = False,
+               tier_rank=None, ptsk_p75: float = np.inf) -> dict:
     top_factors, rationale = build_rationale(row, avg_implied_total, team_implied_total, dst_miss)
-    badge = ", ".join(list(base_badges) + _risk_badges(row, base_badges))
+    tier = price_tier(site, pos, row["salary"])
+    badge = ", ".join(list(base_badges) + _risk_badges(row, base_badges, value_tier_row=tiered and tier == "Value"))
     is_dst = pos == "DST"
     return {
+        "price_tier": tier,
+        "tier_rank": tier_rank if tier_rank is not None else np.nan,
+        "tier_band": tier_band(site, pos, tier),
+        "matchup_tier": row["_m_tier"],
+        "matchup_factor_display": round(float(row["_display_matchup"]), 2),
+        "env_tier": row["_env_tier"],
+        "value_per_k": round(float(row["final_projection"] / (row["salary"] / 1000.0)), 2),
+        "history_trend": _history_trend(row),
+        "setup_tier": row["_setup_tier"] if is_dst else "",
+        "tag_bar": _tag_bar(row, tier, ptsk_p75, team_implied_total),
         "position": pos,
         "rank": rank,
         "player_id": row["player_id"],
@@ -985,7 +1170,10 @@ def _build_row(pos: str, row: pd.Series, rank, is_bonus: bool, base_badges: list
     }
 
 
-def build_cheat_sheet(site: str, slate_id: str, season: int, week: int) -> pd.DataFrame:
+def build_cheat_sheet(site: str, slate_id: str, season: int, week: int,
+                      tiered: bool = None) -> pd.DataFrame:
+    tiered = TIERED_LISTS if tiered is None else tiered
+    cols = OUTPUT_COLUMNS + V4_EXTRA_COLUMNS if tiered else OUTPUT_COLUMNS
     df_full = read_final_projections(site, slate_id)
     df = df_full[df_full["final_projection"] > 0].copy()
     team_implied_total = df.drop_duplicates("team").set_index("team")["implied_total"].to_dict()
@@ -999,7 +1187,7 @@ def build_cheat_sheet(site: str, slate_id: str, season: int, week: int) -> pd.Da
             continue  # ignore anything outside the five tracked positions
         scored.append(score_position_group(group, team_implied_total))
     if not scored:
-        return pd.DataFrame(columns=OUTPUT_COLUMNS)
+        return pd.DataFrame(columns=cols)
     scored_df = pd.concat(scored, ignore_index=True)
 
     # Display-only real DVP signal for the matchup bullet (see docstring).
@@ -1029,8 +1217,11 @@ def build_cheat_sheet(site: str, slate_id: str, season: int, week: int) -> pd.Da
     scored_df = compute_quality(scored_df)
     dst_miss = load_dst_typical_miss()
 
+    ptsk_p75 = {p: float(g.loc[g["_startable"], "_value_raw"].quantile(VALUE_TIER_PTSK_PCTILE))
+                for p, g in scored_df.groupby("position")}
+
     rows = []
-    for pos, top_n in TOP_N_BY_POSITION.items():
+    for pos, top_n in (LIST_SIZE if tiered else TOP_N_BY_POSITION).items():
         pool = scored_df[scored_df["position"] == pos]
         if pool.empty:
             print(f"WARNING: no eligible {pos} players found for {site}/{slate_id} "
@@ -1042,10 +1233,15 @@ def build_cheat_sheet(site: str, slate_id: str, season: int, week: int) -> pd.Da
         elig = pool[pool["_startable"]]
         if pos != "DST":
             elig = elig[elig["_rs"] >= RS_MAIN_LIST_MIN]
-        if len(elig) < top_n:
+        if len(elig) < top_n and not tiered:
             print(f"NOTE: only {len(elig)}/{top_n} eligible {pos} players found "
                   f"for {site}/{slate_id}.", file=sys.stderr)
-        top = elig.sort_values(["_q", "composite_score"], ascending=False).head(top_n).reset_index(drop=True)
+        if tiered:
+            top, fragile_fill = select_tiered(elig, pool[pool["_startable"]], pos, site, slate_id)
+            top = top.reset_index(drop=True)
+        else:
+            top = elig.sort_values(["_q", "composite_score"], ascending=False).head(top_n).reset_index(drop=True)
+            fragile_fill = set()
         top_ids = set(top["player_id"])
         floor_conf = int(top["confidence"].min()) if len(top) else None
 
@@ -1077,7 +1273,7 @@ def build_cheat_sheet(site: str, slate_id: str, season: int, week: int) -> pd.Da
         # Value Candidate rows (Wk9 Item A): RB/WR/TE, top 5 by raw $/pt not
         # already displayed.
         value_candidate_rows = []
-        if pos in VALUE_CANDIDATE_POSITIONS:
+        if pos in VALUE_CANDIDATE_POSITIONS and not tiered:
             candidates = pool[~pool["player_id"].isin(displayed_ids)].sort_values(
                 "_value_raw", ascending=False).head(VALUE_CANDIDATE_TOP_N)
             value_candidate_rows = [row for _, row in candidates.iterrows()]
@@ -1085,10 +1281,18 @@ def build_cheat_sheet(site: str, slate_id: str, season: int, week: int) -> pd.Da
                 displayed_ids.add(row["player_id"])
                 badges_by_id.setdefault(row["player_id"], []).append("Value Candidate")
 
+        tier_counter = {}
+
         def mk(row, rank, is_bonus):
+            tr = None
+            if tiered and not is_bonus:
+                t = price_tier(site, pos, row["salary"])
+                tier_counter[t] = tier_counter.get(t, 0) + 1
+                tr = tier_counter[t]
             return _build_row(pos, row, rank, is_bonus, badges_by_id.get(row["player_id"], []),
                               avg_implied_total, team_implied_total, dst_miss,
-                              conf_cap=floor_conf if is_bonus else None)
+                              conf_cap=floor_conf if is_bonus else None,
+                              site=site, tiered=tiered, tier_rank=tr, ptsk_p75=ptsk_p75[pos])
 
         for rank, (_, row) in enumerate(top.iterrows(), start=1):
             rows.append(mk(row, rank, False))
@@ -1109,7 +1313,7 @@ def build_cheat_sheet(site: str, slate_id: str, season: int, week: int) -> pd.Da
             rows.append(mk(row, bonus_rank, True))
             bonus_rank += 1
 
-    return pd.DataFrame(rows, columns=OUTPUT_COLUMNS)
+    return pd.DataFrame(rows, columns=cols)
 
 
 if __name__ == "__main__":
@@ -1118,12 +1322,18 @@ if __name__ == "__main__":
     parser.add_argument("--season", type=int, required=True)
     parser.add_argument("--week", type=int, required=True)
     parser.add_argument("--slate-id", type=str, required=True)
+    parser.add_argument("--out-dir", type=str, default=None,
+                        help="Write the CSV here instead of output/ (inputs are still read from output/)")
+    parser.add_argument("--no-tiers", action="store_true",
+                        help="v3 behavior: flat top-N lists, Value Candidate rows, 20-column CSV")
     args = parser.parse_args()
 
-    sheet = build_cheat_sheet(args.site, args.slate_id, args.season, args.week)
+    tiered = TIERED_LISTS and not args.no_tiers
+    sheet = build_cheat_sheet(args.site, args.slate_id, args.season, args.week, tiered=tiered)
 
-    OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
-    out_path = OUTPUT_DIR / f"cheat_sheet_{args.site}_{args.slate_id}.csv"
+    out_dir = Path(args.out_dir) if args.out_dir else OUTPUT_DIR
+    out_dir.mkdir(parents=True, exist_ok=True)
+    out_path = out_dir / f"cheat_sheet_{args.site}_{args.slate_id}.csv"
     sheet.to_csv(out_path, index=False)
 
     print(f"Wrote {len(sheet)} cheat sheet row(s) to {out_path}")
@@ -1131,5 +1341,10 @@ if __name__ == "__main__":
         for pos in TOP_N_BY_POSITION:
             pos_rows = sheet[sheet["position"] == pos]
             if not pos_rows.empty:
+                extra = ""
+                if tiered:
+                    main = pos_rows[~pos_rows["is_bonus"].astype(bool)]
+                    tc = main["price_tier"].value_counts()
+                    extra = ", tiers " + " / ".join(f"{t} {int(tc.get(t, 0))}" for t in TIER_ORDER if t in TIER_MIN[pos])
                 print(f"  {pos}: {len(pos_rows)} rows, confidence range "
-                      f"{pos_rows['confidence'].min()}-{pos_rows['confidence'].max()}")
+                      f"{pos_rows['confidence'].min()}-{pos_rows['confidence'].max()}{extra}")
