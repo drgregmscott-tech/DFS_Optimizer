@@ -400,6 +400,78 @@
       "season": 2026,
       "week": 11,
       "lock_time_utc": "2026-11-24T01:15:00Z"
+    },
+    {
+      "slate_id": "dk_classic_wk12_main_26Nov2026",
+      "site": "dk",
+      "format": "classic",
+      "season": 2026,
+      "week": 12,
+      "lock_time_utc": "2026-11-26T18:00:00Z"
+    },
+    {
+      "slate_id": "fd_classic_wk12_main_26Nov2026",
+      "site": "fd",
+      "format": "classic",
+      "season": 2026,
+      "week": 12,
+      "lock_time_utc": "2026-11-26T18:00:00Z"
+    },
+    {
+      "slate_id": "dk_classic_wk12_main_29Nov2026",
+      "site": "dk",
+      "format": "classic",
+      "season": 2026,
+      "week": 12,
+      "lock_time_utc": "2026-11-29T18:00:00Z"
+    },
+    {
+      "slate_id": "fd_classic_wk12_main_29Nov2026",
+      "site": "fd",
+      "format": "classic",
+      "season": 2026,
+      "week": 12,
+      "lock_time_utc": "2026-11-29T18:00:00Z"
+    },
+    {
+      "slate_id": "dk_showdown_wk12_GB_LAR_25Nov2026",
+      "site": "dk",
+      "format": "showdown",
+      "season": 2026,
+      "week": 12,
+      "lock_time_utc": "2026-11-26T01:00:00Z"
+    },
+    {
+      "slate_id": "dk_showdown_wk12_CHI_DET_26Nov2026",
+      "site": "dk",
+      "format": "showdown",
+      "season": 2026,
+      "week": 12,
+      "lock_time_utc": "2026-11-26T18:00:00Z"
+    },
+    {
+      "slate_id": "dk_showdown_wk12_PHI_DAL_26Nov2026",
+      "site": "dk",
+      "format": "showdown",
+      "season": 2026,
+      "week": 12,
+      "lock_time_utc": "2026-11-26T21:30:00Z"
+    },
+    {
+      "slate_id": "dk_showdown_wk12_KC_BUF_26Nov2026",
+      "site": "dk",
+      "format": "showdown",
+      "season": 2026,
+      "week": 12,
+      "lock_time_utc": "2026-11-27T01:20:00Z"
+    },
+    {
+      "slate_id": "dk_showdown_wk12_DEV_PIT_27Nov2026",
+      "site": "dk",
+      "format": "showdown",
+      "season": 2026,
+      "week": 12,
+      "lock_time_utc": "2026-11-27T20:00:00Z"
     }
   ]
 }

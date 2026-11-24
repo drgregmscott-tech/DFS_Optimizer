@@ -1,0 +1,109 @@
+Position,Name + ID,Name,ID,Roster Position,Salary,Game Info,TeamAbbrev,AvgPointsPerGame,Status,roster_role,name,site,salary,normalized_name,normalized_team,position_upper,slate_format,player_id,match_method,match_confidence
+RB,Jonah Coleman (45070015),Jonah Coleman,45070015,CPT,15000,DEN@PIT 11/27/2026 03:00PM ET,DEN,16.8,,CPT,Jonah Coleman,dk,15000,jonah coleman,DEN,RB,showdown,00-0041496,auto_exact,high
+QB,Bo Nix (45070016),Bo Nix,45070016,CPT,14400,DEN@PIT 11/27/2026 03:00PM ET,DEN,14.9,,CPT,Bo Nix,dk,14400,bo nix,DEN,QB,showdown,00-0039732,auto_exact,high
+RB,Jaylen Warren (45070017),Jaylen Warren,45070017,CPT,14100,DEN@PIT 11/27/2026 03:00PM ET,PIT,16.8,,CPT,Jaylen Warren,dk,14100,jaylen warren,PIT,RB,showdown,00-0037228,auto_exact,high
+QB,Aaron Rodgers (45070018),Aaron Rodgers,45070018,CPT,13200,DEN@PIT 11/27/2026 03:00PM ET,PIT,15.6,,CPT,Aaron Rodgers,dk,13200,aaron rodgers,PIT,QB,showdown,00-0023459,auto_exact,high
+WR,Jaylen Waddle (45070019),Jaylen Waddle,45070019,CPT,12600,DEN@PIT 11/27/2026 03:00PM ET,DEN,9.4,,CPT,Jaylen Waddle,dk,12600,jaylen waddle,DEN,WR,showdown,00-0036613,auto_exact,high
+WR,DK Metcalf (45070020),DK Metcalf,45070020,CPT,12000,DEN@PIT 11/27/2026 03:00PM ET,PIT,9.8,,CPT,DK Metcalf,dk,12000,dk metcalf,PIT,WR,showdown,00-0035640,auto_exact,high
+WR,Germie Bernard (45070021),Germie Bernard,45070021,CPT,11700,DEN@PIT 11/27/2026 03:00PM ET,PIT,7.8,,CPT,Germie Bernard,dk,11700,germie bernard,PIT,WR,showdown,00-0041489,auto_exact,high
+WR,Courtland Sutton (45070022),Courtland Sutton,45070022,CPT,11100,DEN@PIT 11/27/2026 03:00PM ET,DEN,6.4,,CPT,Courtland Sutton,dk,11100,courtland sutton,DEN,WR,showdown,00-0034348,auto_exact,high
+WR,Michael Pittman Jr. (45070023),Michael Pittman Jr.,45070023,CPT,10200,DEN@PIT 11/27/2026 03:00PM ET,PIT,5.3,IR,CPT,Michael Pittman Jr.,dk,10200,michael pittman,PIT,WR,showdown,00-0036252,auto_exact,high
+RB,Jonah Coleman (45069961),Jonah Coleman,45069961,FLEX,10000,DEN@PIT 11/27/2026 03:00PM ET,DEN,16.8,,FLEX,Jonah Coleman,dk,10000,jonah coleman,DEN,RB,showdown,00-0041496,auto_exact,high
+QB,Bo Nix (45069962),Bo Nix,45069962,FLEX,9600,DEN@PIT 11/27/2026 03:00PM ET,DEN,14.9,,FLEX,Bo Nix,dk,9600,bo nix,DEN,QB,showdown,00-0039732,auto_exact,high
+RB,Rico Dowdle (45070024),Rico Dowdle,45070024,CPT,9600,DEN@PIT 11/27/2026 03:00PM ET,PIT,8.2,,CPT,Rico Dowdle,dk,9600,rico dowdle,PIT,RB,showdown,00-0036139,auto_exact,high
+RB,Jaylen Warren (45069963),Jaylen Warren,45069963,FLEX,9400,DEN@PIT 11/27/2026 03:00PM ET,PIT,16.8,,FLEX,Jaylen Warren,dk,9400,jaylen warren,PIT,RB,showdown,00-0037228,auto_exact,high
+QB,Mason Rudolph (45070025),Mason Rudolph,45070025,CPT,9000,DEN@PIT 11/27/2026 03:00PM ET,PIT,0.3,,CPT,Mason Rudolph,dk,9000,mason rudolph,PIT,QB,showdown,00-0034771,auto_exact,high
+QB,Drew Allar (45070026),Drew Allar,45070026,CPT,9000,DEN@PIT 11/27/2026 03:00PM ET,PIT,0.0,,CPT,Drew Allar,dk,9000,drew allar,PIT,QB,showdown,00-0041565,auto_exact,high
+QB,Will Howard (45070027),Will Howard,45070027,CPT,9000,DEN@PIT 11/27/2026 03:00PM ET,PIT,0.0,,CPT,Will Howard,dk,9000,will howard,PIT,QB,showdown,00-0040203,auto_exact,high
+QB,Sam Ehlinger (45070028),Sam Ehlinger,45070028,CPT,9000,DEN@PIT 11/27/2026 03:00PM ET,DEN,0.0,,CPT,Sam Ehlinger,dk,9000,sam ehlinger,DEN,QB,showdown,00-0036879,auto_exact,high
+QB,Jarrett Stidham (45070029),Jarrett Stidham,45070029,CPT,9000,DEN@PIT 11/27/2026 03:00PM ET,DEN,0.0,,CPT,Jarrett Stidham,dk,9000,jarrett stidham,DEN,QB,showdown,00-0035264,auto_exact,high
+QB,Aaron Rodgers (45069964),Aaron Rodgers,45069964,FLEX,8800,DEN@PIT 11/27/2026 03:00PM ET,PIT,15.6,,FLEX,Aaron Rodgers,dk,8800,aaron rodgers,PIT,QB,showdown,00-0023459,auto_exact,high
+TE,Pat Freiermuth (45070030),Pat Freiermuth,45070030,CPT,8700,DEN@PIT 11/27/2026 03:00PM ET,PIT,10.0,,CPT,Pat Freiermuth,dk,8700,pat freiermuth,PIT,TE,showdown,00-0036894,auto_exact,high
+WR,Jaylen Waddle (45069965),Jaylen Waddle,45069965,FLEX,8400,DEN@PIT 11/27/2026 03:00PM ET,DEN,9.4,,FLEX,Jaylen Waddle,dk,8400,jaylen waddle,DEN,WR,showdown,00-0036613,auto_exact,high
+K,Wil Lutz (45070031),Wil Lutz,45070031,CPT,8100,DEN@PIT 11/27/2026 03:00PM ET,DEN,8.2,,CPT,Wil Lutz,dk,8100,wil lutz,DEN,K,showdown,00-0032569,auto_exact,high
+WR,DK Metcalf (45069966),DK Metcalf,45069966,FLEX,8000,DEN@PIT 11/27/2026 03:00PM ET,PIT,9.8,,FLEX,DK Metcalf,dk,8000,dk metcalf,PIT,WR,showdown,00-0035640,auto_exact,high
+WR,Germie Bernard (45069967),Germie Bernard,45069967,FLEX,7800,DEN@PIT 11/27/2026 03:00PM ET,PIT,7.8,,FLEX,Germie Bernard,dk,7800,germie bernard,PIT,WR,showdown,00-0041489,auto_exact,high
+K,Chris Boswell (45070032),Chris Boswell,45070032,CPT,7800,DEN@PIT 11/27/2026 03:00PM ET,PIT,10.0,,CPT,Chris Boswell,dk,7800,chris boswell,PIT,K,showdown,00-0031136,auto_exact,high
+WR,Pat Bryant (45070033),Pat Bryant,45070033,CPT,7500,DEN@PIT 11/27/2026 03:00PM ET,DEN,9.0,,CPT,Pat Bryant,dk,7500,pat bryant,DEN,WR,showdown,00-0040134,auto_exact,high
+WR,Courtland Sutton (45069968),Courtland Sutton,45069968,FLEX,7400,DEN@PIT 11/27/2026 03:00PM ET,DEN,6.4,,FLEX,Courtland Sutton,dk,7400,courtland sutton,DEN,WR,showdown,00-0034348,auto_exact,high
+WR,Roman Wilson (45070034),Roman Wilson,45070034,CPT,7200,DEN@PIT 11/27/2026 03:00PM ET,PIT,8.7,,CPT,Roman Wilson,dk,7200,roman wilson,PIT,WR,showdown,00-0039739,auto_exact,high
+DST,Broncos (45070035),Broncos,45070035,CPT,6900,DEN@PIT 11/27/2026 03:00PM ET,DEN,7.7,,CPT,Broncos,dk,6900,broncos,DEN,DST,showdown,DST_DEN,team_defense,high
+WR,Michael Pittman Jr. (45069969),Michael Pittman Jr.,45069969,FLEX,6800,DEN@PIT 11/27/2026 03:00PM ET,PIT,5.3,IR,FLEX,Michael Pittman Jr.,dk,6800,michael pittman,PIT,WR,showdown,00-0036252,auto_exact,high
+TE,Darnell Washington (45070036),Darnell Washington,45070036,CPT,6600,DEN@PIT 11/27/2026 03:00PM ET,PIT,6.9,,CPT,Darnell Washington,dk,6600,darnell washington,PIT,TE,showdown,00-0038558,auto_exact,high
+RB,Rico Dowdle (45069970),Rico Dowdle,45069970,FLEX,6400,DEN@PIT 11/27/2026 03:00PM ET,PIT,8.2,,FLEX,Rico Dowdle,dk,6400,rico dowdle,PIT,RB,showdown,00-0036139,auto_exact,high
+QB,Mason Rudolph (45069971),Mason Rudolph,45069971,FLEX,6000,DEN@PIT 11/27/2026 03:00PM ET,PIT,0.3,,FLEX,Mason Rudolph,dk,6000,mason rudolph,PIT,QB,showdown,00-0034771,auto_exact,high
+QB,Drew Allar (45069972),Drew Allar,45069972,FLEX,6000,DEN@PIT 11/27/2026 03:00PM ET,PIT,0.0,,FLEX,Drew Allar,dk,6000,drew allar,PIT,QB,showdown,00-0041565,auto_exact,high
+QB,Will Howard (45069973),Will Howard,45069973,FLEX,6000,DEN@PIT 11/27/2026 03:00PM ET,PIT,0.0,,FLEX,Will Howard,dk,6000,will howard,PIT,QB,showdown,00-0040203,auto_exact,high
+QB,Sam Ehlinger (45069974),Sam Ehlinger,45069974,FLEX,6000,DEN@PIT 11/27/2026 03:00PM ET,DEN,0.0,,FLEX,Sam Ehlinger,dk,6000,sam ehlinger,DEN,QB,showdown,00-0036879,auto_exact,high
+QB,Jarrett Stidham (45069975),Jarrett Stidham,45069975,FLEX,6000,DEN@PIT 11/27/2026 03:00PM ET,DEN,0.0,,FLEX,Jarrett Stidham,dk,6000,jarrett stidham,DEN,QB,showdown,00-0035264,auto_exact,high
+RB,J.K. Dobbins (45070037),J.K. Dobbins,45070037,CPT,6000,DEN@PIT 11/27/2026 03:00PM ET,DEN,6.3,,CPT,J.K. Dobbins,dk,6000,jk dobbins,DEN,RB,showdown,00-0036158,auto_exact,high
+TE,Pat Freiermuth (45069976),Pat Freiermuth,45069976,FLEX,5800,DEN@PIT 11/27/2026 03:00PM ET,PIT,10.0,,FLEX,Pat Freiermuth,dk,5800,pat freiermuth,PIT,TE,showdown,00-0036894,auto_exact,high
+DST,Steelers (45070038),Steelers,45070038,CPT,5700,DEN@PIT 11/27/2026 03:00PM ET,PIT,7.8,,CPT,Steelers,dk,5700,steelers,PIT,DST,showdown,DST_PIT,team_defense,high
+K,Wil Lutz (45069977),Wil Lutz,45069977,FLEX,5400,DEN@PIT 11/27/2026 03:00PM ET,DEN,8.2,,FLEX,Wil Lutz,dk,5400,wil lutz,DEN,K,showdown,00-0032569,auto_exact,high
+TE,Evan Engram (45070039),Evan Engram,45070039,CPT,5400,DEN@PIT 11/27/2026 03:00PM ET,DEN,5.3,,CPT,Evan Engram,dk,5400,evan engram,DEN,TE,showdown,00-0033881,auto_exact,high
+K,Chris Boswell (45069978),Chris Boswell,45069978,FLEX,5200,DEN@PIT 11/27/2026 03:00PM ET,PIT,10.0,,FLEX,Chris Boswell,dk,5200,chris boswell,PIT,K,showdown,00-0031136,auto_exact,high
+WR,Troy Franklin (45070040),Troy Franklin,45070040,CPT,5100,DEN@PIT 11/27/2026 03:00PM ET,DEN,2.0,,CPT,Troy Franklin,dk,5100,troy franklin,DEN,WR,showdown,00-0039868,auto_exact,high
+WR,Pat Bryant (45069979),Pat Bryant,45069979,FLEX,5000,DEN@PIT 11/27/2026 03:00PM ET,DEN,9.0,,FLEX,Pat Bryant,dk,5000,pat bryant,DEN,WR,showdown,00-0040134,auto_exact,high
+WR,Roman Wilson (45069980),Roman Wilson,45069980,FLEX,4800,DEN@PIT 11/27/2026 03:00PM ET,PIT,8.7,,FLEX,Roman Wilson,dk,4800,roman wilson,PIT,WR,showdown,00-0039739,auto_exact,high
+DST,Broncos (45069981),Broncos,45069981,FLEX,4600,DEN@PIT 11/27/2026 03:00PM ET,DEN,7.7,,FLEX,Broncos,dk,4600,broncos,DEN,DST,showdown,DST_DEN,team_defense,high
+WR,Marvin Mims Jr. (45070041),Marvin Mims Jr.,45070041,CPT,4500,DEN@PIT 11/27/2026 03:00PM ET,DEN,3.4,,CPT,Marvin Mims Jr.,dk,4500,marvin mims,DEN,WR,showdown,00-0038976,auto_exact,high
+TE,Darnell Washington (45069982),Darnell Washington,45069982,FLEX,4400,DEN@PIT 11/27/2026 03:00PM ET,PIT,6.9,,FLEX,Darnell Washington,dk,4400,darnell washington,PIT,TE,showdown,00-0038558,auto_exact,high
+RB,J.K. Dobbins (45069983),J.K. Dobbins,45069983,FLEX,4000,DEN@PIT 11/27/2026 03:00PM ET,DEN,6.3,,FLEX,J.K. Dobbins,dk,4000,jk dobbins,DEN,RB,showdown,00-0036158,auto_exact,high
+TE,Adam Trautman (45070042),Adam Trautman,45070042,CPT,3900,DEN@PIT 11/27/2026 03:00PM ET,DEN,1.9,,CPT,Adam Trautman,dk,3900,adam trautman,DEN,TE,showdown,00-0036422,auto_exact,high
+DST,Steelers (45069984),Steelers,45069984,FLEX,3800,DEN@PIT 11/27/2026 03:00PM ET,PIT,7.8,,FLEX,Steelers,dk,3800,steelers,PIT,DST,showdown,DST_PIT,team_defense,high
+TE,Evan Engram (45069985),Evan Engram,45069985,FLEX,3600,DEN@PIT 11/27/2026 03:00PM ET,DEN,5.3,,FLEX,Evan Engram,dk,3600,evan engram,DEN,TE,showdown,00-0033881,auto_exact,high
+RB,Cody Schrader (45070043),Cody Schrader,45070043,CPT,3600,DEN@PIT 11/27/2026 03:00PM ET,DEN,0.1,,CPT,Cody Schrader,dk,3600,cody schrader,DEN,RB,showdown,00-0039703,auto_exact,high
+WR,Troy Franklin (45069986),Troy Franklin,45069986,FLEX,3400,DEN@PIT 11/27/2026 03:00PM ET,DEN,2.0,,FLEX,Troy Franklin,dk,3400,troy franklin,DEN,WR,showdown,00-0039868,auto_exact,high
+WR,Marvin Mims Jr. (45069987),Marvin Mims Jr.,45069987,FLEX,3000,DEN@PIT 11/27/2026 03:00PM ET,DEN,3.4,,FLEX,Marvin Mims Jr.,dk,3000,marvin mims,DEN,WR,showdown,00-0038976,auto_exact,high
+WR,Max Hurleman (45070044),Max Hurleman,45070044,CPT,3000,DEN@PIT 11/27/2026 03:00PM ET,PIT,18.1,,CPT,Max Hurleman,dk,3000,max hurleman,PIT,WR,showdown,00-0040618,auto_exact,high
+TE,Adam Trautman (45069988),Adam Trautman,45069988,FLEX,2600,DEN@PIT 11/27/2026 03:00PM ET,DEN,1.9,,FLEX,Adam Trautman,dk,2600,adam trautman,DEN,TE,showdown,00-0036422,auto_exact,high
+RB,Cody Schrader (45069989),Cody Schrader,45069989,FLEX,2400,DEN@PIT 11/27/2026 03:00PM ET,DEN,0.1,,FLEX,Cody Schrader,dk,2400,cody schrader,DEN,RB,showdown,00-0039703,auto_exact,high
+TE,Nate Adkins (45070045),Nate Adkins,45070045,CPT,2400,DEN@PIT 11/27/2026 03:00PM ET,DEN,3.0,,CPT,Nate Adkins,dk,2400,nate adkins,DEN,TE,showdown,00-0038783,auto_exact,high
+RB,Lew Nichols (45070046),Lew Nichols,45070046,CPT,2100,DEN@PIT 11/27/2026 03:00PM ET,PIT,0.8,,CPT,Lew Nichols,dk,2100,lew nichols,PIT,RB,showdown,00-0038409,auto_exact,high
+WR,Max Hurleman (45069990),Max Hurleman,45069990,FLEX,2000,DEN@PIT 11/27/2026 03:00PM ET,PIT,18.1,,FLEX,Max Hurleman,dk,2000,max hurleman,PIT,WR,showdown,00-0040618,auto_exact,high
+WR,Ben Skowronek (45070047),Ben Skowronek,45070047,CPT,1800,DEN@PIT 11/27/2026 03:00PM ET,PIT,1.9,,CPT,Ben Skowronek,dk,1800,ben skowronek,PIT,WR,showdown,00-0036862,auto_exact,high
+TE,Nate Adkins (45069991),Nate Adkins,45069991,FLEX,1600,DEN@PIT 11/27/2026 03:00PM ET,DEN,3.0,,FLEX,Nate Adkins,dk,1600,nate adkins,DEN,TE,showdown,00-0038783,auto_exact,high
+WR,Lil'Jordan Humphrey (45070048),Lil'Jordan Humphrey,45070048,CPT,1500,DEN@PIT 11/27/2026 03:00PM ET,DEN,1.1,,CPT,Lil'Jordan Humphrey,dk,1500,liljordan humphrey,DEN,WR,showdown,00-0035406,auto_exact,high
+RB,Lew Nichols (45069992),Lew Nichols,45069992,FLEX,1400,DEN@PIT 11/27/2026 03:00PM ET,PIT,0.8,,FLEX,Lew Nichols,dk,1400,lew nichols,PIT,RB,showdown,00-0038409,auto_exact,high
+WR,Ben Skowronek (45069993),Ben Skowronek,45069993,FLEX,1200,DEN@PIT 11/27/2026 03:00PM ET,PIT,1.9,,FLEX,Ben Skowronek,dk,1200,ben skowronek,PIT,WR,showdown,00-0036862,auto_exact,high
+WR,Marquez Valdes-Scantling (45070049),Marquez Valdes-Scantling,45070049,CPT,1200,DEN@PIT 11/27/2026 03:00PM ET,PIT,1.4,,CPT,Marquez Valdes-Scantling,dk,1200,marquez valdes scantling,PIT,WR,showdown,00-0034272,auto_exact,high
+WR,Lil'Jordan Humphrey (45069994),Lil'Jordan Humphrey,45069994,FLEX,1000,DEN@PIT 11/27/2026 03:00PM ET,DEN,1.1,,FLEX,Lil'Jordan Humphrey,dk,1000,liljordan humphrey,DEN,WR,showdown,00-0035406,auto_exact,high
+TE,Robert Tonyan (45070050),Robert Tonyan,45070050,CPT,900,DEN@PIT 11/27/2026 03:00PM ET,PIT,0.1,,CPT,Robert Tonyan,dk,900,robert tonyan,PIT,TE,showdown,00-0033757,auto_exact,high
+WR,Marquez Valdes-Scantling (45069995),Marquez Valdes-Scantling,45069995,FLEX,800,DEN@PIT 11/27/2026 03:00PM ET,PIT,1.4,,FLEX,Marquez Valdes-Scantling,dk,800,marquez valdes scantling,PIT,WR,showdown,00-0034272,auto_exact,high
+TE,Robert Tonyan (45069996),Robert Tonyan,45069996,FLEX,600,DEN@PIT 11/27/2026 03:00PM ET,PIT,0.1,,FLEX,Robert Tonyan,dk,600,robert tonyan,PIT,TE,showdown,00-0033757,auto_exact,high
+RB,Adam Prentice (45070051),Adam Prentice,45070051,CPT,600,DEN@PIT 11/27/2026 03:00PM ET,DEN,0.4,,CPT,Adam Prentice,dk,600,adam prentice,DEN,RB,showdown,00-0036727,auto_exact,high
+RB,Adam Prentice (45069997),Adam Prentice,45069997,FLEX,400,DEN@PIT 11/27/2026 03:00PM ET,DEN,0.4,,FLEX,Adam Prentice,dk,400,adam prentice,DEN,RB,showdown,00-0036727,auto_exact,high
+RB,Travis Homer (45070052),Travis Homer,45070052,CPT,300,DEN@PIT 11/27/2026 03:00PM ET,PIT,0.2,,CPT,Travis Homer,dk,300,travis homer,PIT,RB,showdown,00-0035594,auto_exact,high
+RB,Riley Nowakowski (45070053),Riley Nowakowski,45070053,CPT,300,DEN@PIT 11/27/2026 03:00PM ET,PIT,0.0,,CPT,Riley Nowakowski,dk,300,riley nowakowski,PIT,RB,showdown,00-0041398,auto_exact,high
+RB,Jaret Patterson (45070054),Jaret Patterson,45070054,CPT,300,DEN@PIT 11/27/2026 03:00PM ET,DEN,0.0,,CPT,Jaret Patterson,dk,300,jaret patterson,DEN,RB,showdown,00-0036755,auto_exact,high
+RB,Eli Heidenreich (45070055),Eli Heidenreich,45070055,CPT,300,DEN@PIT 11/27/2026 03:00PM ET,PIT,0.0,,CPT,Eli Heidenreich,dk,300,eli heidenreich,PIT,RB,showdown,00-0041490,auto_exact,high
+RB,RJ Harvey (45070056),RJ Harvey,45070056,CPT,300,DEN@PIT 11/27/2026 03:00PM ET,DEN,11.2,IR,CPT,RJ Harvey,dk,300,rj harvey,DEN,RB,showdown,00-0040730,auto_exact,high
+RB,Tyler Badie (45070057),Tyler Badie,45070057,CPT,300,DEN@PIT 11/27/2026 03:00PM ET,DEN,3.4,IR,CPT,Tyler Badie,dk,300,tyler badie,DEN,RB,showdown,00-0037085,auto_exact,high
+WR,Brandon Johnson (45070058),Brandon Johnson,45070058,CPT,300,DEN@PIT 11/27/2026 03:00PM ET,PIT,0.6,,CPT,Brandon Johnson,dk,300,brandon johnson,PIT,WR,showdown,00-0037382,auto_exact,high
+WR,Michael Bandy (45070059),Michael Bandy,45070059,CPT,300,DEN@PIT 11/27/2026 03:00PM ET,DEN,0.0,,CPT,Michael Bandy,dk,300,michael bandy,DEN,WR,showdown,00-0036959,auto_exact,high
+WR,Dane Key (45070060),Dane Key,45070060,CPT,300,DEN@PIT 11/27/2026 03:00PM ET,DEN,0.0,,CPT,Dane Key,dk,300,dane key,DEN,WR,showdown,00-0041293,auto_exact,high
+WR,Kolbe Katsis (45070061),Kolbe Katsis,45070061,CPT,300,DEN@PIT 11/27/2026 03:00PM ET,DEN,0.0,,CPT,Kolbe Katsis,dk,300,kolbe katsis,DEN,WR,showdown,00-0041292,auto_exact,high
+WR,Kaden Wetjen (45070062),Kaden Wetjen,45070062,CPT,300,DEN@PIT 11/27/2026 03:00PM ET,PIT,0.0,,CPT,Kaden Wetjen,dk,300,kaden wetjen,PIT,WR,showdown,00-0041397,auto_exact,high
+WR,Cole Burgess (45070063),Cole Burgess,45070063,CPT,300,DEN@PIT 11/27/2026 03:00PM ET,PIT,0.0,IR,CPT,Cole Burgess,dk,300,cole burgess,PIT,WR,showdown,00-0039626,auto_exact,high
+TE,Lake McRee (45070064),Lake McRee,45070064,CPT,300,DEN@PIT 11/27/2026 03:00PM ET,PIT,0.0,,CPT,Lake McRee,dk,300,lake mcree,PIT,TE,showdown,00-0041263,auto_exact,high
+TE,Mitchell Fraboni (45070065),Mitchell Fraboni,45070065,CPT,300,DEN@PIT 11/27/2026 03:00PM ET,DEN,0.0,,CPT,Mitchell Fraboni,dk,300,mitchell fraboni,DEN,TE,showdown,00-0036943,auto_fallback_name_only_position_mismatch,low
+TE,Lucas Krull (45070066),Lucas Krull,45070066,CPT,300,DEN@PIT 11/27/2026 03:00PM ET,DEN,0.0,,CPT,Lucas Krull,dk,300,lucas krull,DEN,TE,showdown,00-0037539,auto_exact,high
+TE,Dallen Bentley (45070067),Dallen Bentley,45070067,CPT,300,DEN@PIT 11/27/2026 03:00PM ET,DEN,0.0,,CPT,Dallen Bentley,dk,300,dallen bentley,DEN,TE,showdown,00-0041133,auto_exact,high
+TE,Caleb Lohner (45070068),Caleb Lohner,45070068,CPT,300,DEN@PIT 11/27/2026 03:00PM ET,DEN,0.0,IR,CPT,Caleb Lohner,dk,300,caleb lohner,DEN,TE,showdown,00-0040240,auto_exact,high
+RB,Travis Homer (45069998),Travis Homer,45069998,FLEX,200,DEN@PIT 11/27/2026 03:00PM ET,PIT,0.2,,FLEX,Travis Homer,dk,200,travis homer,PIT,RB,showdown,00-0035594,auto_exact,high
+RB,Riley Nowakowski (45069999),Riley Nowakowski,45069999,FLEX,200,DEN@PIT 11/27/2026 03:00PM ET,PIT,0.0,,FLEX,Riley Nowakowski,dk,200,riley nowakowski,PIT,RB,showdown,00-0041398,auto_exact,high
+RB,Jaret Patterson (45070000),Jaret Patterson,45070000,FLEX,200,DEN@PIT 11/27/2026 03:00PM ET,DEN,0.0,,FLEX,Jaret Patterson,dk,200,jaret patterson,DEN,RB,showdown,00-0036755,auto_exact,high
+RB,Eli Heidenreich (45070001),Eli Heidenreich,45070001,FLEX,200,DEN@PIT 11/27/2026 03:00PM ET,PIT,0.0,,FLEX,Eli Heidenreich,dk,200,eli heidenreich,PIT,RB,showdown,00-0041490,auto_exact,high
+RB,RJ Harvey (45070002),RJ Harvey,45070002,FLEX,200,DEN@PIT 11/27/2026 03:00PM ET,DEN,11.2,IR,FLEX,RJ Harvey,dk,200,rj harvey,DEN,RB,showdown,00-0040730,auto_exact,high
+RB,Tyler Badie (45070003),Tyler Badie,45070003,FLEX,200,DEN@PIT 11/27/2026 03:00PM ET,DEN,3.4,IR,FLEX,Tyler Badie,dk,200,tyler badie,DEN,RB,showdown,00-0037085,auto_exact,high
+WR,Brandon Johnson (45070004),Brandon Johnson,45070004,FLEX,200,DEN@PIT 11/27/2026 03:00PM ET,PIT,0.6,,FLEX,Brandon Johnson,dk,200,brandon johnson,PIT,WR,showdown,00-0037382,auto_exact,high
+WR,Michael Bandy (45070005),Michael Bandy,45070005,FLEX,200,DEN@PIT 11/27/2026 03:00PM ET,DEN,0.0,,FLEX,Michael Bandy,dk,200,michael bandy,DEN,WR,showdown,00-0036959,auto_exact,high
+WR,Dane Key (45070006),Dane Key,45070006,FLEX,200,DEN@PIT 11/27/2026 03:00PM ET,DEN,0.0,,FLEX,Dane Key,dk,200,dane key,DEN,WR,showdown,00-0041293,auto_exact,high
+WR,Kolbe Katsis (45070007),Kolbe Katsis,45070007,FLEX,200,DEN@PIT 11/27/2026 03:00PM ET,DEN,0.0,,FLEX,Kolbe Katsis,dk,200,kolbe katsis,DEN,WR,showdown,00-0041292,auto_exact,high
+WR,Kaden Wetjen (45070008),Kaden Wetjen,45070008,FLEX,200,DEN@PIT 11/27/2026 03:00PM ET,PIT,0.0,,FLEX,Kaden Wetjen,dk,200,kaden wetjen,PIT,WR,showdown,00-0041397,auto_exact,high
+WR,Cole Burgess (45070009),Cole Burgess,45070009,FLEX,200,DEN@PIT 11/27/2026 03:00PM ET,PIT,0.0,IR,FLEX,Cole Burgess,dk,200,cole burgess,PIT,WR,showdown,00-0039626,auto_exact,high
+TE,Lake McRee (45070010),Lake McRee,45070010,FLEX,200,DEN@PIT 11/27/2026 03:00PM ET,PIT,0.0,,FLEX,Lake McRee,dk,200,lake mcree,PIT,TE,showdown,00-0041263,auto_exact,high
+TE,Mitchell Fraboni (45070011),Mitchell Fraboni,45070011,FLEX,200,DEN@PIT 11/27/2026 03:00PM ET,DEN,0.0,,FLEX,Mitchell Fraboni,dk,200,mitchell fraboni,DEN,TE,showdown,00-0036943,auto_fallback_name_only_position_mismatch,low
+TE,Lucas Krull (45070012),Lucas Krull,45070012,FLEX,200,DEN@PIT 11/27/2026 03:00PM ET,DEN,0.0,,FLEX,Lucas Krull,dk,200,lucas krull,DEN,TE,showdown,00-0037539,auto_exact,high
+TE,Dallen Bentley (45070013),Dallen Bentley,45070013,FLEX,200,DEN@PIT 11/27/2026 03:00PM ET,DEN,0.0,,FLEX,Dallen Bentley,dk,200,dallen bentley,DEN,TE,showdown,00-0041133,auto_exact,high
+TE,Caleb Lohner (45070014),Caleb Lohner,45070014,FLEX,200,DEN@PIT 11/27/2026 03:00PM ET,DEN,0.0,IR,FLEX,Caleb Lohner,dk,200,caleb lohner,DEN,TE,showdown,00-0040240,auto_exact,high

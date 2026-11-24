@@ -1,0 +1,113 @@
+Position,Name + ID,Name,ID,Roster Position,Salary,Game Info,TeamAbbrev,AvgPointsPerGame,Status,roster_role,name,site,salary,normalized_name,normalized_team,position_upper,slate_format,player_id,match_method,match_confidence
+QB,Josh Allen (45065538),Josh Allen,45065538,CPT,16500,KC@BUF 11/26/2026 08:20PM ET,BUF,25.4,,CPT,Josh Allen,dk,16500,josh allen,BUF,QB,showdown,00-0034857,auto_exact,high
+RB,Kenneth Walker III (45065539),Kenneth Walker III,45065539,CPT,16200,KC@BUF 11/26/2026 08:20PM ET,KC,26.4,Q,CPT,Kenneth Walker III,dk,16200,kenneth walker,KC,RB,showdown,00-0038134,auto_exact,high
+QB,Patrick Mahomes (45065540),Patrick Mahomes,45065540,CPT,15000,KC@BUF 11/26/2026 08:20PM ET,KC,21.9,,CPT,Patrick Mahomes,dk,15000,patrick mahomes,KC,QB,showdown,00-0033873,auto_exact,high
+RB,James Cook III (45065541),James Cook III,45065541,CPT,14700,KC@BUF 11/26/2026 08:20PM ET,BUF,20.4,,CPT,James Cook III,dk,14700,james cook,BUF,RB,showdown,00-0037248,auto_exact,high
+RB,Emmett Johnson (45065542),Emmett Johnson,45065542,CPT,14100,KC@BUF 11/26/2026 08:20PM ET,KC,12.9,,CPT,Emmett Johnson,dk,14100,emmett johnson,KC,RB,showdown,00-0041013,auto_exact,high
+WR,DJ Moore (45065543),DJ Moore,45065543,CPT,12900,KC@BUF 11/26/2026 08:20PM ET,BUF,13.3,,CPT,DJ Moore,dk,12900,dj moore,BUF,WR,showdown,00-0034827,auto_exact,high
+WR,Rashee Rice (45065544),Rashee Rice,45065544,CPT,12600,KC@BUF 11/26/2026 08:20PM ET,KC,11.3,,CPT,Rashee Rice,dk,12600,rashee rice,KC,WR,showdown,00-0039067,auto_exact,high
+TE,Travis Kelce (45065545),Travis Kelce,45065545,CPT,11700,KC@BUF 11/26/2026 08:20PM ET,KC,13.3,,CPT,Travis Kelce,dk,11700,travis kelce,KC,TE,showdown,00-0030506,auto_exact,high
+WR,Josh Downs (45065546),Josh Downs,45065546,CPT,11100,KC@BUF 11/26/2026 08:20PM ET,KC,9.1,,CPT,Josh Downs,dk,11100,josh downs,KC,WR,showdown,00-0038997,auto_exact,high
+QB,Josh Allen (45065482),Josh Allen,45065482,FLEX,11000,KC@BUF 11/26/2026 08:20PM ET,BUF,25.4,,FLEX,Josh Allen,dk,11000,josh allen,BUF,QB,showdown,00-0034857,auto_exact,high
+RB,Kenneth Walker III (45065483),Kenneth Walker III,45065483,FLEX,10800,KC@BUF 11/26/2026 08:20PM ET,KC,26.4,Q,FLEX,Kenneth Walker III,dk,10800,kenneth walker,KC,RB,showdown,00-0038134,auto_exact,high
+QB,Patrick Mahomes (45065484),Patrick Mahomes,45065484,FLEX,10000,KC@BUF 11/26/2026 08:20PM ET,KC,21.9,,FLEX,Patrick Mahomes,dk,10000,patrick mahomes,KC,QB,showdown,00-0033873,auto_exact,high
+WR,Khalil Shakir (45065547),Khalil Shakir,45065547,CPT,9900,KC@BUF 11/26/2026 08:20PM ET,BUF,10.3,,CPT,Khalil Shakir,dk,9900,khalil shakir,BUF,WR,showdown,00-0037261,auto_exact,high
+RB,James Cook III (45065485),James Cook III,45065485,FLEX,9800,KC@BUF 11/26/2026 08:20PM ET,BUF,20.4,,FLEX,James Cook III,dk,9800,james cook,BUF,RB,showdown,00-0037248,auto_exact,high
+RB,Emmett Johnson (45065486),Emmett Johnson,45065486,FLEX,9400,KC@BUF 11/26/2026 08:20PM ET,KC,12.9,,FLEX,Emmett Johnson,dk,9400,emmett johnson,KC,RB,showdown,00-0041013,auto_exact,high
+TE,Dalton Kincaid (45065548),Dalton Kincaid,45065548,CPT,9300,KC@BUF 11/26/2026 08:20PM ET,BUF,10.7,Q,CPT,Dalton Kincaid,dk,9300,dalton kincaid,BUF,TE,showdown,00-0038933,auto_exact,high
+QB,Justin Fields (45065549),Justin Fields,45065549,CPT,9000,KC@BUF 11/26/2026 08:20PM ET,KC,-0.3,,CPT,Justin Fields,dk,9000,justin fields,KC,QB,showdown,00-0036945,auto_exact,high
+QB,Garrett Nussmeier (45065550),Garrett Nussmeier,45065550,CPT,9000,KC@BUF 11/26/2026 08:20PM ET,KC,0.0,,CPT,Garrett Nussmeier,dk,9000,garrett nussmeier,KC,QB,showdown,00-0040906,auto_exact,high
+QB,Shane Buechele (45065551),Shane Buechele,45065551,CPT,9000,KC@BUF 11/26/2026 08:20PM ET,BUF,0.0,,CPT,Shane Buechele,dk,9000,shane buechele,BUF,QB,showdown,00-0036679,auto_exact,high
+QB,Kyle Allen (45065552),Kyle Allen,45065552,CPT,9000,KC@BUF 11/26/2026 08:20PM ET,BUF,-0.2,,CPT,Kyle Allen,dk,9000,kyle allen,BUF,QB,showdown,00-0034577,auto_exact,high
+WR,DJ Moore (45065487),DJ Moore,45065487,FLEX,8600,KC@BUF 11/26/2026 08:20PM ET,BUF,13.3,,FLEX,DJ Moore,dk,8600,dj moore,BUF,WR,showdown,00-0034827,auto_exact,high
+WR,Rashee Rice (45065488),Rashee Rice,45065488,FLEX,8400,KC@BUF 11/26/2026 08:20PM ET,KC,11.3,,FLEX,Rashee Rice,dk,8400,rashee rice,KC,WR,showdown,00-0039067,auto_exact,high
+TE,Travis Kelce (45065489),Travis Kelce,45065489,FLEX,7800,KC@BUF 11/26/2026 08:20PM ET,KC,13.3,,FLEX,Travis Kelce,dk,7800,travis kelce,KC,TE,showdown,00-0030506,auto_exact,high
+K,Tyler Bass (45065553),Tyler Bass,45065553,CPT,7500,KC@BUF 11/26/2026 08:20PM ET,BUF,11.6,,CPT,Tyler Bass,dk,7500,tyler bass,BUF,K,showdown,00-0036162,auto_exact,high
+WR,Josh Downs (45065490),Josh Downs,45065490,FLEX,7400,KC@BUF 11/26/2026 08:20PM ET,KC,9.1,,FLEX,Josh Downs,dk,7400,josh downs,KC,WR,showdown,00-0038997,auto_exact,high
+K,Harrison Butker (45065554),Harrison Butker,45065554,CPT,7200,KC@BUF 11/26/2026 08:20PM ET,KC,8.3,,CPT,Harrison Butker,dk,7200,harrison butker,KC,K,showdown,00-0033303,auto_exact,high
+K,Justin Tucker (45065555),Justin Tucker,45065555,CPT,7200,KC@BUF 11/26/2026 08:20PM ET,KC,0.0,,CPT,Justin Tucker,dk,7200,justin tucker,KC,K,showdown,00-0029597,auto_exact,high
+WR,Khalil Shakir (45065491),Khalil Shakir,45065491,FLEX,6600,KC@BUF 11/26/2026 08:20PM ET,BUF,10.3,,FLEX,Khalil Shakir,dk,6600,khalil shakir,BUF,WR,showdown,00-0037261,auto_exact,high
+WR,Xavier Worthy (45065556),Xavier Worthy,45065556,CPT,6600,KC@BUF 11/26/2026 08:20PM ET,KC,7.9,,CPT,Xavier Worthy,dk,6600,xavier worthy,KC,WR,showdown,00-0039894,auto_exact,high
+TE,Dalton Kincaid (45065492),Dalton Kincaid,45065492,FLEX,6200,KC@BUF 11/26/2026 08:20PM ET,BUF,10.7,Q,FLEX,Dalton Kincaid,dk,6200,dalton kincaid,BUF,TE,showdown,00-0038933,auto_exact,high
+QB,Justin Fields (45065493),Justin Fields,45065493,FLEX,6000,KC@BUF 11/26/2026 08:20PM ET,KC,-0.3,,FLEX,Justin Fields,dk,6000,justin fields,KC,QB,showdown,00-0036945,auto_exact,high
+QB,Garrett Nussmeier (45065494),Garrett Nussmeier,45065494,FLEX,6000,KC@BUF 11/26/2026 08:20PM ET,KC,0.0,,FLEX,Garrett Nussmeier,dk,6000,garrett nussmeier,KC,QB,showdown,00-0040906,auto_exact,high
+QB,Shane Buechele (45065495),Shane Buechele,45065495,FLEX,6000,KC@BUF 11/26/2026 08:20PM ET,BUF,0.0,,FLEX,Shane Buechele,dk,6000,shane buechele,BUF,QB,showdown,00-0036679,auto_exact,high
+QB,Kyle Allen (45065496),Kyle Allen,45065496,FLEX,6000,KC@BUF 11/26/2026 08:20PM ET,BUF,-0.2,,FLEX,Kyle Allen,dk,6000,kyle allen,BUF,QB,showdown,00-0034577,auto_exact,high
+DST,Bills (45065557),Bills,45065557,CPT,6000,KC@BUF 11/26/2026 08:20PM ET,BUF,7.0,,CPT,Bills,dk,6000,bills,BUF,DST,showdown,DST_BUF,team_defense,high
+WR,Keon Coleman (45065558),Keon Coleman,45065558,CPT,5700,KC@BUF 11/26/2026 08:20PM ET,BUF,8.0,,CPT,Keon Coleman,dk,5700,keon coleman,BUF,WR,showdown,00-0039901,auto_exact,high
+DST,Chiefs (45065559),Chiefs,45065559,CPT,5400,KC@BUF 11/26/2026 08:20PM ET,KC,7.2,,CPT,Chiefs,dk,5400,chiefs,KC,DST,showdown,DST_KC,team_defense,high
+RB,Ty Johnson (45065560),Ty Johnson,45065560,CPT,5100,KC@BUF 11/26/2026 08:20PM ET,BUF,6.7,,CPT,Ty Johnson,dk,5100,ty johnson,BUF,RB,showdown,00-0035537,auto_exact,high
+K,Tyler Bass (45065497),Tyler Bass,45065497,FLEX,5000,KC@BUF 11/26/2026 08:20PM ET,BUF,11.6,,FLEX,Tyler Bass,dk,5000,tyler bass,BUF,K,showdown,00-0036162,auto_exact,high
+K,Harrison Butker (45065498),Harrison Butker,45065498,FLEX,4800,KC@BUF 11/26/2026 08:20PM ET,KC,8.3,,FLEX,Harrison Butker,dk,4800,harrison butker,KC,K,showdown,00-0033303,auto_exact,high
+K,Justin Tucker (45065499),Justin Tucker,45065499,FLEX,4800,KC@BUF 11/26/2026 08:20PM ET,KC,0.0,,FLEX,Justin Tucker,dk,4800,justin tucker,KC,K,showdown,00-0029597,auto_exact,high
+TE,Dawson Knox (45065561),Dawson Knox,45065561,CPT,4800,KC@BUF 11/26/2026 08:20PM ET,BUF,3.4,,CPT,Dawson Knox,dk,4800,dawson knox,BUF,TE,showdown,00-0035689,auto_exact,high
+WR,Xavier Worthy (45065500),Xavier Worthy,45065500,FLEX,4400,KC@BUF 11/26/2026 08:20PM ET,KC,7.9,,FLEX,Xavier Worthy,dk,4400,xavier worthy,KC,WR,showdown,00-0039894,auto_exact,high
+TE,Noah Gray (45065562),Noah Gray,45065562,CPT,4200,KC@BUF 11/26/2026 08:20PM ET,KC,4.6,Q,CPT,Noah Gray,dk,4200,noah gray,KC,TE,showdown,00-0036637,auto_exact,high
+DST,Bills (45065501),Bills,45065501,FLEX,4000,KC@BUF 11/26/2026 08:20PM ET,BUF,7.0,,FLEX,Bills,dk,4000,bills,BUF,DST,showdown,DST_BUF,team_defense,high
+WR,Keon Coleman (45065502),Keon Coleman,45065502,FLEX,3800,KC@BUF 11/26/2026 08:20PM ET,BUF,8.0,,FLEX,Keon Coleman,dk,3800,keon coleman,BUF,WR,showdown,00-0039901,auto_exact,high
+DST,Chiefs (45065503),Chiefs,45065503,FLEX,3600,KC@BUF 11/26/2026 08:20PM ET,KC,7.2,,FLEX,Chiefs,dk,3600,chiefs,KC,DST,showdown,DST_KC,team_defense,high
+RB,Ray Davis (45065563),Ray Davis,45065563,CPT,3600,KC@BUF 11/26/2026 08:20PM ET,BUF,1.4,,CPT,Ray Davis,dk,3600,ray davis,BUF,RB,showdown,00-0039875,auto_exact,high
+RB,Ty Johnson (45065504),Ty Johnson,45065504,FLEX,3400,KC@BUF 11/26/2026 08:20PM ET,BUF,6.7,,FLEX,Ty Johnson,dk,3400,ty johnson,BUF,RB,showdown,00-0035537,auto_exact,high
+WR,Cyrus Allen (45065564),Cyrus Allen,45065564,CPT,3300,KC@BUF 11/26/2026 08:20PM ET,KC,3.0,,CPT,Cyrus Allen,dk,3300,cyrus allen,KC,WR,showdown,00-0040890,auto_exact,high
+TE,Dawson Knox (45065505),Dawson Knox,45065505,FLEX,3200,KC@BUF 11/26/2026 08:20PM ET,BUF,3.4,,FLEX,Dawson Knox,dk,3200,dawson knox,BUF,TE,showdown,00-0035689,auto_exact,high
+WR,Jalen Royals (45065565),Jalen Royals,45065565,CPT,3000,KC@BUF 11/26/2026 08:20PM ET,KC,2.0,,CPT,Jalen Royals,dk,3000,jalen royals,KC,WR,showdown,00-0040646,auto_exact,high
+TE,Noah Gray (45065506),Noah Gray,45065506,FLEX,2800,KC@BUF 11/26/2026 08:20PM ET,KC,4.6,Q,FLEX,Noah Gray,dk,2800,noah gray,KC,TE,showdown,00-0036637,auto_exact,high
+WR,Andrew Armstrong (45065566),Andrew Armstrong,45065566,CPT,2700,KC@BUF 11/26/2026 08:20PM ET,KC,2.5,,CPT,Andrew Armstrong,dk,2700,andrew armstrong,KC,WR,showdown,00-0040298,auto_exact,high
+RB,Ray Davis (45065507),Ray Davis,45065507,FLEX,2400,KC@BUF 11/26/2026 08:20PM ET,BUF,1.4,,FLEX,Ray Davis,dk,2400,ray davis,BUF,RB,showdown,00-0039875,auto_exact,high
+TE,Keleki Latu (45065567),Keleki Latu,45065567,CPT,2400,KC@BUF 11/26/2026 08:20PM ET,BUF,1.4,,CPT,Keleki Latu,dk,2400,keleki latu,BUF,TE,showdown,00-0040363,auto_exact,high
+WR,Cyrus Allen (45065508),Cyrus Allen,45065508,FLEX,2200,KC@BUF 11/26/2026 08:20PM ET,KC,3.0,,FLEX,Cyrus Allen,dk,2200,cyrus allen,KC,WR,showdown,00-0040890,auto_exact,high
+RB,Brashard Smith (45065568),Brashard Smith,45065568,CPT,2100,KC@BUF 11/26/2026 08:20PM ET,KC,0.3,IR,CPT,Brashard Smith,dk,2100,brashard smith,KC,RB,showdown,00-0040078,auto_exact,high
+WR,Jalen Royals (45065509),Jalen Royals,45065509,FLEX,2000,KC@BUF 11/26/2026 08:20PM ET,KC,2.0,,FLEX,Jalen Royals,dk,2000,jalen royals,KC,WR,showdown,00-0040646,auto_exact,high
+WR,Andrew Armstrong (45065510),Andrew Armstrong,45065510,FLEX,1800,KC@BUF 11/26/2026 08:20PM ET,KC,2.5,,FLEX,Andrew Armstrong,dk,1800,andrew armstrong,KC,WR,showdown,00-0040298,auto_exact,high
+WR,Greg Dortch (45065569),Greg Dortch,45065569,CPT,1800,KC@BUF 11/26/2026 08:20PM ET,BUF,0.0,,CPT,Greg Dortch,dk,1800,greg dortch,BUF,WR,showdown,00-0035500,auto_exact,high
+TE,Keleki Latu (45065511),Keleki Latu,45065511,FLEX,1600,KC@BUF 11/26/2026 08:20PM ET,BUF,1.4,,FLEX,Keleki Latu,dk,1600,keleki latu,BUF,TE,showdown,00-0040363,auto_exact,high
+WR,Tyrell Shavers (45065570),Tyrell Shavers,45065570,CPT,1500,KC@BUF 11/26/2026 08:20PM ET,BUF,0.0,,CPT,Tyrell Shavers,dk,1500,tyrell shavers,BUF,WR,showdown,00-0038679,auto_exact,high
+RB,Brashard Smith (45065512),Brashard Smith,45065512,FLEX,1400,KC@BUF 11/26/2026 08:20PM ET,KC,0.3,IR,FLEX,Brashard Smith,dk,1400,brashard smith,KC,RB,showdown,00-0040078,auto_exact,high
+WR,Greg Dortch (45065513),Greg Dortch,45065513,FLEX,1200,KC@BUF 11/26/2026 08:20PM ET,BUF,0.0,,FLEX,Greg Dortch,dk,1200,greg dortch,BUF,WR,showdown,00-0035500,auto_exact,high
+WR,Skyler Bell (45065571),Skyler Bell,45065571,CPT,1200,KC@BUF 11/26/2026 08:20PM ET,BUF,0.0,,CPT,Skyler Bell,dk,1200,skyler bell,BUF,WR,showdown,00-0041443,auto_exact,high
+WR,Tyrell Shavers (45065514),Tyrell Shavers,45065514,FLEX,1000,KC@BUF 11/26/2026 08:20PM ET,BUF,0.0,,FLEX,Tyrell Shavers,dk,1000,tyrell shavers,BUF,WR,showdown,00-0038679,auto_exact,high
+TE,Jackson Hawes (45065572),Jackson Hawes,45065572,CPT,900,KC@BUF 11/26/2026 08:20PM ET,BUF,0.4,,CPT,Jackson Hawes,dk,900,jackson hawes,BUF,TE,showdown,00-0040194,auto_exact,high
+WR,Skyler Bell (45065515),Skyler Bell,45065515,FLEX,800,KC@BUF 11/26/2026 08:20PM ET,BUF,0.0,,FLEX,Skyler Bell,dk,800,skyler bell,BUF,WR,showdown,00-0041443,auto_exact,high
+TE,Jackson Hawes (45065516),Jackson Hawes,45065516,FLEX,600,KC@BUF 11/26/2026 08:20PM ET,BUF,0.4,,FLEX,Jackson Hawes,dk,600,jackson hawes,BUF,TE,showdown,00-0040194,auto_exact,high
+RB,Jaydn Ott (45065573),Jaydn Ott,45065573,CPT,600,KC@BUF 11/26/2026 08:20PM ET,KC,0.8,,CPT,Jaydn Ott,dk,600,jaydn ott,KC,RB,showdown,00-0040959,auto_exact,high
+RB,Jaydn Ott (45065517),Jaydn Ott,45065517,FLEX,400,KC@BUF 11/26/2026 08:20PM ET,KC,0.8,,FLEX,Jaydn Ott,dk,400,jaydn ott,KC,RB,showdown,00-0040959,auto_exact,high
+RB,Nate Carter (45065574),Nate Carter,45065574,CPT,300,KC@BUF 11/26/2026 08:20PM ET,KC,0.5,,CPT,Nate Carter,dk,300,nate carter,KC,RB,showdown,00-0040547,auto_exact,high
+RB,Brock Lampe (45065575),Brock Lampe,45065575,CPT,300,KC@BUF 11/26/2026 08:20PM ET,BUF,0.0,,CPT,Brock Lampe,dk,300,brock lampe,BUF,RB,showdown,00-0040567,auto_exact,high
+RB,Frank Gore Jr. (45065576),Frank Gore Jr.,45065576,CPT,300,KC@BUF 11/26/2026 08:20PM ET,BUF,0.2,,CPT,Frank Gore Jr.,dk,300,frank gore,BUF,RB,showdown,00-0039471,auto_exact,high
+RB,Ben VanSumeren (45065577),Ben VanSumeren,45065577,CPT,300,KC@BUF 11/26/2026 08:20PM ET,KC,0.0,Q,CPT,Ben VanSumeren,dk,300,ben vansumeren,KC,RB,showdown,00-0038489,auto_exact,high
+RB,EJ Smith (45065578),EJ Smith,45065578,CPT,300,KC@BUF 11/26/2026 08:20PM ET,KC,0.0,,CPT,EJ Smith,dk,300,ej smith,KC,RB,showdown,00-0040964,auto_exact,high
+WR,Trent Sherfield Sr. (45065579),Trent Sherfield Sr.,45065579,CPT,300,KC@BUF 11/26/2026 08:20PM ET,BUF,0.0,,CPT,Trent Sherfield Sr.,dk,300,trent sherfield,BUF,WR,showdown,00-0034487,auto_exact,high
+WR,Joshua Palmer (45065580),Joshua Palmer,45065580,CPT,300,KC@BUF 11/26/2026 08:20PM ET,BUF,4.6,IR,CPT,Joshua Palmer,dk,300,joshua palmer,BUF,WR,showdown,00-0036988,manual_override,high
+WR,Jimmy Holiday (45065581),Jimmy Holiday,45065581,CPT,300,KC@BUF 11/26/2026 08:20PM ET,KC,0.0,IR,CPT,Jimmy Holiday,dk,300,jimmy holiday,KC,WR,showdown,00-0040120,auto_exact,high
+WR,Stephen Gosnell (45065582),Stephen Gosnell,45065582,CPT,300,KC@BUF 11/26/2026 08:20PM ET,BUF,0.0,,CPT,Stephen Gosnell,dk,300,stephen gosnell,BUF,WR,showdown,00-0040361,auto_exact,high
+WR,Tyquan Thornton (45065583),Tyquan Thornton,45065583,CPT,300,KC@BUF 11/26/2026 08:20PM ET,KC,12.0,IR,CPT,Tyquan Thornton,dk,300,tyquan thornton,KC,WR,showdown,00-0038104,auto_exact,high
+WR,Justin Watson (45065584),Justin Watson,45065584,CPT,300,KC@BUF 11/26/2026 08:20PM ET,KC,0.9,,CPT,Justin Watson,dk,300,justin watson,KC,WR,showdown,00-0034386,auto_exact,high
+WR,Ja'Mori Maclin (45065585),Ja'Mori Maclin,45065585,CPT,300,KC@BUF 11/26/2026 08:20PM ET,BUF,0.0,,CPT,Ja'Mori Maclin,dk,300,jamori maclin,BUF,WR,showdown,00-0041272,auto_exact,high
+WR,Omari Evans (45065586),Omari Evans,45065586,CPT,300,KC@BUF 11/26/2026 08:20PM ET,KC,0.0,,CPT,Omari Evans,dk,300,omari evans,KC,WR,showdown,00-0040954,auto_exact,high
+WR,Jeff Caldwell (45065587),Jeff Caldwell,45065587,CPT,300,KC@BUF 11/26/2026 08:20PM ET,KC,0.0,IR,CPT,Jeff Caldwell,dk,300,jeff caldwell,KC,WR,showdown,00-0040953,auto_exact,high
+TE,Jake Briningstool (45065588),Jake Briningstool,45065588,CPT,300,KC@BUF 11/26/2026 08:20PM ET,KC,0.8,,CPT,Jake Briningstool,dk,300,jake briningstool,KC,TE,showdown,00-0040081,auto_exact,high
+TE,John Michael Gyllenborg (45065589),John Michael Gyllenborg,45065589,CPT,300,KC@BUF 11/26/2026 08:20PM ET,KC,0.0,IR,CPT,John Michael Gyllenborg,dk,300,john michael gyllenborg,KC,TE,showdown,00-0040955,auto_exact,high
+TE,Jared Wiley (45065590),Jared Wiley,45065590,CPT,300,KC@BUF 11/26/2026 08:20PM ET,KC,0.0,IR,CPT,Jared Wiley,dk,300,jared wiley,KC,TE,showdown,00-0039824,auto_exact,high
+TE,James Winchester (45065591),James Winchester,45065591,CPT,300,KC@BUF 11/26/2026 08:20PM ET,KC,0.0,,CPT,James Winchester,dk,300,james winchester,KC,TE,showdown,00-0030615,auto_fallback_name_only_position_mismatch,low
+TE,Thomas Odukoya (45065592),Thomas Odukoya,45065592,CPT,300,KC@BUF 11/26/2026 08:20PM ET,KC,0.0,,CPT,Thomas Odukoya,dk,300,thomas odukoya,KC,TE,showdown,00-0038145,auto_exact,high
+TE,John FitzPatrick (45065593),John FitzPatrick,45065593,CPT,300,KC@BUF 11/26/2026 08:20PM ET,KC,0.0,,CPT,John FitzPatrick,dk,300,john fitzpatrick,KC,TE,showdown,00-0037306,auto_exact,high
+RB,Nate Carter (45065518),Nate Carter,45065518,FLEX,200,KC@BUF 11/26/2026 08:20PM ET,KC,0.5,,FLEX,Nate Carter,dk,200,nate carter,KC,RB,showdown,00-0040547,auto_exact,high
+RB,Brock Lampe (45065519),Brock Lampe,45065519,FLEX,200,KC@BUF 11/26/2026 08:20PM ET,BUF,0.0,,FLEX,Brock Lampe,dk,200,brock lampe,BUF,RB,showdown,00-0040567,auto_exact,high
+RB,Frank Gore Jr. (45065520),Frank Gore Jr.,45065520,FLEX,200,KC@BUF 11/26/2026 08:20PM ET,BUF,0.2,,FLEX,Frank Gore Jr.,dk,200,frank gore,BUF,RB,showdown,00-0039471,auto_exact,high
+RB,Ben VanSumeren (45065521),Ben VanSumeren,45065521,FLEX,200,KC@BUF 11/26/2026 08:20PM ET,KC,0.0,Q,FLEX,Ben VanSumeren,dk,200,ben vansumeren,KC,RB,showdown,00-0038489,auto_exact,high
+RB,EJ Smith (45065522),EJ Smith,45065522,FLEX,200,KC@BUF 11/26/2026 08:20PM ET,KC,0.0,,FLEX,EJ Smith,dk,200,ej smith,KC,RB,showdown,00-0040964,auto_exact,high
+WR,Trent Sherfield Sr. (45065523),Trent Sherfield Sr.,45065523,FLEX,200,KC@BUF 11/26/2026 08:20PM ET,BUF,0.0,,FLEX,Trent Sherfield Sr.,dk,200,trent sherfield,BUF,WR,showdown,00-0034487,auto_exact,high
+WR,Joshua Palmer (45065524),Joshua Palmer,45065524,FLEX,200,KC@BUF 11/26/2026 08:20PM ET,BUF,4.6,IR,FLEX,Joshua Palmer,dk,200,joshua palmer,BUF,WR,showdown,00-0036988,manual_override,high
+WR,Jimmy Holiday (45065525),Jimmy Holiday,45065525,FLEX,200,KC@BUF 11/26/2026 08:20PM ET,KC,0.0,IR,FLEX,Jimmy Holiday,dk,200,jimmy holiday,KC,WR,showdown,00-0040120,auto_exact,high
+WR,Stephen Gosnell (45065526),Stephen Gosnell,45065526,FLEX,200,KC@BUF 11/26/2026 08:20PM ET,BUF,0.0,,FLEX,Stephen Gosnell,dk,200,stephen gosnell,BUF,WR,showdown,00-0040361,auto_exact,high
+WR,Tyquan Thornton (45065527),Tyquan Thornton,45065527,FLEX,200,KC@BUF 11/26/2026 08:20PM ET,KC,12.0,IR,FLEX,Tyquan Thornton,dk,200,tyquan thornton,KC,WR,showdown,00-0038104,auto_exact,high
+WR,Justin Watson (45065528),Justin Watson,45065528,FLEX,200,KC@BUF 11/26/2026 08:20PM ET,KC,0.9,,FLEX,Justin Watson,dk,200,justin watson,KC,WR,showdown,00-0034386,auto_exact,high
+WR,Ja'Mori Maclin (45065529),Ja'Mori Maclin,45065529,FLEX,200,KC@BUF 11/26/2026 08:20PM ET,BUF,0.0,,FLEX,Ja'Mori Maclin,dk,200,jamori maclin,BUF,WR,showdown,00-0041272,auto_exact,high
+WR,Omari Evans (45065530),Omari Evans,45065530,FLEX,200,KC@BUF 11/26/2026 08:20PM ET,KC,0.0,,FLEX,Omari Evans,dk,200,omari evans,KC,WR,showdown,00-0040954,auto_exact,high
+WR,Jeff Caldwell (45065531),Jeff Caldwell,45065531,FLEX,200,KC@BUF 11/26/2026 08:20PM ET,KC,0.0,IR,FLEX,Jeff Caldwell,dk,200,jeff caldwell,KC,WR,showdown,00-0040953,auto_exact,high
+TE,Jake Briningstool (45065532),Jake Briningstool,45065532,FLEX,200,KC@BUF 11/26/2026 08:20PM ET,KC,0.8,,FLEX,Jake Briningstool,dk,200,jake briningstool,KC,TE,showdown,00-0040081,auto_exact,high
+TE,John Michael Gyllenborg (45065533),John Michael Gyllenborg,45065533,FLEX,200,KC@BUF 11/26/2026 08:20PM ET,KC,0.0,IR,FLEX,John Michael Gyllenborg,dk,200,john michael gyllenborg,KC,TE,showdown,00-0040955,auto_exact,high
+TE,Jared Wiley (45065534),Jared Wiley,45065534,FLEX,200,KC@BUF 11/26/2026 08:20PM ET,KC,0.0,IR,FLEX,Jared Wiley,dk,200,jared wiley,KC,TE,showdown,00-0039824,auto_exact,high
+TE,James Winchester (45065535),James Winchester,45065535,FLEX,200,KC@BUF 11/26/2026 08:20PM ET,KC,0.0,,FLEX,James Winchester,dk,200,james winchester,KC,TE,showdown,00-0030615,auto_fallback_name_only_position_mismatch,low
+TE,Thomas Odukoya (45065536),Thomas Odukoya,45065536,FLEX,200,KC@BUF 11/26/2026 08:20PM ET,KC,0.0,,FLEX,Thomas Odukoya,dk,200,thomas odukoya,KC,TE,showdown,00-0038145,auto_exact,high
+TE,John FitzPatrick (45065537),John FitzPatrick,45065537,FLEX,200,KC@BUF 11/26/2026 08:20PM ET,KC,0.0,,FLEX,John FitzPatrick,dk,200,john fitzpatrick,KC,TE,showdown,00-0037306,auto_exact,high
