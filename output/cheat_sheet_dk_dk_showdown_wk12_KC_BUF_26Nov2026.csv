@@ -1,153 +1,160 @@
 position,rank,overall_rank,player_id,player_name,team,opponent,salary,final_projection,estimated_ownership_pct,confidence,composite_score,top_factors,rationale,badge,is_bonus,role_security,role_tier,risk_tier,setup_score,conf_basis,cpt_salary,cpt_projection,cpt_ownership_pct,value_per_k
-QB,1,1,00-0034857,Josh Allen,BUF,KC,11000,22.846871029947856,49.70678771795301,10,22.846871029947856,"matchup, game environment, history, usage, value, range, captain","• Matchup: KC allows 0.81x league-avg to QBs (tough)
-• Game environment: BUF implied 25.4 (plus; league average is 22.3), game total 48.1 (high), favored by 2.7
+QB,1,1,00-0034857,Josh Allen,BUF,KC,11000,22.43159181614796,50.32807130791308,10,22.43159181614796,"matchup, game environment, history, usage, value, range, captain","• Matchup: KC allows 0.81x league-avg to QBs (tough)
+• Game environment: BUF implied 25.2 (plus; league average is 22.3), game total 47.7 (high), favored by 2.7
 • History: 25.4 pts/game season avg, 10 games (in line with average)
-• Usage: 35.0 pass att + 2.8 rush att projected; 32.3 pass att/game last 3 (actual), 97% of snaps last 3 games (locked-in role)
-• Value: 2.08 pts/$1K (cheap for this slate)
-• Range: 9.1–38.3 pts (low bust risk; under half his average in 0 of 10 games)
-• Captain: $16,500, 34.3 pts, 22.2% owned as CPT — most-owned captain tonight; QB captain is a sound build; his RB or TE has been the better first partner than his WR1",,False,96.1,locked-in role,low bust risk,,0.916,16500,34.27030654492178,22.172359425853845,2.08
-QB,2,2,00-0033873,Patrick Mahomes,KC,BUF,10000,20.2169203828654,45.44180305274244,9,20.2169203828654,"matchup, game environment, history, usage, value, range, captain","• Matchup: BUF allows 0.91x league-avg to QBs (below average)
-• Game environment: KC implied 22.7 (middling; league average is 22.3), game total 48.1 (high), underdog by 2.7
+• Usage: 34.8 pass att + 2.8 rush att projected; 32.3 pass att/game last 3 (actual), 97% of snaps last 3 games (locked-in role)
+• Value: 2.04 pts/$1K (cheap for this slate)
+• Range: 9.2–38.0 pts (low bust risk; under half his average in 0 of 10 games)
+• Captain: $16,500, 33.6 pts, 21.8% owned as CPT — most-owned captain tonight; QB captain is a sound build; his RB or TE has been the better first partner than his WR1",,False,95.7,locked-in role,low bust risk,,0.915,16500,33.64738772422194,21.80650380650892,2.04
+QB,2,2,00-0033873,Patrick Mahomes,KC,BUF,10000,19.955668948300044,49.81770293307245,9,19.955668948300044,"matchup, game environment, history, usage, value, range, captain","• Matchup: BUF allows 0.91x league-avg to QBs (below average)
+• Game environment: KC implied 22.5 (middling; league average is 22.3), game total 47.7 (high), underdog by 2.7
 • History: 21.9 pts/game season avg, 10 games (in line with average)
-• Usage: 35.5 pass att + 1.0 rush att projected; 35.0 pass att/game last 3 (actual), 91% of snaps last 3 games (locked-in role)
-• Value: 2.02 pts/$1K (cheap for this slate)
-• Range: 7.7–34.8 pts (low bust risk; under half his average in 1 of 10 games)
-• Captain: $15,000, 30.3 pts, 21.0% owned as CPT; QB captain is a sound build; his RB or TE has been the better first partner than his WR1",,False,96.3,locked-in role,low bust risk,,0.87,15000,30.32538057429809,21.04218118769862,2.02
-RB,1,3,00-0037248,James Cook III,BUF,KC,9800,17.62202718370233,42.452102052755045,8,17.62202718370233,"matchup, game environment, history, usage, value, range, captain","• Matchup: KC allows 0.85x league-avg rushing pts (below average), 0.93x receiving pts (below average) to RBs
-• Game environment: BUF implied 25.4 (plus; league average is 22.3), game total 48.1 (high), favored by 2.7
+• Usage: 35.3 pass att + 1.0 rush att projected; 35.0 pass att/game last 3 (actual), 91% of snaps last 3 games (locked-in role)
+• Value: 2.00 pts/$1K (cheap for this slate)
+• Range: 7.7–35.3 pts (low bust risk; under half his average in 1 of 10 games)
+• Captain: $15,000, 29.9 pts, 15.4% owned as CPT; QB captain is a sound build; his RB or TE has been the better first partner than his WR1",,False,95.8,locked-in role,low bust risk,,0.862,15000,29.933503422450062,15.433597215796608,2.0
+RB,1,3,00-0037248,James Cook III,BUF,KC,9800,17.858063531445048,49.81770293307245,8,17.858063531445048,"matchup, game environment, history, usage, value, range, captain","• Matchup: KC allows 0.85x league-avg rushing pts (below average), 0.93x receiving pts (below average) to RBs
+• Game environment: BUF implied 25.2 (plus; league average is 22.3), game total 47.7 (high), favored by 2.7
 • History: 20.4 pts/game season avg, 10 games (in line with average)
-• Usage: 19.0 touches projected (17.4 carries + 1.6 targets, 83% of RB carries); 25.0 touches/game last 3 (actual), 59% of snaps last 3 games (locked-in role; usage dipping)
-• Value: 1.80 pts/$1K (fair for this slate)
-• Range: 1.9–40.0 pts (low bust risk; under half his average in 0 of 10 games)
-• Captain: $14,700, 26.4 pts, 12.7% owned as CPT; RB captain is fine; the builds don't require a partner",,False,89.2,locked-in role,low bust risk,,0.806,14700,26.433040775553494,12.718646531157162,1.8
-RB,2,4,00-0041013,Emmett Johnson,KC,BUF,9400,15.336098617345794,43.70559771035199,7,15.336098617345794,"matchup, game environment, history, usage, value, range, captain","• Matchup: BUF allows 0.93x league-avg rushing pts (below average), 1.17x receiving pts (smash spot) to RBs
-• Game environment: KC implied 22.7 (middling; league average is 22.3), game total 48.1 (high), underdog by 2.7
-• History: 12.9 pts/game season avg, 10 games (in line with average)
-• Usage: 14.4 touches projected (11.3 carries + 3.1 targets) + injury step-up worth 1.7 pts; inheriting vacated work puts him near 17 touches; 20.7 touches/game last 3 (actual), 67% of snaps last 3 games (solid role; usage trending up)
-• Value: 1.63 pts/$1K (fair for this slate)
-• Range: 5.0–30.9 pts (elevated bust risk; under half his average in 5 of 10 games)
-• Captain: $14,100, 23.0 pts, 5.6% owned as CPT; RB captain is fine; the builds don't require a partner",,False,77.7,solid role,elevated bust risk,,0.707,14100,23.00414792601869,5.619557368167865,1.63
-WR,1,5,00-0034827,DJ Moore,BUF,KC,8600,12.797882291427207,26.895599712009727,6,12.797882291427207,"matchup, game environment, history, usage, value, range, captain","• Matchup (WR1): KC allows 0.90x league-avg (below average)
-• Game environment: BUF implied 25.4 (plus; league average is 22.3), game total 48.1 (high), favored by 2.7
+• Usage: 19.1 touches projected (17.4 carries + 1.6 targets, 83% of RB carries); 25.0 touches/game last 3 (actual), 59% of snaps last 3 games (locked-in role; usage dipping)
+• Value: 1.82 pts/$1K (fair for this slate)
+• Range: 1.8–40.0 pts (low bust risk; under half his average in 0 of 10 games)
+• Captain: $14,700, 26.8 pts, 14.8% owned as CPT; RB captain is fine; the builds don't require a partner",,False,89.2,locked-in role,low bust risk,,0.811,14700,26.78709529716757,14.756948472213788,1.82
+RB,2,4,00-0038134,Kenneth Walker III,KC,BUF,10800,15.47908541751574,30.862963884201445,7,15.47908541751574,"matchup, game environment, history, usage, value, range, captain","• Matchup: BUF allows 0.93x league-avg rushing pts (below average), 1.17x receiving pts (smash spot) to RBs
+• Game environment: KC implied 22.5 (middling; league average is 22.3), game total 47.7 (high), underdog by 2.7
+• History: 26.4 pts/game season avg, 8 games (projection running below average)
+• Usage: 16.6 touches projected (13.4 carries + 3.2 targets, 60% of RB carries); 22.3 touches/game last 3 (actual), 73% of snaps last 3 games (solid role; questionable)
+• Value: 1.43 pts/$1K (fair for this slate)
+• Range: 3.0–33.7 pts (low bust risk; under half his average in 1 of 8 games)
+• Captain: $16,200, 23.2 pts, 0.7% owned as CPT; RB captain is fine; the builds don't require a partner",,False,79.4,solid role,low bust risk,,0.695,16200,23.21862812627361,0.7295124567424028,1.43
+WR,1,5,00-0034827,DJ Moore,BUF,KC,8600,12.8905341390649,30.14038362741892,6,12.8905341390649,"matchup, game environment, history, usage, value, range, captain","• Matchup (WR1): KC allows 0.90x league-avg (below average)
+• Game environment: BUF implied 25.2 (plus; league average is 22.3), game total 47.7 (high), favored by 2.7
 • History: 13.3 pts/game season avg, 8 games (in line with average)
-• Usage: 6.1 targets projected (20% of team targets); 7.0 targets/game last 3 (actual), 64% of snaps last 3 games (partial role; usage trending up)
-• Value: 1.49 pts/$1K (fair for this slate)
-• Range: 2.6–28.6 pts (moderate bust risk; under half his average in 2 of 8 games)
-• Captain: $12,900, 19.2 pts, 5.6% owned as CPT; fine as captain, but needs Josh Allen in the FLEX (the builds enforce it)",,False,61.7,partial role,moderate bust risk,,0.602,12900,19.19682343714081,5.619557368167865,1.49
-WR,2,6,00-0037261,Khalil Shakir,BUF,KC,6600,12.470018128111803,45.88907968714514,5,12.470018128111803,"matchup, game environment, history, usage, value, range, captain","• Matchup (WR2/3): KC allows 0.73x league-avg (tough)
-• Game environment: BUF implied 25.4 (plus; league average is 22.3), game total 48.1 (high), favored by 2.7
+• Usage: 6.1 targets projected (18% of team targets); 7.0 targets/game last 3 (actual), 64% of snaps last 3 games (partial role; usage trending up)
+• Value: 1.50 pts/$1K (fair for this slate)
+• Range: 2.5–29.1 pts (elevated bust risk; under half his average in 2 of 8 games)
+• Captain: $12,900, 19.3 pts, 0.7% owned as CPT; fine as captain, but needs Josh Allen in the FLEX (the builds enforce it)",,False,58.4,partial role,elevated bust risk,,0.592,12900,19.33580120859735,0.7295124567424028,1.5
+WR,2,6,00-0037261,Khalil Shakir,BUF,KC,6600,12.60372644199347,44.25187261350833,5,12.60372644199347,"matchup, game environment, history, usage, value, range, captain","• Matchup (WR2/3): KC allows 0.73x league-avg (tough)
+• Game environment: BUF implied 25.2 (plus; league average is 22.3), game total 47.7 (high), favored by 2.7
 • History: 10.3 pts/game season avg, 10 games (in line with average)
-• Usage: 5.5 targets projected (18% of team targets); 5.3 targets/game last 3 (actual), 65% of snaps last 3 games (partial role)
-• Value: 1.89 pts/$1K (fair for this slate)
-• Range: 3.1–26.8 pts (moderate bust risk; under half his average in 1 of 10 games)
-• Captain: $9,900, 18.7 pts, 7.3% owned as CPT; fine as captain, but needs Josh Allen in the FLEX (the builds enforce it)",,False,56.0,partial role,moderate bust risk,,0.561,9900,18.705027192167705,7.314709697249784,1.89
-K,1,7,00-0033303,Harrison Butker,KC,BUF,4800,7.922833445000001,18.14042521379872,4,7.922833445000001,"game environment, history, kicker usage, value, range, captain","• Game environment: KC implied 22.7 (middling; league average is 22.3), game total 48.1 (high), underdog by 2.7
+• Usage: 5.5 targets projected (16% of team targets); 5.3 targets/game last 3 (actual), 65% of snaps last 3 games (partial role)
+• Value: 1.91 pts/$1K (cheap for this slate)
+• Range: 2.9–27.6 pts (moderate bust risk; under half his average in 1 of 10 games)
+• Captain: $9,900, 18.9 pts, 7.7% owned as CPT; fine as captain, but needs Josh Allen in the FLEX (the builds enforce it)",,False,53.4,partial role,moderate bust risk,,0.555,9900,18.9055896629902,7.715694894381647,1.91
+K,1,7,00-0033303,Harrison Butker,KC,BUF,4800,7.922833445000001,18.367161822975344,4,7.922833445000001,"game environment, history, kicker usage, value, range, captain","• Game environment: KC implied 22.5 (middling; league average is 22.3), game total 47.7 (high), underdog by 2.7
 • History: 8.3 pts/game season avg (in line with average)
 • Kicker usage: 1.0 FG attempts + 4.7 extra-point attempts per game, last 3 games; wind 15 mph
 • Value: 1.65 pts/$1K (fair for this slate)
 • Range: 2.0–15.0 pts (the model gives every kicker the same band; kicker scoring follows game flow, not a player-specific role)
-• Captain: $7,200, 11.9 pts, 0.3% owned as CPT; not a recommended captain (a kicker was the best captain in 1 of 49 games studied; the builds penalize it)",,False,,kicker,,,0.478,7200,11.8842501675,0.2560293103330609,1.65
-K,2,8,00-0036162,Tyler Bass,BUF,KC,5000,7.783058159999999,25.698935719548185,4,7.783058159999999,"game environment, history, kicker usage, value, range, captain","• Game environment: BUF implied 25.4 (plus; league average is 22.3), game total 48.1 (high), favored by 2.7
+• Captain: $7,200, 11.9 pts, 1.7% owned as CPT; not a recommended captain (a kicker was the best captain in 1 of 49 games studied; the builds penalize it)",,False,,kicker,,,0.478,7200,11.8842501675,1.695755298852977,1.65
+K,2,8,00-0036162,Tyler Bass,BUF,KC,5000,7.783058159999999,26.020145915881734,4,7.783058159999999,"game environment, history, kicker usage, value, range, captain","• Game environment: BUF implied 25.2 (plus; league average is 22.3), game total 47.7 (high), favored by 2.7
 • History: 11.6 pts/game season avg (projection running below average)
 • Kicker usage: 3.0 FG attempts + 2.7 extra-point attempts per game, last 3 games; wind 15 mph
 • Value: 1.56 pts/$1K (fair for this slate)
 • Range: 2.0–15.0 pts (the model gives every kicker the same band; kicker scoring follows game flow, not a player-specific role)
-• Captain: $7,500, 11.7 pts, 0.3% owned as CPT; not a recommended captain (a kicker was the best captain in 1 of 49 games studied; the builds penalize it)",,False,,kicker,,,0.474,7500,11.67458724,0.2560293103330609,1.56
-WR,3,9,00-0039067,Rashee Rice,KC,BUF,8400,9.143540719608406,1.6075077436536105,4,9.143540719608406,"matchup, game environment, history, usage, value, range, captain","• Matchup (WR1): BUF allows 1.16x league-avg (smash spot)
-• Game environment: KC implied 22.7 (middling; league average is 22.3), game total 48.1 (high), underdog by 2.7
+• Captain: $7,500, 11.7 pts, 1.1% owned as CPT; not a recommended captain (a kicker was the best captain in 1 of 49 games studied; the builds penalize it)",,False,,kicker,,,0.474,7500,11.67458724,1.0751792911291975,1.56
+RB,3,9,00-0041013,Emmett Johnson,KC,BUF,9400,9.506833054188492,1.6275999328236832,4,9.506833054188492,"matchup, game environment, history, usage, value, range, captain","• Matchup: BUF allows 0.93x league-avg rushing pts (below average), 1.17x receiving pts (smash spot) to RBs
+• Game environment: KC implied 22.5 (middling; league average is 22.3), game total 47.7 (high), underdog by 2.7
+• History: 12.9 pts/game season avg, 10 games (projection running below average)
+• Usage: 9.7 touches projected (7.4 carries + 2.3 targets, 33% of RB carries); 20.7 touches/game last 3 (actual), 67% of snaps last 3 games (partial role; usage trending up)
+• Value: 1.01 pts/$1K (pricey for this slate)
+• Range: 2.1–20.6 pts (high bust risk; under half his average in 5 of 10 games)
+• Captain: $14,100, 14.3 pts, 0.7% owned as CPT; RB captain is fine; the builds don't require a partner",,False,52.2,partial role,high bust risk,,0.466,14100,14.26024958128274,0.7295124567424028,1.01
+WR,3,10,00-0039067,Rashee Rice,KC,BUF,8400,9.248488236592332,1.6275999328236832,4,9.248488236592332,"matchup, game environment, history, usage, value, range, captain","• Matchup (WR1): BUF allows 1.16x league-avg (smash spot)
+• Game environment: KC implied 22.5 (middling; league average is 22.3), game total 47.7 (high), underdog by 2.7
 • History: 11.3 pts/game season avg, 7 games (in line with average)
 • Usage: 5.1 targets projected (15% of team targets); 6.3 targets/game last 3 (actual), 49% of snaps last 3 games (part-time role; usage dipping)
-• Value: 1.09 pts/$1K (pricey for this slate)
-• Range: 1.4–20.9 pts (elevated bust risk; under half his average in 1 of 8 games)
-• Captain: $12,600, 13.7 pts, 0.7% owned as CPT; fine as captain, but needs Patrick Mahomes in the FLEX (the builds enforce it)",,False,39.3,part-time role,elevated bust risk,,0.458,12600,13.71531107941261,0.7290209119532609,1.09
-RB,3,10,00-0038134,Kenneth Walker III,KC,BUF,10800,10.080485395323034,1.6075077436536105,4,10.080485395323034,"matchup, game environment, history, usage, value, range, captain","• Matchup: BUF allows 0.93x league-avg rushing pts (below average), 1.17x receiving pts (smash spot) to RBs
-• Game environment: KC implied 22.7 (middling; league average is 22.3), game total 48.1 (high), underdog by 2.7
-• History: 26.4 pts/game season avg, 8 games (projection running below average)
-• Usage: 10.8 touches projected (8.6 carries + 2.2 targets, 39% of RB carries); 22.3 touches/game last 3 (actual), 73% of snaps last 3 games (partial role; missed recent time; questionable)
-• Value: 0.93 pts/$1K (pricey for this slate)
-• Range: 1.4–23.0 pts (elevated bust risk; under half his average in 1 of 8 games)
-• Captain: $16,200, 15.1 pts, 0.7% owned as CPT; RB captain is fine; the builds don't require a partner",,False,46.4,partial role,elevated bust risk,,0.458,16200,15.120728092984551,0.7290209119532609,0.93
-TE,1,11,00-0030506,Travis Kelce,KC,BUF,7800,9.722538122168894,16.5854491733649,4,9.722538122168894,"matchup, game environment, history, usage, value, range, captain","• Matchup (TE1): BUF allows 0.94x league-avg (below average)
-• Game environment: KC implied 22.7 (middling; league average is 22.3), game total 48.1 (high), underdog by 2.7
+• Value: 1.10 pts/$1K (pricey for this slate)
+• Range: 1.4–21.0 pts (elevated bust risk; under half his average in 1 of 8 games)
+• Captain: $12,600, 13.9 pts, 0.7% owned as CPT; fine as captain, but needs Patrick Mahomes in the FLEX (the builds enforce it)",,False,39.6,part-time role,elevated bust risk,,0.462,12600,13.872732354888498,0.7295124567424028,1.1
+TE,1,11,00-0030506,Travis Kelce,KC,BUF,7800,9.687509064036806,15.8439533410115,4,9.687509064036806,"matchup, game environment, history, usage, value, range, captain","• Matchup (TE1): BUF allows 0.94x league-avg (below average)
+• Game environment: KC implied 22.5 (middling; league average is 22.3), game total 47.7 (high), underdog by 2.7
 • History: 13.3 pts/game season avg, 10 games (projection running below average)
 • Usage: 4.9 targets projected (15% of team targets); 5.0 targets/game last 3 (actual), 58% of snaps last 3 games (part-time role; usage dipping)
-• Value: 1.25 pts/$1K (pricey for this slate)
-• Range: 2.1–20.4 pts (elevated bust risk; under half his average in 2 of 10 games)
-• Captain: $11,700, 14.6 pts, 0.7% owned as CPT; fine as captain, but needs Patrick Mahomes in the FLEX (the builds enforce it)",,False,42.0,part-time role,elevated bust risk,,0.422,11700,14.583807183253342,0.7290209119532609,1.25
-WR,4,12,00-0039901,Keon Coleman,BUF,KC,3800,8.57223783336805,40.43898051714613,3,8.57223783336805,"matchup, game environment, history, usage, value, range, captain","• Matchup (WR2/3): KC allows 0.73x league-avg (tough)
-• Game environment: BUF implied 25.4 (plus; league average is 22.3), game total 48.1 (high), favored by 2.7
+• Value: 1.24 pts/$1K (pricey for this slate)
+• Range: 2.2–20.6 pts (elevated bust risk; under half his average in 2 of 10 games)
+• Captain: $11,700, 14.5 pts, 0.7% owned as CPT; fine as captain, but needs Patrick Mahomes in the FLEX (the builds enforce it)",,False,41.4,part-time role,elevated bust risk,,0.419,11700,14.53126359605521,0.7295124567424028,1.24
+WR,4,12,00-0039901,Keon Coleman,BUF,KC,3800,8.460060947062825,35.59302010132119,3,8.460060947062825,"matchup, game environment, history, usage, value, range, captain","• Matchup (WR2/3): KC allows 0.73x league-avg (tough)
+• Game environment: BUF implied 25.2 (plus; league average is 22.3), game total 47.7 (high), favored by 2.7
 • History: 8.0 pts/game season avg, 10 games (in line with average)
-• Usage: 4.0 targets projected (13% of team targets); 4.3 targets/game last 3 (actual), 65% of snaps last 3 games (part-time role; usage dipping)
-• Value: 2.26 pts/$1K (cheap for this slate)
-• Range: 2.1–18.7 pts (high bust risk; under half his average in 4 of 10 games)
-• Captain: $5,700, 12.9 pts, 0.7% owned as CPT; fine as captain, but needs Josh Allen in the FLEX (the builds enforce it)",Fragile Chalk,False,35.1,part-time role,high bust risk,,0.401,5700,12.858356750052074,0.7290209119532609,2.26
-TE,2,13,00-0035689,Dawson Knox,BUF,KC,3200,5.082747641055393,13.11310765143644,3,5.082747641055393,"matchup, game environment, history, usage, value, range, captain","• Matchup (TE1): KC allows 1.06x league-avg (favorable)
-• Game environment: BUF implied 25.4 (plus; league average is 22.3), game total 48.1 (high), favored by 2.7
+• Usage: 3.9 targets projected (12% of team targets); 4.3 targets/game last 3 (actual), 65% of snaps last 3 games (part-time role; usage dipping)
+• Value: 2.23 pts/$1K (cheap for this slate)
+• Range: 2.1–18.3 pts (high bust risk; under half his average in 4 of 10 games)
+• Captain: $5,700, 12.7 pts, 7.7% owned as CPT; fine as captain, but needs Josh Allen in the FLEX (the builds enforce it)",Fragile Chalk,False,33.7,part-time role,high bust risk,,0.393,5700,12.690091420594236,7.715694894381647,2.23
+TE,2,13,00-0035689,Dawson Knox,BUF,KC,3200,5.17815537414703,13.27700797513961,3,5.17815537414703,"matchup, game environment, history, usage, value, range, captain","• Matchup (TE2/3): KC allows 1.31x league-avg (smash spot; small numbers, swings a lot)
+• Game environment: BUF implied 25.2 (plus; league average is 22.3), game total 47.7 (high), favored by 2.7
 • History: 3.4 pts/game season avg, 10 games (in line with average)
-• Usage: 2.8 targets projected (9% of team targets); 3.7 targets/game last 3 (actual), 68% of snaps last 3 games (part-time role)
-• Value: 1.59 pts/$1K (fair for this slate)
-• Range: 0.5–11.3 pts (high bust risk; under half his average in 4 of 10 games)
-• Captain: $4,800, 7.6 pts, 0.7% owned as CPT; fine as captain, but needs Josh Allen in the FLEX (the builds enforce it)",,False,38.7,part-time role,high bust risk,,0.372,4800,7.62412146158309,0.7290209119532609,1.59
-WR,5,14,00-0039894,Xavier Worthy,KC,BUF,4400,6.627942763961674,15.16531654912687,3,6.627942763961674,"matchup, game environment, history, usage, value, range, captain","• Matchup (WR2/3): BUF allows 0.88x league-avg (below average)
-• Game environment: KC implied 22.7 (middling; league average is 22.3), game total 48.1 (high), underdog by 2.7
+• Usage: 2.9 targets projected (9% of team targets); 3.7 targets/game last 3 (actual), 68% of snaps last 3 games (part-time role)
+• Value: 1.62 pts/$1K (fair for this slate)
+• Range: 0.6–11.2 pts (high bust risk; under half his average in 4 of 10 games)
+• Captain: $4,800, 7.8 pts, 0.7% owned as CPT; fine as captain, but needs Josh Allen in the FLEX (the builds enforce it)",,False,38.7,part-time role,high bust risk,,0.387,4800,7.767233061220545,0.7295124567424028,1.62
+WR,5,14,00-0039894,Xavier Worthy,KC,BUF,4400,6.701129182957898,9.60519473621203,3,6.701129182957898,"matchup, game environment, history, usage, value, range, captain","• Matchup (WR2/3): BUF allows 0.88x league-avg (below average)
+• Game environment: KC implied 22.5 (middling; league average is 22.3), game total 47.7 (high), underdog by 2.7
 • History: 7.9 pts/game season avg, 10 games (in line with average)
 • Usage: 4.0 targets projected (12% of team targets); 4.3 targets/game last 3 (actual), 76% of snaps last 3 games (part-time role; usage trending down)
-• Value: 1.51 pts/$1K (fair for this slate)
-• Range: 1.7–13.7 pts (elevated bust risk; under half his average in 1 of 10 games)
-• Captain: $6,600, 9.9 pts, 0.7% owned as CPT; fine as captain, but needs Patrick Mahomes in the FLEX (the builds enforce it)",,False,36.4,part-time role,elevated bust risk,,0.354,6600,9.941914145942512,0.7290209119532609,1.51
-RB,4,15,00-0035537,Ty Johnson,BUF,KC,3400,7.8698057828855825,33.34342945029956,3,7.8698057828855825,"matchup, game environment, history, usage, value, range, captain","• Matchup: KC allows 0.85x league-avg rushing pts (below average), 0.93x receiving pts (below average) to RBs
-• Game environment: BUF implied 25.4 (plus; league average is 22.3), game total 48.1 (high), favored by 2.7
+• Value: 1.52 pts/$1K (fair for this slate)
+• Range: 1.7–13.5 pts (elevated bust risk; under half his average in 1 of 10 games)
+• Captain: $6,600, 10.1 pts, 3.6% owned as CPT; fine as captain, but needs Patrick Mahomes in the FLEX (the builds enforce it)",,False,36.3,part-time role,elevated bust risk,,0.355,6600,10.051693774436846,3.608582056419352,1.52
+RB,4,15,00-0035537,Ty Johnson,BUF,KC,3400,7.815946733319151,32.30857321630384,3,7.815946733319151,"matchup, game environment, history, usage, value, range, captain","• Matchup: KC allows 0.85x league-avg rushing pts (below average), 0.93x receiving pts (below average) to RBs
+• Game environment: BUF implied 25.2 (plus; league average is 22.3), game total 47.7 (high), favored by 2.7
 • History: 6.7 pts/game season avg, 8 games (in line with average)
-• Usage: 4.6 touches projected (0.8 carries + 3.7 targets, 4% of RB carries); 4.3 touches/game last 3 (actual), 25% of snaps last 3 games (punt-level role; usage trending down)
-• Value: 2.31 pts/$1K (cheap for this slate)
-• Range: 1.8–16.3 pts (high bust risk; under half his average in 2 of 8 games)
-• Captain: $5,100, 11.8 pts, 5.6% owned as CPT; RB captain is fine; the builds don't require a partner","Boom/Bust Dart, Fragile Chalk",False,22.5,punt-level role,high bust risk,,0.353,5100,11.804708674328374,5.619557368167865,2.31
-WR,6,16,00-0038997,Josh Downs,KC,BUF,7400,6.516380252644929,1.6075077436536105,3,6.516380252644929,"matchup, game environment, history, usage, value, range, captain","• Matchup (WR2/3): BUF allows 0.88x league-avg (below average)
-• Game environment: KC implied 22.7 (middling; league average is 22.3), game total 48.1 (high), underdog by 2.7
+• Usage: 4.5 touches projected (0.9 carries + 3.7 targets, 4% of RB carries); 4.3 touches/game last 3 (actual), 25% of snaps last 3 games (punt-level role; usage trending down)
+• Value: 2.30 pts/$1K (cheap for this slate)
+• Range: 1.8–15.9 pts (high bust risk; under half his average in 2 of 8 games)
+• Captain: $5,100, 11.7 pts, 6.1% owned as CPT; RB captain is fine; the builds don't require a partner","Boom/Bust Dart, Fragile Chalk",False,22.5,punt-level role,high bust risk,,0.352,5100,11.723920099978724,6.068091225490903,2.3
+WR,6,16,00-0038997,Josh Downs,KC,BUF,7400,6.484044069983496,1.6275999328236832,3,6.484044069983496,"matchup, game environment, history, usage, value, range, captain","• Matchup (WR2/3): BUF allows 0.88x league-avg (below average)
+• Game environment: KC implied 22.5 (middling; league average is 22.3), game total 47.7 (high), underdog by 2.7
 • History: 9.1 pts/game season avg, 11 games (in line with average)
-• Usage: 4.6 targets projected (14% of team targets); 5.3 targets/game last 3 (actual), 39% of snaps last 3 games (punt-level role)
+• Usage: 4.5 targets projected (13% of team targets); 5.3 targets/game last 3 (actual), 39% of snaps last 3 games (punt-level role)
 • Value: 0.88 pts/$1K (pricey for this slate)
-• Range: 0.5–14.4 pts (elevated bust risk; under half his average in 1 of 11 games)
-• Captain: $11,100, 9.8 pts, 0.7% owned as CPT; fine as captain, but needs Patrick Mahomes in the FLEX (the builds enforce it)",,False,36.1,punt-level role,elevated bust risk,,0.351,11100,9.774570378967391,0.7290209119532609,0.88
-DST,1,17,DST_KC,Chiefs,KC,BUF,3600,4.949352826000001,7.620637640556194,2,4.949352826000001,"matchup, game environment, history, upside setup, value, range, captain","• Matchup: model rates this the weaker defensive spot of the two (0.95x vs 1.05x; relative to tonight's other defense only)
-• Game environment: opponent BUF implied 25.4 (tough; league average is 22.3), game total 48.1 (high)
-• History: 7.2 pts/game season avg (in line with average)
-• Upside setup: neutral — BUF QB throws interceptions on 2.5% of attempts; BUF missing Dalton Kincaid; BUF implied 25.4, 3.1 above the league average, works against
-• Value: 1.37 pts/$1K (fair for this slate)
-• Range: about 1–9 pts in a typical game (DST projections miss by about 4.3 pts on average); a defensive or return TD or a safety is what pushes it higher, and those aren't modeled
-• Captain: $5,400, 7.4 pts, 1.1% owned as CPT; not a captain option (best captain in 0 of 49 games; the builds exclude it). As a FLEX it only fits lineups with no BUF skill players, so it rarely makes a build",,False,,,,1.0,0.313,5400,7.424029239000001,1.131366645570417,1.37
-TE,3,18,00-0036637,Noah Gray,KC,BUF,2800,5.474118710179428,22.424872759644128,2,5.474118710179428,"matchup, game environment, history, usage, value, range, captain","• Matchup (TE2/3): BUF allows 0.86x league-avg (below average; small numbers, swings a lot)
-• Game environment: KC implied 22.7 (middling; league average is 22.3), game total 48.1 (high), underdog by 2.7
+• Range: 0.4–15.2 pts (elevated bust risk; under half his average in 1 of 11 games)
+• Captain: $11,100, 9.7 pts, 0.7% owned as CPT; fine as captain, but needs Patrick Mahomes in the FLEX (the builds enforce it)",,False,35.2,punt-level role,elevated bust risk,,0.347,11100,9.726066104975244,0.7295124567424028,0.88
+TE,3,17,00-0036637,Noah Gray,KC,BUF,2800,5.305066730545335,24.62750862462284,2,5.305066730545335,"matchup, game environment, history, usage, value, range, captain","• Matchup (TE2/3): BUF allows 0.86x league-avg (below average; small numbers, swings a lot)
+• Game environment: KC implied 22.5 (middling; league average is 22.3), game total 47.7 (high), underdog by 2.7
 • History: 4.6 pts/game season avg, 10 games (in line with average)
 • Usage: 2.8 targets projected (8% of team targets); 3.0 targets/game last 3 (actual), 71% of snaps last 3 games (part-time role; usage trending up; questionable)
-• Value: 1.96 pts/$1K (cheap for this slate)
-• Range: 0.9–11.3 pts (very high bust risk; under half his average in 4 of 10 games)
-• Captain: $4,200, 8.2 pts, 0.7% owned as CPT; fine as captain, but needs Patrick Mahomes in the FLEX (the builds enforce it)",Boom/Bust Dart,False,31.4,part-time role,very high bust risk,,0.311,4200,8.211178065269142,0.7290209119532609,1.96
-TE,4,19,00-0040363,Keleki Latu,BUF,KC,1600,2.893682221671588,8.778935312134035,2,2.893682221671588,"matchup, game environment, history, usage, value, range, captain","• Matchup (TE2/3): KC allows 1.31x league-avg (smash spot; small numbers, swings a lot)
-• Game environment: BUF implied 25.4 (plus; league average is 22.3), game total 48.1 (high), favored by 2.7
+• Value: 1.89 pts/$1K (cheap for this slate)
+• Range: 0.7–11.4 pts (very high bust risk; under half his average in 4 of 10 games)
+• Captain: $4,200, 8.0 pts, 0.7% owned as CPT; fine as captain, but needs Patrick Mahomes in the FLEX (the builds enforce it)",Boom/Bust Dart,False,31.4,part-time role,very high bust risk,,0.307,4200,7.9576000958180035,0.7295124567424028,1.89
+TE,4,18,00-0040363,Keleki Latu,BUF,KC,1600,2.87000987242296,8.888662950896334,2,2.87000987242296,"matchup, game environment, history, usage, value, range, captain","• Matchup (TE2/3): KC allows 1.31x league-avg (smash spot; small numbers, swings a lot)
+• Game environment: BUF implied 25.2 (plus; league average is 22.3), game total 47.7 (high), favored by 2.7
 • History: 1.4 pts/game season avg, 9 games (in line with average)
 • Usage: 1.5 targets projected (5% of team targets); 1.7 targets/game last 3 (actual), 28% of snaps last 3 games (punt-level role; usage trending up)
-• Value: 1.81 pts/$1K (fair for this slate)
-• Range: 0.0–7.9 pts (very high bust risk; under half his average in 8 of 10 games)
-• Captain: $2,400, 4.3 pts, 0.7% owned as CPT; fine as captain, but needs Josh Allen in the FLEX (the builds enforce it)",Boom/Bust Dart,False,30.0,punt-level role,very high bust risk,,0.305,2400,4.340523332507382,0.7290209119532609,1.81
-WR,7,20,00-0040890,Cyrus Allen,KC,BUF,2200,4.205907327353309,11.995581004185262,2,4.205907327353309,"matchup, game environment, history, usage, value, range, captain","• Matchup (WR2/3): BUF allows 0.88x league-avg (below average)
-• Game environment: KC implied 22.7 (middling; league average is 22.3), game total 48.1 (high), underdog by 2.7
+• Value: 1.79 pts/$1K (fair for this slate)
+• Range: 0.0–7.8 pts (very high bust risk; under half his average in 8 of 10 games)
+• Captain: $2,400, 4.3 pts, 0.7% owned as CPT; fine as captain, but needs Josh Allen in the FLEX (the builds enforce it)",Boom/Bust Dart,False,30.0,punt-level role,very high bust risk,,0.305,2400,4.30501480863444,0.7295124567424028,1.79
+WR,7,19,00-0040890,Cyrus Allen,KC,BUF,2200,4.10347828652719,20.70449048792832,2,4.10347828652719,"matchup, game environment, history, usage, value, range, captain","• Matchup (WR2/3): BUF allows 0.88x league-avg (below average)
+• Game environment: KC implied 22.5 (middling; league average is 22.3), game total 47.7 (high), underdog by 2.7
 • History: 3.0 pts/game season avg, 8 games (in line with average)
-• Usage: 2.8 targets projected (8% of team targets); 3.0 targets/game last 3 (actual), 29% of snaps last 3 games (punt-level role; usage trending up)
-• Value: 1.91 pts/$1K (cheap for this slate)
-• Range: 0.0–10.4 pts (very high bust risk; under half his average in 5 of 10 games)
-• Captain: $3,300, 6.3 pts, 0.7% owned as CPT; fine as captain, but needs Patrick Mahomes in the FLEX (the builds enforce it)",Boom/Bust Dart,False,30.0,punt-level role,very high bust risk,,0.277,3300,6.308860991029963,0.7290209119532609,1.91
-DST,2,21,DST_BUF,Bills,BUF,KC,4000,5.425506673,6.815016149086219,2,5.425506673,"matchup, game environment, history, upside setup, value, range, captain","• Matchup: model rates this the better defensive spot of the two (1.05x vs 0.95x; relative to tonight's other defense only)
-• Game environment: opponent KC implied 22.7 (middling; league average is 22.3), game total 48.1 (high)
+• Usage: 2.7 targets projected (8% of team targets); 3.0 targets/game last 3 (actual), 29% of snaps last 3 games (punt-level role; usage trending up)
+• Value: 1.87 pts/$1K (fair for this slate)
+• Range: 0.0–10.2 pts (very high bust risk; under half his average in 5 of 10 games)
+• Captain: $3,300, 6.2 pts, 0.7% owned as CPT; fine as captain, but needs Patrick Mahomes in the FLEX (the builds enforce it)",Boom/Bust Dart,False,30.0,punt-level role,very high bust risk,,0.275,3300,6.155217429790786,0.7295124567424028,1.87
+TE,5,20,00-0038933,Dalton Kincaid,BUF,KC,6200,5.951861233127727,1.6275999328236832,2,5.951861233127727,"matchup, game environment, history, usage, value, range, captain","• Matchup (TE1): KC allows 1.06x league-avg (favorable)
+• Game environment: BUF implied 25.2 (plus; league average is 22.3), game total 47.7 (high), favored by 2.7
+• History: 10.7 pts/game season avg, 9 games (projection running below average)
+• Usage: 3.0 targets projected (9% of team targets); 4.0 targets/game last 3 (actual), 51% of snaps last 3 games (part-time role; missed recent time; usage trending down; questionable)
+• Value: 0.96 pts/$1K (pricey for this slate)
+• Range: 0.4–14.6 pts (very high bust risk; under half his average in 3 of 9 games)
+• Captain: $9,300, 8.9 pts, 0.7% owned as CPT; fine as captain, but needs Josh Allen in the FLEX (the builds enforce it)",,False,10.5,part-time role,very high bust risk,,0.272,9300,8.927791849691591,0.7295124567424028,0.96
+DST,1,21,DST_KC,Chiefs,KC,BUF,3600,5.0030408500000005,6.470256745891691,2,5.0030408500000005,"matchup, game environment, history, upside setup, value, range, captain","• Matchup: model rates this the weaker defensive spot of the two (0.95x vs 1.05x; relative to tonight's other defense only)
+• Game environment: opponent BUF implied 25.2 (tough; league average is 22.3), game total 47.7 (high)
+• History: 7.2 pts/game season avg (in line with average)
+• Upside setup: neutral — BUF QB throws interceptions on 2.5% of attempts; BUF implied 25.2, 2.9 above the league average, works against
+• Value: 1.39 pts/$1K (fair for this slate)
+• Range: about 1–9 pts in a typical game (DST projections miss by about 4.3 pts on average); a defensive or return TD or a safety is what pushes it higher, and those aren't modeled
+• Captain: $5,400, 7.5 pts, 1.1% owned as CPT; not a captain option (best captain in 0 of 49 games; the builds exclude it). As a FLEX it only fits lineups with no BUF skill players, so it rarely makes a build",,False,,,,0.0,0.27,5400,7.504561275,1.1321294733166734,1.39
+DST,2,22,DST_BUF,Bills,BUF,KC,4000,5.493762484,8.105468215736561,2,5.493762484,"matchup, game environment, history, upside setup, value, range, captain","• Matchup: model rates this the better defensive spot of the two (1.05x vs 0.95x; relative to tonight's other defense only)
+• Game environment: opponent KC implied 22.5 (middling; league average is 22.3), game total 47.7 (high)
 • History: 7.0 pts/game season avg (in line with average)
 • Upside setup: poor — KC without Tyquan Thornton since wk 4; KC rarely sacked (4.8% of dropbacks, works against)
-• Value: 1.36 pts/$1K (fair for this slate)
+• Value: 1.37 pts/$1K (fair for this slate)
 • Range: about 1–10 pts in a typical game (DST projections miss by about 4.3 pts on average); a defensive or return TD or a safety is what pushes it higher, and those aren't modeled
-• Captain: $6,000, 8.1 pts, 1.1% owned as CPT; not a captain option (best captain in 0 of 49 games; the builds exclude it). As a FLEX it only fits lineups with no KC skill players, so it rarely makes a build",,False,,,,-1.0,0.256,6000,8.1382600095,1.131366645570417,1.36
-RB,5,22,00-0039875,Ray Davis,BUF,KC,2400,2.5300365244252423,1.6075077436536105,1,2.5300365244252423,"matchup, game environment, history, usage, value, range, captain","• Matchup: KC allows 0.85x league-avg rushing pts (below average), 0.93x receiving pts (below average) to RBs
-• Game environment: BUF implied 25.4 (plus; league average is 22.3), game total 48.1 (high), favored by 2.7
+• Captain: $6,000, 8.2 pts, 1.1% owned as CPT; not a captain option (best captain in 0 of 49 games; the builds exclude it). As a FLEX it only fits lineups with no KC skill players, so it rarely makes a build",,False,,,,-1.0,0.257,6000,8.240643726,1.1321294733166734,1.37
+RB,5,23,00-0039875,Ray Davis,BUF,KC,2400,2.429788872050933,1.6275999328236832,1,2.429788872050933,"matchup, game environment, history, usage, value, range, captain","• Matchup: KC allows 0.85x league-avg rushing pts (below average), 0.93x receiving pts (below average) to RBs
+• Game environment: BUF implied 25.2 (plus; league average is 22.3), game total 47.7 (high), favored by 2.7
 • History: 1.4 pts/game season avg, 9 games (in line with average)
-• Usage: 2.7 touches projected (1.8 carries + 0.9 targets, 9% of RB carries); 3.0 touches/game last 3 (actual), 16% of snaps last 3 games (punt-level role; usage trending down)
-• Value: 1.05 pts/$1K (pricey for this slate)
-• Range: 0.0–6.8 pts (very high bust risk; under half his average in 4 of 10 games)
-• Captain: $3,600, 3.8 pts, 0.7% owned as CPT; RB captain is fine; the builds don't require a partner",,False,22.5,punt-level role,very high bust risk,,0.233,3600,3.795054786637864,0.7290209119532609,1.05
+• Usage: 2.7 touches projected (1.8 carries + 0.9 targets, 8% of RB carries); 3.0 touches/game last 3 (actual), 16% of snaps last 3 games (punt-level role; usage trending down)
+• Value: 1.01 pts/$1K (pricey for this slate)
+• Range: 0.0–6.6 pts (very high bust risk; under half his average in 4 of 10 games)
+• Captain: $3,600, 3.6 pts, 0.7% owned as CPT; RB captain is fine; the builds don't require a partner",,False,22.5,punt-level role,very high bust risk,,0.231,3600,3.6446833080764,0.7295124567424028,1.01

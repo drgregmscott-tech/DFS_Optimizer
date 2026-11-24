@@ -1,139 +1,139 @@
 position,rank,overall_rank,player_id,player_name,team,opponent,salary,final_projection,estimated_ownership_pct,confidence,composite_score,top_factors,rationale,badge,is_bonus,role_security,role_tier,risk_tier,setup_score,conf_basis,cpt_salary,cpt_projection,cpt_ownership_pct,value_per_k
-QB,1,1,00-0026498,Matthew Stafford,LA,GB,10200,16.983944645898124,53.92167534109637,8,16.983944645898124,"matchup, game environment, history, usage, value, range, captain","• Matchup: GB allows 0.87x league-avg to QBs (below average)
+QB,1,1,00-0026498,Matthew Stafford,LA,GB,10200,16.942238107033997,58.07497400819479,8,16.942238107033997,"matchup, game environment, history, usage, value, range, captain","• Matchup: GB allows 0.87x league-avg to QBs (below average)
 • Game environment: LA implied 23.2 (middling; league average is 22.3), game total 44.0 (average), favored by 2.4
 • History: 18.5 pts/game season avg, 10 games (in line with average)
-• Usage: 33.2 pass att + 1.0 rush att projected; 31.3 pass att/game last 3 (actual), 100% of snaps last 3 games (locked-in role)
-• Value: 1.67 pts/$1K (fair for this slate)
-• Range: 6.2–30.7 pts (low bust risk; under half his average in 1 of 10 games)
-• Captain: $15,300, 25.5 pts, 19.3% owned as CPT — most-owned captain tonight; QB captain is a sound build; his RB or TE has been the better first partner than his WR1",,False,89.4,locked-in role,low bust risk,,0.772,15300,25.475916968847187,19.309607439587605,1.67
-WR,1,2,00-0040667,Matthew Golden,GB,LA,9800,15.849332067553458,42.16362559208681,8,15.849332067553458,"matchup, game environment, history, usage, value, range, captain","• Matchup (WR1): LA allows 0.87x league-avg (below average)
-• Game environment: GB implied 20.8 (middling; league average is 22.3), game total 44.0 (average), underdog by 2.4
-• History: 18.8 pts/game season avg, 10 games (in line with average)
-• Usage: 9.8 targets projected (33% of team targets); 10.7 targets/game last 3 (actual), 81% of snaps last 3 games (locked-in role; usage dipping)
-• Value: 1.62 pts/$1K (fair for this slate)
-• Range: 3.6–33.4 pts (low bust risk; under half his average in 0 of 10 games)
-• Captain: $14,700, 23.8 pts, 18.9% owned as CPT; fine as captain, but needs Jordan Love in the FLEX (the builds enforce it)",,False,94.6,locked-in role,low bust risk,,0.765,14700,23.773998101330186,18.94882993040299,1.62
-QB,2,3,00-0036264,Jordan Love,GB,LA,10600,16.96003574088293,55.05510910187027,8,16.96003574088293,"matchup, game environment, history, usage, value, range, captain","• Matchup: LA allows 0.90x league-avg to QBs (below average)
+• Usage: 33.1 pass att + 1.0 rush att projected; 31.3 pass att/game last 3 (actual), 100% of snaps last 3 games (locked-in role)
+• Value: 1.66 pts/$1K (fair for this slate)
+• Range: 6.1–30.4 pts (low bust risk; under half his average in 1 of 10 games)
+• Captain: $15,300, 25.4 pts, 13.4% owned as CPT; QB captain is a sound build; his RB or TE has been the better first partner than his WR1",,False,89.3,locked-in role,low bust risk,,0.771,15300,25.413357160550994,13.443505370759908,1.66
+QB,2,2,00-0036264,Jordan Love,GB,LA,10600,16.950486074134638,59.40264338497291,8,16.950486074134638,"matchup, game environment, history, usage, value, range, captain","• Matchup: LA allows 0.90x league-avg to QBs (below average)
 • Game environment: GB implied 20.8 (middling; league average is 22.3), game total 44.0 (average), underdog by 2.4
 • History: 21.6 pts/game season avg, 10 games (projection running below average)
 • Usage: 34.2 pass att + 0.8 rush att projected; 32.3 pass att/game last 3 (actual), 94% of snaps last 3 games (locked-in role; usage dipping)
 • Value: 1.60 pts/$1K (fair for this slate)
-• Range: 6.3–30.2 pts (low bust risk; under half his average in 0 of 10 games)
-• Captain: $15,900, 25.4 pts, 13.0% owned as CPT; QB captain is a sound build; his RB or TE has been the better first partner than his WR1",,False,90.0,locked-in role,low bust risk,,0.753,15900,25.440053611324394,13.014453309614083,1.6
-WR,2,4,00-0038124,Christian Watson,GB,LA,10000,14.237310482445556,40.12409110674231,6,14.237310482445556,"matchup, game environment, history, usage, value, range, captain","• Matchup (WR2/3): LA allows 0.85x league-avg (below average)
+• Range: 6.2–30.4 pts (low bust risk; under half his average in 0 of 10 games)
+• Captain: $15,900, 25.4 pts, 9.6% owned as CPT; QB captain is a sound build; his RB or TE has been the better first partner than his WR1",,False,90.0,locked-in role,low bust risk,,0.753,15900,25.42572911120196,9.609522010351052,1.6
+WR,1,3,00-0040667,Matthew Golden,GB,LA,9800,15.799748443289571,40.10162944265626,8,15.799748443289571,"matchup, game environment, history, usage, value, range, captain","• Matchup (WR1): LA allows 0.87x league-avg (below average)
+• Game environment: GB implied 20.8 (middling; league average is 22.3), game total 44.0 (average), underdog by 2.4
+• History: 18.8 pts/game season avg, 10 games (projection running below average)
+• Usage: 9.7 targets projected (31% of team targets); 10.7 targets/game last 3 (actual), 81% of snaps last 3 games (locked-in role; usage dipping)
+• Value: 1.61 pts/$1K (fair for this slate)
+• Range: 3.7–33.9 pts (low bust risk; under half his average in 0 of 10 games)
+• Captain: $14,700, 23.7 pts, 14.4% owned as CPT — most-owned captain tonight; fine as captain, but needs Jordan Love in the FLEX (the builds enforce it)",,False,94.6,locked-in role,low bust risk,,0.743,14700,23.69962266493436,14.389327250092808,1.61
+WR,2,4,00-0038124,Christian Watson,GB,LA,10000,14.1478103441399,44.68042259667666,6,14.1478103441399,"matchup, game environment, history, usage, value, range, captain","• Matchup (WR2/3): LA allows 0.85x league-avg (below average)
 • Game environment: GB implied 20.8 (middling; league average is 22.3), game total 44.0 (average), underdog by 2.4
 • History: 19.7 pts/game season avg, 10 games (projection running below average)
-• Usage: 6.8 targets projected (23% of team targets); 7.7 targets/game last 3 (actual), 70% of snaps last 3 games (solid role; usage dipping)
-• Value: 1.42 pts/$1K (fair for this slate)
-• Range: 3.3–30.8 pts (moderate bust risk; under half his average in 2 of 10 games)
-• Captain: $15,000, 21.4 pts, 7.1% owned as CPT; fine as captain, but needs Jordan Love in the FLEX (the builds enforce it)",,False,71.1,solid role,moderate bust risk,,0.626,15000,21.355965723668334,7.070139295802487,1.42
-RB,1,5,00-0037840,Kyren Williams,LA,GB,8600,12.57058944130885,37.35382049615895,6,12.57058944130885,"matchup, game environment, history, usage, value, range, captain","• Matchup: GB allows 1.17x league-avg rushing pts (smash spot), 0.99x receiving pts (neutral) to RBs
+• Usage: 6.7 targets projected (21% of team targets); 7.7 targets/game last 3 (actual), 70% of snaps last 3 games (solid role; usage dipping)
+• Value: 1.41 pts/$1K (fair for this slate)
+• Range: 3.3–30.7 pts (moderate bust risk; under half his average in 2 of 10 games)
+• Captain: $15,000, 21.2 pts, 8.3% owned as CPT; fine as captain, but needs Jordan Love in the FLEX (the builds enforce it)",,False,68.0,solid role,moderate bust risk,,0.613,15000,21.22171551620985,8.259114167292418,1.41
+RB,1,5,00-0037840,Kyren Williams,LA,GB,8600,12.46898772825184,33.8592958030735,6,12.46898772825184,"matchup, game environment, history, usage, value, range, captain","• Matchup: GB allows 1.17x league-avg rushing pts (smash spot), 0.99x receiving pts (neutral) to RBs
 • Game environment: LA implied 23.2 (middling; league average is 22.3), game total 44.0 (average), favored by 2.4
 • History: 16.6 pts/game season avg, 10 games (projection running below average)
-• Usage: 13.9 touches projected (10.6 carries + 3.3 targets, 45% of RB carries); 17.7 touches/game last 3 (actual), 61% of snaps last 3 games (solid role)
-• Value: 1.46 pts/$1K (fair for this slate)
-• Range: 2.6–27.1 pts (moderate bust risk; under half his average in 1 of 10 games)
-• Captain: $12,900, 18.9 pts, 9.8% owned as CPT; RB captain is fine; the builds don't require a partner",,False,67.6,solid role,moderate bust risk,,0.601,12900,18.855884161963274,9.807743167589846,1.46
-RB,2,6,00-0039738,Blake Corum,LA,GB,7600,11.6261798212944,43.419790157354015,5,11.6261798212944,"matchup, game environment, history, usage, value, range, captain","• Matchup: GB allows 1.17x league-avg rushing pts (smash spot), 0.99x receiving pts (neutral) to RBs
+• Usage: 13.9 touches projected (10.7 carries + 3.2 targets, 45% of RB carries); 17.7 touches/game last 3 (actual), 61% of snaps last 3 games (solid role)
+• Value: 1.45 pts/$1K (fair for this slate)
+• Range: 2.7–26.4 pts (moderate bust risk; under half his average in 1 of 10 games)
+• Captain: $12,900, 18.7 pts, 11.5% owned as CPT; RB captain is fine; the builds don't require a partner",,False,67.8,solid role,moderate bust risk,,0.599,12900,18.70348159237776,11.548627763382727,1.45
+RB,2,6,00-0039738,Blake Corum,LA,GB,7600,11.519130290721415,33.09332931333084,5,11.519130290721415,"matchup, game environment, history, usage, value, range, captain","• Matchup: GB allows 1.17x league-avg rushing pts (smash spot), 0.99x receiving pts (neutral) to RBs
 • Game environment: LA implied 23.2 (middling; league average is 22.3), game total 44.0 (average), favored by 2.4
 • History: 11.9 pts/game season avg, 10 games (in line with average)
-• Usage: 12.7 touches projected (10.6 carries + 2.1 targets, 45% of RB carries); 15.3 touches/game last 3 (actual), 39% of snaps last 3 games (partial role)
-• Value: 1.53 pts/$1K (fair for this slate)
-• Range: 1.8–26.6 pts (elevated bust risk; under half his average in 3 of 10 games)
-• Captain: $11,400, 17.4 pts, 9.1% owned as CPT; RB captain is fine; the builds don't require a partner",,False,52.9,partial role,elevated bust risk,,0.549,11400,17.4392697319416,9.058419886016972,1.53
-K,1,7,00-0029822,Brandon McManus,LA,GB,4600,8.14355,27.59323756287561,4,8.14355,"game environment, history, kicker usage, value, range, captain","• Game environment: LA implied 23.2 (middling; league average is 22.3), game total 44.0 (average), favored by 2.4
+• Usage: 12.6 touches projected (10.5 carries + 2.1 targets, 44% of RB carries); 15.3 touches/game last 3 (actual), 39% of snaps last 3 games (partial role)
+• Value: 1.52 pts/$1K (fair for this slate)
+• Range: 1.7–26.8 pts (elevated bust risk; under half his average in 3 of 10 games)
+• Captain: $11,400, 17.3 pts, 13.1% owned as CPT; RB captain is fine; the builds don't require a partner",,False,52.5,partial role,elevated bust risk,,0.545,11400,17.278695436082124,13.128628300158324,1.52
+K,1,7,00-0029822,Brandon McManus,LA,GB,4600,8.14355,27.577790732403248,4,8.14355,"game environment, history, kicker usage, value, range, captain","• Game environment: LA implied 23.2 (middling; league average is 22.3), game total 44.0 (average), favored by 2.4
 • History: 7.5 pts/game season avg (in line with average)
 • Kicker usage: 1.7 FG attempts + 3.0 extra-point attempts per game, last 3 games; indoors
 • Value: 1.77 pts/$1K (fair for this slate)
 • Range: 2.0–15.0 pts (the model gives every kicker the same band; kicker scoring follows game flow, not a player-specific role)
-• Captain: $6,900, 12.2 pts, 2.3% owned as CPT; not a recommended captain (a kicker was the best captain in 1 of 49 games studied; the builds penalize it)",,False,,kicker,,,0.483,6900,12.215325,2.2775229697969226,1.77
-K,2,8,00-0040899,Trey Smack,GB,LA,5000,8.06875,19.47757945614749,4,8.06875,"game environment, history, kicker usage, value, range, captain","• Game environment: GB implied 20.8 (middling; league average is 22.3), game total 44.0 (average), underdog by 2.4
+• Captain: $6,900, 12.2 pts, 1.4% owned as CPT; not a recommended captain (a kicker was the best captain in 1 of 49 games studied; the builds penalize it)",,False,,kicker,,,0.483,6900,12.215325,1.4010640077322003,1.77
+K,2,8,00-0040899,Trey Smack,GB,LA,5000,8.06875,19.46667581110817,4,8.06875,"game environment, history, kicker usage, value, range, captain","• Game environment: GB implied 20.8 (middling; league average is 22.3), game total 44.0 (average), underdog by 2.4
 • History: 7.7 pts/game season avg (in line with average)
 • Kicker usage: 1.7 FG attempts + 3.0 extra-point attempts per game, last 3 games; indoors
 • Value: 1.61 pts/$1K (fair for this slate)
 • Range: 2.0–15.0 pts (the model gives every kicker the same band; kicker scoring follows game flow, not a player-specific role)
-• Captain: $7,500, 12.1 pts, 1.7% owned as CPT; not a recommended captain (a kicker was the best captain in 1 of 49 games studied; the builds penalize it)",,False,,kicker,,,0.482,7500,12.103125,1.7340255360831165,1.61
-TE,1,9,00-0038996,Tucker Kraft,GB,LA,7000,8.040026709036189,14.652517469649704,4,8.040026709036189,"matchup, game environment, history, usage, value, range, captain","• Matchup (TE1): LA allows 0.83x league-avg (tough)
+• Captain: $7,500, 12.1 pts, 1.0% owned as CPT; not a recommended captain (a kicker was the best captain in 1 of 49 games studied; the builds penalize it)",,False,,kicker,,,0.482,7500,12.103125,1.0024303768110414,1.61
+TE,1,9,00-0038996,Tucker Kraft,GB,LA,7000,7.980704454207294,16.27405627791599,4,7.980704454207294,"matchup, game environment, history, usage, value, range, captain","• Matchup (TE1): LA allows 0.83x league-avg (tough)
 • Game environment: GB implied 20.8 (middling; league average is 22.3), game total 44.0 (average), underdog by 2.4
 • History: 9.3 pts/game season avg, 10 games (in line with average)
-• Usage: 4.3 targets projected (15% of team targets); 4.3 targets/game last 3 (actual), 88% of snaps last 3 games (partial role; usage trending down)
-• Value: 1.15 pts/$1K (fair for this slate)
-• Range: 2.4–15.7 pts (elevated bust risk; under half his average in 3 of 10 games)
-• Captain: $10,500, 12.1 pts, 0.7% owned as CPT; fine as captain, but needs Jordan Love in the FLEX (the builds enforce it)",,False,51.1,partial role,elevated bust risk,,0.425,10500,12.060040063554284,0.7459762795597386,1.15
-TE,2,10,00-0033110,Tyler Higbee,LA,GB,6400,6.314643118106804,1.7259992218687903,3,6.314643118106804,"matchup, game environment, history, usage, value, range, captain","• Matchup (TE1): GB allows 0.83x league-avg (tough)
+• Usage: 4.3 targets projected (14% of team targets); 4.3 targets/game last 3 (actual), 88% of snaps last 3 games (partial role; usage trending down)
+• Value: 1.14 pts/$1K (fair for this slate)
+• Range: 2.3–15.7 pts (high bust risk; under half his average in 3 of 10 games)
+• Captain: $10,500, 12.0 pts, 0.7% owned as CPT; fine as captain, but needs Jordan Love in the FLEX (the builds enforce it)",,False,48.9,partial role,high bust risk,,0.416,10500,11.97105668131094,0.6801520945707663,1.14
+TE,2,10,00-0033110,Tyler Higbee,LA,GB,6400,6.331651442135431,1.7250329989920847,3,6.331651442135431,"matchup, game environment, history, usage, value, range, captain","• Matchup (TE1): GB allows 0.83x league-avg (tough)
 • Game environment: LA implied 23.2 (middling; league average is 22.3), game total 44.0 (average), favored by 2.4
 • History: 7.1 pts/game season avg, 9 games (in line with average)
 • Usage: 3.4 targets projected (18% of team targets); 3.7 targets/game last 3 (actual), 77% of snaps last 3 games (partial role; usage trending up)
 • Value: 0.99 pts/$1K (pricey for this slate)
-• Range: 1.3–13.5 pts (high bust risk; under half his average in 5 of 10 games)
-• Captain: $9,600, 9.5 pts, 0.7% owned as CPT; fine as captain, but needs Matthew Stafford in the FLEX (the builds enforce it)",,False,54.1,partial role,high bust risk,,0.396,9600,9.471964677160203,0.7459762795597386,0.99
-WR,3,11,00-0040590,Konata Mumpfield,LA,GB,5200,5.0876624342697045,11.591268087422954,3,5.0876624342697045,"matchup, game environment, history, usage, value, range, captain","• Matchup (WR1): GB allows 1.08x league-avg (favorable)
+• Range: 1.3–13.9 pts (high bust risk; under half his average in 5 of 10 games)
+• Captain: $9,600, 9.5 pts, 0.7% owned as CPT; fine as captain, but needs Matthew Stafford in the FLEX (the builds enforce it)",,False,54.4,partial role,high bust risk,,0.398,9600,9.497477163203149,0.6801520945707663,0.99
+RB,3,11,00-0035700,Josh Jacobs,GB,LA,8000,8.731053303496783,18.28689594625904,3,8.731053303496783,"matchup, game environment, history, usage, value, range, captain","• Matchup: LA allows 0.73x league-avg rushing pts (tough), 1.06x receiving pts (favorable) to RBs
+• Game environment: GB implied 20.8 (middling; league average is 22.3), game total 44.0 (average), underdog by 2.4
+• History: 14.6 pts/game season avg, 3 games (projection running below average)
+• Usage: 12.9 touches projected (10.0 carries + 2.9 targets, 50% of RB carries); 16.3 touches/game last 3 (actual), 46% of snaps last 3 games (part-time role; only 3 games this season; questionable)
+• Value: 1.09 pts/$1K (fair for this slate)
+• Range: 1.5–18.9 pts (high bust risk; under half his average in 1 of 3 games)
+• Captain: $12,000, 13.1 pts, 0.7% owned as CPT; RB captain is fine; the builds don't require a partner",,False,44.0,part-time role,high bust risk,,0.394,12000,13.096579955245174,0.6801520945707663,1.09
+WR,3,12,00-0040590,Konata Mumpfield,LA,GB,5200,4.7270278970668524,1.7250329989920847,2,4.7270278970668524,"matchup, game environment, history, usage, value, range, captain","• Matchup (WR1): GB allows 1.08x league-avg (favorable)
 • Game environment: LA implied 23.2 (middling; league average is 22.3), game total 44.0 (average), favored by 2.4
 • History: 4.4 pts/game season avg, 9 games (in line with average)
 • Usage: 2.5 targets projected (13% of team targets); 2.7 targets/game last 3 (actual), 52% of snaps last 3 games (punt-level role)
-• Value: 0.98 pts/$1K (pricey for this slate)
-• Range: 0.4–11.2 pts (very high bust risk; under half his average in 5 of 10 games)
-• Captain: $7,800, 7.6 pts, 0.7% owned as CPT; fine as captain, but needs Matthew Stafford in the FLEX (the builds enforce it)",,False,31.9,punt-level role,very high bust risk,,0.328,7800,7.631493651404557,0.7459762795597386,0.98
-WR,4,12,00-0040009,Savion Williams,GB,LA,3400,5.47555921702592,24.491283449965493,2,5.47555921702592,"matchup, game environment, history, usage, value, range, captain","• Matchup (WR2/3): LA allows 0.85x league-avg (below average)
+• Value: 0.91 pts/$1K (pricey for this slate)
+• Range: 0.4–10.5 pts (very high bust risk; under half his average in 5 of 10 games)
+• Captain: $7,800, 7.1 pts, 0.7% owned as CPT; fine as captain, but needs Matthew Stafford in the FLEX (the builds enforce it)",,False,31.9,punt-level role,very high bust risk,,0.32,7800,7.090541845600279,0.6801520945707663,0.91
+WR,4,13,00-0040009,Savion Williams,GB,LA,3400,5.387769895172274,21.943924055729955,2,5.387769895172274,"matchup, game environment, history, usage, value, range, captain","• Matchup (WR2/3): LA allows 0.85x league-avg (below average)
 • Game environment: GB implied 20.8 (middling; league average is 22.3), game total 44.0 (average), underdog by 2.4
 • History: 7.4 pts/game season avg, 5 games (in line with average)
-• Usage: 2.6 targets projected (9% of team targets); 2.7 targets/game last 3 (actual), 46% of snaps last 3 games (punt-level role)
-• Value: 1.61 pts/$1K (fair for this slate)
-• Range: 0.4–12.1 pts (high bust risk; under half his average in 1 of 5 games)
-• Captain: $5,100, 8.2 pts, 0.7% owned as CPT; fine as captain, but needs Jordan Love in the FLEX (the builds enforce it)",Boom/Bust Dart,False,30.0,punt-level role,high bust risk,,0.306,5100,8.21333882553888,0.7459762795597386,1.61
-RB,3,13,00-0040142,Kaleb Johnson,GB,LA,5600,4.215656565234309,1.7259992218687903,2,4.215656565234309,"matchup, game environment, history, usage, value, range, captain","• Matchup: LA allows 0.73x league-avg rushing pts (tough), 1.06x receiving pts (favorable) to RBs
-• Game environment: GB implied 20.8 (middling; league average is 22.3), game total 44.0 (average), underdog by 2.4
-• History: 3.6 pts/game season avg, 8 games (in line with average)
-• Usage: 7.2 touches projected (7.2 carries + 0.0 targets) + injury step-up worth 1.0 pts; inheriting vacated work puts him near 10 touches, with no other startable RB on the team; 8.3 touches/game last 3 (actual), 23% of snaps last 3 games (punt-level role; usage trending up)
-• Value: 0.75 pts/$1K (pricey for this slate)
-• Range: 0.6–10.1 pts (elevated bust risk; under half his average in 1 of 7 games)
-• Captain: $8,400, 6.3 pts, 0.7% owned as CPT; RB captain is fine; the builds don't require a partner",,False,40.3,punt-level role,elevated bust risk,,0.301,8400,6.323484847851464,0.7459762795597386,0.75
-TE,3,14,00-0036244,Colby Parkinson,LA,GB,4400,5.031066004847565,10.185892925074308,2,5.031066004847565,"matchup, game environment, history, usage, value, range, captain","• Matchup (TE2/3): GB allows 0.79x league-avg (tough; small numbers, swings a lot)
+• Usage: 2.5 targets projected (8% of team targets); 2.7 targets/game last 3 (actual), 46% of snaps last 3 games (punt-level role)
+• Value: 1.58 pts/$1K (fair for this slate)
+• Range: 0.3–12.6 pts (high bust risk; under half his average in 1 of 5 games)
+• Captain: $5,100, 8.1 pts, 0.7% owned as CPT; fine as captain, but needs Jordan Love in the FLEX (the builds enforce it)",Boom/Bust Dart,False,30.0,punt-level role,high bust risk,,0.304,5100,8.081654842758411,0.6801520945707663,1.58
+TE,3,14,00-0036244,Colby Parkinson,LA,GB,4400,4.963180272565188,9.42076526177614,2,4.963180272565188,"matchup, game environment, history, usage, value, range, captain","• Matchup (TE2/3): GB allows 0.79x league-avg (tough; small numbers, swings a lot)
 • Game environment: LA implied 23.2 (middling; league average is 22.3), game total 44.0 (average), favored by 2.4
 • History: 4.8 pts/game season avg, 8 games (in line with average)
-• Usage: 2.7 targets projected (14% of team targets); 4.0 targets/game last 3 (actual), 71% of snaps last 3 games (part-time role; missed recent time; usage trending down)
-• Value: 1.14 pts/$1K (fair for this slate)
-• Range: 0.8–10.9 pts (high bust risk; under half his average in 3 of 8 games)
-• Captain: $6,600, 7.5 pts, 0.7% owned as CPT; fine as captain, but needs Matthew Stafford in the FLEX (the builds enforce it)",,False,33.6,part-time role,high bust risk,,0.296,6600,7.546599007271348,0.7459762795597386,1.14
-DST,1,15,DST_LA,Rams,LA,GB,4000,6.2976915385,22.411085352699573,2,6.2976915385,"matchup, game environment, history, upside setup, value, range, captain","• Matchup: model rates this the better defensive spot of the two (1.08x vs 0.92x; relative to tonight's other defense only)
+• Usage: 2.6 targets projected (14% of team targets); 4.0 targets/game last 3 (actual), 71% of snaps last 3 games (part-time role; missed recent time; usage trending down)
+• Value: 1.13 pts/$1K (fair for this slate)
+• Range: 0.6–10.9 pts (very high bust risk; under half his average in 3 of 8 games)
+• Captain: $6,600, 7.4 pts, 0.7% owned as CPT; fine as captain, but needs Matthew Stafford in the FLEX (the builds enforce it)",,False,33.3,part-time role,very high bust risk,,0.293,6600,7.444770408847781,0.6801520945707663,1.13
+DST,1,15,DST_LA,Rams,LA,GB,4000,6.2976915385,20.213149493270176,2,6.2976915385,"matchup, game environment, history, upside setup, value, range, captain","• Matchup: model rates this the better defensive spot of the two (1.08x vs 0.92x; relative to tonight's other defense only)
 • Game environment: opponent GB implied 20.8 (middling; league average is 22.3), game total 44.0 (average)
 • History: 6.5 pts/game season avg (in line with average)
-• Upside setup: poor — high dropback volume for GB (38.7 per game); GB without Josh Jacobs since wk 9; GB QB protects the ball (1.8% INT rate, works against)
+• Upside setup: poor — high dropback volume for GB (38.7 per game); GB QB protects the ball (1.8% INT rate, works against)
 • Value: 1.57 pts/$1K (fair for this slate)
 • Range: about 2–11 pts in a typical game (DST projections miss by about 4.3 pts on average); a defensive or return TD or a safety is what pushes it higher, and those aren't modeled
-• Captain: $6,000, 9.4 pts, 1.2% owned as CPT; not a captain option (best captain in 0 of 49 games; the builds exclude it). As a FLEX it only fits lineups with no GB skill players, so it rarely makes a build",,False,,,,-1.0,0.275,6000,9.44653730775,1.157679659448109,1.57
-RB,4,16,00-0039811,MarShawn Lloyd,GB,LA,6600,4.791919137497234,1.7259992218687903,2,4.791919137497234,"matchup, game environment, history, usage, value, range, captain","• Matchup: LA allows 0.73x league-avg rushing pts (tough), 1.06x receiving pts (favorable) to RBs
-• Game environment: GB implied 20.8 (middling; league average is 22.3), game total 44.0 (average), underdog by 2.4
-• History: 6.6 pts/game season avg, 9 games (in line with average)
-• Usage: 5.8 touches projected (4.1 carries + 1.7 targets) + injury step-up worth 0.7 pts; inheriting vacated work puts him near 7 touches, with no other startable RB on the team; 6.3 touches/game last 3 (actual), 26% of snaps last 3 games (part-time role; missed recent time; usage trending down)
-• Value: 0.73 pts/$1K (pricey for this slate)
-• Range: 0.8–10.5 pts (high bust risk; under half his average in 2 of 9 games)
-• Captain: $9,900, 7.2 pts, 0.7% owned as CPT; RB captain is fine; the builds don't require a partner",,False,27.2,part-time role,high bust risk,,0.268,9900,7.187878706245851,0.7459762795597386,0.73
-DST,2,17,DST_GB,Packers,GB,LA,3600,5.3200948210000005,12.626043002253958,2,5.3200948210000005,"matchup, game environment, history, upside setup, value, range, captain","• Matchup: model rates this the weaker defensive spot of the two (0.92x vs 1.08x; relative to tonight's other defense only)
+• Captain: $6,000, 9.4 pts, 7.2% owned as CPT; not a captain option (best captain in 0 of 49 games; the builds exclude it). As a FLEX it only fits lineups with no GB skill players, so it rarely makes a build",,False,,,,-1.0,0.275,6000,9.44653730775,7.245403596607296,1.57
+DST,2,16,DST_GB,Packers,GB,LA,3600,5.3200948210000005,6.38268498115336,2,5.3200948210000005,"matchup, game environment, history, upside setup, value, range, captain","• Matchup: model rates this the weaker defensive spot of the two (0.92x vs 1.08x; relative to tonight's other defense only)
 • Game environment: opponent LA implied 23.2 (middling; league average is 22.3), game total 44.0 (average)
 • History: 7.2 pts/game season avg (in line with average)
 • Upside setup: poor — high dropback volume for LA (38.4 per game); LA without Puka Nacua since wk 9; LA rarely sacked (4.8% of dropbacks, works against)
 • Value: 1.48 pts/$1K (fair for this slate)
 • Range: about 1–10 pts in a typical game (DST projections miss by about 4.3 pts on average); a defensive or return TD or a safety is what pushes it higher, and those aren't modeled
-• Captain: $5,400, 8.0 pts, 1.2% owned as CPT; not a captain option (best captain in 0 of 49 games; the builds exclude it). As a FLEX it only fits lineups with no LA skill players, so it rarely makes a build",,False,,,,-1.0,0.253,5400,7.9801422315,1.157679659448109,1.48
-TE,4,18,00-0039074,Davis Allen,LA,GB,2400,3.5660331653012745,13.489484062398777,1,3.5660331653012745,"matchup, game environment, history, usage, value, range, captain","• Matchup (TE2/3): GB allows 0.79x league-avg (tough; small numbers, swings a lot)
+• Captain: $5,400, 8.0 pts, 4.3% owned as CPT; not a captain option (best captain in 0 of 49 games; the builds exclude it). As a FLEX it only fits lineups with no LA skill players, so it rarely makes a build",,False,,,,-1.0,0.253,5400,7.9801422315,4.281083560925554,1.48
+TE,4,17,00-0039074,Davis Allen,LA,GB,2400,3.584081586639841,19.240305499970244,1,3.584081586639841,"matchup, game environment, history, usage, value, range, captain","• Matchup (TE2/3): GB allows 0.79x league-avg (tough; small numbers, swings a lot)
 • Game environment: LA implied 23.2 (middling; league average is 22.3), game total 44.0 (average), favored by 2.4
 • History: 4.2 pts/game season avg, 9 games (in line with average)
-• Usage: 1.5 targets projected (8% of team targets); 2.7 targets/game last 3 (actual), 66% of snaps last 3 games (punt-level role; missed recent time; usage trending down)
+• Usage: 1.4 targets projected (8% of team targets); 2.7 targets/game last 3 (actual), 66% of snaps last 3 games (punt-level role; missed recent time; usage trending down)
 • Value: 1.49 pts/$1K (fair for this slate)
-• Range: 0.9–8.4 pts (very high bust risk; under half his average in 4 of 10 games)
-• Captain: $3,600, 5.3 pts, 0.7% owned as CPT; fine as captain, but needs Matthew Stafford in the FLEX (the builds enforce it)",Boom/Bust Dart,False,26.8,punt-level role,very high bust risk,,0.239,3600,5.349049747951912,0.7459762795597386,1.49
-WR,5,19,00-0036849,Tutu Atwell,LA,GB,4800,2.311867584564686,1.7259992218687903,1,2.311867584564686,"matchup, game environment, history, usage, value, range, captain","• Matchup (WR2/3): GB allows 1.11x league-avg (favorable)
+• Range: 0.9–8.5 pts (very high bust risk; under half his average in 4 of 10 games)
+• Captain: $3,600, 5.4 pts, 0.7% owned as CPT; fine as captain, but needs Matthew Stafford in the FLEX (the builds enforce it)",Boom/Bust Dart,False,26.8,punt-level role,very high bust risk,,0.24,3600,5.376122379959761,0.6801520945707663,1.49
+WR,5,18,00-0036849,Tutu Atwell,LA,GB,4800,2.125730910534632,1.7250329989920847,1,2.125730910534632,"matchup, game environment, history, usage, value, range, captain","• Matchup (WR2/3): GB allows 1.11x league-avg (favorable)
 • Game environment: LA implied 23.2 (middling; league average is 22.3), game total 44.0 (average), favored by 2.4
 • History: 3.0 pts/game season avg, 6 games (in line with average)
 • Usage: 1.6 targets projected (8% of team targets); 3.7 targets/game last 3 (actual), 36% of snaps last 3 games (punt-level role; missed recent time)
-• Value: 0.48 pts/$1K (pricey for this slate)
-• Range: 0.0–7.1 pts (high bust risk; under half his average in 2 of 7 games)
-• Captain: $7,200, 3.5 pts, 0.7% owned as CPT; fine as captain, but needs Matthew Stafford in the FLEX (the builds enforce it)",,False,24.0,punt-level role,high bust risk,,0.239,7200,3.467801376847029,0.7459762795597386,0.48
-RB,5,20,00-0038098,Pierre Strong Jr.,GB,LA,1400,4.270008014966092,36.187857365711466,1,4.270008014966092,"matchup, game environment, history, usage, value, range, captain","• Matchup: LA allows 0.73x league-avg rushing pts (tough), 1.06x receiving pts (favorable) to RBs
+• Value: 0.44 pts/$1K (pricey for this slate)
+• Range: 0.0–6.3 pts (high bust risk; under half his average in 2 of 7 games)
+• Captain: $7,200, 3.2 pts, 0.7% owned as CPT; fine as captain, but needs Matthew Stafford in the FLEX (the builds enforce it)",,False,24.0,punt-level role,high bust risk,,0.234,7200,3.1885963658019474,0.6801520945707663,0.44
+RB,4,19,00-0038098,Pierre Strong Jr.,GB,LA,1400,4.223438378031167,36.94335699308301,1,4.223438378031167,"matchup, game environment, history, usage, value, range, captain","• Matchup: LA allows 0.73x league-avg rushing pts (tough), 1.06x receiving pts (favorable) to RBs
 • Game environment: GB implied 20.8 (middling; league average is 22.3), game total 44.0 (average), underdog by 2.4
 • History: 4.4 pts/game season avg, 4 games (in line with average)
-• Usage: 4.6 touches projected (3.2 carries + 1.4 targets, 21% of RB carries); 9.3 touches/game last 3 (actual), 23% of snaps last 3 games (punt-level role; only 4 games this season; missed recent time; usage trending down)
-• Value: 3.05 pts/$1K (cheap for this slate)
-• Range: 1.0–9.2 pts (very high bust risk; under half his average in 2 of 5 games)
-• Captain: $2,100, 6.4 pts, 0.7% owned as CPT; RB captain is fine; the builds don't require a partner","Boom/Bust Dart, Fragile Chalk",False,10.5,punt-level role,very high bust risk,,0.198,2100,6.405012022449139,0.7459762795597386,3.05
+• Usage: 4.9 touches projected (3.5 carries + 1.4 targets, 17% of RB carries); 9.3 touches/game last 3 (actual), 23% of snaps last 3 games (punt-level role; only 4 games this season; missed recent time; usage trending down)
+• Value: 3.02 pts/$1K (cheap for this slate)
+• Range: 0.8–9.1 pts (very high bust risk; under half his average in 2 of 5 games)
+• Captain: $2,100, 6.3 pts, 0.7% owned as CPT; RB captain is fine; the builds don't require a partner","Boom/Bust Dart, Fragile Chalk",False,10.5,punt-level role,very high bust risk,,0.197,2100,6.335157567046751,0.6801520945707663,3.02
+RB,5,20,00-0039811,MarShawn Lloyd,GB,LA,6600,2.821466526349507,1.7250329989920847,1,2.821466526349507,"matchup, game environment, history, usage, value, range, captain","• Matchup: LA allows 0.73x league-avg rushing pts (tough), 1.06x receiving pts (favorable) to RBs
+• Game environment: GB implied 20.8 (middling; league average is 22.3), game total 44.0 (average), underdog by 2.4
+• History: 6.6 pts/game season avg, 9 games (projection running below average)
+• Usage: 4.3 touches projected (3.1 carries + 1.2 targets, 16% of RB carries); 6.3 touches/game last 3 (actual), 26% of snaps last 3 games (punt-level role; missed recent time; usage trending down)
+• Value: 0.43 pts/$1K (pricey for this slate)
+• Range: 0.0–7.6 pts (high bust risk; under half his average in 2 of 9 games)
+• Captain: $9,900, 4.2 pts, 0.7% owned as CPT; RB captain is fine; the builds don't require a partner",,False,21.7,punt-level role,high bust risk,,0.183,9900,4.232199789524261,0.6801520945707663,0.43
