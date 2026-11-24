@@ -1,146 +1,146 @@
 position,rank,overall_rank,player_id,player_name,team,opponent,salary,final_projection,estimated_ownership_pct,confidence,composite_score,top_factors,rationale,badge,is_bonus,role_security,role_tier,risk_tier,setup_score,conf_basis,cpt_salary,cpt_projection,cpt_ownership_pct,value_per_k
-QB,1,1,00-0039918,Caleb Williams,CHI,DET,9800,26.83860984609788,54.465561554278416,10,26.83860984609788,"matchup, game environment, history, usage, value, range, captain","• Matchup: DET allows 1.18x league-avg to QBs (smash spot)
-• Game environment: CHI implied 28.8 (elite; league average is 22.3), game total 55.2 (shootout-level), favored by 2.4
+QB,1,1,00-0039918,Caleb Williams,CHI,DET,9800,26.92249892062415,55.4883384368425,10,26.92249892062415,"matchup, game environment, history, usage, value, range, captain","• Matchup: DET allows 1.18x league-avg to QBs (smash spot)
+• Game environment: CHI implied 28.9 (elite; league average is 22.3), game total 55.4 (shootout-level), favored by 2.4
 • History: 19.5 pts/game season avg, 7 games (projection running above average)
 • Usage: 36.0 pass att + 3.1 rush att projected; 31.3 pass att/game last 3 (actual), 100% of snaps last 3 games (locked-in role)
-• Value: 2.74 pts/$1K (cheap for this slate)
-• Range: 11.0–45.2 pts (low bust risk; under half his average in 1 of 7 games)
-• Captain: $14,700, 40.3 pts, 19.8% owned as CPT — most-owned captain tonight; QB captain is a sound build; his RB or TE has been the better first partner than his WR1",,False,96.9,locked-in role,low bust risk,,0.954,14700,40.257914769146815,19.83703724002128,2.74
-RB,1,2,00-0039139,Jahmyr Gibbs,DET,CHI,12000,25.44761999213095,40.69841477410285,10,25.44761999213095,"matchup, game environment, history, usage, value, range, captain","• Matchup: CHI allows 0.86x league-avg rushing pts (below average), 1.06x receiving pts (favorable) to RBs
-• Game environment: DET implied 26.4 (plus; league average is 22.3), game total 55.2 (shootout-level), underdog by 2.4
+• Value: 2.75 pts/$1K (cheap for this slate)
+• Range: 11.2–44.2 pts (low bust risk; under half his average in 1 of 7 games)
+• Captain: $14,700, 40.4 pts, 19.3% owned as CPT; QB captain is a sound build; his RB or TE has been the better first partner than his WR1",,False,97.0,locked-in role,low bust risk,,0.955,14700,40.38374838093623,19.34611373728005,2.75
+RB,1,2,00-0039139,Jahmyr Gibbs,DET,CHI,12000,25.64865095363136,38.9777308393876,10,25.64865095363136,"matchup, game environment, history, usage, value, range, captain","• Matchup: CHI allows 0.86x league-avg rushing pts (below average), 1.06x receiving pts (favorable) to RBs
+• Game environment: DET implied 26.5 (plus; league average is 22.3), game total 55.4 (shootout-level), underdog by 2.4
 • History: 29.8 pts/game season avg, 10 games (projection running below average)
-• Usage: 21.8 touches projected (16.1 carries + 5.7 targets, 81% of RB carries); 26.3 touches/game last 3 (actual), 70% of snaps last 3 games (locked-in role)
-• Value: 2.12 pts/$1K (fair for this slate)
-• Range: 5.8–52.3 pts (low bust risk; under half his average in 1 of 10 games)
-• Captain: $18,000, 38.2 pts, 13.0% owned as CPT; RB captain is fine; the builds don't require a partner",,False,97.7,locked-in role,low bust risk,,0.913,18000,38.17142998819642,12.988273472675573,2.12
-QB,2,3,00-0033106,Jared Goff,DET,CHI,9600,25.550901898939657,46.63951116376373,9,25.550901898939657,"matchup, game environment, history, usage, value, range, captain","• Matchup: CHI allows 1.04x league-avg to QBs (neutral)
-• Game environment: DET implied 26.4 (plus; league average is 22.3), game total 55.2 (shootout-level), underdog by 2.4
+• Usage: 22.0 touches projected (16.4 carries + 5.7 targets, 82% of RB carries); 26.3 touches/game last 3 (actual), 70% of snaps last 3 games (locked-in role)
+• Value: 2.14 pts/$1K (fair for this slate)
+• Range: 5.7–52.4 pts (low bust risk; under half his average in 1 of 10 games)
+• Captain: $18,000, 38.5 pts, 13.3% owned as CPT; RB captain is fine; the builds don't require a partner",,False,97.7,locked-in role,low bust risk,,0.913,18000,38.47297643044704,13.322998346522002,2.14
+QB,2,3,00-0033106,Jared Goff,DET,CHI,9600,25.67924243141251,45.9991313625399,9,25.67924243141251,"matchup, game environment, history, usage, value, range, captain","• Matchup: CHI allows 1.04x league-avg to QBs (neutral)
+• Game environment: DET implied 26.5 (plus; league average is 22.3), game total 55.4 (shootout-level), underdog by 2.4
 • History: 20.5 pts/game season avg, 10 games (projection running above average)
 • Usage: 35.6 pass att + 2.4 rush att projected; 28.0 pass att/game last 3 (actual), 95% of snaps last 3 games (locked-in role)
-• Value: 2.66 pts/$1K (cheap for this slate)
-• Range: 10.3–42.9 pts (low bust risk; under half his average in 2 of 10 games)
-• Captain: $14,400, 38.3 pts, 19.5% owned as CPT; QB captain is a sound build; his RB or TE has been the better first partner than his WR1",,False,95.4,locked-in role,low bust risk,,0.904,14400,38.326352848409485,19.47874620647808,2.66
-WR,1,4,00-0036963,Amon-Ra St. Brown,DET,CHI,10400,18.538831631478544,28.87988301010109,8,18.538831631478544,"matchup, game environment, history, usage, value, range, captain","• Matchup (WR1): CHI allows 1.04x league-avg (neutral)
-• Game environment: DET implied 26.4 (plus; league average is 22.3), game total 55.2 (shootout-level), underdog by 2.4
+• Value: 2.67 pts/$1K (cheap for this slate)
+• Range: 10.2–43.2 pts (low bust risk; under half his average in 2 of 10 games)
+• Captain: $14,400, 38.5 pts, 20.4% owned as CPT — most-owned captain tonight; QB captain is a sound build; his RB or TE has been the better first partner than his WR1",,False,95.4,locked-in role,low bust risk,,0.904,14400,38.51886364711876,20.41202574287744,2.67
+WR,1,4,00-0036963,Amon-Ra St. Brown,DET,CHI,10400,18.28604867000125,28.764605164669323,8,18.28604867000125,"matchup, game environment, history, usage, value, range, captain","• Matchup (WR1): CHI allows 1.04x league-avg (neutral)
+• Game environment: DET implied 26.5 (plus; league average is 22.3), game total 55.4 (shootout-level), underdog by 2.4
 • History: 20.4 pts/game season avg, 10 games (in line with average)
 • Usage: 8.4 targets projected (25% of team targets); 7.0 targets/game last 3 (actual), 73% of snaps last 3 games (solid role; usage trending down)
-• Value: 1.78 pts/$1K (fair for this slate)
-• Range: 4.1–39.6 pts (low bust risk; under half his average in 0 of 10 games)
-• Captain: $15,600, 27.8 pts, 4.1% owned as CPT; fine as captain, but needs Jared Goff in the FLEX (the builds enforce it)",,False,82.3,solid role,low bust risk,,0.815,15600,27.808247447217816,4.135233120834776,1.78
-RB,2,5,00-0036275,D'Andre Swift,CHI,DET,8600,15.66264109132183,28.519108100696545,7,15.66264109132183,"matchup, game environment, history, usage, value, range, captain","• Matchup: DET allows 0.82x league-avg rushing pts (tough), 1.01x receiving pts (neutral) to RBs
-• Game environment: CHI implied 28.8 (elite; league average is 22.3), game total 55.2 (shootout-level), favored by 2.4
-• History: 17.2 pts/game season avg, 10 games (in line with average)
-• Usage: 15.6 touches projected (13.0 carries + 2.6 targets, 64% of RB carries); 19.3 touches/game last 3 (actual), 65% of snaps last 3 games (solid role; usage trending down)
-• Value: 1.82 pts/$1K (fair for this slate)
-• Range: 2.2–35.3 pts (low bust risk; under half his average in 2 of 10 games)
-• Captain: $12,900, 23.5 pts, 6.5% owned as CPT; RB captain is fine; the builds don't require a partner",,False,75.5,solid role,low bust risk,,0.734,12900,23.493961636982743,6.458550261380745,1.82
-WR,2,6,00-0040735,Luther Burden III,CHI,DET,8000,15.87015347063487,29.24009873214123,7,15.87015347063487,"matchup, game environment, history, usage, value, range, captain","• Matchup (WR1): DET allows 1.18x league-avg (smash spot)
-• Game environment: CHI implied 28.8 (elite; league average is 22.3), game total 55.2 (shootout-level), favored by 2.4
+• Value: 1.76 pts/$1K (fair for this slate)
+• Range: 4.1–39.3 pts (low bust risk; under half his average in 0 of 10 games)
+• Captain: $15,600, 27.4 pts, 0.7% owned as CPT; fine as captain, but needs Jared Goff in the FLEX (the builds enforce it)",,False,82.4,solid role,low bust risk,,0.81,15600,27.429073005001875,0.7071887409935118,1.76
+WR,2,5,00-0040735,Luther Burden III,CHI,DET,8000,15.997625525222324,29.839701119679564,7,15.997625525222324,"matchup, game environment, history, usage, value, range, captain","• Matchup (WR1): DET allows 1.18x league-avg (smash spot)
+• Game environment: CHI implied 28.9 (elite; league average is 22.3), game total 55.4 (shootout-level), favored by 2.4
 • History: 14.5 pts/game season avg, 10 games (in line with average)
 • Usage: 6.8 targets projected (21% of team targets); 7.3 targets/game last 3 (actual), 57% of snaps last 3 games (partial role)
-• Value: 1.98 pts/$1K (fair for this slate)
-• Range: 3.1–34.6 pts (moderate bust risk; under half his average in 2 of 10 games)
-• Captain: $12,000, 23.8 pts, 8.8% owned as CPT; fine as captain, but needs Caleb Williams in the FLEX (the builds enforce it)",,False,62.6,partial role,moderate bust risk,,0.731,12000,23.805230205952306,8.805334106473607,1.98
-TE,1,7,00-0040126,Colston Loveland,CHI,DET,7000,13.925036719502431,28.519108100696545,7,13.925036719502431,"matchup, game environment, history, usage, value, range, captain","• Matchup (TE1): DET allows 1.25x league-avg (smash spot)
-• Game environment: CHI implied 28.8 (elite; league average is 22.3), game total 55.2 (shootout-level), favored by 2.4
+• Value: 2.00 pts/$1K (fair for this slate)
+• Range: 3.3–34.7 pts (moderate bust risk; under half his average in 2 of 10 games)
+• Captain: $12,000, 24.0 pts, 6.7% owned as CPT; fine as captain, but needs Caleb Williams in the FLEX (the builds enforce it)",,False,62.7,partial role,moderate bust risk,,0.735,12000,23.996438287833485,6.702522646159979,2.0
+RB,2,6,00-0036275,D'Andre Swift,CHI,DET,8600,15.56539835854569,26.231152507075777,7,15.56539835854569,"matchup, game environment, history, usage, value, range, captain","• Matchup: DET allows 0.82x league-avg rushing pts (tough), 1.01x receiving pts (neutral) to RBs
+• Game environment: CHI implied 28.9 (elite; league average is 22.3), game total 55.4 (shootout-level), favored by 2.4
+• History: 17.2 pts/game season avg, 10 games (in line with average)
+• Usage: 15.6 touches projected (13.0 carries + 2.6 targets, 65% of RB carries); 19.3 touches/game last 3 (actual), 65% of snaps last 3 games (solid role; usage trending down)
+• Value: 1.81 pts/$1K (fair for this slate)
+• Range: 2.4–33.8 pts (low bust risk; under half his average in 2 of 10 games)
+• Captain: $12,900, 23.3 pts, 5.9% owned as CPT; RB captain is fine; the builds don't require a partner",,False,75.6,solid role,low bust risk,,0.732,12900,23.34809753781853,5.882402355610465,1.81
+TE,1,7,00-0040126,Colston Loveland,CHI,DET,7000,13.928400545590629,28.405270335691267,7,13.928400545590629,"matchup, game environment, history, usage, value, range, captain","• Matchup (TE1): DET allows 1.25x league-avg (smash spot)
+• Game environment: CHI implied 28.9 (elite; league average is 22.3), game total 55.4 (shootout-level), favored by 2.4
 • History: 9.6 pts/game season avg, 10 games (projection running above average)
-• Usage: 6.8 targets projected (20% of team targets); 6.0 targets/game last 3 (actual), 91% of snaps last 3 games (solid role; usage trending down)
+• Usage: 6.7 targets projected (20% of team targets); 6.0 targets/game last 3 (actual), 91% of snaps last 3 games (solid role; usage trending down)
 • Value: 1.99 pts/$1K (fair for this slate)
-• Range: 3.9–28.2 pts (moderate bust risk; under half his average in 3 of 10 games)
-• Captain: $10,500, 20.9 pts, 5.6% owned as CPT; fine as captain, but needs Caleb Williams in the FLEX (the builds enforce it)",,False,75.8,solid role,moderate bust risk,,0.699,10500,20.887555079253648,5.589597456051941,1.99
-WR,3,8,00-0037240,Jameson Williams,DET,CHI,7800,13.719177087616014,20.17038093769942,6,13.719177087616014,"matchup, game environment, history, usage, value, range, captain","• Matchup (WR2/3): CHI allows 0.89x league-avg (below average)
-• Game environment: DET implied 26.4 (plus; league average is 22.3), game total 55.2 (shootout-level), underdog by 2.4
+• Range: 3.7–29.2 pts (moderate bust risk; under half his average in 3 of 10 games)
+• Captain: $10,500, 20.9 pts, 5.5% owned as CPT; fine as captain, but needs Caleb Williams in the FLEX (the builds enforce it)",,False,75.6,solid role,moderate bust risk,,0.698,10500,20.892600818385944,5.451267082980787,1.99
+WR,3,8,00-0037240,Jameson Williams,DET,CHI,7800,13.771239385656449,19.677139703508413,6,13.771239385656449,"matchup, game environment, history, usage, value, range, captain","• Matchup (WR2/3): CHI allows 0.89x league-avg (below average)
+• Game environment: DET implied 26.5 (plus; league average is 22.3), game total 55.4 (shootout-level), underdog by 2.4
 • History: 13.7 pts/game season avg, 10 games (in line with average)
 • Usage: 5.8 targets projected (17% of team targets); 4.3 targets/game last 3 (actual), 80% of snaps last 3 games (solid role)
-• Value: 1.76 pts/$1K (fair for this slate)
-• Range: 3.0–30.1 pts (moderate bust risk; under half his average in 2 of 10 games)
-• Captain: $11,700, 20.6 pts, 0.7% owned as CPT; fine as captain, but needs Jared Goff in the FLEX (the builds enforce it)",,False,65.9,solid role,moderate bust risk,,0.637,11700,20.57876563142402,0.7251342352949689,1.76
-WR,4,9,00-0039919,Rome Odunze,CHI,DET,6600,13.638227382476302,28.87988301010109,6,13.638227382476302,"matchup, game environment, history, usage, value, range, captain","• Matchup (WR2/3): DET allows 0.89x league-avg (below average)
-• Game environment: CHI implied 28.8 (elite; league average is 22.3), game total 55.2 (shootout-level), favored by 2.4
+• Value: 1.77 pts/$1K (fair for this slate)
+• Range: 3.0–30.2 pts (moderate bust risk; under half his average in 2 of 10 games)
+• Captain: $11,700, 20.7 pts, 0.7% owned as CPT; fine as captain, but needs Jared Goff in the FLEX (the builds enforce it)",,False,66.2,solid role,moderate bust risk,,0.639,11700,20.656859078484672,0.7071887409935118,1.77
+WR,4,9,00-0039919,Rome Odunze,CHI,DET,6600,13.83567808418942,33.06320424022181,6,13.83567808418942,"matchup, game environment, history, usage, value, range, captain","• Matchup (WR2/3): DET allows 0.89x league-avg (below average)
+• Game environment: CHI implied 28.9 (elite; league average is 22.3), game total 55.4 (shootout-level), favored by 2.4
 • History: 9.8 pts/game season avg, 10 games (projection running above average)
-• Usage: 5.6 targets projected (17% of team targets); 5.7 targets/game last 3 (actual), 89% of snaps last 3 games (partial role)
-• Value: 2.07 pts/$1K (fair for this slate)
-• Range: 3.2–30.1 pts (low bust risk; under half his average in 0 of 10 games)
-• Captain: $9,900, 20.5 pts, 0.7% owned as CPT; fine as captain, but needs Caleb Williams in the FLEX (the builds enforce it)",,False,64.9,partial role,low bust risk,,0.616,9900,20.457341073714453,0.7251342352949689,2.07
-TE,2,10,00-0039065,Sam LaPorta,DET,CHI,5600,11.82516877139689,26.702848505160137,6,11.82516877139689,"matchup, game environment, history, usage, value, range, captain","• Matchup (TE1): CHI allows 0.86x league-avg (below average)
-• Game environment: DET implied 26.4 (plus; league average is 22.3), game total 55.2 (shootout-level), underdog by 2.4
+• Usage: 5.6 targets projected (17% of team targets); 5.7 targets/game last 3 (actual), 89% of snaps last 3 games (solid role)
+• Value: 2.10 pts/$1K (fair for this slate)
+• Range: 3.2–30.8 pts (low bust risk; under half his average in 0 of 10 games)
+• Captain: $9,900, 20.8 pts, 5.0% owned as CPT; fine as captain, but needs Caleb Williams in the FLEX (the builds enforce it)",,False,65.1,solid role,low bust risk,,0.622,9900,20.75351712628413,5.0022925830138165,2.1
+TE,2,10,00-0039065,Sam LaPorta,DET,CHI,5600,11.953854189759095,28.764605164669323,6,11.953854189759095,"matchup, game environment, history, usage, value, range, captain","• Matchup (TE1): CHI allows 0.86x league-avg (below average)
+• Game environment: DET implied 26.5 (plus; league average is 22.3), game total 55.4 (shootout-level), underdog by 2.4
 • History: 10.5 pts/game season avg, 10 games (in line with average)
 • Usage: 5.6 targets projected (17% of team targets); 5.0 targets/game last 3 (actual), 87% of snaps last 3 games (partial role; questionable)
-• Value: 2.11 pts/$1K (fair for this slate)
+• Value: 2.13 pts/$1K (fair for this slate)
 • Range: 2.9–25.3 pts (moderate bust risk; under half his average in 2 of 10 games)
-• Captain: $8,400, 17.7 pts, 0.7% owned as CPT; fine as captain, but needs Jared Goff in the FLEX (the builds enforce it)",Solid Value,False,62.2,partial role,moderate bust risk,,0.581,8400,17.737753157095334,0.7251342352949689,2.11
-K,1,11,00-0031203,Cairo Santos,CHI,DET,4600,8.08855,25.863805956327575,5,8.08855,"game environment, history, kicker usage, value, range, captain","• Game environment: CHI implied 28.8 (elite; league average is 22.3), game total 55.2 (shootout-level), favored by 2.4
+• Captain: $8,400, 17.9 pts, 0.7% owned as CPT; fine as captain, but needs Jared Goff in the FLEX (the builds enforce it)",Solid Value,False,62.1,partial role,moderate bust risk,,0.584,8400,17.93078128463864,0.7071887409935118,2.13
+K,1,11,00-0031203,Cairo Santos,CHI,DET,4600,8.08855,25.76056717851577,5,8.08855,"game environment, history, kicker usage, value, range, captain","• Game environment: CHI implied 28.9 (elite; league average is 22.3), game total 55.4 (shootout-level), favored by 2.4
 • History: 9.1 pts/game season avg (in line with average)
 • Kicker usage: 2.0 FG attempts + 3.0 extra-point attempts per game, last 3 games; indoors
 • Value: 1.76 pts/$1K (fair for this slate)
 • Range: 2.0–15.0 pts (the model gives every kicker the same band; kicker scoring follows game flow, not a player-specific role)
-• Captain: $6,900, 12.1 pts, 0.3% owned as CPT; not a recommended captain (a kicker was the best captain in 1 of 49 games studied; the builds penalize it)",,False,,kicker,,,0.522,6900,12.132825,0.2546643245994638,1.76
-K,2,12,00-0039172,Jake Bates,DET,CHI,5000,8.06875,18.25680420446653,5,8.06875,"game environment, history, kicker usage, value, range, captain","• Game environment: DET implied 26.4 (plus; league average is 22.3), game total 55.2 (shootout-level), underdog by 2.4
+• Captain: $6,900, 12.1 pts, 0.2% owned as CPT; not a recommended captain (a kicker was the best captain in 1 of 49 games studied; the builds penalize it)",,False,,kicker,,,0.522,6900,12.132825,0.248361936760852,1.76
+K,2,12,00-0039172,Jake Bates,DET,CHI,5000,8.06875,18.18392977306996,5,8.06875,"game environment, history, kicker usage, value, range, captain","• Game environment: DET implied 26.5 (plus; league average is 22.3), game total 55.4 (shootout-level), underdog by 2.4
 • History: 9.4 pts/game season avg (in line with average)
 • Kicker usage: 2.0 FG attempts + 3.3 extra-point attempts per game, last 3 games; indoors
 • Value: 1.61 pts/$1K (fair for this slate)
 • Range: 2.0–15.0 pts (the model gives every kicker the same band; kicker scoring follows game flow, not a player-specific role)
-• Captain: $7,500, 12.1 pts, 0.3% owned as CPT; not a recommended captain (a kicker was the best captain in 1 of 49 games studied; the builds penalize it)",,False,,kicker,,,0.502,7500,12.103125,0.2546643245994638,1.61
-WR,5,13,00-0032464,Kalif Raymond,CHI,DET,3200,9.360343153985442,45.733332667460665,4,9.360343153985442,"matchup, game environment, history, usage, value, range, captain","• Matchup (WR2/3): DET allows 0.89x league-avg (below average)
-• Game environment: CHI implied 28.8 (elite; league average is 22.3), game total 55.2 (shootout-level), favored by 2.4
+• Captain: $7,500, 12.1 pts, 0.2% owned as CPT; not a recommended captain (a kicker was the best captain in 1 of 49 games studied; the builds penalize it)",,False,,kicker,,,0.502,7500,12.103125,0.248361936760852,1.61
+WR,5,13,00-0032464,Kalif Raymond,CHI,DET,3200,9.69091574938494,48.82399777285732,5,9.69091574938494,"matchup, game environment, history, usage, value, range, captain","• Matchup (WR2/3): DET allows 0.89x league-avg (below average)
+• Game environment: CHI implied 28.9 (elite; league average is 22.3), game total 55.4 (shootout-level), favored by 2.4
 • History: 7.3 pts/game season avg, 10 games (in line with average)
-• Usage: 4.4 targets projected (13% of team targets); 4.7 targets/game last 3 (actual), 69% of snaps last 3 games (part-time role; usage trending up)
-• Value: 2.93 pts/$1K (cheap for this slate)
-• Range: 1.9–20.9 pts (high bust risk; under half his average in 4 of 10 games)
-• Captain: $4,800, 14.0 pts, 5.1% owned as CPT; fine as captain, but needs Caleb Williams in the FLEX (the builds enforce it)",Fragile Chalk,False,44.7,part-time role,high bust risk,,0.484,4800,14.040514730978163,5.129229859923202,2.93
-WR,6,14,00-0041051,Zavion Thomas,CHI,DET,2200,4.696984790309167,20.17038093769942,3,4.696984790309167,"matchup, game environment, history, usage, value, range, captain","• Matchup (WR2/3): DET allows 0.89x league-avg (below average)
-• Game environment: CHI implied 28.8 (elite; league average is 22.3), game total 55.2 (shootout-level), favored by 2.4
+• Usage: 4.5 targets projected (14% of team targets); 4.7 targets/game last 3 (actual), 69% of snaps last 3 games (part-time role; usage trending up)
+• Value: 3.03 pts/$1K (cheap for this slate)
+• Range: 2.1–21.1 pts (high bust risk; under half his average in 4 of 10 games)
+• Captain: $4,800, 14.5 pts, 4.5% owned as CPT; fine as captain, but needs Caleb Williams in the FLEX (the builds enforce it)",Fragile Chalk,False,44.9,part-time role,high bust risk,,0.493,4800,14.53637362407741,4.531412561518204,3.03
+WR,6,14,00-0041051,Zavion Thomas,CHI,DET,2200,4.76236410512722,20.089868213488494,3,4.76236410512722,"matchup, game environment, history, usage, value, range, captain","• Matchup (WR2/3): DET allows 0.89x league-avg (below average)
+• Game environment: CHI implied 28.9 (elite; league average is 22.3), game total 55.4 (shootout-level), favored by 2.4
 • History: 2.4 pts/game season avg, 9 games (in line with average)
 • Usage: 2.5 targets projected (8% of team targets); 2.7 targets/game last 3 (actual), 17% of snaps last 3 games (punt-level role)
-• Value: 2.13 pts/$1K (fair for this slate)
-• Range: 0.0–11.8 pts (very high bust risk; under half his average in 4 of 9 games)
-• Captain: $3,300, 7.0 pts, 0.7% owned as CPT; fine as captain, but needs Caleb Williams in the FLEX (the builds enforce it)",Boom/Bust Dart,False,30.0,punt-level role,very high bust risk,,0.328,3300,7.045477185463751,0.7251342352949689,2.13
-WR,7,15,00-0040669,Isaac TeSlaa,DET,CHI,2000,5.239127028450911,27.79543227697165,2,5.239127028450911,"matchup, game environment, history, usage, value, range, captain","• Matchup (WR2/3): CHI allows 0.89x league-avg (below average)
-• Game environment: DET implied 26.4 (plus; league average is 22.3), game total 55.2 (shootout-level), underdog by 2.4
+• Value: 2.16 pts/$1K (fair for this slate)
+• Range: 0.0–12.1 pts (very high bust risk; under half his average in 4 of 9 games)
+• Captain: $3,300, 7.1 pts, 0.7% owned as CPT; fine as captain, but needs Caleb Williams in the FLEX (the builds enforce it)",Boom/Bust Dart,False,30.0,punt-level role,very high bust risk,,0.33,3300,7.14354615769083,0.7071887409935118,2.16
+WR,7,15,00-0040669,Isaac TeSlaa,DET,CHI,2000,5.104304935780591,23.62820148430012,2,5.104304935780591,"matchup, game environment, history, usage, value, range, captain","• Matchup (WR2/3): CHI allows 0.89x league-avg (below average)
+• Game environment: DET implied 26.5 (plus; league average is 22.3), game total 55.4 (shootout-level), underdog by 2.4
 • History: 4.2 pts/game season avg, 9 games (in line with average)
-• Usage: 2.9 targets projected (9% of team targets); 3.3 targets/game last 3 (actual), 53% of snaps last 3 games (punt-level role; missed recent time; usage trending up)
-• Value: 2.62 pts/$1K (cheap for this slate)
-• Range: 0.1–12.9 pts (very high bust risk; under half his average in 6 of 10 games)
-• Captain: $3,000, 7.9 pts, 0.7% owned as CPT; fine as captain, but needs Jared Goff in the FLEX (the builds enforce it)","Boom/Bust Dart, Fragile Chalk",False,27.0,punt-level role,very high bust risk,,0.31,3000,7.858690542676366,0.7251342352949689,2.62
-RB,3,16,00-0039364,Sione Vaki,DET,CHI,3000,4.309922928327685,1.617820629183702,2,4.309922928327685,"matchup, game environment, history, usage, value, range, captain","• Matchup: CHI allows 0.86x league-avg rushing pts (below average), 1.06x receiving pts (favorable) to RBs
-• Game environment: DET implied 26.4 (plus; league average is 22.3), game total 55.2 (shootout-level), underdog by 2.4
+• Usage: 2.8 targets projected (8% of team targets); 3.3 targets/game last 3 (actual), 53% of snaps last 3 games (punt-level role; missed recent time; usage trending up)
+• Value: 2.55 pts/$1K (cheap for this slate)
+• Range: 0.0–11.9 pts (very high bust risk; under half his average in 6 of 10 games)
+• Captain: $3,000, 7.7 pts, 2.9% owned as CPT; fine as captain, but needs Jared Goff in the FLEX (the builds enforce it)",Boom/Bust Dart,False,27.0,punt-level role,very high bust risk,,0.307,3000,7.656457403670887,2.913172613329417,2.55
+RB,3,16,00-0039364,Sione Vaki,DET,CHI,3000,4.344935819711126,1.611362885696233,2,4.344935819711126,"matchup, game environment, history, usage, value, range, captain","• Matchup: CHI allows 0.86x league-avg rushing pts (below average), 1.06x receiving pts (favorable) to RBs
+• Game environment: DET implied 26.5 (plus; league average is 22.3), game total 55.4 (shootout-level), underdog by 2.4
 • History: 3.4 pts/game season avg, 10 games (in line with average)
 • Usage: 4.0 touches projected (2.7 carries + 1.3 targets, 14% of RB carries); 4.7 touches/game last 3 (actual), 26% of snaps last 3 games (punt-level role; usage dipping)
-• Value: 1.44 pts/$1K (fair for this slate)
-• Range: 0.6–9.9 pts (high bust risk; under half his average in 3 of 10 games)
-• Captain: $4,500, 6.5 pts, 0.7% owned as CPT; RB captain is fine; the builds don't require a partner",,False,27.0,punt-level role,high bust risk,,0.289,4500,6.464884392491528,0.7251342352949689,1.44
-TE,3,17,00-0036754,Brock Wright,DET,CHI,2600,2.776473604942838,1.617820629183702,2,2.776473604942838,"matchup, game environment, history, usage, value, range, captain","• Matchup (TE2/3): CHI allows 0.97x league-avg (neutral; small numbers, swings a lot)
-• Game environment: DET implied 26.4 (plus; league average is 22.3), game total 55.2 (shootout-level), underdog by 2.4
+• Value: 1.45 pts/$1K (fair for this slate)
+• Range: 0.6–10.0 pts (high bust risk; under half his average in 3 of 10 games)
+• Captain: $4,500, 6.5 pts, 0.7% owned as CPT; RB captain is fine; the builds don't require a partner",,False,27.0,punt-level role,high bust risk,,0.29,4500,6.51740372956669,0.7071887409935118,1.45
+TE,3,17,00-0036754,Brock Wright,DET,CHI,2600,2.745803778064858,1.611362885696233,2,2.745803778064858,"matchup, game environment, history, usage, value, range, captain","• Matchup (TE2/3): CHI allows 0.97x league-avg (neutral; small numbers, swings a lot)
+• Game environment: DET implied 26.5 (plus; league average is 22.3), game total 55.4 (shootout-level), underdog by 2.4
 • History: 1.7 pts/game season avg, 7 games (in line with average)
 • Usage: 0.8 targets projected (3% of team targets); 1.7 targets/game last 3 (actual), 64% of snaps last 3 games (punt-level role; missed recent time)
-• Value: 1.07 pts/$1K (pricey for this slate)
-• Range: 1.1–5.5 pts (very high bust risk; under half his average in 4 of 10 games)
-• Captain: $3,900, 4.2 pts, 0.7% owned as CPT; fine as captain, but needs Jared Goff in the FLEX (the builds enforce it)",,False,27.0,punt-level role,very high bust risk,,0.267,3900,4.1647104074142565,0.7251342352949689,1.07
-RB,4,18,00-0040236,Kyle Monangai,CHI,DET,5200,3.6593815128317138,1.617820629183702,2,3.6593815128317138,"matchup, game environment, history, usage, value, range, captain","• Matchup: DET allows 0.82x league-avg rushing pts (tough), 1.01x receiving pts (neutral) to RBs
-• Game environment: CHI implied 28.8 (elite; league average is 22.3), game total 55.2 (shootout-level), favored by 2.4
+• Value: 1.06 pts/$1K (pricey for this slate)
+• Range: 1.1–5.3 pts (very high bust risk; under half his average in 4 of 10 games)
+• Captain: $3,900, 4.1 pts, 0.7% owned as CPT; fine as captain, but needs Jared Goff in the FLEX (the builds enforce it)",,False,27.0,punt-level role,very high bust risk,,0.266,3900,4.118705667097287,0.7071887409935118,1.06
+RB,4,18,00-0040236,Kyle Monangai,CHI,DET,5200,3.650172561114681,1.611362885696233,2,3.650172561114681,"matchup, game environment, history, usage, value, range, captain","• Matchup: DET allows 0.82x league-avg rushing pts (tough), 1.01x receiving pts (neutral) to RBs
+• Game environment: CHI implied 28.9 (elite; league average is 22.3), game total 55.4 (shootout-level), favored by 2.4
 • History: 13.4 pts/game season avg, 5 games (projection running below average)
 • Usage: 3.8 touches projected (3.5 carries + 0.3 targets, 17% of RB carries); 16.7 touches/game last 3 (actual), 41% of snaps last 3 games (punt-level role; missed recent time; usage trending up)
 • Value: 0.70 pts/$1K (pricey for this slate)
-• Range: 0.2–9.2 pts (very high bust risk; under half his average in 2 of 5 games)
-• Captain: $7,800, 5.5 pts, 0.7% owned as CPT; RB captain is fine; the builds don't require a partner",,False,22.7,punt-level role,very high bust risk,,0.246,7800,5.48907226924757,0.7251342352949689,0.7
-RB,5,19,00-0039021,Roschon Johnson,CHI,DET,2400,2.972715459561423,1.617820629183702,1,2.972715459561423,"matchup, game environment, history, usage, value, range, captain","• Matchup: DET allows 0.82x league-avg rushing pts (tough), 1.01x receiving pts (neutral) to RBs
-• Game environment: CHI implied 28.8 (elite; league average is 22.3), game total 55.2 (shootout-level), favored by 2.4
+• Range: 0.2–9.4 pts (very high bust risk; under half his average in 2 of 5 games)
+• Captain: $7,800, 5.5 pts, 0.7% owned as CPT; RB captain is fine; the builds don't require a partner",,False,22.7,punt-level role,very high bust risk,,0.245,7800,5.475258841672021,0.7071887409935118,0.7
+RB,5,19,00-0039021,Roschon Johnson,CHI,DET,2400,2.934472722194033,1.611362885696233,1,2.934472722194033,"matchup, game environment, history, usage, value, range, captain","• Matchup: DET allows 0.82x league-avg rushing pts (tough), 1.01x receiving pts (neutral) to RBs
+• Game environment: CHI implied 28.9 (elite; league average is 22.3), game total 55.4 (shootout-level), favored by 2.4
 • History: 3.3 pts/game season avg, 7 games (in line with average)
-• Usage: 3.2 touches projected (2.3 carries + 0.9 targets, 11% of RB carries); 2.7 touches/game last 3 (actual), 25% of snaps last 3 games (punt-level role; missed recent time; usage trending down; questionable)
-• Value: 1.24 pts/$1K (pricey for this slate)
-• Range: 0.0–8.2 pts (very high bust risk; under half his average in 2 of 6 games)
-• Captain: $3,600, 4.5 pts, 0.7% owned as CPT; RB captain is fine; the builds don't require a partner",,False,10.5,punt-level role,very high bust risk,,0.221,3600,4.459073189342135,0.7251342352949689,1.24
-DST,1,20,DST_CHI,Bears,CHI,DET,4000,4.879787551000001,0.9742758798465428,1,4.879787551000001,"matchup, game environment, history, upside setup, value, range, captain","• Matchup: model rates this the better defensive spot of the two (1.08x vs 0.92x; relative to tonight's other defense only)
-• Game environment: opponent DET implied 26.4 (tough; league average is 22.3), game total 55.2 (shootout-level)
-• History: 8.6 pts/game season avg (projection running below average)
-• Upside setup: poor — DET implied 26.4, 4.1 above the league average, works against; shootout-level game total 55.2, works against; DET QB protects the ball (1.5% INT rate, works against)
+• Usage: 3.1 touches projected (2.2 carries + 0.9 targets, 11% of RB carries); 2.7 touches/game last 3 (actual), 25% of snaps last 3 games (punt-level role; missed recent time; usage trending down; questionable)
 • Value: 1.22 pts/$1K (pricey for this slate)
+• Range: 0.0–8.1 pts (very high bust risk; under half his average in 2 of 6 games)
+• Captain: $3,600, 4.4 pts, 0.7% owned as CPT; RB captain is fine; the builds don't require a partner",,False,10.5,punt-level role,very high bust risk,,0.22,3600,4.401709083291049,0.7071887409935118,1.22
+DST,1,20,DST_CHI,Bears,CHI,DET,4000,4.8135777775,0.9703869297339134,1,4.8135777775,"matchup, game environment, history, upside setup, value, range, captain","• Matchup: model rates this the better defensive spot of the two (1.07x vs 0.93x; relative to tonight's other defense only)
+• Game environment: opponent DET implied 26.5 (tough; league average is 22.3), game total 55.4 (shootout-level)
+• History: 8.6 pts/game season avg (projection running below average)
+• Upside setup: poor — DET implied 26.5, 4.2 above the league average, works against; shootout-level game total 55.4, works against; DET QB protects the ball (1.5% INT rate, works against)
+• Value: 1.20 pts/$1K (pricey for this slate)
 • Range: about 1–9 pts in a typical game (DST projections miss by about 4.3 pts on average); a defensive or return TD or a safety is what pushes it higher, and those aren't modeled
-• Captain: $6,000, 7.3 pts, 1.1% owned as CPT; not a captain option (best captain in 0 of 49 games; the builds exclude it). As a FLEX it only fits lineups with no DET skill players, so it rarely makes a build",,False,,,,-3.0,0.159,6000,7.319681326500001,1.125334916903639,1.22
-DST,2,21,DST_DET,Lions,DET,CHI,3400,4.117679503000001,0.9742758798465428,1,4.117679503000001,"matchup, game environment, history, upside setup, value, range, captain","• Matchup: model rates this the weaker defensive spot of the two (0.92x vs 1.08x; relative to tonight's other defense only)
-• Game environment: opponent CHI implied 28.8 (brutal; league average is 22.3), game total 55.2 (shootout-level)
+• Captain: $6,000, 7.2 pts, 1.1% owned as CPT; not a captain option (best captain in 0 of 49 games; the builds exclude it). As a FLEX it only fits lineups with no DET skill players, so it rarely makes a build",,False,,,,-3.0,0.157,6000,7.220366666249999,1.0974853266407965,1.2
+DST,2,21,DST_DET,Lions,DET,CHI,3400,4.1467332355,0.9703869297339134,1,4.1467332355,"matchup, game environment, history, upside setup, value, range, captain","• Matchup: model rates this the weaker defensive spot of the two (0.93x vs 1.07x; relative to tonight's other defense only)
+• Game environment: opponent CHI implied 28.9 (brutal; league average is 22.3), game total 55.4 (shootout-level)
 • History: 6.0 pts/game season avg (in line with average)
-• Upside setup: poor — CHI implied 28.8, 6.5 above the league average, works against; shootout-level game total 55.2, works against; CHI QB protects the ball (1.8% INT rate, works against)
-• Value: 1.21 pts/$1K (pricey for this slate)
+• Upside setup: poor — CHI implied 28.9, 6.6 above the league average, works against; shootout-level game total 55.4, works against; CHI QB protects the ball (1.8% INT rate, works against)
+• Value: 1.22 pts/$1K (pricey for this slate)
 • Range: about 0–8 pts in a typical game (DST projections miss by about 4.3 pts on average); a defensive or return TD or a safety is what pushes it higher, and those aren't modeled
-• Captain: $5,100, 6.2 pts, 1.1% owned as CPT; not a captain option (best captain in 0 of 49 games; the builds exclude it). As a FLEX it only fits lineups with no CHI skill players, so it rarely makes a build",,False,,,,-4.0,0.143,5100,6.1765192545000005,1.125334916903639,1.21
+• Captain: $5,100, 6.2 pts, 1.1% owned as CPT; not a captain option (best captain in 0 of 49 games; the builds exclude it). As a FLEX it only fits lineups with no CHI skill players, so it rarely makes a build",,False,,,,-4.0,0.143,5100,6.22009985325,1.0974853266407965,1.22
