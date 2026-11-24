@@ -1,301 +1,301 @@
-position,rank,player_id,player_name,team,opponent,salary,final_projection,estimated_ownership_pct,confidence,composite_score,top_factors,rationale,badge,is_bonus,role_security,role_tier,risk_tier,setup_score,conf_basis
+position,rank,player_id,player_name,team,opponent,salary,final_projection,estimated_ownership_pct,confidence,composite_score,top_factors,rationale,badge,is_bonus,role_security,role_tier,risk_tier,setup_score,conf_basis,price_tier,tier_rank,tier_band,matchup_tier,matchup_factor_display,env_tier,value_per_k,history_trend,setup_tier,tag_bar
 QB,1,00-0036971,Trevor Lawrence,JAX,TEN,6700,22.850197006343578,10.831338903853895,10,1.6460541201639578,"matchup, game environment, history, usage, range","• Matchup: TEN allows 1.19x league-avg to QBs (smash spot)
 • Game environment: JAX implied 31.2 of a 47.8 total, favored by 14.7 (elite)
 • History: 20.7 pts/game season avg, 10 games (in line with average)
 • Usage: 35.3 pass att + 2.8 rush att projected, 100% of snaps last 3 games (locked-in role; usage trending up)
-• Range: 11.4–43.1 pts (low bust risk; under half his average in 1 of 10 games)",,False,97.5,locked-in role,low bust risk,,0.979
+• Range: 11.4–43.1 pts (low bust risk; under half his average in 1 of 10 games)",,False,97.5,locked-in role,low bust risk,,0.979,Mid,1.0,"$5,800-6,700",smash spot,1.19,elite,3.41,,,mid:Mid;pos:Smash spot matchup (1.19x);pos:Elite env (31.2);pos:Locked-in role (97);pos:Low bust risk;pos:3.4 pts/$1K
 QB,2,00-0036442,Joe Burrow,CIN,NO,7700,23.705705573529187,26.385538423816644,9,1.6167561850166237,"matchup, game environment, history, usage, range","• Matchup: NO allows 1.00x league-avg to QBs (neutral)
 • Game environment: CIN implied 30.2 of a 50.5 total, favored by 9.9 (elite)
 • History: 27.1 pts/game season avg, 10 games (projection running below average)
 • Usage: 37.0 pass att + 2.5 rush att projected, 98% of snaps last 3 games (locked-in role)
-• Range: 12.1–44.7 pts (low bust risk; under half his average in 0 of 9 games)",,False,100.0,locked-in role,low bust risk,,0.916
+• Range: 12.1–44.7 pts (low bust risk; under half his average in 0 of 9 games)",,False,100.0,locked-in role,low bust risk,,0.916,Premium,1.0,"$6,800+",neutral,1.0,elite,3.08,Proj below avg (-3.4),,prem:Premium;neu:Neutral matchup (1.00x);pos:Elite env (30.2);pos:Locked-in role (100);pos:Low bust risk;pos:3.1 pts/$1K;neu:Proj below avg (-3.4)
 QB,3,00-0039163,C.J. Stroud,HOU,BAL,6500,20.488888876858184,12.365518179352629,8,1.3029988084118236,"matchup, game environment, history, usage, range","• Matchup: BAL allows 1.03x league-avg to QBs (neutral)
 • Game environment: HOU implied 26.8 of a 46.9 total, favored by 6.8 (elite)
 • History: 22.3 pts/game season avg, 10 games (in line with average)
 • Usage: 34.4 pass att + 3.1 rush att projected, 96% of snaps last 3 games (locked-in role)
-• Range: 9.7–38.5 pts (low bust risk; under half his average in 0 of 10 games)",,False,94.1,locked-in role,low bust risk,,0.892
+• Range: 9.7–38.5 pts (low bust risk; under half his average in 0 of 10 games)",,False,94.1,locked-in role,low bust risk,,0.892,Mid,2.0,"$5,800-6,700",neutral,1.03,elite,3.15,,,mid:Mid;neu:Neutral matchup (1.03x);pos:Elite env (26.8);pos:Locked-in role (94);pos:Low bust risk;pos:3.2 pts/$1K
 QB,4,00-0039910,Jayden Daniels,WAS,ARI,6000,18.97263739344684,7.693252289212395,8,1.113530743481635,"matchup, game environment, history, usage, range","• Matchup: ARI allows 1.21x league-avg to QBs (smash spot)
 • Game environment: WAS implied 24.6 of a 41.8 total, favored by 7.4 (plus)
 • History: 20.3 pts/game season avg, 8 games (in line with average)
 • Usage: 33.4 pass att + 5.0 rush att projected, 100% of snaps last 3 games (locked-in role)
-• Range: 8.6–34.3 pts (low bust risk; under half his average in 0 of 7 games)",,False,90.3,locked-in role,low bust risk,,0.858
+• Range: 8.6–34.3 pts (low bust risk; under half his average in 0 of 7 games)",,False,90.3,locked-in role,low bust risk,,0.858,Mid,3.0,"$5,800-6,700",smash spot,1.21,plus,3.16,,,mid:Mid;pos:Smash spot matchup (1.21x);pos:Plus env (24.6);pos:Locked-in role (90);pos:Low bust risk;pos:3.2 pts/$1K
 QB,5,00-0029604,Kirk Cousins,MIN,ATL,5800,17.78315600961378,5.395789623075737,7,1.0736705082309645,"matchup, game environment, history, usage, range","• Matchup: ATL allows 1.11x league-avg to QBs (favorable)
 • Game environment: MIN implied 24.8 of a 42.5 total, favored by 7.0 (plus)
 • History: 19.2 pts/game season avg, 11 games (in line with average)
 • Usage: 34.0 pass att + 2.7 rush att projected, 97% of snaps last 3 games (locked-in role)
-• Range: 7.7–33.6 pts (low bust risk; under half his average in 1 of 11 games)",,False,92.5,locked-in role,low bust risk,,0.829
-QB,6,00-0039923,J.J. McCarthy,NYG,IND,5400,17.618824673194005,5.015614710996384,6,1.0522452279767118,"matchup, game environment, history, usage, range","• Matchup: IND allows 1.06x league-avg to QBs (favorable)
+• Range: 7.7–33.6 pts (low bust risk; under half his average in 1 of 11 games)",,False,92.5,locked-in role,low bust risk,,0.829,Mid,4.0,"$5,800-6,700",favorable,1.11,plus,3.07,,,mid:Mid;pos:Favorable matchup (1.11x);pos:Plus env (24.8);pos:Locked-in role (93);pos:Low bust risk;neu:3.1 pts/$1K
+QB,6,00-0040743,Tyler Shough,NO,CIN,5700,17.402053981651715,4.768057619484002,6,0.872873418363371,"matchup, game environment, history, usage, range","• Matchup: CIN allows 1.03x league-avg to QBs (neutral)
+• Game environment: NO implied 20.3 of a 50.5 total, underdog by 9.9 (middling)
+• History: 18.5 pts/game season avg, 10 games (in line with average)
+• Usage: 36.9 pass att + 4.4 rush att projected, 100% of snaps last 3 games (locked-in role)
+• Range: 7.4–30.2 pts (low bust risk; under half his average in 1 of 10 games)",,False,100.0,locked-in role,low bust risk,,0.748,Value,1.0,"under $5,800",neutral,1.03,middling,3.05,,,val:Value;neu:Neutral matchup (1.03x);neu:Middling env (20.3);pos:Locked-in role (100);pos:Low bust risk;neu:3.1 pts/$1K
+QB,7,00-0039923,J.J. McCarthy,NYG,IND,5400,17.618824673194005,5.015614710996384,6,1.0522452279767118,"matchup, game environment, history, usage, range","• Matchup: IND allows 1.06x league-avg to QBs (favorable)
 • Game environment: NYG implied 24.1 of a 41.6 total, favored by 6.6 (plus)
 • History: 11.2 pts/game season avg, 6 games (projection running above average)
 • Usage: 33.9 pass att + 4.4 rush att projected, 88% of snaps last 3 games (locked-in role; usage trending up)
-• Range: 7.6–32.0 pts (low bust risk; under half his average in 1 of 6 games)","Value Pick, Solid Value",True,86.0,locked-in role,low bust risk,,0.721
-QB,7,00-0034869,Sam Darnold,SEA,SF,5500,15.784269352113636,1.040403797154818,4,0.762999728071014,"matchup, game environment, history, usage, range","• Matchup: SF allows 0.99x league-avg to QBs (neutral)
+• Range: 7.6–32.0 pts (low bust risk; under half his average in 1 of 6 games)","Value Pick, Solid Value",True,86.0,locked-in role,low bust risk,,0.721,Value,,"under $5,800",favorable,1.06,plus,3.26,Proj above avg (+6.4),,val:Value;pos:Favorable matchup (1.06x);pos:Plus env (24.1);pos:Locked-in role (86);pos:Low bust risk;pos:3.3 pts/$1K;neu:Proj above avg (+6.4)
+QB,8,00-0034869,Sam Darnold,SEA,SF,5500,15.784269352113636,1.040403797154818,4,0.762999728071014,"matchup, game environment, history, usage, range","• Matchup: SF allows 0.99x league-avg to QBs (neutral)
 • Game environment: SEA implied 21.2 of a 45.5 total, underdog by 3.0 (middling)
 • History: 14.9 pts/game season avg, 7 games (in line with average)
 • Usage: 32.5 pass att + 1.5 rush att projected, 100% of snaps last 3 games (solid role; missed recent time; questionable)
-• Range: 6.2–27.2 pts (low bust risk; under half his average in 1 of 7 games)",Leverage Pick,True,72.9,solid role,low bust risk,,0.603
+• Range: 6.2–27.2 pts (low bust risk; under half his average in 1 of 7 games)",Leverage Pick,True,72.9,solid role,low bust risk,,0.603,Value,,"under $5,800",neutral,0.99,middling,2.87,,,val:Value;neu:Neutral matchup (0.99x);neu:Middling env (21.2);neu:Solid role (73);pos:Low bust risk;neu:2.9 pts/$1K
 RB,1,00-0038597,Chase Brown,CIN,NO,6400,14.03261236785883,17.613975328414842,9,1.5849388435580816,"matchup, game environment, history, usage, range","• Matchup: NO allows 1.19x league-avg to RBs (smash spot)
 • Game environment: CIN implied 30.2 of a 50.5 total, favored by 9.9 (elite)
 • History: 14.0 pts/game season avg, 10 games (in line with average)
 • Usage: 16.4 touches projected (10.6 carries + 5.8 targets, 51% of RB carries), 68% of snaps last 3 games (solid role; usage dipping)
-• Range: 4.0–33.3 pts (low bust risk; under half his average in 1 of 9 games)",,False,78.2,solid role,low bust risk,,0.904
+• Range: 4.0–33.3 pts (low bust risk; under half his average in 1 of 9 games)",,False,78.2,solid role,low bust risk,,0.904,Mid,1.0,"$5,800-6,900",smash spot,1.19,elite,2.19,,,mid:Mid;pos:Smash spot matchup (1.19x);pos:Elite env (30.2);neu:Solid role (78);pos:Low bust risk;pos:2.2 pts/$1K
 RB,2,00-0040715,Cam Skattebo,NYG,IND,6100,14.777118153115124,25.16674493674869,8,1.3440454518014588,"matchup, game environment, history, usage, range","• Matchup: IND allows 1.09x league-avg to RBs (favorable)
 • Game environment: NYG implied 24.1 of a 41.6 total, favored by 6.6 (plus)
 • History: 12.0 pts/game season avg, 8 games (in line with average)
 • Usage: 15.5 touches projected (12.4 carries + 3.1 targets, 64% of RB carries), 76% of snaps last 3 games (locked-in role)
-• Range: 4.2–30.4 pts (low bust risk; under half his average in 1 of 9 games)",,False,87.8,locked-in role,low bust risk,,0.867
+• Range: 4.2–30.4 pts (low bust risk; under half his average in 1 of 9 games)",,False,87.8,locked-in role,low bust risk,,0.867,Mid,2.0,"$5,800-6,900",favorable,1.09,plus,2.42,,,mid:Mid;pos:Favorable matchup (1.09x);pos:Plus env (24.1);pos:Locked-in role (88);pos:Low bust risk;pos:2.4 pts/$1K
 RB,3,00-0040719,Bhayshul Tuten,JAX,TEN,7300,17.089469325094313,35.443203530904505,8,1.8638117198751722,"matchup, game environment, history, usage, range","• Matchup: TEN allows 1.01x league-avg to RBs (neutral)
 • Game environment: JAX implied 31.2 of a 47.8 total, favored by 14.7 (elite)
 • History: 15.9 pts/game season avg, 10 games (in line with average)
 • Usage: 17.2 touches projected (14.7 carries + 2.5 targets, 61% of RB carries), 50% of snaps last 3 games (solid role; questionable)
-• Range: 5.0–39.1 pts (low bust risk; under half his average in 0 of 10 games)",,False,69.5,solid role,low bust risk,,0.862
+• Range: 5.0–39.1 pts (low bust risk; under half his average in 0 of 10 games)",,False,69.5,solid role,low bust risk,,0.862,Premium,1.0,"$7,000+",neutral,1.01,elite,2.34,,,prem:Premium;neu:Neutral matchup (1.01x);pos:Elite env (31.2);neu:Solid role (70);pos:Low bust risk;pos:2.3 pts/$1K
 RB,4,00-0038542,Bijan Robinson,ATL,MIN,7700,17.877514354342527,11.686898901479312,8,1.3450095084401248,"matchup, game environment, history, usage, range","• Matchup: MIN allows 0.88x league-avg to RBs (below average)
 • Game environment: ATL implied 17.8 of a 42.5 total, underdog by 7.0 (low-scoring)
 • History: 20.7 pts/game season avg, 10 games (in line with average)
 • Usage: 19.7 touches projected (15.8 carries + 4.0 targets, 84% of RB carries), 78% of snaps last 3 games (locked-in role)
-• Range: 5.2–34.7 pts (low bust risk; under half his average in 2 of 10 games)",Leverage Pick,False,100.0,locked-in role,low bust risk,,0.857
+• Range: 5.2–34.7 pts (low bust risk; under half his average in 2 of 10 games)",Leverage Pick,False,100.0,locked-in role,low bust risk,,0.857,Premium,2.0,"$7,000+",below average,0.88,low-scoring,2.32,,,prem:Premium;neg:Below average matchup (0.88x);neg:Low-scoring env (17.8);pos:Locked-in role (100);pos:Low bust risk;pos:2.3 pts/$1K
 RB,5,00-0033280,Christian McCaffrey,SF,SEA,8600,18.72381742115001,16.539258147267194,7,1.5201128040513971,"matchup, game environment, history, usage, range","• Matchup: SEA allows 0.93x league-avg to RBs (below average)
 • Game environment: SF implied 24.2 of a 45.5 total, favored by 3.0 (plus)
 • History: 23.1 pts/game season avg, 10 games (projection running below average)
 • Usage: 15.9 touches projected (11.8 carries + 4.1 targets, 53% of RB carries), 64% of snaps last 3 games (solid role)
-• Range: 5.5–37.7 pts (low bust risk; under half his average in 0 of 10 games)",,False,78.8,solid role,low bust risk,,0.815
+• Range: 5.5–37.7 pts (low bust risk; under half his average in 0 of 10 games)",,False,78.8,solid role,low bust risk,,0.815,Premium,3.0,"$7,000+",below average,0.93,plus,2.18,Proj below avg (-4.4),,prem:Premium;neg:Below average matchup (0.93x);pos:Plus env (24.2);neu:Solid role (79);pos:Low bust risk;pos:2.2 pts/$1K;neu:Proj below avg (-4.4)
 RB,6,00-0038120,Breece Hall,NYJ,MIA,6000,12.48312633130629,14.166476680301384,7,1.0713841507002846,"matchup, game environment, history, usage, range","• Matchup: MIA allows 1.10x league-avg to RBs (favorable)
 • Game environment: NYJ implied 22.2 of a 40.8 total, favored by 3.7 (middling)
 • History: 15.2 pts/game season avg, 6 games (in line with average)
 • Usage: 15.8 touches projected (12.5 carries + 3.2 targets, 52% of RB carries), 55% of snaps last 3 games (solid role)
-• Range: 3.4–27.3 pts (low bust risk; under half his average in 0 of 6 games)",,False,72.9,solid role,low bust risk,,0.782
+• Range: 3.4–27.3 pts (low bust risk; under half his average in 0 of 6 games)",,False,72.9,solid role,low bust risk,,0.782,Mid,3.0,"$5,800-6,900",favorable,1.1,middling,2.08,,,mid:Mid;pos:Favorable matchup (1.10x);neu:Middling env (22.2);neu:Solid role (73);pos:Low bust risk;pos:2.1 pts/$1K
 RB,7,00-0040198,Ollie Gordon II,MIA,NYJ,5800,12.805363750961313,10.058051260687447,7,0.9657192865308992,"matchup, game environment, history, usage, range","• Matchup: NYJ allows 1.07x league-avg to RBs (favorable)
 • Game environment: MIA implied 18.6 of a 40.8 total, underdog by 3.7 (low-scoring)
 • History: 11.0 pts/game season avg, 9 games (in line with average)
 • Usage: 16.5 touches projected (13.7 carries + 2.7 targets, 68% of RB carries), 72% of snaps last 3 games (locked-in role)
-• Range: 3.6–25.9 pts (low bust risk; under half his average in 2 of 10 games)","Value Pick, Solid Value",False,90.6,locked-in role,low bust risk,,0.773
+• Range: 3.6–25.9 pts (low bust risk; under half his average in 2 of 10 games)","Value Pick, Solid Value",False,90.6,locked-in role,low bust risk,,0.773,Mid,4.0,"$5,800-6,900",favorable,1.07,low-scoring,2.21,,,mid:Mid;pos:Favorable matchup (1.07x);neg:Low-scoring env (18.6);pos:Locked-in role (91);pos:Low bust risk;pos:2.2 pts/$1K
 RB,8,00-0035261,Tony Pollard,TEN,JAX,6500,14.998180188720236,11.306729508620275,7,1.0215466263209525,"matchup, game environment, history, usage, range","• Matchup: JAX allows 0.86x league-avg to RBs (below average)
 • Game environment: TEN implied 16.5 of a 47.8 total, underdog by 14.7 (bottom-tier)
 • History: 16.0 pts/game season avg, 10 games (in line with average)
 • Usage: 17.3 touches projected (13.9 carries + 3.4 targets, 80% of RB carries), 78% of snaps last 3 games (locked-in role; usage dipping)
-• Range: 4.3–27.3 pts (low bust risk; under half his average in 3 of 10 games)",,False,95.0,locked-in role,low bust risk,,0.769
+• Range: 4.3–27.3 pts (low bust risk; under half his average in 3 of 10 games)",,False,95.0,locked-in role,low bust risk,,0.769,Mid,5.0,"$5,800-6,900",below average,0.86,bottom-tier,2.31,,,mid:Mid;neg:Below average matchup (0.86x);neg:Bottom-tier env (16.5);pos:Locked-in role (95);pos:Low bust risk;pos:2.3 pts/$1K
 RB,9,00-0035685,David Montgomery,HOU,BAL,5700,10.416128391493864,7.713823538769276,6,1.0277173596553864,"matchup, game environment, history, usage, range","• Matchup: BAL allows 0.97x league-avg to RBs (neutral)
 • Game environment: HOU implied 26.8 of a 46.9 total, favored by 6.8 (elite)
 • History: 10.7 pts/game season avg, 6 games (in line with average)
 • Usage: 13.6 touches projected (11.8 carries + 1.8 targets, 54% of RB carries), 48% of snaps last 3 games (partial role; usage trending up)
-• Range: 2.8–24.8 pts (elevated bust risk; under half his average in 3 of 6 games)",,False,64.1,partial role,elevated bust risk,,0.766
+• Range: 2.8–24.8 pts (elevated bust risk; under half his average in 3 of 6 games)",,False,64.1,partial role,elevated bust risk,,0.766,Value,1.0,"under $5,800",neutral,0.97,elite,1.83,,,val:Value;neu:Neutral matchup (0.97x);pos:Elite env (26.8);warn:Partial role (64);warn:Elevated bust risk;neu:1.8 pts/$1K
 RB,10,00-0036223,Jonathan Taylor,IND,NYG,6900,14.990704330349908,11.28051291568102,6,0.9818300740732355,"matchup, game environment, history, usage, range","• Matchup: NYG allows 0.88x league-avg to RBs (below average)
 • Game environment: IND implied 17.5 of a 41.6 total, underdog by 6.6 (low-scoring)
 • History: 16.1 pts/game season avg, 11 games (in line with average)
 • Usage: 16.0 touches projected (12.2 carries + 3.8 targets, 77% of RB carries), 68% of snaps last 3 games (locked-in role)
-• Range: 4.3–27.4 pts (low bust risk; under half his average in 2 of 11 games)",,False,90.6,locked-in role,low bust risk,,0.76
-RB,11,00-0032764,Derrick Henry,BAL,HOU,6700,13.421770097346242,7.619535418801652,5,0.9413233966332739,"matchup, game environment, history, usage, range","• Matchup: HOU allows 0.97x league-avg to RBs (neutral)
+• Range: 4.3–27.4 pts (low bust risk; under half his average in 2 of 11 games)",,False,90.6,locked-in role,low bust risk,,0.76,Mid,6.0,"$5,800-6,900",below average,0.88,low-scoring,2.17,,,mid:Mid;neg:Below average matchup (0.88x);neg:Low-scoring env (17.5);pos:Locked-in role (91);pos:Low bust risk;pos:2.2 pts/$1K
+RB,11,00-0037525,Jordan Mason,MIN,ATL,5000,8.753891562359113,3.408531466148108,5,0.8197733928611478,"matchup, game environment, history, usage, range","• Matchup: ATL allows 1.12x league-avg to RBs (favorable)
+• Game environment: MIN implied 24.8 of a 42.5 total, favored by 7.0 (plus)
+• History: 6.3 pts/game season avg, 6 games (in line with average)
+• Usage: 13.6 touches projected (12.0 carries + 1.6 targets, 56% of RB carries), 48% of snaps last 3 games (partial role; usage trending up)
+• Range: 2.2–21.3 pts (moderate bust risk; under half his average in 1 of 6 games)",,False,64.9,partial role,moderate bust risk,,0.684,Value,2.0,"under $5,800",favorable,1.12,plus,1.75,,,val:Value;pos:Favorable matchup (1.12x);pos:Plus env (24.8);warn:Partial role (65);neu:Moderate bust risk;neu:1.8 pts/$1K
+RB,12,00-0032764,Derrick Henry,BAL,HOU,6700,13.421770097346242,7.619535418801652,5,0.9413233966332739,"matchup, game environment, history, usage, range","• Matchup: HOU allows 0.97x league-avg to RBs (neutral)
 • Game environment: BAL implied 20.1 of a 46.9 total, underdog by 6.8 (middling)
 • History: 17.1 pts/game season avg, 11 games (projection running below average)
 • Usage: 14.4 touches projected (11.2 carries + 3.1 targets, 62% of RB carries), 51% of snaps last 3 games (solid role; usage dipping)
-• Range: 3.8–27.1 pts (moderate bust risk; under half his average in 3 of 11 games)","Value Candidate, Solid Value",True,68.7,solid role,moderate bust risk,,0.669
-RB,12,00-0039165,Zach Charbonnet,SEA,SF,5500,10.858198755490868,5.31800425250292,5,0.8334921846488096,"matchup, game environment, history, usage, range","• Matchup: SF allows 0.93x league-avg to RBs (below average)
+• Range: 3.8–27.1 pts (moderate bust risk; under half his average in 3 of 11 games)",,False,68.7,solid role,moderate bust risk,,0.669,Mid,7.0,"$5,800-6,900",neutral,0.97,middling,2.0,Proj below avg (-3.7),,mid:Mid;neu:Neutral matchup (0.97x);neu:Middling env (20.1);neu:Solid role (69);neu:Moderate bust risk;neu:2.0 pts/$1K;neu:Proj below avg (-3.7)
+RB,13,00-0039165,Zach Charbonnet,SEA,SF,5500,10.858198755490868,5.31800425250292,5,0.8334921846488096,"matchup, game environment, history, usage, range","• Matchup: SF allows 0.93x league-avg to RBs (below average)
 • Game environment: SEA implied 21.2 of a 45.5 total, underdog by 3.0 (middling)
 • History: 8.3 pts/game season avg, 3 games (in line with average)
 • Usage: 14.0 touches projected (12.2 carries + 1.8 targets, 61% of RB carries), 55% of snaps last 3 games (solid role; only 3 games this season; usage trending up)
-• Range: 2.9–22.9 pts (moderate bust risk; under half his average in 0 of 3 games)","Value Candidate, Solid Value",True,66.1,solid role,moderate bust risk,,0.656
-RB,13,00-0034975,Justice Hill,BAL,HOU,5200,10.002160875580312,4.36243159393409,2,0.5190735552385919,"matchup, game environment, history, usage, range","• Matchup: HOU allows 0.97x league-avg to RBs (neutral)
-• Game environment: BAL implied 20.1 of a 46.9 total, underdog by 6.8 (middling)
-• History: 8.0 pts/game season avg, 11 games (in line with average)
-• Usage: 8.7 touches projected (4.6 carries + 4.0 targets, 26% of RB carries), 52% of snaps last 3 games (fragile role)
-• Range: 2.6–19.1 pts (high bust risk; under half his average in 4 of 11 games)","Value Candidate, Boom/Bust Dart",True,40.3,fragile role,high bust risk,,0.45
-RB,14,00-0040666,Omarion Hampton,LAC,NE,5600,10.323262727437037,7.540667851507394,4,0.6383331822279021,"matchup, game environment, history, usage, range","• Matchup: NE allows 1.00x league-avg to RBs (neutral)
+• Range: 2.9–22.9 pts (moderate bust risk; under half his average in 0 of 3 games)",,False,66.1,solid role,moderate bust risk,,0.656,Value,3.0,"under $5,800",below average,0.93,middling,1.97,,,val:Value;neg:Below average matchup (0.93x);neu:Middling env (21.2);neu:Solid role (66);neu:Moderate bust risk;neu:2.0 pts/$1K
+RB,14,00-0040242,Jacory Croskey-Merritt,WAS,ARI,5100,8.265971734600518,6.122804983746839,4,0.7000287600613458,"matchup, game environment, history, usage, range","• Matchup: ARI allows 1.02x league-avg to RBs (neutral)
+• Game environment: WAS implied 24.6 of a 41.8 total, favored by 7.4 (plus)
+• History: 10.1 pts/game season avg, 6 games (in line with average)
+• Usage: 12.1 touches projected (10.2 carries + 1.9 targets, 48% of RB carries), 46% of snaps last 3 games (partial role)
+• Range: 2.1–20.3 pts (moderate bust risk; under half his average in 0 of 5 games)",,False,55.5,partial role,moderate bust risk,,0.6,Value,4.0,"under $5,800",neutral,1.02,plus,1.62,,,val:Value;neu:Neutral matchup (1.02x);pos:Plus env (24.6);warn:Partial role (55);neu:Moderate bust risk;neu:1.6 pts/$1K
+RB,15,00-0040666,Omarion Hampton,LAC,NE,5600,10.323262727437037,7.540667851507394,4,0.6383331822279021,"matchup, game environment, history, usage, range","• Matchup: NE allows 1.00x league-avg to RBs (neutral)
 • Game environment: LAC implied 18.2 of a 35.6 total, favored by 0.7 (low-scoring)
 • History: 10.1 pts/game season avg, 10 games (in line with average)
 • Usage: 14.2 touches projected (12.4 carries + 1.8 targets, 57% of RB carries), 53% of snaps last 3 games (solid role; usage trending up)
-• Range: 2.7–21.3 pts (low bust risk; under half his average in 1 of 10 games)","Value Candidate, Solid Value",True,69.5,solid role,low bust risk,,0.583
-RB,15,00-0037263,Tyler Allgeier,ARI,WAS,4700,8.362058151614168,2.097940998984758,2,0.31254597512453924,"matchup, game environment, history, usage, range","• Matchup: WAS allows 0.96x league-avg to RBs (neutral)
-• Game environment: ARI implied 17.2 of a 41.8 total, underdog by 7.4 (low-scoring)
-• History: 8.9 pts/game season avg, 11 games (in line with average)
-• Usage: 10.2 touches projected (8.5 carries + 1.7 targets, 59% of RB carries), 65% of snaps last 3 games (partial role; usage trending down)
-• Range: 2.1–15.5 pts (elevated bust risk; under half his average in 4 of 11 games)",Value Candidate,True,57.4,partial role,elevated bust risk,,0.451
+• Range: 2.7–21.3 pts (low bust risk; under half his average in 1 of 10 games)",,False,69.5,solid role,low bust risk,,0.583,Value,5.0,"under $5,800",neutral,1.0,low-scoring,1.84,,,val:Value;neu:Neutral matchup (1.00x);neg:Low-scoring env (18.2);neu:Solid role (70);pos:Low bust risk;neu:1.8 pts/$1K
 WR,1,00-0038606,Parker Washington,JAX,TEN,7000,16.383799185363205,23.756981717051865,9,2.1130953397647265,"matchup, game environment, history, usage, range","• Matchup: TEN allows 1.29x league-avg to WRs (smash spot)
 • Game environment: JAX implied 31.2 of a 47.8 total, favored by 14.7 (elite)
 • History: 16.5 pts/game season avg, 10 games (in line with average)
 • Usage: 9.5 targets projected (29% of team targets), 76% of snaps last 3 games (locked-in role; usage trending up)
-• Range: 4.6–43.2 pts (low bust risk; under half his average in 2 of 10 games)",,False,93.8,locked-in role,low bust risk,,0.964
+• Range: 4.6–43.2 pts (low bust risk; under half his average in 2 of 10 games)",,False,93.8,locked-in role,low bust risk,,0.964,Premium,1.0,"$7,000+",smash spot,1.29,elite,2.34,,,prem:Premium;pos:Smash spot matchup (1.29x);pos:Elite env (31.2);pos:Locked-in role (94);pos:Low bust risk;pos:2.3 pts/$1K
 WR,2,00-0036900,Ja'Marr Chase,CIN,NO,8900,21.12446518057304,50.56762083967877,9,2.367721946299552,"matchup, game environment, history, usage, range","• Matchup: NO allows 0.92x league-avg to WRs (below average)
 • Game environment: CIN implied 30.2 of a 50.5 total, favored by 9.9 (elite)
 • History: 21.1 pts/game season avg, 10 games (in line with average)
 • Usage: 9.8 targets projected (29% of team targets), 90% of snaps last 3 games (locked-in role)
-• Range: 6.3–49.7 pts (low bust risk; under half his average in 2 of 9 games)",,False,100.0,locked-in role,low bust risk,,0.958
+• Range: 6.3–49.7 pts (low bust risk; under half his average in 2 of 9 games)",,False,100.0,locked-in role,low bust risk,,0.958,Premium,2.0,"$7,000+",below average,0.92,elite,2.37,,,prem:Premium;neg:Below average matchup (0.92x);pos:Elite env (30.2);pos:Locked-in role (100);pos:Low bust risk;pos:2.4 pts/$1K
 WR,3,00-0036554,Nico Collins,HOU,BAL,7100,16.092659111875584,13.748301091881748,8,1.6558008793958576,"matchup, game environment, history, usage, range","• Matchup: BAL allows 1.00x league-avg to WRs (neutral)
 • Game environment: HOU implied 26.8 of a 46.9 total, favored by 6.8 (elite)
 • History: 16.7 pts/game season avg, 8 games (in line with average)
 • Usage: 7.6 targets projected (24% of team targets), 82% of snaps last 3 games (locked-in role; usage trending up)
-• Range: 4.5–35.0 pts (low bust risk; under half his average in 1 of 8 games)",,False,89.9,locked-in role,low bust risk,,0.898
+• Range: 4.5–35.0 pts (low bust risk; under half his average in 1 of 8 games)",,False,89.9,locked-in role,low bust risk,,0.898,Premium,3.0,"$7,000+",neutral,1.0,elite,2.27,,,prem:Premium;neu:Neutral matchup (1.00x);pos:Elite env (26.8);pos:Locked-in role (90);pos:Low bust risk;pos:2.3 pts/$1K
 WR,4,00-0038543,Jaxon Smith-Njigba,SEA,SF,9100,21.71589823013649,17.64838992678299,8,2.057373543439826,"matchup, game environment, history, usage, range","• Matchup: SF allows 1.05x league-avg to WRs (favorable)
 • Game environment: SEA implied 21.2 of a 45.5 total, underdog by 3.0 (middling)
 • History: 28.7 pts/game season avg, 10 games (projection running below average)
 • Usage: 11.0 targets projected (37% of team targets), 83% of snaps last 3 games (locked-in role)
-• Range: 6.5–45.7 pts (low bust risk; under half his average in 2 of 10 games)",,False,98.4,locked-in role,low bust risk,,0.898
+• Range: 6.5–45.7 pts (low bust risk; under half his average in 2 of 10 games)",,False,98.4,locked-in role,low bust risk,,0.898,Premium,4.0,"$7,000+",favorable,1.05,middling,2.39,Proj below avg (-7.0),,prem:Premium;pos:Favorable matchup (1.05x);neu:Middling env (21.2);pos:Locked-in role (98);pos:Low bust risk;pos:2.4 pts/$1K;neu:Proj below avg (-7.0)
 WR,5,00-0036322,Justin Jefferson,MIN,ATL,7800,18.54369138094872,20.38310180819053,8,1.910628940067159,"matchup, game environment, history, usage, range","• Matchup: ATL allows 1.08x league-avg to WRs (favorable)
 • Game environment: MIN implied 24.8 of a 42.5 total, favored by 7.0 (plus)
 • History: 14.0 pts/game season avg, 9 games (projection running above average)
 • Usage: 9.9 targets projected (32% of team targets), 90% of snaps last 3 games (locked-in role)
-• Range: 5.3–39.1 pts (low bust risk; under half his average in 1 of 9 games)",,False,97.0,locked-in role,low bust risk,,0.89
+• Range: 5.3–39.1 pts (low bust risk; under half his average in 1 of 9 games)",,False,97.0,locked-in role,low bust risk,,0.89,Premium,5.0,"$7,000+",favorable,1.08,plus,2.38,Proj above avg (+4.5),,prem:Premium;pos:Favorable matchup (1.08x);pos:Plus env (24.8);pos:Locked-in role (97);pos:Low bust risk;pos:2.4 pts/$1K;neu:Proj above avg (+4.5)
 WR,6,00-0039337,Malik Nabers,NYG,IND,7400,16.0411854732834,12.11011599303976,8,1.556199210287631,"matchup, game environment, history, usage, range","• Matchup: IND allows 0.97x league-avg to WRs (neutral)
 • Game environment: NYG implied 24.1 of a 41.6 total, favored by 6.6 (plus)
 • History: 16.9 pts/game season avg, 10 games (in line with average)
 • Usage: 8.5 targets projected (27% of team targets), 78% of snaps last 3 games (locked-in role)
-• Range: 4.4–33.1 pts (low bust risk; under half his average in 3 of 10 games)",,False,95.6,locked-in role,low bust risk,,0.889
+• Range: 4.4–33.1 pts (low bust risk; under half his average in 3 of 10 games)",,False,95.6,locked-in role,low bust risk,,0.889,Premium,6.0,"$7,000+",neutral,0.97,plus,2.17,,,prem:Premium;neu:Neutral matchup (0.97x);pos:Plus env (24.1);pos:Locked-in role (96);pos:Low bust risk;pos:2.2 pts/$1K
 WR,7,00-0037239,Chris Olave,NO,CIN,6900,15.685079535495364,14.38092817387269,8,1.505097981992467,"matchup, game environment, history, usage, range","• Matchup: CIN allows 0.96x league-avg to WRs (neutral)
 • Game environment: NO implied 20.3 of a 50.5 total, underdog by 9.9 (middling)
 • History: 17.9 pts/game season avg, 10 games (in line with average)
 • Usage: 9.9 targets projected (29% of team targets), 87% of snaps last 3 games (locked-in role)
-• Range: 4.3–32.2 pts (low bust risk; under half his average in 1 of 10 games)",,False,100.0,locked-in role,low bust risk,,0.875
+• Range: 4.3–32.2 pts (low bust risk; under half his average in 1 of 10 games)",,False,100.0,locked-in role,low bust risk,,0.875,Mid,1.0,"$5,500-6,900",neutral,0.96,middling,2.27,,,mid:Mid;neu:Neutral matchup (0.96x);neu:Middling env (20.3);pos:Locked-in role (100);pos:Low bust risk;pos:2.3 pts/$1K
 WR,8,00-0034960,Jakobi Meyers,JAX,TEN,4500,10.007952578193782,7.738253085815458,7,1.417359541299673,"matchup, game environment, history, usage, range","• Matchup: TEN allows 1.29x league-avg to WRs (smash spot)
 • Game environment: JAX implied 31.2 of a 47.8 total, favored by 14.7 (elite)
 • History: 9.5 pts/game season avg, 10 games (in line with average)
 • Usage: 6.3 targets projected (19% of team targets), 77% of snaps last 3 games (solid role)
-• Range: 2.3–28.7 pts (moderate bust risk; under half his average in 2 of 10 games)",,False,70.4,solid role,moderate bust risk,,0.827
+• Range: 2.3–28.7 pts (moderate bust risk; under half his average in 2 of 10 games)",Solid Value,False,70.4,solid role,moderate bust risk,,0.827,Value,1.0,"under $5,500",smash spot,1.29,elite,2.22,,,val:Value;pos:Smash spot matchup (1.29x);pos:Elite env (31.2);neu:Solid role (70);neu:Moderate bust risk;pos:2.2 pts/$1K
 WR,9,00-0039064,Zay Flowers,BAL,HOU,7200,16.0901279121718,11.017974875198483,7,1.361789026209376,"matchup, game environment, history, usage, range","• Matchup: HOU allows 1.05x league-avg to WRs (favorable)
 • Game environment: BAL implied 20.1 of a 46.9 total, underdog by 6.8 (middling)
 • History: 16.5 pts/game season avg, 10 games (in line with average)
 • Usage: 8.0 targets projected (24% of team targets), 81% of snaps last 3 games (locked-in role)
-• Range: 4.5–32.0 pts (low bust risk; under half his average in 2 of 10 games)",,False,90.5,locked-in role,low bust risk,,0.827
+• Range: 4.5–32.0 pts (low bust risk; under half his average in 2 of 10 games)",,False,90.5,locked-in role,low bust risk,,0.827,Premium,7.0,"$7,000+",favorable,1.05,middling,2.23,,,prem:Premium;pos:Favorable matchup (1.05x);neu:Middling env (20.1);pos:Locked-in role (91);pos:Low bust risk;pos:2.2 pts/$1K
 WR,10,00-0037740,Garrett Wilson,NYJ,MIA,6400,14.153188135790996,7.201715044575192,7,1.3111948707852363,"matchup, game environment, history, usage, range","• Matchup: MIA allows 0.88x league-avg to WRs (below average)
 • Game environment: NYJ implied 22.2 of a 40.8 total, favored by 3.7 (middling)
 • History: 14.6 pts/game season avg, 10 games (in line with average)
 • Usage: 7.6 targets projected (25% of team targets), 88% of snaps last 3 games (locked-in role)
-• Range: 3.8–29.8 pts (low bust risk; under half his average in 2 of 10 games)",,False,92.2,locked-in role,low bust risk,,0.799
+• Range: 3.8–29.8 pts (low bust risk; under half his average in 2 of 10 games)",,False,92.2,locked-in role,low bust risk,,0.799,Mid,2.0,"$5,500-6,900",below average,0.88,middling,2.21,,,mid:Mid;neg:Below average matchup (0.88x);neu:Middling env (22.2);pos:Locked-in role (92);pos:Low bust risk;pos:2.2 pts/$1K
 WR,11,00-0037238,Drake London,ATL,MIN,6300,13.816498092961304,6.508668977054986,7,1.1215970489375664,"matchup, game environment, history, usage, range","• Matchup: MIN allows 0.91x league-avg to WRs (below average)
 • Game environment: ATL implied 17.8 of a 42.5 total, underdog by 7.0 (low-scoring)
 • History: 14.8 pts/game season avg, 10 games (in line with average)
 • Usage: 8.0 targets projected (25% of team targets), 92% of snaps last 3 games (locked-in role)
-• Range: 3.6–28.2 pts (low bust risk; under half his average in 2 of 10 games)","Value Pick, Leverage Pick, Solid Value",False,95.6,locked-in role,low bust risk,,0.781
+• Range: 3.6–28.2 pts (low bust risk; under half his average in 2 of 10 games)","Value Pick, Leverage Pick, Solid Value",False,95.6,locked-in role,low bust risk,,0.781,Mid,3.0,"$5,500-6,900",below average,0.91,low-scoring,2.19,,,mid:Mid;neg:Below average matchup (0.91x);neg:Low-scoring env (17.8);pos:Locked-in role (96);pos:Low bust risk;pos:2.2 pts/$1K
 WR,12,00-0041040,Antonio Williams,WAS,ARI,4300,7.795236111405421,7.610889693912212,6,0.8369413995252951,"matchup, game environment, history, usage, range","• Matchup: ARI allows 1.02x league-avg to WRs (neutral)
 • Game environment: WAS implied 24.6 of a 41.8 total, favored by 7.4 (plus)
 • History: 9.7 pts/game season avg, 10 games (in line with average)
 • Usage: 5.8 targets projected (20% of team targets), 84% of snaps last 3 games (solid role)
-• Range: 1.5–21.8 pts (low bust risk; under half his average in 1 of 9 games)",,False,72.6,solid role,low bust risk,,0.717
+• Range: 1.5–21.8 pts (low bust risk; under half his average in 1 of 9 games)",,False,72.6,solid role,low bust risk,,0.717,Value,2.0,"under $5,500",neutral,1.02,plus,1.81,,,val:Value;neu:Neutral matchup (1.02x);pos:Plus env (24.6);neu:Solid role (73);pos:Low bust risk;neu:1.8 pts/$1K
 WR,13,00-0031588,Stefon Diggs,WAS,ARI,5800,10.88972060204974,7.23815263809017,6,1.056838463772124,"matchup, game environment, history, usage, range","• Matchup: ARI allows 1.02x league-avg to WRs (neutral)
 • Game environment: WAS implied 24.6 of a 41.8 total, favored by 7.4 (plus)
 • History: 13.2 pts/game season avg, 9 games (in line with average)
 • Usage: 6.4 targets projected (21% of team targets), 63% of snaps last 3 games (solid role)
-• Range: 2.6–25.4 pts (low bust risk; under half his average in 0 of 8 games)",,False,65.0,solid role,low bust risk,,0.709
+• Range: 2.6–25.4 pts (low bust risk; under half his average in 0 of 8 games)",,False,65.0,solid role,low bust risk,,0.709,Mid,4.0,"$5,500-6,900",neutral,1.02,plus,1.88,,,mid:Mid;neu:Neutral matchup (1.02x);pos:Plus env (24.6);neu:Solid role (65);pos:Low bust risk;neu:1.9 pts/$1K
 WR,14,00-0038618,Xavier Hutchinson,HOU,BAL,4100,8.453838270387827,2.928905404614326,6,0.9463805029940825,"matchup, game environment, history, usage, range","• Matchup: BAL allows 1.00x league-avg to WRs (neutral)
 • Game environment: HOU implied 26.8 of a 46.9 total, favored by 6.8 (elite)
 • History: 8.5 pts/game season avg, 10 games (in line with average)
 • Usage: 5.2 targets projected (16% of team targets), 80% of snaps last 3 games (partial role)
-• Range: 1.7–20.5 pts (moderate bust risk; under half his average in 2 of 10 games)",,False,60.5,partial role,moderate bust risk,,0.704
+• Range: 1.7–20.5 pts (moderate bust risk; under half his average in 2 of 10 games)",,False,60.5,partial role,moderate bust risk,,0.704,Value,3.0,"under $5,500",neutral,1.0,elite,2.06,,,val:Value;neu:Neutral matchup (1.00x);pos:Elite env (26.8);warn:Partial role (61);neu:Moderate bust risk;neu:2.1 pts/$1K
 WR,15,00-0036410,Tee Higgins,CIN,NO,7600,14.418003214549636,24.09545661622308,5,1.3812012459402803,"matchup, game environment, history, usage, range","• Matchup: NO allows 0.92x league-avg to WRs (below average)
 • Game environment: CIN implied 30.2 of a 50.5 total, favored by 9.9 (elite)
 • History: 19.3 pts/game season avg, 10 games (projection running below average)
 • Usage: 4.9 targets projected (14% of team targets), 78% of snaps last 3 games (partial role; usage trending down)
-• Range: 3.9–30.5 pts (elevated bust risk; under half his average in 2 of 9 games)",Fragile Chalk,False,47.0,partial role,elevated bust risk,,0.678
-WR,16,00-0038621,DeMario Douglas,NE,LAC,4800,10.270531671992517,3.1503217605327416,3,0.5993665264162782,"matchup, game environment, history, usage, range","• Matchup: LAC allows 1.07x league-avg to WRs (favorable)
-• Game environment: NE implied 17.5 of a 35.6 total, underdog by 0.7 (low-scoring)
-• History: 10.2 pts/game season avg, 10 games (in line with average)
-• Usage: 4.7 targets projected + injury step-up worth 1.3 pts, 66% of snaps last 3 games (partial role)
-• Range: 2.4–19.3 pts (high bust risk; under half his average in 4 of 10 games)","Value Candidate, Boom/Bust Dart",True,51.8,partial role,high bust risk,,0.543
-WR,17,00-0039880,Malik Washington,MIA,NYJ,4400,9.134095028698518,1.7782144962471724,4,0.6760991635445179,"matchup, game environment, history, usage, range","• Matchup: NYJ allows 0.92x league-avg to WRs (below average)
+• Range: 3.9–30.5 pts (elevated bust risk; under half his average in 2 of 9 games)",Fragile Chalk,False,47.0,partial role,elevated bust risk,,0.678,Premium,8.0,"$7,000+",below average,0.92,elite,1.9,Proj below avg (-4.9),,prem:Premium;neg:Below average matchup (0.92x);pos:Elite env (30.2);warn:Partial role (47);warn:Elevated bust risk;neu:1.9 pts/$1K;neu:Proj below avg (-4.9)
+WR,16,00-0041042,Malachi Fields,NYG,IND,3800,7.579769609632953,1.8385652550594351,4,0.7098253915910494,"matchup, game environment, history, usage, range","• Matchup: IND allows 0.97x league-avg to WRs (neutral)
+• Game environment: NYG implied 24.1 of a 41.6 total, favored by 6.6 (plus)
+• History: 6.8 pts/game season avg, 10 games (in line with average)
+• Usage: 4.5 targets projected (14% of team targets), 87% of snaps last 3 games (partial role)
+• Range: 1.4–18.6 pts (moderate bust risk; under half his average in 0 of 10 games)",,False,56.0,partial role,moderate bust risk,,0.631,Value,4.0,"under $5,500",neutral,0.97,plus,1.99,,,val:Value;neu:Neutral matchup (0.97x);pos:Plus env (24.1);warn:Partial role (56);neu:Moderate bust risk;neu:2.0 pts/$1K
+WR,17,00-0039890,Adonai Mitchell,NYJ,MIA,4900,9.41934271753616,3.051922615871427,4,0.7461540326044662,"matchup, game environment, history, usage, range","• Matchup: MIA allows 0.88x league-avg to WRs (below average)
+• Game environment: NYJ implied 22.2 of a 40.8 total, favored by 3.7 (middling)
+• History: 9.3 pts/game season avg, 7 games (in line with average)
+• Usage: 5.2 targets projected (17% of team targets), 79% of snaps last 3 games (partial role; usage dipping)
+• Range: 2.1–19.2 pts (elevated bust risk; under half his average in 2 of 7 games)",,False,58.4,partial role,elevated bust risk,,0.616,Value,5.0,"under $5,500",below average,0.88,middling,1.92,,,val:Value;neg:Below average matchup (0.88x);neu:Middling env (22.2);warn:Partial role (58);warn:Elevated bust risk;neu:1.9 pts/$1K
+WR,18,00-0039880,Malik Washington,MIA,NYJ,4400,9.134095028698518,1.7782144962471724,4,0.6760991635445179,"matchup, game environment, history, usage, range","• Matchup: NYJ allows 0.92x league-avg to WRs (below average)
 • Game environment: MIA implied 18.6 of a 40.8 total, underdog by 3.7 (low-scoring)
 • History: 9.7 pts/game season avg, 10 games (in line with average)
 • Usage: 5.9 targets projected (19% of team targets), 84% of snaps last 3 games (solid role)
-• Range: 2.0–19.4 pts (low bust risk; under half his average in 1 of 10 games)","Value Candidate, Solid Value",True,71.7,solid role,low bust risk,,0.615
-WR,18,00-0041438,Carnell Tate,TEN,JAX,5700,11.740084568890532,6.829457149465673,4,0.6426997597318466,"matchup, game environment, history, usage, range","• Matchup: JAX allows 1.00x league-avg to WRs (neutral)
-• Game environment: TEN implied 16.5 of a 47.8 total, underdog by 14.7 (bottom-tier)
-• History: 12.0 pts/game season avg, 8 games (in line with average)
-• Usage: 5.2 targets projected (18% of team targets), 84% of snaps last 3 games (solid role)
-• Range: 2.9–20.0 pts (moderate bust risk; under half his average in 1 of 8 games)","Value Candidate, Solid Value",True,66.2,solid role,moderate bust risk,,0.57
+• Range: 2.0–19.4 pts (low bust risk; under half his average in 1 of 10 games)",Solid Value,False,71.7,solid role,low bust risk,,0.615,Value,6.0,"under $5,500",below average,0.92,low-scoring,2.08,,,val:Value;neg:Below average matchup (0.92x);neg:Low-scoring env (18.6);neu:Solid role (72);pos:Low bust risk;pos:2.1 pts/$1K
 WR,19,00-0041523,Caleb Douglas,MIA,NYJ,4500,9.210141830049672,3.1352921372603118,4,0.6891474641083127,"matchup, game environment, history, usage, range","• Matchup: NYJ allows 0.92x league-avg to WRs (below average)
 • Game environment: MIA implied 18.6 of a 40.8 total, underdog by 3.7 (low-scoring)
 • History: 10.8 pts/game season avg, 7 games (in line with average)
 • Usage: 6.0 targets projected (19% of team targets), 78% of snaps last 3 games (solid role)
-• Range: 2.0–20.1 pts (moderate bust risk; under half his average in 2 of 7 games)","Value Candidate, Solid Value",True,69.1,solid role,moderate bust risk,,0.615
-WR,20,00-0039424,Devaughn Vele,NO,CIN,4700,9.55692197425538,4.910616476109386,4,0.664662726694576,"matchup, game environment, history, usage, range","• Matchup: CIN allows 0.96x league-avg to WRs (neutral)
-• Game environment: NO implied 20.3 of a 50.5 total, underdog by 9.9 (middling)
-• History: 10.8 pts/game season avg, 10 games (in line with average)
-• Usage: 4.7 targets projected (14% of team targets), 90% of snaps last 3 games (partial role)
-• Range: 2.1–19.5 pts (elevated bust risk; under half his average in 2 of 10 games)",Value Candidate,True,56.8,partial role,elevated bust risk,,0.586
+• Range: 2.0–20.1 pts (moderate bust risk; under half his average in 2 of 7 games)",,False,69.1,solid role,moderate bust risk,,0.615,Value,7.0,"under $5,500",below average,0.92,low-scoring,2.05,,,val:Value;neg:Below average matchup (0.92x);neg:Low-scoring env (18.6);neu:Solid role (69);neu:Moderate bust risk;neu:2.0 pts/$1K
+WR,20,00-0031408,Mike Evans,SF,SEA,6000,11.822175052720096,13.004175303469871,4,1.0648949455414907,"matchup, game environment, history, usage, range","• Matchup: SEA allows 0.77x league-avg to WRs (tough)
+• Game environment: SF implied 24.2 of a 45.5 total, favored by 3.0 (plus)
+• History: 16.8 pts/game season avg, 7 games (projection running below average)
+• Usage: 5.7 targets projected (19% of team targets), 49% of snaps last 3 games (partial role; usage dipping)
+• Range: 2.9–26.6 pts (moderate bust risk; under half his average in 0 of 7 games)",,False,47.8,partial role,moderate bust risk,,0.612,Mid,5.0,"$5,500-6,900",tough,0.77,plus,1.97,Proj below avg (-5.0),,mid:Mid;neg:Tough matchup (0.77x);pos:Plus env (24.2);warn:Partial role (48);neu:Moderate bust risk;neu:2.0 pts/$1K;neu:Proj below avg (-5.0)
 TE,1,00-0037744,Trey McBride,ARI,WAS,6600,14.147869294059614,18.573453724327155,8,1.751165090915663,"matchup, game environment, history, usage, range","• Matchup: WAS allows 1.37x league-avg to TEs (smash spot)
 • Game environment: ARI implied 17.2 of a 41.8 total, underdog by 7.4 (low-scoring)
 • History: 17.2 pts/game season avg, 11 games (projection running below average)
 • Usage: 8.4 targets projected (33% of team targets), 82% of snaps last 3 games (locked-in role)
-• Range: 3.0–25.7 pts (low bust risk; under half his average in 0 of 11 games)",,False,98.0,locked-in role,low bust risk,,0.884
+• Range: 3.0–25.7 pts (low bust risk; under half his average in 0 of 11 games)",,False,98.0,locked-in role,low bust risk,,0.884,Premium,1.0,"$5,500+",smash spot,1.37,low-scoring,2.14,Proj below avg (-3.1),,prem:Premium;pos:Smash spot matchup (1.37x);neg:Low-scoring env (17.2);pos:Locked-in role (98);pos:Low bust risk;pos:2.1 pts/$1K;neu:Proj below avg (-3.1)
 TE,2,00-0033288,George Kittle,SF,SEA,6500,14.55078490235212,15.24811347579212,8,1.9419925171631454,"matchup, game environment, history, usage, range","• Matchup: SEA allows 0.86x league-avg to TEs (below average)
 • Game environment: SF implied 24.2 of a 45.5 total, favored by 3.0 (plus)
 • History: 14.7 pts/game season avg, 10 games (in line with average)
 • Usage: 6.2 targets projected (20% of team targets), 82% of snaps last 3 games (solid role; usage dipping)
-• Range: 3.1–29.7 pts (low bust risk; under half his average in 1 of 10 games)",,False,76.9,solid role,low bust risk,,0.852
+• Range: 3.1–29.7 pts (low bust risk; under half his average in 1 of 10 games)",,False,76.9,solid role,low bust risk,,0.852,Premium,2.0,"$5,500+",below average,0.86,plus,2.24,,,prem:Premium;neg:Below average matchup (0.86x);pos:Plus env (24.2);neu:Solid role (77);pos:Low bust risk;pos:2.2 pts/$1K
 TE,3,00-0037838,Isaiah Likely,NYG,IND,5900,12.652914284369006,10.5986990978001,7,1.6065460137599858,"matchup, game environment, history, usage, range","• Matchup: IND allows 1.00x league-avg to TEs (neutral)
 • Game environment: NYG implied 24.1 of a 41.6 total, favored by 6.6 (plus)
 • History: 16.4 pts/game season avg, 10 games (projection running below average)
 • Usage: 5.3 targets projected (17% of team targets), 80% of snaps last 3 games (solid role)
-• Range: 2.6–24.4 pts (elevated bust risk; under half his average in 3 of 10 games)",,False,65.9,solid role,elevated bust risk,,0.768
+• Range: 2.6–24.4 pts (elevated bust risk; under half his average in 3 of 10 games)",,False,65.9,solid role,elevated bust risk,,0.768,Premium,3.0,"$5,500+",neutral,1.0,plus,2.14,Proj below avg (-3.7),,prem:Premium;neu:Neutral matchup (1.00x);pos:Plus env (24.1);neu:Solid role (66);warn:Elevated bust risk;pos:2.1 pts/$1K;neu:Proj below avg (-3.7)
 TE,4,00-0037809,Chig Okonkwo,WAS,ARI,3900,7.929030166705736,7.04717387106926,6,1.239855890289926,"matchup, game environment, history, usage, range","• Matchup: ARI allows 1.22x league-avg to TEs (smash spot)
 • Game environment: WAS implied 24.6 of a 41.8 total, favored by 7.4 (plus)
 • History: 7.9 pts/game season avg, 8 games (in line with average)
 • Usage: 5.4 targets projected (18% of team targets), 70% of snaps last 3 games (partial role)
-• Range: 1.3–19.0 pts (elevated bust risk; under half his average in 3 of 7 games)",,False,62.2,partial role,elevated bust risk,,0.745
+• Range: 1.3–19.0 pts (elevated bust risk; under half his average in 3 of 7 games)",,False,62.2,partial role,elevated bust risk,,0.745,Value,1.0,"under $4,000",smash spot,1.22,plus,2.03,,,val:Value;pos:Smash spot matchup (1.22x);pos:Plus env (24.6);warn:Partial role (62);warn:Elevated bust risk;neu:2.0 pts/$1K
 TE,5,00-0035229,T.J. Hockenson,MIN,ATL,4300,9.08959985763779,8.804571698979846,6,1.2982331159526348,"matchup, game environment, history, usage, range","• Matchup: ATL allows 0.95x league-avg to TEs (neutral)
 • Game environment: MIN implied 24.8 of a 42.5 total, favored by 7.0 (plus)
 • History: 11.1 pts/game season avg, 9 games (in line with average)
 • Usage: 5.0 targets projected (16% of team targets), 72% of snaps last 3 games (partial role; usage trending up)
-• Range: 1.6–19.7 pts (elevated bust risk; under half his average in 2 of 9 games)",,False,57.0,partial role,elevated bust risk,,0.739
-TE,6,00-0036970,Kyle Pitts Sr.,ATL,MIN,3800,8.579004250574648,4.275856228328255,4,0.9379360159270482,"matchup, game environment, history, usage, range","• Matchup: MIN allows 0.80x league-avg to TEs (tough)
-• Game environment: ATL implied 17.8 of a 42.5 total, underdog by 7.0 (low-scoring)
-• History: 7.9 pts/game season avg, 10 games (in line with average)
-• Usage: 4.8 targets projected (15% of team targets), 66% of snaps last 3 games (partial role)
-• Range: 1.5–16.7 pts (high bust risk; under half his average in 4 of 10 games)","Value Pick, Boom/Bust Dart",True,50.0,partial role,high bust risk,,0.574
-TE,7,00-0040128,Tyler Warren,IND,NYG,4700,9.331287703209334,3.901532684679944,3,0.782902889501766,"matchup, game environment, history, usage, range","• Matchup: NYG allows 0.93x league-avg to TEs (below average)
-• Game environment: IND implied 17.5 of a 41.6 total, underdog by 6.6 (low-scoring)
-• History: 10.0 pts/game season avg, 9 games (in line with average)
-• Usage: 4.0 targets projected (19% of team targets), 82% of snaps last 3 games (partial role; usage trending down)
-• Range: 1.7–15.3 pts (elevated bust risk; under half his average in 2 of 9 games)",Leverage Pick,True,53.1,partial role,elevated bust risk,,0.523
-TE,8,00-0039793,AJ Barner,SEA,SF,3400,7.478527796186845,3.529011952122629,4,0.904367943045899,"matchup, game environment, history, usage, range","• Matchup: SF allows 0.97x league-avg to TEs (neutral)
+• Range: 1.6–19.7 pts (elevated bust risk; under half his average in 2 of 9 games)",,False,57.0,partial role,elevated bust risk,,0.739,Mid,1.0,"$4,000-5,400",neutral,0.95,plus,2.11,,,mid:Mid;neu:Neutral matchup (0.95x);pos:Plus env (24.8);warn:Partial role (57);warn:Elevated bust risk;neu:2.1 pts/$1K
+TE,6,00-0038935,Brenton Strange,JAX,TEN,4100,8.444343901830848,4.263105658254842,6,1.2726415737713876,"matchup, game environment, history, usage, range","• Matchup: TEN allows 0.98x league-avg to TEs (neutral)
+• Game environment: JAX implied 31.2 of a 47.8 total, favored by 14.7 (elite)
+• History: 8.5 pts/game season avg, 10 games (in line with average)
+• Usage: 3.0 targets projected (9% of team targets), 80% of snaps last 3 games (partial role)
+• Range: 1.5–17.8 pts (elevated bust risk; under half his average in 2 of 10 games)",,False,46.4,partial role,elevated bust risk,,0.703,Mid,2.0,"$4,000-5,400",neutral,0.98,elite,2.06,,,mid:Mid;neu:Neutral matchup (0.98x);pos:Elite env (31.2);warn:Partial role (46);warn:Elevated bust risk;neu:2.1 pts/$1K
+TE,7,00-0039793,AJ Barner,SEA,SF,3400,7.478527796186845,3.529011952122629,4,0.904367943045899,"matchup, game environment, history, usage, range","• Matchup: SF allows 0.97x league-avg to TEs (neutral)
 • Game environment: SEA implied 21.2 of a 45.5 total, underdog by 3.0 (middling)
 • History: 6.8 pts/game season avg, 10 games (in line with average)
 • Usage: 4.2 targets projected (14% of team targets), 84% of snaps last 3 games (partial role; usage dipping)
-• Range: 1.2–14.5 pts (elevated bust risk; under half his average in 2 of 10 games)",Value Candidate,True,53.1,partial role,elevated bust risk,,0.612
-TE,9,00-0040736,Mason Taylor,NYJ,MIA,3000,6.584660684195714,2.4245615389420587,3,0.7765944325936602,"matchup, game environment, history, usage, range","• Matchup: MIA allows 1.11x league-avg to TEs (favorable)
-• Game environment: NYJ implied 22.2 of a 40.8 total, favored by 3.7 (middling)
-• History: 6.4 pts/game season avg, 8 games (in line with average)
-• Usage: 3.3 targets projected (11% of team targets), 74% of snaps last 3 games (fragile role; usage dipping)
-• Range: 1.0–13.7 pts (high bust risk; under half his average in 3 of 9 games)","Value Candidate, Boom/Bust Dart",True,39.4,fragile role,high bust risk,,0.501
+• Range: 1.2–14.5 pts (elevated bust risk; under half his average in 2 of 10 games)",,False,53.1,partial role,elevated bust risk,,0.612,Value,2.0,"under $4,000",neutral,0.97,middling,2.2,,,val:Value;neu:Neutral matchup (0.97x);neu:Middling env (21.2);warn:Partial role (53);warn:Elevated bust risk;pos:2.2 pts/$1K
+TE,8,00-0036970,Kyle Pitts Sr.,ATL,MIN,3800,8.579004250574648,4.275856228328255,4,0.9379360159270482,"matchup, game environment, history, usage, range","• Matchup: MIN allows 0.80x league-avg to TEs (tough)
+• Game environment: ATL implied 17.8 of a 42.5 total, underdog by 7.0 (low-scoring)
+• History: 7.9 pts/game season avg, 10 games (in line with average)
+• Usage: 4.8 targets projected (15% of team targets), 66% of snaps last 3 games (partial role)
+• Range: 1.5–16.7 pts (high bust risk; under half his average in 4 of 10 games)","Value Pick, Boom/Bust Dart",False,50.0,partial role,high bust risk,,0.574,Value,3.0,"under $4,000",tough,0.8,low-scoring,2.26,,,val:Value;neg:Tough matchup (0.80x);neg:Low-scoring env (17.8);warn:Partial role (50);neg:High bust risk;pos:2.3 pts/$1K
+TE,9,00-0040128,Tyler Warren,IND,NYG,4700,9.331287703209334,3.901532684679944,3,0.782902889501766,"matchup, game environment, history, usage, range","• Matchup: NYG allows 0.93x league-avg to TEs (below average)
+• Game environment: IND implied 17.5 of a 41.6 total, underdog by 6.6 (low-scoring)
+• History: 10.0 pts/game season avg, 9 games (in line with average)
+• Usage: 4.0 targets projected (19% of team targets), 82% of snaps last 3 games (partial role; usage trending down)
+• Range: 1.7–15.3 pts (elevated bust risk; under half his average in 2 of 9 games)",Leverage Pick,False,53.1,partial role,elevated bust risk,,0.523,Mid,3.0,"$4,000-5,400",below average,0.93,low-scoring,1.99,,,mid:Mid;neg:Below average matchup (0.93x);neg:Low-scoring env (17.5);warn:Partial role (53);warn:Elevated bust risk;neu:2.0 pts/$1K
 TE,10,00-0037252,Greg Dulcich,MIA,NYJ,2900,6.098696119272505,1.9066466513951013,2,0.7076110084522974,"matchup, game environment, history, usage, range","• Matchup: NYJ allows 1.00x league-avg to TEs (neutral)
 • Game environment: MIA implied 18.6 of a 40.8 total, underdog by 3.7 (low-scoring)
 • History: 5.6 pts/game season avg, 9 games (in line with average)
 • Usage: 4.6 targets projected (15% of team targets), 62% of snaps last 3 games (partial role)
-• Range: 0.8–13.1 pts (elevated bust risk; under half his average in 2 of 10 games)",Value Candidate,True,46.0,partial role,elevated bust risk,,0.473
-TE,11,00-0038935,Brenton Strange,JAX,TEN,4100,8.444343901830848,4.263105658254842,6,1.2726415737713876,"matchup, game environment, history, usage, range","• Matchup: TEN allows 0.98x league-avg to TEs (neutral)
-• Game environment: JAX implied 31.2 of a 47.8 total, favored by 14.7 (elite)
-• History: 8.5 pts/game season avg, 10 games (in line with average)
-• Usage: 3.0 targets projected (9% of team targets), 80% of snaps last 3 games (partial role)
-• Range: 1.5–17.8 pts (elevated bust risk; under half his average in 2 of 10 games)",Value Candidate,True,46.4,partial role,elevated bust risk,,0.703
-TE,12,00-0040584,Gunnar Helm,TEN,JAX,3300,6.733292333614174,2.8106296426588293,1,0.4981941928751246,"matchup, game environment, history, usage, range","• Matchup: JAX allows 0.85x league-avg to TEs (below average)
-• Game environment: TEN implied 16.5 of a 47.8 total, underdog by 14.7 (bottom-tier)
-• History: 4.7 pts/game season avg, 9 games (in line with average)
-• Usage: 3.4 targets projected (12% of team targets), 72% of snaps last 3 games (fragile role; usage trending down)
-• Range: 1.0–12.2 pts (high bust risk; under half his average in 2 of 10 games)","Value Candidate, Boom/Bust Dart",True,34.1,fragile role,high bust risk,,0.361
+• Range: 0.8–13.1 pts (elevated bust risk; under half his average in 2 of 10 games)",,False,46.0,partial role,elevated bust risk,,0.473,Value,4.0,"under $4,000",neutral,1.0,low-scoring,2.1,,,val:Value;neu:Neutral matchup (1.00x);neg:Low-scoring env (18.6);warn:Partial role (46);warn:Elevated bust risk;neu:2.1 pts/$1K
 DST,1,DST_NE,Patriots,NE,LAC,2700,8.568220273000001,23.21989661842786,7,0.9121900490009881,"matchup, game environment, history, upside setup, range","• Matchup: 1.29x matchup factor (favorable)
 • Game environment: opponent LAC implied 18.2 of a 35.6 total (plus)
 • History: 5.4 pts/game season avg (projection running above average)
 • Upside setup: strong, #1 of 18 on the slate: LAC implied only 18.2, 3.6 below the slate average; low game total 35.6; LAC allows sacks on 9.2% of dropbacks; LAC QB throws interceptions on 2.9% of attempts
-• Range: about 4–13 pts in a typical game (DST projections miss by 4.3 pts on average, 2021-25); a defensive or return TD or a safety is what pushes it higher, and those aren't modeled",Value Pick,False,,,,4.0,0.833
+• Range: about 4–13 pts in a typical game (DST projections miss by 4.3 pts on average, 2021-25); a defensive or return TD or a safety is what pushes it higher, and those aren't modeled",Value Pick,False,,,,4.0,0.833,Value,1.0,"under $3,300",favorable,1.29,plus,3.17,Proj above avg (+3.2),strong,val:Value;pos:Favorable matchup (1.29x);pos:Plus env (opp 18.2);pos:Setup strong (#1/18);pos:3.2 pts/$1K;neu:Proj above avg (+3.2)
 DST,2,DST_WAS,Commanders,WAS,ARI,3200,8.916537696999999,13.141592250620196,7,0.7936169351510869,"matchup, game environment, history, upside setup, range","• Matchup: 1.34x matchup factor (smash spot)
 • Game environment: opponent ARI implied 17.2 of a 41.8 total (plus)
 • History: 5.5 pts/game season avg (projection running above average)
 • Upside setup: strong, #1 of 18 on the slate: ARI implied only 17.2, 4.6 below the slate average; favored by 7.4; high dropback volume for ARI (39.0 per game); rookie QB Carson Beck (1 game this season); ARI without Michael Wilson since wk 9
-• Range: about 5–13 pts in a typical game (DST projections miss by 4.3 pts on average, 2021-25); a defensive or return TD or a safety is what pushes it higher, and those aren't modeled",,False,,,,4.0,0.82
+• Range: about 5–13 pts in a typical game (DST projections miss by 4.3 pts on average, 2021-25); a defensive or return TD or a safety is what pushes it higher, and those aren't modeled",,False,,,,4.0,0.82,Value,2.0,"under $3,300",smash spot,1.34,plus,2.79,Proj above avg (+3.4),strong,val:Value;pos:Smash spot matchup (1.34x);pos:Plus env (opp 17.2);pos:Setup strong (#1/18);pos:2.8 pts/$1K;neu:Proj above avg (+3.4)
 DST,3,DST_LAC,Chargers,LAC,NE,2900,8.0418975865,10.963818946555376,7,0.6620761719821006,"matchup, game environment, history, upside setup, range","• Matchup: 1.21x matchup factor (favorable)
 • Game environment: opponent NE implied 17.5 of a 35.6 total (plus)
 • History: 4.0 pts/game season avg (projection running above average)
 • Upside setup: strong, #1 of 18 on the slate: NE implied only 17.5, 4.3 below the slate average; low game total 35.6; NE QB throws interceptions on 2.5% of attempts; NE QB Tommy DeVito has only 3 games this season
-• Range: about 4–12 pts in a typical game (DST projections miss by 4.3 pts on average, 2021-25); a defensive or return TD or a safety is what pushes it higher, and those aren't modeled",,False,,,,4.0,0.782
+• Range: about 4–12 pts in a typical game (DST projections miss by 4.3 pts on average, 2021-25); a defensive or return TD or a safety is what pushes it higher, and those aren't modeled",,False,,,,4.0,0.782,Value,3.0,"under $3,300",favorable,1.21,plus,2.77,Proj above avg (+4.0),strong,val:Value;pos:Favorable matchup (1.21x);pos:Plus env (opp 17.5);pos:Setup strong (#1/18);pos:2.8 pts/$1K;neu:Proj above avg (+4.0)
 DST,4,DST_NYG,Giants,NYG,IND,3400,8.148537061000003,7.430769156068896,7,0.47084832678382543,"matchup, game environment, history, upside setup, range","• Matchup: 1.23x matchup factor (favorable)
 • Game environment: opponent IND implied 17.5 of a 41.6 total (plus)
 • History: 6.2 pts/game season avg (in line with average)
 • Upside setup: strong, #1 of 18 on the slate: IND implied only 17.5, 4.3 below the slate average; favored by 6.6; IND QB throws interceptions on 2.4% of attempts; IND QB Anthony Richardson Sr. has only 2 games this season
-• Range: about 4–12 pts in a typical game (DST projections miss by 4.3 pts on average, 2021-25); a defensive or return TD or a safety is what pushes it higher, and those aren't modeled",,False,,,,4.0,0.767
+• Range: about 4–12 pts in a typical game (DST projections miss by 4.3 pts on average, 2021-25); a defensive or return TD or a safety is what pushes it higher, and those aren't modeled",,False,,,,4.0,0.767,Premium,1.0,"$3,300+",favorable,1.23,plus,2.4,,strong,prem:Premium;pos:Favorable matchup (1.23x);pos:Plus env (opp 17.5);pos:Setup strong (#1/18);neu:2.4 pts/$1K
 DST,5,DST_NYJ,Jets,NYJ,MIA,3100,8.45020483,7.199698364897891,6,0.6318315991026309,"matchup, game environment, history, upside setup, range","• Matchup: 1.27x matchup factor (favorable)
 • Game environment: opponent MIA implied 18.6 of a 40.8 total (plus)
 • History: 4.6 pts/game season avg (projection running above average)
 • Upside setup: strong, #1 of 18 on the slate: MIA implied only 18.6, 3.2 below the slate average; low game total 40.8; MIA allows sacks on 7.8% of dropbacks; MIA QB Kyle McCord has only 2 games this season
-• Range: about 4–13 pts in a typical game (DST projections miss by 4.3 pts on average, 2021-25); a defensive or return TD or a safety is what pushes it higher, and those aren't modeled",,False,,,,4.0,0.758
-DST,6,DST_CIN,Bengals,CIN,NO,3700,7.792853902000002,2.502997916577351,2,0.12412635600274628,"matchup, game environment, history, upside setup, range","• Matchup: 1.18x matchup factor (favorable)
+• Range: about 4–13 pts in a typical game (DST projections miss by 4.3 pts on average, 2021-25); a defensive or return TD or a safety is what pushes it higher, and those aren't modeled",,False,,,,4.0,0.758,Value,4.0,"under $3,300",favorable,1.27,plus,2.73,Proj above avg (+3.9),strong,val:Value;pos:Favorable matchup (1.27x);pos:Plus env (opp 18.6);pos:Setup strong (#1/18);pos:2.7 pts/$1K;neu:Proj above avg (+3.9)
+DST,6,DST_MIN,Vikings,MIN,ATL,3500,7.999994738500001,6.040984752409959,5,0.37677977225156695,"matchup, game environment, history, upside setup, range","• Matchup: 1.21x matchup factor (favorable)
+• Game environment: opponent ATL implied 17.8 of a 42.5 total (plus)
+• History: 10.4 pts/game season avg (in line with average)
+• Upside setup: good, #7 of 18 on the slate: ATL implied only 17.8, 4.0 below the slate average; favored by 7.0
+• Range: about 4–12 pts in a typical game (DST projections miss by 4.3 pts on average, 2021-25); a defensive or return TD or a safety is what pushes it higher, and those aren't modeled",,False,,,,2.0,0.655,Premium,2.0,"$3,300+",favorable,1.21,plus,2.29,,good,prem:Premium;pos:Favorable matchup (1.21x);pos:Plus env (opp 17.8);pos:Setup good (#7/18);neu:2.3 pts/$1K
+DST,7,DST_CIN,Bengals,CIN,NO,3700,7.792853902000002,2.502997916577351,2,0.12412635600274628,"matchup, game environment, history, upside setup, range","• Matchup: 1.18x matchup factor (favorable)
 • Game environment: opponent NO implied 20.3 of a 50.5 total (middling)
 • History: 6.9 pts/game season avg (in line with average)
 • Upside setup: neutral, #12 of 18 on the slate: favored by 9.9; high dropback volume for NO (40.0 per game); shootout-level game total 50.5, works against
-• Range: about 3–12 pts in a typical game (DST projections miss by 4.3 pts on average, 2021-25); a defensive or return TD or a safety is what pushes it higher, and those aren't modeled",Leverage Pick,True,,,,0.0,0.497
+• Range: about 3–12 pts in a typical game (DST projections miss by 4.3 pts on average, 2021-25); a defensive or return TD or a safety is what pushes it higher, and those aren't modeled",Leverage Pick,True,,,,0.0,0.497,Premium,,"$3,300+",favorable,1.18,middling,2.11,,neutral,prem:Premium;pos:Favorable matchup (1.18x);neu:Middling env (opp 20.3);neu:Setup neutral (#12/18);neu:2.1 pts/$1K
