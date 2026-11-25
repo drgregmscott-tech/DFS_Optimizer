@@ -5465,3 +5465,12 @@ timestamp_utc,trigger_type,site,step,status
 2026-11-24T20:22:36.006049+00:00,manual_workflow_dispatch,fd,fd_classic_wk12_main_29Nov2026,status_apply,success
 2026-11-24T20:22:36.006049+00:00,manual_workflow_dispatch,fd,fd_classic_wk12_main_29Nov2026,pivot_finder,skipped
 2026-11-24T20:22:36.006049+00:00,manual_workflow_dispatch,fd,fd_classic_wk12_main_29Nov2026,cheat_sheet,success
+2026-11-25T17:02:48.470144+00:00,light_vegas_refresh,dk,dk_classic_wk12_main_26Nov2026,cheat_sheet,success
+2026-11-25T17:03:14.899599+00:00,light_vegas_refresh,dk,dk_classic_wk12_main_29Nov2026,cheat_sheet,success
+2026-11-25T17:02:26.250851+00:00,light_vegas_refresh,dk,dk_showdown_wk12_CHI_DET_26Nov2026,cheat_sheet,skipped
+2026-11-25T17:02:23.738178+00:00,light_vegas_refresh,dk,dk_showdown_wk12_DEV_PIT_27Nov2026,cheat_sheet,skipped
+2026-11-25T17:02:13.098973+00:00,light_vegas_refresh,dk,dk_showdown_wk12_GB_LAR_25Nov2026,cheat_sheet,skipped
+2026-11-25T17:02:09.565672+00:00,light_vegas_refresh,dk,dk_showdown_wk12_KC_BUF_26Nov2026,cheat_sheet,skipped
+2026-11-25T17:02:14.338846+00:00,light_vegas_refresh,dk,dk_showdown_wk12_PHI_DAL_26Nov2026,cheat_sheet,skipped
+2026-11-25T17:01:45.433986+00:00,light_vegas_refresh,fd,fd_classic_wk12_main_26Nov2026,cheat_sheet,success
+2026-11-25T17:01:44.845951+00:00,light_vegas_refresh,fd,fd_classic_wk12_main_29Nov2026,cheat_sheet,success
