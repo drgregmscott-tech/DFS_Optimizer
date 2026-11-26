@@ -1,8 +1,8 @@
 team,component,pool_share,share_basis,raw_sum,target,scale,abs_delta
 IND,pass,1.0,exclusive,3.5,29.98,8.5654,26.48
-NE,pass,1.0,exclusive,17.39,28.38,1.6315,10.98
+NE,pass,1.0,exclusive,17.39,28.39,1.6321,10.99
 IND,recv,0.7462,recent,30.37,21.25,0.6999,9.11
-LAC,rush,0.9929,recent,38.75,29.7,0.7665,9.05
+LAC,rush,0.9929,recent,38.74,29.68,0.7661,9.06
 ARI,rush,0.8911,recent,28.28,21.79,0.7708,6.48
 TEN,recv,1.0,recent,42.17,32.54,0.7715,9.64
 ARI,recv,0.9939,recent,37.73,29.3,0.7766,8.43
@@ -16,7 +16,7 @@ NYJ,pass,1.0,exclusive,25.94,30.59,1.1789,4.64
 SF,rush,0.9933,recent,33.48,27.52,0.8221,5.96
 WAS,recv,1.0,recent,37.78,31.23,0.8267,6.55
 TEN,rush,1.0,recent,28.53,23.76,0.8327,4.77
-NE,recv,1.0,recent,32.47,27.15,0.8361,5.32
+NE,recv,1.0,recent,32.47,27.16,0.8364,5.31
 HOU,rush,0.9784,recent,33.87,28.63,0.8455,5.23
 NO,rush,1.0,recent,28.54,24.21,0.8484,4.33
 NYG,rush,1.0,recent,34.88,29.66,0.8503,5.22
@@ -32,7 +32,7 @@ MIA,rush,1.0,recent,30.67,27.56,0.8985,3.11
 WAS,rush,1.0,recent,33.28,29.91,0.8987,3.37
 BAL,pass,1.0,exclusive,37.78,34.28,0.9073,3.5
 SEA,recv,1.0,recent,33.15,30.13,0.909,3.02
-LAC,recv,1.0,recent,28.22,25.84,0.9156,2.38
+LAC,recv,1.0,recent,28.22,25.84,0.9155,2.39
 JAX,rush,0.9792,recent,30.92,28.38,0.9178,2.54
 NO,recv,1.0,recent,37.18,34.2,0.9198,2.98
 MIN,rush,1.0,recent,26.43,28.5,1.0784,2.07
@@ -40,7 +40,7 @@ ATL,pass,1.0,exclusive,34.27,31.67,0.9242,2.6
 SF,recv,1.0,recent,33.29,30.77,0.9243,2.52
 ATL,rush,0.9823,recent,27.89,25.87,0.9277,2.02
 HOU,pass,1.0,exclusive,32.04,34.27,1.0695,2.23
-NE,rush,1.0,recent,30.44,28.44,0.9345,1.99
+NE,rush,1.0,recent,30.44,28.46,0.9349,1.98
 HOU,recv,1.0,recent,35.45,33.19,0.9362,2.26
 SEA,pass,1.0,exclusive,33.23,31.31,0.9424,1.91
 WAS,pass,1.0,exclusive,34.13,32.29,0.9462,1.84
