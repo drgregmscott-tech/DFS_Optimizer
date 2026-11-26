@@ -1,38 +1,40 @@
 player,salary,proj_own,lo,hi
-Sam LaPorta,4200,85.3,73.7,94.7
-Detroit Defense,2400,76.5,57.9,94.7
-Rome Odunze,4500,69.1,47.4,84.2
-Saquon Barkley,5800,66.7,52.6,78.9
-Jahmyr Gibbs,9500,62.5,47.4,78.9
-DeVonta Smith,5900,47.7,31.6,73.7
-Javonte Williams,6800,44.9,21.1,73.7
-Jared Goff,5600,43.5,26.3,68.4
-George Pickens,6300,40.4,21.1,63.2
-Amon-Ra St. Brown,7700,38.6,21.1,52.6
-Dak Prescott,6400,33.3,15.8,52.6
-Dallas Goedert,4100,32.6,10.5,47.4
-Luther Burden III,6000,30.9,15.8,57.9
-CeeDee Lamb,8300,26.7,5.3,63.2
-D'Andre Swift,6200,24.6,5.3,36.8
-Colston Loveland,5000,23.9,5.3,47.4
-Travis Kelce,4900,18.6,5.3,42.1
-Jameson Williams,5700,17.5,0.0,36.8
-Rashee Rice,5400,16.5,10.5,26.3
-Caleb Williams,5800,11.9,5.3,21.1
-Chicago Defense,2900,11.2,0.0,26.3
+Detroit Defense,2400,81.8,68.4,100.0
+Sam LaPorta,4200,80.4,63.2,94.7
+Rome Odunze,4500,68.4,47.4,94.7
+Saquon Barkley,5800,62.1,36.8,89.5
+Jahmyr Gibbs,9500,58.9,47.4,78.9
+Jared Goff,5600,51.6,26.3,68.4
+Amon-Ra St. Brown,7700,47.0,26.3,63.2
+Javonte Williams,6800,43.5,26.3,68.4
+George Pickens,6300,42.1,21.1,63.2
+DeVonta Smith,5900,36.5,21.1,52.6
+Luther Burden III,6000,28.8,5.3,47.4
+Colston Loveland,5000,28.1,15.8,42.1
+Dak Prescott,6400,27.4,10.5,42.1
+Emmett Johnson,7200,26.7,10.5,42.1
+D'Andre Swift,6200,25.6,5.3,36.8
+Dallas Goedert,4100,23.2,5.3,42.1
+Jameson Williams,5700,22.8,5.3,42.1
+CeeDee Lamb,8300,19.6,5.3,42.1
+Makai Lemon,3900,17.9,5.3,26.3
+Travis Kelce,4900,16.1,5.3,36.8
+Rashee Rice,5400,16.1,0.0,31.6
+Caleb Williams,5800,11.9,0.0,26.3
 Kalif Raymond,3500,10.9,0.0,26.3
-James Cook III,7400,9.5,0.0,26.3
-Makai Lemon,3900,8.4,0.0,21.1
-DJ Moore,5600,7.0,0.0,10.5
-Khalil Shakir,4600,6.7,0.0,15.8
-Ryan Flournoy,4300,6.3,0.0,21.1
-Kansas City Defense,2600,6.3,0.0,15.8
-Patrick Mahomes,6000,4.6,0.0,21.1
-Joe Milton III,4600,4.2,0.0,10.5
-Dallas Defense,3300,3.5,0.0,10.5
-Kenneth Walker,8700,3.2,0.0,10.5
+Chicago Defense,2900,10.2,0.0,26.3
+Khalil Shakir,4600,8.8,0.0,26.3
+James Cook III,7400,5.6,0.0,15.8
+Philadelphia Defense,2200,3.9,0.0,15.8
+Patrick Mahomes,6000,3.5,0.0,10.5
+Ryan Flournoy,4300,3.5,0.0,10.5
+Joe Milton III,4600,3.2,0.0,21.1
+Dallas Defense,3300,3.2,0.0,15.8
 Josh Allen,7000,2.5,0.0,10.5
-Philadelphia Defense,2200,2.5,0.0,5.3
-Xavier Worthy,3700,0.7,0.0,5.3
-Isaac TeSlaa,3000,0.7,0.0,5.3
-Darius Cooper,3600,0.4,0.0,5.3
+DJ Moore,5600,2.5,0.0,15.8
+Brevyn Spann-Ford,3000,2.1,0.0,5.3
+Xavier Worthy,3700,1.1,0.0,10.5
+Isaac TeSlaa,3000,1.1,0.0,15.8
+Kansas City Defense,2600,0.7,0.0,5.3
+Darius Cooper,3600,0.7,0.0,5.3
+Buffalo Defense,3100,0.4,0.0,5.3
