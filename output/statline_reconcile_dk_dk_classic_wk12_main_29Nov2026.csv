@@ -3,7 +3,7 @@ IND,pass,1.0,exclusive,3.5,31.7,9.0559,28.2
 NE,pass,1.0,exclusive,17.39,30.9,1.7766,13.51
 ARI,pass,1.0,exclusive,24.78,32.54,1.3133,7.76
 IND,recv,0.7462,recent,31.48,22.62,0.7187,8.85
-SF,rush,0.9933,recent,37.58,27.45,0.7304,10.13
+SF,rush,0.9933,recent,37.59,27.48,0.7311,10.11
 LAC,rush,0.9929,recent,39.08,28.75,0.7355,10.34
 ARI,rush,0.8911,recent,28.81,21.19,0.7356,7.62
 LAC,pass,1.0,exclusive,23.42,29.25,1.249,5.83
@@ -12,7 +12,7 @@ CIN,recv,1.0,recent,47.09,36.12,0.767,10.97
 NYJ,pass,1.0,exclusive,25.94,31.99,1.2329,6.04
 BAL,rush,1.0,recent,31.33,24.09,0.7689,7.24
 ARI,recv,0.9939,recent,40.6,31.27,0.7703,9.32
-SEA,rush,0.961,recent,33.44,25.78,0.7712,7.65
+SEA,rush,0.961,recent,33.43,25.77,0.7707,7.67
 TEN,recv,1.0,recent,44.05,34.17,0.7756,9.88
 NYG,recv,1.0,recent,42.21,32.87,0.7789,9.33
 TEN,rush,1.0,recent,29.64,23.35,0.7876,6.3
@@ -26,17 +26,17 @@ NYJ,rush,0.985,recent,34.4,28.51,0.829,5.88
 MIA,recv,1.0,recent,37.31,30.94,0.8293,6.37
 NE,rush,1.0,recent,33.11,27.48,0.8298,5.64
 ATL,rush,0.9823,recent,30.17,25.08,0.8312,5.09
-SF,pass,1.0,exclusive,28.23,32.52,1.1519,4.29
+SF,pass,1.0,exclusive,28.23,32.5,1.1514,4.27
 BAL,recv,1.0,recent,39.67,34.06,0.8585,5.61
 MIN,recv,1.0,recent,38.0,32.86,0.8647,5.14
 NE,recv,1.0,recent,33.87,29.53,0.8719,4.34
 IND,rush,0.9925,recent,29.12,25.42,0.8731,3.69
 MIA,rush,1.0,recent,30.33,26.55,0.8755,3.77
 NO,recv,1.0,recent,40.18,35.2,0.8761,4.98
-SF,recv,1.0,recent,35.49,31.47,0.8866,4.03
+SF,recv,1.0,recent,35.49,31.45,0.8863,4.03
 JAX,rush,0.9792,recent,31.75,28.26,0.8899,3.5
 NYJ,recv,1.0,recent,34.3,30.96,0.9028,3.33
-SEA,recv,1.0,recent,34.33,31.12,0.9066,3.21
+SEA,recv,1.0,recent,34.33,31.11,0.9063,3.22
 HOU,recv,1.0,recent,36.41,33.44,0.9184,2.97
 HOU,pass,1.0,exclusive,32.04,34.44,1.075,2.4
 LAC,recv,1.0,recent,30.34,28.21,0.9298,2.13
@@ -44,7 +44,7 @@ BAL,pass,1.0,exclusive,37.78,35.2,0.9318,2.58
 NYG,pass,1.0,exclusive,31.69,33.79,1.0661,2.09
 TEN,pass,1.0,exclusive,33.68,35.45,1.0525,1.77
 CIN,pass,1.0,exclusive,38.9,36.92,0.949,1.99
-SEA,pass,1.0,exclusive,33.23,32.14,0.9672,1.09
+SEA,pass,1.0,exclusive,33.23,32.12,0.9668,1.1
 NO,pass,1.0,exclusive,37.41,36.64,0.9796,0.76
 ATL,pass,1.0,exclusive,34.27,33.59,0.9802,0.68
 WAS,pass,1.0,exclusive,34.13,33.5,0.9815,0.63
