@@ -1,146 +1,146 @@
 position,rank,overall_rank,player_id,player_name,team,opponent,salary,final_projection,estimated_ownership_pct,confidence,composite_score,top_factors,rationale,badge,is_bonus,role_security,role_tier,risk_tier,setup_score,conf_basis,cpt_salary,cpt_projection,cpt_ownership_pct,value_per_k,matchup_tier,env_tier,history_trend,setup_tier,tag_bar
-RB,1,1,00-0041496,Jonah Coleman,DEN,PIT,10000,15.042505078322533,57.44616166251173,8,15.042505078322533,"matchup, game environment, history, usage, value, range, captain","• Matchup: PIT allows 0.83x league-avg rushing pts (tough), 1.27x receiving pts (smash spot) to RBs
-• Game environment: DEN implied 20.7 (middling; league average is 22.3), game total 36.8 (very low), favored by 4.5
+RB,1,1,00-0041496,Jonah Coleman,DEN,PIT,10000,14.930298845697648,56.67623529826401,8,14.930298845697648,"matchup, game environment, history, usage, value, range, captain","• Matchup: PIT allows 0.83x league-avg rushing pts (tough), 1.27x receiving pts (smash spot) to RBs
+• Game environment: DEN implied 20.8 (middling; league average is 22.3), game total 36.8 (very low), favored by 4.7
 • History: 16.8 pts/game season avg, 6 games (in line with average)
 • Usage: 16.9 touches projected (13.4 carries + 3.5 targets, 94% of RB carries); 22.0 touches/game last 3 (actual), 76% of snaps last 3 games (locked-in role; usage trending up)
-• Value: 1.50 pts/$1K (cheap for this slate)
+• Value: 1.49 pts/$1K (cheap for this slate)
 • Range: 3.6–31.5 pts (low bust risk; under half his average in 1 of 6 games)
-• Captain: $15,000, 22.6 pts, 22.2% owned as CPT — most-owned captain tonight; RB captain is fine; the builds don't require a partner",,False,96.7,locked-in role,low bust risk,,0.754,15000,22.563757617483795,22.24003834500928,1.5,below average,middling,,,neg:Below average matchup;neu:Middling env (20.7);pos:Locked-in role (97);pos:Low bust risk;pos:1.5 pts/$1K (cheap for this slate)
-DST,1,2,DST_DEN,Broncos,DEN,PIT,4600,9.254052043000002,32.12823267382794,7,9.254052043000002,"matchup, game environment, history, upside setup, value, range, captain","• Matchup: model rates this the better defensive spot of the two (1.22x vs 0.78x; relative to tonight's other defense only)
-• Game environment: opponent PIT implied 16.2 (elite; league average is 22.3), game total 36.8 (very low)
+• Captain: $15,000, 22.4 pts, 23.0% owned as CPT — most-owned captain tonight; RB captain is fine; the builds don't require a partner",,False,96.6,locked-in role,low bust risk,,0.752,15000,22.39544826854647,23.006031528942373,1.49,below average,middling,,,neg:Below average matchup;neu:Middling env (20.8);pos:Locked-in role (97);pos:Low bust risk;pos:1.5 pts/$1K (cheap for this slate)
+DST,1,2,DST_DEN,Broncos,DEN,PIT,4600,9.314860277500005,31.977017396557297,7,9.314860277500005,"matchup, game environment, history, upside setup, value, range, captain","• Matchup: model rates this the better defensive spot of the two (1.23x vs 0.77x; relative to tonight's other defense only)
+• Game environment: opponent PIT implied 16.1 (elite; league average is 22.3), game total 36.8 (very low)
 • History: 7.7 pts/game season avg (in line with average)
-• Upside setup: strong — PIT implied only 16.2, 6.1 below the league average; low game total 36.8; PIT allows sacks on 7.1% of dropbacks; PIT QB throws interceptions on 2.7% of attempts; high dropback volume for PIT (38.9 per game); PIT QB Mason Rudolph has only 3 games this season; weather: gusts 31 mph
-• Value: 2.01 pts/$1K (cheap for this slate)
+• Upside setup: strong — PIT implied only 16.1, 6.2 below the league average; low game total 36.8; PIT allows sacks on 7.1% of dropbacks; PIT QB throws interceptions on 2.7% of attempts; high dropback volume for PIT (38.9 per game); PIT QB Mason Rudolph has only 3 games this season; weather: gusts 31 mph
+• Value: 2.02 pts/$1K (cheap for this slate)
 • Range: about 5–14 pts in a typical game (DST projections miss by about 4.3 pts on average); a defensive or return TD or a safety is what pushes it higher, and those aren't modeled
-• Captain: $6,900, 13.9 pts, 11.9% owned as CPT; not a captain option (best captain in 0 of 49 games; the builds exclude it). As a FLEX it only fits lineups with no PIT skill players, so it rarely makes a build",,False,,,,7.0,0.688,6900,13.881078064500002,11.90279164870226,2.01,,elite,,strong,pos:Elite env (opp 16.2);pos:Setup strong;pos:2.0 pts/$1K (cheap for this slate)
-QB,1,3,00-0039732,Bo Nix,DEN,PIT,9600,13.607593446279266,51.64575344763936,7,13.607593446279266,"matchup, game environment, history, usage, value, range, captain","• Matchup: PIT allows 0.87x league-avg to QBs (below average)
-• Game environment: DEN implied 20.7 (middling; league average is 22.3), game total 36.8 (very low), favored by 4.5
+• Captain: $6,900, 14.0 pts, 13.1% owned as CPT; not a captain option (best captain in 0 of 49 games; the builds exclude it). As a FLEX it only fits lineups with no PIT skill players, so it rarely makes a build",,False,,,,7.0,0.69,6900,13.972290416250004,13.102949276634654,2.02,,elite,,strong,pos:Elite env (opp 16.1);pos:Setup strong;pos:2.0 pts/$1K (cheap for this slate)
+QB,1,3,00-0039732,Bo Nix,DEN,PIT,9600,13.392287070823716,53.21250391262133,7,13.392287070823716,"matchup, game environment, history, usage, value, range, captain","• Matchup: PIT allows 0.87x league-avg to QBs (below average)
+• Game environment: DEN implied 20.8 (middling; league average is 22.3), game total 36.8 (very low), favored by 4.7
 • History: 14.9 pts/game season avg, 10 games (in line with average)
-• Usage: 32.0 pass att + 4.4 rush att projected; 34.7 pass att/game last 3 (actual), 100% of snaps last 3 games (solid role)
-• Value: 1.42 pts/$1K (fair for this slate)
-• Range: 4.5–24.7 pts (low bust risk; under half his average in 2 of 10 games)
-• Captain: $14,400, 20.4 pts, 20.1% owned as CPT; QB captain is a sound build; his RB or TE has been the better first partner than his WR1",,False,84.8,solid role,low bust risk,,0.681,14400,20.411390169418898,20.05088097929717,1.42,below average,middling,,,neg:Below average matchup;neu:Middling env (20.7);neu:Solid role (85);pos:Low bust risk;neu:1.4 pts/$1K (fair for this slate)
-WR,1,4,00-0041489,Germie Bernard,PIT,DEN,7800,9.529296307288607,44.12988097512531,5,9.529296307288607,"matchup, game environment, history, usage, value, range, captain","• Matchup (WR1): DEN allows 0.92x league-avg (below average)
-• Game environment: PIT implied 16.2 (bottom-tier; league average is 22.3), game total 36.8 (very low), underdog by 4.5
+• Usage: 31.9 pass att + 4.4 rush att projected; 34.7 pass att/game last 3 (actual), 100% of snaps last 3 games (solid role)
+• Value: 1.40 pts/$1K (fair for this slate)
+• Range: 4.6–24.4 pts (low bust risk; under half his average in 2 of 10 games)
+• Captain: $14,400, 20.1 pts, 20.0% owned as CPT; QB captain is a sound build; his RB or TE has been the better first partner than his WR1",,False,84.7,solid role,low bust risk,,0.675,14400,20.088430606235576,20.03529129399981,1.4,below average,middling,,,neg:Below average matchup;neu:Middling env (20.8);neu:Solid role (85);pos:Low bust risk;neu:1.4 pts/$1K (fair for this slate)
+WR,1,4,00-0041489,Germie Bernard,PIT,DEN,7800,9.615577980354624,42.870531371319714,5,9.615577980354624,"matchup, game environment, history, usage, value, range, captain","• Matchup (WR1): DEN allows 0.92x league-avg (below average)
+• Game environment: PIT implied 16.1 (bottom-tier; league average is 22.3), game total 36.8 (very low), underdog by 4.7
 • History: 7.8 pts/game season avg, 9 games (in line with average)
 • Usage: 6.6 targets projected (22% of team targets); 6.0 targets/game last 3 (actual), 91% of snaps last 3 games (solid role)
-• Value: 1.22 pts/$1K (fair for this slate)
-• Range: 3.1–18.2 pts (moderate bust risk; under half his average in 4 of 10 games)
-• Captain: $11,700, 14.3 pts, 3.4% owned as CPT; fine as captain, but needs Mason Rudolph in the FLEX (the builds enforce it)",,False,80.7,solid role,moderate bust risk,,0.534,11700,14.293944460932911,3.4362643195192333,1.22,below average,bottom-tier,,,neg:Below average matchup;neg:Bottom-tier env (16.2);neu:Solid role (81);neu:Moderate bust risk;neu:1.2 pts/$1K (fair for this slate)
-RB,2,5,00-0037228,Jaylen Warren,PIT,DEN,9400,11.178170460163898,42.44687349205908,5,11.178170460163898,"matchup, game environment, history, usage, value, range, captain","• Matchup: DEN allows 0.98x league-avg rushing pts (neutral), 1.24x receiving pts (smash spot) to RBs
-• Game environment: PIT implied 16.2 (bottom-tier; league average is 22.3), game total 36.8 (very low), underdog by 4.5
+• Value: 1.23 pts/$1K (fair for this slate)
+• Range: 3.1–18.4 pts (moderate bust risk; under half his average in 4 of 10 games)
+• Captain: $11,700, 14.4 pts, 5.9% owned as CPT; fine as captain, but needs Mason Rudolph in the FLEX (the builds enforce it)",,False,80.9,solid role,moderate bust risk,,0.537,11700,14.423366970531935,5.877032275408123,1.23,below average,bottom-tier,,,neg:Below average matchup;neg:Bottom-tier env (16.1);neu:Solid role (81);neu:Moderate bust risk;neu:1.2 pts/$1K (fair for this slate)
+RB,2,5,00-0037228,Jaylen Warren,PIT,DEN,9400,11.180430880441506,45.00753673769422,5,11.180430880441506,"matchup, game environment, history, usage, value, range, captain","• Matchup: DEN allows 0.98x league-avg rushing pts (neutral), 1.24x receiving pts (smash spot) to RBs
+• Game environment: PIT implied 16.1 (bottom-tier; league average is 22.3), game total 36.8 (very low), underdog by 4.7
 • History: 16.8 pts/game season avg, 10 games (projection running below average)
-• Usage: 14.0 touches projected (10.4 carries + 3.6 targets, 55% of RB carries); 14.7 touches/game last 3 (actual), 55% of snaps last 3 games (partial role; usage trending down)
+• Usage: 14.2 touches projected (10.6 carries + 3.6 targets, 55% of RB carries); 14.7 touches/game last 3 (actual), 55% of snaps last 3 games (partial role; usage trending down)
 • Value: 1.19 pts/$1K (fair for this slate)
-• Range: 3.6–21.6 pts (moderate bust risk; under half his average in 1 of 10 games)
-• Captain: $14,100, 16.8 pts, 8.4% owned as CPT; RB captain is fine; the builds don't require a partner",,False,61.5,partial role,moderate bust risk,,0.508,14100,16.767255690245847,8.435486196139278,1.19,favorable,bottom-tier,Proj below avg (-5.6),,pos:Favorable matchup;neg:Bottom-tier env (16.2);warn:Partial role (62);neu:Moderate bust risk;neu:1.2 pts/$1K (fair for this slate);neu:Proj below avg (-5.6)
-K,1,6,00-0032569,Wil Lutz,DEN,PIT,5400,7.874033269999999,26.97494989780231,4,7.874033269999999,"game environment, history, kicker usage, value, range, captain","• Game environment: DEN implied 20.7 (middling; league average is 22.3), game total 36.8 (very low), favored by 4.5
+• Range: 3.7–22.1 pts (moderate bust risk; under half his average in 1 of 10 games)
+• Captain: $14,100, 16.8 pts, 8.6% owned as CPT; RB captain is fine; the builds don't require a partner",,False,62.4,partial role,moderate bust risk,,0.511,14100,16.77064632066226,8.579581741236563,1.19,favorable,bottom-tier,Proj below avg (-5.6),,pos:Favorable matchup;neg:Bottom-tier env (16.1);warn:Partial role (62);neu:Moderate bust risk;neu:1.2 pts/$1K (fair for this slate);neu:Proj below avg (-5.6)
+K,1,6,00-0032569,Wil Lutz,DEN,PIT,5400,7.874033269999999,27.51142812297945,4,7.874033269999999,"game environment, history, kicker usage, value, range, captain","• Game environment: DEN implied 20.8 (middling; league average is 22.3), game total 36.8 (very low), favored by 4.7
 • History: 8.2 pts/game season avg (in line with average)
 • Kicker usage: 1.7 FG attempts + 3.0 extra-point attempts per game, last 3 games; wind 13 mph, weather could cut into kicks
 • Value: 1.46 pts/$1K (fair for this slate)
 • Range: 2.0–15.0 pts (the model gives every kicker the same band; kicker scoring follows game flow, not a player-specific role)
-• Captain: $8,100, 11.8 pts, 0.2% owned as CPT; not a recommended captain (a kicker was the best captain in 1 of 49 games studied; the builds penalize it)",,False,,kicker,,,0.477,8100,11.811049905,0.2439677323803714,1.46,,middling,,,neu:Middling env (20.7);neu:1.5 pts/$1K (fair for this slate)
-K,2,7,00-0031136,Chris Boswell,PIT,DEN,5200,7.884250819999999,19.041141104331043,4,7.884250819999999,"game environment, history, kicker usage, value, range, captain","• Game environment: PIT implied 16.2 (bottom-tier; league average is 22.3), game total 36.8 (very low), underdog by 4.5
+• Captain: $8,100, 11.8 pts, 0.2% owned as CPT; not a recommended captain (a kicker was the best captain in 1 of 49 games studied; the builds penalize it)",,False,,kicker,,,0.477,8100,11.811049905,0.2481352056671615,1.46,,middling,,,neu:Middling env (20.8);neu:1.5 pts/$1K (fair for this slate)
+K,2,7,00-0031136,Chris Boswell,PIT,DEN,5200,7.884250819999999,19.419831616220783,4,7.884250819999999,"game environment, history, kicker usage, value, range, captain","• Game environment: PIT implied 16.1 (bottom-tier; league average is 22.3), game total 36.8 (very low), underdog by 4.7
 • History: 10.0 pts/game season avg (in line with average)
 • Kicker usage: 2.3 FG attempts + 1.7 extra-point attempts per game, last 3 games; wind 13 mph, weather could cut into kicks
 • Value: 1.52 pts/$1K (cheap for this slate)
 • Range: 2.0–15.0 pts (the model gives every kicker the same band; kicker scoring follows game flow, not a player-specific role)
-• Captain: $7,800, 11.8 pts, 2.0% owned as CPT; not a recommended captain (a kicker was the best captain in 1 of 49 games studied; the builds penalize it)",,False,,kicker,,,0.437,7800,11.82637623,1.958094145737056,1.52,,bottom-tier,,,neg:Bottom-tier env (16.2);pos:1.5 pts/$1K (cheap for this slate)
-QB,2,8,00-0034771,Mason Rudolph,PIT,DEN,6000,9.676270680079016,49.12529637003077,4,9.676270680079016,"matchup, game environment, history, usage, value, range, captain","• Matchup: DEN allows 1.04x league-avg to QBs (neutral)
-• Game environment: PIT implied 16.2 (bottom-tier; league average is 22.3), game total 36.8 (very low), underdog by 4.5
+• Captain: $7,800, 11.8 pts, 1.8% owned as CPT; not a recommended captain (a kicker was the best captain in 1 of 49 games studied; the builds penalize it)",,False,,kicker,,,0.437,7800,11.82637623,1.8204159815378311,1.52,,bottom-tier,,,neg:Bottom-tier env (16.1);pos:1.5 pts/$1K (cheap for this slate)
+QB,2,8,00-0034771,Mason Rudolph,PIT,DEN,6000,9.495852509712284,52.67288499941227,4,9.495852509712284,"matchup, game environment, history, usage, value, range, captain","• Matchup: DEN allows 1.04x league-avg to QBs (neutral)
+• Game environment: PIT implied 16.1 (bottom-tier; league average is 22.3), game total 36.8 (very low), underdog by 4.7
 • History: 0.3 pts/game season avg, 3 games (projection running above average)
-• Usage: 32.6 pass att + 1.2 rush att projected; 1.3 pass att/game last 3 (actual), 9% of snaps last 3 games (partial role; only 3 games this season)
-• Value: 1.61 pts/$1K (cheap for this slate)
-• Range: 3.0–17.8 pts (elevated bust risk; under half his average in 2 of 4 games)
-• Captain: $9,000, 14.5 pts, 7.0% owned as CPT; QB captain is a sound build; his RB or TE has been the better first partner than his WR1",Solid Value,False,58.3,partial role,elevated bust risk,,0.437,9000,14.514406020118525,6.970112662246642,1.61,neutral,bottom-tier,Proj above avg (+9.4),,neu:Neutral matchup;neg:Bottom-tier env (16.2);warn:Partial role (58);warn:Elevated bust risk;pos:1.6 pts/$1K (cheap for this slate);neu:Proj above avg (+9.4)
-WR,2,9,00-0034348,Courtland Sutton,DEN,PIT,7400,6.809597386657271,14.86892575405263,4,6.809597386657271,"matchup, game environment, history, usage, value, range, captain","• Matchup (WR2/3): PIT allows 1.00x league-avg (neutral)
-• Game environment: DEN implied 20.7 (middling; league average is 22.3), game total 36.8 (very low), favored by 4.5
+• Usage: 32.5 pass att + 1.2 rush att projected; 1.3 pass att/game last 3 (actual), 9% of snaps last 3 games (partial role; only 3 games this season)
+• Value: 1.58 pts/$1K (cheap for this slate)
+• Range: 3.0–17.6 pts (elevated bust risk; under half his average in 2 of 4 games)
+• Captain: $9,000, 14.2 pts, 4.5% owned as CPT; QB captain is a sound build; his RB or TE has been the better first partner than his WR1",Solid Value,False,57.9,partial role,elevated bust risk,,0.431,9000,14.243778764568424,4.5272758079583175,1.58,neutral,bottom-tier,Proj above avg (+9.2),,neu:Neutral matchup;neg:Bottom-tier env (16.1);warn:Partial role (58);warn:Elevated bust risk;pos:1.6 pts/$1K (cheap for this slate);neu:Proj above avg (+9.2)
+WR,2,9,00-0034348,Courtland Sutton,DEN,PIT,7400,6.67758793959433,12.841604344688498,4,6.67758793959433,"matchup, game environment, history, usage, value, range, captain","• Matchup (WR2/3): PIT allows 1.00x league-avg (neutral)
+• Game environment: DEN implied 20.8 (middling; league average is 22.3), game total 36.8 (very low), favored by 4.7
 • History: 6.4 pts/game season avg, 10 games (in line with average)
 • Usage: 4.4 targets projected (16% of team targets); 5.0 targets/game last 3 (actual), 78% of snaps last 3 games (partial role)
-• Value: 0.92 pts/$1K (pricey for this slate)
+• Value: 0.90 pts/$1K (pricey for this slate)
 • Range: 1.5–14.2 pts (elevated bust risk; under half his average in 3 of 10 games)
-• Captain: $11,100, 10.2 pts, 0.7% owned as CPT; fine as captain, but needs Bo Nix in the FLEX (the builds enforce it)",,False,52.7,partial role,elevated bust risk,,0.428,11100,10.214396079985908,0.6946766310300091,0.92,neutral,middling,,,neu:Neutral matchup;neu:Middling env (20.7);warn:Partial role (53);warn:Elevated bust risk;neg:0.9 pts/$1K (pricey for this slate)
-WR,3,10,00-0035640,DK Metcalf,PIT,DEN,8000,6.980306178379637,20.16732957642193,4,6.980306178379637,"matchup, game environment, history, usage, value, range, captain","• Matchup (WR2/3): DEN allows 0.91x league-avg (below average)
-• Game environment: PIT implied 16.2 (bottom-tier; league average is 22.3), game total 36.8 (very low), underdog by 4.5
+• Captain: $11,100, 10.0 pts, 0.7% owned as CPT; fine as captain, but needs Bo Nix in the FLEX (the builds enforce it)",,False,52.8,partial role,elevated bust risk,,0.425,11100,10.016381909391496,0.7065431441730722,0.9,neutral,middling,,,neu:Neutral matchup;neu:Middling env (20.8);warn:Partial role (53);warn:Elevated bust risk;neg:0.9 pts/$1K (pricey for this slate)
+WR,3,10,00-0035640,DK Metcalf,PIT,DEN,8000,7.0491708600182825,24.82782740482158,4,7.0491708600182825,"matchup, game environment, history, usage, value, range, captain","• Matchup (WR2/3): DEN allows 0.91x league-avg (below average)
+• Game environment: PIT implied 16.1 (bottom-tier; league average is 22.3), game total 36.8 (very low), underdog by 4.7
 • History: 9.8 pts/game season avg, 10 games (in line with average)
-• Usage: 5.8 targets projected (19% of team targets); 5.3 targets/game last 3 (actual), 79% of snaps last 3 games (partial role; usage dipping)
-• Value: 0.87 pts/$1K (pricey for this slate)
-• Range: 1.7–14.0 pts (moderate bust risk; under half his average in 2 of 10 games)
-• Captain: $12,000, 10.5 pts, 0.7% owned as CPT; fine as captain, but needs Mason Rudolph in the FLEX (the builds enforce it)",,False,64.7,partial role,moderate bust risk,,0.421,12000,10.470459267569456,0.6946766310300091,0.87,below average,bottom-tier,,,neg:Below average matchup;neg:Bottom-tier env (16.2);warn:Partial role (65);neu:Moderate bust risk;neg:0.9 pts/$1K (pricey for this slate)
-TE,1,11,00-0033881,Evan Engram,DEN,PIT,3600,6.663727689009977,28.231031145423785,4,6.663727689009977,"matchup, game environment, history, usage, value, range, captain","• Matchup (TE1): PIT allows 0.95x league-avg (neutral)
-• Game environment: DEN implied 20.7 (middling; league average is 22.3), game total 36.8 (very low), favored by 4.5
+• Usage: 5.9 targets projected (19% of team targets); 5.3 targets/game last 3 (actual), 79% of snaps last 3 games (solid role; usage dipping)
+• Value: 0.88 pts/$1K (pricey for this slate)
+• Range: 1.7–14.4 pts (moderate bust risk; under half his average in 2 of 10 games)
+• Captain: $12,000, 10.6 pts, 0.7% owned as CPT; fine as captain, but needs Mason Rudolph in the FLEX (the builds enforce it)",,False,65.4,solid role,moderate bust risk,,0.425,12000,10.573756290027424,0.7065431441730722,0.88,below average,bottom-tier,,,neg:Below average matchup;neg:Bottom-tier env (16.1);neu:Solid role (65);neu:Moderate bust risk;neg:0.9 pts/$1K (pricey for this slate)
+TE,1,11,00-0033881,Evan Engram,DEN,PIT,3600,6.642356155357772,31.10280350604473,4,6.642356155357772,"matchup, game environment, history, usage, value, range, captain","• Matchup (TE1): PIT allows 0.95x league-avg (neutral)
+• Game environment: DEN implied 20.8 (middling; league average is 22.3), game total 36.8 (very low), favored by 4.7
 • History: 5.3 pts/game season avg, 10 games (in line with average)
 • Usage: 5.0 targets projected (18% of team targets); 5.3 targets/game last 3 (actual), 48% of snaps last 3 games (partial role; usage trending up)
 • Value: 1.85 pts/$1K (cheap for this slate)
-• Range: 0.6–14.9 pts (high bust risk; under half his average in 4 of 10 games)
-• Captain: $5,400, 10.0 pts, 5.8% owned as CPT; fine as captain, but needs Bo Nix in the FLEX (the builds enforce it)",Fragile Chalk,False,48.5,partial role,high bust risk,,0.41,5400,9.995591533514965,5.778326511558473,1.85,neutral,middling,,,neu:Neutral matchup;neu:Middling env (20.7);warn:Partial role (48);neg:High bust risk;pos:1.9 pts/$1K (cheap for this slate)
-WR,4,12,00-0036613,Jaylen Waddle,DEN,PIT,8400,6.66930116663573,17.887150813609587,3,6.66930116663573,"matchup, game environment, history, usage, value, range, captain","• Matchup (WR1): PIT allows 0.97x league-avg (neutral)
-• Game environment: DEN implied 20.7 (middling; league average is 22.3), game total 36.8 (very low), favored by 4.5
+• Range: 0.7–15.0 pts (high bust risk; under half his average in 4 of 10 games)
+• Captain: $5,400, 10.0 pts, 0.7% owned as CPT; fine as captain, but needs Bo Nix in the FLEX (the builds enforce it)",Fragile Chalk,False,48.5,partial role,high bust risk,,0.409,5400,9.963534233036658,0.7065431441730722,1.85,neutral,middling,,,neu:Neutral matchup;neu:Middling env (20.8);warn:Partial role (49);neg:High bust risk;pos:1.8 pts/$1K (cheap for this slate)
+WR,4,12,00-0036613,Jaylen Waddle,DEN,PIT,8400,6.561595174965641,1.720881916250682,3,6.561595174965641,"matchup, game environment, history, usage, value, range, captain","• Matchup (WR1): PIT allows 0.97x league-avg (neutral)
+• Game environment: DEN implied 20.8 (middling; league average is 22.3), game total 36.8 (very low), favored by 4.7
 • History: 9.4 pts/game season avg, 10 games (in line with average)
 • Usage: 4.8 targets projected (17% of team targets); 4.3 targets/game last 3 (actual), 39% of snaps last 3 games (punt-level role; usage trending down)
-• Value: 0.79 pts/$1K (pricey for this slate)
-• Range: 0.9–15.1 pts (high bust risk; under half his average in 2 of 10 games)
-• Captain: $12,600, 10.0 pts, 0.7% owned as CPT; fine as captain, but needs Bo Nix in the FLEX (the builds enforce it)",,False,35.0,punt-level role,high bust risk,,0.363,12600,10.003951749953597,0.6946766310300091,0.79,neutral,middling,,,neu:Neutral matchup;neu:Middling env (20.7);neg:Punt-level role (35);neg:High bust risk;neg:0.8 pts/$1K (pricey for this slate)
-RB,3,13,00-0036139,Rico Dowdle,PIT,DEN,6400,6.605089606674124,19.724305566216263,3,6.605089606674124,"matchup, game environment, history, usage, value, range, captain","• Matchup: DEN allows 0.98x league-avg rushing pts (neutral), 1.24x receiving pts (smash spot) to RBs
-• Game environment: PIT implied 16.2 (bottom-tier; league average is 22.3), game total 36.8 (very low), underdog by 4.5
+• Value: 0.78 pts/$1K (pricey for this slate)
+• Range: 0.9–14.5 pts (high bust risk; under half his average in 2 of 10 games)
+• Captain: $12,600, 9.8 pts, 3.5% owned as CPT; fine as captain, but needs Bo Nix in the FLEX (the builds enforce it)",,False,34.7,punt-level role,high bust risk,,0.359,12600,9.842392762448462,3.4949628187765835,0.78,neutral,middling,,,neu:Neutral matchup;neu:Middling env (20.8);neg:Punt-level role (35);neg:High bust risk;neg:0.8 pts/$1K (pricey for this slate)
+RB,3,13,00-0036139,Rico Dowdle,PIT,DEN,6400,6.478372806927527,22.3222879119781,3,6.478372806927527,"matchup, game environment, history, usage, value, range, captain","• Matchup: DEN allows 0.98x league-avg rushing pts (neutral), 1.24x receiving pts (smash spot) to RBs
+• Game environment: PIT implied 16.1 (bottom-tier; league average is 22.3), game total 36.8 (very low), underdog by 4.7
 • History: 8.2 pts/game season avg, 7 games (in line with average)
 • Usage: 10.0 touches projected (6.8 carries + 3.1 targets, 36% of RB carries); 10.7 touches/game last 3 (actual), 43% of snaps last 3 games (part-time role; usage trending down)
-• Value: 1.03 pts/$1K (fair for this slate)
+• Value: 1.01 pts/$1K (fair for this slate)
 • Range: 1.3–13.7 pts (elevated bust risk; under half his average in 1 of 7 games)
-• Captain: $9,600, 9.9 pts, 0.7% owned as CPT; RB captain is fine; the builds don't require a partner",,False,34.9,part-time role,elevated bust risk,,0.333,9600,9.907634410011186,0.6946766310300091,1.03,favorable,bottom-tier,,,pos:Favorable matchup;neg:Bottom-tier env (16.2);warn:Part-time role (35);warn:Elevated bust risk;neu:1.0 pts/$1K (fair for this slate)
-DST,2,14,DST_PIT,Steelers,PIT,DEN,3800,5.875716764500001,13.95822942735886,2,5.875716764500001,"matchup, game environment, history, upside setup, value, range, captain","• Matchup: model rates this the weaker defensive spot of the two (0.78x vs 1.22x; relative to tonight's other defense only)
-• Game environment: opponent DEN implied 20.7 (middling; league average is 22.3), game total 36.8 (very low)
+• Captain: $9,600, 9.7 pts, 0.7% owned as CPT; RB captain is fine; the builds don't require a partner",,False,34.7,part-time role,elevated bust risk,,0.33,9600,9.71755921039129,0.7065431441730722,1.01,favorable,bottom-tier,,,pos:Favorable matchup;neg:Bottom-tier env (16.1);warn:Part-time role (35);warn:Elevated bust risk;neu:1.0 pts/$1K (fair for this slate)
+DST,2,14,DST_PIT,Steelers,PIT,DEN,3800,5.8027141465000005,12.588608848187564,2,5.8027141465000005,"matchup, game environment, history, upside setup, value, range, captain","• Matchup: model rates this the weaker defensive spot of the two (0.77x vs 1.23x; relative to tonight's other defense only)
+• Game environment: opponent DEN implied 20.8 (middling; league average is 22.3), game total 36.8 (very low)
 • History: 7.8 pts/game season avg (in line with average)
 • Upside setup: neutral — low game total 36.8; DEN without RJ Harvey since wk 7; weather: gusts 31 mph; DEN rarely sacked (4.8% of dropbacks, works against); DEN QB protects the ball (1.8% INT rate, works against)
-• Value: 1.55 pts/$1K (cheap for this slate)
-• Range: about 2–10 pts in a typical game (DST projections miss by about 4.3 pts on average); a defensive or return TD or a safety is what pushes it higher, and those aren't modeled
-• Captain: $5,700, 8.8 pts, 1.1% owned as CPT; not a captain option (best captain in 0 of 49 games; the builds exclude it). As a FLEX it only fits lineups with no DEN skill players, so it rarely makes a build",,False,,,,0.0,0.31,5700,8.81357514675,1.0780677987670229,1.55,,middling,,neutral,neu:Middling env (opp 20.7);neu:Setup neutral;pos:1.5 pts/$1K (cheap for this slate)
-TE,2,15,00-0038558,Darnell Washington,PIT,DEN,4400,5.115106068417289,13.764205092466954,2,5.115106068417289,"matchup, game environment, history, usage, value, range, captain","• Matchup (TE2/3): DEN allows 1.33x league-avg (smash spot; small numbers, swings a lot)
-• Game environment: PIT implied 16.2 (bottom-tier; league average is 22.3), game total 36.8 (very low), underdog by 4.5
+• Value: 1.53 pts/$1K (cheap for this slate)
+• Range: about 1–10 pts in a typical game (DST projections miss by about 4.3 pts on average); a defensive or return TD or a safety is what pushes it higher, and those aren't modeled
+• Captain: $5,700, 8.7 pts, 1.1% owned as CPT; not a captain option (best captain in 0 of 49 games; the builds exclude it). As a FLEX it only fits lineups with no DEN skill players, so it rarely makes a build",,False,,,,0.0,0.308,5700,8.70407121975,1.096483425738976,1.53,,middling,,neutral,neu:Middling env (opp 20.8);neu:Setup neutral;pos:1.5 pts/$1K (cheap for this slate)
+TE,2,15,00-0038558,Darnell Washington,PIT,DEN,4400,4.9801031381255205,12.2117687350712,2,4.9801031381255205,"matchup, game environment, history, usage, value, range, captain","• Matchup (TE2/3): DEN allows 1.33x league-avg (smash spot; small numbers, swings a lot)
+• Game environment: PIT implied 16.1 (bottom-tier; league average is 22.3), game total 36.8 (very low), underdog by 4.7
 • History: 6.9 pts/game season avg, 10 games (in line with average)
 • Usage: 3.2 targets projected (11% of team targets); 3.7 targets/game last 3 (actual), 57% of snaps last 3 games (part-time role; usage dipping)
-• Value: 1.16 pts/$1K (fair for this slate)
-• Range: 0.9–11.0 pts (high bust risk; under half his average in 3 of 10 games)
-• Captain: $6,600, 7.7 pts, 0.7% owned as CPT; fine as captain, but needs Mason Rudolph in the FLEX (the builds enforce it)",,False,28.1,part-time role,high bust risk,,0.288,6600,7.672659102625933,0.6946766310300091,1.16,smash spot,bottom-tier,,,pos:Smash spot matchup;neg:Bottom-tier env (16.2);warn:Part-time role (28);neg:High bust risk;neu:1.2 pts/$1K (fair for this slate)
-TE,3,16,00-0036894,Pat Freiermuth,PIT,DEN,5800,5.403524006537597,11.331540026709495,2,5.403524006537597,"matchup, game environment, history, usage, value, range, captain","• Matchup (TE1): DEN allows 1.22x league-avg (smash spot)
-• Game environment: PIT implied 16.2 (bottom-tier; league average is 22.3), game total 36.8 (very low), underdog by 4.5
+• Value: 1.13 pts/$1K (fair for this slate)
+• Range: 0.9–10.6 pts (high bust risk; under half his average in 3 of 10 games)
+• Captain: $6,600, 7.5 pts, 0.7% owned as CPT; fine as captain, but needs Mason Rudolph in the FLEX (the builds enforce it)",,False,28.1,part-time role,high bust risk,,0.285,6600,7.47015470718828,0.7065431441730722,1.13,smash spot,bottom-tier,,,pos:Smash spot matchup;neg:Bottom-tier env (16.1);warn:Part-time role (28);neg:High bust risk;neu:1.1 pts/$1K (fair for this slate)
+TE,3,16,00-0036894,Pat Freiermuth,PIT,DEN,5800,5.456893826610552,12.841604344688498,2,5.456893826610552,"matchup, game environment, history, usage, value, range, captain","• Matchup (TE1): DEN allows 1.22x league-avg (smash spot)
+• Game environment: PIT implied 16.1 (bottom-tier; league average is 22.3), game total 36.8 (very low), underdog by 4.7
 • History: 10.0 pts/game season avg, 10 games (projection running below average)
 • Usage: 3.5 targets projected (11% of team targets); 3.3 targets/game last 3 (actual), 55% of snaps last 3 games (part-time role; usage trending up)
-• Value: 0.93 pts/$1K (fair for this slate)
-• Range: 1.2–11.6 pts (high bust risk; under half his average in 2 of 10 games)
-• Captain: $8,700, 8.1 pts, 0.7% owned as CPT; fine as captain, but needs Mason Rudolph in the FLEX (the builds enforce it)",,False,30.0,part-time role,high bust risk,,0.281,8700,8.105286009806395,0.6946766310300091,0.93,smash spot,bottom-tier,Proj below avg (-4.6),,pos:Smash spot matchup;neg:Bottom-tier env (16.2);warn:Part-time role (30);neg:High bust risk;neu:0.9 pts/$1K (fair for this slate);neu:Proj below avg (-4.6)
-WR,5,17,00-0038976,Marvin Mims Jr.,DEN,PIT,3000,3.844384005468458,9.214830636769516,2,3.844384005468458,"matchup, game environment, history, usage, value, range, captain","• Matchup (WR2/3): PIT allows 1.00x league-avg (neutral)
-• Game environment: DEN implied 20.7 (middling; league average is 22.3), game total 36.8 (very low), favored by 4.5
+• Value: 0.94 pts/$1K (fair for this slate)
+• Range: 1.2–11.7 pts (high bust risk; under half his average in 2 of 10 games)
+• Captain: $8,700, 8.2 pts, 0.7% owned as CPT; fine as captain, but needs Mason Rudolph in the FLEX (the builds enforce it)",,False,30.0,part-time role,high bust risk,,0.282,8700,8.185340739915826,0.7065431441730722,0.94,smash spot,bottom-tier,Proj below avg (-4.5),,pos:Smash spot matchup;neg:Bottom-tier env (16.1);warn:Part-time role (30);neg:High bust risk;neu:0.9 pts/$1K (fair for this slate);neu:Proj below avg (-4.5)
+WR,5,17,00-0038976,Marvin Mims Jr.,DEN,PIT,3000,3.779024959808743,7.724433039928534,2,3.779024959808743,"matchup, game environment, history, usage, value, range, captain","• Matchup (WR2/3): PIT allows 1.00x league-avg (neutral)
+• Game environment: DEN implied 20.8 (middling; league average is 22.3), game total 36.8 (very low), favored by 4.7
 • History: 3.4 pts/game season avg, 8 games (in line with average)
 • Usage: 2.3 targets projected (8% of team targets); 2.3 targets/game last 3 (actual), 25% of snaps last 3 games (punt-level role; usage dipping)
-• Value: 1.28 pts/$1K (fair for this slate)
-• Range: 0.0–9.5 pts (high bust risk; under half his average in 2 of 8 games)
-• Captain: $4,500, 5.8 pts, 0.7% owned as CPT; fine as captain, but needs Bo Nix in the FLEX (the builds enforce it)",Boom/Bust Dart,False,27.0,punt-level role,high bust risk,,0.271,4500,5.766576008202687,0.6946766310300091,1.28,neutral,middling,,,neu:Neutral matchup;neu:Middling env (20.7);neg:Punt-level role (27);neg:High bust risk;neu:1.3 pts/$1K (fair for this slate)
-WR,6,18,00-0039868,Troy Franklin,DEN,PIT,3400,3.323092210200928,1.68732438255804,2,3.323092210200928,"matchup, game environment, history, usage, value, range, captain","• Matchup (WR2/3): PIT allows 1.00x league-avg (neutral)
-• Game environment: DEN implied 20.7 (middling; league average is 22.3), game total 36.8 (very low), favored by 4.5
+• Value: 1.26 pts/$1K (fair for this slate)
+• Range: 0.0–9.6 pts (high bust risk; under half his average in 2 of 8 games)
+• Captain: $4,500, 5.7 pts, 0.7% owned as CPT; fine as captain, but needs Bo Nix in the FLEX (the builds enforce it)",Boom/Bust Dart,False,27.0,punt-level role,high bust risk,,0.27,4500,5.6685374397131145,0.7065431441730722,1.26,neutral,middling,,,neu:Neutral matchup;neu:Middling env (20.8);neg:Punt-level role (27);neg:High bust risk;neu:1.3 pts/$1K (fair for this slate)
+WR,6,18,00-0039868,Troy Franklin,DEN,PIT,3400,3.234292623909363,1.720881916250682,2,3.234292623909363,"matchup, game environment, history, usage, value, range, captain","• Matchup (WR2/3): PIT allows 1.00x league-avg (neutral)
+• Game environment: DEN implied 20.8 (middling; league average is 22.3), game total 36.8 (very low), favored by 4.7
 • History: 2.0 pts/game season avg, 9 games (in line with average)
 • Usage: 2.3 targets projected (8% of team targets); 2.7 targets/game last 3 (actual), 53% of snaps last 3 games (punt-level role; usage trending up)
-• Value: 0.98 pts/$1K (fair for this slate)
-• Range: 0.0–8.2 pts (very high bust risk; under half his average in 4 of 10 games)
-• Captain: $5,100, 5.0 pts, 0.7% owned as CPT; fine as captain, but needs Bo Nix in the FLEX (the builds enforce it)",,False,30.0,punt-level role,very high bust risk,,0.27,5100,4.984638315301391,0.6946766310300091,0.98,neutral,middling,,,neu:Neutral matchup;neu:Middling env (20.7);neg:Punt-level role (30);neg:Very high bust risk;neu:1.0 pts/$1K (fair for this slate)
-TE,4,19,00-0036422,Adam Trautman,DEN,PIT,2600,2.7036914535390544,1.68732438255804,1,2.7036914535390544,"matchup, game environment, history, usage, value, range, captain","• Matchup (TE2/3): PIT allows 0.79x league-avg (tough; small numbers, swings a lot)
-• Game environment: DEN implied 20.7 (middling; league average is 22.3), game total 36.8 (very low), favored by 4.5
+• Value: 0.95 pts/$1K (fair for this slate)
+• Range: 0.0–8.0 pts (very high bust risk; under half his average in 4 of 10 games)
+• Captain: $5,100, 4.9 pts, 0.7% owned as CPT; fine as captain, but needs Bo Nix in the FLEX (the builds enforce it)",,False,30.0,punt-level role,very high bust risk,,0.268,5100,4.851438935864044,0.7065431441730722,0.95,neutral,middling,,,neu:Neutral matchup;neu:Middling env (20.8);neg:Punt-level role (30);neg:Very high bust risk;neu:1.0 pts/$1K (fair for this slate)
+TE,4,19,00-0036422,Adam Trautman,DEN,PIT,2600,2.688497201538039,1.720881916250682,1,2.688497201538039,"matchup, game environment, history, usage, value, range, captain","• Matchup (TE2/3): PIT allows 0.79x league-avg (tough; small numbers, swings a lot)
+• Game environment: DEN implied 20.8 (middling; league average is 22.3), game total 36.8 (very low), favored by 4.7
 • History: 1.9 pts/game season avg, 6 games (in line with average)
 • Usage: 1.3 targets projected (5% of team targets); 2.0 targets/game last 3 (actual), 57% of snaps last 3 games (punt-level role; missed recent time)
-• Value: 1.04 pts/$1K (fair for this slate)
-• Range: 0.7–6.0 pts (very high bust risk; under half his average in 6 of 10 games)
-• Captain: $3,900, 4.1 pts, 0.7% owned as CPT; fine as captain, but needs Bo Nix in the FLEX (the builds enforce it)",,False,28.1,punt-level role,very high bust risk,,0.224,3900,4.055537180308582,0.6946766310300091,1.04,tough,middling,,,neg:Tough matchup;neu:Middling env (20.7);neg:Punt-level role (28);neg:Very high bust risk;neu:1.0 pts/$1K (fair for this slate)
-WR,7,20,00-0040134,Pat Bryant,DEN,PIT,5000,2.900871625128171,1.68732438255804,1,2.900871625128171,"matchup, game environment, history, usage, value, range, captain","• Matchup (WR2/3): PIT allows 1.00x league-avg (neutral)
-• Game environment: DEN implied 20.7 (middling; league average is 22.3), game total 36.8 (very low), favored by 4.5
+• Value: 1.03 pts/$1K (fair for this slate)
+• Range: 0.7–6.1 pts (very high bust risk; under half his average in 6 of 10 games)
+• Captain: $3,900, 4.0 pts, 0.7% owned as CPT; fine as captain, but needs Bo Nix in the FLEX (the builds enforce it)",,False,28.1,punt-level role,very high bust risk,,0.224,3900,4.032745802307058,0.7065431441730722,1.03,tough,middling,,,neg:Tough matchup;neu:Middling env (20.8);neg:Punt-level role (28);neg:Very high bust risk;neu:1.0 pts/$1K (fair for this slate)
+WR,7,20,00-0040134,Pat Bryant,DEN,PIT,5000,2.82722607165144,1.720881916250682,1,2.82722607165144,"matchup, game environment, history, usage, value, range, captain","• Matchup (WR2/3): PIT allows 1.00x league-avg (neutral)
+• Game environment: DEN implied 20.8 (middling; league average is 22.3), game total 36.8 (very low), favored by 4.7
 • History: 9.0 pts/game season avg, 6 games (projection running below average)
 • Usage: 1.4 targets projected (5% of team targets); 4.0 targets/game last 3 (actual), 53% of snaps last 3 games (punt-level role; missed recent time; usage trending up)
-• Value: 0.58 pts/$1K (pricey for this slate)
-• Range: 0.3–7.5 pts (high bust risk; under half his average in 1 of 6 games)
-• Captain: $7,500, 4.4 pts, 0.7% owned as CPT; fine as captain, but needs Bo Nix in the FLEX (the builds enforce it)",,False,21.0,punt-level role,high bust risk,,0.208,7500,4.351307437692256,0.6946766310300091,0.58,neutral,middling,Proj below avg (-6.1),,neu:Neutral matchup;neu:Middling env (20.7);neg:Punt-level role (21);neg:High bust risk;neg:0.6 pts/$1K (pricey for this slate);neu:Proj below avg (-6.1)
-WR,8,21,00-0039739,Roman Wilson,PIT,DEN,4800,2.575859061754908,1.68732438255804,1,2.575859061754908,"matchup, game environment, history, usage, value, range, captain","• Matchup (WR2/3): DEN allows 0.91x league-avg (below average)
-• Game environment: PIT implied 16.2 (bottom-tier; league average is 22.3), game total 36.8 (very low), underdog by 4.5
+• Value: 0.57 pts/$1K (pricey for this slate)
+• Range: 0.3–7.0 pts (high bust risk; under half his average in 1 of 6 games)
+• Captain: $7,500, 4.2 pts, 0.7% owned as CPT; fine as captain, but needs Bo Nix in the FLEX (the builds enforce it)",,False,21.0,punt-level role,high bust risk,,0.206,7500,4.24083910747716,0.7065431441730722,0.57,neutral,middling,Proj below avg (-6.2),,neu:Neutral matchup;neu:Middling env (20.8);neg:Punt-level role (21);neg:High bust risk;neg:0.6 pts/$1K (pricey for this slate);neu:Proj below avg (-6.2)
+WR,8,21,00-0039739,Roman Wilson,PIT,DEN,4800,2.5984131592073627,1.720881916250682,1,2.5984131592073627,"matchup, game environment, history, usage, value, range, captain","• Matchup (WR2/3): DEN allows 0.91x league-avg (below average)
+• Game environment: PIT implied 16.1 (bottom-tier; league average is 22.3), game total 36.8 (very low), underdog by 4.7
 • History: 8.7 pts/game season avg, 6 games (projection running below average)
 • Usage: 1.7 targets projected (6% of team targets); 4.3 targets/game last 3 (actual), 44% of snaps last 3 games (punt-level role; missed recent time; usage dipping)
 • Value: 0.54 pts/$1K (pricey for this slate)
-• Range: 0.2–5.9 pts (high bust risk; under half his average in 1 of 6 games)
-• Captain: $7,200, 3.9 pts, 0.7% owned as CPT; fine as captain, but needs Mason Rudolph in the FLEX (the builds enforce it)",,False,17.7,punt-level role,high bust risk,,0.136,7200,3.863788592632361,0.6946766310300091,0.54,below average,bottom-tier,Proj below avg (-6.1),,neg:Below average matchup;neg:Bottom-tier env (16.2);neg:Punt-level role (18);neg:High bust risk;neg:0.5 pts/$1K (pricey for this slate);neu:Proj below avg (-6.1)
+• Range: 0.2–6.2 pts (high bust risk; under half his average in 1 of 6 games)
+• Captain: $7,200, 3.9 pts, 0.7% owned as CPT; fine as captain, but needs Mason Rudolph in the FLEX (the builds enforce it)",,False,17.7,punt-level role,high bust risk,,0.137,7200,3.897619738811044,0.7065431441730722,0.54,below average,bottom-tier,Proj below avg (-6.1),,neg:Below average matchup;neg:Bottom-tier env (16.1);neg:Punt-level role (18);neg:High bust risk;neg:0.5 pts/$1K (pricey for this slate);neu:Proj below avg (-6.1)
