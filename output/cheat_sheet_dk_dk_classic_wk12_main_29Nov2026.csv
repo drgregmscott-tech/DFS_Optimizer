@@ -169,16 +169,16 @@ WR,12,00-0041040,Antonio Williams,WAS,ARI,4300,7.739892674831415,17.555255087864
 • History: 9.7 pts/game season avg, 10 games (in line with average)
 • Usage: 5.9 targets projected (19% of team targets), 84% of snaps last 3 games (solid role)
 • Range: 1.5–20.6 pts (low bust risk; under half his average in 1 of 9 games)",,False,72.6,solid role,low bust risk,,0.729,Value,2.0,"under $5,500",neutral,1.02,plus,1.8,,,val:Value;neu:Neutral matchup (1.02x);pos:Plus env (24.1);neu:Solid role (73);pos:Low bust risk;neu:1.8 pts/$1K
-WR,13,00-0038618,Xavier Hutchinson,HOU,BAL,4100,8.429481576927973,2.8303857942147745,6,0.9641468779241585,"matchup, game environment, history, usage, range","• Matchup: BAL allows 1.00x league-avg to WRs (neutral)
+WR,13,00-0031588,Stefon Diggs,WAS,ARI,5800,10.916934033165376,8.33656761377869,6,1.0785850238366774,"matchup, game environment, history, usage, range","• Matchup: ARI allows 1.02x league-avg to WRs (neutral)
+• Game environment: WAS implied 24.1 of a 41.5 total, favored by 6.7 (plus)
+• History: 13.2 pts/game season avg, 9 games (in line with average)
+• Usage: 6.5 targets projected (22% of team targets), 63% of snaps last 3 games (solid role)
+• Range: 2.6–25.3 pts (low bust risk; under half his average in 0 of 8 games)",,False,65.7,solid role,low bust risk,,0.723,Mid,4.0,"$5,500-6,900",neutral,1.02,plus,1.88,,,mid:Mid;neu:Neutral matchup (1.02x);pos:Plus env (24.1);neu:Solid role (66);pos:Low bust risk;neu:1.9 pts/$1K
+WR,14,00-0038618,Xavier Hutchinson,HOU,BAL,4100,8.429481576927973,2.8303857942147745,6,0.9641468779241585,"matchup, game environment, history, usage, range","• Matchup: BAL allows 1.00x league-avg to WRs (neutral)
 • Game environment: HOU implied 27.0 of a 47.2 total, favored by 6.7 (elite)
 • History: 8.5 pts/game season avg, 10 games (in line with average)
 • Usage: 5.2 targets projected (17% of team targets), 80% of snaps last 3 games (partial role)
 • Range: 1.7–19.4 pts (moderate bust risk; under half his average in 2 of 10 games)",,False,60.7,partial role,moderate bust risk,,0.716,Value,3.0,"under $5,500",neutral,1.0,elite,2.06,,,val:Value;neu:Neutral matchup (1.00x);pos:Elite env (27.0);warn:Partial role (61);neu:Moderate bust risk;neu:2.1 pts/$1K
-WR,14,00-0031588,Stefon Diggs,WAS,ARI,5800,10.916934033165376,8.33656761377869,5,1.0785850238366774,"matchup, game environment, history, usage, range","• Matchup: ARI allows 1.02x league-avg to WRs (neutral)
-• Game environment: WAS implied 24.1 of a 41.5 total, favored by 6.7 (plus)
-• History: 13.2 pts/game season avg, 9 games (in line with average)
-• Usage: 6.5 targets projected (22% of team targets), 63% of snaps last 3 games (partial role; questionable)
-• Range: 2.6–25.3 pts (moderate bust risk; under half his average in 0 of 8 games)",,False,56.7,partial role,moderate bust risk,,0.691,Mid,4.0,"$5,500-6,900",neutral,1.02,plus,1.88,,,mid:Mid;neu:Neutral matchup (1.02x);pos:Plus env (24.1);warn:Partial role (57);neu:Moderate bust risk;neu:1.9 pts/$1K
 WR,15,00-0036410,Tee Higgins,CIN,NO,7600,14.330317386767714,9.312746454286687,5,1.3910176163985484,"matchup, game environment, history, usage, range","• Matchup: NO allows 0.92x league-avg to WRs (below average)
 • Game environment: CIN implied 29.6 of a 49.3 total, favored by 9.9 (elite)
 • History: 19.3 pts/game season avg, 10 games (projection running below average)

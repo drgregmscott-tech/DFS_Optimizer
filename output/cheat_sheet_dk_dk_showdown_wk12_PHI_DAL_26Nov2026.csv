@@ -6,7 +6,7 @@ WR,1,1,00-0036358,CeeDee Lamb,DAL,PHI,10800,24.739426638368727,59.43669718213747
 • Value: 2.29 pts/$1K (cheap for this slate)
 • Range: 5.7–52.5 pts (low bust risk; under half his average in 1 of 11 games)
 • Captain: $16,200, 37.1 pts, 16.3% owned as CPT; fine as captain, but needs Dak Prescott in the FLEX (the builds enforce it)",,False,100.0,locked-in role,low bust risk,,0.988,16200,37.10913995755309,16.27438554841361,2.29,favorable,elite,,,pos:Favorable matchup;pos:Elite env (29.0);pos:Locked-in role (100);pos:Low bust risk;pos:2.3 pts/$1K (cheap for this slate)
-QB,1,2,00-0033077,Dak Prescott,DAL,PHI,10400,27.497691125958475,46.74409911258311,10,27.497691125958475,"matchup, game environment, history, usage, value, range, captain","• Matchup: PHI allows 1.08x league-avg to QBs (favorable)
+QB,1,2,00-0033077,Dak Prescott,DAL,PHI,10400,27.497691125958475,46.7440991125831,10,27.497691125958475,"matchup, game environment, history, usage, value, range, captain","• Matchup: PHI allows 1.08x league-avg to QBs (favorable)
 • Game environment: DAL implied 29.0 (elite; league average is 22.3), game total 49.4 (high), favored by 8.6
 • History: 23.6 pts/game season avg, 11 games (projection running above average)
 • Usage: 36.3 pass att + 3.0 rush att projected; 39.3 pass att/game last 3 (actual), 100% of snaps last 3 games (locked-in role)
@@ -20,14 +20,14 @@ RB,1,3,00-0036997,Javonte Williams,DAL,PHI,9800,18.93531839786841,36.49165656711
 • Value: 1.93 pts/$1K (fair for this slate)
 • Range: 3.8–40.2 pts (low bust risk; under half his average in 3 of 11 games)
 • Captain: $14,700, 28.4 pts, 10.5% owned as CPT; RB captain is fine; the builds don't require a partner",,False,91.2,locked-in role,low bust risk,,0.875,14700,28.40297759680261,10.453559192822718,1.93,neutral,elite,,,neu:Neutral matchup;pos:Elite env (29.0);pos:Locked-in role (91);pos:Low bust risk;neu:1.9 pts/$1K (fair for this slate)
-WR,2,4,00-0037247,George Pickens,DAL,PHI,8800,16.813539920418393,51.61015726106452,8,16.813539920418393,"matchup, game environment, history, usage, value, range, captain","• Matchup (WR2/3): PHI allows 1.20x league-avg (smash spot)
+WR,2,4,00-0037247,George Pickens,DAL,PHI,8800,16.813539920418393,51.61015726106453,8,16.813539920418393,"matchup, game environment, history, usage, value, range, captain","• Matchup (WR2/3): PHI allows 1.20x league-avg (smash spot)
 • Game environment: DAL implied 29.0 (elite; league average is 22.3), game total 49.4 (high), favored by 8.6
 • History: 18.1 pts/game season avg, 10 games (in line with average)
 • Usage: 7.7 targets projected (24% of team targets); 10.7 targets/game last 3 (actual), 74% of snaps last 3 games (solid role; missed recent time; usage trending up)
 • Value: 1.91 pts/$1K (fair for this slate)
 • Range: 3.3–36.9 pts (low bust risk; under half his average in 2 of 10 games)
 • Captain: $13,200, 25.2 pts, 8.8% owned as CPT; fine as captain, but needs Dak Prescott in the FLEX (the builds enforce it)",,False,81.0,solid role,low bust risk,,0.817,13200,25.22030988062759,8.76151794342507,1.91,smash spot,elite,,,pos:Smash spot matchup;pos:Elite env (29.0);neu:Solid role (81);pos:Low bust risk;neu:1.9 pts/$1K (fair for this slate)
-WR,3,5,00-0036912,DeVonta Smith,PHI,DAL,8400,12.961237205019415,26.68014087708142,7,12.961237205019415,"matchup, game environment, history, usage, value, range, captain","• Matchup (WR1): DAL allows 1.02x league-avg (neutral)
+WR,3,5,00-0036912,DeVonta Smith,PHI,DAL,8400,12.961237205019415,26.680140877081417,7,12.961237205019415,"matchup, game environment, history, usage, value, range, captain","• Matchup (WR1): DAL allows 1.02x league-avg (neutral)
 • Game environment: PHI implied 20.4 (middling; league average is 22.3), game total 49.4 (high), underdog by 8.6
 • History: 16.2 pts/game season avg, 5 games (projection running below average)
 • Usage: 9.6 targets projected (31% of team targets); 11.3 targets/game last 3 (actual), 82% of snaps last 3 games (locked-in role)
@@ -48,27 +48,27 @@ WR,4,7,00-0040867,Makai Lemon,PHI,DAL,4800,9.338212990209234,37.25702226795723,5
 • Value: 1.95 pts/$1K (fair for this slate)
 • Range: 2.5–19.0 pts (moderate bust risk; under half his average in 3 of 10 games)
 • Captain: $7,200, 14.0 pts, 2.9% owned as CPT; fine as captain, but needs Joe Milton III in the FLEX (the builds enforce it)",Solid Value,False,72.3,solid role,moderate bust risk,,0.566,7200,14.00731948531385,2.853430622455881,1.95,favorable,middling,,,pos:Favorable matchup;neu:Middling env (20.4);neu:Solid role (72);neu:Moderate bust risk;neu:1.9 pts/$1K (fair for this slate)
-RB,2,8,00-0034844,Saquon Barkley,PHI,DAL,8000,7.883547169508813,1.6861614154305546,5,7.883547169508813,"matchup, game environment, history, usage, value, range, captain","• Matchup: DAL allows 1.20x league-avg rushing pts (smash spot), 1.18x receiving pts (smash spot) to RBs
+RB,2,8,00-0034844,Saquon Barkley,PHI,DAL,8000,7.883547169508813,1.6861614154305538,5,7.883547169508813,"matchup, game environment, history, usage, value, range, captain","• Matchup: DAL allows 1.20x league-avg rushing pts (smash spot), 1.18x receiving pts (smash spot) to RBs
 • Game environment: PHI implied 20.4 (middling; league average is 22.3), game total 49.4 (high), underdog by 8.6
 • History: 9.0 pts/game season avg, 8 games (in line with average)
 • Usage: 12.1 touches projected (11.5 carries + 0.7 targets, 71% of RB carries); 15.0 touches/game last 3 (actual), 52% of snaps last 3 games (solid role; usage trending up)
 • Value: 0.99 pts/$1K (pricey for this slate)
 • Range: 0.8–18.9 pts (moderate bust risk; under half his average in 2 of 8 games)
 • Captain: $12,000, 11.8 pts, 0.7% owned as CPT; RB captain is fine; the builds don't require a partner",,False,69.1,solid role,moderate bust risk,,0.534,12000,11.82532075426322,0.6926860427610112,0.99,smash spot,middling,,,pos:Smash spot matchup;neu:Middling env (20.4);neu:Solid role (69);neu:Moderate bust risk;neg:1.0 pts/$1K (pricey for this slate)
-WR,5,9,00-0040024,Darius Cooper,PHI,DAL,4600,9.059690882739703,36.87366652158332,5,9.059690882739703,"matchup, game environment, history, usage, value, range, captain","• Matchup (WR2/3): DAL allows 1.13x league-avg (favorable)
+WR,5,9,00-0040024,Darius Cooper,PHI,DAL,4600,9.059690882739703,36.87366652158333,5,9.059690882739703,"matchup, game environment, history, usage, value, range, captain","• Matchup (WR2/3): DAL allows 1.13x league-avg (favorable)
 • Game environment: PHI implied 20.4 (middling; league average is 22.3), game total 49.4 (high), underdog by 8.6
 • History: 6.7 pts/game season avg, 10 games (in line with average)
 • Usage: 5.2 targets projected (16% of team targets); 6.3 targets/game last 3 (actual), 94% of snaps last 3 games (partial role)
 • Value: 1.97 pts/$1K (fair for this slate)
 • Range: 2.1–19.5 pts (elevated bust risk; under half his average in 4 of 10 games)
 • Captain: $6,900, 13.6 pts, 3.4% owned as CPT; fine as captain, but needs Joe Milton III in the FLEX (the builds enforce it)",Solid Value,False,64.2,partial role,elevated bust risk,,0.531,6900,13.589536324109556,3.4264177417907318,1.97,favorable,middling,,,pos:Favorable matchup;neu:Middling env (20.4);warn:Partial role (64);warn:Elevated bust risk;neu:2.0 pts/$1K (fair for this slate)
-K,1,10,00-0037692,Brandon Aubrey,DAL,PHI,5400,8.4362,26.95635775255686,5,8.4362,"game environment, history, kicker usage, value, range, captain","• Game environment: DAL implied 29.0 (elite; league average is 22.3), game total 49.4 (high), favored by 8.6
+K,1,10,00-0037692,Brandon Aubrey,DAL,PHI,5400,8.4362,26.95635775255685,5,8.4362,"game environment, history, kicker usage, value, range, captain","• Game environment: DAL implied 29.0 (elite; league average is 22.3), game total 49.4 (high), favored by 8.6
 • History: 9.6 pts/game season avg (in line with average)
 • Kicker usage: 2.0 FG attempts + 4.0 extra-point attempts per game, last 3 games; indoors
 • Value: 1.56 pts/$1K (fair for this slate)
 • Range: 2.0–15.0 pts (the model gives every kicker the same band; kicker scoring follows game flow, not a player-specific role)
 • Captain: $8,100, 12.7 pts, 0.2% owned as CPT; not a recommended captain (a kicker was the best captain in 1 of 49 games studied; the builds penalize it)",,False,,kicker,,,0.53,8100,12.6543,0.243268645518373,1.56,,elite,,,pos:Elite env (29.0);neu:1.6 pts/$1K (fair for this slate)
-WR,6,11,00-0039410,Ryan Flournoy,DAL,PHI,6400,7.94586413086263,1.6861614154305546,4,7.94586413086263,"matchup, game environment, history, usage, value, range, captain","• Matchup (WR2/3): PHI allows 1.20x league-avg (smash spot)
+WR,6,11,00-0039410,Ryan Flournoy,DAL,PHI,6400,7.94586413086263,1.6861614154305538,4,7.94586413086263,"matchup, game environment, history, usage, value, range, captain","• Matchup (WR2/3): PHI allows 1.20x league-avg (smash spot)
 • Game environment: DAL implied 29.0 (elite; league average is 22.3), game total 49.4 (high), favored by 8.6
 • History: 9.5 pts/game season avg, 11 games (in line with average)
 • Usage: 3.3 targets projected (10% of team targets); 3.7 targets/game last 3 (actual), 77% of snaps last 3 games (part-time role)
@@ -88,35 +88,35 @@ DST,1,13,DST_DAL,Cowboys,DAL,PHI,4200,7.943278579,16.42689823748437,4,7.94327857
 • Value: 1.89 pts/$1K (fair for this slate)
 • Range: about 4–12 pts in a typical game (DST projections miss by about 4.3 pts on average); a defensive or return TD or a safety is what pushes it higher, and those aren't modeled
 • Captain: $6,300, 11.9 pts, 6.0% owned as CPT; not a captain option (best captain in 0 of 49 games; the builds exclude it). As a FLEX it only fits lineups with no PHI skill players, so it rarely makes a build",,False,,,,3.0,0.452,6300,11.9149178685,5.988940901634283,1.89,,middling,Proj above avg (+4.5),good,neu:Middling env (opp 20.4);pos:Setup good;neu:1.9 pts/$1K (fair for this slate);neu:Proj above avg (+4.5)
-TE,1,14,00-0034351,Dallas Goedert,PHI,DAL,6200,8.129210647350112,18.806747913867,4,8.129210647350112,"matchup, game environment, history, usage, value, range, captain","• Matchup (TE1): DAL allows 1.03x league-avg (neutral)
+TE,1,14,00-0034351,Dallas Goedert,PHI,DAL,6200,8.129210647350112,18.806747913866992,4,8.129210647350112,"matchup, game environment, history, usage, value, range, captain","• Matchup (TE1): DAL allows 1.03x league-avg (neutral)
 • Game environment: PHI implied 20.4 (middling; league average is 22.3), game total 49.4 (high), underdog by 8.6
 • History: 9.9 pts/game season avg, 8 games (in line with average)
 • Usage: 3.9 targets projected (12% of team targets); 3.7 targets/game last 3 (actual), 83% of snaps last 3 games (part-time role; usage trending down)
 • Value: 1.31 pts/$1K (fair for this slate)
 • Range: 2.4–16.7 pts (high bust risk; under half his average in 2 of 8 games)
 • Captain: $9,300, 12.2 pts, 0.7% owned as CPT; fine as captain, but needs Joe Milton III in the FLEX (the builds enforce it)",,False,42.7,part-time role,high bust risk,,0.422,9300,12.193815971025169,0.6926860427610112,1.31,neutral,middling,,,neu:Neutral matchup;neu:Middling env (20.4);warn:Part-time role (43);neg:High bust risk;neu:1.3 pts/$1K (fair for this slate)
-TE,2,15,00-0039530,Brevyn Spann-Ford,DAL,PHI,3400,5.413469568632675,13.17813313696344,3,5.413469568632675,"matchup, game environment, history, usage, value, range, captain","• Matchup (TE1): PHI allows 0.98x league-avg (neutral)
+TE,2,15,00-0039530,Brevyn Spann-Ford,DAL,PHI,3400,5.413469568632675,13.178133136963435,3,5.413469568632675,"matchup, game environment, history, usage, value, range, captain","• Matchup (TE1): PHI allows 0.98x league-avg (neutral)
 • Game environment: DAL implied 29.0 (elite; league average is 22.3), game total 49.4 (high), favored by 8.6
 • History: 3.6 pts/game season avg, 11 games (in line with average)
 • Usage: 2.4 targets projected (7% of team targets); 2.7 targets/game last 3 (actual), 68% of snaps last 3 games (punt-level role; usage dipping)
 • Value: 1.59 pts/$1K (fair for this slate)
 • Range: 0.6–12.0 pts (high bust risk; under half his average in 3 of 11 games)
 • Captain: $5,100, 8.1 pts, 0.7% owned as CPT; fine as captain, but needs Dak Prescott in the FLEX (the builds enforce it)",,False,35.7,punt-level role,high bust risk,,0.377,5100,8.120204352949013,0.6926860427610112,1.59,neutral,elite,,,neu:Neutral matchup;pos:Elite env (29.0);neg:Punt-level role (36);neg:High bust risk;neu:1.6 pts/$1K (fair for this slate)
-RB,3,16,00-0036567,Elijah Mitchell,PHI,DAL,2000,4.953721962294415,24.326901342649204,2,4.953721962294415,"matchup, game environment, history, usage, value, range, captain","• Matchup: DAL allows 1.20x league-avg rushing pts (smash spot), 1.18x receiving pts (smash spot) to RBs
+RB,3,16,00-0036567,Elijah Mitchell,PHI,DAL,2000,4.953721962294415,24.3269013426492,2,4.953721962294415,"matchup, game environment, history, usage, value, range, captain","• Matchup: DAL allows 1.20x league-avg rushing pts (smash spot), 1.18x receiving pts (smash spot) to RBs
 • Game environment: PHI implied 20.4 (middling; league average is 22.3), game total 49.4 (high), underdog by 8.6
 • History: 6.6 pts/game season avg, 3 games (in line with average)
 • Usage: 4.9 touches projected (2.6 carries + 2.3 targets, 16% of RB carries); 10.3 touches/game last 3 (actual), 40% of snaps last 3 games (punt-level role; only 3 games this season; missed recent time; usage trending up)
 • Value: 2.48 pts/$1K (cheap for this slate)
 • Range: 1.1–10.3 pts (high bust risk; under half his average in 0 of 3 games)
 • Captain: $3,000, 7.4 pts, 0.7% owned as CPT; RB captain is fine; the builds don't require a partner",Boom/Bust Dart,False,20.3,punt-level role,high bust risk,,0.298,3000,7.430582943441622,0.6926860427610112,2.48,smash spot,middling,,,pos:Smash spot matchup;neu:Middling env (20.4);neg:Punt-level role (20);neg:High bust risk;pos:2.5 pts/$1K (cheap for this slate)
-RB,4,17,00-0038551,Kendre Miller,DAL,PHI,1400,3.714560240619018,21.44944361500878,2,3.714560240619018,"matchup, game environment, history, usage, value, range, captain","• Matchup: PHI allows 1.03x league-avg rushing pts (neutral), 0.72x receiving pts (tough) to RBs
+RB,4,17,00-0038551,Kendre Miller,DAL,PHI,1400,3.714560240619018,21.44944361500877,2,3.714560240619018,"matchup, game environment, history, usage, value, range, captain","• Matchup: PHI allows 1.03x league-avg rushing pts (neutral), 0.72x receiving pts (tough) to RBs
 • Game environment: DAL implied 29.0 (elite; league average is 22.3), game total 49.4 (high), favored by 8.6
 • History: 6.6 pts/game season avg, 6 games (in line with average)
 • Usage: 4.5 touches projected (3.5 carries + 1.0 targets, 17% of RB carries); 15.0 touches/game last 3 (actual), 38% of snaps last 3 games (punt-level role; missed recent time; usage trending up)
 • Value: 2.65 pts/$1K (cheap for this slate)
 • Range: 0.0–9.4 pts (high bust risk; under half his average in 1 of 6 games)
 • Captain: $2,100, 5.6 pts, 0.7% owned as CPT; RB captain is fine; the builds don't require a partner",Boom/Bust Dart,False,22.5,punt-level role,high bust risk,,0.292,2100,5.571840360928527,0.6926860427610112,2.65,neutral,elite,,,neu:Neutral matchup;pos:Elite env (29.0);neg:Punt-level role (23);neg:High bust risk;pos:2.7 pts/$1K (cheap for this slate)
-RB,5,18,00-0039746,Will Shipley,PHI,DAL,5800,2.2591102579835827,1.6861614154305546,2,2.2591102579835827,"matchup, game environment, history, usage, value, range, captain","• Matchup: DAL allows 1.20x league-avg rushing pts (smash spot), 1.18x receiving pts (smash spot) to RBs
+RB,5,18,00-0039746,Will Shipley,PHI,DAL,5800,2.2591102579835827,1.6861614154305538,2,2.2591102579835827,"matchup, game environment, history, usage, value, range, captain","• Matchup: DAL allows 1.20x league-avg rushing pts (smash spot), 1.18x receiving pts (smash spot) to RBs
 • Game environment: PHI implied 20.4 (middling; league average is 22.3), game total 49.4 (high), underdog by 8.6
 • History: 3.5 pts/game season avg, 6 games (in line with average)
 • Usage: 2.4 touches projected (1.9 carries + 0.5 targets, 12% of RB carries); 6.0 touches/game last 3 (actual), 35% of snaps last 3 games (punt-level role; missed recent time)
