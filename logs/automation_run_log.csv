@@ -5978,3 +5978,6 @@ timestamp_utc,trigger_type,site,step,status
 2026-11-27T00:23:09.886108+00:00,full_refresh_dispatch,fd,fd_classic_wk12_main_29Nov2026,status_apply,success
 2026-11-27T00:23:09.886108+00:00,full_refresh_dispatch,fd,fd_classic_wk12_main_29Nov2026,pivot_finder,skipped
 2026-11-27T00:23:09.886108+00:00,full_refresh_dispatch,fd,fd_classic_wk12_main_29Nov2026,cheat_sheet,success
+2026-11-27T17:02:53.475964+00:00,light_vegas_refresh,dk,dk_classic_wk12_main_29Nov2026,cheat_sheet,success
+2026-11-27T17:02:05.246644+00:00,light_vegas_refresh,dk,dk_showdown_wk12_DEV_PIT_27Nov2026,cheat_sheet,skipped
+2026-11-27T17:01:46.025236+00:00,light_vegas_refresh,fd,fd_classic_wk12_main_29Nov2026,cheat_sheet,success
