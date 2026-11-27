@@ -6005,3 +6005,15 @@ timestamp_utc,trigger_type,site,step,status
 2026-11-27T18:32:51.623760+00:00,injury_refresh_scheduled,fd,fd_classic_wk12_main_29Nov2026,status_apply,success
 2026-11-27T18:32:51.623760+00:00,injury_refresh_scheduled,fd,fd_classic_wk12_main_29Nov2026,pivot_finder,skipped
 2026-11-27T18:32:51.623760+00:00,injury_refresh_scheduled,fd,fd_classic_wk12_main_29Nov2026,cheat_sheet,success
+2026-11-27T18:43:55.049391+00:00,full_refresh_dispatch,dk,dk_classic_wk12_main_29Nov2026,build_projections,success
+2026-11-27T18:43:55.049391+00:00,full_refresh_dispatch,dk,dk_classic_wk12_main_29Nov2026,status_apply,success
+2026-11-27T18:43:55.049391+00:00,full_refresh_dispatch,dk,dk_classic_wk12_main_29Nov2026,pivot_finder,skipped
+2026-11-27T18:43:55.049391+00:00,full_refresh_dispatch,dk,dk_classic_wk12_main_29Nov2026,cheat_sheet,success
+2026-11-27T18:43:15.509484+00:00,full_refresh_dispatch,dk,dk_showdown_wk12_DEV_PIT_27Nov2026,build_projections,success
+2026-11-27T18:43:15.509484+00:00,full_refresh_dispatch,dk,dk_showdown_wk12_DEV_PIT_27Nov2026,status_apply,success
+2026-11-27T18:43:15.509484+00:00,full_refresh_dispatch,dk,dk_showdown_wk12_DEV_PIT_27Nov2026,pivot_finder,skipped
+2026-11-27T18:43:15.509484+00:00,full_refresh_dispatch,dk,dk_showdown_wk12_DEV_PIT_27Nov2026,cheat_sheet,skipped
+2026-11-27T18:42:33.024888+00:00,full_refresh_dispatch,fd,fd_classic_wk12_main_29Nov2026,build_projections,success
+2026-11-27T18:42:33.024888+00:00,full_refresh_dispatch,fd,fd_classic_wk12_main_29Nov2026,status_apply,success
+2026-11-27T18:42:33.024888+00:00,full_refresh_dispatch,fd,fd_classic_wk12_main_29Nov2026,pivot_finder,skipped
+2026-11-27T18:42:33.024888+00:00,full_refresh_dispatch,fd,fd_classic_wk12_main_29Nov2026,cheat_sheet,success

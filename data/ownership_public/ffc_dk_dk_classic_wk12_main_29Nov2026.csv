@@ -1,51 +1,51 @@
 player,salary,proj_own,lo,hi
-Cam Skattebo,6100,84.9,73.7,100.0
-New England Defense,2700,59.3,42.1,73.7
-Parker Washington,7000,50.9,26.3,73.7
-Antonio Williams,4300,47.4,15.8,63.2
-Trevor Lawrence,6700,42.8,26.3,63.2
-Jakobi Meyers,4500,42.5,21.1,63.2
-Trey McBride,6600,42.5,21.1,68.4
-Bijan Robinson,7700,33.0,10.5,57.9
-Chig Okonkwo,3900,31.2,21.1,47.4
-Jaxon Smith-Njigba,9100,31.2,10.5,47.4
-Greg Dulcich,2900,26.3,10.5,36.8
-Ladd McConkey,5100,25.3,5.3,42.1
-Ja'Marr Chase,8900,22.5,0.0,42.1
-Joe Burrow,7700,20.4,5.3,31.6
-Ollie Gordon II,5800,19.3,5.3,31.6
-Jayden Daniels,6000,17.9,5.3,31.6
-C.J. Stroud,6500,17.2,5.3,36.8
-Chase Brown,6400,16.5,5.3,31.6
-T.J. Hockenson,4300,16.1,0.0,31.6
-Dalton Schultz,3500,15.8,5.3,36.8
-Rhamondre Stevenson,5900,11.9,0.0,31.6
-Caleb Douglas,4500,10.9,0.0,31.6
-Jonathan Taylor,6900,10.9,0.0,26.3
-Minnesota Defense,3500,10.2,0.0,15.8
-Drake London,6300,9.5,0.0,21.1
-Garrett Wilson,6400,9.5,0.0,26.3
-Washington Defense,3200,8.8,0.0,26.3
-Breece Hall,6000,8.4,0.0,21.1
-Mason Taylor,3000,8.1,0.0,31.6
-Chris Olave,6900,8.1,0.0,26.3
-Derrick Henry,6700,7.7,0.0,15.8
-Atlanta Defense,2500,7.4,0.0,26.3
-Travis Etienne Jr.,5300,7.0,0.0,21.1
+Cam Skattebo,6100,83.5,68.4,94.7
+New England Defense,2700,60.4,36.8,84.2
+Antonio Williams,4300,53.3,31.6,73.7
+Parker Washington,7000,46.3,21.1,68.4
+Jakobi Meyers,4500,43.5,21.1,57.9
+Trey McBride,6600,42.8,21.1,68.4
+Trevor Lawrence,6700,42.1,21.1,68.4
+Bijan Robinson,7700,36.1,10.5,52.6
+Jaxon Smith-Njigba,9100,35.8,15.8,52.6
+Greg Dulcich,2900,32.6,15.8,42.1
+Chig Okonkwo,3900,29.5,15.8,47.4
+Ja'Marr Chase,8900,24.9,10.5,42.1
+Jayden Daniels,6000,21.8,10.5,31.6
+Joe Burrow,7700,18.6,5.3,26.3
+Ollie Gordon II,5800,18.2,0.0,26.3
+Chase Brown,6400,17.5,0.0,31.6
+C.J. Stroud,6500,15.1,0.0,31.6
+Rhamondre Stevenson,5900,13.3,0.0,31.6
+Ladd McConkey,5100,13.0,0.0,31.6
+Garrett Wilson,6400,11.9,0.0,31.6
+Dalton Schultz,3500,11.6,0.0,21.1
+T.J. Hockenson,4300,11.2,0.0,21.1
+Drake London,6300,11.2,0.0,31.6
+Travis Etienne Jr.,5300,10.9,0.0,26.3
+Brenton Strange,4100,10.9,0.0,26.3
+Caleb Douglas,4500,9.8,0.0,26.3
+Jonathan Taylor,6900,9.8,0.0,26.3
+Mason Taylor,3000,9.5,0.0,21.1
+Minnesota Defense,3500,9.1,0.0,21.1
+Mike Evans,6000,8.1,0.0,21.1
+Breece Hall,6000,7.7,0.0,15.8
+Justin Jefferson,7800,7.7,0.0,21.1
 Mack Hollins,3900,6.7,0.0,21.1
-Mike Gesicki,3600,6.7,0.0,21.1
-Brenton Strange,4100,6.3,0.0,15.8
-Jordan Mason,5000,6.3,0.0,15.8
-Simi Fehoko,3300,6.3,0.0,21.1
-Justin Jefferson,7800,6.3,0.0,21.1
-Stefon Diggs,5800,6.0,0.0,26.3
-Malik Washington,4400,4.9,0.0,15.8
-Christian McCaffrey,8600,4.9,0.0,15.8
-Houston Defense,3300,4.2,0.0,10.5
-Nico Collins,7100,3.9,0.0,10.5
-Zay Flowers,7200,3.9,0.0,10.5
-Bhayshul Tuten,7300,3.5,0.0,15.8
-Isaiah Likely,5900,3.2,0.0,10.5
-Omarion Hampton,5600,2.8,0.0,10.5
-LA Chargers Defense,2900,2.8,0.0,10.5
-Mike Evans,6000,2.8,0.0,10.5
+Mike Gesicki,3600,6.7,0.0,15.8
+Stefon Diggs,5800,6.3,0.0,15.8
+Washington Defense,3200,6.3,0.0,15.8
+Atlanta Defense,2500,6.0,0.0,15.8
+Simi Fehoko,3300,5.6,0.0,15.8
+Derrick Henry,6700,5.6,0.0,15.8
+Houston Defense,3300,5.3,0.0,15.8
+Jordan Mason,5000,5.3,0.0,10.5
+Chris Olave,6900,4.2,0.0,15.8
+Tony Pollard,6500,4.2,0.0,15.8
+Malik Washington,4400,3.2,0.0,10.5
+Kyle Pitts Sr.,3800,3.2,0.0,15.8
+Chimere Dike,3700,3.2,0.0,10.5
+Nico Collins,7100,3.2,0.0,10.5
+Bhayshul Tuten,7300,3.2,0.0,10.5
+NY Jets Defense,3100,2.8,0.0,10.5
+Isaiah Likely,5900,2.8,0.0,10.5
