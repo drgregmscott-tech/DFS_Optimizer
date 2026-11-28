@@ -6049,3 +6049,11 @@ timestamp_utc,trigger_type,site,step,status
 2026-11-28T13:49:10.285898+00:00,manual_workflow_dispatch,fd,fd_classic_wk12_main_29Nov2026,status_apply,success
 2026-11-28T13:49:10.285898+00:00,manual_workflow_dispatch,fd,fd_classic_wk12_main_29Nov2026,pivot_finder,success
 2026-11-28T13:49:10.285898+00:00,manual_workflow_dispatch,fd,fd_classic_wk12_main_29Nov2026,cheat_sheet,success
+2026-11-28T16:02:46.593321+00:00,injury_refresh_scheduled,dk,dk_classic_wk12_main_29Nov2026,build_projections,success
+2026-11-28T16:02:46.593321+00:00,injury_refresh_scheduled,dk,dk_classic_wk12_main_29Nov2026,status_apply,success
+2026-11-28T16:02:46.593321+00:00,injury_refresh_scheduled,dk,dk_classic_wk12_main_29Nov2026,pivot_finder,success
+2026-11-28T16:02:46.593321+00:00,injury_refresh_scheduled,dk,dk_classic_wk12_main_29Nov2026,cheat_sheet,success
+2026-11-28T16:01:48.669170+00:00,injury_refresh_scheduled,fd,fd_classic_wk12_main_29Nov2026,build_projections,success
+2026-11-28T16:01:48.669170+00:00,injury_refresh_scheduled,fd,fd_classic_wk12_main_29Nov2026,status_apply,success
+2026-11-28T16:01:48.669170+00:00,injury_refresh_scheduled,fd,fd_classic_wk12_main_29Nov2026,pivot_finder,success
+2026-11-28T16:01:48.669170+00:00,injury_refresh_scheduled,fd,fd_classic_wk12_main_29Nov2026,cheat_sheet,success
